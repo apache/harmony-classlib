@@ -17,7 +17,7 @@
 <!-- ====================================================================== 
      Build source and lay out results in the required format
      ====================================================================== -->
-<project name="build-contribution" default="default">
+<project name="build-contribution" default="default" basedir="..">
     <description>
     	Build contributed source and lay out results in the required format 
     </description>

@@ -1,13 +1,14 @@
 README
 ======
 
+This directory contain the Harmony class library code.
 
+Contents
+--------
+After checking out the code onto disk at <EXTRACT_DIR> you should find the
+following directories under <EXTRACT_DIR> :
 
-Archive Contents
-----------------
-After extracting the archive onto disk at <EXTRACT_DIR> you should find the
-following directories under <EXTRACT_DIR>/Harmony :
-
+*  make     - support for building the source code and packaging the results.
 
 *  depends  - support files (both text and binary) that are required to build
               the class libraries and any native libraries required. Includes
@@ -57,24 +58,24 @@ successfully invoked from the command line.
             See http://www.doxygen.org
             
 
-The top-level Ant script <EXTRACT_DIR>/Harmony/build.xml has a default target 
+The top-level Ant script <EXTRACT_DIR>/make/build.xml has a default target 
 which builds both the Java source and C source files. It is expected
 therefore that, at a minimum, a C compiler and a Java compiler be available.
 Doxygen is only necessary if generation of HTML documentation from the
 source code is to be carried out by invoking Ant with the "doc" target on
-the <EXTRACT_DIR>/Harmony/build.xml script. As a convenience, pre-generated
-HTML files are already included.
+the <EXTRACT_DIR>/make/build.xml script. As a convenience, pre-generated
+HTML files are already stored in subversion.
 
 
 
 Building
 --------
 The simplest way to get started is to change directory into
-<EXTRACT_DIR>/Harmony and then type "ant" to run Apache Ant against the
+<EXTRACT_DIR>/make and then type "ant" to run Apache Ant against the
 default target of the build.xml file. Provided that both a C compiler and a Java
 compiler are available, Ant will proceed to compile all Java source beneath
-the <EXTRACT_DIR>/Harmony/java-src folders and all C source beneath the
-<EXTRACT_DIR>/Harmony/native-src folders.
+the <EXTRACT_DIR>/java-src folders and all C source beneath the
+<EXTRACT_DIR>/native-src folders.
 
 
 Building Java
@@ -85,7 +86,7 @@ http://wiki.apache.org/harmony/ClassLibrary for more information). Together with
 the required support files, these JAR files will then be laid out in the boot
 directory of the following directory tree structure ...
 
-<EXTRACT_DIR>/Harmony
+<EXTRACT_DIR>
        |
        \---deploy
              |
@@ -109,14 +110,14 @@ directory of the following directory tree structure ...
 
 Building Natives
 ----------------
-Next, the source files contained under <EXTRACT_DIR>/Harmony/native-src will be
+Next, the source files contained under <EXTRACT_DIR>/native-src will be
 built using the available C compiler. The output from this stage will be the 
 creation of a launcher executable (java.exe on Windows, java on Linux) in the 
 bin directory of the above layout together with a number of shared libraries
 (with the .dll extension on Windows, and .so on Linux). 
 
 A record of the progress of the native build step is kept in the text file 
-<EXTRACT_DIR>/Harmony/native-src/<target platform>/build.log where
+<EXTRACT_DIR>/native-src/<target platform>/build.log where
 <target platform> will have the value "win.IA32" or "linux.IA32". The contents
 of this file are especially useful in tracking down problems in your build 
 environment. For example, on Windows if the native build exits on error and 
@@ -140,24 +141,23 @@ require a virtual machine component.
 
 Building Documentation
 ----------------------
-Two sets of HTML files can be found under the <EXTRACT_DIR>/Harmony/doc 
-directory. 
+Two sets of HTML files can be found under the <EXTRACT_DIR>/doc directory. 
 
 * kernel_doc - contains HTML documentation on the set of Java classes called the
                "kernel classes". These are the set of classes which - under the
                architecture proposed in this contribution - are closely tied to
                the structure of the VM. 
-               Browse <EXTRACT_DIR>/Harmony/doc/kernel_doc/html/index.html
+               Browse <EXTRACT_DIR>/doc/kernel_doc/html/index.html
 
 * vm_doc - contains HTML documentation concerned with how the Java class
            libraries may be used on different VM implementations. This includes
            an overview of the external dependencies of the class libraries 
            and introduces a VM interface through which the class library natives
            and VM can interoperate with one another.        
-           Browse <EXTRACT_DIR>/Harmony/doc/vm_doc/html/index.html
+           Browse <EXTRACT_DIR>/doc/vm_doc/html/index.html
 
 Running the "doc" target of the top-level Ant script
-<EXTRACT_DIR>/Harmony/build.xml will refresh the contents of these directories.
+<EXTRACT_DIR>/build.xml will refresh the contents of these directories.
 The target makes use of the doxygen tool and so expects the doxygen executable
 to be available in the current user environment (i.e the user PATH environment
 variable should contain an entry for <DOXYGEN_INSTALL_DIR>/bin ). 
@@ -167,7 +167,7 @@ variable should contain an entry for <DOXYGEN_INSTALL_DIR>/bin ).
 Modifying the Java Build Compiler
 ---------------------------------
 When compiling the Java source files the top-level Ant script calls another
-Ant script, <EXTRACT_DIR>/Harmony/java-src/build.xml. By opening up this Ant 
+Ant script, <EXTRACT_DIR>/java-src/build.xml. By opening up this Ant 
 file for editing and making a small change to the "build.compiler" property
 declared near the top of the file it is possible to specify any Java compiler of
 choice - provided it is capable of handling Java 1.4 source code. For example,
@@ -183,7 +183,7 @@ this amounts to adding <ECLIPSE_INSTALL>/plugins/org.eclipse.jdt.core_3.1.0.jar
 together with the jdtCompilerAdapter.jar it contains. 
 
 Remember that the Java source files located under
-<EXTRACT_DIR>/Harmony/java-src are intended for consumption by a compiler that
+<EXTRACT_DIR>/java-src are intended for consumption by a compiler that
 understands Java 1.4 source code.
 
 For further information on this topic please refer to the Eclipse batch compiler
@@ -197,13 +197,13 @@ http://dev.eclipse.org/viewcvs/index.cgi/%7Echeckout%7E/jdt-core-home/howto/batc
 What's Next ?
 -------------
 
-The class libraries included in this contribution do not provide the full J2SE
+The class libraries do not provide the full J2SE
 API. Instead the included source is only a subset of the Java 1.4.2 API.
 
 In addition there is minimal support for the Java security framework. Users 
 wishing to experiment with introducing JCE support to these class libraries are 
 recommended to download the latest release of the Bouncy Castle Cryptography API
-and install the provider jar into the <EXTRACT_DIR>/Harmony/deploy/jre/lib/ext
+and install the provider jar into the <EXTRACT_DIR>/deploy/jre/lib/ext
 location. 
 See http://www.bouncycastle.org
 
@@ -220,7 +220,7 @@ The java launcher has a bug which makes it sensitive to the JAVA_HOME
 environment setting. Until this bug is fixed users should be aware that When
 running Java applications with the built class library components on a
 compatible VM the JAVA_HOME variable should either be unset or else explicitly
-set to EXTRACT_DIR>/Harmony/deploy/jre. Any other value risks crashing
+set to EXTRACT_DIR>/deploy/jre. Any other value risks crashing
 the launcher. 
 
                                   ----------
@@ -256,12 +256,12 @@ error while loading shared libraries: libhysig.so: cannot open shared
 object file: No such file or directory
 
 On some systems this error can occur even when the shared library
-(e.g. <EXTRACT_DIR>/Harmony/deploy/jre/bin/libhysig.so) has been built correctly
+(e.g. <EXTRACT_DIR>/deploy/jre/bin/libhysig.so) has been built correctly
 and is present in the correct location. This is not a problem with the built
 shared library but instead is dependent on how the operating system locates and 
 loads dynamically linked libraries at runtime. Updating the LD_LIBRARY_PATH 
 environment variable to include the directory
-<EXTRACT_DIR>/Harmony/deploy/jre/bin should solve this. An alternative remedy 
+<EXTRACT_DIR>/deploy/jre/bin should solve this. An alternative remedy 
 would be to add new entries for each of the shared libraries built from the
 contributed native source code to the local /etc/ld.so.conf file and then 
 running the ldconfig program to rebuild the /etc/ld.so.cache. 
