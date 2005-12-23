@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.oti.util;
+package org.apache.harmony.luni.util;
 
 
 import java.io.ByteArrayOutputStream;
@@ -25,15 +25,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import com.ibm.oti.util.ASN1Decoder.BMPString;
-import com.ibm.oti.util.ASN1Decoder.BitString;
-import com.ibm.oti.util.ASN1Decoder.CertificateSet;
-import com.ibm.oti.util.ASN1Decoder.Data;
-import com.ibm.oti.util.ASN1Decoder.Explicit;
-import com.ibm.oti.util.ASN1Decoder.GeneralizedTime;
-import com.ibm.oti.util.ASN1Decoder.Set;
-import com.ibm.oti.util.ASN1Decoder.Set2;
-import com.ibm.oti.util.ASN1Decoder.UTCTime;
+import org.apache.harmony.luni.util.ASN1Decoder.BMPString;
+import org.apache.harmony.luni.util.ASN1Decoder.BitString;
+import org.apache.harmony.luni.util.ASN1Decoder.CertificateSet;
+import org.apache.harmony.luni.util.ASN1Decoder.Data;
+import org.apache.harmony.luni.util.ASN1Decoder.Explicit;
+import org.apache.harmony.luni.util.ASN1Decoder.GeneralizedTime;
+import org.apache.harmony.luni.util.ASN1Decoder.Set;
+import org.apache.harmony.luni.util.ASN1Decoder.Set2;
+import org.apache.harmony.luni.util.ASN1Decoder.UTCTime;
+
+import com.ibm.oti.util.Msg;
+
 
 /**
  * This class implements ASN.1 encoding, but just the smallest subset possible,

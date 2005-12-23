@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.oti.util;
+package org.apache.harmony.luni.util;
 
 
 import java.io.ByteArrayInputStream;
@@ -27,6 +27,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.Vector;
+
+import com.ibm.oti.util.Msg;
+import com.ibm.oti.util.PositionedInputStream;
+import com.ibm.oti.util.PriviAction;
 
 /**
  * This class implements ASN.1 decoding, but just the smallest subset possible,
