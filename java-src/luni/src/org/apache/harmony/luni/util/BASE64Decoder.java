@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-package com.ibm.oti.util;
+package org.apache.harmony.luni.util;
+
+import com.ibm.oti.util.Msg;
 
 
 /**
