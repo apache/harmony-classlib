@@ -16,6 +16,7 @@ java/lang/*
 
 java/util/*
 com/ibm/oti/util/*
+org/apache/harmony/luni/util/*
 
 java/net/*
 com/ibm/oti/net/www/*
