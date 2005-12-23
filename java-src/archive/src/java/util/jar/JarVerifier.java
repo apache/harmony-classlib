@@ -32,7 +32,8 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
-import com.ibm.oti.util.BASE64Decoder;
+import org.apache.harmony.luni.util.BASE64Decoder;
+
 import com.ibm.oti.util.JarUtils;
 import com.ibm.oti.util.Msg;
 
