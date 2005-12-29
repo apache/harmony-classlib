@@ -18,7 +18,7 @@
      build-java-source    
      Compile the Java source and package in component archives.
      ====================================================================== -->
-<project name="build-java-source" default="default" basedir=".">
+<project name="build-java-source" default="default" basedir="../java-src">
     <description>
 		Compile the Java source and package in component archives.
     </description>
@@ -151,9 +151,11 @@
             <src path="math/src" />
             <src path="archive/src" />
             <src path="luni/src" />
+        	<src path="luni/src.kernel" />
             <src path="nio/src" />
             <src path="nio_char/src" />
             <src path="security/src" />
+            <src path="security/src.kernel" />
             <src path="text/src" />
             <classpath location="${build.output}" />
             <classpath>

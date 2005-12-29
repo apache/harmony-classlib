@@ -31,7 +31,7 @@
 Building Java component archives...
 ========================================
 </echo>
-        <ant antfile="java-src/build.xml" inheritall="false" />
+        <ant antfile="make/build-java.xml" inheritall="false" />
 
         <echo>
 ========================================
