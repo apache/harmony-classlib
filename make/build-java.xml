@@ -152,7 +152,7 @@
             <src path="archive/src/main/java" />
             <src path="luni/src" />
             <src path="nio/src/main/java" />
-            <src path="nio_char/src" />
+            <src path="nio_char/src/main/java" />
             <src path="security/src/main/java" />
             <src path="text/src" />
             <classpath location="${build.output}" />
