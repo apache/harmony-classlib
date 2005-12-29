@@ -24,4 +24,3 @@ Export-Package: java.security,
  javax.security.cert,
  javax.security.sasl,
  org.ietf.jgss
-Require-Bundle: org.apache.harmony.luni
