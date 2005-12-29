@@ -150,7 +150,7 @@
             <src path="regex/src/main/java" />
             <src path="math/src/main/java" />
             <src path="archive/src/main/java" />
-            <src path="luni/src" />
+            <src path="luni/src/main/java" />
             <src path="nio/src/main/java" />
             <src path="nio_char/src/main/java" />
             <src path="security/src/main/java" />
