@@ -154,7 +154,7 @@
             <src path="nio/src/main/java" />
             <src path="nio_char/src/main/java" />
             <src path="security/src/main/java" />
-            <src path="text/src" />
+            <src path="text/src/main/java" />
             <classpath location="${build.output}" />
             <classpath>
                 <fileset dir="${depends.jars}">
