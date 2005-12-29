@@ -151,7 +151,7 @@
             <src path="math/src" />
             <src path="archive/src" />
             <src path="luni/src" />
-            <src path="nio/src" />
+            <src path="nio/src/main/java" />
             <src path="nio_char/src" />
             <src path="security/src" />
             <src path="text/src" />
