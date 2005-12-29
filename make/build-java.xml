@@ -147,7 +147,7 @@
 
         <javac destdir="${build.output}" source="1.4" target="1.4" debug="on">
             <src path="kernel/src" />
-            <src path="regex/src" />
+            <src path="regex/src/main/java" />
             <src path="math/src/main/java" />
             <src path="archive/src/main/java" />
             <src path="luni/src" />
