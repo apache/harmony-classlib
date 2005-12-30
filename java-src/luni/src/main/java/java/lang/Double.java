@@ -83,18 +83,37 @@ public final class Double extends Number implements Comparable {
 	}
 
 	/**
-	 * Compares the receiver with the Double parameter.
+	 * Compares the receiver with the Double parameter. NaN is equal to NaN, and
+	 * is greater than other double values. 0d is greater than -0d.
 	 * 
 	 * @param object
 	 *            the Double to compare to the receiver
 	 * 
-	 * @return Returns greater than zero when this.doubleValue() >
-	 *         object.doubleValue(), zero when this.doubleValue() ==
-	 *         object.doubleValue(), and less than zero when this.doubleValue() <
-	 *         object.doubleValue()
+	 * @return Returns greater than zero when this.doubleValue() is greater than
+	 *         object.doubleValue(), zero when this.doubleValue() equals
+	 *         object.doubleValue(), and less than zero when this.doubleValue()
+	 *         is less than object.doubleValue()
 	 */
 	public int compareTo(Double object) {
-		return value > object.value ? 1 : (value < object.value ? -1 : 0);
+		long d1, d2;
+		long NaNbits = Double.doubleToLongBits(Double.NaN);
+		if ((d1 = Double.doubleToLongBits(value)) == NaNbits) {
+			if (Double.doubleToLongBits(object.value) == NaNbits) {
+				return 0;
+			}
+			return 1;
+		}
+		if ((d2 = Double.doubleToLongBits(object.value)) == NaNbits) {
+			return -1;
+		}
+		if (value == object.value) {
+			if (d1 == d2) {
+				return 0;
+			}
+			// check for -0
+			return d1 > d2 ? 1 : -1;
+		}
+		return value > object.value ? 1 : -1;
 	}
 
 	/**
@@ -103,13 +122,15 @@ public final class Double extends Number implements Comparable {
 	 * @param object
 	 *            the Double to compare to the receiver
 	 * 
-	 * @return Returns greater than zero when this.doubleValue() >
-	 *         object.doubleValue(), zero when this.doubleValue() ==
-	 *         object.doubleValue(), and less than zero when this.doubleValue() <
-	 *         object.doubleValue()
+	 * @return Returns greater than zero when this.doubleValue() is greater than
+	 *         object.doubleValue(), zero when this.doubleValue() equals
+	 *         object.doubleValue(), and less than zero when this.doubleValue()
+	 *         is less than object.doubleValue()
 	 * 
 	 * @throws ClassCastException
 	 *             when object is not a Double
+	 * 
+	 * @see #compareTo(Double)
 	 */
 	public int compareTo(Object object) {
 		return compareTo((Double) object);
@@ -326,17 +347,37 @@ public final class Double extends Number implements Comparable {
 	}
 
 	/**
-	 * Compares the two doubles.
+	 * Compares the two doubles. NaN is equal to NaN, and is greater than other
+	 * double values. 0d is greater than -0d.
 	 * 
 	 * @param double1
 	 *            the first value to compare
 	 * @param double2
 	 *            the second value to compare
 	 * 
-	 * @return Returns greater than zero when double1 > double2, zero when
-	 *         double1 == double2, and less than zero when double1 < double2
+	 * @return Returns greater than zero when double1 is greater than double2,
+	 *         zero when double1 equals double2, and less than zero when double1
+	 *         is less than double2
 	 */
 	public static int compare(double double1, double double2) {
-		return double1 > double2 ? 1 : (double1 < double2 ? -1 : 0);
+		long d1, d2;
+		long NaNbits = Double.doubleToLongBits(Double.NaN);
+		if ((d1 = Double.doubleToLongBits(double1)) == NaNbits) {
+			if (Double.doubleToLongBits(double2) == NaNbits) {
+				return 0;
+			}
+			return 1;
+		}
+		if ((d2 = Double.doubleToLongBits(double2)) == NaNbits) {
+			return -1;
+		}
+		if (double1 == double2) {
+			if (d1 == d2) {
+				return 0;
+			}
+			// check for -0
+			return d1 > d2 ? 1 : -1;
+		}
+		return double1 > double2 ? 1 : -1;
 	}
 }

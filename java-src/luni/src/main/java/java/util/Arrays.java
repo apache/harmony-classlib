@@ -202,19 +202,20 @@ public class Arrays {
 	 *         is the -index - 1 where the element would be inserted
 	 */
 	public static int binarySearch(double[] array, double value) {
+		long longBits = Double.doubleToLongBits(value);
 		int low = 0, mid = -1, high = array.length - 1;
 		while (low <= high) {
 			mid = (low + high) >> 1;
-			if (value > array[mid])
+			if (lessThan(array[mid], value))
 				low = mid + 1;
-			else if (value == array[mid])
+			else if (longBits == Double.doubleToLongBits(array[mid]))
 				return mid;
 			else
 				high = mid - 1;
 		}
 		if (mid < 0)
 			return -1;
-		return -mid - (value < array[mid] ? 1 : 2);
+		return -mid - (lessThan(value, array[mid]) ? 1 : 2);
 	}
 
 	/**
@@ -229,19 +230,20 @@ public class Arrays {
 	 *         is the -index - 1 where the element would be inserted
 	 */
 	public static int binarySearch(float[] array, float value) {
+		int intBits = Float.floatToIntBits(value);
 		int low = 0, mid = -1, high = array.length - 1;
 		while (low <= high) {
 			mid = (low + high) >> 1;
-			if (value > array[mid])
+			if (lessThan(array[mid], value))
 				low = mid + 1;
-			else if (value == array[mid])
+			else if (intBits == Float.floatToIntBits(array[mid]))
 				return mid;
 			else
 				high = mid - 1;
 		}
 		if (mid < 0)
 			return -1;
-		return -mid - (value < array[mid] ? 1 : 2);
+		return -mid - (lessThan(value, array[mid]) ? 1 : 2);
 	}
 
 	/**
@@ -876,7 +878,8 @@ public class Arrays {
 	}
 
 	/**
-	 * Compares the two arrays.
+	 * Compares the two arrays. The values are compared in the same manner as
+	 * Float.equals().
 	 * 
 	 * @param array1
 	 *            the first float array
@@ -884,6 +887,8 @@ public class Arrays {
 	 *            the second float array
 	 * @return true when the arrays have the same length and the elements at
 	 *         each index in the two arrays are equal, false otherwise
+	 * 
+	 * @see Float#equals(Object)
 	 */
 	public static boolean equals(float[] array1, float[] array2) {
 		if (array1 == array2)
@@ -891,14 +896,17 @@ public class Arrays {
 		if (array1 == null || array2 == null || array1.length != array2.length)
 			return false;
 		for (int i = 0; i < array1.length; i++) {
-			if (array1[i] != array2[i])
+			if (Float.floatToIntBits(array1[i]) !=
+					Float.floatToIntBits(array2[i])) {
 				return false;
+			}
 		}
 		return true;
 	}
 
 	/**
-	 * Compares the two arrays.
+	 * Compares the two arrays. The values are compared in the same manner as
+	 * Double.equals().
 	 * 
 	 * @param array1
 	 *            the first double array
@@ -906,6 +914,8 @@ public class Arrays {
 	 *            the second double array
 	 * @return true when the arrays have the same length and the elements at
 	 *         each index in the two arrays are equal, false otherwise
+	 * 
+	 * @see Double#equals(Object)
 	 */
 	public static boolean equals(double[] array1, double[] array2) {
 		if (array1 == array2)
@@ -913,8 +923,10 @@ public class Arrays {
 		if (array1 == null || array2 == null || array1.length != array2.length)
 			return false;
 		for (int i = 0; i < array1.length; i++) {
-			if (array1[i] != array2[i])
+			if (Double.doubleToLongBits(array1[i]) !=
+					Double.doubleToLongBits(array2[i])) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -964,6 +976,44 @@ public class Arrays {
 		return true;
 	}
 
+	private static boolean lessThan(double double1, double double2) {
+		long d1, d2;
+		long NaNbits = Double.doubleToLongBits(Double.NaN);
+		if ((d1 = Double.doubleToLongBits(double1)) == NaNbits) {
+			return false;
+		}
+		if ((d2 = Double.doubleToLongBits(double2)) == NaNbits) {
+			return true;
+		}
+		if (double1 == double2) {
+			if (d1 == d2) {
+				return false;
+			}
+			// check for -0
+			return d1 < d2;
+		}
+		return double1 < double2;
+	}
+
+	private static boolean lessThan(float float1, float float2) {
+		int f1, f2;
+		int NaNbits = Float.floatToIntBits(Float.NaN);
+		if ((f1 = Float.floatToIntBits(float1)) == NaNbits) {
+			return false;
+		}
+		if ((f2 = Float.floatToIntBits(float2)) == NaNbits) {
+			return true;
+		}
+		if (float1 == float2) {
+			if (f1 == f2) {
+				return false;
+			}
+			// check for -0
+			return f1 < f2;
+		}
+		return float1 < float2;
+	}
+
 	private static int med3(byte[] array, int a, int b, int c) {
 		byte x = array[a], y = array[b], z = array[c];
 		return x < y ? (y < z ? b : (x < z ? c : a)) : (y > z ? b : (x > z ? c
@@ -978,14 +1028,16 @@ public class Arrays {
 
 	private static int med3(double[] array, int a, int b, int c) {
 		double x = array[a], y = array[b], z = array[c];
-		return x < y ? (y < z ? b : (x < z ? c : a)) : (y > z ? b : (x > z ? c
-				: a));
+		return lessThan(x, y)
+			? (lessThan(y, z) ? b : (lessThan(x, z) ? c : a))
+			: (lessThan(z, y) ? b : (lessThan(z, x) ? c : a));
 	}
 
 	private static int med3(float[] array, int a, int b, int c) {
 		float x = array[a], y = array[b], z = array[c];
-		return x < y ? (y < z ? b : (x < z ? c : a)) : (y > z ? b : (x > z ? c
-				: a));
+		return lessThan(x, y)
+			? (lessThan(y, z) ? b : (lessThan(x, z) ? c : a))
+			: (lessThan(z, y) ? b : (lessThan(z, x) ? c : a));
 	}
 
 	private static int med3(int[] array, int a, int b, int c) {
@@ -1231,13 +1283,16 @@ public class Arrays {
 	 * 
 	 * @param array
 	 *            the double array to be sorted
+	 * 
+	 * @see #sort(double[], int, int)
 	 */
 	public static void sort(double[] array) {
 		sort(0, array.length, array);
 	}
 
 	/**
-	 * Sorts the specified range in the array in ascending order.
+	 * Sorts the specified range in the array in ascending order. The values are
+	 * sorted according to the order imposed by Double.compareTo().
 	 * 
 	 * @param array
 	 *            the double array to be sorted
@@ -1251,6 +1306,8 @@ public class Arrays {
 	 * @exception ArrayIndexOutOfBoundsException
 	 *                when <code>start < 0</code> or
 	 *                <code>end > array.size()</code>
+	 * 
+	 * @see Double#compareTo(Double)
 	 */
 	public static void sort(double[] array, int start, int end) {
 		if (start >= 0 && end <= array.length) {
@@ -1267,7 +1324,7 @@ public class Arrays {
 		int length = end - start;
 		if (length < 7) {
 			for (int i = start + 1; i < end; i++)
-				for (int j = i; j > start && array[j - 1] > array[j]; j--) {
+				for (int j = i; j > start && lessThan(array[j], array[j - 1]); j--) {
 					temp = array[j];
 					array[j] = array[j - 1];
 					array[j - 1] = temp;
@@ -1292,7 +1349,7 @@ public class Arrays {
 		a = b = start;
 		c = d = end - 1;
 		while (true) {
-			while (b <= c && array[b] <= partionValue) {
+			while (b <= c && !lessThan(partionValue, array[b])) {
 				if (array[b] == partionValue) {
 					temp = array[a];
 					array[a++] = array[b];
@@ -1300,7 +1357,7 @@ public class Arrays {
 				}
 				b++;
 			}
-			while (c >= b && array[c] >= partionValue) {
+			while (c >= b && !lessThan(array[c], partionValue)) {
 				if (array[c] == partionValue) {
 					temp = array[c];
 					array[c] = array[d];
@@ -1341,13 +1398,16 @@ public class Arrays {
 	 * 
 	 * @param array
 	 *            the float array to be sorted
+	 * 
+	 * @see #sort(float[], int, int)
 	 */
 	public static void sort(float[] array) {
 		sort(0, array.length, array);
 	}
 
 	/**
-	 * Sorts the specified range in the array in ascending order.
+	 * Sorts the specified range in the array in ascending order. The values are
+	 * sorted according to the order imposed by Float.compareTo().
 	 * 
 	 * @param array
 	 *            the float array to be sorted
@@ -1361,6 +1421,8 @@ public class Arrays {
 	 * @exception ArrayIndexOutOfBoundsException
 	 *                when <code>start < 0</code> or
 	 *                <code>end > array.size()</code>
+	 * 
+	 * @see Float#compareTo(Float)
 	 */
 	public static void sort(float[] array, int start, int end) {
 		if (start >= 0 && end <= array.length) {
@@ -1377,7 +1439,7 @@ public class Arrays {
 		int length = end - start;
 		if (length < 7) {
 			for (int i = start + 1; i < end; i++)
-				for (int j = i; j > start && array[j - 1] > array[j]; j--) {
+				for (int j = i; j > start && lessThan(array[j], array[j - 1]); j--) {
 					temp = array[j];
 					array[j] = array[j - 1];
 					array[j - 1] = temp;
@@ -1402,7 +1464,7 @@ public class Arrays {
 		a = b = start;
 		c = d = end - 1;
 		while (true) {
-			while (b <= c && array[b] <= partionValue) {
+			while (b <= c && !lessThan(partionValue, array[b])) {
 				if (array[b] == partionValue) {
 					temp = array[a];
 					array[a++] = array[b];
@@ -1410,7 +1472,7 @@ public class Arrays {
 				}
 				b++;
 			}
-			while (c >= b && array[c] >= partionValue) {
+			while (c >= b && !lessThan(array[c], partionValue)) {
 				if (array[c] == partionValue) {
 					temp = array[c];
 					array[c] = array[d];

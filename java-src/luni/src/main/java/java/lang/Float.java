@@ -90,18 +90,37 @@ public final class Float extends Number implements Comparable {
 	}
 
 	/**
-	 * Compares the receiver with the Float parameter.
+	 * Compares the receiver with the Float parameter. NaN is equal to NaN, and
+	 * is greater than other float values. 0f is greater than -0f.
 	 * 
 	 * @param object
 	 *            the Float to compare to the receiver
 	 * 
-	 * @return Returns greater than zero when this.floatValue() >
-	 *         object.floatValue(), zero when this.floatValue() ==
-	 *         object.floatValue(), and less than zero when this.floatValue() <
-	 *         object.floatValue()
+	 * @return Returns greater than zero when this.floatValue() is greater than
+	 *         object.floatValue(), zero when this.floatValue() equals
+	 *         object.floatValue(), and less than zero when this.floatValue() is
+	 *         less than object.floatValue()
 	 */
 	public int compareTo(Float object) {
-		return value > object.value ? 1 : (value < object.value ? -1 : 0);
+		int f1, f2;
+		int NaNbits = Float.floatToIntBits(Float.NaN);
+		if ((f1 = Float.floatToIntBits(value)) == NaNbits) {
+			if (Float.floatToIntBits(object.value) == NaNbits) {
+				return 0;
+			}
+			return 1;
+		}
+		if ((f2 = Float.floatToIntBits(object.value)) == NaNbits) {
+			return -1;
+		}
+		if (value == object.value) {
+			if (f1 == f2) {
+				return 0;
+			}
+			// check for -0
+			return f1 > f2 ? 1 : -1;
+		}
+		return value > object.value ? 1 : -1;
 	}
 
 	/**
@@ -110,13 +129,15 @@ public final class Float extends Number implements Comparable {
 	 * @param object
 	 *            the Float to compare to the receiver
 	 * 
-	 * @return Returns greater than zero when this.floatValue() >
-	 *         object.floatValue(), zero when this.floatValue() ==
-	 *         object.floatValue(), and less than zero when this.floatValue() <
-	 *         object.floatValue()
+	 * @return Returns greater than zero when this.floatValue() is greater than
+	 *         object.floatValue(), zero when this.floatValue() equals
+	 *         object.floatValue(), and less than zero when this.floatValue() is
+	 *         less than object.floatValue()
 	 * 
 	 * @throws ClassCastException
 	 *             when object is not a Float
+	 * 
+	 * @see #compareTo(Float)
 	 */
 	public int compareTo(Object object) {
 		return compareTo((Float) object);
@@ -331,17 +352,37 @@ public final class Float extends Number implements Comparable {
 	}
 
 	/**
-	 * Compares the two floats.
+	 * Compares the two floats. NaN is equal to NaN, and is greater than other
+	 * float values. 0f is greater than -0f.
 	 * 
 	 * @param float1
 	 *            the first value to compare
 	 * @param float2
 	 *            the second value to compare
 	 * 
-	 * @return Returns greater than zero when float1 > float2, zero when float1 ==
-	 *         float2, and less than zero when float1 < float2
+	 * @return Returns greater than zero when float1 is greater than float2,
+	 *         zero when float1 equals float2, and less than zero when float1 is
+	 *         less than float2
 	 */
 	public static int compare(float float1, float float2) {
-		return float1 > float2 ? 1 : (float1 < float2 ? -1 : 0);
+		int f1, f2;
+		int NaNbits = Float.floatToIntBits(Float.NaN);
+		if ((f1 = Float.floatToIntBits(float1)) == NaNbits) {
+			if (Float.floatToIntBits(float2) == NaNbits) {
+				return 0;
+			}
+			return 1;
+		}
+		if ((f2 = Float.floatToIntBits(float2)) == NaNbits) {
+			return -1;
+		}
+		if (float1 == float2) {
+			if (f1 == f2) {
+				return 0;
+			}
+			// check for -0
+			return f1 > f2 ? 1 : -1;
+		}
+		return float1 > float2 ? 1 : -1;
 	}
 }
