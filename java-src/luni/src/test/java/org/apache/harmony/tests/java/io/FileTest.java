@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.test.java.io;
+package org.apache.harmony.tests.java.io;
 
 import java.io.File;
 
