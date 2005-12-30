@@ -31,7 +31,8 @@ public class FileTest extends TestCase {
 		File file = new File(root, "/dir/file");
 		assertEquals("Assert 1: wrong path result ", path.getPath(), file
 				.getPath());
-
+		assertTrue("Assert 1.1: path not absolute ", new File("\\\\\\a\b").isAbsolute());
+		
 		// Test data used in a few places below
 		String dirName = System.getProperty("user.dir");
 		String fileName = "input.tst";
