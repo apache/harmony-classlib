@@ -5,16 +5,15 @@ Bundle-SymbolicName: org.apache.harmony.nio
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Export-Package: java.nio,
- java.nio.channels,
- java.nio.channels.spi,
- com.ibm.io.nio.factory
-Import-Package: java.io,
+Import-Package: com.ibm.misc.util,
+ com.ibm.oti.vm,
+ java.io,
  java.lang,
  java.lang.ref,
  java.net,
  java.nio.charset,
  java.util
-Require-Bundle: org.apache.harmony.luni,
- org.apache.harmony.nio_char
-
+Export-Package: com.ibm.io.nio;version="1.0.0";x-friends:="org.apache.harmony.luni",
+ java.nio,
+ java.nio.channels,
+ java.nio.channels.spi
