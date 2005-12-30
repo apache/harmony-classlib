@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.misc.util;
+package org.apache.harmony.luni.util;
 
 
 /**
