@@ -27,7 +27,8 @@ import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
-import com.ibm.misc.util.NotYetImplementedException;
+import org.apache.harmony.luni.util.NotYetImplementedException;
+
 import com.ibm.platform.IFileSystem;
 import com.ibm.platform.Platform;
 import com.ibm.platform.struct.PlatformAddress;

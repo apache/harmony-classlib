@@ -18,7 +18,8 @@ package com.ibm.platform;
 
 import java.io.IOException;
 
-import com.ibm.misc.util.NotYetImplementedException;
+import org.apache.harmony.luni.util.NotYetImplementedException;
+
 import com.ibm.platform.struct.PlatformAddress;
 
 /**

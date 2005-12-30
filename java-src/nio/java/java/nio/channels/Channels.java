@@ -24,7 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 
-import com.ibm.misc.util.NotYetImplementedException;
+import org.apache.harmony.luni.util.NotYetImplementedException;
 
 /**
  * Provides convenience methods to java.io package streams.
