@@ -306,7 +306,13 @@ public class File implements Serializable, Comparable {
 		SecurityManager security = System.getSecurityManager();
 		if (security != null)
 			security.checkWrite(path);
-		return exists() && !isReadOnlyImpl(properPath(true));
+		
+		// Cannot use exists() since that does an unwanted read-check.
+		boolean exists = false;
+		if (path.length() > 0) {
+			exists = existsImpl(properPath(true));
+		}
+		return exists && !isReadOnlyImpl(properPath(true));
 	}
 
 	/**
