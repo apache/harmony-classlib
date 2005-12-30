@@ -99,15 +99,8 @@ public class File implements Serializable, Comparable {
 			if (dir == null) {
 				this.path = name;
 			} else {
-				String dirPath = dir.getPath();
-				if (dirPath.length() > 0
-						&& dirPath.charAt(dirPath.length() - 1) == separatorChar) {
-					this.path = dirPath + name;
-				} else {
-					this.path = dirPath + separator + name;
-				}
+				this.path = calculatePath(dir.getPath(),name);
 			}
-			fixSlashes();
 		} else
 			throw new NullPointerException();
 	}
@@ -120,8 +113,7 @@ public class File implements Serializable, Comparable {
 	 */
 	public File(String path) {
 		// NullPointerException thrown by fixSlashes
-		this.path = path;
-		fixSlashes();
+		this.path = fixSlashes(path);
 	}
 
 	/**
@@ -138,14 +130,8 @@ public class File implements Serializable, Comparable {
 			if (dirPath == null) {
 				this.path = name;
 			} else {
-				if (dirPath.length() > 0
-						&& dirPath.charAt(dirPath.length() - 1) == separatorChar) {
-					this.path = dirPath + name;
-				} else {
-					this.path = dirPath + separator + name;
-				}
+				this.path = calculatePath(dirPath, name);
 			}
-			fixSlashes();
 		} else
 			throw new NullPointerException();
 	}
@@ -170,8 +156,22 @@ public class File implements Serializable, Comparable {
 	public File(URI uri) {
 		// check pre-conditions
 		checkURI(uri);
-		this.path = uri.getPath();
-		fixSlashes();
+		this.path = fixSlashes(uri.getPath());
+	}
+
+	private String calculatePath(String dirPath, String name) {
+		// Remove all the proceeding separator chars from name
+		name = fixSlashes(name);
+		while (name.length() > 0 && (name.charAt(0) == separatorChar))
+			name = name.substring(1, name.length());
+
+		// Ensure there is a separator char between dirPath and name
+		dirPath = fixSlashes(dirPath);
+		if (dirPath.length() > 0 && (dirPath.charAt(dirPath.length() - 1) == separatorChar)) {
+			return dirPath + name;
+		}
+
+		return dirPath + separatorChar + name;
 	}
 
 	private void checkURI(URI uri) {
@@ -237,16 +237,16 @@ public class File implements Serializable, Comparable {
 	 * includes changing them all to the current platforms fileSeparator and
 	 * removing duplicates.
 	 */
-	private void fixSlashes() {
+	private String fixSlashes(String origPath) {
 		int uncIndex = 1;
-		int length = path.length(), newLength = 0;
+		int length = origPath.length(), newLength = 0;
 		if (separatorChar == '/') // disable UNC names
 			uncIndex = 0;
-		else if (length > 2 && path.charAt(1) == ':')
+		else if (length > 2 && origPath.charAt(1) == ':')
 			uncIndex = 2;
 
 		boolean foundSlash = false;
-		char newPath[] = path.toCharArray();
+		char newPath[] = origPath.toCharArray();
 		for (int i = 0; i < length; i++) {
 			char pathChar = newPath[i];
 			if (pathChar == '\\' || pathChar == '/') {
@@ -273,8 +273,10 @@ public class File implements Serializable, Comparable {
 			newLength--;
 		String tempPath = new String(newPath, 0, newLength);
 		// If it's the same keep it identical for SecurityManager purposes
-		if (!tempPath.equals(path))
-			path = tempPath;
+		if (!tempPath.equals(origPath)) {
+			return tempPath;
+		}
+		return origPath;
 	}
 
 	/**
