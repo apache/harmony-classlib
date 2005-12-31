@@ -29,7 +29,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.Permission;
 
-import com.ibm.oti.net.www.MimeTable;
+import org.apache.harmony.net.www.MimeTable;
+
 import com.ibm.oti.util.Msg;
 
 public class FtpURLConnection extends URLConnection {

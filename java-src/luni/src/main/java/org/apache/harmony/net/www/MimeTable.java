@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.oti.net.www;
+package org.apache.harmony.net.www;
 
 
 import java.io.IOException;

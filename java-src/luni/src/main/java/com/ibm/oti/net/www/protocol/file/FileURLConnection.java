@@ -28,7 +28,8 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.ibm.oti.net.www.MimeTable;
+import org.apache.harmony.net.www.MimeTable;
+
 
 /**
  * This subclass extends <code>URLConnection</code>.
