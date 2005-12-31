@@ -175,7 +175,7 @@ public final class URI implements Comparable, Serializable {
 		if (authority != null) {
 			uri.append("//");
 			// QUOTE ILLEGAL CHARS
-			uri.append(quoteComponent(authority, "@" + someLegal));
+			uri.append(quoteComponent(authority, "@[]" + someLegal));
 		}
 
 		if (path != null) {
@@ -201,6 +201,8 @@ public final class URI implements Comparable, Serializable {
 		private void parseURI(String uri, boolean forceServer)
 				throws URISyntaxException {
 			String temp = uri;
+			// assign uri string to the input value per spec
+			string = uri;
 			int index, index1, index2, index3;
 			// parse into Fragment, Scheme, and SchemeSpecificPart
 			// then parse SchemeSpecificPart if necessary
@@ -226,6 +228,10 @@ public final class URI implements Comparable, Serializable {
 				// the characters up to the first ':' comprise the scheme
 				absolute = true;
 				scheme = temp.substring(0, index);
+				if (scheme.length() == 0) {
+					throw new URISyntaxException(uri, Msg.getString("K0342"),
+							index);
+				}
 				validateScheme(uri, scheme, 0);
 				schemespecificpart = temp.substring(index + 1);
 				if (schemespecificpart.length() == 0) {
@@ -269,12 +275,21 @@ public final class URI implements Comparable, Serializable {
 						// nothing left, so path is empty (not null, path should
 						// never be null)
 					}
-					validateAuthority(uri, authority, index1 + 3);
+
+					if (authority.length() == 0)
+						authority = null;
+					else
+						validateAuthority(uri, authority, index1 + 3);
 				} else { // no authority specified
 					path = temp;
 				}
 
-				validatePath(uri, path, index2 + index);
+				int pathIndex = 0;
+				if (index2 > -1)
+					pathIndex += index2;
+				if (index > -1)
+					pathIndex += index;
+				validatePath(uri, path, pathIndex);
 			} else { // if not hierarchical, URI is opaque
 				opaque = true;
 				validateSsp(uri, schemespecificpart, index2 + 2 + index);
@@ -283,16 +298,16 @@ public final class URI implements Comparable, Serializable {
 			parseAuthority(forceServer);
 		}
 
-		private void validateScheme(String uri, String schemeValue, int index)
+		private void validateScheme(String uri, String scheme, int index)
 				throws URISyntaxException {
 			// first char needs to be an alpha char
-			char ch = schemeValue.charAt(0);
+			char ch = scheme.charAt(0);
 			if (!((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'))) {
 				throw new URISyntaxException(uri, Msg.getString("K0305"), 0);
 			}
 
 			try {
-				URIEncoderDecoder.validateSimple(schemeValue, "+-.");
+				URIEncoderDecoder.validateSimple(scheme, "+-.");
 			} catch (URISyntaxException e) {
 				throw new URISyntaxException(uri, Msg.getString("K0305"), index
 						+ e.getIndex());
@@ -309,30 +324,30 @@ public final class URI implements Comparable, Serializable {
 			}
 		}
 
-		private void validateAuthority(String uri, String authorityValue,
-				int index) throws URISyntaxException {
+		private void validateAuthority(String uri, String authority, int index)
+				throws URISyntaxException {
 			try {
-				URIEncoderDecoder.validate(authorityValue, "@[]" + someLegal);
+				URIEncoderDecoder.validate(authority, "@[]" + someLegal);
 			} catch (URISyntaxException e) {
 				throw new URISyntaxException(uri, Msg.getString("K0307", e
 						.getReason()), index + e.getIndex());
 			}
 		}
 
-		private void validatePath(String uri, String pathValue, int index)
+		private void validatePath(String uri, String path, int index)
 				throws URISyntaxException {
 			try {
-				URIEncoderDecoder.validate(pathValue, "/@" + someLegal);
+				URIEncoderDecoder.validate(path, "/@" + someLegal);
 			} catch (URISyntaxException e) {
 				throw new URISyntaxException(uri, Msg.getString("K0308", e
 						.getReason()), index + e.getIndex());
 			}
 		}
 
-		private void validateQuery(String uri, String queryValue, int index)
+		private void validateQuery(String uri, String query, int index)
 				throws URISyntaxException {
 			try {
-				URIEncoderDecoder.validate(queryValue, allLegal);
+				URIEncoderDecoder.validate(query, allLegal);
 			} catch (URISyntaxException e) {
 				throw new URISyntaxException(uri, Msg.getString("K0309", e
 						.getReason()), index + e.getIndex());
@@ -340,10 +355,10 @@ public final class URI implements Comparable, Serializable {
 			}
 		}
 
-		private void validateFragment(String uri, String fragmentValue,
-				int index) throws URISyntaxException {
+		private void validateFragment(String uri, String fragment, int index)
+				throws URISyntaxException {
 			try {
-				URIEncoderDecoder.validate(fragmentValue, allLegal);
+				URIEncoderDecoder.validate(fragment, allLegal);
 			} catch (URISyntaxException e) {
 				throw new URISyntaxException(uri, Msg.getString("K030a", e
 						.getReason()), index + e.getIndex());
@@ -364,7 +379,7 @@ public final class URI implements Comparable, Serializable {
 		 */
 		private void parseAuthority(boolean forceServer)
 				throws URISyntaxException {
-			if (authority == null || authority.equals(""))
+			if (authority == null)
 				return;
 
 			String temp, tempUserinfo = null, tempHost = null;
@@ -389,6 +404,12 @@ public final class URI implements Comparable, Serializable {
 				tempHost = temp.substring(0, index);
 				try {
 					tempPort = Integer.parseInt(temp.substring(index + 1));
+					if (tempPort < 0) {
+						if (forceServer)
+							throw new URISyntaxException(authority, Msg
+									.getString("K00b1"), hostindex + index + 1);
+						return;
+					}
 				} catch (NumberFormatException e) {
 					if (forceServer)
 						throw new URISyntaxException(authority, Msg
@@ -416,10 +437,10 @@ public final class URI implements Comparable, Serializable {
 			serverAuthority = true;
 		}
 
-		private void validateUserinfo(String uri, String userinfoValue,
-				int index) throws URISyntaxException {
-			for (int i = 0; i < userinfoValue.length(); i++) {
-				char ch = userinfoValue.charAt(i);
+		private void validateUserinfo(String uri, String userinfo, int index)
+				throws URISyntaxException {
+			for (int i = 0; i < userinfo.length(); i++) {
+				char ch = userinfo.charAt(i);
 				if (ch == ']' || ch == '[') {
 					throw new URISyntaxException(uri, Msg.getString("K030d"),
 							index + i);
@@ -432,69 +453,69 @@ public final class URI implements Comparable, Serializable {
 		 * distinguish between IPv4, IPv6, domain name and validate it based on
 		 * its type
 		 */
-		private boolean isValidHost(boolean forceServer, String hostValue)
+		private boolean isValidHost(boolean forceServer, String host)
 				throws URISyntaxException {
-			if (hostValue.charAt(0) == '[') {
+			if (host.charAt(0) == '[') {
 				// ipv6 address
-				if (hostValue.charAt(hostValue.length() - 1) != ']') {
-					throw new URISyntaxException(hostValue, Msg
-							.getString("K030e"), 0);
+				if (host.charAt(host.length() - 1) != ']') {
+					throw new URISyntaxException(host, Msg.getString("K030e"),
+							0);
+				} else {
+					if (!isValidIP6Address(host)) {
+						throw new URISyntaxException(host, Msg
+								.getString("K030f"));
+					} else
+						return true;
 				}
-				if (!isValidIP6Address(hostValue)) {
-					throw new URISyntaxException(hostValue, Msg
-							.getString("K030f"));
-				}
-				return true;
 			}
 
 			// '[' and ']' can only be the first char and last char
 			// of the host name
-			if (hostValue.indexOf('[') != -1 || hostValue.indexOf(']') != -1) {
-				throw new URISyntaxException(hostValue, Msg.getString("K0310"),
-						0);
+			if (host.indexOf('[') != -1 || host.indexOf(']') != -1) {
+				throw new URISyntaxException(host, Msg.getString("K0310"), 0);
 			}
 
-			int index = hostValue.lastIndexOf('.');
-			if (index < 0 || index == hostValue.length() - 1
-					|| !Character.isDigit(hostValue.charAt(index + 1))) {
+			int index = host.lastIndexOf('.');
+			if (index < 0 || index == host.length() - 1
+					|| !Character.isDigit(host.charAt(index + 1))) {
 				// domain name
-				if (isValidDomainName(hostValue)) {
+				if (isValidDomainName(host))
 					return true;
+				else {
+					if (forceServer)
+						throw new URISyntaxException(host, Msg
+								.getString("K0310"), 0);
+					return false;
 				}
-				if (forceServer) {
-					throw new URISyntaxException(hostValue, Msg
-							.getString("K0310"), 0);
-				}
-				return false;
 			}
 
 			// IPv4 address
-			if (isValidIPv4Address(hostValue)) {
+			if (isValidIPv4Address(host))
 				return true;
+			else {
+				if (forceServer)
+					throw new URISyntaxException(host, Msg.getString("K0311"),
+							0);
+				return false;
 			}
-			if (forceServer) {
-				throw new URISyntaxException(hostValue, Msg.getString("K0311"),
-						0);
-			}
-			return false;
 		}
 
-		private boolean isValidDomainName(String hostValue) {
+		private boolean isValidDomainName(String host) {
 			try {
-				URIEncoderDecoder.validateSimple(hostValue, "-.");
+				URIEncoderDecoder.validateSimple(host, "-.");
 			} catch (URISyntaxException e) {
 				return false;
 			}
 
 			String label = null;
-			StringTokenizer st = new StringTokenizer(hostValue, ".");
+			StringTokenizer st = new StringTokenizer(host, ".");
 			while (st.hasMoreTokens()) {
 				label = st.nextToken();
 				if (label.startsWith("-") || label.endsWith("-"))
 					return false;
 			}
 
-			if (!label.equals(hostValue)) {
+			if (!label.equals(host)) {
 				char ch = label.charAt(0);
 				if (ch >= '0' && ch <= '9')
 					return false;
@@ -502,24 +523,24 @@ public final class URI implements Comparable, Serializable {
 			return true;
 		}
 
-		private boolean isValidIPv4Address(String hostString) {
+		private boolean isValidIPv4Address(String host) {
 			int index;
 			int index2;
 			try {
 				int num;
-				index = hostString.indexOf('.');
-				num = Integer.parseInt(hostString.substring(0, index));
+				index = host.indexOf('.');
+				num = Integer.parseInt(host.substring(0, index));
 				if (num < 0 || num > 255)
 					return false;
-				index2 = hostString.indexOf('.', index + 1);
-				num = Integer.parseInt(hostString.substring(index + 1, index2));
+				index2 = host.indexOf('.', index + 1);
+				num = Integer.parseInt(host.substring(index + 1, index2));
 				if (num < 0 || num > 255)
 					return false;
-				index = hostString.indexOf('.', index2 + 1);
-				num = Integer.parseInt(hostString.substring(index2 + 1, index));
+				index = host.indexOf('.', index2 + 1);
+				num = Integer.parseInt(host.substring(index2 + 1, index));
 				if (num < 0 || num > 255)
 					return false;
-				num = Integer.parseInt(hostString.substring(index + 1));
+				num = Integer.parseInt(host.substring(index + 1));
 				if (num < 0 || num > 255)
 					return false;
 			} catch (Exception e) {
@@ -707,16 +728,16 @@ public final class URI implements Comparable, Serializable {
 
 			// compare authorities
 			if (authority != null && uri.authority == null)
-				return -1;
-			else if (authority == null && uri.authority != null)
 				return 1;
+			else if (authority == null && uri.authority != null)
+				return -1;
 			else if (authority != null && uri.authority != null) {
 				if (host != null && uri.host != null) {
 					// both are server based, so compare userinfo, host, port
 					if (userinfo != null && uri.userinfo == null)
-						return -1;
-					else if (userinfo == null && uri.userinfo != null)
 						return 1;
+					else if (userinfo == null && uri.userinfo != null)
+						return -1;
 					else if (userinfo != null && uri.userinfo != null) {
 						ret = userinfo.compareTo(uri.userinfo);
 						if (ret != 0)
@@ -724,7 +745,7 @@ public final class URI implements Comparable, Serializable {
 					}
 
 					// userinfo's are the same, compare hostname
-					ret = host.compareTo(uri.host);
+					ret = host.compareToIgnoreCase(uri.host);
 					if (ret != 0)
 						return ret;
 
@@ -748,9 +769,9 @@ public final class URI implements Comparable, Serializable {
 			// compare queries
 
 			if (query != null && uri.query == null)
-				return -1;
-			else if (query == null && uri.query != null)
 				return 1;
+			else if (query == null && uri.query != null)
+				return -1;
 			else if (query != null && uri.query != null) {
 				ret = query.compareTo(uri.query);
 				if (ret != 0)
@@ -761,9 +782,9 @@ public final class URI implements Comparable, Serializable {
 
 		// everything else is identical, so compare fragments
 		if (fragment != null && uri.fragment == null)
-			return -1;
-		else if (fragment == null && uri.fragment != null)
 			return 1;
+		else if (fragment == null && uri.fragment != null)
+			return -1;
 		else if (fragment != null && uri.fragment != null) {
 			ret = fragment.compareTo(uri.fragment);
 			if (ret != 0)
@@ -842,8 +863,6 @@ public final class URI implements Comparable, Serializable {
 			index += 3;
 			previndex = index;
 		}
-		if (first.length() != 0 && previndex == first.length())
-			return true;
 		return first.substring(previndex).equals(second.substring(previndex));
 	}
 
@@ -916,8 +935,6 @@ public final class URI implements Comparable, Serializable {
 	}
 
 	public String getAuthority() {
-		if (authority == null || authority.equals(""))
-			return null;
 		return decode(authority);
 	}
 
@@ -972,8 +989,6 @@ public final class URI implements Comparable, Serializable {
 	 * @return String
 	 */
 	public String getRawAuthority() {
-		if (authority == null || authority.equals(""))
-			return null;
 		return authority;
 	}
 
@@ -1073,26 +1088,36 @@ public final class URI implements Comparable, Serializable {
 		return opaque;
 	}
 
-	/*
-	 * Normalize path, and return the resulting string
-	 */
-	private String normalize(String fullPath) {
+	private String normalize(String path) {
+		// normalize path, and return
+		// the resulting string
 
-		int index = fullPath.indexOf(':');
-		int index2 = fullPath.indexOf('/');
+		int index = path.indexOf(':');
+		int index2 = path.indexOf('/');
+
+		// //This code will cause the function to return right away if this
+		// //URI is already in normalized form
+		// //(the last line tests whether there is a ':' in the first segment)
+		// //is it worth having this test? (if removed, the method still works)
+		// if(!path.startsWith("./") && !path.endsWith("/.") &&
+		// !path.endsWith("/..") &&
+		// path.indexOf("/./") == -1 && path.indexOf("/../") == -1 &&
+		// !path.equals(".") && //(special case)
+		// (index > index2 && index2!=-1 || index == -1))
+		// return path;
 
 		StringBuffer newpath = new StringBuffer();
 
 		index = 0;
 		index2 = 0;
-		int pathlen = fullPath.length();
+		int pathlen = path.length();
 		index = -1;
 		// count the number of '/'s, to determine number of segments
 		int size = 0;
-		if (pathlen > 0 && fullPath.charAt(0) != '/')
+		if (pathlen > 0 && path.charAt(0) != '/')
 			size++;
-		while ((index = fullPath.indexOf('/', index + 1)) != -1)
-			if (index + 1 < pathlen && fullPath.charAt(index + 1) != '/')
+		while ((index = path.indexOf('/', index + 1)) != -1)
+			if (index + 1 < pathlen && path.charAt(index + 1) != '/')
 				size++;
 
 		String[] seglist = new String[size];
@@ -1100,16 +1125,16 @@ public final class URI implements Comparable, Serializable {
 
 		// break the path into segments and store in the list
 		int current = 0;
-		index = (pathlen > 0 && fullPath.charAt(0) == '/') ? 1 : 0;
-		while ((index2 = fullPath.indexOf('/', index + 1)) != -1) {
-			seglist[current++] = fullPath.substring(index, index2);
+		index = (pathlen > 0 && path.charAt(0) == '/') ? 1 : 0;
+		while ((index2 = path.indexOf('/', index + 1)) != -1) {
+			seglist[current++] = path.substring(index, index2);
 			index = index2 + 1;
 		}
 
 		// if current==size, then the last character was a slash
 		// and there are no more segments
 		if (current < size)
-			seglist[current] = fullPath.substring(index);
+			seglist[current] = path.substring(index);
 
 		// determine which segments get included in the normalized path
 		for (int i = 0; i < size; i++) {
@@ -1132,7 +1157,7 @@ public final class URI implements Comparable, Serializable {
 
 		// put the path back together
 		newpath = new StringBuffer();
-		if (fullPath.startsWith("/"))
+		if (path.startsWith("/"))
 			newpath.append('/');
 
 		for (int i = 0; i < seglist.length; i++)
@@ -1145,7 +1170,7 @@ public final class URI implements Comparable, Serializable {
 		// and the path previously ended with a slash
 		// and the last segment is still used, then
 		// delete the extra trailing '/'
-		if (!fullPath.endsWith("/") && seglist.length > 0
+		if (!path.endsWith("/") && seglist.length > 0
 				&& include[seglist.length - 1])
 			newpath.deleteCharAt(newpath.length() - 1);
 
@@ -1163,15 +1188,22 @@ public final class URI implements Comparable, Serializable {
 	}
 
 	public URI normalize() {
-		if (opaque) {
+		if (opaque)
 			return this;
+		else {
+			String normalizedPath = normalize(path);
+			// if the path is already normalized, return this
+			if (path.equals(normalizedPath))
+				return this;
+			else {
+				URI result = duplicate(); // get an exact copy of the URI
+				// re-calculate the scheme specific part since
+				// the path of the normalized URI is different from this URI.
+				result.path = normalizedPath;
+				result.setSchemeSpecificPart();
+				return result;
+			}
 		}
-		URI result = duplicate(); // get an exact copy of the URI
-		result.path = normalize(path);
-		// re-calculate the scheme specific part since
-		// the path of the normalized URI is different from this URI.
-		result.setSchemeSpecificPart();
-		return result;
 	}
 
 	/**
@@ -1188,11 +1220,13 @@ public final class URI implements Comparable, Serializable {
 	public URI relativize(URI relative) {
 		if (relative.opaque || opaque)
 			return relative;
-		if (!(scheme == null && relative.scheme == null)
-				&& !scheme.equals(relative.scheme))
+
+		if (scheme == null ? relative.scheme != null : !scheme
+				.equals(relative.scheme))
 			return relative;
-		if (!(authority == null && relative.authority == null)
-				&& !authority.equals(relative.authority))
+
+		if (authority == null ? relative.authority != null : !authority
+				.equals(relative.authority))
 			return relative;
 
 		// append a slash to the end if necessary
@@ -1213,7 +1247,7 @@ public final class URI implements Comparable, Serializable {
 
 		URI result = new URI();
 		result.fragment = relative.fragment;
-		result.query = relative.fragment;
+		result.query = relative.query;
 		result.path = normrel.substring(tempPath.length());
 
 		return result;
@@ -1281,6 +1315,8 @@ public final class URI implements Comparable, Serializable {
 		if (query != null)
 			ssp.append("?" + query);
 		schemespecificpart = ssp.toString();
+		// reset string, so that it can be re-calculated correctly when asked.
+		string = null;
 	}
 
 	public URI resolve(String relative) {
