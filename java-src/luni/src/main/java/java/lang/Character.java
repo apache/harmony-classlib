@@ -18,7 +18,8 @@ package java.lang;
 
 import java.io.Serializable;
 
-import com.ibm.oti.util.BinarySearch;
+import org.apache.harmony.luni.util.BinarySearch;
+
 
 /**
  * Characters are objects (i.e. non-base types) which represent char values. It
