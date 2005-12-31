@@ -24,8 +24,9 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.util.WeakHashMap;
 
+import org.apache.harmony.luni.util.Sorter;
+
 import com.ibm.oti.util.PriviAction;
-import com.ibm.oti.util.Sorter;
 
 /**
  * Instances of ObjectStreamClass are used to describe classes of objects used

@@ -18,7 +18,8 @@ package java.io;
 
 import java.lang.ref.WeakReference;
 
-import com.ibm.oti.util.Sorter;
+import org.apache.harmony.luni.util.Sorter;
+
 
 /**
  * This class represents object fields that are saved to the stream, by
