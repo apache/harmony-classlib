@@ -19,7 +19,7 @@ com/ibm/oti/util/*
 org/apache/harmony/luni/util/*
 
 java/net/*
-com/ibm/oti/net/www/*
+org/apache/harmony/net/www/*
 com/ibm/oti/net/www/protocol/file/*
 com/ibm/oti/net/www/protocol/ftp/*
 com/ibm/oti/net/www/protocol/http/*
