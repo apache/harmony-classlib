@@ -24,7 +24,7 @@ public class FileTest extends TestCase {
 	/**
 	 * @tests java.io.File#File(java.io.File, java.lang.String)
 	 */
-	public void test_File_ConstructorLjava_io_FileLjava_lang_String() {
+	public void test_ConstructorLjava_io_FileLjava_lang_String() {
 		// Regression test for HARMONY-21
 		File path = new File("/dir/file");
 		File root = new File("/");
