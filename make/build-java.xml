@@ -88,6 +88,12 @@
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
+        <!-- Create (non-functional) kernel jar (to compile against) -->
+        <jar destfile="${components.output}/kernel-stubs.jar">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/kernel.txt" />
+        </jar>
+
         <!-- Create luni jar -->
         <jar destfile="${components.output}/luni.jar" manifest="luni/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
