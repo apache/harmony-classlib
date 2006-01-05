@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+    Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable.
   
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,18 +18,9 @@
 <!-- THIS FILE IS WORK IN PROGRESS - BEWARE -->
 
 
-
-
-<project name="LUNI Build" default="dist" basedir="..">
-
-	<description>Build for LUNI component</description>
-
-	<!-- set global properties for this build. -->
-
-	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 	<!--
-         You will need to add
-         the compiler's jars to the CLASSPATH and path to jni.h
+         You will need to add the Eclipse
+         compiler's jars to the CLASSPATH and path to jni.h
          to INCLUDE environment variables before build start.
          For example:
 
@@ -41,27 +31,41 @@
 
      -->
 
-	<property name="java.bin.main" location="./bin.main" />
-	<property name="java.bin.test" location="./bin.test" />
+<project name="LUNI Build" default="build" basedir="..">
+	<description>Build for LUNI component</description>
+
+	<!-- set global properties for this build. -->
+	<xmlproperty file="make/common/hyproperties.xml" semanticAttributes="true"/>
 	<property environment="env"/>
 
-
-	<condition property="if.win" value="true">
+	<!-- Determine the (normalized) operating system family -->
+	<condition property="if.win">
 		<os family="Windows" />
 	</condition>
+	<condition property="hy.os_family" value="windows">
+		<isset property="if.win"/>
+	</condition>
 
-	<condition property="if.linux" value="true">
+	<condition property="if.linux">
 		<and>
 			<os name="linux" />
 			<os family="unix" />
 		</and>
 	</condition>
-
-	<condition property="if.x86_64" value="true">
-		<contains string="${os.arch}" substring="x86_64"/>
+	<condition property="hy.os_family" value="linux">
+		<isset property="if.linux"/>
 	</condition>
 
-	<condition property="if.x86" value="true">
+
+	<!-- Determine the (normalized) processor family -->
+	<condition property="if.x86_64">
+		<contains string="${os.arch}" substring="x86_64"/>
+	</condition>
+	<condition property="hy.cpu_family" value="x86_64">
+		<isset property="if.x86_64"/>
+	</condition>
+	
+	<condition property="if.x86">
 		<and>
 			<contains string="${os.arch}" substring="86"/>
 			<not>
@@ -69,15 +73,25 @@
 			</not>
 		</and>
 	</condition>
-
-	<condition property="if.ipf" value="true">
+	<condition property="hy.cpu_family" value="x86">
+		<isset property="if.x86"/>
+	</condition>
+	
+	<condition property="if.ipf">
 		<contains string="${os.arch}" substring="ia64"/>
 	</condition>
+	<condition property="hy.cpu_family" value="ipf">
+		<isset property="if.ipf"/>
+	</condition>
+
+	<!-- Define the platform property dependant upon the OS and platform -->
+	<property name="hy.platform" value="${hy.os_family}.${hy.cpu_family}"/>
+
+	<!-- Set the java compiler to be the Eclipse Java compiler -->
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
 
-	<!-- Platform dependency -->
-
-	<target name="timestamp" description="Set up a timestamp">
+	<target name="init">
 		<tstamp>
 			<format property="build-date" pattern="yyyyMMdd" locale="en" />
 		</tstamp>
@@ -87,268 +101,31 @@
 		<echo message="build-date=${build-date}" />
 		<echo message="build-time=${build-time}" />
 		<echo message="on platform=${os.name} version=${os.version} arch=${os.arch}" />
-	</target>
-
-	<target name="setname.win" if="if.win">
-		<property name="platform.name" value="win" />
-		<property name="libpr" value=""/>
-		<property name="libsf" value=".dll"/>
-	</target>
-
-	<target name="setname.linux" if="if.linux">
-		<property name="platform.name" value="lnx" />
-		<property name="libpr" value="lib"/>
-		<property name="libsf" value=".so"/>
-	</target>
-
-
-	<!-- INIT TARGETS -->
-
-	<target name="init" depends="timestamp, setname.win, setname.linux">
-
-		<echo message="platform name=${platform.name}" />
 
 		<property name="java.debug.option" value="on" />
 		<property name="native.debug.option" value="on" />
 
-		<property name="target" location="../../deploy" />
-		<property name="target.jre.bin" location="${target}/jre/bin" />
-		<property name="target.jre.lib.boot" location ="${target}/jre/lib/boot" />
-
-
-		<property name="src" location="${basedir}/src/main/java" />
-		<property name="src.main.java" location="${basedir}/src/main/java" />
-		<property name="src.common.native" location="${src}/common/other" />
-		<property name="src.win.native" location="${src}/windows/other" />
-		<property name="src.win.java" location="${src}/windows/javasrc" />
-		<property name="src.linux.native" location="${src}/linux/other" />
-		<property name="src.linux.java" location="${src}/linux/javasrc" />
-		<property name="src.windows.other" location="${basedir}/src/windows/other/com/openintel/drl/nativelib/windows" />
-		<property name="src.linux.other" location="${basedir}/src/linux/other/com/openintel/drl/nativelib/X11"/>
-
-		<property name="src.test.java" location="${basedir}/src/test/java" />
-		<property name="src.test.common" location="${src.test.java}/common" />
-
-		<property name="combined.path" value="deploy/jre"/>
-		<property name="build.lib.path" location="${java.bin.main}/${combined.path}/lib" />
-		<property name="build.jars.path" location="${java.bin.main}/${combined.path}/lib/boot" />
-		<property name="build.ext.path" location="${java.bin.main}/${combined.path}/lib/ext" />
-		<property name="build.bin.path" location="${java.bin.main}/${combined.path}/bin" />
-
-		<property name="tmp" location="${java.bin.main}/tmp" />
 		<property name="source.ver" value="1.4" />
-
-		<property name="native.lib.name" value="**/*"/>
-
-		<echo message="if.x86_64=${if.x86_64}"/>
-		<echo message="if.x86=${if.x86}"/>
-		<echo message="if.ipf=${if.ipf}"/>
 	</target>
+	
+	<!-- LUNI TARGETS -->
 
-	<target name="init.java_home">
-
-		<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
-		<property name="jni_h.path"    location="${env.JAVA_HOME}/include"/>
-		<echo message="JAVA_HOME=${JAVA_HOME}"/>
-
-	</target>
-
-	<target name="init.win" depends="init, init.java_home" if="if.win">
-		<property name="cPath" value="${PATH};${env.Path}" />
-		<property name="cINCLUDE" value="${env.INCLUDE}" />
-		<property name="cLIB" value="${LIB};${env.lib};${env.LIB}" />
-		<property name="src.java" value="${src.win.java}" />
-		<property name="compile.native.tail" value="windows" />
-
-		<property name="src.tst.common.ps" value="${src.test.java}/windows" />
-
-		<property name="jni_md_h.path" location="${env.JAVA_HOME}/include/win32"/>
-
+	<target name="build" depends="init">
+		<ant dir="make/common" target="compile.java" />
+		<ant dir="make/common" target="build.jar" />
+		<ant dir="make/platform/${hy.platform}" target="compile.native" />
+		<ant dir="make/common" target="copy.resources" />
 	</target>
 
 
-	<target name="init.linux" depends="init, init.java_home" if="if.linux">
-
-		<property name="cPath" value="${env.PATH}" />
-		<property name="cINCLUDE" value="${env.INCLUDE}" />
-		<property name="cLIB" value="${env.LIB}" />
-		<property name="src.java" value="${src.linux.java}" />
-		<property name="compile.native.tail" value="linux" />
-
-		<property name="src.tst.common.ps" value="${src.test.java}/linux" />
-
-		<property name="jni_md_h.path" location="${env.JAVA_HOME}/include/linux"/>
-
+	<target name="test" depends="build">
+		<ant dir="make/common" target="compile.tests" />
+		<ant dir="make/common" target="run.tests" />
 	</target>
-
-
-
-	<!-- SECURITY PACKAGES SETS -->
-
-	<patternset id="crypto">
-		<include name="javax/crypto/**"/>
-		<include name="com/openintel/drlx/crypto/**"/>
-	</patternset>
-
-
-	<patternset id="security">
-		<include name="java/security/**"/>
-		<include name="javax/security/**"/>
-		<include name="com/openintel/fortress/drl/security/**"/>
-		<include name="com/openintel/drl/security/**"/>
-		<include name="com/openintel/drlx/security/**"/>
-		<include name="com/openintel/drl/misc/Base64.*"/>
-		<include name="org/ietf/jgss/**"/>
-	</patternset>
-
-
-	<patternset id="x_net">
-		<include name="javax/net/**"/>
-	</patternset>
-
-
-	<patternset id="api.src.all">
-		<patternset refid="crypto"/>
-		<patternset refid="security"/>
-		<patternset refid="x_net"/>
-	</patternset>
-
-
-	<patternset id="unit.tests.src.all">
-		<include name="common/unit/com/openintel/drl/security/**"/>
-		<include name="common/unit/com/openintel/drlx/crypto/**"/>
-		<include name="common/unit/com/openintel/drlx/security/**"/>
-		<include name="common/unit/com/openintel/fortress/drl/security/**"/>
-		<include name="common/unit/java/security/**"/>
-		<include name="common/unit/javax/crypto/**"/>
-		<include name="common/unit/javax/net/**"/>
-		<include name="common/unit/javax/security/**"/>
-		<include name="common/unit/org/ietf/jgss/**"/>
-		<include name="linux/unit/com/openintel/drlx/security/**"/>
-		<include name="windows/unit/com/openintel/drlx/security/**"/>
-	</patternset>
-
-
-	<!-- SECURITY TARGETS -->
-
-
-	<target name="dist" depends="init, init.win, init.linux, compile.api, build.jar, build.native, copy.resources"
-        description="Building Security binaries">
-		<!-- clean up -->
-		<delete dir="${tmp}"/>
-	</target>
-
-
-	<target name="tests" depends="dist, tests.compile"
-        description="Building Security tests">
-	</target>
-
-
-	<target name="tests.run" depends="tests, run"
-        description="Running Security tests">
-	</target>
-
 
 	<target name="clean">
-		<delete dir="${java.bin.main}"/>
-	</target>
-
-	<!-- SUPPORT TARGETS -->
-
-
-	<target name="build.jar">
-		<jar destfile="${target.jre.lib.boot}/luni.jar" manifest="META-INF/MANIFEST.MF">
-			<fileset dir="${java.bin.main}" />
-		</jar>
-	</target>
-
-
-	<target name="compile.api" description="Compile LUNI java code">
-		<mkdir dir="${java.bin.main}" />
-		<echo message="Compiling classes from ${src.main.java}" />
-		<javac sourcepath=""
-            destdir="${java.bin.main}"
-            source="${source.ver}"
-            debug="${java.debug.option}">
-			<src>
-				<pathelement location="${src.main.java}"/>
-			</src>
-			<bootclasspath>
-				<fileset dir="${target.jre.lib.boot}">
-					<include name="*.jar" />
-				</fileset>
-			</bootclasspath>
-		</javac>
-	</target>
-
-
-	<target name="build.one.jar">
-		<property name="jar.name" value="${ref.id}.jar"/>
-		<jar destfile="${build.jar.path}/${jar.name}">
-			<fileset dir="${java.bin.main}/classes">
-				<patternset refid="${ref.id}"/>
-			</fileset>
-		</jar>
-	</target>
-
-
-	<target name="build.native">
-
-	</target>
-
-
-	<target name="copy.resources">
-		<!-- Nothing for LUNI -->
-	</target>
-
-
-	<target name="tests.compile">
-		<echo message="Compiling LUNI tests from ${src.test.java}" />
-
-		<mkdir dir="${java.bin.test}" />
-
-		<javac srcdir="${src.test.java}"
-               destdir="${java.bin.test}"
-               sourcepath=""
-               classpath="${env.CLASSPATH}"
-               source="${source.ver}"
-               debug="${java.debug.option}">
-
-			<src>
-				<pathelement location="${src.test.java}"/>
-			</src>
-			<bootclasspath>
-				<fileset dir="${target.jre.lib.boot}">
-					<include name="*.jar" />
-				</fileset>
-			</bootclasspath>
-		</javac>
-	</target>
-
-	<target name="run">
-		<mkdir dir="tests_report" />
-
-		<junit fork="yes"
-            forkmode="once"
-            printsummary="withOutAndErr"
-            errorproperty="test.error"
-            showoutput="on"
-            dir="${java.bin.test}"
-            jvm="${target.jre.bin}/java">
-
-			<jvmarg value="-showversion"/>
-			
-			<classpath>
-				<pathelement path="${java.bin.test}"/>
-			</classpath>
-
-			<test name="org.apache.harmony.tests.luni.AllTests"
-				haltonfailure="no"
-				todir="tests_report"
-				outfile="result">
-				<formatter type="plain" />
-			</test>
-		</junit>
+		<delete dir="${hy.luni.bin.main}"/>
+		<delete dir="${hy.luni.bin.test}"/>
 	</target>
 
 </project>

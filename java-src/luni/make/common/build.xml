@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="Common_LUNI_Build">
+	
+	<target name="compile.java" description="Compile LUNI java code">
+		<echo message="Compiling LUNI classes from ${hy.luni.src.main.java}" />
+		
+		<mkdir dir="${hy.luni.bin.main}" />
+
+		<javac sourcepath=""
+			srcdir="${hy.luni.src.main.java}"
+            destdir="${hy.luni.bin.main}"
+            source="${source.ver}"
+            debug="${java.debug.option}">
+
+			<bootclasspath>
+				<fileset dir="${hy.target}/jre/lib/boot">
+					<include name="*.jar" />
+				</fileset>
+			</bootclasspath>
+		</javac>
+	</target>
+	
+	<target name="build.jar">
+		<jar destfile="${hy.target}/jre/lib/boot/luni.jar" manifest="${hy.luni}/META-INF/MANIFEST.MF">
+			<fileset dir="${hy.luni.bin.main}" />
+		</jar>
+	</target>
+
+	
+	<target name="compile.tests">
+		<echo message="Compiling LUNI tests from ${hy.luni.src.test.java}" />
+
+		<mkdir dir="${hy.luni.bin.test}" />
+
+		<javac srcdir="${hy.luni.src.test.java}"
+               destdir="${hy.luni.bin.test}"
+               sourcepath=""
+               source="${source.ver}"
+               debug="${java.debug.option}">
+
+			<bootclasspath>
+				<fileset dir="${hy.target}/jre/lib/boot">
+					<include name="*.jar" />
+				</fileset>
+			</bootclasspath>
+		</javac>
+	</target>
+
+
+	<target name="run.tests">
+		<mkdir dir="tests_report" />
+
+		<junit fork="yes"
+            forkmode="once"
+            printsummary="withOutAndErr"
+            errorproperty="test.error"
+            showoutput="on"
+            dir="${hy.luni.bin.test}"
+            jvm="${hy.target}/jre/bin/java">
+
+			<jvmarg value="-showversion"/>
+
+			<classpath>
+				<pathelement path="${hy.luni.bin.test}"/>
+			</classpath>
+
+			<test name="org.apache.harmony.tests.luni.AllTests"
+				haltonfailure="no"
+				todir="tests_report"
+				outfile="result">
+				<formatter type="plain" />
+			</test>
+		</junit>
+	</target>
+	
+	
+	<target name="copy.resources">
+		<!-- Nothing for LUNI -->
+	</target>
+</project>
+
