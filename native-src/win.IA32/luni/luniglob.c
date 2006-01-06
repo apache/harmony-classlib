@@ -13,6 +13,13 @@
  * limitations under the License.
  */
 
+/* HarmonyDoxygen */
+/**
+ * @file
+ * @ingroup HarmonyNatives
+ * @brief Harmony LUNI natives initialization API.
+ */
+
 #include <string.h>
 #include "jcl.h"
 #include "jclglob.h"
@@ -54,12 +61,24 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   void *keyInitCountPtr = GLOBAL_DATA (keyInitCount);
   void **jclIdCache = GLOBAL_DATA (JCL_ID_CACHE);
   jint rcBpInit;
+  VMInterface *vmInterface;
+  JavaVMInitArgs *vmArgs;
+  JavaVMOption *currentOption;
+  int i;
+  int bootClassPathSet = 0;
 
 #if defined(LINUX)
   /* all UNIX platforms */
   HySignalHandler previousGpHandler;
   HySigSet (SIGPIPE, SIG_IGN, previousGpHandler);
 #endif
+
+  /* Query the VM interface */
+  vmInterface = VMI_GetVMIFromJavaVM (vm);
+  if (!vmInterface)
+    {
+      goto fail;
+    }
 
   if ((*vm)->GetEnv (vm, (void **) &env, JNI_VERSION_1_2) == JNI_OK)
     {
@@ -87,12 +106,33 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
         {
           goto fail2;
         }
-
-      /* Initialize bootstrap classpath */
-      rcBpInit = readClassPathFromPropertiesFile (vm);
-      if (JNI_OK != rcBpInit)
+      /* Grab the VM command line arguments */  
+      vmArgs = (*vmInterface)->GetInitArgs (vmInterface);
+      if (!vmArgs)
         {
-          goto fail2;
+          return JNI_ERR;
+        }
+  
+      /* Before we try to set the bootclasspath, check that it has not been specified
+         explicitly on the command line */
+      for ( i = 0; i < vmArgs->nOptions; i++ ) 
+        {
+          currentOption = &(vmArgs->options[i]);
+          if ( strstr( currentOption->optionString, "-Xbootclasspath:" ) )
+            { 
+              bootClassPathSet = 1;
+            }
+        }
+    
+      /* Only read bootsclasspath.properties if -Xbootclasspath: has not been specified */
+      if (0 == bootClassPathSet) 
+        {
+          /* Initialize bootstrap classpath */
+          rcBpInit = readClassPathFromPropertiesFile (vm);
+          if (JNI_OK != rcBpInit)
+            {
+              goto fail2;
+            }
         }
 
       return JNI_VERSION_1_2;
