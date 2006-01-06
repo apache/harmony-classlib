@@ -19,8 +19,9 @@ package java.text;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import com.ibm.text.BidiRun;
-import com.ibm.text.BidiWrapper;
+import org.apache.harmony.text.BidiRun;
+import org.apache.harmony.text.BidiWrapper;
+
 
 /**
  * Bidi is the class providing the bidirectional algorithm. The algorithm is

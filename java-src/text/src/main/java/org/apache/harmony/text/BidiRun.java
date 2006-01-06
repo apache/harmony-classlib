@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.text;
+package org.apache.harmony.text;
 
 
 /**
