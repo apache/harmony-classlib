@@ -1,0 +1,293 @@
+/*
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/**
+* @author Alexander Y. Kleymenov
+* @version $Revision$
+*/
+
+package javax.crypto;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import javax.crypto.NullCipher;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+/**
+ */
+
+public class CipherInputStreamTest extends TestCase {
+
+    private static class TestInputStream extends ByteArrayInputStream {
+        private boolean closed = false;
+
+        public TestInputStream(byte[] data) {
+            super(data);
+        }
+
+        public void close() {
+            closed = true;
+        }
+
+        public boolean wasClosed() {
+            return closed;
+        }
+    };
+
+    /**
+     * CipherInputStream(InputStream is) method testing. Tests that
+     * CipherInputStream uses NullCipher if Cipher is not specified
+     * in the constructor.
+     */
+    public void testCipherInputStream() {
+        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+        TestInputStream tis = new TestInputStream(data);
+        CipherInputStream cis = new CipherInputStream(tis);
+
+        try {
+            for (int i=0; i<data.length; i++) {
+                if ((byte) cis.read() != data[i]) {
+                    fail("NullCipher should be used "
+                            + "if Cipher is not specified.");
+                }
+            }
+            if (cis.read() != -1) {
+                fail("NullCipher should be used if Cipher is not specified.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Unexpected IOException was thrown.");
+        }
+    }
+
+    /**
+     * read() method testing. Tests that method returns the correct value
+     * (related to the InputStream) and that it returns -1 at the end of
+     * stream.
+     */
+    public void testRead1() {
+        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+        TestInputStream tis = new TestInputStream(data);
+        CipherInputStream cis = new CipherInputStream(tis, new NullCipher());
+        byte res;
+        try {
+            for (int i=0; i<data.length; i++) {
+                if ((res = (byte) cis.read()) != data[i]) {
+                    fail("read() returned the incorrect value. " +
+                            "Expected: " + data[i] + ", Got: " + res + ".");
+                }
+            }
+            if (cis.read() != -1) {
+                fail("read() should return -1 at the end of the stream.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Unexpected IOException was thrown.");
+        }
+    }
+
+    /**
+     * read(byte[] b) method testing. Tests that method returns the correct
+     * value (related to the InputStream) and that it returns -1 at the end of
+     * stream.
+     */
+    public void testRead2() {
+        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+        TestInputStream tis = new TestInputStream(data);
+        CipherInputStream cis = new CipherInputStream(tis, new NullCipher());
+        try {
+            int expected = data.length;
+            byte[] result = new byte[expected];
+
+            int ind = 0; // index into the data array (to check the got data)
+            int got = cis.read(result); // the number of got bytes
+            while (true) {
+                for (int j=0; j<got-ind; j++) {
+                    if (result[j] != data[ind+j]) {
+                        fail("read(byte[] b) returned incorrect data.");
+                    }
+                }
+                if (got == expected) {
+                    break;
+                } else if (got > expected) {
+                    fail("The data returned by read(byte[] b) "
+                                                + "is larger than expected.");
+                } else {
+                    ind = got;
+                    got += cis.read(result);
+                }
+            }
+            if (cis.read(result) != -1) {
+                fail("read(byte[] b) should return -1 "
+                                                + "at the end of the stream.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Unexpected IOException was thrown.");
+        }
+    }
+
+    /**
+     * read(byte[] b, int off, int len) method testing. Tests that method
+     * returns the correct value (related to the InputStream), that it
+     * dicards bytes in the case of null buffer, and that it returns -1 at
+     * the end of stream.
+     */
+    public void testRead3() {
+        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+        TestInputStream tis = new TestInputStream(data);
+        CipherInputStream cis = new CipherInputStream(tis, new NullCipher());
+        try {
+            int expected = data.length;
+            byte[] result = new byte[expected];
+
+            int skip = 2;
+            int ind = skip; // index into the data array (to check the got data)
+            // should read and discard bytes;
+            cis.read(null, 0, skip);
+            int got = skip + cis.read(result, 0, 1); // the number of got bytes
+            while (true) {
+                for (int j=0; j<got-ind; j++) {
+                    assertEquals("read(byte[] b, int off, int len) "
+                        + "returned incorrect data.", result[j], data[ind+j]);
+                }
+                if (got == expected) {
+                    break;
+                } else if (got > expected) {
+                    fail("The data returned by "
+                            + "read(byte[] b, int off, int len) "
+                                                + "is larger than expected.");
+                } else {
+                    ind = got;
+                    got += cis.read(result, 0, 3);
+                }
+            }
+            if (cis.read(result, 0, 1) != -1) {
+                fail("read() should return -1 at the end of the stream.");
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            fail("Unexpected NullPointerException was thrown.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Unexpected IOException was thrown.");
+        }
+    }
+
+    /**
+     * skip(long n) method testing. Tests that the method correctly skips
+     * the bytes.
+     */
+    public void testSkip() {
+        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+        TestInputStream tis = new TestInputStream(data);
+        CipherInputStream cis = new CipherInputStream(tis, new NullCipher());
+        try {
+            int expected = data.length;
+            byte[] result = new byte[expected];
+
+            int skipped = (int) cis.skip(2);
+            int ind = skipped;
+            int got = skipped + cis.read(result, 0, 1); // the number of got bytes
+            while (true) {
+                for (int j=0; j<got-ind; j++) {
+                    if (result[j] != data[ind+j]) {
+                        fail("read(byte[] b, int off, int len) "
+                                + "returned incorrect data: Expected "
+                                + data[ind+j] + ", got: " + result[j]);
+                    }
+                }
+                if (got == expected) {
+                    break;
+                } else if (got > expected) {
+                    fail("The data returned by "
+                            + "read(byte[] b, int off, int len) "
+                                                + "is larger than expected.");
+                } else {
+                    ind = got;
+                    got += cis.read(result, 0, 1);
+                }
+            }
+            if ((got = cis.read(result, 0, 1)) != -1) {
+                fail("read() should return -1 at the end of the stream. "
+                        + "Output is: " + got + ".");
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            fail("Unexpected NullPointerException was thrown.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Unexpected IOException was thrown.");
+        }
+    }
+
+    /**
+     * available() method testing. Tests that the method always return 0.
+     */
+    public void testAvailable() {
+        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+        TestInputStream tis = new TestInputStream(data);
+        CipherInputStream cis = new CipherInputStream(tis, new NullCipher());
+        try {
+            assertEquals("The returned by available() method value "
+                    + "should be 0.", cis.available(), 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Unexpected IOException was thrown.");
+        }
+    }
+
+    /**
+     * close() method testing. Tests that the method calls the close()
+     * method of the underlying input stream.
+     */
+    public void testClose() {
+        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+        TestInputStream tis = new TestInputStream(data);
+        CipherInputStream cis = new CipherInputStream(tis, new NullCipher());
+        try {
+            cis.close();
+            assertTrue("The close() method should call the close() method "
+                            + "of its underlying input stream.", tis.wasClosed());
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Unexpected IOException was thrown.");
+        }
+    }
+
+    /**
+     * markSupported() method testing. Tests that mark is not supported.
+     */
+    public void testMarkSupported() {
+        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+        TestInputStream tis = new TestInputStream(data);
+        CipherInputStream cis = new CipherInputStream(tis, new NullCipher());
+        assertFalse("The returned by markSupported() method value "
+                + "should be false.", cis.markSupported());
+    }
+
+    public static Test suite() {
+        return new TestSuite(CipherInputStreamTest.class);
+    }
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(suite());
+    }
+}
+

@@ -1,0 +1,487 @@
+/*
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/**
+* @author Vladimir N. Molotkov
+* @version $Revision$
+*/
+
+package java.security.cert;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * @com.intel.drl.spec_ref
+ * 
+ */
+public class PKIXParameters implements CertPathParameters {
+    // Set of trust anchors - most trusted CAs
+    private Set trustAnchors;
+    // Set of acceptable initial policy identifiers (OID strings)
+    private Set initialPolicies;
+    // List of cert stores that used to find certificates and CRLs
+    private List certStores;
+    // Time for which the valididty of the certification
+    // patch should be determined
+    private Date date;
+    // List of certification patch checkers (PKIXCertPathChecker)
+    private List certPathCheckers;
+    // Preferred signature provider name
+    private String sigProvider;
+    // Required constraints on the target certificate
+    private CertSelector targetCertConstraints;
+    // Indicates wether cert revocation is enabled or not
+    private boolean revocationEnabled = true;
+    // Indicates wether explicit policy required or not
+    private boolean explicitPolicyRequired = false;
+    // Indicates wether policy mapping inhibited or not
+    private boolean policyMappingInhibited = false;
+    // Indicates wether any policy inhibited or not
+    private boolean anyPolicyInhibited = false;
+    // Indicates wether certificates that include policy
+    // qualifiers in a certificate policies extension that
+    // is marked critical must be rejected or not
+    private boolean policyQualifiersRejected = true;
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public PKIXParameters(Set trustAnchors)
+        throws InvalidAlgorithmParameterException {
+        if (trustAnchors == null) {
+            throw new NullPointerException(
+                    "the trustAnchors parameter is null");
+        }
+        checkTrustAnchors(trustAnchors);
+        this.trustAnchors = new HashSet(trustAnchors);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public PKIXParameters(KeyStore keyStore)
+        throws KeyStoreException,
+               InvalidAlgorithmParameterException {
+        if (keyStore == null) {
+            throw new NullPointerException("the keyStore parameter is null");
+        }
+        // Will throw KeyStoreException if
+        // keyStore has not been initialized (loaded)
+        if (keyStore.size() == 0) {
+            throw new InvalidAlgorithmParameterException(
+                    "the keystore is empty");
+        }
+        // keyStore is not null and loaded
+        trustAnchors = new HashSet();
+        for (Enumeration i = keyStore.aliases(); i.hasMoreElements();) {
+            String alias = (String) i.nextElement();
+            if (keyStore.isCertificateEntry(alias)) {
+                // this is trusted certificate entry
+                // check if it is X509Cerificate
+                Certificate c = keyStore.getCertificate(alias);
+                // add only X509Cerificate
+                // ignore all other types
+                if (c instanceof X509Certificate) {
+                    trustAnchors.add(new TrustAnchor((X509Certificate)c, null));
+                }
+            }
+        }
+        checkTrustAnchors(trustAnchors);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public Set getTrustAnchors() {
+        return Collections.unmodifiableSet(trustAnchors);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setTrustAnchors(Set trustAnchors)
+        throws InvalidAlgorithmParameterException {
+        if (trustAnchors == null) {
+            throw new NullPointerException(
+                    "the trustAnchors parameter is null");
+        }
+        checkTrustAnchors(trustAnchors);
+        // make shallow copy
+        this.trustAnchors = new HashSet(trustAnchors);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean isAnyPolicyInhibited() {
+        return anyPolicyInhibited;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setAnyPolicyInhibited(boolean anyPolicyInhibited) {
+        this.anyPolicyInhibited = anyPolicyInhibited;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public List getCertPathCheckers() {
+        if (certPathCheckers == null) {
+            // set to empty List if has not been set yet
+            certPathCheckers = new ArrayList();
+        }
+        if (certPathCheckers.isEmpty()) {
+            // no content - no need to copy,
+            // just return immutable view of the same
+            // empty List each time
+            return Collections.unmodifiableList(certPathCheckers);
+        }
+        // List is not empty - do deep copy
+        ArrayList modifiableList = new ArrayList();
+        for (Iterator i = certPathCheckers.iterator(); i.hasNext();) {
+            modifiableList.add(((PKIXCertPathChecker)i.next()).clone());
+        }
+        return Collections.unmodifiableList(modifiableList);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setCertPathCheckers(List certPathCheckers) {
+        if (certPathCheckers == null || certPathCheckers.isEmpty()) {
+            // empty list or null provided
+            if (this.certPathCheckers != null &&
+               !this.certPathCheckers.isEmpty()) {
+                // discard non-empty list
+                this.certPathCheckers = null;
+            }
+            return;
+        }
+        // non-empty list provided - do deep copy
+        this.certPathCheckers = new ArrayList();
+        for (Iterator i = certPathCheckers.iterator(); i.hasNext();) {
+            this.certPathCheckers.add(((PKIXCertPathChecker)i.next()).clone());
+        }
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void addCertPathChecker(PKIXCertPathChecker checker) {
+        if (checker == null) {
+            // do nothing if null provided
+            return;
+        }
+        if (certPathCheckers == null) {
+            // set to empty List if has not been set yet
+            certPathCheckers = new ArrayList();
+        }
+        // add a copy to avoid possible modifications
+        certPathCheckers.add(checker.clone());
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public List getCertStores() {
+        if (certStores == null) {
+            // set to empty List if has not been set yet
+            certStores = new ArrayList();
+        }
+        if (certStores.isEmpty()) {
+            // no content - no need to copy,
+            // just return immutable view of the same
+            // empty List each time
+            return Collections.unmodifiableList(certStores);
+        }
+        // List is not empty - do shallow copy
+        ArrayList modifiableList = new ArrayList(certStores);
+        return Collections.unmodifiableList(modifiableList);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setCertStores(List certStores) {
+        if (certStores == null || certStores.isEmpty()) {
+            // empty list or null provided
+            if (this.certStores != null && !this.certStores.isEmpty()) {
+                // discard non-empty list
+                this.certStores = null;
+            }
+            return;
+        }
+        // non-empty list provided - do shallow copy
+        this.certStores = new ArrayList(certStores);
+        // check that all elements are CertStore
+        for (Iterator i = this.certStores.iterator(); i.hasNext();) {
+            if (!(i.next() instanceof CertStore)) {
+                throw new ClassCastException(
+              "all list elements must be of type java.security.cert.CertStore");
+            }
+        }
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void addCertStore(CertStore store) {
+        if (store == null) {
+            // do nothing if null provided
+            return;
+        }
+        if (certStores == null) {
+            // set to empty List if has not been set yet
+            certStores = new ArrayList();
+        }
+        // add store
+        certStores.add(store);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public Date getDate() {
+        return date == null ? null : (Date)date.clone();
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setDate(Date date) {
+        this.date = (date == null ? null : new Date(date.getTime()));
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean isExplicitPolicyRequired() {
+        return explicitPolicyRequired;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setExplicitPolicyRequired(boolean explicitPolicyRequired) {
+        this.explicitPolicyRequired = explicitPolicyRequired;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public Set getInitialPolicies() {
+        if (initialPolicies == null) {
+            // set to empty Set if has not been set yet
+            initialPolicies = new HashSet();
+        }
+        if (initialPolicies.isEmpty()) {
+            // no content - no need to copy,
+            // just return immutable view of the same
+            // empty Set each time
+            return Collections.unmodifiableSet(initialPolicies);
+        }
+        // List is not empty - do shallow copy
+        HashSet modifiableSet = new HashSet(initialPolicies);
+        return Collections.unmodifiableSet(modifiableSet);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setInitialPolicies(Set initialPolicies) {
+        if (initialPolicies == null || initialPolicies.isEmpty()) {
+            // empty list or null provided
+            if (this.initialPolicies != null &&
+               !this.initialPolicies.isEmpty()) {
+                // discard non-empty list
+                this.initialPolicies = null;
+            }
+            return;
+        }
+        // non-empty list provided - do shallow copy
+        this.initialPolicies = new HashSet(initialPolicies);
+        // check that all elements are String
+        for (Iterator i = this.initialPolicies.iterator(); i.hasNext();) {
+            if (!(i.next() instanceof String)) {
+                throw new ClassCastException(
+                        "all set elements must be of type java.lang.String");
+            }
+        }
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean isPolicyMappingInhibited() {
+        return policyMappingInhibited;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setPolicyMappingInhibited(boolean policyMappingInhibited) {
+        this.policyMappingInhibited = policyMappingInhibited;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean getPolicyQualifiersRejected() {
+        return policyQualifiersRejected;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setPolicyQualifiersRejected(boolean policyQualifiersRejected) {
+        this.policyQualifiersRejected = policyQualifiersRejected;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean isRevocationEnabled() {
+        return revocationEnabled;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setRevocationEnabled(boolean revocationEnabled) {
+        this.revocationEnabled = revocationEnabled;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public String getSigProvider() {
+        return sigProvider;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setSigProvider(String sigProvider) {
+        this.sigProvider = sigProvider;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public CertSelector getTargetCertConstraints() {
+        return (targetCertConstraints == null ? null
+                :(CertSelector)targetCertConstraints.clone());
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void setTargetCertConstraints(CertSelector targetCertConstraints) {
+        this.targetCertConstraints = (targetCertConstraints == null ? null
+                : (CertSelector)targetCertConstraints.clone());
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public Object clone() {
+        try {
+            // do shallow copy first
+            PKIXParameters ret = (PKIXParameters)super.clone();
+            // copy fields containing references to mutable objects
+            if (this.certStores != null) {
+                ret.certStores = new ArrayList(this.certStores);
+            }
+            if (this.certPathCheckers != null) {
+                ret.certPathCheckers = new ArrayList(this.certPathCheckers);
+            }
+            return ret;
+        } catch (CloneNotSupportedException e) {
+            throw new Error(e);
+        }
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public String toString() {
+        StringBuffer sb =
+            new StringBuffer("[\n Trust Anchors: ");
+        sb.append(trustAnchors);
+        sb.append("\n Revocation Enabled: ");
+        sb.append(revocationEnabled);
+        sb.append("\n Explicit Policy Required: ");
+        sb.append(explicitPolicyRequired);
+        sb.append("\n Policy Mapping Inhibited: ");
+        sb.append(policyMappingInhibited);
+        sb.append("\n Any Policy Inhibited: ");
+        sb.append(anyPolicyInhibited);
+        sb.append("\n Policy Qualifiers Rejected: ");
+        sb.append(policyQualifiersRejected);
+        sb.append("\n Initial Policy OIDs: ");
+        sb.append((initialPolicies == null || initialPolicies.isEmpty())
+                ? "any" : initialPolicies.toString());
+        sb.append("\n Cert Stores: ");
+        sb.append((certStores==null||certStores.isEmpty())?
+                "no":certStores.toString());
+        sb.append("\n Validity Date: ");
+        sb.append(date);
+        sb.append("\n Cert Path Checkers: ");
+        sb.append((certPathCheckers==null||certPathCheckers.isEmpty())?
+                "no":certPathCheckers.toString());
+        sb.append("\n Signature Provider: ");
+        sb.append(sigProvider);
+        sb.append("\n Target Certificate Constraints: ");
+        sb.append(targetCertConstraints);
+        sb.append("\n]");
+        return sb.toString();
+    }
+
+    //
+    // Private stuff
+    //
+
+    //
+    // Checks that 'trustAnchors' contains
+    // only TrustAnchor instances.
+    // Throws InvalidAlgorithmParameterException if trustAnchors set is empty.
+    //
+    private void checkTrustAnchors(Set trustAnchors)
+        throws InvalidAlgorithmParameterException {
+        if (trustAnchors.isEmpty()) {
+            throw new InvalidAlgorithmParameterException(
+                    "the trust anchors set is empty");
+        }
+        for (Iterator i = trustAnchors.iterator(); i.hasNext();) {
+            if (!(i.next() instanceof TrustAnchor)) {
+                throw new ClassCastException(
+             "all set elements must be of type java.security.cert.TrustAnchor");
+            }
+        }
+    }
+}

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- 
+Author: Alexander V. Astapchuk, Natalya S. Naumova, Vladimir N. Molotkov
+Version: $Revision$
+-->
+
+<project name="MyBuild" default="dist" basedir="../..">
+
+    <description> Build for ... </description>
+
+    <!-- set global properties for this build -->
+
+    <target name="init">
+
+        <property name="compiler.name" value="gcc"/>
+        <property name="library.name" value="jaasnix"/>
+        <property name="library.ext" value=".so"/>
+
+        <property name="lib_tmp" location="${tmp}/${library.name}"/>
+        <property name="ntvlibname.path" value="${src.linux.native}/${library.name}"/>
+
+        <echo message="native_compiler.name=${compiler.name}"/>
+        <echo message="library.name=${library.name}"/>
+        <echo message="ntvlibname.path=${ntvlibname.path}"/>
+
+        <mkdir dir="${lib_tmp}"/>
+
+    </target>
+
+
+    <target name="compile.linux.native" depends="init">
+
+        <echo message="make linux native..."/>
+
+        <!-- Compile the native code from ${src.linux.native} 
+         and putting .dll or .so to ${tmp}/lib -->
+
+        <property name="path.to.build.native" value="${ntvlibname.path}"/>
+        <echo message="path.to.build.native=${path.to.build.native}"/>
+
+        <copy todir="${lib_tmp}">
+            <fileset dir="${path.to.build.native}" includes="**/*.c"/>
+            <mapper type="package" from="*.c" to="*.c"/>
+        </copy>
+        <copy todir="${lib_tmp}">
+            <fileset dir="${path.to.build.native}" includes="**/*.cpp"/>
+            <mapper type="package" from="*.cpp" to="*.cpp"/>
+        </copy>
+        <copy todir="${lib_tmp}">
+            <fileset dir="${path.to.build.native}" includes="**/*.h"/>
+            <mapper type="flatten"/>
+        </copy>
+
+        <!-- ==========================================================   -->
+
+        <exec executable="${compiler.name}" output="${tmp}/outerr.txt" failonerror="true">
+            <env key="PATH" value="${cPath}"/>
+            <env key="CPATH" value="${cINCLUDE}:${env.CPATH}:${jni_h.path}:${jni_md_h.path}"/>
+            <env key="LIB" value="${cLIB}"/>
+            <env key="TMP" value="${tmp}"/>
+
+            <arg value="-shared"/> 
+            <arg value="-I${lib_tmp}"/>
+            <arg value="-I${cINCLUDE}"/>
+            <arg value="-o${lib_tmp}/lib${library.name}${library.ext}"/>
+            <arg value="-lstdc++"/>
+            <arg value="-fPIC"/>
+            <arg value="${lib_tmp}/jaasnix.cpp"/>
+        </exec>
+
+        <!-- ==========================================================   -->
+
+        <copy todir="${build.bin.path}">
+            <fileset dir="${lib_tmp}" includes="lib${library.name}${library.ext}"/>
+        </copy>
+
+    </target>
+
+    <target name="dist" depends="compile.linux.native" description="">
+
+        <echo message="Compiling native finished ..."/>
+
+    </target>
+
+
+</project>

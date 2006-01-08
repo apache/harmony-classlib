@@ -1,0 +1,179 @@
+/*
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/**
+* @author Alexander Y. Kleymenov
+* @version $Revision$
+*/
+
+package com.openintel.drl.security.x509;
+
+import java.io.IOException;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+
+import com.openintel.drlx.crypto.utils.AlgNameMapper;
+import com.openintel.drl.security.PublicKeyImpl;
+
+import com.openintel.drl.security.asn1.*;
+
+/**
+ * The class incapsulates the ASN.1 DER encoding/decoding work
+ * with the following structure which is a part of X.509 certificate
+ * (as specified in RFC 3280 -
+ *  Internet X.509 Public Key Infrastructure.
+ *  Certificate and Certificate Revocation List (CRL) Profile.
+ *  http://www.ietf.org/rfc/rfc3280.txt):
+ *
+ * <pre>
+ *  SubjectPublicKeyInfo  ::=  SEQUENCE  {
+ *      algorithm            AlgorithmIdentifier,
+ *      subjectPublicKey     BIT STRING  
+ *  }
+ * </pre>
+ */
+public class SubjectPublicKeyInfo {
+
+    // the value of algorithmID field of the structure
+    private AlgorithmIdentifier algorithmID;
+    // the value of subjectPublicKey field of the structure
+    private byte[] subjectPublicKey;
+    // the public key corresponding to this SubjectPublicKeyInfo
+    private PublicKey publicKey;
+    // the value of unusedBits field of the structure
+    private int unusedBits;
+    // the ASN.1 encoded form of SubjectPublicKeyInfo
+    private byte[] encoding;
+    
+    /**
+     * TODO
+     * @param   algID:  AlgorithmIdentifier
+     * @param   subjectPublicKey:   byte[]
+     */
+    public SubjectPublicKeyInfo(AlgorithmIdentifier algID, 
+                                byte[] subjectPublicKey) { 
+        this(algID, subjectPublicKey, 0);
+    }
+
+    /**
+     * TODO
+     * @param   algID:  AlgorithmIdentifier
+     * @param   subjectPublicKey:   byte[]
+     * @param   unused: int
+     */
+    public SubjectPublicKeyInfo(AlgorithmIdentifier algID, 
+                                byte[] subjectPublicKey, int unused) {
+        this(algID, subjectPublicKey, 0, null);
+    }
+
+    // 
+    // TODO
+    // @param   algID:  AlgorithmIdentifier
+    // @param   subjectPublicKey:   byte[]
+    // @param   unused: int
+    // @param   encoding:   byte[]
+    // 
+    private SubjectPublicKeyInfo(AlgorithmIdentifier algID, 
+                                 byte[] subjectPublicKey, int unused, 
+                                 byte[] encoding) {
+        this.algorithmID = algID;
+        this.subjectPublicKey = subjectPublicKey;
+        this.unusedBits = unused;
+        this.encoding = encoding;
+    }
+
+    /**
+     * Returns the value of algorithmIdentifier field of the structure.
+     * @return  algorithmIdentifier
+     */
+    public AlgorithmIdentifier getAlgorithmIdentifier() {
+        return algorithmID;
+    }
+
+    /**
+     * Returns the value of subjectPublicKey field of the structure.
+     * @return  subjectPublicKey
+     */
+    public byte[] getSubjectPublicKey() {
+        return subjectPublicKey;
+    }
+
+    /**
+     * Returns the value of unusedBits field of the structure.
+     * @return  unusedBits
+     */
+    public int getUnusedBits() {
+        return unusedBits;
+    }
+
+    /**
+     * Returns ASN.1 encoded form of this X.509 SubjectPublicKeyInfo value.
+     * @return a byte array containing ASN.1 encode form.
+     */
+    public byte[] getEncoded() {
+        if (encoding == null) {
+            encoding = ASN1.encode(this);
+        }
+        return encoding;
+    }
+
+    /**
+     * Returns The PublicKey corresponding to this SubjectPublicKeyInfo
+     * instance.
+     * @return public key corresponding to this SubjectPublicKeyInfo.
+     */
+    public PublicKey getPublicKey() {
+        if (publicKey == null) {
+            try {
+                String alg_oid = algorithmID.getAlgorithm();
+                String alg = 
+                    AlgNameMapper.map2AlgName(alg_oid);
+                
+                if (alg == null) {
+                    alg = alg_oid;
+                }
+                publicKey = KeyFactory.getInstance(alg)
+                    .generatePublic(new X509EncodedKeySpec(getEncoded()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return publicKey;
+    }
+    
+    public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
+            AlgorithmIdentifier.ASN1, ASN1BitString.getInstance() }) {
+
+        protected Object getDecodedObject(BerInputStream in) {
+            Object[] values = (Object[]) in.content;
+            return new SubjectPublicKeyInfo(
+                    (AlgorithmIdentifier) values[0],
+                    ((BitString) values[1]).bytes,
+                    ((BitString) values[1]).unusedBits,
+                    in.getEncoded());
+        }
+
+        protected void getValues(Object object, Object[] values) {
+
+            SubjectPublicKeyInfo spki = (SubjectPublicKeyInfo) object;
+
+            values[0] = spki.algorithmID;
+            values[1] = new BitString(spki.subjectPublicKey, spki.unusedBits);
+        }
+    };
+}
+
