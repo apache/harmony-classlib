@@ -18,7 +18,7 @@
      build-java-source    
      Compile the Java source and package in component archives.
      ====================================================================== -->
-<project name="build-java-source" default="default" basedir="../java-src">
+<project name="build-java-source" default="default" basedir="../modules">
     <description>
 		Compile the Java source and package in component archives.
     </description>
