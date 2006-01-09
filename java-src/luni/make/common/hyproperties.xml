@@ -29,8 +29,8 @@
          <natives location="src/natives" />
       </src>
       <bin>
-        <main location="bin.main" />
-        <test location="bin.test" />
+        <main location="bin/main" />
+        <test location="bin/test" />
       </bin>
       <packaging>
       </packaging>
