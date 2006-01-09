@@ -19,7 +19,7 @@ following directories under <EXTRACT_DIR> :
               HTML documentation of the Java and C source using the Doxygen
               documentation system. Pre-genenerated HTML is included. 
                
-*  java-src - Java source files that can be compiled into the class library
+*  modules - Java source files that can be compiled into the class library
               component files
               
 *  native-src -  C language source files plus the required makefiles that
@@ -30,7 +30,7 @@ following directories under <EXTRACT_DIR> :
 
 Pre-requisites for Building
 ---------------------------
-In order to build the Java and C source contained in the java-src and native-src
+In order to build the Java and C source contained in the modules and native-src
 directories, it is necessary to configure the following tools in the user 
 environment. That is, the working environment should be such that the PATH 
 environment variable contains all of the directories where the executables of
@@ -48,7 +48,7 @@ successfully invoked from the command line.
                   Although it cannot be invoked through an executable, it is 
                   also possible to use the JDT compiler as delivered in a
                   standard Eclipse download to accomplish the compiling of the 
-                  source under the java-src directory. See the section on 
+                  source under the modules directory. See the section on 
                   "Modifying the Java Build Compiler" for more details. 
                   
 * Apache Ant - the Java based build tool. See http://ant.apache.org
@@ -74,7 +74,7 @@ The simplest way to get started is to change directory into
 <EXTRACT_DIR>/make and then type "ant" to run Apache Ant against the
 default target of the build.xml file. Provided that both a C compiler and a Java
 compiler are available, Ant will proceed to compile all Java source beneath
-the <EXTRACT_DIR>/java-src folders and all C source beneath the
+the <EXTRACT_DIR>/modules folders and all C source beneath the
 <EXTRACT_DIR>/native-src folders.
 
 
@@ -167,7 +167,7 @@ variable should contain an entry for <DOXYGEN_INSTALL_DIR>/bin ).
 Modifying the Java Build Compiler
 ---------------------------------
 When compiling the Java source files the top-level Ant script calls another
-Ant script, <EXTRACT_DIR>/java-src/build.xml. By opening up this Ant 
+Ant script, <EXTRACT_DIR>/modules/build.xml. By opening up this Ant 
 file for editing and making a small change to the "build.compiler" property
 declared near the top of the file it is possible to specify any Java compiler of
 choice - provided it is capable of handling Java 1.4 source code. For example,
@@ -183,7 +183,7 @@ this amounts to adding <ECLIPSE_INSTALL>/plugins/org.eclipse.jdt.core_3.1.0.jar
 together with the jdtCompilerAdapter.jar it contains. 
 
 Remember that the Java source files located under
-<EXTRACT_DIR>/java-src are intended for consumption by a compiler that
+<EXTRACT_DIR>/modules are intended for consumption by a compiler that
 understands Java 1.4 source code.
 
 For further information on this topic please refer to the Eclipse batch compiler
