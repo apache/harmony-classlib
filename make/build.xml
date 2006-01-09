@@ -58,7 +58,7 @@ Generating HTML using Doxygen...
           target: clean
          ================================= -->
     <target name="clean">
-        <ant antfile="java-src/build.xml" inheritall="false" target="clean" />
+        <ant antfile="make/build-java.xml" inheritall="false" target="clean" />
         <ant antfile="native-src/build.xml" inheritall="false" target="clean" />
         <ant antfile="doc/build.xml" inheritall="false" target="clean" />
     </target>
