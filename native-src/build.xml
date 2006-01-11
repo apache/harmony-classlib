@@ -122,6 +122,7 @@
 
         <!-- Create the structure -->
         <mkdir dir="${target.output}/jre/bin" />
+        <mkdir dir="${target.output}/include" />
 
         <!-- Copy across the built shared libs -->
         <copy todir="${target.output}/jre/bin" overwrite="yes">
@@ -149,6 +150,13 @@
             <fileset dir="${depends.libs}" includes="*${shlib.suffix}*" />
         </copy>
 
+        <!-- Copy across JNI include files -->
+        <copy todir="${target.output}/include" overwrite="yes">
+            <fileset dir="${native.src.root}/include">
+                <include name="jni.h" />
+                <include name="jniport.h" />
+            </fileset>
+        </copy>
     </target>
 
 
