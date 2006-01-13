@@ -152,7 +152,9 @@ public class RuleBasedCollator extends Collator {
 	public CollationKey getCollationKey(String source) {
 		com.ibm.icu.text.CollationKey icuKey = this.icuColl
 				.getCollationKey(source);
-
+		if (icuKey == null) {
+			return null;
+		}
 		return new CollationKey(source, icuKey);
 	}
 
