@@ -3,6 +3,8 @@
 	<classpathentry output="bin/main" kind="src" path="src/main/java"/>
 	<classpathentry output="bin/test" kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/boot/kernel-stubs.jar"/>
 	<classpathentry kind="lib" path="depends/icu4j/icu4j-3.4.jar"/>
+	<classpathentry sourcepath="JUNIT_SRC_HOME/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
