@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.ibm.oti.lang.reflect.ProxyClassFile;
+import org.apache.harmony.luni.reflect.ProxyClassFile;
+
 import com.ibm.oti.util.Msg;
 
 /**

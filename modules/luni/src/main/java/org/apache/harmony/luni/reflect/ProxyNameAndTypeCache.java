@@ -13,45 +13,45 @@
  * limitations under the License.
  */
 
-package com.ibm.oti.lang.reflect;
+package org.apache.harmony.luni.reflect;
 
 
-class ProxyObjectCache {
-	Object keyTable[];
+class ProxyNameAndTypeCache {
+	int[][] keyTable;
 
-	int valueTable[];
+	int[] valueTable;
 
 	int elementSize;
 
 	int threshold;
 
-	ProxyObjectCache(int initialCapacity) {
+	ProxyNameAndTypeCache(int initialCapacity) {
 		if (initialCapacity < 13)
 			initialCapacity = 13;
 		this.elementSize = 0;
 		this.threshold = (int) (initialCapacity * 0.66f);
-		this.keyTable = new Object[initialCapacity];
+		this.keyTable = new int[initialCapacity][];
 		this.valueTable = new int[initialCapacity];
 	}
 
-	int get(Object key) {
+	int get(int[] key) {
 		int index = hashCode(key);
 		while (keyTable[index] != null) {
-			if (keyTable[index].equals(key))
+			if (keyTable[index][0] == key[0] && keyTable[index][1] == key[1])
 				return valueTable[index];
 			index = (index + 1) % keyTable.length;
 		}
 		return -1;
 	}
 
-	int hashCode(Object key) {
-		return (key.hashCode() & 0x7FFFFFFF) % keyTable.length;
+	int hashCode(int[] key) {
+		return (key[0] + key[1]) % keyTable.length;
 	}
 
-	int put(Object key, int value) {
+	int put(int[] key, int value) {
 		int index = hashCode(key);
 		while (keyTable[index] != null) {
-			if (keyTable[index].equals(key))
+			if (keyTable[index][0] == key[0] && keyTable[index][1] == key[1])
 				return valueTable[index] = value;
 			index = (index + 1) % keyTable.length;
 		}
@@ -65,7 +65,7 @@ class ProxyObjectCache {
 	}
 
 	private void rehash() {
-		ProxyObjectCache newHashtable = new ProxyObjectCache(
+		ProxyNameAndTypeCache newHashtable = new ProxyNameAndTypeCache(
 				keyTable.length * 2);
 		for (int i = keyTable.length; --i >= 0;)
 			if (keyTable[i] != null)

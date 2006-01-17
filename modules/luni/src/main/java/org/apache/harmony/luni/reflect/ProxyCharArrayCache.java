@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.oti.lang.reflect;
+package org.apache.harmony.luni.reflect;
 
 
 class ProxyCharArrayCache {
