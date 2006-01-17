@@ -32,8 +32,9 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.openintel.drl.security.pkcs7.ContentInfo;
-import com.openintel.drl.security.pkcs7.SignedData;
+import org.apache.harmony.security.pkcs7.ContentInfo;
+import org.apache.harmony.security.pkcs7.SignedData;
+
 
 import junit.framework.Test;
 import junit.framework.TestCase;
