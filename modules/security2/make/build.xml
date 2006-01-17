@@ -192,15 +192,16 @@
     </patternset>
 
 
-    <patternset id="security">
-        <include name="java/security/**"/>
-        <include name="javax/security/**"/>
-        <include name="com/openintel/fortress/drl/security/**"/>
-        <include name="com/openintel/drl/security/**"/>
-        <include name="com/openintel/drlx/security/**"/>
-        <include name="org/apache/harmony/misc/Base64.*"/>
-        <include name="org/ietf/jgss/**"/>
-    </patternset>
+	<patternset id="security">
+		<include name="java/security/**"/>
+		<include name="javax/security/**"/>
+		<include name="com/openintel/fortress/drl/security/**"/>
+		<include name="org/apache/harmony/security/**"/>
+		<include name="com/openintel/drl/security/**"/>
+		<include name="com/openintel/drlx/security/**"/>
+		<include name="org/apache/harmony/misc/Base64.*"/>
+		<include name="org/ietf/jgss/**"/>
+	</patternset>
 
 
     <patternset id="x_net">
