@@ -31,17 +31,19 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import javax.security.auth.x500.X500Principal;
+
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BitString;
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
 import com.openintel.drl.security.x501.Name;
 import com.openintel.drl.security.x509.*;
-import com.openintel.drl.security.asn1.ASN1Integer;
-import com.openintel.drl.security.asn1.ASN1BitString;
-import com.openintel.drl.security.asn1.ASN1Sequence;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.BitString;
-import com.openintel.drl.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.asn1.ASN1BitString;
 
 import java.security.cert.CertificateParsingException;
 

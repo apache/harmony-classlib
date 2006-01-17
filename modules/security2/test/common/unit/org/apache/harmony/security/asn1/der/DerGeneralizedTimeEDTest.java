@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.asn1.der;
+package org.apache.harmony.security.asn1.der;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,11 +28,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
+import org.apache.harmony.security.asn1.DerInputStream;
+import org.apache.harmony.security.asn1.DerOutputStream;
+
 import junit.framework.TestCase;
 
-import com.openintel.drl.security.asn1.ASN1GeneralizedTime;
-import com.openintel.drl.security.asn1.DerInputStream;
-import com.openintel.drl.security.asn1.DerOutputStream;
 
 /**
  * ASN.1 DER test for GeneralizedTime type

@@ -23,7 +23,7 @@ package com.openintel.drl.security.x509;
 
 import java.util.Iterator;
 import java.util.List;
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.*;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -24,10 +24,11 @@ package com.openintel.drl.security.x509;
 import java.io.*;
 import java.math.*;
 import java.util.*;
-import java.security.cert.CertificateFactory;
 import java.security.cert.*;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.ASN1Integer;
+
+import org.apache.harmony.security.asn1.*;
 import com.openintel.drl.security.x501.Name;
 
 import junit.framework.Test;

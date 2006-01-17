@@ -46,16 +46,17 @@ import java.util.Iterator;
 import java.util.Collection;
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.ASN1Boolean;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+
+import org.apache.harmony.security.asn1.*;
 
 import com.openintel.drl.security.TestKeyPair;
 import com.openintel.drl.security.x509.*;
-import com.openintel.drl.security.x509.AlgorithmIdentifier;
-import com.openintel.drl.security.x509.EDIPartyName;
-import com.openintel.drl.security.x509.GeneralName;
-import com.openintel.drl.security.x509.GeneralNames;
-import com.openintel.drl.security.x509.GeneralSubtree;
-import com.openintel.drl.security.x509.GeneralSubtrees;
 import com.openintel.drl.security.x501.Name;
 import com.openintel.drl.security.x509.NameConstraints;
 import com.openintel.drl.security.x509.ORAddress;

@@ -19,19 +19,20 @@
  * @version $Revision$
  */
 
-package com.openintel.drl.security.asn1.der;
+package org.apache.harmony.security.asn1.der;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.harmony.security.asn1.ASN1Exception;
+import org.apache.harmony.security.asn1.BitString;
+import org.apache.harmony.security.asn1.DerInputStream;
+import org.apache.harmony.security.asn1.DerOutputStream;
+
 import junit.framework.TestCase;
 
-import com.openintel.drl.security.asn1.ASN1BitString;
-import com.openintel.drl.security.asn1.ASN1Exception;
-import com.openintel.drl.security.asn1.BitString;
-import com.openintel.drl.security.asn1.DerInputStream;
-import com.openintel.drl.security.asn1.DerOutputStream;
-import com.openintel.drl.security.asn1.ASN1BitString.ASN1NamedBitList;
+import org.apache.harmony.security.asn1.ASN1BitString;
+import org.apache.harmony.security.asn1.ASN1BitString.ASN1NamedBitList;
 
 /**
  * ASN.1 DER test for Bitstring type

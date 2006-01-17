@@ -24,7 +24,7 @@ package com.openintel.drl.security.x509;
 import java.io.*;
 import java.security.cert.*;
 import java.util.*;
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.*;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

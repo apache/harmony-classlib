@@ -19,12 +19,13 @@
  * @version $Revision$
  */
 
-package com.openintel.drl.security.asn1.der;
+package org.apache.harmony.security.asn1.der;
 
 import java.io.IOException;
 import java.math.BigInteger;
 
-import com.openintel.drl.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.BerInputStream;
+
 
 import junit.framework.TestCase;
 

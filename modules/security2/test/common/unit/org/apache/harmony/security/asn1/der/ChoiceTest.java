@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.asn1.der;
+package org.apache.harmony.security.asn1.der;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,16 +27,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.harmony.security.asn1.ASN1Boolean;
+import org.apache.harmony.security.asn1.ASN1Choice;
+import org.apache.harmony.security.asn1.ASN1Explicit;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1SequenceOf;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.DerInputStream;
+import org.apache.harmony.security.asn1.DerOutputStream;
+
 import junit.framework.TestCase;
 
-import com.openintel.drl.security.asn1.ASN1Boolean;
-import com.openintel.drl.security.asn1.ASN1Choice;
-import com.openintel.drl.security.asn1.ASN1Explicit;
-import com.openintel.drl.security.asn1.ASN1Integer;
-import com.openintel.drl.security.asn1.ASN1SequenceOf;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.DerInputStream;
-import com.openintel.drl.security.asn1.DerOutputStream;
 
 /**
  * ASN.1 DER test for Choice type

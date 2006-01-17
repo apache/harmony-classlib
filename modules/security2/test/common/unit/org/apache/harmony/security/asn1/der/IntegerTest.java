@@ -19,18 +19,19 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.asn1.der;
+package org.apache.harmony.security.asn1.der;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import org.apache.harmony.security.asn1.ASN1Exception;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.DerInputStream;
+import org.apache.harmony.security.asn1.DerOutputStream;
+
 import junit.framework.TestCase;
 
-import com.openintel.drl.security.asn1.ASN1Exception;
-import com.openintel.drl.security.asn1.ASN1Integer;
-import com.openintel.drl.security.asn1.DerInputStream;
-import com.openintel.drl.security.asn1.DerOutputStream;
 
 /**
  * ASN.1 DER test for INTEGER type

@@ -32,7 +32,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.openintel.drl.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.BerInputStream;
+
 import com.openintel.drl.security.provider.cert.X509CertImplTest;
 import com.openintel.drl.security.x509.Certificate;
 

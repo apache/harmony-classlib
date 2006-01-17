@@ -36,7 +36,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import javax.security.auth.x500.X500Principal;
-import com.openintel.drl.security.asn1.*;
+
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1OctetString;
+
+import org.apache.harmony.security.asn1.*;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

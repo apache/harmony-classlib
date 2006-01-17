@@ -21,9 +21,6 @@
 
 package com.openintel.drl.security.x509;
 
-import com.openintel.drl.security.asn1.ASN1Integer;
-import com.openintel.drl.security.asn1.ASN1OctetString;
-import com.openintel.drl.security.asn1.ASN1GeneralizedTime;
 import com.openintel.drl.security.x501.Name;
 
 import java.io.ByteArrayInputStream;
@@ -40,6 +37,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1OctetString;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -20,9 +20,6 @@
 
 package com.openintel.drl.security.provider.cert;
 
-import com.openintel.drl.security.asn1.ASN1GeneralizedTime;
-import com.openintel.drl.security.asn1.ASN1Integer;
-import com.openintel.drl.security.asn1.ASN1OctetString;
 import com.openintel.drl.security.x501.Name;
 import com.openintel.drl.security.x509.AlgorithmIdentifier;
 import com.openintel.drl.security.x509.CertificateList;
@@ -57,6 +54,10 @@ import java.security.KeyPairGenerator;
 import java.security.PublicKey;
 import java.security.PrivateKey;
 import javax.security.auth.x500.X500Principal;
+
+import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1OctetString;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
