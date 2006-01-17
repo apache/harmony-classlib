@@ -15,12 +15,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<!-- 
-Author: Natalya S. Naumova, Alexei Y. Zakharov, Igor A. Pyankov, Vladimir N. Molotkov
-Version: $Revision$
--->
 
-<project name="CLBuild" default="dist" basedir="..">
+<project name="HarmonySecurityBuild" default="dist" basedir="..">
 
     <description> Build for Security stuff </description>
 
@@ -188,7 +184,6 @@ Version: $Revision$
     </target>
 
 
-
     <!-- SECURITY PACKAGES SETS -->
 
     <patternset id="crypto">
@@ -340,6 +335,21 @@ Version: $Revision$
 
 
     <target name="tests.compile">
+    	
+    	<!-- download the jars we need for testing and create a path -->
+    	
+    	<ant antfile="make/download.xml" target="test-download" />
+    		
+        <mkdir dir="${build.path}/tests_report" />
+
+    	<path id="sec.test.path">
+    		<fileset dir="${build.path}/lib">
+		        <include name="**/*.jar"/>
+		      </fileset>
+	     </path>
+    		
+    	<property name="test.deps.path" refid="sec.test.path" />
+
         <echo message="Compiling Security tests from ${src.tst.common}/unit, ${src.tst.common.ps}/unit" />
     
         <mkdir dir="${build.path}/tests" />
@@ -347,7 +357,7 @@ Version: $Revision$
         <javac srcdir="${src.tst.common}/unit;${src.tst.common.ps}/unit"
                destdir="${build.path}/tests"
                sourcepath=""
-               classpath="${env.CLASSPATH};${build.path}/tests"
+               classpath="${env.CLASSPATH};${build.path}/tests;${test.deps.path}"
                bootclasspath="${build.jars.path}/security.jar;${build.jars.path}/crypto.jar;${build.jars.path}/x_net.jar;${java.home}/lib/rt.jar"
                source="${source.ver}"
                debug="${java.debug.option}"
@@ -366,8 +376,9 @@ Version: $Revision$
     </target>
 
     <target name="run">
-        <mkdir dir="${build.path}/tests_report" />
-        
+    	
+    	<!-- run the tests -->
+    	
         <junit fork="yes"
             forkmode="perTest"
             printsummary="withOutAndErr"
@@ -375,9 +386,9 @@ Version: $Revision$
             showoutput="on"
             dir="${basedir}"
             jvm="${env.JAVA_HOME}/bin/java">
-
-            <jvmarg value="-Xbootclasspath/p:${build.path}/classes/security_alt.jar${path.separator}${build.jars.path}/crypto.jar${path.separator}${build.jars.path}/x_net.jar"/>
-            <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${env.CLASSPATH}"/>
+ 
+        	<jvmarg value="-Xbootclasspath/p:${build.path}/classes/security_alt.jar${path.separator}${build.jars.path}/crypto.jar${path.separator}${build.jars.path}/x_net.jar"/>
+            <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${test.deps.path}"/>
             <jvmarg value="-Dreference.output=${src.tst.common}/unit" />
             <jvmarg value="-Dunit.test.root=${src.tst.common}/unit"/>
             <jvmarg value="-Djava.security.properties==${build.lib.path}/security/java.security"/>
