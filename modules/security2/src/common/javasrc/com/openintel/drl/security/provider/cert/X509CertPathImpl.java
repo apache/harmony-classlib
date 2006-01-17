@@ -37,9 +37,9 @@ import java.util.List;
 import org.apache.harmony.security.asn1.ASN1Any;
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.pkcs7.ContentInfo;
+import org.apache.harmony.security.pkcs7.SignedData;
 
-import com.openintel.drl.security.pkcs7.ContentInfo;
-import com.openintel.drl.security.pkcs7.SignedData;
 import com.openintel.drl.security.x509.Certificate;
 import com.openintel.drl.security.x509.Extensions;
 

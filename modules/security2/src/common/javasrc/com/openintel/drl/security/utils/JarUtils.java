@@ -39,10 +39,10 @@ import java.util.List;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.pkcs7.ContentInfo;
+import org.apache.harmony.security.pkcs7.SignedData;
+import org.apache.harmony.security.pkcs7.SignerInfo;
 
-import com.openintel.drl.security.pkcs7.ContentInfo;
-import com.openintel.drl.security.pkcs7.SignedData;
-import com.openintel.drl.security.pkcs7.SignerInfo;
 import com.openintel.drl.security.provider.cert.X509CertImpl;
 import com.openintel.drl.security.x501.AttributeTypeAndValue;
 
