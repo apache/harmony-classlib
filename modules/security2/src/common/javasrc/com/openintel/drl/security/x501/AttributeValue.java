@@ -23,10 +23,11 @@ package com.openintel.drl.security.x501;
 
 import java.io.IOException;
 
-import com.openintel.drl.security.asn1.ASN1Constants;
-import com.openintel.drl.security.asn1.ASN1StringType;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.DerInputStream;
+import org.apache.harmony.security.asn1.ASN1Constants;
+import org.apache.harmony.security.asn1.ASN1StringType;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.DerInputStream;
+
 import com.openintel.drl.security.x509.Utils;
 
 /**

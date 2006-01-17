@@ -28,7 +28,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.ASN1Implicit;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+
+import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 

@@ -32,11 +32,12 @@ import java.util.Locale;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.asn1.ASN1Exception;
-import com.openintel.drl.security.asn1.ASN1SequenceOf;
-import com.openintel.drl.security.asn1.ASN1SetOf;
-import com.openintel.drl.security.asn1.BerInputStream;
-import com.openintel.drl.security.asn1.DerInputStream;
+import org.apache.harmony.security.asn1.ASN1Exception;
+import org.apache.harmony.security.asn1.ASN1SequenceOf;
+import org.apache.harmony.security.asn1.ASN1SetOf;
+import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.DerInputStream;
+
 import com.openintel.drl.security.x509.DNParser;
 
 /**

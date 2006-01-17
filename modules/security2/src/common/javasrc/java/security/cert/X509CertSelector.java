@@ -38,8 +38,9 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.asn1.ASN1OctetString;
-import com.openintel.drl.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.asn1.ASN1Type;
+
 import com.openintel.drl.security.x509.PrivateKeyUsagePeriod;
 import com.openintel.drl.security.x509.SubjectPublicKeyInfo;
 import com.openintel.drl.security.x509.AlgorithmIdentifier;

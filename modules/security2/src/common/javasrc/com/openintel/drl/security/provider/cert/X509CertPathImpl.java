@@ -34,9 +34,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.openintel.drl.security.asn1.ASN1Any;
-import com.openintel.drl.security.asn1.ASN1SequenceOf;
-import com.openintel.drl.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1SequenceOf;
+import org.apache.harmony.security.asn1.BerInputStream;
+
 import com.openintel.drl.security.pkcs7.ContentInfo;
 import com.openintel.drl.security.pkcs7.SignedData;
 import com.openintel.drl.security.x509.Certificate;

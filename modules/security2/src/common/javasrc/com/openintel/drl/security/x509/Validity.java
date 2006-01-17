@@ -24,7 +24,11 @@ package com.openintel.drl.security.x509;
 import java.io.IOException;
 import java.util.Date;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+
+import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 

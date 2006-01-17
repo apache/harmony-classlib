@@ -29,20 +29,21 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.asn1.ASN1BitString;
-import com.openintel.drl.security.asn1.ASN1Boolean;
-import com.openintel.drl.security.asn1.ASN1Enumerated;
-import com.openintel.drl.security.asn1.ASN1GeneralizedTime;
-import com.openintel.drl.security.asn1.ASN1Integer;
-import com.openintel.drl.security.asn1.ASN1OctetString;
-import com.openintel.drl.security.asn1.ASN1Oid;
-import com.openintel.drl.security.asn1.ASN1Sequence;
-import com.openintel.drl.security.asn1.ASN1SequenceOf;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.BerInputStream;
-import com.openintel.drl.security.asn1.BitString;
-import com.openintel.drl.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.asn1.ASN1Boolean;
+import org.apache.harmony.security.asn1.ASN1Enumerated;
+import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1SequenceOf;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.BitString;
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+
 import com.openintel.drl.security.x501.Name;
+import org.apache.harmony.security.asn1.ASN1BitString;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 

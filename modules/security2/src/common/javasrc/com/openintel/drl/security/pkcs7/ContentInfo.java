@@ -23,13 +23,14 @@ package com.openintel.drl.security.pkcs7;
 import java.io.IOException;
 import java.util.Arrays;
 
-import com.openintel.drl.security.asn1.ASN1Any;
-import com.openintel.drl.security.asn1.ASN1Explicit;
-import com.openintel.drl.security.asn1.ASN1OctetString;
-import com.openintel.drl.security.asn1.ASN1Oid;
-import com.openintel.drl.security.asn1.ASN1Sequence;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1Explicit;
+import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+
 /**
  * As defined in PKCS #7: Cryptographic Message Syntax Standard
  * (http://www.rsasecurity.com/rsalabs/node.asp?id=2129)

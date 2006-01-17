@@ -21,7 +21,15 @@
 
 package com.openintel.drl.security.x509;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1Explicit;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+
+import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 

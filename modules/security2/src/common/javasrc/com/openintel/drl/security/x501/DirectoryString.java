@@ -21,10 +21,11 @@
 
 package com.openintel.drl.security.x501;
 
-import com.openintel.drl.security.asn1.ASN1Choice;
-import com.openintel.drl.security.asn1.ASN1StringType;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.ASN1Choice;
+import org.apache.harmony.security.asn1.ASN1StringType;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 

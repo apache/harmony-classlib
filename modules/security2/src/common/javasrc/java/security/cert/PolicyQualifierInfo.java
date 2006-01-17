@@ -23,7 +23,8 @@ package java.security.cert;
 
 import java.io.IOException;
 
-import com.openintel.drl.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+
 import com.openintel.drl.security.utils.Array;
 
 /**

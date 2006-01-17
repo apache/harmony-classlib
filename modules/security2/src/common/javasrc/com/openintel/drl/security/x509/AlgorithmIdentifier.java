@@ -23,12 +23,13 @@ package com.openintel.drl.security.x509;
 
 import java.util.Arrays;
 
-import com.openintel.drl.security.asn1.ASN1Any;
-import com.openintel.drl.security.asn1.ASN1Oid;
-import com.openintel.drl.security.asn1.ASN1Sequence;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.BerInputStream;
-import com.openintel.drl.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work

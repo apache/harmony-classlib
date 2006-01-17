@@ -28,13 +28,14 @@ import java.util.Iterator;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.asn1.ASN1Constants;
-import com.openintel.drl.security.asn1.ASN1Oid;
-import com.openintel.drl.security.asn1.ASN1Sequence;
-import com.openintel.drl.security.asn1.ASN1StringType;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.BerInputStream;
-import com.openintel.drl.security.asn1.BerOutputStream;
+import org.apache.harmony.security.asn1.ASN1Constants;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1StringType;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.BerOutputStream;
+
 import com.openintel.drl.security.utils.ObjectIdentifier;
 
 /**
@@ -270,7 +271,7 @@ public class AttributeTypeAndValue {
     public AttributeTypeAndValue(String sOid, AttributeValue value) {
         if (sOid.charAt(0) >= '0' && sOid.charAt(0) <= '9') {
 
-            int[] array = com.openintel.drl.security.asn1.ObjectIdentifier
+            int[] array = org.apache.harmony.security.asn1.ObjectIdentifier
                     .toIntArray(sOid);
 
             ObjectIdentifier thisOid = getOID(array);

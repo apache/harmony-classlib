@@ -30,7 +30,16 @@ import java.util.StringTokenizer;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.ASN1Choice;
+import org.apache.harmony.security.asn1.ASN1Implicit;
+import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.ASN1StringType;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+
+import org.apache.harmony.security.asn1.*;
 import com.openintel.drl.security.x501.Name;
 
 /**

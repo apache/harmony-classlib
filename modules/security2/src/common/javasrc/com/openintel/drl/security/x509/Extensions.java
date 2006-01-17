@@ -32,7 +32,9 @@ import java.util.List;
 import java.util.HashMap;
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.ASN1SequenceOf;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 

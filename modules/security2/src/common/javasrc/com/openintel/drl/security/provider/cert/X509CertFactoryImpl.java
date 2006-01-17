@@ -21,14 +21,14 @@
 
 package com.openintel.drl.security.provider.cert;
 
-import com.openintel.drl.security.asn1.ASN1Any;
-import com.openintel.drl.security.asn1.BerInputStream;
 
 import java.io.*;
 import java.util.*;
 import java.security.cert.*;
 
 import org.apache.harmony.misc.Base64;
+import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
  * X509CertFactoryImpl

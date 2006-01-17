@@ -22,13 +22,14 @@ package com.openintel.drl.security.pkcs7;
 
 import java.util.List;
 
-import com.openintel.drl.security.asn1.ASN1Any;
-import com.openintel.drl.security.asn1.ASN1Implicit;
-import com.openintel.drl.security.asn1.ASN1Integer;
-import com.openintel.drl.security.asn1.ASN1Sequence;
-import com.openintel.drl.security.asn1.ASN1SetOf;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1Implicit;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1SetOf;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+
 import com.openintel.drl.security.x509.AlgorithmIdentifier;
 import com.openintel.drl.security.x509.Certificate;
 

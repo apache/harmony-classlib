@@ -20,11 +20,12 @@
 
 package com.openintel.drl.security.x501;
 
-import com.openintel.drl.security.asn1.ASN1OpenType;
-import com.openintel.drl.security.asn1.ASN1Sequence;
-import com.openintel.drl.security.asn1.ASN1SetOf;
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.InformationObjectSet;
+import org.apache.harmony.security.asn1.ASN1OpenType;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1SetOf;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.InformationObjectSet;
+
 
 /**
  * X.501 Attributes

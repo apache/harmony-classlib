@@ -23,7 +23,15 @@ package com.openintel.drl.security.x509;
 
 import java.math.BigInteger;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.ASN1Explicit;
+import org.apache.harmony.security.asn1.ASN1Implicit;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.BitString;
+
+import org.apache.harmony.security.asn1.*;
 import com.openintel.drl.security.x501.Name;
 
 /**

@@ -26,10 +26,15 @@ import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.BitString;
+
 import com.openintel.drlx.crypto.utils.AlgNameMapper;
 import com.openintel.drl.security.PublicKeyImpl;
 
-import com.openintel.drl.security.asn1.*;
+import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work

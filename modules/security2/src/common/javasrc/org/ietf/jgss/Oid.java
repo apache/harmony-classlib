@@ -23,9 +23,10 @@ package org.ietf.jgss;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.openintel.drl.security.asn1.ASN1Oid;
-import com.openintel.drl.security.asn1.DerInputStream;
-import com.openintel.drl.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.asn1.ASN1Oid;
+import org.apache.harmony.security.asn1.DerInputStream;
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+
 
 /**
  * @com.intel.drl.spec_ref

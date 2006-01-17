@@ -38,7 +38,8 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.BerInputStream;
+
 import com.openintel.drl.security.pkcs7.ContentInfo;
 import com.openintel.drl.security.pkcs7.SignedData;
 import com.openintel.drl.security.pkcs7.SignerInfo;

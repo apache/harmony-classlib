@@ -20,8 +20,9 @@
 
 package com.openintel.drl.security.x501;
 
-import com.openintel.drl.security.asn1.ASN1Type;
-import com.openintel.drl.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.ObjectIdentifier;
+
 
 /**
  * X.501 Attribute Type

@@ -29,8 +29,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import javax.security.auth.x500.X500Principal;
-import com.openintel.drl.security.asn1.ASN1Integer;
-import com.openintel.drl.security.asn1.ASN1OctetString;
+
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1OctetString;
+
 
 /**
  * @com.intel.drl.spec_ref
