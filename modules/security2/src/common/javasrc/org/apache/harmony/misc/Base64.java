@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.misc;
+package org.apache.harmony.misc;
 
 /**
  * This class implements Base64 encoding/decoding functionality

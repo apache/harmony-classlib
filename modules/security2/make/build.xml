@@ -198,7 +198,7 @@
         <include name="com/openintel/fortress/drl/security/**"/>
         <include name="com/openintel/drl/security/**"/>
         <include name="com/openintel/drlx/security/**"/>
-        <include name="com/openintel/drl/misc/Base64.*"/>
+        <include name="org/apache/harmony/misc/Base64.*"/>
         <include name="org/ietf/jgss/**"/>
     </patternset>
 

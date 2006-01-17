@@ -21,7 +21,7 @@
 
 package com.openintel.drl.security.provider.cert;
 
-import com.openintel.drl.misc.Base64;
+import org.apache.harmony.misc.Base64;
 
 /**
  * Class contains the base 64 encodings of X.509 certificates,
