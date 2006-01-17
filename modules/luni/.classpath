@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="java/security/**" output="bin/kernel" kind="src" path="src.kernel"/>
 	<classpathentry output="bin/main" kind="src" path="src/main/java"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/boot/kernel-stubs.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry output="bin/test" kind="src" path="src/test/java"/>
 	<classpathentry sourcepath="JUNIT_SRC_HOME/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
