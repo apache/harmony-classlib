@@ -31,7 +31,7 @@ com/ibm/oti/io/*
 java/lang/ref/*
 
 java/lang/reflect/*
-com/ibm/oti/lang/reflect/*
+org/apache/harmony/luni/reflect/*
 
 com/ibm/misc/util/*
 
