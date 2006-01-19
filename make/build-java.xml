@@ -178,22 +178,22 @@
         <mkdir dir="${build.output}" />
 
         <copy todir="${build.output}" includeemptydirs="false">
-            <fileset dir="archive/src">
+            <fileset dir="archive/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
-            <fileset dir="luni/src">
+            <fileset dir="luni/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
-            <fileset dir="nio/src">
+            <fileset dir="nio/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
-            <fileset dir="nio_char/src">
+            <fileset dir="nio_char/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
-            <fileset dir="security/src">
+            <fileset dir="security/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
-            <fileset dir="text/src">
+            <fileset dir="text/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
@@ -260,7 +260,6 @@
                 <include name="**/jre/bin/harmony*.properties" />
                 <include name="**/lib/*.properties" />
                 <include name="**/lib/boot/*" />
-                <include name="**/lib/ext/*" />
                 <include name="**/lib/security/*" />
             </fileset>
         </delete>
