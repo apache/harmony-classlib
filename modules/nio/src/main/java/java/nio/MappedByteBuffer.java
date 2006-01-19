@@ -43,23 +43,23 @@ public abstract class MappedByteBuffer extends ByteBuffer {
 	/**
 	 * The map mode used when creating this buffer.
 	 */
-	protected final MapMode mapMode;
+	final MapMode mapMode;
 
 	/**
 	 * The mapped file.
 	 */
-	protected final File mappedFile;
+	final File mappedFile;
 
 	/**
 	 * The offset of the mapped region. The size of the mapped region is defined
 	 * by capacity.
 	 */
-	protected final long offset;
+	final long offset;
 
 	/**
 	 * The wrapped byte buffer.
 	 */
-	protected final ByteBuffer wrappedBuffer;
+	final ByteBuffer wrappedBuffer;
 
 	/**
 	 * Create a new mapped byte buffer, mapping to the specified region of file.
@@ -70,7 +70,7 @@ public abstract class MappedByteBuffer extends ByteBuffer {
 	 * @param size
 	 * @param mapMode
 	 */
-	protected MappedByteBuffer(File mappedFile, long offset, int size,
+	MappedByteBuffer(File mappedFile, long offset, int size,
 			MapMode mapMode) {
 		super(size);
 		this.mappedFile = mappedFile;
@@ -91,7 +91,7 @@ public abstract class MappedByteBuffer extends ByteBuffer {
 	 * @param mapMode
 	 * @param wrappedBuffer
 	 */
-	protected MappedByteBuffer(File mappedFile, long offset, int size,
+	MappedByteBuffer(File mappedFile, long offset, int size,
 			MapMode mapMode, ByteBuffer wrappedBuffer) {
 		super(size);
 		this.mappedFile = mappedFile;

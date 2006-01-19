@@ -52,31 +52,31 @@ public abstract class Buffer {
 	/**
 	 * <code>UNSET_MARK</code> means the mark has not been set.
 	 */
-	protected final static int UNSET_MARK = -1;
+	final static int UNSET_MARK = -1;
 
 	/**
 	 * The capacity of this buffer, which never change.
 	 */
-	protected final int capacity;
+	final int capacity;
 
 	/**
 	 * <code>limit - 1</code> is the last element that can be read or write.
 	 * Limit must be no less than zero and no greater than <code>capacity</code>.
 	 */
-	protected int limit;
+	int limit;
 
 	/**
 	 * Mark is the position will be set when <code>reset()</code> is called.
 	 * Mark is not set by default. Mark is always no less than zero and no
 	 * greater than <code>position</code>.
 	 */
-	protected int mark = UNSET_MARK;
+	int mark = UNSET_MARK;
 
 	/**
 	 * The current position of this buffer. Position is always no less than zero
 	 * and no greater than <code>limit</code>.
 	 */
-	protected int position = 0;
+	int position = 0;
 
 	/**
 	 * Construct a buffer with the specified capacity.
@@ -84,7 +84,7 @@ public abstract class Buffer {
 	 * @param capacity
 	 *            The capacity of this buffer
 	 */
-	protected Buffer(int capacity) {
+	Buffer(int capacity) {
 		super();
 		if (capacity < 0) {
 			throw new IllegalArgumentException();

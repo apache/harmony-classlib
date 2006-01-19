@@ -16,7 +16,6 @@
 package java.nio;
 
 
-import com.ibm.io.nio.BufferFactory;
 
 /**
  * A buffer of <code>short</code>s.
@@ -107,7 +106,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable {
 	 * @param capacity
 	 *            The capacity of the buffer
 	 */
-	protected ShortBuffer(int capacity) {
+	ShortBuffer(int capacity) {
 		super(capacity);
 	}
 
@@ -397,21 +396,21 @@ public abstract class ShortBuffer extends Buffer implements Comparable {
 	 * 
 	 * @return see <code>array()</code>
 	 */
-	protected abstract short[] protectedArray();
+	abstract short[] protectedArray();
 
 	/**
 	 * Child class implements this method to realize <code>arrayOffset()</code>.
 	 * 
 	 * @return see <code>arrayOffset()</code>
 	 */
-	protected abstract int protectedArrayOffset();
+	abstract int protectedArrayOffset();
 
 	/**
 	 * Child class implements this method to realize <code>hasArray()</code>.
 	 * 
 	 * @return see <code>hasArray()</code>
 	 */
-	protected abstract boolean protectedHasArray();
+	abstract boolean protectedHasArray();
 
 	/**
 	 * Writes the given short to the current position and increase the position

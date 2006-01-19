@@ -267,14 +267,13 @@ public class FileChannelImpl extends FileChannel {
 		int bytesRead;
 		synchronized (repositioningLock) {
 			if (buffer.isDirect()) {
-				DirectByteBuffer directBuffer = (DirectByteBuffer) buffer;
+				DirectBuffer directBuffer = (DirectBuffer) buffer;
 				long address = directBuffer.getEffectiveAddress().toLong();
 				bytesRead = (int) fileSystem.readDirect(handle, address, buffer
 						.remaining());
 			} else {
-				HeapByteBuffer heapBuffer = (HeapByteBuffer) buffer;
-				bytesRead = (int) fileSystem.read(handle, heapBuffer.array(),
-						heapBuffer.arrayOffset(), buffer.remaining());
+				bytesRead = (int) fileSystem.read(handle, buffer.array(),
+						buffer.arrayOffset(), buffer.remaining());
 			}
 			if (bytesRead > 0) {
 				buffer.position(buffer.position() + bytesRead);
@@ -346,14 +345,13 @@ public class FileChannelImpl extends FileChannel {
 		int bytesWritten;
 		synchronized (repositioningLock) {
 			if (buffer.isDirect()) {
-				DirectByteBuffer directBuffer = (DirectByteBuffer) buffer;
+				DirectBuffer directBuffer = (DirectBuffer) buffer;
 				long address = directBuffer.getEffectiveAddress().toLong();
 				bytesWritten = (int) fileSystem.writeDirect(handle, address,
 						buffer.remaining());
 			} else {
-				HeapByteBuffer heapBuffer = (HeapByteBuffer) buffer;
-				bytesWritten = (int) fileSystem.write(handle, heapBuffer
-						.array(), heapBuffer.arrayOffset(), buffer.remaining());
+				bytesWritten = (int) fileSystem.write(handle, buffer
+						.array(), buffer.arrayOffset(), buffer.remaining());
 			}
 			if (bytesWritten > 0) {
 				buffer.position(buffer.position() + bytesWritten);

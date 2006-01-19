@@ -16,7 +16,6 @@
 package java.nio;
 
 
-import com.ibm.io.nio.BufferFactory;
 
 /**
  * A buffer of <code>int</code>s.
@@ -106,7 +105,7 @@ public abstract class IntBuffer extends Buffer implements Comparable {
 	 * @param capacity
 	 *            The capacity of the buffer
 	 */
-	protected IntBuffer(int capacity) {
+	IntBuffer(int capacity) {
 		super(capacity);
 	}
 
@@ -392,21 +391,21 @@ public abstract class IntBuffer extends Buffer implements Comparable {
 	 * 
 	 * @return see <code>array()</code>
 	 */
-	protected abstract int[] protectedArray();
+	abstract int[] protectedArray();
 
 	/**
 	 * Child class implements this method to realize <code>arrayOffset()</code>.
 	 * 
 	 * @return see <code>arrayOffset()</code>
 	 */
-	protected abstract int protectedArrayOffset();
+	abstract int protectedArrayOffset();
 
 	/**
 	 * Child class implements this method to realize <code>hasArray()</code>.
 	 * 
 	 * @return see <code>hasArray()</code>
 	 */
-	protected abstract boolean protectedHasArray();
+	abstract boolean protectedHasArray();
 
 	/**
 	 * Writes the given int to the current position and increase the position by

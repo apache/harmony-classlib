@@ -16,7 +16,6 @@
 package java.nio;
 
 
-import com.ibm.io.nio.BufferFactory;
 
 /**
  * A buffer of <code>char</code>s.
@@ -159,7 +158,7 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 * @param capacity
 	 *            The capacity of the buffer
 	 */
-	protected CharBuffer(int capacity) {
+	CharBuffer(int capacity) {
 		super(capacity);
 	}
 
@@ -478,21 +477,21 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 * 
 	 * @return see <code>array()</code>
 	 */
-	protected abstract char[] protectedArray();
+	abstract char[] protectedArray();
 
 	/**
 	 * Child class implements this method to realize <code>arrayOffset()</code>.
 	 * 
 	 * @return see <code>arrayOffset()</code>
 	 */
-	protected abstract int protectedArrayOffset();
+	abstract int protectedArrayOffset();
 
 	/**
 	 * Child class implements this method to realize <code>hasArray()</code>.
 	 * 
 	 * @return see <code>hasArray()</code>
 	 */
-	protected abstract boolean protectedHasArray();
+	abstract boolean protectedHasArray();
 
 	/**
 	 * Writes the given char to the current position and increase the position
@@ -526,7 +525,7 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 * @exception ReadOnlyBufferException
 	 *                If no changes may be made to the contents of this buffer
 	 */
-	public CharBuffer put(char[] src) {
+	public final CharBuffer put(char[] src) {
 		return put(src, 0, src.length);
 	}
 

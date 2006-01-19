@@ -16,7 +16,6 @@
 package java.nio;
 
 
-import com.ibm.io.nio.BufferFactory;
 import com.ibm.platform.Endianness;
 
 /**
@@ -119,14 +118,14 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	/**
 	 * The byte order of this buffer, default is <code>BIG_ENDIAN</code>.
 	 */
-	protected Endianness order = Endianness.BIG_ENDIAN;
+	Endianness order = Endianness.BIG_ENDIAN;
 
 	/**
 	 * Constructs a <code>ByteBuffer</code> with given capacity.
 	 * 
 	 * @param capacity  The capacity of the buffer
 	 */
-	protected ByteBuffer(int capacity) {
+	ByteBuffer(int capacity) {
 		super(capacity);
 	}
 
@@ -694,7 +693,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	 * @param byteOrder     The byte order to set
 	 * @return This buffer
 	 */
-	public ByteBuffer order(ByteOrder byteOrder) {
+	public final ByteBuffer order(ByteOrder byteOrder) {
 		/*
 		 * This method is not 'final', because MappedToByteBufferAdapter 
 		 * needs to override this method.
@@ -712,21 +711,21 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	 * 
 	 * @return see <code>array()</code>
 	 */
-	protected abstract byte[] protectedArray();
+	abstract byte[] protectedArray();
 
 	/**
 	 * Child class implements this method to realize <code>arrayOffset()</code>.
 	 * 
 	 * @return see <code>arrayOffset()</code>
 	 */
-	protected abstract int protectedArrayOffset();
+	abstract int protectedArrayOffset();
 
 	/**
 	 * Child class implements this method to realize <code>hasArray()</code>.
 	 * 
 	 * @return see <code>hasArray()</code>
 	 */
-	protected abstract boolean protectedHasArray();
+	abstract boolean protectedHasArray();
 
 	/**
 	 * Writes the given byte to the current position and increase the position
