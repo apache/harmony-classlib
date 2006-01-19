@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drlx.security.auth.login;
+package org.apache.harmony.security.x.security.auth.login;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,8 +35,9 @@ import java.util.Properties;
 import javax.security.auth.login.AppConfigurationEntry;
 
 import org.apache.harmony.security.test.PerformanceTest;
+import org.apache.harmony.security.x.security.auth.login.DefaultConfigurationParser;
+import org.apache.harmony.security.x.security.auth.login.DefaultConfigurationParser.InvalidFormatException;
 
-import com.openintel.drlx.security.auth.login.DefaultConfigurationParser.InvalidFormatException;
 
 /**
  * Tests parser implementation for default configuration.
@@ -46,8 +47,9 @@ public class DefaultConfigParserTest extends PerformanceTest {
 
     static String outputPath = System.getProperty("TEST_SRC_DIR", "test/common/unit");
     
-    static String fconf = outputPath + File.separator + "com" + 
-        File.separator + "openintel" + File.separator + "drlx" + 
+    static String fconf = outputPath + File.separator + "org" + 
+        File.separator + "apache" + File.separator + "harmony" + 
+        File.separator + "security" + File.separator + "x" + 
         File.separator + "security"  + File.separator + "auth" +
         File.separator + "login"  + File.separator + "jaas.conf";
     

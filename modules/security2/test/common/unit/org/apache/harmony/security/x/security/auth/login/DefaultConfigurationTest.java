@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drlx.security.auth.login;
+package org.apache.harmony.security.x.security.auth.login;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,6 +34,7 @@ import javax.security.auth.AuthPermission;
 import javax.security.auth.login.AppConfigurationEntry;
 
 import org.apache.harmony.security.test.PerformanceTest;
+import org.apache.harmony.security.x.security.auth.login.DefaultConfiguration;
 
 
 /**
@@ -44,8 +45,9 @@ public class DefaultConfigurationTest extends PerformanceTest {
 
     static String outputPath = System.getProperty("TEST_SRC_DIR", "test/common/unit");
     
-    static String otherConfFile = outputPath + File.separator + "com" + 
-        File.separator + "openintel" + File.separator + "drlx" + 
+    static String otherConfFile = outputPath + File.separator + "org" + 
+        File.separator + "apache" + File.separator + "harmony" + 
+        File.separator + "security" + File.separator + "x" + 
         File.separator + "security"  + File.separator + "auth" +
         File.separator + "login"  + File.separator + "jaas.conf";
 

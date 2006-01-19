@@ -18,7 +18,7 @@
  * @author Alexander V. Astapchuk
  * @version $Revision$
  */
-package com.openintel.drlx.security.auth.module;
+package org.apache.harmony.security.x.security.auth.module;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,22 +29,23 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.login.LoginException;
 
 import org.apache.harmony.security.test.PerformanceTest;
+import org.apache.harmony.security.x.security.auth.module.NTLoginModule;
 
 
 /**
- * Unit test for UnixLoginModule
+ * Unit test for NTLoginModule
  */
-public class UnixLoginModuleTest extends PerformanceTest {
+public class NTLoginModuleTest extends PerformanceTest {
 
     /**
      * Standalone entry point.
      * @param args
      */
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(UnixLoginModuleTest.class);
+        junit.textui.TestRunner.run(NTLoginModuleTest.class);
     }
 
-    UnixLoginModule lm = new UnixLoginModule();
+    NTLoginModule lm = new NTLoginModule();
 
     /*
      * @see TestCase#setUp()
@@ -66,16 +67,16 @@ public class UnixLoginModuleTest extends PerformanceTest {
     
     private static class TestCallbackHandler implements CallbackHandler {
         public void handle(Callback[] cbs) {
-            // does nothing
+            //
         }
     }
 
     /**
-     * Test for UnixLoginModule.initialize()
+     * Test for NTLoginModule.initialize()
      */
     public void testInitialize() {
         // Need new, non initialized instance of LoginModule
-        lm = new UnixLoginModule();
+        lm = new NTLoginModule();
         
         Map shared = new HashMap();
         Map options = new HashMap();

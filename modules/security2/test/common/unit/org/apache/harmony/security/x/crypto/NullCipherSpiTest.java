@@ -19,13 +19,14 @@
 * @version $Revision$
 */
 
-package com.openintel.drlx.crypto;
+package org.apache.harmony.security.x.crypto;
 
 import java.nio.ByteBuffer;
 
 import javax.crypto.ShortBufferException;
 
 import org.apache.harmony.security.test.PerformanceTest;
+import org.apache.harmony.security.x.crypto.NullCipherSpi;
 
 
 /**
