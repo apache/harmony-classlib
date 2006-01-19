@@ -421,13 +421,9 @@
                     <!-- Not a test -->
                     <exclude name="org/apache/harmony/security/TestCertUtils.java"/>
                     <exclude name="org/apache/harmony/security/TestKeyPair.java"/>
-                    <exclude name="com/openintel/drl/security/cert/TestUtils.java"/>
+                    <exclude name="org/apache/harmony/security/cert/TestUtils.java"/>
                     <exclude name="org/apache/harmony/security/provider/cert/CertFactoryTestData.java"/>
-                    <exclude name="com/openintel/drl/security/test/**"/>
-
-                	<!-- gmj : I took this out as it started failing during refactoring -->
-                	
-                    <exclude name="javax/security/auth/login/LoginContextTest_1.java"/>
+                    <exclude name="org/apache/harmony/security/test/**"/>
 
                     <!-- 
                     <exclude name="javax/security/auth/SubjectDomainCombinerTest.java"/>
