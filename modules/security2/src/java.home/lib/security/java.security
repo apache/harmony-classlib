@@ -6,7 +6,7 @@
 # See also: J2SE doc. "How to Implement a Provider for the JavaTM Cryptography Architecture"
 #
 # Open Source providers
-security.provider.1=com.openintel.drl.security.provider.cert.DRLCertFactory
+security.provider.1=org.apache.harmony.security.provider.cert.DRLCertFactory
 security.provider.2=org.bouncycastle.jce.provider.BouncyCastleProvider
 
 
