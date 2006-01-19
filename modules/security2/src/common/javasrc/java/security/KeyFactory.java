@@ -24,7 +24,8 @@ package java.security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
-import com.openintel.fortress.drl.security.Engine;
+import org.apache.harmony.security.fortress.Engine;
+
 
 /**
  * @com.intel.drl.spec_ref

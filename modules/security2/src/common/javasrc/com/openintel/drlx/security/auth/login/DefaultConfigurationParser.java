@@ -37,7 +37,8 @@ import java.util.Properties;
 
 import javax.security.auth.login.AppConfigurationEntry;
 
-import com.openintel.fortress.drl.security.PolicyUtils;
+import org.apache.harmony.security.fortress.PolicyUtils;
+
 
 
 /**

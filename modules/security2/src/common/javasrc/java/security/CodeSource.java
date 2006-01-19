@@ -40,7 +40,8 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.fortress.drl.security.PolicyUtils;
+import org.apache.harmony.security.fortress.PolicyUtils;
+
 
 /**
  * @com.intel.drl.spec_ref

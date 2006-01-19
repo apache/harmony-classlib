@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.fortress.drl.security;
+package org.apache.harmony.security.fortress;
 
 public class SomeClass {
 

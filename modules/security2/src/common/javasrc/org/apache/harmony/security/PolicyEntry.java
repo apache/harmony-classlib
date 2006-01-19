@@ -26,7 +26,8 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.openintel.fortress.drl.security.PolicyUtils;
+import org.apache.harmony.security.fortress.PolicyUtils;
+
 
 /**
  * This class represents an elementary block of a security policy. It associates

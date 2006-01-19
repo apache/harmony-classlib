@@ -35,10 +35,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.openintel.fortress.drl.security.Engine;
-import com.openintel.fortress.drl.security.PolicyUtils;
-import com.openintel.fortress.drl.security.SecurityAccess;
-import com.openintel.fortress.drl.security.Services;
+import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.fortress.PolicyUtils;
+import org.apache.harmony.security.fortress.SecurityAccess;
+import org.apache.harmony.security.fortress.Services;
+
 
 /**
  * @com.intel.drl.spec_ref

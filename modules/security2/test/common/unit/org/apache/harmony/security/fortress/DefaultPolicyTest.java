@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.fortress.drl.security;
+package org.apache.harmony.security.fortress;
 
 import java.net.URL;
 import java.security.cert.Certificate;
@@ -36,6 +36,8 @@ import java.util.Properties;
 
 import org.apache.harmony.security.PolicyEntry;
 import org.apache.harmony.security.UnresolvedPrincipal;
+import org.apache.harmony.security.fortress.DefaultPolicy;
+import org.apache.harmony.security.fortress.DefaultPolicyParser;
 import org.apache.harmony.security.test.PerformanceTest;
 
 

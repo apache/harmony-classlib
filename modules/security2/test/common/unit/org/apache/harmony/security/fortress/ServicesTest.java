@@ -19,13 +19,13 @@
 * @version $Revision$
 */
 
-package com.openintel.fortress.drl.security;
+package org.apache.harmony.security.fortress;
 
 import java.security.Provider;
 
+import org.apache.harmony.security.fortress.Services;
 import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.fortress.drl.security.Services;
 
 /**
  *
@@ -44,7 +44,7 @@ public class ServicesTest extends PerformanceTest {
 			fail("Service is null");
 		}
 		if (serv.getProvider() != p ||
-				! "com.openintel.fortress.drl.security.SomeClass".equals(serv.getClassName())) {
+				! "org.apache.harmony.security.fortress.SomeClass".equals(serv.getClassName())) {
 			fail("Incorrect Service");
 		}
 		Services.updateServiceInfo(); // restore from registered providers

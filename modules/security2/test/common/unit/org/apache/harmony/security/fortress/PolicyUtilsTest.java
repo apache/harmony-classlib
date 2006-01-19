@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.fortress.drl.security;
+package org.apache.harmony.security.fortress;
 
 import java.io.File;
 import java.net.URL;
@@ -35,6 +35,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 
+import org.apache.harmony.security.fortress.PolicyUtils;
 import org.apache.harmony.security.test.PerformanceTest;
 
 

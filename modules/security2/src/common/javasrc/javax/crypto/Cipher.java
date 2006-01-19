@@ -39,7 +39,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import com.openintel.fortress.drl.security.Engine;
+import org.apache.harmony.security.fortress.Engine;
+
 
 /**
  * @com.intel.drl.spec_ref

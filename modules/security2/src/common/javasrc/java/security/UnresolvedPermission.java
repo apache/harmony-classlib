@@ -36,7 +36,8 @@ import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.openintel.fortress.drl.security.PolicyUtils;
+import org.apache.harmony.security.fortress.PolicyUtils;
+
 
 /**
  * @com.intel.drl.spec_ref 

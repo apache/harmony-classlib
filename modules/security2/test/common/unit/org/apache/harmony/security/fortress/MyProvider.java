@@ -19,35 +19,21 @@
 * @version $Revision$
 */
 
-package com.openintel.fortress.drl.security;
+package org.apache.harmony.security.fortress;
 
-import java.util.Iterator;
 import java.security.Provider;
 
 /**
  *
- * This interface provides access to package visible api in java.security
- * 
+ * Provider for testing
  */
-public interface SecurityAccess {
-    /**
-     * Access to Security.renumProviders()
-     *
-     */
-    public void renumProviders();
-    
-    /**
-     * Access to Service.getAliases()
-     * @param s
-     * @return
-     */
-    public Iterator getAliases(Provider.Service s);
-    
-    /**
-     * Access to Provider.getService(String type)
-     * @param p
-     * @param type
-     * @return
-     */
-    public Provider.Service getService(Provider p, String type);
+public class MyProvider extends Provider {
+	MyProvider() {
+		super("MyProvider", 1.0, "Provider for testing");
+		put("Service.Algorithm", "org.apache.harmony.security.fortress.SomeClass");
+	}
+		
+	MyProvider(String name, double version, String info) {
+		super(name, version, info);
+	}
 }

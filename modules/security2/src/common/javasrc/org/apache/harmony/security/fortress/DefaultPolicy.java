@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.fortress.drl.security;
+package org.apache.harmony.security.fortress;
 
 import java.io.File;
 import java.net.URL;

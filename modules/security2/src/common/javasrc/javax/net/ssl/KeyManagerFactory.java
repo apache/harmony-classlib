@@ -31,7 +31,8 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 
-import com.openintel.fortress.drl.security.Engine;
+import org.apache.harmony.security.fortress.Engine;
+
 
 /**
  * @com.intel.drl.spec_ref

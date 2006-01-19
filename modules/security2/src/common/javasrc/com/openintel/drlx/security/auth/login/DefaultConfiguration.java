@@ -34,7 +34,8 @@ import javax.security.auth.AuthPermission;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 
-import com.openintel.fortress.drl.security.PolicyUtils;
+import org.apache.harmony.security.fortress.PolicyUtils;
+
 
 /**
  * Default Configuration implementation based on login configuration files.

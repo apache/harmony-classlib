@@ -19,16 +19,16 @@
 * @version $Revision$
 */
 
-package com.openintel.fortress.drl.security;
+package org.apache.harmony.security.fortress;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
 
+import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.fortress.Services;
 import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.fortress.drl.security.Engine;
-import com.openintel.fortress.drl.security.Services;
 
 /**
  *

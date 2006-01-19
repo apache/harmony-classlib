@@ -29,7 +29,7 @@ security.allowCustomePropertiesFile=true
 # Class to instantiate as the default system Policy.
 # The class should be available via bootclasspath.
 # See specification for java.security.Policy class.
-policy.provider=com.openintel.fortress.drl.security.DefaultPolicy
+policy.provider=org.apache.harmony.security.fortress.DefaultPolicy
 
 
 # The default is to have a single system-wide policy file,
@@ -55,7 +55,7 @@ policy.allowSystemProperty=true
 # A comma-separated list of package prefixes that require 
 # extra protection at ClassLoader's level. 
 # See java/lang/SecurityManager#checkPackageAccess for more details.
-package.access=com.openintel.fortress.,com.intel.fortress.
+package.access=org.apache.harmony.security.fortress.,com.intel.fortress.
 
 
 # Class to instantiate as default JGSS manager.

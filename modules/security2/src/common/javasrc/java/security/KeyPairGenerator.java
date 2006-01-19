@@ -23,7 +23,8 @@ package java.security;
 
 import java.security.spec.AlgorithmParameterSpec;
 
-import com.openintel.fortress.drl.security.Engine;
+import org.apache.harmony.security.fortress.Engine;
+
 
 /**
  * 

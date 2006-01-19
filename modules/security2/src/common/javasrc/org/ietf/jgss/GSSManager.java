@@ -23,7 +23,8 @@ package org.ietf.jgss;
 import java.security.AccessController;
 import java.security.Provider;
 
-import com.openintel.fortress.drl.security.PolicyUtils;
+import org.apache.harmony.security.fortress.PolicyUtils;
+
 
 /**
  * @com.intel.drl.spec_ref

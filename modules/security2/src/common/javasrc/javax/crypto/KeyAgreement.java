@@ -31,7 +31,8 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 
-import com.openintel.fortress.drl.security.Engine;
+import org.apache.harmony.security.fortress.Engine;
+
 
 /**
  * @com.intel.drl.spec_ref

@@ -38,9 +38,9 @@ import javax.security.auth.Policy;
 import javax.security.auth.Subject;
 
 import org.apache.harmony.security.PolicyEntry;
+import org.apache.harmony.security.fortress.DefaultPolicyParser;
+import org.apache.harmony.security.fortress.PolicyUtils;
 
-import com.openintel.fortress.drl.security.DefaultPolicyParser;
-import com.openintel.fortress.drl.security.PolicyUtils;
 
 /**
  * Default implementation for subject-based policy 

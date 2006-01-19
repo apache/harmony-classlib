@@ -62,7 +62,7 @@ import java.util.List;
  * This implementation is effectively thread-safe, as it has no field references
  * to data being processed (that is, passes all the data as method parameters).
  * 
- * @see com.openintel.fortress.drl.security.DefaultPolicyParser
+ * @see org.apache.harmony.security.fortress.DefaultPolicyParser
  */
 public class DefaultPolicyScanner {
 
@@ -398,7 +398,7 @@ public class DefaultPolicyScanner {
      * Compound token representing <i>keystore </i> clause. See policy format
      * {@link org.apache.harmony.security.DefaultPolicy description}for details.
      * 
-     * @see com.openintel.fortress.drl.security.DefaultPolicyParser
+     * @see org.apache.harmony.security.fortress.DefaultPolicyParser
      * @see org.apache.harmony.security.DefaultPolicyScanner
      */
     public static class KeystoreEntry {
@@ -418,7 +418,7 @@ public class DefaultPolicyScanner {
      * Compound token representing <i>grant </i> clause. See policy format
      * {@link org.apache.harmony.security.DefaultPolicy description}for details.
      * 
-     * @see com.openintel.fortress.drl.security.DefaultPolicyParser
+     * @see org.apache.harmony.security.fortress.DefaultPolicyParser
      * @see org.apache.harmony.security.DefaultPolicyScanner
      */
     public static class GrantEntry {
@@ -465,7 +465,7 @@ public class DefaultPolicyScanner {
      * clause. See policy format
      * {@link org.apache.harmony.security.DefaultPolicy description}for details.
      * 
-     * @see com.openintel.fortress.drl.security.DefaultPolicyParser
+     * @see org.apache.harmony.security.fortress.DefaultPolicyParser
      * @see org.apache.harmony.security.DefaultPolicyScanner
      */
     public static class PrincipalEntry {
@@ -493,7 +493,7 @@ public class DefaultPolicyScanner {
      * clause. See policy format
      * {@link org.apache.harmony.security.DefaultPolicy description}for details.
      * 
-     * @see com.openintel.fortress.drl.security.DefaultPolicyParser
+     * @see org.apache.harmony.security.fortress.DefaultPolicyParser
      * @see org.apache.harmony.security.DefaultPolicyScanner
      */
     public static class PermissionEntry {

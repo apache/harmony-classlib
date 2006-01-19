@@ -23,8 +23,9 @@ package java.security;
 
 import java.util.Enumeration;
 
-import com.openintel.fortress.drl.security.DefaultPolicy;
-import com.openintel.fortress.drl.security.PolicyUtils;
+import org.apache.harmony.security.fortress.DefaultPolicy;
+import org.apache.harmony.security.fortress.PolicyUtils;
+
 
 /**
  * @com.intel.drl.spec_ref

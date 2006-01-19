@@ -26,7 +26,8 @@ import java.security.CodeSource;
 import java.security.PermissionCollection;
 import java.security.PrivilegedAction;
 
-import com.openintel.fortress.drl.security.PolicyUtils;
+import org.apache.harmony.security.fortress.PolicyUtils;
+
 import com.openintel.drlx.security.auth.DefaultSubjectPolicy;
 
 /**

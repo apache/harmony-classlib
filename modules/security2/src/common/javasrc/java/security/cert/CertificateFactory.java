@@ -30,7 +30,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import com.openintel.fortress.drl.security.Engine;
+import org.apache.harmony.security.fortress.Engine;
+
 
 /**
  * @com.intel.drl.spec_ref

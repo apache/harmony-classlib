@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.fortress.drl.security;
+package org.apache.harmony.security.fortress;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.harmony.security.PolicyEntry;
+import org.apache.harmony.security.fortress.DefaultPolicyParser;
 import org.apache.harmony.security.test.PerformanceTest;
 
 

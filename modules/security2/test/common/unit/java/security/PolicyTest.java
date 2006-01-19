@@ -25,10 +25,10 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 
+import org.apache.harmony.security.fortress.DefaultPolicy;
 import org.apache.harmony.security.test.PerformanceTest;
 import org.apache.harmony.security.test.SecurityChecker;
 
-import com.openintel.fortress.drl.security.DefaultPolicy;
 
 /**
  * Tests for <code>Policy</code>

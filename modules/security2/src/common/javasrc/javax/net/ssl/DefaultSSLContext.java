@@ -29,8 +29,9 @@ import java.security.KeyStore;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.openintel.fortress.drl.security.Engine;
-import com.openintel.fortress.drl.security.Services;
+import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.fortress.Services;
+
 
 /**
  * Support class for this package.

@@ -23,7 +23,8 @@ package javax.security.auth.login;
 
 import java.security.AccessController;
 import javax.security.auth.AuthPermission;
-import com.openintel.fortress.drl.security.PolicyUtils;
+
+import org.apache.harmony.security.fortress.PolicyUtils;
 
 /**
  * @com.intel.drl.spec_ref
