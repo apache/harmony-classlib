@@ -35,7 +35,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.openintel.drl.security.utils.TwoKeyHashMap;
+import org.apache.harmony.security.utils.TwoKeyHashMap;
+
 import com.openintel.fortress.drl.security.Services;
 
 /**

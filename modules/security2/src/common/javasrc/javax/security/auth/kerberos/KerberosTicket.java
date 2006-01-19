@@ -31,7 +31,8 @@ import javax.security.auth.Destroyable;
 import javax.security.auth.RefreshFailedException;
 import javax.security.auth.Refreshable;
 
-import com.openintel.drl.security.utils.Array;
+import org.apache.harmony.security.utils.Array;
+
 
 /**
  * @com.intel.drl.spec_ref

@@ -26,7 +26,8 @@ import java.security.PublicKey;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.utils.Array;
+import org.apache.harmony.security.utils.Array;
+
 import com.openintel.drl.security.x509.NameConstraints;
 
 

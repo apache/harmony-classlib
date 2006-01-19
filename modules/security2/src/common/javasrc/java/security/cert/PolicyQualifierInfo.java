@@ -24,8 +24,8 @@ package java.security.cert;
 import java.io.IOException;
 
 import org.apache.harmony.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.utils.Array;
 
-import com.openintel.drl.security.utils.Array;
 
 /**
  * @com.intel.drl.spec_ref

@@ -35,8 +35,8 @@ import org.apache.harmony.security.asn1.ASN1StringType;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.BerOutputStream;
+import org.apache.harmony.security.utils.ObjectIdentifier;
 
-import com.openintel.drl.security.utils.ObjectIdentifier;
 
 /**
  * X.501 AttributeTypeAndValue

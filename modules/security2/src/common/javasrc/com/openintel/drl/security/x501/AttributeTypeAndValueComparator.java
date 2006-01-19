@@ -22,7 +22,8 @@
 package com.openintel.drl.security.x501;
 
 import java.util.Comparator;
-import com.openintel.drl.security.utils.ObjectIdentifier;
+
+import org.apache.harmony.security.utils.ObjectIdentifier;
 
 /**
  * AttributeTypeAndValue comparator

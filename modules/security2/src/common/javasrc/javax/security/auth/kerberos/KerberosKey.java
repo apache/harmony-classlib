@@ -30,7 +30,8 @@ import java.util.Arrays;
 import javax.crypto.SecretKey;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
-import com.openintel.drl.security.utils.Array;
+
+import org.apache.harmony.security.utils.Array;
 
 /**
  * @com.intel.drl.spec_ref

@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.utils;
+package org.apache.harmony.security.utils;
 
 
 /**

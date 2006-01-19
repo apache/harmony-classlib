@@ -18,7 +18,7 @@
 * @author Boris Kuznetsov
 * @version $Revision$
 */
-package com.openintel.drl.security.utils;
+package org.apache.harmony.security.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
