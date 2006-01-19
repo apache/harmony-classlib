@@ -843,7 +843,7 @@ public class LoginContextTest_1 extends PerformanceTest {
         };
         Thread.currentThread().setContextClassLoader(testClassLoader);
         String klassName = TestConfig
-                .addInstalledRequired("no such class here.");
+                .addInstalledRequired("NoSuchClassHere");
         try {
             LoginContext lc = new LoginContext(CONFIG_NAME);
             lc.login();
