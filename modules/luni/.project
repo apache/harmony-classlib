@@ -25,11 +25,4 @@
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src.kernel</name>
-			<type>2</type>
-			<locationURI>HY_WORKSPACE/kernel/src/main/java</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

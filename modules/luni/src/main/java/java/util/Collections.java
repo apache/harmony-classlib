@@ -1777,6 +1777,11 @@ public class Collections {
 	public static void rotate(List list, int dist) {
 		int size = list.size();
 
+		// Can't sensibly rotate an empty collection
+		if (size == 0) {
+			return;
+		}
+
 		// normalize the distance
 		if (dist > 0)
 			dist = dist % size;

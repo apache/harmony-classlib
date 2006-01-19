@@ -29,6 +29,7 @@ public class AllTests {
 				"Test for org.apache.harmony.tests.java.util");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(ArraysTest.class);
+		suite.addTestSuite(CollectionsTest.class);
 		//$JUnit-END$
 		return suite;
 	}
