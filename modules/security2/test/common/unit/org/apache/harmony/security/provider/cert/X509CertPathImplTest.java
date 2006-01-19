@@ -35,8 +35,8 @@ import java.util.List;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.provider.cert.X509CertImplTest;
 import org.apache.harmony.security.provider.cert.X509CertPathImpl;
+import org.apache.harmony.security.x509.Certificate;
 
-import com.openintel.drl.security.x509.Certificate;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

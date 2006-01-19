@@ -28,8 +28,9 @@ import java.security.cert.CRLException;
 import java.security.cert.X509CRLEntry;
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.x509.Extensions;
-import com.openintel.drl.security.x509.TBSCertList;
+import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.TBSCertList;
+
 
 /**
  * X509CRLEntryImpl

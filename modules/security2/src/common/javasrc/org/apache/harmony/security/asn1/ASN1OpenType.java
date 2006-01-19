@@ -23,8 +23,9 @@ package org.apache.harmony.security.asn1;
 
 import java.io.IOException;
 
+import org.apache.harmony.security.x501.AttributeType;
 
-import com.openintel.drl.security.x501.AttributeType;
+
 
 /**
  * Represents ASN.1 open type that is defined by Oid

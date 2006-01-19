@@ -40,16 +40,16 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.ASN1OctetString;
 import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.x509.AlgorithmIdentifier;
+import org.apache.harmony.security.x509.CertificatePolicies;
+import org.apache.harmony.security.x509.GeneralName;
+import org.apache.harmony.security.x509.GeneralNames;
+import org.apache.harmony.security.x509.NameConstraints;
+import org.apache.harmony.security.x509.PolicyInformation;
+import org.apache.harmony.security.x509.PrivateKeyUsagePeriod;
+import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
 
-import com.openintel.drl.security.x509.PrivateKeyUsagePeriod;
-import com.openintel.drl.security.x509.SubjectPublicKeyInfo;
-import com.openintel.drl.security.x509.AlgorithmIdentifier;
-import com.openintel.drl.security.x509.CertificatePolicies;
-import com.openintel.drl.security.x509.GeneralName;
-import com.openintel.drl.security.x509.GeneralNames;
 
-import com.openintel.drl.security.x509.NameConstraints;
-import com.openintel.drl.security.x509.PolicyInformation;
 
 /**
  * @com.intel.drl.spec_ref

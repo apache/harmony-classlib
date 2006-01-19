@@ -28,7 +28,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.Principal;
 
-import com.openintel.drl.security.x501.Name;
+import org.apache.harmony.security.x501.Name;
+
 
 /**
  * @com.intel.drl.spec_ref

@@ -41,10 +41,10 @@ import org.apache.harmony.security.asn1.ObjectIdentifier;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
-import com.openintel.drl.security.x501.Name;
-import com.openintel.drl.security.x509.*;
 import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.provider.cert.X509CertImpl;
+import org.apache.harmony.security.x501.Name;
+import org.apache.harmony.security.x509.*;
 
 import java.security.cert.CertificateParsingException;
 

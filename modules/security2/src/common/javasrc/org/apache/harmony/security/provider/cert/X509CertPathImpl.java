@@ -39,9 +39,9 @@ import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.pkcs7.ContentInfo;
 import org.apache.harmony.security.pkcs7.SignedData;
+import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.Extensions;
 
-import com.openintel.drl.security.x509.Certificate;
-import com.openintel.drl.security.x509.Extensions;
 
 /**
  * X509CertPathImpl

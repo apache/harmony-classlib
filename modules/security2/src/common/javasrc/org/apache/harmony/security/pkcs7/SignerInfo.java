@@ -32,10 +32,10 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1SetOf;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.x501.AttributeTypeAndValue;
+import org.apache.harmony.security.x501.Name;
+import org.apache.harmony.security.x509.AlgorithmIdentifier;
 
-import com.openintel.drl.security.x501.AttributeTypeAndValue;
-import com.openintel.drl.security.x501.Name;
-import com.openintel.drl.security.x509.AlgorithmIdentifier;
 
 /**
  * As defined in PKCS #7: Cryptographic Message Syntax Standard

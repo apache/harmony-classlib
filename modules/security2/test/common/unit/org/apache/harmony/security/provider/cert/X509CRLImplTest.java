@@ -20,19 +20,6 @@
 
 package org.apache.harmony.security.provider.cert;
 
-import com.openintel.drl.security.x501.Name;
-import com.openintel.drl.security.x509.AlgorithmIdentifier;
-import com.openintel.drl.security.x509.CertificateList;
-import com.openintel.drl.security.x509.Certificate;
-import com.openintel.drl.security.x509.Extension;
-import com.openintel.drl.security.x509.Extensions;
-import com.openintel.drl.security.x509.GeneralName;
-import com.openintel.drl.security.x509.GeneralNames;
-import com.openintel.drl.security.x509.SubjectPublicKeyInfo;
-import com.openintel.drl.security.x509.TBSCertList;
-import com.openintel.drl.security.x509.TBSCertificate;
-import com.openintel.drl.security.x509.Validity;
-import com.openintel.drl.security.x509.AuthorityKeyIdentifier;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,6 +46,19 @@ import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
 import org.apache.harmony.security.provider.cert.X509CRLImpl;
 import org.apache.harmony.security.provider.cert.X509CertImpl;
+import org.apache.harmony.security.x501.Name;
+import org.apache.harmony.security.x509.AlgorithmIdentifier;
+import org.apache.harmony.security.x509.AuthorityKeyIdentifier;
+import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.CertificateList;
+import org.apache.harmony.security.x509.Extension;
+import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.GeneralName;
+import org.apache.harmony.security.x509.GeneralNames;
+import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
+import org.apache.harmony.security.x509.TBSCertList;
+import org.apache.harmony.security.x509.TBSCertificate;
+import org.apache.harmony.security.x509.Validity;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

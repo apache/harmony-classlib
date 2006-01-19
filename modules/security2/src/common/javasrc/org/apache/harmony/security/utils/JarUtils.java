@@ -43,8 +43,8 @@ import org.apache.harmony.security.pkcs7.ContentInfo;
 import org.apache.harmony.security.pkcs7.SignedData;
 import org.apache.harmony.security.pkcs7.SignerInfo;
 import org.apache.harmony.security.provider.cert.X509CertImpl;
+import org.apache.harmony.security.x501.AttributeTypeAndValue;
 
-import com.openintel.drl.security.x501.AttributeTypeAndValue;
 
 public class JarUtils {
 
@@ -80,7 +80,7 @@ public class JarUtils {
         X509Certificate[] certs = new X509Certificate[encCerts.size()];
         int i = 0;
         for (Iterator it = encCerts.iterator(); it.hasNext();) {
-            certs[i++]= new X509CertImpl((com.openintel.drl.security.x509.Certificate)it.next());
+            certs[i++]= new X509CertImpl((org.apache.harmony.security.x509.Certificate)it.next());
         }
 
         List sigInfos = signedData.getSignerInfos();

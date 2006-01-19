@@ -42,15 +42,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import javax.security.auth.x500.X500Principal;
+
+import org.apache.harmony.security.x509.CertificateList;
+import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.TBSCertList;
+
 import com.openintel.drlx.crypto.utils.AlgNameMapper;
 
 import java.io.InputStream;
 import java.io.IOException;
 import java.security.Signature;
 
-import com.openintel.drl.security.x509.CertificateList;
-import com.openintel.drl.security.x509.Extensions;
-import com.openintel.drl.security.x509.TBSCertList;
 
 /**
  * X509CRLImpl

@@ -22,7 +22,6 @@
 package org.apache.harmony.security.provider.cert;
 
 import java.security.cert.X509Certificate;
-import com.openintel.drl.security.x509.*;
 import java.math.BigInteger;
 import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
@@ -47,6 +46,7 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateParsingException;
 import com.openintel.drlx.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.asn1.*;
+import org.apache.harmony.security.x509.*;
 
 /**
  * X509CertImpl

@@ -55,7 +55,7 @@ public class PolicyQualifierInfo {
         System.arraycopy(encoded, 0, this.encoded, 0, this.encoded.length);
         
         // DER Decoding:
-        Object[] decoded = (Object[]) com.openintel.drl.security.x509.PolicyQualifierInfo.ASN1
+        Object[] decoded = (Object[]) org.apache.harmony.security.x509.PolicyQualifierInfo.ASN1
                 .getValues(this.encoded);
         policyQualifierId = ObjectIdentifier.toString((int[]) decoded[0]);
         policyQualifier = (byte[]) decoded[1];

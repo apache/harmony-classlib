@@ -55,14 +55,9 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 
 import org.apache.harmony.security.asn1.*;
+import org.apache.harmony.security.x501.Name;
+import org.apache.harmony.security.x509.*;
 
-import com.openintel.drl.security.x509.*;
-import com.openintel.drl.security.x501.Name;
-import com.openintel.drl.security.x509.NameConstraints;
-import com.openintel.drl.security.x509.ORAddress;
-import com.openintel.drl.security.x509.OtherName;
-import com.openintel.drl.security.x509.PrivateKeyUsagePeriod;
-import com.openintel.drl.security.x509.SubjectPublicKeyInfo;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -2257,8 +2252,8 @@ public class X509CertSelectorTest extends TestCase {
                 extensions);
 
         // make the Certificate
-        com.openintel.drl.security.x509.Certificate certificate = 
-                        new com.openintel.drl.security.x509.Certificate
+        org.apache.harmony.security.x509.Certificate certificate = 
+                        new org.apache.harmony.security.x509.Certificate
                                     (tbsCertificate, signature, new byte[10]);
 
         return certificate.getEncoded();

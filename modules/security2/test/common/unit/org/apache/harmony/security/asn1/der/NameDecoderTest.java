@@ -22,7 +22,8 @@ package org.apache.harmony.security.asn1.der;
 
 import java.io.ByteArrayInputStream;
 
-import com.openintel.drl.security.x501.Name;
+import org.apache.harmony.security.x501.Name;
+
 
 import junit.framework.TestCase;
 

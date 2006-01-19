@@ -23,7 +23,8 @@ package org.apache.harmony.security.asn1;
 
 import java.util.Arrays;
 
-import com.openintel.drl.security.x501.AttributeType;
+import org.apache.harmony.security.x501.AttributeType;
+
 
 /**
  * Represents Information Object Set. 
