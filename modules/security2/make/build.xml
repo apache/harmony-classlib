@@ -189,17 +189,16 @@
 
     <patternset id="crypto">
         <include name="javax/crypto/**"/>
-        <include name="com/openintel/drlx/crypto/**"/>
+        <include name="org/apache/harmony/security/x/crypto/**"/>
     </patternset>
 
 
 	<patternset id="security">
 		<include name="java/security/**"/>
 		<include name="javax/security/**"/>
-		<include name="com/openintel/fortress/drl/security/**"/>
+		<include name="org/apache/harmony/security/fortress/**"/>
 		<include name="org/apache/harmony/security/**"/>
-		<include name="com/openintel/drl/security/**"/>
-		<include name="com/openintel/drlx/security/**"/>
+		<include name="org/apache/harmony/security/x/security/**"/>
 		<include name="org/apache/harmony/misc/Base64.*"/>
 		<include name="org/ietf/jgss/**"/>
 	</patternset>
@@ -218,18 +217,17 @@
 
 
     <patternset id="unit.tests.src.all">
-        <include name="common/unit/com/openintel/drl/security/**"/>
-        <include name="common/unit/com/openintel/drlx/crypto/**"/>
-        <include name="common/unit/com/openintel/drlx/security/**"/>
+        <include name="common/unit/org/apache/harmony/security/x/crypto/**"/>
+        <include name="common/unit/org/apache/harmony/sceurity/x/security/**"/>
         <include name="common/unit/org/apache/harmony/security/**"/>
-        <include name="common/unit/com/openintel/fortress/drl/security/**"/>
+        <include name="common/unit/org/apache/harmony/security/fortress/**"/>
         <include name="common/unit/java/security/**"/>
         <include name="common/unit/javax/crypto/**"/>
         <include name="common/unit/javax/net/**"/>
         <include name="common/unit/javax/security/**"/>
         <include name="common/unit/org/ietf/jgss/**"/>
-        <include name="linux/unit/com/openintel/drlx/security/**"/>
-        <include name="windows/unit/com/openintel/drlx/security/**"/>
+        <include name="linux/unit/org/apache/harmony/security/x/security/**"/>
+        <include name="windows/unit/org/apache/harmony/security/x/security/**"/>
     </patternset>
 
 
@@ -410,7 +408,7 @@
                 <fileset dir="${src.tst.common.ps}/unit">
                     <include name="**/*Test*.java"/>
                     <!-- Temp -->
-                    <exclude name="com/openintel/drlx/security/auth/module/*LoginModuleTest.java"/>
+                    <exclude name="org/apache/harmony/security/x/security/auth/module/*LoginModuleTest.java"/>
                 </fileset>
             </batchtest>
             <batchtest todir="${build.path}/tests_report">
