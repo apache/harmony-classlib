@@ -23,7 +23,8 @@ package java.security;
 
 import java.security.spec.AlgorithmParameterSpec;
 
-import com.openintel.drl.security.SpiEngUtils;
+import org.apache.harmony.security.SpiEngUtils;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

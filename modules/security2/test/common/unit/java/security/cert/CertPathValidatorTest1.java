@@ -27,7 +27,8 @@ import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 
-import com.openintel.drl.security.SpiEngUtils;
+import org.apache.harmony.security.SpiEngUtils;
+
 import com.openintel.drl.security.cert.MyCertPath;
 import com.openintel.drl.security.test.PerformanceTest;
 

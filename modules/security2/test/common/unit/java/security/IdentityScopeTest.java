@@ -21,7 +21,8 @@
 
 package java.security;
 
-import com.openintel.drl.security.IdentityScopeStub;
+import org.apache.harmony.security.IdentityScopeStub;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

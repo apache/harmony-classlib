@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.provider.cert;
+package org.apache.harmony.security.provider.cert;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -33,8 +33,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.provider.cert.X509CertImplTest;
+import org.apache.harmony.security.provider.cert.X509CertPathImpl;
 
-import com.openintel.drl.security.provider.cert.X509CertImplTest;
 import com.openintel.drl.security.x509.Certificate;
 
 import junit.framework.Test;

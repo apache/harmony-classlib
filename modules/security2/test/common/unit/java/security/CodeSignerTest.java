@@ -24,7 +24,8 @@ package java.security;
 import java.security.cert.CertPath;
 import java.util.Date;
 
-import com.openintel.drl.security.TestCertUtils;
+import org.apache.harmony.security.TestCertUtils;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

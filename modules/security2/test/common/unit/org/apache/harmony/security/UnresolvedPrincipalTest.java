@@ -18,9 +18,11 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import java.security.Principal;
+
+import org.apache.harmony.security.UnresolvedPrincipal;
 
 import com.openintel.drl.security.test.PerformanceTest;
 

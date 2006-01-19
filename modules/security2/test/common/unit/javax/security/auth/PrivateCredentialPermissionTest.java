@@ -57,7 +57,7 @@ public class PrivateCredentialPermissionTest extends PerformanceTest {
 
     /**
      * number of iterations in performance mode 
-     * @see com.openintel.drl.security.test.PerformanceTest#getRepeatCount()
+     * @see org.apache.harmony.security.test.PerformanceTest#getRepeatCount()
      */
     public long getRepeatCount() {
         return 100000;

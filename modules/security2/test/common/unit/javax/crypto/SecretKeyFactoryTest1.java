@@ -32,7 +32,8 @@ import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.openintel.drl.security.SpiEngUtils;
+import org.apache.harmony.security.SpiEngUtils;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

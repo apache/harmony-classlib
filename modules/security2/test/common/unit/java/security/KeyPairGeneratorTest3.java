@@ -24,7 +24,8 @@ package java.security;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
-import com.openintel.drl.security.SpiEngUtils;
+import org.apache.harmony.security.SpiEngUtils;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

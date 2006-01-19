@@ -30,7 +30,8 @@ import java.util.Arrays;
 
 import javax.security.auth.x500.X500Principal;
 
-import com.openintel.drl.security.TestKeyPair;
+import org.apache.harmony.security.TestKeyPair;
+
 import com.openintel.drl.security.cert.TestUtils;
 import com.openintel.drl.security.test.PerformanceTest;
 

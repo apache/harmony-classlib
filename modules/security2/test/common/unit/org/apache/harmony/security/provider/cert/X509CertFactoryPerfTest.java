@@ -18,7 +18,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.provider.cert;
+package org.apache.harmony.security.provider.cert;
 
 import java.io.*;
 import java.math.*;
@@ -28,6 +28,7 @@ import java.security.Signature;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.security.PrivateKey;
+import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import javax.security.auth.x500.X500Principal;
@@ -52,48 +53,47 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * X509CertImplTest
+ * X509CertFactoryPerfTest
  */
-public class X509CertImplTest extends TestCase {
+public class X509CertFactoryPerfTest extends TestCase {
 
     //
     // The values of certificate's fields:
     //
     
-    int         version         = 2; //v3
-    BigInteger  serialNumber    = BigInteger.valueOf(555L);
-    
+    static int         version         = 2; //v3
+    static BigInteger  serialNumber    = BigInteger.valueOf(555555555555555555L);
+
     // Algorithm name and its OID (http://oid.elibel.tm.fr)
-    String      algOID          = "1.2.840.10040.4.3";
-    String      algName         = "SHA1withDSA";
-    
+    static String      algOID          = "1.2.840.10040.4.3";
+    static String      algName         = "SHA1withDSA";
+
     // DER boolean false encoding (http://asn1.elibel.tm.fr)
     // Makes no sence. For testing purposes we need just provide 
     // some ASN.1 structure:
-    byte[]      algParams       = {1, 1, 0};
-    String      issuerName      = "O=Certificate Issuer";
-    long        notBefore       = 1000000000L;
-    long        notAfter        = 2000000000L;
-    String      subjectName     = "O=Subject Organization";
-    
+    static byte[]      algParams       = {1, 1, 0};
+    static String      issuerName      = "O=Certificate Issuer";
+    static long        notBefore       = 1000000000L;
+    static long        notAfter        = 2000000000L;
+    static String      subjectName     = "O=Subject Organization";
+
     // keys are using to make signature and to verify it
     static PublicKey   publicKey;
     static PrivateKey  privateKey;
-    byte[]      key             = new byte[] {1, 2, 3, 4, 5, 6, 7, 8}; // random value
-    byte[]      keyEncoding     = null;
-    boolean[]   issuerUniqueID  = new boolean[] 
+    static byte[]      key             = new byte[] {1, 2, 3, 4, 5, 6, 7, 8}; // random value
+    static byte[]      keyEncoding     = null;
+    static boolean[]   issuerUniqueID  = new boolean[] 
                 {true, false, true, false, true, false, true, false}; // random value
-    boolean[]   subjectUniqueID = new boolean[]
+    static boolean[]   subjectUniqueID = new boolean[]
                 {false, true, false, true, false, true, false, true}; // random value
 
     // Extensions' values
-    byte[]      extValEncoding  = new byte[] {1, 1, 1}; // random value
-    boolean[]   extnKeyUsage    = new boolean[] 
+    static byte[]      extValEncoding  = new byte[] {1, 1, 1}; // random value
+    static boolean[]   extnKeyUsage    = new boolean[] 
                 {true, false, true, false, true, false, true, false, true}; // random value
-    List    extnExtendedKeyUsage = Arrays.asList(new int[][] {
-
-        // Extended key usage values as specified in rfc 3280
-        // (http://www.ietf.org/rfc/rfc3280.txt):
+    static List    extnExtendedKeyUsage = Arrays.asList(new int[][] {
+        // Extended key usage values as specified in rfc 3280:
+        // (http://www.ietf.org/rfc/rfc3280.txt)
         ObjectIdentifier.toIntArray("2.5.29.37.0"),       // Any extended key usage
         ObjectIdentifier.toIntArray("1.3.6.1.5.5.7.3.1"), // TLS Web server authentication
         ObjectIdentifier.toIntArray("1.3.6.1.5.5.7.3.1"), // TLS Web server authentication
@@ -109,7 +109,7 @@ public class X509CertImplTest extends TestCase {
         ObjectIdentifier.toIntArray("1.3.6.1.4.1.311.10.3.3"), // MS Server Gated Cryptography
         ObjectIdentifier.toIntArray("2.16.840.1.113730.4.1"), // Netscape Server Gated Cryptography
     });
-    int extnBCLen = 5;
+    static int extnBCLen = 5;
     static GeneralNames extnSANames;
     static GeneralNames extnIANames;
     
@@ -143,10 +143,11 @@ public class X509CertImplTest extends TestCase {
     }
 
     // Extensions
-    Extension[] extensions      = new Extension[] {
-
+    static Extension[] extensions      = new Extension[] {
+        
         // Supported critical extensions (as specified in rfc 3280
         // http://www.ietf.org/rfc/rfc3280.txt):
+
         // Key Usage
         new Extension("2.5.29.15", true, 
                 ASN1BitString.getInstance()
@@ -178,11 +179,9 @@ public class X509CertImplTest extends TestCase {
         new Extension("2.5.29.54", true,
                 ASN1Integer.getInstance().encode(ASN1Integer.fromIntValue(1))),
 
-
         // Unsupported critical extensions:
         new Extension("1.2.77.777", true, extValEncoding),
 
-        
         // Non-critical extensions (as specified in rfc 3280
         // http://www.ietf.org/rfc/rfc3280.txt):
  
@@ -202,49 +201,47 @@ public class X509CertImplTest extends TestCase {
         // Policy Mappings
         new Extension("2.5.29.33", false, extValEncoding),
     };
-    List allCritical = Arrays.asList(new String[] {"2.5.29.15", "2.5.29.19",
+    static List allCritical = Arrays.asList(new String[] {"2.5.29.15", "2.5.29.19",
         "2.5.29.32", "2.5.29.17", "2.5.29.30", "2.5.29.36", "2.5.29.37",
         "2.5.29.54", "1.2.77.777"});
-    List allNonCritical = Arrays.asList(new String[] {"2.5.29.18", "2.5.29.35",
+    static List allNonCritical = Arrays.asList(new String[] {"2.5.29.18", "2.5.29.35",
         "2.5.29.14", "2.5.29.33", "2.5.29.31"});
 
-    public X509Certificate certificate;
-    byte[] tbsCertEncoding;
-    byte[] signatureValue;
+    static X509Certificate certificate;
+    static TBSCertificate tbsCertificate;
+    static AlgorithmIdentifier signature;
+    static CertificateFactory factory;
+    static ByteArrayInputStream stream, streamCRL, stream_b64;
+    static byte[] tbsCertEncoding;
+    static byte[] signatureValue;
     // to minimize efforts on signature generation the signature will be
     // stored in this field
     static byte[] signatureValueBytes;
-    byte[] certEncoding;
+    static byte[] certEncoding, certEncoding_b64;
+   
+    static {
+        try {
+            signature = 
+                new AlgorithmIdentifier(algOID, algParams);
+            Name issuer = new Name(issuerName);
+            Name subject = new Name(subjectName);
+            Validity validity = 
+                new Validity(new Date(notBefore), new Date(notAfter));
 
-    /**
-     * Creates the master certificate on the base of which 
-     * all functionality will be tested.
-     * @return
-     * @throws java.lang.Exception 
-     */
-    protected void setUp() throws java.lang.Exception {
-        AlgorithmIdentifier signature = 
-            new AlgorithmIdentifier(algOID, algParams);
-        Name issuer = new Name(issuerName);
-        Name subject = new Name(subjectName);
-        Validity validity = 
-            new Validity(new Date(notBefore), new Date(notAfter));
-
-        SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) 
-            SubjectPublicKeyInfo.ASN1.decode(publicKey.getEncoded());
-        keyEncoding = subjectPublicKeyInfo.getEncoded();
-
-        Extensions exts = new Extensions(Arrays.asList(extensions));
-        
-        TBSCertificate tbsCertificate = 
-            new TBSCertificate(version, serialNumber, 
-                signature, issuer, validity, subject, subjectPublicKeyInfo, 
-                issuerUniqueID, subjectUniqueID, exts);
-        tbsCertEncoding = tbsCertificate.getEncoded();
-       
-        if (signatureValueBytes == null) {
+            SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) 
+                SubjectPublicKeyInfo.ASN1.decode(publicKey.getEncoded());
+            keyEncoding = subjectPublicKeyInfo.getEncoded();
+            
+            Extensions exts = new Extensions(Arrays.asList(extensions));
+            
+            tbsCertificate = 
+                new TBSCertificate(version, serialNumber, 
+                    signature, issuer, validity, subject, subjectPublicKeyInfo, 
+                    issuerUniqueID, subjectUniqueID, exts);
+            tbsCertEncoding = tbsCertificate.getEncoded();
+           
             try {
-                Signature sig= Signature.getInstance("DSA");//new byte[32];
+                Signature sig= Signature.getInstance("DSA");
                 sig.initSign(privateKey);
                 sig.update(tbsCertEncoding, 0, tbsCertEncoding.length);
                 signatureValueBytes = sig.sign();
@@ -252,7 +249,67 @@ public class X509CertImplTest extends TestCase {
                 e.printStackTrace();
                 signatureValueBytes = new byte[10];
             }
+            factory = CertificateFactory.getInstance("X.509");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+    
+    // the testing data was generated by using of classes 
+    // from org.apache.harmony.security.asn1 package encoded
+    // by com.openintel.drl.misc.Base64 class.
+
+    private static String base64certEncoding = 
+        "-----BEGIN CERTIFICATE-----\n" +
+        "MIIC+jCCAragAwIBAgICAiswDAYHKoZIzjgEAwEBADAdMRswGQYDVQQKExJDZXJ0a" +
+        "WZpY2F0ZSBJc3N1ZXIwIhgPMTk3MDAxMTIxMzQ2NDBaGA8xOTcwMDEyNDAzMzMyMF" +
+        "owHzEdMBsGA1UEChMUU3ViamVjdCBPcmdhbml6YXRpb24wGTAMBgcqhkjOOAQDAQE" +
+        "AAwkAAQIDBAUGBwiBAgCqggIAVaOCAhQwggIQMA8GA1UdDwEB/wQFAwMBqoAwEgYD" +
+        "VR0TAQH/BAgwBgEB/wIBBTAUBgNVHSABAf8ECjAIMAYGBFUdIAAwZwYDVR0RAQH/B" +
+        "F0wW4EMcmZjQDgyMi5OYW1lggdkTlNOYW1lpBcxFTATBgNVBAoTDE9yZ2FuaXphdG" +
+        "lvboYaaHR0cDovL3VuaWZvcm0uUmVzb3VyY2UuSWSHBP///wCIByoDolyDsgMwDAY" +
+        "DVR0eAQH/BAIwADAMBgNVHSQBAf8EAjAAMIGZBgNVHSUBAf8EgY4wgYsGBFUdJQAG" +
+        "CCsGAQUFBwMBBggrBgEFBQcDAQYIKwYBBQUHAwIGCCsGAQUFBwMDBggrBgEFBQcDB" +
+        "AYIKwYBBQUHAwUGCCsGAQUFBwMGBggrBgEFBQcDBwYIKwYBBQUHAwgGCCsGAQUFBw" +
+        "MJBggrBgEFBQgCAgYKKwYBBAGCNwoDAwYJYIZIAYb4QgQBMA0GA1UdNgEB/wQDAgE" +
+        "BMA4GBCpNhgkBAf8EAwEBATBkBgNVHRIEXTBbgQxyZmNAODIyLk5hbWWCB2ROU05h" +
+        "bWWkFzEVMBMGA1UEChMMT3JnYW5pemF0aW9uhhpodHRwOi8vdW5pZm9ybS5SZXNvd" +
+        "XJjZS5JZIcE////AIgHKgOiXIOyAzAJBgNVHR8EAjAAMAoGA1UdIwQDAQEBMAoGA1" +
+        "UdDgQDAQEBMAoGA1UdIQQDAQEBMAwGByqGSM44BAMBAQADMAAwLQIUAL4QvoazNWP" +
+        "7jrj84/GZlhm09DsCFQCBKGKCGbrP64VtUt4JPmLjW1VxQA==\n" +
+        "-----END CERTIFICATE-----\n" +
+        "-----BEGIN CERTIFICATE-----\n" +
+        "MIIC+jCCAragAwIBAgICAiswDAYHKoZIzjgEAwEBADAdMRswGQYDVQQKExJDZXJ0a" +
+        "WZpY2F0ZSBJc3N1ZXIwIhgPMTk3MDAxMTIxMzQ2NDBaGA8xOTcwMDEyNDAzMzMyMF" +
+        "owHzEdMBsGA1UEChMUU3ViamVjdCBPcmdhbml6YXRpb24wGTAMBgcqhkjOOAQDAQE" +
+        "AAwkAAQIDBAUGBwiBAgCqggIAVaOCAhQwggIQMA8GA1UdDwEB/wQFAwMBqoAwEgYD" +
+        "VR0TAQH/BAgwBgEB/wIBBTAUBgNVHSABAf8ECjAIMAYGBFUdIAAwZwYDVR0RAQH/B" +
+        "F0wW4EMcmZjQDgyMi5OYW1lggdkTlNOYW1lpBcxFTATBgNVBAoTDE9yZ2FuaXphdG" +
+        "lvboYaaHR0cDovL3VuaWZvcm0uUmVzb3VyY2UuSWSHBP///wCIByoDolyDsgMwDAY" +
+        "DVR0eAQH/BAIwADAMBgNVHSQBAf8EAjAAMIGZBgNVHSUBAf8EgY4wgYsGBFUdJQAG" +
+        "CCsGAQUFBwMBBggrBgEFBQcDAQYIKwYBBQUHAwIGCCsGAQUFBwMDBggrBgEFBQcDB" +
+        "AYIKwYBBQUHAwUGCCsGAQUFBwMGBggrBgEFBQcDBwYIKwYBBQUHAwgGCCsGAQUFBw" +
+        "MJBggrBgEFBQgCAgYKKwYBBAGCNwoDAwYJYIZIAYb4QgQBMA0GA1UdNgEB/wQDAgE" +
+        "BMA4GBCpNhgkBAf8EAwEBATBkBgNVHRIEXTBbgQxyZmNAODIyLk5hbWWCB2ROU05h" +
+        "bWWkFzEVMBMGA1UEChMMT3JnYW5pemF0aW9uhhpodHRwOi8vdW5pZm9ybS5SZXNvd" +
+        "XJjZS5JZIcE////AIgHKgOiXIOyAzAJBgNVHR8EAjAAMAoGA1UdIwQDAQEBMAoGA1" +
+        "UdDgQDAQEBMAoGA1UdIQQDAQEBMAwGByqGSM44BAMBAQADMAAwLQIUAL4QvoazNWP" +
+        "7jrj84/GZlhm09DsCFQCBKGKCGbrP64VtUt4JPmLjW1VxQA==\n" +
+        "-----END CERTIFICATE-----\n";
+
+    static {
+        certEncoding_b64 = base64certEncoding.getBytes();
+        stream_b64 = new ByteArrayInputStream(certEncoding_b64);
+        stream_b64.mark(certEncoding_b64.length);
+    }
+    
+    /**
+     * Creates the master certificate on the base of which 
+     * all functionality will be tested.
+     * @return
+     * @throws java.lang.Exception 
+     */
+    protected void setUp() throws java.lang.Exception {
         if ("testVerify3".equals(getName())) {
             signatureValue = new byte[signatureValueBytes.length];
             // make incorrect signature value:
@@ -262,22 +319,87 @@ public class X509CertImplTest extends TestCase {
         } else {
             signatureValue = signatureValueBytes;
         }
-        
         Certificate cert = 
             new Certificate(tbsCertificate, signature, signatureValue);
 
         certEncoding = cert.getEncoded();
+        stream = new ByteArrayInputStream(certEncoding);
+        stream.mark(certEncoding.length);
+        certificate = (X509Certificate) factory.generateCertificate(stream);
 
-        cert = (Certificate) Certificate.ASN1.decode(certEncoding);
-        certificate = new X509CertImpl(cert);
+        streamCRL = new ByteArrayInputStream(certEncoding);
+        streamCRL.mark(certEncoding.length);
+        //System.out.println("\nUSING: "+certificate.getClass());
     }
 
-    public void testCreation() {
+    private static int XXX = 0, flag = 0;
+    private static java.security.cert.Certificate prev = null;
+
+    public void testCreationCRL() {
         try {
-            ByteArrayInputStream bis = new ByteArrayInputStream(certEncoding);
-            certificate = new X509CertImpl(bis);
+            byte[] stamp = new byte[10];
+            if ((++flag)%2 != 0) {
+                XXX++;
+            }
+            byte tmp[] = BigInteger.valueOf(XXX).toByteArray();
+            System.arraycopy(tmp, 0, stamp, 0, tmp.length);
+            System.arraycopy(stamp, 0, certEncoding, 
+                    certEncoding.length-stamp.length, stamp.length);
+
+            stream.reset();
+            java.security.cert.Certificate c = factory.generateCertificate(stream);
+
+            byte[] enc = c.getEncoded();
+            byte[] stamp_chek = new byte[stamp.length];
+            
+            System.arraycopy(enc, enc.length - stamp.length, 
+                    stamp_chek, 0, stamp.length);
+           
+            if (!Arrays.equals(stamp, stamp_chek)) {
+                fail("Wrong encoding received.");
+            }
         } catch (Exception e) {
-            fail("Creation of a certificate from a stream failed.");
+            e.printStackTrace();
+            fail("Creation of a certificate from a stream failed:"+e.getMessage());
+        }
+    }
+    
+    public void testCreation1() {
+        try {
+            byte[] stamp = new byte[10];
+            if ((++flag)%2 != 0) {
+                XXX++;
+            }
+            byte tmp[] = BigInteger.valueOf(XXX).toByteArray();
+            System.arraycopy(tmp, 0, stamp, 0, tmp.length);
+            System.arraycopy(stamp, 0, certEncoding, 
+                    certEncoding.length-stamp.length, stamp.length);
+
+            stream.reset();
+            java.security.cert.Certificate c = factory.generateCertificate(stream);
+
+            byte[] enc = c.getEncoded();
+            byte[] stamp_chek = new byte[stamp.length];
+            
+            System.arraycopy(enc, enc.length - stamp.length, 
+                    stamp_chek, 0, stamp.length);
+           
+            if (!Arrays.equals(stamp, stamp_chek)) {
+                fail("Wrong encoding received.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Creation of a certificate from a stream failed:"+e.getMessage());
+        }
+    }
+    
+    public void testCreation2() {
+        try {
+            stream_b64.reset();
+            factory.generateCertificate(stream_b64);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Creation of a certificate from a stream failed:"+e.getMessage());
         }
     }
     
@@ -456,7 +578,7 @@ public class X509CertImplTest extends TestCase {
      */
     public void testGetSigAlgParams() {
         if (!Arrays.equals(algParams, certificate.getSigAlgParams())) {
-            fail("Incorrect SigAlgParams value.");
+            fail("Incorrect Signature value.");
         }
     }
     
@@ -711,10 +833,19 @@ public class X509CertImplTest extends TestCase {
     }
     
     public static Test suite() {
-        return new TestSuite(X509CertImplTest.class);
+        return new TestSuite(X509CertFactoryPerfTest.class);
     }
 
     public static void main(String[] args) throws Exception {
+        /*
+        X509CertFactoryPerfTest test = new X509CertFactoryPerfTest();
+        test.setUp();
+        long startTime = System.currentTimeMillis();
+        for (int i=0; i<100000; i++) {
+            test.testCreation1();
+        }
+        System.out.println("time: "+(System.currentTimeMillis() - startTime));
+        */
         junit.textui.TestRunner.run(suite());
     }
 }

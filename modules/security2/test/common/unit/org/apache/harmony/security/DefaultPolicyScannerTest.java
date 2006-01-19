@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.harmony.security.DefaultPolicyScanner;
 
 import com.openintel.drl.security.test.PerformanceTest;
 

@@ -37,10 +37,11 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
+import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.TestKeyPair;
+
 import junit.framework.TestCase;
 
-import com.openintel.drl.security.SpiEngUtils;
-import com.openintel.drl.security.TestKeyPair;
 import com.openintel.drl.security.test.TestUtils;
 
 /**

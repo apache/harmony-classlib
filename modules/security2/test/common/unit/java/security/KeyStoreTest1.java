@@ -31,8 +31,9 @@ import java.security.spec.InvalidKeySpecException;
 import javax.crypto.SecretKey;
 import javax.security.auth.DestroyFailedException;
 
-import com.openintel.drl.security.SpiEngUtils;
-import com.openintel.drl.security.TestKeyPair;
+import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.TestKeyPair;
+
 import com.openintel.drl.security.test.PerformanceTest;
 /**
  * Tests for <code>KeyStore</code> constructor and methods

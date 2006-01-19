@@ -31,10 +31,11 @@ import javax.crypto.spec.DHGenParameterSpec;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.harmony.security.SpiEngUtils;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import com.openintel.drl.security.SpiEngUtils;
 import com.openintel.drl.security.test.PerformanceTest;
 /**
  * Tests for Mac class constructors and methods

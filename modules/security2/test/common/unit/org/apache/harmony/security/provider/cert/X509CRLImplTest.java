@@ -18,7 +18,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.provider.cert;
+package org.apache.harmony.security.provider.cert;
 
 import com.openintel.drl.security.x501.Name;
 import com.openintel.drl.security.x509.AlgorithmIdentifier;
@@ -33,7 +33,6 @@ import com.openintel.drl.security.x509.TBSCertList;
 import com.openintel.drl.security.x509.TBSCertificate;
 import com.openintel.drl.security.x509.Validity;
 import com.openintel.drl.security.x509.AuthorityKeyIdentifier;
-import com.openintel.drl.security.provider.cert.X509CertImpl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,6 +57,8 @@ import javax.security.auth.x500.X500Principal;
 import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.provider.cert.X509CRLImpl;
+import org.apache.harmony.security.provider.cert.X509CertImpl;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

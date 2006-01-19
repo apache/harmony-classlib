@@ -363,7 +363,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testHasNext_EmptySet()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testHasNext_EmptySet()
          */
         public void testHasNext_EmptySet() {
             setReadOnly();
@@ -371,7 +371,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testHasNext()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testHasNext()
          */
         public void testHasNext() {
 
@@ -382,7 +382,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testNext_EmptySet_NoSuchElementException()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testNext_EmptySet_NoSuchElementException()
          */
         public void testNext_EmptySet_NoSuchElementException() {
             setReadOnly();
@@ -390,7 +390,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testNext()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testNext()
          */
         public void testNext() {
 
@@ -404,7 +404,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testNext_NoSuchElementException()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testNext_NoSuchElementException()
          */
         public void testNext_NoSuchElementException() {
 
@@ -442,7 +442,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testRemove_EmptySet_IllegalStateException()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testRemove_EmptySet_IllegalStateException()
          */
         public void testRemove_EmptySet_IllegalStateException() {
             setReadOnly();
@@ -500,7 +500,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testHasNext_EmptySet()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testHasNext_EmptySet()
          */
         public void testHasNext_EmptySet() {
             setSecure();
@@ -508,7 +508,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testHasNext()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testHasNext()
          */
         public void testHasNext() {
             set.add(element);
@@ -518,7 +518,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testNext_EmptySet_NoSuchElementException()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testNext_EmptySet_NoSuchElementException()
          */
         public void testNext_EmptySet_NoSuchElementException() {
             setSecure();
@@ -526,7 +526,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testNext_NoSuchElementException()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testNext_NoSuchElementException()
          */
         public void testNext_NoSuchElementException() {
             set.add(element);
@@ -543,7 +543,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testNext()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testNext()
          */
         public void testNext() {
             set.add(element);
@@ -577,7 +577,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testRemove_EmptySet_IllegalStateException()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testRemove_EmptySet_IllegalStateException()
          * 
          * Expected: AccessControlException instead IllegalStateException for empty set
          */
@@ -593,7 +593,7 @@ public class SecurityTest extends PerformanceTest {
         }
 
         /**
-         * @see com.openintel.drl.security.test.SecurityTest.IteratorTest#testRemove_IllegalStateException_NoNext()
+         * @see org.apache.harmony.security.test.SecurityTest.IteratorTest#testRemove_IllegalStateException_NoNext()
          * 
          * Expected: AccessControlException instead IllegalStateException
          */

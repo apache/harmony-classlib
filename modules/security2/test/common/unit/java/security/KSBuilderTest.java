@@ -21,8 +21,6 @@
 
 package java.security;
 
-import com.openintel.drl.security.SpiEngUtils;
-import com.openintel.drl.security.TestKeyPair;
 import com.openintel.drl.security.test.PerformanceTest;
 import com.openintel.drl.security.test.TestUtils;
 
@@ -35,6 +33,9 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 
 import java.util.Enumeration;
+
+import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.TestKeyPair;
 
 /**
  * Tests for <code>KeyStore.Builder</code> class

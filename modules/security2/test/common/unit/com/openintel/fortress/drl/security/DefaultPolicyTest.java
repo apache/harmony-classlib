@@ -34,8 +34,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
 
-import com.openintel.drl.security.UnresolvedPrincipal;
-import com.openintel.drl.security.PolicyEntry;
+import org.apache.harmony.security.PolicyEntry;
+import org.apache.harmony.security.UnresolvedPrincipal;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

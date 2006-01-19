@@ -21,7 +21,8 @@
 
 package java.security;
 
-import com.openintel.drl.security.*;
+import org.apache.harmony.security.*;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 

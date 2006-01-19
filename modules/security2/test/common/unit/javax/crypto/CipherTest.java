@@ -30,7 +30,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.Enumeration;
 
-import com.openintel.drl.security.TestKeyPair;
+import org.apache.harmony.security.TestKeyPair;
+
 
 import junit.framework.TestCase;
 

@@ -26,7 +26,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import com.openintel.drl.security.MDGoldenData;
+import org.apache.harmony.security.MDGoldenData;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

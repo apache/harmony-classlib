@@ -25,7 +25,8 @@ import java.io.IOException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
 
-import com.openintel.drl.security.TestKeyPair;
+import org.apache.harmony.security.TestKeyPair;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

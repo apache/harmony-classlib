@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import java.net.URL;
 import java.security.cert.Certificate;
@@ -32,6 +32,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+
+import org.apache.harmony.security.PolicyEntry;
+import org.apache.harmony.security.UnresolvedPrincipal;
 
 import com.openintel.drl.security.test.PerformanceTest;
 

@@ -23,9 +23,10 @@ package java.security;
 
 
 
-import com.openintel.drl.security.CertificateStub;
-import com.openintel.drl.security.IdentityStub;
-import com.openintel.drl.security.PublicKeyStub;
+import org.apache.harmony.security.CertificateStub;
+import org.apache.harmony.security.IdentityStub;
+import org.apache.harmony.security.PublicKeyStub;
+
 import com.openintel.drl.security.test.PerformanceTest;
 /**
  * Tests for class Identity

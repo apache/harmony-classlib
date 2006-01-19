@@ -33,7 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import com.openintel.drl.security.SpiEngUtils;
+import org.apache.harmony.security.SpiEngUtils;
+
 import com.openintel.drl.security.cert.MyCertificate;
 import com.openintel.drl.security.cert.MyCertPath;
 import com.openintel.drl.security.test.PerformanceTest;

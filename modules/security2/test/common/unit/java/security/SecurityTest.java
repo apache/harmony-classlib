@@ -25,7 +25,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.openintel.drl.security.TestKeyPair;
+import org.apache.harmony.security.TestKeyPair;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

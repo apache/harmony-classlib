@@ -31,7 +31,8 @@ import java.security.cert.Certificate;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.openintel.drl.security.PolicyEntry;
+import org.apache.harmony.security.PolicyEntry;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

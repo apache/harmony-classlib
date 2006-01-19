@@ -28,7 +28,8 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.Collection;
 
-import com.openintel.drl.security.SpiEngUtils;
+import org.apache.harmony.security.SpiEngUtils;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**

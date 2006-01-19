@@ -19,16 +19,18 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import junit.framework.TestCase;
 import java.security.*;
 import java.util.Enumeration;
 
+import org.apache.harmony.security.SystemScope;
+
 import com.openintel.drl.security.test.PerformanceTest;
 
 /**
- * Unit test for class com.openintel.drl.security.SystemScope 
+ * Unit test for class org.apache.harmony.security.SystemScope 
  * 
  */
 

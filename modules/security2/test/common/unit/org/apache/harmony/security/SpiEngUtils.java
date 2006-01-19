@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import java.io.File;
 import java.security.Security;

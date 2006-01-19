@@ -19,52 +19,56 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
-
-import java.security.PublicKey;
-
+import java.security.PrivateKey;
 
 /**
- * Stub implements interface PublicKey
- * 
+ * Stub for interface PrivateKey tests
  */
 
-public class PublicKeyStub implements PublicKey {
+public class PrivateKeyStub implements PrivateKey {
 
     String algorithm = null;
     String format = null;
     byte [] encoded = null;
     
+    
     /**
-     *  constructor 
+     * Constructor
+     * 
+     * @param algorithm
+     * @param format
+     * @param encoded
      */
-    public PublicKeyStub(String algorithm, String format, byte[] encoded) {
+    public PrivateKeyStub(String algorithm, String format, byte[] encoded) {
         this.algorithm = algorithm;
         this.format = format;
         this.encoded = encoded;
     }
 
     /**
-     * returns algorithm
+     * Returns algorithm
+     * @see java.security.Key#getAlgorithm()
      */
     public String getAlgorithm() {
         return algorithm;
     }
 
     /**
-     * returns format
+     * Returns format
      * @see java.security.Key#getFormat()
      */
     public String getFormat() {
         return format;
     }
 
-    /** 
-     * returns encoded
+    /**
+     * Returns encoded form
      * @see java.security.Key#getEncoded()
      */
     public byte[] getEncoded() {
         return encoded;
     }
+
 }
