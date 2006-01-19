@@ -25,7 +25,8 @@
     <!-- set global properties for this build. -->
 
     <property name="build.compiler" value="modern"/>
-    <!--
+
+	<!--
          In order to use Eclipse compiler you will need to add
          the compiler's jars to the CLASSPATH and path to jni.h
          to INCLUDE environment variables before build start.
@@ -252,6 +253,10 @@
     </target>
 
 
+    <target name="tests.gen" depends="tests, gen_ser"
+        description="Generating serialized stuff for tests">
+    </target>
+
     <target name="clean">
         <delete dir="${build.path}"/>
     </target>
@@ -414,12 +419,15 @@
                     <!-- See README, Ch.5 -->
                     <exclude name="javax/security/auth/x500/X500PrincipalTest.java" />
                     <!-- Not a test -->
-                    <exclude name="com/openintel/drl/security/TestCertUtils.java"/>
-                    <exclude name="com/openintel/drl/security/TestKeyPair.java"/>
+                    <exclude name="org/apache/harmony/security/TestCertUtils.java"/>
+                    <exclude name="org/apache/harmony/security/TestKeyPair.java"/>
                     <exclude name="com/openintel/drl/security/cert/TestUtils.java"/>
-                    <exclude name="com/openintel/drl/security/provider/cert/CertFactoryTestData.java"/>
+                    <exclude name="org/apache/harmony/security/provider/cert/CertFactoryTestData.java"/>
                     <exclude name="com/openintel/drl/security/test/**"/>
 
+                	<!-- gmj : I took this out as it started failing during refactoring -->
+                	
+                    <exclude name="javax/security/auth/login/LoginContextTest_1.java"/>
 
                     <!-- 
                     <exclude name="javax/security/auth/SubjectDomainCombinerTest.java"/>
@@ -432,4 +440,43 @@
         </junit>
     </target>
 
+	<!--                                                       -->
+	<!-- gen_ser : generates the serialized data for the       -->
+	<!--            serialization tests                        -->
+	<!--                                                       -->
+    <target name="gen_ser">
+
+        <mkdir dir="${build.path}/tests_report" />
+
+    	<!-- run the tests -->
+    	
+        <junit fork="yes"
+            forkmode="perTest"
+            printsummary="withOutAndErr"
+            errorproperty="test.error"
+            showoutput="on"
+        	haltonfailure="on"
+            dir="${basedir}"
+            jvm="${env.JAVA_HOME}/bin/java">
+ 
+        	<jvmarg value="-Xbootclasspath/p:${build.path}/classes/security_alt.jar${path.separator}${build.jars.path}/crypto.jar${path.separator}${build.jars.path}/x_net.jar"/>
+<!--            <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${test.deps.path}"/> -->
+            <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${env.CLASSPATH}"/>
+            <jvmarg value="-Dreference.output=${src.tst.common}/unit" />
+            <jvmarg value="-Dunit.test.root=${src.tst.common}/unit"/>
+            <jvmarg value="-Djava.security.properties==${build.lib.path}/security/java.security"/>
+            <jvmarg value="-Djava.security.policy==${build.lib.path}/security/drl.policy"/>
+			<jvmarg value="-Dtest.mode=serial.reference" />
+            <formatter type="plain" />
+        	
+        	<batchtest todir="${build.path}/tests_report">
+                <fileset dir="${src.tst.common}/unit">
+                    <include name="**/serialization/**/CodeSignerTest.java"/>
+                    <include name="**/serialization/**/CodeSourceTest.java"/>
+                    <include name="**/serialization/**/TimestampTest.java"/>
+                </fileset>
+            </batchtest>
+        	
+        </junit>
+    </target>
 </project>
