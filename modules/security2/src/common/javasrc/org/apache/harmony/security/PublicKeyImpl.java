@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import com.openintel.drlx.crypto.utils.AlgNameMapper;
 import java.security.PublicKey;

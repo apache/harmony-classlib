@@ -45,8 +45,8 @@ import org.apache.harmony.security.asn1.BerInputStream;
  *   GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
  * </pre>
  * 
- * @see com.openintel.drl.security.x509.NameConstraints
- * @see com.openintel.drl.security.x509.GeneralSubtree
+ * @see org.apache.harmony.security.x509.NameConstraints
+ * @see org.apache.harmony.security.x509.GeneralSubtree
  */
 public class GeneralNames {
 

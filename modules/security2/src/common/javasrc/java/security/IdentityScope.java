@@ -23,7 +23,8 @@ package java.security;
 
 import java.util.Enumeration;
 
-import com.openintel.drl.security.SystemScope;
+import org.apache.harmony.security.SystemScope;
+
 
 /**
  * @com.intel.drl.spec_ref 

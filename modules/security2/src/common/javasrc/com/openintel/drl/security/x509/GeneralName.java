@@ -84,8 +84,8 @@ import com.openintel.drl.security.x501.Name;
  *  
  * </pre>
  * 
- * @see com.openintel.drl.security.x509.NameConstraints
- * @see com.openintel.drl.security.x509.GeneralSubtree
+ * @see org.apache.harmony.security.x509.NameConstraints
+ * @see org.apache.harmony.security.x509.GeneralSubtree
  */
 public class GeneralName {
     

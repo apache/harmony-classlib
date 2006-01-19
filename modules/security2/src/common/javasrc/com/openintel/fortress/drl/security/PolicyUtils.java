@@ -268,7 +268,7 @@ public class PolicyUtils {
      * Instances of this interface are intended for resolving  
      * generalized expansion expressions, of the form ${{protocol:data}}. 
      * Such functionality is applicable to security policy files, for example.
-     * @see com.openintel.drl.security.PolicyUtils#expandGeneral(String, GeneralExpansionHandler)
+     * @see org.apache.harmony.security.PolicyUtils#expandGeneral(String, GeneralExpansionHandler)
      */
     public static interface GeneralExpansionHandler {
 

@@ -54,8 +54,8 @@ import org.apache.harmony.security.asn1.*;
  * </pre>
  * 
  * 
- * @see com.openintel.drl.security.x509.GeneralSubtree
- * @see com.openintel.drl.security.x509.GeneralName
+ * @see org.apache.harmony.security.x509.GeneralSubtree
+ * @see org.apache.harmony.security.x509.GeneralName
  */
 public class NameConstraints {
 

@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import java.security.CodeSource;
 import java.security.Principal;
@@ -33,7 +33,7 @@ import com.openintel.fortress.drl.security.PolicyUtils;
  * a CodeSource of an executable code, Principals allowed to execute the code,
  * and a set of granted Permissions.
  * 
- * @see com.openintel.drl.security.DefaultPolicy
+ * @see org.apache.harmony.security.DefaultPolicy
  */
 public class PolicyEntry {
 

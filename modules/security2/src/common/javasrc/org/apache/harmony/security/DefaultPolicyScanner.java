@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -52,7 +52,7 @@ import java.util.List;
  * </pre>
  * 
  * For semantical details of this format, see the
- * {@link com.openintel.drl.security.DefaultPolicy default policy description}.
+ * {@link org.apache.harmony.security.DefaultPolicy default policy description}.
  * <br>
  * Keywords are case-insensitive in contrast to quoted string literals.
  * Comma-separation rule is quite forgiving, most commas may be just omitted.
@@ -396,10 +396,10 @@ public class DefaultPolicyScanner {
 
     /**
      * Compound token representing <i>keystore </i> clause. See policy format
-     * {@link com.openintel.drl.security.DefaultPolicy description}for details.
+     * {@link org.apache.harmony.security.DefaultPolicy description}for details.
      * 
      * @see com.openintel.fortress.drl.security.DefaultPolicyParser
-     * @see com.openintel.drl.security.DefaultPolicyScanner
+     * @see org.apache.harmony.security.DefaultPolicyScanner
      */
     public static class KeystoreEntry {
 
@@ -416,10 +416,10 @@ public class DefaultPolicyScanner {
 
     /**
      * Compound token representing <i>grant </i> clause. See policy format
-     * {@link com.openintel.drl.security.DefaultPolicy description}for details.
+     * {@link org.apache.harmony.security.DefaultPolicy description}for details.
      * 
      * @see com.openintel.fortress.drl.security.DefaultPolicyParser
-     * @see com.openintel.drl.security.DefaultPolicyScanner
+     * @see org.apache.harmony.security.DefaultPolicyScanner
      */
     public static class GrantEntry {
 
@@ -463,10 +463,10 @@ public class DefaultPolicyScanner {
     /**
      * Compound token representing <i>principal </i> entry of a <i>grant </i>
      * clause. See policy format
-     * {@link com.openintel.drl.security.DefaultPolicy description}for details.
+     * {@link org.apache.harmony.security.DefaultPolicy description}for details.
      * 
      * @see com.openintel.fortress.drl.security.DefaultPolicyParser
-     * @see com.openintel.drl.security.DefaultPolicyScanner
+     * @see org.apache.harmony.security.DefaultPolicyScanner
      */
     public static class PrincipalEntry {
 
@@ -491,10 +491,10 @@ public class DefaultPolicyScanner {
     /**
      * Compound token representing <i>permission </i> entry of a <i>grant </i>
      * clause. See policy format
-     * {@link com.openintel.drl.security.DefaultPolicy description}for details.
+     * {@link org.apache.harmony.security.DefaultPolicy description}for details.
      * 
      * @see com.openintel.fortress.drl.security.DefaultPolicyParser
-     * @see com.openintel.drl.security.DefaultPolicyScanner
+     * @see org.apache.harmony.security.DefaultPolicyScanner
      */
     public static class PermissionEntry {
 

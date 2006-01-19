@@ -36,7 +36,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import com.openintel.drl.security.PolicyEntry;
+import org.apache.harmony.security.PolicyEntry;
+
 
 /**
  * Default Policy implementation based on policy configuration files. This
@@ -130,7 +131,7 @@ import com.openintel.drl.security.PolicyEntry;
  * WeakHashMap; the cache is cleaned either explicitly during refresh()
  * invokation, or naturally by garbage-collecting the corresponding objects.
  * 
- * @see com.openintel.drl.security.PolicyUtils#getPolicyURLs(Properties, String,
+ * @see org.apache.harmony.security.PolicyUtils#getPolicyURLs(Properties, String,
  *      String)
  */
 

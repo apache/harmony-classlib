@@ -37,8 +37,9 @@ import javax.security.auth.AuthPermission;
 import javax.security.auth.Policy;
 import javax.security.auth.Subject;
 
+import org.apache.harmony.security.PolicyEntry;
+
 import com.openintel.fortress.drl.security.DefaultPolicyParser;
-import com.openintel.drl.security.PolicyEntry;
 import com.openintel.fortress.drl.security.PolicyUtils;
 
 /**

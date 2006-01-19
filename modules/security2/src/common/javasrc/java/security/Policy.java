@@ -105,7 +105,7 @@ public abstract class Policy {
      // Reads name of default policy provider from security.properties,
      // loads the class and instantiates the provider.<br> 
      // In case of any error, including undefined provider name, 
-     // returns new instance of com.openintel.drl.security.FilePolicy provider. 
+     // returns new instance of org.apache.harmony.security.FilePolicy provider. 
     private static Policy getDefaultProvider() {
         final String defaultClass = (String) AccessController
                 .doPrivileged(new PolicyUtils.SecurityPropertyAccessor(

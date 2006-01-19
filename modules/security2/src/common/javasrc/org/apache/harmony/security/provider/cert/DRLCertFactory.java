@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.provider.cert;
+package org.apache.harmony.security.provider.cert;
 
 import java.security.AccessController;
 import java.security.Provider;
@@ -36,7 +36,7 @@ public final class DRLCertFactory extends Provider {
         AccessController.doPrivileged(new java.security.PrivilegedAction() {
             public Object run() {
                 put("CertificateFactory.X509", 
-                    "com.openintel.drl.security.provider.cert.X509CertFactoryImpl");
+                    "org.apache.harmony.security.provider.cert.X509CertFactoryImpl");
                 put("Alg.Alias.CertificateFactory.X.509", "X509");
                     return null;
             }

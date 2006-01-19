@@ -48,8 +48,8 @@ import org.apache.harmony.security.asn1.*;
  *  
  * </pre>
  * 
- * @see com.openintel.drl.security.x509.NameConstraints
- * @see com.openintel.drl.security.x509.GeneralName
+ * @see org.apache.harmony.security.x509.NameConstraints
+ * @see org.apache.harmony.security.x509.GeneralName
  */
 public class GeneralSubtree {
 

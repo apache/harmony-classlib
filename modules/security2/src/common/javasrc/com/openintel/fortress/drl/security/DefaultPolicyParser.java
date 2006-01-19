@@ -45,16 +45,17 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import com.openintel.drl.security.DefaultPolicyScanner;
-import com.openintel.drl.security.PolicyEntry;
-import com.openintel.drl.security.UnresolvedPrincipal;
+import org.apache.harmony.security.DefaultPolicyScanner;
+import org.apache.harmony.security.PolicyEntry;
+import org.apache.harmony.security.UnresolvedPrincipal;
+
 
 /**
  * This is a basic loader of policy files. It delegates lexical analysis to 
  * a pluggable scanner and converts received tokens to a set of 
- * {@link com.openintel.drl.security.PolicyEntry PolicyEntries}. 
+ * {@link org.apache.harmony.security.PolicyEntry PolicyEntries}. 
  * For details of policy format, see the 
- * {@link com.openintel.drl.security.DefaultPolicy default policy description}.
+ * {@link org.apache.harmony.security.DefaultPolicy default policy description}.
  * <br>
  * For ordinary uses, this class has just one public method <code>parse()</code>, 
  * which performs the main task.
@@ -64,9 +65,9 @@ import com.openintel.drl.security.UnresolvedPrincipal;
  * This implementation is effectively thread-safe, as it has no field references 
  * to data being processed (that is, passes all the data as method parameters).
  * 
- * @see com.openintel.drl.security.DefaultPolicy
- * @see com.openintel.drl.security.DefaultPolicyScanner
- * @see com.openintel.drl.security.PolicyEntry
+ * @see org.apache.harmony.security.DefaultPolicy
+ * @see org.apache.harmony.security.DefaultPolicyScanner
+ * @see org.apache.harmony.security.PolicyEntry
  */
 public class DefaultPolicyParser {
 
@@ -75,7 +76,7 @@ public class DefaultPolicyParser {
 
     /** 
      * Default constructor, 
-     * {@link com.openintel.drl.security.DefaultPolicyScanner DefaultPolicyScanner} 
+     * {@link org.apache.harmony.security.DefaultPolicyScanner DefaultPolicyScanner} 
      * is used. 
      */
     public DefaultPolicyParser() {
@@ -92,7 +93,7 @@ public class DefaultPolicyParser {
     /**
      * This is the main business method. It manages loading process as follows:
      * the associated scanner is used to parse the stream to a set of 
-     * {@link com.openintel.drl.security.DefaultPolicyScanner.GrantEntry composite tokens},
+     * {@link org.apache.harmony.security.DefaultPolicyScanner.GrantEntry composite tokens},
      * then this set is iterated and each token is translated to a PolicyEntry.
      * Semantically invalid tokens are ignored, the same as void PolicyEntries.
      * <br>
@@ -177,7 +178,7 @@ public class DefaultPolicyParser {
      * of the GrantEntry
      * @see DefaultPolicyScanner.PrincipalEntry
      * @see DefaultPolicyScanner.PermissionEntry
-     * @see com.openintel.drl.security.PolicyUtils
+     * @see org.apache.harmony.security.PolicyUtils
      */
     protected PolicyEntry resolveGrant(DefaultPolicyScanner.GrantEntry ge,
             KeyStore ks, Properties system, boolean resolve) throws Exception {

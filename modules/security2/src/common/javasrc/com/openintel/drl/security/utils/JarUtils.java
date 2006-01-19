@@ -42,8 +42,8 @@ import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.pkcs7.ContentInfo;
 import org.apache.harmony.security.pkcs7.SignedData;
 import org.apache.harmony.security.pkcs7.SignerInfo;
+import org.apache.harmony.security.provider.cert.X509CertImpl;
 
-import com.openintel.drl.security.provider.cert.X509CertImpl;
 import com.openintel.drl.security.x501.AttributeTypeAndValue;
 
 public class JarUtils {

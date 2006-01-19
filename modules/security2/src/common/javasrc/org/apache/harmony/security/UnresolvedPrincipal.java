@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security;
+package org.apache.harmony.security;
 
 import java.security.Principal;
 
@@ -33,8 +33,8 @@ import java.security.Principal;
  * execution thread. So the policy refers to this model definition of 
  * acceptable principal and compares it with the actual principal. 
  * 
- * @see com.openintel.drl.security.PolicyEntry
- * @see com.openintel.drl.security.DefaultPolicy
+ * @see org.apache.harmony.security.PolicyEntry
+ * @see org.apache.harmony.security.DefaultPolicy
  */
 public final class UnresolvedPrincipal implements Principal {
 
