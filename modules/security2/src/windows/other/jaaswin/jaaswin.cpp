@@ -71,9 +71,9 @@ bool getDebugNative( JNIEnv * jenv, jobject thiz ) {
 
 
 
-JNIEXPORT void JNICALL Java_com_openintel_drlx_security_auth_module_NTSystem_initNatives(JNIEnv * jenv, jclass klass) {
+JNIEXPORT void JNICALL Java_org_apache_harmony_security_x_security_auth_module_NTSystem_initNatives(JNIEnv * jenv, jclass klass) {
 
-	if( NULL == (jf_user = jenv->GetFieldID(klass, "user", "Lcom/openintel/drlx/security/auth/NTSidUserPrincipal;"))) {
+	if( NULL == (jf_user = jenv->GetFieldID(klass, "user", "Lorg/apache/harmony/security/x/security/auth/NTSidUserPrincipal;"))) {
 		jclass klassErr = jenv->FindClass("java/lang/Error");
 		assert(klassErr);
 		jenv->ThrowNew(klassErr, "Could not find field \"user\" of type NTSidUserPrincipal");
@@ -87,14 +87,14 @@ JNIEXPORT void JNICALL Java_com_openintel_drlx_security_auth_module_NTSystem_ini
 		return;
 	}
 
-	if( NULL == (jf_mainGroup = jenv->GetFieldID(klass, "mainGroup", "Lcom/openintel/drlx/security/auth/NTSidPrimaryGroupPrincipal;")) ) {
+	if( NULL == (jf_mainGroup = jenv->GetFieldID(klass, "mainGroup", "Lorg/apache/harmony/security/x/security/auth/NTSidPrimaryGroupPrincipal;")) ) {
 		jclass klassErr = jenv->FindClass("java/lang/Error");
 		assert(klassErr);
 		jenv->ThrowNew(klassErr, "Could not find field \"mainGroup\" of type NTSidPrimaryGroupPrincipal");
 		return;
 	}
 
-	if( NULL == (jf_groups = jenv->GetFieldID(klass, "groups", "[Lcom/openintel/drlx/security/auth/NTSidGroupPrincipal;")) ) {
+	if( NULL == (jf_groups = jenv->GetFieldID(klass, "groups", "[Lorg/apache/harmony/security/x/security/auth/NTSidGroupPrincipal;")) ) {
 		jclass klassErr = jenv->FindClass("java/lang/Error");
 		assert(klassErr);
 		jenv->ThrowNew(klassErr, "Could not find field \"groups\" of type NTSidPrimaryGroupPrincipal");
@@ -171,7 +171,7 @@ BOOL GetInfo( PSID sid, LPSTR* ppName, LPSTR* ppDomain ) {
 	return TRUE;
 }
 
-JNIEXPORT void JNICALL Java_com_openintel_drlx_security_auth_module_NTSystem_load(JNIEnv * jenv, jobject thiz) {
+JNIEXPORT void JNICALL Java_org_apache_harmony_security_x_security_auth_module_NTSystem_load(JNIEnv * jenv, jobject thiz) {
 
 	DWORD dwError = -1; // presume unknown error
 	LPCSTR errMsg = NULL;
@@ -226,7 +226,7 @@ JNIEXPORT void JNICALL Java_com_openintel_drlx_security_auth_module_NTSystem_loa
 		goto exit;
 	};
 
-	jclass jkl = jenv->FindClass("com/openintel/drlx/security/auth/NTSidUserPrincipal");
+	jclass jkl = jenv->FindClass("org/apache/harmony/security/x/security/auth/NTSidUserPrincipal");
 	if( NULL == jkl || jenv->ExceptionCheck() ) {
 		errMsg = "Could not find class NTSidUserPrincipal";
 		goto exit;
@@ -305,7 +305,7 @@ JNIEXPORT void JNICALL Java_com_openintel_drlx_security_auth_module_NTSystem_loa
 	}
 	ConvertSidToStringSid(groupSid, &lpStr2);
 
-	jclass jklassPrimaryGroup = jenv->FindClass("com/openintel/drlx/security/auth/NTSidPrimaryGroupPrincipal");
+	jclass jklassPrimaryGroup = jenv->FindClass("org/apache/harmony/security/x/security/auth/NTSidPrimaryGroupPrincipal");
 	if( NULL == jklassPrimaryGroup || jenv->ExceptionCheck() ) {
 		errMsg = "Could not find class NTSidPrimaryGroupPrincipal";
 		goto exit;
@@ -340,7 +340,7 @@ JNIEXPORT void JNICALL Java_com_openintel_drlx_security_auth_module_NTSystem_loa
 
 	PTOKEN_GROUPS ptgs = (PTOKEN_GROUPS)lpAllGroupsData;
 
-	jclass klassGroup = jenv->FindClass("com/openintel/drlx/security/auth/NTSidGroupPrincipal");
+	jclass klassGroup = jenv->FindClass("org/apache/harmony/security/x/security/auth/NTSidGroupPrincipal");
 	if( NULL == klassGroup || jenv->ExceptionCheck() ) {
 		errMsg = "Could not find NTSidGroupPrincipal";
 		goto exit;
@@ -448,7 +448,7 @@ exit:
  * Method:    free
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_openintel_drlx_security_auth_module_NTSystem_free(JNIEnv * jenv, jobject thiz) {
+JNIEXPORT void JNICALL Java_org_apache_harmony_security_x_security_auth_module_NTSystem_free(JNIEnv * jenv, jobject thiz) {
 	HANDLE hTok = (HANDLE)jenv->GetLongField(thiz, jf_token);
 	if( !(0 == hTok || INVALID_HANDLE_VALUE == hTok) ) {
 		if( !CloseHandle(hTok) ) {

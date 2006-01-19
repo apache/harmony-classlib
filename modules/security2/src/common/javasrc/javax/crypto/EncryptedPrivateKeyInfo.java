@@ -39,9 +39,9 @@ import org.apache.harmony.security.asn1.ASN1OctetString;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1SetOf;
 import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.x.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 
-import com.openintel.drlx.crypto.utils.AlgNameMapper;
 
 /**
  * @com.intel.drl.spec_ref

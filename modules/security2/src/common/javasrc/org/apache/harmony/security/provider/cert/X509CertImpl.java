@@ -44,8 +44,8 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateParsingException;
-import com.openintel.drlx.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.asn1.*;
+import org.apache.harmony.security.x.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.x509.*;
 
 /**

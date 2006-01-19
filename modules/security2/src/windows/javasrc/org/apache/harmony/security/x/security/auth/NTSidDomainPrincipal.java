@@ -15,35 +15,32 @@
  */
 
 /**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
-package javax.crypto;
-
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.SecureRandom;
-
-import org.apache.harmony.security.x.crypto.NullCipherSpi;
-
-
-/**
- * @com.intel.drl.spec_ref
- *
+ * @author Alexander V. Astapchuk
+ * @version $Revision$
  */
-public class NullCipher extends Cipher {
+package org.apache.harmony.security.x.security.auth;
+
+/** 
+ * A principal which holds information about NT domain.
+ */
+public class NTSidDomainPrincipal extends NTSid {
+    
+    /**
+     * A constructor which takes domain's SID as its only argumant. 
+     * @param sid domain SID
+     */
+    public NTSidDomainPrincipal(String sid) {
+        super(sid);
+    }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
+     * A constructor which takes an extended set of information - domain SID, 
+     * and its name 
+     * @param sid domain SID
+     * @param domani name of the domain
      */
-    public NullCipher() {
-        super(new NullCipherSpi(), null, null);
-        try {
-            this.init(Cipher.ENCRYPT_MODE, (Key)null, (SecureRandom)null);    
-        } catch (InvalidKeyException e) {        
-        }
+    public NTSidDomainPrincipal(String sid, String domain) {
+        super(sid, domain, domain);
     }
-    
+
 }

@@ -14,7 +14,7 @@ security.provider.2=org.bouncycastle.jce.provider.BouncyCastleProvider
 # Class to instantiate as a default Configuration implementation
 # See specification for javax.security.auth.login.Configuration class.
 #
-login.configuration.provider=com.openintel.drlx.security.auth.login.DefaultConfiguration
+login.configuration.provider=org.apache.harmony.security.x.security.auth.login.DefaultConfiguration
 
 
 #

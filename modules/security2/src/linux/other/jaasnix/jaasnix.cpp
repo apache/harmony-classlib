@@ -51,7 +51,7 @@ jfieldID jf_groupsNames = NULL;
 
 jclass jclassString = NULL;
 
-JNIEXPORT void JNICALL Java_com_openintel_drlx_security_auth_module_UnixSystem_load(JNIEnv * jenv, jobject thiz) {
+JNIEXPORT void JNICALL Java_org_apache_harmony_security_x_security_auth_module_UnixSystem_load(JNIEnv * jenv, jobject thiz) {
 
     if( NULL == jf_uid ) {
         jclass klass = jenv->GetObjectClass(thiz);

@@ -21,9 +21,10 @@
 
 package org.apache.harmony.security;
 
-import com.openintel.drlx.crypto.utils.AlgNameMapper;
 import java.security.PublicKey;
 import java.util.Arrays;
+
+import org.apache.harmony.security.x.crypto.utils.AlgNameMapper;
 
 /**
  * PublicKeyImpl

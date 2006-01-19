@@ -32,9 +32,9 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.BitString;
 
-import com.openintel.drlx.crypto.utils.AlgNameMapper;
 
 import org.apache.harmony.security.asn1.*;
+import org.apache.harmony.security.x.crypto.utils.AlgNameMapper;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work
