@@ -21,11 +21,12 @@
 
 package javax.security.sasl;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.security.Provider;
 import java.security.Security;
 import java.util.Enumeration;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Test for Sasl class

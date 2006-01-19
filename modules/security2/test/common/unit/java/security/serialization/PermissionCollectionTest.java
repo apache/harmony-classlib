@@ -25,7 +25,8 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Enumeration;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization tests for <code>PermissionCollection</code>

@@ -21,8 +21,9 @@
 
 package java.security.cert;
 
-import com.openintel.drl.security.cert.MyCRL;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.MyCRL;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>java.security.cert.CRL</code> fields and methods

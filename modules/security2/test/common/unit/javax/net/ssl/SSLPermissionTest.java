@@ -20,7 +20,7 @@
  */
 package javax.net.ssl;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>SSLPermission</code> class constructors.

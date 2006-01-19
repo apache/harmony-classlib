@@ -28,7 +28,8 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.login.LoginException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Unit test for NTLoginModule

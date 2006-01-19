@@ -23,7 +23,8 @@ package java.security;
 
 import java.util.HashMap;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>Provider.Service</code> constructor and methods

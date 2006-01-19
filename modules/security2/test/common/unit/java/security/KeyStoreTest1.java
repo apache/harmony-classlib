@@ -33,8 +33,8 @@ import javax.security.auth.DestroyFailedException;
 
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 /**
  * Tests for <code>KeyStore</code> constructor and methods
  * 

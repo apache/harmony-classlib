@@ -41,7 +41,8 @@ import java.util.HashMap;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Test for EncryptedPrivateKeyInfo class.

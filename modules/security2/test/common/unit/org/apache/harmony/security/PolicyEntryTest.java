@@ -35,8 +35,8 @@ import java.util.HashSet;
 
 import org.apache.harmony.security.PolicyEntry;
 import org.apache.harmony.security.UnresolvedPrincipal;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * TODO Put your class description here

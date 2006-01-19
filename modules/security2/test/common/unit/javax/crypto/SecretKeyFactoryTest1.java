@@ -33,8 +33,8 @@ import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for <code>SecretKeyFactory</code> class constructors and methods.

@@ -24,7 +24,8 @@ package java.security.serialization;
 import java.security.PermissionCollection;
 import java.util.*;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 
 /**

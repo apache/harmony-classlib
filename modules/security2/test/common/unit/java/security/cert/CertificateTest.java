@@ -26,8 +26,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 
-import com.openintel.drl.security.cert.MyCertificate;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.MyCertificate;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>Certificate</code> fields and methods

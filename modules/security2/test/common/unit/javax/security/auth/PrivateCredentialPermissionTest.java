@@ -27,7 +27,8 @@ import java.io.ObjectOutputStream;
 import java.security.Principal;
 import java.util.HashSet;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests PrivateCredentialPermission class implementation. 

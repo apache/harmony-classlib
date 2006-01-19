@@ -23,7 +23,8 @@ package java.security.serialization;
 
 import java.security.DigestException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Tests for DigestException serialization

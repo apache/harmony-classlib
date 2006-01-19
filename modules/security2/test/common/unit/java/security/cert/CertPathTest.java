@@ -21,8 +21,9 @@
 
 package java.security.cert;
 
-import com.openintel.drl.security.cert.MyCertPath;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.MyCertPath;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>CertPath</code> fields and methods

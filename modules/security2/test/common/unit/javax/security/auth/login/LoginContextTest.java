@@ -31,7 +31,8 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.spi.LoginModule;
 
-import com.openintel.drl.security.test.SecurityTest;
+import org.apache.harmony.security.test.SecurityTest;
+
 
 /**
  * Tests LoginContext class

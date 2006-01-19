@@ -21,11 +21,12 @@
 
 package java.security.interfaces;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.security.spec.ECPoint;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECParameterSpec;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>ECPublicKey</code> class field

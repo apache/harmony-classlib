@@ -23,7 +23,8 @@ package java.security;
 
 import java.security.UnrecoverableKeyException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>UnrecoverableKeyException</code> class constructors and

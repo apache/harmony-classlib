@@ -25,7 +25,8 @@ import java.security.AllPermission;
 import java.security.Permission;
 import java.security.AccessControlException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization tests for <code>AccessControlException</code>

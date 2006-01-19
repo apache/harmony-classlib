@@ -23,7 +23,8 @@ package java.security.spec.serialization;
 
 import java.security.spec.InvalidKeySpecException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Test for InvalidKeySpecException seialization 

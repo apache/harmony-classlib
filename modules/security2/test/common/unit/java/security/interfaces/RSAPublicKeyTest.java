@@ -21,10 +21,11 @@
 
 package java.security.interfaces;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>RSAPublicKey</code> class field

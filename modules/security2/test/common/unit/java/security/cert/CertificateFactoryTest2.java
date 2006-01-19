@@ -32,8 +32,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for CertificateFactory class constructors and methods

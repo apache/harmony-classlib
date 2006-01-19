@@ -23,10 +23,12 @@ package javax.net.ssl;
 
 import java.io.IOException;
 import javax.net.SocketFactory;
+
+import org.apache.harmony.security.test.PerformanceTest;
+
 import java.net.ServerSocket;
 import java.security.cert.Certificate;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for <code>HandshakeCompletedEvent</code> class constructors and methods.

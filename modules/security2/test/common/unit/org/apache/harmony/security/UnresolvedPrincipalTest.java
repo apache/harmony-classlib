@@ -23,8 +23,8 @@ package org.apache.harmony.security;
 import java.security.Principal;
 
 import org.apache.harmony.security.UnresolvedPrincipal;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for <code>UnresolvedPrincipal</code>

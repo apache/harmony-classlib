@@ -35,9 +35,10 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
+import org.apache.harmony.security.cert.MyCertificate;
+
 import junit.framework.TestCase;
 
-import com.openintel.drl.security.cert.MyCertificate;
 
 /**
  * Tests for <code>Certificate</code> serialization
@@ -52,7 +53,7 @@ public class CertificateTest extends TestCase {
      * Input file name used for <code>Certificate</code> instance generation
      */
     private static final String certFileName =
-        com.openintel.drl.security.test.TestUtils.TEST_ROOT +
+        org.apache.harmony.security.test.TestUtils.TEST_ROOT +
         "java/security/cert/serialization/Certificate." +
         certType;
     /**

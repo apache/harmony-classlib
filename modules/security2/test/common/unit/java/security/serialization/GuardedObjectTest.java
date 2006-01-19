@@ -26,7 +26,8 @@ import java.io.Serializable;
 import java.security.Guard;
 import java.security.GuardedObject;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization tests for <code>GuardedObject</code>

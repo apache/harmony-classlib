@@ -30,7 +30,8 @@ import java.security.SecureRandom;
 import java.security.AlgorithmParameters;
 import java.nio.ByteBuffer;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>CipherSpi</code> class constructors and methods.

@@ -23,7 +23,8 @@ package javax.net.ssl;
 
 import javax.net.ssl.SSLProtocolException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>SSLProtocolException</code> class constructors and methods.

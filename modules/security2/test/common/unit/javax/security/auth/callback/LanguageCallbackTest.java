@@ -21,9 +21,10 @@
 
 package javax.security.auth.callback;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.util.Locale;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests LanguageCallback class

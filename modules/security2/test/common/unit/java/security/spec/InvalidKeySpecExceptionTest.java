@@ -23,7 +23,8 @@ package java.security.spec;
 
 import java.security.spec.InvalidKeySpecException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>InvalidKeySpecException</code> class constructors and

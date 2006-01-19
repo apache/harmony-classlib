@@ -21,9 +21,10 @@
 
 package java.security.cert;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.security.InvalidAlgorithmParameterException;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

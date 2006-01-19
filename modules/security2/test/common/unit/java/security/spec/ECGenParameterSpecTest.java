@@ -21,7 +21,7 @@
 
 package java.security.spec;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>ECGenParameterSpec</code> class fields and methods.

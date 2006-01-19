@@ -21,8 +21,9 @@
 
 package java.security.spec;
 
-import com.openintel.drl.security.spec.MyEncodedKeySpec;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.spec.MyEncodedKeySpec;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>EncodedKeySpec</code> class fields and methods.

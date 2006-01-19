@@ -26,7 +26,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization tests for <code>Permissions</code>

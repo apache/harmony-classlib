@@ -26,8 +26,8 @@ import java.security.*;
 import java.util.Enumeration;
 
 import org.apache.harmony.security.SystemScope;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Unit test for class org.apache.harmony.security.SystemScope 

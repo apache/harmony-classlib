@@ -27,8 +27,8 @@ import java.security.cert.CertPath;
 import java.util.Date;
 
 import org.apache.harmony.security.TestCertUtils;
+import org.apache.harmony.security.test.SerializationTest;
 
-import com.openintel.drl.security.test.SerializationTest;
 
 /**
  * Serialization tests for <code>CodeSigner</code>

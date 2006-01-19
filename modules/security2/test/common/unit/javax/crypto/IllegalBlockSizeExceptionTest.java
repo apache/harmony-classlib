@@ -23,7 +23,8 @@ package javax.crypto;
 
 import javax.crypto.IllegalBlockSizeException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>IllegalBlockSizeException</code> class constructors and

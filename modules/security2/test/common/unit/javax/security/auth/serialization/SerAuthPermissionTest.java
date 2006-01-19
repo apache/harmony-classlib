@@ -23,7 +23,8 @@ package javax.security.auth.serialization;
 
 import javax.security.auth.AuthPermission;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization test for AuthPermission class

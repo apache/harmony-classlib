@@ -26,7 +26,8 @@ import java.util.List;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>KeyStoreBuilderParameters</code> class constructors and

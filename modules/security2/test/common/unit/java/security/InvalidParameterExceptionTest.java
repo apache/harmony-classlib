@@ -23,7 +23,8 @@ package java.security;
 
 import java.security.InvalidParameterException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>InvalidParameterException</code> class constructors and

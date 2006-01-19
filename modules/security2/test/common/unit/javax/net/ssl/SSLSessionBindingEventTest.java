@@ -26,7 +26,8 @@ import java.security.cert.Certificate;
 
 import javax.security.cert.X509Certificate;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>SSLSessionBindingEvent</code> class constructors and methods.

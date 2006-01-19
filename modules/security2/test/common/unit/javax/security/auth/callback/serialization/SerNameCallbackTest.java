@@ -23,7 +23,8 @@ package javax.security.auth.callback.serialization;
 
 import javax.security.auth.callback.NameCallback;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization test for NameCallback class

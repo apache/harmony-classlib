@@ -28,7 +28,8 @@ import java.security.UnrecoverableKeyException;
 
 import javax.net.ssl.KeyManagerFactorySpi;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>KeyManagerFactorySpi</code> class constructors and methods.

@@ -22,8 +22,9 @@
 package javax.security.auth.x500.serialization;
 
 
-import com.openintel.drl.security.test.SerializationTest;
 import javax.security.auth.x500.X500Principal; 
+
+import org.apache.harmony.security.test.SerializationTest;
 
 /**
  * Serialization test for X500Principal class

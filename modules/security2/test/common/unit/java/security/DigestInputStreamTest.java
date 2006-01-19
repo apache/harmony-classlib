@@ -28,11 +28,11 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.util.Arrays;
 
 import org.apache.harmony.security.MDGoldenData;
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for fields and methods of class <code>DigestInputStream</code>

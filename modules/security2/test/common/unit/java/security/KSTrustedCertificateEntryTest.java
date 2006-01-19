@@ -21,9 +21,10 @@
 
 package java.security;
 
-import com.openintel.drl.security.cert.MyCertificate;
-import com.openintel.drl.security.test.PerformanceTest;
 import java.security.cert.Certificate;
+
+import org.apache.harmony.security.cert.MyCertificate;
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>KeyStore.TrustedCertificateEntry</code> class constructor and methods 

@@ -26,8 +26,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
 
 import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for <code>SignedObject</code> constructor and methods

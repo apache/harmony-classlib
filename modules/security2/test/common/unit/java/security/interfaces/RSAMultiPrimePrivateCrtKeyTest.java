@@ -21,11 +21,12 @@
 
 package java.security.interfaces;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.math.BigInteger;
 import java.security.interfaces.RSAMultiPrimePrivateCrtKey;
 import java.security.spec.RSAOtherPrimeInfo;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>RSAMultiPrimePrivateCrtKey</code> class field

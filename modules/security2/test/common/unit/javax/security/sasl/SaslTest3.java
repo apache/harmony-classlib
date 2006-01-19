@@ -21,7 +21,6 @@
 
 package javax.security.sasl;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.io.IOException;
 import java.security.Provider;
@@ -36,6 +35,7 @@ import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Test for Sasl class

@@ -28,7 +28,8 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509ExtendedKeyManager;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>X509ExtendedKeyManager</code> class constructors and methods.

@@ -22,9 +22,10 @@
 package java.security;
 
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import javax.security.auth.callback.CallbackHandler;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>KeyStore.CallbackHandlerProtection> class constructor and methods

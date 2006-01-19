@@ -25,7 +25,8 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.LanguageCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization test for UnsupportedCallbackException class

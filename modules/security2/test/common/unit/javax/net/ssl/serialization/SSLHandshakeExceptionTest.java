@@ -23,7 +23,8 @@ package javax.net.ssl.serialization;
 
 import javax.net.ssl.SSLHandshakeException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Test for SSLHandshakeException seialization

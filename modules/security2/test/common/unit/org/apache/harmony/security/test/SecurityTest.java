@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.test;
+package org.apache.harmony.security.test;
 
 import java.security.AccessControlContext;
 import java.security.AccessControlException;

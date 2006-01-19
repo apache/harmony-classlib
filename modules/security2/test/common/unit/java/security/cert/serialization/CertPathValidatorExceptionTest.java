@@ -25,7 +25,8 @@ import java.security.cert.CertPath;
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.myCertPath;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Test for CertPathValidatorException seialization

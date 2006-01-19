@@ -21,12 +21,12 @@
 
 package java.security;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.math.BigInteger;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>KeyPairGenerator</code> class constructors and methods.

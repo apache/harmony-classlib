@@ -23,7 +23,8 @@ package javax.security.cert.serialization;
 
 import javax.security.cert.CertificateParsingException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Test for CertificateParsingException seialization

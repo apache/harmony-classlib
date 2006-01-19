@@ -25,9 +25,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
-import com.openintel.drl.security.cert.MyCertPath;
-import com.openintel.drl.security.cert.TestUtils;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.MyCertPath;
+import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>PKIXCertPathBuilderResult</code>

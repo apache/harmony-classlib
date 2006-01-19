@@ -23,7 +23,8 @@ package javax.security.cert;
 
 import javax.security.cert.CertificateExpiredException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>DigestException</code> class constructors and methods.

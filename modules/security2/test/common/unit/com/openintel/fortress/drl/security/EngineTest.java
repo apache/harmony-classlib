@@ -25,7 +25,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 import com.openintel.fortress.drl.security.Engine;
 import com.openintel.fortress.drl.security.Services;
 

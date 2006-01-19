@@ -23,7 +23,8 @@ package javax.crypto.serialization;
 
 import javax.crypto.BadPaddingException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Test for BadPaddingException seialization

@@ -33,7 +33,8 @@ import java.util.Map;
 import javax.security.auth.AuthPermission;
 import javax.security.auth.login.AppConfigurationEntry;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests default configuration implementation.  

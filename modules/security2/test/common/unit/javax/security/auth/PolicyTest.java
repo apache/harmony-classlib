@@ -33,8 +33,9 @@ import java.security.Security;
 import java.security.cert.Certificate;
 import java.util.Enumeration;
 
-import com.openintel.drl.security.test.PerformanceTest;
-import com.openintel.drl.security.test.SecurityChecker;
+import org.apache.harmony.security.test.PerformanceTest;
+import org.apache.harmony.security.test.SecurityChecker;
+
 
 /**
  * Tests Policy class

@@ -35,9 +35,10 @@ import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
+import org.apache.harmony.security.cert.MyCertPath;
+
 import junit.framework.TestCase;
 
-import com.openintel.drl.security.cert.MyCertPath;
 
 /**
  * Tests for <code>CertPath</code> serialization
@@ -57,7 +58,7 @@ public class CertPathTest extends TestCase {
      * Input file name used for <code>CertPath</code> instance generation
      */
     private static final String certPathFileName =
-        com.openintel.drl.security.test.TestUtils.TEST_ROOT +
+        org.apache.harmony.security.test.TestUtils.TEST_ROOT +
         "java/security/cert/serialization/CertPath." +
         certPathEncoding;
     /**

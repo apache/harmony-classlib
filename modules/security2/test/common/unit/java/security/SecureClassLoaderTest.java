@@ -26,7 +26,8 @@ import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
 import java.security.cert.Certificate;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Unit test for SecureClassLoader.

@@ -21,9 +21,10 @@
 
 package java.security;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import javax.crypto.SecretKey;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>KeyStore.SecretKeyEntry</code> class constructor and methods 

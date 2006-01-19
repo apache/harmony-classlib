@@ -21,7 +21,6 @@
 
 package java.security.cert;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -29,6 +28,8 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>CertificateFactorySpi</code> class constructors and methods

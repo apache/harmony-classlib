@@ -21,8 +21,6 @@
 
 package java.security;
 
-import com.openintel.drl.security.test.PerformanceTest;
-import com.openintel.drl.security.test.TestUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +34,8 @@ import java.util.Enumeration;
 
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.test.PerformanceTest;
+import org.apache.harmony.security.test.TestUtils;
 
 /**
  * Tests for <code>KeyStore.Builder</code> class

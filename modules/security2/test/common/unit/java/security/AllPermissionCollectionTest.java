@@ -24,7 +24,8 @@ package java.security;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>AllPermissionCollection</code>

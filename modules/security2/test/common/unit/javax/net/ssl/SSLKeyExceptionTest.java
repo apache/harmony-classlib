@@ -23,7 +23,8 @@ package javax.net.ssl;
 
 import javax.net.ssl.SSLKeyException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>SSLKeyException</code> class constructors and methods.

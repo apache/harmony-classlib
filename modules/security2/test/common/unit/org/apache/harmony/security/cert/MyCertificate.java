@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.cert;
+package org.apache.harmony.security.cert;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

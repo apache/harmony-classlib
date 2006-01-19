@@ -21,7 +21,7 @@
 
 package javax.security.auth.login;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests CredentialExpiredException class

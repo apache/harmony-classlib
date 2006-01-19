@@ -24,8 +24,9 @@ package java.security.cert;
 import java.util.Collection;
 import java.util.Vector;
 
-import com.openintel.drl.security.cert.MyCertificate;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.MyCertificate;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>CollectionCertStoreParameters</code>

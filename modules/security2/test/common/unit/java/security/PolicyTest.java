@@ -25,9 +25,10 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 
+import org.apache.harmony.security.test.PerformanceTest;
+import org.apache.harmony.security.test.SecurityChecker;
+
 import com.openintel.fortress.drl.security.DefaultPolicy;
-import com.openintel.drl.security.test.PerformanceTest;
-import com.openintel.drl.security.test.SecurityChecker;
 
 /**
  * Tests for <code>Policy</code>

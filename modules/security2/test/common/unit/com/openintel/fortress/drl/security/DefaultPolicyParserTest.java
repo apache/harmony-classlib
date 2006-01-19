@@ -32,8 +32,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.harmony.security.PolicyEntry;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for DefaultPolicyParser

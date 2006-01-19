@@ -39,10 +39,10 @@ import java.util.Arrays;
 
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.test.TestUtils;
 
 import junit.framework.TestCase;
 
-import com.openintel.drl.security.test.TestUtils;
 
 /**
  * Tests for <code>KeyPair</code> serialization

@@ -23,7 +23,8 @@ package java.security.serialization;
 
 import java.security.PrivilegedActionException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization testing for PrivilegedActionException.

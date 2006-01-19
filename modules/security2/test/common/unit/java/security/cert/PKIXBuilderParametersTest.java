@@ -28,8 +28,9 @@ import java.security.KeyStoreException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.openintel.drl.security.cert.TestUtils;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>PKIXBuilderParameters</code> fields and methods

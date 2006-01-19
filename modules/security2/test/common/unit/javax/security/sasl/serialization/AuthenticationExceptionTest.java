@@ -22,7 +22,8 @@
 package javax.security.sasl.serialization;
 
 import javax.security.sasl.AuthenticationException;
-import com.openintel.drl.security.test.SerializationTest;
+
+import org.apache.harmony.security.test.SerializationTest;
 
 /**
  * Test for AuthoricationException seialization

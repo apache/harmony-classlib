@@ -28,10 +28,10 @@ import java.security.NoSuchProviderException;
 import java.security.Provider;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.cert.MyCertPath;
+import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.cert.MyCertPath;
-import com.openintel.drl.security.cert.TestUtils;
-import com.openintel.drl.security.test.PerformanceTest;
 /**
  * Tests for <code>CertPathValidator</code> class  methods.
  * 

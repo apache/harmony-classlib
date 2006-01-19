@@ -24,8 +24,9 @@ package java.security;
 import java.security.cert.CertPath;
 import java.util.Date;
 
-import com.openintel.drl.security.cert.MyCertPath;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.MyCertPath;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>Timestamp</code> class fields and methods

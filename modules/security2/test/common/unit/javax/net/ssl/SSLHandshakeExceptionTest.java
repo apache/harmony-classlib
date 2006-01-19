@@ -23,7 +23,8 @@ package javax.net.ssl;
 
 import javax.net.ssl.SSLHandshakeException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>SSLHandshakeException</code> class constructors and

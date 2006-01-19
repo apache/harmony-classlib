@@ -26,7 +26,8 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 
 import javax.net.ssl.TrustManagerFactorySpi;
-import com.openintel.drl.security.test.PerformanceTest;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for <code>TrustManagerFactorySpi</code> class constructors and

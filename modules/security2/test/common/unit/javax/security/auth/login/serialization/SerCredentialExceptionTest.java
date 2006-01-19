@@ -24,7 +24,8 @@ package javax.security.auth.login.serialization;
 
 import javax.security.auth.login.CredentialException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization test for AccountException class

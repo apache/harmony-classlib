@@ -24,7 +24,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>DefaultSSLServerSocketFactory</code> class constructors and methods.

@@ -27,8 +27,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import org.apache.harmony.security.MDGoldenData;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for fields and methods of class <code>DigestInputStream</code>

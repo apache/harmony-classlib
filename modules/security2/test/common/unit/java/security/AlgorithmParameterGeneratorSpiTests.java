@@ -21,9 +21,10 @@
 
 package java.security;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.security.spec.AlgorithmParameterSpec;
+
+import org.apache.harmony.security.test.PerformanceTest;
 
 
 /**

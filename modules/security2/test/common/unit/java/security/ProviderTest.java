@@ -31,9 +31,9 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.test.PerformanceTest;
+import org.apache.harmony.security.test.TestUtils;
 
-import com.openintel.drl.security.test.PerformanceTest;
-import com.openintel.drl.security.test.TestUtils;
 
 /**
  * Tests for <code>Provider</code> constructor and methods

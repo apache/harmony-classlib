@@ -23,7 +23,8 @@ package javax.crypto;
 
 import javax.crypto.BadPaddingException;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>BadPaddingException</code> class constructors and methods.

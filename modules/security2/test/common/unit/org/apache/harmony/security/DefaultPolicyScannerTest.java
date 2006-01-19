@@ -31,8 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.security.DefaultPolicyScanner;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * TODO Put your class description here

@@ -34,10 +34,10 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.cert.MyCertPath;
+import org.apache.harmony.security.cert.MyCertificate;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.cert.MyCertificate;
-import com.openintel.drl.security.cert.MyCertPath;
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for <code>CertificateFactory</code> class methods and constructor

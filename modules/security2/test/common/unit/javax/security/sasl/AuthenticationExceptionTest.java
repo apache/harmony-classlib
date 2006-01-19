@@ -21,7 +21,7 @@
 
 package javax.security.sasl;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
 
 /**
  * Tests for constructors and methods of AuthenticationException class

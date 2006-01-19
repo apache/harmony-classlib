@@ -21,13 +21,13 @@
 
 package javax.security.sasl;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 import java.security.Provider;
 import java.security.Security;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.test.PerformanceTest;
 
 import java.util.Enumeration;
 import java.util.Map;

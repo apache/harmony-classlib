@@ -23,7 +23,8 @@ package java.security;
 
 import java.util.*;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>UnresolvedPermissionCollection</code> class fields and methods

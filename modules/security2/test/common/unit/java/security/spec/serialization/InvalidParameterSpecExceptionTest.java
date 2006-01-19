@@ -23,7 +23,8 @@ package java.security.spec.serialization;
 
 import java.security.spec.InvalidParameterSpecException;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Test for InvalidParameterSpecException seialization 

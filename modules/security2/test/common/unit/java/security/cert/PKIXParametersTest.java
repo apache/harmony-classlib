@@ -32,8 +32,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.openintel.drl.security.cert.TestUtils;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>PKIXParameters</code> fields and methods

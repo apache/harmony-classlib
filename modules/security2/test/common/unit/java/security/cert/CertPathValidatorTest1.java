@@ -28,9 +28,9 @@ import java.security.Provider;
 import java.security.Security;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.cert.MyCertPath;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.cert.MyCertPath;
-import com.openintel.drl.security.test.PerformanceTest;
 
 
 

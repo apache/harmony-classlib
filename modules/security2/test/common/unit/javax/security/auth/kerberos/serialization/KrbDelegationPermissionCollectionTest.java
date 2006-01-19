@@ -29,7 +29,8 @@ import java.util.HashSet;
 
 import javax.security.auth.kerberos.DelegationPermission;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 
 /**

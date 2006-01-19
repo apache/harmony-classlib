@@ -23,9 +23,10 @@ package java.security.cert;
 
 import java.util.HashSet;
 
-import com.openintel.drl.security.cert.MyCertificate;
-import com.openintel.drl.security.cert.TestUtils;
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.cert.MyCertificate;
+import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>PKIXCertPathChecker</code>

@@ -40,10 +40,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.apache.harmony.security.test.SecurityTest;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import com.openintel.drl.security.test.SecurityTest;
 
 /**
  * Tests Subject and its innner classes implementation. 

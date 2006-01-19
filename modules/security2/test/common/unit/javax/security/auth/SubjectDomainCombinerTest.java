@@ -31,7 +31,8 @@ import java.security.Principal;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
 
-import com.openintel.drl.security.test.SecurityTest;
+import org.apache.harmony.security.test.SecurityTest;
+
 
 /**
  * Tests SubjectDomainCombiner class

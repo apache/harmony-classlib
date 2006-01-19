@@ -32,11 +32,11 @@ import java.security.cert.CertificateException;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.cert.MyCertificate;
+import org.apache.harmony.security.test.PerformanceTest;
 
 import java.util.Date;
 
-import com.openintel.drl.security.cert.MyCertificate;
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for <code>KeyStore</code> constructor and methods

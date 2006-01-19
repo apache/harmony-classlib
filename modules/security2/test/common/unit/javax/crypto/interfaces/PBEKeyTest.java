@@ -25,7 +25,8 @@ import java.math.BigInteger;
 
 import javax.crypto.interfaces.PBEKey;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>PBEKey</code> class field

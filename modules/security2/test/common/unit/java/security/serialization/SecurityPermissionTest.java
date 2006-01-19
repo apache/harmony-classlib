@@ -23,7 +23,8 @@ package java.security.serialization;
 
 import java.security.SecurityPermission;
 
-import com.openintel.drl.security.test.SerializationTest;
+import org.apache.harmony.security.test.SerializationTest;
+
 
 /**
  * Serialization tests for <code>SecurityPermission</code>

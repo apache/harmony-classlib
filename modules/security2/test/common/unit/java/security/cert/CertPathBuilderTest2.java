@@ -28,8 +28,8 @@ import java.security.Provider;
 import java.security.Security;
 
 import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Tests for CertPathBuilder class constructors and methods

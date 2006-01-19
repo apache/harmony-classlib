@@ -35,7 +35,8 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Tests for <code>PolicyUtils</code> class fields and methods.

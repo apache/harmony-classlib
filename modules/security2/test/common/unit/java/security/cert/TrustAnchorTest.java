@@ -31,9 +31,9 @@ import java.util.Arrays;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.test.PerformanceTest;
 
-import com.openintel.drl.security.cert.TestUtils;
-import com.openintel.drl.security.test.PerformanceTest;
 
 /**
  * Unit tests for <code>TrustAnchor</code>

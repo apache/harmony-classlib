@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package com.openintel.drl.security.spec;
+package org.apache.harmony.security.spec;
 
 import java.security.spec.EncodedKeySpec;
 

@@ -34,7 +34,8 @@ import java.util.Properties;
 
 import javax.security.auth.login.AppConfigurationEntry;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 import com.openintel.drlx.security.auth.login.DefaultConfigurationParser.InvalidFormatException;
 
 /**

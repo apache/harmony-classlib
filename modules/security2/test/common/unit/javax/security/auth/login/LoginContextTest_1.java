@@ -50,7 +50,8 @@ import javax.security.auth.spi.LoginModule;
 
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
 
-import com.openintel.drl.security.test.PerformanceTest;
+import org.apache.harmony.security.test.PerformanceTest;
+
 
 /**
  * Unit tests for LoginContext
