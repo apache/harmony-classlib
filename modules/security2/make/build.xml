@@ -120,9 +120,8 @@
         <property name="src.win.java" location="${src}/windows/javasrc" />
         <property name="src.linux.native" location="${src}/linux/other" />
         <property name="src.linux.java" location="${src}/linux/javasrc" />
-        <property name="src.windows.other" location="${basedir}/src/windows/other/com/openintel/drl/nativelib/windows" />
-        <property name="src.linux.other" location="${basedir}/src/linux/other/com/openintel/drl/nativelib/X11"/>
-
+        <property name="src.windows.other" location="${basedir}/src/windows/other/org/apache/harmony/nativelib/windows" />
+        <property name="src.linux.other" location="${basedir}/src/linux/other/org/apache/harmony/nativelib/X11"/>
         <property name="src.tst" value="${basedir}/test" />
         <property name="src.tst.common" value="${src.tst}/common" />
 
@@ -369,13 +368,6 @@
         >
 
         <include name="**/*.java"/>
-
-        <!--
-        <exclude name="com/openintel/drl/security/test/SecurityTest.java"/>
-        <exclude name="javax/security/auth/SubjectDomainCombinerTest.java"/>
-        <exclude name="javax/security/auth/SubjectTest.java"/>
-        <exclude name="javax/security/auth/login/LoginContextTest.java"/>
-        -->
 
         </javac>
     </target>
