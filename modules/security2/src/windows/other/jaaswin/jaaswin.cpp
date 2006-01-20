@@ -444,7 +444,7 @@ exit:
 }
 
 /*
- * Class:     com_openintel_drlx_security_auth_module_NTSystem
+ * Class:     org_apache_harmony_security_x_security_auth_module_NTSystem
  * Method:    free
  * Signature: ()V
  */
