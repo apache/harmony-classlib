@@ -26,3 +26,4 @@ javax/security/auth/x500/*
 javax/security/cert/*
 javax/security/sasl/*
 org/ietf/jgss/*
+org/apache/harmony/security/**/*
