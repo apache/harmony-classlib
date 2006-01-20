@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
@@ -34,6 +35,8 @@ import java.security.Permissions;
 import java.security.Policy;
 import java.security.PrivilegedAction;
 import java.security.Security;
+import java.security.UnresolvedPermission;
+import java.security.cert.Certificate;
 import java.util.Enumeration;
 import java.util.PropertyPermission;
 import java.util.Vector;
@@ -408,7 +411,69 @@ public class DefaultPolicy extends Policy {
 	 *            InputStream Stream containing the policy data
 	 */
 	private void readPolicy(InputStream data, URL source, boolean allowExpand) {
-		policyRead = false;
+		//		 get out if there is no InputStream
+		if (data == null)
+			return;
+
+		InputStreamReader dataReader = null;
+		try {
+			dataReader = new InputStreamReader(data, "UTF8");
+		} catch (UnsupportedEncodingException e1) {
+			// get out if encoding not available
+			return;
+		}
+		PolicyTokenizer parser = new PolicyTokenizer(dataReader);
+
+		String[] keystoreData = null;
+		// look for the keystore entry first so that parseGrant
+		// knows where to get certificates from
+		Vector thisPolicyGrantList = new Vector();
+		Vector unresolvedGrants = new Vector();
+		for (int tokenType = parser.nextToken(); !parser.isAtEOF(); tokenType = parser
+				.nextToken()) {
+			if (tokenType == PolicyTokenizer.TOK_STRING) {
+				// all base entries are either grant or keystore entries
+				if (parser.sval.equalsIgnoreCase("grant")) {
+					parseGrant(parser, source, thisPolicyGrantList,
+							unresolvedGrants, allowExpand);
+					continue;
+				}
+				if (parser.sval.equalsIgnoreCase("keystore")) {
+					if (keystoreData != null)
+						parser.skipTokens(';');
+					else {
+						keystoreData = new String[2];
+						parseKeystore(parser, keystoreData, allowExpand);
+					}
+					continue;
+				}
+				// if something other than a keystore or grant was reached
+				// then it was a parse error
+				grantList.removeAllElements();
+				break;
+			}
+			// quoted strings at this level are parse errors
+			grantList.removeAllElements();
+			break;
+		}
+
+		// Add corresponding certificates to each grant
+		Enumeration e = thisPolicyGrantList.elements();
+		while (e.hasMoreElements()) {
+			GrantHolder grant = (GrantHolder) e.nextElement();
+			java.security.cert.Certificate[] certs = null;
+			String signedBy = grant.getSigner();
+
+			if (certs != null) {
+				CodeSource cs = new CodeSource(grant.getCodeSource()
+						.getLocation(), certs);
+				grant.setCodeSource(cs);
+			}
+
+			if (signedBy == null || certs != null)
+				addGrant(grant);
+		}
+		policyRead = true;
 	}
 
 	/**
@@ -682,5 +747,274 @@ public class DefaultPolicy extends Policy {
 		}
 
 		return orgURL;
+	}
+	
+	/**
+	 * read and parse a grant entry
+	 * 
+	 */
+	private void parseGrant(PolicyTokenizer parser, URL source,
+			Vector thisPolicyGrantList, Vector unresolvedGrants,
+			boolean allowExpand) {
+		// constants for the parsing FSM
+		final int EXPECT_PERMISSION = 1;
+		final int EXPECT_PERMISSION_KEYWORD = 2;
+		final int EXPECT_SIGNEDBY_KEYWORD = 3;
+		final int EXPECT_NAME = 4;
+		final int EXPECT_ACTION = 5;
+		final int EXPECT_SIGNEDBY = 6;
+		// flag to throw away the entire grant entry
+		boolean invalidGrant = false;
+
+		String codeBase = null;
+		String signedBy = null;
+		while (!parser.isAtEOF()) {
+			if (parser.nextToken() == PolicyTokenizer.TOK_CHAR) {
+				if (parser.cval == '{')
+					break;
+				// codebase and signer entries can be coma-separated
+				if (parser.cval == ','
+						&& (codeBase != null || signedBy != null))
+					continue;
+				// invalid grant
+				parser.sval = String.valueOf(parser.cval);
+			}
+			// a codeBase can be followed by a string giving a location
+			if (parser.sval.equalsIgnoreCase("codeBase")) {
+				if (parser.nextToken() != PolicyTokenizer.TOK_QUOTEDSTRING) {
+					/*
+					 * [MSG "K00a2", "Parsing policy file: {0}, expected quoted
+					 * {1}, found unquoted: {2}"]
+					 */
+					System.out.println(com.ibm.oti.util.Msg.getString("K00a2",
+							new Object[] { source, "codeBase", parser.sval }));
+					invalidGrant = true;
+					break;
+				}
+				// expand any tags in the codebase
+				if ((codeBase = expandTags(parser.sval, false, allowExpand)) == null) {
+					invalidGrant = true;
+					break;
+				}
+				// a codeBase is always specified as a URL, so if this is a
+				// windows system, convert all the \\ to /
+				codeBase = codeBase.replace('\\', '/');
+			} else if (parser.sval.equalsIgnoreCase("signedBy")) {
+				if (parser.nextToken() != PolicyTokenizer.TOK_QUOTEDSTRING) {
+					/*
+					 * [MSG "K00a2", "Parsing policy file: {0}, expected quoted
+					 * {1}, found unquoted: {2}"]
+					 */
+					System.out.println(com.ibm.oti.util.Msg.getString("K00a2",
+							new Object[] { source, "signedBy", parser.sval }));
+					invalidGrant = true;
+					continue;
+				}
+				signedBy = parser.sval;
+			} else {
+				/*
+				 * [MSG "K00a3", "Parsing policy file: {0}, found unexpected:
+				 * {1}"]
+				 */
+				System.out.println(com.ibm.oti.util.Msg.getString("K00a3",
+						source, parser.sval));
+				invalidGrant = true;
+				break;
+			}
+		}
+
+		// re-use a GrantHolder from the Hashtable if there already is one
+		// matching
+		// the codesource and signers of this entry
+		GrantHolder thisGrant = null;
+		try {
+			CodeSource grantCS = null;
+			// Generate a codesource name, must be the same
+			// as the name generated by the class loader
+			URL hisURL = null;
+			if (codeBase != null) {
+				hisURL = toCanonicalURL(new URL(codeBase));
+			}
+			grantCS = new CodeSource(hisURL, (Certificate[])null);
+			// if a new GrantHolder is needed, create one
+			if (thisGrant == null)
+				thisGrant = new GrantHolder();
+			thisGrant.setCodeSource(grantCS);
+		} catch (MalformedURLException e) {
+			// throw out the entire grant if its URL can't be parsed
+			invalidGrant = true;
+			/*
+			 * [MSG "K00a8", "Parsing policy file: {0}, invalid codesource URL:
+			 * {1}"]
+			 */
+			System.out.println(com.ibm.oti.util.Msg.getString("K00a8", source,
+					codeBase));
+		}
+		if (invalidGrant) {
+			// if there was a parsing failure, throw away the entire
+			// grant entry and move on
+			parser.skipTokens('}');
+			parser.skipTokens(';');
+			return;
+		}
+
+		thisGrant.setSigner(signedBy);
+		// parse permission entries
+		int expect = EXPECT_PERMISSION_KEYWORD;
+		String permissionClass = null;
+		String permissionName = null;
+		String permissionAction = null;
+		String permissionSigners = null;
+		while (!parser.isAtEOF()) {
+			int type = parser.nextToken();
+			if (type == PolicyTokenizer.TOK_CHAR) {
+				if (parser.cval == '}') {
+					if (parser.nextToken() == PolicyTokenizer.TOK_CHAR) {
+						if (parser.cval == ';')
+							break;
+						parser.sval = String.valueOf(parser.cval);
+					}
+					type = -1; // cause an error
+					// semicolon ends the current permission entry
+				} else if (parser.cval == ';') {
+					// perform any tag expansions on the permissionName and
+					// Action
+					if (permissionName != null) {
+						permissionName = expandTags(permissionName, false,
+								allowExpand);
+						if (permissionName == null)
+							continue;
+					}
+					if (permissionAction != null) {
+						permissionAction = expandTags(permissionAction, false,
+								allowExpand);
+						if (permissionAction == null)
+							continue;
+					}
+					// create the approprate Permission object for this entry
+					Permission newPermission = createPermission(
+							permissionClass, permissionName, permissionAction);
+					if (newPermission != null) {
+						thisGrant.addPermission(newPermission);
+					} else {
+						if (permissionSigners == null) {
+							thisGrant.addPermission(new UnresolvedPermission(
+									permissionClass, permissionName,
+									permissionAction, null));
+						}
+					}
+					permissionClass = null;
+					permissionName = null;
+					permissionAction = null;
+					expect = EXPECT_PERMISSION_KEYWORD;
+					continue;
+				} else if (parser.cval == ',') {
+					continue;
+				} else {
+					// invalid
+					parser.sval = String.valueOf(parser.cval);
+				}
+			}
+
+			if (type == PolicyTokenizer.TOK_QUOTEDSTRING) {
+				switch (expect) {
+				case EXPECT_NAME:
+					permissionName = parser.sval;
+					expect = EXPECT_ACTION;
+					continue;
+				case EXPECT_ACTION:
+					permissionAction = parser.sval;
+					expect = EXPECT_SIGNEDBY_KEYWORD;
+					continue;
+				case EXPECT_SIGNEDBY:
+					permissionSigners = parser.sval;
+					expect = 0;
+					continue;
+				}
+				// permission must be followed by the object name
+			} else if (type == PolicyTokenizer.TOK_STRING) {
+				switch (expect) {
+				case EXPECT_PERMISSION:
+					permissionClass = parser.sval;
+					expect = EXPECT_NAME;
+					continue;
+				case EXPECT_PERMISSION_KEYWORD:
+					if (parser.sval.equalsIgnoreCase("permission")) {
+						expect = EXPECT_PERMISSION;
+						continue;
+					}
+					break;
+				case EXPECT_SIGNEDBY_KEYWORD:
+				case EXPECT_NAME:
+				case EXPECT_ACTION:
+					if (parser.sval.equalsIgnoreCase("signedBy")) {
+						expect = EXPECT_SIGNEDBY;
+						continue;
+					}
+					break;
+				}
+			}
+			/* [MSG "K00a3", "Parsing policy file: {0}, found unexpected: {1}"] */
+			System.out.println(com.ibm.oti.util.Msg.getString("K00a3",
+					new Object[] { source, parser.sval }));
+			invalidGrant = true;
+			break;
+		}
+		if ((!invalidGrant) || (thisGrant.getPermissions() == null))
+			thisPolicyGrantList.addElement(thisGrant);
+	}
+
+	/**
+	 * and stores the keystore entry if there isn't one already stored
+	 * 
+	 * @param parser
+	 *            PolicyTokenizer
+	 */
+	private void parseKeystore(PolicyTokenizer parser, String[] values,
+			boolean allowExpand) {
+		// parse the keystore entry and store it
+		final int EXPECT_URL = 1;
+		final int EXPECT_TYPE = 2;
+		final int EXPECT_END = 3;
+		int expect = EXPECT_URL;
+		while (!parser.isAtEOF()) {
+			switch (parser.nextToken()) {
+			case PolicyTokenizer.TOK_CHAR:
+				if (parser.cval == ';')
+					return;
+				break;
+			case PolicyTokenizer.TOK_QUOTEDSTRING:
+				if (expect == EXPECT_URL) {
+					expect = EXPECT_TYPE;
+					String keyURL = expandTags(parser.sval, true, allowExpand);
+					values[0] = keyURL.replace('\\', '/');
+					break;
+				}
+				if (expect == EXPECT_TYPE) {
+					expect = EXPECT_END;
+					values[1] = parser.sval;
+					break;
+				}
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * @param grant
+	 */
+	private void addGrant(GrantHolder grant) {
+		// Signer no longer required, the certificates have been added
+		grant.setSigner(null);
+		for (int i = 0; i < grantList.size(); i++) {
+			GrantHolder existingGrant = (GrantHolder) grantList.elementAt(i);
+			if (existingGrant.getCodeSource().equals(grant.getCodeSource())) {
+				Enumeration egl = grant.getPermissions().elements();
+				while (egl.hasMoreElements())
+					existingGrant.addPermission((Permission) egl.nextElement());
+				return;
+			}
+		}
+		grantList.addElement(grant);
 	}
 }
