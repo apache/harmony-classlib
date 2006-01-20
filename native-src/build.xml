@@ -97,6 +97,11 @@
             output="${target.platform}/build.log">
             <arg line="all" />
         </exec>
+    	
+       <!-- gmj : HACK : the binary for security2 -->
+
+    	<ant dir="../modules/security2/"  antfile="make/build.xml" />
+
     </target>
 
 
@@ -110,6 +115,7 @@
             output="${target.platform}/build.log">
             <arg line="clean" />
         </exec>
+    	
     </target>
 
 
@@ -157,6 +163,14 @@
                 <include name="jniport.h" />
             </fileset>
         </copy>
+    	
+    	<!-- gmj : HACK :  copy the binaries for security2 -->
+    	
+        <copy todir="${target.output}/jre/bin" overwrite="yes"
+        	    verbose="true"
+        		file ="../modules/security2/build/deploy/jre/bin/jaaswin.dll" />
+
+
     </target>
 
 
