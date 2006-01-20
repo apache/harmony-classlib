@@ -316,7 +316,7 @@
 
 
     <target name="build.native">
-        <!-- Building the clear-red native code -->
+        <!-- Building the native code -->
 
         <echo message="jni_h.path=${jni_h.path}"/>
         <echo message="jni_md_h.path=${jni_md_h.path}"/>
