@@ -30,6 +30,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(ArraysTest.class);
 		suite.addTestSuite(CollectionsTest.class);
+		suite.addTestSuite(IdentityHashMapTest.class);
 		//$JUnit-END$
 		return suite;
 	}

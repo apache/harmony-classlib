@@ -69,6 +69,12 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 * the Identityhashmap and the iterator
 	 */
 	transient int modCount = 0;
+	
+	/* Object used to represent null keys and values. 
+	 * This is used to differentiate a literal 'null' key
+	 * value pair from an empty spot in the map.
+	 */
+	private static final Object NULL_OBJECT = new Object();
 
 	static class IdentityHashMapEntry extends MapEntry {
 		IdentityHashMapEntry(Object theKey, Object theValue) {
@@ -121,11 +127,9 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 
 		public boolean hasNext() {
 			while (position < associatedMap.elementData.length) {
-				// check if position is an empty spot, not just an entry with
-				// null key
-				if (associatedMap.elementData[position] == null
-						&& associatedMap.elementData[position + 1] == null)
-					position = position + 2;
+				// if this is an empty spot, go to the next one
+				if (associatedMap.elementData[position] == null)
+					position += 2;
 				else
 					return true;
 			}
@@ -139,26 +143,23 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 
 		public Object next() {
 			checkConcurrentMod();
-			if (!hasNext())
-				throw new NoSuchElementException();
-
-			IdentityHashMapEntry result = new IdentityHashMapEntry(
-					associatedMap.elementData[position],
-					associatedMap.elementData[position + 1]);
+			if (!hasNext()) throw new NoSuchElementException();
+			
+			IdentityHashMapEntry result = associatedMap.getEntry(position);
 			lastPosition = position;
 			position += 2;
-
+			
 			canRemove = true;
 			return type.get(result);
 		}
 
 		public void remove() {
 			checkConcurrentMod();
-			if (!canRemove)
-				throw new IllegalStateException();
-
+			if (!canRemove) throw new IllegalStateException();
+			
 			canRemove = false;
 			associatedMap.remove(associatedMap.elementData[lastPosition]);
+			position = lastPosition;
 			expectedModCount++;
 		}
 	}
@@ -278,6 +279,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		for (int i = 0; i < elementData.length; i++) {
 			elementData[i] = null;
 		}
+		modCount ++;
 	}
 
 	/**
@@ -288,13 +290,12 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 * @return true if <code>key</code> is a key of this Map, false otherwise
 	 */
 	public boolean containsKey(Object key) {
-		int index = findIndex(key, elementData);
-		if (key != null)
-			return elementData[index] == key;
-		// if key is null, we have to make sure
-		// what we found is not one of the empty spots
-		return (elementData[index] == null && elementData[index + 1] != null);
+		if (key == null) {
+			key = NULL_OBJECT;
+		}
 
+		int index = findIndex(key, elementData);
+		return elementData[index] == key;
 	}
 
 	/**
@@ -307,14 +308,13 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 *         otherwise
 	 */
 	public boolean containsValue(Object value) {
+		if (value == null) {
+			value = NULL_OBJECT;
+		}
+
 		for (int i = 1; i < elementData.length; i = i + 2) {
 			if (elementData[i] == value) {
-				if (value != null)
-					return true;
-				// if value is null, we have to make sure what we found is
-				// not one of the empty spots
-				if (elementData[i - 1] != null)
-					return true;
+				return true;
 			}
 		}
 		return false;
@@ -328,20 +328,49 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 * @return the value of the mapping with the specified key
 	 */
 	public Object get(Object key) {
+		if (key == null) {
+			key = NULL_OBJECT;
+		}
+
 		int index = findIndex(key, elementData);
 
-		if (elementData[index] == key)
-			return elementData[index + 1];
-		
+		if (elementData[index] == key) {
+			Object result = elementData[index + 1];
+			return (result == NULL_OBJECT) ? null : result;
+		}
+
 		return null;
 	}
 
 	private IdentityHashMapEntry getEntry(Object key) {
+		if (key == null) {
+			key = NULL_OBJECT;
+		}
+
 		int index = findIndex(key, elementData);
-		if (elementData[index] == key)
-			return new IdentityHashMapEntry(key, elementData[index + 1]);
-		
+		if (elementData[index] == key) {
+			return getEntry(index);
+		}
+
 		return null;
+	}
+
+	/**
+	 * Convenience method for getting the IdentityHashMapEntry without the
+	 * NULL_OBJECT elements
+	 */
+	private IdentityHashMapEntry getEntry(int index) {
+		Object key = elementData[index];
+		Object value = elementData[index + 1];
+
+		if (key == NULL_OBJECT) {
+			key = null;
+		}
+		if (value == NULL_OBJECT) {
+			value = null;
+		}
+
+		return new IdentityHashMapEntry(key, value);
 	}
 
 	/**
@@ -353,9 +382,13 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		int index = getModuloHash(key, length);
 		int last = (index + length - 2) % length;
 		while (index != last) {
-			if (array[index] == key
-					|| (array[index] == null && array[index + 1] == null))
+			if (array[index] == key || (array[index] == null)) {
+				/*
+				 * Found the key, or the next empty spot (which means key is not
+				 * in the table)
+				 */
 				break;
+			}
 			index = (index + 2) % length;
 		}
 		return index;
@@ -376,14 +409,18 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 *         if there was no mapping
 	 */
 	public Object put(Object key, Object value) {
+		if (key == null) {
+			key = NULL_OBJECT;
+		}
+
+		if (value == null) {
+			value = NULL_OBJECT;
+		}
+
 		int index = findIndex(key, elementData);
 
 		// if the key doesn't exist in the table
-		if (elementData[index] != key
-				|| (key == null && elementData[index + 1] == null)) {
-			// if key is null, and value is null
-			// this is one of the empty spots, there is not entry for key "null"
-			// in the table
+		if (elementData[index] != key) {
 			modCount++;
 			if (++size > threshold) {
 				rehash();
@@ -398,7 +435,8 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		// insert value to where it needs to go, return the old value
 		Object result = elementData[index + 1];
 		elementData[index + 1] = value;
-		return result;
+
+		return (result == NULL_OBJECT) ? null : result;
 	}
 
 	private void rehash() {
@@ -408,9 +446,8 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		Object[] newData = newElementArray(newlength);
 		for (int i = 0; i < elementData.length; i = i + 2) {
 			Object key = elementData[i];
-			if (key != null || (key == null && elementData[i + 1] != null)) { // if
-				// not
-				// empty
+			if (key != null) {
+				// if not empty
 				int index = findIndex(key, newData);
 				newData[index] = key;
 				newData[index + 1] = elementData[i + 1];
@@ -433,16 +470,20 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 *         this Map
 	 */
 	public Object remove(Object key) {
-		boolean hashedOk;
+		if (key == null) {
+			key = NULL_OBJECT;
+		}
 
+		boolean hashedOk;
 		int index, next, hash;
 		Object result, object;
 		index = next = findIndex(key, elementData);
 
+		if (elementData[index] != key)
+			return null;
+
 		// store the value for this key
 		result = elementData[index + 1];
-		if (result == null && key == null)
-			return null;
 
 		// shift the following elements up if needed
 		// until we reach an empty spot
@@ -450,7 +491,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		while (true) {
 			next = (next + 2) % length;
 			object = elementData[next];
-			if (object == null && elementData[next + 1] == null)
+			if (object == null)
 				break;
 
 			hash = getModuloHash(object, length);
@@ -462,7 +503,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 			}
 			if (!hashedOk) {
 				elementData[index] = object;
-				elementData[index + 1] = elementData[next];
+				elementData[index + 1] = elementData[next + 1];
 				index = next;
 			}
 		}
@@ -474,7 +515,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		elementData[index] = null;
 		elementData[index + 1] = null;
 
-		return result;
+		return (result == NULL_OBJECT) ? null : result;
 	}
 
 	/**
@@ -559,6 +600,17 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 							return entry.value;
 						}
 					}, IdentityHashMap.this);
+				}
+				
+				public boolean remove(Object object) {
+					Iterator it = iterator();
+					while (it.hasNext()) {
+						if (object == it.next()) {
+							it.remove();
+							return true;
+						}
+					}
+					return false;
 				}
 			};
 		}
