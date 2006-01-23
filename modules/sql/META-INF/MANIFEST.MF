@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony SQL
+Bundle-SymbolicName: org.apache.harmony.sql
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Eclipse-JREBundle: true
+Export-Package: java.sql
+Import-Package: java.lang,
+Require-Bundle: org.apache.harmony.luni
