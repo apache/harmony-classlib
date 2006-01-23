@@ -150,36 +150,42 @@
     <target name="init.java_home">
 
         <property name="JAVA_HOME" value="${env.JAVA_HOME}" />
-        <property name="jni_h.path"    location="${env.JAVA_HOME}/include"/>
+<!--        <property name="jni_h.path"    location="${env.JAVA_HOME}/include"/> -->
         <echo message="JAVA_HOME=${JAVA_HOME}"/>
 
     </target>
 
     <target name="init.win" depends="init, init.java_home" if="if.win">
-        <property name="cPath" value="${PATH};${env.Path}" />
-        <property name="cINCLUDE" value="${INCLUDE};${env.include};${env.INCLUDE}" />
+    	
+    	<property name="native.include.path" value="../../native-src/win.IA32/include" />
+
+    	<property name="cPath" value="${PATH};${env.Path}" />
+        <property name="cINCLUDE" value="${INCLUDE};${env.include};${env.INCLUDE};${native.include.path}" />
         <property name="cLIB" value="${LIB};${env.lib};${env.LIB}" />
         <property name="src.java" value="${src.win.java}" />
         <property name="compile.native.tail" value="windows" />
 
         <property name="src.tst.common.ps" value="${src.tst}/windows" />
 
-        <property name="jni_md_h.path" location="${env.JAVA_HOME}/include/win32"/>
+        <property name="jni_h.path"    location="${native.include.path}"/>
+        <property name="jni_md_h.path" location="${native.include.path}"/>
 
     </target>
 
     
     <target name="init.linux" depends="init, init.java_home" if="if.linux">
 
+       	<property name="native.include.path" value="../../native-src/linux.IA32/include" />
+
         <property name="cPath" value="${env.PATH}" />
-        <property name="cINCLUDE" value="${env.INCLUDE}" />
+        <property name="cINCLUDE" value="${env.INCLUDE};${native.include.path}" />
         <property name="cLIB" value="${env.LIB}" />
         <property name="src.java" value="${src.linux.java}" />
         <property name="compile.native.tail" value="linux" />
 
         <property name="src.tst.common.ps" value="${src.tst}/linux" />
 
-        <property name="jni_md_h.path" location="${env.JAVA_HOME}/include/linux"/>
+        <property name="jni_md_h.path" location="${native.include.path}"/>
 
     </target>
 
