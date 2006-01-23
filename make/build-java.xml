@@ -142,6 +142,14 @@
                 includesfile="${components.patternsets}/regex.txt" 
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
+    	
+        <!-- Create sql jar -->
+        <jar destfile="${components.output}/sql.jar" manifest="sql/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/sql.txt" 
+                excludesfile="${components.patternsets}/kernel.txt" />
+        </jar>
+
     </target>
 
 
@@ -162,8 +170,10 @@
 <!--  gmj : HACK :            <src path="security/src/main/java" /> -->
             <src path="security2/src/common/javasrc" />
             <src path="security2/src/windows/javasrc" />
-        	
+            
+        	<src path="sql/src/main/java" />        	
             <src path="text/src/main/java" />
+        	
             <classpath location="${build.output}" />
             <classpath>
                 <fileset dir="${depends.jars}">
