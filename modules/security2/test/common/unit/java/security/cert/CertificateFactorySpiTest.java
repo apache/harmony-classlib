@@ -36,13 +36,13 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertificateFactorySpiTests extends PerformanceTest {
+public class CertificateFactorySpiTest extends PerformanceTest {
     /**
-     * Constructor for CertStoreSpiTests.
+     * Constructor for CertStoreSpiTest.
      * 
      * @param arg0
      */
-    public CertificateFactorySpiTests(String arg0) {
+    public CertificateFactorySpiTest(String arg0) {
         super(arg0);
     }
 

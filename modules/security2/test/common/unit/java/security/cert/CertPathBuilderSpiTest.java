@@ -29,14 +29,14 @@ import java.security.InvalidAlgorithmParameterException;
  * 
  */
 
-public class CertPathBuilderSpiTests extends TestCase {
+public class CertPathBuilderSpiTest extends TestCase {
 
     /**
-     * Constructor for CertPathBuilderSpiTests.
+     * Constructor for CertPathBuilderSpiTest.
      * 
      * @param arg0
      */
-    public CertPathBuilderSpiTests(String arg0) {
+    public CertPathBuilderSpiTest(String arg0) {
         super(arg0);
     }
 

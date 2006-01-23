@@ -38,13 +38,13 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertPathBuilderTest1 extends PerformanceTest {
+public class CertPathBuilder1Test extends PerformanceTest {
 
     /**
      * Constructor for CertPathBuilderTests.
      * @param name
      */
-    public CertPathBuilderTest1(String name) {
+    public CertPathBuilder1Test(String name) {
         super(name);
     }
     public static final String srvCertPathBuilder = "CertPathBuilder";
@@ -369,7 +369,7 @@ public class CertPathBuilderTest1 extends PerformanceTest {
         }
     }
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(CertPathBuilderTest1.class);
+        junit.textui.TestRunner.run(CertPathBuilder1Test.class);
     }  
     
 }

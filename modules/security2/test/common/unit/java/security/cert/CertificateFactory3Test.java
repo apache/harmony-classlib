@@ -41,13 +41,13 @@ import org.apache.harmony.security.test.TestUtils;
  * Tests for <code>CertificateFactory</code> class methods
  */
 
-public class CertificateFactoryTest3 extends PerformanceTest {
+public class CertificateFactory3Test extends PerformanceTest {
 
     /**
      * Constructor for CertificateFactoryFileTests.
      * @param arg0
      */
-    public CertificateFactoryTest3(String arg0) {
+    public CertificateFactory3Test(String arg0) {
         super(arg0);
     }
     private static String defaultProviderName = null;
@@ -56,9 +56,9 @@ public class CertificateFactoryTest3 extends PerformanceTest {
 
     private static boolean X509Support = false;
 
-    private static String defaultType = CertificateFactoryTest1.defaultType;
+    private static String defaultType = CertificateFactory1Test.defaultType;
 
-    private final static String[] validValues = CertificateFactoryTest1.validValues;
+    private final static String[] validValues = CertificateFactory1Test.validValues;
 
     private final static String[] invalidValues = SpiEngUtils.invalidValues;
     
@@ -69,7 +69,7 @@ public class CertificateFactoryTest3 extends PerformanceTest {
 
     static {
         defaultProvider = SpiEngUtils.isSupport(defaultType,
-                CertificateFactoryTest1.srvCertificateFactory);
+                CertificateFactory1Test.srvCertificateFactory);
         X509Support = (defaultProvider != null);
         defaultProviderName = (X509Support ? defaultProvider.getName() : null);
         NotSupportMsg = defaultType.concat(" is not supported");

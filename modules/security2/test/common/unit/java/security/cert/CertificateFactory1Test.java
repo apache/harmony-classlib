@@ -44,14 +44,14 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertificateFactoryTest1 extends PerformanceTest {
+public class CertificateFactory1Test extends PerformanceTest {
 
     /**
      * Constructor for CertificateFactoryTests.
      * 
      * @param arg0
      */
-    public CertificateFactoryTest1(String arg0) {
+    public CertificateFactory1Test(String arg0) {
         super(arg0);
     }
 
@@ -685,7 +685,7 @@ public class CertificateFactoryTest1 extends PerformanceTest {
     }
     
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CertificateFactoryTest1.class);
+        junit.textui.TestRunner.run(CertificateFactory1Test.class);
     }
 }
 /**

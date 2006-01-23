@@ -40,13 +40,13 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertPathValidatorTest1 extends PerformanceTest {
+public class CertPathValidator1Test extends PerformanceTest {
 
     /**
      * Constructor for CertPathValidatorTests.
      * @param name
      */
-    public CertPathValidatorTest1(String name) {
+    public CertPathValidator1Test(String name) {
         super(name);
     }
     public static final String srvCertPathValidator = "CertPathValidator";
@@ -390,7 +390,7 @@ public class CertPathValidatorTest1 extends PerformanceTest {
         }
     }
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(CertPathValidatorTest1.class);
+        junit.textui.TestRunner.run(CertPathValidator1Test.class);
     }  
 }
 /**

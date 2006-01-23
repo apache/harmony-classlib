@@ -37,7 +37,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertStoreTest2 extends PerformanceTest {
+public class CertStore2Test extends PerformanceTest {
     private static final String defaultAlg = "CertStore";
     private static final String CertStoreProviderClass = "java.security.cert.MyCertStoreSpi";
 
@@ -58,7 +58,7 @@ public class CertStoreTest2 extends PerformanceTest {
     protected void setUp() throws Exception {
         super.setUp();
         mProv = (new SpiEngUtils()).new MyProvider("MyCertStoreProvider",
-                "Provider for testing", CertStoreTest1.srvCertStore
+                "Provider for testing", CertStore1Test.srvCertStore
                         .concat(".").concat(defaultAlg),
                 CertStoreProviderClass);  
         Security.insertProviderAt(mProv, 1);
@@ -73,11 +73,11 @@ public class CertStoreTest2 extends PerformanceTest {
     }
 
     /**
-     * Constructor for CertStoreTest2.
+     * Constructor for CertStore2Test.
      * 
      * @param arg0
      */
-    public CertStoreTest2(String arg0) {
+    public CertStore2Test(String arg0) {
         super(arg0);
     }
 

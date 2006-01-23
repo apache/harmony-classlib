@@ -40,7 +40,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertificateFactoryTest2 extends PerformanceTest {
+public class CertificateFactory2Test extends PerformanceTest {
     private static final String defaultAlg = "CertFac";
     private static final String CertificateFactoryProviderClass = "java.security.cert.MyCertificateFactorySpi";
     
@@ -61,7 +61,7 @@ public class CertificateFactoryTest2 extends PerformanceTest {
     protected void setUp() throws Exception {
         super.setUp();
         mProv = (new SpiEngUtils()).new MyProvider("MyCFProvider",
-                "Provider for testing", CertificateFactoryTest1.srvCertificateFactory
+                "Provider for testing", CertificateFactory1Test.srvCertificateFactory
                         .concat(".").concat(defaultAlg),
                 CertificateFactoryProviderClass);
         Security.insertProviderAt(mProv, 1);
@@ -76,11 +76,11 @@ public class CertificateFactoryTest2 extends PerformanceTest {
     }
 
     /**
-     * Constructor for CertificateFactoryTest2.
+     * Constructor for CertificateFactory2Test.
      * 
      * @param arg0
      */
-    public CertificateFactoryTest2(String arg0) {
+    public CertificateFactory2Test(String arg0) {
         super(arg0);
     }
 

@@ -37,17 +37,17 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertPathValidatorTest3 extends PerformanceTest {
+public class CertPathValidator3Test extends PerformanceTest {
 
     /**
      * Constructor for CertPathValidatorTests.
      * @param name
      */
-    public CertPathValidatorTest3(String name) {
+    public CertPathValidator3Test(String name) {
         super(name);
     }
-    private static final String defaultType = CertPathBuilderTest1.defaultType;    
-    private static final String [] validValues = CertPathBuilderTest1.validValues;
+    private static final String defaultType = CertPathBuilder1Test.defaultType;    
+    private static final String [] validValues = CertPathBuilder1Test.validValues;
      
     private static String [] invalidValues = SpiEngUtils.invalidValues;
     
@@ -60,7 +60,7 @@ public class CertPathValidatorTest3 extends PerformanceTest {
 
     static {
         defaultProvider = SpiEngUtils.isSupport(defaultType,
-                CertPathValidatorTest1.srvCertPathValidator);
+                CertPathValidator1Test.srvCertPathValidator);
         PKIXSupport = (defaultProvider != null);
         defaultProviderName = (PKIXSupport ? defaultProvider.getName() : null);
         NotSupportMsg = defaultType.concat(" is not supported");

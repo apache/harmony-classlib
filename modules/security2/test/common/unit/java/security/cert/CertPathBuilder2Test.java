@@ -32,14 +32,13 @@ import org.apache.harmony.security.test.PerformanceTest;
 
 
 /**
- * Tests for CertPathValidator class constructors and methods
+ * Tests for CertPathBuilder class constructors and methods
  * 
  */
 
-public class CertPathValidatorTest2 extends PerformanceTest {
+public class CertPathBuilder2Test extends PerformanceTest {
     private static final String defaultAlg = "CertPB";
-    
-    public static final String CertPathValidatorProviderClass = "java.security.cert.MyCertPathValidatorSpi";
+    private static final String CertPathBuilderProviderClass = "java.security.cert.MyCertPathBuilderSpi";
 
     private static final String[] invalidValues = SpiEngUtils.invalidValues;
 
@@ -57,10 +56,10 @@ public class CertPathValidatorTest2 extends PerformanceTest {
 
     protected void setUp() throws Exception {
         super.setUp();
-        mProv = (new SpiEngUtils()).new MyProvider("MyCertPathValidatorProvider",
-                "Provider for testing", CertPathValidatorTest1.srvCertPathValidator
+        mProv = (new SpiEngUtils()).new MyProvider("MyCertPathBuilderProvider",
+                "Provider for testing", CertPathBuilder1Test.srvCertPathBuilder
                         .concat(".").concat(defaultAlg),
-                CertPathValidatorProviderClass);
+                CertPathBuilderProviderClass);
         Security.insertProviderAt(mProv, 1);
     }
 
@@ -73,68 +72,71 @@ public class CertPathValidatorTest2 extends PerformanceTest {
     }
 
     /**
-     * Constructor for CertPathValidatorTest2.
+     * Constructor for CertPathBuilder2Test.
      * 
      * @param arg0
      */
-    public CertPathValidatorTest2(String arg0) {
+    public CertPathBuilder2Test(String arg0) {
         super(arg0);
     }
 
-    private void checkResult(CertPathValidator certV) 
-            throws CertPathValidatorException, 
-            InvalidAlgorithmParameterException {
-        String dt = CertPathValidator.getDefaultType();
-        String propName = "certpathvalidator.type";
+    private void checkResult(CertPathBuilder certBuild)
+            throws InvalidAlgorithmParameterException,
+            CertPathBuilderException {
+        String dt = CertPathBuilder.getDefaultType();
+        String propName = "certpathbuild.type";
+        String dtN;
         for (int i = 0; i <invalidValues.length; i++) {
             Security.setProperty(propName, invalidValues[i]);
-            assertEquals("Incorrect default type", CertPathValidator.getDefaultType(),
-                    invalidValues[i]);
+            dtN = CertPathBuilder.getDefaultType();
+            if (!dtN.equals(invalidValues[i]) && !dtN.equals(dt)) {
+                fail("Incorrect default type: ".concat(dtN));
+            }
         }
         Security.setProperty(propName, dt);
-        assertEquals("Incorrect default type", CertPathValidator.getDefaultType(),
-                dt);       certV.validate(null, null);
-       try {
-           certV.validate(null, null);           
-       } catch (CertPathValidatorException e) {
-       }
-       try {
-           certV.validate(null, null);           
-       } catch (InvalidAlgorithmParameterException e) {
-       }
+        assertEquals("Incorrect default type", CertPathBuilder.getDefaultType(),
+                dt);
+        try {
+            certBuild.build(null);
+            fail("CertPathBuilderException must be thrown");
+        } catch (CertPathBuilderException e) {
+        }    
+        CertPathBuilderResult cpbResult = certBuild.build(null);
+        assertNull("Not null CertPathBuilderResult", cpbResult);
     }
 
     /**
      * Test for <code>getInstance(String algorithm)</code> method 
      * Assertions:
+     * throws 
 	 * throws NullPointerException when algorithm is null 
-	 * throws NoSuchAlgorithmException when algorithm  is not available
-     * returns CertPathValidator object
+	 * throws NoSuchAlgorithmException when algorithm  is not correct
+     * returns CertPathBuilder object
      */
     public void testGetInstance01() throws NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException, CertPathValidatorException {
+            InvalidAlgorithmParameterException, CertPathBuilderException {
         try {
-            CertPathValidator.getInstance(null);
+            CertPathBuilder.getInstance(null);
             fail("NullPointerException or NoSuchAlgorithmException must be thrown when algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                CertPathValidator.getInstance(invalidValues[i]);
+                CertPathBuilder.getInstance(invalidValues[i]);
                 fail("NoSuchAlgorithmException must be thrown (type: ".concat(
                         invalidValues[i]).concat(")"));
             } catch (NoSuchAlgorithmException e) {
             }
         }
-        CertPathValidator cerPV;
+        CertPathBuilder cerPB;
         for (int i = 0; i < validValues.length; i++) {
-            cerPV = CertPathValidator.getInstance(validValues[i]);
-            assertTrue("Not instanceof CertPathValidator object",
-                    cerPV instanceof CertPathValidator);
-            assertEquals("Incorrect type", cerPV.getAlgorithm(), validValues[i]);
-            assertEquals("Incorrect provider", cerPV.getProvider(), mProv);
-            checkResult(cerPV);
+            cerPB = CertPathBuilder.getInstance(validValues[i]);
+            assertTrue("Not instanceof CertPathBuilder object",
+                    cerPB instanceof CertPathBuilder);
+            assertEquals("Incorrect type", cerPB.getAlgorithm(), validValues[i]);
+            assertEquals("Incorrect provider", cerPB.getProvider(), mProv);
+            checkResult(cerPB);
         }
     }
 
@@ -142,23 +144,23 @@ public class CertPathValidatorTest2 extends PerformanceTest {
      * Test for <code>getInstance(String algorithm, String provider)</code> method
      * Assertions: 
 	 * throws NullPointerException when algorithm is null 
-	 * throws NoSuchAlgorithmException when algorithm  is not available
+	 * throws NoSuchAlgorithmException when algorithm  is not correct
      * throws IllegalArgumentException when provider is null or empty; 
      * throws NoSuchProviderException when provider is available; 
-     * returns CertPathValidator object
+     * returns CertPathBuilder object
      */
     public void testGetInstance02() throws NoSuchAlgorithmException,
             NoSuchProviderException, IllegalArgumentException,
-            InvalidAlgorithmParameterException, CertPathValidatorException {
+            InvalidAlgorithmParameterException, CertPathBuilderException {
         try {
-            CertPathValidator.getInstance(null, mProv.getName());
+            CertPathBuilder.getInstance(null, mProv.getName());
             fail("NullPointerException or NoSuchAlgorithmException must be thrown when algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                CertPathValidator.getInstance(invalidValues[i], mProv
+                CertPathBuilder.getInstance(invalidValues[i], mProv
                         .getName());
                 fail("NoSuchAlgorithmException must be thrown (type: ".concat(
                         invalidValues[i]).concat(")"));
@@ -168,13 +170,13 @@ public class CertPathValidatorTest2 extends PerformanceTest {
         String prov = null;
         for (int i = 0; i < validValues.length; i++) {
             try {
-                CertPathValidator.getInstance(validValues[i], prov);
+                CertPathBuilder.getInstance(validValues[i], prov);
                 fail("IllegalArgumentException must be thrown when provider is null (type: "
                         .concat(validValues[i]).concat(")"));
             } catch (IllegalArgumentException e) {
             }
             try {
-                CertPathValidator.getInstance(validValues[i], "");
+                CertPathBuilder.getInstance(validValues[i], "");
                 fail("IllegalArgumentException must be thrown when provider is empty (type: "
                         .concat(validValues[i]).concat(")"));
             } catch (IllegalArgumentException e) {
@@ -183,7 +185,7 @@ public class CertPathValidatorTest2 extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             for (int j = 1; j < invalidValues.length; j++) {
                 try {
-                    CertPathValidator.getInstance(validValues[i],
+                    CertPathBuilder.getInstance(validValues[i],
                             invalidValues[j]);
                     fail("NoSuchProviderException must be thrown (type: "
                             .concat(validValues[i]).concat(" provider: ")
@@ -192,16 +194,16 @@ public class CertPathValidatorTest2 extends PerformanceTest {
                 }
             }
         }
-        CertPathValidator cerPV;
+        CertPathBuilder cerPB;
         for (int i = 0; i < validValues.length; i++) {
-            cerPV = CertPathValidator.getInstance(validValues[i], mProv
+            cerPB = CertPathBuilder.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof CertPathValidator object",
-                    cerPV instanceof CertPathValidator);
-            assertEquals("Incorrect type", cerPV.getAlgorithm(), validValues[i]);
-            assertEquals("Incorrect provider", cerPV.getProvider().getName(),
+            assertTrue("Not instanceof CertPathBuilder object",
+                    cerPB instanceof CertPathBuilder);
+            assertEquals("Incorrect type", cerPB.getAlgorithm(), validValues[i]);
+            assertEquals("Incorrect provider", cerPB.getProvider().getName(),
                     mProv.getName());
-            checkResult(cerPV);
+            checkResult(cerPB);
         }
     }
 
@@ -210,22 +212,21 @@ public class CertPathValidatorTest2 extends PerformanceTest {
      * method 
      * Assertions: 
 	 * throws NullPointerException when algorithm is null 
-	 * throws NoSuchAlgorithmException when algorithm  is not available
-     * throws IllegalArgumentException when provider is null; 
-     * returns CertPathValidator object
+	 * throws NoSuchAlgorithmException when algorithm  is not correct
+     * returns CertPathBuilder object
      */
     public void testGetInstance03() throws NoSuchAlgorithmException,
             IllegalArgumentException,
-            InvalidAlgorithmParameterException, CertPathValidatorException {
+            InvalidAlgorithmParameterException, CertPathBuilderException {
         try {
-            CertPathValidator.getInstance(null, mProv);
+            CertPathBuilder.getInstance(null, mProv);
             fail("NullPointerException or NoSuchAlgorithmException must be thrown when algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                CertPathValidator.getInstance(invalidValues[i], mProv);
+                CertPathBuilder.getInstance(invalidValues[i], mProv);
                 fail("NoSuchAlgorithmException must be thrown (type: ".concat(
                         invalidValues[i]).concat(")"));
             } catch (NoSuchAlgorithmException e) {
@@ -234,20 +235,25 @@ public class CertPathValidatorTest2 extends PerformanceTest {
         Provider prov = null;
         for (int i = 0; i < validValues.length; i++) {
             try {
-                CertPathValidator.getInstance(validValues[i], prov);
+                CertPathBuilder.getInstance(validValues[i], prov);
                 fail("IllegalArgumentException must be thrown when provider is null (type: "
                         .concat(validValues[i]).concat(")"));
             } catch (IllegalArgumentException e) {
             }
         }
-        CertPathValidator cerPV;
+        CertPathBuilder cerPB;
         for (int i = 0; i < validValues.length; i++) {
-            cerPV = CertPathValidator.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof CertPathValidator object",
-                    cerPV instanceof CertPathValidator);
-            assertEquals("Incorrect type", cerPV.getAlgorithm(), validValues[i]);
-            assertEquals("Incorrect provider", cerPV.getProvider(), mProv);
-            checkResult(cerPV);
+            cerPB = CertPathBuilder.getInstance(validValues[i], mProv);
+            assertTrue("Not instanceof CertPathBuilder object",
+                    cerPB instanceof CertPathBuilder);
+            assertEquals("Incorrect type", cerPB.getAlgorithm(), validValues[i]);
+            assertEquals("Incorrect provider", cerPB.getProvider(), mProv);
+            checkResult(cerPB);
         }
     }
+    public static void main(String args[]) {
+        junit.textui.TestRunner.run(CertPathBuilder2Test.class);
+    }  
+    
+
 }

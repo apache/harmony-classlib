@@ -39,13 +39,13 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertStoreTest1 extends PerformanceTest {
+public class CertStore1Test extends PerformanceTest {
 
     /**
      * Constructor for CertStoreTests.
      * @param arg0
      */
-    public CertStoreTest1(String arg0) {
+    public CertStore1Test(String arg0) {
         super(arg0);
     }
     public static final String srvCertStore = "CertStore";

@@ -34,14 +34,14 @@ import junit.framework.TestSuite;
  * 
  */
 
-public class CertStoreSpiTests extends PerformanceTest {
+public class CertStoreSpiTest extends PerformanceTest {
 
     /**
-     * Constructor for CertStoreSpiTests.
+     * Constructor for CertStoreSpiTest.
      * 
      * @param arg0
      */
-    public CertStoreSpiTests(String arg0) {
+    public CertStoreSpiTest(String arg0) {
         super(arg0);
     }
 
@@ -71,7 +71,7 @@ public class CertStoreSpiTests extends PerformanceTest {
     }
     
     public static Test suite() {
-        return new TestSuite(CertStoreSpiTests.class);
+        return new TestSuite(CertStoreSpiTest.class);
     }
 
     public static void main(String args[]) {
