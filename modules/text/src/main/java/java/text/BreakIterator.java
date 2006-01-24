@@ -202,7 +202,7 @@ public abstract class BreakIterator implements Cloneable {
 	 */
 	public static BreakIterator getWordInstance(Locale where) {
 		return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
-				.getSentenceInstance(where));
+				.getWordInstance(where));
 	}
 
 	/**

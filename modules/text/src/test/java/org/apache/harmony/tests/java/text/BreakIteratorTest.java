@@ -16,22 +16,19 @@
 
 package org.apache.harmony.tests.java.text;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.text.BreakIterator;
+import java.util.Locale;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
-	}
+public class BreakIteratorTest extends TestCase {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.text");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(RuleBasedCollatorTest.class);
-		suite.addTestSuite(BreakIteratorTest.class);
-		//$JUnit-END$
-		return suite;
+	public void test_next() {
+		// Regression test for HARMONY-30
+		BreakIterator bi = BreakIterator.getWordInstance(Locale.US);
+		bi.setText("This is the test, WordInstance");
+		int n = bi.first();
+		n = bi.next();
+		assertEquals("Assert 0: next() returns incorrect value ", 4, n);
 	}
 }
