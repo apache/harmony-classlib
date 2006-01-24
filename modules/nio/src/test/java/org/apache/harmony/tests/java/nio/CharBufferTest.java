@@ -1040,4 +1040,189 @@ public class CharBufferTest extends TestCase {
 		slice.limit(10).position(1);
 		testCharBufferInstance(slice.slice());
 	}
+
+	public void testAppendSelf() throws Exception{
+        CharBuffer cb = CharBuffer.allocate(10);
+        CharBuffer cb2 = cb.duplicate();
+        cb.append(cb);
+        assertEquals(10, cb.position());
+        cb.clear();
+        assertEquals(cb2, cb);
+        
+        cb.put("abc");
+        cb2 = cb.duplicate();
+        cb.append(cb);
+        assertEquals(10, cb.position());
+        cb.clear();
+        cb2.clear();
+        assertEquals(cb2, cb);
+        
+        cb.put("edfg");
+        cb.clear();
+        cb2 = cb.duplicate();
+        cb.append(cb);
+        assertEquals(10, cb.position());
+        cb.clear();
+        cb2.clear();
+        assertEquals(cb, cb2);
+    }
+    
+	public void testAppendOverFlow() throws IOException {
+		CharBuffer cb = CharBuffer.allocate(1);
+		CharSequence cs = "String";
+		cb.put('A');
+		try {
+			cb.append('C');
+			fail("should throw BufferOverflowException.");
+		} catch (BufferOverflowException ex) {
+			// expected;
+		}
+		try {
+			cb.append(cs);
+			fail("should throw BufferOverflowException.");
+		} catch (BufferOverflowException ex) {
+			// expected;
+		}
+		try {
+			cb.append(cs, 1, 2);
+			fail("should throw BufferOverflowException.");
+		} catch (BufferOverflowException ex) {
+			// expected;
+		}
+	}
+
+	public void testReadOnlyMap() throws IOException {
+		CharBuffer cb = CharBuffer.wrap("ABCDE").asReadOnlyBuffer();
+		CharSequence cs = "String";
+		try {
+			cb.append('A');
+			fail("should throw ReadOnlyBufferException.");
+		} catch (ReadOnlyBufferException ex) {
+			// expected;
+		}
+		try {
+			cb.append(cs);
+			fail("should throw ReadOnlyBufferException.");
+		} catch (ReadOnlyBufferException ex) {
+			// expected;
+		}
+		try {
+			cb.append(cs, 1, 2);
+			fail("should throw ReadOnlyBufferException.");
+		} catch (ReadOnlyBufferException ex) {
+			// expected;
+		}
+		cb.append(cs, 1, 1);
+	}
+
+	public void testAppendCNormal() throws IOException {
+		CharBuffer cb = CharBuffer.allocate(2);
+		cb.put('A');
+		assertSame(cb, cb.append('B'));
+		assertEquals('B', cb.get(1));
+	}
+
+	public void testAppendCharSequenceNormal() throws IOException {
+		CharBuffer cb = CharBuffer.allocate(10);
+		cb.put('A');
+		assertSame(cb, cb.append("String"));
+		assertEquals("AString", cb.flip().toString());
+		cb.append(null);
+		assertEquals("null", cb.flip().toString());
+	}
+
+	public void testAppendCharSequenceIINormal() throws IOException {
+		CharBuffer cb = CharBuffer.allocate(10);
+		cb.put('A');
+		assertSame(cb, cb.append("String", 1, 3));
+		assertEquals("Atr", cb.flip().toString());
+
+		cb.append(null, 0, 1);
+		assertEquals("n", cb.flip().toString());
+	}
+
+	public void testAppendCharSequenceII_IllegalArgument() throws IOException {
+		CharBuffer cb = CharBuffer.allocate(10);
+		cb.append("String", 0, 0);
+		cb.append("String", 2, 2);
+		try {
+			cb.append("String", -1, 1);
+			fail("should throw IndexOutOfBoundsException.");
+		} catch (IndexOutOfBoundsException ex) {
+			// expected;
+		}
+		try {
+			cb.append("String", -1, -1);
+			fail("should throw IndexOutOfBoundsException.");
+		} catch (IndexOutOfBoundsException ex) {
+			// expected;
+		}
+		try {
+			cb.append("String", 3, 2);
+			fail("should throw IndexOutOfBoundsException.");
+		} catch (IndexOutOfBoundsException ex) {
+			// expected;
+		}
+		try {
+			cb.append("String", 3, 0);
+			fail("should throw IndexOutOfBoundsException.");
+		} catch (IndexOutOfBoundsException ex) {
+			// expected;
+		}
+		try {
+			cb.append("String", 3, 110);
+			fail("should throw IndexOutOfBoundsException.");
+		} catch (IndexOutOfBoundsException ex) {
+			// expected;
+		}
+	}
+
+	public void testReadCharBuffer() throws IOException {
+		// happy path
+		CharBuffer source = CharBuffer.wrap("String");
+		CharBuffer target = CharBuffer.allocate(10);
+		assertEquals(6, source.read(target));
+		assertEquals("String", target.flip().toString());
+		// return -1 when nothing to read
+		assertEquals(-1, source.read(target));
+		// npe
+		try {
+			assertEquals(-1, source.read(null));
+			fail("should throw NPE.");
+		} catch (NullPointerException ex) {
+			// expected;
+		}
+
+	}
+
+	public void testReadReadOnly() throws IOException {
+		CharBuffer source = CharBuffer.wrap("String");
+		CharBuffer target = CharBuffer.allocate(10).asReadOnlyBuffer();
+		try {
+			source.read(target);
+			fail("should throw ReadOnlyBufferException.");
+		} catch (ReadOnlyBufferException ex) {
+			// expected;
+		}
+		// if target has no remaining, needn't to check the isReadOnly
+		target.flip();
+		assertEquals(0, source.read(target));
+	}
+
+	public void testReadOverflow() throws IOException {
+		CharBuffer source = CharBuffer.wrap("String");
+		CharBuffer target = CharBuffer.allocate(1);
+		assertEquals(1, source.read(target));
+		assertEquals("S", target.flip().toString());
+		assertEquals(1, source.position());
+	}
+    
+    public void testReadSelf() throws Exception{
+        CharBuffer source = CharBuffer.wrap("abuffer");
+        try {
+            source.read(source);
+            fail("should throw IAE.");
+        } catch (IllegalArgumentException e) {
+        }
+    }
 }

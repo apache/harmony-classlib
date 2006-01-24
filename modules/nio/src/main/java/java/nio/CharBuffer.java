@@ -15,6 +15,8 @@
 
 package java.nio;
 
+import java.io.IOException;
+
 
 
 /**
@@ -35,7 +37,7 @@ package java.nio;
  * 
  */
 public abstract class CharBuffer extends Buffer implements Comparable,
-		CharSequence {
+		CharSequence, Appendable, Readable {
 
 	/**
 	 * Creates a char buffer based on a new allocated char array.
@@ -741,4 +743,52 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 		}
 		return strbuf.toString();
 	}
+    
+    /**
+     * @see Appendable#append(char)
+     */
+    public Appendable append(char c){
+        return put(c);
+    }
+
+    /**
+     * @see Appendable#append(CharSequence)
+     */
+    public Appendable append(CharSequence csq){
+        if (csq != null) {
+            return put(csq.toString());
+        }
+        return put("null"); //$NON-NLS-1$
+    }
+
+    /**
+     * @see Appendable#append(CharSequence, int, int)
+     */
+    public Appendable append(CharSequence csq, int start, int end){
+        if (csq == null) {
+            csq = "null"; //$NON-NLS-1$
+        }
+        CharSequence cs = csq.subSequence(start, end);
+        if (cs.length() > 0) {
+            return put(cs.toString());
+        }
+        return this;
+    }
+
+    /**
+     * @see Readable#read(CharBuffer)
+     */
+    public int read(CharBuffer target) throws IOException {
+        if(target == this){
+            throw new IllegalArgumentException();
+        }
+        if (remaining() == 0) {
+            return target.remaining()==0?0:-1;
+        }
+        int result = Math.min(target.remaining(), remaining());
+        char[] chars = new char[result];
+        get(chars);
+        target.put(chars);
+        return result;
+    }    
 }
