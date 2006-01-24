@@ -1,7 +1,7 @@
 package java.sql;
 
 /**
- *   Stub to keep J9 happy for now
+ *   Stub for now
  *
  */
 public class SQLException extends Exception {
