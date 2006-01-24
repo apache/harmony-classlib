@@ -70,6 +70,19 @@ final class CharSequenceAdapter extends CharBuffer {
 		return sequence.charAt(index);
 	}
 
+    public final CharBuffer get(char[] dest, int off, int len) {
+        if ((off < 0 ) || (len < 0) || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferUnderflowException();
+        }
+        int newPosition = position + len;
+        sequence.toString().getChars(position, newPosition, dest, off);
+        position = newPosition;
+        return this;
+    }
+
 	public boolean isDirect() {
 		return false;
 	}
@@ -115,12 +128,10 @@ final class CharSequenceAdapter extends CharBuffer {
 	}
 
 	public CharSequence subSequence(int start, int end) {
-		if (start < 0 || start > remaining()) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (end < start || end > remaining()) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (end < start || start < 0 || end > remaining()) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		CharSequenceAdapter result = copy(this);
 		result.position = position + start;
 		result.limit = position + end;

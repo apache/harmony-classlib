@@ -91,12 +91,9 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 *                invalid
 	 */
 	public static CharBuffer wrap(char[] array, int start, int len) {
-		if (start < 0 || start > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || start + len > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if ((start < 0 ) || (len < 0) || start + len > array.length) {
+            throw new IndexOutOfBoundsException();
+        }
 
 		CharBuffer buf = BufferFactory.newCharBuffer(array);
 		buf.position = start;
@@ -142,12 +139,10 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 *                invalid
 	 */
 	public static CharBuffer wrap(CharSequence chseq, int start, int end) {
-		if (start < 0 || start > chseq.length()) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (end < start || end > chseq.length()) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (start < 0 || end < start || end > chseq.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		CharBuffer result = BufferFactory.newCharBuffer(chseq);
 		result.position = start;
 		result.limit = end;
@@ -382,12 +377,10 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 *                <code>remaining()</code>
 	 */
 	public CharBuffer get(char[] dest, int off, int len) {
-		if (off < 0 || off > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if ((len < 0) || off + len > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if ((off < 0 ) || (len < 0) || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (len > remaining()) {
 			throw new BufferUnderflowException();
 		}
@@ -555,12 +548,10 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public CharBuffer put(char[] src, int off, int len) {
-		if (off < 0 || off > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || off + len > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if ((off < 0 ) || (len < 0) || off + len > src.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (len > remaining()) {
 			throw new BufferOverflowException();
 		}
@@ -593,9 +584,10 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 		if (src.remaining() > remaining()) {
 			throw new BufferOverflowException();
 		}
-		while (src.hasRemaining()) {
-			put(src.get());
-		}
+        
+        char[] contents = new char[src.remaining()];
+        src.get(contents);
+        put(contents);
 		return this;
 	}
 
@@ -662,12 +654,10 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public CharBuffer put(String str, int start, int end) {
-		if (start < 0 || start > str.length()) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (end < start || end > str.length()) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (start < 0 || end < start || end > str.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (end - start > remaining()) {
 			throw new BufferOverflowException();
 		}

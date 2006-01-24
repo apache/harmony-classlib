@@ -139,12 +139,10 @@ final class CharToByteBufferAdapter extends CharBuffer {
 	}
 
 	public CharSequence subSequence(int start, int end) {
-		if (start < 0 || start > remaining()) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (end < start || end > remaining()) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (start < 0 || end < start || end > remaining()) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		CharBuffer result = duplicate();
 		result.limit(position + end);
 		result.position(position + start);

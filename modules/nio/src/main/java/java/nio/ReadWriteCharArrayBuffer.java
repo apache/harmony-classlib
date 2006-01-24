@@ -100,6 +100,18 @@ final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
 		return this;
 	}
 
+    public CharBuffer put(char[] src, int off, int len) {
+        if (off < 0 || len < 0 || len + off > src.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferOverflowException();
+        }
+        System.arraycopy(src, off, backingArray, offset+position, len);
+        position += len;
+        return this;
+    }
+    
 	public CharBuffer slice() {
 		return new ReadWriteCharArrayBuffer(remaining(), backingArray, offset
 				+ position);

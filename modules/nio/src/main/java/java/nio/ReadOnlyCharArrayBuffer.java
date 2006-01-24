@@ -80,6 +80,14 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
 		throw new ReadOnlyBufferException();
 	}
 
+    public final CharBuffer put(char[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+
+    public CharBuffer put(String src, int start, int end) {
+        throw new ReadOnlyBufferException();
+    }
+
 	public CharBuffer slice() {
 		return new ReadOnlyCharArrayBuffer(remaining(), backingArray, offset
 				+ position);

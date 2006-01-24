@@ -63,6 +63,18 @@ abstract class CharArrayBuffer extends CharBuffer {
 		return backingArray[offset + index];
 	}
 
+    public final CharBuffer get(char[] dest, int off, int len) {
+        if ((off < 0 ) || (len < 0) || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferUnderflowException();
+        }
+        System.arraycopy(backingArray, offset+position, dest, off, len);
+        position += len;
+        return this;
+    }
+    
 	public final boolean isDirect() {
 		return false;
 	}
@@ -72,12 +84,10 @@ abstract class CharArrayBuffer extends CharBuffer {
 	}
 
 	public final CharSequence subSequence(int start, int end) {
-		if (start < 0 || start > remaining()) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (end < start || end > remaining()) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (start < 0 || end < start || end > remaining()) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		CharBuffer result = duplicate();
 		result.limit(position + end);
 		result.position(position + start);
