@@ -91,7 +91,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 	public void autoFree(PlatformAddress address) {
 		AddressWrapper wrapper;
 		synchronized (lock) {
-			wrapper = (AddressWrapper) memoryInUse.remove(address);
+			wrapper = (AddressWrapper) memoryInUse.get(address);
 		}
 		if (wrapper != null) {
 			wrapper.autoFree = true;
