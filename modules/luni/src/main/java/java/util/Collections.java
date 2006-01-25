@@ -1770,7 +1770,7 @@ public class Collections {
 	 * like this: [8, 9, 0, 1, 2, 3, 4, 5, 6, 7]
 	 * 
 	 * @param list
-	 * @param dist
+	 * @param normdist
 	 *            It can be any integer: 0, positive, negative, larger than the
 	 *            list size
 	 */
@@ -1783,12 +1783,13 @@ public class Collections {
 		}
 
 		// normalize the distance
+		int normdist;
 		if (dist > 0)
-			dist = dist % size;
+			normdist = dist % size;
 		else
-			dist = size - (dist * (-1) % size);
+			normdist = size - (dist * (-1) % size);
 
-		if (dist == 0 || dist == size)
+		if (normdist == 0 || normdist == size)
 			return;
 
 		if (list instanceof RandomAccess) {
@@ -1797,7 +1798,7 @@ public class Collections {
 			Object temp = list.get(0);
 			int index = 0, beginIndex = 0;
 			for (int i = 0; i < size; i++) {
-				index = (index + dist) % size;
+				index = (index + normdist) % size;
 				temp = list.set(index, temp);
 				if (index == beginIndex) {
 					index = ++beginIndex;
@@ -1805,7 +1806,7 @@ public class Collections {
 				}
 			}
 		} else {
-			int divideIndex = (size - dist) % size;
+			int divideIndex = (size - normdist) % size;
 			List sublist1 = list.subList(0, divideIndex);
 			List sublist2 = list.subList(divideIndex, size);
 			reverse(sublist1);
