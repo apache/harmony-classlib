@@ -15,6 +15,7 @@
 
 package com.ibm.platform.struct;
 
+import java.lang.ref.Reference;
 
 public final class RuntimeMemorySpy extends AbstractMemorySpy {
 
@@ -25,7 +26,7 @@ public final class RuntimeMemorySpy extends AbstractMemorySpy {
 	public void alloc(PlatformAddress address, long size) {
 		super.alloc(address, size);
 		// Pay a tax on the allocation to see if there are any frees pending.
-		Object ref = notifyQueue.poll(); // non-blocking check
+		Reference ref = notifyQueue.poll(); // non-blocking check
 		while (ref != null) {
 			orphanedMemory(ref);
 			ref = notifyQueue.poll();

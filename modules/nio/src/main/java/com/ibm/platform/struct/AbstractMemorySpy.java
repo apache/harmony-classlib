@@ -17,7 +17,8 @@ package com.ibm.platform.struct;
 
 
 import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
+import java.lang.ref.Reference;
+import java.lang.ref.PhantomReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 
 		final long size;
 
-		final WeakReference wrAddress;
+		final PhantomReference wrAddress;
 
 		volatile boolean autoFree = false;
 
@@ -49,7 +50,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 			super();
 			this.shadow = PlatformAddress.on(address);
 			this.size = size;
-			this.wrAddress = new WeakReference(address, notifyQueue);
+			this.wrAddress = new PhantomReference(address, notifyQueue);
 		}
 	}
 
@@ -98,12 +99,13 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 		}
 	}
 
-	protected void orphanedMemory(Object ref) {
+	protected void orphanedMemory(Reference ref) {
 		AddressWrapper wrapper;
 		synchronized (lock) {
 			Object shadow = refToShadow.remove(ref);
 			wrapper = (AddressWrapper) memoryInUse.remove(shadow);
 		}
+        ref.clear();
 		if (wrapper != null) {
 			// There is a leak if we were not auto-freeing this memory.
 			if (!wrapper.autoFree) {
