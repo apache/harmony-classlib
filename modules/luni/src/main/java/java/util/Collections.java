@@ -1770,7 +1770,7 @@ public class Collections {
 	 * like this: [8, 9, 0, 1, 2, 3, 4, 5, 6, 7]
 	 * 
 	 * @param list
-	 * @param normdist
+	 * @param dist
 	 *            It can be any integer: 0, positive, negative, larger than the
 	 *            list size
 	 */
