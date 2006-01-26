@@ -85,12 +85,9 @@ public abstract class IntBuffer extends Buffer implements Comparable {
 	 *                invalid
 	 */
 	public static IntBuffer wrap(int[] array, int start, int len) {
-		if (start < 0 || start > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || start + len > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (start < 0 || len < 0 || len + start > array.length) {
+            throw new IndexOutOfBoundsException();
+        }
 
 		IntBuffer buf = BufferFactory.newIntBuffer(array);
 		buf.position = start;
@@ -307,12 +304,9 @@ public abstract class IntBuffer extends Buffer implements Comparable {
 	 *                <code>remaining()</code>
 	 */
 	public IntBuffer get(int[] dest, int off, int len) {
-		if (off < 0 || off > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if ((len < 0) || off + len > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (off < 0 || len < 0 || len + off > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
 		if (len > remaining()) {
 			throw new BufferUnderflowException();
 		}
@@ -467,12 +461,10 @@ public abstract class IntBuffer extends Buffer implements Comparable {
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public IntBuffer put(int[] src, int off, int len) {
-		if (off < 0 || off > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || off + len > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (off < 0 || len < 0 || len + off > src.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (len > remaining()) {
 			throw new BufferOverflowException();
 		}
@@ -505,9 +497,9 @@ public abstract class IntBuffer extends Buffer implements Comparable {
 		if (src.remaining() > remaining()) {
 			throw new BufferOverflowException();
 		}
-		while (src.hasRemaining()) {
-			put(src.get());
-		}
+        int[] contents = new int[src.remaining()];
+        src.get(contents);
+        put(contents);
 		return this;
 	}
 

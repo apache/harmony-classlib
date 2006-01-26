@@ -82,6 +82,10 @@ final class ReadOnlyDoubleArrayBuffer extends DoubleArrayBuffer {
 		throw new ReadOnlyBufferException();
 	}
 
+    public final DoubleBuffer put(double[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+    
 	public DoubleBuffer slice() {
 		return new ReadOnlyDoubleArrayBuffer(remaining(), backingArray, offset
 				+ position);

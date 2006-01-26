@@ -63,6 +63,18 @@ abstract class LongArrayBuffer extends LongBuffer {
 		return backingArray[offset + index];
 	}
 
+    public final LongBuffer get(long[] dest, int off, int len) {
+        if (off < 0 || len < 0 || len + off > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferUnderflowException();
+        }
+        System.arraycopy(backingArray, offset+position, dest, off, len);
+        position += len;
+        return this;
+    }
+    
 	public final boolean isDirect() {
 		return false;
 	}

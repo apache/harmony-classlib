@@ -63,6 +63,18 @@ abstract class FloatArrayBuffer extends FloatBuffer {
 		return backingArray[offset + index];
 	}
 
+    public final FloatBuffer get(float[] dest, int off, int len) {
+        if (off < 0 || len < 0 || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferUnderflowException();
+        }
+        System.arraycopy(backingArray, offset+position, dest, off, len);
+        position += len;
+        return this;
+    }
+    
 	public final boolean isDirect() {
 		return false;
 	}

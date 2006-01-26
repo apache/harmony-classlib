@@ -80,6 +80,10 @@ final class ReadOnlyShortArrayBuffer extends ShortArrayBuffer {
 		throw new ReadOnlyBufferException();
 	}
 
+    public final ShortBuffer put(short[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+    
 	public ShortBuffer slice() {
 		return new ReadOnlyShortArrayBuffer(remaining(), backingArray, offset
 				+ position);

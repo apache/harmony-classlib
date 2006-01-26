@@ -55,6 +55,25 @@ abstract class HeapByteBuffer extends BaseByteBuffer {
 		}
 	}
 
+    /*
+     * Override ByteBuffer.get(byte[], int, int) to improve performance.
+     * 
+     * (non-Javadoc)
+     * 
+     * @see java.nio.ByteBuffer#get(byte[], int, int)
+     */
+    public final ByteBuffer get(byte[] dest, int off, int len) {
+        if (off < 0 || len < 0 || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferUnderflowException();
+        }
+        System.arraycopy(backingArray, offset + position, dest, off, len);
+        position += len;
+        return this;
+    }
+    
 	public final byte get() {
 		if (position == limit) {
 			throw new BufferUnderflowException();
@@ -143,74 +162,88 @@ abstract class HeapByteBuffer extends BaseByteBuffer {
 	protected final int loadInt(int index) {
 		int baseOffset = offset + index;
 		int bytes = 0;
-		for (int i = 0; i < 4; i++) {
-			bytes = bytes << 8;
-			bytes = bytes | (backingArray[baseOffset + i] & 0xFF);
-		}
-		return (order == Endianness.BIG_ENDIAN) ? bytes : swap(bytes);
+        if(order == Endianness.BIG_ENDIAN){
+            for (int i = 0; i < 4; i++) {
+                bytes = bytes << 8;
+                bytes = bytes | (backingArray[baseOffset + i] & 0xFF);
+            }    
+        }else{
+            for (int i = 3; i >= 0; i--) {
+                bytes = bytes << 8;
+                bytes = bytes | (backingArray[baseOffset + i] & 0xFF);
+            }
+        }
+        return bytes;
 	}
 
 	protected final long loadLong(int index) {
 		int baseOffset = offset + index;
 		long bytes = 0;
-		for (int i = 0; i < 8; i++) {
-			bytes = bytes << 8;
-			bytes = bytes | (backingArray[baseOffset + i] & 0xFF);
-		}
-		return (order == Endianness.BIG_ENDIAN) ? bytes : swap(bytes);
+        if(order == Endianness.BIG_ENDIAN){
+            for (int i = 0; i < 8; i++) {
+                bytes = bytes << 8;
+                bytes = bytes | (backingArray[baseOffset + i] & 0xFF);
+            }    
+        }else{
+            for (int i = 7; i >= 0; i--) {
+                bytes = bytes << 8;
+                bytes = bytes | (backingArray[baseOffset + i] & 0xFF);
+            }
+        }
+        return bytes;
 	}
 
 	protected final short loadShort(int index) {
 		int baseOffset = offset + index;
-		short bytes = (short) (backingArray[baseOffset] << 8);
-		bytes |= (backingArray[baseOffset + 1] & 0xFF);
-		return (order == Endianness.BIG_ENDIAN) ? bytes : swap(bytes);
+        short bytes  = 0;
+        if(order == Endianness.BIG_ENDIAN){
+            bytes = (short) (backingArray[baseOffset] << 8);
+            bytes |= (backingArray[baseOffset + 1] & 0xFF);   
+        }else{
+            bytes = (short) (backingArray[baseOffset+1] << 8);
+            bytes |= (backingArray[baseOffset] & 0xFF);
+        }
+        return bytes;
 	}
 
 	protected final void store(int index, int value) {
 		int baseOffset = offset + index;
-		int bytes = (order == Endianness.BIG_ENDIAN) ? value : swap(value);
-		for (int i = 3; i >= 0; i--) {
-			backingArray[baseOffset + i] = (byte) (bytes & 0xFF);
-			bytes = bytes >> 8;
-		}
+        if (order == Endianness.BIG_ENDIAN) {
+            for (int i = 3; i >= 0; i--) {
+                backingArray[baseOffset + i] = (byte) (value & 0xFF);
+                value = value >> 8;
+            }
+        } else {
+            for (int i = 0; i <= 3; i++) {
+                backingArray[baseOffset + i] = (byte) (value & 0xFF);
+                value = value >> 8;
+            }
+        }
 	}
 
 	protected final void store(int index, long value) {
 		int baseOffset = offset + index;
-		long bytes = (order == Endianness.BIG_ENDIAN) ? value : swap(value);
-		for (int i = 7; i >= 0; i--) {
-			backingArray[baseOffset + i] = (byte) (bytes & 0xFF);
-			bytes = bytes >> 8;
-		}
+        if (order == Endianness.BIG_ENDIAN) {
+            for (int i = 7; i >= 0; i--) {
+                backingArray[baseOffset + i] = (byte) (value & 0xFF);
+                value = value >> 8;
+            }
+        } else {
+            for (int i = 0; i <= 7; i++) {
+                backingArray[baseOffset + i] = (byte) (value & 0xFF);
+                value = value >> 8;
+            }
+        }
 	}
 
 	protected final void store(int index, short value) {
 		int baseOffset = offset + index;
-		short bytes = (order == Endianness.BIG_ENDIAN) ? value : swap(value);
-		backingArray[baseOffset] = (byte) ((bytes >> 8) & 0xFF);
-		backingArray[baseOffset + 1] = (byte) (bytes & 0xFF);
-	}
-
-	private int swap(int value) {
-		short left = (short) (value >> 16);
-		short right = (short) value;
-		int topEnd = swap(right) << 16;
-		int btmEnd = swap(left) & 0xFFFF;
-		return topEnd | btmEnd;
-	}
-
-	private long swap(long value) {
-		int left = (int) (value >> 32);
-		int right = (int) value;
-		long topEnd = ((long) swap(right)) << 32;
-		long btmEnd = swap(left) & 0xFFFFFFFFL;
-		return topEnd | btmEnd;
-	}
-
-	private short swap(short value) {
-		int topEnd = value << 8;
-		int btmEnd = (value >> 8) & 0xFF;
-		return (short) (topEnd | btmEnd);
+        if (order == Endianness.BIG_ENDIAN) {
+            backingArray[baseOffset] = (byte) ((value >> 8) & 0xFF);
+            backingArray[baseOffset + 1] = (byte) (value & 0xFF);
+        } else {
+            backingArray[baseOffset+1] = (byte) ((value >> 8) & 0xFF);
+            backingArray[baseOffset] = (byte) (value & 0xFF);
+        }
 	}
 }

@@ -86,12 +86,9 @@ public abstract class ShortBuffer extends Buffer implements Comparable {
 	 *                invalid
 	 */
 	public static ShortBuffer wrap(short[] array, int start, int len) {
-		if (start < 0 || start > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || start + len > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (start< 0 || len < 0 || start + len > array.length) {
+            throw new IndexOutOfBoundsException();
+        }
 
 		ShortBuffer buf = BufferFactory.newShortBuffer(array);
 		buf.position = start;
@@ -308,12 +305,9 @@ public abstract class ShortBuffer extends Buffer implements Comparable {
 	 *                <code>remaining()</code>
 	 */
 	public ShortBuffer get(short[] dest, int off, int len) {
-		if (off < 0 || off > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if ((len < 0) || off + len > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (off < 0 || len < 0 || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
 		if (len > remaining()) {
 			throw new BufferUnderflowException();
 		}
@@ -472,12 +466,10 @@ public abstract class ShortBuffer extends Buffer implements Comparable {
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public ShortBuffer put(short[] src, int off, int len) {
-		if (off < 0 || off > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || off + len > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (off < 0 || len < 0 || off + len > src.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (len > remaining()) {
 			throw new BufferOverflowException();
 		}
@@ -510,9 +502,9 @@ public abstract class ShortBuffer extends Buffer implements Comparable {
 		if (src.remaining() > remaining()) {
 			throw new BufferOverflowException();
 		}
-		while (src.hasRemaining()) {
-			put(src.get());
-		}
+        short[] contents = new short[src.remaining()];
+        src.get(contents);
+        put(contents);
 		return this;
 	}
 

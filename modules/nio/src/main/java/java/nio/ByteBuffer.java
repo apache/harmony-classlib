@@ -101,12 +101,9 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	 *                invalid
 	 */
 	public static ByteBuffer wrap(byte[] array, int start, int len) {
-		if (start < 0 || start > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || start + len > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if ((start< 0 ) || (len < 0) || start+ len > array.length) {
+            throw new IndexOutOfBoundsException();
+        }
 
 		ByteBuffer buf = BufferFactory.newByteBuffer(array);
 		buf.position = start;
@@ -428,12 +425,10 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	 *                <code>remaining()</code>
 	 */
 	public ByteBuffer get(byte[] dest, int off, int len) {
-		if (off < 0 || off > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if ((len < 0) || off + len > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if ((off < 0 ) || (len < 0) || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (len > remaining()) {
 			throw new BufferUnderflowException();
 		}
@@ -787,12 +782,10 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public ByteBuffer put(byte[] src, int off, int len) {
-		if (off < 0 || off > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || off + len > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if ((off < 0 ) || (len < 0) || off + len > src.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (len > remaining()) {
 			throw new BufferOverflowException();
 		}
@@ -825,9 +818,9 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 		if (src.remaining() > remaining()) {
 			throw new BufferOverflowException();
 		}
-		while (src.hasRemaining()) {
-			put(src.get());
-		}
+        byte[] contents = new byte[src.remaining()];
+        src.get(contents);
+        put(contents);
 		return this;
 	}
 

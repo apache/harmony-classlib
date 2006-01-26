@@ -81,6 +81,10 @@ final class ReadOnlyHeapByteBuffer extends HeapByteBuffer {
 		throw new ReadOnlyBufferException();
 	}
 
+    public ByteBuffer put(byte[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+    
 	public ByteBuffer putDouble(double value) {
 		throw new ReadOnlyBufferException();
 	}

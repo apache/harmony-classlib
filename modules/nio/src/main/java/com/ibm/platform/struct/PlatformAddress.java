@@ -118,6 +118,16 @@ public final class PlatformAddress implements ICommonDataTypes, Comparable {
 		return PlatformAddress.on(addr);
 	}
 
+    public void setByteArray(int offset, byte[] bytes, int bytesOffset, int length) {
+		memorySpy.rangeCheck(this, offset, length * SIZEOF_JBYTE);
+		osMemory.setByteArray(osaddr + offset, bytes, bytesOffset, length);
+	}
+
+	public void getByteArray(int offset, byte[] bytes, int bytesOffset, int length) {
+		memorySpy.rangeCheck(this, offset, length * SIZEOF_JBYTE);
+		osMemory.getByteArray(osaddr + offset, bytes, bytesOffset, length);
+	}
+    
 	public void setByte(int offset, byte value) {
 		memorySpy.rangeCheck(this, offset, SIZEOF_JBYTE);
 		osMemory.setByte(osaddr + offset, value);

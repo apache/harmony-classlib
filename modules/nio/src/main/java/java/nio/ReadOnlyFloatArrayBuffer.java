@@ -80,6 +80,10 @@ final class ReadOnlyFloatArrayBuffer extends FloatArrayBuffer {
 		throw new ReadOnlyBufferException();
 	}
 
+    public final FloatBuffer put(float[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+    
 	public FloatBuffer slice() {
 		return new ReadOnlyFloatArrayBuffer(remaining(), backingArray, offset
 				+ position);

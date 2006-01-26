@@ -80,6 +80,10 @@ final class ReadOnlyLongArrayBuffer extends LongArrayBuffer {
 		throw new ReadOnlyBufferException();
 	}
 
+    public final LongBuffer put(long[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+    
 	public LongBuffer slice() {
 		return new ReadOnlyLongArrayBuffer(remaining(), backingArray, offset
 				+ position);

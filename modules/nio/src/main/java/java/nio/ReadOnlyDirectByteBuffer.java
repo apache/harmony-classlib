@@ -15,7 +15,7 @@
 
 package java.nio;
 
-
+import com.ibm.platform.struct.PlatformAddress;
 
 /**
  * DirectByteBuffer, ReadWriteDirectByteBuffer and ReadOnlyDirectByteBuffer
@@ -46,6 +46,11 @@ final class ReadOnlyDirectByteBuffer extends DirectByteBuffer {
 		super(address, capacity, offset);
 	}
 
+    protected ReadOnlyDirectByteBuffer(PlatformAddress address, int capacity,
+            int offset) {
+        super(new SafeAddress(address), capacity, offset);
+    }
+    
 	public ByteBuffer asReadOnlyBuffer() {
 		return copy(this, mark);
 	}
@@ -56,18 +61,6 @@ final class ReadOnlyDirectByteBuffer extends DirectByteBuffer {
 
 	public ByteBuffer duplicate() {
 		return copy(this, mark);
-	}
-
-	protected byte[] protectedArray() {
-		throw new UnsupportedOperationException();
-	}
-
-	protected int protectedArrayOffset() {
-		throw new UnsupportedOperationException();
-	}
-
-	protected boolean protectedHasArray() {
-		return false;
 	}
 
 	public boolean isReadOnly() {
@@ -82,6 +75,10 @@ final class ReadOnlyDirectByteBuffer extends DirectByteBuffer {
 		throw new ReadOnlyBufferException();
 	}
 
+    public ByteBuffer put(byte[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+    
 	public ByteBuffer putDouble(double value) {
 		throw new ReadOnlyBufferException();
 	}

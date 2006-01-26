@@ -52,6 +52,11 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
 		super(address, capacity, offset);
 	}
 
+    ReadWriteDirectByteBuffer(PlatformAddress address, int aCapacity,
+            int anOffset) {
+        super(new SafeAddress(address), aCapacity, anOffset);
+    }
+    
 	public ByteBuffer asReadOnlyBuffer() {
 		return ReadOnlyDirectByteBuffer.copy(this, mark);
 	}
@@ -74,18 +79,6 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
 		return false;
 	}
 
-	protected byte[] protectedArray() {
-		throw new UnsupportedOperationException();
-	}
-
-	protected int protectedArrayOffset() {
-		throw new UnsupportedOperationException();
-	}
-
-	protected boolean protectedHasArray() {
-		return false;
-	}
-
 	public ByteBuffer put(byte value) {
 		if (position == limit) {
 			throw new BufferOverflowException();
@@ -100,9 +93,31 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
 		}
 		getBaseAddress().setByte(offset + index, value);
 		return this;
-
 	}
 
+    /*
+     * Override ByteBuffer.put(byte[], int, int) to improve performance.
+     * 
+     * (non-Javadoc)
+     * 
+     * @see java.nio.ByteBuffer#put(byte[], int, int)
+     */
+    public ByteBuffer put(byte[] src, int off, int len) {
+        if (off < 0 || len < 0 || off + len > src.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferOverflowException();
+        }
+        if (isReadOnly()) {
+            throw new ReadOnlyBufferException();
+        }
+        getBaseAddress().setByteArray(offset + position, src, off,
+                len);
+        position += len;
+        return this;
+    }
+    
 	public ByteBuffer putDouble(double value) {
 		int newPosition = position + 8;
 		if (newPosition > limit) {

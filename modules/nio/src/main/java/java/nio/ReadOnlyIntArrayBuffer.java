@@ -80,6 +80,10 @@ final class ReadOnlyIntArrayBuffer extends IntArrayBuffer {
 		throw new ReadOnlyBufferException();
 	}
 
+    public final IntBuffer put(int[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+    
 	public IntBuffer slice() {
 		return new ReadOnlyIntArrayBuffer(remaining(), backingArray, offset
 				+ position);

@@ -82,12 +82,9 @@ public abstract class FloatBuffer extends Buffer implements Comparable {
 	 *                invalid
 	 */
 	public static FloatBuffer wrap(float[] array, int start, int len) {
-		if (start < 0 || start > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || start + len > array.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (start < 0 || len < 0 || start + len > array.length) {
+            throw new IndexOutOfBoundsException();
+        }
 
 		FloatBuffer buf = BufferFactory.newFloatBuffer(array);
 		buf.position = start;
@@ -295,12 +292,10 @@ public abstract class FloatBuffer extends Buffer implements Comparable {
 	 *                <code>remaining()</code>
 	 */
 	public FloatBuffer get(float[] dest, int off, int len) {
-		if (off < 0 || off > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if ((len < 0) || off + len > dest.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (off < 0 || len < 0 || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (len > remaining()) {
 			throw new BufferUnderflowException();
 		}
@@ -452,12 +447,10 @@ public abstract class FloatBuffer extends Buffer implements Comparable {
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public FloatBuffer put(float[] src, int off, int len) {
-		if (off < 0 || off > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (len < 0 || off + len > src.length) {
-			throw new IndexOutOfBoundsException();
-		}
+        if (off < 0 || len < 0 || off + len > src.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        
 		if (len > remaining()) {
 			throw new BufferOverflowException();
 		}
@@ -490,9 +483,9 @@ public abstract class FloatBuffer extends Buffer implements Comparable {
 		if (src.remaining() > remaining()) {
 			throw new BufferOverflowException();
 		}
-		while (src.hasRemaining()) {
-			put(src.get());
-		}
+        float[] contents = new float[src.remaining()];
+        src.get(contents);
+        put(contents);
 		return this;
 	}
 

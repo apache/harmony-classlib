@@ -36,7 +36,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 
 	// This class will help us track whether the address is valid or not.
 	static final class SafeAddress {
-		protected boolean isValid = true;
+		protected volatile boolean isValid = true;
 
 		protected final PlatformAddress address;
 
@@ -64,6 +64,24 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 		this.offset = offset;
 	}
 
+    /*
+     * Override ByteBuffer.get(byte[], int, int) to improve performance.
+     * 
+     * (non-Javadoc)
+     * @see java.nio.ByteBuffer#get(byte[], int, int)
+     */
+    public final ByteBuffer get(byte[] dest, int off, int len) {
+        if ((off < 0 ) || (len < 0) || off + len > dest.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferUnderflowException();
+        }
+        getBaseAddress().getByteArray(offset+position, dest, off, len);
+        position += len;
+        return this;
+    }
+    
 	public final byte get() {
 		if (position == limit) {
 			throw new BufferUnderflowException();
@@ -227,4 +245,16 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 			safeAddress.address.free();
 		}
 	}
+    
+    final protected byte[] protectedArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    final protected int protectedArrayOffset() {
+        throw new UnsupportedOperationException();
+    }
+
+    final protected boolean protectedHasArray() {
+        return false;
+    }
 }
