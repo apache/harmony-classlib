@@ -15,23 +15,21 @@
 
 package org.apache.harmony.tests.java.net;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.net");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(URITest.class);
-		suite.addTestSuite(URLEncoderTest.class);
-		//$JUnit-END$
-		return suite;
+public class URLEncoderTest extends TestCase {
+	
+	public void test_encodeLjava_lang_StringLjava_lang_String() {
+		// Regression for HARMONY-24
+        try {
+            URLEncoder.encode("str","unknown_enc");
+            fail("Assert 0: Should throw UEE for invalid encoding");
+        } catch (UnsupportedEncodingException e) {
+            // expected
+        } 
 	}
 
 }

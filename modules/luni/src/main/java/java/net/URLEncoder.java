@@ -91,6 +91,12 @@ public class URLEncoder {
 	 */
 	public static String encode(String s, String enc)
 			throws UnsupportedEncodingException {
+		if (enc == null) {
+			throw new NullPointerException();
+		}
+		// check for UnsupportedEncodingException
+		"".getBytes(enc);
+
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < s.length(); i++) {
 			char ch = s.charAt(i);
