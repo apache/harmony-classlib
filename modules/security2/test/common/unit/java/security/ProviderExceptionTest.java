@@ -77,8 +77,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * constructs ProviderException with no detail message
      */
     public void testProviderException01() {
-        logln("==test_01: ProviderException==");
-
         ProviderException tE = new ProviderException();
         assertTrue(errNotExc, tE instanceof ProviderException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testProviderException02() {
-        logln("==test_02: ProviderException==");
-
         ProviderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ProviderException(msgs[i]);
@@ -119,8 +115,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * constructs ProviderException when <code>msg</code> is null
      */
     public void testProviderException03() {
-        logln("==test_03: ProviderException==");
-
         String msg = null;
         ProviderException tE = new ProviderException(msg);
         assertTrue(errNotExc, tE instanceof ProviderException);
@@ -138,8 +132,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * Assertion: constructs ProviderException when <code>cause</code> is null
      */
     public void testProviderException04() {
-        logln("==test_04: ProviderException==");
-
         Throwable cause = null;
         ProviderException tE = new ProviderException(cause);
         assertTrue(errNotExc, tE instanceof ProviderException);
@@ -158,8 +150,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * null
      */
     public void testProviderException05() {
-        logln("==test_05: ProviderException==");
-
         ProviderException tE = new ProviderException(tCause);
         assertTrue(errNotExc, tE instanceof ProviderException);
         if (tE.getMessage() != null) {
@@ -184,8 +174,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testProviderException06() {
-        logln("==test_06: ProviderException==");
-
         ProviderException tE = new ProviderException(null, null);
         assertTrue(errNotExc, tE instanceof ProviderException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -203,8 +191,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testProviderException07() {
-        logln("==test_07: ProviderException==");
-
         ProviderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ProviderException(msgs[i], null);
@@ -227,8 +213,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * null <code>msg</code> is null
      */
     public void testProviderException08() {
-        logln("==test_08: ProviderException==");
-
         ProviderException tE = new ProviderException(null, tCause);
         assertTrue(errNotExc, tE instanceof ProviderException);
         if (tE.getMessage() != null) {
@@ -253,8 +237,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      * null <code>msg</code> is not null
      */
     public void testProviderException09() {
-        logln("==test_09: ProviderException==");
-
         ProviderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ProviderException(msgs[i], tCause);

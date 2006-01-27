@@ -78,8 +78,6 @@ public class ExemptionMechanismExceptionTest extends PerformanceTest {
      * Assertion: constructs ExemptionMechanismException with no detail message
      */
     public void testExemptionMechanismException01() {
-        logln("==test_01: ExemptionMechanismException==");
-
         ExemptionMechanismException tE = new ExemptionMechanismException();
         assertTrue(errNotExc, tE instanceof ExemptionMechanismException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class ExemptionMechanismExceptionTest extends PerformanceTest {
      * msg. Parameter <code>msg</code> is not null.
      */
     public void testExemptionMechanismException02() {
-        logln("==test_02: ExemptionMechanismException==");
-
         ExemptionMechanismException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ExemptionMechanismException(msgs[i]);
@@ -121,8 +117,6 @@ public class ExemptionMechanismExceptionTest extends PerformanceTest {
      * is null
      */
     public void testExemptionMechanismException03() {
-        logln("==test_03: ExemptionMechanismException==");
-
         String msg = null;
         ExemptionMechanismException tE = new ExemptionMechanismException(msg);
         assertTrue(errNotExc, tE instanceof ExemptionMechanismException);

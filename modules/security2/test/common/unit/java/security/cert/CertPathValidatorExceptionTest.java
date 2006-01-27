@@ -79,8 +79,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * Assertion: constructs CertPathValidatorException with no detail message
      */
     public void testCertPathValidatorException01() {
-        logln("==test_01: CertPathValidatorException==");
-
         CertPathValidatorException tE = new CertPathValidatorException();
         assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -98,8 +96,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testCertPathValidatorException02() {
-        logln("==test_02: CertPathValidatorException==");
-
         CertPathValidatorException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathValidatorException(msgs[i]);
@@ -122,8 +118,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * is null
      */
     public void testCertPathValidatorException03() {
-        logln("==test_03: CertPathValidatorException==");
-
         String msg = null;
         CertPathValidatorException tE = new CertPathValidatorException(msg);
         assertTrue(errNotExc, tE instanceof CertPathValidatorException);
@@ -142,8 +136,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * is null
      */
     public void testCertPathValidatorException04() {
-        logln("==test_04: CertPathValidatorException==");
-
         Throwable cause = null;
         CertPathValidatorException tE = new CertPathValidatorException(cause);
         assertTrue(errNotExc, tE instanceof CertPathValidatorException);
@@ -162,8 +154,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * is not null
      */
     public void testCertPathValidatorException05() {
-        logln("==test_05: CertPathValidatorException==");
-
         CertPathValidatorException tE = new CertPathValidatorException(tCause);
         assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         if (tE.getMessage() != null) {
@@ -188,8 +178,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testCertPathValidatorException06() {
-        logln("==test_06: CertPathValidatorException==");
-
         CertPathValidatorException tE = new CertPathValidatorException(null,
                 null);
         assertTrue(errNotExc, tE instanceof CertPathValidatorException);
@@ -208,8 +196,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testCertPathValidatorException07() {
-        logln("==test_07: CertPathValidatorException==");
-
         CertPathValidatorException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathValidatorException(msgs[i], null);
@@ -232,8 +218,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testCertPathValidatorException08() {
-        logln("==test_08: CertPathValidatorException==");
-
         CertPathValidatorException tE = new CertPathValidatorException(null,
                 tCause);
         assertTrue(errNotExc, tE instanceof CertPathValidatorException);
@@ -259,8 +243,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testCertPathValidatorException09() {
-        logln("==test_09: CertPathValidatorException==");
-
         CertPathValidatorException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathValidatorException(msgs[i], tCause);
@@ -296,8 +278,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * <code>certPath</code> is null <code>index</code> is -1
      */
     public void testCertPathValidatorException10() {
-        logln("==test_10: CertPathValidatorException==");
-
         CertPathValidatorException tE = new CertPathValidatorException(null,
                 null, null, -1);
         assertTrue(errNotExc, tE instanceof CertPathValidatorException);
@@ -321,8 +301,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * IllegalArgumentException
      */
     public void testCertPathValidatorException11() {
-        logln("==test_11: CertPathValidatorException==");
-
         CertPathValidatorException tE;
         int[] indx = { 0, 1, 100, Integer.MAX_VALUE, Integer.MIN_VALUE };
         for (int j = 0; j < indx.length; j++) {
@@ -348,8 +326,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * <code>certPath</code> is null <code>index</code> is -1
      */
     public void testCertPathValidatorException12() {
-        logln("==test_12: CertPathValidatorException==");
-
         CertPathValidatorException tE;
 
         for (int i = 0; i < msgs.length; i++) {
@@ -394,8 +370,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * certPath.getCertificates().size() throws: IndexOutOfBoundsException
      */
     public void testCertPathValidatorException13() {
-        logln("==test_13: CertPathValidatorException==");
-
         CertPathValidatorException tE;
         myCertPath mcp = new myCertPath("X.509", "");
         CertPath cp = mcp.get("X.509");
@@ -425,8 +399,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * certPath.getCertificates().size()
      */
     public void testCertPathValidatorException14() {
-        logln("==test_14: CertPathValidatorException==");
-
         CertPathValidatorException tE;
         myCertPath mcp = new myCertPath("X.509", "");
         CertPath cp = mcp.get("X.509");

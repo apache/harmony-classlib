@@ -77,8 +77,6 @@ public class CertificateExpiredExceptionTest extends PerformanceTest {
      * Assertion: constructs CertificateExpiredException with no detail message
      */
     public void testCertificateExpiredException01() {
-        logln("==test_01: CertificateExpiredException==");
-
         CertificateExpiredException tE = new CertificateExpiredException();
         assertTrue(errNotExc, tE instanceof CertificateExpiredException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class CertificateExpiredExceptionTest extends PerformanceTest {
      * msg. Parameter <code>msg</code> is not null.
      */
     public void testCertificateExpiredException02() {
-        logln("==test_02: CertificateExpiredException==");
-
         CertificateExpiredException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateExpiredException(msgs[i]);
@@ -120,8 +116,6 @@ public class CertificateExpiredExceptionTest extends PerformanceTest {
      * is null
      */
     public void testCertificateExpiredException03() {
-        logln("==test_03: CertificateExpiredException==");
-
         String msg = null;
         CertificateExpiredException tE = new CertificateExpiredException(msg);
         assertTrue(errNotExc, tE instanceof CertificateExpiredException);

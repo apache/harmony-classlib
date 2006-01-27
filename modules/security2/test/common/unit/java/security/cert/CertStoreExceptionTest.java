@@ -77,8 +77,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * constructs CertStoreException with no detail message
      */
     public void testCertStoreException01() {
-        logln("==test_01: CertStoreException==");
-
         CertStoreException tE = new CertStoreException();
         assertTrue(errNotExc, tE instanceof CertStoreException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testCertStoreException02() {
-        logln("==test_02: CertStoreException==");
-
         CertStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertStoreException(msgs[i]);
@@ -119,8 +115,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * constructs CertStoreException when <code>msg</code> is null
      */
     public void testCertStoreException03() {
-        logln("==test_03: CertStoreException==");
-
         String msg = null;
         CertStoreException tE = new CertStoreException(msg);
         assertTrue(errNotExc, tE instanceof CertStoreException);
@@ -139,8 +133,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * null
      */
     public void testCertStoreException04() {
-        logln("==test_04: CertStoreException==");
-
         Throwable cause = null;
         CertStoreException tE = new CertStoreException(cause);
         assertTrue(errNotExc, tE instanceof CertStoreException);
@@ -159,8 +151,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * null
      */
     public void testCertStoreException05() {
-        logln("==test_05: CertStoreException==");
-
         CertStoreException tE = new CertStoreException(tCause);
         assertTrue(errNotExc, tE instanceof CertStoreException);
         if (tE.getMessage() != null) {
@@ -185,8 +175,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * null <code>msg</code> is null
      */
     public void testCertStoreException06() {
-        logln("==test_06: CertStoreException==");
-
         CertStoreException tE = new CertStoreException(null, null);
         assertTrue(errNotExc, tE instanceof CertStoreException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -204,8 +192,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * null <code>msg</code> is not null
      */
     public void testCertStoreException07() {
-        logln("==test_07: CertStoreException==");
-
         CertStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertStoreException(msgs[i], null);
@@ -228,8 +214,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * null <code>msg</code> is null
      */
     public void testCertStoreException08() {
-        logln("==test_08: CertStoreException==");
-
         CertStoreException tE = new CertStoreException(null, tCause);
         assertTrue(errNotExc, tE instanceof CertStoreException);
         if (tE.getMessage() != null) {
@@ -254,8 +238,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      * null <code>msg</code> is not null
      */
     public void testCertStoreException09() {
-        logln("==test_09: CertStoreException==");
-
         CertStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertStoreException(msgs[i], tCause);

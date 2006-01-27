@@ -78,8 +78,6 @@ public class UnrecoverableKeyExceptionTest extends PerformanceTest {
      * Assertion: constructs UnrecoverableKeyException with no detail message
      */
     public void testUnrecoverableKeyException01() {
-        logln("==test_01: UnrecoverableKeyException==");
-
         UnrecoverableKeyException tE = new UnrecoverableKeyException();
         assertTrue(errNotExc, tE instanceof UnrecoverableKeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class UnrecoverableKeyExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testUnrecoverableKeyException02() {
-        logln("==test_02: UnrecoverableKeyException==");
-
         UnrecoverableKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new UnrecoverableKeyException(msgs[i]);
@@ -121,8 +117,6 @@ public class UnrecoverableKeyExceptionTest extends PerformanceTest {
      * is null
      */
     public void testUnrecoverableKeyException03() {
-        logln("==test_03: UnrecoverableKeyException==");
-
         String msg = null;
         UnrecoverableKeyException tE = new UnrecoverableKeyException(msg);
         assertTrue(errNotExc, tE instanceof UnrecoverableKeyException);

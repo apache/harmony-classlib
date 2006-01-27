@@ -78,8 +78,6 @@ public class NoSuchPaddingExceptionTest extends PerformanceTest {
      * constructs NoSuchPaddingException with no detail message
      */
     public void testNoSuchPaddingException01() {
-        logln("==test_01: NoSuchPaddingException==");
-
         NoSuchPaddingException tE = new NoSuchPaddingException();
         assertTrue(errNotExc, tE instanceof NoSuchPaddingException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class NoSuchPaddingExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testNoSuchPaddingException02() {
-        logln("==test_02: NoSuchPaddingException==");
-
         NoSuchPaddingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchPaddingException(msgs[i]);
@@ -121,8 +117,6 @@ public class NoSuchPaddingExceptionTest extends PerformanceTest {
      * null
      */
     public void testNoSuchPaddingException03() {
-        logln("==test_03: NoSuchPaddingException==");
-
         String msg = null;
         NoSuchPaddingException tE = new NoSuchPaddingException(msg);
         assertTrue(errNotExc, tE instanceof NoSuchPaddingException);

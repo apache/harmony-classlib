@@ -77,8 +77,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * KeyException with no detail message
      */
     public void testKeyException01() {
-        logln("==test_01: KeyException==");
-
         KeyException tE = new KeyException();
         assertTrue(errNotExc, tE instanceof KeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testKeyException02() {
-        logln("==test_02: KeyException==");
-
         KeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyException(msgs[i]);
@@ -119,8 +115,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * constructs KeyException when <code>msg</code> is null
      */
     public void testKeyException03() {
-        logln("==test_03: KeyException==");
-
         String msg = null;
         KeyException tE = new KeyException(msg);
         assertTrue(errNotExc, tE instanceof KeyException);
@@ -138,8 +132,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * constructs KeyException when <code>cause</code> is null
      */
     public void testKeyException04() {
-        logln("==test_04: KeyException==");
-
         Throwable cause = null;
         KeyException tE = new KeyException(cause);
         assertTrue(errNotExc, tE instanceof KeyException);
@@ -157,8 +149,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * constructs KeyException when <code>cause</code> is not null
      */
     public void testKeyException05() {
-        logln("==test_05: KeyException==");
-
         KeyException tE = new KeyException(tCause);
         assertTrue(errNotExc, tE instanceof KeyException);
         if (tE.getMessage() != null) {
@@ -183,8 +173,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testKeyException06() {
-        logln("==test_06: KeyException==");
-
         KeyException tE = new KeyException(null, null);
         assertTrue(errNotExc, tE instanceof KeyException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -202,8 +190,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testKeyException07() {
-        logln("==test_07: KeyException==");
-
         KeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyException(msgs[i], null);
@@ -226,8 +212,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testKeyException08() {
-        logln("==test_08: KeyException==");
-
         KeyException tE = new KeyException(null, tCause);
         assertTrue(errNotExc, tE instanceof KeyException);
         if (tE.getMessage() != null) {
@@ -252,8 +236,6 @@ public class KeyExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testKeyException09() {
-        logln("==test_09: KeyException==");
-
         KeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyException(msgs[i], tCause);

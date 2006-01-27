@@ -79,8 +79,6 @@ public class InvalidParameterSpecExceptionTest extends PerformanceTest {
      * message
      */
     public void testInvalidParameterSpecException01() {
-        logln("==test_01: InvalidParameterSpecException==");
-
         InvalidParameterSpecException tE = new InvalidParameterSpecException();
         assertTrue(errNotExc, tE instanceof InvalidParameterSpecException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -98,8 +96,6 @@ public class InvalidParameterSpecExceptionTest extends PerformanceTest {
      * msg. Parameter <code>msg</code> is not null.
      */
     public void testInvalidParameterSpecException02() {
-        logln("==test_02: InvalidParameterSpecException==");
-
         InvalidParameterSpecException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidParameterSpecException(msgs[i]);
@@ -122,8 +118,6 @@ public class InvalidParameterSpecExceptionTest extends PerformanceTest {
      * is null
      */
     public void testInvalidParameterSpecException03() {
-        logln("==test_03: InvalidParameterSpecException==");
-
         String msg = null;
         InvalidParameterSpecException tE = new InvalidParameterSpecException(
                 msg);

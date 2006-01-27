@@ -78,8 +78,6 @@ public class SSLKeyExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testSSLKeyException01() {
-        logln("==test_01: SSLKeyException==");
-
         SSLKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLKeyException(msgs[i]);
@@ -101,8 +99,6 @@ public class SSLKeyExceptionTest extends PerformanceTest {
      * constructs SSLKeyException when <code>msg</code> is null
      */
     public void testSSLKeyException02() {
-        logln("==test_02: SSLKeyException==");
-
         String msg = null;
         SSLKeyException tE = new SSLKeyException(msg);
         assertTrue(errNotExc, tE instanceof SSLKeyException);

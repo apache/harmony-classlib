@@ -78,8 +78,6 @@ public class NoSuchProviderExceptionTest extends PerformanceTest {
      * constructs NoSuchProviderException with no detail message
      */
     public void testNoSuchProviderException01() {
-        logln("==test_01: NoSuchProviderException==");
-
         NoSuchProviderException tE = new NoSuchProviderException();
         assertTrue(errNotExc, tE instanceof NoSuchProviderException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class NoSuchProviderExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testNoSuchProviderException02() {
-        logln("==test_02: NoSuchProviderException==");
-
         NoSuchProviderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchProviderException(msgs[i]);
@@ -121,8 +117,6 @@ public class NoSuchProviderExceptionTest extends PerformanceTest {
      * null
      */
     public void testNoSuchProviderException03() {
-        logln("==test_03: NoSuchProviderException==");
-
         String msg = null;
         NoSuchProviderException tE = new NoSuchProviderException(msg);
         assertTrue(errNotExc, tE instanceof NoSuchProviderException);

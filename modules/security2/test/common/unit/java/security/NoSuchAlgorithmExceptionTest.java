@@ -78,8 +78,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * constructs NoSuchAlgorithmException with no detail message
      */
     public void testNoSuchAlgorithmException01() {
-        logln("==test_01: NoSuchAlgorithmException==");
-
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException();
         assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testNoSuchAlgorithmException02() {
-        logln("==test_02: NoSuchAlgorithmException==");
-
         NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchAlgorithmException(msgs[i]);
@@ -121,8 +117,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * null
      */
     public void testNoSuchAlgorithmException03() {
-        logln("==test_03: NoSuchAlgorithmException==");
-
         String msg = null;
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(msg);
         assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
@@ -141,8 +135,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * is null
      */
     public void testNoSuchAlgorithmException04() {
-        logln("==test_04: NoSuchAlgorithmException==");
-
         Throwable cause = null;
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(cause);
         assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
@@ -161,8 +153,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * is not null
      */
     public void testNoSuchAlgorithmException05() {
-        logln("==test_05: NoSuchAlgorithmException==");
-
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(tCause);
         assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         if (tE.getMessage() != null) {
@@ -187,8 +177,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testNoSuchAlgorithmException06() {
-        logln("==test_06: NoSuchAlgorithmException==");
-
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(null, null);
         assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -206,8 +194,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testNoSuchAlgorithmException07() {
-        logln("==test_07: NoSuchAlgorithmException==");
-
         NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchAlgorithmException(msgs[i], null);
@@ -230,8 +216,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testNoSuchAlgorithmException08() {
-        logln("==test_08: NoSuchAlgorithmException==");
-
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(null, tCause);
         assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         if (tE.getMessage() != null) {
@@ -256,8 +240,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testNoSuchAlgorithmException09() {
-        logln("==test_09: NoSuchAlgorithmException==");
-
         NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchAlgorithmException(msgs[i], tCause);

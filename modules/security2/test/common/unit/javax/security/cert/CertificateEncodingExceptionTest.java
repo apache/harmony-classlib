@@ -77,8 +77,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * Assertion: constructs CertificateEncodingException with no detail message
      */
     public void testCertificateEncodingException01() {
-        logln("==test_01: CertificateEncodingException==");
-
         CertificateEncodingException tE = new CertificateEncodingException();
         assertTrue(errNotExc, tE instanceof CertificateEncodingException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * msg. Parameter <code>msg</code> is not null.
      */
     public void testCertificateEncodingException02() {
-        logln("==test_02: CertificateEncodingException==");
-
         CertificateEncodingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateEncodingException(msgs[i]);
@@ -120,8 +116,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * is null
      */
     public void testCertificateEncodingException03() {
-        logln("==test_03: CertificateEncodingException==");
-
         String msg = null;
         CertificateEncodingException tE = new CertificateEncodingException(msg);
         assertTrue(errNotExc, tE instanceof CertificateEncodingException);

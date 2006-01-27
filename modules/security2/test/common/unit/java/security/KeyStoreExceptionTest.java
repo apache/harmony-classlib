@@ -77,8 +77,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * constructs KeyStoreException with no detail message
      */
     public void testKeyStoreException01() {
-        logln("==test_01: KeyStoreException==");
-
         KeyStoreException tE = new KeyStoreException();
         assertTrue(errNotExc, tE instanceof KeyStoreException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testKeyStoreException02() {
-        logln("==test_02: KeyStoreException==");
-
         KeyStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyStoreException(msgs[i]);
@@ -119,8 +115,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * constructs KeyStoreException when <code>msg</code> is null
      */
     public void testKeyStoreException03() {
-        logln("==test_03: KeyStoreException==");
-
         String msg = null;
         KeyStoreException tE = new KeyStoreException(msg);
         assertTrue(errNotExc, tE instanceof KeyStoreException);
@@ -138,8 +132,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * Assertion: constructs KeyStoreException when <code>cause</code> is null
      */
     public void testKeyStoreException04() {
-        logln("==test_04: KeyStoreException==");
-
         Throwable cause = null;
         KeyStoreException tE = new KeyStoreException(cause);
         assertTrue(errNotExc, tE instanceof KeyStoreException);
@@ -158,8 +150,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * null
      */
     public void testKeyStoreException05() {
-        logln("==test_05: KeyStoreException==");
-
         KeyStoreException tE = new KeyStoreException(tCause);
         assertTrue(errNotExc, tE instanceof KeyStoreException);
         if (tE.getMessage() != null) {
@@ -184,8 +174,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testKeyStoreException06() {
-        logln("==test_06: KeyStoreException==");
-
         KeyStoreException tE = new KeyStoreException(null, null);
         assertTrue(errNotExc, tE instanceof KeyStoreException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -203,8 +191,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testKeyStoreException07() {
-        logln("==test_07: KeyStoreException==");
-
         KeyStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyStoreException(msgs[i], null);
@@ -227,8 +213,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * null <code>msg</code> is null
      */
     public void testKeyStoreException08() {
-        logln("==test_08: KeyStoreException==");
-
         KeyStoreException tE = new KeyStoreException(null, tCause);
         assertTrue(errNotExc, tE instanceof KeyStoreException);
         if (tE.getMessage() != null) {
@@ -253,8 +237,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      * null <code>msg</code> is not null
      */
     public void testKeyStoreException09() {
-        logln("==test_09: KeyStoreException==");
-
         KeyStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyStoreException(msgs[i], tCause);

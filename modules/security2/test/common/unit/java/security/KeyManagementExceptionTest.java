@@ -78,8 +78,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * constructs KeyManagementException with no detail message
      */
     public void testKeyManagementException01() {
-        logln("==test_01: KeyManagementException==");
-
         KeyManagementException tE = new KeyManagementException();
         assertTrue(errNotExc, tE instanceof KeyManagementException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testKeyManagementException02() {
-        logln("==test_02: KeyManagementException==");
-
         KeyManagementException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyManagementException(msgs[i]);
@@ -121,8 +117,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * null
      */
     public void testKeyManagementException03() {
-        logln("==test_03: KeyManagementException==");
-
         String msg = null;
         KeyManagementException tE = new KeyManagementException(msg);
         assertTrue(errNotExc, tE instanceof KeyManagementException);
@@ -141,8 +135,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * null
      */
     public void testKeyManagementException04() {
-        logln("==test_04: KeyManagementException==");
-
         Throwable cause = null;
         KeyManagementException tE = new KeyManagementException(cause);
         assertTrue(errNotExc, tE instanceof KeyManagementException);
@@ -161,8 +153,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * not null
      */
     public void testKeyManagementException05() {
-        logln("==test_05: KeyManagementException==");
-
         KeyManagementException tE = new KeyManagementException(tCause);
         assertTrue(errNotExc, tE instanceof KeyManagementException);
         if (tE.getMessage() != null) {
@@ -187,8 +177,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testKeyManagementException06() {
-        logln("==test_06: KeyManagementException==");
-
         KeyManagementException tE = new KeyManagementException(null, null);
         assertTrue(errNotExc, tE instanceof KeyManagementException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -206,8 +194,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testKeyManagementException07() {
-        logln("==test_07: KeyManagementException==");
-
         KeyManagementException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyManagementException(msgs[i], null);
@@ -230,8 +216,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testKeyManagementException08() {
-        logln("==test_08: KeyManagementException==");
-
         KeyManagementException tE = new KeyManagementException(null, tCause);
         assertTrue(errNotExc, tE instanceof KeyManagementException);
         if (tE.getMessage() != null) {
@@ -256,8 +240,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testKeyManagementException09() {
-        logln("==test_09: KeyManagementException==");
-
         KeyManagementException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyManagementException(msgs[i], tCause);

@@ -77,8 +77,6 @@ public class CertificateExceptionTest extends PerformanceTest {
      * constructs CertificateException with no detail message
      */
     public void testCertificateException01() {
-        logln("==test_01: CertificateException==");
-
         CertificateException tE = new CertificateException();
         assertTrue(errNotExc, tE instanceof CertificateException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class CertificateExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testCertificateException02() {
-        logln("==test_02: CertificateException==");
-
         CertificateException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateException(msgs[i]);
@@ -120,8 +116,6 @@ public class CertificateExceptionTest extends PerformanceTest {
      * null
      */
     public void testCertificateException03() {
-        logln("==test_03: CertificateException==");
-
         String msg = null;
         CertificateException tE = new CertificateException(msg);
         assertTrue(errNotExc, tE instanceof CertificateException);

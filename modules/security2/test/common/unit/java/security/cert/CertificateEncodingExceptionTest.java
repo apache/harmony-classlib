@@ -78,8 +78,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * Assertion: constructs CertificateEncodingException with no detail message
      */
     public void testCertificateEncodingException01() {
-        logln("==test_01: CertificateEncodingException==");
-
         CertificateEncodingException tE = new CertificateEncodingException();
         assertTrue(errNotExc, tE instanceof CertificateEncodingException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * msg. Parameter <code>msg</code> is not null.
      */
     public void testCertificateEncodingException02() {
-        logln("==test_02: CertificateEncodingException==");
-
         CertificateEncodingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateEncodingException(msgs[i]);
@@ -121,8 +117,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * is null
      */
     public void testCertificateEncodingException03() {
-        logln("==test_03: CertificateEncodingException==");
-
         String msg = null;
         CertificateEncodingException tE = new CertificateEncodingException(msg);
         assertTrue(errNotExc, tE instanceof CertificateEncodingException);
@@ -141,8 +135,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * <code>cause</code> is null
      */
     public void testCertificateEncodingException04() {
-        logln("==test_04: CertificateEncodingException==");
-
         Throwable cause = null;
         CertificateEncodingException tE = new CertificateEncodingException(
                 cause);
@@ -162,8 +154,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null
      */
     public void testCertificateEncodingException05() {
-        logln("==test_05: CertificateEncodingException==");
-
         CertificateEncodingException tE = new CertificateEncodingException(
                 tCause);
         assertTrue(errNotExc, tE instanceof CertificateEncodingException);
@@ -189,8 +179,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testCertificateEncodingException06() {
-        logln("==test_06: CertificateEncodingException==");
-
         CertificateEncodingException tE = new CertificateEncodingException(
                 null, null);
         assertTrue(errNotExc, tE instanceof CertificateEncodingException);
@@ -209,8 +197,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testCertificateEncodingException07() {
-        logln("==test_07: CertificateEncodingException==");
-
         CertificateEncodingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateEncodingException(msgs[i], null);
@@ -233,8 +219,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testCertificateEncodingException08() {
-        logln("==test_08: CertificateEncodingException==");
-
         CertificateEncodingException tE = new CertificateEncodingException(
                 null, tCause);
         assertTrue(errNotExc, tE instanceof CertificateEncodingException);
@@ -260,8 +244,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testCertificateEncodingException09() {
-        logln("==test_09: CertificateEncodingException==");
-
         CertificateEncodingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateEncodingException(msgs[i], tCause);

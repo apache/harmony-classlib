@@ -78,8 +78,6 @@ public class SSLExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testSSLException01() {
-        logln("==test_01: SSLException==");
-
         SSLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLException(msgs[i]);
@@ -101,8 +99,6 @@ public class SSLExceptionTest extends PerformanceTest {
      * constructs SSLException when <code>msg</code> is null
      */
     public void testSSLException02() {
-        logln("==test_02: SSLException==");
-
         String msg = null;
         SSLException tE = new SSLException(msg);
         assertTrue(errNotExc, tE instanceof SSLException);
@@ -120,8 +116,6 @@ public class SSLExceptionTest extends PerformanceTest {
      * constructs DigestException when <code>cause</code> is null
      */
     public void testSSLException03() {
-        logln("==test_03: SSLException==");
-
         Throwable cause = null;
         SSLException tE = new SSLException(cause);
         assertTrue(errNotExc, tE instanceof SSLException);
@@ -139,8 +133,6 @@ public class SSLExceptionTest extends PerformanceTest {
      * constructs SSLException when <code>cause</code> is not null
      */
     public void testSSLException04() {
-        logln("==test_04: SSLException==");
-
         SSLException tE = new SSLException(tCause);
         assertTrue(errNotExc, tE instanceof SSLException);
         if (tE.getMessage() != null) {
@@ -169,8 +161,6 @@ public class SSLExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testSSLException05() {
-        logln("==test_05: SSLException==");
-
         SSLException tE = new SSLException(null, null);
         assertTrue(errNotExc, tE instanceof SSLException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -188,8 +178,6 @@ public class SSLExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testSSLException06() {
-        logln("==test_06: SSLException==");
-
         SSLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLException(msgs[i], null);
@@ -212,8 +200,6 @@ public class SSLExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testSSLException07() {
-        logln("==test_07: SSLException==");
-
         SSLException tE = new SSLException(null, tCause);
         assertTrue(errNotExc, tE instanceof SSLException);
         if (tE.getMessage() != null) {
@@ -242,8 +228,6 @@ public class SSLExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testSSLException08() {
-        logln("==test_08: SSLException==");
-
         SSLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLException(msgs[i], tCause);

@@ -77,8 +77,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * CRLException with no detail message
      */
     public void testCRLException01() {
-        logln("==test_01: CRLException==");
-
         CRLException tE = new CRLException();
         assertTrue(errNotExc, tE instanceof CRLException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testCRLException02() {
-        logln("==test_02: CRLException==");
-
         CRLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CRLException(msgs[i]);
@@ -119,8 +115,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * constructs CRLException when <code>msg</code> is null
      */
     public void testCRLException03() {
-        logln("==test_03: CRLException==");
-
         String msg = null;
         CRLException tE = new CRLException(msg);
         assertTrue(errNotExc, tE instanceof CRLException);
@@ -138,8 +132,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * constructs CRLException when <code>cause</code> is null
      */
     public void testCRLException04() {
-        logln("==test_04: CRLException==");
-
         Throwable cause = null;
         CRLException tE = new CRLException(cause);
         assertTrue(errNotExc, tE instanceof CRLException);
@@ -157,8 +149,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * constructs CRLException when <code>cause</code> is not null
      */
     public void testCRLException05() {
-        logln("==test_05: CRLException==");
-
         CRLException tE = new CRLException(tCause);
         assertTrue(errNotExc, tE instanceof CRLException);
         if (tE.getMessage() != null) {
@@ -183,8 +173,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testCRLException06() {
-        logln("==test_06: CRLException==");
-
         CRLException tE = new CRLException(null, null);
         assertTrue(errNotExc, tE instanceof CRLException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -202,8 +190,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testCRLException07() {
-        logln("==test_07: CRLException==");
-
         CRLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CRLException(msgs[i], null);
@@ -226,8 +212,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testCRLException08() {
-        logln("==test_08: CRLException==");
-
         CRLException tE = new CRLException(null, tCause);
         assertTrue(errNotExc, tE instanceof CRLException);
         if (tE.getMessage() != null) {
@@ -252,8 +236,6 @@ public class CRLExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testCRLException09() {
-        logln("==test_09: CRLException==");
-
         CRLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CRLException(msgs[i], tCause);

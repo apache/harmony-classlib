@@ -78,8 +78,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * Assertion: constructs CertificateParsingException with no detail message
      */
     public void testCertificateParsingException01() {
-        logln("==test_01: CertificateParsingException==");
-
         CertificateParsingException tE = new CertificateParsingException();
         assertTrue(errNotExc, tE instanceof CertificateParsingException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * msg. Parameter <code>msg</code> is not null.
      */
     public void testCertificateParsingException02() {
-        logln("==test_02: CertificateParsingException==");
-
         CertificateParsingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateParsingException(msgs[i]);
@@ -121,8 +117,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * is null
      */
     public void testCertificateParsingException03() {
-        logln("==test_03: CertificateParsingException==");
-
         String msg = null;
         CertificateParsingException tE = new CertificateParsingException(msg);
         assertTrue(errNotExc, tE instanceof CertificateParsingException);
@@ -141,8 +135,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * <code>cause</code> is null
      */
     public void testCertificateParsingException04() {
-        logln("==test_04: CertificateParsingException==");
-
         Throwable cause = null;
         CertificateParsingException tE = new CertificateParsingException(cause);
         assertTrue(errNotExc, tE instanceof CertificateParsingException);
@@ -161,8 +153,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null
      */
     public void testCertificateParsingException05() {
-        logln("==test_05: CertificateParsingException==");
-
         CertificateParsingException tE = new CertificateParsingException(tCause);
         assertTrue(errNotExc, tE instanceof CertificateParsingException);
         if (tE.getMessage() != null) {
@@ -187,8 +177,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testCertificateParsingException06() {
-        logln("==test_06: CertificateParsingException==");
-
         CertificateParsingException tE = new CertificateParsingException(null,
                 null);
         assertTrue(errNotExc, tE instanceof CertificateParsingException);
@@ -207,8 +195,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testCertificateParsingException07() {
-        logln("==test_07: CertificateParsingException==");
-
         CertificateParsingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateParsingException(msgs[i], null);
@@ -231,8 +217,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testCertificateParsingException08() {
-        logln("==test_08: CertificateParsingException==");
-
         CertificateParsingException tE = new CertificateParsingException(null,
                 tCause);
         assertTrue(errNotExc, tE instanceof CertificateParsingException);
@@ -258,8 +242,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testCertificateParsingException09() {
-        logln("==test_09: CertificateParsingException==");
-
         CertificateParsingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateParsingException(msgs[i], tCause);

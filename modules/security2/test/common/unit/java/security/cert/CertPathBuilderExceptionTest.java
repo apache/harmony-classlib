@@ -78,8 +78,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * constructs CertPathBuilderException with no detail message
      */
     public void testCertPathBuilderException01() {
-        logln("==test_01: CertPathBuilderException==");
-
         CertPathBuilderException tE = new CertPathBuilderException();
         assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testCertPathBuilderException02() {
-        logln("==test_02: CertPathBuilderException==");
-
         CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathBuilderException(msgs[i]);
@@ -121,8 +117,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * null
      */
     public void testCertPathBuilderException03() {
-        logln("==test_03: CertPathBuilderException==");
-
         String msg = null;
         CertPathBuilderException tE = new CertPathBuilderException(msg);
         assertTrue(errNotExc, tE instanceof CertPathBuilderException);
@@ -141,8 +135,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * is null
      */
     public void testCertPathBuilderException04() {
-        logln("==test_04: CertPathBuilderException==");
-
         Throwable cause = null;
         CertPathBuilderException tE = new CertPathBuilderException(cause);
         assertTrue(errNotExc, tE instanceof CertPathBuilderException);
@@ -161,8 +153,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * is not null
      */
     public void testCertPathBuilderException05() {
-        logln("==test_05: CertPathBuilderException==");
-
         CertPathBuilderException tE = new CertPathBuilderException(tCause);
         assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         if (tE.getMessage() != null) {
@@ -187,8 +177,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testCertPathBuilderException06() {
-        logln("==test_06: CertPathBuilderException==");
-
         CertPathBuilderException tE = new CertPathBuilderException(null, null);
         assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -206,8 +194,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testCertPathBuilderException07() {
-        logln("==test_07: CertPathBuilderException==");
-
         CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathBuilderException(msgs[i], null);
@@ -230,8 +216,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testCertPathBuilderException08() {
-        logln("==test_08: CertPathBuilderException==");
-
         CertPathBuilderException tE = new CertPathBuilderException(null, tCause);
         assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         if (tE.getMessage() != null) {
@@ -256,8 +240,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testCertPathBuilderException09() {
-        logln("==test_09: CertPathBuilderException==");
-
         CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathBuilderException(msgs[i], tCause);

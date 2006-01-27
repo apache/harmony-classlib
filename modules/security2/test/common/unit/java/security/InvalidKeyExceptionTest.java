@@ -77,8 +77,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * constructs InvalidKeyException with no detail message
      */
     public void testInvalidKeyException01() {
-        logln("==test_01: InvalidKeyException==");
-
         InvalidKeyException tE = new InvalidKeyException();
         assertTrue(errNotExc, tE instanceof InvalidKeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testInvalidKeyException02() {
-        logln("==test_02: InvalidKeyException==");
-
         InvalidKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidKeyException(msgs[i]);
@@ -119,8 +115,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * Assertion: constructs InvalidKeyException when <code>msg</code> is null
      */
     public void testInvalidKeyException03() {
-        logln("==test_03: InvalidKeyException==");
-
         String msg = null;
         InvalidKeyException tE = new InvalidKeyException(msg);
         assertTrue(errNotExc, tE instanceof InvalidKeyException);
@@ -139,8 +133,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * null
      */
     public void testInvalidKeyException04() {
-        logln("==test_04: InvalidKeyException==");
-
         Throwable cause = null;
         InvalidKeyException tE = new InvalidKeyException(cause);
         assertTrue(errNotExc, tE instanceof InvalidKeyException);
@@ -159,8 +151,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * not null
      */
     public void testInvalidKeyException05() {
-        logln("==test_05: InvalidKeyException==");
-
         InvalidKeyException tE = new InvalidKeyException(tCause);
         assertTrue(errNotExc, tE instanceof InvalidKeyException);
         if (tE.getMessage() != null) {
@@ -185,8 +175,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testInvalidKeyException06() {
-        logln("==test_06: InvalidKeyException==");
-
         InvalidKeyException tE = new InvalidKeyException(null, null);
         assertTrue(errNotExc, tE instanceof InvalidKeyException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -204,8 +192,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testInvalidKeyException07() {
-        logln("==test_07: InvalidKeyException==");
-
         InvalidKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidKeyException(msgs[i], null);
@@ -228,8 +214,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testInvalidKeyException08() {
-        logln("==test_08: InvalidKeyException==");
-
         InvalidKeyException tE = new InvalidKeyException(null, tCause);
         assertTrue(errNotExc, tE instanceof InvalidKeyException);
         if (tE.getMessage() != null) {
@@ -254,8 +238,6 @@ public class InvalidKeyExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testInvalidKeyException09() {
-        logln("==test_09: InvalidKeyException==");
-
         InvalidKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidKeyException(msgs[i], tCause);

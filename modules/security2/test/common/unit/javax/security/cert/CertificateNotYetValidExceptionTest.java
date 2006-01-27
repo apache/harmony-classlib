@@ -79,8 +79,6 @@ public class CertificateNotYetValidExceptionTest extends PerformanceTest {
      * message
      */
     public void testCertificateNotYetValidException01() {
-        logln("==test_01: CertificateNotYetValidException==");
-
         CertificateNotYetValidException tE = new CertificateNotYetValidException();
         assertTrue(errNotExc, tE instanceof CertificateNotYetValidException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -98,8 +96,6 @@ public class CertificateNotYetValidExceptionTest extends PerformanceTest {
      * detail message msg. Parameter <code>msg</code> is not null.
      */
     public void testCertificateNotYetValidException02() {
-        logln("==test_02: CertificateNotYetValidException==");
-
         CertificateNotYetValidException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateNotYetValidException(msgs[i]);
@@ -122,8 +118,6 @@ public class CertificateNotYetValidExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testCertificateNotYetValidException03() {
-        logln("==test_03: CertificateNotYetValidException==");
-
         String msg = null;
         CertificateNotYetValidException tE = new CertificateNotYetValidException(
                 msg);

@@ -78,8 +78,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * constructs GeneralSecurityException with no detail message
      */
     public void testGeneralSecurityException01() {
-        logln("==test_01: GeneralSecurityException==");
-
         GeneralSecurityException tE = new GeneralSecurityException();
         assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testGeneralSecurityException02() {
-        logln("==test_02: GeneralSecurityException==");
-
         GeneralSecurityException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new GeneralSecurityException(msgs[i]);
@@ -121,8 +117,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * null
      */
     public void testGeneralSecurityException03() {
-        logln("==test_03: GeneralSecurityException==");
-
         String msg = null;
         GeneralSecurityException tE = new GeneralSecurityException(msg);
         assertTrue(errNotExc, tE instanceof GeneralSecurityException);
@@ -141,8 +135,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * is null
      */
     public void testGeneralSecurityException04() {
-        logln("==test_04: GeneralSecurityException==");
-
         Throwable cause = null;
         GeneralSecurityException tE = new GeneralSecurityException(cause);
         assertTrue(errNotExc, tE instanceof GeneralSecurityException);
@@ -161,8 +153,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * is not null
      */
     public void testGeneralSecurityException05() {
-        logln("==test_05: GeneralSecurityException==");
-
         GeneralSecurityException tE = new GeneralSecurityException(tCause);
         assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         if (tE.getMessage() != null) {
@@ -187,8 +177,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testGeneralSecurityException06() {
-        logln("==test_06: GeneralSecurityException==");
-
         GeneralSecurityException tE = new GeneralSecurityException(null, null);
         assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -206,8 +194,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testGeneralSecurityException07() {
-        logln("==test_07: GeneralSecurityException==");
-
         GeneralSecurityException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new GeneralSecurityException(msgs[i], null);
@@ -230,8 +216,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testGeneralSecurityException08() {
-        logln("==test_08: GeneralSecurityException==");
-
         GeneralSecurityException tE = new GeneralSecurityException(null, tCause);
         assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         if (tE.getMessage() != null) {
@@ -256,8 +240,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testGeneralSecurityException09() {
-        logln("==test_09: GeneralSecurityException==");
-
         GeneralSecurityException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new GeneralSecurityException(msgs[i], tCause);

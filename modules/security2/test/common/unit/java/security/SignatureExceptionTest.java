@@ -77,8 +77,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * constructs SignatureException with no detail message
      */
     public void testSignatureException01() {
-        logln("==test_01: SignatureException==");
-
         SignatureException tE = new SignatureException();
         assertTrue(errNotExc, tE instanceof SignatureException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testSignatureException02() {
-        logln("==test_02: SignatureException==");
-
         SignatureException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SignatureException(msgs[i]);
@@ -119,8 +115,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * constructs SignatureException when <code>msg</code> is null
      */
     public void testSignatureException03() {
-        logln("==test_03: SignatureException==");
-
         String msg = null;
         SignatureException tE = new SignatureException(msg);
         assertTrue(errNotExc, tE instanceof SignatureException);
@@ -139,8 +133,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * null
      */
     public void testSignatureException04() {
-        logln("==test_04: SignatureException==");
-
         Throwable cause = null;
         SignatureException tE = new SignatureException(cause);
         assertTrue(errNotExc, tE instanceof SignatureException);
@@ -159,8 +151,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * null
      */
     public void testSignatureException05() {
-        logln("==test_05: SignatureException==");
-
         SignatureException tE = new SignatureException(tCause);
         assertTrue(errNotExc, tE instanceof SignatureException);
         if (tE.getMessage() != null) {
@@ -185,8 +175,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * null <code>msg</code> is null
      */
     public void testSignatureException06() {
-        logln("==test_06: SignatureException==");
-
         SignatureException tE = new SignatureException(null, null);
         assertTrue(errNotExc, tE instanceof SignatureException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -204,8 +192,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * null <code>msg</code> is not null
      */
     public void testSignatureException07() {
-        logln("==test_07: SignatureException==");
-
         SignatureException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SignatureException(msgs[i], null);
@@ -228,8 +214,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * null <code>msg</code> is null
      */
     public void testSignatureException08() {
-        logln("==test_08: SignatureException==");
-
         SignatureException tE = new SignatureException(null, tCause);
         assertTrue(errNotExc, tE instanceof SignatureException);
         if (tE.getMessage() != null) {
@@ -254,8 +238,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      * null <code>msg</code> is not null
      */
     public void testSignatureException09() {
-        logln("==test_09: SignatureException==");
-
         SignatureException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SignatureException(msgs[i], tCause);

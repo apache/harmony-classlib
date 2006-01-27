@@ -79,8 +79,6 @@ public class SSLPeerUnverifiedExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testSSLPeerUnverifiedException01() {
-        logln("==test_01: SSLPeerUnverifiedException==");
-
         SSLPeerUnverifiedException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLPeerUnverifiedException(msgs[i]);
@@ -103,8 +101,6 @@ public class SSLPeerUnverifiedExceptionTest extends PerformanceTest {
      * is null
      */
     public void testSSLPeerUnverifiedException02() {
-        logln("==test_02: SSLPeerUnverifiedException==");
-
         String msg = null;
         SSLPeerUnverifiedException tE = new SSLPeerUnverifiedException(msg);
         assertTrue(errNotExc, tE instanceof SSLPeerUnverifiedException);

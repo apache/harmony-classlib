@@ -78,8 +78,6 @@ public class InvalidParameterExceptionTest extends PerformanceTest {
      * Assertion: constructs InvalidParameterException with no detail message
      */
     public void testInvalidParameterException01() {
-        logln("==test_01: InvalidParameterException==");
-
         InvalidParameterException tE = new InvalidParameterException();
         assertTrue(errNotExc, tE instanceof InvalidParameterException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class InvalidParameterExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testInvalidParameterException02() {
-        logln("==test_02: InvalidParameterException==");
-
         InvalidParameterException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidParameterException(msgs[i]);
@@ -121,8 +117,6 @@ public class InvalidParameterExceptionTest extends PerformanceTest {
      * is null
      */
     public void testInvalidParameterException03() {
-        logln("==test_03: InvalidParameterException==");
-
         String msg = null;
         InvalidParameterException tE = new InvalidParameterException(msg);
         assertTrue(errNotExc, tE instanceof InvalidParameterException);

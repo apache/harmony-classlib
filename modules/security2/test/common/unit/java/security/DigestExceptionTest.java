@@ -77,8 +77,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * constructs DigestException with no detail message
      */
     public void testDigestException01() {
-        logln("==test_01: DigestException==");
-
         DigestException tE = new DigestException();
         assertTrue(errNotExc, tE instanceof DigestException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null.
      */
     public void testDigestException02() {
-        logln("==test_02: DigestException==");
-
         DigestException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new DigestException(msgs[i]);
@@ -119,8 +115,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * constructs DigestException when <code>msg</code> is null
      */
     public void testDigestException03() {
-        logln("==test_03: DigestException==");
-
         String msg = null;
         DigestException tE = new DigestException(msg);
         assertTrue(errNotExc, tE instanceof DigestException);
@@ -138,8 +132,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * constructs DigestException when <code>cause</code> is null
      */
     public void testDigestException04() {
-        logln("==test_04: DigestException==");
-
         Throwable cause = null;
         DigestException tE = new DigestException(cause);
         assertTrue(errNotExc, tE instanceof DigestException);
@@ -157,8 +149,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * constructs DigestException when <code>cause</code> is not null
      */
     public void testDigestException05() {
-        logln("==test_05: DigestException==");
-
         DigestException tE = new DigestException(tCause);
         assertTrue(errNotExc, tE instanceof DigestException);
         if (tE.getMessage() != null) {
@@ -183,8 +173,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testDigestException06() {
-        logln("==test_06: DigestException==");
-
         DigestException tE = new DigestException(null, null);
         assertTrue(errNotExc, tE instanceof DigestException);
         assertNull("getMessage() must return null", tE.getMessage());
@@ -202,8 +190,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * <code>msg</code> is not null
      */
     public void testDigestException07() {
-        logln("==test_07: DigestException==");
-
         DigestException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new DigestException(msgs[i], null);
@@ -226,8 +212,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * null <code>msg</code> is null
      */
     public void testDigestException08() {
-        logln("==test_08: DigestException==");
-
         DigestException tE = new DigestException(null, tCause);
         assertTrue(errNotExc, tE instanceof DigestException);
         if (tE.getMessage() != null) {
@@ -252,8 +236,6 @@ public class DigestExceptionTest extends PerformanceTest {
      * null <code>msg</code> is not null
      */
     public void testDigestException09() {
-        logln("==test_09: DigestException==");
-
         DigestException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new DigestException(msgs[i], tCause);

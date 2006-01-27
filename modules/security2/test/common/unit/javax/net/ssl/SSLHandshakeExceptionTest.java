@@ -79,8 +79,6 @@ public class SSLHandshakeExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testSSLHandshakeException01() {
-        logln("==test_01: SSLHandshakeException==");
-
         SSLHandshakeException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLHandshakeException(msgs[i]);
@@ -103,8 +101,6 @@ public class SSLHandshakeExceptionTest extends PerformanceTest {
      * null
      */
     public void testSSLHandshakeException02() {
-        logln("==test_02: SSLHandshakeException==");
-
         String msg = null;
         SSLHandshakeException tE = new SSLHandshakeException(msg);
         assertTrue(errNotExc, tE instanceof SSLHandshakeException);

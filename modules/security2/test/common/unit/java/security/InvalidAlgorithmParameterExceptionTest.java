@@ -80,8 +80,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * message
      */
     public void testInvalidAlgorithmParameterException01() {
-        logln("==test_01: InvalidAlgorithmParameterException==");
-
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException();
         assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -99,8 +97,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * detail message msg. Parameter <code>msg</code> is not null.
      */
     public void testInvalidAlgorithmParameterException02() {
-        logln("==test_02: InvalidAlgorithmParameterException==");
-
         InvalidAlgorithmParameterException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidAlgorithmParameterException(msgs[i]);
@@ -123,8 +119,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * <code>msg</code> is null
      */
     public void testInvalidAlgorithmParameterException03() {
-        logln("==test_03: InvalidAlgorithmParameterException==");
-
         String msg = null;
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 msg);
@@ -144,8 +138,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * <code>cause</code> is null
      */
     public void testInvalidAlgorithmParameterException04() {
-        logln("==test_04: InvalidAlgorithmParameterException==");
-
         Throwable cause = null;
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 cause);
@@ -165,8 +157,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null
      */
     public void testInvalidAlgorithmParameterException05() {
-        logln("==test_05: InvalidAlgorithmParameterException==");
-
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 tCause);
         assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
@@ -193,8 +183,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is null
      */
     public void testInvalidAlgorithmParameterException06() {
-        logln("==test_06: InvalidAlgorithmParameterException==");
-
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 null, null);
         assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
@@ -214,8 +202,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * <code>cause</code> is null <code>msg</code> is not null
      */
     public void testInvalidAlgorithmParameterException07() {
-        logln("==test_07: InvalidAlgorithmParameterException==");
-
         InvalidAlgorithmParameterException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidAlgorithmParameterException(msgs[i], null);
@@ -239,8 +225,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is null
      */
     public void testInvalidAlgorithmParameterException08() {
-        logln("==test_08: InvalidAlgorithmParameterException==");
-
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 null, tCause);
         assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
@@ -267,8 +251,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      * <code>cause</code> is not null <code>msg</code> is not null
      */
     public void testInvalidAlgorithmParameterException09() {
-        logln("==test_09: InvalidAlgorithmParameterException==");
-
         InvalidAlgorithmParameterException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidAlgorithmParameterException(msgs[i], tCause);

@@ -78,8 +78,6 @@ public class SSLProtocolExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testSSLProtocolException01() {
-        logln("==test_01: SSLProtocolException==");
-
         SSLProtocolException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLProtocolException(msgs[i]);
@@ -102,8 +100,6 @@ public class SSLProtocolExceptionTest extends PerformanceTest {
      * null
      */
     public void testSSLProtocolException02() {
-        logln("==test_02: SSLProtocolException==");
-
         String msg = null;
         SSLProtocolException tE = new SSLProtocolException(msg);
         assertTrue(errNotExc, tE instanceof SSLProtocolException);

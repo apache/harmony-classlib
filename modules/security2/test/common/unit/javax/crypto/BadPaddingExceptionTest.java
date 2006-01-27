@@ -77,8 +77,6 @@ public class BadPaddingExceptionTest extends PerformanceTest {
      * constructs BadPaddingException with no detail message
      */
     public void testBadPaddingException01() {
-        logln("==test_01: BadPaddingException==");
-
         BadPaddingException tE = new BadPaddingException();
         assertTrue(errNotExc, tE instanceof BadPaddingException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class BadPaddingExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testBadPaddingException02() {
-        logln("==test_02: BadPaddingException==");
-
         BadPaddingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new BadPaddingException(msgs[i]);
@@ -119,8 +115,6 @@ public class BadPaddingExceptionTest extends PerformanceTest {
      * Assertion: constructs BadPaddingException when <code>msg</code> is null
      */
     public void testBadPaddingException03() {
-        logln("==test_03: BadPaddingException==");
-
         String msg = null;
         BadPaddingException tE = new BadPaddingException(msg);
         assertTrue(errNotExc, tE instanceof BadPaddingException);

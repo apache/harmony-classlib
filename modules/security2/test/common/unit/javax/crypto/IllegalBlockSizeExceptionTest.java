@@ -78,8 +78,6 @@ public class IllegalBlockSizeExceptionTest extends PerformanceTest {
      * Assertion: constructs IllegalBlockSizeException with no detail message
      */
     public void testIllegalBlockSizeException01() {
-        logln("==test_01: IllegalBlockSizeException==");
-
         IllegalBlockSizeException tE = new IllegalBlockSizeException();
         assertTrue(errNotExc, tE instanceof IllegalBlockSizeException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -97,8 +95,6 @@ public class IllegalBlockSizeExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testIllegalBlockSizeException02() {
-        logln("==test_02: IllegalBlockSizeException==");
-
         IllegalBlockSizeException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new IllegalBlockSizeException(msgs[i]);
@@ -121,8 +117,6 @@ public class IllegalBlockSizeExceptionTest extends PerformanceTest {
      * is null
      */
     public void testIllegalBlockSizeException03() {
-        logln("==test_03: IllegalBlockSizeException==");
-
         String msg = null;
         IllegalBlockSizeException tE = new IllegalBlockSizeException(msg);
         assertTrue(errNotExc, tE instanceof IllegalBlockSizeException);

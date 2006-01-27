@@ -77,8 +77,6 @@ public class ShortBufferExceptionTest extends PerformanceTest {
      * constructs ShortBufferException with no detail message
      */
     public void testShortBufferException01() {
-        logln("==test_01: ShortBufferException==");
-
         ShortBufferException tE = new ShortBufferException();
         assertTrue(errNotExc, tE instanceof ShortBufferException);
         assertNull("getMessage() must return null.", tE.getMessage());
@@ -96,8 +94,6 @@ public class ShortBufferExceptionTest extends PerformanceTest {
      * Parameter <code>msg</code> is not null.
      */
     public void testShortBufferException02() {
-        logln("==test_02: ShortBufferException==");
-
         ShortBufferException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ShortBufferException(msgs[i]);
@@ -120,8 +116,6 @@ public class ShortBufferExceptionTest extends PerformanceTest {
      * null
      */
     public void testShortBufferException03() {
-        logln("==test_03: ShortBufferException==");
-
         String msg = null;
         ShortBufferException tE = new ShortBufferException(msg);
         assertTrue(errNotExc, tE instanceof ShortBufferException);
