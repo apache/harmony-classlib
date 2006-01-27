@@ -1787,7 +1787,7 @@ public class Collections {
 		if (dist > 0)
 			normdist = dist % size;
 		else
-			normdist = size - (dist * (-1) % size);
+			normdist = size - ((dist % size) * (-1));
 
 		if (normdist == 0 || normdist == size)
 			return;
