@@ -78,7 +78,7 @@ public class URLEncoder {
 	 * MIME content type.
 	 * <p>
 	 * All characters except letters ('a'..'z', 'A'..'Z') and numbers ('0'..'9')
-	 * and characters '.', '-', '*', '_' are converted into their hexidecimal
+	 * and characters '.', '-', '*', '_' are converted into their hexadecimal
 	 * value prepended by '%'.
 	 * <p>
 	 * For example: '#' -> %23
@@ -98,22 +98,39 @@ public class URLEncoder {
 		"".getBytes(enc);
 
 		StringBuffer buf = new StringBuffer();
+		int start = -1;
 		for (int i = 0; i < s.length(); i++) {
 			char ch = s.charAt(i);
 			if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
-					|| (ch >= '0' && ch <= '9') || ".-*_".indexOf(ch) > -1)
-				buf.append(ch);
-			else if (ch == ' ')
-				buf.append('+');
-			else {
-				byte[] bytes = new String(new char[] { ch }).getBytes(enc);
-				for (int j = 0; j < bytes.length; j++) {
-					buf.append('%');
-					buf.append(digits.charAt((bytes[j] & 0xf0) >> 4));
-					buf.append(digits.charAt(bytes[j] & 0xf));
+					|| (ch >= '0' && ch <= '9') || " .-*_".indexOf(ch) > -1) {
+				if (start >= 0) {
+					convert(s.substring(start, i), buf, enc);
+					start = -1;
+				}
+				if (ch != ' ') {
+					buf.append(ch);
+				} else {
+					buf.append('+');
+				}
+			} else {
+				if (start < 0) {
+					start = i;
 				}
 			}
 		}
+		if (start >= 0) {
+			convert(s.substring(start, s.length()), buf, enc);
+		}
 		return buf.toString();
+	}
+
+	private static void convert(String s, StringBuffer buf, String enc)
+			throws UnsupportedEncodingException {
+		byte[] bytes = s.getBytes(enc);
+		for (int j = 0; j < bytes.length; j++) {
+			buf.append('%');
+			buf.append(digits.charAt((bytes[j] & 0xf0) >> 4));
+			buf.append(digits.charAt(bytes[j] & 0xf));
+		}
 	}
 }
