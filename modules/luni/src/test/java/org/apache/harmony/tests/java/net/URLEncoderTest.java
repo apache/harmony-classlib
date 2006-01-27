@@ -22,6 +22,9 @@ import junit.framework.TestCase;
 
 public class URLEncoderTest extends TestCase {
 	
+	/**
+	 * @tests URLEncoder#encode(String, String)
+	 */
 	public void test_encodeLjava_lang_StringLjava_lang_String() {
 		// Regression for HARMONY-24
         try {
@@ -31,5 +34,4 @@ public class URLEncoderTest extends TestCase {
             // expected
         } 
 	}
-
 }
