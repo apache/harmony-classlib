@@ -60,4 +60,22 @@ public class FileTest extends TestCase {
 		assertTrue("Assert 4: Created incorrect file " + f.getPath(), f
 				.getAbsolutePath().equals(dirName));
 	}
+	
+	/**
+	 * @tests java.io.File#hashCode()
+	 */
+	public void test_hashCode() {
+		// Regression for HARMONY-53
+		String mixedFname = "SoMe FiLeNaMe";
+		File mfile = new File(mixedFname);
+		File lfile = new File(mixedFname.toLowerCase());
+
+		int hash = 0;
+		if (mfile.equals(lfile)) {
+			hash = mixedFname.toLowerCase().hashCode() ^ 1234321;
+		} else {
+			hash = mixedFname.hashCode() ^ 1234321;
+		}
+		assertEquals("Assert 0: wrong hashcode", hash, mfile.hashCode());
+	}
 }

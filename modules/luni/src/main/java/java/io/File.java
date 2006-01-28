@@ -634,7 +634,10 @@ public class File implements Serializable, Comparable {
 	 * @see #equals
 	 */
 	public int hashCode() {
-		return path.hashCode() ^ 1234321;
+		if (caseSensitive)
+			return path.hashCode() ^ 1234321;
+		else
+			return path.toLowerCase().hashCode() ^ 1234321;
 	}
 
 	/**
