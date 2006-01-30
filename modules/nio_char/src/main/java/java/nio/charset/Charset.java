@@ -559,12 +559,15 @@ public abstract class Charset implements Comparable {
 	}
 
 	/**
-	 * Answers whether this charset is registered in the IANA Charset Registry.
+	 * Answers whether this charset is known to be registered in the
+	 * IANA Charset Registry.
 	 * 
-	 * @return true
+	 * @return true if the charset is known to be registered, otherwise
+	 * 	returns false.
 	 */
 	public final boolean isRegistered() {
-		return true;
+		return !canonicalName.startsWith("x-") &&
+			!canonicalName.startsWith("X-");
 	}
 
 	/**
