@@ -69,6 +69,9 @@ public class URLDecoder {
 	public static String decode(String s, String enc)
 			throws UnsupportedEncodingException {
 
+		if (enc == null) {
+			throw new NullPointerException();
+		}
 		StringBuffer result = new StringBuffer(s.length());
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		for (int i = 0; i < s.length();) {
