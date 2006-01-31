@@ -27,7 +27,7 @@ import java.security.Security;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 import java.util.Enumeration;
 import java.util.Map;
@@ -37,7 +37,7 @@ import java.util.Map;
  * 
  */
 
-public class SaslTest2 extends PerformanceTest {
+public class SaslTest2 extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SaslTest2.class);

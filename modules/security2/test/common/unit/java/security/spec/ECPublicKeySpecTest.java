@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>ECPublicKeySpec</code> class fields and methods.
  * 
  */
-public class ECPublicKeySpecTest extends PerformanceTest {
+public class ECPublicKeySpecTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -76,9 +76,8 @@ public class ECPublicKeySpecTest extends PerformanceTest {
                               BigInteger.ZERO,
                               BigInteger.valueOf(4L));
         ECPoint g = new ECPoint(BigInteger.ZERO, BigInteger.valueOf(2L));
-        ECPublicKeySpec ks =
-            new ECPublicKeySpec(g,
-                    new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10));
+        new ECPublicKeySpec(g,
+                new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10));
         
     }
 
@@ -98,35 +97,28 @@ public class ECPublicKeySpecTest extends PerformanceTest {
         ECPoint g = new ECPoint(BigInteger.ZERO, BigInteger.valueOf(2L));
 
         // Test case 1: w is null
-        boolean passed = false;
         try {
-            ECPublicKeySpec ks = new ECPublicKeySpec(null,
+            new ECPublicKeySpec(null,
                 new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10));
+            fail("#1: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 2: params is null
-        passed = false;
         try {
-            ECPublicKeySpec ks = new ECPublicKeySpec(g, null);
+            new ECPublicKeySpec(g, null);
+            fail("#2: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 3: both w and params are null
-        passed = false;
         try {
-            ECPublicKeySpec ks = new ECPublicKeySpec(null, null);
+            new ECPublicKeySpec(null, null);
+            fail("#3: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -144,16 +136,13 @@ public class ECPublicKeySpecTest extends PerformanceTest {
                                BigInteger.ZERO,
                                BigInteger.valueOf(4L));
          ECPoint g = new ECPoint(BigInteger.ZERO, BigInteger.valueOf(2L));
-         boolean passed = false;
+
          try {
-             ECPublicKeySpec ks =
-                 new ECPublicKeySpec(ECPoint.POINT_INFINITY,
-                         new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10));
+             new ECPublicKeySpec(ECPoint.POINT_INFINITY,
+                     new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10));
+            fail("Expected IAE not thrown");
          } catch (IllegalArgumentException ok) {
-             passed = true;
-             logln(getName() + ": " + ok);
          }
-         assertTrue(passed);
      }
 
      /**

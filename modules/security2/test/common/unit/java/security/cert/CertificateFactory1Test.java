@@ -36,7 +36,7 @@ import java.util.Vector;
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.cert.MyCertPath;
 import org.apache.harmony.security.cert.MyCertificate;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -44,7 +44,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertificateFactory1Test extends PerformanceTest {
+public class CertificateFactory1Test extends TestCase {
 
     /**
      * Constructor for CertificateFactoryTests.
@@ -114,8 +114,6 @@ public class CertificateFactory1Test extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             CertificateFactory certF = CertificateFactory
                     .getInstance(validValues[i]);
-            assertTrue("Not CertificateFactory object",
-                    certF instanceof CertificateFactory);
             assertEquals("Incorrect type: ", validValues[i], certF.getType());
         }
     }
@@ -213,8 +211,6 @@ public class CertificateFactory1Test extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             certF = CertificateFactory.getInstance(validValues[i],
                     defaultProviderName);
-            assertTrue("Not CertificateFactory object",
-                    certF instanceof CertificateFactory);
             assertEquals("Incorrect type", certF.getType(), validValues[i]);
             assertEquals("Incorrect provider name", certF.getProvider()
                     .getName(), defaultProviderName);
@@ -286,8 +282,6 @@ public class CertificateFactory1Test extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             certF = CertificateFactory.getInstance(validValues[i],
                     defaultProvider);
-            assertTrue("Not CertificateFactory object",
-                    certF instanceof CertificateFactory);
             assertEquals("Incorrect provider", certF.getProvider(),
                     defaultProvider);
             assertEquals("Incorrect type", certF.getType(), validValues[i]);
@@ -314,7 +308,7 @@ public class CertificateFactory1Test extends PerformanceTest {
             String s1 = (String) it1.next();
             boolean yesNo = false;
             while (it2.hasNext()) {
-                if (s1.equals((String) it2.next())) {
+                if (s1.equals(it2.next())) {
                     yesNo = true;
                     break;
                 }
@@ -330,7 +324,7 @@ public class CertificateFactory1Test extends PerformanceTest {
             String s1 = (String) it1.next();
             boolean yesNo = false;
             while (it2.hasNext()) {
-                if (s1.equals((String) it2.next())) {
+                if (s1.equals(it2.next())) {
                     yesNo = true;
                     break;
                 }
@@ -358,10 +352,8 @@ public class CertificateFactory1Test extends PerformanceTest {
         CertificateFactory[] certFs = initCertFs();
         assertNotNull("CertificateFactory objects were not created", certFs);
         byte [] bb = {};
-        InputStream is = (InputStream) new ByteArrayInputStream(bb);
-        Certificate cer;
+        InputStream is = new ByteArrayInputStream(bb);
         Collection colCer;
-        CRL crl;
         Collection colCrl;
         for (int i = 0; i < certFs.length; i++) {
             try {
@@ -370,20 +362,19 @@ public class CertificateFactory1Test extends PerformanceTest {
             } catch (CertificateException e) {
             } catch (NullPointerException e) {
             }
-            is = (InputStream) new ByteArrayInputStream(bb);
+            is = new ByteArrayInputStream(bb);
             try {
                 certFs[i].generateCertificates(null);
                 fail("generateCertificates must throw CertificateException or NullPointerException when input stream is null");
             } catch (CertificateException e) {
             } catch (NullPointerException e) {
             }
-            is = (InputStream) new ByteArrayInputStream(bb);
+            is = new ByteArrayInputStream(bb);
             try {
-                cer = certFs[i].generateCertificate(is);
-                logln("generateCertificate(..) returns certificate: " + cer);
+                certFs[i].generateCertificate(is);
             } catch (CertificateException e) {
             }
-            is = (InputStream) new ByteArrayInputStream(bb);
+            is = new ByteArrayInputStream(bb);
             try {
                 colCer = certFs[i].generateCertificates(is);
                 if (colCer != null) {
@@ -394,8 +385,7 @@ public class CertificateFactory1Test extends PerformanceTest {
         }
         for (int i = 0; i < certFs.length; i++) {
             try {
-                crl = certFs[i].generateCRL(null);
-                logln("generateCRL(..) returns from null stream CRL: " + crl);
+                certFs[i].generateCRL(null);
             } catch (CRLException e) {
             } catch (NullPointerException e) {
             }
@@ -407,13 +397,12 @@ public class CertificateFactory1Test extends PerformanceTest {
             } catch (CRLException e) {
             } catch (NullPointerException e) {
             }
-            is = (InputStream) new ByteArrayInputStream(bb);
+            is = new ByteArrayInputStream(bb);
             try {
-                 crl = certFs[i].generateCRL(is);
-                 logln("generateCRL(..) returns from empty stream CRL: " + crl);
+                 certFs[i].generateCRL(is);
             } catch (CRLException e) {
             }
-            is = (InputStream) new ByteArrayInputStream(bb);
+            is = new ByteArrayInputStream(bb);
             try {
                 certFs[i].generateCRLs(is);
                 colCrl = certFs[i].generateCRLs(null);
@@ -504,8 +493,7 @@ public class CertificateFactory1Test extends PerformanceTest {
         CertificateFactory[] certFs = initCertFs();
         assertNotNull("CertificateFactory objects were not created", certFs);
         InputStream is1 = null;
-        InputStream is2 = (InputStream) new ByteArrayInputStream(new byte[10]);
-        String provider = null;
+        InputStream is2 = new ByteArrayInputStream(new byte[10]);
 
         for (int i = 0; i < certFs.length; i++) {
             try {
@@ -595,7 +583,6 @@ public class CertificateFactory1Test extends PerformanceTest {
         CertificateFactory[] certFs = initCertFs();
         assertNotNull("CertificateFactory objects were not created", certFs);
         List list = null;
-        String provider = null;
         for (int i = 0; i < certFs.length; i++) {
             try {
                 certFs[i].generateCertPath(list);
@@ -619,7 +606,7 @@ public class CertificateFactory1Test extends PerformanceTest {
         }
         CertificateFactory[] certFs = initCertFs();
         assertNotNull("CertificateFactory objects were not created", certFs); 
-        List list = (List) new Vector();
+        List list = new Vector();
         for (int i = 0; i < certFs.length; i++) {
             CertPath cp = certFs[i].generateCertPath(list);
             List list1 = cp.getCertificates();
@@ -641,7 +628,7 @@ public class CertificateFactory1Test extends PerformanceTest {
         CertificateFactory[] certFs = initCertFs();
         assertNotNull("CertificateFactory objects were not created", certFs);
         MyCertificate ms = createMC();
-        List list = (List) new Vector();
+        List list = new Vector();
         list.add(ms);
         for (int i = 0; i < certFs.length; i++) {
             try {
@@ -665,7 +652,6 @@ public class CertificateFactory1Test extends PerformanceTest {
         CertificateFactorySpi spi = new MyCertificateFactorySpi(); 
         CertificateFactory cf = new myCertificateFactory(spi, defaultProvider,
                 defaultType);
-        assertTrue("Not CertificateFactory object", cf instanceof CertificateFactory);
         assertEquals("Incorrect type", cf.getType(), defaultType);
         assertEquals("Incorrect provider", cf.getProvider(), defaultProvider);
         try {

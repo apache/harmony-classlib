@@ -21,14 +21,14 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>UnresolvedPermission</code> class fields and methods
  * 
  */
 
-public class UnresolvedPermissionTest extends PerformanceTest {
+public class UnresolvedPermissionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(UnresolvedPermissionTest.class);

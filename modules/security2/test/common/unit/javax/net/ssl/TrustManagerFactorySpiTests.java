@@ -27,7 +27,7 @@ import java.security.KeyStoreException;
 
 import javax.net.ssl.TrustManagerFactorySpi;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>TrustManagerFactorySpi</code> class constructors and
@@ -35,7 +35,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class TrustManagerFactorySpiTests extends PerformanceTest {
+public class TrustManagerFactorySpiTests extends TestCase {
     /**
      * Constructor for TrustManegerFactorySpiTests.
      * 

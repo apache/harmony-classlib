@@ -27,7 +27,7 @@ import java.security.cert.CertificateException;
 import java.util.Date;
 
 import org.apache.harmony.security.cert.MyCertificate;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -35,7 +35,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyStoreSpiTests extends PerformanceTest {
+public class KeyStoreSpiTests extends TestCase {
 
     /**
      * Constructor for KeyStoreSpi.
@@ -62,36 +62,37 @@ public class KeyStoreSpiTests extends PerformanceTest {
     public void testKeyStoteSpi01() throws IOException,
             NoSuchAlgorithmException, CertificateException,
             UnrecoverableEntryException, KeyStoreException {
-        KeyStoreSpi ksSpi = (KeyStoreSpi) new MyKeyStoreSpi();
-        assertTrue("Not KeyStoreSpi object", ksSpi instanceof KeyStoreSpi);
+        KeyStoreSpi ksSpi = new MyKeyStoreSpi();
 
         tmpEntry entry = new tmpEntry();
         tmpProtection pPar = new tmpProtection();
         try {
             ksSpi.engineLoad(null);
         } catch (UnsupportedOperationException e) {
-            logln("UnsupportedOperationException was thrown: " + e.getMessage());
         }
+
         try {
             ksSpi.engineStore(null);
         } catch (UnsupportedOperationException e) {
-            logln("UnsupportedOperationException was thrown: " + e.getMessage());
         }
         assertNull("Not null entry", ksSpi.engineGetEntry("aaa", null));
         assertNull("Not null entry", ksSpi.engineGetEntry(null, pPar));
         assertNull("Not null entry", ksSpi.engineGetEntry("aaa", pPar));
+
         try {
             ksSpi.engineSetEntry("", null, null);
             fail("KeyStoreException or NullPointerException must be thrown");
         } catch (KeyStoreException e) {
         } catch (NullPointerException e) {
         }
+
         try {
             ksSpi.engineSetEntry("", new KeyStore.TrustedCertificateEntry(
                     new MyCertificate("type", new byte[0])), null);
             fail("KeyStoreException must be thrown");
         } catch (KeyStoreException e) {            
         }
+
         try {
             ksSpi.engineSetEntry("aaa", entry, null);
             fail("KeyStoreException must be thrown");
@@ -107,8 +108,7 @@ public class KeyStoreSpiTests extends PerformanceTest {
      */
     public void testKeyStoteSpi02() throws NoSuchAlgorithmException,
             UnrecoverableKeyException, CertificateException {
-        KeyStoreSpi ksSpi = (KeyStoreSpi) new MyKeyStoreSpi();
-        assertTrue("Not KeyStoreSpi object", ksSpi instanceof KeyStoreSpi);
+        KeyStoreSpi ksSpi = new MyKeyStoreSpi();
         assertNull("engineGetKey(..) must return null", ksSpi.engineGetKey("",
                 new char[0]));
         assertNull("engineGetCertificateChain(..) must return null", ksSpi

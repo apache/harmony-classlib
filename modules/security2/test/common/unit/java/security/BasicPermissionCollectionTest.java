@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -39,7 +39,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class BasicPermissionCollectionTest extends PerformanceTest {
+public class BasicPermissionCollectionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(BasicPermissionCollectionTest.class);

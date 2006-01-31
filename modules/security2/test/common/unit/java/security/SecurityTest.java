@@ -26,14 +26,14 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.harmony.security.TestKeyPair;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>Security</code> constructor and methods
  * 
  */
-public class SecurityTest extends PerformanceTest {
+public class SecurityTest extends TestCase {
 
     public final void testMixed() {
 

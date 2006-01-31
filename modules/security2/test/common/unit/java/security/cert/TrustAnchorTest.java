@@ -32,13 +32,13 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.TestKeyPair;
 import org.apache.harmony.security.cert.TestUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Unit tests for <code>TrustAnchor</code>
  */
-public class TrustAnchorTest extends PerformanceTest {
+public class TrustAnchorTest extends TestCase {
     private static final String keyAlg = "DSA";
     // Sample of some valid CA name
     private static final String validCaNameRfc2253 =
@@ -67,26 +67,26 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
         // sub testcase 1
-        TrustAnchor ta = new TrustAnchor(
-                (X509Certificate)ks.getCertificate(certAlias),
-                getFullEncoding());
+        new TrustAnchor(
+            (X509Certificate)ks.getCertificate(certAlias),
+            getFullEncoding());
         // sub testcase 2
-        ta = new TrustAnchor(
-                (X509Certificate)ks.getCertificate(certAlias),
-                getEncodingPSOnly());
+        new TrustAnchor(
+            (X509Certificate)ks.getCertificate(certAlias),
+            getEncodingPSOnly());
         // sub testcase 3
-        ta = new TrustAnchor(
-                (X509Certificate)ks.getCertificate(certAlias),
-                getEncodingESOnly());
+        new TrustAnchor(
+            (X509Certificate)ks.getCertificate(certAlias),
+            getEncodingESOnly());
         // sub testcase 4
-        ta = new TrustAnchor(
-                (X509Certificate)ks.getCertificate(certAlias),
-                getEncodingNoMinMax());
+        new TrustAnchor(
+            (X509Certificate)ks.getCertificate(certAlias),
+            getEncodingNoMinMax());
     }
 
     /**
@@ -99,13 +99,13 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
-        TrustAnchor ta = new TrustAnchor(
-                (X509Certificate)ks.getCertificate(certAlias),
-                null);        
+        new TrustAnchor(
+            (X509Certificate)ks.getCertificate(certAlias),
+            null);        
     }
 
     /**
@@ -118,9 +118,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
         byte[] nc = getEncodingPSOnly();
         byte[] ncCopy = (byte[])nc.clone();
@@ -146,16 +146,13 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
-        String certAlias = "testca1";
+
         try {
-            TrustAnchor ta = new TrustAnchor(null, getFullEncoding());
+            new TrustAnchor(null, getFullEncoding());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
-            return;
         }
     }
 
@@ -170,9 +167,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
 
         // sub testcase 1:
@@ -181,12 +178,11 @@ public class TrustAnchorTest extends PerformanceTest {
         // set wrong root seq length
         nameConstraints[2] = (byte)0x8d;
         try {
-            TrustAnchor ta = new TrustAnchor(
+            new TrustAnchor(
                     (X509Certificate)ks.getCertificate(certAlias),
                     nameConstraints);
             fail("IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
 
         // sub testcase 2:
@@ -195,12 +191,11 @@ public class TrustAnchorTest extends PerformanceTest {
         // set wrong root seq length
         nameConstraints[2] = (byte)0x8b;
         try {
-            TrustAnchor ta = new TrustAnchor(
+            new TrustAnchor(
                     (X509Certificate)ks.getCertificate(certAlias),
                     nameConstraints);
             fail("IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
 
         // sub testcase 3:
@@ -209,12 +204,11 @@ public class TrustAnchorTest extends PerformanceTest {
         // remove right class from seq tag
         nameConstraints[3] &= (byte)0x3f;
         try {
-            TrustAnchor ta = new TrustAnchor(
+            new TrustAnchor(
                     (X509Certificate)ks.getCertificate(certAlias),
                     nameConstraints);
             fail("IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
 
         // sub testcase 4:
@@ -223,12 +217,11 @@ public class TrustAnchorTest extends PerformanceTest {
         // set wrong tagged value (excludedSubtrees SEQ OF) tag [2]
         nameConstraints[2] = (byte)0xa2;
         try {
-            TrustAnchor ta = new TrustAnchor(
+            new TrustAnchor(
                     (X509Certificate)ks.getCertificate(certAlias),
                     nameConstraints);
             fail("IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
 
         // sub testcase 5:
@@ -237,12 +230,11 @@ public class TrustAnchorTest extends PerformanceTest {
         // remove CONSTRUCTED flag from tagged value (excludedSubtrees SEQ OF) tag
         nameConstraints[2] &= (byte)0xdf;
         try {
-            TrustAnchor ta = new TrustAnchor(
+            new TrustAnchor(
                     (X509Certificate)ks.getCertificate(certAlias),
                     nameConstraints);
             fail("IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
 
         // sub testcase 6:
@@ -252,12 +244,11 @@ public class TrustAnchorTest extends PerformanceTest {
         // (generalSubtree's 'base' as IA5String)
         nameConstraints[5] |= (byte)0x20;
         try {
-            TrustAnchor ta = new TrustAnchor(
+            new TrustAnchor(
                     (X509Certificate)ks.getCertificate(certAlias),
                     nameConstraints);
             fail("IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
 
         // sub testcase 7:
@@ -268,12 +259,11 @@ public class TrustAnchorTest extends PerformanceTest {
         nameConstraints[12] = nameConstraints[13] = nameConstraints[14] =
             (byte)0x6f;
         try {
-            TrustAnchor ta = new TrustAnchor(
+            new TrustAnchor(
                     (X509Certificate)ks.getCertificate(certAlias),
                     nameConstraints);
             fail("IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
     }
 
@@ -287,14 +277,14 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
         byte []  nameConstraints = getEncodingOid();
-        TrustAnchor ta = new TrustAnchor(
-                (X509Certificate)ks.getCertificate(certAlias),
-                nameConstraints);
+        new TrustAnchor(
+            (X509Certificate)ks.getCertificate(certAlias),
+            nameConstraints);
     }
 
     /**
@@ -308,20 +298,19 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
         byte []  nameConstraints = getEncodingOid();
         //corrupt Oid
         nameConstraints[10]= (byte) 0xFF;
         try {
-            TrustAnchor ta = new TrustAnchor(
-                    (X509Certificate)ks.getCertificate(certAlias),
-                    nameConstraints);
+            new TrustAnchor(
+                (X509Certificate)ks.getCertificate(certAlias),
+                nameConstraints);
             fail("IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
     }
 
@@ -336,9 +325,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
         // GeneralName tags for this test (1,2 and 3 are omitted)
         byte[] generalNameTag = new byte[] {
@@ -358,13 +347,12 @@ public class TrustAnchorTest extends PerformanceTest {
         for (int i=0; i<generalNameTag.length; i++) {
             wrongEncoding[6] = generalNameTag[i];
             try {
-                TrustAnchor ta = new TrustAnchor(
-                        (X509Certificate)ks.getCertificate(certAlias),
-                        wrongEncoding);
+                new TrustAnchor(
+                    (X509Certificate)ks.getCertificate(certAlias),
+                    wrongEncoding);
                 fail("IllegalArgumentException has not been thrown for tag " +
                         (generalNameTag[i]&0xff));
             } catch (IllegalArgumentException ok) {
-                logln(getName() + ": " + ok);
             }
         }
     }
@@ -382,9 +370,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
         byte[] encoding = new byte[] {
                 (byte)0x30,(byte)0x13,(byte)0xa1,(byte)0x11,
@@ -394,19 +382,18 @@ public class TrustAnchorTest extends PerformanceTest {
                 (byte)0x80,(byte)0x01,(byte)0x00
         };
         try {
-            TrustAnchor ta = new TrustAnchor(
-                    (X509Certificate)ks.getCertificate(certAlias), encoding);
+            new TrustAnchor(
+                (X509Certificate)ks.getCertificate(certAlias), encoding);
         } catch (IllegalArgumentException failed) {
             fail("valid encoding not accepted");
         }
         // now corrupt encoding: set OtherName value tag to 1 (must be 0)
         encoding[13] = 1;
         try {
-            TrustAnchor ta = new TrustAnchor(
-                    (X509Certificate)ks.getCertificate(certAlias), encoding);
+            new TrustAnchor(
+                (X509Certificate)ks.getCertificate(certAlias), encoding);
             fail("invalid encoding accepted");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         }
     }
     /**
@@ -422,17 +409,17 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         // sub testcase 1
-        TrustAnchor ta = new TrustAnchor(validCaNameRfc2253, pk, getFullEncoding());
+        new TrustAnchor(validCaNameRfc2253, pk, getFullEncoding());
         // sub testcase 2
-        ta = new TrustAnchor(validCaNameRfc2253, pk, getEncodingPSOnly());        
+        new TrustAnchor(validCaNameRfc2253, pk, getEncodingPSOnly());        
         // sub testcase 3
-        ta = new TrustAnchor(validCaNameRfc2253, pk, getEncodingESOnly());        
+        new TrustAnchor(validCaNameRfc2253, pk, getEncodingESOnly());        
         // sub testcase 4
-        ta = new TrustAnchor(validCaNameRfc2253, pk, getEncodingNoMinMax());        
+        new TrustAnchor(validCaNameRfc2253, pk, getEncodingNoMinMax());        
     }
 
     /**
@@ -448,11 +435,11 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
 
-        TrustAnchor ta = new TrustAnchor(validCaNameRfc2253, pk, null);
+
+        new TrustAnchor(validCaNameRfc2253, pk, null);
     }
 
     /**
@@ -468,9 +455,9 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         byte[] nc = getEncodingPSOnly();
         byte[] ncCopy = (byte[])nc.clone();
         // sub testcase 5 - nameConstraints can be null
@@ -496,29 +483,28 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         // sub testcase 1
         try {
-            TrustAnchor ta = new TrustAnchor((String)null, pk, getEncodingPSOnly());
+            new TrustAnchor((String)null, pk, getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
+
         // sub testcase 2
         try {
-            TrustAnchor ta = new TrustAnchor(validCaNameRfc2253, null, getEncodingPSOnly());
+            new TrustAnchor(validCaNameRfc2253, null, getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
+
         // sub testcase 3
         try {
-            TrustAnchor ta = new TrustAnchor((String)null, null, getEncodingPSOnly());
+            new TrustAnchor((String)null, null, getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
     }
 
@@ -535,18 +521,18 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         X500Principal x500p = new X500Principal(validCaNameRfc2253);
         // sub testcase 1
-        TrustAnchor ta = new TrustAnchor(x500p, pk, getFullEncoding());
+        new TrustAnchor(x500p, pk, getFullEncoding());
         // sub testcase 2
-        ta = new TrustAnchor(x500p, pk, getEncodingPSOnly());        
+        new TrustAnchor(x500p, pk, getEncodingPSOnly());        
         // sub testcase 3
-        ta = new TrustAnchor(x500p, pk, getEncodingESOnly());        
+        new TrustAnchor(x500p, pk, getEncodingESOnly());        
         // sub testcase 4
-        ta = new TrustAnchor(x500p, pk, getEncodingNoMinMax());        
+        new TrustAnchor(x500p, pk, getEncodingNoMinMax());        
     }
 
     /**
@@ -562,12 +548,12 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         X500Principal x500p = new X500Principal(validCaNameRfc2253);
 
-        TrustAnchor ta = new TrustAnchor(x500p, pk, null);
+        new TrustAnchor(x500p, pk, null);
     }
 
     /**
@@ -583,9 +569,9 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         byte[] nc = getEncodingPSOnly();
         byte[] ncCopy = (byte[])nc.clone();
         // sub testcase 5 - nameConstraints can be null
@@ -612,33 +598,33 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         X500Principal x500p = new X500Principal(validCaNameRfc2253);
         // sub testcase 1
         try {
-            TrustAnchor ta = new TrustAnchor((X500Principal)null,
+            new TrustAnchor((X500Principal)null,
                     pk, getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
+
         // sub testcase 2
         try {
-            TrustAnchor ta = new TrustAnchor(x500p, null, getEncodingPSOnly());
+            new TrustAnchor(x500p, null, getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
+
         // sub testcase 3
         try {
-            TrustAnchor ta = new TrustAnchor((X500Principal)null, null,
+            new TrustAnchor((X500Principal)null, null,
                     getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
+
     }
 
     /**
@@ -654,9 +640,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "testca1";
         byte[] nc = getFullEncoding();
         // sub testcase 1
@@ -683,9 +669,9 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         // sub testcase 1
         TrustAnchor ta =
             new TrustAnchor(validCaNameRfc2253, pk, null);
@@ -711,9 +697,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws InvalidKeySpecException, KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         TrustAnchor ta = new TrustAnchor(
                 (X509Certificate)ks.getCertificate("testca1"),
                 null);
@@ -733,9 +719,9 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         // sub testcase 1
         TrustAnchor ta =
             new TrustAnchor(validCaNameRfc2253, pk, null);
@@ -760,9 +746,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         TrustAnchor ta = new TrustAnchor(
                 (X509Certificate)ks.getCertificate("testca1"),
                 null);
@@ -782,9 +768,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         X509Certificate cert =
             (X509Certificate)ks.getCertificate("testca1");
         TrustAnchor ta = new TrustAnchor(cert, null);
@@ -806,9 +792,9 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         // sub testcase 1
         TrustAnchor ta =
             new TrustAnchor(validCaNameRfc2253, pk, null);
@@ -834,9 +820,9 @@ public class TrustAnchorTest extends PerformanceTest {
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
         // sub testcase 1
         TrustAnchor ta =
             new TrustAnchor(validCaNameRfc2253, pk, null);
@@ -862,9 +848,9 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         TrustAnchor ta = new TrustAnchor(
                 (X509Certificate)ks.getCertificate("testca1"),
                 null);
@@ -882,45 +868,40 @@ public class TrustAnchorTest extends PerformanceTest {
         throws KeyStoreException, InvalidKeySpecException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
+
         String certAlias = "test";
 
         // sub testcase 1
         TrustAnchor ta = new TrustAnchor(
                 (X509Certificate)ks.getCertificate(certAlias),
                 getFullEncoding());
-        String rep = ta.toString();
-        logln(getName() + ": " + rep);
-        assertNotNull("st1", rep);
+
+        assertNotNull("#1", ta.toString());
 
         PublicKey pk = null;
         try {
             pk = new TestKeyPair(keyAlg).getPublic();
         } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": PASSED (could not create test PublicKey)");
-            return;
+            fail(getName() + ": not performed (could not create test PublicKey)");
         }
+
 
         // sub testcase 2
         ta = new TrustAnchor(validCaNameRfc2253, pk, getEncodingESOnly());
-        rep = ta.toString();
-        logln(getName() + ": " + rep);
-        assertNotNull("st2", rep);
+
+        assertNotNull("#2", ta.toString());
 
         // sub testcase 3
         X500Principal x500p = new X500Principal(validCaNameRfc2253);
         ta = new TrustAnchor(x500p, pk, getEncodingNoMinMax());
-        rep = ta.toString();
-        logln(getName() + ": " + rep);
-        assertNotNull("st3", rep);
+
+        assertNotNull("#3", ta.toString());
 
         // sub testcase 4
         ta = new TrustAnchor(x500p, pk, null);
-        rep = ta.toString();
-        logln(getName() + ": " + rep);
-        assertNotNull("st4", rep);
+        assertNotNull("#4", ta.toString());
     }
 
     //

@@ -25,14 +25,14 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SSLSocket</code> class constructors.
  *  
  */
-public class SSLSocketTest extends PerformanceTest {
+public class SSLSocketTest extends TestCase {
 
     /*
      * Class under test for void SSLSocket()

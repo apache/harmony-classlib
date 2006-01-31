@@ -21,14 +21,14 @@
 
 package javax.security.sasl;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for constructor and methods of AuthorizeCallback class
  * 
  */
 
-public class AuthorizeCallbackTest extends PerformanceTest {
+public class AuthorizeCallbackTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AuthorizeCallbackTest.class);

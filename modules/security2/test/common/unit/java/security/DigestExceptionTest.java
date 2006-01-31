@@ -23,14 +23,14 @@ package java.security;
 
 import java.security.DigestException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>DigestException</code> class constructors and methods.
  * 
  */
-public class DigestExceptionTest extends PerformanceTest {
+public class DigestExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class DigestExceptionTest extends PerformanceTest {
      */
     public void testDigestException01() {
         DigestException tE = new DigestException();
-        assertTrue(errNotExc, tE instanceof DigestException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class DigestExceptionTest extends PerformanceTest {
         DigestException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new DigestException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof DigestException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -117,7 +114,6 @@ public class DigestExceptionTest extends PerformanceTest {
     public void testDigestException03() {
         String msg = null;
         DigestException tE = new DigestException(msg);
-        assertTrue(errNotExc, tE instanceof DigestException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -134,7 +130,6 @@ public class DigestExceptionTest extends PerformanceTest {
     public void testDigestException04() {
         Throwable cause = null;
         DigestException tE = new DigestException(cause);
-        assertTrue(errNotExc, tE instanceof DigestException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -150,7 +145,6 @@ public class DigestExceptionTest extends PerformanceTest {
      */
     public void testDigestException05() {
         DigestException tE = new DigestException(tCause);
-        assertTrue(errNotExc, tE instanceof DigestException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -174,7 +168,6 @@ public class DigestExceptionTest extends PerformanceTest {
      */
     public void testDigestException06() {
         DigestException tE = new DigestException(null, null);
-        assertTrue(errNotExc, tE instanceof DigestException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -193,8 +186,6 @@ public class DigestExceptionTest extends PerformanceTest {
         DigestException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new DigestException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof DigestException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -213,7 +204,6 @@ public class DigestExceptionTest extends PerformanceTest {
      */
     public void testDigestException08() {
         DigestException tE = new DigestException(null, tCause);
-        assertTrue(errNotExc, tE instanceof DigestException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -239,8 +229,6 @@ public class DigestExceptionTest extends PerformanceTest {
         DigestException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new DigestException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof DigestException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

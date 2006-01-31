@@ -21,13 +21,13 @@
 
 package java.security.spec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>PSSParameterSpec</code> class (1.5)
  * 
  */
-public class PSSParameterSpecTest extends PerformanceTest {
+public class PSSParameterSpecTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -69,16 +69,11 @@ public class PSSParameterSpecTest extends PerformanceTest {
      * if <code>saltLen</code> less than 0
      */
     public final void testPSSParameterSpec0102() {
-        boolean passed = false;
         try {
-            AlgorithmParameterSpec aps = new PSSParameterSpec(-1);
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException) {
-                passed = true;
-            }
-            logln(getName() + ": " + e);
+            new PSSParameterSpec(-1);
+            fail("Expected IAE not thrown");
+        } catch (IllegalArgumentException e) {
         }
-        assertTrue(passed);
     }
 
     /**
@@ -105,17 +100,11 @@ public class PSSParameterSpecTest extends PerformanceTest {
      * if <code>mdName</code> is null
      */
     public final void testPSSParameterSpec0202() {
-        boolean passed = false;
         try {
-            AlgorithmParameterSpec aps = new PSSParameterSpec(null, "MGF1",
-                    MGF1ParameterSpec.SHA1, 20, 1);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-            }
-            logln(getName() + ": " + e);
+            new PSSParameterSpec(null, "MGF1", MGF1ParameterSpec.SHA1, 20, 1);
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
 
     /**
@@ -128,17 +117,11 @@ public class PSSParameterSpecTest extends PerformanceTest {
      * if <code>mgfName</code> is null
      */
     public final void testPSSParameterSpec0203() {
-        boolean passed = false;
         try {
-            AlgorithmParameterSpec aps = new PSSParameterSpec("SHA-1", null,
-                    MGF1ParameterSpec.SHA1, 20, 1);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-            }
-            logln(getName() + ": " + e);
+            new PSSParameterSpec("SHA-1", null, MGF1ParameterSpec.SHA1, 20, 1);
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
 
     /**
@@ -151,17 +134,12 @@ public class PSSParameterSpecTest extends PerformanceTest {
      * if <code>saltLen<code> less than 0
      */
     public final void testPSSParameterSpec0204() {
-        boolean passed = false;
         try {
-            AlgorithmParameterSpec aps = new PSSParameterSpec("SHA-1", "MGF1",
+            new PSSParameterSpec("SHA-1", "MGF1",
                     MGF1ParameterSpec.SHA1, -20, 1);
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException) {
-                passed = true;
-            }
-            logln(getName() + ": " + e);
+            fail("Expected IAE not thrown");
+        } catch (IllegalArgumentException e) {
         }
-        assertTrue(passed);
     }
 
     /**
@@ -174,17 +152,12 @@ public class PSSParameterSpecTest extends PerformanceTest {
      * if <code>trailerField</code> less than 0
      */
     public final void testPSSParameterSpec0205() {
-        boolean passed = false;
         try {
-            AlgorithmParameterSpec aps = new PSSParameterSpec("SHA-1", "MGF1",
+            new PSSParameterSpec("SHA-1", "MGF1",
                     MGF1ParameterSpec.SHA1, 20, -1);
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException) {
-                passed = true;
-            }
-            logln(getName() + ": " + e);
+            fail("Expected IAE not thrown");
+        } catch (IllegalArgumentException e) {
         }
-        assertTrue(passed);
     }
 
     /**
@@ -196,15 +169,7 @@ public class PSSParameterSpecTest extends PerformanceTest {
      * 
      */
     public final void testPSSParameterSpec0206() {
-        boolean passed = true;
-        try {
-            AlgorithmParameterSpec aps = new PSSParameterSpec("SHA-1", "MGF1",
-                    null, 20, 1);
-        } catch (Exception e) {
-            passed = false;
-            logln(getName() + ": " + e);
-        }
-        assertTrue(passed);
+        new PSSParameterSpec("SHA-1", "MGF1", null, 20, 1);
     }
 
     /**

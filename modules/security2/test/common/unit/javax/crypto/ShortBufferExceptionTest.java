@@ -23,14 +23,14 @@ package javax.crypto;
 
 import javax.crypto.ShortBufferException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>ShortBufferException</code> class constructors and methods.
  * 
  */
-public class ShortBufferExceptionTest extends PerformanceTest {
+public class ShortBufferExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class ShortBufferExceptionTest extends PerformanceTest {
      */
     public void testShortBufferException01() {
         ShortBufferException tE = new ShortBufferException();
-        assertTrue(errNotExc, tE instanceof ShortBufferException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class ShortBufferExceptionTest extends PerformanceTest {
         ShortBufferException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ShortBufferException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof ShortBufferException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -118,7 +115,6 @@ public class ShortBufferExceptionTest extends PerformanceTest {
     public void testShortBufferException03() {
         String msg = null;
         ShortBufferException tE = new ShortBufferException(msg);
-        assertTrue(errNotExc, tE instanceof ShortBufferException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

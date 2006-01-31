@@ -21,14 +21,14 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>AlgorithmParameters</code> class constructors and
  * methods.
  * 
  */
-public class AlgorithmParametersTest extends PerformanceTest {
+public class AlgorithmParametersTest extends TestCase {
 
 	/**
 	 * Provider

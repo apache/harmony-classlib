@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.InvalidAlgorithmParameterException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * constructors and methods.
  * 
  */
-public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
+public class InvalidAlgorithmParameterExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -81,7 +81,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
      */
     public void testInvalidAlgorithmParameterException01() {
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException();
-        assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -100,8 +99,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
         InvalidAlgorithmParameterException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidAlgorithmParameterException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof InvalidAlgorithmParameterException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -122,7 +119,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
         String msg = null;
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 msg);
-        assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -141,7 +137,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
         Throwable cause = null;
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 cause);
-        assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -159,7 +154,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
     public void testInvalidAlgorithmParameterException05() {
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 tCause);
-        assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -185,7 +179,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
     public void testInvalidAlgorithmParameterException06() {
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 null, null);
-        assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -205,8 +198,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
         InvalidAlgorithmParameterException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidAlgorithmParameterException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof InvalidAlgorithmParameterException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -227,7 +218,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
     public void testInvalidAlgorithmParameterException08() {
         InvalidAlgorithmParameterException tE = new InvalidAlgorithmParameterException(
                 null, tCause);
-        assertTrue(errNotExc, tE instanceof InvalidAlgorithmParameterException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -254,8 +244,6 @@ public class InvalidAlgorithmParameterExceptionTest extends PerformanceTest {
         InvalidAlgorithmParameterException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidAlgorithmParameterException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof InvalidAlgorithmParameterException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

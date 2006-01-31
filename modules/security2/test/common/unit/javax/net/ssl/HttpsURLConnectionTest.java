@@ -25,14 +25,14 @@ import java.io.IOException;
 import java.security.cert.Certificate;
 import java.net.URL;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>HttpsURLConnection</code> class constructors and methods.
  * 
  */
-public class HttpsURLConnectionTest extends PerformanceTest {
+public class HttpsURLConnectionTest extends TestCase {
 
     public final void testGetPeerPrincipal() {
         HttpsURLConnection con = new MyHttpsURLConnection(null);

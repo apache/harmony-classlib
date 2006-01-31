@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.KeyManagementException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class KeyManagementExceptionTest extends PerformanceTest {
+public class KeyManagementExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      */
     public void testKeyManagementException01() {
         KeyManagementException tE = new KeyManagementException();
-        assertTrue(errNotExc, tE instanceof KeyManagementException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
         KeyManagementException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyManagementException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyManagementException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
     public void testKeyManagementException03() {
         String msg = null;
         KeyManagementException tE = new KeyManagementException(msg);
-        assertTrue(errNotExc, tE instanceof KeyManagementException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -137,7 +133,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
     public void testKeyManagementException04() {
         Throwable cause = null;
         KeyManagementException tE = new KeyManagementException(cause);
-        assertTrue(errNotExc, tE instanceof KeyManagementException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -154,7 +149,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      */
     public void testKeyManagementException05() {
         KeyManagementException tE = new KeyManagementException(tCause);
-        assertTrue(errNotExc, tE instanceof KeyManagementException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -178,7 +172,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      */
     public void testKeyManagementException06() {
         KeyManagementException tE = new KeyManagementException(null, null);
-        assertTrue(errNotExc, tE instanceof KeyManagementException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -197,8 +190,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
         KeyManagementException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyManagementException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyManagementException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -217,7 +208,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
      */
     public void testKeyManagementException08() {
         KeyManagementException tE = new KeyManagementException(null, tCause);
-        assertTrue(errNotExc, tE instanceof KeyManagementException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -243,8 +233,6 @@ public class KeyManagementExceptionTest extends PerformanceTest {
         KeyManagementException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyManagementException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyManagementException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

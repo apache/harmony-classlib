@@ -33,7 +33,7 @@ import java.util.Map;
 import javax.security.auth.AuthPermission;
 import javax.security.auth.login.AppConfigurationEntry;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.x.security.auth.login.DefaultConfiguration;
 
 
@@ -41,7 +41,7 @@ import org.apache.harmony.security.x.security.auth.login.DefaultConfiguration;
  * Tests default configuration implementation.  
  */
 
-public class DefaultConfigurationTest extends PerformanceTest {
+public class DefaultConfigurationTest extends TestCase {
 
     static String outputPath = System.getProperty("TEST_SRC_DIR", "test/common/unit");
     

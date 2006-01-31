@@ -23,7 +23,7 @@ package javax.crypto;
 
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 import java.security.*;
 
@@ -31,7 +31,7 @@ import java.security.*;
  *
  * Tests for NullCipher
  */
-public class NullCipherTest extends PerformanceTest {
+public class NullCipherTest extends TestCase {
 
 	private Cipher c;
 	

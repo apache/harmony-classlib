@@ -21,13 +21,13 @@
 
 package javax.security.auth;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests DestroyFailedException class
  */
 
-public class DestroyFailedExceptionTest extends PerformanceTest {
+public class DestroyFailedExceptionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(DestroyFailedExceptionTest.class);

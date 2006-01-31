@@ -25,7 +25,7 @@ import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -33,7 +33,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class SecretKeyFactorySpiTests extends PerformanceTest {
+public class SecretKeyFactorySpiTests extends TestCase {
 
     /**
      * Constructor for SecretKeyfactorySpiTests.

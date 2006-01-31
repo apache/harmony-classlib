@@ -21,13 +21,13 @@
 
 package java.security.spec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Test for MGF1ParameterSpec class
  * 
  */
-public class MGF1ParameterSpecTest extends PerformanceTest {
+public class MGF1ParameterSpecTest extends TestCase {
 
     /**
      * Meaningless algorithm name just for testing purposes
@@ -66,7 +66,7 @@ public class MGF1ParameterSpecTest extends PerformanceTest {
      * object using valid parameter
      */
     public final void testMGF1ParameterSpec01() {
-        AlgorithmParameterSpec aps = new MGF1ParameterSpec(testAlgName);
+        new MGF1ParameterSpec(testAlgName);
     }
 
     /**
@@ -75,10 +75,9 @@ public class MGF1ParameterSpecTest extends PerformanceTest {
      */
     public final void testMGF1ParameterSpec02() {
         try {
-            AlgorithmParameterSpec aps = new MGF1ParameterSpec(null);
+            new MGF1ParameterSpec(null);
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
     }
 

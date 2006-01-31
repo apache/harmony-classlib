@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 
 import javax.crypto.ShortBufferException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.x.crypto.NullCipherSpi;
 
 
@@ -33,7 +33,7 @@ import org.apache.harmony.security.x.crypto.NullCipherSpi;
  *
  * Tests for NullCipher implementation
  */
-public class NullCipherSpiTest extends PerformanceTest {
+public class NullCipherSpiTest extends TestCase {
 
 	public void testEngineGetBlockSize() {
 		NullCipherSpi spi = new NullCipherSpi();

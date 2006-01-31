@@ -30,7 +30,7 @@ import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -38,7 +38,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyGeneratorTest1 extends PerformanceTest {
+public class KeyGeneratorTest1 extends TestCase {
 
     /**
      * Constructor for KeyGeneratorTest1.
@@ -89,21 +89,16 @@ public class KeyGeneratorTest1 extends PerformanceTest {
         }
     }
     
-    private KeyGenerator[] createKGs() {
+    private KeyGenerator[] createKGs() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
-            return null;
         }
-        try {
-            KeyGenerator [] kg = new KeyGenerator[3];
-            kg[0] = KeyGenerator.getInstance(defaultAlgorithm);
-            kg[1] = KeyGenerator.getInstance(defaultAlgorithm, defaultProvider);
-            kg[2] = KeyGenerator.getInstance(defaultAlgorithm, defaultProviderName);
-            return kg;
-        } catch (Exception e) {
-            logln(e.toString());
-            return null;
-        }
+
+        KeyGenerator [] kg = new KeyGenerator[3];
+        kg[0] = KeyGenerator.getInstance(defaultAlgorithm);
+        kg[1] = KeyGenerator.getInstance(defaultAlgorithm, defaultProvider);
+        kg[2] = KeyGenerator.getInstance(defaultAlgorithm, defaultProviderName);
+        return kg;
     }
 
 
@@ -120,7 +115,6 @@ public class KeyGeneratorTest1 extends PerformanceTest {
         KeyGeneratorSpi spi = new MyKeyGeneratorSpi();
         KeyGenerator keyG = new myKeyGenerator(spi, defaultProvider,
                 defaultAlgorithm);
-        assertTrue("Not KeyGenerator object", keyG instanceof KeyGenerator);
         assertEquals("Incorrect algorithm", keyG.getAlgorithm(),
                 defaultAlgorithm);
         assertEquals("Incorrect provider", keyG.getProvider(), defaultProvider);
@@ -137,7 +131,6 @@ public class KeyGeneratorTest1 extends PerformanceTest {
         } catch (IllegalArgumentException e) {
         }
         keyG = new myKeyGenerator(null, null, null);
-        assertTrue("Not KeyGenerator object", keyG instanceof KeyGenerator);
         assertNull("Algorithm must be null", keyG.getAlgorithm());
         assertNull("Provider must be null", keyG.getProvider());
 
@@ -187,7 +180,6 @@ public class KeyGeneratorTest1 extends PerformanceTest {
         KeyGenerator keyG;
         for (int i = 0; i < validValues.length; i++) {
             keyG = KeyGenerator.getInstance(validValues[i]);
-            assertTrue("Not KeyGenerator object", keyG instanceof KeyGenerator);
             assertEquals("Incorrect algorithm", keyG.getAlgorithm(), validValues[i]);
         }
     }
@@ -269,7 +261,6 @@ public class KeyGeneratorTest1 extends PerformanceTest {
         KeyGenerator keyG;
         for (int i = 0; i < validValues.length; i++) {
             keyG = KeyGenerator.getInstance(validValues[i], defaultProviderName);
-            assertTrue("Not KeyGenerator object", keyG instanceof KeyGenerator);
             assertEquals("Incorrect algorithm", keyG.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", keyG.getProvider().getName(), defaultProviderName);
         }
@@ -335,7 +326,6 @@ public class KeyGeneratorTest1 extends PerformanceTest {
         KeyGenerator keyA;
         for (int i = 0; i < validValues.length; i++) {
             keyA = KeyGenerator.getInstance(validValues[i], defaultProvider);
-            assertTrue("Not KeyGenerator object", keyA instanceof KeyGenerator);
             assertEquals("Incorrect algorithm", keyA.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", keyA.getProvider(), defaultProvider);
         }
@@ -347,7 +337,7 @@ public class KeyGeneratorTest1 extends PerformanceTest {
      * Assertion: throws InvalidParameterException if keysize is wrong
      * 
      */    
-    public void testInitKey() {
+    public void testInitKey() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
@@ -358,21 +348,18 @@ public class KeyGeneratorTest1 extends PerformanceTest {
         }
         int[] size = { Integer.MIN_VALUE, -1, 0, Integer.MAX_VALUE };
         KeyGenerator[] kgs = createKGs();
-        assertNotNull("KeyGenerator objects were not created", kgs);
         SecureRandom random = new SecureRandom();
+
         for (int i = 0; i < kgs.length; i++) {
             for (int j = 0; j < size.length; j++) {
                 try {
                     kgs[i].init(size[j]);
-                    logln("Ignore key size: "+size[j]);
-                } catch (InvalidParameterException e) {
+                } catch (InvalidParameterException ignore) {
                 }
-            }
-            for (int j = 0; j < size.length; j++) {
+
                 try {
                     kgs[i].init(size[j], random);
-                    logln("Ignore key size: "+size[j]);
-                } catch (InvalidParameterException e) {
+                } catch (InvalidParameterException ignore) {
                 }
             }
         }
@@ -383,14 +370,14 @@ public class KeyGeneratorTest1 extends PerformanceTest {
      * <code>init(AlgorithmParameterSpec params, SecureRandom random)</code> methods
      * Assertion: throws InvalidAlgorithmParameterException when params is null
      */
-    public void testInitParams() {
+    public void testInitParams() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
         }
         KeyGenerator [] kgs = createKGs();
-        assertNotNull("KeyGenerator objects were not created", kgs);
         AlgorithmParameterSpec aps = null;
+
         for (int i = 0; i < kgs.length; i++) {
             try {
                 kgs[i].init(aps);
@@ -417,7 +404,7 @@ public class KeyGeneratorTest1 extends PerformanceTest {
      * returns SecretKey object
      * 
      */ 
-    public void testGenerateKey() throws NoSuchAlgorithmException {
+    public void testGenerateKey() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
@@ -426,25 +413,21 @@ public class KeyGeneratorTest1 extends PerformanceTest {
         String dAl = defaultAlgorithm.toUpperCase();
 
         KeyGenerator[] kgs = createKGs();
-        assertNotNull("KeyGenerator objects were not created", kgs);
+
         for (int i = 0; i < kgs.length; i++) {
             sKey = kgs[i].generateKey();
-            assertTrue("Not SecretKey object", sKey instanceof SecretKey);
             assertEquals("Incorect algorithm", sKey.getAlgorithm()
                     .toUpperCase(), dAl);
             kgs[i].init(new SecureRandom());
             sKey = kgs[i].generateKey();
-            assertTrue("Not SecretKey object", sKey instanceof SecretKey);
             assertEquals("Incorect algorithm", sKey.getAlgorithm()
                     .toUpperCase(), dAl);
             kgs[i].init(defaultKeySize);
             sKey = kgs[i].generateKey();
-            assertTrue("Not SecretKey object", sKey instanceof SecretKey);
             assertEquals("Incorect algorithm", sKey.getAlgorithm()
                     .toUpperCase(), dAl);
             kgs[i].init(defaultKeySize, new SecureRandom());
             sKey = kgs[i].generateKey();
-            assertTrue("Not SecretKey object", sKey instanceof SecretKey);
             assertEquals("Incorect algorithm", sKey.getAlgorithm()
                     .toUpperCase(), dAl);
         }

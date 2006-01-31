@@ -26,14 +26,14 @@ import java.math.BigInteger;
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>DHPublicKey</code> class field
  * 
  */
-public class DHPublicKeyTest extends PerformanceTest {
+public class DHPublicKeyTest extends TestCase {
 
     public static void main(String[] args) {
     }

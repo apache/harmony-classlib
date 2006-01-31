@@ -35,14 +35,14 @@ import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Test for Sasl class
  * 
  */
 
-public class SaslTest3 extends PerformanceTest {
+public class SaslTest3 extends TestCase {
     private static final String CLNTSRV = "SaslClientFactory.";
 
     private static final String fClientClass = "javax.security.sasl.mySaslClientFactory";

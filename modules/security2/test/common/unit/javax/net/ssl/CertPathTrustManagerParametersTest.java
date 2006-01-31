@@ -22,7 +22,7 @@ package javax.net.ssl;
 
 import java.security.cert.CertPathParameters;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * and methods.
  *  
  */
-public class CertPathTrustManagerParametersTest extends PerformanceTest {
+public class CertPathTrustManagerParametersTest extends TestCase {
 
     public void testCertPathTrustManagerParameters() {
         CertPathParameters parameters = new MyCertPathParameters();

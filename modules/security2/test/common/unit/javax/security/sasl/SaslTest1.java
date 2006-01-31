@@ -26,14 +26,14 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.Enumeration;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Test for Sasl class
  * 
  */
 
-public class SaslTest1 extends PerformanceTest {
+public class SaslTest1 extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SaslTest1.class);

@@ -28,7 +28,7 @@ import java.security.Provider;
 import java.security.Security;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertPathBuilder2Test extends PerformanceTest {
+public class CertPathBuilder2Test extends TestCase {
     private static final String defaultAlg = "CertPB";
     private static final String CertPathBuilderProviderClass = "java.security.cert.MyCertPathBuilderSpi";
 

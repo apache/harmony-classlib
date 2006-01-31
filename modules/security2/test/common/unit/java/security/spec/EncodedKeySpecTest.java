@@ -22,7 +22,7 @@
 package java.security.spec;
 
 import org.apache.harmony.security.spec.MyEncodedKeySpec;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class EncodedKeySpecTest extends PerformanceTest {
+public class EncodedKeySpecTest extends TestCase {
 
     /*
      * @see TestCase#setUp()

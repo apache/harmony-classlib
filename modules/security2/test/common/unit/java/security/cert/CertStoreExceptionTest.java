@@ -23,14 +23,14 @@ package java.security.cert;
 
 import java.security.cert.CertStoreException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>CertStoreException</code> class constructors and methods.
  * 
  */
-public class CertStoreExceptionTest extends PerformanceTest {
+public class CertStoreExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      */
     public void testCertStoreException01() {
         CertStoreException tE = new CertStoreException();
-        assertTrue(errNotExc, tE instanceof CertStoreException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
         CertStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertStoreException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertStoreException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -117,7 +114,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
     public void testCertStoreException03() {
         String msg = null;
         CertStoreException tE = new CertStoreException(msg);
-        assertTrue(errNotExc, tE instanceof CertStoreException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -135,7 +131,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
     public void testCertStoreException04() {
         Throwable cause = null;
         CertStoreException tE = new CertStoreException(cause);
-        assertTrue(errNotExc, tE instanceof CertStoreException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -152,7 +147,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      */
     public void testCertStoreException05() {
         CertStoreException tE = new CertStoreException(tCause);
-        assertTrue(errNotExc, tE instanceof CertStoreException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -176,7 +170,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      */
     public void testCertStoreException06() {
         CertStoreException tE = new CertStoreException(null, null);
-        assertTrue(errNotExc, tE instanceof CertStoreException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -195,8 +188,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
         CertStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertStoreException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertStoreException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -215,7 +206,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
      */
     public void testCertStoreException08() {
         CertStoreException tE = new CertStoreException(null, tCause);
-        assertTrue(errNotExc, tE instanceof CertStoreException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -241,8 +231,6 @@ public class CertStoreExceptionTest extends PerformanceTest {
         CertStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertStoreException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertStoreException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

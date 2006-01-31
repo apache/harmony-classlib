@@ -23,7 +23,7 @@ package java.security;
 
 import java.util.*;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class PermissionCollectionTest extends PerformanceTest {
+public class PermissionCollectionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(PermissionCollectionTest.class);

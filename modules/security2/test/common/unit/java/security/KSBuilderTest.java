@@ -34,7 +34,7 @@ import java.util.Enumeration;
 
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.TestKeyPair;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.test.TestUtils;
 
 /**
@@ -42,7 +42,7 @@ import org.apache.harmony.security.test.TestUtils;
  * 
  */
 
-public class KSBuilderTest extends PerformanceTest {
+public class KSBuilderTest extends TestCase {
     /**
      * Constructor for KSBuilderTest
      * 
@@ -63,8 +63,6 @@ public class KSBuilderTest extends PerformanceTest {
 
     private static boolean JKSSupported = false;
 
-    private static String defaultProviderName = null;
-
     private static Provider defaultProvider = null;
     
     private static String fileEmpty = "java/security/KSEmpty.dat";
@@ -75,7 +73,6 @@ public class KSBuilderTest extends PerformanceTest {
         defaultProvider = SpiEngUtils.isSupport(
                 KeyStoreTest1.defaultType, KeyStoreTest1.srvKeyStore);
         JKSSupported = (defaultProvider != null);
-        defaultProviderName = (JKSSupported ? defaultProvider.getName() : null);     
         fileEmpty = SpiEngUtils.getFileName(TestUtils.TEST_ROOT,
                 fileEmpty);
         fileName = SpiEngUtils.getFileName(TestUtils.TEST_ROOT,
@@ -194,15 +191,11 @@ public class KSBuilderTest extends PerformanceTest {
             }
             ks.load(null, pass);
             ksB = KeyStore.Builder.newInstance(ks, pp[i]);
-            assertTrue("Not KeyStore.Builder object with empty KeyStore",
-                    ksB instanceof KeyStore.Builder);
 
             assertEquals("Incorrect KeyStore", ksB.getKeyStore().size(), 0);
 
             ks.setEntry("aaa", pKey, pp[0]);
             ksB = KeyStore.Builder.newInstance(ks, pp[i]);
-            assertTrue("Not KeyStore.Builder object",
-                    ksB instanceof KeyStore.Builder);
 
             // verification getKeyStore() and getProtectionParameter(String
             // alias)
@@ -218,18 +211,22 @@ public class KSBuilderTest extends PerformanceTest {
             } catch (KeyStoreException e) {
                 fail("Unexpected: " + e.toString() + " was thrown");
             }
+
             try {
                 assertEquals(ksB.getProtectionParameter("Bad alias"), pp[i]);
             } catch (KeyStoreException e) {
-                logln("KeyStoreException was thrown because there is no entry with such alias");
+                // KeyStoreException might be thrown because there is no entry with such alias
             }
+
             try {
                 assertEquals(ksB.getProtectionParameter(""), pp[i]);
             } catch (KeyStoreException e) {
-                logln("KeyStoreException was thrown because there is no entry with such alias");
+                // KeyStoreException might be thrown because there is no entry with such alias
             }
+
             KeyStore.ProtectionParameter pPar = ksB
                     .getProtectionParameter("aaa");
+
             switch (i) {
             case 0:
                 assertTrue(pPar instanceof KeyStore.PasswordProtection);
@@ -324,8 +321,6 @@ public class KSBuilderTest extends PerformanceTest {
         }
         ksB = KeyStore.Builder.newInstance(defaultType, defaultProvider, fl,
                 protPass);
-        assertTrue("Not KeyStore.Builder object",
-                ksB instanceof KeyStore.Builder);
         try {
             ksB.getKeyStore();
             fail("KeyStoreException must be throw because file is empty");
@@ -353,10 +348,6 @@ public class KSBuilderTest extends PerformanceTest {
             ksB = KeyStore.Builder.newInstance(defaultType, null, fl, pp[i]);
             ksB1 = KeyStore.Builder.newInstance(defaultType, defaultProvider,
                     fl, pp[i]);
-            assertTrue("Incorrect KeyStore.Builder",
-                    ksB instanceof KeyStore.Builder);
-            assertTrue("Incorrect KeyStore.Builder",
-                    ksB1 instanceof KeyStore.Builder);
             try {
                 ks = ksB.getKeyStore();
                 if (i == 2) {
@@ -367,9 +358,8 @@ public class KSBuilderTest extends PerformanceTest {
             } catch (KeyStoreException e) {
                 if (i == 2) {
                     continue;
-                } else {
-                    fail("Unexpected KeyException was thrown");
                 }
+                fail("Unexpected KeyException was thrown");
             }
             try {
                 ks1 = ksB1.getKeyStore();
@@ -379,13 +369,13 @@ public class KSBuilderTest extends PerformanceTest {
             } catch (KeyStoreException e) {
                 if (i == 2) {
                     continue;
-                } else {
-                    fail("Unexpected KeyException was thrown");
                 }
+                fail("Unexpected KeyException was thrown");
             }
             assertEquals("Incorrect KeyStore size", ks.size(), ks1.size());
             Enumeration iter = ks.aliases();
             String aName;
+
             while (iter.hasMoreElements()) {
                 aName = (String) iter.nextElement();
                 try {
@@ -396,11 +386,13 @@ public class KSBuilderTest extends PerformanceTest {
                             + " was thrown for alias: " + aName);
                 }
             }
+
             try {
                 assertEquals(ksB.getProtectionParameter("Bad alias"), pp[i]);
             } catch (KeyStoreException e) {
-                logln("KeyStoreException was thrown because there is no entry with such alias");
+                // KeyStoreException might be thrown because there is no entry with such alias
             }
+
             iter = ks1.aliases();
             while (iter.hasMoreElements()) {
                 aName = (String) iter.nextElement();
@@ -412,10 +404,11 @@ public class KSBuilderTest extends PerformanceTest {
                             + " was thrown for alias: " + aName);
                 }
             }
+
             try {
                 assertEquals(ksB1.getProtectionParameter("Bad alias"), pp[i]);
             } catch (KeyStoreException e) {
-                logln("KeyStoreException was thrown because there is no entry with such alias");
+                // KeyStoreException might be thrown because there is no entry with such alias
             }
         }
     }
@@ -443,13 +436,13 @@ public class KSBuilderTest extends PerformanceTest {
             return;
         }
         try {
-            KeyStore.Builder ksB = KeyStore.Builder.newInstance(null,
+            KeyStore.Builder.newInstance(null,
                     defaultProvider, protPass);
             fail("NullPointerException must be thrown when type is null");
         } catch (NullPointerException e) {
         }
         try {
-            KeyStore.Builder ksB = KeyStore.Builder.newInstance(defaultType,
+            KeyStore.Builder.newInstance(defaultType,
                     defaultProvider, null);
             fail("NullPointerException must be thrown when ProtectionParameter is null");
         } catch (NullPointerException e) {
@@ -464,7 +457,6 @@ public class KSBuilderTest extends PerformanceTest {
             ksB1 = KeyStore.Builder.newInstance(defaultType, null, pp[i]);
             switch (i) {
             case 0:
-                Exception ex1 = null;
                 try {
                     ks = ksB.getKeyStore();
                     assertNotNull("KeyStore is null", ks);
@@ -472,31 +464,30 @@ public class KSBuilderTest extends PerformanceTest {
                         assertEquals(ksB.getProtectionParameter("Bad alias"),
                                 pp[i]);
                     } catch (KeyStoreException e) {
-                        logln("KeyStoreException was thrown because there is no entry in key store");
+                        // KeyStoreException might be thrown because there is no entry with such alias
                     }
+
                     ks = ksB1.getKeyStore();
                     assertNotNull("KeyStore is null", ks);
+
                     try {
                         assertEquals(ksB1.getProtectionParameter("Bad alias"),
                                 pp[i]);
                     } catch (KeyStoreException e) {
-                        logln("KeyStoreException must was thrown because there is no entry in key store");
+                        // KeyStoreException might be thrown because there is no entry with such alias
                     }
                 } catch (KeyStoreException e) {
-                    ex1 = e;
-                }
-                if (ex1 != null) {
                     try {
                         ks = ksB.getKeyStore();
-                    } catch (KeyStoreException e) {
-                        assertEquals("Incorrect exception", ex1.getMessage(), e
+                    } catch (KeyStoreException e1) {
+                        assertEquals("Incorrect exception", e.getMessage(), e1
                                 .getMessage());
                     }
                 }
                 break;
             case 1:
             case 2:
-                ex1 = null;
+                Exception ex1 = null;
                 Exception ex2 = null;
                 try {
                     ks = ksB.getKeyStore();
@@ -510,11 +501,14 @@ public class KSBuilderTest extends PerformanceTest {
                 }
                 assertEquals("Incorrect exception", ex1.getMessage(), ex2
                         .getMessage());
+
+
                 try {
                     ksB.getProtectionParameter("aaa");
                     fail("IllegalStateException must be thrown because getKeyStore() was not invoked");
                 } catch (IllegalStateException e) {
                 }
+
                 try {
                     ks = ksB1.getKeyStore();
                 } catch (KeyStoreException e) {
@@ -527,6 +521,8 @@ public class KSBuilderTest extends PerformanceTest {
                 }
                 assertEquals("Incorrect exception", ex1.getMessage(), ex2
                         .getMessage());
+
+
                 try {
                     ksB1.getProtectionParameter("aaa");
                     fail("IllegalStateException must be thrown because getKeyStore() was not invoked");
@@ -595,11 +591,9 @@ public class KSBuilderTest extends PerformanceTest {
  * Additional class for creating KeyStoreBuilder
  */
 class myProtectionParameter implements KeyStore.ProtectionParameter {
-    private byte [] myPPParam;
     public myProtectionParameter(byte [] param) {
         if (param == null) {
             throw new NullPointerException("param is null");
         }
-        myPPParam = param;
     }    
 }

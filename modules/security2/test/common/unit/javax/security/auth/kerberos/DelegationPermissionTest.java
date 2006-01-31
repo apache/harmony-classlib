@@ -31,13 +31,13 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /** 
  * Tests DelegationPermission class implementation.
  */
-public class DelegationPermissionTest extends PerformanceTest {
+public class DelegationPermissionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(DelegationPermissionTest.class);

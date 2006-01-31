@@ -50,13 +50,13 @@ import javax.security.auth.spi.LoginModule;
 
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Unit tests for LoginContext
  */
-public class LoginContextTest_1 extends PerformanceTest {
+public class LoginContextTest_1 extends TestCase {
 
     private static final String CONFIG_NAME = "testConfiguration";
 

@@ -21,14 +21,14 @@
 
 package javax.security.auth.login;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests AccountExpiredException class
  */
 
-public class AccountExpiredExceptionTest extends PerformanceTest {
+public class AccountExpiredExceptionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AccountExpiredExceptionTest.class);

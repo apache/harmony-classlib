@@ -29,7 +29,7 @@ import java.security.Security;
 import java.util.Collection;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -37,7 +37,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertStore2Test extends PerformanceTest {
+public class CertStore2Test extends TestCase {
     private static final String defaultAlg = "CertStore";
     private static final String CertStoreProviderClass = "java.security.cert.MyCertStoreSpi";
 

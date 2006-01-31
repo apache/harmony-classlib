@@ -26,14 +26,14 @@ import java.math.BigInteger;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyPairGenerator</code> class constructors and methods.
  * 
  */
 
-public class KeyPairGeneratorTest1 extends PerformanceTest {
+public class KeyPairGeneratorTest1 extends TestCase {
 
     /**
      * Constructor for KayPairGeneratorTest.
@@ -124,8 +124,6 @@ public class KeyPairGeneratorTest1 extends PerformanceTest {
         KeyPairGenerator kpg;
         for (int i = 0; i < algs.length; i++) {
             kpg = KeyPairGenerator.getInstance(algs[i]);
-            assertTrue("Not KeyPairGenerator object",
-                    kpg instanceof KeyPairGenerator);
             assertEquals("Incorrect algorithm ", kpg.getAlgorithm().toUpperCase(),
                     algs[i].toUpperCase());
         }
@@ -227,8 +225,6 @@ public class KeyPairGeneratorTest1 extends PerformanceTest {
         KeyPairGenerator kpg;
         for (int i = 0; i < algs.length; i++) {
             kpg = KeyPairGenerator.getInstance(algs[i], validProviderName);
-            assertTrue("Not KeyPairGenerator object",
-                    kpg instanceof KeyPairGenerator);
             assertEquals("Incorrect algorithm", kpg.getAlgorithm().toUpperCase(),
                     algs[i].toUpperCase());
             assertEquals("Incorrect provider", kpg.getProvider().getName(),
@@ -299,8 +295,6 @@ public class KeyPairGeneratorTest1 extends PerformanceTest {
         KeyPairGenerator kpg;
         for (int i = 0; i < algs.length; i++) {
             kpg = KeyPairGenerator.getInstance(algs[i], validProvider);
-            assertTrue("Not KeyPairGenerator object",
-                    kpg instanceof KeyPairGenerator);
             assertEquals("Incorrect algorithm", kpg.getAlgorithm().toUpperCase(),
                     algs[i].toUpperCase());
             assertEquals("Incorrect provider", kpg.getProvider(), validProvider);
@@ -325,10 +319,8 @@ public class KeyPairGeneratorTest1 extends PerformanceTest {
             for (int i = 0; i < kpg.length; i++) {
                 kpg[i].initialize(512);
                 kp = kpg[i].generateKeyPair();
-                assertTrue("Not KeyPair object", kp instanceof KeyPair);
                 kp1 = kpg[i].genKeyPair();
 
-                assertTrue("Not KeyPair object", kp1 instanceof KeyPair);
                 assertFalse("Incorrect private key", kp.getPrivate().equals(
                         kp1.getPrivate()));
                 assertFalse("Incorrect public key", kp.getPublic().equals(
@@ -357,32 +349,20 @@ public class KeyPairGeneratorTest1 extends PerformanceTest {
         assertNotNull("KeyPairGenerator objects were not created", kpg);
         SecureRandom random = new SecureRandom();
         AlgorithmParameterSpec aps = null;
+
         for (int i = 0; i < kpg.length; i++) {
                         
             for (int j = 0; j < keys.length; j++) {                
                 try {
                     kpg[i].initialize(keys[j]);
-                    logln("Ignore keysize:" + Integer.toString(keys[j]));
-                } catch (InvalidParameterException e) {
-                } catch (IllegalArgumentException e) {
-                } 
-
-                try {
                     kpg[i].initialize(keys[j], random);
-                    logln("Ignore keysize:" + Integer.toString(keys[j])
-                            + " with non-null random");
                 } catch (InvalidParameterException e) {
-                } catch (IllegalArgumentException e) {
                 }
             }            
+
             try {
                 kpg[i].initialize(aps);
-                logln("Ignore null AlgorithmParameterSpec");
-            } catch (InvalidAlgorithmParameterException e) {
-            }
-            try {
                 kpg[i].initialize(aps, random);
-                logln("Ignore null AlgorithmParameterSpec");
             } catch (InvalidAlgorithmParameterException e) {
             }
         }
@@ -404,16 +384,12 @@ public class KeyPairGeneratorTest1 extends PerformanceTest {
         int[] keys = { -1, -250, 1, 64, 512, 1024 };
         SecureRandom random = new SecureRandom();
         AlgorithmParameterSpec aps;
-        KeyPairGenerator mKPG = (KeyPairGenerator) new MyKeyPairGenerator1("");
-        assertTrue("Not KeyPairGenerator object",
-                mKPG instanceof KeyPairGenerator);
+        KeyPairGenerator mKPG = new MyKeyPairGenerator1("");
         assertEquals("Incorrect algorithm", mKPG.getAlgorithm(),
                 MyKeyPairGenerator1.getResAlgorithm());
 
-        KeyPair kp = mKPG.generateKeyPair();
-        assertTrue("Not KeyPair object", kp instanceof KeyPair);
-        kp = mKPG.genKeyPair();
-        assertTrue("Not KeyPair object", kp instanceof KeyPair);
+        mKPG.generateKeyPair();
+        mKPG.genKeyPair();
 
         for (int i = 0; i < keys.length; i++) {
             try {
@@ -483,9 +459,7 @@ public class KeyPairGeneratorTest1 extends PerformanceTest {
     public void testKeyPairGenerator13() {
         int[] keys = { -1, -250, 1, 63, -512, -1024 };
         SecureRandom random = new SecureRandom();
-        KeyPairGenerator mKPG = (KeyPairGenerator) new MyKeyPairGenerator2(null);
-        assertTrue("Not KeyPairGenerator object",
-                mKPG instanceof KeyPairGenerator);
+        KeyPairGenerator mKPG = new MyKeyPairGenerator2(null);
         assertEquals("Algorithm must be null", mKPG.getAlgorithm(),
                 MyKeyPairGenerator2.getResAlgorithm());
         assertNull("genKeyPair() must return null", mKPG.genKeyPair());

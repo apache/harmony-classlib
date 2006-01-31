@@ -21,13 +21,13 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>MessageDigest</code> constructor and methods
  * 
  */
-public class MessageDigestTest2 extends PerformanceTest {
+public class MessageDigestTest2 extends TestCase {
 
 	/**
 	 * Provider

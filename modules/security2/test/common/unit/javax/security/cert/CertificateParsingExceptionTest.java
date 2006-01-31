@@ -23,14 +23,14 @@ package javax.security.cert;
 
 import javax.security.cert.CertificateParsingException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>DigestException</code> class constructors and methods.
  * 
  */
-public class CertificateParsingExceptionTest extends PerformanceTest {
+public class CertificateParsingExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      */
     public void testCertificateParsingException01() {
         CertificateParsingException tE = new CertificateParsingException();
-        assertTrue(errNotExc, tE instanceof CertificateParsingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
         CertificateParsingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateParsingException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateParsingException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -118,7 +115,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
     public void testCertificateParsingException03() {
         String msg = null;
         CertificateParsingException tE = new CertificateParsingException(msg);
-        assertTrue(errNotExc, tE instanceof CertificateParsingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

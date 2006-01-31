@@ -25,14 +25,14 @@ import java.io.IOException;
 import java.security.Security;
 import java.net.SocketException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SSLSocketFactory</code> class methods.
  * 
  */
-public class SSLSocketFactoryTest extends PerformanceTest {
+public class SSLSocketFactoryTest extends TestCase {
 
     private SSLSocketFactory customSocketFactory;
     

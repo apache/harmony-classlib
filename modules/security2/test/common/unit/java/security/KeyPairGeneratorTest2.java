@@ -28,7 +28,7 @@ import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyPairGeneratorTest2 extends PerformanceTest {
+public class KeyPairGeneratorTest2 extends TestCase {
     private String KeyPairGeneratorProviderClass = "";
 
     private static final String KeyPairGeneratorProviderClass1 = "java.security.MyKeyPairGenerator1";
@@ -113,8 +113,8 @@ public class KeyPairGeneratorTest2 extends PerformanceTest {
                 assertEquals("Incorrect exception", e.getMessage(),
                         "Incorrect random");
             }
-            assertTrue("Not KeyPair object", keyPairGen.generateKeyPair() instanceof KeyPair);
-            assertTrue("Not KeyPair object", keyPairGen.genKeyPair() instanceof KeyPair);
+            keyPairGen.generateKeyPair();
+            keyPairGen.genKeyPair();
             break;
         case 2:
             try {
@@ -133,26 +133,11 @@ public class KeyPairGeneratorTest2 extends PerformanceTest {
             assertNull("Not null KeyPair", keyPairGen.genKeyPair());
             break;
         case 3:
-            try {
-                keyPairGen.initialize(pp, new SecureRandom());
-                logln("Method initialize(AlgorithmParameterSpec, SecureRandom) is supported");
-            } catch (UnsupportedOperationException e) {
-            }
-            try {
-                keyPairGen.initialize(pp);
-                logln("Method initialize(AlgorithmParameterSpec) is supported");
-            } catch (UnsupportedOperationException e) {
-            }
-            try {
-                keyPairGen.initialize(1000, new SecureRandom());
-                logln("Method initialize(int, SecureRandom) is supported");
-            } catch (UnsupportedOperationException e) {
-            }
-            try {
-                keyPairGen.initialize(100);
-                logln("Method initialize(int) is supported");
-            } catch (UnsupportedOperationException e) {
-            }
+            keyPairGen.initialize(pp, new SecureRandom());
+            keyPairGen.initialize(pp);
+            keyPairGen.initialize(1000, new SecureRandom());
+            keyPairGen.initialize(100);
+
             assertNotNull("Null KeyPair", keyPairGen.generateKeyPair());
             assertNotNull("Null KeyPair", keyPairGen.genKeyPair());
             break;
@@ -219,8 +204,6 @@ public class KeyPairGeneratorTest2 extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             String alg = validValues[i].concat(post);
             kpG = KeyPairGenerator.getInstance(alg);
-            assertTrue("Not instanceof KeyPairGenerator object",
-                    kpG instanceof KeyPairGenerator);
             assertEquals("Incorrect algorithm", kpG.getAlgorithm()
                     .toUpperCase(), (mode <= 2 ? resAlg : alg).toUpperCase());
             assertEquals("Incorrect provider", kpG.getProvider(), mProv);
@@ -282,8 +265,6 @@ public class KeyPairGeneratorTest2 extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             String alg = validValues[i].concat(post);
             kpG = KeyPairGenerator.getInstance(alg, mProv.getName());
-            assertTrue("Not instanceof KeyPairGenerator object",
-                    kpG instanceof KeyPairGenerator);
             assertEquals("Incorrect algorithm", kpG.getAlgorithm()
                     .toUpperCase(), (mode <= 2 ? resAlg : alg).toUpperCase());
             assertEquals("Incorrect provider", kpG.getProvider().getName(),
@@ -331,8 +312,6 @@ public class KeyPairGeneratorTest2 extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             String alg = validValues[i].concat(post);
             kpG = KeyPairGenerator.getInstance(alg, mProv);
-            assertTrue("Not instanceof KeyPairGenerator object",
-                    kpG instanceof KeyPairGenerator);
             assertEquals("Incorrect algorithm", kpG.getAlgorithm()
                     .toUpperCase(), (mode <= 2 ? resAlg : alg).toUpperCase());
             assertEquals("Incorrect provider", kpG.getProvider(), mProv);

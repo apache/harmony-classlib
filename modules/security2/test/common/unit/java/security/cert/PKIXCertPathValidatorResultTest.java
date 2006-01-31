@@ -26,14 +26,14 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 import org.apache.harmony.security.cert.TestUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>PKIXCertPathValidatorResult</code>
  * 
  */
-public class PKIXCertPathValidatorResultTest extends PerformanceTest {
+public class PKIXCertPathValidatorResultTest extends TestCase {
     /**
      * PublicKey stub
      */
@@ -89,14 +89,12 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
                NoSuchAlgorithmException {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
-        PKIXCertPathValidatorResult vr =
-            new PKIXCertPathValidatorResult(
-                    ta,
-                    TestUtils.getPolicyTree(),
-                    testPublicKey);
+        new PKIXCertPathValidatorResult(
+                ta,
+                TestUtils.getPolicyTree(),
+                testPublicKey);
     }
 
     /**
@@ -106,21 +104,15 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * <code>TrustAnchor</code> parameter is <code>null</code>
      */
     public final void testPKIXCertPathValidatorResult02() {
-        boolean npeHasBeenThrown = false;
         try {
             // pass null
-            PKIXCertPathValidatorResult vr =
-                new PKIXCertPathValidatorResult(
-                        null,
-                        TestUtils.getPolicyTree(),
-                        testPublicKey);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXCertPathValidatorResult(
+                    null,
+                    TestUtils.getPolicyTree(),
+                    testPublicKey);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -132,24 +124,17 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
     public final void testPKIXCertPathValidatorResult03() {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
-        boolean npeHasBeenThrown = false;
         try {
             // pass null
-            PKIXCertPathValidatorResult vr =
-                new PKIXCertPathValidatorResult(
-                        ta,
-                        TestUtils.getPolicyTree(),
-                        null);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXCertPathValidatorResult(
+                    ta,
+                    TestUtils.getPolicyTree(),
+                    null);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -157,19 +142,16 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * PolicyNode, PublicKey)</code> constructor<br>
      * Assertion: <code>PolicyNode</code>can be <code>null</code>
      */
-    public final void testPKIXCertPathValidatorResult04()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testPKIXCertPathValidatorResult04() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
-        PKIXCertPathValidatorResult vr =
-            new PKIXCertPathValidatorResult(
-                    ta,
-                    null,
-                    testPublicKey);
+
+        new PKIXCertPathValidatorResult(
+                ta,
+                null,
+                testPublicKey);
     }
 
     /**
@@ -178,19 +160,18 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public final void testGetTrustAnchor()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testGetTrustAnchor() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
+
         PKIXCertPathValidatorResult vr =
             new PKIXCertPathValidatorResult(
                     ta,
                     null,
                     testPublicKey);
+
         // must return the same reference passed
         // as a parameter to the constructor
         assertSame(ta, vr.getTrustAnchor());
@@ -202,20 +183,19 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public final void testGetPublicKey()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testGetPublicKey() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
+
         PublicKey pk = testPublicKey;
         PKIXCertPathValidatorResult vr =
             new PKIXCertPathValidatorResult(
                     ta,
                     null,
                     pk);
+
         // must return the same reference passed
         // as a parameter to the constructor
         assertSame(pk, vr.getPublicKey());
@@ -229,14 +209,12 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public final void testGetPolicyTree01()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testGetPolicyTree01() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
+
         // valid policy tree case;
         PolicyNode pn = TestUtils.getPolicyTree();
         PKIXCertPathValidatorResult vr =
@@ -244,6 +222,7 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
                     ta,
                     pn,
                     testPublicKey);
+
         // must return the same reference passed
         // as a parameter to the constructor
         assertSame(pn, vr.getPolicyTree());
@@ -257,20 +236,19 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public final void testGetPolicyTree02()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testGetPolicyTree02() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
+
         // no valid policy tree case (null)
         PKIXCertPathValidatorResult vr =
             new PKIXCertPathValidatorResult(
                     ta,
                     null,
                     testPublicKey);
+
         // must return the same reference passed
         // as a parameter to the constructor
         assertNull(vr.getPolicyTree());
@@ -282,21 +260,21 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public final void testClone()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testClone() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
+
         PKIXCertPathValidatorResult vr1 =
             new PKIXCertPathValidatorResult(
                     ta,
                     TestUtils.getPolicyTree(),
                     testPublicKey);
+
         PKIXCertPathValidatorResult vr2 =
             (PKIXCertPathValidatorResult) vr1.clone();
+
         // check that method makes shallow copy
         assertNotSame("notSame", vr1, vr2);
         assertSame("trustAncor", vr1.getTrustAnchor(), vr2.getTrustAnchor());
@@ -310,22 +288,19 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public final void testToString01()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testToString01() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
+
         PKIXCertPathValidatorResult vr =
             new PKIXCertPathValidatorResult(
                     ta,
                     TestUtils.getPolicyTree(),
                     testPublicKey);
-        String rep = vr.toString();
-        logln(getName() + ": " + rep);
-        assertNotNull(rep);
+
+        assertNotNull(vr.toString());
     }
 
     /**
@@ -334,22 +309,19 @@ public class PKIXCertPathValidatorResultTest extends PerformanceTest {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public final void testToString02()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testToString02() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
+
         PKIXCertPathValidatorResult vr =
             new PKIXCertPathValidatorResult(
                     ta,
                     null,
                     testPublicKey);
-        String rep = vr.toString();
-        logln(getName() + ": " + rep);
-        assertNotNull(rep);
+
+        assertNotNull(vr.toString());
     }
 
 }

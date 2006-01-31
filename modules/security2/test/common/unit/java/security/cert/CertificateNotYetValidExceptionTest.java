@@ -23,14 +23,14 @@ package java.security.cert;
 
 import java.security.cert.CertificateNotYetValidException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>DigestException</code> class constructors and methods.
  * 
  */
-public class CertificateNotYetValidExceptionTest extends PerformanceTest {
+public class CertificateNotYetValidExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -80,7 +80,6 @@ public class CertificateNotYetValidExceptionTest extends PerformanceTest {
      */
     public void testCertificateNotYetValidException01() {
         CertificateNotYetValidException tE = new CertificateNotYetValidException();
-        assertTrue(errNotExc, tE instanceof CertificateNotYetValidException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -99,8 +98,6 @@ public class CertificateNotYetValidExceptionTest extends PerformanceTest {
         CertificateNotYetValidException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateNotYetValidException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateNotYetValidException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -121,7 +118,6 @@ public class CertificateNotYetValidExceptionTest extends PerformanceTest {
         String msg = null;
         CertificateNotYetValidException tE = new CertificateNotYetValidException(
                 msg);
-        assertTrue(errNotExc, tE instanceof CertificateNotYetValidException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

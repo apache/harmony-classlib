@@ -21,13 +21,13 @@
 
 package javax.security.auth.callback;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests ConfirmationCallback class
  */
 
-public class ConfirmationCallbackTest extends PerformanceTest {
+public class ConfirmationCallbackTest extends TestCase {
 
     ConfirmationCallback cc;
      int mt[] = { ConfirmationCallback.INFORMATION,

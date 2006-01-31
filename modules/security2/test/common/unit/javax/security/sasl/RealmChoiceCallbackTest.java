@@ -21,14 +21,14 @@
 
 package javax.security.sasl;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for constructor and methods ofRealmChoiceCallback class 
  * 
  */
 
-public class RealmChoiceCallbackTest extends PerformanceTest {
+public class RealmChoiceCallbackTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(RealmChoiceCallbackTest.class);

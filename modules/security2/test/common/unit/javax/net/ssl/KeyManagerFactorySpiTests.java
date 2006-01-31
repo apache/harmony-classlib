@@ -28,7 +28,7 @@ import java.security.UnrecoverableKeyException;
 
 import javax.net.ssl.KeyManagerFactorySpi;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyManagerFactorySpiTests extends PerformanceTest {
+public class KeyManagerFactorySpiTests extends TestCase {
 
     /**
      * Constructor for KeyManegerFactorySpiTests.

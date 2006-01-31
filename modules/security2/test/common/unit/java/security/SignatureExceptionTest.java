@@ -23,14 +23,14 @@ package java.security;
 
 import java.security.SignatureException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SignatureException</code> class constructors and methods.
  * 
  */
-public class SignatureExceptionTest extends PerformanceTest {
+public class SignatureExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      */
     public void testSignatureException01() {
         SignatureException tE = new SignatureException();
-        assertTrue(errNotExc, tE instanceof SignatureException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class SignatureExceptionTest extends PerformanceTest {
         SignatureException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SignatureException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SignatureException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -117,7 +114,6 @@ public class SignatureExceptionTest extends PerformanceTest {
     public void testSignatureException03() {
         String msg = null;
         SignatureException tE = new SignatureException(msg);
-        assertTrue(errNotExc, tE instanceof SignatureException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -135,7 +131,6 @@ public class SignatureExceptionTest extends PerformanceTest {
     public void testSignatureException04() {
         Throwable cause = null;
         SignatureException tE = new SignatureException(cause);
-        assertTrue(errNotExc, tE instanceof SignatureException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -152,7 +147,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      */
     public void testSignatureException05() {
         SignatureException tE = new SignatureException(tCause);
-        assertTrue(errNotExc, tE instanceof SignatureException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -176,7 +170,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      */
     public void testSignatureException06() {
         SignatureException tE = new SignatureException(null, null);
-        assertTrue(errNotExc, tE instanceof SignatureException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -195,8 +188,6 @@ public class SignatureExceptionTest extends PerformanceTest {
         SignatureException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SignatureException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SignatureException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -215,7 +206,6 @@ public class SignatureExceptionTest extends PerformanceTest {
      */
     public void testSignatureException08() {
         SignatureException tE = new SignatureException(null, tCause);
-        assertTrue(errNotExc, tE instanceof SignatureException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -241,8 +231,6 @@ public class SignatureExceptionTest extends PerformanceTest {
         SignatureException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SignatureException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SignatureException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

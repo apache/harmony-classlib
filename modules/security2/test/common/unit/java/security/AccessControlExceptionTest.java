@@ -21,13 +21,13 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Unit test for AccessControlException.
  */
 
-public class AccessControlExceptionTest extends PerformanceTest {
+public class AccessControlExceptionTest extends TestCase {
 
     /**
      * Entry point for standalone run.

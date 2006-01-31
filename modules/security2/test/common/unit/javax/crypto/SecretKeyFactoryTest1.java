@@ -33,7 +33,7 @@ import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -41,7 +41,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class SecretKeyFactoryTest1 extends PerformanceTest {
+public class SecretKeyFactoryTest1 extends TestCase {
     
     public static final String srvSecretKeyFactory = "SecretKeyFactory";
         

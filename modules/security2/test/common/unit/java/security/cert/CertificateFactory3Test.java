@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.test.TestUtils;
 
 
@@ -41,7 +41,7 @@ import org.apache.harmony.security.test.TestUtils;
  * Tests for <code>CertificateFactory</code> class methods
  */
 
-public class CertificateFactory3Test extends PerformanceTest {
+public class CertificateFactory3Test extends TestCase {
 
     /**
      * Constructor for CertificateFactoryFileTests.
@@ -58,10 +58,6 @@ public class CertificateFactory3Test extends PerformanceTest {
 
     private static String defaultType = CertificateFactory1Test.defaultType;
 
-    private final static String[] validValues = CertificateFactory1Test.validValues;
-
-    private final static String[] invalidValues = SpiEngUtils.invalidValues;
-    
     public static String fileCertificateX509 = "java/security/cert/serialization/Certificate.X.509";
     public static String fileCertPathPki = "java/security/cert/serialization/CertPath.PkiPath";
 
@@ -169,7 +165,7 @@ public class CertificateFactory3Test extends PerformanceTest {
         FileInputStream fis = new FileInputStream(fileCertificateX509);
         Certificate cert = certFs[0].generateCertificate(fis);
         fis.close();
-        List list = (List) new Vector();
+        List list = new Vector();
         list.add(cert);
         for (int i = 0; i < certFs.length; i++) {
             CertPath certPath = null;
@@ -223,7 +219,7 @@ public class CertificateFactory3Test extends PerformanceTest {
         for (int i = 0; i < certFs.length; i++) {
             Iterator it = certFs[0].getCertPathEncodings();
             if (it.hasNext()) {
-                if (certPathEncoding.equals((String)it.next())) {
+                if (certPathEncoding.equals(it.next())) {
                     CertPath certPath = null;
                     FileInputStream fis = new FileInputStream(fileCertPathPki);
                     certPath = certFs[i].generateCertPath(fis);
@@ -232,7 +228,7 @@ public class CertificateFactory3Test extends PerformanceTest {
                     List list1 = certPath.getCertificates();
                     assertFalse("Result list is empty",list1.isEmpty());
                 } else {
-                    logln("Default encoding is not ".concat(fileCertPathPki));
+                    fail("Default encoding is not ".concat(certPathEncoding));
                 }
             } else {
                 fail("There are no CertPath encodings");

@@ -32,7 +32,7 @@ import javax.crypto.spec.DHGenParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -42,7 +42,7 @@ import junit.framework.TestSuite;
  * 
  */
 
-public class MacTest1 extends PerformanceTest {
+public class MacTest1 extends TestCase {
 
     public static final String srvMac = "Mac";
 
@@ -139,7 +139,6 @@ public class MacTest1 extends PerformanceTest {
         Mac mac;
         for (int i = 0; i < validValues.length; i++) {
             mac = Mac.getInstance(validValues[i]);
-            assertTrue("Not Mac object", mac instanceof Mac);
             assertEquals("Incorrect algorithm", mac.getAlgorithm(), validValues[i]);
         }
     }
@@ -218,7 +217,6 @@ public class MacTest1 extends PerformanceTest {
         Mac mac;
         for (int i = 0; i < validValues.length; i++) {
             mac = Mac.getInstance(validValues[i], defaultProviderName);
-            assertTrue("Not Mac object", mac instanceof Mac);
             assertEquals("Incorrect algorithm", mac.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", mac.getProvider().getName(), 
                     defaultProviderName);
@@ -284,7 +282,6 @@ public class MacTest1 extends PerformanceTest {
         Mac mac;
         for (int i = 0; i < validValues.length; i++) {
             mac = Mac.getInstance(validValues[i], defaultProvider);
-            assertTrue("Not Mac object", mac instanceof Mac);
             assertEquals("Incorrect algorithm", mac.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", mac.getProvider(), defaultProvider);
         }
@@ -548,12 +545,10 @@ public class MacTest1 extends PerformanceTest {
         for (int i = 0; i < macs.length; i++) {
             try {
                 Mac mac1 = (Mac) macs[i].clone();
-                assertTrue(mac1 instanceof Mac);
                 assertEquals(mac1.getAlgorithm(), macs[i].getAlgorithm());
                 assertEquals(mac1.getProvider(), macs[i].getProvider());
                 assertFalse(macs[i].equals(mac1));
             } catch (CloneNotSupportedException e) {
-                logln("clone() is not supported");
             }
         }
     }
@@ -577,19 +572,20 @@ public class MacTest1 extends PerformanceTest {
         byte [] b = {(byte)1, (byte)2, (byte)3, (byte)4, (byte)5};
         SecretKeySpec sks = new SecretKeySpec(b, "SHA1");
         DHGenParameterSpec algPS = new DHGenParameterSpec(1, 2);
-        byte [] bb1;
-        byte [] bb2;
+
         for (int i = 0; i < macs.length; i++) {
             try {
                 macs[i].init(sks, algPS);
-                logln("init(..) ignore incorrect AlgorithmParameterSpec parameter");
+                fail("init(..) accepts incorrect AlgorithmParameterSpec parameter");
             } catch (InvalidAlgorithmParameterException e) {
             }
+
             try {
                 macs[i].init(null, null);
                 fail("InvalidKeyException must be thrown");
             } catch (InvalidKeyException e) {                
             }
+
             try {
                 macs[i].init(null);
                 fail("InvalidKeyException must be thrown");
@@ -696,10 +692,6 @@ public class MacTest1 extends PerformanceTest {
                 assertTrue("Object should not be equals", !macs[i].equals(res));
                 assertEquals("Incorrect class", macs[i].getClass(), res.getClass());
             } catch (CloneNotSupportedException e) {
-                if (!(macs[i] instanceof Cloneable)) {
-                    fail("Unexcpected CloneNotSupportedException was thrown");
-                }
-                
             }
         }
     }
@@ -768,7 +760,6 @@ public class MacTest1 extends PerformanceTest {
         }
         MacSpi spi = new MyMacSpi();
         Mac mac = new myMac(spi, defaultProvider, defaultAlgorithm);
-        assertTrue("Not Mac object", mac instanceof Mac);
         assertEquals("Incorrect algorithm", mac.getAlgorithm(),
                 defaultAlgorithm);
         assertEquals("Incorrect provider", mac.getProvider(), defaultProvider);
@@ -780,7 +771,6 @@ public class MacTest1 extends PerformanceTest {
         assertEquals("Invalid mac length", mac.getMacLength(), 0);
         
         mac = new myMac(null, null, null);
-        assertTrue("Not Mac object", mac instanceof Mac);
         assertNull("Algorithm must be null", mac.getAlgorithm());
         assertNull("Provider must be null", mac.getProvider());
         try {

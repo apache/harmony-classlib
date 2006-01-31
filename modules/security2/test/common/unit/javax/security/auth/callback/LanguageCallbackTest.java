@@ -24,13 +24,13 @@ package javax.security.auth.callback;
 
 import java.util.Locale;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests LanguageCallback class
  */
 
-public class LanguageCallbackTest extends PerformanceTest {
+public class LanguageCallbackTest extends TestCase {
 
     LanguageCallback lc;
     

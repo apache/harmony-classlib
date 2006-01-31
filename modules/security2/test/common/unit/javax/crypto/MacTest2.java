@@ -34,7 +34,7 @@ import java.security.spec.KeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -42,7 +42,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class MacTest2 extends PerformanceTest {
+public class MacTest2 extends TestCase {
     
     private static final String defaultAlg = "MyMacProv";
     

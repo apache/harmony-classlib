@@ -26,7 +26,7 @@ import java.util.List;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -34,7 +34,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  *  
  */
-public class KeyStoreBuilderParametersTest extends PerformanceTest {
+public class KeyStoreBuilderParametersTest extends TestCase {
 
     /*
      * Class under test for void KeyStoreBuilderParameters(KeyStore.Builder)

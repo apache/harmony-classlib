@@ -30,14 +30,14 @@ import java.security.Provider;
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.cert.MyCertPath;
 import org.apache.harmony.security.cert.TestUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>CertPathValidator</code> class  methods.
  * 
  */
 
-public class CertPathValidator3Test extends PerformanceTest {
+public class CertPathValidator3Test extends TestCase {
 
     /**
      * Constructor for CertPathValidatorTests.

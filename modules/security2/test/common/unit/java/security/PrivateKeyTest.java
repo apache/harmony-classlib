@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.PrivateKey;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class PrivateKeyTest extends PerformanceTest {
+public class PrivateKeyTest extends TestCase {
 
     /**
      * Constructor for PrivateKeyTest.

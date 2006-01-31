@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>RSAOtherPrimeInfo</code> class fields and methods.
  * 
  */
-public class RSAOtherPrimeInfoTest extends PerformanceTest {
+public class RSAOtherPrimeInfoTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -72,19 +72,13 @@ public class RSAOtherPrimeInfoTest extends PerformanceTest {
      * Assertion: NullPointerException if prime is null
      */
     public final void testRSAOtherPrimeInfo02() {
-        boolean passed = false;
         try {
-            RSAOtherPrimeInfo ropi =
-                new RSAOtherPrimeInfo(null,
-                                      BigInteger.valueOf(2L),
-                                      BigInteger.valueOf(3L));
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            new RSAOtherPrimeInfo(null,
+                                  BigInteger.valueOf(2L),
+                                  BigInteger.valueOf(3L));
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -92,19 +86,13 @@ public class RSAOtherPrimeInfoTest extends PerformanceTest {
      * Assertion: NullPointerException if primeExponent is null
      */
     public final void testRSAOtherPrimeInfo03() {
-        boolean passed = false;
         try {
-            RSAOtherPrimeInfo ropi =
-                new RSAOtherPrimeInfo(BigInteger.valueOf(1L),
-                                      null,
-                                      BigInteger.valueOf(3L));
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            new RSAOtherPrimeInfo(BigInteger.valueOf(1L),
+                                  null,
+                                  BigInteger.valueOf(3L));
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -112,19 +100,13 @@ public class RSAOtherPrimeInfoTest extends PerformanceTest {
      * Assertion: NullPointerException if crtCoefficient is null
      */
     public final void testRSAOtherPrimeInfo04() {
-        boolean passed = false;
         try {
-            RSAOtherPrimeInfo ropi =
-                new RSAOtherPrimeInfo(BigInteger.valueOf(1L),
-                                      BigInteger.valueOf(2L),
-                                      null);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            new RSAOtherPrimeInfo(BigInteger.valueOf(1L),
+                                  BigInteger.valueOf(2L),
+                                  null);
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -132,19 +114,13 @@ public class RSAOtherPrimeInfoTest extends PerformanceTest {
      * Assertion: NullPointerException if prime and crtCoefficient is null
      */
     public final void testRSAOtherPrimeInfo05() {
-        boolean passed = false;
         try {
-            RSAOtherPrimeInfo ropi =
-                new RSAOtherPrimeInfo(null,
-                                      BigInteger.valueOf(2L),
-                                      null);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            new RSAOtherPrimeInfo(null,
+                                  BigInteger.valueOf(2L),
+                                  null);
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
 
     /**

@@ -21,13 +21,13 @@
 
 package javax.security.auth.callback;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests NameCallback class
  */
 
-public class NameCallbackTest extends PerformanceTest {
+public class NameCallbackTest extends TestCase {
 
     NameCallback nc;
 

@@ -21,13 +21,13 @@
 
 package javax.security.auth.login;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests AccountException class
  */
 
-public class AccountExceptionTest extends PerformanceTest {
+public class AccountExceptionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AccountExceptionTest.class);

@@ -21,12 +21,12 @@
 
 package javax.security.auth.login;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 /**
  * Tests LoginException class
  */
 
-public class LoginExceptionTest extends PerformanceTest {
+public class LoginExceptionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(LoginExceptionTest.class);

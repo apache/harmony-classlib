@@ -25,7 +25,7 @@ import java.security.cert.CertPath;
 import java.util.Date;
 
 import org.apache.harmony.security.cert.MyCertPath;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -33,7 +33,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class TimestampTest extends PerformanceTest {
+public class TimestampTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(TimestampTest.class);

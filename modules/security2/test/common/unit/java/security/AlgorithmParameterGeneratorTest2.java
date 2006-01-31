@@ -28,7 +28,7 @@ import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  */
 
-public class AlgorithmParameterGeneratorTest2 extends PerformanceTest {
+public class AlgorithmParameterGeneratorTest2 extends TestCase {
     
     private static final String AlgorithmParameterGeneratorProviderClass = "java.security.MyAlgorithmParameterGeneratorSpi";
 
@@ -138,8 +138,6 @@ public class AlgorithmParameterGeneratorTest2 extends PerformanceTest {
         AlgorithmParameterGenerator apG;
         for (int i = 0; i < validValues.length; i++) {
             apG = AlgorithmParameterGenerator.getInstance(validValues[i]);
-            assertTrue("Not instanceof AlgorithmParameterGenerator object",
-                    apG instanceof AlgorithmParameterGenerator);
             assertEquals("Incorrect algorithm", apG.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", apG.getProvider(), mProv);
@@ -200,8 +198,6 @@ public class AlgorithmParameterGeneratorTest2 extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             apG = AlgorithmParameterGenerator.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof AlgorithmParameterGenerator object",
-                    apG instanceof AlgorithmParameterGenerator);
             assertEquals("Incorrect algorithm", apG.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", apG.getProvider().getName(),
@@ -248,8 +244,6 @@ public class AlgorithmParameterGeneratorTest2 extends PerformanceTest {
         AlgorithmParameterGenerator apG;
         for (int i = 0; i < validValues.length; i++) {
             apG = AlgorithmParameterGenerator.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof AlgorithmParameterGenerator object",
-                    apG instanceof AlgorithmParameterGenerator);
             assertEquals("Incorrect algorithm", apG.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", apG.getProvider(), mProv);

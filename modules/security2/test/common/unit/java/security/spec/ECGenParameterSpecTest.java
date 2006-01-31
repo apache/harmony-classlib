@@ -21,13 +21,13 @@
 
 package java.security.spec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>ECGenParameterSpec</code> class fields and methods.
  * 
  */
-public class ECGenParameterSpecTest extends PerformanceTest {
+public class ECGenParameterSpecTest extends TestCase {
 
     /**
      * @see TestCase#setUp()

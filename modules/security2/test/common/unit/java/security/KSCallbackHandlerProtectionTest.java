@@ -25,14 +25,14 @@ package java.security;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyStore.CallbackHandlerProtection> class constructor and methods
  * 
  */
 
-public class KSCallbackHandlerProtectionTest extends PerformanceTest {
+public class KSCallbackHandlerProtectionTest extends TestCase {
 
     /**
      * Constructor for KSCallbackHandlerProtectionTest.

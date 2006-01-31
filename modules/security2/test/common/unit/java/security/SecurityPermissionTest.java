@@ -21,13 +21,13 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>SecurityPermission</code>
  * 
  */
-public class SecurityPermissionTest extends PerformanceTest {
+public class SecurityPermissionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SecurityPermissionTest.class);

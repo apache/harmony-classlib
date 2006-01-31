@@ -25,7 +25,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -33,7 +33,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  *  
  */
-public class DefaultSSLSocketFactoryTest extends PerformanceTest {
+public class DefaultSSLSocketFactoryTest extends TestCase {
 
     /*
      * Class under test for Socket createSocket(String, int)

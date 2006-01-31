@@ -29,7 +29,6 @@ import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
@@ -41,7 +40,7 @@ import java.util.HashMap;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -52,7 +51,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * security providers list extended by Bouncy Castle's one
  * (http://www.bouncycastle.org)
  */
-public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
+public class EncryptedPrivateKeyInfoTest extends TestCase {
 
     /**
      * "valid" encoding for DSA with alg params
@@ -1195,7 +1194,7 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             {"1.2.840.113549.1.3.1",    "DiffieHellman"},
             {"1.2.840.113549.1.5.3",    "pbeWithMD5AndDES-CBC"},
             {"1.2.840.113549.1.12.1.3", "pbeWithSHAAnd3-KeyTripleDES-CBC"},
-            {"1.2.840.113549.1.12.1.6", "pbeWithSHAAnd40BitRC2-CBC"},
+//            {"1.2.840.113549.1.12.1.6", "pbeWithSHAAnd40BitRC2-CBC"},
             {"1.2.840.113549.3.2",      "RC2-CBC"},
             {"1.2.840.113549.3.3",      "RC2-EBC"},
             {"1.2.840.113549.3.4",      "RC4"},
@@ -1362,19 +1361,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      * @throws IOException
      * @throws NoSuchAlgorithmException
      */
-    public final void testEncryptedPrivateKeyInfobyteArray1()
-            throws NoSuchAlgorithmException, IOException {
-        EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
-                getValidEncryptedPrivateKeyInfoEncoding("DH"));
-        logln(getName() + ": ok");
-//        for (int i = 0; i < algName0.length; i++) {
-//            try {
-//                EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
-//                        getValidEncryptedPrivateKeyInfoEncoding(algName0[i][0]));
-//            } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
-//            }
-//        }
+    public final void testEncryptedPrivateKeyInfobyteArray1() throws Exception {
+        new EncryptedPrivateKeyInfo(getValidEncryptedPrivateKeyInfoEncoding("DH"));
+
     }
 
     /**
@@ -1390,10 +1379,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
     public final void testEncryptedPrivateKeyInfobyteArray2()
             throws IOException {
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(null);
+            new EncryptedPrivateKeyInfo(null);
             fail(getName() + ": NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
     }
 
@@ -1406,11 +1394,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      */
     public final void testEncryptedPrivateKeyInfobyteArray3() {
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
-                    new byte[0]);
+            new EncryptedPrivateKeyInfo(new byte[0]);
             fail(getName() + ": IOException has not been thrown");
         } catch (IOException ok) {
-            logln(getName() + ": " + ok);
         }
     }
 
@@ -1423,11 +1409,10 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      */
     public final void testEncryptedPrivateKeyInfobyteArray4() {
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
+            new EncryptedPrivateKeyInfo(
                     new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
             fail(getName() + ": IOException has not been thrown");
         } catch (IOException ok) {
-            logln(getName() + ": " + ok);
         }
     }
 
@@ -1438,19 +1423,18 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      * Test preconditions: wrong encoding passed as a parameter <br>
      * Expected: <code>IOException</code>
      */
-    public final void testEncryptedPrivateKeyInfobyteArray5() {
+    public final void testEncryptedPrivateKeyInfobyteArray5() throws Exception {
         byte[] enc = null;
         try {
             // 1: get valid encoding
             enc = getValidEncryptedPrivateKeyInfoEncoding("DSA");
+
             // ... and corrupt it (set wrong alg OID length)
             enc[9] = (byte) 6;
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(enc);
+
+            new EncryptedPrivateKeyInfo(enc);
             fail(getName() + "(1): IOException has not been thrown");
         } catch (IOException ok) {
-            logln(getName() + ": " + ok);
-        } catch (NoSuchAlgorithmException allowedFailure) {
-            // loglnError(getName() + ": " + allowedFailure);
         }
 
         try {
@@ -1458,12 +1442,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             enc = getValidEncryptedPrivateKeyInfoEncoding("DSA");
             // ... and corrupt it (set wrong encrypted data tag)
             enc[307] = (byte) 6;
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(enc);
+            new EncryptedPrivateKeyInfo(enc);
             fail(getName() + "(2): IOException has not been thrown");
         } catch (IOException ok) {
-            logln(getName() + ": " + ok);
-        } catch (NoSuchAlgorithmException allowedFailure) {
-            // loglnError(getName() + ": " + allowedFailure);
         }
 
         try {
@@ -1471,12 +1452,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             enc = getValidEncryptedPrivateKeyInfoEncoding("DSA");
             // ... and corrupt it (set wrong encrypted data length)
             enc[310] = (byte) 1;
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(enc);
+            new EncryptedPrivateKeyInfo(enc);
             fail(getName() + "(3): IOException has not been thrown");
         } catch (IOException ok) {
-            logln(getName() + ": " + ok);
-        } catch (NoSuchAlgorithmException allowedFailure) {
-            // loglnError(getName() + ": " + allowedFailure);
         }
 
         try {
@@ -1492,15 +1470,11 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                 // initialization BUT No AlgorithmParameters instance
                 // available for algName0[i][0].
                 // So just skip this sub test
-                // loglnError(getName() + "(4): SKIPPED LEGITIMATELY");
             } else {
                 fail(getName() + "(4): IOException has not been thrown");
             }
 
         } catch (IOException ok) {
-            logln(getName() + ": " + ok);
-        } catch (NoSuchAlgorithmException allowedFailure) {
-            // loglnError(getName() + ": " + allowedFailure);
         }
 
         try {
@@ -1508,12 +1482,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             enc = getValidEncryptedPrivateKeyInfoEncoding("DSA");
             // ... and corrupt it (set wrong length for alg params sequence)
             enc[20] = (byte) 0x1d;
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(enc);
+            new EncryptedPrivateKeyInfo(enc);
             fail(getName() + "(5): IOException has not been thrown");
         } catch (IOException ok) {
-            logln(getName() + ": " + ok);
-        } catch (NoSuchAlgorithmException allowedFailure) {
-            // loglnError(getName() + ": " + allowedFailure);
         }
 
         try {
@@ -1521,12 +1492,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             enc = getValidEncryptedPrivateKeyInfoEncoding("DSA");
             // ... and corrupt it (set wrong length for alg params sequence)
             enc[20] = (byte) 0x1f;
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(enc);
+            new EncryptedPrivateKeyInfo(enc);
             fail(getName() + "(6): IOException has not been thrown");
         } catch (IOException ok) {
-            logln(getName() + ": " + ok);
-        } catch (NoSuchAlgorithmException allowedFailure) {
-            // loglnError(getName() + ": " + allowedFailure);
         }
     }
 
@@ -1540,21 +1508,16 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      * 
      * @throws IOException
      */
-    public final void testEncryptedPrivateKeyInfobyteArray6()
-            throws IOException {
-        try {
-            byte[] encoded = getValidEncryptedPrivateKeyInfoEncoding("DSA");
-            byte[] encodedCopy = (byte[]) encoded.clone();
-            // pass valid array
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
-                    encodedCopy);
-            // modify array passed
-            encodedCopy[9] = (byte) 6;
-            // check that internal state has not been affected
-            assertTrue(Arrays.equals(encoded, epki.getEncoded()));
-        } catch (NoSuchAlgorithmException allowedFailure) {
-            // loglnError(getName() + ": " + allowedFailure);
-        }
+    public final void testEncryptedPrivateKeyInfobyteArray6() throws Exception {
+        byte[] encoded = getValidEncryptedPrivateKeyInfoEncoding("DSA");
+        byte[] encodedCopy = (byte[]) encoded.clone();
+        // pass valid array
+        EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
+                encodedCopy);
+        // modify array passed
+        encodedCopy[9] = (byte) 6;
+        // check that internal state has not been affected
+        assertTrue(Arrays.equals(encoded, epki.getEncoded()));
     }
 
     /**
@@ -1566,15 +1529,16 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      */
     public final void testEncryptedPrivateKeyInfoStringbyteArray1() {
         boolean performed = false;
+
         for (int i = 0; i < algName0.length; i++) {
             try {
-                EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
+                new EncryptedPrivateKeyInfo(
                         algName0[i][0], encryptedData);
                 performed = true;
-            } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
+            } catch (NoSuchAlgorithmException allowed) {
             }
         }
+
         assertTrue("Test not perfrormed", performed);
     }
 
@@ -1588,18 +1552,15 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      */
     public final void testEncryptedPrivateKeyInfoStringbyteArray2() {
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
-                    "bla-bla", encryptedData);
+            new EncryptedPrivateKeyInfo("bla-bla", encryptedData);
             fail(getName() + ": NoSuchAlgorithmException has not been thrown");
         } catch (NoSuchAlgorithmException ok) {
-            logln(getName() + ": " + ok);
         }
+
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo("",
-                    encryptedData);
+            new EncryptedPrivateKeyInfo("", encryptedData);
             fail(getName() + ": NoSuchAlgorithmException has not been thrown");
         } catch (NoSuchAlgorithmException ok) {
-            logln(getName() + ": " + ok);
         }
     }
 
@@ -1618,22 +1579,17 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             throws NoSuchAlgorithmException {
         // pass null as name
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
-                    (String) null, encryptedData);
+            new EncryptedPrivateKeyInfo((String) null, encryptedData);
             fail(getName() + ": NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
 
         // pass null as encrypted data
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo("DSA",
-                    null);
+            new EncryptedPrivateKeyInfo("DSA", null);
             fail(getName() + ": NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         } catch (NoSuchAlgorithmException allowedFailure) {
-            // was: loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             fail(getName() + ": " + allowedFailure);
         }
     }
@@ -1648,13 +1604,11 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      */
     public final void testEncryptedPrivateKeyInfoStringbyteArray4() {
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo("DSA",
+            new EncryptedPrivateKeyInfo("DSA",
                     new byte[] {});
             fail(getName() + ": IllegalArgumentException has not been thrown");
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         } catch (NoSuchAlgorithmException allowedFailure) {
-            // was: loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             fail(getName() + " " + allowedFailure);
         }
     }
@@ -1680,7 +1634,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             // check that internal state has not been affected
             assertTrue(Arrays.equals(encryptedData, epki.getEncryptedData()));
         } catch (NoSuchAlgorithmException allowedFailure) {
-            // was: loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             fail(getName() + " " + allowedFailure);
         }
     }
@@ -1707,12 +1660,10 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                 // use pregenerated AlgorithmParameters encodings
                 ap.init(getParametersEncoding(algName0[i][0]));
 
-                EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(ap,
-                        encryptedData);
+                new EncryptedPrivateKeyInfo(ap, encryptedData);
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -1736,23 +1687,20 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             throws NoSuchAlgorithmException, IOException {
         // 1: pass null as AlgorithmParameters
         try {
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
-                    (AlgorithmParameters) null, encryptedData);
+            new EncryptedPrivateKeyInfo((AlgorithmParameters) null, encryptedData);
             fail(getName() + ": NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         }
+
         // 2: pass null as encrypted data
         try {
             AlgorithmParameters ap = AlgorithmParameters.getInstance("DSA");
             // use pregenerated AlgorithmParameters encodings
             ap.init(getParametersEncoding("DSA"));
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(ap, null);
+            new EncryptedPrivateKeyInfo(ap, null);
             fail(getName() + ": NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
         } catch (NoSuchAlgorithmException allowedFailure) {
-            // was: loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             fail(getName() + " " + allowedFailure);
         }
     }
@@ -1777,14 +1725,11 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             // use pregenerated AlgorithmParameters encodings
             ap.init(getParametersEncoding("DSA"));
 
-            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(ap,
-                    new byte[] {});
+            new EncryptedPrivateKeyInfo(ap, new byte[] {});
             fail(getName() + ": IllegalArgumentException has not been thrown");
 
         } catch (IllegalArgumentException ok) {
-            logln(getName() + ": " + ok);
         } catch (NoSuchAlgorithmException allowedFailure) {
-            // was: loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             fail(getName() + " " + allowedFailure);
         }
     }
@@ -1820,7 +1765,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             assertTrue(Arrays.equals(encryptedData, epki.getEncryptedData()));
 
         } catch (NoSuchAlgorithmException allowedFailure) {
-            // was: loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             fail(getName() + " " + allowedFailure);
         }
     }
@@ -1841,23 +1785,13 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                 EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
                         getValidEncryptedPrivateKeyInfoEncoding(algName0[i][0]));
 
-                logln(getName() + ": " + algName0[i][0] +
-                        ", expected: " + algName0[i][1] +
-                        ", got: " + epki.getAlgName());
-//                if (epki.getAlgParameters() == null) {
-//                    // no AlgorithmParameters instance
-//                    // available for algName0[i][0] so
-//                    // perform another test:
-//                    // epki.getAlgName() must return OID
-//                    // from encoding
-//                    assertTrue("isOID", epki.getAlgName().indexOf('.') != -1);
-//                } else {
-//                    assertEquals("StdName", algName0[i][1], epki.getAlgName());
-//                }
+//                logln(getName() + ": " + algName0[i][0] +
+//                        ", expected: " + algName0[i][1] +
+//                        ", got: " + epki.getAlgName());
+                assertEquals(algName0[i][1], epki.getAlgName());
 
                 performed = true;
-            } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
+            } catch (NoSuchAlgorithmException allowed) {
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -1879,14 +1813,13 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                 EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(
                         algName0[i][0], encryptedData);
 
-                logln(getName() + ": " + algName0[i][0] +
-                        ", expected: " + algName0[i][1] +
-                        ", got: " + epki.getAlgName());
-//                assertEquals(algName0[i][1], epki.getAlgName());
+//                logln(getName() + ": " + algName0[i][0] +
+//                        ", expected: " + algName0[i][1] +
+//                        ", got: " + epki.getAlgName());
+                assertEquals(algName0[i][1], epki.getAlgName());
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -1913,14 +1846,13 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                 EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo(ap,
                         encryptedData);
 
-                logln(getName() + ": " + algName0[i][0] +
-                        ", expected: " + algName0[i][1] +
-                        ", got: " + epki.getAlgName());
-//                assertEquals(algName0[i][1], epki.getAlgName());
+//                logln(getName() + ": " + algName0[i][0] +
+//                        ", expected: " + algName0[i][1] +
+//                        ", got: " + epki.getAlgName());
+                assertEquals(algName0[i][1], epki.getAlgName());
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -1945,19 +1877,15 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 AlgorithmParameters apar = epki.getAlgParameters();
                 if (apar == null) {
-//                    loglnError(getName() + " NOT PERFORMED: " + 
-//                            "No AlgorithmParameters for algorithm " +
-//                            algName0[i][0] + " available");
                     continue;
                 }
+
                 // check that method under test returns
                 // parameters with the same encoded form
                 assertTrue(Arrays.equals(getParametersEncoding(algName0[i][0]),
                         apar.getEncoded()));
                 performed = true;
-                logln(getName() + ": passed for " + algName0[i][0]);
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -1975,7 +1903,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
             assertNull(epki.getAlgParameters());
             
         } catch (NoSuchAlgorithmException allowedFailure) {
-                // was: loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
                 fail(getName() + " " + allowedFailure);
         }
     }
@@ -2003,7 +1930,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2035,7 +1961,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2069,7 +1994,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2099,7 +2023,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2126,7 +2049,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2160,7 +2082,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2191,7 +2112,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2219,7 +2139,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2252,7 +2171,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2287,7 +2205,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2321,7 +2238,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2341,14 +2257,12 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     fail(getName() + "NullPointerException has not been thrown");
 
                 } catch (NullPointerException ok) {
-                    logln(getName() + ": " + ok);
                 } catch (InvalidKeySpecException e) {
                     fail(getName() + "Unexpected exception: " + e);
                 }
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2358,10 +2272,8 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      * Encrypted data contains valid PKCS8 key info encoding
      */
     public final void test_ROUNDTRIP_GetKeySpecCipher01() {
-        boolean failed = false;
-        String failedForAlgs = "Failed for:\n";
-        String passedForAlgs = "\nPassed for:\n";
         boolean performed = false;
+
         for (int i = 0; i < algName.length; i++) {
             try {
                 // generate test data
@@ -2376,42 +2288,31 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                 } else {
                     epki = new EncryptedPrivateKeyInfo(g.ap(), g.ct());
                 }
+
                 // call methods under test
                 try {
 
                     PKCS8EncodedKeySpec eks = epki.getKeySpec(g.c());
 
-                    if (Arrays.equals(privateKeyInfo, eks.getEncoded())) {
-                        passedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
-                    } else {
-                        failed = true;
-                        failedForAlgs += algName[i][0] + ", " + algName[i][1] +
-                        ": comparison\n";
+                    if (!Arrays.equals(privateKeyInfo, eks.getEncoded())) {
+                        fail(algName[i][0] + " != " + algName[i][1]);
                     }
                 } catch (InvalidKeySpecException e) {
-                    failed = true;
-                    failedForAlgs += algName[i][0] + ", " + algName[i][1] +
-                    ": " + e + "\n";
+                    fail(algName[i][0] + ", " + algName[i][1] + e + "\n");
                 }
                 performed = true;
+
             } catch (TestDataGenerator.AllowedFailure allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
-            } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
+            } catch (NoSuchAlgorithmException allowed) {
             }
         }
-        assertFalse(failedForAlgs+passedForAlgs, failed);
         assertTrue("Test not perfrormed", performed);
-        logln(getName() + passedForAlgs);
     }
 
     /**
      * Encrypted data contains invalid PKCS8 key info encoding
      */
     public final void test_ROUNDTRIP_GetKeySpecCipher02() {
-        boolean failed = false;
-        String failedForAlgs = "Failed for:\n";
-        String passedForAlgs = "\nPassed for:\n";
         boolean performed = false;
         for (int i = 0; i < algName.length; i++) {
             try {
@@ -2427,28 +2328,23 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                 } else {
                     epki = new EncryptedPrivateKeyInfo(g.ap(), g.ct());
                 }
+
                 // call methods under test
                 try {
+                    epki.getKeySpec(g.c());
 
-                    PKCS8EncodedKeySpec eks = epki.getKeySpec(g.c());
                     // must not get here because decrypted data does
                     // not represent valid PKCS8 encoding
-                    failed = true;
-                    failedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
+                    fail(algName[i][0] + ", " + algName[i][1]);
                 } catch (InvalidKeySpecException ok) {
-                    passedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
                 }
 
                 performed = true;
             } catch (TestDataGenerator.AllowedFailure allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
-        assertFalse(failedForAlgs+passedForAlgs, failed);
         assertTrue("Test not perfrormed", performed);
-        logln(getName() + passedForAlgs);
     }
 
     public final void testGetKeySpecKey01() {
@@ -2465,14 +2361,12 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     fail(getName() + "NullPointerException has not been thrown");
 
                 } catch (NullPointerException ok) {
-                    logln(getName() + ": " + ok);
                 } catch (InvalidKeyException e) {
                     fail(getName() + "Unexpected exception: " + e);
                 }
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2482,9 +2376,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      * Encrypted data contains valid PKCS8 key info encoding
      */
     public final void test_ROUNDTRIP_GetKeySpecKey01() {
-        boolean failed = false;
-        String failedForAlgs = "Failed for:\n";
-        String passedForAlgs = "\nPassed for:\n";
         boolean performed = false;
         for (int i = 0; i < algName.length; i++) {
             try {
@@ -2505,38 +2396,25 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     PKCS8EncodedKeySpec eks =
                         epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK());
                     
-                    if (Arrays.equals(privateKeyInfo, eks.getEncoded())) {
-                        passedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
-                    } else {
-                        failed = true;
-                        failedForAlgs += algName[i][0] + ", " + algName[i][1] +
-                        ": comparison\n";
+                    if (!Arrays.equals(privateKeyInfo, eks.getEncoded())) {
+                        fail(algName[i][0] + " != " + algName[i][1]);
                     }
                 } catch (InvalidKeyException e) {
-                    failed = true;
-                    failedForAlgs += algName[i][0] + ", " + algName[i][1] +
-                    ": " + e + "\n";
+                    fail(algName[i][0] + ", " + algName[i][1] +  ": " + e);
                 }
 
                 performed = true;
             } catch (TestDataGenerator.AllowedFailure allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
-        assertFalse(failedForAlgs+passedForAlgs, failed);
         assertTrue("Test not perfrormed", performed);
-        logln(getName() + passedForAlgs);
     }
 
     /**
      * Encrypted data contains invalid PKCS8 key info encoding
      */
     public final void test_ROUNDTRIP_GetKeySpecKey02() {
-        boolean failed = false;
-        String failedForAlgs = "Failed for:\n";
-        String passedForAlgs = "\nPassed for:\n";
         boolean performed = false;
         for (int i = 0; i < algName.length; i++) {
             try {
@@ -2554,29 +2432,20 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                 }
                 
                 try {
-                    PKCS8EncodedKeySpec eks =
-                        epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK());
-                    
-                    failed = true;
-                    failedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
-
+                    epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK());
+                    fail(algName[i][0] + ", " + algName[i][1]);
                 } catch (InvalidKeyException e) {
-                    passedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
                 }
 
                 performed = true;
             } catch (TestDataGenerator.AllowedFailure allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
-        assertFalse(failedForAlgs+passedForAlgs, failed);
         assertTrue("Test not perfrormed", performed);
-        logln(getName() + passedForAlgs);
     }
 
-    public final void testGetKeySpecKeyString01() {
+    public final void testGetKeySpecKeyString01() throws Exception {
         boolean performed = false;
         for (int i = 0; i < algName0.length; i++) {
             try {
@@ -2590,11 +2459,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     fail(getName() + "NullPointerException has not been thrown");
 
                 } catch (NullPointerException ok) {
-                    logln(getName() + ": " + ok);
-                } catch (InvalidKeyException e) {
-                    fail(getName() + "Unexpected exception: " + e);
-                } catch (NoSuchProviderException e) {
-                    fail(getName() + "Unexpected exception: " + e);
                 }
 
                 try {
@@ -2617,16 +2481,10 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     fail(getName() + "NullPointerException has not been thrown");
 
                 } catch (NullPointerException ok) {
-                    logln(getName() + ": " + ok);
-                } catch (InvalidKeyException e) {
-                    fail(getName() + "Unexpected exception: " + e);
-                } catch (NoSuchProviderException e) {
-                    fail(getName() + "Unexpected exception: " + e);
                 }
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2635,10 +2493,7 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
     /**
      * Encrypted data contains valid PKCS8 key info encoding
      */
-    public final void test_ROUNDTRIP_GetKeySpecKeyString01() {
-        boolean failed = false;
-        String failedForAlgs = "Failed for:\n";
-        String passedForAlgs = "\nPassed for:\n";
+    public final void test_ROUNDTRIP_GetKeySpecKeyString01() throws Exception {
         boolean performed = false;
         for (int i = 0; i < algName.length; i++) {                
             for (int l=0; l<provider.length; l++) {
@@ -2651,9 +2506,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     g = new TestDataGenerator(algName[i][0], algName[i][1],
                             privateKeyInfo, provider[l]);
                 } catch (TestDataGenerator.AllowedFailure allowedFailure) {
-//                    loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
                     continue;
-                }                    
+                }
+                    
                 try {
                     // create test object
                     EncryptedPrivateKeyInfo epki;
@@ -2668,40 +2523,25 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                             epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK(),
                                     provider[l].getName());
 
-                        if (Arrays.equals(privateKeyInfo, eks.getEncoded())) {
-                            passedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
-                        } else {
-                            failed = true;
-                            failedForAlgs += algName[i][0] + ", " + algName[i][1] +
-                            ": comparison\n";
+                        if (!Arrays.equals(privateKeyInfo, eks.getEncoded())) {
+                            fail(algName[i][0] + " != " + algName[i][1]);
                         }
                     } catch (InvalidKeyException e) {
-                        failed = true;
-                        failedForAlgs += algName[i][0] + ", " + algName[i][1] +
-                        ": " + e + "\n";
+                        fail(algName[i][0] + ", " + algName[i][1] + ": " + e);
                     }
                     
                     performed = true;
-                } catch (NoSuchProviderException e) {
-                    fail(getName() + ": " + e);
                 } catch (NoSuchAlgorithmException allowedFailure) {
-                    // loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure
-                    //        + ", provider=" + provider[l]);
                 }
             }
         }
-        assertFalse(failedForAlgs+passedForAlgs, failed);
         assertTrue("Test not perfrormed", performed);
-        logln(getName() + passedForAlgs);
     }
 
     /**
      * Encrypted data contains invalid PKCS8 key info encoding
      */
-    public final void test_ROUNDTRIP_GetKeySpecKeyString02() {
-        boolean failed = false;
-        String failedForAlgs = "Failed for:\n";
-        String passedForAlgs = "\nPassed for:\n";
+    public final void test_ROUNDTRIP_GetKeySpecKeyString02() throws Exception {
         boolean performed = false;
         for (int i = 0; i < algName.length; i++) {                
             for (int l=0; l<provider.length; l++) {
@@ -2714,9 +2554,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     g = new TestDataGenerator(algName[i][0], algName[i][1],
                             privateKeyInfoDamaged, provider[l]);
                 } catch (TestDataGenerator.AllowedFailure allowedFailure) {
-//                    loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
                     continue;
                 }                    
+
                 try {
                     // create test object
                     EncryptedPrivateKeyInfo epki;
@@ -2725,34 +2565,26 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     } else {
                         epki = new EncryptedPrivateKeyInfo(g.ap(), g.ct());
                     }
+
                     try {
 
-                        PKCS8EncodedKeySpec eks =
-                            epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK(),
-                                    provider[l].getName());
+                        epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK(),
+                                provider[l].getName());
 
-                        failed = true;
-                        failedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
+                        fail(algName[i][0] + ", " + algName[i][1]);
 
                     } catch (InvalidKeyException e) {
-                        passedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
                     }
                     
                     performed = true;
-                } catch (NoSuchProviderException e) {
-                    fail(getName() + ": " + e);
                 } catch (NoSuchAlgorithmException allowedFailure) {
-                    // loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure
-                    //        + ", provider=" + provider[l]);
                 }
             }
         }
-        assertFalse(failedForAlgs+passedForAlgs, failed);
         assertTrue("Test not perfrormed", performed);
-        logln(getName() + passedForAlgs);
     }
 
-    public final void testGetKeySpecKeyProvider01() {
+    public final void testGetKeySpecKeyProvider01() throws Exception {
         boolean performed = false;
         
         for (int i = 0; i < algName0.length; i++) {
@@ -2765,11 +2597,7 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     // check that method under test throws NPE
                     epki.getKeySpec((Key)null, (Provider)null);
                     fail(getName() + "NullPointerException has not been thrown");
-
                 } catch (NullPointerException ok) {
-                    logln(getName() + ": " + ok);
-                } catch (InvalidKeyException e) {
-                    fail(getName() + "Unexpected exception: " + e);
                 }
 
                 try {
@@ -2790,16 +2618,11 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                             (Provider)null);
 
                     fail(getName() + "NullPointerException has not been thrown");
-
                 } catch (NullPointerException ok) {
-                    logln(getName() + ": " + ok);
-                } catch (InvalidKeyException e) {
-                    fail(getName() + "Unexpected exception: " + e);
                 }
 
                 performed = true;
             } catch (NoSuchAlgorithmException allowedFailure) {
-//                loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
             }
         }
         assertTrue("Test not perfrormed", performed);
@@ -2809,9 +2632,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
      * Encrypted data contains valid PKCS8 key info encoding
      */
     public final void test_ROUNDTRIP_GetKeySpecKeyProvider01() {
-        boolean failed = false;
-        String failedForAlgs = "Failed for:\n";
-        String passedForAlgs = "\nPassed for:\n";
         boolean performed = false;
         
         for (int i = 0; i < algName.length; i++) {                
@@ -2825,7 +2645,6 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     g = new TestDataGenerator(algName[i][0], algName[i][1],
                             privateKeyInfo, provider[l]);
                 } catch (TestDataGenerator.AllowedFailure allowedFailure) {
-//                    loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
                     continue;
                 }                    
                 try {
@@ -2842,38 +2661,25 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                             epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK(),
                                     provider[l]);
                         
-                        if (Arrays.equals(privateKeyInfo, eks.getEncoded())) {
-                            passedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
-                        } else {
-                            failed = true;
-                            failedForAlgs += algName[i][0] + ", " + algName[i][1] +
-                            ": comparison\n";
+                        if (!Arrays.equals(privateKeyInfo, eks.getEncoded())) {
+                            fail(algName[i][0] + " != " + algName[i][1]);
                         }
                     } catch (InvalidKeyException e) {
-                        failed = true;
-                        failedForAlgs += algName[i][0] + ", " + algName[i][1] +
-                        ": " + e + "\n";
+                        fail(algName[i][0] + ", " + algName[i][1] + ": " + e);
                     }
                     performed = true;
                     
                 } catch (NoSuchAlgorithmException allowedFailure) {
-                    // loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure
-                    //        + ", provider=" + provider[l]);
                 }
             }
         }
-        assertFalse(failedForAlgs+passedForAlgs, failed);
         assertTrue("Test not performed", performed);
-        logln(getName() + passedForAlgs);
     }
 
     /**
      * Encrypted data contains invalid PKCS8 key info encoding
      */
     public final void test_ROUNDTRIP_GetKeySpecKeyProvider02() {
-        boolean failed = false;
-        String failedForAlgs = "Failed for:\n";
-        String passedForAlgs = "\nPassed for:\n";
         boolean performed = false;
         
         for (int i = 0; i < algName.length; i++) {                
@@ -2887,9 +2693,9 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     g = new TestDataGenerator(algName[i][0], algName[i][1],
                             privateKeyInfoDamaged, provider[l]);
                 } catch (TestDataGenerator.AllowedFailure allowedFailure) {
-//                    loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure);
                     continue;
                 }                    
+
                 try {
                     // create test object
                     EncryptedPrivateKeyInfo epki;
@@ -2900,26 +2706,19 @@ public class EncryptedPrivateKeyInfoTest extends PerformanceTest {
                     }
                     try {
                         
-                        PKCS8EncodedKeySpec eks =
-                            epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK(),
-                                    provider[l]);
+                        epki.getKeySpec(g.pubK()==null ? g.k() : g.pubK(),
+                                provider[l]);
                         
-                        failed = true;
-                        failedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
+                        fail(algName[i][0] + ", " + algName[i][1]);
 
                     } catch (InvalidKeyException e) {
-                        passedForAlgs += algName[i][0] + ", " + algName[i][1] + "\n";
                     }
                     performed = true;
                 } catch (NoSuchAlgorithmException allowedFailure) {
-                    // loglnError(getName() + " ALLOWED FAILURE: " + allowedFailure
-                    //        + ", provider=" + provider[l]);
                 }
             }
         }
-        assertFalse(failedForAlgs+passedForAlgs, failed);
         assertTrue("Test not perfrormed", performed);
-        logln(getName() + passedForAlgs);
     }
     
     //

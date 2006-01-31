@@ -25,14 +25,14 @@ import java.math.BigInteger;
 
 import javax.crypto.interfaces.PBEKey;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>PBEKey</code> class field
  * 
  */
-public class PBEKeyTest extends PerformanceTest {
+public class PBEKeyTest extends TestCase {
 
 
     /**

@@ -29,14 +29,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.harmony.security.cert.TestUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>PKIXBuilderParameters</code> fields and methods
  * 
  */
-public class PKIXBuilderParametersTest extends PerformanceTest {
+public class PKIXBuilderParametersTest extends TestCase {
     private static final int DEFAULT_MAX_PATH_LEN = 5;
     /*
      * @see TestCase#setUp()
@@ -70,8 +70,7 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
         throws InvalidAlgorithmParameterException {
         Set taSet = TestUtils.getTrustAnchorSet();
         if (taSet == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor set)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor set)");
         }
         // both parameters are valid and non-null
         PKIXParameters p =
@@ -90,8 +89,7 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
         throws InvalidAlgorithmParameterException {
         Set taSet = TestUtils.getTrustAnchorSet();
         if (taSet == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor set)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor set)");
         }
         // both parameters are valid but CertSelector is null
         PKIXParameters p = new PKIXBuilderParameters(taSet, null);
@@ -110,8 +108,7 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
         throws InvalidAlgorithmParameterException {
         Set taSet = TestUtils.getTrustAnchorSet();
         if (taSet == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor set)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor set)");
         }
         HashSet originalSet = (HashSet)taSet;
         HashSet originalSetCopy = (HashSet)originalSet.clone();
@@ -132,19 +129,13 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
      * Assertion: <code>NullPointerException</code> -
      * if the specified <code>Set</code> is null
      */
-    public final void testPKIXBuilderParametersSetCertSelector04() {
-        boolean npeHasBeenThrown = false;
+    public final void testPKIXBuilderParametersSetCertSelector04() throws Exception {
         try {
             // pass null
-            PKIXBuilderParameters pp =
-                new PKIXBuilderParameters((Set)null, null);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXBuilderParameters((Set)null, null);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -155,18 +146,12 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
      * (<code>trustAnchors.isEmpty() == true</code>)
      */
     public final void testPKIXBuilderParametersSetCertSelector05() {
-        boolean iapeHasBeenThrown = false;
         try {
             // use empty set
-            PKIXBuilderParameters pp =
-                new PKIXBuilderParameters(new HashSet(), null);
-        } catch (Exception e) {
-            if (e instanceof InvalidAlgorithmParameterException) {
-                iapeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXBuilderParameters(new HashSet(), null);
+            fail("InvalidAlgorithmParameterException expected");
+        } catch (InvalidAlgorithmParameterException e) {
         }
-        assertTrue(iapeHasBeenThrown);
     }
 
     /**
@@ -176,24 +161,20 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
      * if any of the elements in the <code>Set</code> are not of type
      * <code>java.security.cert.TrustAnchor</code>
      */
-    public final void testPKIXBuilderParametersSetCertSelector06() {
+    public final void testPKIXBuilderParametersSetCertSelector06() throws Exception {
         Set taSet = TestUtils.getTrustAnchorSet();
         if (taSet == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor set)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor set)");
         }
+
         // add wrong object to valid set
         assertTrue(taSet.add(new Object()));
-        boolean cceHasBeenThrown = false;
+
         try {
-            PKIXBuilderParameters pp = new PKIXBuilderParameters(taSet, null);
-        } catch (Exception e) {
-            if (e instanceof ClassCastException) {
-                cceHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXBuilderParameters(taSet, null);
+            fail("ClassCastException expected");
+        } catch (ClassCastException e) {
         }
-        assertTrue(cceHasBeenThrown);
     }
 
     /**
@@ -208,8 +189,7 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
                InvalidAlgorithmParameterException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
         // both parameters are valid and non-null
         PKIXParameters p =
@@ -230,8 +210,7 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
                InvalidAlgorithmParameterException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
         // both parameters are valid but CertSelector is null
         PKIXParameters p =
@@ -254,8 +233,7 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
                InvalidAlgorithmParameterException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED_AND_UNTRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
         // both parameters are valid but CertSelector is null
         PKIXParameters p =
@@ -270,19 +248,13 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
      * Assertion: <code>NullPointerException</code> -
      * if the <code>keystore</code> is <code>null</code>
      */
-    public final void testPKIXBuilderParametersKeyStoreCertSelector04() {
-        boolean npeHasBeenThrown = false;
+    public final void testPKIXBuilderParametersKeyStoreCertSelector04() throws Exception {
         try {
             // pass null
-            PKIXBuilderParameters pp =
-                new PKIXBuilderParameters((KeyStore)null, null);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXBuilderParameters((KeyStore)null, null);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -291,23 +263,18 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
      * Assertion: <code>KeyStoreException</code> -
      * if the <code>keystore</code> has not been initialized
      */
-    public final void testPKIXBuilderParametersKeyStoreCertSelector05() {
+    public final void testPKIXBuilderParametersKeyStoreCertSelector05() throws Exception {
         KeyStore ks = TestUtils.getKeyStore(false, 0);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
-        boolean kseHasBeenThrown = false;
+        
         try {
             // pass not initialized KeyStore
-            PKIXBuilderParameters pp = new PKIXBuilderParameters(ks, null);
-        } catch (Exception e) {
-            if (e instanceof KeyStoreException) {
-                kseHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXBuilderParameters(ks, null);
+            fail("KeyStoreException expected");
+        } catch (KeyStoreException e) {
         }
-        assertTrue(kseHasBeenThrown);
     }
 
     /**
@@ -317,23 +284,19 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
      * if the <code>keystore</code> does not contain at least one
      * trusted certificate entry
      */
-    public final void testPKIXBuilderParametersKeyStoreCertSelector06() {
+    public final void testPKIXBuilderParametersKeyStoreCertSelector06() throws Exception {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.UNTRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
+            fail(getName() + ": not performed (could not create test KeyStore)");
             return;
         }
-        boolean iapeHasBeenThrown = false;
+
         try {
             // pass KeyStore that does not contain trusted certificates
-            PKIXBuilderParameters pp = new PKIXBuilderParameters(ks, null);
-        } catch (Exception e) {
-            if (e instanceof InvalidAlgorithmParameterException) {
-                iapeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXBuilderParameters(ks, null);
+            fail("InvalidAlgorithmParameterException expected");
+        } catch (InvalidAlgorithmParameterException e) {
         }
-        assertTrue(iapeHasBeenThrown);
     }
 
     /**
@@ -347,8 +310,7 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
                InvalidAlgorithmParameterException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
         PKIXBuilderParameters p = new PKIXBuilderParameters(ks, null);
         assertEquals(DEFAULT_MAX_PATH_LEN, p.getMaxPathLength());
@@ -366,8 +328,7 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
                InvalidAlgorithmParameterException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
         // all these VALID maxPathLength values must be
         // set (and get) without exceptions
@@ -391,21 +352,16 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
                InvalidAlgorithmParameterException {
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
         PKIXBuilderParameters p = new PKIXBuilderParameters(ks, null);
-        boolean ipeHasBeenThrown = false;
+
         try {
             // pass parameter less than -1
             p.setMaxPathLength(Integer.MIN_VALUE);
-        } catch (Exception e) {
-            if (e instanceof InvalidParameterException) {
-                ipeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            fail("InvalidParameterException expected");
+        } catch (InvalidParameterException e) {
         }
-        assertTrue(ipeHasBeenThrown);
     }
 
     /**
@@ -419,13 +375,12 @@ public class PKIXBuilderParametersTest extends PerformanceTest {
                InvalidAlgorithmParameterException {
         KeyStore ks = TestUtils.getKeyStore(true,TestUtils.TRUSTED_AND_UNTRUSTED);
         if (ks == null) {
-            fail(getName() + ": PASSED (could not create test KeyStore)");
-            return;
+            fail(getName() + ": not performed (could not create test KeyStore)");
         }
         PKIXBuilderParameters p =
             new PKIXBuilderParameters(ks, new X509CertSelector());
         String rep = p.toString();
-        logln(getName() + ": " + rep);
+
         assertNotNull(rep);
     }
 

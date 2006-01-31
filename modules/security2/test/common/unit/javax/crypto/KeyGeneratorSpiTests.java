@@ -28,14 +28,14 @@ import java.security.SecureRandom;
 
 import java.security.spec.AlgorithmParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyGeneratorSpi</code> class constructors and methods.
  * 
  */
 
-public class KeyGeneratorSpiTests extends PerformanceTest {
+public class KeyGeneratorSpiTests extends TestCase {
 
     /**
      * Constructor for KeyGeneratorSpiTests.

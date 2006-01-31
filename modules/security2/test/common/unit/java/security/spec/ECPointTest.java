@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>ECPoint</code> class fields and methods.
  * 
  */
-public class ECPointTest extends PerformanceTest {
+public class ECPointTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -65,11 +65,11 @@ public class ECPointTest extends PerformanceTest {
      * Expected: must pass without any exceptions
      */
     public final void testECPoint01() {
-        ECPoint p = new ECPoint(BigInteger.ZERO, BigInteger.ZERO);
-        p = new ECPoint(BigInteger.valueOf(-23456L), BigInteger.valueOf(-23456L));
-        p = new ECPoint(BigInteger.valueOf(123456L), BigInteger.valueOf(123456L));
-        p = new ECPoint(BigInteger.valueOf(-56L), BigInteger.valueOf(234L));
-        p = new ECPoint(BigInteger.valueOf(3456L), BigInteger.valueOf(-2344L));
+        new ECPoint(BigInteger.ZERO, BigInteger.ZERO);
+        new ECPoint(BigInteger.valueOf(-23456L), BigInteger.valueOf(-23456L));
+        new ECPoint(BigInteger.valueOf(123456L), BigInteger.valueOf(123456L));
+        new ECPoint(BigInteger.valueOf(-56L), BigInteger.valueOf(234L));
+        new ECPoint(BigInteger.valueOf(3456L), BigInteger.valueOf(-2344L));
     }
 
     /**
@@ -80,35 +80,28 @@ public class ECPointTest extends PerformanceTest {
      * Expected: must throw <code>NullPointerException</code>
      */
     public final void testECPoint02() {
-        boolean passed=false;
         // test case 1: x is null
         try {
-            ECPoint p = new ECPoint(null, BigInteger.ZERO);
+            new ECPoint(null, BigInteger.ZERO);
+            fail("#1: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
-        passed=false;
+
         // test case 2: y is null
         try {
-            ECPoint p = new ECPoint(BigInteger.ZERO, null);
+            new ECPoint(BigInteger.ZERO, null);
+            fail("#2: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
-        passed=false;
+
         // test case 3: both : x and y are null
         try {
-            ECPoint p = new ECPoint(null, null);
+            new ECPoint(null, null);
+            fail("#3: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -227,7 +220,6 @@ public class ECPointTest extends PerformanceTest {
     public final void testHashCode01() {
         ECPoint f = new ECPoint(BigInteger.valueOf(-23457L), BigInteger.ONE);
         int hc = f.hashCode();
-        logln(getName() + ": " + hc);
         assertTrue(hc == f.hashCode() &&
                    hc == f.hashCode() &&
                    hc == f.hashCode() &&
@@ -236,10 +228,10 @@ public class ECPointTest extends PerformanceTest {
                    hc == f.hashCode() &&
                    hc == f.hashCode() &&
                    hc == f.hashCode());
+
         
         // the same for POINT_INFINITY
         hc = ECPoint.POINT_INFINITY.hashCode();
-        logln(getName() + ": " + hc);
         assertTrue(hc == ECPoint.POINT_INFINITY.hashCode() &&
                    hc == ECPoint.POINT_INFINITY.hashCode() &&
                    hc == ECPoint.POINT_INFINITY.hashCode() &&

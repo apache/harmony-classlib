@@ -23,7 +23,7 @@ package java.security.spec;
 
 import java.security.spec.InvalidKeySpecException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class InvalidKeySpecExceptionTest extends PerformanceTest {
+public class InvalidKeySpecExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
      */
     public void testInvalidKeySpecException01() {
         InvalidKeySpecException tE = new InvalidKeySpecException();
-        assertTrue(errNotExc, tE instanceof InvalidKeySpecException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
         InvalidKeySpecException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidKeySpecException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof InvalidKeySpecException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
     public void testInvalidKeySpecException03() {
         String msg = null;
         InvalidKeySpecException tE = new InvalidKeySpecException(msg);
-        assertTrue(errNotExc, tE instanceof InvalidKeySpecException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -137,7 +133,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
     public void testInvalidKeySpecException04() {
         Throwable cause = null;
         InvalidKeySpecException tE = new InvalidKeySpecException(cause);
-        assertTrue(errNotExc, tE instanceof InvalidKeySpecException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -154,7 +149,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
      */
     public void testInvalidKeySpecException05() {
         InvalidKeySpecException tE = new InvalidKeySpecException(tCause);
-        assertTrue(errNotExc, tE instanceof InvalidKeySpecException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -178,7 +172,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
      */
     public void testInvalidKeySpecException06() {
         InvalidKeySpecException tE = new InvalidKeySpecException(null, null);
-        assertTrue(errNotExc, tE instanceof InvalidKeySpecException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -197,8 +190,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
         InvalidKeySpecException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidKeySpecException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof InvalidKeySpecException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -217,7 +208,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
      */
     public void testInvalidKeySpecException08() {
         InvalidKeySpecException tE = new InvalidKeySpecException(null, tCause);
-        assertTrue(errNotExc, tE instanceof InvalidKeySpecException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -243,8 +233,6 @@ public class InvalidKeySpecExceptionTest extends PerformanceTest {
         InvalidKeySpecException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidKeySpecException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof InvalidKeySpecException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

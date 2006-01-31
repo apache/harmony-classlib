@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>DSAParameterSpec</code>
  * 
  */
-public class DSAParameterSpecTest extends PerformanceTest {
+public class DSAParameterSpecTest extends TestCase {
 
     /**
      * @see TestCase#setUp()

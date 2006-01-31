@@ -28,14 +28,14 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509ExtendedKeyManager;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>X509ExtendedKeyManager</code> class constructors and methods.
  * 
  */
-public class X509ExtendedKeyManagerTest extends PerformanceTest {
+public class X509ExtendedKeyManagerTest extends TestCase {
 
     public final void testChooseEngineClientAlias() {
         X509ExtendedKeyManager km = new MyX509ExtendedKeyManager();

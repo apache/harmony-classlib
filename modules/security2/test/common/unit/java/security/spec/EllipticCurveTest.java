@@ -24,14 +24,14 @@ package java.security.spec;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>EllipticCurve</code> class fields and methods.
  * 
  */
-public class EllipticCurveTest extends PerformanceTest {
+public class EllipticCurveTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -73,14 +73,14 @@ public class EllipticCurveTest extends PerformanceTest {
         BigInteger b = BigInteger.valueOf(19L);
         byte[] seed = new byte[24];
         // perform test case 1
-        EllipticCurve c = new EllipticCurve(f, a, b, seed);
+        new EllipticCurve(f, a, b, seed);
 
         // test case 2 parameters set
         ECFieldF2m f1 = new ECFieldF2m(5);
         a = BigInteger.ZERO;
         b = BigInteger.valueOf(23L);
         // perform test case 2
-        c = new EllipticCurve(f1, a, b, seed);
+        new EllipticCurve(f1, a, b, seed);
 
         // test case 3 parameters set,
         // the seed parameter may be null 
@@ -89,7 +89,7 @@ public class EllipticCurveTest extends PerformanceTest {
         b = BigInteger.valueOf(19L);
         seed = null;
         // perform test case 3
-        c = new EllipticCurve(f, a, b, seed);
+        new EllipticCurve(f, a, b, seed);
     }
 
     /**
@@ -101,22 +101,20 @@ public class EllipticCurveTest extends PerformanceTest {
      * Expected: must throw <code>NullPointerException</code>
      */
     public final void testEllipticCurveECFieldBigIntegerBigIntegerbyteArray02() {
-        boolean passed=false;
         // test case 1 parameters set
         ECFieldFp f = null;
         BigInteger a = BigInteger.ONE;
         BigInteger b = BigInteger.valueOf(19L);
         byte[] seed = new byte[24];
+
         // perform test case 1
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#1: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
-        passed=false;
+
         // test case 2 parameters set,
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = null;
@@ -124,28 +122,23 @@ public class EllipticCurveTest extends PerformanceTest {
         seed = new byte[24];
         // perform test case 2
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#2: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
 
         // test case 3 parameters set,
-        passed=false;
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = BigInteger.ONE;
         b = null;
         seed = new byte[24];
         // perform test case 2
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#3: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -159,69 +152,60 @@ public class EllipticCurveTest extends PerformanceTest {
      * Expected: must throw <code>IllegalArgumentException</code>
      */
     public final void testEllipticCurveECFieldBigIntegerBigIntegerbyteArray03() {
-        boolean passed=false;
         // test case 1 parameters set,
         // a is not in field
         ECFieldFp f = new ECFieldFp(BigInteger.valueOf(23L));
         BigInteger a = BigInteger.valueOf(24L);
         BigInteger b = BigInteger.valueOf(19L);
         byte[] seed = new byte[24];
+
         // perform test case 1
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#1: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
-        passed=false;
+
         // test case 1.1 parameters set,
         // b is not in field
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = BigInteger.valueOf(1L);
         b = BigInteger.valueOf(23L);
         seed = new byte[24];
-        // perform test case 1
+        // perform test case 1.1
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#1.1: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
         // test case 2 parameters set,
         // b is not in field
-        passed=false;
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = BigInteger.valueOf(19L);
         b = BigInteger.valueOf(24L);
         seed = new byte[24];
         // perform test case 2
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#2: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // test case 3 parameters set,
         // both a and b are not in field
-        passed=false;
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = BigInteger.valueOf(25L);
         b = BigInteger.valueOf(240L);
         seed = new byte[24];
         // perform test case 3
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#3: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -235,53 +219,48 @@ public class EllipticCurveTest extends PerformanceTest {
      * Expected: must throw <code>IllegalArgumentException</code>
      */
     public final void testEllipticCurveECFieldBigIntegerBigIntegerbyteArray04() {
-        boolean passed=false;
         // test case 1 parameters set,
         // a is not in field
         ECFieldF2m f = new ECFieldF2m(5);
         BigInteger a = BigInteger.valueOf(32L);
         BigInteger b = BigInteger.valueOf(19L);
         byte[] seed = new byte[24];
+
+
         // perform test case 1
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#1: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // test case 2 parameters set,
         // b is not in field
-        passed=false;
         f = new ECFieldF2m(5);
         a = BigInteger.valueOf(19L);
         b = BigInteger.valueOf(32L);
         seed = new byte[24];
         // perform test case 2
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#2: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // test case 3 parameters set,
         // both a and b are not in field
-        passed=false;
         f = new ECFieldF2m(5);
         a = BigInteger.valueOf(32L);
         b = BigInteger.valueOf(43L);
         seed = new byte[24];
         // perform test case 3
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b, seed);
+            new EllipticCurve(f, a, b, seed);
+            fail("#3: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -318,14 +297,14 @@ public class EllipticCurveTest extends PerformanceTest {
         BigInteger a = BigInteger.ONE;
         BigInteger b = BigInteger.valueOf(19L);
         // perform test case 1
-        EllipticCurve c = new EllipticCurve(f, a, b);
+        new EllipticCurve(f, a, b);
 
         // test case 2 parameters set
         ECFieldF2m f1 = new ECFieldF2m(5);
         a = BigInteger.ZERO;
         b = BigInteger.valueOf(23L);
         // perform test case 2
-        c = new EllipticCurve(f1, a, b);
+        new EllipticCurve(f1, a, b);
 
         // test case 3 parameters set,
         // the seed parameter may be null 
@@ -333,7 +312,7 @@ public class EllipticCurveTest extends PerformanceTest {
         a = BigInteger.ONE;
         b = BigInteger.valueOf(19L);
         // perform test case 3
-        c = new EllipticCurve(f, a, b);
+        new EllipticCurve(f, a, b);
     }
 
     /**
@@ -345,48 +324,41 @@ public class EllipticCurveTest extends PerformanceTest {
      * Expected: must throw <code>NullPointerException</code>
      */
     public final void testEllipticCurveECFieldBigIntegerBigInteger02() {
-        boolean passed=false;
         // test case 1 parameters set
         ECFieldFp f = null;
         BigInteger a = BigInteger.ONE;
         BigInteger b = BigInteger.valueOf(19L);
+
         // perform test case 1
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#1: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
-        passed=false;
+
         // test case 2 parameters set,
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = null;
         b = BigInteger.valueOf(19L);
         // perform test case 2
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#2: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
 
         // test case 3 parameters set,
-        passed=false;
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = BigInteger.ONE;
         b = null;
-        // perform test case 2
+        // perform test case 3
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#3: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -400,65 +372,57 @@ public class EllipticCurveTest extends PerformanceTest {
      * Expected: must throw <code>IllegalArgumentException</code>
      */
     public final void testEllipticCurveECFieldBigIntegerBigInteger03() {
-        boolean passed=false;
         // test case 1 parameters set,
         // a is not in field
         ECFieldFp f = new ECFieldFp(BigInteger.valueOf(23L));
         BigInteger a = BigInteger.valueOf(24L);
         BigInteger b = BigInteger.valueOf(19L);
+
         // perform test case 1
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#1: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
 
-        passed=false;
+
         // test case 1.1 parameters set,
         // a is not in field
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = BigInteger.valueOf(23L);
         b = BigInteger.valueOf(19L);
-        // perform test case 1
+        // perform test case 1.1
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#1.1: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // test case 2 parameters set,
         // b is not in field
-        passed=false;
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = BigInteger.valueOf(19L);
         b = BigInteger.valueOf(24L);
         // perform test case 2
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#2: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // test case 3 parameters set,
         // both a and b are not in field
-        passed=false;
         f = new ECFieldFp(BigInteger.valueOf(23L));
         a = BigInteger.valueOf(25L);
         b = BigInteger.valueOf(240L);
         // perform test case 3
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#3: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -472,7 +436,6 @@ public class EllipticCurveTest extends PerformanceTest {
      * Expected: must throw <code>IllegalArgumentException</code>
      */
     public final void testEllipticCurveECFieldBigIntegerBigInteger04() {
-        boolean passed=false;
         // test case 1 parameters set,
         // a is not in field
         ECFieldF2m f = new ECFieldF2m(5);
@@ -480,42 +443,36 @@ public class EllipticCurveTest extends PerformanceTest {
         BigInteger b = BigInteger.valueOf(19L);
         // perform test case 1
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#1: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // test case 2 parameters set,
         // b is not in field
-        passed=false;
         f = new ECFieldF2m(5);
         a = BigInteger.valueOf(19L);
         b = BigInteger.valueOf(32L);
         // perform test case 2
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#2: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // test case 3 parameters set,
         // both a and b are not in field
-        passed=false;
         f = new ECFieldF2m(5);
         a = BigInteger.valueOf(32L);
         b = BigInteger.valueOf(43L);
         // perform test case 3
         try {
-            EllipticCurve c = new EllipticCurve(f, a, b);
+            new EllipticCurve(f, a, b);
+            fail("#3: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed=true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -626,7 +583,7 @@ public class EllipticCurveTest extends PerformanceTest {
         BigInteger b = BigInteger.valueOf(19L);
         byte[] seed = new byte[24];
         EllipticCurve c = new EllipticCurve(f, a, b, seed);
-        byte[] seedRet = c.getSeed();
+        c.getSeed();
         assertNotSame(c.getSeed(), c.getSeed());
     }
 
@@ -775,7 +732,6 @@ public class EllipticCurveTest extends PerformanceTest {
                 BigInteger.valueOf(19L),
                 new byte[24]);
         hc = f.hashCode();
-        logln(getName() + ": " + hc);
         assertTrue(hc == f.hashCode() &&
                 hc == f.hashCode() &&
                 hc == f.hashCode() &&

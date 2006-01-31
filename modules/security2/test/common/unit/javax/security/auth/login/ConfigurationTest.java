@@ -26,13 +26,13 @@ import java.security.Security;
 
 import javax.security.auth.AuthPermission;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests Configuration class
  */
 
-public class ConfigurationTest extends PerformanceTest {
+public class ConfigurationTest extends TestCase {
 
 	/**
 	 * Easy the SecurityManager class

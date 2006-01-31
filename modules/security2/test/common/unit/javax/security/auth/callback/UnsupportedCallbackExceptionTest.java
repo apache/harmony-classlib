@@ -22,13 +22,13 @@
 package javax.security.auth.callback;
 
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests UnsupportedCallbackException class
  */
 
-public class UnsupportedCallbackExceptionTest extends PerformanceTest {
+public class UnsupportedCallbackExceptionTest extends TestCase {
 
     NameCallback nc = new NameCallback("prompt");
     

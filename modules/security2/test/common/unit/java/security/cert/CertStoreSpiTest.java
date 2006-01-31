@@ -24,7 +24,7 @@ package java.security.cert;
 
 import java.security.InvalidAlgorithmParameterException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -34,7 +34,7 @@ import junit.framework.TestSuite;
  * 
  */
 
-public class CertStoreSpiTest extends PerformanceTest {
+public class CertStoreSpiTest extends TestCase {
 
     /**
      * Constructor for CertStoreSpiTest.

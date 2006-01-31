@@ -23,7 +23,7 @@ package javax.net.ssl;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class SSLPeerUnverifiedExceptionTest extends PerformanceTest {
+public class SSLPeerUnverifiedExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -82,8 +82,6 @@ public class SSLPeerUnverifiedExceptionTest extends PerformanceTest {
         SSLPeerUnverifiedException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLPeerUnverifiedException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SSLPeerUnverifiedException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -103,7 +101,6 @@ public class SSLPeerUnverifiedExceptionTest extends PerformanceTest {
     public void testSSLPeerUnverifiedException02() {
         String msg = null;
         SSLPeerUnverifiedException tE = new SSLPeerUnverifiedException(msg);
-        assertTrue(errNotExc, tE instanceof SSLPeerUnverifiedException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

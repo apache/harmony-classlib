@@ -24,14 +24,14 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>DefaultSSLServerSocketFactory</code> class constructors and methods.
  *  
  */
-public class DefaultSSLServerSocketFactoryTest extends PerformanceTest {
+public class DefaultSSLServerSocketFactoryTest extends TestCase {
 
     /*
      * Class under test for ServerSocket createServerSocket(int)

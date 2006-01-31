@@ -23,7 +23,7 @@ package javax.net.ssl;
 
 import javax.net.ssl.SSLHandshakeException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class SSLHandshakeExceptionTest extends PerformanceTest {
+public class SSLHandshakeExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -82,8 +82,6 @@ public class SSLHandshakeExceptionTest extends PerformanceTest {
         SSLHandshakeException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLHandshakeException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SSLHandshakeException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -103,7 +101,6 @@ public class SSLHandshakeExceptionTest extends PerformanceTest {
     public void testSSLHandshakeException02() {
         String msg = null;
         SSLHandshakeException tE = new SSLHandshakeException(msg);
-        assertTrue(errNotExc, tE instanceof SSLHandshakeException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

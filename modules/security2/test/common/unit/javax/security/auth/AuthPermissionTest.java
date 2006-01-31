@@ -21,12 +21,12 @@
 
 package javax.security.auth;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests AuthPermission class
  */
-public class AuthPermissionTest extends PerformanceTest {
+public class AuthPermissionTest extends TestCase {
 
     private AuthPermission ap;
     private AuthPermission ap1;

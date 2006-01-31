@@ -33,7 +33,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.cert.MyCertificate;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 import java.util.Date;
 
@@ -43,7 +43,7 @@ import java.util.Date;
  * 
  */
 
-public class KeyStoreTest2 extends PerformanceTest {
+public class KeyStoreTest2 extends TestCase {
 
     private static final String KeyStoreProviderClass = "java.security.MyKeyStoreSpi";
 
@@ -153,32 +153,29 @@ public class KeyStoreTest2 extends PerformanceTest {
             fail("IOException must be thrown");
         } catch (IOException e) {
         }       
+
         KeyStore.LoadStoreParameter lParam = new MyLoadStoreParams(
                 new KeyStore.PasswordProtection(new char[0]));        
         try {
             keyS.store(null);
             fail("IOException must be thrown when param is null");
         } catch (IOException e) {
-        } catch (UnsupportedOperationException e) {
-            logln("store(null) throws UnsupportedOperationException, but expected IOException");
-        } catch (IllegalArgumentException e) {
-            logln("store(null) throws IllegalArgumentException, but expected IOException");            
         }
+
         try {
             keyS.load(null);
-            logln("load(null) does not throw any exception");
+            fail("load(null) does not throw any exception");
         } catch (IOException e) {
         }
+
         try {
             keyS.store(lParam);
             fail("UnsupportedOperationException must be thrown");
         } catch (UnsupportedOperationException e) {
         }
-        try {
-            keyS.load(lParam);
-        } catch (UnsupportedOperationException e) {
-            logln("load(LoadSroreParameter) throws UnsupportedOperationException");
-        }
+
+        keyS.load(lParam);
+
         assertFalse("Incorrect result of entryInstanceOf", keyS
                 .entryInstanceOf(alias, alias.getClass()));
     }
@@ -216,7 +213,7 @@ public class KeyStoreTest2 extends PerformanceTest {
         }
         MyCertificate mc = new MyCertificate("type", new byte[0]);
         try {
-            keyS.getCertificateAlias((Certificate) mc);
+            keyS.getCertificateAlias(mc);
             fail(eMsg);
         } catch (KeyStoreException e) {
         }
@@ -233,7 +230,7 @@ public class KeyStoreTest2 extends PerformanceTest {
         KeyStore.PasswordProtection pp = new KeyStore.PasswordProtection(
                 new char[0]);
         try {
-            keyS.getEntry(alias, (KeyStore.ProtectionParameter) pp);
+            keyS.getEntry(alias, pp);
             fail(eMsg);
         } catch (KeyStoreException e) {
         }
@@ -320,8 +317,6 @@ public class KeyStoreTest2 extends PerformanceTest {
         KeyStore keyS;
         for (int i = 0; i < validValues.length; i++) {
             keyS = KeyStore.getInstance(validValues[i]);
-            assertTrue("Not instanceof KeyStore object",
-                    keyS instanceof KeyStore);
             assertEquals("Incorrect type", keyS.getType(), validValues[i]);
             assertEquals("Incorrect provider", keyS.getProvider(), mProv);
             checkKeyStoreException(keyS);
@@ -379,8 +374,6 @@ public class KeyStoreTest2 extends PerformanceTest {
         KeyStore keyS;
         for (int i = 0; i < validValues.length; i++) {
             keyS = KeyStore.getInstance(validValues[i], mProv.getName());
-            assertTrue("Not instanceof KeyStore object",
-                    keyS instanceof KeyStore);
             assertEquals("Incorrect type", keyS.getType(), validValues[i]);
             assertEquals("Incorrect provider", keyS.getProvider().getName(),
                     mProv.getName());
@@ -428,8 +421,6 @@ public class KeyStoreTest2 extends PerformanceTest {
         KeyStore keyS;
         for (int i = 0; i < validValues.length; i++) {
             keyS = KeyStore.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof KeyStore object",
-                    keyS instanceof KeyStore);
             assertEquals("Incorrect type", keyS.getType(), validValues[i]);
             assertEquals("Incorrect provider", keyS.getProvider(), mProv);
             checkKeyStoreException(keyS);

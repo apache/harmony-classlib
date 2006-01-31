@@ -26,14 +26,14 @@ import java.security.cert.Certificate;
 
 import javax.security.cert.X509Certificate;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SSLSessionBindingEvent</code> class constructors and methods.
  * 
  */
-public class SSLSessionBindingEventTest extends PerformanceTest {
+public class SSLSessionBindingEventTest extends TestCase {
 
     public final void testSSLSessionBindingEvent() {
         SSLSession ses = new MySSLSession();

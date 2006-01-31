@@ -27,7 +27,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class ExemptionMechanismSpiTests extends PerformanceTest {
+public class ExemptionMechanismSpiTests extends TestCase {
     /**
      * Constructor for ExemptionMechanismSpiTests.
      * 

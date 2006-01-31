@@ -21,14 +21,14 @@
 
 package java.security.cert;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>java.security.cert.LDAPCertStoreParameters</code>
  * fields and methods
  * 
  */
-public class LDAPCertStoreParametersTest extends PerformanceTest {
+public class LDAPCertStoreParametersTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -65,7 +65,6 @@ public class LDAPCertStoreParametersTest extends PerformanceTest {
         CertStoreParameters cp = new LDAPCertStoreParameters();
         assertTrue("isLDAPCertStoreParameters",
                 cp instanceof LDAPCertStoreParameters);
-        assertTrue("isCloneable", cp instanceof Cloneable);
     }
 
     /**
@@ -88,7 +87,6 @@ public class LDAPCertStoreParametersTest extends PerformanceTest {
         CertStoreParameters cp = new LDAPCertStoreParameters("myhost");
         assertTrue("isLDAPCertStoreParameters",
                 cp instanceof LDAPCertStoreParameters);
-        assertTrue("isCloneable", cp instanceof Cloneable);
     }
 
     /**
@@ -109,16 +107,11 @@ public class LDAPCertStoreParametersTest extends PerformanceTest {
      * if <code>serverName</code> is <code>null</code>
      */
     public final void testLDAPCertStoreParametersString03() {
-        boolean npeHasBeenThrown = false;
         try {
-            LDAPCertStoreParameters cp = new LDAPCertStoreParameters(null);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new LDAPCertStoreParameters(null);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -130,7 +123,6 @@ public class LDAPCertStoreParametersTest extends PerformanceTest {
         CertStoreParameters cp = new LDAPCertStoreParameters("myhost", 1098);
         assertTrue("isLDAPCertStoreParameters",
                 cp instanceof LDAPCertStoreParameters);
-        assertTrue("isCloneable", cp instanceof Cloneable);
     }
 
     /**
@@ -153,16 +145,11 @@ public class LDAPCertStoreParametersTest extends PerformanceTest {
      * if <code>serverName</code> is <code>null</code>
      */
     public final void testLDAPCertStoreParametersStringint03() {
-        boolean npeHasBeenThrown = false;
         try {
-            LDAPCertStoreParameters cp = new LDAPCertStoreParameters(null, 0);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new LDAPCertStoreParameters(null, 0);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -187,9 +174,8 @@ public class LDAPCertStoreParametersTest extends PerformanceTest {
     public final void testToString() {
         LDAPCertStoreParameters cp1 =
             new LDAPCertStoreParameters("myhost", 1101);
-        String rep = cp1.toString();
-        logln(getName() + ": " + rep);
-        assertTrue(rep != null);
+
+        assertNotNull(cp1.toString());
     }
 
     /**

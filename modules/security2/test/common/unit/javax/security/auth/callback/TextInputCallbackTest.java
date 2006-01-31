@@ -21,13 +21,13 @@
 
 package javax.security.auth.callback;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests TextInputCallback class
  */
 
-public class TextInputCallbackTest extends PerformanceTest {
+public class TextInputCallbackTest extends TestCase {
 
     TextInputCallback text = null;
 

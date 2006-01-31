@@ -28,14 +28,14 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.login.LoginException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.x.security.auth.module.UnixLoginModule;
 
 
 /**
  * Unit test for UnixLoginModule
  */
-public class UnixLoginModuleTest extends PerformanceTest {
+public class UnixLoginModuleTest extends TestCase {
 
     /**
      * Standalone entry point.

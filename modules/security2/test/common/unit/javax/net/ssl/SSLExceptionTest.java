@@ -23,14 +23,14 @@ package javax.net.ssl;
 
 import javax.net.ssl.SSLException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SSLException</code> class constructors and methods.
  * 
  */
-public class SSLExceptionTest extends PerformanceTest {
+public class SSLExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -81,8 +81,6 @@ public class SSLExceptionTest extends PerformanceTest {
         SSLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SSLException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -101,7 +99,6 @@ public class SSLExceptionTest extends PerformanceTest {
     public void testSSLException02() {
         String msg = null;
         SSLException tE = new SSLException(msg);
-        assertTrue(errNotExc, tE instanceof SSLException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -118,7 +115,6 @@ public class SSLExceptionTest extends PerformanceTest {
     public void testSSLException03() {
         Throwable cause = null;
         SSLException tE = new SSLException(cause);
-        assertTrue(errNotExc, tE instanceof SSLException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -134,7 +130,6 @@ public class SSLExceptionTest extends PerformanceTest {
      */
     public void testSSLException04() {
         SSLException tE = new SSLException(tCause);
-        assertTrue(errNotExc, tE instanceof SSLException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -162,7 +157,6 @@ public class SSLExceptionTest extends PerformanceTest {
      */
     public void testSSLException05() {
         SSLException tE = new SSLException(null, null);
-        assertTrue(errNotExc, tE instanceof SSLException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -181,8 +175,6 @@ public class SSLExceptionTest extends PerformanceTest {
         SSLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SSLException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -201,7 +193,6 @@ public class SSLExceptionTest extends PerformanceTest {
      */
     public void testSSLException07() {
         SSLException tE = new SSLException(null, tCause);
-        assertTrue(errNotExc, tE instanceof SSLException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -231,8 +222,6 @@ public class SSLExceptionTest extends PerformanceTest {
         SSLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SSLException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

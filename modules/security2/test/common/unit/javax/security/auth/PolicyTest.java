@@ -33,14 +33,14 @@ import java.security.Security;
 import java.security.cert.Certificate;
 import java.util.Enumeration;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.test.SecurityChecker;
 
 
 /**
  * Tests Policy class
  */
-public class PolicyTest extends PerformanceTest {
+public class PolicyTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(PolicyTest.class);

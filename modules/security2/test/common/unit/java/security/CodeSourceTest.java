@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.TestCertUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -44,7 +44,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CodeSourceTest extends PerformanceTest {
+public class CodeSourceTest extends TestCase {
     /**
      * 
      * Entry point for standalone runs.

@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.test.TestUtils;
 
 
@@ -39,7 +39,7 @@ import org.apache.harmony.security.test.TestUtils;
  * Tests for <code>Provider</code> constructor and methods
  * 
  */
-public class ProviderTest extends PerformanceTest {
+public class ProviderTest extends TestCase {
 
     Provider p;
     

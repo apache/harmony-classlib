@@ -21,14 +21,14 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>UnrecoverableEntryException</code> class
  * 
  */
 
-public class UnrecoverableEntryExceptionTest extends PerformanceTest {
+public class UnrecoverableEntryExceptionTest extends TestCase {
 
     /**
      * Constructor for UnrecoverableEntryExceptionTest.

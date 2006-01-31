@@ -25,7 +25,7 @@ package java.security;
 import java.security.cert.Certificate;
 
 import org.apache.harmony.security.cert.MyCertificate;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -35,7 +35,7 @@ import junit.framework.TestSuite;
  * 
  */
 
-public class KSPrivateKeyEntryTest extends PerformanceTest {
+public class KSPrivateKeyEntryTest extends TestCase {
 
     /**
      * Constructor for KSPrivateKeyEntryTest.
@@ -65,7 +65,7 @@ public class KSPrivateKeyEntryTest extends PerformanceTest {
      * Assertion: throws NullPointerException when privateKey is null
      */
     public void testPrivateKeyEntry01() {
-        Certificate[] certs = (Certificate[]) new MyCertificate[1];//new Certificate[1];
+        Certificate[] certs = new MyCertificate[1];//new Certificate[1];
         PrivateKey pk = null;
         try {
             new KeyStore.PrivateKeyEntry(pk, certs);
@@ -133,8 +133,6 @@ public class KSPrivateKeyEntryTest extends PerformanceTest {
         createParams(false, false);
         KeyStore.PrivateKeyEntry ksPKE = new KeyStore.PrivateKeyEntry(
                 testPrivateKey, testChain);
-        assertTrue("Not KeyStore.PrivateKeyEntry object",
-                ksPKE instanceof KeyStore.PrivateKeyEntry);
         assertEquals("Incorrect PrivateKey", testPrivateKey, ksPKE
                 .getPrivateKey());
     }
@@ -147,8 +145,6 @@ public class KSPrivateKeyEntryTest extends PerformanceTest {
         createParams(false, false);
         KeyStore.PrivateKeyEntry ksPKE = new KeyStore.PrivateKeyEntry(
                 testPrivateKey, testChain);
-        assertTrue("Not KeyStore.PrivateKeyEntry object",
-                ksPKE instanceof KeyStore.PrivateKeyEntry);
         Certificate[] res = ksPKE.getCertificateChain();
         assertEquals("Incorrect chain length", testChain.length, res.length);
         for (int i = 0; i < res.length; i++) {
@@ -165,8 +161,6 @@ public class KSPrivateKeyEntryTest extends PerformanceTest {
         createParams(false, false);
         KeyStore.PrivateKeyEntry ksPKE = new KeyStore.PrivateKeyEntry(
                 testPrivateKey, testChain);
-        assertTrue("Not KeyStore.PrivateKeyEntry object",
-                ksPKE instanceof KeyStore.PrivateKeyEntry);
         Certificate res = ksPKE.getCertificate();
         assertEquals("Incorrect end certificate (number 0)", testChain[0], res);
     }
@@ -179,11 +173,8 @@ public class KSPrivateKeyEntryTest extends PerformanceTest {
         createParams(false, false);
         KeyStore.PrivateKeyEntry ksPKE = new KeyStore.PrivateKeyEntry(
                 testPrivateKey, testChain);
-        assertTrue("Not KeyStore.PrivateKeyEntry object",
-                ksPKE instanceof KeyStore.PrivateKeyEntry);
         String res = ksPKE.toString();
         assertNotNull("toString() returns null", res);
-        logln(res);
     }
 
     public static Test suite() {

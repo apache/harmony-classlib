@@ -23,14 +23,14 @@ package java.security;
 
 import java.security.spec.InvalidKeySpecException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for fields and methods of class <code>KeyPair</code>
  * 
  */
-public class KeyPairTest extends PerformanceTest {
+public class KeyPairTest extends TestCase {
 
     private static class TestKeyPair {
         static PublicKey getPublic() {

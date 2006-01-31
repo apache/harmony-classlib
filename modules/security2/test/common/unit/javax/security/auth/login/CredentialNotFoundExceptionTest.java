@@ -21,13 +21,13 @@
 
 package javax.security.auth.login;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests CredentialNotFoundException class
  */
 
-public class CredentialNotFoundExceptionTest extends PerformanceTest {
+public class CredentialNotFoundExceptionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(CredentialNotFoundExceptionTest.class);

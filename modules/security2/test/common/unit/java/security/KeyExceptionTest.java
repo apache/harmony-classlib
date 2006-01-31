@@ -23,14 +23,14 @@ package java.security;
 
 import java.security.KeyException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>KeyException</code> class constructors and methods.
  * 
  */
-public class KeyExceptionTest extends PerformanceTest {
+public class KeyExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class KeyExceptionTest extends PerformanceTest {
      */
     public void testKeyException01() {
         KeyException tE = new KeyException();
-        assertTrue(errNotExc, tE instanceof KeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class KeyExceptionTest extends PerformanceTest {
         KeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -117,7 +114,6 @@ public class KeyExceptionTest extends PerformanceTest {
     public void testKeyException03() {
         String msg = null;
         KeyException tE = new KeyException(msg);
-        assertTrue(errNotExc, tE instanceof KeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -134,7 +130,6 @@ public class KeyExceptionTest extends PerformanceTest {
     public void testKeyException04() {
         Throwable cause = null;
         KeyException tE = new KeyException(cause);
-        assertTrue(errNotExc, tE instanceof KeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -150,7 +145,6 @@ public class KeyExceptionTest extends PerformanceTest {
      */
     public void testKeyException05() {
         KeyException tE = new KeyException(tCause);
-        assertTrue(errNotExc, tE instanceof KeyException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -174,7 +168,6 @@ public class KeyExceptionTest extends PerformanceTest {
      */
     public void testKeyException06() {
         KeyException tE = new KeyException(null, null);
-        assertTrue(errNotExc, tE instanceof KeyException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -193,8 +186,6 @@ public class KeyExceptionTest extends PerformanceTest {
         KeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -213,7 +204,6 @@ public class KeyExceptionTest extends PerformanceTest {
      */
     public void testKeyException08() {
         KeyException tE = new KeyException(null, tCause);
-        assertTrue(errNotExc, tE instanceof KeyException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -239,8 +229,6 @@ public class KeyExceptionTest extends PerformanceTest {
         KeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

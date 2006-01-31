@@ -24,7 +24,7 @@ package java.security;
 
 import java.security.spec.AlgorithmParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -33,7 +33,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class AlgorithmParameterGeneratorSpiTests extends PerformanceTest {
+public class AlgorithmParameterGeneratorSpiTests extends TestCase {
 
     /**
      * Constructor for CertPathBuilderTests.

@@ -23,14 +23,14 @@ package javax.security.cert;
 
 import javax.security.cert.CertificateEncodingException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>DigestException</code> class constructors and methods.
  * 
  */
-public class CertificateEncodingExceptionTest extends PerformanceTest {
+public class CertificateEncodingExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
      */
     public void testCertificateEncodingException01() {
         CertificateEncodingException tE = new CertificateEncodingException();
-        assertTrue(errNotExc, tE instanceof CertificateEncodingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
         CertificateEncodingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateEncodingException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateEncodingException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -118,7 +115,6 @@ public class CertificateEncodingExceptionTest extends PerformanceTest {
     public void testCertificateEncodingException03() {
         String msg = null;
         CertificateEncodingException tE = new CertificateEncodingException(msg);
-        assertTrue(errNotExc, tE instanceof CertificateEncodingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

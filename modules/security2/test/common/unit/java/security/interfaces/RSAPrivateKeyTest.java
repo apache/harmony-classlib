@@ -25,13 +25,13 @@ package java.security.interfaces;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>RSAPrivateKey</code> class field
  * 
  */
-public class RSAPrivateKeyTest extends PerformanceTest {
+public class RSAPrivateKeyTest extends TestCase {
 
     /**
      * Constructor for RSAPrivateKeyTest.

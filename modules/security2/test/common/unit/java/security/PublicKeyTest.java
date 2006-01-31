@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.PublicKey;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class PublicKeyTest extends PerformanceTest {
+public class PublicKeyTest extends TestCase {
 
 
     /**

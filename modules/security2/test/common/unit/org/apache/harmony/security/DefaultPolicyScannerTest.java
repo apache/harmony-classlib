@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.security.DefaultPolicyScanner;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -39,7 +39,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class DefaultPolicyScannerTest extends PerformanceTest {
+public class DefaultPolicyScannerTest extends TestCase {
     
     public static void main(String[] args) {
         junit.textui.TestRunner.run(DefaultPolicyScannerTest.class);

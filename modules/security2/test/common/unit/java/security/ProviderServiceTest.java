@@ -23,14 +23,14 @@ package java.security;
 
 import java.util.HashMap;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>Provider.Service</code> constructor and methods
  * 
  */
-public class ProviderServiceTest extends PerformanceTest {
+public class ProviderServiceTest extends TestCase {
 
 	public void testService() {
 		Provider p = new MyProvider();

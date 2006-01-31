@@ -25,14 +25,14 @@ import java.util.Collection;
 import java.util.Vector;
 
 import org.apache.harmony.security.cert.MyCertificate;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>CollectionCertStoreParameters</code>
  * 
  */
-public class CollectionCertStoreParametersTest extends PerformanceTest {
+public class CollectionCertStoreParametersTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -69,7 +69,6 @@ public class CollectionCertStoreParametersTest extends PerformanceTest {
         CertStoreParameters cp = new CollectionCertStoreParameters();
         assertTrue("isCollectionCertStoreParameters",
                 cp instanceof CollectionCertStoreParameters);
-        assertTrue("isCloneable", cp instanceof Cloneable);
     }
 
     /**
@@ -81,16 +80,14 @@ public class CollectionCertStoreParametersTest extends PerformanceTest {
         CollectionCertStoreParameters cp = new CollectionCertStoreParameters();
         Collection c = cp.getCollection();
         assertTrue("isEmpty", c.isEmpty());
+
         // check that empty collection is immutable
-        boolean xHasBeenThrown = false;
         try {
             // try to modify it
             c.add(new Object());
+            fail("empty collection must be immutable");
         } catch (Exception e) {
-            xHasBeenThrown = true;
-            logln(getName() + ": " + e);
         }
-        assertTrue("isImmutable", xHasBeenThrown);
     }
 
     /**
@@ -101,10 +98,7 @@ public class CollectionCertStoreParametersTest extends PerformanceTest {
     public final void testCollectionCertStoreParametersCollection01() {
         Vector certificates = new Vector();
         certificates.add(new MyCertificate("TEST", new byte[] {}));
-        CollectionCertStoreParameters cp =
-            new CollectionCertStoreParameters(certificates);
-        assertTrue("isCertStoreParameters", cp instanceof CertStoreParameters);
-        assertTrue("isCloneable", cp instanceof Cloneable);
+        new CollectionCertStoreParameters(certificates);
     }
 
     /**
@@ -120,8 +114,7 @@ public class CollectionCertStoreParametersTest extends PerformanceTest {
         // a Certificate or CRL
         Vector certificates = new Vector();
         certificates.add(new String("Not a Certificate"));
-        CollectionCertStoreParameters cp =
-            new CollectionCertStoreParameters(certificates);
+        new CollectionCertStoreParameters(certificates);
     }
 
     /**
@@ -156,17 +149,11 @@ public class CollectionCertStoreParametersTest extends PerformanceTest {
      * <code>collection</code> is <code>null</code> 
      */
     public final void testCollectionCertStoreParametersCollection04() {
-        boolean npeHasBeenThrown = false;
         try {
-            CollectionCertStoreParameters cp =
-                new CollectionCertStoreParameters(null);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new CollectionCertStoreParameters(null);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -225,7 +212,6 @@ public class CollectionCertStoreParametersTest extends PerformanceTest {
         CollectionCertStoreParameters cp =
             new CollectionCertStoreParameters();
         String s = cp.toString();
-        logln(getName() + ": " + s);
         assertTrue(s != null);
     }
 
@@ -238,9 +224,8 @@ public class CollectionCertStoreParametersTest extends PerformanceTest {
         certificates.add(new MyCertificate("TEST", new byte[] {(byte)4}));
         CollectionCertStoreParameters cp =
             new CollectionCertStoreParameters(certificates);
-        String s = cp.toString();
-        logln(getName() + ": " + s);
-        assertTrue(s != null);
+
+        assertNotNull(cp.toString());
     }
 
     /**

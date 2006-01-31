@@ -24,14 +24,14 @@ package java.security;
 
 import javax.crypto.SecretKey;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyStore.SecretKeyEntry</code> class constructor and methods 
  * 
  */
 
-public class KSSecretKeyEntryTest extends PerformanceTest {
+public class KSSecretKeyEntryTest extends TestCase {
 
     /**
      * Constructor for KSSecretKeyTest.
@@ -60,7 +60,6 @@ public class KSSecretKeyEntryTest extends PerformanceTest {
     public void testGetSecretKey() {
         SecretKey sk = new tmpSecretKey();
         KeyStore.SecretKeyEntry ske = new KeyStore.SecretKeyEntry(sk);
-        assertTrue("Not KeyStore.SecretKeyEntry object", ske instanceof KeyStore.SecretKeyEntry);
         assertEquals("Incorrect SecretKey", sk, ske.getSecretKey());
     }
    
@@ -71,9 +70,7 @@ public class KSSecretKeyEntryTest extends PerformanceTest {
     public void testToString() {
         SecretKey sk = new tmpSecretKey();
         KeyStore.SecretKeyEntry ske = new KeyStore.SecretKeyEntry(sk);
-        assertTrue("Not KeyStore.SecretKeyEntry object", ske instanceof KeyStore.SecretKeyEntry);
         assertNotNull("toString() returns null string", ske.toString());
-        logln(ske.toString());        
     }
 }
 

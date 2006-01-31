@@ -26,7 +26,7 @@ import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
 import java.security.cert.Certificate;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -34,7 +34,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class SecureClassLoaderTest extends PerformanceTest {
+public class SecureClassLoaderTest extends TestCase {
     /**
      * Entry point for stand alone runs.
      * 

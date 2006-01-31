@@ -22,13 +22,13 @@
 package javax.security.auth.callback;
 
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests PasswordCallback class
  */
 
-public class PasswordCallbackTest extends PerformanceTest {
+public class PasswordCallbackTest extends TestCase {
 
     PasswordCallback pc;
     

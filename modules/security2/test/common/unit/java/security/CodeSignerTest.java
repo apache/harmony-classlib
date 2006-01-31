@@ -25,14 +25,14 @@ import java.security.cert.CertPath;
 import java.util.Date;
 
 import org.apache.harmony.security.TestCertUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Unit test for CodeSigner. 
  */
 
-public class CodeSignerTest extends PerformanceTest {
+public class CodeSignerTest extends TestCase {
 
     /**
      * Entry point for standalone runs.

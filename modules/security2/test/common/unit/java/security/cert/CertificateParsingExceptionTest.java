@@ -23,7 +23,7 @@ package java.security.cert;
 
 import java.security.cert.CertificateParsingException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class CertificateParsingExceptionTest extends PerformanceTest {
+public class CertificateParsingExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      */
     public void testCertificateParsingException01() {
         CertificateParsingException tE = new CertificateParsingException();
-        assertTrue(errNotExc, tE instanceof CertificateParsingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
         CertificateParsingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateParsingException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateParsingException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
     public void testCertificateParsingException03() {
         String msg = null;
         CertificateParsingException tE = new CertificateParsingException(msg);
-        assertTrue(errNotExc, tE instanceof CertificateParsingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -137,7 +133,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
     public void testCertificateParsingException04() {
         Throwable cause = null;
         CertificateParsingException tE = new CertificateParsingException(cause);
-        assertTrue(errNotExc, tE instanceof CertificateParsingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -154,7 +149,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
      */
     public void testCertificateParsingException05() {
         CertificateParsingException tE = new CertificateParsingException(tCause);
-        assertTrue(errNotExc, tE instanceof CertificateParsingException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -179,7 +173,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
     public void testCertificateParsingException06() {
         CertificateParsingException tE = new CertificateParsingException(null,
                 null);
-        assertTrue(errNotExc, tE instanceof CertificateParsingException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -198,8 +191,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
         CertificateParsingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateParsingException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateParsingException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -219,7 +210,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
     public void testCertificateParsingException08() {
         CertificateParsingException tE = new CertificateParsingException(null,
                 tCause);
-        assertTrue(errNotExc, tE instanceof CertificateParsingException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -245,8 +235,6 @@ public class CertificateParsingExceptionTest extends PerformanceTest {
         CertificateParsingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateParsingException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateParsingException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

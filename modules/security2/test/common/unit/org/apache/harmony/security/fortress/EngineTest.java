@@ -27,14 +27,14 @@ import java.security.Security;
 
 import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.fortress.Services;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  *
  * Tests for Engine
  */
-public class EngineTest extends PerformanceTest {
+public class EngineTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		super.tearDown();

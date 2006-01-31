@@ -26,14 +26,14 @@ package java.security;
 import org.apache.harmony.security.CertificateStub;
 import org.apache.harmony.security.IdentityStub;
 import org.apache.harmony.security.PublicKeyStub;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for class Identity
  * 
  */
 
-public class IdentityTest extends PerformanceTest {
+public class IdentityTest extends TestCase {
 
     public static class MySecurityManager extends SecurityManager {
         public Permissions denied = new Permissions(); 
@@ -113,8 +113,8 @@ public class IdentityTest extends PerformanceTest {
      */
     public void testToString2() {    
         assertNotNull(new IdentityStub("testToString2").toString());
-        logln(new IdentityStub("testToString2").toString());
     }
+
     /**
      * verify Identity() creates instance
      */
@@ -306,10 +306,10 @@ public class IdentityTest extends PerformanceTest {
      * verify Identity.toString(boolean) return string represenation of identity
      */
     public void testToStringboolean() throws Exception {
-        logln(new IdentityStub("aaa").toString(false));
-        logln(new IdentityStub("aaa2", IdentityScope.getSystemScope()).toString(false));
-        logln(new IdentityStub("bbb").toString(true));
-        logln(new IdentityStub("bbb2", IdentityScope.getSystemScope()).toString(true));
+        new IdentityStub("aaa").toString(false);
+        new IdentityStub("aaa2", IdentityScope.getSystemScope()).toString(false);
+        new IdentityStub("bbb").toString(true);
+        new IdentityStub("bbb2", IdentityScope.getSystemScope()).toString(true);
     }
 
     /**
@@ -319,8 +319,6 @@ public class IdentityTest extends PerformanceTest {
        Identity i = new IdentityStub("testGetScope");
        assertNull(i.getScope());
        IdentityScope s = IdentityScope.getSystemScope();
-//       s.addIdentity(i);
-//       assertSame(s, i.getScope());
        
        Identity i2 = new IdentityStub("testGetScope2", s);
        assertSame(s, i2.getScope());
@@ -351,7 +349,7 @@ public class IdentityTest extends PerformanceTest {
      */
     public void testSetPublicKey2() throws Exception {
         Identity i2 = new IdentityStub("testSetPublicKey2_2", IdentityScope.getSystemScope());
-        PublicKey pk = new PublicKeyStub("kkk", "testSetPublicKey2", new byte[]{1,2,3,4,5});
+        new PublicKeyStub("kkk", "testSetPublicKey2", new byte[]{1,2,3,4,5});
         try {
             i2.setPublicKey(null);
             //fail("KeyManagementException should be thrown - key is null");            
@@ -430,8 +428,6 @@ public class IdentityTest extends PerformanceTest {
     public void testGetInfo() {
         
         Identity i = new IdentityStub("testGetInfo");
-        //assertNull(i.getInfo());
-        logln("testGetInfo: "+i.getInfo());
         i.setInfo("some info");
         assertEquals("some info", i.getInfo());
     }

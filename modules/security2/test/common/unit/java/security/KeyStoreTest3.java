@@ -31,7 +31,7 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -39,7 +39,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyStoreTest3 extends PerformanceTest {
+public class KeyStoreTest3 extends TestCase {
 
     private static final String KeyStoreProviderClass = "java.security.MyKeyStore";
 
@@ -159,11 +159,13 @@ public class KeyStoreTest3 extends PerformanceTest {
             } catch (IOException e) {
             } catch (NullPointerException e) {
             }
+
             try {
                 kss[i].store(bos, null);
-                logln("store(...) does not throw any exception when password is null");
+                fail("store(...) does not throw any exception when password is null");
             } catch (IOException e) {
             }
+
             kss[i].store(bos, pwd);
             ByteArrayInputStream bis = new ByteArrayInputStream(bos
                     .toByteArray());

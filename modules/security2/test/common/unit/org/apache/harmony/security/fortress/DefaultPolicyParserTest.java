@@ -33,7 +33,7 @@ import java.util.Iterator;
 
 import org.apache.harmony.security.PolicyEntry;
 import org.apache.harmony.security.fortress.DefaultPolicyParser;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -41,7 +41,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class DefaultPolicyParserTest extends PerformanceTest {
+public class DefaultPolicyParserTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(DefaultPolicyParserTest.class);

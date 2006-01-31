@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.InvalidParameterException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class InvalidParameterExceptionTest extends PerformanceTest {
+public class InvalidParameterExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class InvalidParameterExceptionTest extends PerformanceTest {
      */
     public void testInvalidParameterException01() {
         InvalidParameterException tE = new InvalidParameterException();
-        assertTrue(errNotExc, tE instanceof InvalidParameterException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class InvalidParameterExceptionTest extends PerformanceTest {
         InvalidParameterException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new InvalidParameterException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof InvalidParameterException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class InvalidParameterExceptionTest extends PerformanceTest {
     public void testInvalidParameterException03() {
         String msg = null;
         InvalidParameterException tE = new InvalidParameterException(msg);
-        assertTrue(errNotExc, tE instanceof InvalidParameterException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

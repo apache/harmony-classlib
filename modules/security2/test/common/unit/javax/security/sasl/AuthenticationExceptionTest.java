@@ -21,13 +21,13 @@
 
 package javax.security.sasl;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for constructors and methods of AuthenticationException class
  * 
  */
-public class AuthenticationExceptionTest extends PerformanceTest {
+public class AuthenticationExceptionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AuthenticationExceptionTest.class);

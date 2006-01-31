@@ -23,7 +23,7 @@ package java.security.cert;
 
 import java.security.cert.CertPathBuilderException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class CertPathBuilderExceptionTest extends PerformanceTest {
+public class CertPathBuilderExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      */
     public void testCertPathBuilderException01() {
         CertPathBuilderException tE = new CertPathBuilderException();
-        assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
         CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathBuilderException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertPathBuilderException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
     public void testCertPathBuilderException03() {
         String msg = null;
         CertPathBuilderException tE = new CertPathBuilderException(msg);
-        assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -137,7 +133,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
     public void testCertPathBuilderException04() {
         Throwable cause = null;
         CertPathBuilderException tE = new CertPathBuilderException(cause);
-        assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -154,7 +149,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      */
     public void testCertPathBuilderException05() {
         CertPathBuilderException tE = new CertPathBuilderException(tCause);
-        assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -178,7 +172,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      */
     public void testCertPathBuilderException06() {
         CertPathBuilderException tE = new CertPathBuilderException(null, null);
-        assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -197,8 +190,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
         CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathBuilderException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertPathBuilderException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -217,7 +208,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
      */
     public void testCertPathBuilderException08() {
         CertPathBuilderException tE = new CertPathBuilderException(null, tCause);
-        assertTrue(errNotExc, tE instanceof CertPathBuilderException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -243,8 +233,6 @@ public class CertPathBuilderExceptionTest extends PerformanceTest {
         CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathBuilderException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertPathBuilderException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

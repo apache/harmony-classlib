@@ -21,14 +21,14 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>BasicPermission</code>
  * 
  */
 
-public class BasicPermissionTest extends PerformanceTest {
+public class BasicPermissionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(BasicPermissionTest.class);

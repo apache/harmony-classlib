@@ -33,14 +33,14 @@ import javax.security.auth.DestroyFailedException;
 
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.TestKeyPair;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyStore</code> constructor and methods
  * 
  */
 
-public class KeyStoreTest1 extends PerformanceTest {
+public class KeyStoreTest1 extends TestCase {
     
     public static final String srvKeyStore = "KeyStore";
     public static String[] validValues =  {
@@ -156,7 +156,6 @@ public class KeyStoreTest1 extends PerformanceTest {
         KeyStore ks;
         for (int i = 0; i < validValues.length; i++) {
             ks = KeyStore.getInstance(validValues[i]);
-            assertTrue("Not KeyStore object", ks instanceof KeyStore);
             assertEquals("Incorrect type", ks.getType(), validValues[i]);
         }
     }
@@ -251,7 +250,6 @@ public class KeyStoreTest1 extends PerformanceTest {
         KeyStore ks;
         for (int i = 0; i < validValues.length; i++) {
             ks = KeyStore.getInstance(validValues[i], defaultProviderName);
-            assertTrue("Not KeyStore object", ks instanceof KeyStore);
             assertEquals("Incorrect type", ks.getType(), validValues[i]);
             assertEquals("Incorrect provider", ks.getProvider().getName(),
                     defaultProviderName);
@@ -320,7 +318,6 @@ public class KeyStoreTest1 extends PerformanceTest {
         KeyStore ks;
         for (int i = 0; i < validValues.length; i++) {
             ks = KeyStore.getInstance(validValues[i], defaultProvider);
-            assertTrue("not KeyStore object", ks instanceof KeyStore);
             assertEquals("Incorrect type", ks.getType(), validValues[i]);
             assertEquals("Incorrect provider", ks.getProvider(),
                     defaultProvider);
@@ -660,26 +657,19 @@ public class KeyStoreTest1 extends PerformanceTest {
                 kss[i].setEntry("ZZZ", pKey, pPath);
                 fail("KeyStoreException should be thrown because password is destroyed");
             } catch (KeyStoreException e) {
-            } catch (IllegalStateException e) {
-                logln("testEntry02: setEntry(..) throws IllegalStateException instead of "
-                        + "KeyStoreException for destroyed password");
             }
+
             for (int j = 0; j < aliases.length; j++) {
                 try {
                     kss[i].getEntry(aliases[j], pPath);
                     fail("KeyStoreException should be thrown because password is destroyed");
                 } catch (KeyStoreException e) {
-                } catch (IllegalStateException e) {
-                    logln("testEntry02: getEntry(..) throws IllegalStateExceptioninstead of "
-                            +"KeyStoreException for destroyed password");
                 }
+
                 try {
                     kss[i].getEntry(aliases[j], pPar);
                     fail("UnrecoverableEntryExceptionn should be thrown");
                 } catch (UnrecoverableEntryException e) {
-                } catch (UnsupportedOperationException e) {
-                    logln("testEntry02: getEntry(..) throws UnsupportedOperationException, "
-                            + "but expected UnrecoverableEntryException");
                 }
             }
         }
@@ -727,11 +717,11 @@ public class KeyStoreTest1 extends PerformanceTest {
                 try {
                     kss[i].setEntry(aliases[j], sKey, pPath);
                 } catch (KeyStoreException e) {
-                	logln("testEntry03: non-PrivateKeys not supported.");
-                	return;
+                    //logln("testEntry03: non-PrivateKeys not supported.");
+                    return;
                 }
             }
-            KeyStore.Entry en;
+
             for (int j = 0; j < aliases.length; j++)  {            
                 assertTrue("Incorrect alias", kss[i].containsAlias(aliases[j]));
                 assertTrue("Not KeyEntry", kss[i].isKeyEntry(aliases[j]));                
@@ -740,7 +730,7 @@ public class KeyStoreTest1 extends PerformanceTest {
                 try {
                 	key1 = kss[i].getKey(aliases[j], pwd);
                 } catch (UnrecoverableKeyException e) { 
-                	logln("testEntry03: non-PrivateKeys not supported.");
+                	//logln("testEntry03: non-PrivateKeys not supported.");
                 	return;
                 }
                 if (!secKey.getAlgorithm().equals(key1.getAlgorithm()) ||
@@ -904,19 +894,14 @@ public class KeyStoreTest1 extends PerformanceTest {
                 fail("KeyStoreException or IllegalArgumentException should be thrown "
                         + "when chain is null and key is private");
             } catch (KeyStoreException e) {
-            } catch (IllegalArgumentException e) {
-                logln("testEntry05: setKeyEntry throws IllegalArgumentException for "
-                        + "private key and null chain");
             }
             try {
                 kss[i].setKeyEntry("ZZZ", key, pwd, new MCertificate[0]);
                 fail("KeyStoreException or IllegalArgumentException should be thrown "
                         + "when chain is empty and key is private");
             } catch (KeyStoreException e) {
-            } catch (IllegalArgumentException e) {
-                logln("testEntry05: setKeyEntry throws IllegalArgumentException "
-                        + "for private key and emptyl chain");
             }
+
             for (int j = 0; j < aliases.length; j++)  {
                 kss[i].setKeyEntry(aliases[j], key, pwd, certs);
             }
@@ -968,8 +953,8 @@ public class KeyStoreTest1 extends PerformanceTest {
                     assertEquals("Incorrect certificate", cc[t], certs[t]);                    
                 }
             }
-            assertEquals(kss[i].getCertificateAlias((Certificate)cert), null);
-            String ss = kss[i].getCertificateAlias((Certificate)certs[0]);
+            assertEquals(kss[i].getCertificateAlias(cert), null);
+            String ss = kss[i].getCertificateAlias(certs[0]);
             boolean ans = false;
             for (int j = 1; j < aliases.length; j++)  {
                 if (ss.equals(aliases[j])) {
@@ -1079,7 +1064,7 @@ public class KeyStoreTest1 extends PerformanceTest {
         char [] pwd = {'p', 'a', 's', 's', 'w', 'd'};
         String aliasKE = "KeyAlias";
         KeyStore.PasswordProtection pp = new KeyStore.PasswordProtection(pwd);
-        KeyStore.PasswordProtection anotherPath = new KeyStore.PasswordProtection(new char[0]);
+        new KeyStore.PasswordProtection(new char[0]);
         KeyStore [] kss = createKS();
         assertNotNull("KeyStore objects were not created", kss);
 
@@ -1126,7 +1111,6 @@ public class KeyStoreTest1 extends PerformanceTest {
         KeyStoreSpi spi = new MyKeyStoreSpi();
         KeyStore keySt = new tmpKeyStore(spi, defaultProvider,
                 defaultType);
-        assertTrue("Not CertStore object", keySt instanceof KeyStore);
         assertEquals("Incorrect name", keySt.getType(),
                 defaultType);
         assertEquals("Incorrect provider", keySt.getProvider(), defaultProvider);
@@ -1137,7 +1121,6 @@ public class KeyStoreTest1 extends PerformanceTest {
         } catch (KeyStoreException e) {
         }
         keySt = new tmpKeyStore(null, null, null);
-        assertTrue("Not CertStore object", keySt instanceof KeyStore);
         assertNull("Aalgorithm must be null", keySt.getType());
         assertNull("Provider must be null", keySt.getProvider());
         try {

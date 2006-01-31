@@ -24,14 +24,14 @@ package java.security;
 
 import javax.security.auth.DestroyFailedException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyStore.PasswordProtection</code> class constructor and methods
  * 
  */
 
-public class KSPasswordProtectionTest extends PerformanceTest {
+public class KSPasswordProtectionTest extends TestCase {
 
     /**
      * Constructor for KSPasswordProtectionTest.

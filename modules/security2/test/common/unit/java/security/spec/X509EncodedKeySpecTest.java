@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.util.Arrays;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>X509EncodedKeySpec</code> class fields and methods
  * 
  */
-public class X509EncodedKeySpecTest extends PerformanceTest {
+public class X509EncodedKeySpecTest extends TestCase {
 
     /*
      * @see TestCase#setUp()

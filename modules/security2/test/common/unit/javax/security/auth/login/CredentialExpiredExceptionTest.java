@@ -21,13 +21,13 @@
 
 package javax.security.auth.login;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests CredentialExpiredException class
  */
 
-public class CredentialExpiredExceptionTest extends PerformanceTest {
+public class CredentialExpiredExceptionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(CredentialExpiredException.class);

@@ -41,7 +41,7 @@ public class TestUtils {
 
     /**
      * Prints byte array <code>data</code> as hex to the
-     * PerformanceTest log in the customizable form.
+     * <code>System.out</code> in the customizable form.
      *
      * @param perLine how many numbers put on single line
      * @param prefix custom output number prefix
@@ -57,39 +57,12 @@ public class TestUtils {
             if (tail.length() == 1) {
                 tail = "0" + tail; 
             }
-            PerformanceTest.log(prefix + "0x" + tail + delimiter);
-
-            if (((i+1)%perLine) == 0) {
-                PerformanceTest.logln("");
-            }
-        }
-        PerformanceTest.logln("");
-    }
-
-    /**
-     * Prints byte array <code>data</code> as hex to the
-     * <code>System.out</code> in the customizable form.
-     *
-     * @param perLine how many numbers put on single line
-     * @param prefix custom output number prefix
-     * @param delimiter custom output number delimiter
-     * @param data data to be printed
-     */
-    public static void printAsHex1(int perLine,
-            String prefix,
-            String delimiter,
-            byte[] data) {
-        for (int i=0; i<data.length; i++) {
-            String tail = Integer.toHexString(0x000000ff & data[i]);
-            if (tail.length() == 1) {
-                tail = "0" + tail; 
-            }
             System.out.print(prefix + "0x" + tail + delimiter);
 
             if (((i+1)%perLine) == 0) {
-                System.out.println();
+                System.out.println("");
             }
         }
-        System.out.println();
+        System.out.println("");
     }
 }

@@ -23,14 +23,14 @@ package java.security;
 
 import java.security.ProviderException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>ProviderException</code> class constructors and methods.
  * 
  */
-public class ProviderExceptionTest extends PerformanceTest {
+public class ProviderExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      */
     public void testProviderException01() {
         ProviderException tE = new ProviderException();
-        assertTrue(errNotExc, tE instanceof ProviderException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class ProviderExceptionTest extends PerformanceTest {
         ProviderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ProviderException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof ProviderException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -117,7 +114,6 @@ public class ProviderExceptionTest extends PerformanceTest {
     public void testProviderException03() {
         String msg = null;
         ProviderException tE = new ProviderException(msg);
-        assertTrue(errNotExc, tE instanceof ProviderException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -134,7 +130,6 @@ public class ProviderExceptionTest extends PerformanceTest {
     public void testProviderException04() {
         Throwable cause = null;
         ProviderException tE = new ProviderException(cause);
-        assertTrue(errNotExc, tE instanceof ProviderException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -151,7 +146,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      */
     public void testProviderException05() {
         ProviderException tE = new ProviderException(tCause);
-        assertTrue(errNotExc, tE instanceof ProviderException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -175,7 +169,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      */
     public void testProviderException06() {
         ProviderException tE = new ProviderException(null, null);
-        assertTrue(errNotExc, tE instanceof ProviderException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -194,8 +187,6 @@ public class ProviderExceptionTest extends PerformanceTest {
         ProviderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ProviderException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof ProviderException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -214,7 +205,6 @@ public class ProviderExceptionTest extends PerformanceTest {
      */
     public void testProviderException08() {
         ProviderException tE = new ProviderException(null, tCause);
-        assertTrue(errNotExc, tE instanceof ProviderException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -240,8 +230,6 @@ public class ProviderExceptionTest extends PerformanceTest {
         ProviderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ProviderException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof ProviderException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

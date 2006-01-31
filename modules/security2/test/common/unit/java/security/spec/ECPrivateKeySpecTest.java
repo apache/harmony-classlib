@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>ECPrivateKeySpec</code> class fields and methods.
  * 
  */
-public class ECPrivateKeySpecTest extends PerformanceTest {
+public class ECPrivateKeySpecTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -76,9 +76,8 @@ public class ECPrivateKeySpecTest extends PerformanceTest {
                               BigInteger.ZERO,
                               BigInteger.valueOf(4L));
         ECPoint g = new ECPoint(BigInteger.ZERO, BigInteger.valueOf(2L));
-        ECPrivateKeySpec ks =
-            new ECPrivateKeySpec(BigInteger.ZERO,
-                    new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10));
+        new ECPrivateKeySpec(BigInteger.ZERO,
+                new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10));
         
     }
 
@@ -98,36 +97,28 @@ public class ECPrivateKeySpecTest extends PerformanceTest {
         ECPoint g = new ECPoint(BigInteger.ZERO, BigInteger.valueOf(2L));
 
         // Test case 1: s is null
-        boolean passed = false;
         try {
-            ECPrivateKeySpec ks = new ECPrivateKeySpec(null,
+            new ECPrivateKeySpec(null,
                 new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10));
+            fail("#1: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 2: params is null
-        passed = false;
         try {
-            ECPrivateKeySpec ks = new ECPrivateKeySpec(BigInteger.valueOf(0L),
-                null);
+            new ECPrivateKeySpec(BigInteger.valueOf(0L), null);
+            fail("#2: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 3: both s and params are null
-        passed = false;
         try {
-            ECPrivateKeySpec ks = new ECPrivateKeySpec(null, null);
+            new ECPrivateKeySpec(null, null);
+            fail("#3: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**

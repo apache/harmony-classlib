@@ -23,7 +23,7 @@ package java.security;
 
 import java.util.Random;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * Tests for internal Secure Random implementation based on Random
  * 
  */
-public class SecureRandomTest2 extends PerformanceTest {
+public class SecureRandomTest2 extends TestCase {
 	
 	/**
 	 * Registered providers

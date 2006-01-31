@@ -23,7 +23,7 @@ package javax.crypto;
 
 import javax.crypto.ExemptionMechanismException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class ExemptionMechanismExceptionTest extends PerformanceTest {
+public class ExemptionMechanismExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class ExemptionMechanismExceptionTest extends PerformanceTest {
      */
     public void testExemptionMechanismException01() {
         ExemptionMechanismException tE = new ExemptionMechanismException();
-        assertTrue(errNotExc, tE instanceof ExemptionMechanismException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class ExemptionMechanismExceptionTest extends PerformanceTest {
         ExemptionMechanismException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new ExemptionMechanismException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof ExemptionMechanismException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class ExemptionMechanismExceptionTest extends PerformanceTest {
     public void testExemptionMechanismException03() {
         String msg = null;
         ExemptionMechanismException tE = new ExemptionMechanismException(msg);
-        assertTrue(errNotExc, tE instanceof ExemptionMechanismException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

@@ -29,14 +29,14 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 
 /** 
  * Tests ServicePermission class implementation.
  */
-public class ServicePermissionTest extends PerformanceTest {
+public class ServicePermissionTest extends TestCase {
     
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ServicePermissionTest.class);

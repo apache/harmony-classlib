@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.NoSuchProviderException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class NoSuchProviderExceptionTest extends PerformanceTest {
+public class NoSuchProviderExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -66,8 +66,6 @@ public class NoSuchProviderExceptionTest extends PerformanceTest {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not NoSuchProviderException";
-
     static String createErr(Exception tE, Exception eE) {
         return "NoSuchProvideException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());
@@ -79,7 +77,6 @@ public class NoSuchProviderExceptionTest extends PerformanceTest {
      */
     public void testNoSuchProviderException01() {
         NoSuchProviderException tE = new NoSuchProviderException();
-        assertTrue(errNotExc, tE instanceof NoSuchProviderException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +95,6 @@ public class NoSuchProviderExceptionTest extends PerformanceTest {
         NoSuchProviderException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchProviderException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof NoSuchProviderException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +114,6 @@ public class NoSuchProviderExceptionTest extends PerformanceTest {
     public void testNoSuchProviderException03() {
         String msg = null;
         NoSuchProviderException tE = new NoSuchProviderException(msg);
-        assertTrue(errNotExc, tE instanceof NoSuchProviderException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

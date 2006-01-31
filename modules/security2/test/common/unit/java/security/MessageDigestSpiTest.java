@@ -23,14 +23,14 @@ package java.security;
 
 import java.nio.ByteBuffer;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>MessageDigestSpi</code> constructor and methods
  * 
  */
-public class MessageDigestSpiTest extends PerformanceTest {
+public class MessageDigestSpiTest extends TestCase {
 
 	public void testEngineGetDigestLength() {
 		MyMessageDigest md = new MyMessageDigest();

@@ -30,7 +30,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -38,7 +38,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class SecretKeyFactoryTest2 extends PerformanceTest {
+public class SecretKeyFactoryTest2 extends TestCase {
     
     private static final String defaultAlg = "MySecretKey";
     private static final String SecretKeyFactoryProviderClass = "javax.crypto.MySecretKeyFactorySpi";

@@ -27,14 +27,14 @@ import java.security.spec.InvalidKeySpecException;
 
 import org.apache.harmony.security.cert.MyCertPath;
 import org.apache.harmony.security.cert.TestUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>PKIXCertPathBuilderResult</code>
  * 
  */
-public class PKIXCertPathBuilderResultTest extends PerformanceTest {
+public class PKIXCertPathBuilderResultTest extends TestCase {
     /**
      * Cert path encoding stub
      */
@@ -95,8 +95,7 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
                NoSuchAlgorithmException {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
         CertPathBuilderResult r =
             new PKIXCertPathBuilderResult(
@@ -119,8 +118,7 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
                NoSuchAlgorithmException {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
         CertPathBuilderResult r =
             new PKIXCertPathBuilderResult(
@@ -140,25 +138,19 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
     public final void testPKIXCertPathBuilderResult03() {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
-        boolean npeHasBeenThrown = false;
+
         try {
             // pass null
-            CertPathBuilderResult r =
-                new PKIXCertPathBuilderResult(
-                        null,
-                        ta,
-                        TestUtils.getPolicyTree(),
-                        testPublicKey);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXCertPathBuilderResult(
+                    null,
+                    ta,
+                    TestUtils.getPolicyTree(),
+                    testPublicKey);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -170,15 +162,13 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
     public final void testPKIXCertPathBuilderResult04() {
         try {
             // pass null
-            CertPathBuilderResult r =
-                new PKIXCertPathBuilderResult(
-                        new MyCertPath(testEncoding),
-                        null,
-                        TestUtils.getPolicyTree(),
-                        testPublicKey);
-            fail(getName() + "NullPointerException has not been thrown");
-        } catch (NullPointerException ok) {
-            logln(getName() + ": " + ok);
+            new PKIXCertPathBuilderResult(
+                    new MyCertPath(testEncoding),
+                    null,
+                    TestUtils.getPolicyTree(),
+                    testPublicKey);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
     }
 
@@ -191,25 +181,19 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
     public final void testPKIXCertPathBuilderResult05() {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
-        boolean npeHasBeenThrown = false;
+
         try {
             // pass null
-            CertPathBuilderResult r =
-                new PKIXCertPathBuilderResult(
-                        new MyCertPath(testEncoding),
-                        ta,
-                        TestUtils.getPolicyTree(),
-                        null);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                npeHasBeenThrown = true;
-            }
-            logln(getName() + ": " + e);
+            new PKIXCertPathBuilderResult(
+                    new MyCertPath(testEncoding),
+                    ta,
+                    TestUtils.getPolicyTree(),
+                    null);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
         }
-        assertTrue(npeHasBeenThrown);
     }
 
     /**
@@ -219,14 +203,12 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public final void testGetCertPath()
-        throws InvalidKeySpecException,
-               NoSuchAlgorithmException {
+    public final void testGetCertPath() throws Exception {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
+
         CertPath cp = new MyCertPath(testEncoding);
         CertPathBuilderResult r =
             new PKIXCertPathBuilderResult(
@@ -234,6 +216,7 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
                     ta,
                     TestUtils.getPolicyTree(),
                     testPublicKey);
+
         // must return the same reference
         // as passed to the constructor
         assertSame(cp, r.getCertPath());
@@ -250,8 +233,7 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
                NoSuchAlgorithmException {
         TrustAnchor ta = TestUtils.getTrustAnchor();
         if (ta == null) {
-            fail(getName() + ": PASSED (could not create test TrustAnchor)");
-            return;
+            fail(getName() + ": not performed (could not create test TrustAnchor)");
         }
         CertPathBuilderResult r =
             new PKIXCertPathBuilderResult(
@@ -259,9 +241,8 @@ public class PKIXCertPathBuilderResultTest extends PerformanceTest {
                     ta,
                     TestUtils.getPolicyTree(),
                     testPublicKey);
-        String rep = r.toString();
-        logln(getName() + ": " + rep);
-        assertNotNull(rep);
+
+        assertNotNull(r.toString());
     }
 
 }

@@ -23,14 +23,14 @@ package java.security.cert;
 
 import java.security.cert.CertificateException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>CertificateException</code> class constructors and methods.
  * 
  */
-public class CertificateExceptionTest extends PerformanceTest {
+public class CertificateExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class CertificateExceptionTest extends PerformanceTest {
      */
     public void testCertificateException01() {
         CertificateException tE = new CertificateException();
-        assertTrue(errNotExc, tE instanceof CertificateException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class CertificateExceptionTest extends PerformanceTest {
         CertificateException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -118,7 +115,6 @@ public class CertificateExceptionTest extends PerformanceTest {
     public void testCertificateException03() {
         String msg = null;
         CertificateException tE = new CertificateException(msg);
-        assertTrue(errNotExc, tE instanceof CertificateException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -136,7 +132,6 @@ public class CertificateExceptionTest extends PerformanceTest {
     public void testCertificateException04() {
         Throwable cause = null;
         CertificateException tE = new CertificateException(cause);
-        assertTrue(errNotExc, tE instanceof CertificateException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -153,7 +148,6 @@ public class CertificateExceptionTest extends PerformanceTest {
      */
     public void testCertificateException05() {
         CertificateException tE = new CertificateException(tCause);
-        assertTrue(errNotExc, tE instanceof CertificateException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -177,7 +171,6 @@ public class CertificateExceptionTest extends PerformanceTest {
      */
     public void testCertificateException06() {
         CertificateException tE = new CertificateException(null, null);
-        assertTrue(errNotExc, tE instanceof CertificateException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -196,8 +189,6 @@ public class CertificateExceptionTest extends PerformanceTest {
         CertificateException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -216,7 +207,6 @@ public class CertificateExceptionTest extends PerformanceTest {
      */
     public void testCertificateException08() {
         CertificateException tE = new CertificateException(null, tCause);
-        assertTrue(errNotExc, tE instanceof CertificateException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -242,8 +232,6 @@ public class CertificateExceptionTest extends PerformanceTest {
         CertificateException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

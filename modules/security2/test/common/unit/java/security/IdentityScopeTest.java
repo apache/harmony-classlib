@@ -22,7 +22,7 @@
 package java.security;
 
 import org.apache.harmony.security.IdentityScopeStub;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class IdentityScopeTest extends PerformanceTest {
+public class IdentityScopeTest extends TestCase {
 
     public static class MySecurityManager extends SecurityManager {
         public Permissions denied = new Permissions(); 

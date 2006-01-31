@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>RSAMultiPrimePrivateCrtKeySpec</code> class fields and methods.
  * 
  */
-public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
+public class RSAMultiPrimePrivateCrtKeySpecTest extends TestCase {
     /**
      * Reference array of RSAOtherPrimeInfo. DO NOT MODIFY
      */
@@ -108,9 +108,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: NullPointerException if modulus is null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec02() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     null,
                     BigInteger.ONE,
                     BigInteger.ONE,
@@ -120,13 +119,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     BigInteger.ONE,
                     BigInteger.ONE,
                     opi);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -144,9 +139,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: NullPointerException if publicExponent is null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec03() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     BigInteger.ONE,
                     null,
                     BigInteger.ONE,
@@ -156,13 +150,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     BigInteger.ONE,
                     BigInteger.ONE,
                     opi);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -180,9 +170,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: NullPointerException if privateExponent is null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec04() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     BigInteger.ONE,
                     BigInteger.ONE,
                     null,
@@ -192,13 +181,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     BigInteger.ONE,
                     BigInteger.ONE,
                     opi);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -216,9 +201,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: NullPointerException if primeP is null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec05() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     BigInteger.ONE,
                     BigInteger.ONE,
                     BigInteger.ONE,
@@ -228,13 +212,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     BigInteger.ONE,
                     BigInteger.ONE,
                     opi);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -252,9 +232,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: NullPointerException if primeQ is null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec06() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     BigInteger.ONE,
                     BigInteger.ONE,
                     BigInteger.ONE,
@@ -264,13 +243,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     BigInteger.ONE,
                     BigInteger.ONE,
                     opi);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -288,9 +263,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: NullPointerException if primeExponentP is null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec07() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     BigInteger.ONE,
                     BigInteger.ONE,
                     BigInteger.ONE,
@@ -300,13 +274,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     BigInteger.ONE,
                     BigInteger.ONE,
                     opi);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -324,9 +294,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: NullPointerException if primeExponentQ is null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec08() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     BigInteger.ONE,
                     BigInteger.ONE,
                     BigInteger.ONE,
@@ -336,13 +305,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     null,
                     BigInteger.ONE,
                     opi);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -360,9 +325,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: NullPointerException if crtCoefficient is null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec09() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     BigInteger.ONE,
                     BigInteger.ONE,
                     BigInteger.ONE,
@@ -372,13 +336,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     BigInteger.ONE,
                     null,
                     opi);
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected NPE not thrown");
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
     
     /**
@@ -396,22 +356,16 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: otherPrimeInfo can be null
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec10() {
-        boolean passed = false;
-        try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
-                    BigInteger.ONE,
-                    BigInteger.ONE,
-                    BigInteger.ONE,
-                    BigInteger.ONE,
-                    BigInteger.ONE,
-                    BigInteger.ONE,
-                    BigInteger.ONE,
-                    BigInteger.ONE,
-                    null);
-            passed = true;
-        } catch (Exception e) {
-        }
-        assertTrue(passed);
+        new RSAMultiPrimePrivateCrtKeySpec(
+                BigInteger.ONE,
+                BigInteger.ONE,
+                BigInteger.ONE,
+                BigInteger.ONE,
+                BigInteger.ONE,
+                BigInteger.ONE,
+                BigInteger.ONE,
+                BigInteger.ONE,
+                null);
     }
     
     /**
@@ -429,9 +383,8 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
      * Assertion: IllegalArgumentException if otherPrimeInfo length is 0
      */
     public final void testRSAMultiPrimePrivateCrtKeySpec11() {
-        boolean passed = false;
         try {
-            KeySpec ks = new RSAMultiPrimePrivateCrtKeySpec(
+            new RSAMultiPrimePrivateCrtKeySpec(
                     BigInteger.ONE,
                     BigInteger.ONE,
                     BigInteger.ONE,
@@ -441,13 +394,9 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends PerformanceTest {
                     BigInteger.ONE,
                     BigInteger.ONE,
                     new RSAOtherPrimeInfo[0]);
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            }
+            fail("Expected IAE not thrown");
+        } catch (IllegalArgumentException e) {
         }
-        assertTrue(passed);
     }
 
     /**

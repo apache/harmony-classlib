@@ -21,13 +21,13 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>SecureRandom</code> constructor and methods
  * 
  */
-public class SecureRandomTest1 extends PerformanceTest {
+public class SecureRandomTest1 extends TestCase {
 
 	/**
 	 * SRProvider

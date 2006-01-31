@@ -33,7 +33,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -41,7 +41,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyGeneratorTest2 extends PerformanceTest {
+public class KeyGeneratorTest2 extends TestCase {
     
     private static final String defaultAlg = "MyKeyGen";
     
@@ -154,8 +154,6 @@ public class KeyGeneratorTest2 extends PerformanceTest {
         KeyGenerator keyGen;
         for (int i = 0; i < validValues.length; i++) {
             keyGen = KeyGenerator.getInstance(validValues[i]);
-            assertTrue("Not instanceof KeyGenerator object",
-                    keyGen instanceof KeyGenerator);
             assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyGen.getProvider(), mProv);
@@ -220,8 +218,6 @@ public class KeyGeneratorTest2 extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             keyGen = KeyGenerator.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof KeyGenerator object",
-                    keyGen instanceof KeyGenerator);
             assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyGen.getProvider().getName(),
@@ -270,8 +266,6 @@ public class KeyGeneratorTest2 extends PerformanceTest {
         KeySpec keySpec;
         for (int i = 0; i < validValues.length; i++) {
             keyGen = KeyGenerator.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof KeyGenerator object",
-                    keyGen instanceof KeyGenerator);
             assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyGen.getProvider(), mProv);

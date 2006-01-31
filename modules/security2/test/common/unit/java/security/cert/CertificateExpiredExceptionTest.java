@@ -23,14 +23,14 @@ package java.security.cert;
 
 import java.security.cert.CertificateExpiredException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>DigestException</code> class constructors and methods.
  * 
  */
-public class CertificateExpiredExceptionTest extends PerformanceTest {
+public class CertificateExpiredExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class CertificateExpiredExceptionTest extends PerformanceTest {
      */
     public void testCertificateExpiredException01() {
         CertificateExpiredException tE = new CertificateExpiredException();
-        assertTrue(errNotExc, tE instanceof CertificateExpiredException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class CertificateExpiredExceptionTest extends PerformanceTest {
         CertificateExpiredException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertificateExpiredException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertificateExpiredException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -118,7 +115,6 @@ public class CertificateExpiredExceptionTest extends PerformanceTest {
     public void testCertificateExpiredException03() {
         String msg = null;
         CertificateExpiredException tE = new CertificateExpiredException(msg);
-        assertTrue(errNotExc, tE instanceof CertificateExpiredException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

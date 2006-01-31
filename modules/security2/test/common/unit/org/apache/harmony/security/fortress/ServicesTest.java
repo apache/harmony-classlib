@@ -24,14 +24,14 @@ package org.apache.harmony.security.fortress;
 import java.security.Provider;
 
 import org.apache.harmony.security.fortress.Services;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  *
  * Tests for Services
  */
-public class ServicesTest extends PerformanceTest {
+public class ServicesTest extends TestCase {
 
 	public void testInitServiceInfo() {
 		Provider p = new MyProvider();

@@ -27,13 +27,13 @@ import java.io.ObjectOutputStream;
 import java.security.Principal;
 import java.util.HashSet;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests PrivateCredentialPermission class implementation. 
  */
-public class PrivateCredentialPermissionTest extends PerformanceTest {
+public class PrivateCredentialPermissionTest extends TestCase {
 
     private PrivateCredentialPermission p_that = null;
 
@@ -54,14 +54,6 @@ public class PrivateCredentialPermissionTest extends PerformanceTest {
      */
     public PrivateCredentialPermissionTest(String name) {
         super(name);
-    }
-
-    /**
-     * number of iterations in performance mode 
-     * @see org.apache.harmony.security.test.PerformanceTest#getRepeatCount()
-     */
-    public long getRepeatCount() {
-        return 100000;
     }
 
     /**

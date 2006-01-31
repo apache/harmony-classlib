@@ -24,7 +24,7 @@ package javax.crypto.interfaces;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 import java.math.BigInteger;
 
@@ -33,7 +33,7 @@ import java.math.BigInteger;
  * Tests for <code>DHPrivateKey</code> class field
  * 
  */
-public class DHPrivateKeyTest extends PerformanceTest {
+public class DHPrivateKeyTest extends TestCase {
 
     /**
      * Constructor for DHPrivateKey.

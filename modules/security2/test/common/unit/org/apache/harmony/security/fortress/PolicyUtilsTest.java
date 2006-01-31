@@ -36,7 +36,7 @@ import java.util.HashSet;
 import java.util.Properties;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -44,7 +44,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class PolicyUtilsTest extends PerformanceTest {
+public class PolicyUtilsTest extends TestCase {
 
     /** Tests valid expansion of ${key} entries. */
     public void testExpand() throws Exception {

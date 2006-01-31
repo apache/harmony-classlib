@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.GeneralSecurityException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class GeneralSecurityExceptionTest extends PerformanceTest {
+public class GeneralSecurityExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      */
     public void testGeneralSecurityException01() {
         GeneralSecurityException tE = new GeneralSecurityException();
-        assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
         GeneralSecurityException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new GeneralSecurityException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof GeneralSecurityException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
     public void testGeneralSecurityException03() {
         String msg = null;
         GeneralSecurityException tE = new GeneralSecurityException(msg);
-        assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -137,7 +133,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
     public void testGeneralSecurityException04() {
         Throwable cause = null;
         GeneralSecurityException tE = new GeneralSecurityException(cause);
-        assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -154,7 +149,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      */
     public void testGeneralSecurityException05() {
         GeneralSecurityException tE = new GeneralSecurityException(tCause);
-        assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -178,7 +172,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      */
     public void testGeneralSecurityException06() {
         GeneralSecurityException tE = new GeneralSecurityException(null, null);
-        assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -197,8 +190,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
         GeneralSecurityException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new GeneralSecurityException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof GeneralSecurityException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -217,7 +208,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
      */
     public void testGeneralSecurityException08() {
         GeneralSecurityException tE = new GeneralSecurityException(null, tCause);
-        assertTrue(errNotExc, tE instanceof GeneralSecurityException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -243,8 +233,6 @@ public class GeneralSecurityExceptionTest extends PerformanceTest {
         GeneralSecurityException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new GeneralSecurityException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof GeneralSecurityException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

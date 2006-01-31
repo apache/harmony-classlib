@@ -24,14 +24,14 @@ package java.security;
 
 import java.security.spec.AlgorithmParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyPairGeneratorSpi</code> class constructors and methods.
  * 
  */
 
-public class KeyPairGeneratorSpiTests extends PerformanceTest {
+public class KeyPairGeneratorSpiTests extends TestCase {
 
     /**
      * Constructor for KeyPairGeneratorSpiTests.

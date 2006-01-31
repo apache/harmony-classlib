@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>RSAPrivateKeySpec</code> class fields and methods
  * 
  */
-public class RSAPrivateKeySpecTest extends PerformanceTest {
+public class RSAPrivateKeySpecTest extends TestCase {
 
     /*
      * @see TestCase#setUp()

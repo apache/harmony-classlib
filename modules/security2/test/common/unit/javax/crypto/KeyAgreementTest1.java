@@ -38,7 +38,7 @@ import javax.crypto.spec.DHParameterSpec;
 
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.TestKeyPair;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -46,7 +46,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyAgreementTest1 extends PerformanceTest {
+public class KeyAgreementTest1 extends TestCase {
 
     /**
      * Constructor for KeyAgreementTest1.
@@ -87,40 +87,27 @@ public class KeyAgreementTest1 extends PerformanceTest {
         defaultProviderName = (DEFSupported ? defaultProvider.getName() : null);
     }
 
-    private boolean createKeys() {
-        if (initKeys) {
-            return true;
-        }
-        try {
+    private void createKeys() throws Exception {
+        if (!initKeys) {
             TestKeyPair tkp = new TestKeyPair(defaultAlgorithm);
             privKey = tkp.getPrivate();
             publKey = tkp.getPublic();
             initKeys = true;
-            return true;
-        } catch (Exception e) {
-            logln("Unexpected: " + e.toString());
-            initKeys = false;
-            return false;
         }
 
     }
 
-    private KeyAgreement[] createKAs() {
+    private KeyAgreement[] createKAs() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
-            return null;
         }
-        try {
-            KeyAgreement[] ka = new KeyAgreement[3];
-            ka[0] = KeyAgreement.getInstance(defaultAlgorithm);
-            ka[1] = KeyAgreement.getInstance(defaultAlgorithm, defaultProvider);
-            ka[2] = KeyAgreement.getInstance(defaultAlgorithm,
-                    defaultProviderName);
-            return ka;
-        } catch (Exception e) {
-            logln(e.toString());
-            return null;
-        }
+
+        KeyAgreement[] ka = new KeyAgreement[3];
+        ka[0] = KeyAgreement.getInstance(defaultAlgorithm);
+        ka[1] = KeyAgreement.getInstance(defaultAlgorithm, defaultProvider);
+        ka[2] = KeyAgreement.getInstance(defaultAlgorithm,
+                defaultProviderName);
+        return ka;
     }
 
     public static String getDefAlg() {
@@ -140,7 +127,6 @@ public class KeyAgreementTest1 extends PerformanceTest {
         KeyAgreementSpi spi = new MyKeyAgreementSpi();
         KeyAgreement keyA = new myKeyAgreement(spi, defaultProvider,
                 defaultAlgorithm);
-        assertTrue("Not KeyAgreement object", keyA instanceof KeyAgreement);
         assertEquals("Incorrect algorithm", keyA.getAlgorithm(),
                 defaultAlgorithm);
         assertEquals("Incorrect provider", keyA.getProvider(), defaultProvider);
@@ -148,7 +134,6 @@ public class KeyAgreementTest1 extends PerformanceTest {
         assertEquals("Incorrect result", keyA.generateSecret().length, 0);
 
         keyA = new myKeyAgreement(null, null, null);
-        assertTrue("Not KeyAgreement object", keyA instanceof KeyAgreement);
         assertNull("Algorithm must be null", keyA.getAlgorithm());
         assertNull("Provider must be null", keyA.getProvider());
         try {
@@ -191,7 +176,6 @@ public class KeyAgreementTest1 extends PerformanceTest {
         KeyAgreement keyA;
         for (int i = 0; i < validValues.length; i++) {
             keyA = KeyAgreement.getInstance(validValues[i]);
-            assertTrue("Not KeyAgreement object", keyA instanceof KeyAgreement);
             assertEquals("Incorrect algorithm", keyA.getAlgorithm(),
                     validValues[i]);
         }
@@ -276,7 +260,6 @@ public class KeyAgreementTest1 extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             keyA = KeyAgreement
                     .getInstance(validValues[i], defaultProviderName);
-            assertTrue("Not KeyAgreement object", keyA instanceof KeyAgreement);
             assertEquals("Incorrect algorithm", keyA.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyA.getProvider().getName(),
@@ -343,7 +326,6 @@ public class KeyAgreementTest1 extends PerformanceTest {
         KeyAgreement keyA;
         for (int i = 0; i < validValues.length; i++) {
             keyA = KeyAgreement.getInstance(validValues[i], defaultProvider);
-            assertTrue("Not KeyAgreement object", keyA instanceof KeyAgreement);
             assertEquals("Incorrect algorithm", keyA.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyA.getProvider(),
@@ -360,18 +342,16 @@ public class KeyAgreementTest1 extends PerformanceTest {
      * sharedsecret in buffer and return numbers of bytes; returns SecretKey
      * object
      */
-    public void testGenerateSecret03() throws ShortBufferException,
-            InvalidKeyException, NoSuchAlgorithmException {
+    public void testGenerateSecret03() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
         }
-        assertTrue("Keys were not created", createKeys());
+        createKeys();
         KeyAgreement[] kAgs = createKAs();
-        assertNotNull("KeyAgreement objects were not created", kAgs);
+
         byte[] bb;
         byte[] bb1 = new byte[10];
-        int t;
         for (int i = 0; i < kAgs.length; i++) {
             kAgs[i].init(privKey);
             kAgs[i].doPhase(publKey, true);
@@ -379,11 +359,10 @@ public class KeyAgreementTest1 extends PerformanceTest {
             kAgs[i].init(privKey);
             kAgs[i].doPhase(publKey, true);
             bb1 = new byte[bb.length + 10];
-            t = kAgs[i].generateSecret(bb1, 9);
+            kAgs[i].generateSecret(bb1, 9);
             kAgs[i].init(privKey);
             kAgs[i].doPhase(publKey, true);
-            assertTrue("Not SecretKey object",
-                    kAgs[i].generateSecret("DES") instanceof SecretKey);
+            kAgs[i].generateSecret("DES");
         }
     }
 
@@ -391,15 +370,14 @@ public class KeyAgreementTest1 extends PerformanceTest {
      * Test for <code>doPhase(Key key, boolean lastPhase)</code> method
      * Assertion: throws InvalidKeyException if key is not appropriate
      */
-    public void testDoPhase() throws ShortBufferException, InvalidKeyException,
-            NoSuchAlgorithmException {
+    public void testDoPhase() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
         }
-        assertTrue("Keys were not created", createKeys());
+        createKeys();
         KeyAgreement[] kAgs = createKAs();
-        assertNotNull("KeyAgreement objects were not created", kAgs);
+
         for (int i = 0; i < kAgs.length; i++) {
             kAgs[i].init(privKey);
             try {
@@ -423,15 +401,14 @@ public class KeyAgreementTest1 extends PerformanceTest {
      * <code>init(Key key, AlgorithmParameterSpec params, SecureRandom random)</code>
      * Assertion: throws InvalidKeyException when key is inapporopriate
      */
-    public void testInit01() throws InvalidAlgorithmParameterException,
-            InvalidKeyException {
+    public void testInit01() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
         }
-        assertTrue("Keys were not created", createKeys());
+        createKeys();
         KeyAgreement[] kAgs = createKAs();
-        assertNotNull("KeyAgreement objects were not created", kAgs);
+
         SecureRandom random = null;
         AlgorithmParameterSpec aps = null;
         DHParameterSpec dhPs = new DHParameterSpec(new BigInteger("56"),
@@ -477,16 +454,15 @@ public class KeyAgreementTest1 extends PerformanceTest {
      * Assertion: throws AlgorithmParameterException when params are
      * inapporopriate
      */
-    public void testInit02() throws InvalidKeyException {
+    public void testInit02() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
         }
-        assertTrue("Keys were not created", createKeys());
+        createKeys();
         KeyAgreement[] kAgs = createKAs();
-        assertNotNull("KeyAgreement objects were not created", kAgs);
+
         SecureRandom random = null;
-        AlgorithmParameterSpec aps = null;
         DSAParameterSpec dsa = new DSAParameterSpec(new BigInteger("56"),
                 new BigInteger("56"), new BigInteger("56"));
         for (int i = 0; i < kAgs.length; i++) {
@@ -518,19 +494,17 @@ public class KeyAgreementTest1 extends PerformanceTest {
      * <code>generateSecret()</code>
      * Assertions: initializes KeyAgreement and returns byte array
      */
-    public void testInit03() throws InvalidKeyException {
+    public void testInit03() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
         }
-        assertTrue("Keys were not created", createKeys());
+        createKeys();
         KeyAgreement[] kAgs = createKAs();
-        assertNotNull("KeyAgreement objects were not created", kAgs);
+
         byte[] bbRes1;
         byte[] bbRes2;
         byte[] bbRes3;
-        byte[] bb1 = new byte[10];
-        int t;
         SecureRandom randomNull = null;
         SecureRandom random = new SecureRandom();
         for (int i = 0; i < kAgs.length; i++) {
@@ -565,22 +539,20 @@ public class KeyAgreementTest1 extends PerformanceTest {
      * <code>generateSecret()</code>
      * Assertions: initializes KeyAgreement and returns byte array
      */
-    public void testInit04() throws InvalidKeyException,
+    public void testInit04() throws Exception,
             InvalidAlgorithmParameterException {
         if (!DEFSupported) {
             fail(NotSupportMsg);
             return;
         }
-        assertTrue("Keys were not created", createKeys());
+        createKeys();
         KeyAgreement[] kAgs = createKAs();
-        assertNotNull("KeyAgreement objects were not created", kAgs);
+
         DHParameterSpec dhPs = ((DHPrivateKey) privKey).getParams();
 
         byte[] bbRes1;
         byte[] bbRes2;
         byte[] bbRes3;
-        byte[] bb1 = new byte[10];
-        int t;
         SecureRandom randomNull = null;
         SecureRandom random = new SecureRandom();
         for (int i = 0; i < kAgs.length; i++) {

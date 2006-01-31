@@ -25,14 +25,14 @@ import java.util.HashSet;
 
 import org.apache.harmony.security.cert.MyCertificate;
 import org.apache.harmony.security.cert.TestUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>PKIXCertPathChecker</code>
  * 
  */
-public class PKIXCertPathCheckerTest extends PerformanceTest {
+public class PKIXCertPathCheckerTest extends TestCase {
 
     /*
      * @see TestCase#setUp()

@@ -24,23 +24,14 @@ package java.security.spec;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>ECFieldF2m</code> class fields and methods.
  * 
  */
-public class ECFieldF2mTest extends PerformanceTest {
-
-    /**
-     * <code>PASSED</code> - test status 'passed'
-     */
-    private static final long PASSED = 0L;
-    /**
-     * <code>FAILED</code> - test status 'failed'
-     */
-    private static final long FAILED = 1L;
+public class ECFieldF2mTest extends TestCase {
 
     /**
      * Support class for this test.
@@ -156,36 +147,27 @@ public class ECFieldF2mTest extends PerformanceTest {
      * Assertion: IllegalArgumentException if m is not positive.
      */
     public final void testECFieldF2mint() {
-        long result = PASSED;
         for(int i=0; i<intCtorTestParameters.length; i++) {
             ECFieldF2mDomainParams tp = intCtorTestParameters[i];
             try {
                 // perform test
-                ECField f = new ECFieldF2m(tp.m);
+                new ECFieldF2m(tp.m);
                 
-                if (tp.x == null) {
-                    // passed
-                } else {
+                if (tp.x != null) {
                     // exception has been expected 
-                    result |= (FAILED << i);
-                    loglnError(getName() + ", set " + i +
+                    fail(getName() + ", set " + i +
                             " FAILED: expected exception has not been thrown");
                 }
             } catch (Exception e){
-                if (tp.x != null && e.getClass().isInstance(tp.x)) {
-                    // passed
-                    logln(getName() + ", set " + i + ": " + e);
-                } else {
+                if (tp.x == null || !e.getClass().isInstance(tp.x)) {
                     // exception: failure
                     // if it has not been expected
                     // or wrong one has been thrown
-                    result |= (FAILED << i);
-                    loglnError(getName() + ", set " + i +
+                    fail(getName() + ", set " + i +
                             " FAILED: unexpected " + e);
                 }
             }
         }
-        assertTrue(result == PASSED);
     }
 
     /**
@@ -286,36 +268,27 @@ public class ECFieldF2mTest extends PerformanceTest {
      * Assertion: IllegalArgumentException if rp is invalid.
      */
     public final void testECFieldF2mintBigInteger() {
-        long result = PASSED;
         for(int i=0; i<intBigIntegerCtorTestParameters.length; i++) {
             ECFieldF2mDomainParams tp = intBigIntegerCtorTestParameters[i];
             try {
                 // perform test
-                ECField f = new ECFieldF2m(tp.m, tp.rp);
+                new ECFieldF2m(tp.m, tp.rp);
                 
-                if (tp.x == null) {
-                    // passed
-                } else {
+                if (tp.x != null) {
                     // exception has been expected 
-                    result |= (FAILED << i);
-                    loglnError(getName() + ", set " + i +
+                    fail(getName() + ", set " + i +
                             " FAILED: expected exception has not been thrown");
                 }
             } catch (Exception e){
-                if (tp.x != null && e.getClass().isInstance(tp.x)) {
-                    // passed
-                    logln(getName() + ", set " + i + ": " + e);
-                } else {
+                if (tp.x == null || !e.getClass().isInstance(tp.x)) {
                     // exception: failure
                     // if it has not been expected
                     // or wrong one has been thrown
-                    result |= (FAILED << i);
-                    loglnError(getName() + ", set " + i +
+                    fail(getName() + ", set " + i +
                             " FAILED: unexpected " + e);
                 }
             }
         }
-        assertTrue(result == PASSED);
     }
 
     /**
@@ -420,36 +393,27 @@ public class ECFieldF2mTest extends PerformanceTest {
      * Assertion: IllegalArgumentException if ks is invalid.
      */
     public final void testECFieldF2mintintArray() {
-        long result = PASSED;
         for(int i=0; i<intIntArrayCtorTestParameters.length; i++) {
             ECFieldF2mDomainParams tp = intIntArrayCtorTestParameters[i];
             try {
                 // perform test
-                ECField f = new ECFieldF2m(tp.m, tp.ks);
+                new ECFieldF2m(tp.m, tp.ks);
                 
-                if (tp.x == null) {
-                    // passed
-                } else {
+                if (tp.x != null) {
                     // exception has been expected 
-                    result |= (FAILED << i);
-                    loglnError(getName() + ", set " + i +
+                    fail(getName() + ", set " + i +
                             " FAILED: expected exception has not been thrown");
                 }
             } catch (Exception e){
-                if (tp.x != null && e.getClass().isInstance(tp.x)) {
-                    // passed
-                    logln(getName() + ", set " + i + ": " + e);
-                } else {
+                if (tp.x == null || !e.getClass().isInstance(tp.x)) {
                     // exception: failure
                     // if it has not been expected
                     // or wrong one has been thrown
-                    result |= (FAILED << i);
-                    loglnError(getName() + ", set " + i +
+                    fail(getName() + ", set " + i +
                             " FAILED: unexpected " + e);
                 }
             }
         }
-        assertTrue(result == PASSED);
     }
 
     /**

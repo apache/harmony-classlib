@@ -23,14 +23,14 @@ package javax.net.ssl;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SSLServerSocket</code> class constructors.
  *  
  */
-public class SSLServerSocketTest extends PerformanceTest {
+public class SSLServerSocketTest extends TestCase {
 
     /*
      * Class under test for void SSLServerSocket()

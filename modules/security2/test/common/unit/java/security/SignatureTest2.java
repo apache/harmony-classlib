@@ -21,13 +21,13 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>Signature</code> constructor and methods
  * 
  */
-public class SignatureTest2 extends PerformanceTest {
+public class SignatureTest2 extends TestCase {
 
 	/**
 	 * Provider

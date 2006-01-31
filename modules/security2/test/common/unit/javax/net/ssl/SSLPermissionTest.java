@@ -20,13 +20,13 @@
  */
 package javax.net.ssl;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>SSLPermission</code> class constructors.
  *  
  */
-public class SSLPermissionTest extends PerformanceTest {
+public class SSLPermissionTest extends TestCase {
 
     /*
      * Class under test for void SSLPermission(String)

@@ -22,14 +22,14 @@
 package java.security.cert;
 
 import org.apache.harmony.security.cert.MyCRL;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>java.security.cert.CRL</code> fields and methods
  * 
  */
-public class CRLTest extends PerformanceTest {
+public class CRLTest extends TestCase {
 
     /*
      * @see TestCase#setUp()

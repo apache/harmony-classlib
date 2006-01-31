@@ -24,7 +24,7 @@ package java.security.cert;
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.CertPath;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -32,7 +32,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class CertPathValidatorExceptionTest extends PerformanceTest {
+public class CertPathValidatorExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -80,7 +80,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      */
     public void testCertPathValidatorException01() {
         CertPathValidatorException tE = new CertPathValidatorException();
-        assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -99,8 +98,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
         CertPathValidatorException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathValidatorException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertPathValidatorException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -120,7 +117,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
     public void testCertPathValidatorException03() {
         String msg = null;
         CertPathValidatorException tE = new CertPathValidatorException(msg);
-        assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -138,7 +134,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
     public void testCertPathValidatorException04() {
         Throwable cause = null;
         CertPathValidatorException tE = new CertPathValidatorException(cause);
-        assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -155,7 +150,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      */
     public void testCertPathValidatorException05() {
         CertPathValidatorException tE = new CertPathValidatorException(tCause);
-        assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -180,7 +174,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
     public void testCertPathValidatorException06() {
         CertPathValidatorException tE = new CertPathValidatorException(null,
                 null);
-        assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -199,8 +192,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
         CertPathValidatorException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathValidatorException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertPathValidatorException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -220,7 +211,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
     public void testCertPathValidatorException08() {
         CertPathValidatorException tE = new CertPathValidatorException(null,
                 tCause);
-        assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -246,8 +236,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
         CertPathValidatorException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CertPathValidatorException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CertPathValidatorException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {
@@ -280,7 +268,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
     public void testCertPathValidatorException10() {
         CertPathValidatorException tE = new CertPathValidatorException(null,
                 null, null, -1);
-        assertTrue(errNotExc, tE instanceof CertPathValidatorException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         assertNull("getCertPath() must return null", tE.getCertPath());
@@ -301,13 +288,11 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * IllegalArgumentException
      */
     public void testCertPathValidatorException11() {
-        CertPathValidatorException tE;
         int[] indx = { 0, 1, 100, Integer.MAX_VALUE, Integer.MIN_VALUE };
         for (int j = 0; j < indx.length; j++) {
             for (int i = 0; i < msgs.length; i++) {
                 try {
-                    tE = new CertPathValidatorException(msgs[i], tCause, null,
-                            indx[j]);
+                    new CertPathValidatorException(msgs[i], tCause, null, indx[j]);
                     fail("Error. IllegalArgumentException was not thrown as expected. "
                             + " msg: "
                             + msgs[i]
@@ -331,8 +316,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
         for (int i = 0; i < msgs.length; i++) {
             try {
                 tE = new CertPathValidatorException(msgs[i], tCause, null, -1);
-                assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(
-                        ")"), tE instanceof CertPathValidatorException);
                 String getM = tE.getMessage();
                 String toS = tCause.toString();
                 if (msgs[i].length() > 0) {
@@ -370,7 +353,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
      * certPath.getCertificates().size() throws: IndexOutOfBoundsException
      */
     public void testCertPathValidatorException13() {
-        CertPathValidatorException tE;
         myCertPath mcp = new myCertPath("X.509", "");
         CertPath cp = mcp.get("X.509");
         int[] indx = { -2, -100, 0, 1, 100, Integer.MAX_VALUE,
@@ -378,8 +360,7 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
         for (int j = 0; j < indx.length; j++) {
             for (int i = 0; i < msgs.length; i++) {
                 try {
-                    tE = new CertPathValidatorException(msgs[i], tCause, cp,
-                            indx[j]);
+                    new CertPathValidatorException(msgs[i], tCause, cp, indx[j]);
                     fail("IndexOutOfBoundsException was not thrown as expected. "
                             + " msg: "
                             + msgs[i]
@@ -405,8 +386,6 @@ public class CertPathValidatorExceptionTest extends PerformanceTest {
         for (int i = 0; i < msgs.length; i++) {
             try {
                 tE = new CertPathValidatorException(msgs[i], tCause, cp, -1);
-                assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(
-                        ")"), tE instanceof CertPathValidatorException);
                 String getM = tE.getMessage();
                 String toS = tCause.toString();
                 if (msgs[i].length() > 0) {

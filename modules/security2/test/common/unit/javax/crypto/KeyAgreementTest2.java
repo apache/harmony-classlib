@@ -34,7 +34,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -42,7 +42,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyAgreementTest2 extends PerformanceTest {
+public class KeyAgreementTest2 extends TestCase {
     
     private static final String defaultAlg = "MyKeyAgr";
     
@@ -149,8 +149,6 @@ public class KeyAgreementTest2 extends PerformanceTest {
         KeyAgreement keyAgr;
         for (int i = 0; i < validValues.length; i++) {
             keyAgr = KeyAgreement.getInstance(validValues[i]);
-            assertTrue("Not instanceof KeyAgreement object",
-                    keyAgr instanceof KeyAgreement);
             assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyAgr.getProvider(), mProv);
@@ -215,8 +213,6 @@ public class KeyAgreementTest2 extends PerformanceTest {
         for (int i = 0; i < validValues.length; i++) {
             keyAgr = KeyAgreement.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof KeyAgreement object",
-                    keyAgr instanceof KeyAgreement);
             assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyAgr.getProvider().getName(),
@@ -267,8 +263,6 @@ public class KeyAgreementTest2 extends PerformanceTest {
         KeySpec keySpec;
         for (int i = 0; i < validValues.length; i++) {
             keyAgr = KeyAgreement.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof KeyAgreement object",
-                    keyAgr instanceof KeyAgreement);
             assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyAgr.getProvider(), mProv);

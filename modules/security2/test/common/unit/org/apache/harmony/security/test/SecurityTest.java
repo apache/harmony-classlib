@@ -41,6 +41,8 @@ import javax.security.auth.Subject;
 import javax.security.auth.SubjectTest.MyClass1;
 import javax.security.auth.SubjectTest.MyClass2;
 
+import junit.framework.TestCase;
+
 /**
  * Custom security manager 
  * 
@@ -49,7 +51,7 @@ import javax.security.auth.SubjectTest.MyClass2;
  * 
  */
 
-public class SecurityTest extends PerformanceTest {
+public class SecurityTest extends TestCase {
 
     public static boolean testing = false;
 

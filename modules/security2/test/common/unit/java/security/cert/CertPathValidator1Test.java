@@ -29,7 +29,7 @@ import java.security.Security;
 
 import org.apache.harmony.security.SpiEngUtils;
 import org.apache.harmony.security.cert.MyCertPath;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 
@@ -40,7 +40,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertPathValidator1Test extends PerformanceTest {
+public class CertPathValidator1Test extends TestCase {
 
     /**
      * Constructor for CertPathValidatorTests.

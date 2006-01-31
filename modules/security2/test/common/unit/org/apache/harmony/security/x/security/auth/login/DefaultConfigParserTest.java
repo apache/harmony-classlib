@@ -34,7 +34,7 @@ import java.util.Properties;
 
 import javax.security.auth.login.AppConfigurationEntry;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.x.security.auth.login.DefaultConfigurationParser;
 import org.apache.harmony.security.x.security.auth.login.DefaultConfigurationParser.InvalidFormatException;
 
@@ -43,7 +43,7 @@ import org.apache.harmony.security.x.security.auth.login.DefaultConfigurationPar
  * Tests parser implementation for default configuration.
  */
 
-public class DefaultConfigParserTest extends PerformanceTest {
+public class DefaultConfigParserTest extends TestCase {
 
     static String outputPath = System.getProperty("TEST_SRC_DIR", "test/common/unit");
     

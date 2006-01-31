@@ -22,14 +22,14 @@
 package java.security.cert;
 
 import org.apache.harmony.security.cert.MyCertPath;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>CertPath</code> fields and methods
  * 
  */
-public class CertPathTest extends PerformanceTest {
+public class CertPathTest extends TestCase {
     /**
      * Meaningless cert path encoding just for testing purposes
      */
@@ -70,7 +70,7 @@ public class CertPathTest extends PerformanceTest {
     public final void testHashCode() {
         CertPath cp1 = new MyCertPath(testEncoding);
         CertPath cp2 = new MyCertPath(testEncoding);
-        logln(getName() + ": " + cp1.hashCode());
+
         assertTrue(cp1.hashCode() == cp2.hashCode());
     }
 
@@ -138,9 +138,7 @@ public class CertPathTest extends PerformanceTest {
      */
     public final void testToString() {
         CertPath cp1 = new MyCertPath(testEncoding);
-        String rep = cp1.toString(); 
-        logln(getName() + ": " + rep);
-        assertTrue(rep != null);
+        assertNotNull(cp1.toString());
     }
 
     //

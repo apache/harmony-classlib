@@ -23,14 +23,14 @@ package javax.crypto;
 
 import javax.crypto.BadPaddingException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>BadPaddingException</code> class constructors and methods.
  * 
  */
-public class BadPaddingExceptionTest extends PerformanceTest {
+public class BadPaddingExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class BadPaddingExceptionTest extends PerformanceTest {
      */
     public void testBadPaddingException01() {
         BadPaddingException tE = new BadPaddingException();
-        assertTrue(errNotExc, tE instanceof BadPaddingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class BadPaddingExceptionTest extends PerformanceTest {
         BadPaddingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new BadPaddingException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof BadPaddingException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -117,7 +114,6 @@ public class BadPaddingExceptionTest extends PerformanceTest {
     public void testBadPaddingException03() {
         String msg = null;
         BadPaddingException tE = new BadPaddingException(msg);
-        assertTrue(errNotExc, tE instanceof BadPaddingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

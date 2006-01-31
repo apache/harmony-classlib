@@ -29,14 +29,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>CertificateFactorySpi</code> class constructors and methods
  * 
  */
 
-public class CertificateFactorySpiTest extends PerformanceTest {
+public class CertificateFactorySpiTest extends TestCase {
     /**
      * Constructor for CertStoreSpiTest.
      * 

@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>ECParameterSpec</code> class fields and methods.
  * 
  */
-public class ECParameterSpecTest extends PerformanceTest {
+public class ECParameterSpecTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -76,8 +76,7 @@ public class ECParameterSpecTest extends PerformanceTest {
                               BigInteger.ZERO,
                               BigInteger.valueOf(4L));
         ECPoint g = new ECPoint(BigInteger.ZERO, BigInteger.valueOf(2L));
-        AlgorithmParameterSpec ps =
-            new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10);        
+        new ECParameterSpec(c, g, BigInteger.valueOf(5L), 10);        
     }
 
     /**
@@ -95,49 +94,37 @@ public class ECParameterSpecTest extends PerformanceTest {
                               BigInteger.valueOf(4L));
         ECPoint generator = new ECPoint(BigInteger.ZERO, BigInteger.valueOf(2L));
         BigInteger order = BigInteger.valueOf(5L);
+
         // Test case 1: curve is null
-        boolean passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(null, generator, order, 10);
+            new ECParameterSpec(null, generator, order, 10);
+            fail("#1: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 2: generator is null
-        passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(curve, null, order, 10);
+            new ECParameterSpec(curve, null, order, 10);
+            fail("#2: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 3: order is null
-        passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(curve, generator, null, 10);
+            new ECParameterSpec(curve, generator, null, 10);
+            fail("#3: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 4: all above are null
-        passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(null, null, null, 10);
+            new ECParameterSpec(null, null, null, 10);
+            fail("#4: Expected NPE not thrown");
         } catch (NullPointerException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -154,65 +141,46 @@ public class ECParameterSpecTest extends PerformanceTest {
                               BigInteger.ZERO,
                               BigInteger.valueOf(4L));
         ECPoint generator = new ECPoint(BigInteger.ZERO, BigInteger.valueOf(2L));
+
+
         // Test case 1: order is negative
-        boolean passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(curve, generator,
-                        BigInteger.valueOf(-5L), 10);
+            new ECParameterSpec(curve, generator, BigInteger.valueOf(-5L), 10);
+            fail("#1: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 2: order == 0
-        passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(curve, generator,
-                        BigInteger.ZERO, 10);
+            new ECParameterSpec(curve, generator, BigInteger.ZERO, 10);
+            fail("#2: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 3: cofactor is negative
-        passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(curve, generator,
-                        BigInteger.valueOf(5L), -10);
+            new ECParameterSpec(curve, generator, BigInteger.valueOf(5L), -10);
+            fail("#3: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 4: cofactor == 0
-        passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(curve, generator,
-                        BigInteger.valueOf(5L), 0);
+            new ECParameterSpec(curve, generator, BigInteger.valueOf(5L), 0);
+            fail("#4: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
+
 
         // Test case 5: both order and cofactor are not positive
-        passed = false;
         try {
-            AlgorithmParameterSpec ps =
-                new ECParameterSpec(curve, generator,
-                        BigInteger.valueOf(-5L), 0);
+            new ECParameterSpec(curve, generator, BigInteger.valueOf(-5L), 0);
+            fail("#5: Expected IAE not thrown");
         } catch (IllegalArgumentException ok) {
-            passed = true;
-            logln(getName() + ": " + ok);
         }
-        assertTrue(passed);
     }
 
     /**

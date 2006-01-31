@@ -32,6 +32,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
+import junit.framework.TestCase;
+
 /**
  * Framework for serialization testing. Subclasses only need to override
  * getData() method and, optionally, assertDeserialized() method. The first one
@@ -51,7 +53,18 @@ import java.io.OutputStream;
  * <b>&quot;TEST_SRC_DIR&quot; </b> system property.
  * 
  */
-public abstract class SerializationTest extends PerformanceTest {
+public abstract class SerializationTest extends TestCase {
+
+    /**
+     * Property name for the testing mode.
+     */
+    public static final String MODE_KEY = "test.mode";
+
+
+    /**
+     * Testing mode.
+     */
+    public static String mode = System.getProperty(MODE_KEY);
 
     /**
      * Reference files generation mode switch.

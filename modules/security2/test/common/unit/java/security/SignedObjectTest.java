@@ -26,14 +26,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
 
 import org.apache.harmony.security.TestKeyPair;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SignedObject</code> constructor and methods
  * 
  */
-public class SignedObjectTest extends PerformanceTest {
+public class SignedObjectTest extends TestCase {
 
 	public void testSignedObject() {
 		Signature sig = null;

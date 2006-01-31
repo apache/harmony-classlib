@@ -21,13 +21,13 @@
 
 package javax.security.auth.callback;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests ChoiceCallback class
  */
 
-public class ChoiceCallbackTest extends PerformanceTest {
+public class ChoiceCallbackTest extends TestCase {
 
 	ChoiceCallback cb;
 

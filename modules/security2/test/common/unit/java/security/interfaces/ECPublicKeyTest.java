@@ -26,13 +26,13 @@ import java.security.spec.ECPoint;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>ECPublicKey</code> class field
  * 
  */
-public class ECPublicKeyTest extends PerformanceTest {
+public class ECPublicKeyTest extends TestCase {
 
     /**
      * Constructor for ECPublicKeyTest.

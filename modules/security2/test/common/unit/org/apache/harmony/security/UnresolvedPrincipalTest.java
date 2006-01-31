@@ -23,7 +23,7 @@ package org.apache.harmony.security;
 import java.security.Principal;
 
 import org.apache.harmony.security.UnresolvedPrincipal;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class UnresolvedPrincipalTest extends PerformanceTest {
+public class UnresolvedPrincipalTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(UnresolvedPrincipalTest.class);

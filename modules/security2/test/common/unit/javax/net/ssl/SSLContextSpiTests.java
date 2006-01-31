@@ -28,7 +28,7 @@ import java.security.SecureRandom;
 
 import javax.net.ssl.SSLContextSpi;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class SSLContextSpiTests extends PerformanceTest {
+public class SSLContextSpiTests extends TestCase {
     /**
      * Constructor for SSLContextSpiTests.
      * 

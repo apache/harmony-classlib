@@ -23,14 +23,14 @@ package javax.net.ssl;
 
 import javax.net.ssl.SSLProtocolException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SSLProtocolException</code> class constructors and methods.
  * 
  */
-public class SSLProtocolExceptionTest extends PerformanceTest {
+public class SSLProtocolExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -81,8 +81,6 @@ public class SSLProtocolExceptionTest extends PerformanceTest {
         SSLProtocolException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLProtocolException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SSLProtocolException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -102,7 +100,6 @@ public class SSLProtocolExceptionTest extends PerformanceTest {
     public void testSSLProtocolException02() {
         String msg = null;
         SSLProtocolException tE = new SSLProtocolException(msg);
-        assertTrue(errNotExc, tE instanceof SSLProtocolException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

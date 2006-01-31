@@ -26,13 +26,13 @@ import java.math.BigInteger;
 import java.security.interfaces.RSAMultiPrimePrivateCrtKey;
 import java.security.spec.RSAOtherPrimeInfo;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>RSAMultiPrimePrivateCrtKey</code> class field
  * 
  */
-public class RSAMultiPrimePrivateCrtKeyTest extends PerformanceTest {
+public class RSAMultiPrimePrivateCrtKeyTest extends TestCase {
 
     /**
      * Constructor for RSAMultiPrimePrivateCrtKeyTest.

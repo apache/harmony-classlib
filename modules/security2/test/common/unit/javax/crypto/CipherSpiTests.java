@@ -30,7 +30,7 @@ import java.security.SecureRandom;
 import java.security.AlgorithmParameters;
 import java.nio.ByteBuffer;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -38,7 +38,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CipherSpiTests extends PerformanceTest {
+public class CipherSpiTests extends TestCase {
 
     /**
      * Constructor for CipherSpiTests.

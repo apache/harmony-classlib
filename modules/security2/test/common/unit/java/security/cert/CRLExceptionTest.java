@@ -23,14 +23,14 @@ package java.security.cert;
 
 import java.security.cert.CRLException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>CRLException</code> class constructors and methods.
  * 
  */
-public class CRLExceptionTest extends PerformanceTest {
+public class CRLExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class CRLExceptionTest extends PerformanceTest {
      */
     public void testCRLException01() {
         CRLException tE = new CRLException();
-        assertTrue(errNotExc, tE instanceof CRLException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class CRLExceptionTest extends PerformanceTest {
         CRLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CRLException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CRLException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -117,7 +114,6 @@ public class CRLExceptionTest extends PerformanceTest {
     public void testCRLException03() {
         String msg = null;
         CRLException tE = new CRLException(msg);
-        assertTrue(errNotExc, tE instanceof CRLException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -134,7 +130,6 @@ public class CRLExceptionTest extends PerformanceTest {
     public void testCRLException04() {
         Throwable cause = null;
         CRLException tE = new CRLException(cause);
-        assertTrue(errNotExc, tE instanceof CRLException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -150,7 +145,6 @@ public class CRLExceptionTest extends PerformanceTest {
      */
     public void testCRLException05() {
         CRLException tE = new CRLException(tCause);
-        assertTrue(errNotExc, tE instanceof CRLException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -174,7 +168,6 @@ public class CRLExceptionTest extends PerformanceTest {
      */
     public void testCRLException06() {
         CRLException tE = new CRLException(null, null);
-        assertTrue(errNotExc, tE instanceof CRLException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -193,8 +186,6 @@ public class CRLExceptionTest extends PerformanceTest {
         CRLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CRLException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CRLException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -213,7 +204,6 @@ public class CRLExceptionTest extends PerformanceTest {
      */
     public void testCRLException08() {
         CRLException tE = new CRLException(null, tCause);
-        assertTrue(errNotExc, tE instanceof CRLException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -239,8 +229,6 @@ public class CRLExceptionTest extends PerformanceTest {
         CRLException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new CRLException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof CRLException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

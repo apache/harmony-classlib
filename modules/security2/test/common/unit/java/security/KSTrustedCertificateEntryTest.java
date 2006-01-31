@@ -24,14 +24,14 @@ package java.security;
 import java.security.cert.Certificate;
 
 import org.apache.harmony.security.cert.MyCertificate;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyStore.TrustedCertificateEntry</code> class constructor and methods 
  * 
  */
 
-public class KSTrustedCertificateEntryTest extends PerformanceTest {
+public class KSTrustedCertificateEntryTest extends TestCase {
 
     /**
      * Test for <codfe>KeyStore.TrustedCertificateEntry(Certificate trustCert)</code>
@@ -55,8 +55,6 @@ public class KSTrustedCertificateEntryTest extends PerformanceTest {
         Certificate cert = new MyCertificate("TEST", new byte[10]);
         KeyStore.TrustedCertificateEntry ksTCE = 
                 new KeyStore.TrustedCertificateEntry(cert);
-        assertTrue("Not KeyStore.TrustedCertificateEntry object", 
-                ksTCE instanceof KeyStore.TrustedCertificateEntry);
         assertEquals("Incorrect certificate", cert, ksTCE.getTrustedCertificate());
     }
 
@@ -68,9 +66,6 @@ public class KSTrustedCertificateEntryTest extends PerformanceTest {
         Certificate cert = new MyCertificate("TEST", new byte[10]);
         KeyStore.TrustedCertificateEntry ksTCE = 
                 new KeyStore.TrustedCertificateEntry(cert);
-        assertTrue("Not KeyStore.TrustedCertificateEntry object", 
-                ksTCE instanceof KeyStore.TrustedCertificateEntry);
         assertNotNull("toString() returns null string", ksTCE.toString());
-        logln(ksTCE.toString());
     }
 }

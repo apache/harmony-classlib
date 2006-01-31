@@ -27,13 +27,13 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SocketFactory</code> class methods.
  */
-public class SocketFactoryTest extends PerformanceTest {
+public class SocketFactoryTest extends TestCase {
 
     /*
      * Class under test for java.net.Socket createSocket()

@@ -23,14 +23,14 @@ package javax.crypto;
 
 import javax.crypto.SecretKey;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SecretKey</code> class field
  * 
  */
-public class SecretKeyTest extends PerformanceTest {
+public class SecretKeyTest extends TestCase {
 
     /**
      * Constructor for SecretKeyTest.

@@ -28,14 +28,14 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.login.LoginException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.x.security.auth.module.NTLoginModule;
 
 
 /**
  * Unit test for NTLoginModule
  */
-public class NTLoginModuleTest extends PerformanceTest {
+public class NTLoginModuleTest extends TestCase {
 
     /**
      * Standalone entry point.

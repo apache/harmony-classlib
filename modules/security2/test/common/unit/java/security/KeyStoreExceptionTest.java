@@ -23,14 +23,14 @@ package java.security;
 
 import java.security.KeyStoreException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>KeyStoreException</code> class constructors and methods.
  * 
  */
-public class KeyStoreExceptionTest extends PerformanceTest {
+public class KeyStoreExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -78,7 +78,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      */
     public void testKeyStoreException01() {
         KeyStoreException tE = new KeyStoreException();
-        assertTrue(errNotExc, tE instanceof KeyStoreException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -97,8 +96,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
         KeyStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyStoreException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyStoreException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -117,7 +114,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
     public void testKeyStoreException03() {
         String msg = null;
         KeyStoreException tE = new KeyStoreException(msg);
-        assertTrue(errNotExc, tE instanceof KeyStoreException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -134,7 +130,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
     public void testKeyStoreException04() {
         Throwable cause = null;
         KeyStoreException tE = new KeyStoreException(cause);
-        assertTrue(errNotExc, tE instanceof KeyStoreException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -151,7 +146,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      */
     public void testKeyStoreException05() {
         KeyStoreException tE = new KeyStoreException(tCause);
-        assertTrue(errNotExc, tE instanceof KeyStoreException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -175,7 +169,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      */
     public void testKeyStoreException06() {
         KeyStoreException tE = new KeyStoreException(null, null);
-        assertTrue(errNotExc, tE instanceof KeyStoreException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -194,8 +187,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
         KeyStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyStoreException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyStoreException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -214,7 +205,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
      */
     public void testKeyStoreException08() {
         KeyStoreException tE = new KeyStoreException(null, tCause);
-        assertTrue(errNotExc, tE instanceof KeyStoreException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -240,8 +230,6 @@ public class KeyStoreExceptionTest extends PerformanceTest {
         KeyStoreException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new KeyStoreException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof KeyStoreException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

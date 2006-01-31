@@ -38,14 +38,14 @@ import org.apache.harmony.security.PolicyEntry;
 import org.apache.harmony.security.UnresolvedPrincipal;
 import org.apache.harmony.security.fortress.DefaultPolicy;
 import org.apache.harmony.security.fortress.DefaultPolicyParser;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for DefaultPolicy
  * 
  */
-public class DefaultPolicyTest extends PerformanceTest {
+public class DefaultPolicyTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(DefaultPolicyTest.class);

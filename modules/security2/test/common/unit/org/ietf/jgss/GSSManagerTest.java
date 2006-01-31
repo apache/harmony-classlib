@@ -24,13 +24,13 @@ package org.ietf.jgss;
 import java.security.Provider;
 import java.security.Security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests GSSManager class
  */
-public class GSSManagerTest extends PerformanceTest {
+public class GSSManagerTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(GSSManagerTest.class);

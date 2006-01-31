@@ -30,7 +30,7 @@ import java.security.spec.AlgorithmParameterSpec;
 
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -38,7 +38,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class MacSpiTests extends PerformanceTest {
+public class MacSpiTests extends TestCase {
 
     /**
      * Constructor for MacSpiTests.
@@ -53,14 +53,12 @@ public class MacSpiTests extends PerformanceTest {
      * Test for <code>MacSpi</code> constructor 
      * Assertion: constructs MacSpi
      */
-    public void testMacSpiTests01() throws CloneNotSupportedException,
-    InvalidKeyException, InvalidAlgorithmParameterException {
-        MacSpi mSpi = (MacSpi) new MyMacSpi();
+    public void testMacSpiTests01() throws Exception {
+        MacSpi mSpi = new MyMacSpi();
                 
         byte [] bb1 = {(byte)1, (byte)2, (byte)3, (byte)4, (byte)5};
         SecretKeySpec sks = new SecretKeySpec(bb1, "SHA1");        
         
-        assertTrue("Not MacSpi object", mSpi instanceof MacSpi);
         assertEquals("Incorrect MacLength", mSpi.engineGetMacLength(), 0);
         
         try {
@@ -79,8 +77,7 @@ public class MacSpiTests extends PerformanceTest {
         } catch (CloneNotSupportedException e) {
         }
         
-        MacSpi mSpi1 = (MacSpi) new MyMacSpi1();
-        assertTrue("Not MacSpi object", mSpi1 instanceof MacSpi);
+        MacSpi mSpi1 = new MyMacSpi1();
         mSpi1.clone();
         
         byte [] bbb = new byte[10];
@@ -102,16 +99,16 @@ public class MacSpiTests extends PerformanceTest {
         bb = mSpi1.engineDoFinal();
         assertEquals("Incorrect result of engineDoFinal", bb.length, beforeUp);
         
-        MacSpi mSpi2 = (MacSpi) new MyMacSpi2();
-        assertTrue("Not MacSpi object", mSpi2 instanceof MacSpi);
+        MacSpi mSpi2 = new MyMacSpi2();
         
         mSpi2.engineInit(null, null);
         mSpi2.engineInit(sks, null);
+
         try {
-            assertTrue((MacSpi)mSpi2.clone() instanceof MacSpi);
+            mSpi2.clone();
         } catch (CloneNotSupportedException e) {
-            logln("clone() is not supported");
         }
+
         byte [] bbuf = {(byte)5, (byte)4, (byte)3, (byte)2, (byte)1};
         byteBuf = ByteBuffer.allocate(5);        
         byteBuf.put(bbuf);

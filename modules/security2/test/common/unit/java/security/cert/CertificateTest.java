@@ -27,14 +27,14 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 
 import org.apache.harmony.security.cert.MyCertificate;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>Certificate</code> fields and methods
  * 
  */
-public class CertificateTest extends PerformanceTest {
+public class CertificateTest extends TestCase {
     /**
      * Meaningless cert encoding just for testing purposes
      */
@@ -75,7 +75,7 @@ public class CertificateTest extends PerformanceTest {
     public final void testHashCode() {
         Certificate c1 = new MyCertificate("TEST_TYPE", testEncoding);
         Certificate c2 = new MyCertificate("TEST_TYPE", testEncoding);
-        logln(getName() + ": " + c1.hashCode());
+
         assertTrue(c1.hashCode() == c2.hashCode());
     }
 
@@ -86,7 +86,7 @@ public class CertificateTest extends PerformanceTest {
     public final void testHashCodeEqualsObject() {
         Certificate c1 = new MyCertificate("TEST_TYPE", testEncoding);
         Certificate c2 = new MyCertificate("TEST_TYPE", testEncoding);
-        logln(getName() + ": " + c1.hashCode());
+
         assertTrue((c1.hashCode() == c2.hashCode()) && c1.equals(c2));
     }
 

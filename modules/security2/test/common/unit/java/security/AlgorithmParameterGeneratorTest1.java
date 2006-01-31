@@ -24,7 +24,7 @@ package java.security;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -33,7 +33,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
+public class AlgorithmParameterGeneratorTest1 extends TestCase {
     /**
      * Constructor for AlgorithmParameterGeneratorTests.
      * 
@@ -122,8 +122,6 @@ public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
         AlgorithmParameterGenerator apg;
         for (int i = 0; i < algs.length; i++) {
             apg = AlgorithmParameterGenerator.getInstance(algs[i]);
-            assertTrue("Not AlgorithmParameterGenerator object",
-                    apg instanceof AlgorithmParameterGenerator);
             assertEquals("Incorrect algorithm", apg.getAlgorithm(), algs[i]);
         }
     }
@@ -225,8 +223,6 @@ public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
         for (int i = 0; i < algs.length; i++) {
             apg = AlgorithmParameterGenerator.getInstance(algs[i],
                     validProviderName);
-            assertTrue("Not AlgorithmParameterGenerator object",
-                    apg instanceof AlgorithmParameterGenerator);
             assertEquals("Incorrect algorithm", algs[i], apg.getAlgorithm());
             assertEquals("Incorrect provider", apg.getProvider().getName(),
                     validProviderName);
@@ -298,8 +294,6 @@ public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
         for (int i = 0; i < algs.length; i++) {
             apg = AlgorithmParameterGenerator.getInstance(algs[i],
                     validProvider);
-            assertTrue("Not AlgorithmParameterGenerator object",
-                    apg instanceof AlgorithmParameterGenerator);
             assertEquals("Incorrect algorithm", apg.getAlgorithm(), algs[i]);
             assertEquals("Incorrect provider", apg.getProvider(), validProvider);
         }
@@ -319,8 +313,6 @@ public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
                 .getInstance(validAlgName);
         apg.init(512);
         AlgorithmParameters ap = apg.generateParameters();
-        assertTrue("Not AlgorithmParameters object",
-                ap instanceof AlgorithmParameters);
         assertEquals("Incorrect algorithm", ap.getAlgorithm().toUpperCase(),
                 apg.getAlgorithm().toUpperCase());
     }
@@ -330,7 +322,7 @@ public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
      * <code>init(int size, SecureRandom random<code> methods
      * Assertion: throws InvalidParameterExceptiom when size is incorrect
      */
-    public void testAlgorithmParameterGenerator11() {        
+    public void testAlgorithmParameterGenerator11() throws InvalidParameterException {        
         if (!DSASupported) {
             fail(validAlgName + " algorithm is not supported");
             return;
@@ -340,35 +332,15 @@ public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
         AlgorithmParameterGenerator[] apgs = createAPGen();
         assertNotNull("AlgorithmParameterGenerator objects were not created",
                 apgs);
+
         for (int i = 0; i < apgs.length; i++) {
             for (int j = 0; j < keys.length; j++) {
-              
-                try {
-                    apgs[i].init(keys[j]);
-                    logln("Ignore key: " + Integer.toString(keys[j]));
-                } catch (InvalidParameterException e) {                    
-                }
-                try {
-                    apgs[i].init(keys[j], random);
-                    logln("Ignore key: " + Integer.toString(keys[j])+ " when random is not null");
-                } catch (InvalidParameterException e) {                    
-                }
-                try {
-                    apgs[i].init(keys[j], null);
-                    logln("Ignore key: " + Integer.toString(keys[j])+ " when random is null");
-                } catch (InvalidParameterException e) {                    
-                }
+                apgs[i].init(keys[j]);
+                apgs[i].init(keys[j], random);
+                apgs[i].init(keys[j], null);
             }
-            try {
-                apgs[i].init(1024);
-            } catch (InvalidParameterException e) {
-                fail("Unexpected InvalidParameterException was thrown");                
-            }
-            try {
-                apgs[i].init(1024, random);
-            } catch (InvalidParameterException e) {
-                fail("Unexpected InvalidParameterException was thrown");                                
-            }
+            apgs[i].init(1024);
+            apgs[i].init(1024, random);
         }
     }
     
@@ -409,7 +381,6 @@ public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
         AlgorithmParameterGeneratorSpi spi = new MyAlgorithmParameterGeneratorSpi();
         AlgorithmParameterGenerator apg = 
                 new myAlgPG(spi, validProvider, validAlgName);
-        assertTrue("Not CertStore object", apg instanceof AlgorithmParameterGenerator);
         assertEquals("Incorrect algorithm", apg.getAlgorithm(), validAlgName);
         assertEquals("Incorrect provider",apg.getProvider(),validProvider);
         try {
@@ -419,7 +390,6 @@ public class AlgorithmParameterGeneratorTest1 extends PerformanceTest {
         }
         
         apg = new myAlgPG(null, null, null);
-        assertTrue("Not CertStore object", apg instanceof AlgorithmParameterGenerator);
         assertNull("Incorrect algorithm", apg.getAlgorithm());
         assertNull("Incorrect provider", apg.getProvider());
         try {

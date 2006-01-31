@@ -24,7 +24,7 @@ package java.security;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -32,7 +32,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class AllPermissionCollectionTest extends PerformanceTest {
+public class AllPermissionCollectionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AllPermissionCollectionTest.class);

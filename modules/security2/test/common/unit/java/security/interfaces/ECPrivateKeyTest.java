@@ -26,13 +26,13 @@ import java.math.BigInteger;
 import java.security.interfaces.ECPrivateKey;
 import java.security.spec.ECParameterSpec;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>ECPrivateKey</code> class field
  * 
  */
-public class ECPrivateKeyTest extends PerformanceTest {
+public class ECPrivateKeyTest extends TestCase {
 
     /**
      * Constructor for ECPrivateKeyTest.

@@ -26,7 +26,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 
 import org.apache.harmony.security.fortress.DefaultPolicy;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 import org.apache.harmony.security.test.SecurityChecker;
 
 
@@ -35,7 +35,7 @@ import org.apache.harmony.security.test.SecurityChecker;
  * 
  */
 
-public class PolicyTest extends PerformanceTest {
+public class PolicyTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(PolicyTest.class);

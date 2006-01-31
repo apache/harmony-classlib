@@ -23,7 +23,7 @@ package javax.crypto;
 
 import javax.crypto.NoSuchPaddingException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class NoSuchPaddingExceptionTest extends PerformanceTest {
+public class NoSuchPaddingExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class NoSuchPaddingExceptionTest extends PerformanceTest {
      */
     public void testNoSuchPaddingException01() {
         NoSuchPaddingException tE = new NoSuchPaddingException();
-        assertTrue(errNotExc, tE instanceof NoSuchPaddingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class NoSuchPaddingExceptionTest extends PerformanceTest {
         NoSuchPaddingException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchPaddingException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof NoSuchPaddingException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class NoSuchPaddingExceptionTest extends PerformanceTest {
     public void testNoSuchPaddingException03() {
         String msg = null;
         NoSuchPaddingException tE = new NoSuchPaddingException(msg);
-        assertTrue(errNotExc, tE instanceof NoSuchPaddingException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

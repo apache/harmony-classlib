@@ -21,14 +21,14 @@
 
 package java.security;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>GuardedObject</code>
  * 
  */
 
-public class GuardedObjectTest extends PerformanceTest {
+public class GuardedObjectTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(GuardedObjectTest.class);

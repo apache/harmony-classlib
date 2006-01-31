@@ -22,7 +22,7 @@
 package java.security;
 
 import org.apache.harmony.security.*;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class SignerTest extends PerformanceTest {
+public class SignerTest extends TestCase {
 
     public static class MySecurityManager extends SecurityManager {
         public Permissions denied = new Permissions(); 
@@ -71,18 +71,18 @@ public class SignerTest extends PerformanceTest {
      * verify  Signer.toString()
      */
     public void testToString() throws Exception {
-//        java.util.Enumeration e = IdentityScope.getSystemScope().identities();
-//        while(e.hasMoreElements())  System.out.println(e.nextElement());
-        
         Signer s1 = new SignerStub("testToString1");
-        logln(s1.toString());
+        s1.toString();
+
         Signer s2 = new SignerStub("testToString2", IdentityScope.getSystemScope());
-        logln(s2.toString());
+        s2.toString();
+
         KeyPair kp = new KeyPair(new PublicKeyStub("public", "SignerTest.testToString", null), new PrivateKeyStub("private", "SignerTest.testToString", null));
         s1.setKeyPair(kp);
-        logln(s1.toString());
+        s1.toString();
+
         s2.setKeyPair(kp);
-        logln(s2.toString());
+        s2.toString();
     }
 
     /**

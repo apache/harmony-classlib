@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.UnrecoverableKeyException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class UnrecoverableKeyExceptionTest extends PerformanceTest {
+public class UnrecoverableKeyExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class UnrecoverableKeyExceptionTest extends PerformanceTest {
      */
     public void testUnrecoverableKeyException01() {
         UnrecoverableKeyException tE = new UnrecoverableKeyException();
-        assertTrue(errNotExc, tE instanceof UnrecoverableKeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class UnrecoverableKeyExceptionTest extends PerformanceTest {
         UnrecoverableKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new UnrecoverableKeyException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof UnrecoverableKeyException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class UnrecoverableKeyExceptionTest extends PerformanceTest {
     public void testUnrecoverableKeyException03() {
         String msg = null;
         UnrecoverableKeyException tE = new UnrecoverableKeyException(msg);
-        assertTrue(errNotExc, tE instanceof UnrecoverableKeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

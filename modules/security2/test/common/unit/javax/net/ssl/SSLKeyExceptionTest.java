@@ -23,14 +23,14 @@ package javax.net.ssl;
 
 import javax.net.ssl.SSLKeyException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>SSLKeyException</code> class constructors and methods.
  * 
  */
-public class SSLKeyExceptionTest extends PerformanceTest {
+public class SSLKeyExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -81,8 +81,6 @@ public class SSLKeyExceptionTest extends PerformanceTest {
         SSLKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SSLKeyException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SSLKeyException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -101,7 +99,6 @@ public class SSLKeyExceptionTest extends PerformanceTest {
     public void testSSLKeyException02() {
         String msg = null;
         SSLKeyException tE = new SSLKeyException(msg);
-        assertTrue(errNotExc, tE instanceof SSLKeyException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

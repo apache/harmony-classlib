@@ -25,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -33,7 +33,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class KeyPairGeneratorTest3 extends PerformanceTest {
+public class KeyPairGeneratorTest3 extends TestCase {
 
     /**
      * Constructor for KeyPairGeneratorTest3.
@@ -101,9 +101,7 @@ public class KeyPairGeneratorTest3 extends PerformanceTest {
         for (int i = 0; i < kpg.length; i++) {
             kpg[i].initialize(512, rr);
             kp = kpg[i].generateKeyPair();
-            assertTrue("Not KeyPair object", kp instanceof KeyPair);
             kp1 = kpg[i].genKeyPair();
-            assertTrue("Not KeyPair object", kp1 instanceof KeyPair);
             assertFalse("Incorrect private key", kp.getPrivate().equals(
                     kp1.getPrivate()));
             assertFalse("Incorrect public key", kp.getPublic().equals(
@@ -126,19 +124,12 @@ public class KeyPairGeneratorTest3 extends PerformanceTest {
         assertNotNull("KeyPairGenerator objects were not created", kpg);
         KeyPair kp, kp1;   
         for (int i = 0; i < kpg.length; i++) {
-            try {
-                kp = kpg[i].generateKeyPair();
-                assertTrue("Not KeyPair object", kp instanceof KeyPair);
-                kp1 = kpg[i].genKeyPair();
-                assertTrue("Not KeyPair object", kp1 instanceof KeyPair);
-                assertFalse("Incorrect private key", kp.getPrivate().equals(
-                    kp1.getPrivate()));
-                assertFalse("Incorrect public key", kp.getPublic().equals(
-                    kp1.getPublic()));
-            } catch (Exception e) {
-                logln("Unexpected exception was thrown during KeyPair "
-                        + " generation without previous initialization");
-            }
+            kp = kpg[i].generateKeyPair();
+            kp1 = kpg[i].genKeyPair();
+            assertFalse("Incorrect private key", kp.getPrivate().equals(
+                kp1.getPrivate()));
+            assertFalse("Incorrect public key", kp.getPublic().equals(
+                kp1.getPublic()));
         }
     }
 

@@ -35,7 +35,7 @@ import java.util.HashSet;
 
 import org.apache.harmony.security.PolicyEntry;
 import org.apache.harmony.security.UnresolvedPrincipal;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -43,7 +43,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class PolicyEntryTest extends PerformanceTest {
+public class PolicyEntryTest extends TestCase {
 
     /** 
      * Tests constructor and accessors of PolicyEntry 

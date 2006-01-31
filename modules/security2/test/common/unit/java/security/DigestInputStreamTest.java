@@ -32,13 +32,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import org.apache.harmony.security.MDGoldenData;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for fields and methods of class <code>DigestInputStream</code>
  * 
  */
-public class DigestInputStreamTest extends PerformanceTest {
+public class DigestInputStreamTest extends TestCase {
 
     /**
      * Message digest algorithm name used during testing
@@ -232,9 +232,7 @@ public class DigestInputStreamTest extends PerformanceTest {
      * <code>InputStream</code> not set. <code>read()</code> must
      * not work
      */
-    public final void testRead04()
-        throws IOException {
-        boolean passed = false;
+    public final void testRead04() throws IOException {
         for (int ii=0; ii<algorithmName.length; ii++) {
             try {
                 MessageDigest md = MessageDigest.getInstance(algorithmName[ii]);
@@ -245,11 +243,11 @@ public class DigestInputStreamTest extends PerformanceTest {
                         dis.read();
                     }
                 } catch (Exception e) {
-                    passed = true;
-                    logln(getName() + ": " + e);
+                    return;
                 }
-                assertTrue(passed);
-                return;
+
+                fail("InputStream not set. read() must not work");
+
             } catch (NoSuchAlgorithmException e) {
                 // allowed failure
             }
@@ -265,21 +263,18 @@ public class DigestInputStreamTest extends PerformanceTest {
      * <code>read()</code> must not work when digest
      * functionality is on
      */
-    public final void testRead05()
-        throws IOException {
-        boolean passed = false;
+    public final void testRead05() {
         InputStream is = new ByteArrayInputStream(myMessage);
         DigestInputStream dis = new DigestInputStream(is, null);
+
         // must result in an exception
         try {
             for (int i=0; i<MY_MESSAGE_LEN; i++) {
                 dis.read();
             }
+            fail("read() must not work when digest functionality is on");
         } catch (Exception e) {
-            passed = true;
-            logln(getName() + ": " + e);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -590,9 +585,8 @@ public class DigestInputStreamTest extends PerformanceTest {
                 MessageDigest md = MessageDigest.getInstance(algorithmName[ii]);
                 InputStream is = new ByteArrayInputStream(myMessage);
                 DigestInputStream dis = new DigestInputStream(is, md);
-                String rep = dis.toString();
-                logln(getName() + ": " + rep);
-                assertTrue(rep != null);
+
+                assertNotNull(dis.toString());
                 return;
             } catch (NoSuchAlgorithmException e) {
                 // allowed failure

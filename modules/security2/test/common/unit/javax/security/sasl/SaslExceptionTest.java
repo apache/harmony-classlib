@@ -22,13 +22,13 @@
 package javax.security.sasl;
 
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for constructors and methods of SaslException class
  * 
  */
-public class SaslExceptionTest extends PerformanceTest {
+public class SaslExceptionTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SaslExceptionTest.class);

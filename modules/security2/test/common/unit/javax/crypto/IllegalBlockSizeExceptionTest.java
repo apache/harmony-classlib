@@ -23,7 +23,7 @@ package javax.crypto;
 
 import javax.crypto.IllegalBlockSizeException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class IllegalBlockSizeExceptionTest extends PerformanceTest {
+public class IllegalBlockSizeExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class IllegalBlockSizeExceptionTest extends PerformanceTest {
      */
     public void testIllegalBlockSizeException01() {
         IllegalBlockSizeException tE = new IllegalBlockSizeException();
-        assertTrue(errNotExc, tE instanceof IllegalBlockSizeException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class IllegalBlockSizeExceptionTest extends PerformanceTest {
         IllegalBlockSizeException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new IllegalBlockSizeException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof IllegalBlockSizeException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class IllegalBlockSizeExceptionTest extends PerformanceTest {
     public void testIllegalBlockSizeException03() {
         String msg = null;
         IllegalBlockSizeException tE = new IllegalBlockSizeException(msg);
-        assertTrue(errNotExc, tE instanceof IllegalBlockSizeException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

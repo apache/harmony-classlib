@@ -23,14 +23,14 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>ECFieldFp</code> class fields and methods.
  * 
  */
-public class ECFieldFpTest extends PerformanceTest {
+public class ECFieldFpTest extends TestCase {
     /**
      * @see TestCase#setUp()
      */
@@ -64,7 +64,7 @@ public class ECFieldFpTest extends PerformanceTest {
      * using valid <code>p</code> (odd prime)
      */
     public final void testECFieldFp01() {
-        assertTrue(new ECFieldFp(BigInteger.valueOf(23L)) instanceof ECFieldFp);
+        new ECFieldFp(BigInteger.valueOf(23L));
     }
 
     /**
@@ -74,7 +74,7 @@ public class ECFieldFpTest extends PerformanceTest {
      * using valid <code>p</code> (odd but not prime)
      */
     public final void testECFieldFp02() {
-        assertTrue(new ECFieldFp(BigInteger.valueOf(21L)) instanceof ECFieldFp);
+        new ECFieldFp(BigInteger.valueOf(21L));
     }
 
     /**
@@ -83,20 +83,12 @@ public class ECFieldFpTest extends PerformanceTest {
      * Assertion: IllegalArgumentException if <code>p</code> is not positive
      */
     public final void testECFieldFp03() {
-        boolean passed = false;
         try {
-            ECFieldFp f = new ECFieldFp(BigInteger.valueOf(-1L)); 
-            loglnError(getName() +
+            new ECFieldFp(BigInteger.valueOf(-1L)); 
+            fail(getName() +
                     " FAILED: expected exception has not been thrown");
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            } else {
-                loglnError(getName() + " FAILED: unexpected exception " + e);
-            }
+        } catch (IllegalArgumentException e) {
         }
-        assertTrue(passed);
     }
 
     /**
@@ -105,20 +97,12 @@ public class ECFieldFpTest extends PerformanceTest {
      * Assertion: IllegalArgumentException if <code>p</code> is not positive
      */
     public final void testECFieldFp04() {
-        boolean passed = false;
         try {
-            ECFieldFp f = new ECFieldFp(BigInteger.valueOf(0L));
-            loglnError(getName() +
+            new ECFieldFp(BigInteger.valueOf(0L));
+            fail(getName() +
                     " FAILED: expected exception has not been thrown");
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            } else {
-                loglnError(getName() + " FAILED: unexpected exception " + e);
-            }
+        } catch (IllegalArgumentException e) {
         }
-        assertTrue(passed);
     }
 
     /**
@@ -127,20 +111,12 @@ public class ECFieldFpTest extends PerformanceTest {
      * Assertion: NullPointerException if <code>p</code> is null
      */
     public final void testECFieldFp05() {
-        boolean passed = false;
         try {
-            ECFieldFp f = new ECFieldFp(null);
-            loglnError(getName() +
+            new ECFieldFp(null);
+            fail(getName() +
                     " FAILED: expected exception has not been thrown");
-        } catch (Exception e) {
-            if (e instanceof NullPointerException) {
-                passed = true;
-                logln(getName() + ": " + e);
-            } else {
-                loglnError(getName() + " FAILED: unexpected exception " + e);
-            }
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
 
     /**

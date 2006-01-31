@@ -21,14 +21,14 @@
 
 package javax.net.ssl;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Template tests for SSLEngineResult class
  * FIXME: uncommente these tests  
  * 
  */
-public class SSLEngineResultTest extends PerformanceTest {
+public class SSLEngineResultTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SSLEngineResultTest.class);

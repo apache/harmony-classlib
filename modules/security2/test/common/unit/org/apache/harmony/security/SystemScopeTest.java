@@ -26,7 +26,7 @@ import java.security.*;
 import java.util.Enumeration;
 
 import org.apache.harmony.security.SystemScope;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -34,7 +34,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class SystemScopeTest extends PerformanceTest {
+public class SystemScopeTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SystemScopeTest.class);

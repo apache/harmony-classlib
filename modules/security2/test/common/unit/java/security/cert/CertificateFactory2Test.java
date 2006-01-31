@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -40,7 +40,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * 
  */
 
-public class CertificateFactory2Test extends PerformanceTest {
+public class CertificateFactory2Test extends TestCase {
     private static final String defaultAlg = "CertFac";
     private static final String CertificateFactoryProviderClass = "java.security.cert.MyCertificateFactorySpi";
     

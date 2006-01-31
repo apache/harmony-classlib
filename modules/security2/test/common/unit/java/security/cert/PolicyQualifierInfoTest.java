@@ -23,14 +23,14 @@ package java.security.cert;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * PolicyQualifierInfo test
  * 
  */
-public class PolicyQualifierInfoTest extends PerformanceTest {
+public class PolicyQualifierInfoTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
@@ -60,42 +60,30 @@ public class PolicyQualifierInfoTest extends PerformanceTest {
      * qualifier info
      */
     public final void testPolicyQualifierInfo01() {
-        boolean passed = false;
         try {
             // pass null
-            PolicyQualifierInfo i = new PolicyQualifierInfo(null);
+            new PolicyQualifierInfo(null);
+            fail("IOE or NPE expected");
         } catch (IOException e) {
-            passed = true;
-            logln(getName() + ": " + e);
         } catch (NullPointerException e) {
-            // ref impl behaves like this
-            passed = true;
-            logln(getName() + ": " + e);
         }
-        assertTrue(passed);
 
-        passed = false;
         try {
             // pass empty array
-            PolicyQualifierInfo i = new PolicyQualifierInfo(new byte[0]);
+            new PolicyQualifierInfo(new byte[0]);
+            fail("IOE expected");
         } catch (IOException e) {
-            passed = true;
-            logln(getName() + ": " + e);
         }
-        assertTrue(passed);
 
-        passed = false;
+
         try {
             // pass invalid array
-            PolicyQualifierInfo i =
-                new PolicyQualifierInfo(
-                        new byte[] {(byte)0x06, (byte)0x03,
-                                (byte)0x81, (byte)0x34, (byte)0x03});
+            new PolicyQualifierInfo(
+                    new byte[] {(byte)0x06, (byte)0x03,
+                            (byte)0x81, (byte)0x34, (byte)0x03});
+            fail("IOE expected");
         } catch (IOException e) {
-            passed = true;
-            logln(getName() + ": " + e);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -105,21 +93,19 @@ public class PolicyQualifierInfoTest extends PerformanceTest {
      * qualifier info
      */
     public final void testPolicyQualifierInfo02() {
-        boolean passed = false;
         // get valid encoding
         byte[] encoding = getDerEncoding();
         // corrupt root seq length
         encoding[1] = (byte)0x27;
+
         try {
             // pass invalid array
-            PolicyQualifierInfo i = new PolicyQualifierInfo(encoding);
+            new PolicyQualifierInfo(encoding);
+            fail("IOE expected");
         } catch (IOException e) {
-            passed = true;
-            logln(getName() + ": " + e);
         }
-        assertTrue(passed);
 
-        passed = false;
+
         // get valid encoding
         encoding = getDerEncoding();
         // corrupt policy qualifier ID:
@@ -127,12 +113,10 @@ public class PolicyQualifierInfoTest extends PerformanceTest {
         encoding[2] = (byte)13;
         try {
             // pass invalid array
-            PolicyQualifierInfo i = new PolicyQualifierInfo(encoding);
+            new PolicyQualifierInfo(encoding);
+            fail("IOE expected");
         } catch (IOException e) {
-            passed = true;
-            logln(getName() + ": " + e);
         }
-        assertTrue(passed);
     }
 
     /**
@@ -146,7 +130,7 @@ public class PolicyQualifierInfoTest extends PerformanceTest {
         // get valid encoding
         byte[] encoding = getDerEncoding();
         // pass valid array
-        PolicyQualifierInfo i = new PolicyQualifierInfo(encoding);
+        new PolicyQualifierInfo(encoding);
     }
 
     /**
@@ -305,9 +289,8 @@ public class PolicyQualifierInfoTest extends PerformanceTest {
         byte[] encoding = getDerEncoding();
         // pass valid array
         PolicyQualifierInfo i = new PolicyQualifierInfo(encoding);
-        String rep = i.toString();
-        logln(getName() + ": " + rep);
-        assertNotNull(rep);
+
+        assertNotNull(i.toString());
     }
 
     //

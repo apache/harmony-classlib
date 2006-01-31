@@ -23,7 +23,7 @@ package java.security;
 
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.harmony.security.test.PerformanceTest;
  * methods.
  * 
  */
-public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
+public class NoSuchAlgorithmExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
@@ -79,7 +79,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      */
     public void testNoSuchAlgorithmException01() {
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException();
-        assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -98,8 +97,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
         NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchAlgorithmException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof NoSuchAlgorithmException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -119,7 +116,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
     public void testNoSuchAlgorithmException03() {
         String msg = null;
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(msg);
-        assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -137,7 +133,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
     public void testNoSuchAlgorithmException04() {
         Throwable cause = null;
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(cause);
-        assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -154,7 +149,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      */
     public void testNoSuchAlgorithmException05() {
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(tCause);
-        assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -178,7 +172,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      */
     public void testNoSuchAlgorithmException06() {
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(null, null);
-        assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -197,8 +190,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
         NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchAlgorithmException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof NoSuchAlgorithmException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -217,7 +208,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
      */
     public void testNoSuchAlgorithmException08() {
         NoSuchAlgorithmException tE = new NoSuchAlgorithmException(null, tCause);
-        assertTrue(errNotExc, tE instanceof NoSuchAlgorithmException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -243,8 +233,6 @@ public class NoSuchAlgorithmExceptionTest extends PerformanceTest {
         NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new NoSuchAlgorithmException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof NoSuchAlgorithmException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

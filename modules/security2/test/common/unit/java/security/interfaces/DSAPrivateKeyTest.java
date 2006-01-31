@@ -25,13 +25,13 @@ package java.security.interfaces;
 import java.math.BigInteger;
 import java.security.interfaces.DSAPrivateKey;
 
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>DSAPrivateKey</code> class field
  * 
  */
-public class DSAPrivateKeyTest extends PerformanceTest {
+public class DSAPrivateKeyTest extends TestCase {
 
     /**
      * Constructor for DSAPrivateKeyTest.

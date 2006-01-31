@@ -27,14 +27,14 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import org.apache.harmony.security.MDGoldenData;
-import org.apache.harmony.security.test.PerformanceTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests for fields and methods of class <code>DigestInputStream</code>
  * 
  */
-public class DigestOutputStreamTest extends PerformanceTest {
+public class DigestOutputStreamTest extends TestCase {
 
     /**
      * Message digest algorithm name used during testing
@@ -194,9 +194,7 @@ public class DigestOutputStreamTest extends PerformanceTest {
      * <code>OutputStream</code> not set. <code>write(int)</code> must
      * not work
      */
-    public final void testWriteint03()
-        throws IOException {
-        boolean passed = false;
+    public final void testWriteint03() throws IOException {
         for (int k=0; k<algorithmName.length; k++) {
             try {
                 MessageDigest md = MessageDigest.getInstance(algorithmName[k]);
@@ -206,12 +204,10 @@ public class DigestOutputStreamTest extends PerformanceTest {
                     for (int i=0; i<MY_MESSAGE_LEN; i++) {
                         dos.write(myMessage[i]);
                     }
+                    fail("OutputStream not set. write(int) must not work");
                 } catch (Exception e) {
-                    passed = true;
-                    logln(getName() + ": " + e);
+                    return;
                 }
-                assertTrue(passed);
-                return;
             } catch (NoSuchAlgorithmException e) {
                 // allowed failure
             }
@@ -227,21 +223,19 @@ public class DigestOutputStreamTest extends PerformanceTest {
      * <code>write(int)</code> must not work when digest
      * functionality is on
      */
-    public final void testWriteint04()
-        throws IOException {
-        boolean passed = false;
+    public final void testWriteint04() throws IOException {
         OutputStream os = new ByteArrayOutputStream(MY_MESSAGE_LEN);
         DigestOutputStream dos = new DigestOutputStream(os, null);
+
         // must result in an exception
         try {
             for (int i=0; i<MY_MESSAGE_LEN; i++) {
                 dos.write(myMessage[i]);
             }
+            fail("OutputStream not set. write(int) must not work");
         } catch (Exception e) {
-            passed = true;
-            logln(getName() + ": " + e);
+            return;
         }
-        assertTrue(passed);
     }
 
     /**
@@ -253,8 +247,7 @@ public class DigestOutputStreamTest extends PerformanceTest {
      * <code>write(int)</code> must work when digest
      * functionality is off
      */
-    public final void testWriteint05()
-        throws IOException {
+    public final void testWriteint05() throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(MY_MESSAGE_LEN);
         DigestOutputStream dos = new DigestOutputStream(bos, null);
         // set digest functionality to off
@@ -507,9 +500,8 @@ public class DigestOutputStreamTest extends PerformanceTest {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream(MY_MESSAGE_LEN);
                 MessageDigest md = MessageDigest.getInstance(algorithmName[k]);
                 DigestOutputStream dos = new DigestOutputStream(bos, md);
-                String rep = dos.toString();
-                logln(getName() + ": " + rep);
-                assertTrue(rep != null);
+
+                assertNotNull(dos.toString());
                 return;
             } catch (NoSuchAlgorithmException e) {
                 // allowed failure
