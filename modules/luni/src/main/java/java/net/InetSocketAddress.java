@@ -51,6 +51,7 @@ public class InetSocketAddress extends SocketAddress {
 		this.port = port;
 		try {
 			addr = InetAddress.getByName(hostName);
+			hostName = addr.getHostName();
 		} catch (UnknownHostException e) {
 		}
 	}
