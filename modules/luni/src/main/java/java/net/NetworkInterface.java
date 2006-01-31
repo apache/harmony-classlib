@@ -125,10 +125,10 @@ public final class NetworkInterface extends Object {
 		// generated set the initial capacity to be the number of addresses for
 		// the network interface which is the maximum required size
 
-		// just return null if there are not addresses associated with the
+		// return an empty enumeration if there are no addresses associated with the
 		// interface
 		if (addresses == null) {
-			return null;
+			return new Vector(0).elements();
 		}
 
 		// for those configuration that support the security manager we only
@@ -163,7 +163,7 @@ public final class NetworkInterface extends Object {
 			return accessibleAddresses.elements();
 		}
 		
-		return null;
+		return new Vector(0).elements();
 	}
 
 	/**
@@ -237,8 +237,7 @@ public final class NetworkInterface extends Object {
 
 		// get the list of interfaces, and then loop through the list. For each
 		// interface loop through the associated set of inet addresses and see
-		// if
-		// one matches. If so return that network interface
+		// if one matches. If so return that network interface
 		Enumeration interfaces = getNetworkInterfaces();
 		if (interfaces != null) {
 			while (interfaces.hasMoreElements()) {
