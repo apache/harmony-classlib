@@ -111,8 +111,7 @@ public abstract class URLStreamHandler {
 						portIdx = -1;
 					}
 				} catch (Exception e) {
-					System.out.println("***********");
-					e.printStackTrace();
+					// Ignored
 				}
 			}
 
