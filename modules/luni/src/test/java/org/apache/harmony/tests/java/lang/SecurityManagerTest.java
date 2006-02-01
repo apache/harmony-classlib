@@ -15,24 +15,26 @@
 
 package org.apache.harmony.tests.java.lang;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.security.AccessControlException;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+public class SecurityManagerTest extends TestCase {
+
+	/**
+	 * @tests java.lang.SecurityManager#checkAccess(java.lang.Thread)
+	 */
+	public void test_checkAccessLjava_lang_Thread() throws InterruptedException {
+		// Regression for HARMONY-66
+		Thread t = new Thread() {
+			public void run() {	};
+		};
+		t.start();
+		t.join();
+		try {
+			new SecurityManager().checkAccess(t);
+		} catch (AccessControlException e) {
+			// expected
+		}
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.lang");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(FloatTest.class);
-		suite.addTestSuite(SecurityManagerTest.class);
-		suite.addTestSuite(DoubleTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }

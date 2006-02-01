@@ -88,8 +88,9 @@ public class SecurityManager {
 	 *            the thread we are attempting to modify
 	 */
 	public void checkAccess(Thread thread) {
-		// Only worry about system threads.
-		if (thread.getThreadGroup().parent == null)
+		// Only worry about system threads. Dead threads have a null group.
+		ThreadGroup group = thread.getThreadGroup();
+		if (group == null || group.parent == null)
 			checkPermission(RuntimePermission.permissionToModifyThread);
 	}
 
