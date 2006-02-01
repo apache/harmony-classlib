@@ -263,15 +263,24 @@ public class InetAddress extends Object implements Serializable {
 	 * @return String the corresponding string name
 	 */
 	public String getHostName() {
-		int address = 0;
 		try {
 			if (hostName == null) {
-				address = bytesToInt(ipaddress, 0);
-				hostName = (0 == address) ? inetNtoaImpl(address)
-						: getHostByAddrImpl(ipaddress).hostName;
+				int address = 0;
+				if (ipaddress.length == 4) {
+					address = bytesToInt(ipaddress, 0);
+					if (address == 0) {
+						return hostName = inetNtoaImpl(address);
+					}
+				}
+				hostName = getHostByAddrImpl(ipaddress).hostName;
+				if (hostName.equals("localhost") && ipaddress.length == 4
+						&& address != 0x7f000001) {
+					return hostName = inetNtoaImpl(address);
+				}
 			}
 		} catch (UnknownHostException e) {
-			return hostName = inetNtoaImpl(address);
+			return hostName = Inet6Util
+					.createIPAddrStringFromByteArray(ipaddress);
 		}
 		SecurityManager security = System.getSecurityManager();
 		try {
@@ -279,11 +288,10 @@ public class InetAddress extends Object implements Serializable {
 			if (security != null && isHostName(hostName))
 				security.checkConnect(hostName, -1);
 		} catch (SecurityException e) {
-			address = bytesToInt(ipaddress, 0);
-			return inetNtoaImpl(address);
+			return Inet6Util.createIPAddrStringFromByteArray(ipaddress);
 		}
 		return hostName;
-	}
+}
 
 	/**
 	 * Answers canonical name for the host associated with the inet address
@@ -291,26 +299,29 @@ public class InetAddress extends Object implements Serializable {
 	 * @return String string containing the host name
 	 */
 	public String getCanonicalHostName() {
-		int address = 0;
+		String canonicalName;
 		try {
-
-			address = bytesToInt(ipaddress, 0);
-			hostName = (0 == address) ? inetNtoaImpl(address)
-					: getHostByAddrImpl(ipaddress).hostName;
+			int address = 0;
+			if (ipaddress.length == 4) {
+				address = bytesToInt(ipaddress, 0);
+				if (address == 0) {
+					return inetNtoaImpl(address);
+				}
+			}
+			canonicalName = getHostByAddrImpl(ipaddress).hostName;
 		} catch (UnknownHostException e) {
-			return hostName = inetNtoaImpl(address);
+			return Inet6Util.createIPAddrStringFromByteArray(ipaddress);
 		}
 		SecurityManager security = System.getSecurityManager();
 		try {
 			// Only check host names, not addresses
-			if (security != null && isHostName(hostName))
-				security.checkConnect(hostName, -1);
+			if (security != null && isHostName(canonicalName))
+				security.checkConnect(canonicalName, -1);
 		} catch (SecurityException e) {
-			address = bytesToInt(ipaddress, 0);
-			return inetNtoaImpl(address);
+			return Inet6Util.createIPAddrStringFromByteArray(ipaddress);
 		}
-		return hostName;
-	}
+		return canonicalName;
+}
 
 	/**
 	 * Answer the local host, if allowed by the security policy. Otherwise,
@@ -1050,9 +1061,7 @@ public class InetAddress extends Object implements Serializable {
 	static boolean preferIPv6Addresses() {
 		String result = (String) AccessController.doPrivileged(new PriviAction(
 				"java.net.preferIPv6Addresses"));
-		if ("true".equals(result))
-			return true;
-		return false;
+		return "true".equals(result);
 	}
 
 	private static final ObjectStreamField[] serialPersistentFields = {
