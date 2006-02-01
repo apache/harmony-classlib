@@ -87,7 +87,7 @@ public class InetAddress extends Object implements Serializable {
 	 * @param address
 	 *            network address
 	 */
-	private InetAddress(byte[] address, String hostName) {
+	InetAddress(byte[] address, String hostName) {
 		super();
 		this.ipaddress = address;
 		this.hostName = hostName;

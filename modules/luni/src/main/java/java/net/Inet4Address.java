@@ -208,7 +208,7 @@ public final class Inet4Address extends InetAddress {
 	}
 
 	private Object writeReplace() throws ObjectStreamException {
-		return new InetAddress(ipaddress);
+		return new InetAddress(ipaddress, hostName);
 	}
 
 }
