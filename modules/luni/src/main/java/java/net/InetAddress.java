@@ -1084,6 +1084,6 @@ public class InetAddress extends Object implements Serializable {
 	}
 
 	private Object readResolve() throws ObjectStreamException {
-		return new Inet4Address(ipaddress);
+		return new Inet4Address(ipaddress, hostName);
 	}
 }
