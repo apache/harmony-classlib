@@ -67,25 +67,34 @@ public final class Inet4Address extends InetAddress {
 	}
 
 	/**
-	 * Answers false for all IPv4 addresses.
+	 * Answers whether this address has link-local scope.
+	 * 
+	 * RFC 3484 Default Address Selection for Internet Protocol version 6 (IPv6)
+	 * states IPv4 auto-configuration addresses, prefix 169.254/16, 
+	 * IPv4 loopback addresses, prefix 127/8, are assigned link-local scope.
 	 * 
 	 * @return boolean
-	 * 
-	 * There are no valid IPv4 link local addresses.
 	 */
 	public boolean isLinkLocalAddress() {
-		return false;
+		// The reference implementation does not return true
+		// for loopback addresses even though RFC 3484 says to do so
+		return (((ipaddress[0] & 255) == 169) && ((ipaddress[1] & 255) == 254));
 	}
 
 	/**
-	 * Answers false for all IPv4 addresses.
+	 * Answers whether this address has site-local scope.
 	 * 
 	 * @return boolean
 	 * 
-	 * There are no valid IPv4 site local addresses.
+	 * RFC 3484 Default Address Selection for Internet Protocol version 6 (IPv6)
+	 * states IPv4 private addresses, prefixes 10/8, 172.16/12, and 192.168/16,
+	 * are assigned site-local scope.
 	 */
 	public boolean isSiteLocalAddress() {
-		return false;
+		return ((ipaddress[0] & 255) == 10) || ((ipaddress[0] & 255) == 172)
+				&& (((ipaddress[1] & 255) > 15) && (ipaddress[1] & 255) < 32)
+				|| ((ipaddress[0] & 255) == 192)
+				&& ((ipaddress[1] & 255) == 168);
 	}
 
 	/**
