@@ -171,16 +171,6 @@ public final class Inet4Address extends InetAddress {
 	}
 
 	/**
-	 * Returns the byte array representation of the IP address.
-	 * 
-	 * @return byte[]
-	 * 
-	 */
-	public byte[] getAddress() {
-		return ipaddress;
-	}
-
-	/**
 	 * Returns a String representation of the IP address.
 	 * 
 	 * @return String
