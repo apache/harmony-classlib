@@ -147,8 +147,9 @@ public class Inet6Util {
 
 	}
 
-	static String createIPAddrStringFromByteArray(byte ipByteArray[]) {
+	static String hexCharacters = "0123456789ABCDEF";
 
+	public static String createIPAddrStringFromByteArray(byte ipByteArray[]) {
 		if (ipByteArray.length == 4) {
 			return addressToString(bytesToInt(ipByteArray, 0));
 		}
@@ -160,26 +161,22 @@ public class Inet6Util {
 					ipv4ByteArray[i] = ipByteArray[i + 12];
 				}
 				return addressToString(bytesToInt(ipv4ByteArray, 0));
-			}
-
-			StringBuffer buffer = new StringBuffer();
-			for (int i = 0; i < ipByteArray.length; i++) {
-				int j = (ipByteArray[i] & 0xf0) >>> 4;
-				buffer.append(hexCharacters[j]);
-				j = ipByteArray[i] & 0x0f;
-				buffer.append(hexCharacters[j]);
-				if (i % 2 != 0) {
-					buffer.append(":");
+			} else {
+				StringBuffer buffer = new StringBuffer();
+				for (int i = 0; i < ipByteArray.length; i++) {
+					int j = (ipByteArray[i] & 0xf0) >>> 4;
+					buffer.append(hexCharacters.charAt(j));
+					j = ipByteArray[i] & 0x0f;
+					buffer.append(hexCharacters.charAt(j));
+					if (i % 2 != 0 && (i + 1) < ipByteArray.length) {
+						buffer.append(":");
+					}
 				}
+				return buffer.toString();
 			}
-			return buffer.toString().substring(0, buffer.length() - 1)
-					.toUpperCase();
 		}
 		return null;
 	}
-
-	static char[] hexCharacters = { '0', '1', '2', '3', '4', '5', '6', '7',
-			'8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
 	/** Converts a 4 character hex word into a 2 byte word equivalent */
 	public static void convertToBytes(String hexWord, byte ipByteArray[],
@@ -406,8 +403,7 @@ public class Inet6Util {
 				return false;
 		} else {
 			// If we're at then end and we haven't had 7 colons then there is a
-			// problem
-			// unless we encountered a doubleColon
+			// problem unless we encountered a doubleColon
 			if (numberOfColons != 7 && !doubleColon) {
 				return false;
 			}
@@ -416,7 +412,7 @@ public class Inet6Util {
 			// a : or a .
 			// If we did not end in :: then this is invalid
 			if (numberOfPercent == 0) {
-				if (word == "" && ipAddress.charAt(length - 1 - offset) != ':'
+				if (word == "" && ipAddress.charAt(length - 1 - offset) == ':'
 						&& ipAddress.charAt(length - 2 - offset) != ':') {
 					return false;
 				}

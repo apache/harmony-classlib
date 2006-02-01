@@ -21,6 +21,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 
+import com.ibm.oti.util.Inet6Util;
+
 public final class Inet6Address extends InetAddress {
 
 	static final long serialVersionUID = 6880410070516793377L;
@@ -247,38 +249,8 @@ public final class Inet6Address extends InetAddress {
 		return (ipaddress[0] == -1) && (ipaddress[1] & 15) == 8;
 	}
 
-	/**
-	 * Returns the byte array representation of the IP address.
-	 * 
-	 * @return byte[]
-	 * 
-	 */
-	public byte[] getAddress() {
-		return ipaddress;
-	}
-
 	public String getHostAddress() {
-		StringBuffer hostAddress = new StringBuffer();
-		String tempString;
-		int length = ipaddress.length / 2;
-		for (int i = 0; i < length; i++) {
-
-			tempString = Integer.toHexString(ipaddress[i * 2] & 255);
-			if (tempString.length() == 1) {
-				tempString = "0" + tempString;
-			}
-			hostAddress.append(tempString);
-			tempString = Integer.toHexString(ipaddress[i * 2 + 1] & 255);
-			if (tempString.length() == 1) {
-				tempString = "0" + tempString;
-			}
-			hostAddress.append(tempString);
-			if (i + 1 < length) {
-				hostAddress.append(":");
-			}
-		}
-
-		return hostAddress.toString().toUpperCase();
+		return Inet6Util.createIPAddrStringFromByteArray(ipaddress);
 	}
 
 	public int hashCode() {
