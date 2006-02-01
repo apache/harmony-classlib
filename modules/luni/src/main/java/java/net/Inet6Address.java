@@ -168,7 +168,7 @@ public final class Inet6Address extends InetAddress {
 	/**
 	 * Answer true if the InetAddress is a global multicast address.
 	 * 
-	 * A valid IPv6 global mutlicast address is 11111111xxxx1110
+	 * A valid IPv6 global multicast address is 11111111xxxx1110 (i.e. FF0E)
 	 * 
 	 * @return boolean true, if it is a global mutlicast address, false
 	 *         otherwise
@@ -177,8 +177,7 @@ public final class Inet6Address extends InetAddress {
 
 		// the first byte should be 0xFF and the lower 4 bits
 		// of the second byte should be 0xE
-		return (ipaddress[0] == -1) && (ipaddress[1] & 14) == 14;
-
+		return (ipaddress[0] == -1) && (ipaddress[1] & 15) == 14;
 	}
 
 	/**
