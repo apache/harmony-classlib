@@ -15,8 +15,6 @@
 
 package org.apache.harmony.tests.java.lang;
 
-import java.security.AccessControlException;
-
 import junit.framework.TestCase;
 
 public class SecurityManagerTest extends TestCase {
@@ -27,14 +25,11 @@ public class SecurityManagerTest extends TestCase {
 	public void test_checkAccessLjava_lang_Thread() throws InterruptedException {
 		// Regression for HARMONY-66
 		Thread t = new Thread() {
-			public void run() {	};
+			public void run() {
+			};
 		};
 		t.start();
 		t.join();
-		try {
-			new SecurityManager().checkAccess(t);
-		} catch (AccessControlException e) {
-			// expected
-		}
+		new SecurityManager().checkAccess(t);
 	}
 }
