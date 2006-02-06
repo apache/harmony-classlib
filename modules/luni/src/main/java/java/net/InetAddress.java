@@ -743,7 +743,7 @@ public class InetAddress extends Object implements Serializable {
 	static InetAddress getByAddress(byte[] ipAddress, int scope_id)
 			throws UnknownHostException {
 		byte[] copy_address;
-		if (ipAddress.length == 4) {
+		if (ipAddress != null && ipAddress.length == 4) {
 			copy_address = new byte[4];
 			for (int i = 0; i < 4; i++) {
 				copy_address[i] = ipAddress[i];
@@ -751,7 +751,7 @@ public class InetAddress extends Object implements Serializable {
 			return new Inet4Address(ipAddress);
 		}
 
-		if (ipAddress.length == 16) {
+		if (ipAddress != null && ipAddress.length == 16) {
 			// First check to see if the address is an IPv6-mapped
 			// IPv4 address. If it is, then we can make it a IPv4
 			// address, otherwise, we'll create an IPv6 address.
@@ -837,7 +837,7 @@ public class InetAddress extends Object implements Serializable {
 	static InetAddress getByAddress(String hostName, byte[] ipAddress,
 			int scope_id) throws UnknownHostException {
 		byte[] copy_address;
-		if (ipAddress.length == 4) {
+		if (ipAddress != null && ipAddress.length == 4) {
 			copy_address = new byte[4];
 			for (int i = 0; i < 4; i++) {
 				copy_address[i] = ipAddress[i];
@@ -845,7 +845,7 @@ public class InetAddress extends Object implements Serializable {
 			return new Inet4Address(ipAddress, hostName);
 		}
 
-		if (ipAddress.length == 16) {
+		if (ipAddress != null && ipAddress.length == 16) {
 			// First check to see if the address is an IPv6-mapped
 			// IPv4 address. If it is, then we can make it a IPv4
 			// address, otherwise, we'll create an IPv6 address.
@@ -864,6 +864,7 @@ public class InetAddress extends Object implements Serializable {
 
 			return new Inet6Address(ipAddress, hostName, scope_id);
 		}
+
 		throw new UnknownHostException(Msg.getString("K0332", hostName));
 	}
 

@@ -15,24 +15,23 @@
 
 package org.apache.harmony.tests.java.net;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+public class InetAddressTest extends TestCase {
+
+	/**
+	 * @tests java.net.InetAddress#getByAddress(byte[])
+	 */
+	public void test_getByAddress() {
+		// Regression for HARMONY-61
+		try {
+			InetAddress.getByAddress(null);
+			fail("Assert 0: UnknownHostException must be thrown");
+		} catch (UnknownHostException e) {
+			// Expected
+		}
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.net");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(URLEncoderTest.class);
-		suite.addTestSuite(InetAddressTest.class);
-		suite.addTestSuite(URITest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }
