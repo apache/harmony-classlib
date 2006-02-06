@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,18 @@
 
 package com.ibm.platform;
 
+import java.io.FileDescriptor;
 
 /**
- * OSComponentFactory
- * 
+ * This interface declares method to get wrapped <code>FileDescritpor</code>.
  */
-public class OSComponentFactory {
+public interface FileDescriptorHandler {
 
-	/**
-	 * @return OSFileSystem
-	 */
-	public static IFileSystem getFileSystem() {
-		//  Auto-generated method stub
-		return new OSFileSystem();
-	}
-
-	/**
-	 * @return OSMemory
-	 */
-	public static IMemorySystem getMemorySystem() {
-		// Auto-generated method stub
-		return new OSMemory();
-	}
-
-	/**
-	 * @return OSNetwork
-	 */
-	public static INetworkSystem getNetworkSystem() {
-		return OSNetworkSystem.getOSNetworkSystem();
-	}
+    /**
+     * Get the wrapped <code>FileDescritpor</code>.
+     * 
+     * @return the wrapped <code>FileDescritpor</code>.
+     */
+    FileDescriptor getFD();
 
 }

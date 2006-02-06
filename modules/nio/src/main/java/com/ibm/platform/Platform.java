@@ -31,6 +31,9 @@ public class Platform {
 	static final IMemorySystem MEMORY_SYSTEM = OSComponentFactory
 			.getMemorySystem();
 
+	static final INetworkSystem NETWORK_SYSTEM = OSComponentFactory
+			.getNetworkSystem();
+
 	public static IAdapterManager getAdapterManager() {
 		return ADAPTER_MANAGER;
 	}
@@ -49,5 +52,10 @@ public class Platform {
 	public static IMemorySystem getMemorySystem() {
 		accessCheck();
 		return MEMORY_SYSTEM;
+	}
+
+	public static INetworkSystem getNetworkSystem() {
+		accessCheck();
+		return NETWORK_SYSTEM;
 	}
 }
