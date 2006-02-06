@@ -26,11 +26,11 @@ LIBNAME=hynio# declaration
 
 LIBPATH=../lib/# declaration
 
-CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../zlib -I../zip -I../fdlibm -I../nio $(VMDEBUG)
+CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../common -I../zlib -I../zip -I../fdlibm -I../nio $(VMDEBUG)
 
 .SUFFIXES:.cpp
 .cpp.o:
-	$(CXX) -fpic -O1 -march=pentium3 -fno-exceptions -fno-rtti -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../zlib -I../zip -I../fdlibm -I../nio $(VMDEBUG) -c $<
+	$(CXX) -fpic -O1 -march=pentium3 -fno-exceptions -fno-rtti -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../common -I../zlib -I../zip -I../fdlibm -I../nio $(VMDEBUG) -c $<
 
 ASFLAGS= -o $@
 
@@ -40,9 +40,9 @@ ASFLAGS= -o $@
 	$(AS) $(ASFLAGS) -o $*.o $*.s
 	-rm $*.s
 
-BUILDFILES1 = nio_copyright.o 
-BUILDFILES2 = OSFileSystem.o OSFileSystemLinux32.o OSMemory.o OSMemoryLinux32.o
-
+BUILDFILES1 = nio_copyright.o helpers.o
+BUILDFILES2 = OSFileSystem.o OSFileSystemLinux32.o OSMemory.o OSMemoryLinux32.o nethelp.o OSNetworkSystem.o socket.o
+ 
 MDLLIBFILES1 = ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a ../lib/libhypool.a
 MDLLIBFILES2 = ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
