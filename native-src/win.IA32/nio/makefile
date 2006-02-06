@@ -30,10 +30,10 @@ LIBNAME=hynio# declaration
 LIBPATH=..\lib\# declaration
 
 .c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -Zi -WX  /I..\include /I..\nio /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
+	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -Zi -WX  /I..\include /I..\nio /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
 
 .cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -Zi -WX /I..\include /I..\nio /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.cpp
+	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -Zi -WX /I..\include /I..\nio /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.cpp
 
 .asm.obj:
 	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32   $<
@@ -42,13 +42,14 @@ LIBPATH=..\lib\# declaration
 	rc -I..\include $<
 
 BUILDFILES1 = nio_copyright.obj OSFileSystemWin32.obj OSFileSystem.obj OSMemoryWin32.obj OSMemory.obj
+BUILDFILES2 = nethelp.obj helpers.obj socket.obj OSNetworkSystem.obj OSNetworkSystemWin32.obj
 
 VIRTFILES1 = hynio.res
 
 SYSLIBFILES1 = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES1 = ..\lib\hysig.lib ..\lib\hycommon.lib
-MDLLIBFILES2 = ..\lib\hyfdlibm.lib ..\lib\hythr.lib ..\lib\vmi.lib
+MDLLIBFILES1 = ..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hyzip.lib ..\lib\hyzlib.lib
+MDLLIBFILES2 = ..\lib\hypool.lib ..\lib\hyfdlibm.lib ..\lib\hythr.lib ..\lib\vmi.lib
 
 all: \
 	 ..\lib\$(LIBNAME).lib $(DLLNAME)
@@ -56,20 +57,20 @@ all: \
 BUILDLIB: $(LIBPATH)$(LIBNAME).lib
 
 $(LIBPATH)$(LIBNAME).lib:\
-	$(BUILDFILES1) $(VIRTFILES1) \
+	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) \
 	$(MDLLIBFILES1) $(MDLLIBFILES2) 
 	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib -def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES1) $(VIRTFILES1) \
+	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) \
 	$(MDLLIBFILES1) $(MDLLIBFILES2) 
 
 
 $(DLLNAME): $(LIBPATH)$(LIBNAME).lib \
-	$(BUILDFILES1) $(VIRTFILES1) \
+	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) \
 	$(MDLLIBFILES1) $(MDLLIBFILES2) 
 	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x13300000 -machine:$(CPU) \
 	/comment:"NIO component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable." \
 	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
-	$(BUILDFILES1) $(VIRTFILES1) \
+	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) \
 	$(MDLLIBFILES1) $(MDLLIBFILES2) $(SYSLIBFILES1)  \
 	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
 
