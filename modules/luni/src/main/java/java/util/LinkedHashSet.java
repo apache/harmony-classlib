@@ -19,12 +19,19 @@ package java.util;
 import java.io.Serializable;
 
 /**
- * LinkedHashSet
- * 
+ * LinkedHashSet is a variant on HashSet. Its entries are kept in a doubly-linked list.
+ * The iteration order is the order in which entries were inserted.
+ * <p>
+ * Null elements are allowed, and all the optional Set operations are supported.
+ * <p>
+ * Like HashSet, LinkedHashSet is not thread safe, so access by multiple threads must be synchronized
+ * by an external mechanism such as Collections.synchronizedSet.
  */
 public class LinkedHashSet extends HashSet implements Set, Cloneable,
 		Serializable {
 	
+	private static final long serialVersionUID = -2851667679971038690L;
+
 	/**
 	 * Contructs a new empty instance of LinkedHashSet.
 	 */
