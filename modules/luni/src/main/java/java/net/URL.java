@@ -382,15 +382,25 @@ public final class URL implements java.io.Serializable {
 			throw new MalformedURLException(com.ibm.oti.util.Msg.getString(
 					"K0325", port)); //$NON-NLS-1$
 
+		if (host != null && host.indexOf(":") != -1 && host.charAt(0) != '[') {
+			host = "[" + host + "]";
+		}
+
+		this.protocol = protocol;
+		this.host = host;
+		this.port = port;
+
 		// Set the fields from the arguments. Handle the case where the
 		// passed in "file" includes both a file and a ref part.
 		int index = -1;
 		index = file.indexOf("#", file.lastIndexOf("/"));
-		if (index >= 0)
-			set(protocol, host, port, file.substring(0, index), file
-					.substring(index + 1));
-		else
-			set(protocol, host, port, file, null);
+		if (index >= 0) {
+			this.file = file.substring(0, index);
+			ref = file.substring(index + 1);
+		} else {
+			this.file = file;
+		}
+		fixURL(false);
 
 		// Set the stream handler for the URL either to the handler
 		// argument if it was specified, or to the default for the
@@ -408,18 +418,20 @@ public final class URL implements java.io.Serializable {
 		}
 	}
 
-	void fixURL() {
+	void fixURL(boolean fixHost) {
 		int index;
 		if (host != null && host.length() > 0) {
 			authority = host;
 			if (port != -1)
 				authority = authority + ":" + port;
 		}
-		if (host != null && (index = host.lastIndexOf('@')) > -1) {
-			userInfo = host.substring(0, index);
-			host = host.substring(index + 1);
-		} else {
-			userInfo = null;
+		if (fixHost) {
+			if (host != null && (index = host.lastIndexOf('@')) > -1) {
+				userInfo = host.substring(0, index);
+				host = host.substring(index + 1);
+			} else {
+				userInfo = null;
+			}
 		}
 		if (file != null && (index = file.indexOf('?')) > -1) {
 			query = file.substring(index + 1);
@@ -458,7 +470,7 @@ public final class URL implements java.io.Serializable {
 		this.port = port;
 		this.ref = ref;
 		hashCode = 0;
-		fixURL();
+		fixURL(true);
 	}
 
 	/**
@@ -655,7 +667,7 @@ public final class URL implements java.io.Serializable {
 		try {
 			stream.defaultReadObject();
 			if (host != null && authority == null)
-				fixURL();
+				fixURL(true);
 			else if (authority != null) {
 				int index;
 				if ((index = authority.lastIndexOf('@')) > -1)

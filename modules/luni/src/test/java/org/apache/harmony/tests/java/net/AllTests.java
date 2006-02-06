@@ -30,6 +30,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(URLEncoderTest.class);
 		suite.addTestSuite(InetAddressTest.class);
+		suite.addTestSuite(URLTest.class);
 		suite.addTestSuite(URITest.class);
 		//$JUnit-END$
 		return suite;
