@@ -161,8 +161,8 @@ public abstract class Authenticator {
 	/**
 	 * This method sets <code>a</code> to be the default authenticator. It
 	 * will be called whenever the realm that the URL is pointing to requires
-	 * authorization. If there is already an authenticator installed before or
-	 * <code>a</code> is null, it will simply do nothing.
+	 * authorization. If there is a security manager set then the caller must
+	 * have the NetPermission "setDefaultAuthenticator".
 	 * 
 	 * @param a
 	 *            java.net.Authenticator The authenticator to be set.
@@ -171,8 +171,7 @@ public abstract class Authenticator {
 		SecurityManager sm = System.getSecurityManager();
 		if (sm != null)
 			sm.checkPermission(setDefaultAuthenticatorPermission);
-		if ((thisAuthenticator == null) && (a != null))
-			thisAuthenticator = a;
+		thisAuthenticator = a;
 	}
 
 	/**
