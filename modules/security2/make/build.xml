@@ -185,6 +185,7 @@
 
         <property name="src.tst.common.ps" value="${src.tst}/linux" />
 
+        <property name="jni_h.path"    location="${native.include.path}"/>
         <property name="jni_md_h.path" location="${native.include.path}"/>
 
     </target>
