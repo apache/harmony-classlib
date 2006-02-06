@@ -25,7 +25,7 @@ package java.lang;
  * @see Throwable#getStackTrace()
  */
 public final class StackTraceElement implements java.io.Serializable {
-	static final long serialVersionUID = 6992337162326171013L;
+	private static final long serialVersionUID = 6992337162326171013L;
 
 	String declaringClass, methodName, fileName;
 

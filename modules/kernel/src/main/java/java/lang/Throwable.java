@@ -38,7 +38,7 @@ import java.io.PrintWriter;
  * @see RuntimeException
  */
 public class Throwable implements java.io.Serializable {
-	static final long serialVersionUID = -3042686055658047285L;
+	private static final long serialVersionUID = -3042686055658047285L;
 
 	/**
 	 * The message provided when the exception was created.

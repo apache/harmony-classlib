@@ -31,7 +31,7 @@ import java.util.regex.PatternSyntaxException;
  * @see StringBuffer
  */
 public final class String implements Serializable, Comparable, CharSequence {
-	static final long serialVersionUID = -6849794470754667710L;
+	private static final long serialVersionUID = -6849794470754667710L;
 
 	/**
 	 * An PrintStream used for System.out which performs the 
@@ -80,7 +80,7 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 */
 	private static final class CaseInsensitiveComparator implements Comparator,
 			Serializable {
-		static final long serialVersionUID = 8575799808933029326L;
+		private static final long serialVersionUID = 8575799808933029326L;
 
 		/**
 		 * Compare the two objects to determine

@@ -66,7 +66,7 @@ import java.security.ProtectionDomain;
  * 
  */
 public final class Class implements java.io.Serializable {
-	static final long serialVersionUID = 3206093459760846163L;
+	private static final long serialVersionUID = 3206093459760846163L;
 
 	/**
 	 * Answers a Class object which represents the class named by the argument.
