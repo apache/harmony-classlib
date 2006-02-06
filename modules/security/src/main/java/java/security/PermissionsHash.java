@@ -34,7 +34,7 @@ import java.util.Hashtable;
  */
 
 class PermissionsHash extends PermissionCollection {
-	static final long serialVersionUID = -8491988220802933440L;
+	private static final long serialVersionUID = -8491988220802933440L;
 
 	/**
 	 * A hashtable to store the elements of the collection.

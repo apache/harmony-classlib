@@ -22,7 +22,7 @@ package java.util;
  */
 public class LinkedHashMap extends HashMap {
 	
-	static final long serialVersionUID = 3801124242820219131L;
+	private static final long serialVersionUID = 3801124242820219131L;
 
 	private boolean accessOrder;
 

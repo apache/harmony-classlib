@@ -23,7 +23,7 @@ package java.nio.channels;
  */
 public class NotYetConnectedException extends IllegalStateException {
 
-	static final long serialVersionUID = 4697316551909513464L;
+	private static final long serialVersionUID = 4697316551909513464L;
 
 	/**
 	 * Default constructor.

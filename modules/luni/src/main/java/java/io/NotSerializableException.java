@@ -29,7 +29,7 @@ package java.io;
  */
 public class NotSerializableException extends ObjectStreamException {
 
-	static final long serialVersionUID = 2906642554793891381L;
+	private static final long serialVersionUID = 2906642554793891381L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

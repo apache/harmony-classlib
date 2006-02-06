@@ -27,7 +27,7 @@ package java.lang;
  */
 public class Error extends Throwable {
 
-	static final long serialVersionUID = 4980196508277280342L;
+	private static final long serialVersionUID = 4980196508277280342L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

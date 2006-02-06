@@ -38,7 +38,7 @@ import java.util.Hashtable;
  */
 
 class BasicPermissionCollection extends PermissionCollection {
-	static final long serialVersionUID = 739301742472979399L;
+	private static final long serialVersionUID = 739301742472979399L;
 
 	/**
 	 * A flag to indicate whether the "grant all wildcard" (i.e. "*") has been

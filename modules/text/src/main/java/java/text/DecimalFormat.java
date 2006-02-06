@@ -32,7 +32,7 @@ import com.ibm.oti.util.Msg;
  */
 public class DecimalFormat extends NumberFormat {
 
-	static final long serialVersionUID = 864413376551465018L;
+	private static final long serialVersionUID = 864413376551465018L;
 
 	private static final String patternChars = "0#.,;%\u2030E";
 

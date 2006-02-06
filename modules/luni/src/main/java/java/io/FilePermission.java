@@ -34,7 +34,7 @@ import java.security.PrivilegedAction;
  * 
  */
 public final class FilePermission extends Permission implements Serializable {
-	static final long serialVersionUID = 7930732926638008763L;
+	private static final long serialVersionUID = 7930732926638008763L;
 
 	// canonical path of this permission
 	private transient String canonPath;

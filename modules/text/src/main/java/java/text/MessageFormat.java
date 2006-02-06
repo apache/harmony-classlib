@@ -36,7 +36,7 @@ import com.ibm.oti.util.Msg;
  */
 public class MessageFormat extends Format {
 
-	static final long serialVersionUID = 6479157306784022952L;
+	private static final long serialVersionUID = 6479157306784022952L;
 
 	private Locale locale = Locale.getDefault();
 

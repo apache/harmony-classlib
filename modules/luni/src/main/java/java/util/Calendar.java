@@ -34,7 +34,7 @@ import java.io.Serializable;
  */
 public abstract class Calendar implements Serializable, Cloneable {
 	
-	static final long serialVersionUID = -1807547505821590642L;
+	private static final long serialVersionUID = -1807547505821590642L;
 
 	/**
 	 * Set to true when the calendar fields have been set from the time, set to

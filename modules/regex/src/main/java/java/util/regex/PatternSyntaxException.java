@@ -24,7 +24,7 @@ import java.io.Serializable;
  */
 public class PatternSyntaxException extends IllegalArgumentException implements
 		Serializable {
-	static final long serialVersionUID = -3864639126226059218L;
+	private static final long serialVersionUID = -3864639126226059218L;
 
 	public PatternSyntaxException(String desc, String regex, int index) {
 	}

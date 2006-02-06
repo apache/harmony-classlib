@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 public class ZipException extends IOException {
 
-	static final long serialVersionUID = 8000196834066748623L;
+	private static final long serialVersionUID = 8000196834066748623L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

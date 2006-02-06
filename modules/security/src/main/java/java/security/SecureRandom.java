@@ -24,7 +24,7 @@ import java.io.ObjectStreamField;
  * For the generation of secure pseudo-random numbers.
  */
 public class SecureRandom extends java.util.Random {
-	static final long serialVersionUID = 4940670005562187L;
+	private static final long serialVersionUID = 4940670005562187L;
 
 	// Algorithm name in case users call the empty constructor
 	private static final String DEFAULT_ALGORITHM_NAME = "SHA1PRNG"; 

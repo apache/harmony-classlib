@@ -22,7 +22,7 @@ package java.lang;
  * 
  */
 public class InstantiationException extends Exception {
-	static final long serialVersionUID = -8441929162975509110L;
+	private static final long serialVersionUID = -8441929162975509110L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

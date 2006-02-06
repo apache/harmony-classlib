@@ -25,7 +25,7 @@ package java.lang;
  * 
  */
 public class InstantiationError extends IncompatibleClassChangeError {
-	static final long serialVersionUID = -4885810657349421204L;
+	private static final long serialVersionUID = -4885810657349421204L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

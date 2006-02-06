@@ -26,7 +26,7 @@ package java.nio.channels;
  */
 public class ClosedByInterruptException extends AsynchronousCloseException {
 
-	static final long serialVersionUID = -4488191543534286750L;
+	private static final long serialVersionUID = -4488191543534286750L;
 
 	/**
 	 * Default constructor.

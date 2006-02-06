@@ -31,7 +31,7 @@ package java.io;
  */
 public abstract class ObjectStreamException extends IOException {
 
-	static final long serialVersionUID = 7260898174833392607L;
+	private static final long serialVersionUID = 7260898174833392607L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

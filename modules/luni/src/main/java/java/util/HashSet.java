@@ -28,7 +28,7 @@ import java.io.Serializable;
 public class HashSet extends AbstractSet implements Set, Cloneable,
 		Serializable {
 
-	static final long serialVersionUID = -5024744406713321676L;
+	private static final long serialVersionUID = -5024744406713321676L;
 
 	transient HashMap backingMap;
 

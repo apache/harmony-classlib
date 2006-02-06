@@ -23,7 +23,7 @@ import java.security.BasicPermission;
  */
 public final class RuntimePermission extends BasicPermission {
 
-	static final long serialVersionUID = 7399184964622342223L;
+	private static final long serialVersionUID = 7399184964622342223L;
 
 	/**
 	 * Constants for runtime permissions used in this package.

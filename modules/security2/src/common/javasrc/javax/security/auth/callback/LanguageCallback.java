@@ -33,7 +33,7 @@ public class LanguageCallback implements Callback, Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    private final static long serialVersionUID = 2019050433478903213L; 
+    private static final long serialVersionUID = 2019050433478903213L; 
 
     /**
      * @com.intel.drl.spec_ref

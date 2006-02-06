@@ -27,7 +27,7 @@ package java.io;
  */
 public class StreamCorruptedException extends ObjectStreamException {
 
-	static final long serialVersionUID = 8983558202217591746L;
+	private static final long serialVersionUID = 8983558202217591746L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

@@ -26,7 +26,7 @@ package java.lang;
  * @see RuntimeException
  */
 public class Exception extends Throwable {
-	static final long serialVersionUID = -3387516993124229948L;
+	private static final long serialVersionUID = -3387516993124229948L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

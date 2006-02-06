@@ -30,7 +30,7 @@ import java.io.ObjectStreamField;
  */
 public class SimpleTimeZone extends TimeZone {
 	
-	static final long serialVersionUID = -403250971215465050L;
+	private static final long serialVersionUID = -403250971215465050L;
 
 	private int rawOffset;
 

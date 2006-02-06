@@ -35,7 +35,7 @@ public class CharacterCodingException extends IOException {
 	 * This constant is used during deserialization to check the J2SE version
 	 * which created the serialized object.
 	 */
-	static final long serialVersionUID = 8421532232154627783L; // J2SE 1.4.2
+	private static final long serialVersionUID = 8421532232154627783L; // J2SE 1.4.2
 
 	/**
 	 * Default constructor.

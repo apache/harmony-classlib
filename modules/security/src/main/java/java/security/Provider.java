@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public abstract class Provider extends java.util.Properties {
 
-	static final long serialVersionUID = -4298000515446427739L; 
+	private static final long serialVersionUID = -4298000515446427739L; 
 
 	private String name; // Name of the provider.
 

@@ -31,7 +31,7 @@ import com.ibm.oti.util.PriviAction;
  */
 
 public final class URL implements java.io.Serializable {
-	static final long serialVersionUID = -7627629688361524110L;
+	private static final long serialVersionUID = -7627629688361524110L;
 
 	private static final NetPermission specifyStreamHandlerPermission = new NetPermission(
 			"specifyStreamHandler");

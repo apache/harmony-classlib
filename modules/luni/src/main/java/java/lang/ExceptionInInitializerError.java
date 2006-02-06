@@ -21,7 +21,7 @@ package java.lang;
  */
 public class ExceptionInInitializerError extends LinkageError {
 
-	static final long serialVersionUID = 1521711792217232256L;
+	private static final long serialVersionUID = 1521711792217232256L;
 
 	private Throwable exception;
 

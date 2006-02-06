@@ -27,7 +27,7 @@ public class Arrays {
 	private static class ArrayList extends AbstractList implements List,
 			Serializable, RandomAccess {
 
-		static final long serialVersionUID = -2764017481108945198L;
+		private static final long serialVersionUID = -2764017481108945198L;
 
 		private Object[] a;
 

@@ -25,7 +25,7 @@ import java.util.Random;
  */
 public class BigInteger extends Number implements Comparable {
 	// Version ID indicating compatability with standard.
-	static final long serialVersionUID = -8287574255936472291L;
+	private static final long serialVersionUID = -8287574255936472291L;
 
 	/**
 	 * Constant: 0 as represented by a BigInteger.

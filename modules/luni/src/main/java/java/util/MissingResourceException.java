@@ -24,7 +24,7 @@ package java.util;
  */
 public class MissingResourceException extends RuntimeException {
 
-	static final long serialVersionUID = -4876345176062000401L;
+	private static final long serialVersionUID = -4876345176062000401L;
 
 	String className, key;
 

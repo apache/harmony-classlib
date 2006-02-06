@@ -38,7 +38,7 @@ import java.io.Serializable;
 public class Hashtable extends Dictionary implements Map, Cloneable,
 		Serializable {
 
-	static final long serialVersionUID = 1421746759512286392L;
+	private static final long serialVersionUID = 1421746759512286392L;
 
 	transient int elementCount;
 

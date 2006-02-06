@@ -25,7 +25,7 @@ package java.util;
  */
 public class NoSuchElementException extends RuntimeException {
 
-	static final long serialVersionUID = 6769829250639411880L;
+	private static final long serialVersionUID = 6769829250639411880L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

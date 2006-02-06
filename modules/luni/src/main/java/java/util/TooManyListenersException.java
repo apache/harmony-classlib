@@ -25,7 +25,7 @@ package java.util;
  */
 public class TooManyListenersException extends Exception {
 
-	static final long serialVersionUID = 5074640544770687831L;
+	private static final long serialVersionUID = 5074640544770687831L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

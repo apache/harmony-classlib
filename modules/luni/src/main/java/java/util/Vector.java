@@ -40,7 +40,7 @@ import java.lang.reflect.Array;
 public class Vector extends AbstractList implements List, RandomAccess,
 		Cloneable, Serializable {
 	
-	static final long serialVersionUID = -2767605614048989439L;
+	private static final long serialVersionUID = -2767605614048989439L;
 
 	/**
 	 * The number of elements or the size of the vector.

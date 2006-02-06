@@ -32,7 +32,7 @@ package java.io;
  */
 public class InvalidClassException extends ObjectStreamException {
 
-	static final long serialVersionUID = -4333316296251054416L;
+	private static final long serialVersionUID = -4333316296251054416L;
 
 	/**
 	 * The fully qualified name of the class that caused the problem

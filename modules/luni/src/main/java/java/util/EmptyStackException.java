@@ -22,7 +22,7 @@ package java.util;
  */
 public class EmptyStackException extends RuntimeException {
 
-	static final long serialVersionUID = 5084686378493302095L;
+	private static final long serialVersionUID = 5084686378493302095L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

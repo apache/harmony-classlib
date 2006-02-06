@@ -27,7 +27,7 @@ import java.io.Serializable;
 
 public abstract class BasicPermission extends Permission implements
 		Serializable {
-	static final long serialVersionUID = 6279438298436773498L;
+	private static final long serialVersionUID = 6279438298436773498L;
 
 	/**
 	 * If the receiver was a correctly formatted wildcarded pattern, then this

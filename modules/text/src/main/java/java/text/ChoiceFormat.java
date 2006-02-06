@@ -27,7 +27,7 @@ import java.util.Vector;
 
 public class ChoiceFormat extends NumberFormat {
 
-	static final long serialVersionUID = 1795184449645032964L;
+	private static final long serialVersionUID = 1795184449645032964L;
 
 	private double[] choiceLimits;
 

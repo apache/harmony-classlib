@@ -21,7 +21,7 @@ package java.lang;
  */
 public final class Integer extends Number implements Comparable {
 
-	static final long serialVersionUID = 1360826667806852920L;
+	private static final long serialVersionUID = 1360826667806852920L;
 
 	/**
 	 * The value which the receiver represents.

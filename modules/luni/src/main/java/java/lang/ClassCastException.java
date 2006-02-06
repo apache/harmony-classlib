@@ -22,7 +22,7 @@ package java.lang;
  * 
  */
 public class ClassCastException extends RuntimeException {
-	static final long serialVersionUID = -9223365651070458532L;
+	private static final long serialVersionUID = -9223365651070458532L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

@@ -22,7 +22,7 @@ package java.lang;
  */
 public class RuntimeException extends Exception {
 	
-	static final long serialVersionUID = -7034897190745766939L;
+	private static final long serialVersionUID = -7034897190745766939L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

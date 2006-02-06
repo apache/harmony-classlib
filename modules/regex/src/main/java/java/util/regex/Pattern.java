@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 
  */
 public final class Pattern implements Serializable {
-	static final long serialVersionUID = 5073258162644648461L;
+	private static final long serialVersionUID = 5073258162644648461L;
 
 	public static final int UNIX_LINES = 1;
 

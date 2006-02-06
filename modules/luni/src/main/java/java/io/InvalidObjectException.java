@@ -26,7 +26,7 @@ package java.io;
  */
 public class InvalidObjectException extends ObjectStreamException {
 
-	static final long serialVersionUID = 3233174318281839583L;
+	private static final long serialVersionUID = 3233174318281839583L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback and message

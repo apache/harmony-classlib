@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
  */
 public class DateFormatSymbols implements Serializable, Cloneable {
 
-	static final long serialVersionUID = -5987973545549424702L;
+	private static final long serialVersionUID = -5987973545549424702L;
 
 	private String localPatternChars;
 

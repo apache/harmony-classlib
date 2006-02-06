@@ -23,7 +23,7 @@ package java.util;
  */
 public class Stack extends Vector {
 	
-	static final long serialVersionUID = 1224463164541339165L;
+	private static final long serialVersionUID = 1224463164541339165L;
 
 	/**
 	 * Constructs a stack with the default size of <code>Vector</code>.

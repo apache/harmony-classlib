@@ -25,7 +25,7 @@ import java.io.Serializable;
  * 
  */
 public abstract class Permission implements Guard, Serializable {
-	static final long serialVersionUID = -5636570222231596674L;
+	private static final long serialVersionUID = -5636570222231596674L;
 
 	/**
 	 * The name of the permission.

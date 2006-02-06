@@ -36,7 +36,7 @@ import java.util.zip.CRC32;
  */
 public abstract class Certificate implements Serializable {
 	
-	static final long serialVersionUID = -6751606818319535583L;
+	private static final long serialVersionUID = -6751606818319535583L;
 
 	private String type; // Type of certificate
 
@@ -182,7 +182,7 @@ public abstract class Certificate implements Serializable {
 	 */
 	protected static class CertificateRep implements Serializable {
 
-		static final long serialVersionUID = -8563758940495660020L;
+		private static final long serialVersionUID = -8563758940495660020L;
 
 		String type;
 

@@ -22,7 +22,7 @@ package java.security;
  * 
  */
 public class PrivilegedActionException extends Exception {
-	static final long serialVersionUID = 4724086851538908602L;
+	private static final long serialVersionUID = 4724086851538908602L;
 
 	/**
 	 * The exception which occurred.

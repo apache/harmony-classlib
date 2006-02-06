@@ -21,7 +21,7 @@ package java.lang;
  */
 public final class Float extends Number implements Comparable {
 
-	static final long serialVersionUID = -2671257302660747028L;
+	private static final long serialVersionUID = -2671257302660747028L;
 
 	/**
 	 * The value which the receiver represents.

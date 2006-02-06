@@ -35,7 +35,7 @@ import java.text.SimpleDateFormat;
  */
 public class Date implements Serializable, Cloneable, Comparable {
 	
-	static final long serialVersionUID = 7523967970034938905L;
+	private static final long serialVersionUID = 7523967970034938905L;
 
 	transient private long milliseconds;
 

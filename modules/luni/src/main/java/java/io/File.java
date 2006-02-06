@@ -39,7 +39,7 @@ import com.ibm.oti.util.PriviAction;
  */
 
 public class File implements Serializable, Comparable {
-	static final long serialVersionUID = 301077366599181567L;
+	private static final long serialVersionUID = 301077366599181567L;
 
 	private String path;
 

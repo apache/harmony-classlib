@@ -29,7 +29,7 @@ import java.io.Serializable;
  */
 public class HashMap extends AbstractMap implements Map, Cloneable,
 		Serializable {
-	static final long serialVersionUID = 362498820763181265L;
+	private static final long serialVersionUID = 362498820763181265L;
 
 	transient int elementCount;
 

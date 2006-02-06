@@ -30,7 +30,7 @@ import com.ibm.oti.util.Msg;
  */
 public abstract class Format implements Serializable, Cloneable {
 
-	static final long serialVersionUID = -299282585814624189L;
+	private static final long serialVersionUID = -299282585814624189L;
 
 	/**
 	 * Constructs a new instance of Format.

@@ -39,7 +39,7 @@ import java.util.Vector;
  */
 public class SimpleDateFormat extends DateFormat {
 
-	static final long serialVersionUID = 4774881970558875024L;
+	private static final long serialVersionUID = 4774881970558875024L;
 
 	private static final String patternChars = "GyMdkHmsSEDFwWahKzZ";
 

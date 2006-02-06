@@ -43,7 +43,7 @@ import com.ibm.oti.util.PriviAction;
  */
 public final class Locale implements Cloneable, Serializable {
 	
-	static final long serialVersionUID = 9149081749638150636L;
+	private static final long serialVersionUID = 9149081749638150636L;
 
 	transient private String countryCode, languageCode, variantCode;
 

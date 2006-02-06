@@ -28,7 +28,7 @@ import java.util.Vector;
  */
 public final class Permissions extends PermissionCollection implements
 		Serializable {
-	static final long serialVersionUID = 4858622370623524688L;
+	private static final long serialVersionUID = 4858622370623524688L;
 
 	/**
 	 * Maps a Permission's class to an appropriate PermissionCollection.

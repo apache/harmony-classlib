@@ -30,7 +30,7 @@ public interface AttributedCharacterIterator extends CharacterIterator {
 
 	public static class Attribute implements Serializable {
 
-		static final long serialVersionUID = -9142742483513960612L;
+		private static final long serialVersionUID = -9142742483513960612L;
 
 		public static final Attribute INPUT_METHOD_SEGMENT = new Attribute(
 				"input_method_segment");

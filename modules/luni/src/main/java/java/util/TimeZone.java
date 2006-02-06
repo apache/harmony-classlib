@@ -32,7 +32,7 @@ import com.ibm.oti.util.PriviAction;
  */
 
 abstract public class TimeZone implements Serializable, Cloneable {
-	static final long serialVersionUID = 3581463369166924961L;
+	private static final long serialVersionUID = 3581463369166924961L;
 
 	/**
 	 * The SHORT display name style.

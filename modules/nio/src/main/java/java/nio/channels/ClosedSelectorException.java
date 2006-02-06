@@ -22,7 +22,7 @@ package java.nio.channels;
  */
 public class ClosedSelectorException extends IllegalStateException {
 
-    static final long serialVersionUID = 6466297122317847835L;
+    private static final long serialVersionUID = 6466297122317847835L;
     
 	/**
 	 * Default constructor.

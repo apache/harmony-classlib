@@ -24,7 +24,7 @@ package java.io;
  */
 public class OptionalDataException extends ObjectStreamException {
 
-	static final long serialVersionUID = -8011121865681257820L;
+	private static final long serialVersionUID = -8011121865681257820L;
 
 	/**
 	 * If true it means there is no more primitive data available.

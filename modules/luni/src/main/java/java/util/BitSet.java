@@ -24,7 +24,7 @@ import java.io.Serializable;
  * size is exceeded. Growth is always rounded to a 64 bit boundary.
  */
 public class BitSet implements Serializable, Cloneable {
-	static final long serialVersionUID = 7997698588986878753L;
+	private static final long serialVersionUID = 7997698588986878753L;
 
 	private long[] bits;
 

@@ -25,7 +25,7 @@ import com.ibm.oti.util.Inet6Util;
 
 public final class Inet6Address extends InetAddress {
 
-	static final long serialVersionUID = 6880410070516793377L;
+	private static final long serialVersionUID = 6880410070516793377L;
 
 	final static byte[] any_bytes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0 };

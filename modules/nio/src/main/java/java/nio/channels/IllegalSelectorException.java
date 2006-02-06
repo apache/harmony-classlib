@@ -23,7 +23,7 @@ package java.nio.channels;
  */
 public class IllegalSelectorException extends IllegalArgumentException {
 
-	static final long serialVersionUID = -8406323347253320987L;
+	private static final long serialVersionUID = -8406323347253320987L;
 
 	/**
 	 * Default constructor.

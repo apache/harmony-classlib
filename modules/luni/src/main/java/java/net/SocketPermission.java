@@ -61,7 +61,7 @@ import com.ibm.oti.util.Msg;
  */
 public final class SocketPermission extends Permission implements Serializable {
 
-	static final long serialVersionUID = -7204263841984476862L;
+	private static final long serialVersionUID = -7204263841984476862L;
 
 	// Bit masks for each of the possible actions
 	static final int SP_CONNECT = 1;

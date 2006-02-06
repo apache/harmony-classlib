@@ -28,7 +28,7 @@ package java.io;
  */
 public class WriteAbortedException extends ObjectStreamException {
 
-	static final long serialVersionUID = -3326426625597282442L;
+	private static final long serialVersionUID = -3326426625597282442L;
 
 	/**
 	 * The exception that was caused when writeObject() was attempting to

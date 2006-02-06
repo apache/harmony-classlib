@@ -21,7 +21,7 @@ package java.lang;
  */
 public final class Boolean implements java.io.Serializable {
 
-	static final long serialVersionUID = -3665804199014368530L;
+	private static final long serialVersionUID = -3665804199014368530L;
 
 	/**
 	 * The boolean value of the receiver.

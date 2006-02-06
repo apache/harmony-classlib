@@ -32,7 +32,7 @@ import com.ibm.oti.util.Msg;
  */
 public abstract class DateFormat extends Format {
 
-	static final long serialVersionUID = 7218322306649953788L;
+	private static final long serialVersionUID = 7218322306649953788L;
 
 	protected Calendar calendar;
 

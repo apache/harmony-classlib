@@ -38,7 +38,7 @@ import java.io.Serializable;
 public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		Cloneable {
 
-	static final long serialVersionUID = 8188218128353913216L;
+	private static final long serialVersionUID = 8188218128353913216L;
 
 	/*
 	 * The internal data structure to hold key value pairs This array holds keys

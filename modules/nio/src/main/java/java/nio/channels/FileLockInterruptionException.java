@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 public class FileLockInterruptionException extends IOException {
 
-	static final long serialVersionUID = 7104080643653532383L;
+	private static final long serialVersionUID = 7104080643653532383L;
 
 	/**
 	 * Default constructor.

@@ -27,7 +27,7 @@ import java.util.Vector;
  */
 final class SocketPermissionCollection extends PermissionCollection {
 	
-	static final long serialVersionUID = 2787186408602843674L;
+	private static final long serialVersionUID = 2787186408602843674L;
 
 	public Vector permissions = new Vector();
 

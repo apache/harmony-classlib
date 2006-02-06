@@ -36,7 +36,7 @@ import com.ibm.oti.util.PriviAction;
  */
 public class Properties extends Hashtable {
 	
-	static final long serialVersionUID = 4112578634029874840L;
+	private static final long serialVersionUID = 4112578634029874840L;
 
 	/**
 	 * The default values for this Properties.

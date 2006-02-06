@@ -26,7 +26,7 @@ import java.io.Serializable;
  */
 public class EventObject implements Serializable {
 	
-	static final long serialVersionUID = 5516075349620653480L;
+	private static final long serialVersionUID = 5516075349620653480L;
 
 	/**
 	 * The event source.

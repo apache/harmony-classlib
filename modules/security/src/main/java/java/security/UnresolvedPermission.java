@@ -34,7 +34,7 @@ import java.util.Hashtable;
  */
 public final class UnresolvedPermission extends Permission implements
 		Serializable {
-	static final long serialVersionUID = -4821973115467008846L;
+	private static final long serialVersionUID = -4821973115467008846L;
 
 	/**
 	 * The Certificates which were used to create the receiver.

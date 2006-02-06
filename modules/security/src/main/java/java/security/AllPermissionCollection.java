@@ -20,7 +20,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 class AllPermissionCollection extends PermissionCollection {
-	static final long serialVersionUID = -4023755556366636806L;
+	private static final long serialVersionUID = -4023755556366636806L;
 
 	boolean all_allowed = false;
 

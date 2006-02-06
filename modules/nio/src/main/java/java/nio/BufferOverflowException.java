@@ -24,7 +24,7 @@ package java.nio;
  */
 public class BufferOverflowException extends RuntimeException {
 
-	static final long serialVersionUID = -5484897634319144535L;
+	private static final long serialVersionUID = -5484897634319144535L;
 
 	/**
 	 * Construts a <code>BufferOverflowException</code>.

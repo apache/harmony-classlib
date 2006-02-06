@@ -30,7 +30,7 @@ package java.math;
  */
 public class BigDecimal extends Number implements Comparable {
 
-	static final long serialVersionUID = 6108874887143696463L;
+	private static final long serialVersionUID = 6108874887143696463L;
 
 	/**
 	 * Rounding mode Constants

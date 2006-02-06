@@ -33,7 +33,7 @@ import com.ibm.oti.util.Msg;
  */
 public abstract class NumberFormat extends Format {
 
-	static final long serialVersionUID = -2308460125733713944L;
+	private static final long serialVersionUID = -2308460125733713944L;
 
 	/**
 	 * Field constant.

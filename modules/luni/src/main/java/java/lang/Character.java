@@ -28,7 +28,7 @@ import org.apache.harmony.luni.util.BinarySearch;
  */
 public final class Character implements Serializable, Comparable {
 
-	static final long serialVersionUID = 3786198910865385080L;
+	private static final long serialVersionUID = 3786198910865385080L;
 
 	final char value;
 

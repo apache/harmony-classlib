@@ -21,7 +21,7 @@ package java.lang;
  */
 public final class Long extends Number implements Comparable {
 
-	static final long serialVersionUID = 4290774380558885855L;
+	private static final long serialVersionUID = 4290774380558885855L;
 
 	/**
 	 * The value which the receiver represents.

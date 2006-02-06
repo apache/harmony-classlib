@@ -30,7 +30,7 @@ import java.lang.reflect.Array;
 public class LinkedList extends AbstractSequentialList implements List,
 		Cloneable, Serializable {
 	
-	static final long serialVersionUID = 876323262645176354L;
+	private static final long serialVersionUID = 876323262645176354L;
 
 	transient int size = 0;
 

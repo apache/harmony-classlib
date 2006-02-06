@@ -28,7 +28,7 @@ import java.security.PermissionCollection;
  * PropertyPermission objects represent permission to access system properties.
  */
 public final class PropertyPermission extends BasicPermission {
-	static final long serialVersionUID = 885438825399942851L;
+	private static final long serialVersionUID = 885438825399942851L;
 
 	transient private boolean read, write;
 

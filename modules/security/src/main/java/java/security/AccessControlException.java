@@ -23,7 +23,7 @@ package java.security;
  */
 public class AccessControlException extends SecurityException {
 
-	static final long serialVersionUID = 5138225684096988535L;
+	private static final long serialVersionUID = 5138225684096988535L;
 
 	/**
 	 * The permission object associated with the receiver.

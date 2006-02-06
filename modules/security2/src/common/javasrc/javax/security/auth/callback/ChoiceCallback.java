@@ -32,7 +32,7 @@ public class ChoiceCallback implements Callback, Serializable {
     /** 
      * @com.intel.drl.spec_ref 
      */
-    private final static long serialVersionUID = -3975664071579892167L; 
+    private static final long serialVersionUID = -3975664071579892167L; 
 
     /**
      * @com.intel.drl.spec_ref

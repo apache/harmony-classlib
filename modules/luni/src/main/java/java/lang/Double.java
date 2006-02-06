@@ -21,7 +21,7 @@ package java.lang;
  */
 public final class Double extends Number implements Comparable {
 
-	static final long serialVersionUID = -9172774392245257468L;
+	private static final long serialVersionUID = -9172774392245257468L;
 
 	/**
 	 * The value which the receiver represents.

@@ -33,7 +33,7 @@ package java.io;
  */
 public class NotActiveException extends ObjectStreamException {
 
-	static final long serialVersionUID = -3893467273049808895L;
+	private static final long serialVersionUID = -3893467273049808895L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

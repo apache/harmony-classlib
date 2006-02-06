@@ -32,7 +32,7 @@ public class SSLException extends IOException {
      * @com.intel.drl.spec_ref
      * @serial
      */
-    private final static long serialVersionUID = 4511006460650708967L;
+    private static final long serialVersionUID = 4511006460650708967L;
 
     /**
      * @com.intel.drl.spec_ref

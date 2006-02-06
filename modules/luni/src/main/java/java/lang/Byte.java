@@ -21,7 +21,7 @@ package java.lang;
  */
 public final class Byte extends Number implements Comparable {
 
-	static final long serialVersionUID = -7183698231559129828L;
+	private static final long serialVersionUID = -7183698231559129828L;
 
 	/**
 	 * The value which the receiver represents.

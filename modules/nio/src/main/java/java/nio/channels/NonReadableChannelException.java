@@ -22,7 +22,7 @@ package java.nio.channels;
  */
 public class NonReadableChannelException extends IllegalStateException {
 
-	static final long serialVersionUID = -3200915679294993514L;
+	private static final long serialVersionUID = -3200915679294993514L;
 
 	/**
 	 * Default constructor.

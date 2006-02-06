@@ -22,7 +22,7 @@ package java.security;
  * 
  */
 public final class SecurityPermission extends BasicPermission {
-	static final long serialVersionUID = 5236109936224050470L;
+	private static final long serialVersionUID = 5236109936224050470L;
 
 	/**
 	 * Constants for security permissions used in this package.

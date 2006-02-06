@@ -31,7 +31,7 @@ public class InvalidKeySpecException extends GeneralSecurityException {
     /**
      * @com.intel.drl.spec_ref
      */
-    static final long serialVersionUID = 3546139293998810778L;
+    private static final long serialVersionUID = 3546139293998810778L;
 
     /**
      * @com.intel.drl.spec_ref

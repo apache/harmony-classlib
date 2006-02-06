@@ -21,7 +21,7 @@ import java.io.ObjectInputStream;
 
 public class InetSocketAddress extends SocketAddress {
 
-	static final long serialVersionUID = 5076001401234631237L;
+	private static final long serialVersionUID = 5076001401234631237L;
 
 	private String hostName;
 

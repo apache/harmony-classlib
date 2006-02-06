@@ -20,7 +20,7 @@ import java.io.ObjectStreamException;
 
 public final class Inet4Address extends InetAddress {
 
-	static final long serialVersionUID = 3286316764910316507L;
+	private static final long serialVersionUID = 3286316764910316507L;
 
 	Inet4Address(byte[] address) {
 		ipaddress = address;

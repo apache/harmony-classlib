@@ -31,7 +31,7 @@ import java.io.Serializable;
 
 public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		Serializable {
-	static final long serialVersionUID = 919286545866124006L;
+	private static final long serialVersionUID = 919286545866124006L;
 
 	transient int size = 0;
 

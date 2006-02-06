@@ -46,7 +46,7 @@ public class InetAddress extends Object implements Serializable {
 	final static InetAddress LOOPBACK = new Inet4Address(localhost_bytes,
 			"localhost");
 
-	static final long serialVersionUID = 3286316764910316507L;
+	private static final long serialVersionUID = 3286316764910316507L;
 
 	String hostName;
 

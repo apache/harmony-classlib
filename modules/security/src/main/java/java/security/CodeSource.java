@@ -35,7 +35,7 @@ import java.util.Hashtable;
  * 
  */
 public class CodeSource extends Object implements java.io.Serializable {
-	static final long serialVersionUID = 4977541819976013951L;
+	private static final long serialVersionUID = 4977541819976013951L;
 
 	/**
 	 * The URL which was used to create the receiver.

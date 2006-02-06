@@ -30,7 +30,7 @@ import java.io.Serializable;
 public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 		Serializable {
 	
-	static final long serialVersionUID = -2479143000061671589L;
+	private static final long serialVersionUID = -2479143000061671589L;
 
 	private transient TreeMap backingMap;
 

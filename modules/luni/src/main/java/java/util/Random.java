@@ -27,7 +27,7 @@ import java.io.Serializable;
  */
 public class Random implements Serializable {
 	
-	static final long serialVersionUID = 3905348978240129619L;
+	private static final long serialVersionUID = 3905348978240129619L;
 
 	static final long multiplier = 0x5deece66dL;
 

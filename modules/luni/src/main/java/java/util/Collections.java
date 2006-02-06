@@ -28,7 +28,7 @@ public class Collections {
 
 	private static final class CopiesList extends AbstractList implements
 			Serializable {
-		static final long serialVersionUID = 2739099268398711800L;
+		private static final long serialVersionUID = 2739099268398711800L;
 
 		private int n;
 
@@ -59,7 +59,7 @@ public class Collections {
 
 	private static final class EmptyList extends AbstractList implements
 			Serializable {
-		static final long serialVersionUID = 8842843931221139166L;
+		private static final long serialVersionUID = 8842843931221139166L;
 
 		public boolean contains(Object object) {
 			return false;
@@ -76,7 +76,7 @@ public class Collections {
 
 	private static final class EmptySet extends AbstractSet implements
 			Serializable {
-		static final long serialVersionUID = 1582296315990362920L;
+		private static final long serialVersionUID = 1582296315990362920L;
 
 		public boolean contains(Object object) {
 			return false;
@@ -105,7 +105,7 @@ public class Collections {
 
 	private static final class EmptyMap extends AbstractMap implements
 			Serializable {
-		static final long serialVersionUID = 6428348081105594320L;
+		private static final long serialVersionUID = 6428348081105594320L;
 
 		public boolean containsKey(Object key) {
 			return false;
@@ -139,7 +139,7 @@ public class Collections {
 	public static final Map EMPTY_MAP = new EmptyMap();
 
 	private static class ReverseComparator implements Comparator, Serializable {
-		static final long serialVersionUID = 7207038068494060240L;
+		private static final long serialVersionUID = 7207038068494060240L;
 
 		public int compare(Object o1, Object o2) {
 			return -((Comparable) o1).compareTo(o2);
@@ -148,7 +148,7 @@ public class Collections {
 
 	private static final class SingletonSet extends AbstractSet implements
 			Serializable {
-		static final long serialVersionUID = 3193687207550431679L;
+		private static final long serialVersionUID = 3193687207550431679L;
 
 		Object element;
 
@@ -189,7 +189,7 @@ public class Collections {
 
 	private static final class SingletonList extends AbstractList implements
 			Serializable {
-		static final long serialVersionUID = 3093736618740652951L;
+		private static final long serialVersionUID = 3093736618740652951L;
 
 		Object element;
 
@@ -214,7 +214,7 @@ public class Collections {
 
 	private static final class SingletonMap extends AbstractMap implements
 			Serializable {
-		static final long serialVersionUID = -6979724477215052911L;
+		private static final long serialVersionUID = -6979724477215052911L;
 
 		Object k, v;
 
@@ -303,7 +303,7 @@ public class Collections {
 	}
 
 	static class SynchronizedCollection implements Collection, Serializable {
-		static final long serialVersionUID = 3053995032091335093L;
+		private static final long serialVersionUID = 3053995032091335093L;
 
 		Collection c;
 
@@ -406,7 +406,7 @@ public class Collections {
 
 	static class SynchronizedRandomAccessList extends SynchronizedList
 			implements RandomAccess {
-		static final long serialVersionUID = 1530674583602358482L;
+		private static final long serialVersionUID = 1530674583602358482L;
 
 		SynchronizedRandomAccessList(List l) {
 			super(l);
@@ -441,7 +441,7 @@ public class Collections {
 
 	static class SynchronizedList extends SynchronizedCollection implements
 			List {
-		static final long serialVersionUID = -7754090372962971524L;
+		private static final long serialVersionUID = -7754090372962971524L;
 
 		List list;
 
@@ -556,7 +556,7 @@ public class Collections {
 	}
 
 	static class SynchronizedMap implements Map, Serializable {
-		static final long serialVersionUID = 1978198479659022715L;
+		private static final long serialVersionUID = 1978198479659022715L;
 
 		private Map m;
 
@@ -664,7 +664,7 @@ public class Collections {
 	}
 
 	static class SynchronizedSet extends SynchronizedCollection implements Set {
-		static final long serialVersionUID = 487447009682186044L;
+		private static final long serialVersionUID = 487447009682186044L;
 
 		SynchronizedSet(Set set) {
 			super(set);
@@ -695,7 +695,7 @@ public class Collections {
 
 	static class SynchronizedSortedMap extends SynchronizedMap implements
 			SortedMap {
-		static final long serialVersionUID = -8798146769416483793L;
+		private static final long serialVersionUID = -8798146769416483793L;
 
 		private SortedMap sm;
 
@@ -755,7 +755,7 @@ public class Collections {
 
 	static class SynchronizedSortedSet extends SynchronizedSet implements
 			SortedSet {
-		static final long serialVersionUID = 8695801310862127406L;
+		private static final long serialVersionUID = 8695801310862127406L;
 
 		private SortedSet ss;
 
@@ -814,7 +814,7 @@ public class Collections {
 
 	private static class UnmodifiableCollection implements Collection,
 			Serializable {
-		static final long serialVersionUID = 1820017752578914078L;
+		private static final long serialVersionUID = 1820017752578914078L;
 
 		Collection c;
 
@@ -891,7 +891,7 @@ public class Collections {
 
 	private static class UnmodifiableRandomAccessList extends UnmodifiableList
 			implements RandomAccess {
-		static final long serialVersionUID = -2542308836966382001L;
+		private static final long serialVersionUID = -2542308836966382001L;
 
 		UnmodifiableRandomAccessList(List l) {
 			super(l);
@@ -918,7 +918,7 @@ public class Collections {
 
 	private static class UnmodifiableList extends UnmodifiableCollection
 			implements List {
-		static final long serialVersionUID = -283967356065247728L;
+		private static final long serialVersionUID = -283967356065247728L;
 
 		List list;
 
@@ -1037,12 +1037,12 @@ public class Collections {
 	}
 
 	private static class UnmodifiableMap implements Map, Serializable {
-		static final long serialVersionUID = -1034234728574286014L;
+		private static final long serialVersionUID = -1034234728574286014L;
 
 		private Map m;
 
 		private static class UnmodifiableEntrySet extends UnmodifiableSet {
-			static final long serialVersionUID = 7854390611657943733L;
+			private static final long serialVersionUID = 7854390611657943733L;
 
 			private static class UnmodifiableMapEntry implements Map.Entry {
 				Map.Entry mapEntry;
@@ -1185,7 +1185,7 @@ public class Collections {
 
 	private static class UnmodifiableSet extends UnmodifiableCollection
 			implements Set {
-		static final long serialVersionUID = -9215047833775013803L;
+		private static final long serialVersionUID = -9215047833775013803L;
 
 		UnmodifiableSet(Set set) {
 			super(set);
@@ -1202,7 +1202,7 @@ public class Collections {
 
 	private static class UnmodifiableSortedMap extends UnmodifiableMap
 			implements SortedMap {
-		static final long serialVersionUID = -8806743815996713206L;
+		private static final long serialVersionUID = -8806743815996713206L;
 
 		private SortedMap sm;
 
@@ -1238,7 +1238,7 @@ public class Collections {
 
 	private static class UnmodifiableSortedSet extends UnmodifiableSet
 			implements SortedSet {
-		static final long serialVersionUID = -4929149591599911165L;
+		private static final long serialVersionUID = -4929149591599911165L;
 
 		private SortedSet ss;
 

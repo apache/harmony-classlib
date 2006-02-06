@@ -30,7 +30,7 @@ import java.io.ObjectOutputStream;
  */
 public class GregorianCalendar extends Calendar {
 
-	static final long serialVersionUID = -8125100834729963327L;
+	private static final long serialVersionUID = -8125100834729963327L;
 
 	public final static int BC = 0, AD = 1;
 

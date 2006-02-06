@@ -29,7 +29,7 @@ package java.io;
  * @see ObjectStreamConstants
  */
 public final class SerializablePermission extends java.security.BasicPermission {
-	static final long serialVersionUID = 8537212141160296410L;
+	private static final long serialVersionUID = 8537212141160296410L;
 
 	private String actions;
 

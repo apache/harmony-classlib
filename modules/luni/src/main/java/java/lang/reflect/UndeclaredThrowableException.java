@@ -25,7 +25,7 @@ package java.lang.reflect;
 
 public class UndeclaredThrowableException extends RuntimeException {
 
-	static final long serialVersionUID = 330127114055056639L;
+	private static final long serialVersionUID = 330127114055056639L;
 
 	private Throwable undeclaredThrowable;
 

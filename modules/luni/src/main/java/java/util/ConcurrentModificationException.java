@@ -24,7 +24,7 @@ package java.util;
  */
 public class ConcurrentModificationException extends RuntimeException {
 
-	static final long serialVersionUID = -3666751008965953603L;
+	private static final long serialVersionUID = -3666751008965953603L;
 
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.

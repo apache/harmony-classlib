@@ -22,7 +22,7 @@ package java.lang;
  */
 public abstract class Number implements java.io.Serializable {
 
-	static final long serialVersionUID = -8742448824652078965L;
+	private static final long serialVersionUID = -8742448824652078965L;
 
 	/**
 	 * Number constructor. Included for spec compatability.

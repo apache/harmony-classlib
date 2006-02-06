@@ -33,7 +33,7 @@ public class MalformedInputException extends CharacterCodingException {
 	 * This constant is used during deserialization to check the J2SE version
 	 * which created the serialized object.
 	 */
-	static final long serialVersionUID = -3438823399834806194L; // J2SE 1.4.2
+	private static final long serialVersionUID = -3438823399834806194L; // J2SE 1.4.2
 
 	/*
 	 * -------------------------------------------------------------------

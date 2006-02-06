@@ -28,7 +28,7 @@ import java.security.PermissionCollection;
  */
 class PropertyPermissionCollection extends PermissionCollection {
 	
-	static final long serialVersionUID = 7015263904581634791L;
+	private static final long serialVersionUID = 7015263904581634791L;
 
 	Hashtable permissions = new Hashtable(30);
 

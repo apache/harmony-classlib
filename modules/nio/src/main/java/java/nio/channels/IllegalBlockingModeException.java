@@ -23,7 +23,7 @@ package java.nio.channels;
  */
 public class IllegalBlockingModeException extends IllegalStateException {
 
-	static final long serialVersionUID = -3335774961855590474L;
+	private static final long serialVersionUID = -3335774961855590474L;
 
 	/**
 	 * Default constructor.

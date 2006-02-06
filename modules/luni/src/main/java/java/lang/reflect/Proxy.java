@@ -32,7 +32,7 @@ import com.ibm.oti.util.Msg;
  */
 public class Proxy implements java.io.Serializable {
 
-	static final long serialVersionUID = -2222568056686623797L;
+	private static final long serialVersionUID = -2222568056686623797L;
 
 	// maps class loaders to created classes by interface names
 	private static Map loaderCache = new WeakHashMap();

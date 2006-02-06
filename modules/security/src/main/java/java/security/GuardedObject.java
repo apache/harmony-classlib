@@ -24,7 +24,7 @@ import java.io.Serializable;
  * 
  */
 public class GuardedObject implements Serializable {
-	static final long serialVersionUID = -5240450096227834308L;
+	private static final long serialVersionUID = -5240450096227834308L;
 
 	Object object;
 

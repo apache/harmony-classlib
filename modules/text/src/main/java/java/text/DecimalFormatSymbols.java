@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
  */
 public final class DecimalFormatSymbols implements Cloneable, Serializable {
 
-	static final long serialVersionUID = 5772796243397350300L;
+	private static final long serialVersionUID = 5772796243397350300L;
 
 	private final int ZeroDigit = 0, Digit = 1, DecimalSeparator = 2,
 			GroupingSeparator = 3, PatternSeparator = 4, Percent = 5,

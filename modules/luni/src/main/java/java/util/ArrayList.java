@@ -31,7 +31,7 @@ import java.lang.reflect.Array;
 public class ArrayList extends AbstractList implements List, Cloneable,
 		Serializable, RandomAccess {
 
-	static final long serialVersionUID = 8683452581122892189L;
+	private static final long serialVersionUID = 8683452581122892189L;
 
 	transient private int firstIndex, lastIndex;
 

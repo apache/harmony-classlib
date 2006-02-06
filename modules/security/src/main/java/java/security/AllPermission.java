@@ -22,7 +22,7 @@ package java.security;
  * 
  */
 public final class AllPermission extends Permission {
-	static final long serialVersionUID = -2916474571451318075L;
+	private static final long serialVersionUID = -2916474571451318075L;
 
 	/**
 	 * Constructs a new instance of this class.
