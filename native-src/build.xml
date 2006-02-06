@@ -167,9 +167,11 @@
     	<!-- gmj : HACK :  copy the binaries for security2 -->
     	
         <copy todir="${target.output}/jre/bin" overwrite="yes"
-        	    verbose="true"
-        		file ="../modules/security2/build/deploy/jre/bin/jaaswin.dll" />
-
+        	    verbose="true" >
+        	
+        	<fileset dir="../modules/security2/build/deploy/jre/bin/"
+             	includes="*${shlib.suffix}" />
+        </copy>
 
     </target>
 
