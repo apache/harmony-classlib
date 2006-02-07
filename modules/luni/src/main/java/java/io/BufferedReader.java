@@ -229,11 +229,13 @@ public class BufferedReader extends Reader {
 	public int read(char[] buffer, int offset, int length) throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
+				// check for null
+				int bufLen = buffer.length;
 				if (length == 0)
 					return 0;
 				// avoid int overflow
-				if (0 <= offset && offset <= buffer.length && 0 < length
-						&& length <= buffer.length - offset) {
+				if (0 <= offset && offset <= bufLen && 0 < length
+						&& length <= bufLen - offset) {
 					int required;
 					if (pos < count) {
 						/* There are bytes available in the buffer. */

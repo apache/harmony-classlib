@@ -29,6 +29,7 @@ public class AllTests {
 				"Test for org.apache.harmony.tests.java.io");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(FileTest.class);
+		suite.addTestSuite(BufferedReaderTest.class);
 		suite.addTestSuite(PushBackInputStreamTest.class);
 		//$JUnit-END$
 		return suite;
