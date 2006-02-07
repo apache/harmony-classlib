@@ -27,10 +27,10 @@ public final class Inet6Address extends InetAddress {
 
 	private static final long serialVersionUID = 6880410070516793377L;
 
-	final static byte[] any_bytes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0 };
-
-	static InetAddress ANY = new Inet6Address(any_bytes);
+	static final byte[] any_bytes = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	static final byte[] localhost_bytes = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+	static final InetAddress ANY = new Inet6Address(any_bytes);
+	static final InetAddress LOOPBACK = new Inet6Address(localhost_bytes, "localhost"); 
 
 	int scope_id = 0;
 

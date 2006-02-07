@@ -23,6 +23,18 @@ import junit.framework.TestCase;
 public class InetAddressTest extends TestCase {
 
 	/**
+	 * @tests java.net.InetAddress#getAllByName(java.lang.String)
+	 */
+	public void test_getAllByNameLjava_lang_String()
+			throws UnknownHostException {
+		// Regression for HARMONY-56
+		InetAddress[] ia = InetAddress.getAllByName(null);
+		assertEquals("Assert 0: No loopback address", 1, ia.length);
+		assertTrue("Assert 1: getAllByName(null) not loopback",
+				ia[0].isLoopbackAddress());
+	}
+
+	/**
 	 * @tests java.net.InetAddress#getByAddress(byte[])
 	 */
 	public void test_getByAddress() {
