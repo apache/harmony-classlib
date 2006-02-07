@@ -263,14 +263,18 @@ public class File implements Serializable, Comparable {
 						&& newPath[0] == separatorChar) {
 					newPath[0] = newPath[newLength - 1];
 					newLength = 1;
+					// allow trailing slash after drive letter
+					uncIndex = 2;
 				}
 				newPath[newLength++] = pathChar;
 				foundSlash = false;
 			}
 		}
 		// remove trailing slash
-		if (foundSlash && newLength > (uncIndex + 1))
+		if (foundSlash
+				&& (newLength > (uncIndex + 1) || (newLength == 2 && newPath[0] != separatorChar))) {
 			newLength--;
+		}
 		String tempPath = new String(newPath, 0, newLength);
 		// If it's the same keep it identical for SecurityManager purposes
 		if (!tempPath.equals(origPath)) {

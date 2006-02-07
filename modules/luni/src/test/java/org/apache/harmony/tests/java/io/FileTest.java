@@ -59,6 +59,11 @@ public class FileTest extends TestCase {
 		f = new File((File) null, fileName);
 		assertTrue("Assert 4: Created incorrect file " + f.getPath(), f
 				.getAbsolutePath().equals(dirName));
+		
+		// Regression for HARMONY-46
+		File f1 = new File("a");
+		File f2 = new File("a/");
+		assertEquals("Assert 5: Trailing slash file name is incorrect", f1, f2);
 	}
 	
 	/**
@@ -70,12 +75,10 @@ public class FileTest extends TestCase {
 		File mfile = new File(mixedFname);
 		File lfile = new File(mixedFname.toLowerCase());
 
-		int hash = 0;
 		if (mfile.equals(lfile)) {
-			hash = mixedFname.toLowerCase().hashCode() ^ 1234321;
+			assertTrue("Assert 0: wrong hashcode", mfile.hashCode() == lfile.hashCode());
 		} else {
-			hash = mixedFname.hashCode() ^ 1234321;
+			assertFalse("Assert 1: wrong hashcode", mfile.hashCode() == lfile.hashCode());
 		}
-		assertEquals("Assert 0: wrong hashcode", hash, mfile.hashCode());
 	}
 }
