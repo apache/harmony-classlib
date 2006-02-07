@@ -15,23 +15,26 @@
 
 package org.apache.harmony.tests.java.io;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.PushbackInputStream;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+public class PushBackInputStreamTest extends TestCase {
+
+	/**
+	 * @tests java.io.PushbackInputStream#unread(byte[], int, int)
+	 */
+	public void test_unread$BII() {
+		// Regression for HARMONY-49
+		try {
+			PushbackInputStream pb = new PushbackInputStream(
+					new ByteArrayInputStream(new byte[] { 0 }), 2);
+			pb.unread(new byte[1], 0, 5);
+			fail("Assert 0: should throw IOE");
+		} catch (IOException e) {
+			// expected
+		}
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.io");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(FileTest.class);
-		suite.addTestSuite(PushBackInputStreamTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }

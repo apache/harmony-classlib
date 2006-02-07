@@ -260,6 +260,9 @@ public class PushbackInputStream extends FilterInputStream {
 	 */
 	public void unread(byte[] buffer, int offset, int length)
 			throws IOException {
+		if (length > pos)
+			// Pushback buffer full
+			throw new IOException(com.ibm.oti.util.Msg.getString("K007e"));
 		// avoid int overflow
 		if (0 <= offset && offset <= buffer.length && 0 <= length
 				&& length <= buffer.length - offset) {

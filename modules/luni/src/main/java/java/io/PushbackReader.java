@@ -267,6 +267,9 @@ public class PushbackReader extends FilterReader {
 	 *             If the pushback buffer becomes, or is, full.
 	 */
 	public void unread(char[] buffer, int offset, int count) throws IOException {
+		if (count > pos)
+			// Pushback buffer full
+			throw new IOException(com.ibm.oti.util.Msg.getString("K007e"));
 		// avoid int overflow
 		if (0 <= offset && offset <= buffer.length && 0 <= count
 				&& count <= buffer.length - offset) {
