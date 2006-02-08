@@ -238,7 +238,7 @@ public final class DatagramPacket {
 	 * @param sockAddr
 	 *            the machine address and port
 	 */
-	public DatagramPacket(byte[] data, int length, SocketAddress sockAddr) {
+	public DatagramPacket(byte[] data, int length, SocketAddress sockAddr) throws SocketException {
 		this(data, 0, length);
 		setSocketAddress(sockAddr);
 	}
@@ -258,7 +258,7 @@ public final class DatagramPacket {
 	 *            the machine address and port
 	 */
 	public DatagramPacket(byte[] data, int offset, int length,
-			SocketAddress sockAddr) {
+			SocketAddress sockAddr) throws SocketException {
 		this(data, offset, length);
 		setSocketAddress(sockAddr);
 	}
