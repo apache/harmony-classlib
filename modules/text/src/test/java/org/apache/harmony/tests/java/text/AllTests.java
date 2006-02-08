@@ -31,6 +31,8 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(RuleBasedCollatorTest.class);
 		suite.addTestSuite(BreakIteratorTest.class);
+		suite.addTestSuite(MessageFormatTest.class);
+		suite.addTestSuite(ChoiceFormatTest.class);
 		//$JUnit-END$
 		return suite;
 	}

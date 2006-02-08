@@ -366,6 +366,8 @@ public class ChoiceFormat extends NumberFormat {
 	public String toPattern() {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < choiceLimits.length; i++) {
+            if (i != 0) //if appending another format add OR symbol first
+                buffer.append('|');
 			String previous = String.valueOf(previousDouble(choiceLimits[i]));
 			String limit = String.valueOf(choiceLimits[i]);
 			if (previous.length() < limit.length()) {
@@ -381,9 +383,7 @@ public class ChoiceFormat extends NumberFormat {
 			buffer.append(choiceFormats[i]);
 			if (quote)
 				buffer.append('\'');
-			buffer.append('|');
 		}
-		buffer.setLength(buffer.length() - 1);
 		return buffer.toString();
 	}
 }
