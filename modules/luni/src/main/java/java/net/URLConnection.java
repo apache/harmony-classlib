@@ -35,7 +35,7 @@ import com.ibm.oti.util.Util;
 /**
  * The URLConnection class is responsible for establishing a connection to an
  * URL for a given protocol. The correct URLConnection subclass to call is
- * deteremined by <code<URLStreamHandler.openConnection().
+ * determined by <code>URLStreamHandler.openConnection()</code>.
  */
 public abstract class URLConnection {
 	protected URL url;
@@ -727,13 +727,13 @@ public abstract class URLConnection {
 	 * @param newValue
 	 *            the value of the flag to be set
 	 * 
-	 * @throws SecurityException
+	 * @throws IllegalStateException
 	 *             if this method attempts to change the flag after a connection
 	 *             has been established
 	 */
 	public void setAllowUserInteraction(boolean newValue) {
 		if (connected) {
-			throw new SecurityException(Msg.getString("K0037"));
+			throw new IllegalStateException(Msg.getString("K0037"));
 		}
 		this.allowUserInteraction = newValue;
 	}
@@ -908,7 +908,7 @@ public abstract class URLConnection {
 	 * @param newValue
 	 *            the value of the flag to be set
 	 * 
-	 * @throws IllegalAccessError
+	 * @throws IllegalStateException
 	 *             Exception thrown when this method attempts to change the
 	 *             value after connected
 	 * 
@@ -916,11 +916,10 @@ public abstract class URLConnection {
 	 * @see #setDefaultUseCaches
 	 * @see #getUseCaches
 	 * @see #useCaches
-	 * @see java.lang.IllegalAccessError
 	 */
 	public void setUseCaches(boolean newValue) {
 		if (connected) {
-			throw new IllegalAccessError(Msg.getString("K0037"));
+			throw new IllegalStateException(Msg.getString("K0037"));
 		}
 		this.useCaches = newValue;
 	}

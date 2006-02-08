@@ -32,6 +32,7 @@ public class AllTests {
 		suite.addTestSuite(InetAddressTest.class);
 		suite.addTestSuite(URLTest.class);
 		suite.addTestSuite(URITest.class);
+		suite.addTestSuite(URLConnectionTest.class);
 		//$JUnit-END$
 		return suite;
 	}
