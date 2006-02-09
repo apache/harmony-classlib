@@ -522,8 +522,8 @@
                 	<!-- Harmony exclude list -->
                 	<exclude name="java/security/AlgorithmParameterGenerator1Test.java"/>
                 	<exclude name="java/security/KSBuilderTest.java"/>
-                	<exclude name="java/security/KeyPairGeneratorTest1.java"/>
-                	<exclude name="java/security/KeyPairGeneratorTest3.java"/>
+                	<exclude name="java/security/KeyPairGenerator1Test.java"/>
+                	<exclude name="java/security/KeyPairGenerator3Test.java"/>
                 	<exclude name="java/security/KeyStoreTest1.java"/>
                 	<exclude name="java/security/SignedObjectTest.java"/>
                 	<exclude name="java/security/cert/PKIXBuilderParametersTest.java"/>
