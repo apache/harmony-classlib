@@ -472,4 +472,107 @@
         	
         </junit>
     </target>
+
+	<!--                                                       -->
+	<!-- test.classlib : Running Security tests against the    -->
+	<!--                 Harmony classlib.  This also uses     -->
+	<!--                 the HarmonyVM (or whatever) found     -->
+    <!--                 at ../../deploy/jre                   -->
+	<!--                                                       -->
+
+    <target name="test.classlib" depends="tests"
+    	description="Running Security tests on Harmony classlib">
+
+        <mkdir dir="${build.path}/tests_report" />
+
+    	<property name="vm.home" location="../../deploy/jre" />
+
+        <junit fork="yes"
+            forkmode="perTest"
+            printsummary="withOutAndErr"
+            errorproperty="test.error"
+            showoutput="on"
+        	haltonfailure="on"
+            dir="${basedir}"
+            jvm="${vm.home}/bin/java">
+        	
+        	<env key="JAVA_HOME" value="${vm.home}"/>
+
+        	<!-- to pick up junit.jar and bouncycastle.jar -->
+            <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${env.CLASSPATH}"/>
+
+        	<jvmarg value="-Djava.security.properties==${build.lib.path}/security/java.security"/>
+            <jvmarg value="-Djava.security.policy==${build.lib.path}/security/drl.policy"/>
+        	<jvmarg value="-DTEST_SRC_DIR=${src.tst.common}/unit"/>
+
+            <formatter type="plain" />
+            <batchtest todir="${build.path}/tests_report">
+                <fileset dir="${src.tst.common}/unit">
+                    <include name="**/*Test*.java"/>
+
+                	<!-- Not a test -->
+                    <exclude name="org/apache/harmony/security/TestCertUtils.java"/>
+                    <exclude name="org/apache/harmony/security/TestKeyPair.java"/>
+                    <exclude name="org/apache/harmony/security/cert/TestUtils.java"/>
+                    <exclude name="org/apache/harmony/security/provider/cert/CertFactoryTestData.java"/>
+                    <exclude name="org/apache/harmony/security/test/**"/>
+                	
+                	<!-- Harmony exclude list -->
+                	<exclude name="java/security/AlgorithmParameterGeneratorTest1.java"/>
+                	<exclude name="java/security/KSBuilderTest.java"/>
+                	<exclude name="java/security/KeyPairGeneratorTest1.java"/>
+                	<exclude name="java/security/KeyPairGeneratorTest3.java"/>
+                	<exclude name="java/security/KeyStoreTest1.java"/>
+                	<exclude name="java/security/SignedObjectTest.java"/>
+                	<exclude name="java/security/cert/PKIXBuilderParametersTest.java"/>
+                	<exclude name="java/security/cert/PKIXParametersTest.java"/>
+                	<exclude name="java/security/cert/TrustAnchorTest.java"/>
+                	<exclude name="java/security/cert/X509CRLSelectorTest.java"/>
+                	<exclude name="java/security/cert/X509CertSelectorTest.java"/>
+                	<exclude name="java/security/serialization/KeyPairTest.java"/>
+                	<exclude name="java/security/serialization/SignedObjectTest.java"/>
+                	<exclude name="java/security/spec/DSAParameterSpecTest.java"/>
+                	<exclude name="java/security/spec/DSAPrivateKeySpecTest.java"/>
+                	<exclude name="java/security/spec/DSAPublicKeySpecTest.java"/>
+                	<exclude name="java/security/spec/ECFieldF2mTest.java"/>
+                	<exclude name="java/security/spec/ECFieldFpTest.java"/>
+                	<exclude name="java/security/spec/ECParameterSpecTest.java"/>
+                	<exclude name="java/security/spec/ECPointTest.java"/>
+                	<exclude name="java/security/spec/ECPrivateKeySpecTest.java"/>
+                	<exclude name="java/security/spec/ECPublicKeySpecTest.java"/>
+                	<exclude name="java/security/spec/EllipticCurveTest.java"/>
+                	<exclude name="java/security/spec/RSAKeyGenParameterSpecTest.java"/>
+                	<exclude name="java/security/spec/RSAMultiPrimePrivateCrtKeySpecTest.java"/>
+                	<exclude name="java/security/spec/RSAOtherPrimeInfoTest.java"/>
+                	<exclude name="java/security/spec/RSAPrivateCrtKeySpecTest.java"/>
+                	<exclude name="java/security/spec/RSAPrivateKeySpecTest.java"/>
+                	<exclude name="java/security/spec/RSAPublicKeySpecTest.java"/>
+                	<exclude name="javax/crypto/EncryptedPrivateKeyInfoTest.java"/>
+                	<exclude name="javax/crypto/KeyAgreementTest1.java"/>
+                	<exclude name="javax/crypto/spec/DHParameterSpecTest.java"/>
+                	<exclude name="javax/crypto/spec/DHPrivateKeySpecTest.java"/>
+                	<exclude name="javax/crypto/spec/DHPublicKeySpecTest.java"/>
+                	<exclude name="javax/security/auth/PrivateCredentialPermissionTest.java"/>
+                	<exclude name="javax/security/auth/SubjectDomainCombinerTest.java"/>
+                	<exclude name="javax/security/auth/SubjectTest.java"/>
+                	<exclude name="javax/security/auth/login/LoginContextTest.java"/>
+                	<exclude name="javax/security/auth/login/serialization/SerAccountExpiredExceptionTest.java"/>
+                	<exclude name="javax/security/auth/login/serialization/SerCredentialExpiredExceptionTest.java"/>
+                    <exclude name="javax/security/auth/x500/X500PrincipalTest.java" />
+                	<exclude name="javax/security/cert/X509CertificateTest.java"/>
+                	<exclude name="org/apache/harmony/security/asn1/der/BerInputStreamTest.java"/>
+                	<exclude name="org/apache/harmony/security/asn1/der/IntegerTest.java"/>
+                	<exclude name="org/apache/harmony/security/provider/cert/X509CRLImplTest.java"/>
+                	<exclude name="org/apache/harmony/security/provider/cert/X509CertFactoryImplTest.java"/>
+                	<exclude name="org/apache/harmony/security/provider/cert/X509CertFactoryPerfTest.java"/>
+                	<exclude name="org/apache/harmony/security/provider/cert/X509CertImplTest.java"/>
+                	<exclude name="org/apache/harmony/security/provider/cert/X509CertPathImplTest.java"/>
+                	<exclude name="org/apache/harmony/security/x509/CertificateListTest.java"/>
+                	<exclude name="org/apache/harmony/security/x509/CertificateTest.java"/>
+
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
 </project>
