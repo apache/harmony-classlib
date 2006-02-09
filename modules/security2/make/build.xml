@@ -499,6 +499,8 @@
         	<env key="JAVA_HOME" value="${vm.home}"/>
 
         	<!-- to pick up junit.jar and bouncycastle.jar -->
+            <jvmarg value="-Xbootclasspath/p:${build.jars.path}/crypto.jar${path.separator}${build.jars.path}/x_net.jar"/>
+            
             <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${env.CLASSPATH}"/>
 
         	<jvmarg value="-Djava.security.properties==${build.lib.path}/security/java.security"/>
@@ -518,7 +520,7 @@
                     <exclude name="org/apache/harmony/security/test/**"/>
                 	
                 	<!-- Harmony exclude list -->
-                	<exclude name="java/security/AlgorithmParameterGeneratorTest1.java"/>
+                	<exclude name="java/security/AlgorithmParameterGenerator1Test.java"/>
                 	<exclude name="java/security/KSBuilderTest.java"/>
                 	<exclude name="java/security/KeyPairGeneratorTest1.java"/>
                 	<exclude name="java/security/KeyPairGeneratorTest3.java"/>
