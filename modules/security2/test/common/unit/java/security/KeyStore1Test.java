@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyStoreTest1 extends TestCase {
+public class KeyStore1Test extends TestCase {
     
     public static final String srvKeyStore = "KeyStore";
     public static String[] validValues =  {
@@ -74,7 +74,7 @@ public class KeyStoreTest1 extends TestCase {
      * 
      * @param arg0
      */
-    public KeyStoreTest1(String arg0) {
+    public KeyStore1Test(String arg0) {
         super(arg0);
     }
     
@@ -1130,7 +1130,7 @@ public class KeyStoreTest1 extends TestCase {
         }
     }
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyStoreTest1.class);    
+        junit.textui.TestRunner.run(KeyStore1Test.class);
     }
     
     /**

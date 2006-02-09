@@ -43,7 +43,7 @@ import java.util.Date;
  * 
  */
 
-public class KeyStoreTest2 extends TestCase {
+public class KeyStore2Test extends TestCase {
 
     private static final String KeyStoreProviderClass = "java.security.MyKeyStoreSpi";
 
@@ -66,7 +66,7 @@ public class KeyStoreTest2 extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         mProv = (new SpiEngUtils()).new MyProvider("MyKSProvider",
-                "Testing provider", KeyStoreTest1.srvKeyStore.concat(".").concat(
+                "Testing provider", KeyStore1Test.srvKeyStore.concat(".").concat(
                         defaultAlg), KeyStoreProviderClass);
         Security.insertProviderAt(mProv, 2);
     }
@@ -84,7 +84,7 @@ public class KeyStoreTest2 extends TestCase {
      * 
      * @param arg0
      */
-    public KeyStoreTest2(String arg0) {
+    public KeyStore2Test(String arg0) {
         super(arg0);
     }
 
@@ -428,7 +428,7 @@ public class KeyStoreTest2 extends TestCase {
         }
     }
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyStoreTest2.class);    
+        junit.textui.TestRunner.run(KeyStore2Test.class);
     }
 
 }

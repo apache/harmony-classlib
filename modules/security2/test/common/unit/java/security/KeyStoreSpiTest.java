@@ -35,14 +35,14 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyStoreSpiTests extends TestCase {
+public class KeyStoreSpiTest extends TestCase {
 
     /**
      * Constructor for KeyStoreSpi.
      * 
      * @param arg0
      */
-    public KeyStoreSpiTests(String arg0) {
+    public KeyStoreSpiTest(String arg0) {
         super(arg0);
     }
 
@@ -149,7 +149,7 @@ public class KeyStoreSpiTests extends TestCase {
     }
     
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyStoreSpiTests.class);
+        junit.textui.TestRunner.run(KeyStoreSpiTest.class);
     }
 }
 /**

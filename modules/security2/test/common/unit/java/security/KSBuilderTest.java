@@ -57,9 +57,9 @@ public class KSBuilderTest extends TestCase {
     private tmpCallbackHandler tmpCall = new tmpCallbackHandler();
     private KeyStore.CallbackHandlerProtection callbackHand = new KeyStore.CallbackHandlerProtection(tmpCall);
     private myProtectionParameter myProtParam = new myProtectionParameter(new byte[5]);  
-    public static String[] validValues = KeyStoreTest1.validValues;
+    public static String[] validValues = KeyStore1Test.validValues;
 
-    private static String defaultType = KeyStoreTest1.defaultType;
+    private static String defaultType = KeyStore1Test.defaultType;
 
     private static boolean JKSSupported = false;
 
@@ -71,7 +71,7 @@ public class KSBuilderTest extends TestCase {
     
     static {
         defaultProvider = SpiEngUtils.isSupport(
-                KeyStoreTest1.defaultType, KeyStoreTest1.srvKeyStore);
+                KeyStore1Test.defaultType, KeyStore1Test.srvKeyStore);
         JKSSupported = (defaultProvider != null);
         fileEmpty = SpiEngUtils.getFileName(TestUtils.TEST_ROOT,
                 fileEmpty);

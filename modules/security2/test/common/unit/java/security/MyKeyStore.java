@@ -105,7 +105,7 @@ public class MyKeyStore extends KeyStoreSpi {
         if (Chain.containsKey(alias)) {
             Chain.remove(alias);
         }
-        KeyStoreTest1.MyPrivateKey keyK = new KeyStoreTest1("proba").new MyPrivateKey(
+        KeyStore1Test.MyPrivateKey keyK = new KeyStore1Test("proba").new MyPrivateKey(
                 alias, alias, key);
         Keys.put(alias, keyK);
         if (chain != null) {

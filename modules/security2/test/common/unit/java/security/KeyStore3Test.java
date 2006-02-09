@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyStoreTest3 extends TestCase {
+public class KeyStore3Test extends TestCase {
 
     private static final String KeyStoreProviderClass = "java.security.MyKeyStore";
 
@@ -75,11 +75,11 @@ public class KeyStoreTest3 extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         mProv = (new SpiEngUtils()).new MyProvider("MyKSProvider",
-                "Testing provider", KeyStoreTest1.srvKeyStore.concat(".")
+                "Testing provider", KeyStore1Test.srvKeyStore.concat(".")
                         .concat(defaultType), KeyStoreProviderClass);
         Security.insertProviderAt(mProv, 2);
         defaultProvider = SpiEngUtils.isSupport(defaultType,
-                KeyStoreTest1.srvKeyStore);
+                KeyStore1Test.srvKeyStore);
         KSSupported = (defaultProvider != null);
         defaultProviderName = (KSSupported ? defaultProvider.getName() : null);
     }
@@ -97,7 +97,7 @@ public class KeyStoreTest3 extends TestCase {
      * 
      * @param arg0
      */
-    public KeyStoreTest3(String arg0) {
+    public KeyStore3Test(String arg0) {
         super(arg0);
     }
 
@@ -121,14 +121,14 @@ public class KeyStoreTest3 extends TestCase {
             return;
         }
         String tType = "TestType";
-        KeyStoreTest1 KeyStoreT1 = new KeyStoreTest1("proba");
+        KeyStore1Test keyStoreT1 = new KeyStore1Test("proba");
         KeyStore.TrustedCertificateEntry tCert = new KeyStore.TrustedCertificateEntry(
-                KeyStoreT1.new MCertificate("type", new byte[0]));
+                keyStoreT1.new MCertificate("type", new byte[0]));
 
         Certificate certs[] = {
-                (Certificate) KeyStoreT1.new MCertificate(tType, new byte[10]),
-                (Certificate) KeyStoreT1.new MCertificate(tType, new byte[20]) };
-        PrivateKey pk = KeyStoreT1.new MyPrivateKey(tType, "", new byte[10]);
+                (Certificate) keyStoreT1.new MCertificate(tType, new byte[10]),
+                (Certificate) keyStoreT1.new MCertificate(tType, new byte[20]) };
+        PrivateKey pk = keyStoreT1.new MyPrivateKey(tType, "", new byte[10]);
         KeyStore.PrivateKeyEntry pKey = new KeyStore.PrivateKeyEntry(pk, certs);
         char[] pwd = { 'p', 'a', 's', 's', 'w', 'd' };
         KeyStore.PasswordProtection pPath = new KeyStore.PasswordProtection(pwd);
@@ -277,10 +277,10 @@ public class KeyStoreTest3 extends TestCase {
         String alias = "keyEntry";
         char[] pwd = new char[0];
         byte[] res;
-        KeyStoreTest1 KeyStoreT1 = new KeyStoreTest1("proba");
+        KeyStore1Test keyStoreT1 = new KeyStore1Test("proba");
         Certificate certs[] = {
-                (Certificate) KeyStoreT1.new MCertificate(alias, kk),
-                (Certificate) KeyStoreT1.new MCertificate(alias, kk) };
+                (Certificate) keyStoreT1.new MCertificate(alias, kk),
+                (Certificate) keyStoreT1.new MCertificate(alias, kk) };
         for (int i = 0; i < kss.length; i++) {
             kss[i].load(null, null);
             try {
@@ -306,6 +306,6 @@ public class KeyStoreTest3 extends TestCase {
     }
     
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyStoreTest3.class);    
+        junit.textui.TestRunner.run(KeyStore3Test.class);
     }
 }
