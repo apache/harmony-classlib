@@ -122,39 +122,46 @@
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
+        <!-- Create x-net (javax.net from security2) jar -->
+        <jar destfile="${components.output}/x-net.jar" manifest="security/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/x-net.txt"
+                excludesfile="${components.patternsets}/kernel.txt" />
+        </jar>
+
         <!-- Create text jar -->
         <jar destfile="${components.output}/text.jar" manifest="text/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/text.txt" 
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/text.txt"
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
         <!-- Create math jar -->
         <jar destfile="${components.output}/math.jar" manifest="math/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/math.txt" 
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/math.txt"
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
         <!-- Create regex jar -->
         <jar destfile="${components.output}/regex.jar" manifest="regex/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/regex.txt" 
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/regex.txt"
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
-    	
+
         <!-- Create sql jar -->
         <jar destfile="${components.output}/sql.jar" manifest="sql/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/sql.txt" 
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/sql.txt"
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
     </target>
 
 
-    <!-- ================================= 
-          target: compile              
+    <!-- =================================
+          target: compile
          ================================= -->
     <target name="compile" depends="copy-resources" description="Compile the source">
         <mkdir dir="${build.output}" />
@@ -167,13 +174,14 @@
             <src path="luni/src/main/java" />
             <src path="nio/src/main/java" />
             <src path="nio_char/src/main/java" />
-<!--  gmj : HACK :            <src path="security/src/main/java" /> -->
             <src path="security2/src/common/javasrc" />
             <src path="security2/src/windows/javasrc" />
-            
-        	<src path="sql/src/main/java" />        	
+
+            <src path="x-net/src/main/java/" />
+
+            <src path="sql/src/main/java" />
             <src path="text/src/main/java" />
-        	
+
             <classpath location="${build.output}" />
             <classpath>
                 <fileset dir="${depends.jars}">
@@ -184,8 +192,8 @@
     </target>
 
 
-    <!-- ================================= 
-          target: copy-resources              
+    <!-- =================================
+          target: copy-resources
          ================================= -->
     <target name="copy-resources" description="Copy non-Java files under src tree to the build output">
         <mkdir dir="${build.output}" />
@@ -203,19 +211,19 @@
             <fileset dir="nio_char/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
-<!--  gmj : HACK :            
+<!--  gmj : HACK :
             <fileset dir="security/src/main/java">
                 <exclude name="**/*.java" />
-            </fileset> 
+            </fileset>
 -->
-        	
-            <fileset dir="security/src">
-                <exclude name="**/*.java" />
-            </fileset> 
 
             <fileset dir="security/src">
                 <exclude name="**/*.java" />
-            </fileset> 
+            </fileset>
+
+            <fileset dir="security/src">
+                <exclude name="**/*.java" />
+            </fileset>
 
             <fileset dir="text/src/main/java">
                 <exclude name="**/*.java" />
