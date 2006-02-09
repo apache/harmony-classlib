@@ -33,14 +33,14 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyPairGeneratorTest1 extends TestCase {
+public class KeyPairGenerator1Test extends TestCase {
 
     /**
      * Constructor for KayPairGeneratorTest.
      * 
      * @param arg0
      */
-    public KeyPairGeneratorTest1(String arg0) {
+    public KeyPairGenerator1Test(String arg0) {
         super(arg0);
     }
 
@@ -498,6 +498,6 @@ public class KeyPairGeneratorTest1 extends TestCase {
     }
 
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyPairGeneratorTest1.class);    
+        junit.textui.TestRunner.run(KeyPairGenerator1Test.class);
     }
 }

@@ -33,14 +33,14 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyPairGeneratorTest3 extends TestCase {
+public class KeyPairGenerator3Test extends TestCase {
 
     /**
-     * Constructor for KeyPairGeneratorTest3.
+     * Constructor for KeyPairGenerator3Test.
      * 
      * @param arg0
      */
-    public KeyPairGeneratorTest3(String arg0) {
+    public KeyPairGenerator3Test(String arg0) {
         super(arg0);
     }
 
@@ -50,30 +50,30 @@ public class KeyPairGeneratorTest3 extends TestCase {
 
     private static boolean DSASupported = false;
     
-    private static String NotSupportMsg = KeyPairGeneratorTest1.NotSupportMsg;
+    private static String NotSupportMsg = KeyPairGenerator1Test.NotSupportMsg;
 
     static {
         validProvider = SpiEngUtils.isSupport(
-                KeyPairGeneratorTest1.validAlgName,
-                KeyPairGeneratorTest1.srvKeyPairGenerator);
+                KeyPairGenerator1Test.validAlgName,
+                KeyPairGenerator1Test.srvKeyPairGenerator);
         DSASupported = (validProvider != null);
         validProviderName = (DSASupported ? validProvider.getName() : null);
     }
 
     protected KeyPairGenerator[] createKPGen() {
         if (!DSASupported) {
-            fail(KeyPairGeneratorTest1.validAlgName
+            fail(KeyPairGenerator1Test.validAlgName
                     + " algorithm is not supported");
             return null;
         }
         KeyPairGenerator[] kpg = new KeyPairGenerator[3];
         try {
             kpg[0] = KeyPairGenerator
-                    .getInstance(KeyPairGeneratorTest1.validAlgName);
+                    .getInstance(KeyPairGenerator1Test.validAlgName);
             kpg[1] = KeyPairGenerator.getInstance(
-                    KeyPairGeneratorTest1.validAlgName, validProvider);
+                    KeyPairGenerator1Test.validAlgName, validProvider);
             kpg[2] = KeyPairGenerator.getInstance(
-                    KeyPairGeneratorTest1.validAlgName, validProviderName);
+                    KeyPairGenerator1Test.validAlgName, validProviderName);
             return kpg;
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,7 +134,7 @@ public class KeyPairGeneratorTest3 extends TestCase {
     }
 
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyPairGeneratorTest3.class);    
+        junit.textui.TestRunner.run(KeyPairGenerator3Test.class);
     }
     
 }

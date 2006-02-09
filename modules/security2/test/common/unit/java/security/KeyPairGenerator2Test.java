@@ -36,7 +36,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyPairGeneratorTest2 extends TestCase {
+public class KeyPairGenerator2Test extends TestCase {
     private String KeyPairGeneratorProviderClass = "";
 
     private static final String KeyPairGeneratorProviderClass1 = "java.security.MyKeyPairGenerator1";
@@ -73,7 +73,7 @@ public class KeyPairGeneratorTest2 extends TestCase {
 
     protected void setProv() {
         mProv = (new SpiEngUtils()).new MyProvider("MyKPGenProvider".concat(post),
-                "Testing provider", KeyPairGeneratorTest1.srvKeyPairGenerator.concat(".")
+                "Testing provider", KeyPairGenerator1Test.srvKeyPairGenerator.concat(".")
                         .concat(defaultAlg.concat(post)),
                 KeyPairGeneratorProviderClass);
         Security.insertProviderAt(mProv, 1);
@@ -84,7 +84,7 @@ public class KeyPairGeneratorTest2 extends TestCase {
      * 
      * @param arg0
      */
-    public KeyPairGeneratorTest2(String arg0) {
+    public KeyPairGenerator2Test(String arg0) {
         super(arg0);
     }
 
@@ -431,6 +431,6 @@ public class KeyPairGeneratorTest2 extends TestCase {
         GetInstance03(4);
     }
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyPairGeneratorTest2.class);    
+        junit.textui.TestRunner.run(KeyPairGenerator2Test.class);
     }
 }
