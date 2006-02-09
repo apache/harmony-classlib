@@ -21,9 +21,6 @@
 
 package java.security;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
 
@@ -46,7 +43,7 @@ public class KeyPairGenerator3Test extends TestCase {
 
     private static String validProviderName = null;
 
-    public static Provider validProvider = null;;
+    public static Provider validProvider = null;
 
     private static boolean DSASupported = false;
     

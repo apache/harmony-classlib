@@ -49,7 +49,7 @@ public class KeyPairGeneratorSpiTest extends TestCase {
     public void testKeyPairGeneratorSpi01()
             throws InvalidAlgorithmParameterException,
             InvalidParameterException {
-        KeyPairGeneratorSpi keyPairGen = (KeyPairGeneratorSpi) new MyKeyPairGeneratorSpi();
+        KeyPairGeneratorSpi keyPairGen = new MyKeyPairGeneratorSpi();
         assertTrue("Not KeyPairGeneratorSpi object",
                 keyPairGen instanceof KeyPairGeneratorSpi);
 

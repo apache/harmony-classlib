@@ -55,7 +55,7 @@ public class KeyPairGenerator1Test extends TestCase {
 
     private static String validProviderName = null;
 
-    public static Provider validProvider = null;;
+    public static Provider validProvider = null;
 
     private static boolean DSASupported = false;
     
