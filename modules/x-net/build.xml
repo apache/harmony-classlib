@@ -1,0 +1,108 @@
+<project name="HarmonySecurityBuild" default="test" basedir=".">
+
+    <description> Build for Security stuff </description>
+
+    <!-- set global properties for this build. -->
+
+    <property name="build.compiler" value="modern"/>
+
+    <property name="tests.output" value="target" />
+    <property name="target.output" value="../../deploy" />
+
+    <!-- =================================
+          target: run
+         ================================= -->
+    <target name="test" depends="test-clean, test-compile, test-run" description="Run Tests" />
+
+    <!-- =================================
+          target: test-clean
+         ================================= -->
+    <target name="test-clean" description="Delete all built test classes">
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset dir="${tests.output}">
+                <include name="**/**" />
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- =================================
+          target: test-compile
+         ================================= -->
+    <target name="test-compile" depends="test-copy-resource" description="Compile tests">
+        <mkdir dir="${tests.output}" />
+
+        <javac destdir="${tests.output}" source="1.4" target="1.4" debug="on">
+            <src>
+                <pathelement location="src/test/java"/>
+                <pathelement location="../security2/test/common/unit"/>
+            </src>
+
+            <include name="javax/net/**/*Test*.java" />
+            <include name="org/apache/harmony/security/test/**/*" />
+
+            <exclude name="**/SecurityTest.java"/>
+
+            <classpath location="${tests.output}" />
+
+            <bootclasspath>
+                <fileset dir="${target.output}/jre/lib/boot">
+                    <include name="*.jar"/>
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+    <!-- =================================
+          target: test-copy-resource
+         ================================= -->
+    <target name="test-copy-resource" description="Copy non-Java files">
+
+        <mkdir dir="${tests.output}" />
+
+        <copy todir="${tests.output}" includeemptydirs="false">
+            <fileset dir="src/test/java">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- =================================
+          target: test-clean
+         ================================= -->
+    <target name="test-run">
+
+    	<property name="tests.report" value="${tests.output}/report" />
+        <property environment="env"/>
+
+        <mkdir dir="${tests.report}" />
+
+        <junit fork="yes"
+            forkmode="perTest"
+            printsummary="withOutAndErr"
+            errorproperty="test.error"
+            showoutput="on"
+        	haltonfailure="on"
+            dir="${basedir}"
+            jvm="${target.output}/jre/bin/java">
+
+            <env key="JAVA_HOME" value="${target.output}/jre"/>
+
+<!--            <jvmarg value="-verbose:dynload" /> -->
+            <jvmarg value="-Xbootclasspath/a:${tests.output}${path.separator}${env.CLASSPATH}"/>
+            <jvmarg value="-Djava.security.properties==${target.output}/jre/lib/security/java.security"/>
+            <jvmarg value="-Djava.security.policy==${target.output}/jre/lib/security/drl.policy"/>
+            <jvmarg value="-DTEST_SRC_DIR=src/test/java/"/>
+
+            <formatter type="plain" />
+            <batchtest todir="${tests.report}">
+                <fileset dir="src/test/java">
+                    <include name="**/*Test.java"/>
+
+                    <exclude name="org/apache/harmony/security/test/**"/>
+
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+ </project>
