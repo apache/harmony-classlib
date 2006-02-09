@@ -31,9 +31,25 @@ public class URLTest extends TestCase {
 		URL url = new URL("http", ipv6Host, -1, "myfile");
 		assertEquals(("[" + ipv6Host + "]"), url.getHost());
 	}
-	
+
 	/**
-	 * @tests java.net.URL#URL(java.lang.String, java.lang.String, java.lang.String)
+	 * @tests java.net.URL#URL(java.lang.String, java.lang.String, int, java.lang.String)
+	 */
+	public void test_ConstructorLjava_lang_StringLjava_lang_StringILjava_lang_String()
+			throws MalformedURLException {
+		// Regression for HARMONY-83
+		new URL("http", "apache.org", 123456789, "file");
+		try {
+			new URL("http", "apache.org", -123, "file");
+			fail("Assert 0: Negative port should throw exception");
+		} catch (MalformedURLException e) {
+			// expected
+		}
+	}
+
+	/**
+	 * @tests java.net.URL#URL(java.lang.String, java.lang.String,
+	 *        java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_String() throws MalformedURLException {
 		// Strange behavior in reference, the hostname contains a ':' so it gets wrapped in '[', ']'

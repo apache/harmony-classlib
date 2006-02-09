@@ -313,7 +313,7 @@ public final class URL implements java.io.Serializable {
 			throw new MalformedURLException(e.toString());
 		}
 
-		if (port < -1 || port > 65535)
+		if (port < -1)
 			throw new MalformedURLException(com.ibm.oti.util.Msg.getString(
 					"K0325", port)); //$NON-NLS-1$
 	}
@@ -378,7 +378,7 @@ public final class URL implements java.io.Serializable {
 	 */
 	public URL(String protocol, String host, int port, String file,
 			URLStreamHandler handler) throws MalformedURLException {
-		if (port < -1 || port > 65535)
+		if (port < -1)
 			throw new MalformedURLException(com.ibm.oti.util.Msg.getString(
 					"K0325", port)); //$NON-NLS-1$
 
