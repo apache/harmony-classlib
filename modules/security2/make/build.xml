@@ -524,7 +524,7 @@
                 	<exclude name="java/security/KSBuilderTest.java"/>
                 	<exclude name="java/security/KeyPairGenerator1Test.java"/>
                 	<exclude name="java/security/KeyPairGenerator3Test.java"/>
-                	<exclude name="java/security/KeyStoreTest1.java"/>
+                	<exclude name="java/security/KeyStore1Test.java"/>
                 	<exclude name="java/security/SignedObjectTest.java"/>
                 	<exclude name="java/security/cert/PKIXBuilderParametersTest.java"/>
                 	<exclude name="java/security/cert/PKIXParametersTest.java"/>
