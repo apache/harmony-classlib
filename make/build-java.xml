@@ -123,7 +123,7 @@
         </jar>
 
         <!-- Create x-net (javax.net from security2) jar -->
-        <jar destfile="${components.output}/x-net.jar" manifest="security/META-INF/MANIFEST.MF">
+        <jar destfile="${components.output}/x-net.jar" manifest="x-net/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
                 includesfile="${components.patternsets}/x-net.txt"
                 excludesfile="${components.patternsets}/kernel.txt" />
