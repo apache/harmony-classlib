@@ -27,3 +27,4 @@ javax/security/cert/*
 javax/security/sasl/*
 org/ietf/jgss/*
 org/apache/harmony/security/**/*
+org/apache/harmony/misc/*
