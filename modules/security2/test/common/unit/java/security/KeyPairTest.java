@@ -78,7 +78,6 @@ public class KeyPairTest extends TestCase {
     /**
      * Constructor for KeyPairTest.
      * @param name
-     * @throws NoSuchAlgorithmException
      */
     public KeyPairTest(String name) {
         super(name);
