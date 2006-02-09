@@ -33,13 +33,13 @@ import junit.framework.TestCase;
  * 
  */
 
-public class AlgorithmParameterGeneratorTest1 extends TestCase {
+public class AlgorithmParameterGenerator1Test extends TestCase {
     /**
      * Constructor for AlgorithmParameterGeneratorTests.
      * 
      * @param arg0
      */
-    public AlgorithmParameterGeneratorTest1(String arg0) {
+    public AlgorithmParameterGenerator1Test(String arg0) {
         super(arg0);
     }
 
@@ -400,7 +400,7 @@ public class AlgorithmParameterGeneratorTest1 extends TestCase {
     }
 
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(AlgorithmParameterGeneratorTest1.class);
+        junit.textui.TestRunner.run(AlgorithmParameterGenerator1Test.class);
     }
 }
 /**

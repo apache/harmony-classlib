@@ -33,14 +33,14 @@ import junit.framework.TestCase;
  * 
  */
 
-public class AlgorithmParameterGeneratorSpiTests extends TestCase {
+public class AlgorithmParameterGeneratorSpiTest extends TestCase {
 
     /**
      * Constructor for CertPathBuilderTests.
      * 
      * @param name
      */
-    public AlgorithmParameterGeneratorSpiTests(String name) {
+    public AlgorithmParameterGeneratorSpiTest(String name) {
         super(name);
     }
 

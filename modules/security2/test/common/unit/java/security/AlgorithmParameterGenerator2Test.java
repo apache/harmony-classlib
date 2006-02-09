@@ -36,7 +36,7 @@ import junit.framework.TestCase;
  * methods.
  */
 
-public class AlgorithmParameterGeneratorTest2 extends TestCase {
+public class AlgorithmParameterGenerator2Test extends TestCase {
     
     private static final String AlgorithmParameterGeneratorProviderClass = "java.security.MyAlgorithmParameterGeneratorSpi";
 
@@ -59,7 +59,7 @@ public class AlgorithmParameterGeneratorTest2 extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         mProv = (new SpiEngUtils()).new MyProvider("MyAPGProvider", "Testing provider", 
-                AlgorithmParameterGeneratorTest1.srvAlgorithmParameterGenerator.concat(".").concat(defaultAlg), 
+                AlgorithmParameterGenerator1Test.srvAlgorithmParameterGenerator.concat(".").concat(defaultAlg),
                 AlgorithmParameterGeneratorProviderClass);
         Security.insertProviderAt(mProv, 1);
     }
@@ -77,7 +77,7 @@ public class AlgorithmParameterGeneratorTest2 extends TestCase {
      * 
      * @param arg0
      */
-    public AlgorithmParameterGeneratorTest2(String arg0) {
+    public AlgorithmParameterGenerator2Test(String arg0) {
         super(arg0);
     }
 
