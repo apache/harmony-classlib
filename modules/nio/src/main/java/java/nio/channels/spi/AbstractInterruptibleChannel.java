@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@
 
 package java.nio.channels.spi;
 
-
 import java.io.IOException;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.Channel;
 import java.nio.channels.InterruptibleChannel;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class roots the implementation of interruptable channels.
@@ -35,12 +36,14 @@ import java.nio.channels.InterruptibleChannel;
 public abstract class AbstractInterruptibleChannel implements Channel,
 		InterruptibleChannel {
 
-	private boolean isClosed = false;
+	private static List blockingThreads = new LinkedList();
+
+	private volatile boolean closed = false;
 
 	/**
 	 * Default constructor.
 	 */
-	public AbstractInterruptibleChannel() {
+	protected AbstractInterruptibleChannel() {
 		super();
 	}
 
@@ -50,8 +53,8 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * @return true if the channel is open, and false if it is closed.
 	 * @see java.nio.channels.Channel#isOpen()
 	 */
-	public boolean isOpen() {
-		return !isClosed;
+	public synchronized final boolean isOpen() {
+		return !closed;
 	}
 
 	/**
@@ -63,10 +66,14 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * 
 	 * @see java.nio.channels.Channel#close()
 	 */
-	public synchronized final void close() throws IOException {
-		if (!isClosed) {
-			closeChannel();
-			isClosed = true;
+	public final void close() throws IOException {
+		if (!closed) {
+			synchronized (this) {
+				if (!closed) {
+					closed = true;
+					implCloseChannel();
+				}
+			}
 		}
 	}
 
@@ -76,8 +83,10 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * Once the operation is completed the applicaion should invoke a
 	 * corresponding <code>end(boolean)</code>.
 	 */
-	protected synchronized final void begin() {
-		// TODO
+	protected final void begin() {
+		// FIXME: not implemented yet
+		blockingThreads.add(Thread.currentThread());
+		// throw new NotYetImplementedException();
 	}
 
 	/**
@@ -93,7 +102,13 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 *             the thread conducting the IO operation was interrupted.
 	 */
 	protected final void end(boolean success) throws AsynchronousCloseException {
-		// TODO
+		blockingThreads.remove(Thread.currentThread());
+		if (success) {
+			return;
+		}
+
+		// FIXME: not implemented yet
+		// throw new NotYetImplementedException();
 	}
 
 	/**
@@ -110,5 +125,5 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * @throws IOException
 	 *             if a problem occurs closig the channel.
 	 */
-	protected abstract void closeChannel() throws IOException;
+	protected abstract void implCloseChannel() throws IOException;
 }

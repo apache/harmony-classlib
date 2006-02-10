@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,23 @@
  * limitations under the License.
  */
 
-package com.ibm.platform; 
+package com.ibm.platform;
 
+import java.io.IOException;
+
+import com.ibm.platform.struct.PlatformAddress;
 
 /**
  * IMemorySystem
  * 
  */
 public interface IMemorySystem {
+
+	public final int MMAP_READ_ONLY = 1;
+
+	public final int MMAP_READ_WRITE = 2;
+
+	public final int MMAP_WRITE_COPY = 4;
 
 	/**
 	 * Answers true if the platform is little endian, otherwise it may be
@@ -392,4 +401,41 @@ public interface IMemorySystem {
 	 *            the value of the platform pointer as a Java <code>long</code>.
 	 */
 	public void setAddress(long address, long value);
+
+	/**
+	 * TODO: JavaDoc
+	 * 
+	 * @param fileDescriptor
+	 * @param alignment
+	 * @param size
+	 * @param mapMode
+	 * @return
+	 * @throws IOException
+	 */
+	public PlatformAddress mmap(long fileDescriptor, long alignment, long size,
+			int mapMode) throws IOException;
+
+	/**
+	 * TODO: JavaDoc
+	 * 
+	 * @param addr
+	 * @throws IOException
+	 */
+	public void unmap(PlatformAddress addr);
+
+	/**
+	 * TODO: JavaDoc
+	 */
+	public void load(PlatformAddress addr, long size);
+
+	/**
+	 * TODO: JavaDoc
+	 */
+	public boolean isLoaded(PlatformAddress addr, long size);
+
+	/**
+	 * TODO : JavaDoc
+	 */
+	public void flush(PlatformAddress addr, long size);
+
 }

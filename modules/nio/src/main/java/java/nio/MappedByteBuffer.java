@@ -15,11 +15,9 @@
 
 package java.nio;
 
-
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel.MapMode;
+import com.ibm.io.nio.DirectBuffer;
+import com.ibm.platform.IMemorySystem;
+import com.ibm.platform.struct.PlatformAddress;
 
 /**
  * <code>MappedByteBuffer</code> is a special kind of direct byte buffer,
@@ -40,105 +38,35 @@ import java.nio.channels.FileChannel.MapMode;
  */
 public abstract class MappedByteBuffer extends ByteBuffer {
 
-	/**
-	 * The map mode used when creating this buffer.
-	 */
-	final MapMode mapMode;
+    final DirectByteBuffer wrapped;
 
-	/**
-	 * The mapped file.
-	 */
-	final File mappedFile;
+    private int mapMode;
 
-	/**
-	 * The offset of the mapped region. The size of the mapped region is defined
-	 * by capacity.
-	 */
-	final long offset;
+    MappedByteBuffer(ByteBuffer directBuffer) {
+        super(directBuffer.capacity);
+        if (!directBuffer.isDirect()) {
+            throw new IllegalArgumentException();
+        }
+        this.wrapped = (DirectByteBuffer) directBuffer;
 
-	/**
-	 * The wrapped byte buffer.
-	 */
-	final ByteBuffer wrappedBuffer;
+    }
 
-	/**
-	 * Create a new mapped byte buffer, mapping to the specified region of file.
-	 * A new direct byte buffer will be allocated.
-	 * 
-	 * @param mappedFile
-	 * @param offset
-	 * @param size
-	 * @param mapMode
-	 */
-	MappedByteBuffer(File mappedFile, long offset, int size,
-			MapMode mapMode) {
-		super(size);
-		this.mappedFile = mappedFile;
-		this.offset = offset;
-		this.mapMode = mapMode;
-		this.wrappedBuffer = ByteBuffer.allocateDirect(size);
-
-		load();
-	}
-
-	/**
-	 * Create a new mapped byte buffer, mapping to the specified region of file.
-	 * The specified byte buffer is used.
-	 * 
-	 * @param mappedFile
-	 * @param offset
-	 * @param size
-	 * @param mapMode
-	 * @param wrappedBuffer
-	 */
-	MappedByteBuffer(File mappedFile, long offset, int size,
-			MapMode mapMode, ByteBuffer wrappedBuffer) {
-		super(size);
-		this.mappedFile = mappedFile;
-		this.offset = offset;
-		this.mapMode = mapMode;
-		this.wrappedBuffer = wrappedBuffer;
-		this.wrappedBuffer.clear();
-
-		if (wrappedBuffer.capacity() != size) {
-			throw new IllegalArgumentException();
-		}
-	}
-
-	/**
-	 * Writes all changes made to this buffer's content back to the file.
-	 * <p>
-	 * If this buffer is not mapped in read/write mode, then this method does
-	 * nothing.
-	 * </p>
-	 * 
-	 * @return This buffer
-	 */
-	public final MappedByteBuffer force() {
-		// TODO re-impl in a direct way
-		if (mapMode == MapMode.READ_WRITE) {
-			RandomAccessFile accessFile = null;
-			try {
-				accessFile = new RandomAccessFile(mappedFile, "rw"); //$NON-NLS-1$
-				accessFile.seek(offset);
-				for (int i = 0; i < capacity; i++) {
-					accessFile.writeByte(wrappedBuffer.get(i));
-				}
-			} catch (IOException e) {
-				// javadoc does not specify how to report this exception
-				e.printStackTrace();
-			} finally {
-				if (accessFile != null) {
-					try {
-						accessFile.close();
-					} catch (IOException e) {
-						// nothing to do
-					}
-				}
-			}
-		}
-		return this;
-	}
+    MappedByteBuffer(PlatformAddress addr, int capa, int offset, int mode) {
+        super(capa);
+        mapMode = mode;
+        switch (mapMode) {
+        case IMemorySystem.MMAP_READ_ONLY:
+            wrapped = new ReadOnlyDirectByteBuffer(addr, capa, offset);
+            break;
+        case IMemorySystem.MMAP_READ_WRITE:
+        case IMemorySystem.MMAP_WRITE_COPY:
+            wrapped = new ReadWriteDirectByteBuffer(addr, capa, offset);
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
+        addr.autoFree();
+    }
 
 	/**
 	 * Returns true if this buffer's content is loaded.
@@ -146,7 +74,8 @@ public abstract class MappedByteBuffer extends ByteBuffer {
 	 * @return True if this buffer's content is loaded.
 	 */
 	public final boolean isLoaded() {
-		return true;
+		return ((DirectBuffer) wrapped).getEffectiveAddress().mmapIsLoaded(
+                wrapped.capacity());
 	}
 
 	/**
@@ -155,27 +84,20 @@ public abstract class MappedByteBuffer extends ByteBuffer {
 	 * @return This buffer
 	 */
 	public final MappedByteBuffer load() {
-		// TODO re-impl in a direct way
-		RandomAccessFile accessFile = null;
-		try {
-			accessFile = new RandomAccessFile(mappedFile, "r"); //$NON-NLS-1$
-			accessFile.seek(offset);
-			for (int i = 0; i < capacity; i++) {
-				wrappedBuffer.put(i, accessFile.readByte());
-			}
-		} catch (IOException e) {
-			// javadoc does not specify how to report this exception
-			e.printStackTrace();
-		} finally {
-			if (accessFile != null) {
-				try {
-					accessFile.close();
-				} catch (IOException e) {
-					// nothing to do
-				}
-			}
-		}
+		((DirectBuffer) wrapped).getEffectiveAddress().mmapLoad(
+                wrapped.capacity());
 		return this;
 	}
 
+    /**
+     * TODO: JavaDoc
+     * @return
+     */
+    public final MappedByteBuffer force() {
+        if (mapMode == IMemorySystem.MMAP_READ_WRITE) {
+            ((DirectBuffer) wrapped).getEffectiveAddress().mmapFlush(
+                    wrapped.capacity());
+        }
+        return this;
+    }
 }

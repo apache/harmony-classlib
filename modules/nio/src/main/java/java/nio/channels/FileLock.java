@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  */
 
 package java.nio.channels;
-
 
 import java.io.IOException;
 
@@ -65,7 +64,7 @@ import java.io.IOException;
  * <p>
  * Further care should be exercised when locking files maintained on network file systems since they often
  * have further limitations.</p>  
- * 
+ *
  */
 public abstract class FileLock {
 
@@ -98,7 +97,9 @@ public abstract class FileLock {
 	protected FileLock(FileChannel channel, long position, long size,
 			boolean shared) {
 		super();
-
+		if (position < 0 || size < 0) {
+			throw new IllegalArgumentException();
+		}
 		this.channel = channel;
 		this.position = position;
 		this.size = size;
@@ -153,8 +154,8 @@ public abstract class FileLock {
 	 * @return true if there is an overlap, and false otherwise.
 	 */
 	public final boolean overlaps(long start, long length) {
-		long myEnd = position + size;
-		long otherEnd = start + length;
+		final long myEnd = position + size - 1;
+		final long otherEnd = start + length - 1;
 		return ((start >= position) && (start <= myEnd))
 				|| ((otherEnd >= position) && (otherEnd <= myEnd));
 	}

@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,13 @@
  * limitations under the License.
  */
 
-package com.ibm.platform; 
+package com.ibm.platform;
+
+import java.io.IOException;
+
+import org.apache.harmony.luni.util.NotYetImplementedException;
+
+import com.ibm.platform.struct.PlatformAddress;
 
 // import com.ibm.oti.vm.VM;
 
@@ -53,6 +59,8 @@ final class OSMemory extends OSComponent implements IMemorySystem {
 	private static final OSMemory singleton = new OSMemory();
 
 	static {
+		// FIXME: OSMemory, OSFileSystem, OSNetwork, should be moved to luni
+		System.loadLibrary("hynio");
 		POINTER_SIZE = getPointerSizeImpl();
 
 		if (isLittleEndianImpl()) {
@@ -530,6 +538,49 @@ final class OSMemory extends OSComponent implements IMemorySystem {
 	 *            the value of the platform pointer as a Java <code>long</code>.
 	 */
 	public native void setAddress(long address, long value);
+
+	/*
+	 * Memory mapped file
+	 */
+	private native long mmapImpl(long fileDescriptor, long alignment,
+			long size, int mapMode);
+
+	public PlatformAddress mmap(long fileDescriptor, long alignment, long size,
+			int mapMode) throws IOException {
+		throw new NotYetImplementedException();
+//		long address = mmapImpl(fileDescriptor, alignment, size, mapMode);
+//		if (address == -1) {
+//			throw new IOException();
+//		}
+//		return PlatformAddress.on(address, true);
+	}
+
+	private native void unmapImpl(long addr);
+
+	public void unmap(PlatformAddress addr) {
+		long osAddr = addr.toLong();
+		unmapImpl(osAddr);
+	}
+
+	public void load(PlatformAddress addr, long size) {
+		// WIN32: virtualLock, need
+		// Linux:
+		loadImpl(addr.toLong(), size);
+	}
+
+	private native int loadImpl(long l, long size);
+
+	public boolean isLoaded(PlatformAddress addr, long size) {
+		return size == 0 ? true : isLoadedImpl(addr.toLong(), size);
+	}
+
+	private native boolean isLoadedImpl(long l, long size);
+
+	public void flush(PlatformAddress addr, long size) {
+		flushImpl(addr.toLong(), size);
+	}
+
+	private native int flushImpl(long l, long size);
 
 	/*
 	 * Helper methods to change byte order.

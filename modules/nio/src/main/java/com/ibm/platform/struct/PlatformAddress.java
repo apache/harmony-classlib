@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  */
 
 package com.ibm.platform.struct;
-
 
 import com.ibm.platform.Endianness;
 import com.ibm.platform.IMemorySystem;
@@ -42,12 +41,24 @@ public final class PlatformAddress implements ICommonDataTypes, Comparable {
 
 	private final long osaddr;
 
+	private final boolean isMappedAddress;
+
 	public static PlatformAddress on(PlatformAddress other) {
-		return new PlatformAddress(other.osaddr);
+		return new PlatformAddress(other.osaddr, other.isMappedAddress);
 	}
 
 	public static PlatformAddress on(long value) {
-		return (value == 0) ? NULL : new PlatformAddress(value);
+		return (value == 0) ? NULL : new PlatformAddress(value, false);
+	}
+
+	public static PlatformAddress on(long value, boolean isMapped) {
+		PlatformAddress addr = (value == 0) ? NULL : new PlatformAddress(value,
+				isMapped);
+		if (isMapped) {
+			// FIXME: some platform need the size to unmap/free, fix it
+			memorySpy.alloc(addr, 0);
+		}
+		return addr;
 	}
 
 	public static PlatformAddress alloc(long size) {
@@ -58,8 +69,13 @@ public final class PlatformAddress implements ICommonDataTypes, Comparable {
 	}
 
 	public PlatformAddress(long address) {
+		this(address, false);
+	}
+
+	public PlatformAddress(long address, boolean isMapped) {
 		super();
-		this.osaddr = address;
+		osaddr = address;
+		isMappedAddress = isMapped;
 	}
 
 	/**
@@ -102,6 +118,9 @@ public final class PlatformAddress implements ICommonDataTypes, Comparable {
 		// Memory spys can veto the basic free if they determine the memory was
 		// not allocated.
 		if (memorySpy.free(this)) {
+			if (isMappedAddress) {
+				unmap();
+			}
 			osMemory.free(osaddr);
 		}
 	}
@@ -118,24 +137,26 @@ public final class PlatformAddress implements ICommonDataTypes, Comparable {
 		return PlatformAddress.on(addr);
 	}
 
-    public void setByteArray(int offset, byte[] bytes, int bytesOffset, int length) {
-		memorySpy.rangeCheck(this, offset, length * SIZEOF_JBYTE);
-		osMemory.setByteArray(osaddr + offset, bytes, bytesOffset, length);
-	}
-
-	public void getByteArray(int offset, byte[] bytes, int bytesOffset, int length) {
-		memorySpy.rangeCheck(this, offset, length * SIZEOF_JBYTE);
-		osMemory.getByteArray(osaddr + offset, bytes, bytesOffset, length);
-	}
-    
 	public void setByte(int offset, byte value) {
 		memorySpy.rangeCheck(this, offset, SIZEOF_JBYTE);
 		osMemory.setByte(osaddr + offset, value);
 	}
 
+	public void setByteArray(int offset, byte[] bytes, int bytesOffset,
+			int length) {
+		memorySpy.rangeCheck(this, offset, length * SIZEOF_JBYTE);
+		osMemory.setByteArray(osaddr + offset, bytes, bytesOffset, length);
+	}
+
 	public byte getByte(int offset) {
 		memorySpy.rangeCheck(this, offset, SIZEOF_JBYTE);
 		return osMemory.getByte(osaddr + offset);
+	}
+
+	public void getByteArray(int offset, byte[] bytes, int bytesOffset,
+			int length) {
+		memorySpy.rangeCheck(this, offset, length * SIZEOF_JBYTE);
+		osMemory.getByteArray(osaddr + offset, bytes, bytesOffset, length);
 	}
 
 	public void setShort(int offset, short value, Endianness order) {
@@ -236,6 +257,25 @@ public final class PlatformAddress implements ICommonDataTypes, Comparable {
 	public double getDouble(int offset) {
 		memorySpy.rangeCheck(this, offset, SIZEOF_JDOUBLE);
 		return osMemory.getDouble(osaddr + offset);
+	}
+
+	public void mmapLoad(long size) {
+		memorySpy.rangeCheck(this, 0, (int) size * SIZEOF_JBYTE);
+		osMemory.load(this, size);
+	}
+
+	public boolean mmapIsLoaded(long size) {
+		memorySpy.rangeCheck(this, 0, (int) size * SIZEOF_JBYTE);
+		return osMemory.isLoaded(this, size);
+	}
+
+	public void mmapFlush(long size) {
+		memorySpy.rangeCheck(this, 0, (int) size * SIZEOF_JBYTE);
+		osMemory.flush(this, size);
+	}
+
+	public void unmap() {
+		osMemory.unmap(this);
 	}
 
 	public long toLong() {

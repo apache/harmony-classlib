@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,9 @@
 
 package com.ibm.platform;
 
-
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import org.apache.harmony.luni.util.NotYetImplementedException;
-
-import com.ibm.platform.struct.PlatformAddress;
 
 /**
  * This is the portable implementation of the file system interface.
@@ -33,7 +30,6 @@ public class OSFileSystem extends OSComponent implements IFileSystem {
 	 */
 	public OSFileSystem() {
 		super();
-		// Auto-generated constructor stub
 	}
 
 	private final void validateLockArgs(int type, long start, long length) {
@@ -57,6 +53,8 @@ public class OSFileSystem extends OSComponent implements IFileSystem {
 
 	private native int lockImpl(long fileDescriptor, long start, long length,
 			int type, boolean wait);
+
+	public native int getPageSize();
 
 	public boolean lock(long fileDescriptor, long start, long length, int type,
 			boolean waitFlag) throws IOException {
@@ -107,11 +105,11 @@ public class OSFileSystem extends OSComponent implements IFileSystem {
 	 * Direct read/write APIs work on addresses.
 	 */
 	private native long readDirectImpl(long fileDescriptor, long address,
-			int length);
+			int offset, int length);
 
-	public long readDirect(long fileDescriptor, long address, int length)
-			throws IOException {
-		long bytesRead = readDirectImpl(fileDescriptor, address, length);
+	public long readDirect(long fileDescriptor, long address, int offset,
+			int length) throws IOException {
+		long bytesRead = readDirectImpl(fileDescriptor, address, offset, length);
 		if (bytesRead < -1) {
 			throw new IOException();
 		}
@@ -119,12 +117,13 @@ public class OSFileSystem extends OSComponent implements IFileSystem {
 	}
 
 	private native long writeDirectImpl(long fileDescriptor, long address,
-			int length);
+			int offset, int length);
 
-	public long writeDirect(long fileDescriptor, long address, int length)
-			throws IOException {
-		long bytesWritten = writeDirectImpl(fileDescriptor, address, length);
-		if (bytesWritten < -1) {
+	public long writeDirect(long fileDescriptor, long address, int offset,
+			int length) throws IOException {
+		long bytesWritten = writeDirectImpl(fileDescriptor, address, offset,
+				length);
+		if (bytesWritten < 0) {
 			throw new IOException();
 		}
 		return bytesWritten;
@@ -145,42 +144,46 @@ public class OSFileSystem extends OSComponent implements IFileSystem {
 		return bytesRead;
 	}
 
+	private native long writeImpl(long fileDescriptor, byte[] bytes,
+			int offset, int length);
+
 	public long write(long fileDescriptor, byte[] bytes, int offset, int length)
 			throws IOException {
-		// Auto-generated method stub
-		throw new NotYetImplementedException();
+		long bytesWritten = writeImpl(fileDescriptor, bytes, offset, length);
+		if (bytesWritten < 0) {
+			throw new IOException();
+		}
+		return bytesWritten;
 	}
 
 	/*
 	 * Scatter/gather calls.
 	 */
-	public long readv(long fileDescriptor, byte[] bytes, int[] offsets,
-			int[] lengths) throws IOException {
-		// Auto-generated method stub
-		throw new NotYetImplementedException();
-	}
-
-	public long writev(long fileDescriptor, byte[] bytes, int[] offsets,
-			int[] lengths) throws IOException {
-		//  Auto-generated method stub
-		throw new NotYetImplementedException();
-	}
-
-	/*
-	 * Memory mapped file
-	 */
-	private native long mmapImpl(long fileDescriptor, long offset, long size,
-			int mapMode);
-
-	public PlatformAddress mmap(long fileDescriptor, long offset, long size,
-			int mapMode) throws IOException {
-		long address = mmapImpl(fileDescriptor, offset, size, mapMode);
-		if (address == -1) {
+	public long readv(long fileDescriptor, long[] addresses, int[] offsets,
+			int[] lengths, int size) throws IOException {
+		long bytesRead = readvImpl(fileDescriptor, addresses, offsets, lengths,
+				size);
+		if (bytesRead < -1) {
 			throw new IOException();
 		}
-		return PlatformAddress.on(address);
-
+		return bytesRead;
 	}
+
+	private native long readvImpl(long fileDescriptor, long[] addresses,
+			int[] offsets, int[] lengths, int size);
+
+	public long writev(long fileDescriptor, long[] addresses, int[] offsets,
+			int[] lengths, int size) throws IOException {
+		long bytesWritten = writevImpl(fileDescriptor, addresses, offsets,
+				lengths, size);
+		if (bytesWritten < 0) {
+			throw new IOException();
+		}
+		return bytesWritten;
+	}
+
+	private native long writevImpl(long fileDescriptor, long[] addresses,
+			int[] offsets, int[] lengths, int size);
 
 	private native int closeImpl(long fileDescriptor);
 
@@ -195,4 +198,38 @@ public class OSFileSystem extends OSComponent implements IFileSystem {
 			throw new IOException();
 		}
 	}
+
+	public void truncate(long fileDescriptor, long size) throws IOException {
+		int rc = truncateImpl(fileDescriptor, size);
+		if (rc < 0) {
+			throw new IOException();
+		}
+	}
+
+	private native int truncateImpl(long fileDescriptor, long size);
+
+	public long open(byte[] fileName, int mode) throws FileNotFoundException {
+		if (fileName == null) {
+			throw new NullPointerException();
+		}
+		long handler = openImpl(fileName, mode);
+		if (handler < 0) {
+			throw new FileNotFoundException();
+		}
+		return handler;
+	}
+
+	private native long openImpl(byte[] fileName, int mode);
+
+	public long transfer(long fileHandler, FileDescriptor socketDescriptor,
+			long offset, long count) throws IOException {
+		long result = transferImpl(fileHandler, socketDescriptor, offset, count);
+		if (result < 0)
+			throw new IOException();
+		return result;
+	}
+
+	private native long transferImpl(long fileHandler,
+			FileDescriptor socketDescriptor, long offset, long count);
+
 }

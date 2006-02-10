@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -689,10 +689,10 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	 * @return This buffer
 	 */
 	public final ByteBuffer order(ByteOrder byteOrder) {
-		/*
-		 * This method is not 'final', because MappedToByteBufferAdapter 
-		 * needs to override this method.
-		 */
+		return orderImpl(byteOrder);
+	}
+
+	ByteBuffer orderImpl(ByteOrder byteOrder) {
 		if (byteOrder == null) {
 			throw new NullPointerException();
 		}

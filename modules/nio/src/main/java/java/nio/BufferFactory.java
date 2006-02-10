@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
 
 package java.nio;
 
-
-import java.io.File;
-import java.nio.channels.FileChannel.MapMode;
 
 /**
  * Provide factory service of buffer classes.
@@ -182,24 +179,6 @@ final class BufferFactory {
 	 */
 	public static LongBuffer newLongBuffer(long array[]) {
 		return new ReadWriteLongArrayBuffer(array);
-	}
-
-	/**
-	 * Returns a new byte buffer mapped to the specified region of file.
-	 * 
-	 * @param mappedFile
-	 *            The file to be mapped
-	 * @param offset
-	 *            The offset of the region
-	 * @param size
-	 *            The size of the region
-	 * @param mapMode
-	 *            The map mode
-	 * @return A new byte buffer mapped to the specified region of file.
-	 */
-	public static MappedByteBuffer newMappedByteBuffer(File mappedFile,
-			long offset, int size, MapMode mapMode) {
-		return new MappedToByteBufferAdapter(mappedFile, offset, size, mapMode);
 	}
 
 	/**

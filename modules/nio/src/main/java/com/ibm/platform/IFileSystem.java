@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
 
 package com.ibm.platform;
 
-
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import com.ibm.platform.struct.PlatformAddress;
 
 /**
  * TODO Type description
@@ -35,12 +34,6 @@ public interface IFileSystem extends ISystemComponent {
 	public final int SEEK_CUR = 2;
 
 	public final int SEEK_END = 4;
-
-	public final int MMAP_READ_ONLY = 1;
-
-	public final int MMAP_READ_WRITE = 2;
-
-	public final int MMAP_WRITE_COPY = 4;
 
 	public final int O_RDONLY = 0x00000000;
 
@@ -66,18 +59,18 @@ public interface IFileSystem extends ISystemComponent {
 	public long write(long fileDescriptor, byte[] bytes, int offset, int length)
 			throws IOException;
 
-	public long readv(long fileDescriptor, byte[] bytes, int[] offsets,
-			int[] lengths) throws IOException;
+	public long readv(long fileDescriptor, long[] addresses, int[] offsets,
+			int[] lengths, int size) throws IOException;
 
-	public long writev(long fileDescriptor, byte[] bytes, int[] offsets,
-			int[] lengths) throws IOException;
+	public long writev(long fileDescriptor, long[] addresses, int[] offsets,
+			int[] lengths, int size) throws IOException;
 
 	// Required to support direct byte buffers
-	public long readDirect(long fileDescriptor, long address, int length)
-			throws IOException;
+	public long readDirect(long fileDescriptor, long address, int offset,
+			int length) throws IOException;
 
-	public long writeDirect(long fileDescriptor, long address, int length)
-			throws IOException;
+	public long writeDirect(long fileDescriptor, long address, int offset,
+			int length) throws IOException;
 
 	public boolean lock(long fileDescriptor, long start, long length, int type,
 			boolean waitFlag) throws IOException;
@@ -91,8 +84,15 @@ public interface IFileSystem extends ISystemComponent {
 	public void fflush(long fileDescriptor, boolean metadata)
 			throws IOException;
 
-	public PlatformAddress mmap(long fileDescriptor, long offset, long size,
-			int mapMode) throws IOException;
-
 	public void close(long fileDescriptor) throws IOException;
+
+	public void truncate(long fileDescriptor, long size) throws IOException;
+
+	public int getPageSize() throws IOException;
+
+	public long open(byte[] fileName, int mode) throws FileNotFoundException;
+
+	public long transfer(long fileHandler, FileDescriptor socketDescriptor,
+			long offset, long count) throws IOException;
+
 }
