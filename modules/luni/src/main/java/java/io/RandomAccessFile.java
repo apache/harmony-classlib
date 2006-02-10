@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package java.io;
 
 import java.nio.channels.FileChannel;
 
+import com.ibm.platform.IFileSystem;
+import com.ibm.platform.Platform;
+
 /**
  * RandomAccessFile is a class which allows positioning of the next read
  * anywhere in the file. This is useful for reading specific locations of files
@@ -26,7 +29,7 @@ import java.nio.channels.FileChannel;
  * 
  */
 
-public class RandomAccessFile implements DataInput, DataOutput {
+public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 	/**
 	 * The FileDescriptor representing this RandomAccessFile.
 	 */
@@ -36,14 +39,11 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	// initialized).
 	private FileChannel channel;
 
-	private boolean isReadOnly;
+    private IFileSystem fileSystem = Platform.getFileSystem();
 
-	// Fill in the JNI id caches
-	private static native void oneTimeInitialization();
+    private boolean isReadOnly;
 
-	static {
-		oneTimeInitialization();
-	}
+    private Object repositionLock = new Object();
 
 	/**
 	 * Constructs a new RandomAccessFile on the File <code>file</code> and
@@ -66,22 +66,28 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	public RandomAccessFile(File file, String mode)
 			throws FileNotFoundException {
 		super();
-		if (mode.equals("r") || mode.equals("rw")) { //$NON-NLS-1$ //$NON-NLS-2$
-			SecurityManager security = System.getSecurityManager();
-			if (security != null) {
-				security.checkRead(file.getPath());
-				if (mode.equals("rw")) //$NON-NLS-1$
-					security.checkWrite(file.getPath());
-			}
-			fd = new FileDescriptor();
-			if (openImpl(file.properPath(true), mode.equals("rw")) != 0) //$NON-NLS-1$
-				throw new FileNotFoundException(file.getPath());
+		if (mode.equals("r")) { //$NON-NLS-1$
+            isReadOnly = true;
+        } else if (mode.equals("rw") || mode.equals("rws") || mode.equals("rwd")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            isReadOnly = false;
+        } else {
+            throw new IllegalArgumentException(com.ibm.oti.util.Msg
+                    .getString("K0081")); //$NON-NLS-1$
+        }
 
-			isReadOnly = mode.equals("r"); //$NON-NLS-1$
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkRead(file.getPath());
+            if (!isReadOnly)
+                security.checkWrite(file.getPath());
+        }
 
-		} else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
-					.getString("K0081")); //$NON-NLS-1$
+        fd = new FileDescriptor();
+        // FIXME: add support to "rwd", "rws"
+        fd.descriptor = fileSystem.open(file.properPath(true),
+                isReadOnly ? IFileSystem.O_RDONLY : IFileSystem.O_RDWR);
+        channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
+                isReadOnly ? IFileSystem.O_RDONLY : IFileSystem.O_RDWR);
 	}
 
 	/**
@@ -107,22 +113,7 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 */
 	public RandomAccessFile(String fileName, String mode)
 			throws FileNotFoundException {
-		super();
-		if (mode.equals("r") || mode.equals("rw")) {  //$NON-NLS-1$//$NON-NLS-2$
-			SecurityManager security = System.getSecurityManager();
-			if (security != null) {
-				security.checkRead(fileName);
-				if (mode.equals("rw")) //$NON-NLS-1$
-					security.checkWrite(fileName);
-			}
-			fd = new FileDescriptor();
-			File f = new File(fileName);
-			if (openImpl(f.properPath(true), mode.equals("rw")) != 0) //$NON-NLS-1$
-				throw new FileNotFoundException(fileName);
-
-		} else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
-					.getString("K0081")); //$NON-NLS-1$
+		this(new File(fileName), mode);
 	}
 
 	/**
@@ -132,10 +123,15 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 *             If an error occurs attempting to close this RandomAccessFile.
 	 */
 	public void close() throws IOException {
-		closeImpl();
+		synchronized (channel) {
+            synchronized (this) {
+                if(channel.isOpen() && fd.descriptor >= 0){
+                    channel.close();
+                }
+                fd.descriptor = -1;
+            }
+        }
 	}
-
-	private native void closeImpl() throws IOException;
 
 	/**
 	 * Answers the FileChannel equivalent to this stream.
@@ -149,11 +145,6 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 * @return the file channel representation for this FileOutputStream.
 	 */
 	public final synchronized FileChannel getChannel() {
-		if (channel == null) {
-			channel = FileChannelFactory.getFileChannel(fd.descriptor,
-					(isReadOnly ? FileChannelFactory.O_RDONLY
-							: FileChannelFactory.O_RDWR));
-		}
 		return channel;
 	}
 
@@ -181,7 +172,16 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 *             If an error occurs attempting to get the file pointer
 	 *             position of this RandomAccessFile.
 	 */
-	public native long getFilePointer() throws IOException;
+    public long getFilePointer() throws IOException {
+        openCheck();
+        return fileSystem.seek(fd.descriptor, 0L, IFileSystem.SEEK_CUR);
+    }
+
+    private synchronized void openCheck() throws IOException {
+        if (fd.descriptor < 0) {
+            throw new IOException();
+        }
+    }
 
 	/**
 	 * Answers the current length of this RandomAccessFile in bytes.
@@ -192,9 +192,18 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 *             If an error occurs attempting to get the file length of this
 	 *             RandomAccessFile.
 	 */
-	public native long length() throws IOException;
-
-	private native int openImpl(byte[] fileName, boolean writable);
+    public long length() throws IOException {
+        openCheck();
+        synchronized (repositionLock) {
+            long currentPosition = fileSystem.seek(fd.descriptor, 0L,
+                    IFileSystem.SEEK_CUR);
+            long endOfFilePosition = fileSystem.seek(fd.descriptor, 0L,
+                    IFileSystem.SEEK_END);
+            fileSystem.seek(fd.descriptor, currentPosition,
+                    IFileSystem.SEEK_SET);
+            return endOfFilePosition;
+        }
+    }
 
 	/**
 	 * Reads a single byte from this RandomAccessFile and returns the result as
@@ -212,12 +221,13 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 * @see #write(int)
 	 */
 	public int read() throws IOException {
-		if (fd != null)
-			return readByteImpl(fd.descriptor);
-		throw new IOException();
+		openCheck();
+        byte[] bytes = new byte[1];
+        synchronized (repositionLock) {
+            long readed = fileSystem.read(fd.descriptor, bytes, 0, 1);
+            return readed == -1 ? -1 : bytes[0] & 0xff;
+        }
 	}
-
-	private native int readByteImpl(long descriptor) throws IOException;
 
 	/**
 	 * Reads bytes from this RandomAccessFile into the byte array
@@ -262,13 +272,11 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 * @see #write(int)
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException {
-		if (fd != null)
-			return readImpl(buffer, offset, count, fd.descriptor);
-		throw new IOException();
+		openCheck();
+        synchronized (repositionLock) {
+            return (int) fileSystem.read(fd.descriptor, buffer, offset, count);
+        }
 	}
-
-	private native int readImpl(byte[] buffer, int offset, int count,
-			long descriptor) throws IOException;
 
 	/**
 	 * Reads a boolean from this stream.
@@ -578,7 +586,12 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public native void seek(long pos) throws IOException;
+	public void seek(long pos) throws IOException {
+        openCheck();
+        synchronized (repositionLock) {
+            fileSystem.seek(fd.descriptor, pos, IFileSystem.SEEK_SET);
+        }
+    }
 
 	/**
 	 * Set the length of this file to be <code>newLength</code>. If the
@@ -594,10 +607,16 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 *             occurs.
 	 */
 	public void setLength(long newLength) throws IOException {
-		setLengthImpl(newLength);
+		openCheck();
+        if (newLength < 0) {
+            throw new IllegalArgumentException();
+        }
+        synchronized (repositionLock) {
+            long position = fileSystem.seek(fd.descriptor, 0, IFileSystem.SEEK_CUR);
+            fileSystem.truncate(fd.descriptor, newLength);            
+            seek(position > newLength ? newLength : position);
+        }
 	}
-
-	private native void setLengthImpl(long newLength) throws IOException;
 
 	/**
 	 * Skips <code>count</code> number of bytes in this stream. Subsequent
@@ -665,14 +684,11 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 * 
 	 */
 	public void write(byte[] buffer, int offset, int count) throws IOException {
-		if (fd != null) {
-			writeImpl(buffer, offset, count, fd.descriptor);
-		} else
-			throw new IOException();
+		openCheck();
+        synchronized (repositionLock) {
+            fileSystem.write(fd.descriptor, buffer, offset, count);
+        }
 	}
-
-	private native void writeImpl(byte[] buffer, int offset, int count,
-			long descriptor) throws IOException;
 
 	/**
 	 * Writes the specified byte <code>oneByte</code> to this RandomAccessFile
@@ -691,14 +707,13 @@ public class RandomAccessFile implements DataInput, DataOutput {
 	 * @see #read(byte[], int, int)
 	 */
 	public void write(int oneByte) throws IOException {
-		if (fd != null) {
-			writeByteImpl(oneByte, fd.descriptor);
-		} else
-			throw new IOException();
+		openCheck();
+        byte[] bytes = new byte[1];
+        bytes[0] = (byte)(oneByte & 0xff);
+        synchronized (repositionLock) {
+            fileSystem.write(fd.descriptor, bytes, 0, 1);
+        }
 	}
-
-	private native void writeByteImpl(int oneByte, long descriptor)
-			throws IOException;
 
 	/**
 	 * Writes a boolean to this output stream.

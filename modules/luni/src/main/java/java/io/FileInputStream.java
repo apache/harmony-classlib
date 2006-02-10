@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package java.io;
 
 import java.nio.channels.FileChannel;
 
+import com.ibm.platform.IFileSystem;
+import com.ibm.platform.Platform;
+
 /**
  * FileInputStream is a class for reading bytes from a file. This class may also
  * be used with other InputStreams, ie: BufferedInputStream, to read data from a
@@ -25,7 +28,7 @@ import java.nio.channels.FileChannel;
  * 
  * @see FileOutputStream
  */
-public class FileInputStream extends InputStream {
+public class FileInputStream extends InputStream implements Closeable{
 	/**
 	 * The FileDescriptor representing this FileInputStream.
 	 */
@@ -35,12 +38,9 @@ public class FileInputStream extends InputStream {
 	// initialized).
 	private FileChannel channel;
 
-	// Fill in the JNI id caches
-	private static native void oneTimeInitialization();
+    private IFileSystem fileSystem = Platform.getFileSystem();
 
-	static {
-		oneTimeInitialization();
-	}
+    private Object repositioningLock = new Object();
 
 	/**
 	 * Constructs a new FileInputStream on the File <code>file</code>. If the
@@ -62,8 +62,10 @@ public class FileInputStream extends InputStream {
 		if (security != null)
 			security.checkRead(file.getPath());
 		fd = new FileDescriptor();
-		if (openImpl(file.properPath(true)) != 0)
-			throw new FileNotFoundException(file.getPath());
+		fd.descriptor = fileSystem.open(file.properPath(true),
+                IFileSystem.O_RDONLY);
+        channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
+                IFileSystem.O_RDONLY);
 	}
 
 	/**
@@ -80,13 +82,15 @@ public class FileInputStream extends InputStream {
 	 */
 	public FileInputStream(FileDescriptor fd) {
 		super();
-		if (fd != null) {
-			SecurityManager security = System.getSecurityManager();
-			if (security != null)
-				security.checkRead(fd);
-			this.fd = fd;
-		} else
-			throw new NullPointerException();
+		if (fd == null) {
+            throw new NullPointerException();
+        }
+        SecurityManager security = System.getSecurityManager();
+        if (security != null)
+            security.checkRead(fd);
+        this.fd = fd;
+        channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
+                IFileSystem.O_RDONLY);
 	}
 
 	/**
@@ -102,12 +106,7 @@ public class FileInputStream extends InputStream {
 	 *             If the <code>fileName</code> is not found.
 	 */
 	public FileInputStream(String fileName) throws FileNotFoundException {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(fileName);
-		fd = new FileDescriptor();
-		if (openImpl(new File(fileName).properPath(true)) != 0)
-			throw new FileNotFoundException(fileName);
+		this(new File(fileName));
 	}
 
 	/**
@@ -120,7 +119,18 @@ public class FileInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs in this stream.
 	 */
-	public native int available() throws IOException;
+	public int available() throws IOException {
+        openCheck();
+        synchronized (repositioningLock) {
+            long currentPosition = fileSystem.seek(fd.descriptor, 0L,
+                    IFileSystem.SEEK_CUR);
+            long endOfFilePosition = fileSystem.seek(fd.descriptor, 0L,
+                    IFileSystem.SEEK_END);
+            fileSystem.seek(fd.descriptor, currentPosition,
+                    IFileSystem.SEEK_SET);
+            return (int) (endOfFilePosition - currentPosition);
+        }
+    }
 
 	/**
 	 * Close the FileInputStream.
@@ -129,10 +139,16 @@ public class FileInputStream extends InputStream {
 	 *             If an error occurs attempting to close this FileInputStream.
 	 */
 	public void close() throws IOException {
-		closeImpl();
+		synchronized (channel) {
+            synchronized (this) {
+                //FIXME: System.in, out, err may not want to be closed?                
+                if (channel.isOpen() && fd.descriptor >= 0) {
+                    channel.close();
+                }
+                fd.descriptor = -1;
+            }
+        }
 	}
-
-	private native void closeImpl() throws IOException;
 
 	/**
 	 * This method ensures that all resources for this file are released when it
@@ -143,8 +159,7 @@ public class FileInputStream extends InputStream {
 	 *             FileInputStream.
 	 */
 	protected void finalize() throws IOException {
-		if (this.fd != null)
-			close();
+		close();
 	}
 
 	/**
@@ -158,11 +173,7 @@ public class FileInputStream extends InputStream {
 	 * 
 	 * @return the file channel representation for this FileInputStream.
 	 */
-	public synchronized FileChannel getChannel() {
-		if (channel == null) {
-			channel = FileChannelFactory.getFileChannel(fd.descriptor,
-					FileChannelFactory.O_RDONLY);
-		}
+	public FileChannel getChannel() {
 		return channel;
 	}
 
@@ -177,12 +188,8 @@ public class FileInputStream extends InputStream {
 	 *             this FileInputStream.
 	 */
 	public final FileDescriptor getFD() throws IOException {
-		if (fd != null)
-			return fd;
-		throw new IOException();
+		return fd;
 	}
-
-	private native int openImpl(byte[] fileName);
 
 	/**
 	 * Reads a single byte from this FileInputStream and returns the result as
@@ -196,12 +203,10 @@ public class FileInputStream extends InputStream {
 	 *             occurs.
 	 */
 	public int read() throws IOException {
-		if (fd != null)
-			return readByteImpl(getFD().descriptor);
-		throw new IOException();
+		byte[] readed = new byte[1];
+        int result = read(readed, 0, 1);
+        return result == -1 ? -1 : readed[0] & 0xff;
 	}
-
-	private native int readByteImpl(long descriptor) throws IOException;
 
 	/**
 	 * Reads bytes from the FileInputStream and stores them in byte array
@@ -239,13 +244,11 @@ public class FileInputStream extends InputStream {
 	 *             occurs.
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException {
-		if (fd != null)
-			return readImpl(buffer, offset, count, getFD().descriptor);
-		throw new IOException();
+		openCheck();
+        synchronized (repositioningLock) {
+            return (int) fileSystem.read(fd.descriptor, buffer, offset, count);
+        }
 	}
-
-	private native int readImpl(byte[] buffer, int offset, int count,
-			long descriptor) throws IOException;
 
 	/**
 	 * Skips <code>count</code> number of bytes in this FileInputStream.
@@ -262,5 +265,20 @@ public class FileInputStream extends InputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public native long skip(long count) throws IOException;
+    public long skip(long count) throws IOException {
+        openCheck();
+        synchronized (repositioningLock) {
+            final long currentPosition = fileSystem.seek(fd.descriptor, 0L,
+                    IFileSystem.SEEK_CUR);
+            final long newPosition = fileSystem.seek(fd.descriptor,
+                    currentPosition + count, IFileSystem.SEEK_SET);
+            return newPosition - currentPosition;
+        }
+    }
+
+    private synchronized void openCheck() throws IOException {
+        if (fd.descriptor < 0) {
+            throw new IOException();
+        }
+    }
 }

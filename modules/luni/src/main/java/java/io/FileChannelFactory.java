@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,28 @@ package java.io;
 
 import java.nio.channels.FileChannel;
 
-import com.ibm.io.nio.FileChannelImpl;
+import com.ibm.io.nio.ReadOnlyFileChannel;
+import com.ibm.io.nio.ReadWriteFileChannel;
+import com.ibm.io.nio.WriteOnlyFileChannel;
+import com.ibm.platform.IFileSystem;
 
 /**
  * A simple factory to provide a generic way to create FileChannel
  * implementation from within the java.io package.
  */
 class FileChannelFactory {
-	static final int O_RDONLY = 0x00000000;
-
-	static final int O_WRONLY = 0x00000001;
-
-	static final int O_RDWR = 0x00000010;
-
-	static FileChannel getFileChannel(long fd, int mode) {
-		return new FileChannelImpl(fd, mode);
+	static FileChannel getFileChannel(Object stream, long fd, int mode) {
+        switch(mode){
+        case IFileSystem.O_RDONLY:
+            return new ReadOnlyFileChannel(stream, fd);
+        case IFileSystem.O_WRONLY:
+            return new WriteOnlyFileChannel(stream, fd);
+        case IFileSystem.O_RDWR:
+            return new ReadWriteFileChannel(stream, fd);
+        case IFileSystem.O_APPEND:
+            return new WriteOnlyFileChannel(stream, fd, true);
+        default:
+            throw new RuntimeException("Unknown file channel type: "+mode); //$NON-NLS-1$
+        }
 	}
 }

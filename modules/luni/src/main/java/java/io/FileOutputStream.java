@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package java.io;
 
 import java.nio.channels.FileChannel;
 
+import com.ibm.platform.IFileSystem;
+import com.ibm.platform.Platform;
+
 /**
  * FileOutputStream is a class whose underlying stream is represented by a file
  * in the operating system. The bytes that are written to this stream are passed
@@ -30,7 +33,7 @@ import java.nio.channels.FileChannel;
  * 
  * @see FileInputStream
  */
-public class FileOutputStream extends OutputStream {
+public class FileOutputStream extends OutputStream implements Closeable{
 
 	/**
 	 * The FileDescriptor representing this FileOutputStream.
@@ -41,12 +44,7 @@ public class FileOutputStream extends OutputStream {
 	// initialized).
 	private FileChannel channel;
 
-	// Fill in the JNI id caches
-	private static native void oneTimeInitialization();
-
-	static {
-		oneTimeInitialization();
-	}
+    private IFileSystem fileSystem = Platform.getFileSystem();
 
 	/**
 	 * Constructs a new FileOutputStream on the File <code>file</code>. If
@@ -90,9 +88,9 @@ public class FileOutputStream extends OutputStream {
 		if (security != null)
 			security.checkWrite(file.getPath());
 		fd = new FileDescriptor();
-		if (openImpl(file.properPath(true), append) != 0)
-			throw new FileNotFoundException(file.getPath());
-
+        fd.descriptor = fileSystem.open(file.properPath(true), append?IFileSystem.O_APPEND:IFileSystem.O_WRONLY);
+        channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
+                append? IFileSystem.O_APPEND:IFileSystem.O_WRONLY);
 	}
 
 	/**
@@ -107,14 +105,16 @@ public class FileOutputStream extends OutputStream {
 	 */
 	public FileOutputStream(FileDescriptor fd) {
 		super();
-		if (fd != null) {
-			SecurityManager security = System.getSecurityManager();
-			if (security != null)
-				security.checkWrite(fd);
-			this.fd = fd;
-		} else
-			throw new NullPointerException(com.ibm.oti.util.Msg
-					.getString("K006c")); //$NON-NLS-1$
+        if (fd == null) {
+            throw new NullPointerException(com.ibm.oti.util.Msg
+                    .getString("K006c")); //$NON-NLS-1$
+        }
+        SecurityManager security = System.getSecurityManager();
+        if (security != null)
+            security.checkWrite(fd);
+        this.fd = fd;
+        channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
+                IFileSystem.O_WRONLY);
 	}
 
 	/**
@@ -151,15 +151,7 @@ public class FileOutputStream extends OutputStream {
 	 */
 	public FileOutputStream(String filename, boolean append)
 			throws FileNotFoundException {
-		super();
-		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkWrite(filename);
-		fd = new FileDescriptor();
-		File f = new File(filename);
-		if (openImpl(f.properPath(true), append) != 0)
-			throw new FileNotFoundException(filename);
-
+		this(new File(filename), append);
 	}
 
 	/**
@@ -170,10 +162,16 @@ public class FileOutputStream extends OutputStream {
 	 *             If an error occurs attempting to close this FileOutputStream.
 	 */
 	public void close() throws IOException {
-		closeImpl();
+        synchronized (channel) {
+            synchronized (this) {
+                //FIXME: System.in, out, err may not want to be closed?                
+                if(channel.isOpen() && fd.descriptor >= 0){
+                    channel.close();
+                }
+                fd.descriptor = -1;
+            }
+        }
 	}
-
-	private native void closeImpl() throws IOException;
 
 	/**
 	 * Frees any resources allocated to represent this FileOutputStream before
@@ -185,8 +183,7 @@ public class FileOutputStream extends OutputStream {
 	 *             FileOutputStream.
 	 */
 	protected void finalize() throws IOException {
-		if (fd != null)
-			close();
+		close();
 	}
 
 	/**
@@ -200,12 +197,8 @@ public class FileOutputStream extends OutputStream {
 	 * 
 	 * @return the file channel representation for this FileOutputStream.
 	 */
-	public synchronized FileChannel getChannel() {
-		if (channel == null) {
-			channel = FileChannelFactory.getFileChannel(fd.descriptor,
-					FileChannelFactory.O_WRONLY);
-		}
-		return channel;
+	public FileChannel getChannel() {
+        return channel;
 	}
 
 	/**
@@ -219,12 +212,8 @@ public class FileOutputStream extends OutputStream {
 	 *             FileDescriptor.
 	 */
 	public final FileDescriptor getFD() throws IOException {
-		if (fd != null)
-			return fd;
-		throw new IOException();
+		return fd;
 	}
-
-	private native int openImpl(byte[] fileName, boolean openAppend);
 
 	/**
 	 * Writes the entire contents of the byte array <code>buffer</code> to
@@ -262,13 +251,9 @@ public class FileOutputStream extends OutputStream {
 	 *             If buffer is <code>null</code>.
 	 */
 	public void write(byte[] buffer, int offset, int count) throws IOException {
-		if (fd == null)
-			throw new IOException();
-		writeImpl(buffer, offset, count, getFD().descriptor);
+		openCheck();
+        fileSystem.write(fd.descriptor, buffer, offset, count);
 	}
-
-	private native void writeImpl(byte[] buffer, int offset, int count,
-			long descriptor) throws IOException;
 
 	/**
 	 * Writes the specified byte <code>oneByte</code> to this
@@ -283,13 +268,16 @@ public class FileOutputStream extends OutputStream {
 	 *             FileOutputStream.
 	 */
 	public void write(int oneByte) throws IOException {
-		if (fd != null) {
-			writeByteImpl(oneByte, getFD().descriptor);
-		} else
-			throw new IOException();
+		openCheck();
+        byte[] byteArray = new byte[1];
+        byteArray[0] = (byte)oneByte;
+        fileSystem.write(fd.descriptor, byteArray, 0, 1);
 	}
 
-	private native void writeByteImpl(int oneByte, long descriptor)
-			throws IOException;
+	private synchronized void openCheck() throws IOException {
+        if (fd.descriptor < 0) {
+            throw new IOException();
+        }
+    }
 
 }
