@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@
  * Common natives supporting the memory system interface.
  */
 
-#include <string.h>
+#include <sys/mman.h>
 #include <harmony.h>
 #include "OSMemory.h"
+#include "IMemorySystem.h"
 
 JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_malloc
   (JNIEnv * env, jobject thiz, jlong size)
@@ -159,3 +160,59 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setDouble
 {
   *(jdouble *) ((IDATA) address) = value;
 }
+
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    unmapImpl
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_unmapImpl
+  (JNIEnv * env, jobject thiz, jlong fd)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  hymmap_unmap_file((void *)fd);
+}
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    mmapImpl
+ * Signature: (JJJI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_mmapImpl
+  (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  void *mapAddress = NULL;
+  int prot, flags;
+		  
+  // Convert from Java mapping mode to port library mapping mode.
+  switch (mmode)
+    {
+      case com_ibm_platform_IMemorySystem_MMAP_READ_ONLY:
+	prot = PROT_READ;
+	flags = MAP_SHARED;
+        break;
+      case com_ibm_platform_IMemorySystem_MMAP_READ_WRITE:
+	prot = PROT_READ|PROT_WRITE;
+	flags = MAP_SHARED;
+        break;
+      case com_ibm_platform_IMemorySystem_MMAP_WRITE_COPY:
+	prot = PROT_READ|PROT_WRITE;
+	flags = MAP_PRIVATE;
+        break;
+      default:
+        return -1;
+    }
+
+//TODO: how to unmap
+ // mapAddress = hymmap_map_filehandler(fd, &mapAddress, mapmode, (IDATA)alignment, (IDATA)size);
+
+   mapAddress = mmap(0,size, prot, flags,fd,alignment);
+  if (mapAddress == NULL)
+    {
+      return -1;
+    }
+  return (jlong) mapAddress;
+}
+

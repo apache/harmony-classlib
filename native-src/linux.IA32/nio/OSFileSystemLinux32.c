@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,23 @@
  * Linux32 specific natives supporting the file system interface.
  */
 
+#include <sys/uio.h>
 #include <fcntl.h>
-#include <bits/wordsize.h>
+#include <unistd.h>
 #include <errno.h>
-
+#include <sys/sendfile.h>
 #include <harmony.h>
 
 #include "IFileSystem.h"
 #include "OSFileSystem.h"
 
-/*
- * Class:     com_ibm_platform_OSFileSystem
- * Method:    mmapImpl
- * Signature: (JJJI)J
- */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_mmapImpl
-  (JNIEnv * env, jobject thiz, jlong fd, jlong offset, jlong size, jint mmode)
+typedef int OSSOCKET;   
+typedef struct hysocket_struct
 {
-  // TODO: 
-  return (jlong) - 1L;
-}
+  OSSOCKET sock;
+  U_16 family;
+} hysocket_struct;
+
 
 /**
  * Lock the file identified by the given handle.
@@ -121,3 +118,117 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_unlockImpl
 
   return (rc == -1) ? -1 : 0;
 }
+
+
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_getPageSize
+  (JNIEnv * env, jobject thiz)
+{
+  static int pageSize = 0;
+  if(pageSize == 0){
+    pageSize = getpagesize();
+  }
+  return pageSize;
+}
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    readvImpl
+ * Signature: (J[J[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readvImpl
+  (JNIEnv *env, jobject thiz, jlong fd, jlongArray jbuffers, jintArray joffsets, jintArray jlengths, jint size){
+  PORT_ACCESS_FROM_ENV (env);
+  jboolean bufsCopied = JNI_FALSE;
+  jboolean offsetsCopied = JNI_FALSE;
+  jboolean lengthsCopied = JNI_FALSE;
+  jlong *bufs; 
+  jint *offsets;
+  jint *lengths;
+  int i = 0;
+  long totalRead = 0;  
+  struct iovec *vectors = (struct iovec *)hymem_allocate_memory(size * sizeof(struct iovec));
+  if(vectors == NULL){
+    return -1;
+  }
+  bufs = (*env)->GetLongArrayElements(env, jbuffers, &bufsCopied);
+  offsets = (*env)->GetIntArrayElements(env, joffsets, &offsetsCopied);
+  lengths = (*env)->GetIntArrayElements(env, jlengths, &lengthsCopied);
+  while(i < size){
+    vectors[i].iov_base = (void *)(bufs[i]+offsets[i]);
+    vectors[i].iov_len = lengths[i];
+    i++;
+  }
+  totalRead = readv(fd, vectors, size);
+  if(bufsCopied){
+    (*env)->ReleaseLongArrayElements(env, jbuffers, bufs, JNI_ABORT);
+  }
+  if(offsetsCopied){
+    (*env)->ReleaseIntArrayElements(env, joffsets, offsets, JNI_ABORT);
+  }
+  if(lengthsCopied){
+    (*env)->ReleaseIntArrayElements(env, jlengths, lengths, JNI_ABORT);
+  }
+  hymem_free_memory(vectors);
+  return totalRead;
+}
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    writevImpl
+ * Signature: (J[J[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writevImpl
+  (JNIEnv *env, jobject thiz, jlong fd, jlongArray jbuffers, jintArray joffsets, jintArray jlengths, jint size){
+  PORT_ACCESS_FROM_ENV (env);
+  jboolean bufsCopied = JNI_FALSE;
+  jboolean offsetsCopied = JNI_FALSE;
+  jboolean lengthsCopied = JNI_FALSE;
+  jlong *bufs; 
+  jint *offsets;
+  jint *lengths;
+  int i = 0;
+  long totalRead = 0;  
+  struct iovec *vectors = (struct iovec *)hymem_allocate_memory(size * sizeof(struct iovec));
+  if(vectors == NULL){
+    return -1;
+  }
+  bufs = (*env)->GetLongArrayElements(env, jbuffers, &bufsCopied);
+  offsets = (*env)->GetIntArrayElements(env, joffsets, &offsetsCopied);
+  lengths = (*env)->GetIntArrayElements(env, jlengths, &lengthsCopied);
+  while(i < size){
+    vectors[i].iov_base = (void *)(bufs[i]+offsets[i]);
+    vectors[i].iov_len = lengths[i];
+    i++;
+  }
+  totalRead = writev(fd, vectors, size);
+  if(bufsCopied){
+    (*env)->ReleaseLongArrayElements(env, jbuffers, bufs, JNI_ABORT);
+  }
+  if(offsetsCopied){
+    (*env)->ReleaseIntArrayElements(env, joffsets, offsets, JNI_ABORT);
+  }
+  if(lengthsCopied){
+    (*env)->ReleaseIntArrayElements(env, jlengths, lengths, JNI_ABORT);
+  }
+  hymem_free_memory(vectors);
+  return totalRead;
+}
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    transferImpl
+ * Signature: (JLjava/io/FileDescriptor;JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_transferImpl
+  (JNIEnv *env, jobject thiz, jlong fd, jobject sd, jlong offset, jlong count)
+{
+	PORT_ACCESS_FROM_ENV (env);
+	int socket;
+	//TODO IPV6
+	hysocket_t hysocketP= (hysocket_t)getJavaIoFileDescriptorContentsAsAPointer (env,sd);
+	if(hysocketP == NULL)
+       return -1;
+	socket = hysocketP->sock;
+	return sendfile(socket,(size_t)fd,(off_t *)&offset,(size_t)count);	
+}
+

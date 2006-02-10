@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 #include <jni.h>
 /* Header for class com_ibm_platform_OSMemory */
 
-#if !defined(_Included_com_ibm_platform_OSMemory)
+#ifndef _Included_com_ibm_platform_OSMemory
 #define _Included_com_ibm_platform_OSMemory
-#if defined(__cplusplus)
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -81,6 +81,15 @@ extern "C"
  */
   JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setByteArray
     (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    setCharArray
+ * Signature: (J[CII)V
+ */
+JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setCharArray
+  (JNIEnv *, jobject, jlong, jcharArray, jint, jint);
+
 /*
  * Class:     com_ibm_platform_OSMemory
  * Method:    getByte
@@ -179,7 +188,48 @@ extern "C"
  */
   JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setAddress
     (JNIEnv *, jobject, jlong, jlong);
-#if defined(__cplusplus)
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    mmapImpl
+ * Signature: (JJJI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_mmapImpl
+  (JNIEnv *, jobject, jlong, jlong, jlong, jint);
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    unmapImpl
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_unmapImpl
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    loadImpl
+ * Signature: (JJ)I
+ */
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_loadImpl
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    isLoadedImpl
+ * Signature: (JJ)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLoadedImpl
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    flushImpl
+ * Signature: (JJ)I
+ */
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_flushImpl
+  (JNIEnv *, jobject, jlong, jlong);
+
+#ifdef __cplusplus
 }
 #endif
 #endif
