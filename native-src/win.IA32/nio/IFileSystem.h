@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,6 @@ extern "C"
 #define com_ibm_platform_IFileSystem_SEEK_CUR 2L
 #undef com_ibm_platform_IFileSystem_SEEK_END
 #define com_ibm_platform_IFileSystem_SEEK_END 4L
-#undef com_ibm_platform_IFileSystem_MMAP_READ_ONLY
-#define com_ibm_platform_IFileSystem_MMAP_READ_ONLY 1L
-#undef com_ibm_platform_IFileSystem_MMAP_READ_WRITE
-#define com_ibm_platform_IFileSystem_MMAP_READ_WRITE 2L
-#undef com_ibm_platform_IFileSystem_MMAP_WRITE_COPY
-#define com_ibm_platform_IFileSystem_MMAP_WRITE_COPY 4L
 #undef com_ibm_platform_IFileSystem_O_RDONLY
 #define com_ibm_platform_IFileSystem_O_RDONLY 0L
 #undef com_ibm_platform_IFileSystem_O_WRONLY

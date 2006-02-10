@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 #include "OSMemory.h"
 
 JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLittleEndianImpl
@@ -59,4 +60,36 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setAddress
 #endif
 
 }
+
+
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_loadImpl
+  (JNIEnv * env, jobject thiz, jlong addr, jlong size){
+    /* FIXME:
+     * lock the memory make the pages be loaded into physical memory
+     * and unlock then to make them swappable
+     * maybe can be improved
+     * */
+    if(0 != VirtualLock((void *)addr, (SIZE_T)size)){
+        VirtualUnlock((void *)addr, (SIZE_T)size);
+        return 0;
+    }else{
+        printf("lock error: %d\n", GetLastError());
+        return -1;
+    }
+  }
+
+JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLoadedImpl
+  (JNIEnv * env, jobject thiz, jlong addr, jlong size){
+    /* FIXME:
+     * Windows only provides readiness status of memory pages
+     * by VirtualQuery(EX), seems not enough to support this 
+     * function
+     * */
+    return JNI_FALSE;
+  }
+
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_flushImpl
+  (JNIEnv * env, jobject thiz, jlong addr, jlong size){
+    return (jint)FlushViewOfFile((void *)addr, (SIZE_T)size);
+  }
 

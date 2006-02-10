@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #include <string.h>
 #include <harmony.h>
 #include "OSMemory.h"
+#include "IMemorySystem.h"
 
 JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_malloc
   (JNIEnv * env, jobject thiz, jlong size)
@@ -73,6 +74,17 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_getByteArray
     }
 }
 
+JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_getCharArray
+  (JNIEnv * env, jobject thiz, jlong address, jcharArray jdest, jint offset, jint length){
+  jboolean isCopy;
+  jchar *dest = (*env)->GetCharArrayElements (env, jdest, &isCopy);
+  memcpy (dest + offset, (const void *) address, (size_t) length);
+  if (isCopy == JNI_TRUE)
+    {
+      (*env)->ReleaseCharArrayElements (env, jdest, dest, 0);
+    }
+  }
+
 JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setByteArray
   (JNIEnv * env, jobject thiz, jlong address, jbyteArray byteArray,
    jint offset, jint length)
@@ -85,6 +97,17 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setByteArray
       (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
     }
 }
+
+JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setCharArray
+  (JNIEnv * env, jobject thiz, jlong address, jcharArray jsrc, jint offset, jint length){
+  jboolean isCopy;
+  jchar *src = (*env)->GetCharArrayElements (env, jsrc, &isCopy);
+  memcpy ((void *) address, (const jchar *) src + offset, (size_t) length);
+  if (isCopy == JNI_TRUE)
+    {
+      (*env)->ReleaseCharArrayElements (env, jsrc, src, JNI_ABORT);
+    }
+  }
 
 JNIEXPORT jbyte JNICALL Java_com_ibm_platform_OSMemory_getByte
   (JNIEnv * env, jobject thiz, jlong address)
@@ -158,3 +181,54 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setDouble
   *(jdouble *) address = value;
 }
 
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    unmapImpl
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_unmapImpl
+  (JNIEnv * env, jobject thiz, jlong fd)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  hymmap_unmap_file((void *)fd);
+}
+
+/*
+ * Class:     com_ibm_platform_OSMemory
+ * Method:    mmapImpl
+ * Signature: (JJJI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_mmapImpl
+  (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  void *mapAddress = NULL;
+  I_32 mapmode = 0;
+
+  // Convert from Java mapping mode to port library mapping mode.
+  /* TPE - removed until portlib fixed
+    switch (mmode)
+    {
+      case com_ibm_platform_IMemorySystem_MMAP_READ_ONLY:
+        mapmode = HYPORT_MMAP_CAPABILITY_READ;
+        break;
+      case com_ibm_platform_IMemorySystem_MMAP_READ_WRITE:
+        mapmode = HYPORT_MMAP_CAPABILITY_READ|HYPORT_MMAP_CAPABILITY_WRITE;
+        break;
+      case com_ibm_platform_IMemorySystem_MMAP_WRITE_COPY:
+        mapmode = HYPORT_MMAP_CAPABILITY_COPYONWRITE;
+        break;
+      default:
+        return -1;
+    }
+
+     hymmap_map_filehandler((void *)fd, &mapAddress, mapmode, (IDATA)alignment, (IDATA)size);
+  */
+
+  if (mapAddress == NULL)
+    {
+      return -1;
+    }
+  
+  return (jlong) mapAddress;
+}

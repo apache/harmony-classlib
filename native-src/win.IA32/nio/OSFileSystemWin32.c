@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,75 +17,23 @@
  * Win32 specific natives supporting the file system interface.
  */
 
-#include <windows.h>
-#include <harmony.h>
+#if defined(_WINSOCKAPI_) && !defined(_WINSOCK2API_)
+#undef _WINSOCKAPI_
+#endif
 
+#include <windows.h>
+#include "nethelp.h"
+#include <stdio.h>
 #include "IFileSystem.h"
 #include "OSFileSystem.h"
 
-/*
- * Class:     com_ibm_platform_OSFileSystem
- * Method:    mmapImpl
- * Signature: (JJJI)J
- */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_mmapImpl
-  (JNIEnv * env, jobject thiz, jlong fd, jlong offset, jlong size, jint mmode)
+typedef SOCKET OSSOCKET;
+typedef struct hysocket_struct
 {
-
-  DWORD flProtect = 0;
-  DWORD dwDesiredAccess = 0;    /* Access control for mapping view. */
-  HANDLE hFileMappingObject = 0;
-  LPVOID mapAddress = 0;
-  DWORD dwFileOffsetLow = (DWORD) (offset & 0xFFFFFFFF);
-  DWORD dwFileOffsetHigh = (DWORD) ((offset >> 0x20) & 0x7FFFFFFF);
-
-  // Convert from Java mapping mode to windows mapping mode.
-  switch (mmode)
-    {
-      case com_ibm_platform_IFileSystem_MMAP_READ_ONLY:
-        flProtect = PAGE_READONLY;
-        dwDesiredAccess = FILE_MAP_READ;
-        break;
-      case com_ibm_platform_IFileSystem_MMAP_READ_WRITE:
-        flProtect = PAGE_READWRITE;
-        dwDesiredAccess = FILE_MAP_WRITE;
-        break;
-      case com_ibm_platform_IFileSystem_MMAP_WRITE_COPY:
-        flProtect = PAGE_WRITECOPY;
-        dwDesiredAccess = FILE_MAP_COPY;
-        break;
-      default:
-        return -1;
-    }
-
-  /* First create a file mapping handle. */
-  hFileMappingObject = CreateFileMapping ((HANDLE) fd,  /* [in] file handle */
-                                          (LPSECURITY_ATTRIBUTES) NULL, /* [in] mapping is not inherited */
-                                          flProtect,    /* [in] protection mode for mapped data */
-                                          (DWORD) 0,    /* [in] maximum size high */
-                                          (DWORD) 0,    /* [in] maximum size low */
-                                          (LPCTSTR) NULL);      /* [in] name for mapping object */
-
-  if (!hFileMappingObject || hFileMappingObject == INVALID_HANDLE_VALUE)
-    {
-      return -1;
-    }
-
-  /* Secondly create a view on that mapping object. */
-
-  mapAddress = MapViewOfFile (hFileMappingObject,       /* [in] open file mapping object */
-                              dwDesiredAccess,  /* [in] access to the file view */
-                              dwFileOffsetHigh, /* [in] high offset where mapping is to begin */
-                              dwFileOffsetLow,  /* [in] low offset where mapping is to begin */
-                              (SIZE_T) size);   /* [in] number of bytes to map */
-
-  if (mapAddress == NULL)
-    {
-      return -1;
-    }
-
-  return (jlong) mapAddress;
-}
+  OSSOCKET ipv4;
+  OSSOCKET ipv6;
+  U_8 flags;
+} hysocket_struct;
 
 /**
  * Lock the file identified by the given handle.
@@ -163,5 +111,134 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_unlockImpl
       return (jint) 0;
     }
   return (jint) - 1;
+}
+
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_getPageSize
+  (JNIEnv * env, jobject thiz)
+{
+  static DWORD pageSize = 0;
+  if(!pageSize){
+      SYSTEM_INFO info;
+      GetSystemInfo(&info);
+      pageSize = info.dwPageSize;
+  }
+  return pageSize;
+}
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    readvImpl
+ * Signature: (J[J[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readvImpl
+  (JNIEnv *env, jobject thiz, jlong fd, jlongArray jbuffers, jintArray joffsets, jintArray jlengths, jint size){
+  PORT_ACCESS_FROM_ENV (env);
+  jboolean bufsCopied = JNI_FALSE;
+  jboolean offsetsCopied = JNI_FALSE;
+  jboolean lengthsCopied = JNI_FALSE;
+  jlong *bufs = (*env)->GetLongArrayElements(env, jbuffers, &bufsCopied);
+  jint *offsets = (*env)->GetIntArrayElements(env, joffsets, &offsetsCopied);
+  jint *lengths = (*env)->GetIntArrayElements(env, jlengths, &lengthsCopied);
+  long totalRead = 0;  
+  int i = 0;
+  while(i<size){
+    long bytesRead = hyfile_read ((IDATA) fd, (void *) (*(bufs+i)+*(offsets+i)), (IDATA) *(lengths+i));
+    if(bytesRead == -1){
+        totalRead = -1;
+        break;
+    }
+    totalRead += bytesRead;
+    i++;
+  }
+  if(bufsCopied){
+    (*env)->ReleaseLongArrayElements(env, jbuffers, bufs, JNI_ABORT);
+  }
+  if(offsetsCopied){
+    (*env)->ReleaseIntArrayElements(env, joffsets, offsets, JNI_ABORT);
+  }
+  if(lengthsCopied){
+    (*env)->ReleaseIntArrayElements(env, jlengths, lengths, JNI_ABORT);
+  }
+  return totalRead;
+}
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    writevImpl
+ * Signature: (J[J[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writevImpl
+  (JNIEnv *env, jobject thiz, jlong fd, jlongArray jbuffers, jintArray joffsets, jintArray jlengths, jint size){
+  PORT_ACCESS_FROM_ENV (env);
+  jboolean bufsCopied = JNI_FALSE;
+  jboolean offsetsCopied = JNI_FALSE;
+  jboolean lengthsCopied = JNI_FALSE;
+  jlong *bufs = (*env)->GetLongArrayElements(env, jbuffers, &bufsCopied);
+  jint *offsets = (*env)->GetIntArrayElements(env, joffsets, &offsetsCopied);
+  jint *lengths = (*env)->GetIntArrayElements(env, jlengths, &lengthsCopied);
+  long totalWritten = 0;  
+  int i = 0;
+  while(i<size){
+    long bytesWritten = hyfile_write ((IDATA) fd, (void *) (*(bufs+i)+*(offsets+i)), (IDATA) *(lengths+i));
+    if(bytesWritten == -1){
+        totalWritten = -1;
+        break;
+    }
+    totalWritten += bytesWritten;
+    i++;
+  }
+  if(bufsCopied){
+    (*env)->ReleaseLongArrayElements(env, jbuffers, bufs, JNI_ABORT);
+  }
+  if(offsetsCopied){
+    (*env)->ReleaseIntArrayElements(env, joffsets, offsets, JNI_ABORT);
+  }
+  if(lengthsCopied){
+    (*env)->ReleaseIntArrayElements(env, jlengths, lengths, JNI_ABORT);
+  }
+  return totalWritten;
+}
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    transferImpl
+ * Signature: (JLjava/io/FileDescriptor;JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_transferImpl
+  (JNIEnv *env, jobject thiz, jlong fd, jobject sd, jlong offset, jlong count)
+{
+	PORT_ACCESS_FROM_ENV (env);
+	int length =0;
+    HANDLE hfile = (HANDLE)fd;
+	OVERLAPPED  overlapped;
+    SOCKET socket;
+	//TODO IPV6
+
+	hysocket_t hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env,sd);
+	if (!hysock_socketIsValid (hysocketP)){
+      	printf("not valid socket\n");
+    }
+	printf("hysocketP:%p\n",hysocketP);
+	if(hysocketP == NULL)
+	{   
+	printf("Error getJavaIoFileDescriptorContentsAsAPointer!\n");
+	return -1;}
+	
+	socket = (SOCKET)hysocketP->ipv4;
+	printf("socket:%p\n",socket);
+	overlapped.Offset = (int)offset;
+	overlapped.OffsetHigh = (int)(offset>>32);
+
+	TransmitFile(socket,hfile,(int)count,0,&overlapped,NULL,0);
+    printf("TrasmitFile Error %d\n",GetLastError());
+	if(GetOverlappedResult((HANDLE)socket,&overlapped,(LPDWORD)&length,1))
+	{
+        return length; //OK
+	}
+	else
+	{
+		printf("GetOverlappedResult Error %d\n",GetLastError());
+		return -1;//ERROR
+	}
 }
 

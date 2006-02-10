@@ -1,4 +1,4 @@
-/* Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -539,7 +539,7 @@ hyfile_seek (struct HyPortLibrary * portLibrary, IDATA fd, I_64 offset,
   I_32 error;
 
   lowerOffset = (DWORD) (offset & 0xFFFFFFFF);
-  upperOffset = (DWORD) (offset >> 32);
+  upperOffset = (DWORD) ((offset >> 32) & 0x7FFFFFFF);
 
   if ((whence < HySeekSet) || (whence > HySeekEnd))
     {
@@ -904,7 +904,7 @@ hyfile_set_length (struct HyPortLibrary *portLibrary, IDATA fd,
   I_32 lowValue, highValue;
 
   lowValue = (I_32) (newLength & 0xFFFFFFFF);
-  highValue = (I_32) (newLength >> 32);
+  highValue = (I_32) ((newLength >> 32) & 0x7FFFFFFF);
 
   result = SetFilePointer ((HANDLE) fd, lowValue, &highValue, FILE_BEGIN);
   error = GetLastError ();

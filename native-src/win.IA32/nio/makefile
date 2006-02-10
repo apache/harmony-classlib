@@ -46,7 +46,7 @@ BUILDFILES2 = nethelp.obj helpers.obj socket.obj OSNetworkSystem.obj OSNetworkSy
 
 VIRTFILES1 = hynio.res
 
-SYSLIBFILES1 = ws2_32.lib Iphlpapi.lib
+SYSLIBFILES1 = ws2_32.lib Iphlpapi.lib Mswsock.lib
 
 MDLLIBFILES1 = ..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hyzip.lib ..\lib\hyzlib.lib
 MDLLIBFILES2 = ..\lib\hypool.lib ..\lib\hyfdlibm.lib ..\lib\hythr.lib ..\lib\vmi.lib

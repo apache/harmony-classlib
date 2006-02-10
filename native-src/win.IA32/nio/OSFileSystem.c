@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  */
 
 #include <harmony.h>
+#include <string.h>
 
 #include "OSFileSystem.h"
 #include "IFileSystem.h"
@@ -28,10 +29,10 @@
  * Signature: (JJI)J
  */
 JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readDirectImpl
-  (JNIEnv * env, jobject thiz, jlong fd, jlong buf, jint nbytes)
+  (JNIEnv * env, jobject thiz, jlong fd, jlong buf, jint offset, jint nbytes)
 {
   PORT_ACCESS_FROM_ENV (env);
-  return (jlong) hyfile_read ((IDATA) fd, (void *) buf, (IDATA) nbytes);
+  return (jlong) hyfile_read ((IDATA) fd, (void *) (buf+offset), (IDATA) nbytes);
 }
 
 /*
@@ -40,10 +41,10 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readDirectImpl
  * Signature: (JJI)J
  */
 JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeDirectImpl
-  (JNIEnv * env, jobject thiz, jlong fd, jlong buf, jint nbytes)
+  (JNIEnv * env, jobject thiz, jlong fd, jlong buf, jint offset, jint nbytes)
 {
   PORT_ACCESS_FROM_ENV (env);
-  return (jlong) hyfile_write ((IDATA) fd, (const void *) buf,
+  return (jlong) hyfile_write ((IDATA) fd, (const void *) (buf+offset),
                                (IDATA) nbytes);
 }
 
@@ -63,6 +64,30 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readImpl
 
   result =
     (jlong) hyfile_read ((IDATA) fd, (void *) (bytes + offset),
+                         (IDATA) nbytes);
+  if (isCopy == JNI_TRUE)
+    {
+      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
+    }
+
+  return result;
+}
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    writeImpl
+ * Signature: (J[BII)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeImpl
+  (JNIEnv * env, jobject thiz, jlong fd, jbyteArray byteArray, jint offset, jint nbytes)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  jboolean isCopy;
+  jbyte *bytes = (*env)->GetByteArrayElements (env, byteArray, &isCopy);
+  jlong result;
+
+  result =
+    (jlong) hyfile_write ((IDATA) fd, (void *) (bytes + offset),
                          (IDATA) nbytes);
   if (isCopy == JNI_TRUE)
     {
@@ -148,4 +173,112 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_closeImpl
 
   return (jint) hyfile_close ((IDATA) fd);
 }
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    truncateImpl
+ * Signature: (JJ)I
+ */
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_truncateImpl
+  (JNIEnv * env, jobject thiz, jlong fd, jlong size)
+{
+  PORT_ACCESS_FROM_ENV (env);
+
+  return (jint)hyfile_set_length((IDATA)fd, (I_64)size);
+
+}
+
+#define jclSeparator DIR_SEPARATOR
+/**
+  * This will convert all separators to the proper platform separator
+  * and remove duplicates on non POSIX platforms.
+  */
+void convertToPlatform (char *path)
+{
+  char *pathIndex;
+  int length = strlen (path);
+
+  /* Convert all separators to the same type */
+  pathIndex = path;
+  while (*pathIndex != '\0')
+    {
+      if ((*pathIndex == '\\' || *pathIndex == '/')
+          && (*pathIndex != jclSeparator))
+        *pathIndex = jclSeparator;
+      pathIndex++;
+    }
+
+  /* Remove duplicate separators */
+  if (jclSeparator == '/')
+    return;                     /* Do not do POSIX platforms */
+
+  /* Remove duplicate initial separators */
+  pathIndex = path;
+  while ((*pathIndex != '\0') && (*pathIndex == jclSeparator))
+    {
+      pathIndex++;
+    }
+  if ((pathIndex > path) && (length > (pathIndex - path))
+      && (*(pathIndex + 1) == ':'))
+    {
+      /* For Example '////c:/*' */
+      int newlen = length - (pathIndex - path);
+      memmove (path, pathIndex, newlen);
+      path[newlen] = '\0';
+    }
+  else
+    {
+      if ((pathIndex - path > 3) && (length > (pathIndex - path)))
+        {
+          /* For Example '////serverName/*' */
+          int newlen = length - (pathIndex - path) + 2;
+          memmove (path, pathIndex - 2, newlen);
+          path[newlen] = '\0';
+        }
+    }
+  /* This will have to handle extra \'s but currently doesn't */
+}
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    openImpl
+ * Signature: ([BI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_openImpl
+  (JNIEnv * env, jobject obj, jbyteArray path, jint jflags){
+      PORT_ACCESS_FROM_ENV (env);
+      I_32 flags = 0;
+      I_32 mode = 0; 
+      IDATA portFD;
+      jsize length;
+      char pathCopy[HyMaxPath];
+
+      switch(jflags){
+        case com_ibm_platform_IFileSystem_O_RDONLY:
+                flags = HyOpenRead;
+                mode = 0;
+                break;
+        case com_ibm_platform_IFileSystem_O_WRONLY:
+                flags = HyOpenCreate | HyOpenWrite | HyOpenTruncate;
+                mode = 0666;
+                break;
+        case com_ibm_platform_IFileSystem_O_RDWR:
+                flags = HyOpenRead | HyOpenWrite | HyOpenCreate;
+                mode = 0666;
+                break;
+        case com_ibm_platform_IFileSystem_O_APPEND:
+                flags = HyOpenWrite | HyOpenCreate | HyOpenAppend; 
+                mode = 0666;
+                break;
+      }
+
+      length = (*env)->GetArrayLength (env, path);
+      length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
+      ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+      pathCopy[length] = '\0';
+      convertToPlatform (pathCopy);
+
+      portFD = hyfile_open (pathCopy, flags, mode);
+      return (jlong)portFD;
+  }
 

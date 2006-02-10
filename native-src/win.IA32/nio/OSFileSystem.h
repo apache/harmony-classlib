@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,10 @@
 #include <jni.h>
 /* Header for class com_ibm_platform_OSFileSystem */
 
-#if !defined(_Included_com_ibm_platform_OSFileSystem)
+#ifndef _Included_com_ibm_platform_OSFileSystem
 #define _Included_com_ibm_platform_OSFileSystem
-#if defined(__cplusplus)
-extern "C"
-{
+#ifdef __cplusplus
+extern "C" {
 #endif
 /*
  * Class:     com_ibm_platform_OSFileSystem
@@ -30,6 +29,15 @@ extern "C"
  */
   JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_lockImpl
     (JNIEnv *, jobject, jlong, jlong, jlong, jint, jboolean);
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    getPageSize
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_getPageSize
+  (JNIEnv *, jobject);
+
 /*
  * Class:     com_ibm_platform_OSFileSystem
  * Method:    unlockImpl
@@ -54,17 +62,17 @@ extern "C"
 /*
  * Class:     com_ibm_platform_OSFileSystem
  * Method:    readDirectImpl
- * Signature: (JJI)J
+ * Signature: (JJII)J
  */
   JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readDirectImpl
-    (JNIEnv *, jobject, jlong, jlong, jint);
+    (JNIEnv *, jobject, jlong, jlong, jint, jint);
 /*
  * Class:     com_ibm_platform_OSFileSystem
  * Method:    writeDirectImpl
- * Signature: (JJI)J
+ * Signature: (JJII)J
  */
   JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeDirectImpl
-    (JNIEnv *, jobject, jlong, jlong, jint);
+    (JNIEnv *, jobject, jlong, jlong, jint, jint);
 /*
  * Class:     com_ibm_platform_OSFileSystem
  * Method:    readImpl
@@ -74,11 +82,28 @@ extern "C"
     (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);
 /*
  * Class:     com_ibm_platform_OSFileSystem
- * Method:    mmapImpl
- * Signature: (JJJI)J
+ * Method:    writeImpl
+ * Signature: (J[BII)J
  */
-  JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_mmapImpl
-    (JNIEnv *, jobject, jlong, jlong, jlong, jint);
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeImpl
+  (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    readvImpl
+ * Signature: (J[J[I[II)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readvImpl
+  (JNIEnv *, jobject, jlong, jlongArray, jintArray, jintArray, jint);
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    writevImpl
+ * Signature: (J[J[I[II)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writevImpl
+  (JNIEnv *, jobject, jlong, jlongArray, jintArray, jintArray, jint);
+
 /*
  * Class:     com_ibm_platform_OSFileSystem
  * Method:    closeImpl
@@ -86,7 +111,32 @@ extern "C"
  */
   JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_closeImpl
     (JNIEnv *, jobject, jlong);
-#if defined(__cplusplus)
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    truncateImpl
+ * Signature: (JJ)I
+ */
+JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_truncateImpl
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    openImpl
+ * Signature: ([BI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_openImpl
+  (JNIEnv *, jobject, jbyteArray, jint);
+
+/*
+ * Class:     com_ibm_platform_OSFileSystem
+ * Method:    transferImpl
+ * Signature: (JLjava/io/FileDescriptor;JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_transferImpl
+  (JNIEnv *, jobject, jlong, jobject, jlong, jlong);
+
+#ifdef __cplusplus
 }
 #endif
 #endif
