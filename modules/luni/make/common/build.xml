@@ -84,11 +84,21 @@
 				<pathelement path="${hy.luni.bin.test}"/>
 			</classpath>
 
+        	<!--
 			<test name="org.apache.harmony.tests.luni.AllTests"
 				haltonfailure="no"
 				todir="${test.dir}">
 				<formatter type="xml" />
 			</test>
+			-->
+        	
+            <formatter type="xml" />
+            <batchtest todir="${test.dir}">
+                <fileset dir="../../src/test/java">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+
 		</junit>
 		
     </target>
