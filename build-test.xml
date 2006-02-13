@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<project name="classlib-testt" default="test-all" basedir=".">
+
+    <description> Tests for classlib package</description>
+
+    <!-- set global properties for this build. -->
+
+    <property name="build.compiler" value="modern"/>
+
+    <property name="tests.output" value="target" />
+    <property name="target.output" value="../../deploy" />
+
+    <target name="test-all">
+
+        <echo message="=================================="/>
+        <echo message="Running tests for module luni"/>
+        <echo message="=================================="/>
+
+        <ant antfile="make/build.xml" dir="modules/luni" target="test"/>
+        
+        <echo message="=================================="/>
+        <echo message="Running tests for module security2"/>
+        <echo message="=================================="/>
+
+        <ant antfile="make/build.xml" dir="modules/security2" target="test.classlib"/>
+
+        <echo message="=================================="/>
+        <echo message="Running tests for module x-net"/>
+        <echo message="=================================="/>
+
+        <ant antfile="build.xml" dir="modules/x-net" target="test" />
+
+    </target>
+
+</project>
