@@ -23,13 +23,13 @@
 
     <property name="build.compiler" value="modern"/>
 
-    <property name="tests.output" value="target" />
+    <property name="tests.output" value="../../woogie" />
     <property name="target.output" value="../../deploy" />
 
     <!-- =================================
           target: run
          ================================= -->
-    <target name="test" depends="test-clean, test-compile, test-run" description="Run Tests" />
+    <target name="test" depends="test-clean, test-run" description="Run Tests" />
 
     <!-- =================================
           target: test-clean
@@ -86,9 +86,9 @@
     <!-- =================================
           target: test-clean
          ================================= -->
-    <target name="test-run">
+    <target name="test-run" depends="test-compile">
 
-    	<property name="tests.report" value="${tests.output}/report" />
+    	<property name="tests.report" value="${tests.output}" />
         <property environment="env"/>
 
         <mkdir dir="${tests.report}" />
@@ -100,17 +100,18 @@
             showoutput="on"
         	haltonfailure="on"
             dir="${basedir}"
-            jvm="${target.output}/jre/bin/java">
+            jvm="${basedir}/${target.output}/jre/bin/java">
 
-            <env key="JAVA_HOME" value="${target.output}/jre"/>
+            <env key="JAVA_HOME" value="${basedir}/${target.output}/jre"/>
 
 <!--            <jvmarg value="-verbose:dynload" /> -->
             <jvmarg value="-Xbootclasspath/a:${tests.output}${path.separator}${env.CLASSPATH}"/>
+
             <jvmarg value="-Djava.security.properties==${target.output}/jre/lib/security/java.security"/>
             <jvmarg value="-Djava.security.policy==${target.output}/jre/lib/security/drl.policy"/>
             <jvmarg value="-DTEST_SRC_DIR=src/test/java/"/>
 
-            <formatter type="plain" />
+            <formatter type="xml" />
             <batchtest todir="${tests.report}">
                 <fileset dir="src/test/java">
                     <include name="**/*Test.java"/>
