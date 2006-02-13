@@ -64,9 +64,11 @@
 
 
 	<target name="run.tests">
-		<mkdir dir="tests_report" />
+		
+		<property name="test.dir" value="../../../../target/test_report" />
+		<mkdir dir="${test.dir}" />
 
-		<junit fork="yes"
+        <junit fork="yes"
             forkmode="once"
             printsummary="withOutAndErr"
             errorproperty="test.error"
@@ -76,18 +78,20 @@
 
 			<jvmarg value="-showversion"/>
 
-			<classpath>
+            <env key="JAVA_HOME" value=""/>
+
+            <classpath>
 				<pathelement path="${hy.luni.bin.test}"/>
 			</classpath>
 
 			<test name="org.apache.harmony.tests.luni.AllTests"
 				haltonfailure="no"
-				todir="tests_report"
-				outfile="result">
-				<formatter type="plain" />
+				todir="${test.dir}">
+				<formatter type="xml" />
 			</test>
 		</junit>
-	</target>
+		
+    </target>
 	
 	
 	<target name="copy.resources">
