@@ -29,7 +29,9 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.apache.harmony.tests.java.text");
 		//$JUnit-BEGIN$
+		suite.addTestSuite(StringCharacterIteratorTest.class);
 		suite.addTestSuite(RuleBasedCollatorTest.class);
+		suite.addTestSuite(AnnotationTest.class);
 		suite.addTestSuite(BreakIteratorTest.class);
 		suite.addTestSuite(MessageFormatTest.class);
 		suite.addTestSuite(ChoiceFormatTest.class);
