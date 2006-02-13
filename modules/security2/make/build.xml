@@ -485,7 +485,7 @@
 
         <mkdir dir="${build.path}/tests_report" />
 
-    	<property name="vm.home" location="../../deploy/jre" />
+    	<property name="vm.home" location="${basedir}/../../deploy/jre" />
 
         <junit fork="yes"
             forkmode="perTest"
@@ -507,8 +507,9 @@
             <jvmarg value="-Djava.security.policy==${build.lib.path}/security/drl.policy"/>
         	<jvmarg value="-DTEST_SRC_DIR=${src.tst.common}/unit"/>
 
-            <formatter type="plain" />
-            <batchtest todir="${build.path}/tests_report">
+            <formatter type="xml" />
+<!--            <batchtest todir="${build.path}/tests_report"> -->
+                <batchtest todir="${tests.output}">
                 <fileset dir="${src.tst.common}/unit">
                     <include name="**/*Test*.java"/>
 
