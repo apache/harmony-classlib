@@ -26,34 +26,55 @@
     <property name="tests.output" value="../../target/test_report" />
     <property name="target.output" value="../../deploy" />
 
-    <target name="test-all">
+    <target name="test-all" depends="clean, test-luni, test-xnet, test-text, test-security, gen-report">
+	</target>
 
+	<target name="clean">
+		<delete dir="target" />
+	</target>
+
+	<target name="test-luni">
         <echo message="=================================="/>
         <echo message="Running tests for module luni"/>
         <echo message="=================================="/>
 
         <ant antfile="make/build.xml" dir="modules/luni" target="test"/>
-
+	</target>
+		
+	<target name="test-xnet">
         <echo message="=================================="/>
         <echo message="Running tests for module x-net"/>
         <echo message="=================================="/>
 
         <ant antfile="build.xml" dir="modules/x-net" target="test-run" />
 
+	</target>
+
+	<target name="test-text">
+        <echo message="=================================="/>
+        <echo message="Running tests for module text"/>
+        <echo message="=================================="/>
+
+        <ant antfile="build.xml" dir="modules/text" target="test-run" />
+
+	</target>
+		
+	<target name="test-security">
+	
         <echo message="=================================="/>
         <echo message="Running tests for module security2"/>
         <echo message="=================================="/>
 
         <ant antfile="make/build.xml" dir="modules/security2" target="test.classlib"/>
+	</target>
 
-
+	<target name="gen-report">
 		<junitreport todir="target/test_report">
 		  <fileset dir="target/test_report">
 		    <include name="TEST*-*.xml"/>
 		  </fileset>
 		  <report format="frames" todir="target/test_report/html"/>
 		</junitreport>
-
     </target>
 
 </project>
