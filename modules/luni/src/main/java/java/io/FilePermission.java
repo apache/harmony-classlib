@@ -89,18 +89,10 @@ public final class FilePermission extends Permission implements Serializable {
 									}
 								}
 							});
-					int plength = canonPath.length();
-					if (plength >= 1) {
-						if (canonPath.endsWith("*")) { //$NON-NLS-1$
-							if (plength == 1
-									|| (canonPath.charAt(plength - 2)) == File.separatorChar)
-								allDir = true;
-						} else if (canonPath.endsWith("-")) { //$NON-NLS-1$
-							if (plength == 1
-									|| (canonPath.charAt(plength - 2)) == File.separatorChar)
-								allSubdir = true;
-						}
-					}
+					if (path.equals("*") || path.endsWith(File.separator + "*"))
+						allDir = true;
+					if (path.equals("-") || path.endsWith(File.separator + "-"))
+						allSubdir = true;
 				}
 				this.actions = toCanonicalActionString(pathActions);
 			} else
@@ -254,65 +246,63 @@ public final class FilePermission extends Permission implements Serializable {
 		if (allSubdir && thisLength == 2
 				&& !fp.canonPath.equals(File.separator))
 			return matchedMask;
+		// need /- to imply /-
+		if (fp.allSubdir && !allSubdir)
+			return 0;
+		// need /- or /* to imply /*
+		if (fp.allDir && !allSubdir && !allDir)
+			return 0;
 
 		boolean includeDir = false;
-		boolean lastIsSlash = false;
 		int pLength = fp.canonPath.length();
+		// do not compare the * or -
+		if (allDir || allSubdir)
+			thisLength--;
+		if (fp.allDir || fp.allSubdir)
+			pLength--;
 		for (int i = 0; i < pLength; i++) {
 			char pChar = fp.canonPath.charAt(i);
 			// Is p longer than this permissions canonLength?
 			if (i >= thisLength) {
+				if (i == thisLength) {
+					// Is this permission include all? (must have matched up
+					// until this point).
+					if (allSubdir)
+						return matchedMask;
+					// Is this permission include a dir? Continue the check
+					// afterwards.
+					if (allDir)
+						includeDir = true;
+				}
 				// If not includeDir then is has to be a mismatch.
 				if (!includeDir)
 					return 0;
 				/**
-				 * If we have * for this and the separator is not the last char
-				 * it is invalid. IE: this is '/a/*' and p is '/a/b/c' we should
-				 * fail on the separator after the b.
+				 * If we have * for this and find a separator it is invalid. IE:
+				 * this is '/a/*' and p is '/a/b/c' we should fail on the
+				 * separator after the b. Except for root, canonical paths do
+				 * not end in a separator.
 				 */
-				if (pChar == File.separatorChar && (i != pLength - 1))
+				if (pChar == File.separatorChar)
 					return 0;
 			} else {
-				// Can safely get cChar since it's in range.
-				char cChar = canonPath.charAt(i);
-				// Is this permission include all? (must have matched up until
-				// this point).
-				if (lastIsSlash && cChar == '-') {
-					// Checked at constructor for separator/-
-					if (!allSubdir)
-						return 0;
-					// If we've already seen '*' return 0, can't group - and *.
-					if (includeDir)
-						return 0;
-					return matchedMask;
-				}
-				// Is this permission include a dir? Continue the check
-				// afterwards.
-				if (lastIsSlash && cChar == '*') {
-					/* Checked at constructor for File.separator/* */
-					if (!allDir)
-						return 0;
-					// Cannot have two *'s in a row.
-					if (includeDir)
-						return 0;
-					// * does not match -
-					if (fp.allSubdir)
-						return 0;
-					// Set the fact that we have seen a * in this permission.
-					includeDir = true;
-					continue;
-				}
 				// Are the characters matched?
-				if (cChar != pChar)
+				if (canonPath.charAt(i) != pChar)
 					return 0;
-				// Is is a separator char? Needed for /* and /-
-				lastIsSlash = cChar == File.separatorChar;
 			}
 		}
 		// Must have matched upto this point or it's a valid file in an include
 		// all directory
-		return pLength == thisLength || includeDir ? matchedMask : 0;
-	}
+		if (pLength == thisLength) {
+			if (allSubdir) {
+				// /- implies /- or /*
+				return fp.allSubdir || fp.allDir ? matchedMask : 0;
+			} else {
+				return allDir == fp.allDir ? matchedMask : 0;
+			}
+		}
+		return includeDir ? matchedMask : 0;
+}
 
 	/**
 	 * Answers a new PermissionCollection in which to place FilePermission
