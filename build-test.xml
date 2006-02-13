@@ -23,7 +23,7 @@
 
     <property name="build.compiler" value="modern"/>
 
-    <property name="tests.output" value="target" />
+    <property name="tests.output" value="../../target/test_report" />
     <property name="target.output" value="../../deploy" />
 
     <target name="test-all">
@@ -33,18 +33,26 @@
         <echo message="=================================="/>
 
         <ant antfile="make/build.xml" dir="modules/luni" target="test"/>
-        
+
+        <echo message="=================================="/>
+        <echo message="Running tests for module x-net"/>
+        <echo message="=================================="/>
+
+        <ant antfile="build.xml" dir="modules/x-net" target="test-run" />
+
         <echo message="=================================="/>
         <echo message="Running tests for module security2"/>
         <echo message="=================================="/>
 
         <ant antfile="make/build.xml" dir="modules/security2" target="test.classlib"/>
 
-        <echo message="=================================="/>
-        <echo message="Running tests for module x-net"/>
-        <echo message="=================================="/>
 
-        <ant antfile="build.xml" dir="modules/x-net" target="test" />
+		<junitreport todir="target/test_report">
+		  <fileset dir="target/test_report">
+		    <include name="TEST*-*.xml"/>
+		  </fileset>
+		  <report format="frames" todir="target/test_report/html"/>
+		</junitreport>
 
     </target>
 
