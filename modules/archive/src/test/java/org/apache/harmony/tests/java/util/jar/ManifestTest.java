@@ -34,7 +34,6 @@ public class ManifestTest extends TestCase {
 			fail("Assert 0: Should have thrown IOException");
 		} catch (IOException e) {
 			// expected
-			e.printStackTrace();
 		}
 	}
 
