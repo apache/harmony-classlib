@@ -15,23 +15,23 @@
 
 package org.apache.harmony.tests.java.util.jar;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.jar.Attributes;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+public class AttributesName extends TestCase {
+
+	/**
+	 * @tests java.util.jar.Attributes.Name#Name(java.lang.String)
+	 */
+	public void test_AttributesName_Constructor() {
+		// Regression for HARMONY-85
+		try {
+			new Attributes.Name(
+					"01234567890123456789012345678901234567890123456789012345678901234567890");
+			fail("Assert 0: should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.util.jar");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(AttributesName.class);
-		suite.addTestSuite(ManifestTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }

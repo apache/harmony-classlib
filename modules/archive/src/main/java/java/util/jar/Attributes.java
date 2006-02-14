@@ -84,7 +84,7 @@ public class Attributes implements Cloneable, Map {
 
 		public Name(String s) {
 			int i = s.length();
-			if (i == 0)
+			if (i == 0 || i > 70)
 				throw new IllegalArgumentException();
 			for (; --i >= 0;) {
 				char ch = s.charAt(i);
