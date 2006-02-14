@@ -403,8 +403,12 @@ public abstract class CharsetDecoder {
 			if (action == CodingErrorAction.IGNORE) {
 				continue;
 			} else if (action == CodingErrorAction.REPLACE) {
-				out.put(replace);
-				continue;
+				if (out.remaining() < replace.length()) {
+					result = CoderResult.OVERFLOW;
+				} else {
+					out.put(replace);
+					continue;
+				}
 			}
 			break;
 		}
