@@ -15,22 +15,18 @@
 
 package org.apache.harmony.tests.java.util.zip;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.zip.Inflater;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
-	}
+public class InflaterTest extends TestCase {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.util.zip");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(InflaterTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
+	/**
+	 * @tests java.util.zip.Inflater#needsDictionary()
+	 */
+    public void test_needsDictionary () {
+    	// Regression test for HARMONY-86
+        Inflater inf = new Inflater();
+        assertFalse(inf.needsDictionary());
+    } 
 }

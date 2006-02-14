@@ -208,8 +208,6 @@ public class Inflater {
 	 * @see #setDictionary(byte[], int, int)
 	 */
 	public synchronized boolean needsDictionary() {
-		if (inputBuffer == null)
-			throw new IllegalStateException();
 		return needsDictionary;
 	}
 
