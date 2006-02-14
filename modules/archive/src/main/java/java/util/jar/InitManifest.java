@@ -190,7 +190,12 @@ class InitManifest {
 					if (blankline)
 						addLine(pos, lines);
 					return lines.size() != 0;
-				}
+				} else {
+					if (inbufCount == inbuf.length && in.available() == 0) {
+						/* KA000 = "line too long" */
+						throw new IOException(Msg.getString("KA000"));
+					}
+				} 
 				inbufPos = 0;
 			}
 			next = inbuf[inbufPos++];
