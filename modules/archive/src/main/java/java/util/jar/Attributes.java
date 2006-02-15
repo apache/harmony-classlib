@@ -229,14 +229,14 @@ public class Attributes implements Cloneable, Map {
 	 *                String
 	 */
 	public Object put(Object key, Object value) {
-		return map.put(key, value);
+		return map.put((Name)key, (String)value);
 	}
 
 	/**
 	 * putAll method comment.
 	 */
 	public void putAll(Map attrib) {
-		this.map.putAll(attrib);
+		this.map.putAll((Attributes)attrib);
 	}
 
 	/**
