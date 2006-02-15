@@ -23,7 +23,7 @@ import java.util.Set;
 
 /**
  * The Attributes class is used to store values for Manifest entries. Attributes
- * keys are genrerally instances of Attributes.Name. Values associated with
+ * keys are generally instances of Attributes.Name. Values associated with
  * Attributes keys are of type String.
  */
 public class Attributes implements Cloneable, Map {
@@ -216,12 +216,12 @@ public class Attributes implements Cloneable, Map {
 	}
 
 	/**
-	 * Store value value in this Attributes and associate it with key key.
+	 * Store value in this Attributes and associate it with key.
 	 * 
 	 * @param key
 	 *            The key to associate with value.
 	 * @param value
-	 *            The value to sotre in this Attributes
+	 *            The value to store in this Attributes
 	 * @return The value being stored
 	 * 
 	 * @exception ClassCastException
@@ -233,10 +233,13 @@ public class Attributes implements Cloneable, Map {
 	}
 
 	/**
-	 * putAll method comment.
+	 * Store all the key.value pairs in the argument in this Attributes.
+	 * 
+	 * @param attrib
+	 *            the associations to store (must be of type Attributes).
 	 */
 	public void putAll(Map attrib) {
-		this.map.putAll((Attributes)attrib);
+		this.map.putAll((Attributes) attrib);
 	}
 
 	/**
@@ -244,7 +247,7 @@ public class Attributes implements Cloneable, Map {
 	 * 
 	 * @param key
 	 *            The key to remove
-	 * @return the valuse associated with the removed key, null if not present.
+	 * @return the values associated with the removed key, null if not present.
 	 */
 	public Object remove(Object key) {
 		return map.remove(key);
@@ -260,7 +263,7 @@ public class Attributes implements Cloneable, Map {
 	}
 
 	/**
-	 * Returns a Colletion of all the values present in this Attributes.
+	 * Returns a Collection of all the values present in this Attributes.
 	 * 
 	 * @return a Collection of all values present
 	 */
