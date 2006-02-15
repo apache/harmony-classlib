@@ -19,7 +19,7 @@ import java.util.jar.Attributes;
 
 import junit.framework.TestCase;
 
-public class AttributesName extends TestCase {
+public class AttributesNameTest extends TestCase {
 
 	/**
 	 * @tests java.util.jar.Attributes.Name#Name(java.lang.String)

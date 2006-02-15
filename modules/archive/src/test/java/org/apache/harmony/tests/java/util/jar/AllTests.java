@@ -28,8 +28,8 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.apache.harmony.tests.java.util.jar");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(AttributesName.class);
 		suite.addTestSuite(ManifestTest.class);
+		suite.addTestSuite(AttributesNameTest.class);
 		//$JUnit-END$
 		return suite;
 	}
