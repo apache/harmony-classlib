@@ -71,14 +71,17 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
 	/**
 	 * Closes the current ZipEntry if any. Closes the underlying output stream.
+	 * If the stream is already closed this method does nothing.
 	 * 
 	 * @exception IOException
 	 *                If an error occurs closing the stream
 	 */
 	public void close() throws IOException {
-		finish();
-		out.close();
-		out = null;
+		if (out != null) {
+			finish();
+			out.close();
+			out = null;
+		}
 	}
 
 	/**
