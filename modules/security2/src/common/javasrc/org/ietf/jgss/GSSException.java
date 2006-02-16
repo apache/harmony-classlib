@@ -25,6 +25,8 @@ package org.ietf.jgss;
  */
 public class GSSException extends Exception {
 
+    private static final long serialVersionUID = -2706218945227726672L;
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -144,21 +146,25 @@ public class GSSException extends Exception {
             "DUPLICATE TOKEN", "OLD TOKEN", "UNSEQ TOKEN", "GAP TOKEN" };
 
     //major code
-    private int majorCode = FAILURE;
+    private int major = FAILURE;
 
     //minor code
-    private int minorCode /*= 0*/;
+    private int minor;
 
     //minor string
-    private String minorString;
+    private String minorMessage;
+
+    //major string
+    private String majorString;
 
     /**
      * @com.intel.drl.spec_ref
      */
     public GSSException(int majorCode) {
         if (majorCode > 0 && majorCode <= 22) {
-            this.majorCode = majorCode;
+            this.major = majorCode;
         }
+        this.majorString = errorMessages[major - 1];
     }
 
     /**
@@ -166,39 +172,39 @@ public class GSSException extends Exception {
      */
     public GSSException(int majorCode, int minorCode, String minorString) {
         this(majorCode);
-        this.minorCode = minorCode;
-        this.minorString = minorString;
+        this.minor = minorCode;
+        this.minorMessage = minorString;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public int getMajor() {
-        return majorCode;
+        return major;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public String getMajorString() {
-        return errorMessages[majorCode - 1];
+        return majorString;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public int getMinor() {
-        return minorCode;
+        return minor;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public String getMinorString() {
-        if (minorCode == 0) {
+        if (minor == 0) {
             return null;
         }
-        return minorString;
+        return minorMessage;
     }
 
     /**
@@ -217,8 +223,8 @@ public class GSSException extends Exception {
      * @com.intel.drl.spec_ref
      */
     public void setMinor(int minorCode, String minorString) {
-        this.minorCode = minorCode;
-        this.minorString = minorString;
+        this.minor = minorCode;
+        this.minorMessage = minorString;
     }
 
     /**
