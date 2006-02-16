@@ -1,0 +1,10 @@
+LIBRARY	HYAUTH
+
+SECTIONS
+	.data	READ WRITE
+	.text	EXECUTE READ
+
+EXPORTS
+	Java_org_apache_harmony_security_x_security_auth_module_NTSystem_free
+	Java_org_apache_harmony_security_x_security_auth_module_NTSystem_initNatives
+	Java_org_apache_harmony_security_x_security_auth_module_NTSystem_load
