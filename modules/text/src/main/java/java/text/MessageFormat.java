@@ -532,7 +532,7 @@ public class MessageFormat extends Format {
 			return new Object[0];
 		ParsePosition internalPos = new ParsePosition(0);
 		int offset = position.getIndex();
-		Object[] result = new Object[10];
+		Object[] result = new Object[maxOffset + 1];
 		for (int i = 0; i <= maxOffset; i++) {
 			String sub = strings[i];
 			if (!string.startsWith(sub, offset)) {

@@ -16,13 +16,26 @@
 package org.apache.harmony.tests.java.text;
 
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
 public class MessageFormatTest extends TestCase {
 
 	/**
-	 * @tests java.textMessageFormat#toPattern()
+	 * @tests java.text.MessageFormat#parse(java.lang.String)
+	 */
+	public void test_parse() throws ParseException {
+		// Regression for HARMONY-63
+		MessageFormat mf = new MessageFormat("{0,number,#,####}", Locale.US);
+		Object[] res = mf.parse("1,00,00");
+		assertEquals("Assert 0: incorrect size of parsed data ", 1, res.length);
+		assertEquals("Assert 1: parsed value incorrectly", new Long(10000), (Long)res[0]);
+	} 
+    
+	/**
+	 * @tests java.text.MessageFormat#toPattern()
 	 */
 	public void test_toPattern() {
 		// Regression for HARMONY-59
