@@ -227,8 +227,9 @@ public abstract class CharsetDecoder {
 		reset();
 		int length = (int) (in.remaining() * averChars);
 		CharBuffer output = CharBuffer.allocate(length);
+		CoderResult result = null;
 		while (true) {
-			CoderResult result = decode(in, output, false);
+			result = decode(in, output, false);
 			if (result.isUnderflow()) {
 				break;
 			} else if (result.isMalformed()
@@ -240,7 +241,14 @@ public abstract class CharsetDecoder {
 			}
 			output = allocateMore(output);
 		}
-		decode(in, output, true);
+		result = decode(in, output, true);
+		if (result.isMalformed()
+				&& malformAction == CodingErrorAction.REPORT) {
+			throw new MalformedInputException(result.length());
+		} else if (result.isUnmappable()
+				&& unmapAction == CodingErrorAction.REPORT) {
+			throw new UnmappableCharacterException(result.length());
+		}
 		while (flush(output) != CoderResult.UNDERFLOW) {
 			output = allocateMore(output);
 		}

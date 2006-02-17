@@ -21,6 +21,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.MalformedInputException;
 
 import junit.framework.TestCase;
 
@@ -49,5 +50,17 @@ public class CharsetDecoderTest extends TestCase {
 
 		charbuf = Charset.forName("UTF-16LE").decode(buf);
 		assertEquals("Assert 2: charset UTF16LE", 0, charbuf.length());
+		
+		// Regression for HARMONY-99
+		CharsetDecoder decoder2 = Charset.forName("UTF-16").newDecoder();
+		decoder2.onMalformedInput(CodingErrorAction.REPORT);
+		decoder2.onUnmappableCharacter(CodingErrorAction.REPORT);
+		ByteBuffer in = ByteBuffer.wrap(new byte[] { 109, 97, 109 });
+		try {
+			decoder2.decode(in);
+			fail("Assert 3: MalformedInputException should have thrown");
+		} catch (MalformedInputException e) {
+			//expected
+		} 
 	}
 }
