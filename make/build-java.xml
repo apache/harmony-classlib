@@ -265,7 +265,12 @@
             </fileset>
         </copy>
 
-    	
+        <copy todir="${target.output}/jre/lib/security" overwrite="yes">
+             <fileset dir="${depends.files}">
+                 <include name="java.policy" />
+             </fileset>
+         </copy>
+   	
         <copy todir="${target.output}/jre/lib/security" overwrite="yes">
             <fileset dir="../modules/security/src/java.home/lib/security/">
                 <include name="drl.policy" />
