@@ -51,7 +51,7 @@
         <javac destdir="${tests.output}" source="1.4" target="1.4" debug="on">
             <src>
                 <pathelement location="src/test/java"/>
-                <pathelement location="../security2/test/common/unit"/>
+                <pathelement location="../security/test/common/unit"/>
             </src>
 
             <include name="javax/net/**/*Test*.java" />
