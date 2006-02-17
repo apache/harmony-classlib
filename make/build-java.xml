@@ -122,7 +122,7 @@
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
-        <!-- Create x-net (javax.net from security2) jar -->
+        <!-- Create x-nets jar -->
         <jar destfile="${components.output}/x-net.jar" manifest="x-net/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
                 includesfile="${components.patternsets}/x-net.txt"
@@ -174,8 +174,8 @@
             <src path="luni/src/main/java" />
             <src path="nio/src/main/java" />
             <src path="nio_char/src/main/java" />
-            <src path="security2/src/common/javasrc" />
-            <src path="security2/src/windows/javasrc" />
+            <src path="security/src/common/javasrc" />
+            <src path="security/src/windows/javasrc" />
 
             <src path="x-net/src/main/java/" />
 
@@ -209,15 +209,6 @@
                 <exclude name="**/*.java" />
             </fileset>
             <fileset dir="nio_char/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-<!--  gmj : HACK :
-            <fileset dir="security/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
--->
-
-            <fileset dir="security/src">
                 <exclude name="**/*.java" />
             </fileset>
 
@@ -274,18 +265,9 @@
             </fileset>
         </copy>
 
-<!--  gmj : HACK : - use from security2
-
-        <copy todir="${target.output}/jre/lib/security" overwrite="yes">
-            <fileset dir="${depends.files}">
-                <include name="java.policy" />
-                <include name="java.security" />
-            </fileset>
-        </copy>
- -->
     	
         <copy todir="${target.output}/jre/lib/security" overwrite="yes">
-            <fileset dir="../modules/security2/src/java.home/lib/security/">
+            <fileset dir="../modules/security/src/java.home/lib/security/">
                 <include name="drl.policy" />
                 <include name="java.security" />
             </fileset>
