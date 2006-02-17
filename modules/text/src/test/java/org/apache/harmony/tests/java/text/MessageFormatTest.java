@@ -24,6 +24,47 @@ import junit.framework.TestCase;
 public class MessageFormatTest extends TestCase {
 
 	/**
+	 * @tests java.text.MessageFormat(java.util.Locale)
+	 */
+	public void test_ConstructorLjava_util_Locale() {
+		// Regression for HARMONY-65
+		try {
+			new MessageFormat("{0,number,integer", Locale.US);
+			fail("Assert 0: Failed to detect unmatched brackets.");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+	}
+
+	/**
+	 * @tests java.text.MessageFormat(java.lang.String)
+	 */
+	public void test_ConstructorLjava_lang_String() {
+		// Regression for HARMONY-65
+		try {
+			new MessageFormat("{0,number,integer");
+			fail("Assert 0: Failed to detect unmatched brackets.");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+	}
+
+	/**
+	 * @tests java.text.MessageFormat#applyPattern(java.lang.String)
+	 */
+    public void test_applyPatternLjava_lang_String() {
+		// Regression for HARMONY-65
+		MessageFormat mf = new MessageFormat("{0,number,integer}");
+		String badpattern = "{0,number,#";
+		try {
+			mf.applyPattern(badpattern);
+			fail("Assert 0: Failed to detect unmatched brackets.");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+	} 
+
+	/**
 	 * @tests java.text.MessageFormat#parse(java.lang.String)
 	 */
 	public void test_parse() throws ParseException {

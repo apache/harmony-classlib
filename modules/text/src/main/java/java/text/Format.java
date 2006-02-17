@@ -222,8 +222,8 @@ public abstract class Format implements Serializable, Cloneable {
 			}
 			buffer.append(ch);
 		}
-		position.setIndex(index);
-		return false;
+		// Unmatched braces in the pattern
+		throw new IllegalArgumentException(Msg.getString("K0346"));
 	}
 
 	/**

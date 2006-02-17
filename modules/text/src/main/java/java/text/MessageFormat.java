@@ -199,6 +199,9 @@ public class MessageFormat extends Format {
 	 *                by this Format
 	 */
 	public AttributedCharacterIterator formatToCharacterIterator(Object object) {
+		if (object == null)
+			throw new NullPointerException();
+
 		StringBuffer buffer = new StringBuffer();
 		Vector fields = new Vector();
 
@@ -532,7 +535,7 @@ public class MessageFormat extends Format {
 			return new Object[0];
 		ParsePosition internalPos = new ParsePosition(0);
 		int offset = position.getIndex();
-		Object[] result = new Object[maxOffset + 1];
+		Object[] result = new Object[maxArgumentIndex + 1];
 		for (int i = 0; i <= maxOffset; i++) {
 			String sub = strings[i];
 			if (!string.startsWith(sub, offset)) {
@@ -688,7 +691,11 @@ public class MessageFormat extends Format {
 			return NumberFormat.getIntegerInstance(locale);
 		}
 		// choice
-		Format.upToWithQuotes(string, position, buffer, '}', '{');
+		try {
+			Format.upToWithQuotes(string, position, buffer, '}', '{');
+		} catch (IllegalArgumentException e) {
+			// ignored
+		}
 		return new ChoiceFormat(buffer.toString());
 	}
 
@@ -711,7 +718,11 @@ public class MessageFormat extends Format {
 	 *            an array of Format
 	 */
 	public void setFormats(Format[] formats) {
-		this.formats = (Format[]) formats.clone();
+		int min = this.formats.length;
+		if (formats.length < min)
+			min = formats.length;
+		for (int i=0; i<min; i++)
+			this.formats[i] = formats[i];
 	}
 
 	/**
@@ -927,14 +938,21 @@ public class MessageFormat extends Format {
 		}
 
 		/**
-		 * serizalization method resolve instances to the constant
+		 * serialization method resolve instances to the constant
 		 * MessageFormat.Field values
 		 */
 		protected Object readResolve() throws InvalidObjectException {
-			if (this.equals(ARGUMENT))
+			String name = this.getName();
+			if (name == null)
+				// "Not a valid {0}, subclass should override readResolve()"
+				throw new InvalidObjectException(
+						Msg.getString("K0344", "MessageFormat.Field"));
+
+			if (name.equals(ARGUMENT.getName()))
 				return ARGUMENT;
-			throw new InvalidObjectException(Msg
-					.getString("K000d"));
+
+			throw new InvalidObjectException(
+					Msg.getString("K0344", "MessageFormat.Field"));
 		}
 	}
 
