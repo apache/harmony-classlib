@@ -98,9 +98,9 @@
             <arg line="all" />
         </exec>
     	
-       <!-- gmj : HACK : the binary for security2 -->
+       <!-- invoke the build for the security module native code -->
 
-    	<ant dir="../modules/security2/"  antfile="make/build.xml" />
+    	<ant dir="../modules/security/"  antfile="make/build.xml" />
 
     </target>
 
@@ -164,12 +164,12 @@
             </fileset>
         </copy>
     	
-    	<!-- gmj : HACK :  copy the binaries for security2 -->
+    	<!-- Copy the binaries for security -->
     	
         <copy todir="${target.output}/jre/bin" overwrite="yes"
         	    verbose="true" >
         	
-        	<fileset dir="../modules/security2/build/deploy/jre/bin/"
+        	<fileset dir="../modules/security/build/deploy/jre/bin/"
              	includes="*${shlib.suffix}" />
         </copy>
 
