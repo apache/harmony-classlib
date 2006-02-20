@@ -397,9 +397,10 @@ public class Date implements Serializable, Cloneable, Comparable {
 				int digit = Integer.parseInt(buffer.toString());
 				buffer.setLength(0);
 				if (sign == '+' || sign == '-') {
-					if (year != -1 && zoneOffset == 0) {
+					if (zoneOffset == 0) {
 						zone = true;
 						zoneOffset = sign == '-' ? -digit : digit;
+						sign = 0;
 					} else
 						throw new IllegalArgumentException();
 				} else if (digit >= 70) {
