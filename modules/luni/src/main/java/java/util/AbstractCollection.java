@@ -275,8 +275,13 @@ public abstract class AbstractCollection implements Collection {
 		buffer.append('[');
 		Iterator it = iterator();
 		while (it.hasNext()) {
-			buffer.append(it.next());
-			buffer.append(", "); //$NON-NLS-1$
+			Object next = it.next();
+			if (next != this) {
+				buffer.append(next);
+			} else {
+				buffer.append("(this Collection)");
+			}
+			buffer.append(", ");
 		}
 		// Remove the trailing ", "
 		if (buffer.length() > 1)
