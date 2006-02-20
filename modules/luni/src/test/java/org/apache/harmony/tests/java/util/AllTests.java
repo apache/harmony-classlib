@@ -28,8 +28,9 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.apache.harmony.tests.java.util");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(ArraysTest.class);
 		suite.addTestSuite(CollectionsTest.class);
+		suite.addTestSuite(BitSetTest.class);
+		suite.addTestSuite(ArraysTest.class);
 		suite.addTestSuite(IdentityHashMapTest.class);
 		//$JUnit-END$
 		return suite;

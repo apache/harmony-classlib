@@ -18,6 +18,8 @@ package java.util;
 
 import java.io.Serializable;
 
+import com.ibm.oti.util.Msg;
+
 /**
  * The BitSet class implements a bit field. Each element in a BitSet can be
  * on(1) or off(0). A BitSet is created with a given size and grows when this
@@ -88,9 +90,13 @@ public class BitSet implements Serializable, Cloneable {
 	 * @return A copy of this BitSet.
 	 */
 	public Object clone() {
-		BitSet bs = new BitSet(this.size());
-		System.arraycopy(bits, 0, bs.bits, 0, bits.length);
-		return bs;
+		try {
+			BitSet clone = (BitSet) super.clone();
+			clone.bits = (long[]) bits.clone();
+			return clone;
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -187,10 +193,11 @@ public class BitSet implements Serializable, Cloneable {
 		if (pos >= 0) {
 			if (pos < bits.length * ELM_SIZE)
 				return (bits[pos / ELM_SIZE] & (1L << (pos % ELM_SIZE))) != 0;
-			return false;
+			else
+				return false;
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
-					.getString("K0006")); //$NON-NLS-1$
+			// Negative index specified
+			throw new IndexOutOfBoundsException(Msg.getString("K0006"));
 	}
 
 	/**
@@ -209,14 +216,17 @@ public class BitSet implements Serializable, Cloneable {
 	 * @see #get(int)
 	 */
 	public BitSet get(int pos1, int pos2) {
-		if (pos1 >= 0 && pos2 > 0 && pos2 > pos1) {
-			if (pos2 >= bits.length * ELM_SIZE)
-				growBits(pos2);
+		if (pos1 >= 0 && pos2 >= 0 && pos2 >= pos1) {
+			int last = (bits.length * ELM_SIZE);
+			if (pos1 >= last || pos1 == pos2)
+				return new BitSet(0);
+			if (pos2 > last)
+				pos2 = last;
 
 			int idx1 = pos1 / ELM_SIZE;
-			int idx2 = pos2 / ELM_SIZE;
+			int idx2 = (pos2 - 1) / ELM_SIZE;
 			long factor1 = (~0L) << (pos1 % ELM_SIZE);
-			long factor2 = Long.MAX_VALUE >> (ELM_SIZE - (pos2 % ELM_SIZE) - 1);
+			long factor2 = (~0L) >>> (ELM_SIZE - (pos2 % ELM_SIZE));
 
 			if (idx1 == idx2) {
 				long result = (bits[idx1] & (factor1 & factor2)) >>> (pos1 % ELM_SIZE);
@@ -249,8 +259,7 @@ public class BitSet implements Serializable, Cloneable {
 				return new BitSet(newbits);
 			}
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
-					.getString("K0006")); //$NON-NLS-1$
+			throw new IndexOutOfBoundsException(Msg.getString("K0006"));
 	}
 
 	/**
@@ -309,14 +318,16 @@ public class BitSet implements Serializable, Cloneable {
 	 * @see #set(int)
 	 */
 	public void set(int pos1, int pos2) {
-		if (pos1 >= 0 && pos2 > 0 && pos2 > pos1) {
+		if (pos1 >= 0 && pos2 >= 0 && pos2 >= pos1) {
+			if (pos1 == pos2)
+				return;
 			if (pos2 >= bits.length * ELM_SIZE)
 				growBits(pos2);
 
 			int idx1 = pos1 / ELM_SIZE;
-			int idx2 = pos2 / ELM_SIZE;
+			int idx2 = (pos2 - 1) / ELM_SIZE;
 			long factor1 = (~0L) << (pos1 % ELM_SIZE);
-			long factor2 = Long.MAX_VALUE >> (ELM_SIZE - (pos2 % ELM_SIZE) - 1);
+			long factor2 = (~0L) >>> (ELM_SIZE - (pos2 % ELM_SIZE));
 
 			if (idx1 == idx2)
 				bits[idx1] |= (factor1 & factor2);
@@ -327,8 +338,7 @@ public class BitSet implements Serializable, Cloneable {
 					bits[i] |= (~0L);
 			}
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
-					.getString("K0006")); //$NON-NLS-1$
+			throw new IndexOutOfBoundsException(Msg.getString("K0006"));
 	}
 
 	/**
@@ -380,11 +390,9 @@ public class BitSet implements Serializable, Cloneable {
 		if (pos >= 0) {
 			if (pos < bits.length * ELM_SIZE)
 				bits[pos / ELM_SIZE] &= ~(1L << (pos % ELM_SIZE));
-			else
-				growBits(pos); // Bit is cleared for free if we have to grow
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
-					.getString("K0006")); //$NON-NLS-1$
+			// Negative index specified
+			throw new IndexOutOfBoundsException(Msg.getString("K0006"));
 	}
 
 	/**
@@ -402,14 +410,17 @@ public class BitSet implements Serializable, Cloneable {
 	 * @see #clear(int)
 	 */
 	public void clear(int pos1, int pos2) {
-		if (pos1 >= 0 && pos2 > 0 && pos2 > pos1) {
-			if (pos2 >= bits.length * ELM_SIZE)
-				growBits(pos2);
+		if (pos1 >= 0 && pos2 >= 0 && pos2 >= pos1) {
+			int last = (bits.length * ELM_SIZE);
+			if (pos1 >= last || pos1 == pos2)
+				return;
+			if (pos2 > last)
+				pos2 = last;
 
 			int idx1 = pos1 / ELM_SIZE;
-			int idx2 = pos2 / ELM_SIZE;
+			int idx2 = (pos2 - 1) / ELM_SIZE;
 			long factor1 = (~0L) << (pos1 % ELM_SIZE);
-			long factor2 = Long.MAX_VALUE >> (ELM_SIZE - (pos2 % ELM_SIZE) - 1);
+			long factor2 = (~0L) >>> (ELM_SIZE - (pos2 % ELM_SIZE));
 
 			if (idx1 == idx2)
 				bits[idx1] &= ~(factor1 & factor2);
@@ -420,9 +431,8 @@ public class BitSet implements Serializable, Cloneable {
 					bits[i] = 0L;
 			}
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
-					.getString("K0006")); //$NON-NLS-1$
-	}
+			throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+}
 
 	/**
 	 * Flips the bit at index pos. Grows the BitSet if pos > size.
@@ -459,14 +469,16 @@ public class BitSet implements Serializable, Cloneable {
 	 * @see #flip(int)
 	 */
 	public void flip(int pos1, int pos2) {
-		if (pos1 >= 0 && pos2 > 0 && pos2 > pos1) {
+		if (pos1 >= 0 && pos2 >= 0 && pos2 >= pos1) {
+			if (pos1 == pos2)
+				return;
 			if (pos2 >= bits.length * ELM_SIZE)
 				growBits(pos2);
 
 			int idx1 = pos1 / ELM_SIZE;
-			int idx2 = pos2 / ELM_SIZE;
+			int idx2 = (pos2 - 1) / ELM_SIZE;
 			long factor1 = (~0L) << (pos1 % ELM_SIZE);
-			long factor2 = Long.MAX_VALUE >> (ELM_SIZE - (pos2 % ELM_SIZE) - 1);
+			long factor2 = (~0L) >>> (ELM_SIZE - (pos2 % ELM_SIZE));
 
 			if (idx1 == idx2)
 				bits[idx1] ^= (factor1 & factor2);
@@ -477,8 +489,7 @@ public class BitSet implements Serializable, Cloneable {
 					bits[i] ^= (~0L);
 			}
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
-					.getString("K0006")); //$NON-NLS-1$
+			throw new IndexOutOfBoundsException(Msg.getString("K0006"));
 	}
 
 	/**
