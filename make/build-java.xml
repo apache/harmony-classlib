@@ -287,10 +287,7 @@
     <target name="clean-layout">
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${target.output}">
-                <include name="**/jre/bin/harmony*.properties" />
-                <include name="**/lib/*.properties" />
-                <include name="**/lib/boot/*" />
-                <include name="**/lib/security/*" />
+                <exclude name="jre/bin/default/**" />
             </fileset>
         </delete>
     </target>
