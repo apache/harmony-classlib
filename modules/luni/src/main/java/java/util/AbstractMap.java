@@ -326,10 +326,20 @@ public abstract class AbstractMap implements Map {
 		Iterator it = entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
-			buffer.append(entry.getKey());
+			Object key = entry.getKey();
+			if (key != this) {
+				buffer.append(key);
+			} else {
+				buffer.append("(this Map)");
+			}
 			buffer.append('=');
-			buffer.append(entry.getValue());
-			buffer.append(", "); //$NON-NLS-1$
+			Object value = entry.getValue();
+			if (value != this) {
+				buffer.append(value);
+			} else {
+				buffer.append("(this Map)");
+			}
+			buffer.append(", ");
 		}
 		// Remove the trailing ", "
 		if (buffer.length() > 1)
