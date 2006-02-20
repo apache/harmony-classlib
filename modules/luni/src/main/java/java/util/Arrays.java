@@ -29,7 +29,7 @@ public class Arrays {
 
 		private static final long serialVersionUID = -2764017481108945198L;
 
-		private Object[] a;
+		private final Object[] a;
 
 		ArrayList(Object[] storage) {
 			if (storage == null) {

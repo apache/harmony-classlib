@@ -139,15 +139,15 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	}
 
 	private static class SubAbstractList extends AbstractList {
-		private AbstractList fullList;
+		private final AbstractList fullList;
 
 		private int offset, size;
 
 		private static final class SubAbstractListIterator implements
 				ListIterator {
-			private SubAbstractList subList;
+			private final SubAbstractList subList;
 
-			private ListIterator iterator;
+			private final ListIterator iterator;
 
 			private int start, end;
 

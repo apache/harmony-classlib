@@ -51,7 +51,7 @@ public class LinkedList extends AbstractSequentialList implements List,
 	private static final class LinkIterator implements ListIterator {
 		int pos, expectedModCount;
 
-		LinkedList list;
+		final LinkedList list;
 
 		Link link, lastLink;
 
