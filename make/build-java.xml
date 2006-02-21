@@ -34,7 +34,7 @@
     <property name="build.output" location="../bin" />
     <property name="depends.jars" location="../depends/jars" />
     <property name="depends.files" location="../depends/files" />
-    <property name="components.patternsets" location="../depends/patternsets" />
+    <property name="components.patternsets" location="../make/patternsets" />
     <property name="components.output" location="../components" />
     <property name="target.output" location="../deploy" />
 
