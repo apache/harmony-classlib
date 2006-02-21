@@ -23,17 +23,15 @@ EXENAME=../java# declaration
 CFLAGS=-O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include $(VMDEBUG)
 
 
-BUILDFILES1 = main.o cmain.o launcher_copyright.o strbuf.o libhlp.o  
- 
-MDLLIBFILES1 = ../libhyprt.so ../libhythr.so ../libhysig.so
+BUILDFILES = main.o cmain.o launcher_copyright.o strbuf.o libhlp.o  
 
-all: \
-	$(EXENAME)
+MDLLIBFILES = ../libhyprt.so ../libhythr.so ../libhysig.so
 
-$(EXENAME):\
-	$(BUILDFILES1) $(MDLLIBFILES1) 
+all: $(EXENAME)
+
+$(EXENAME): $(BUILDFILES) $(MDLLIBFILES) 
 	$(CC) -L. -L.. -L../lib $(VMLINK) \
-	$(BUILDFILES1) $(VIRTFILES1) -Xlinker --start-group \
+	$(BUILDFILES) $(VIRTFILES1) -Xlinker --start-group \
 	-lhyprt \
 	-lhythr \
 	-Xlinker --end-group \

@@ -28,21 +28,20 @@ LIBPATH=../lib/# declaration
 
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../archive -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
 
+BUILDFILES = \
+	archive_copyright.o jclcrc32.o zip.o adler32.o inflater.o \
+	jarfile.o deflater.o archiveglob.o
 
+MDLLIBFILES = \
+	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
+	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-BUILDFILES1 = archive_copyright.o jclcrc32.o zip.o adler32.o inflater.o
-BUILDFILES2 = jarfile.o deflater.o archiveglob.o
+all: $(DLLNAME)
 
-MDLLIBFILES1 = ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a
-MDLLIBFILES2 = ../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
-
-all: \
-	 $(DLLNAME)
-
-$(DLLNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) $(MDLLIBFILES1) $(MDLLIBFILES2) 
-	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) -Xlinker --start-group \
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) 
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
+	$(BUILDFILES) -Xlinker --start-group \
 	-lhysig \
 	-lhyzip \
 	-lhyzlib \

@@ -22,20 +22,14 @@ LIBNAME=libhycommon.a# declaration
 
 LIBPATH=../lib/# declaration
 
-BUILDFILES1 = libglob.o iohelp.o utf8encode.o utf8decode.o
-
-MDLLIBFILES1 = ../libjsig.so ../lib/libhyzip.a ../libhyzlib23.so ../lib/libhycommon.a ../lib/libhypool.a
-MDLLIBFILES2 = ../lib/libhyfdlibm.a ../libhythr23.so ../libvmi.so
+BUILDFILES = libglob.o iohelp.o utf8encode.o utf8decode.o
 
 CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
 
-
 all: $(LIBPATH)$(LIBNAME)
 
-$(LIBPATH)$(LIBNAME):\
-	$(BUILDFILES1) 
-	$(AR) rcv $(LIBPATH)$(LIBNAME) \
-	$(BUILDFILES1) 
+$(LIBPATH)$(LIBNAME): $(BUILDFILES) 
+	$(AR) rcv $(LIBPATH)$(LIBNAME) $(BUILDFILES)
 
 clean:
 	-rm -f *.o

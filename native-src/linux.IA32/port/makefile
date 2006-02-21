@@ -29,25 +29,23 @@ LIBPATH=../lib/# declaration
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -DHYPORT_LIBRARY_DEFINE -I../include  $(VMDEBUG)
 
 
-BUILDFILES1 = port_copyright.o hycpu.o hyerror.o hyerrorhelpers.o hyexit.o
-BUILDFILES2 = hyfile.o hyfiletext.o hygp.o hyipcmutex.o hymem.o
-BUILDFILES3 = hymmap.o hynls.o hynlshelpers.o hyosdump.o hyport.o
-BUILDFILES4 = hyportcontrol.o hyportptb.o hysharedhelper.o hyshmem.o hyshsem.o
-BUILDFILES5 = hysignal.o hysl.o hysock.o hystr.o hystrftime.o
-BUILDFILES6 = hystsl.o hysysinfo.o hytime.o hytlshelpers.o hytty.o
-BUILDFILES7 = hyvmem.o
+BUILDFILES = \
+	port_copyright.o hycpu.o hyerror.o hyerrorhelpers.o hyexit.o \
+	hyfile.o hyfiletext.o hygp.o hyipcmutex.o hymem.o \
+	hymmap.o hynls.o hynlshelpers.o hyosdump.o hyport.o \
+	hyportcontrol.o hyportptb.o hysharedhelper.o hyshmem.o hyshsem.o \
+	hysignal.o hysl.o hysock.o hystr.o hystrftime.o \
+	hystsl.o hysysinfo.o hytime.o hytlshelpers.o hytty.o \
+	hyvmem.o
 
-MDLLIBFILES1 = ../libhythr.so ../lib/libhycommon.a ../libhysig.so
+MDLLIBFILES = ../libhythr.so ../lib/libhycommon.a ../libhysig.so
 
-all: \
-	 $(DLLNAME)
+all: $(DLLNAME)
 
-$(DLLNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(BUILDFILES4) $(BUILDFILES5) \
-	$(BUILDFILES6) $(BUILDFILES7) $(MDLLIBFILES1) 
-	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(BUILDFILES4) $(BUILDFILES5) \
-	$(BUILDFILES6) $(BUILDFILES7) -Xlinker --start-group \
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) 
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
+	$(BUILDFILES) -Xlinker --start-group \
 	-lhythr \
 	-lhycommon \
 	-lhysig \

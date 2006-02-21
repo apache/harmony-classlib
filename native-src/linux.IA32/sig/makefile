@@ -28,15 +28,14 @@ LIBPATH=../lib/# declaration
 
 CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -I../include $(VMDEBUG)
 
+BUILDFILES = jsig_copyright.o jsiglinux.o jsigunix.o
 
-BUILDFILES1 = jsig_copyright.o jsiglinux.o jsigunix.o
+all: $(DLLNAME)
 
-all: \
-	 $(DLLNAME)
-
-$(DLLNAME): $(BUILDFILES1) 
-	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -o $(DLLNAME) \
-	$(BUILDFILES1) -Xlinker --start-group -Xlinker --end-group  -lc -lm -ldl
+$(DLLNAME): $(BUILDFILES) 
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -o $(DLLNAME) \
+	$(BUILDFILES) -Xlinker --start-group -Xlinker --end-group  -lc -lm -ldl
 
 clean:
 	-rm -f *.o 

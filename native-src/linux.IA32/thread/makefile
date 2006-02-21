@@ -28,22 +28,21 @@ LIBPATH=../lib/# declaration
 
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include  $(VMDEBUG)
 
+BUILDFILES = \
+	thread_copyright.o thrhelp.o thrspinlock.o hythread.o \
+	hythreadinspect.o linuxonexit.o priority.o rasthrsup.o rwmutex.o \
+	thrcreate.o thrdsup.o thrprof.o
 
-BUILDFILES1 = thread_copyright.o thrhelp.o thrspinlock.o hythread.o hythreadinspect.o
-BUILDFILES2 = linuxonexit.o priority.o rasthrsup.o rwmutex.o
-BUILDFILES3 = thrcreate.o thrdsup.o thrprof.o
+SYSLIBFILES = -lpthread
 
-SYSLIBFILES1 = -lpthread
+MDLLIBFILES = ../lib/libhypool.a ../lib/libhycommon.a
 
-MDLLIBFILES1 = ../lib/libhypool.a ../lib/libhycommon.a
+all: $(DLLNAME)
 
-all: \
-	 $(DLLNAME)
-
-$(DLLNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(MDLLIBFILES1) 
-	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -o $(DLLNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(SYSLIBFILES1) -Xlinker --start-group \
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) 
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -o $(DLLNAME) \
+	$(BUILDFILES) $(SYSLIBFILES) -Xlinker --start-group \
 	-lhypool \
 	-lhycommon -Xlinker --end-group  -lc -lm -ldl
 

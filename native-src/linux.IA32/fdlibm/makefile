@@ -22,39 +22,30 @@ LIBNAME=libhyfdlibm.a# declaration
 
 LIBPATH=../lib/# declaration
 
-BUILDFILES1 = e_acos.o e_acosh.o e_asin.o e_atan2.o e_atanh.o
-BUILDFILES2 = e_cosh.o e_exp.o e_fmod.o e_gamma.o e_gamma_r.o
-BUILDFILES3 = e_hypot.o e_j0.o e_j1.o e_jn.o e_lgamma.o
-BUILDFILES4 = e_lgamma_r.o e_log.o e_log10.o e_pow.o e_rem_pio2.o
-BUILDFILES5 = e_remainder.o e_scalb.o e_sinh.o e_sqrt.o k_cos.o
-BUILDFILES6 = k_rem_pio2.o k_sin.o k_standard.o k_tan.o s_asinh.o
-BUILDFILES7 = s_atan.o s_cbrt.o s_ceil.o s_copysign.o s_cos.o
-BUILDFILES8 = s_erf.o s_expm1.o s_fabs.o s_finite.o s_floor.o
-BUILDFILES9 = s_frexp.o s_ilogb.o s_isnan.o s_ldexp.o s_lib_version.o
-BUILDFILES10 = s_log1p.o s_logb.o s_matherr.o s_modf.o s_nextafter.o
-BUILDFILES11 = s_rint.o s_scalbn.o s_signgam.o s_significand.o s_sin.o
-BUILDFILES12 = s_tan.o s_tanh.o w_acos.o w_acosh.o w_asin.o
-BUILDFILES13 = w_atan2.o w_atanh.o w_cosh.o w_exp.o w_fmod.o
-BUILDFILES14 = w_gamma.o w_gamma_r.o w_hypot.o w_j0.o w_j1.o
-BUILDFILES15 = w_jn.o w_lgamma.o w_lgamma_r.o w_log.o w_log10.o
-BUILDFILES16 = w_pow.o w_remainder.o w_scalb.o w_sinh.o w_sqrt.o
+BUILDFILES = \
+	e_acos.o e_acosh.o e_asin.o e_atan2.o e_atanh.o \
+	e_cosh.o e_exp.o e_fmod.o e_gamma.o e_gamma_r.o \
+	e_hypot.o e_j0.o e_j1.o e_jn.o e_lgamma.o \
+	e_lgamma_r.o e_log.o e_log10.o e_pow.o e_rem_pio2.o \
+	e_remainder.o e_scalb.o e_sinh.o e_sqrt.o k_cos.o \
+	k_rem_pio2.o k_sin.o k_standard.o k_tan.o s_asinh.o \
+	s_atan.o s_cbrt.o s_ceil.o s_copysign.o s_cos.o \
+	s_erf.o s_expm1.o s_fabs.o s_finite.o s_floor.o \
+	s_frexp.o s_ilogb.o s_isnan.o s_ldexp.o s_lib_version.o \
+	s_log1p.o s_logb.o s_matherr.o s_modf.o s_nextafter.o \
+	s_rint.o s_scalbn.o s_signgam.o s_significand.o s_sin.o \
+	s_tan.o s_tanh.o w_acos.o w_acosh.o w_asin.o \
+	w_atan2.o w_atanh.o w_cosh.o w_exp.o w_fmod.o \
+	w_gamma.o w_gamma_r.o w_hypot.o w_j0.o w_j1.o \
+	w_jn.o w_lgamma.o w_lgamma_r.o w_log.o w_log10.o \
+	w_pow.o w_remainder.o w_scalb.o w_sinh.o w_sqrt.o
 
 CFLAGS=-O0 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM -DHY_PLATFORM_DOUBLE_ORDER -I../include -ffloat-store $(VMDEBUG)
 
-
-
 all: $(LIBPATH)$(LIBNAME)
 
-$(LIBPATH)$(LIBNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(BUILDFILES4) $(BUILDFILES5) \
-	$(BUILDFILES6) $(BUILDFILES7) $(BUILDFILES8) $(BUILDFILES9) $(BUILDFILES10) \
-	$(BUILDFILES11) $(BUILDFILES12) $(BUILDFILES13) $(BUILDFILES14) $(BUILDFILES15) \
-	$(BUILDFILES16) 
-	$(AR) rcv $(LIBPATH)$(LIBNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(BUILDFILES4) $(BUILDFILES5) \
-	$(BUILDFILES6) $(BUILDFILES7) $(BUILDFILES8) $(BUILDFILES9) $(BUILDFILES10) \
-	$(BUILDFILES11) $(BUILDFILES12) $(BUILDFILES13) $(BUILDFILES14) $(BUILDFILES15) \
-	$(BUILDFILES16) 
+$(LIBPATH)$(LIBNAME): $(BUILDFILES)
+	$(AR) rcv $(LIBPATH)$(LIBNAME) $(BUILDFILES)
 
 clean:
 	-rm -f *.o

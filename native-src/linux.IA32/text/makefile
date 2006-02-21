@@ -28,22 +28,19 @@ LIBPATH=../lib/# declaration
 
 CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../text -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
 
+BUILDFILES = text_copyright.o BidiWrapper.o
 
-BUILDFILES1 = text_copyright.o 
-BUILDFILES2 = BidiWrapper.o
+MDLLIBFILES = \
+	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
+	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-MDLLIBFILES1 = ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a ../lib/libhypool.a
-MDLLIBFILES2 = ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
+all: $(DLLNAME)
 
-all: \
-	 $(DLLNAME)
-
-$(DLLNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) \
-	$(MDLLIBFILES1) $(MDLLIBFILES2) 
-	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) -Xlinker --start-group \
-    libicuuc.so.34 \
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
+	$(BUILDFILES) -Xlinker --start-group \
+	libicuuc.so.34 \
 	-lhysig \
 	-lhyzip \
 	-lhyzlib \

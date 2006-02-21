@@ -28,27 +28,24 @@ LIBPATH=../lib/# declaration
 
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../luni -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
 
+BUILDFILES = \
+	luni_copyright.o file.o procimpl.o oos.o fileis.o \
+	simpl.o psimpl2.o nethelp.o floatbits.o rafile.o \
+	ois.o helpers.o math.o luniglob.o proxy.o \
+	netif.o process.o bigint.o osc.o socket.o \
+	inetadds.o pssimpl.o filedesc.o timezone.o pmsimpl.o \
+	pdsimpl.o fileos.o
 
+MDLLIBFILES = \
+	../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so \
+	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-BUILDFILES1 = luni_copyright.o file.o procimpl.o oos.o fileis.o
-BUILDFILES2 = simpl.o psimpl2.o nethelp.o floatbits.o rafile.o
-BUILDFILES3 = ois.o helpers.o math.o luniglob.o proxy.o
-BUILDFILES4 = netif.o process.o bigint.o osc.o socket.o
-BUILDFILES5 = inetadds.o pssimpl.o filedesc.o timezone.o pmsimpl.o
-BUILDFILES6 = pdsimpl.o fileos.o
+all: $(DLLNAME)
 
-MDLLIBFILES1 = ../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so
-MDLLIBFILES2 = ../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
-
-all: \
-	 $(DLLNAME)
-
-$(DLLNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(BUILDFILES4) $(BUILDFILES5) \
-	$(BUILDFILES6) $(MDLLIBFILES1) $(MDLLIBFILES2) 
-	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(BUILDFILES4) $(BUILDFILES5) \
-	$(BUILDFILES6) -Xlinker --start-group \
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
+	$(BUILDFILES) -Xlinker --start-group \
 	-lhycommon \
 	-lhysig \
 	-lhyzip \

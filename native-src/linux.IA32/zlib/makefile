@@ -29,17 +29,16 @@ LIBPATH=../lib/# declaration
 CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I.  $(VMDEBUG)
 
 
-BUILDFILES1 = zlib_copyright.o adler32.o compress.o crc32.o deflate.o
-BUILDFILES2 = infback.o inffast.o inflate.o inftrees.o trees.o
-BUILDFILES3 = uncompr.o zutil.o
+BUILDFILES = \
+	zlib_copyright.o adler32.o compress.o crc32.o deflate.o infback.o \
+	inffast.o inflate.o inftrees.o trees.o uncompr.o zutil.o
 
-all: \
-	 $(DLLNAME)
+all: $(DLLNAME)
 
-$(DLLNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) 
-	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -o $(DLLNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) -Xlinker --start-group -Xlinker --end-group  -lc -lm -ldl
+$(DLLNAME): $(BUILDFILES)
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -o $(DLLNAME) \
+	$(BUILDFILES) -Xlinker --start-group -Xlinker --end-group  -lc -lm -ldl
 
 clean:
 	-rm -f *.o

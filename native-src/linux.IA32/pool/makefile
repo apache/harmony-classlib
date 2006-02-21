@@ -22,17 +22,14 @@ LIBNAME=libhypool.a# declaration
 
 LIBPATH=../lib/# declaration
 
-BUILDFILES1 = pool.o pool_cap.o
+BUILDFILES = pool.o pool_cap.o
 
 CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include  $(VMDEBUG)
 
-
 all: $(LIBPATH)$(LIBNAME)
 
-$(LIBPATH)$(LIBNAME):\
-	$(BUILDFILES1) 
-	$(AR) rcv $(LIBPATH)$(LIBNAME) \
-	$(BUILDFILES1) 
+$(LIBPATH)$(LIBNAME): $(BUILDFILES) 
+	$(AR) rcv $(LIBPATH)$(LIBNAME) $(BUILDFILES)
 
 clean:
 	-rm -f *.o

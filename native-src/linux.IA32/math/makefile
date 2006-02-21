@@ -28,21 +28,19 @@ LIBPATH=../lib/# declaration
 
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../math -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
 
+BUILDFILES = \
+	math_copyright.o fltparse.o mathglob.o dblparse.o bigint.o cbigint.o
 
+MDLLIBFILES = \
+	../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so \
+	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-BUILDFILES1 = math_copyright.o fltparse.o mathglob.o dblparse.o bigint.o
-BUILDFILES2 = cbigint.o
+all: $(DLLNAME)
 
-MDLLIBFILES1 = ../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so
-MDLLIBFILES2 = ../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
-
-all: \
-	 $(DLLNAME)
-
-$(DLLNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) $(MDLLIBFILES1) $(MDLLIBFILES2) 
-	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) -Xlinker --start-group \
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
+	$(BUILDFILES) -Xlinker --start-group \
 	-lhycommon \
 	-lhysig \
 	-lhyzip \

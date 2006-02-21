@@ -28,21 +28,20 @@ LIBPATH=../lib/# declaration
 
 CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../common -I../zlib -I../zip -I../fdlibm -I../nio $(VMDEBUG)
 
-
-BUILDFILES1 = nio_copyright.o helpers.o
-BUILDFILES2 = OSFileSystem.o OSFileSystemLinux32.o OSMemory.o OSMemoryLinux32.o nethelp.o OSNetworkSystem.o socket.o
+BUILDFILES = \
+	nio_copyright.o helpers.o OSFileSystem.o OSFileSystemLinux32.o \
+	OSMemory.o OSMemoryLinux32.o nethelp.o OSNetworkSystem.o socket.o
  
-MDLLIBFILES1 = ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a ../lib/libhypool.a
-MDLLIBFILES2 = ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
+MDLLIBFILES = \
+	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
+	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-all: \
-	 $(DLLNAME)
+all: $(DLLNAME)
 
-$(DLLNAME):\
-	$(BUILDFILES1) $(BUILDFILES2) \
-	$(MDLLIBFILES1) $(MDLLIBFILES2) 
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES1) $(BUILDFILES2) -Xlinker --start-group \
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
+	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
+	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
+	$(BUILDFILES) -Xlinker --start-group \
 	-lhysig \
 	-lhyzip \
 	-lhyzlib \
