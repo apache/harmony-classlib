@@ -15,25 +15,21 @@
 
 package org.apache.harmony.tests.java.lang;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
 
-public class AllTests {
+public class StringBufferTest extends TestCase {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+	/**
+	 * @tests java.lang.StringBuffer#setLength(int)
+	 */
+	public void test_setLengthI() {
+		// Regression for HARMONY-90
+		StringBuffer buffer = new StringBuffer("abcde");
+		try {
+			buffer.setLength(-1);
+			fail("Assert 0: IndexOutOfBoundsException must be thrown");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.lang");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(FloatTest.class);
-		suite.addTestSuite(StringBufferTest.class);
-		suite.addTestSuite(SecurityManagerTest.class);
-		suite.addTestSuite(DoubleTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }
