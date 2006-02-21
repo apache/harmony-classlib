@@ -20,9 +20,14 @@
 
 all: \
 	_sig _pool _thread _port _fdlibm _zip \
-	_zlib _common _nio _luni _vmi \
+	_zlib _common _nio _luni _vmi _auth \
 	_archive _math _launcher _text
 
+_auth:
+	cd auth
+	$(MAKE) /NOLOGO
+	cd ..
+	
 _pool: 
 	cd pool
 	$(MAKE) /NOLOGO
@@ -99,6 +104,9 @@ _launcher: _port _thread
 	cd ..
 
 clean:
+	cd auth
+	$(MAKE) /NOLOGO clean
+	cd ..
 	cd archive
 	$(MAKE) /NOLOGO clean
 	cd ..
