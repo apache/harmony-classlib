@@ -28,17 +28,6 @@ LIBPATH=../lib/# declaration
 
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -DHYPORT_LIBRARY_DEFINE -I../include  $(VMDEBUG)
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX)  -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -fno-exceptions -fno-rtti -DIPv6_FUNCTION_SUPPORT  -DHYX86 -DHYPORT_LIBRARY_DEFINE -I../include   $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include  $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 BUILDFILES1 = port_copyright.o hycpu.o hyerror.o hyerrorhelpers.o hyexit.o
 BUILDFILES2 = hyfile.o hyfiletext.o hygp.o hyipcmutex.o hymem.o
@@ -53,8 +42,6 @@ MDLLIBFILES1 = ../libhythr.so ../lib/libhycommon.a ../libhysig.so
 all: \
 	 $(DLLNAME)
 
-BUILDLIB: $(DLLNAME)
-
 $(DLLNAME):\
 	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(BUILDFILES4) $(BUILDFILES5) \
 	$(BUILDFILES6) $(BUILDFILES7) $(MDLLIBFILES1) 
@@ -65,9 +52,6 @@ $(DLLNAME):\
 	-lhycommon \
 	-lhysig \
 	-Xlinker --end-group  -lc -lm -ldl
-
-quick:
-	$(MAKE)
 
 clean:
 	-rm -f *.o

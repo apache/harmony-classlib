@@ -29,17 +29,6 @@ MDLLIBFILES2 = ../lib/libhyfdlibm.a ../libhythr23.so ../libvmi.so
 
 CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX)  -DLINUX -D_REENTRANT -O1 -march=pentium3 -fno-exceptions -fno-rtti -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include -I../common -I../zlib -I../zip -I../fdlibm $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 all: $(LIBPATH)$(LIBNAME)
 
@@ -47,9 +36,6 @@ $(LIBPATH)$(LIBNAME):\
 	$(BUILDFILES1) 
 	$(AR) rcv $(LIBPATH)$(LIBNAME) \
 	$(BUILDFILES1) 
-
-quick:
-	$(MAKE)
 
 clean:
 	-rm -f *.o

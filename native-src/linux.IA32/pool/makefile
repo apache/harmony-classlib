@@ -26,17 +26,6 @@ BUILDFILES1 = pool.o pool_cap.o
 
 CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include  $(VMDEBUG)
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX)  -DLINUX -D_REENTRANT -O1 -march=pentium3 -fno-exceptions -fno-rtti -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include  $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 all: $(LIBPATH)$(LIBNAME)
 
@@ -44,9 +33,6 @@ $(LIBPATH)$(LIBNAME):\
 	$(BUILDFILES1) 
 	$(AR) rcv $(LIBPATH)$(LIBNAME) \
 	$(BUILDFILES1) 
-
-quick:
-	$(MAKE)
 
 clean:
 	-rm -f *.o

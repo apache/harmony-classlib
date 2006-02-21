@@ -29,17 +29,6 @@ LIBPATH=../lib/# declaration
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../archive -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
 
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX)  -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -fno-exceptions -fno-rtti -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../archive -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include -I../archive -I../common -I../zlib -I../zip -I../fdlibm $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 BUILDFILES1 = archive_copyright.o jclcrc32.o zip.o adler32.o inflater.o
 BUILDFILES2 = jarfile.o deflater.o archiveglob.o
@@ -49,8 +38,6 @@ MDLLIBFILES2 = ../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.
 
 all: \
 	 $(DLLNAME)
-
-BUILDLIB: $(DLLNAME)
 
 $(DLLNAME):\
 	$(BUILDFILES1) $(BUILDFILES2) $(MDLLIBFILES1) $(MDLLIBFILES2) 

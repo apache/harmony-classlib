@@ -29,17 +29,6 @@ LIBPATH=../lib/
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include $(VMDEBUG)
 
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX)  -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -fno-exceptions -fno-rtti -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 BUILDFILES1 = vmi_copyright.o vmi.o
 
@@ -47,8 +36,6 @@ MDLLIBFILES1 = ../lib/libhyzip.a ../lib/libhypool.a
 
 all: \
 	 $(DLLNAME)
-
-BUILDLIB: $(DLLNAME)
 
 $(DLLNAME):\
 	$(BUILDFILES1) $(MDLLIBFILES1) 

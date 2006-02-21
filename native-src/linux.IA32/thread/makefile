@@ -28,17 +28,6 @@ LIBPATH=../lib/# declaration
 
 CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include  $(VMDEBUG)
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX)  -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -fno-exceptions -fno-rtti -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include  $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 BUILDFILES1 = thread_copyright.o thrhelp.o thrspinlock.o hythread.o hythreadinspect.o
 BUILDFILES2 = linuxonexit.o priority.o rasthrsup.o rwmutex.o
@@ -51,17 +40,12 @@ MDLLIBFILES1 = ../lib/libhypool.a ../lib/libhycommon.a
 all: \
 	 $(DLLNAME)
 
-BUILDLIB: $(DLLNAME)
-
 $(DLLNAME):\
 	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(MDLLIBFILES1) 
 	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -o $(DLLNAME) \
 	$(BUILDFILES1) $(BUILDFILES2) $(BUILDFILES3) $(SYSLIBFILES1) -Xlinker --start-group \
 	-lhypool \
 	-lhycommon -Xlinker --end-group  -lc -lm -ldl
-
-quick:
-	$(MAKE)
 
 clean:
 	-rm -f *.o

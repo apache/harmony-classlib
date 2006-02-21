@@ -28,17 +28,6 @@ LIBPATH=../lib/# declaration
 
 CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../common -I../zlib -I../zip -I../fdlibm -I../nio $(VMDEBUG)
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX) -fpic -O1 -march=pentium3 -fno-exceptions -fno-rtti -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../common -I../zlib -I../zip -I../fdlibm -I../nio $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl -I../include -I../zlib -I../zip -I../fdlibm -I../nio $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 BUILDFILES1 = nio_copyright.o helpers.o
 BUILDFILES2 = OSFileSystem.o OSFileSystemLinux32.o OSMemory.o OSMemoryLinux32.o nethelp.o OSNetworkSystem.o socket.o
@@ -48,8 +37,6 @@ MDLLIBFILES2 = ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
 all: \
 	 $(DLLNAME)
-
-BUILDLIB: $(DLLNAME)
 
 $(DLLNAME):\
 	$(BUILDFILES1) $(BUILDFILES2) \

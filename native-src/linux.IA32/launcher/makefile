@@ -22,17 +22,6 @@ EXENAME=../java# declaration
 
 CFLAGS=-O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include $(VMDEBUG)
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX) -O1 -march=pentium3 -fno-exceptions -fno-rtti -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -I../include $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 BUILDFILES1 = main.o cmain.o launcher_copyright.o strbuf.o libhlp.o  
  

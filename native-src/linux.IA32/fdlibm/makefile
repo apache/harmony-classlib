@@ -42,17 +42,6 @@ BUILDFILES16 = w_pow.o w_remainder.o w_scalb.o w_sinh.o w_sqrt.o
 CFLAGS=-O0 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM -DHY_PLATFORM_DOUBLE_ORDER -I../include -ffloat-store $(VMDEBUG)
 
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX) -O0 -fno-exceptions -fno-rtti -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM -DHY_PLATFORM_DOUBLE_ORDER -I../include -ffloat-store $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 all: $(LIBPATH)$(LIBNAME)
 

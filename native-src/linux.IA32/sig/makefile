@@ -28,24 +28,11 @@ LIBPATH=../lib/# declaration
 
 CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -I../include $(VMDEBUG)
 
-.SUFFIXES:.cpp
-.cpp.o:
-	$(CXX) -fpic -O1 -march=pentium3 -fno-exceptions -fno-rtti -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -I../include $(VMDEBUG) -c $<
-
-ASFLAGS= -o $@
-
-.SUFFIXES:.asm
-.asm.o:
-	perl ../masm2gas/masm2gas.pl   -I../include  $*.asm
-	$(AS) $(ASFLAGS) -o $*.o $*.s
-	-rm $*.s
 
 BUILDFILES1 = jsig_copyright.o jsiglinux.o jsigunix.o
 
 all: \
 	 $(DLLNAME)
-
-BUILDLIB: $(DLLNAME)
 
 $(DLLNAME): $(BUILDFILES1) 
 	 $(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -o $(DLLNAME) \
