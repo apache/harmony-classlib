@@ -48,4 +48,4 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f ../libhythr.so
+	-rm -f $(DLLNAME)

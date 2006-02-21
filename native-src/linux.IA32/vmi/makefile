@@ -44,4 +44,4 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f $(DLLNAME)
+	-rm -f $(DLLNAME) $(LIBNAME).map

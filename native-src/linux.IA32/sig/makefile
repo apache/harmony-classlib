@@ -39,4 +39,4 @@ $(DLLNAME): $(BUILDFILES)
 
 clean:
 	-rm -f *.o 
-	-rm -f ../libhysig.so
+	-rm -f $(DLLNAME)

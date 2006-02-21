@@ -52,4 +52,4 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f ../libhytext.so
+	-rm -f $(DLLNAME)

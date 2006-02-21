@@ -58,4 +58,4 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f ../libhyluni.so
+	-rm -f $(DLLNAME)

@@ -33,4 +33,4 @@ $(LIBPATH)$(LIBNAME): $(BUILDFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f ../lib/libhycommon.a
+	-rm -f $(LIBPATH)$(LIBNAME)

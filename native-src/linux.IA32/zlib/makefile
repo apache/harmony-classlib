@@ -42,4 +42,4 @@ $(DLLNAME): $(BUILDFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f ../libhyzlib.so
+	-rm -f $(DLLNAME)

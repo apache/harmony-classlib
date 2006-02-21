@@ -42,4 +42,4 @@ $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f ../java
+	-rm -f $(EXENAME)

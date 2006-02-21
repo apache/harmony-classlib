@@ -49,4 +49,4 @@ $(LIBPATH)$(LIBNAME): $(BUILDFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f ../lib/libhyfdlibm.a
+	-rm -f $(LIBPATH)$(LIBNAME)

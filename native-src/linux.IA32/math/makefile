@@ -53,4 +53,4 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 
 clean:
 	-rm -f *.o
-	-rm -f ../libhymath.so
+	-rm -f $(DLLNAME)
