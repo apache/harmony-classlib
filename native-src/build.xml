@@ -93,8 +93,7 @@
     <target name="make-all" depends="properties">
         <exec failonerror="true" 
             executable="${make.command}" 
-            dir="${target.platform}" 
-            output="${target.platform}/build.log">
+            dir="${target.platform}">
             <arg line="all" />
         </exec>
     	
@@ -111,8 +110,7 @@
     <target name="make-clean" depends="properties">
         <exec failonerror="true" 
             executable="${make.command}" 
-            dir="${target.platform}" 
-            output="${target.platform}/build.log">
+            dir="${target.platform}">
             <arg line="clean" />
         </exec>
     	
