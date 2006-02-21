@@ -30,9 +30,9 @@ public class Collections {
 			Serializable {
 		private static final long serialVersionUID = 2739099268398711800L;
 
-		private int n;
+		private final int n;
 
-		private Object element;
+		private final Object element;
 
 		CopiesList(int length, Object object) {
 			if (length < 0) {
@@ -150,7 +150,7 @@ public class Collections {
 			Serializable {
 		private static final long serialVersionUID = 3193687207550431679L;
 
-		Object element;
+		final Object element;
 
 		SingletonSet(Object object) {
 			element = object;
@@ -191,7 +191,7 @@ public class Collections {
 			Serializable {
 		private static final long serialVersionUID = 3093736618740652951L;
 
-		Object element;
+		final Object element;
 
 		SingletonList(Object object) {
 			element = object;
@@ -216,7 +216,7 @@ public class Collections {
 			Serializable {
 		private static final long serialVersionUID = -6979724477215052911L;
 
-		Object k, v;
+		final Object k, v;
 
 		SingletonMap(Object key, Object value) {
 			k = key;
@@ -305,9 +305,8 @@ public class Collections {
 	static class SynchronizedCollection implements Collection, Serializable {
 		private static final long serialVersionUID = 3053995032091335093L;
 
-		Collection c;
-
-		Object mutex;
+		final Collection c;
+		final Object mutex;
 
 		SynchronizedCollection(Collection collection) {
 			c = collection;
@@ -391,6 +390,12 @@ public class Collections {
 			}
 		}
 
+		public String toString() {
+			synchronized (mutex) {
+				return c.toString();
+			}
+		}
+
 		public Object[] toArray(Object[] array) {
 			synchronized (mutex) {
 				return c.toArray(array);
@@ -414,7 +419,6 @@ public class Collections {
 
 		SynchronizedRandomAccessList(List l, Object mutex) {
 			super(l, mutex);
-			list = l;
 		}
 
 		public List subList(int start, int end) {
@@ -443,7 +447,7 @@ public class Collections {
 			List {
 		private static final long serialVersionUID = -7754090372962971524L;
 
-		List list;
+		final List list;
 
 		SynchronizedList(List l) {
 			super(l);
@@ -558,9 +562,8 @@ public class Collections {
 	static class SynchronizedMap implements Map, Serializable {
 		private static final long serialVersionUID = 1978198479659022715L;
 
-		private Map m;
-
-		Object mutex;
+		private final Map m;
+		final Object mutex;
 
 		SynchronizedMap(Map map) {
 			m = map;
@@ -656,6 +659,12 @@ public class Collections {
 			}
 		}
 
+		public String toString() {
+			synchronized (mutex) {
+				return m.toString();
+			}
+		}
+
 		private void writeObject(ObjectOutputStream stream) throws IOException {
 			synchronized (mutex) {
 				stream.defaultWriteObject();
@@ -697,7 +706,7 @@ public class Collections {
 			SortedMap {
 		private static final long serialVersionUID = -8798146769416483793L;
 
-		private SortedMap sm;
+		private final SortedMap sm;
 
 		SynchronizedSortedMap(SortedMap map) {
 			super(map);
@@ -757,7 +766,7 @@ public class Collections {
 			SortedSet {
 		private static final long serialVersionUID = 8695801310862127406L;
 
-		private SortedSet ss;
+		private final SortedSet ss;
 
 		SynchronizedSortedSet(SortedSet set) {
 			super(set);
@@ -816,7 +825,7 @@ public class Collections {
 			Serializable {
 		private static final long serialVersionUID = 1820017752578914078L;
 
-		Collection c;
+		final Collection c;
 
 		UnmodifiableCollection(Collection collection) {
 			c = collection;
@@ -920,7 +929,7 @@ public class Collections {
 			implements List {
 		private static final long serialVersionUID = -283967356065247728L;
 
-		List list;
+		final List list;
 
 		UnmodifiableList(List l) {
 			super(l);
@@ -1039,7 +1048,7 @@ public class Collections {
 	private static class UnmodifiableMap implements Map, Serializable {
 		private static final long serialVersionUID = -1034234728574286014L;
 
-		private Map m;
+		private final Map m;
 
 		private static class UnmodifiableEntrySet extends UnmodifiableSet {
 			private static final long serialVersionUID = 7854390611657943733L;
@@ -1204,7 +1213,7 @@ public class Collections {
 			implements SortedMap {
 		private static final long serialVersionUID = -8806743815996713206L;
 
-		private SortedMap sm;
+		private final SortedMap sm;
 
 		UnmodifiableSortedMap(SortedMap map) {
 			super(map);
@@ -1240,7 +1249,7 @@ public class Collections {
 			implements SortedSet {
 		private static final long serialVersionUID = -4929149591599911165L;
 
-		private SortedSet ss;
+		private final SortedSet ss;
 
 		UnmodifiableSortedSet(SortedSet set) {
 			super(set);
@@ -1968,6 +1977,8 @@ public class Collections {
 	 * @return a synchronized Collection
 	 */
 	public static Collection synchronizedCollection(Collection collection) {
+		if (collection == null)
+			throw new NullPointerException();
 		return new SynchronizedCollection(collection);
 	}
 
@@ -1997,6 +2008,8 @@ public class Collections {
 	 * @return a synchronized Map
 	 */
 	public static Map synchronizedMap(Map map) {
+		if (map == null)
+			throw new NullPointerException();
 		return new SynchronizedMap(map);
 	}
 
@@ -2009,6 +2022,8 @@ public class Collections {
 	 * @return a synchronized Set
 	 */
 	public static Set synchronizedSet(Set set) {
+		if (set == null)
+			throw new NullPointerException();
 		return new SynchronizedSet(set);
 	}
 
@@ -2021,6 +2036,8 @@ public class Collections {
 	 * @return a synchronized SortedMap
 	 */
 	public static SortedMap synchronizedSortedMap(SortedMap map) {
+		if (map == null)
+			throw new NullPointerException();
 		return new SynchronizedSortedMap(map);
 	}
 
@@ -2033,6 +2050,8 @@ public class Collections {
 	 * @return a synchronized SortedSet
 	 */
 	public static SortedSet synchronizedSortedSet(SortedSet set) {
+		if (set == null)
+			throw new NullPointerException();
 		return new SynchronizedSortedSet(set);
 	}
 
@@ -2046,6 +2065,8 @@ public class Collections {
 	 * @return an unmodifiable Collection
 	 */
 	public static Collection unmodifiableCollection(Collection collection) {
+		if (collection == null)
+			throw new NullPointerException();
 		return new UnmodifiableCollection(collection);
 	}
 
@@ -2077,6 +2098,8 @@ public class Collections {
 	 * @return a unmodifiable Map
 	 */
 	public static Map unmodifiableMap(Map map) {
+		if (map == null)
+			throw new NullPointerException();
 		return new UnmodifiableMap(map);
 	}
 
@@ -2090,6 +2113,8 @@ public class Collections {
 	 * @return a unmodifiable Set
 	 */
 	public static Set unmodifiableSet(Set set) {
+		if (set == null)
+			throw new NullPointerException();
 		return new UnmodifiableSet(set);
 	}
 
@@ -2103,6 +2128,8 @@ public class Collections {
 	 * @return a unmodifiable SortedMap
 	 */
 	public static SortedMap unmodifiableSortedMap(SortedMap map) {
+		if (map == null)
+			throw new NullPointerException();
 		return new UnmodifiableSortedMap(map);
 	}
 
@@ -2116,6 +2143,8 @@ public class Collections {
 	 * @return a unmodifiable SortedSet
 	 */
 	public static SortedSet unmodifiableSortedSet(SortedSet set) {
+		if (set == null)
+			throw new NullPointerException();
 		return new UnmodifiableSortedSet(set);
 	}
 }
