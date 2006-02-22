@@ -1339,7 +1339,8 @@ public class Collections {
 	 * @param object
 	 *            the element to find
 	 * @param comparator
-	 *            the Comparator
+	 *            the Comparator.  If the comparator is <code>null</code>
+	 *            then the search uses the objects' natural ordering. 
 	 * @return the non-negative index of the element, or a negative index which
 	 *         is the -index - 1 where the element would be inserted
 	 * 
@@ -1349,6 +1350,9 @@ public class Collections {
 	 */
 	public static int binarySearch(List list, Object object,
 			Comparator comparator) {
+		if (comparator == null) {
+			return Collections.binarySearch(list, object);
+		} 
 		if (!(list instanceof RandomAccess)) {
 			ListIterator it = list.listIterator();
 			while (it.hasNext()) {

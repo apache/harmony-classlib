@@ -18,12 +18,26 @@ package org.apache.harmony.tests.java.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 public class CollectionsTest extends TestCase {
 
+	/**
+	 * @tests java.util.Collections#binarySearch(java.util.List,
+	 *        java.lang.Object, java.util.Comparator)
+	 */
+	public void test_binarySearchLjava_util_ListLjava_lang_ObjectLjava_util_Comparator() {
+		// Regression for HARMONY-94
+		LinkedList lst = new LinkedList();
+		lst.add(new Integer(30));
+		Collections.sort(lst, null);
+		int index = Collections.binarySearch(lst, new Integer(2), null);
+		assertEquals(-1, index);
+	} 
+	   
 	/**
 	 * @tests java.util.Collections#rotate(java.util.List, int)
 	 */
