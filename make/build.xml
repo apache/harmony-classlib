@@ -63,4 +63,92 @@ Generating HTML using Doxygen...
         <ant antfile="doc/build.xml" inheritall="false" target="clean" />
     </target>
 
+    <!-- ================================= 
+          target: properties
+         ================================= -->
+    <target name="properties"
+            depends="common-properties, unix-properties, windows-properties" />
+
+    <!-- ================================= 
+          target: common-properties
+         ================================= -->
+    <target name="common-properties">
+        <xmlproperty file=".svn/entries" prefix="svn" />
+        <property name="svn.revision"
+                  value="${svn.wc-entries.entry(revision)}" />
+        <property name="deploy.file.prefix"
+                  value="harmony-classlib-r${svn.revision}" />
+        <condition property="is.win" value="true">
+            <os family="Windows" />
+        </condition>
+        <condition property="is.unix" value="true">
+            <os name="linux" />
+        </condition>
+    </target>
+
+    <!-- ================================= 
+          target: unix-properties
+         ================================= -->
+    <target name="unix-properties" if="is.unix">
+        <property name="deploy.tar"
+                  value="${deploy.file.prefix}-${os.name}-${os.arch}-snapshot.tar.gz" />
+    </target>
+
+    <!-- ================================= 
+          target: windows-properties
+         ================================= -->
+    <target name="windows-properties" if="is.win">
+        <property name="deploy.zip"
+                  value="${deploy.file.prefix}-win-${os.arch}-snapshot.zip" />
+    </target>
+
+    <!-- ================================= 
+          target: snapshot
+         ================================= -->
+    <target name="snapshot" depends="snapshot-tar, snapshot-zip" />
+
+    <!-- ================================= 
+          target: snapshot-tar
+         ================================= -->
+    <target name="snapshot-tar" depends="default, properties" if="is.unix">
+        <echo>
+========================================
+Generating snapshot tar
+========================================
+</echo>
+        <tar destfile="${deploy.tar}" compression="gzip">
+            <tarfileset dir="${basedir}" prefix="Harmony">
+                <include name="LICENSE" />
+                <include name="THIRD_PARTY_NOTICES.txt" />
+                <include name="deploy/**" />
+                <exclude name="deploy/jre/bin/default/**" /> 
+            </tarfileset>
+            <tarfileset dir="${basedir}/make/resources"
+                includes="README-snapshot.txt"
+                fullpath="Harmony/README"/>
+        </tar>
+    </target>
+
+    <!-- ================================= 
+          target: snapshot-zip
+         ================================= -->
+    <target name="snapshot-zip" depends="default, properties" if="is.win">
+        <echo>
+========================================
+Generating snapshot zip
+========================================
+</echo>
+        <zip destfile="${deploy.zip}">
+            <zipfileset dir="${basedir}" prefix="Harmony">
+                <include name="LICENSE" />
+                <include name="THIRD_PARTY_NOTICES.txt" />
+                <include name="deploy/**" />
+                <exclude name="deploy/jre/bin/default/**" /> 
+            </zipfileset>
+            <zipfileset dir="${basedir}/make/resources"
+                includes="README-snapshot.txt"
+                fullpath="Harmony/README.txt"/>
+        </zip>
+    </target>
+
 </project>
