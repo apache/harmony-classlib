@@ -312,12 +312,6 @@ vmdll_parseCmdLine (HyPortLibrary * portLibrary, UDATA lastLegalArg,
 {
   UDATA i;
 
-#if (LINUX)
-#define COMPARE_STRINGS strncasecmp
-#else
-#define COMPARE_STRINGS strncasecmp
-#endif
-
   /* Parse command line args for -vm: */
   for (i = 1; i <= lastLegalArg; i++)
     {
@@ -341,12 +335,6 @@ vmdlldir_parseCmdLine (HyPortLibrary * portLibrary, UDATA lastLegalArg,
            char **argv)
 {
   UDATA i;
-
-#if (LINUX)
-#define COMPARE_STRINGS strncasecmp
-#else
-#define COMPARE_STRINGS strncasecmp
-#endif
 
   /* Parse command line args for -vmdir: */
   for (i = 1; i <= lastLegalArg; i++)
