@@ -70,8 +70,7 @@ $(DLLNAME): $(LIBPATH)$(LIBNAME).lib \
 	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1) $(MDLLIBFILES2) \
 	$(SYSLIBFILES1)  \
 	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
-	cd ..
-	cd archive
+
 	
 clean:
 	-del *.map
