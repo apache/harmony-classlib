@@ -230,36 +230,58 @@ public abstract class CharsetDecoder {
 		CoderResult result = null;
 		while (true) {
 			result = decode(in, output, false);
+			checkCoderResult(result);
 			if (result.isUnderflow()) {
 				break;
-			} else if (result.isMalformed()
-					&& malformAction == CodingErrorAction.REPORT) {
-				throw new MalformedInputException(result.length());
-			} else if (result.isUnmappable()
-					&& unmapAction == CodingErrorAction.REPORT) {
-				throw new UnmappableCharacterException(result.length());
+			} else if (result.isOverflow()) {
+				output = allocateMore(output);
 			}
-			output = allocateMore(output);
 		}
 		result = decode(in, output, true);
-		if (result.isMalformed()
-				&& malformAction == CodingErrorAction.REPORT) {
+		checkCoderResult(result);
+
+		while (true) {
+			result = flush(output);
+			checkCoderResult(result);
+			if (result.isOverflow()) {
+				output = allocateMore(output);
+			} else {
+				break;
+			}
+		}
+
+		output.flip();
+		CharBuffer truncatedBuffer = null;
+		// truncate elements after limit in the output.
+		// clippedBuffer has the same value of capcity and limit.
+		if (output.limit() == output.capacity()) {
+			truncatedBuffer = output;
+		} else {
+			truncatedBuffer = CharBuffer.allocate(output.remaining());
+			truncatedBuffer.put(output);
+			truncatedBuffer.flip();
+		}
+		status = FLUSH;
+		return truncatedBuffer;
+	}
+
+	/*
+	 * checks the result whether it needs to throw CharacterCodingException.
+	 */
+	private void checkCoderResult(CoderResult result)
+			throws CharacterCodingException {
+		if (result.isMalformed() && malformAction == CodingErrorAction.REPORT) {
 			throw new MalformedInputException(result.length());
 		} else if (result.isUnmappable()
 				&& unmapAction == CodingErrorAction.REPORT) {
 			throw new UnmappableCharacterException(result.length());
 		}
-		while (flush(output) != CoderResult.UNDERFLOW) {
-			output = allocateMore(output);
-		}
-		output.flip();
-		status = FLUSH;
-		return output;
 	}
 
 	/*
-	 * allocate more space to new CharBuffer and return it, the contents in the
-	 * given buffer will be copied into the new buffer
+	 * original output is full and doesn't have remaining. allocate more space
+	 * to new CharBuffer and return it, the contents in the given buffer will be
+	 * copied into the new buffer.
 	 */
 	private CharBuffer allocateMore(CharBuffer output) {
 		if (output.capacity() == 0) {
@@ -346,68 +368,56 @@ public abstract class CharsetDecoder {
 		if ((status == FLUSH) || (!endOfInput && status == END)) {
 			throw new IllegalStateException();
 		}
-		
-		CoderResult result = CoderResult.UNDERFLOW;
+
+		CoderResult result = null;
+
+		// save old values of remains.length and the position of in.
+		int remainsLength = 0;
+		int inOldPosition = in.position();
+
+		// construct decodingBuffer for decode.
+		// put "remains" and "in" into decodingBuffer.
+		ByteBuffer decodingBuffer = null;
+		if (remains != null) {
+			remainsLength = remains.length;
+			decodingBuffer = ByteBuffer.allocate(remains.length
+					+ in.remaining());
+			decodingBuffer.put(remains);
+			remains = null;
+		} else {
+			decodingBuffer = ByteBuffer.allocate(in.remaining());
+		}
+		decodingBuffer.put(in);
+		decodingBuffer.flip();
+
+		// begin to decode
 		while (true) {
 			CodingErrorAction action = null;
-			result = CoderResult.UNDERFLOW;
-			/*
-			 * handle the remained bytes if there are some(bug#545)
-			 */
-			if (remains != null) {
-				int remainLength = remains.length;
-				ByteBuffer remainBuffer = ByteBuffer.wrap(remains);
-				while(remainBuffer.hasRemaining() && in.hasRemaining() && result.isUnderflow()){
-					//get one more byte from input ByteBuffer
-					//merge it with remained bytes
-					//and try to decode them to one char
-					byte b = in.get();
-					ByteBuffer temp = ByteBuffer.allocate(++remainLength);
-					temp.put(remainBuffer);
-					temp.put(b);
-					remainBuffer = temp;
-					remainBuffer.flip();
-					result = decodeLoop(remainBuffer, out);
-				}
-				remains = remainBuffer.hasRemaining()?remainBuffer.array():null;
-			}
-			
-			/*
-			 * decode input bytes
-			 */
-			//if no remained bytes left and no any error happened
-			//go on to decode other input bytes
-			//else, go to result handling part
-			result = result.isUnderflow() && (null == remains) ? decodeLoop(in,
-					out) : result;
-			
+			result = decodeLoop(decodingBuffer, out);
 			/*
 			 * result handling
 			 */
-			//handle the underflow result, if endOfInput and some input bytes remained
-			//which mean the malform error happened
 			if (result.isUnderflow()) {
 				if (endOfInput) {
-					if (in.hasRemaining()) {
-						result = CoderResult.malformedForLength(in.remaining());
-						in.position(in.position() + result.length());
-					} else if (null != remains) {
-						result = CoderResult.malformedForLength(remains.length);
+					if (decodingBuffer.hasRemaining()) {
+						result = CoderResult.malformedForLength(decodingBuffer
+								.remaining());
+						decodingBuffer.position(decodingBuffer.limit());
 					}
-				} else if (in.hasRemaining()) {
-					remains = new byte[in.remaining()];
-					in.get(remains);
+				} else {
+					if (decodingBuffer.hasRemaining()) {
+						remains = new byte[decodingBuffer.remaining()];
+						decodingBuffer.get(remains);
+					}
 				}
-			}			
+			}
+			// set coding error handle action
 			if (result.isMalformed()) {
 				action = malformAction;
 			} else if (result.isUnmappable()) {
 				action = unmapAction;
 			}
-
-			//respond to the CodingErrorAction
-			//if the action is REPORT, break and return
-			//else, skip the error bytes and go on to decode 
+			// If the action is IGNORE or REPLACE, we should continue decoding.
 			if (action == CodingErrorAction.IGNORE) {
 				continue;
 			} else if (action == CodingErrorAction.REPLACE) {
@@ -418,8 +428,15 @@ public abstract class CharsetDecoder {
 					continue;
 				}
 			}
+			// otherwise, the decode process ends.
 			break;
 		}
+		// set in new position
+		int offset = decodingBuffer.position() > remainsLength ? (decodingBuffer
+				.position() - remainsLength)
+				: 0;
+		in.position(inOldPosition + offset);
+
 		status = endOfInput ? END : ONGOING;
 		return result;
 	}
@@ -729,7 +746,7 @@ public abstract class CharsetDecoder {
 	}
 
 	/**
-	 * Reset this decoder. This method will reset internla status, and then call
+	 * Reset this decoder. This method will reset internal status, and then call
 	 * <code>implReset()</code> to reset any status related to specific
 	 * charset.
 	 * 
