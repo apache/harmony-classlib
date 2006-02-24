@@ -16,6 +16,7 @@
 package org.apache.harmony.tests.java.nio.charset;
 
 import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -61,4 +62,17 @@ public class CharsetTest extends TestCase {
 					Charset.forName(name).isRegistered());
 		}
 	}
+	
+	/**
+	 * @tests java.nio.charset.Charset#isSupported(String)
+	 */
+	public void testIsSupported_EmptyString() {
+		// Regression for HARMONY-113
+		try {
+			Charset.isSupported("");
+			fail("Assert 0: Should throw IllegalCharsetNameException");
+		} catch (IllegalCharsetNameException e) {
+			// Expected
+		}
+	} 
 }

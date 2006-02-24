@@ -15,8 +15,6 @@
 
 package java.nio.charset;
 
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,9 +102,6 @@ public abstract class Charset implements Comparable {
 	 * --------------------------------------------------------------------
 	 */
 
-	// the shared pattern used to check charset names
-	// private static Pattern _charsetNamePattern = Pattern
-	// .compile("[0-9A-Za-z][0-9A-Za-z\\x2e\\x3a\\x2d\\x5f]*"); //$NON-NLS-1$
 	// built in provider instance, assuming thread-safe
 	private static CharsetProviderICU _builtInProvider = null;
 
@@ -184,6 +179,10 @@ public abstract class Charset implements Comparable {
 	 */
 	protected Charset(String canonicalName, String[] aliases)
 			throws IllegalCharsetNameException {
+		// throw IllegalArgumentException if name is null
+		if (null == canonicalName) {
+			throw new NullPointerException();
+		}
 		// check whether the given canonical name is legal
 		checkCharsetName(canonicalName);
 		this.canonicalName = canonicalName;
@@ -211,23 +210,44 @@ public abstract class Charset implements Comparable {
 		return ('-' == c || '.' == c || ':' == c || '_' == c);
 	}
 
+    /*
+     * Checks whether a character is a letter (ascii) which are defined in 
+     * Java Spec.
+     */
+	private static boolean isLetter(char c) {
+		return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
+	}
+
+    /*
+     * Checks whether a character is a digit (ascii) which are defined in 
+     * Java Spec.
+     */
+	private static boolean isDigit(char c) {
+		return ('0' <= c && c <= '9');
+	}
+
 	/*
-	 * Checks whether a given string is a legal charset name. To be compatible
-	 * with JDK's behavior, allow empty strings and strings not starting with a
-	 * letter or digit. These are not allowed according to the 1.4.2 javadoc.
+	 * Checks whether a given string is a legal charset name. The argument name
+	 * should not be null.
 	 */
 	private static void checkCharsetName(String name) {
-		boolean isDigit;
-		boolean isLetter;
+		// An empty string is illegal charset name
+		if (name.length() == 0) {
+			throw new IllegalCharsetNameException(name);
+		}
+		// The first character must be a letter or a digit
+        // This is related to HARMONY-68 (won't fix)
+		//char first = name.charAt(0);
+		//if (!isLetter(first) && !isDigit(first)) {
+		//	throw new IllegalCharsetNameException(name);
+		//}
+		// Check the remaining characters
 		int length = name.length();
 		for (int i = 0; i < length; i++) {
 			char c = name.charAt(i);
-			isLetter = ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z');
-			isDigit = ('0' <= c && c <= '9');
-			if (isDigit || isLetter || isSpecial(c)) {
-				continue;
+			if (!isLetter(c) && !isDigit(c) && !isSpecial(c)) {
+				throw new IllegalCharsetNameException(name);
 			}
-			throw new IllegalCharsetNameException(name);
 		}
 	}
 
@@ -259,6 +279,19 @@ public abstract class Charset implements Comparable {
 	}
 
 	/*
+	 * Trim comment string, and then trim white spaces.
+	 */
+	private static String trimClassName(String name) {
+		String trimedName = name;
+		int index = name.indexOf(PROVIDER_CONFIGURATION_FILE_COMMENT);
+		// Trim comments
+		if (index != -1) {
+			trimedName = name.substring(0, index);
+		}
+		return trimedName.trim();
+	}
+
+	/*
 	 * Read a configuration file and add the charsets supported by the providers
 	 * specified by this configuration file to the map.
 	 */
@@ -272,12 +305,9 @@ public abstract class Charset implements Comparable {
 					PROVIDER_CONFIGURATION_FILE_ENCODING));
 			String providerClassName = reader.readLine();
 			while (null != providerClassName) {
-				// Trim leading and trailing whitespaces
-				providerClassName = providerClassName.trim();
+				providerClassName = trimClassName(providerClassName);
 				// Skip comments and blank lines
-				if (!providerClassName
-						.startsWith(PROVIDER_CONFIGURATION_FILE_COMMENT)
-						&& !"".equals(providerClassName)) { //$NON-NLS-1$
+				if (providerClassName.length() > 0) { // Non empty string
 					// Load the charset provider
 					Object cp = null;
 					try {
@@ -368,12 +398,8 @@ public abstract class Charset implements Comparable {
 					PROVIDER_CONFIGURATION_FILE_ENCODING));
 			String providerClassName = reader.readLine();
 			while (null != providerClassName) {
-				// Trim leading and trailing whitespaces
-				providerClassName = providerClassName.trim();
-				// Skip comments and blank lines
-				if (!providerClassName
-						.startsWith(PROVIDER_CONFIGURATION_FILE_COMMENT)
-						&& !"".equals(providerClassName)) { //$NON-NLS-1$
+				providerClassName = trimClassName(providerClassName);
+				if (providerClassName.length() > 0) { // Non empty string
 					// Load the charset provider
 					Object cp = null;
 					try {
@@ -417,6 +443,9 @@ public abstract class Charset implements Comparable {
 	 */
 	private static Charset forNameInternal(String charsetName)
 			throws IllegalCharsetNameException {
+		if (null == charsetName) {
+			throw new IllegalArgumentException();
+		}
 		checkCharsetName(charsetName);
 		// Try built-in charsets
 		Charset cs = _builtInProvider.charsetForName(charsetName);
@@ -459,24 +488,11 @@ public abstract class Charset implements Comparable {
 	 */
 	public static Charset forName(String charsetName)
 			throws IllegalCharsetNameException, UnsupportedCharsetException {
-		/*
-		 * The following ugly checks try to keep compatibility with JDK. It
-		 * rejects empty names and names starting with a non-letter&digit
-		 * character.
-		 */
-		if (null == charsetName || "".equals(charsetName)) { //$NON-NLS-1$
-			throw new IllegalArgumentException();
-		}
-		char initial = charsetName.charAt(0);
-		if (isSpecial(initial)) {
-			throw new IllegalArgumentException();
-		}
-
 		Charset c = forNameInternal(charsetName);
-		if (null != c) {
-			return c;
+		if (null == c) {
+			throw new UnsupportedCharsetException(charsetName);
 		}
-		throw new UnsupportedCharsetException(charsetName);
+		return c;
 	}
 
 	/**
@@ -490,10 +506,8 @@ public abstract class Charset implements Comparable {
 	 */
 	public static boolean isSupported(String charsetName)
 			throws IllegalCharsetNameException {
-		if (null == charsetName) {
-			throw new IllegalCharsetNameException(charsetName);
-		}
-		return null != forNameInternal(charsetName);
+		Charset cs = forNameInternal(charsetName);
+		return (null != cs);
 	}
 
 	/**
@@ -523,7 +537,7 @@ public abstract class Charset implements Comparable {
 	/**
 	 * Gets the canonical name of this charset.
 	 * 
-	 * @return this charset's name in canonical form. 
+	 * @return this charset's name in canonical form.
 	 */
 	public final String name() {
 		return this.canonicalName;
@@ -559,15 +573,15 @@ public abstract class Charset implements Comparable {
 	}
 
 	/**
-	 * Answers whether this charset is known to be registered in the
-	 * IANA Charset Registry.
+	 * Answers whether this charset is known to be registered in the IANA
+	 * Charset Registry.
 	 * 
-	 * @return true if the charset is known to be registered, otherwise
-	 * 	returns false.
+	 * @return true if the charset is known to be registered, otherwise returns
+	 *         false.
 	 */
 	public final boolean isRegistered() {
-		return !canonicalName.startsWith("x-") &&
-			!canonicalName.startsWith("X-");
+		return !canonicalName.startsWith("x-")
+				&& !canonicalName.startsWith("X-");
 	}
 
 	/**
@@ -643,11 +657,11 @@ public abstract class Charset implements Comparable {
 	 */
 
 	/**
-	 * Compares this charset with the given charset.
+	 * Compares this charset with the given charset, regardless of case.
 	 * 
-	 * @param obj
-	 *            the given object to be compared with
-	 * @return a negative integer if less than the given object, a positive
+	 * @param charset
+	 *            the given charset to be compared with
+	 * @return a negative integer if less than the given charset, a positive
 	 *         integer if larger than it, or 0 if equal to it
 	 */
 	public final int compareTo(Object obj) {
@@ -724,7 +738,6 @@ public abstract class Charset implements Comparable {
 		public int compare(Object obj1, Object obj2) {
 			String s1 = (String) obj1;
 			String s2 = (String) obj2;
-
 			return s1.compareToIgnoreCase(s2);
 		}
 	}
