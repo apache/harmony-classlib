@@ -68,7 +68,7 @@ $(DLLNAME): $(LIBPATH)$(LIBNAME).lib \
 
 clean:
 	-del *.map
-	-del *.obj
+	-del *.obj dist\*.obj
 	-del *.res
 	-del *.pdb
 	-del ..\lib\$(LIBNAME).lib

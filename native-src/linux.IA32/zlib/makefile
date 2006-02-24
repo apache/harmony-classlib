@@ -42,5 +42,5 @@ $(DLLNAME): $(BUILDFILES)
 	$(BUILDFILES) -Xlinker --start-group -Xlinker --end-group  -lc -lm -ldl
 
 clean:
-	-rm -f *.o
+	-rm -f $(BUILDFILES)
 	-rm -f $(DLLNAME)

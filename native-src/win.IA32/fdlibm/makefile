@@ -79,6 +79,6 @@ $(LIBPATH)$(LIBNAME):\
 	@del templrf
 
 clean:
-	-del *.obj
+	-del *.obj dist\*.obj
 	-del $(LIBPATH)$(LIBNAME)
 	-del $(LIBPATH)hyfdlibm.pdb

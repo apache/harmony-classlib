@@ -53,5 +53,5 @@ $(LIBPATH)$(LIBNAME): $(BUILDFILES)
 	$(AR) rcv $(LIBPATH)$(LIBNAME) $(BUILDFILES)
 
 clean:
-	-rm -f *.o
+	-rm -f $(BUILDFILES)
 	-rm -f $(LIBPATH)$(LIBNAME)
