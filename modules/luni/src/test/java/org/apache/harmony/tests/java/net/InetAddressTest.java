@@ -46,4 +46,15 @@ public class InetAddressTest extends TestCase {
 			// Expected
 		}
 	}
+	
+	/**
+	 * @tests java.net.InetAddress#toString()
+	 */
+	public void test_toString() throws UnknownHostException {
+		// Regression for HARMONY-84
+        InetAddress addr = InetAddress.getByName("localhost");
+        assertEquals("Assert 0: wrong string from name", "localhost/127.0.0.1", addr.toString());
+        InetAddress addr2 = InetAddress.getByAddress(new byte[]{127, 0, 0, 1});
+        assertEquals("Assert 1: wrong string from address", "/127.0.0.1", addr2.toString());
+	}
 }

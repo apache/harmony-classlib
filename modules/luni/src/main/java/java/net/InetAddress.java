@@ -487,7 +487,7 @@ public class InetAddress extends Object implements Serializable {
 	 * @return String the description, as host/address
 	 */
 	public String toString() {
-		return getHostName() + "/" + getHostAddress();
+		return (hostName == null ? "" : hostName) + "/" + getHostAddress();
 	}
 
 	class CacheElement {
