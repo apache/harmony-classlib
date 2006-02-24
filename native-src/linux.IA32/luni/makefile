@@ -50,7 +50,6 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 	-lhysig \
 	-lhyzip \
 	-lhyzlib \
-	-lhycommon \
 	-lhypool \
 	-lhyfdlibm \
 	-lhythr \
