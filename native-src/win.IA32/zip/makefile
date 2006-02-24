@@ -29,7 +29,7 @@ LIBPATH=..\lib\# declaration
 BUILDFILES1 = zcpool.obj zipalloc.obj zipcache.obj zipsup.obj
 
 .c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hyzip.pdb /I..\include /I..\zlib  $(VMDEBUG) $*.c
+	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hyzip.pdb /I..\include /I..\zlib\dist  $(VMDEBUG) $*.c
 
 .cpp.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hyzip.pdb /I..\include /I..\zlib  $(VMDEBUG) $*.cpp

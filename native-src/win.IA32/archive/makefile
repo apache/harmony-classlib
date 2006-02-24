@@ -31,10 +31,10 @@ LIBNAME=hyarchive# declaration
 LIBPATH=..\lib\# declaration
 
 .c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include /I..\archive /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
+	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include /I..\archive /I..\common /I..\zlib\dist /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
 
 .cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include /I..\archive /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.cpp
+	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include /I..\archive /I..\common /I..\zlib\dist /I..\zip /I..\fdlibm  $(VMDEBUG) $*.cpp
 
 .asm.obj:
 	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd  $(VMASMDEBUG) -DWIN32  $<
@@ -71,7 +71,7 @@ $(DLLNAME): $(LIBPATH)$(LIBNAME).lib \
 	$(SYSLIBFILES1)  \
 	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
 
-	
+
 clean:
 	-del *.map
 	-del *.obj

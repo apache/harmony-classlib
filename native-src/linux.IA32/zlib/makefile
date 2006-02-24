@@ -26,12 +26,13 @@ LIBNAME=hyzlib# declaration
 
 LIBPATH=../lib/# declaration
 
-CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I.  $(VMDEBUG)
+CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I. $(VMDEBUG)
 
 
 BUILDFILES = \
-	zlib_copyright.o adler32.o compress.o crc32.o deflate.o infback.o \
-	inffast.o inflate.o inftrees.o trees.o uncompr.o zutil.o
+	zlib_copyright.o dist/adler32.o dist/compress.o dist/crc32.o \
+	dist/deflate.o dist/infback.o dist/inffast.o dist/inflate.o \
+	dist/inftrees.o dist/trees.o dist/uncompr.o dist/zutil.o
 
 all: $(DLLNAME)
 

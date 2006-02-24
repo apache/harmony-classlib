@@ -24,7 +24,7 @@ LIBPATH=../lib/# declaration
 
 BUILDFILES = zcpool.o zipalloc.o zipcache.o zipsup.o
 
-CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../zlib  $(VMDEBUG)
+CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../zlib/dist  $(VMDEBUG)
 
 all: $(LIBPATH)$(LIBNAME)
 

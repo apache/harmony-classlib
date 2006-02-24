@@ -31,7 +31,7 @@ LIBNAME=hyzlib# declaration
 LIBPATH=..\lib\# declaration
 
 .c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -W3 -Zi  /I..\include /I. $(VMDEBUG) $*.c
+	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -W3 -Zi  /I..\include /I. $(VMDEBUG) -Fo$*.obj $*.c
 
 .cpp.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -W3 -Zi  /I..\include /I. $(VMDEBUG) $*.cpp
@@ -42,9 +42,9 @@ LIBPATH=..\lib\# declaration
 .rc.res:
 	rc -I..\include $<
 
-BUILDFILES1 = zlib_copyright.obj adler32.obj compress.obj crc32.obj deflate.obj
-BUILDFILES2 = gzio.obj infback.obj inffast.obj inflate.obj inftrees.obj trees.obj
-BUILDFILES3 = uncompr.obj zutil.obj
+BUILDFILES1 = zlib_copyright.obj dist/adler32.obj dist/compress.obj dist/crc32.obj dist/deflate.obj
+BUILDFILES2 = dist/gzio.obj dist/infback.obj dist/inffast.obj dist/inflate.obj dist/inftrees.obj dist/trees.obj
+BUILDFILES3 = dist/uncompr.obj dist/zutil.obj
 
 VIRTFILES1 = $(LIBNAME).res
 

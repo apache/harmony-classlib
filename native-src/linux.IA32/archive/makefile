@@ -26,7 +26,7 @@ LIBNAME=hyarchive# declaration
 
 LIBPATH=../lib/# declaration
 
-CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../archive -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
+CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../archive -I../common -I../zlib/dist -I../zip -I../fdlibm  $(VMDEBUG)
 
 BUILDFILES = \
 	archive_copyright.o jclcrc32.o zip.o adler32.o inflater.o \

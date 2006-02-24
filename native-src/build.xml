@@ -28,13 +28,14 @@
          ================================= -->
     <target name="default" 
         description="Compile the native source into component shared libs." 
-        depends="overlay-oss, make-clean, make-all, clean-layout, layout" />
+        depends="clean-overlay-oss, overlay-oss, make-clean, make-all, clean-layout, layout" />
 
 
     <!-- ================================= 
           target: clean              
          ================================= -->
-    <target name="clean" depends="make-clean, clean-layout" />
+    <target name="clean"
+            depends="clean-overlay-oss, make-clean, clean-layout" />
 
 
     <!-- ================================= 
@@ -192,15 +193,27 @@
           target: overlay-oss              
          ================================= -->
     <target name="overlay-oss" depends="properties">
-        <unzip src="${fdlibm.zip}" dest="${native.src.root}/fdlibm" />
-        <chmod dir="${native.src.root}/fdlibm" perm="ugo+r" />
+        <unzip src="${fdlibm.zip}" dest="${native.src.root}/fdlibm/dist" />
+        <chmod dir="${native.src.root}/fdlibm/dist" perm="ugo+r" />
 
-        <unzip src="${zlib.zip}" dest="${native.src.root}/zlib" />
-        <chmod dir="${native.src.root}/zlib" perm="ugo+r" />
+        <unzip src="${zlib.zip}" dest="${native.src.root}/zlib/dist" />
+        <chmod dir="${native.src.root}/zlib/dist" perm="ugo+r" />
 
         <unzip src="${iculib.zip}" dest="${native.src.root}" />
         <chmod dir="${native.src.root}/include/unicode" perm="ugo+r" />
         <chmod dir="${native.src.root}/text" perm="ugo+r" />
+    </target>
+
+    <!-- ================================= 
+          target: clean-overlay-oss              
+         ================================= -->
+    <target name="clean-overlay-oss" depends="properties">
+        <delete dir="${native.src.root}/fdlibm/dist" quiet="true" />
+        <delete dir="${native.src.root}/zlib/dist" quiet="true" />
+        <delete dir="${native.src.root}/include/unicode" quiet="true" />
+        <!-- should really only delete one of these per platform ... -->
+        <delete file="${native.src.root}/text/icuuc.lib" quiet="true" />
+        <delete file="${native.src.root}/text/libicuuc.so.34" quiet="true" />
     </target>
 
 </project>
