@@ -131,7 +131,9 @@ public abstract class Writer {
 	public void write(String str) throws IOException {
 		char buf[] = new char[str.length()];
 		str.getChars(0, buf.length, buf, 0);
-		write(buf);
+		synchronized (lock) {
+			write(buf);
+		}
 	}
 
 	/**

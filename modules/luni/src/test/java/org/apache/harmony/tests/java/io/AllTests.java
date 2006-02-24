@@ -28,6 +28,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.apache.harmony.tests.java.io");
 		//$JUnit-BEGIN$
+		suite.addTestSuite(WriterTest.class);
 		suite.addTestSuite(FilePermissionTest.class);
 		suite.addTestSuite(FileTest.class);
 		suite.addTestSuite(BufferedReaderTest.class);
