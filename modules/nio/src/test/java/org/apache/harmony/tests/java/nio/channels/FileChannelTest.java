@@ -13,24 +13,27 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.nio;
+package org.apache.harmony.tests.java.nio.channels;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+public class FileChannelTest extends TestCase {
+
+	/**
+	 * @tests java.nio.channels.FileChannel#isOpen()
+	 */
+	public void test_close() throws Exception {
+		// Regression for HARMONY-40
+		File logFile = File.createTempFile("out", "tmp");
+		logFile.deleteOnExit();
+		FileOutputStream out = new FileOutputStream(logFile, true);
+		FileChannel channel = out.getChannel();
+		out.write(1);
+		out.close();
+		assertFalse("Assert 0: Channel is still open", channel.isOpen());
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.apache.harmony.tests.nio");
-		// $JUnit-BEGIN$
-		suite.addTest(org.apache.harmony.tests.java.nio.AllTests.suite());
-		suite.addTest(org.apache.harmony.tests.java.nio.channels.AllTests.suite());
-		// $JUnit-END$
-		return suite;
-	}
-
 }

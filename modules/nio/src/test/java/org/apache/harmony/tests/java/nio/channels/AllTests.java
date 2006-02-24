@@ -13,23 +13,19 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.nio;
+package org.apache.harmony.tests.java.nio.channels;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 public class AllTests {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
-	}
-
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.apache.harmony.tests.nio");
-		// $JUnit-BEGIN$
-		suite.addTest(org.apache.harmony.tests.java.nio.AllTests.suite());
-		suite.addTest(org.apache.harmony.tests.java.nio.channels.AllTests.suite());
-		// $JUnit-END$
+		TestSuite suite = new TestSuite(
+				"Test for org.apache.harmony.tests.java.nio.channels");
+		//$JUnit-BEGIN$
+		suite.addTestSuite(FileChannelTest.class);
+		//$JUnit-END$
 		return suite;
 	}
 
