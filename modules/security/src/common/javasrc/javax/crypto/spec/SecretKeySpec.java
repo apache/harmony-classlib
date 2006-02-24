@@ -60,7 +60,7 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
             throw BADPARAMS_EXC;
         }
         this.algorithm = algorithm;
-        this.key = new byte[key.length];
+        this.key = new byte[len];
         System.arraycopy(key, offset, this.key, 0, len);
     }
 

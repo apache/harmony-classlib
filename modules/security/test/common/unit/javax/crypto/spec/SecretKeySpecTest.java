@@ -178,6 +178,12 @@ public class SecretKeySpecTest extends TestCase {
         assertFalse("The change of returned by getEncoded() method key "
                     + "should not cause the change of internal array.",
                     result[0] == ks.getEncoded()[0]);
+
+		// Regression for HARMONY-78
+		int offset = 1;
+		int len = 4;
+		SecretKeySpec sks = new SecretKeySpec(key, offset, len, algorithm);
+		assertEquals("Key length is incorrect", len, sks.getEncoded().length);
     }
 
     /**
