@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -74,5 +75,59 @@ public class CharsetTest extends TestCase {
 		} catch (IllegalCharsetNameException e) {
 			// Expected
 		}
-	} 
+	}
+	
+    /**
+	 * @tests java.nio.charset.Charset#defaultCharset()
+	 */
+	public void test_defaultCharset() {
+		String charsetName = null;
+		String defaultCharsetName = null;
+		Properties oldProps = (Properties) System.getProperties().clone();
+		try {
+			// Normal behavior
+			charsetName = "UTF-8"; //$NON-NLS-1$
+			System.setProperty("file.encoding", charsetName);//$NON-NLS-1$
+			defaultCharsetName = Charset.defaultCharset().name();
+			assertEquals(charsetName, defaultCharsetName);
+
+			charsetName = "ISO-8859-1"; //$NON-NLS-1$
+			System.setProperty("file.encoding", charsetName);//$NON-NLS-1$
+			defaultCharsetName = Charset.defaultCharset().name();
+			assertEquals(charsetName, defaultCharsetName);
+
+			System.setProperties(oldProps);
+
+			// Unsupported behavior
+			charsetName = "IMPOSSIBLE-8"; //$NON-NLS-1$
+			System.setProperty("file.encoding", charsetName);//$NON-NLS-1$
+			defaultCharsetName = Charset.defaultCharset().name();
+			assertEquals("UTF-8", defaultCharsetName);
+
+			System.setProperties(oldProps);
+
+			// Null behavior
+			try {
+				Properties currentProps = System.getProperties();
+				currentProps.remove("file.encoding");//$NON-NLS-1$
+				Charset.defaultCharset().name();
+				fail("Should throw illegal IllegalArgumentException");//$NON-NLS-1$
+			} catch (IllegalArgumentException e) {
+				// expected
+			}
+			System.setProperties(oldProps);
+
+			// IllegalCharsetName behavior
+			try {
+				charsetName = "IMP~~OSSIBLE-8"; //$NON-NLS-1$
+				System.setProperty("file.encoding", charsetName);//$NON-NLS-1$
+				Charset.defaultCharset().name();
+				fail("Should throw IllegalCharsetNameException");//$NON-NLS-1$
+			} catch (IllegalCharsetNameException e) {
+				// expected
+			}
+		} finally {
+			System.setProperties(oldProps);
+		}
+	}
 }

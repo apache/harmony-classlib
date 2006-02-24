@@ -666,7 +666,19 @@ public abstract class Charset implements Comparable {
 	 */
 	public final int compareTo(Object obj) {
 		Charset that = (Charset) obj;
-		return this.canonicalName.compareToIgnoreCase(that.canonicalName);
+		return compareTo(that);
+	}
+
+	/**
+	 * Compares this charset with the given charset.
+	 * 
+	 * @param charset
+	 *            the given object to be compared with
+	 * @return a negative integer if less than the given object, a positive
+	 *         integer if larger than it, or 0 if equal to it
+	 */
+	public final int compareTo(Charset charset) {
+		return this.canonicalName.compareToIgnoreCase(charset.canonicalName);
 	}
 
 	/*
@@ -709,7 +721,28 @@ public abstract class Charset implements Comparable {
 	public final String toString() {
 		return "Charset[" + this.canonicalName + "]"; //$NON-NLS-1$//$NON-NLS-2$
 	}
-
+	
+    /**
+	 * Gets the system default charset from jvm.
+	 * 
+	 * @return the default charset
+	 */
+	public static Charset defaultCharset() {
+		Charset defaultCharset = null;
+		String encoding = (String) AccessController
+				.doPrivileged(new PrivilegedAction() {
+					public Object run() {
+						return System.getProperty("file.encoding"); //$NON-NLS-1$
+					}
+				});
+		try {
+			defaultCharset = Charset.forName(encoding);
+		} catch (UnsupportedCharsetException e) {
+			defaultCharset = Charset.forName("UTF-8"); //$NON-NLS-1$
+		}
+		return defaultCharset;
+	}
+   
 	/**
 	 * A comparator that ignores case.
 	 */
