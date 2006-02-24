@@ -26,7 +26,7 @@ public class FileChannelTest extends TestCase {
 	/**
 	 * @tests java.nio.channels.FileChannel#isOpen()
 	 */
-	public void test_close() throws Exception {
+	public void test_isOpen() throws Exception {
 		// Regression for HARMONY-40
 		File logFile = File.createTempFile("out", "tmp");
 		logFile.deleteOnExit();
