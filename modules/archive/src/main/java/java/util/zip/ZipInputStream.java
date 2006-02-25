@@ -279,17 +279,20 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 	 * @return the number of bytes skipped
 	 */
 	public long skip(long value) throws IOException {
-		long skipped = 0;
-		int x = 0;
-		byte[] b = new byte[1024];
-		while (skipped != value) {
-			x = read(b, 0, (int) (b.length > value ? value : b.length));
-			if (x == -1)
-				return skipped;
-			skipped += x;
-		}
-		return skipped;
-	}
+		if (value >= 0) {
+			long skipped = 0;
+			byte[] b = new byte[1024];
+			while (skipped != value) {
+				long rem = value - skipped;
+				int x = read(b, 0, (int) (b.length > rem ? rem : b.length));
+				if (x == -1)
+					return skipped;
+				skipped += x;
+			}
+			return skipped;
+		} else
+			throw new IllegalArgumentException();
+}
 
 	/**
 	 * Answers 1 if the EOF has been reached, otherwise returns 0.

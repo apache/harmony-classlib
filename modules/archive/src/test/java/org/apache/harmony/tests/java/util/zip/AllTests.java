@@ -29,6 +29,7 @@ public class AllTests {
 				"Test for org.apache.harmony.tests.java.util.zip");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(InflaterTest.class);
+		suite.addTestSuite(ZipInputStreamTest.class);
 		suite.addTestSuite(ZipOutputStreamTest.class);
 		//$JUnit-END$
 		return suite;
