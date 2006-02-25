@@ -116,12 +116,7 @@ creation of a launcher executable (java.exe on Windows, java on Linux) in the
 bin directory of the above layout together with a number of shared libraries
 (with the .dll extension on Windows, and .so on Linux). 
 
-A record of the progress of the native build step is kept in the text file 
-<EXTRACT_DIR>/native-src/<target platform>/build.log where
-<target platform> will have the value "win.IA32" or "linux.IA32". The contents
-of this file are especially useful in tracking down problems in your build 
-environment. For example, on Windows if the native build exits on error and 
-the resulting build.log file contains the message :
+On Windows if the native build exits with the message :
 
 fatal error U1052: file 'ntwin32.mak' not found
 
