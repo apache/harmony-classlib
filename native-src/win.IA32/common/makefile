@@ -26,26 +26,20 @@ LIBNAME=hycommon.lib# declaration
 
 LIBPATH=..\lib\# declaration
 
-BUILDFILES1 = libglob.obj iohelp.obj locklbl.obj lock386.obj utf8decode.obj utf8encode.obj
-
-SYSLIBFILES1 = ws2_32.lib Iphlpapi.lib
-
-MDLLIBFILES1 = ..\lib\hysig.lib ..\lib\hypool.lib
-MDLLIBFILES2 = ..\lib\hyfdlibm.lib ..\lib\hythr.lib ..\lib\vmi.lib
+BUILDFILES = \
+	libglob.obj iohelp.obj locklbl.obj lock386.obj \
+	utf8decode.obj utf8encode.obj
 
 .c.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hycommon.pdb /I..\include /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
-
-.cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hycommon.pdb /I..\include /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.cpp
 
 .asm.obj:
 	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd  $(VMASMDEBUG) -DWIN32  $<
 
 all: $(LIBPATH)$(LIBNAME)
 
-$(LIBPATH)$(LIBNAME): $(BUILDFILES1) 
-	$(implib) /NOLOGO -out:$(LIBPATH)$(LIBNAME) $(BUILDFILES1)
+$(LIBPATH)$(LIBNAME): $(BUILDFILES) 
+	$(implib) /NOLOGO -out:$(LIBPATH)$(LIBNAME) $(BUILDFILES)
 
 clean:
 	-del *.obj

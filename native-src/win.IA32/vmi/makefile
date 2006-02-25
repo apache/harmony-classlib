@@ -33,30 +33,19 @@ LIBPATH=..\lib\# declaration
 .c.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include  $(VMDEBUG) $*.c
 
-.cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include  $(VMDEBUG) $*.cpp
-
-.asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd  $(VMASMDEBUG) -DWIN32  $<
-
 .rc.res:
 	rc -I..\include $<
 
-BUILDFILES1 = vmi_copyright.obj vmi.obj
+BUILDFILES = vmi_copyright.obj vmi.obj
 
-VIRTFILES1 = vmi.res
+VIRTFILES = vmi.res
 
-MDLLIBFILES1 = 
+all: ..\lib\$(LIBNAME).lib
 
-all: \
-	 ..\lib\$(LIBNAME).lib
-
-BUILDLIB: $(LIBPATH)$(LIBNAME).lib
-
-$(LIBPATH)$(LIBNAME).lib:\
-	$(BUILDFILES1) $(VIRTFILES1) $(MDLLIBFILES1) 
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib -def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES1) $(VIRTFILES1) $(MDLLIBFILES1) 
+$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES)
+	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
+	-def:$(LIBNAME).def -machine:$(CPU) \
+	$(BUILDFILES) $(VIRTFILES)
 
 clean:
 	-del *.obj

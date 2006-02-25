@@ -26,21 +26,15 @@ LIBNAME=hypool.lib# declaration
 
 LIBPATH=..\lib\# declaration
 
-BUILDFILES1 = pool.obj pool_cap.obj
+BUILDFILES = pool.obj pool_cap.obj
 
 .c.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hypool.pdb /I..\include  $(VMDEBUG) $*.c
 
-.cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hypool.pdb /I..\include  $(VMDEBUG) $*.cpp
-
-.asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32  $<
-
 all: $(LIBPATH)$(LIBNAME)
 
-$(LIBPATH)$(LIBNAME): $(BUILDFILES1) 
-	$(implib) /NOLOGO -out:$(LIBPATH)$(LIBNAME) $(BUILDFILES1)
+$(LIBPATH)$(LIBNAME): $(BUILDFILES) 
+	$(implib) /NOLOGO -out:$(LIBPATH)$(LIBNAME) $(BUILDFILES)
 
 clean:
 	-del *.obj

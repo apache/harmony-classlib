@@ -33,42 +33,36 @@ LIBPATH=..\lib\# declaration
 .c.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include /I..\archive /I..\common /I..\zlib\dist /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
 
-.cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include /I..\archive /I..\common /I..\zlib\dist /I..\zip /I..\fdlibm  $(VMDEBUG) $*.cpp
-
-.asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd  $(VMASMDEBUG) -DWIN32  $<
-
 .rc.res:
 	rc -I..\include $<
 
-BUILDFILES1 = archive_copyright.obj jclcrc32.obj zip.obj adler32.obj inflater.obj
-BUILDFILES2 = jarfile.obj deflater.obj archiveglob.obj
+BUILDFILES = \
+	archive_copyright.obj jclcrc32.obj zip.obj adler32.obj inflater.obj \
+	jarfile.obj deflater.obj archiveglob.obj
 
-VIRTFILES1 = hyarchive.res
+VIRTFILES = hyarchive.res
 
-SYSLIBFILES1 = ws2_32.lib Iphlpapi.lib
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES1 = ..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hyzip.lib ..\lib\hyzlib.lib
-MDLLIBFILES2 = ..\lib\hypool.lib ..\lib\hyfdlibm.lib ..\lib\hythr.lib ..\lib\vmi.lib
+MDLLIBFILES = \
+	..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hyzip.lib \
+        ..\lib\hyzlib.lib ..\lib\hypool.lib ..\lib\hyfdlibm.lib \
+	..\lib\hythr.lib ..\lib\vmi.lib
 
-all: \
-	 ..\lib\$(LIBNAME).lib $(DLLNAME)
+all: $(DLLNAME)
 
-BUILDLIB: $(LIBPATH)$(LIBNAME).lib
-
-$(LIBPATH)$(LIBNAME).lib:\
-	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1) $(MDLLIBFILES2) 
-	$(implib) /nologo -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib -def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1) $(MDLLIBFILES2) 
+$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
+	$(implib) /nologo -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
+	-def:$(LIBNAME).def -machine:$(CPU) \
+	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 
 
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib \
-	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1) $(MDLLIBFILES2) 
-	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x13100000 -machine:$(CPU) \
+$(DLLNAME): $(LIBPATH)$(LIBNAME).lib
+	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
+	-entry:_DllMainCRTStartup@12 -dll /BASE:0x13100000 -machine:$(CPU) \
 	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
-	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1) $(MDLLIBFILES2) \
-	$(SYSLIBFILES1)  \
+	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) \
+	$(SYSLIBFILES)  \
 	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
 
 

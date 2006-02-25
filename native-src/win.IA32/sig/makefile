@@ -33,34 +33,27 @@ LIBPATH=..\lib\# declaration
 .c.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include $(VMDEBUG) $*.c
 
-.cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include $(VMDEBUG) $*.cpp
-
-.asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32  $<
-
 .rc.res:
 	rc -I..\include $<
 
-BUILDFILES1 = hysig_copyright.obj hysigwin.obj
+BUILDFILES = hysig_copyright.obj hysigwin.obj
 
-VIRTFILES1 = hysig.res
+VIRTFILES = hysig.res
 
-all: \
-	 ..\lib\$(LIBNAME).lib $(DLLNAME)
+all: $(DLLNAME)
 
-BUILDLIB: $(LIBPATH)$(LIBNAME).lib
+$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) 
+	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
+	-def:$(LIBNAME).def -machine:$(CPU) \
+	$(BUILDFILES) $(VIRTFILES) 
 
-$(LIBPATH)$(LIBNAME).lib:\
-	$(BUILDFILES1) $(VIRTFILES1) 
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib -def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES1) $(VIRTFILES1) 
-
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib \
-	$(BUILDFILES1) $(VIRTFILES1) 
-	link $(VMLINK) /NOLOGO /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x13100000 -machine:$(CPU) \
-	/comment:"Signal handling support DLL. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable." -subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
-	$(BUILDFILES1) $(VIRTFILES1)  \
+$(DLLNAME): $(LIBPATH)$(LIBNAME).lib
+	link $(VMLINK) /NOLOGO /debug /opt:icf /opt:ref /INCREMENTAL:NO \
+	/NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x13100000 \
+	-machine:$(CPU) \
+	/comment:"Signal handling support DLL. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable." \
+	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
+	$(BUILDFILES) $(VIRTFILES)  \
 	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
 
 clean:
@@ -72,4 +65,3 @@ clean:
 	-del ..\lib\$(LIBNAME).exp
 	-del ..\$(LIBNAME).pdb
 	-del $(DLLNAME)
-	

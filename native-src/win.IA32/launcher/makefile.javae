@@ -27,28 +27,23 @@ EXENAME=..\java.exe# declaration
 .c.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include $(VMDEBUG) $*.c
 
-.cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include $(VMDEBUG) $*.cpp
-
-.asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd -DWIN32  $<
-
 .rc.res:
 	rc -I../include $<
 
-BUILDFILES1 = launcher_copyright.obj cmain.obj main.obj strbuf.obj libhlp.obj
+BUILDFILES = launcher_copyright.obj cmain.obj main.obj strbuf.obj libhlp.obj
 
-VIRTFILES1 = java.res
+VIRTFILES = java.res
 
-MDLLIBFILES1 = ..\lib\hyprt.lib ..\lib\hythr.lib 
+MDLLIBFILES = ..\lib\hyprt.lib ..\lib\hythr.lib 
 
 all: $(EXENAME)
 
-$(EXENAME):\
-	$(BUILDFILES1) $(VIRTFILES1) $(MDLLIBFILES1)
-	link /NOLOGO $(conlflags) /debug /opt:icf /opt:ref $(VMLINK) -out:$(EXENAME) -subsystem:console -machine:$(CPU) setargv.obj  $(BUILDFILES1) $(VIRTFILES1) $(MDLLIBFILES1) $(MDLLIBFILES2) $(conlibsdll) 
+$(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
+	link /NOLOGO $(conlflags) /debug /opt:icf /opt:ref $(VMLINK) \
+	-out:$(EXENAME) -subsystem:console -machine:$(CPU) setargv.obj  \
+	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(conlibsdll) 
 
 clean:
-	-del ..\java.exe
+	-del $(EXENAME)
 	-del ..\java.pdb
 	-del java.RES

@@ -33,39 +33,35 @@ LIBPATH=..\lib\# declaration
 .c.obj:
 	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include  $(VMDEBUG) $*.c
 
-.cpp.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include  $(VMDEBUG) $*.cpp
-
 .asm.obj:
 	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32  $<
 
 .rc.res:
 	rc -I..\include $<
 
-BUILDFILES1 = thread_copyright.obj thrhelp.obj thrspinlock.obj hythread.obj hythreadinspect.obj
-BUILDFILES2 = rwmutex.obj thrdsup.obj thrprof.obj
+BUILDFILES = \
+  thread_copyright.obj thrhelp.obj thrspinlock.obj hythread.obj \
+  hythreadinspect.obj rwmutex.obj thrdsup.obj thrprof.obj
 
-VIRTFILES1 = hythr.res
+VIRTFILES = hythr.res
 
-MDLLIBFILES1 = ..\lib\hypool.lib ..\lib\hycommon.lib
+MDLLIBFILES = ..\lib\hypool.lib ..\lib\hycommon.lib
 
-all: \
-	 ..\lib\$(LIBNAME).lib $(DLLNAME)
+all: $(DLLNAME)
 
-BUILDLIB: $(LIBPATH)$(LIBNAME).lib
-
-$(LIBPATH)$(LIBNAME).lib:\
-	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1) 
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib -def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1) 
+$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) 
+	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
+	-def:$(LIBNAME).def -machine:$(CPU) \
+	$(BUILDFILES) $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) 
 
 
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib $(LIBNAME).def \
-	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1) 
-	link $(VMLINK) /NOLOGO /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x11500000 -machine:$(CPU) \
-	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
+$(DLLNAME): $(LIBPATH)$(LIBNAME).lib $(LIBNAME).def
+	link $(VMLINK) /NOLOGO /debug /opt:icf /opt:ref /INCREMENTAL:NO \
+	/NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x11500000 \
+	-machine:$(CPU) -subsystem:windows \
+	-out:$(DLLNAME) -map:$(LIBNAME).map  \
 	/comment:"Thread support library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable." \
-	$(BUILDFILES1) $(BUILDFILES2) $(VIRTFILES1) $(MDLLIBFILES1)  \
+	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)  \
 	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
 
 clean:
