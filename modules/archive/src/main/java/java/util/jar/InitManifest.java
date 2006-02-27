@@ -141,8 +141,11 @@ class InitManifest {
 				if (next != '\n') {
 					inbufPos--;
 					next = '\r';
-				} else
+				} else {
+					if (out.size() == 0)
+						continue;
 					out.write('\r');
+				}
 				lastCr = false;
 			} else if (next == '\r') {
 				lastCr = true;
