@@ -103,9 +103,9 @@ gpProtectedMain (struct haCmdlineOptions *args)
   int i;
   char *vmdllsubdir;
   int isJvmSubDir = 0;
-  char *vmiPath;
+  char *vmiPath = NULL;
   char *newPathToAdd;
-  char *propertiesFileName;
+  char *propertiesFileName = NULL;
   char *exeName;
   char *endPathPtr;
   //jint (JNICALL *JNI_CreateJavaVM)(JavaVM**, JNIEnv**, JavaVMInitArgs*);
@@ -590,15 +590,15 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
       noOfLauncherHomes = 0;
 
       /* count number of instances of %LAUNCHER_HOME% in String */
-      while (equalsDelimiter =
-             strstr (lineStr[l] + offset, "%LAUNCHER_HOME%"))
+      while ( (equalsDelimiter =
+             strstr (lineStr[l] + offset, "%LAUNCHER_HOME%")) )
         {
           noOfLauncherHomes++;
           offset = equalsDelimiter - lineStr[l] + 15;
           //printf("counter = %d\n",noOfLauncherHomes);
         }
       /* Allocate memory for expanding string */
-      if (equalsDelimiter = strstr (lineStr[l], "%LAUNCHER_HOME%"))
+      if ( (equalsDelimiter = strstr (lineStr[l], "%LAUNCHER_HOME%")) )
         {
           expandedLineStr[l] =
             hymem_allocate_memory (strlen (lineStr[l]) +
