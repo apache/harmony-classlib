@@ -29,9 +29,13 @@ public class URLConnectionTest extends TestCase {
 	 */
 	public void test_setUseCachesZ() throws MalformedURLException, IOException {
 		// Regression for HARMONY-71
-		URLConnection u = new URL("http://www.apache.org").openConnection();
-		u.connect(); // TODO change to use local server
+		URLConnection u = new URLConnection(new URL("http://www.apache.org")) {
+		    public void connect() {
+		        connected = true;
+		    }
+		};
 
+		u.connect();
 		try {
 			u.setUseCaches(true);
 			fail("Assert 0: expected an IllegalStateException");
@@ -46,8 +50,13 @@ public class URLConnectionTest extends TestCase {
 	public void test_setAllowUserInteractionZ() throws MalformedURLException,
 			IOException {
 		// Regression for HARMONY-72
-		URLConnection u = new URL("http://www.apache.org").openConnection();
-		u.connect(); // TODO change to use local server
+		URLConnection u = new URLConnection(new URL("http://www.apache.org")) {
+		    public void connect() {
+		        connected = true;
+		    }
+		};
+
+		u.connect();
 		try {
 			u.setAllowUserInteraction(false);
 			fail("Assert 0: expected an IllegalStateException");
