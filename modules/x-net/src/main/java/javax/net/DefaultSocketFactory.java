@@ -32,6 +32,10 @@ import java.net.UnknownHostException;
  */
 class DefaultSocketFactory extends SocketFactory {
 
+	public Socket createSocket() throws IOException {
+		return new Socket();
+	}
+
     public Socket createSocket(String host, int port) throws IOException,
             UnknownHostException {
         return new Socket(host, port);
