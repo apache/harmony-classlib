@@ -293,8 +293,6 @@ public class JarFile extends java.util.zip.ZipFile {
 								.regionMatches(true, entryName.length() - 4,
 										".RSA", 0, 4))) {
 					signed = true;
-					if (manifest == null)
-						verifier.setManifest(getManifest());
 					InputStream is = super.getInputStream(entry);
 					byte[] buf = new byte[is.available()];
 					is.read(buf, 0, buf.length);
@@ -320,6 +318,7 @@ public class JarFile extends java.util.zip.ZipFile {
 		if (manifestEntry != null)
 			getManifest();
 		if (verifier != null) {
+			verifier.setManifest(getManifest());
 			if (verifier.readCertificates()) {
 				verifier.removeMetaEntries();
 				if (manifest != null)
