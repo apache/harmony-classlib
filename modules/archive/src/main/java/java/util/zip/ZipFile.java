@@ -179,7 +179,7 @@ public class ZipFile implements ZipConstants {
 	public InputStream getInputStream(ZipEntry entry) throws IOException {
 		byte[] buf = inflateEntryImpl2(descriptor, entry.getName());
 		if (buf == null) return null;
-		return new com.ibm.oti.util.AccessibleByteArrayInputStream(buf);
+		return new ByteArrayInputStream(buf);
 }
 
 	/**
