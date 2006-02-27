@@ -485,7 +485,7 @@ ioLookupErrorString (JNIEnv * env, I_32 anErrorNum)
     case HYPORT_ERROR_FILE_EXIST:
       return "File already exists";
     case HYPORT_ERROR_FILE_INVAL:
-      return "a parameter is invalid";
+      return "A parameter is invalid";
     case HYPORT_ERROR_FILE_LOOP:
       return "Followed too many symbolic links, possibly stuck in loop";
     case HYPORT_ERROR_FILE_NAMETOOLONG:

@@ -52,7 +52,7 @@ throwJavaZIOException (JNIEnv * env, char *message)
       /* Just return if we can't load the exception class. */
       return;
     }
-  (*env)->ThrowNew (env, exceptionClass, "thrown from C code");
+  (*env)->ThrowNew (env, exceptionClass, message);
 }
 
 jint JNICALL
