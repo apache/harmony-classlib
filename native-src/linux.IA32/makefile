@@ -22,67 +22,67 @@ all: \
 	_math _text _launcher
 
 _auth:
-	(cd auth && $(MAKE) & cd ..)
+	(cd auth && $(MAKE) )
 
 _pool: 
-	(cd pool && $(MAKE) && cd ..)
+	(cd pool && $(MAKE) )
 
 _common:
-	(cd common && $(MAKE) && cd ..)
+	(cd common && $(MAKE) )
 
 _thread: _pool _common
-	(cd thread && $(MAKE) && cd ..)
+	(cd thread && $(MAKE) )
 
 _port: _thread _sig
-	(cd port && $(MAKE) && cd ..)
+	(cd port && $(MAKE) )
 
 _sig:
-	(cd sig && $(MAKE) && cd ..)
+	(cd sig && $(MAKE) )
 
 _fdlibm: 
-	(cd fdlibm && $(MAKE) && cd ..)
+	(cd fdlibm && $(MAKE) )
 
 _zip: 
-	(cd zip && $(MAKE) && cd ..)
+	(cd zip && $(MAKE) )
 
 _zlib: 
-	(cd zlib && $(MAKE) && cd ..)
+	(cd zlib && $(MAKE) )
 
 _vmi: _zip _pool
-	(cd vmi && $(MAKE) && cd ..)
+	(cd vmi && $(MAKE) )
 
 _luni: _common _sig _zip _zlib _pool _fdlibm _thread _vmi
-	(cd luni && $(MAKE) && cd ..)
+	(cd luni && $(MAKE) )
 	
 _nio: _sig _zip _zlib _pool _fdlibm _thread _vmi
-	(cd nio && $(MAKE) && cd ..)
+	(cd nio && $(MAKE) )
 	
 _archive: _common _sig _zip _zlib _pool _fdlibm _thread _vmi
-	(cd archive && $(MAKE) && cd ..)
+	(cd archive && $(MAKE) )
 	
 _math: _common _sig _zip _zlib _pool _fdlibm _thread _vmi
-	(cd math && $(MAKE) && cd ..)
+	(cd math && $(MAKE) )
 	
 _text: _sig _zip _zlib _pool _fdlibm _thread _vmi
-	(cd text && $(MAKE) && cd ..)
+	(cd text && $(MAKE) )
 	
 _launcher: _thread _port
-	(cd launcher && $(MAKE) && cd ..)	
+	(cd launcher && $(MAKE) )	
 
 clean:
-	(cd auth && $(MAKE) clean && cd ..)
-	(cd sig && $(MAKE) clean && cd ..)
-	(cd pool  && $(MAKE) clean && cd ..)
-	(cd thread && $(MAKE) clean && cd ..)
-	(cd port && $(MAKE) clean && cd ..)
-	(cd fdlibm && $(MAKE) clean && cd ..)
-	(cd zip && $(MAKE) clean && cd ..)
-	(cd zlib && $(MAKE) clean && cd ..)
-	(cd vmi && $(MAKE) clean && cd ..)
-	(cd common && $(MAKE) clean && cd ..)
-	(cd luni && $(MAKE) clean && cd ..)
-	(cd nio && $(MAKE) clean && cd ..)
-	(cd archive && $(MAKE) clean && cd ..)
-	(cd math && $(MAKE) clean && cd ..)
-	(cd text && $(MAKE) clean && cd ..)
-	(cd launcher && $(MAKE) clean && cd ..)
+	(cd auth && $(MAKE) clean )
+	(cd sig && $(MAKE) clean )
+	(cd pool  && $(MAKE) clean )
+	(cd thread && $(MAKE) clean )
+	(cd port && $(MAKE) clean )
+	(cd fdlibm && $(MAKE) clean )
+	(cd zip && $(MAKE) clean )
+	(cd zlib && $(MAKE) clean )
+	(cd vmi && $(MAKE) clean )
+	(cd common && $(MAKE) clean )
+	(cd luni && $(MAKE) clean )
+	(cd nio && $(MAKE) clean )
+	(cd archive && $(MAKE) clean )
+	(cd math && $(MAKE) clean )
+	(cd text && $(MAKE) clean )
+	(cd launcher && $(MAKE) clean )
