@@ -20,6 +20,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
@@ -79,8 +81,12 @@ public class ZipFile implements ZipConstants {
 		if (mode == OPEN_READ || mode == (OPEN_READ | OPEN_DELETE)) {
 			fileName = file.getPath();
 			SecurityManager security = System.getSecurityManager();
-			if (security != null)
+			if (security != null) {
 				security.checkRead(fileName);
+				if ((mode & OPEN_DELETE) != 0) {
+					security.checkDelete(fileName);
+				}
+			}
 			this.mode = mode;
 			openZip(fileName);
 		} else
@@ -95,8 +101,9 @@ public class ZipFile implements ZipConstants {
 	 */
 	public ZipFile(String filename) throws IOException {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
+		if (security != null) {
 			security.checkRead(filename);
+		}
 		fileName = filename;
 		openZip(fileName);
 	}
@@ -126,10 +133,16 @@ public class ZipFile implements ZipConstants {
 		if (fileName != null) {
 			// Only close initialized instances
 			closeZipImpl();
-			if ((mode & OPEN_DELETE) != 0)
-				new File(fileName).delete();
+			if ((mode & OPEN_DELETE) != 0) {
+				AccessController.doPrivileged(new PrivilegedAction() {
+					public Object run() {
+						new File(fileName).delete();
+						return null;
+					}
+				});
+			}
 		}
-	}
+}
 
 	/**
 	 * Answers all of the zip entries contained in this ZipFile.
@@ -165,10 +178,9 @@ public class ZipFile implements ZipConstants {
 	 */
 	public InputStream getInputStream(ZipEntry entry) throws IOException {
 		byte[] buf = inflateEntryImpl2(descriptor, entry.getName());
-		if (buf == null)
-			return null;
-		return new ByteArrayInputStream(buf);
-	}
+		if (buf == null) return null;
+		return new com.ibm.oti.util.AccessibleByteArrayInputStream(buf);
+}
 
 	/**
 	 * Gets the file name of this ZipFile.
@@ -225,6 +237,10 @@ public class ZipFile implements ZipConstants {
 				long nextEntryPointer1);
 
 		public boolean hasMoreElements() {
+			if(descriptor == -1) {
+				/* the descriptor is set to -1 by native code to indicate the zip was closed */
+				throw new IllegalStateException();
+			}
 			return current != null;
 		}
 
