@@ -33,8 +33,6 @@ java/lang/ref/*
 java/lang/reflect/*
 org/apache/harmony/luni/internal/reflect/*
 
-com/ibm/misc/util/*
-
 org/apache/harmony/luni/internal/locale/*
 
 com/ibm/oti/vm/*
