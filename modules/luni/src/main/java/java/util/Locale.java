@@ -28,8 +28,9 @@ import java.security.PrivilegedAction;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.ibm.oti.locale.Country;
-import com.ibm.oti.locale.Language;
+import org.apache.harmony.luni.internal.locale.Country;
+import org.apache.harmony.luni.internal.locale.Language;
+
 import com.ibm.oti.util.PriviAction;
 
 /**
@@ -347,7 +348,7 @@ public final class Locale implements Cloneable, Serializable {
 			availableLocales = (Locale[]) AccessController
 					.doPrivileged(new PrivilegedAction() {
 						public Object run() {
-							return find("com/ibm/oti/locale/Locale_"); //$NON-NLS-1$
+							return find("org/apache/harmony/luni/internal/locale/Locale_"); //$NON-NLS-1$
 						}
 					});
 		}

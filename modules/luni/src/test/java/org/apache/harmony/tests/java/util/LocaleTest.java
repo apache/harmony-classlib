@@ -15,27 +15,18 @@
 
 package org.apache.harmony.tests.java.util;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.Locale;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+public class LocaleTest extends TestCase {
+
+	/**
+	 * @tests java.util.Locale#getAvailableLocales()
+	 */
+	public void test_getAvailableLocales() {
+		Locale[] locales = Locale.getAvailableLocales();
+		// Assumes that there will be a decent number of locales
+		assertTrue("Assert 0: Cannot find locales", locales.length > 100);
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.util");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(CollectionsTest.class);
-		suite.addTestSuite(BitSetTest.class);
-		suite.addTestSuite(ArraysTest.class);
-		suite.addTestSuite(IdentityHashMapTest.class);
-		suite.addTestSuite(DateTest.class);
-		suite.addTestSuite(LocaleTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }
