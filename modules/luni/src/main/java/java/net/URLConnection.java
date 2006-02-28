@@ -26,7 +26,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.harmony.net.www.MimeTable;
+import org.apache.harmony.luni.internal.net.www.MimeTable;
 
 import com.ibm.oti.util.Msg;
 import com.ibm.oti.util.PriviAction;

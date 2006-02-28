@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.apache.harmony.net.www.MimeTable;
+import org.apache.harmony.luni.internal.net.www.MimeTable;
 
 
 /**

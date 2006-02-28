@@ -29,7 +29,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.Permission;
 
-import org.apache.harmony.net.www.MimeTable;
+import org.apache.harmony.luni.internal.net.www.MimeTable;
 
 import com.ibm.oti.util.Msg;
 

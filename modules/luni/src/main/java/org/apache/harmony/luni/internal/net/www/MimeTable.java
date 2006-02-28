@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.net.www;
+package org.apache.harmony.luni.internal.net.www;
 
 
 import java.io.IOException;
