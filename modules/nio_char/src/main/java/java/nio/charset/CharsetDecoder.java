@@ -15,6 +15,8 @@
 
 package java.nio.charset;
 
+import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
@@ -393,7 +395,16 @@ public abstract class CharsetDecoder {
 		// begin to decode
 		while (true) {
 			CodingErrorAction action = null;
-			result = decodeLoop(decodingBuffer, out);
+			try {
+				result = decodeLoop(decodingBuffer, out);
+			} catch (BufferOverflowException ex) {
+				// unexpected exception
+				throw new CoderMalfunctionError(ex);
+			} catch (BufferUnderflowException ex) {
+				// unexpected exception
+				throw new CoderMalfunctionError(ex);
+			}
+
 			/*
 			 * result handling
 			 */
