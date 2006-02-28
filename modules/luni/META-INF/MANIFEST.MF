@@ -13,13 +13,12 @@ Import-Package: com.ibm.io.nio,
  java.util.zip,
  java.security,
  java.text
-Export-Package: com.ibm.misc.util,
- com.ibm.oti.util,
- org.apache.harmony.luni.util,
+Export-Package: com.ibm.oti.util,
  com.ibm.oti.vm,
  java.io,
  java.lang,
  java.lang.ref,
  java.lang.reflect,
  java.net,
- java.util
+ java.util,
+ org.apache.harmony.luni.util
