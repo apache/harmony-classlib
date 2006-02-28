@@ -261,3 +261,13 @@ would be to add new entries for each of the shared libraries built from the
 contributed native source code to the local /etc/ld.so.conf file and then 
 running the ldconfig program to rebuild the /etc/ld.so.cache. 
 
+                                  ----------
+
+Linux users may need to update their GNU Make (http://www.gnu.org/software/make/)
+to version 3.80 or later if they see the following error message when attempting
+to build native source:
+
+: No such file or directory
+make: *** [../libvmi.so] Error 1
+
+(The library name may be different)
