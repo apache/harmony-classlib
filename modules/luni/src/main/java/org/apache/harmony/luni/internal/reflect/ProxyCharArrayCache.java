@@ -13,45 +13,70 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.luni.reflect;
+package org.apache.harmony.luni.internal.reflect;
 
 
-class ProxyObjectCache {
-	Object keyTable[];
+class ProxyCharArrayCache {
+	// to avoid using Enumerations, walk the individual tables skipping nulls
+	char[] keyTable[];
 
 	int valueTable[];
 
-	int elementSize;
+	int elementSize; // number of elements in the table
 
 	int threshold;
 
-	ProxyObjectCache(int initialCapacity) {
-		if (initialCapacity < 13)
+	static boolean equals(char[] first, char[] second) {
+		if (first == second) {
+			return true;
+		}
+		if (first == null || second == null) {
+			return false;
+		}
+		if (first.length != second.length) {
+			return false;
+		}
+
+		for (int i = first.length; --i >= 0;)
+			if (first[i] != second[i]) {
+				return false;
+			}
+		return true;
+	}
+
+	ProxyCharArrayCache(int initialCapacity) {
+		if (initialCapacity < 13) {
 			initialCapacity = 13;
+		}
 		this.elementSize = 0;
 		this.threshold = (int) (initialCapacity * 0.66f);
-		this.keyTable = new Object[initialCapacity];
+		this.keyTable = new char[initialCapacity][];
 		this.valueTable = new int[initialCapacity];
 	}
 
-	int get(Object key) {
-		int index = hashCode(key);
+	int get(char[] key) {
+		int index = hashCodeChar(key);
 		while (keyTable[index] != null) {
-			if (keyTable[index].equals(key))
+			if (equals(keyTable[index], key))
 				return valueTable[index];
 			index = (index + 1) % keyTable.length;
 		}
 		return -1;
 	}
 
-	int hashCode(Object key) {
-		return (key.hashCode() & 0x7FFFFFFF) % keyTable.length;
+	private int hashCodeChar(char[] val) {
+		int length = val.length;
+		int hash = 0;
+		int n = 2; // number of characters skipped
+		for (int i = 0; i < length; i += n)
+			hash += val[i];
+		return (hash & 0x7FFFFFFF) % keyTable.length;
 	}
 
-	int put(Object key, int value) {
-		int index = hashCode(key);
+	int put(char[] key, int value) {
+		int index = hashCodeChar(key);
 		while (keyTable[index] != null) {
-			if (keyTable[index].equals(key))
+			if (equals(keyTable[index], key))
 				return valueTable[index] = value;
 			index = (index + 1) % keyTable.length;
 		}
@@ -65,7 +90,7 @@ class ProxyObjectCache {
 	}
 
 	private void rehash() {
-		ProxyObjectCache newHashtable = new ProxyObjectCache(
+		ProxyCharArrayCache newHashtable = new ProxyCharArrayCache(
 				keyTable.length * 2);
 		for (int i = keyTable.length; --i >= 0;)
 			if (keyTable[i] != null)

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.luni.reflect;
+package org.apache.harmony.luni.internal.reflect;
 
 
 class ProxyNameAndTypeCache {
