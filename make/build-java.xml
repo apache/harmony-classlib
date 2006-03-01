@@ -180,6 +180,7 @@
             <src path="nio_char/src/main/java" />
             <src path="security/src/common/javasrc" />
             <src path="security/src/windows/javasrc" />
+            <src path="security/src/linux/javasrc" />
 
             <src path="x-net/src/main/java/" />
 

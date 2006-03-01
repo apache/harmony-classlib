@@ -65,7 +65,7 @@ public class NTUserPrincipal implements Serializable, Principal {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof NTSid) {
+        if (obj instanceof NTUserPrincipal) {
             return name.equals(((NTUserPrincipal) obj).name);
         }
         return false;

@@ -59,7 +59,7 @@ public final class NTSystem {
      */
     public NTSystem() {
         if (!loadLibDone) {
-            System.loadLibrary("jaaswin");
+            System.loadLibrary("hyauth");
             initNatives();
             loadLibDone = true;
         }

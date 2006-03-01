@@ -64,7 +64,7 @@ public class UnixSystem {
      */
     public UnixSystem() {
         if (!loadLibDone) {
-            System.loadLibrary("jaasnix");
+            System.loadLibrary("hyauth");
             loadLibDone = true;
         }
         load();

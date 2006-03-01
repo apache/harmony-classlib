@@ -512,6 +512,9 @@
             <formatter type="xml" />
 <!--            <batchtest todir="${build.path}/tests_report"> -->
                 <batchtest todir="${tests.output}">
+                <fileset dir="${src.tst.common.ps}/unit">
+                    <include name="**/*Test*.java"/>
+                </fileset>
                 <fileset dir="${src.tst.common}/unit">
                     <include name="**/*Test*.java"/>
 
