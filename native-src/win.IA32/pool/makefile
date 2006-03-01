@@ -16,27 +16,10 @@
 # Makefile for module 'pool'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-LIBNAME=hypool.lib# declaration
+SHAREDSUB=$(SHARED)pool\# comment to avoid \ being treated as continuation
+LIBNAME=$(LIBPATH)hypool.lib
+BUILDFILES = pool.obj $(SHAREDSUB)pool_cap.obj
 
-LIBPATH=..\lib\# declaration
-
-BUILDFILES = pool.obj pool_cap.obj
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hypool.pdb /I..\include  $(VMDEBUG) $*.c
-
-all: $(LIBPATH)$(LIBNAME)
-
-$(LIBPATH)$(LIBNAME): $(BUILDFILES) 
-	$(implib) /NOLOGO -out:$(LIBPATH)$(LIBNAME) $(BUILDFILES)
-
-clean:
-	-del *.obj
-	-del $(LIBPATH)$(LIBNAME)
-	-del $(LIBPATH)hypool.pdb
+!include <..\rules.mak>

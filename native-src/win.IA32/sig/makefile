@@ -16,52 +16,15 @@
 # Makefile for module 'sig'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-DLLFILENAME=hysig.dll# declaration
-
-DLLNAME=..\hysig.dll# declaration
-
-LIBNAME=hysig# declaration
-
-LIBPATH=..\lib\# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include $(VMDEBUG) $*.c
-
-.rc.res:
-	rc -I..\include $<
-
+LIBBASE=hysig
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = hysig_copyright.obj hysigwin.obj
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
+VIRTFILES = $(LIBBASE).res
+DLLBASE=0x13100000
+COMMENT=/comment:"Signal handling support DLL. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-VIRTFILES = hysig.res
-
-all: $(DLLNAME)
-
-$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) 
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
-	-def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES) $(VIRTFILES) 
-
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib
-	link $(VMLINK) /NOLOGO /debug /opt:icf /opt:ref /INCREMENTAL:NO \
-	/NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x13100000 \
-	-machine:$(CPU) \
-	/comment:"Signal handling support DLL. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable." \
-	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
-	$(BUILDFILES) $(VIRTFILES)  \
-	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
-
-clean:
-	-del *.map
-	-del *.obj
-	-del *.res
-	-del *.pdb
-	-del ..\lib\$(LIBNAME).lib
-	-del ..\lib\$(LIBNAME).exp
-	-del ..\$(LIBNAME).pdb
-	-del $(DLLNAME)
+!include <..\rules.mak>

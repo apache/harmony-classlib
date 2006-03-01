@@ -18,38 +18,14 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhytext.so# declaration
-
-DLLNAME=../libhytext.so# declaration
-
-LIBNAME=hytext# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../text -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
-
+CFLAGS += -fpic -I../zlib -I../zip -I../fdlibm 
 BUILDFILES = text_copyright.o BidiWrapper.o
 
 MDLLIBFILES = \
+	libicuuc.so.34 \
 	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
 	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-all: $(DLLNAME)
+DLLNAME = ../libhytext.so
 
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group \
-	libicuuc.so.34 \
-	-lhysig \
-	-lhyzip \
-	-lhyzlib \
-	-lhycommon \
-	-lhypool \
-	-lhyfdlibm \
-	-lhythr \
-	-lvmi -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME)
+include ../rules.mk

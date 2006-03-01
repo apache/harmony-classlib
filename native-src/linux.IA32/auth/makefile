@@ -18,27 +18,8 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhyauth.so# declaration
+CFLAGS += -fpic 
+BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
+DLLNAME = ../libhyauth.so
 
-DLLNAME=../libhyauth.so# declaration
-
-LIBNAME=hyauth# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS= -fpic -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include $(VMDEBUG)
-
-BUILDFILES = \
-	auth_copyright.o authnix.o
-
-all: $(DLLNAME)
-
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group \
-	-Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME)
+include ../rules.mk

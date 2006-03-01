@@ -16,31 +16,21 @@
 # Makefile for module 'math'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-DLLFILENAME=hymath.dll# declaration
-
-DLLNAME=..\hymath.dll# declaration
-
-LIBNAME=hymath# declaration
-
-LIBPATH=..\lib\# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include /I..\math /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
-
-.rc.res:
-	rc -I..\include $<
+SHAREDSUB=$(SHARED)math\# comment to avoid \ being treated as continuation
+LIBBASE=hymath
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+HYCFLAGS = $(HYCFLAGS) /I$(SHARED)common /I..\zip /I..\fdlibm
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-  math_copyright.obj fltparse.obj mathglob.obj dblparse.obj bigint.obj \
-  cbigint.obj
+  $(SHAREDSUB)math_copyright.obj $(SHAREDSUB)fltparse.obj \
+  $(SHAREDSUB)mathglob.obj $(SHAREDSUB)dblparse.obj bigint.obj \
+  $(SHAREDSUB)cbigint.obj
 
-VIRTFILES = hymath.res
+VIRTFILES = $(LIBBASE).res
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
@@ -48,29 +38,7 @@ MDLLIBFILES = \
   ..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hypool.lib ..\lib\hyfdlibm.lib \
   ..\lib\hythr.lib ..\lib\vmi.lib
 
-all: $(DLLNAME)
+DLLBASE=0x13300000
+COMMENT=/comment:"Math component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) 
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
-	-def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) 
-
-
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib
-	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
-	-entry:_DllMainCRTStartup@12 -dll /BASE:0x13300000 -machine:$(CPU) \
-	/comment:"Math component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable." \
-	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) \
-	$(SYSLIBFILES)  \
-	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
-
-clean:
-	-del *.map
-	-del *.obj
-	-del *.res
-	-del *.pdb
-	-del ..\lib\$(LIBNAME).lib
-	-del ..\lib\$(LIBNAME).exp
-	-del ..\$(LIBNAME).pdb
-	-del $(DLLNAME)
+!include <..\rules.mak>

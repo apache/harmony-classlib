@@ -18,39 +18,20 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhyprt.so# declaration
-
-DLLNAME=../libhyprt.so# declaration
-
-LIBNAME=hyprt# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -DHYPORT_LIBRARY_DEFINE -I../include  $(VMDEBUG)
-
+CFLAGS += -fpic -DHYPORT_LIBRARY_DEFINE
 
 BUILDFILES = \
-	port_copyright.o hycpu.o hyerror.o hyerrorhelpers.o hyexit.o \
-	hyfile.o hyfiletext.o hygp.o hyipcmutex.o hymem.o \
+	$(SHAREDSUB)port_copyright.o hycpu.o $(SHAREDSUB)hyerror.o \
+	hyerrorhelpers.o $(SHAREDSUB)hyexit.o hyfile.o hyfiletext.o \
+	$(SHAREDSUB)hygp.o hyipcmutex.o hymem.o \
 	hymmap.o hynls.o hynlshelpers.o hyosdump.o hyport.o \
-	hyportcontrol.o hyportptb.o hysharedhelper.o hyshmem.o hyshsem.o \
-	hysignal.o hysl.o hysock.o hystr.o hystrftime.o \
-	hystsl.o hysysinfo.o hytime.o hytlshelpers.o hytty.o \
-	hyvmem.o
+	$(SHAREDSUB)hyportcontrol.o hyportptb.o hysharedhelper.o hyshmem.o \
+	hyshsem.o hysignal.o hysl.o hysock.o hystr.o $(SHAREDSUB)hystrftime.o \
+	$(SHAREDSUB)hystsl.o hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o \
+	hytty.o hyvmem.o
 
 MDLLIBFILES = ../libhythr.so ../lib/libhycommon.a ../libhysig.so
 
-all: $(DLLNAME)
+DLLNAME = ../libhyprt.so
 
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) 
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group \
-	-lhythr \
-	-lhycommon \
-	-lhysig \
-	-Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME)
+include ../rules.mk

@@ -18,10 +18,6 @@
 
 include ../makefile.include
 
-LIBNAME=libhyfdlibm.a# declaration
-
-LIBPATH=../lib/# declaration
-
 BUILDFILES = \
 	dist/e_acos.o dist/e_acosh.o dist/e_asin.o dist/e_atan2.o \
 	dist/e_atanh.o dist/e_cosh.o dist/e_exp.o dist/e_fmod.o \
@@ -33,7 +29,8 @@ BUILDFILES = \
 	dist/k_tan.o dist/s_asinh.o dist/s_atan.o dist/s_cbrt.o dist/s_ceil.o \
 	dist/s_copysign.o dist/s_cos.o dist/s_erf.o dist/s_expm1.o \
 	dist/s_fabs.o dist/s_finite.o dist/s_floor.o dist/s_frexp.o \
-	dist/s_ilogb.o dist/s_isnan.o dist/s_ldexp.o s_lib_version.o \
+	dist/s_ilogb.o dist/s_isnan.o dist/s_ldexp.o \
+	$(SHAREDSUB)s_lib_version.o \
 	dist/s_log1p.o dist/s_logb.o dist/s_matherr.o dist/s_modf.o \
 	dist/s_nextafter.o dist/s_rint.o dist/s_scalbn.o dist/s_signgam.o \
 	dist/s_significand.o dist/s_sin.o dist/s_tan.o dist/s_tanh.o \
@@ -44,14 +41,12 @@ BUILDFILES = \
 	dist/w_log.o dist/w_log10.o dist/w_pow.o dist/w_remainder.o \
 	dist/w_scalb.o dist/w_sinh.o dist/w_sqrt.o
 
+# CFLAGS are overriden not just appended to
 CFLAGS= -O0 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM \
-        -DHY_PLATFORM_DOUBLE_ORDER -I../include -I. -ffloat-store $(VMDEBUG)
+        -DHY_PLATFORM_DOUBLE_ORDER \
+	-I../include -I. -I$(SHARED)include -I$(SHAREDSUB) \
+	-ffloat-store $(VMDEBUG)
 
-all: $(LIBPATH)$(LIBNAME)
+LIBNAME = $(LIBPATH)libhyfdlibm.a
 
-$(LIBPATH)$(LIBNAME): $(BUILDFILES)
-	$(AR) rcv $(LIBPATH)$(LIBNAME) $(BUILDFILES)
-
-clean:
-	-rm -f $(BUILDFILES)
-	-rm -f $(LIBPATH)$(LIBNAME)
+include ../rules.mk

@@ -16,32 +16,15 @@
 # Makefile for module 'common'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-LIBNAME=hycommon.lib# declaration
-
-LIBPATH=..\lib\# declaration
+SHAREDSUB=$(SHARED)common\# comment to avoid \ being treated as continuation
+LIBNAME=$(LIBPATH)hycommon.lib
 
 BUILDFILES = \
-	libglob.obj iohelp.obj locklbl.obj lock386.obj \
+	$(SHAREDSUB)libglob.obj iohelp.obj locklbl.obj lock386.obj \
 	utf8decode.obj utf8encode.obj
 
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi -Fd$(LIBPATH)hycommon.pdb /I..\include /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\zip /I..\fdlibm
 
-.asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd  $(VMASMDEBUG) -DWIN32  $<
-
-all: $(LIBPATH)$(LIBNAME)
-
-$(LIBPATH)$(LIBNAME): $(BUILDFILES) 
-	$(implib) /NOLOGO -out:$(LIBPATH)$(LIBNAME) $(BUILDFILES)
-
-clean:
-	-del *.obj
-	-del ..\lib\$(LIBNAME)
-	-del ..\lib\hycommon.pdb
+!include <..\rules.mak>

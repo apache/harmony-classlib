@@ -16,57 +16,23 @@
 # Makefile for module 'text'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-DLLFILENAME=hytext.dll# declaration
-
-DLLNAME=..\hytext.dll# declaration
-
-LIBNAME=hytext# declaration
-
-LIBPATH=..\lib\# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -Zi -WX  /I..\include /I..\text /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
-
-.rc.res:
-	rc -I..\include $<
-
+SHAREDSUB=$(SHARED)text\# comment to avoid \ being treated as continuation
+LIBBASE=hytext
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\zip /I..\fdlibm
 BUILDFILES = text_copyright.obj BidiWrapper.obj
-
 VIRTFILES = hytext.res
-
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = \
   ..\lib\hysig.lib ..\lib\hycommon.lib ..\lib\hypool.lib ..\lib\hyfdlibm.lib \
   ..\lib\hythr.lib ..\lib\vmi.lib icuuc.lib
 
-all: $(DLLNAME)
-	
-$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
-	-def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
+DLLBASE=0x13300000
+COMMENT=/comment:"Text component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib
-	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
-	-entry:_DllMainCRTStartup@12 -dll /BASE:0x13300000 -machine:$(CPU) \
-	/comment:"Text component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable." \
-	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES)  \
-	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib icuuc.lib $(LIBPATH)$(LIBNAME).exp
-
-clean:
-	-del *.map
-	-del *.obj
-	-del *.res
-	-del *.pdb
-	-del ..\lib\$(LIBNAME).lib
-	-del ..\lib\$(LIBNAME).exp
-	-del ..\$(LIBNAME).pdb
-	-del $(DLLNAME)
+!include <..\rules.mak>

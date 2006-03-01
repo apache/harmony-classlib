@@ -16,14 +16,10 @@
 # Makefile for module 'fdlibm'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-SEHMAP=TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-LIBNAME=hyfdlibm.lib# declaration
-
-LIBPATH=..\lib\# declaration
+SHAREDSUB=$(SHARED)fdlibm\# comment to avoid \ being treated as continuation
+LIBNAME=$(LIBPATH)hyfdlibm.lib
 
 BUILDFILES = \
   dist/e_acos.obj dist/e_acosh.obj dist/e_asin.obj dist/e_atan2.obj \
@@ -37,7 +33,8 @@ BUILDFILES = \
   dist/s_ceil.obj dist/s_copysign.obj dist/s_cos.obj dist/s_erf.obj \
   dist/s_expm1.obj dist/s_fabs.obj dist/s_finite.obj dist/s_floor.obj \
   dist/s_frexp.obj dist/s_ilogb.obj dist/s_isnan.obj dist/s_ldexp.obj \
-  s_lib_version.obj dist/s_log1p.obj dist/s_logb.obj dist/s_matherr.obj \
+  $(SHAREDSUB)s_lib_version.obj \
+  dist/s_log1p.obj dist/s_logb.obj dist/s_matherr.obj \
   dist/s_modf.obj dist/s_nextafter.obj dist/s_rint.obj dist/s_scalbn.obj \
   dist/s_signgam.obj dist/s_significand.obj dist/s_sin.obj dist/s_tan.obj \
   dist/s_tanh.obj dist/w_acos.obj dist/w_acosh.obj dist/w_asin.obj \
@@ -47,10 +44,11 @@ BUILDFILES = \
   dist/w_lgamma_r.obj dist/w_log.obj dist/w_log10.obj dist/w_pow.obj \
   dist/w_remainder.obj dist/w_scalb.obj dist/w_sinh.obj dist/w_sqrt.obj
 
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Oityb1 -Gs -GF -Zm400 -W3 -Zi -Fd$(LIBPATH)hyfdlibm.pdb  -D_IEEE_LIBM -DHY_PLATFORM_DOUBLE_ORDER /I..\include /I. $(VMDEBUG) -Fo$*.obj $*.c
+HYCFLAGS = -Oityb1 -W3 -Fd$(LIBPATH)hyfdlibm.pdb -D_IEEE_LIBM \
+	 -DHY_PLATFORM_DOUBLE_ORDER /I$(SHAREDSUB)
 
-all: $(LIBPATH)$(LIBNAME)
+.c.obj:
+        $(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.c
 
 $(LIBPATH)$(LIBNAME): $(BUILDFILES)
 	@echo /NOLOGO -out:$(LIBPATH)$(LIBNAME) >templrf

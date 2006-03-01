@@ -18,25 +18,8 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhysig.so# declaration
-
-DLLNAME=../libhysig.so# declaration
-
-LIBNAME=hysig# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -I../include $(VMDEBUG)
-
+CFLAGS += -fpic
 BUILDFILES = jsig_copyright.o jsiglinux.o jsigunix.o
+DLLNAME = ../libhysig.so
 
-all: $(DLLNAME)
-
-$(DLLNAME): $(BUILDFILES) 
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o 
-	-rm -f $(DLLNAME)
+include ../rules.mk

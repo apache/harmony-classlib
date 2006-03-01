@@ -16,34 +16,17 @@
 # Makefile for module 'launcher.java'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-EXENAME=..\java.exe# declaration
+SHAREDSUB=$(SHARED)launcher\# comment to avoid \ being treated as continuation
+EXENAME=$(EXEPATH)java.exe
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include $(VMDEBUG) $*.c
-
-.rc.res:
-	rc -I../include $<
-
-BUILDFILES = launcher_copyright.obj cmain.obj main.obj strbuf.obj libhlp.obj
-
+BUILDFILES = $(SHAREDSUB)launcher_copyright.obj cmain.obj main.obj \
+        $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
 VIRTFILES = java.res
-
 MDLLIBFILES = ..\lib\hyprt.lib ..\lib\hythr.lib 
+EXEFLAGS=$(conlflags) -subsystem:console
+EXEDLLFILES=$(conlibsdll)
 
-all: $(EXENAME)
-
-$(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
-	link /NOLOGO $(conlflags) /debug /opt:icf /opt:ref $(VMLINK) \
-	-out:$(EXENAME) -subsystem:console -machine:$(CPU) setargv.obj  \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(conlibsdll) 
-
-clean:
-	-del $(EXENAME)
-	-del ..\java.pdb
-	-del java.RES
+!include <..\rules.mak>

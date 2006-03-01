@@ -18,34 +18,15 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhythr.so# declaration
-
-DLLNAME=../libhythr.so# declaration
-
-LIBNAME=hythr# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include  $(VMDEBUG)
+CFLAGS += -fpic
 
 BUILDFILES = \
-	thread_copyright.o thrhelp.o thrspinlock.o hythread.o \
-	hythreadinspect.o linuxonexit.o priority.o rasthrsup.o rwmutex.o \
-	thrcreate.o thrdsup.o thrprof.o
+	$(SHAREDSUB)thread_copyright.o thrhelp.o thrspinlock.o hythread.o \
+	$(SHAREDSUB)hythreadinspect.o linuxonexit.o priority.o rasthrsup.o \
+	$(SHAREDSUB)rwmutex.o thrcreate.o thrdsup.o thrprof.o
 
 SYSLIBFILES = -lpthread
-
 MDLLIBFILES = ../lib/libhypool.a ../lib/libhycommon.a
+DLLNAME = ../libhythr.so
 
-all: $(DLLNAME)
-
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) 
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -o $(DLLNAME) \
-	$(BUILDFILES) $(SYSLIBFILES) -Xlinker --start-group \
-	-lhypool \
-	-lhycommon -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME)
+include ../rules.mk

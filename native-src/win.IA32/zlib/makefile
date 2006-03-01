@@ -16,56 +16,28 @@
 # Makefile for module 'zlib'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-DLLFILENAME=hyzlib.dll# declaration
+SHAREDSUB=$(SHARED)zlib\# comment to avoid \ being treated as continuation
+LIBBASE=hyzlib
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
-DLLNAME=..\hyzlib.dll# declaration
-
-LIBNAME=hyzlib# declaration
-
-LIBPATH=..\lib\# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -W3 -Zi  /I..\include /I. $(VMDEBUG) -Fo$*.obj $*.c
-
-.rc.res:
-	rc -I..\include $<
+# override HYCFLAGS to get different warning behaviour (W3 not WX)
+HYCFLAGS = \
+  -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
+  -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
+  $(VMDEBUG) /I..\include /I$(SHARED)include /I.
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-  zlib_copyright.obj dist/adler32.obj dist/compress.obj dist/crc32.obj \
-  dist/deflate.obj dist/gzio.obj dist/infback.obj dist/inffast.obj \
-  dist/inflate.obj dist/inftrees.obj dist/trees.obj dist/uncompr.obj \
-  dist/zutil.obj
+  $(SHAREDSUB)zlib_copyright.obj dist\adler32.obj dist\compress.obj \
+  dist\crc32.obj dist\deflate.obj dist\gzio.obj dist\infback.obj \
+  dist\inffast.obj dist\inflate.obj dist\inftrees.obj dist\trees.obj \
+  dist\uncompr.obj dist\zutil.obj
 
-VIRTFILES = $(LIBNAME).res
+VIRTFILES = $(LIBBASE).res
+DLLBASE=0x11700000
+COMMENT=/comment:"zlib data compression library Copyright (C) 1995-2003 Jean-loup Gailly and Mark Adler"
 
-all: $(DLLNAME)
-
-$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) 
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
-	-def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES) $(VIRTFILES) 
-
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib
-	link $(VMLINK) /NOLOGO /debug /opt:icf /opt:ref /INCREMENTAL:NO \
-	/NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x11700000 \
-	-machine:$(CPU) \
-	/comment:"zlib data compression library Copyright (C) 1995-2003 Jean-loup Gailly and Mark Adler" \
-	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
-	$(BUILDFILES) $(VIRTFILES)  \
-	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
-
-clean:
-	-del *.map
-	-del *.obj dist\*.obj
-	-del *.res
-	-del *.pdb
-	-del ..\lib\$(LIBNAME).lib
-	-del ..\lib\$(LIBNAME).exp
-	-del ..\$(LIBNAME).pdb
-	-del $(DLLNAME)
+!include <..\rules.mak>

@@ -16,40 +16,16 @@
 # Makefile for module 'vmi'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-DLLFILENAME=vmi.dll# declaration
+SHAREDSUB=$(SHARED)vmi\# comment to avoid \ being treated as continuation
+LIBBASE=vmi
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+HYCFLAGS = $(HYCFLAGS) -DHYPORT_LIBRARY_DEFINE
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-DLLNAME=..\vmi.dll# declaration
-
-LIBNAME=vmi# declaration
-
-LIBPATH=..\lib\# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include  $(VMDEBUG) $*.c
-
-.rc.res:
-	rc -I..\include $<
-
-BUILDFILES = vmi_copyright.obj vmi.obj
+BUILDFILES = $(SHAREDSUB)vmi_copyright.obj $(SHAREDSUB)vmi.obj
 
 VIRTFILES = vmi.res
 
-all: ..\lib\$(LIBNAME).lib
-
-$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES)
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
-	-def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES) $(VIRTFILES)
-
-clean:
-	-del *.obj
-	-del *.pdb
-	-del *.res
-	-del $(LIBPATH)$(LIBNAME).lib
-	-del $(LIBPATH)$(LIBNAME).exp
+!include <..\rules.mak>

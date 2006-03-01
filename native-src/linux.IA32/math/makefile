@@ -18,39 +18,17 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhymath.so# declaration
-
-DLLNAME=../libhymath.so# declaration
-
-LIBNAME=hymath# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../math -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
+CFLAGS += -fpic -I$(SHARED)common -I../zlib -I../zip -I../fdlibm 
 
 BUILDFILES = \
-	math_copyright.o fltparse.o mathglob.o dblparse.o bigint.o cbigint.o
+	$(SHAREDSUB)math_copyright.o $(SHAREDSUB)fltparse.o \
+	$(SHAREDSUB)mathglob.o $(SHAREDSUB)dblparse.o bigint.o \
+	$(SHAREDSUB)cbigint.o
 
 MDLLIBFILES = \
 	../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so \
 	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-all: $(DLLNAME)
+DLLNAME = ../libhymath.so
 
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group \
-	-lhycommon \
-	-lhysig \
-	-lhyzip \
-	-lhyzlib \
-	-lhycommon \
-	-lhypool \
-	-lhyfdlibm \
-	-lhythr \
-	-lvmi -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME)
+include ../rules.mk

@@ -18,29 +18,13 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhyzlib.so# declaration
-
-DLLNAME=../libhyzlib.so# declaration
-
-LIBNAME=hyzlib# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I. $(VMDEBUG)
-
+CFLAGS += -fpic
 
 BUILDFILES = \
-	zlib_copyright.o dist/adler32.o dist/compress.o dist/crc32.o \
-	dist/deflate.o dist/infback.o dist/inffast.o dist/inflate.o \
-	dist/inftrees.o dist/trees.o dist/uncompr.o dist/zutil.o
+	$(SHAREDSUB)zlib_copyright.o dist/adler32.o dist/compress.o \
+	dist/crc32.o dist/deflate.o dist/infback.o dist/inffast.o \
+	dist/inflate.o dist/inftrees.o dist/trees.o dist/uncompr.o dist/zutil.o
 
-all: $(DLLNAME)
+DLLNAME = ../libhyzlib.so
 
-$(DLLNAME): $(BUILDFILES)
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f $(BUILDFILES)
-	-rm -f $(DLLNAME)
+include ../rules.mk

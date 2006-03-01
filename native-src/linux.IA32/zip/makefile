@@ -18,19 +18,9 @@
 
 include ../makefile.include
 
-LIBNAME=libhyzip.a# declaration
+CFLAGS += -I../zlib/dist 
+BUILDFILES = $(SHAREDSUB)zcpool.o $(SHAREDSUB)zipalloc.o \
+	$(SHAREDSUB)zipcache.o $(SHAREDSUB)zipsup.o
+LIBNAME = $(LIBPATH)libhyzip.a
 
-LIBPATH=../lib/# declaration
-
-BUILDFILES = zcpool.o zipalloc.o zipcache.o zipsup.o
-
-CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../zlib/dist  $(VMDEBUG)
-
-all: $(LIBPATH)$(LIBNAME)
-
-$(LIBPATH)$(LIBNAME): $(BUILDFILES)
-	$(AR) rcv $(LIBPATH)$(LIBNAME) $(BUILDFILES)
-
-clean:
-	-rm -f *.o
-	-rm -f $(LIBPATH)$(LIBNAME)
+include ../rules.mk

@@ -16,60 +16,25 @@
 # Makefile for module 'thread'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-DLLFILENAME=hythr.dll# declaration
-
-DLLNAME=..\hythr.dll# declaration
-
-LIBNAME=hythr# declaration
-
-LIBPATH=..\lib\# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include  $(VMDEBUG) $*.c
-
-.asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32  $<
-
-.rc.res:
-	rc -I..\include $<
+SHAREDSUB=$(SHARED)thread\# comment to avoid \ being treated as continuation
+LIBBASE=hythr
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 BUILDFILES = \
-  thread_copyright.obj thrhelp.obj thrspinlock.obj hythread.obj \
-  hythreadinspect.obj rwmutex.obj thrdsup.obj thrprof.obj
+  $(SHAREDSUB)thread_copyright.obj thrhelp.obj thrspinlock.obj hythread.obj \
+  $(SHAREDSUB)hythreadinspect.obj $(SHAREDSUB)rwmutex.obj thrdsup.obj \
+  thrprof.obj
 
-VIRTFILES = hythr.res
+# TOFIX $(LIBBASE).def should be a dependency on all libs
+VIRTFILES = $(LIBBASE).res
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 
 MDLLIBFILES = ..\lib\hypool.lib ..\lib\hycommon.lib
 
-all: $(DLLNAME)
+DLLBASE=0x11500000
+COMMENT=/comment:"Thread support library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) 
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
-	-def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES) $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) 
-
-
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib $(LIBNAME).def
-	link $(VMLINK) /NOLOGO /debug /opt:icf /opt:ref /INCREMENTAL:NO \
-	/NOLOGO -entry:_DllMainCRTStartup@12 -dll /BASE:0x11500000 \
-	-machine:$(CPU) -subsystem:windows \
-	-out:$(DLLNAME) -map:$(LIBNAME).map  \
-	/comment:"Thread support library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable." \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)  \
-	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
-
-clean:
-	-del *.map
-	-del *.obj
-	-del *.res
-	-del *.pdb
-	-del ..\lib\$(LIBNAME).lib
-	-del ..\lib\$(LIBNAME).exp
-	-del ..\hythr.pdb
-	-del $(DLLNAME)
+!include <..\rules.mak>

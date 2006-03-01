@@ -16,13 +16,6 @@
 # Makefile for module 'launcher'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-
-!include <win32.mak>
-
 all: 
 	$(MAKE) /NOLOGO -f makefile.javae
 	$(MAKE) /NOLOGO -f makefile.javaw
@@ -30,5 +23,3 @@ all:
 clean:
 	$(MAKE) /NOLOGO -f makefile.javae clean
 	$(MAKE) /NOLOGO -f makefile.javaw clean
-	-del *.obj
-	-del vc70.pdb

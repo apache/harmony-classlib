@@ -18,30 +18,10 @@
 
 include ../makefile.include
 
-DLLFILENAME=libvmi.so
-
-DLLNAME=../libvmi.so
-
-LIBNAME=vmi
-
-LIBPATH=../lib/
-
-CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include $(VMDEBUG)
-
-BUILDFILES = vmi_copyright.o vmi.o
-
+CFLAGS += -fpic
+BUILDFILES = $(SHAREDSUB)vmi_copyright.o $(SHAREDSUB)vmi.o
 MDLLIBFILES = ../lib/libhyzip.a ../lib/libhypool.a
 
-all: $(DLLNAME)
+DLLNAME = ../libvmi.so
 
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) 
-	$(DLL_LD)  -shared  -Wl,-Map=$(LIBNAME).map \
-	-Wl,--version-script,$(LIBNAME).exp -Wl,-soname=$(DLLFILENAME) \
-	$(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group \
-	-lhyzip \
-	-lhypool -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME) $(LIBNAME).map
+include ../rules.mk

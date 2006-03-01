@@ -55,6 +55,7 @@
         <property name="depends.libs" location="../depends/libs/${target.platform}" />
         <property name="build.output" location="../native-bin/${target.platform}" />
         <property name="native.src.root" location="${basedir}/${target.platform}" />
+        <property name="native.shared.src.root" location="${basedir}/shared" />
 
         <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
         <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
@@ -167,6 +168,8 @@
         <copy todir="${target.output}/include" overwrite="yes">
             <fileset dir="${native.src.root}/include">
                 <include name="jni.h" />
+            </fileset>
+            <fileset dir="${native.shared.src.root}/include">
                 <include name="jniport.h" />
             </fileset>
         </copy>

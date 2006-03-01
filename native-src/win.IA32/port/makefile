@@ -1,11 +1,11 @@
 # Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,64 +16,34 @@
 # Makefile for module 'port'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-DLLFILENAME=hyprt.dll# declaration
+SHAREDSUB=$(SHARED)port\# comment to avoid \ being treated as continuation
+LIBBASE=hyprt
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
-DLLNAME=..\hyprt.dll # declaration
-
-LIBNAME=hyprt# declaration
-
-LIBPATH=..\lib\# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  -DHYPORT_LIBRARY_DEFINE /I..\include $(VMDEBUG) $*.c
-
-.rc.res:
-	rc -I..\include $<
+HYCFLAGS = $(HYCFLAGS) -DHYPORT_LIBRARY_DEFINE /I$(SHAREDSUB)
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-  port_copyright.obj hycpu.obj hyerror.obj hyerrorhelpers.obj hyexit.obj \
-  hyfile.obj hyfiletext.obj hygp.obj hyipcmutex.obj hymem.obj hymmap.obj \
-  hynls.obj hynlshelpers.obj hyosdump.obj hyport.obj hyportcontrol.obj \
+  $(SHAREDSUB)port_copyright.obj hycpu.obj $(SHAREDSUB)hyerror.obj \
+  hyerrorhelpers.obj $(SHAREDSUB)hyexit.obj hyfile.obj hyfiletext.obj \
+  $(SHAREDSUB)hygp.obj hyipcmutex.obj hymem.obj hymmap.obj hynls.obj \
+  hynlshelpers.obj hyosdump.obj hyport.obj $(SHAREDSUB)hyportcontrol.obj \
   hyportptb.obj hyshmem.obj hyshsem.obj hysignal.obj hysl.obj hysock.obj \
-  hystr.obj hystrftime.obj hystsl.obj hysysinfo.obj hytime.obj \
-  hytlshelpers.obj hytty.obj hyvmem.obj
+  hystr.obj $(SHAREDSUB)hystrftime.obj $(SHAREDSUB)hystsl.obj hysysinfo.obj \
+  hytime.obj $(SHAREDSUB)hytlshelpers.obj hytty.obj hyvmem.obj
 
 VIRTFILES = hyprt.res
 
-SYSLIBFILES = ws2_32.lib Iphlpapi.lib shell32.lib
+SYSLIBFILES = \
+	Delayimp.lib -delayload:shell32.dll -delayload:Iphlpapi.dll \
+	ws2_32.lib Iphlpapi.lib shell32.lib
 
 MDLLIBFILES = ..\lib\hythr.lib ..\lib\hycommon.lib ..\lib\hysig.lib
 
-all: $(DLLNAME)
+DLLBASE=0x11100000
+COMMENT=/comment:"Platform port library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) 
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
-	-def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) 
-
-
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib
-	link $(VMLINK) /NOLOGO /debug /opt:icf /opt:ref /INCREMENTAL:NO \
-	/NOLOGO -entry:_DllMainCRTStartup@12 \
-         -dll /BASE:0x11100000 -machine:$(CPU) \
-	/comment:"Platform port library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable." \
-	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map Delayimp.lib -delayload:shell32.dll -delayload:Iphlpapi.dll \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES)  \
-	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
-
-clean:
-	-del *.map
-	-del *.obj
-	-del *.res
-	-del *.pdb
-	-del ..\lib\$(LIBNAME).lib
-	-del ..\lib\$(LIBNAME).exp
-	-del ..\$(LIBNAME).pdb
-	-del $(DLLNAME)
-	
+!include <..\rules.mak>

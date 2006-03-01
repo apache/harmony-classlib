@@ -18,28 +18,9 @@
 
 include ../makefile.include
 
-EXENAME=../java# declaration
+BUILDFILES = main.o cmain.o $(SHAREDSUB)launcher_copyright.o \
+	$(SHAREDSUB)strbuf.o $(SHAREDSUB)libhlp.o  
+MDLLIBFILES = ../libhyprt.so ../libhythr.so
+EXENAME = $(EXEPATH)java
 
-CFLAGS=-O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include $(VMDEBUG)
-
-
-BUILDFILES = main.o cmain.o launcher_copyright.o strbuf.o libhlp.o  
-
-MDLLIBFILES = ../libhyprt.so ../libhythr.so ../libhysig.so
-
-all: $(EXENAME)
-
-$(EXENAME): $(BUILDFILES) $(MDLLIBFILES) 
-	$(CC) -L. -L.. -L../lib $(VMLINK) \
-	$(BUILDFILES) $(VIRTFILES1) -Xlinker --start-group \
-	-lhyprt \
-	-lhythr \
-	-Xlinker --end-group \
-	-o $@ -lm -lpthread -lc -ldl \
-	-Xlinker -z -Xlinker origin \
-	-Xlinker -rpath -Xlinker \$$ORIGIN/ \
-	-Xlinker -rpath-link -Xlinker ..
-
-clean:
-	-rm -f *.o
-	-rm -f $(EXENAME)
+include ../rules.mk

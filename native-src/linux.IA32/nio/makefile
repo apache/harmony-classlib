@@ -18,39 +18,17 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhynio.so# declaration
-
-DLLNAME=../libhynio.so# declaration
-
-LIBNAME=hynio# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS=-fpic -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86  -I../include -I../common -I../zlib -I../zip -I../fdlibm -I../nio $(VMDEBUG)
+CFLAGS += -fpic -I$(SHARED)common -I../zlib -I../zip -I../fdlibm
 
 BUILDFILES = \
-	nio_copyright.o helpers.o OSFileSystem.o OSFileSystemLinux32.o \
-	OSMemory.o OSMemoryLinux32.o nethelp.o OSNetworkSystem.o socket.o
- 
+	$(SHAREDSUB)nio_copyright.o helpers.o $(SHAREDSUB)OSFileSystem.o \
+	OSFileSystemLinux32.o OSMemory.o OSMemoryLinux32.o nethelp.o \
+	OSNetworkSystem.o socket.o
+
 MDLLIBFILES = \
 	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
 	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-all: $(DLLNAME)
+DLLNAME = ../libhynio.so
 
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group \
-	-lhysig \
-	-lhyzip \
-	-lhyzlib \
-	-lhycommon \
-	-lhypool \
-	-lhyfdlibm \
-	-lhythr \
-	-lvmi -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME)
+include ../rules.mk

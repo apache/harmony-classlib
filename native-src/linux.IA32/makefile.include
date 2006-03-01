@@ -22,3 +22,12 @@ AS = as
 AR = ar
 DLL_LD = $(CC)
 CXX_DLL_LD = $(CXX)
+
+EXEPATH=../
+LIBPATH=../lib/
+
+SHARED=../../shared/
+SHAREDSUB=$(SHARED)$(notdir $(CURDIR))/
+
+CFLAGS = -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
+         -DHYX86 $(VMDEBUG) -I../include -I$(SHARED)include -I. -I$(SHAREDSUB)

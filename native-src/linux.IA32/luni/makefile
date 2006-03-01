@@ -18,43 +18,22 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhyluni.so# declaration
-
-DLLNAME=../libhyluni.so# declaration
-
-LIBNAME=hyluni# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../luni -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
+CFLAGS += -fpic -I$(SHARED)common -I../zlib -I../zip -I$(SHARED)fdlibm
 
 BUILDFILES = \
-	luni_copyright.o file.o procimpl.o oos.o fileis.o \
-	simpl.o psimpl2.o nethelp.o floatbits.o rafile.o \
-	ois.o helpers.o math.o luniglob.o proxy.o \
-	netif.o process.o bigint.o osc.o socket.o \
-	inetadds.o pssimpl.o filedesc.o timezone.o pmsimpl.o \
-	pdsimpl.o fileos.o
+	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \
+	$(SHAREDSUB)oos.o $(SHAREDSUB)fileis.o \
+	simpl.o $(SHAREDSUB)psimpl2.o nethelp.o $(SHAREDSUB)floatbits.o \
+	$(SHAREDSUB)rafile.o $(SHAREDSUB)ois.o helpers.o math.o luniglob.o \
+	$(SHAREDSUB)proxy.o $(SHAREDSUB)netif.o process.o bigint.o \
+	$(SHAREDSUB)osc.o socket.o inetadds.o $(SHAREDSUB)pssimpl.o \
+	$(SHAREDSUB)filedesc.o $(SHAREDSUB)timezone.o $(SHAREDSUB)pmsimpl.o \
+	pdsimpl.o $(SHAREDSUB)fileos.o
 
 MDLLIBFILES = \
 	../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so \
 	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-all: $(DLLNAME)
+DLLNAME = ../libhyluni.so
 
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group \
-	-lhycommon \
-	-lhysig \
-	-lhyzip \
-	-lhyzlib \
-	-lhypool \
-	-lhyfdlibm \
-	-lhythr \
-	-lvmi -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME)
+include ../rules.mk

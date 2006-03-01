@@ -18,39 +18,16 @@
 
 include ../makefile.include
 
-DLLFILENAME=libhyarchive.so# declaration
+CFLAGS += -fpic -I$(SHARED)common -I../zlib/dist -I../zip -I../fdlibm
 
-DLLNAME=../libhyarchive.so# declaration
-
-LIBNAME=hyarchive# declaration
-
-LIBPATH=../lib/# declaration
-
-CFLAGS= -fpic  -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../archive -I../common -I../zlib/dist -I../zip -I../fdlibm  $(VMDEBUG)
-
-BUILDFILES = \
-	archive_copyright.o jclcrc32.o zip.o adler32.o inflater.o \
-	jarfile.o deflater.o archiveglob.o
+BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o zip.o \
+	$(SHAREDSUB)adler32.o inflater.o jarfile.o deflater.o \
+	$(SHAREDSUB)archiveglob.o
 
 MDLLIBFILES = \
 	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
 	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 
-all: $(DLLNAME)
+DLLNAME=../libhyarchive.so
 
-$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) 
-	$(DLL_LD) -shared -Wl,--version-script,$(LIBNAME).exp \
-	-Wl,-soname=$(DLLFILENAME) $(VMLINK) -L.  -L../lib -L.. -o $(DLLNAME) \
-	$(BUILDFILES) -Xlinker --start-group \
-	-lhysig \
-	-lhyzip \
-	-lhyzlib \
-	-lhycommon \
-	-lhypool \
-	-lhyfdlibm \
-	-lhythr \
-	-lvmi -Xlinker --end-group  -lc -lm -ldl
-
-clean:
-	-rm -f *.o
-	-rm -f $(DLLNAME)
+include ../rules.mk

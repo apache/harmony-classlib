@@ -16,32 +16,25 @@
 # Makefile for module 'luni'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-DLLFILENAME=hyluni.dll# declaration
-
-DLLNAME=..\hyluni.dll# declaration
-
-LIBNAME=hyluni# declaration
-
-LIBPATH=..\lib\# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -WX -Zi  /I..\include /I..\luni /I..\common /I..\zlib /I..\zip /I..\fdlibm  $(VMDEBUG) $*.c
-
-.rc.res:
-	rc -I..\include $<
+SHAREDSUB=$(SHARED)luni\# comment to avoid \ being treated as continuation
+LIBBASE=hyluni
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\zip \
+	   /I$(SHARED)fdlibm
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-  luni_copyright.obj file.obj procimpl.obj oos.obj fileis.obj simpl.obj \
-  psimpl2.obj nethelp.obj floatbits.obj rafile.obj ois.obj helpers.obj \
-  math.obj luniglob.obj proxy.obj netif.obj process.obj bigint.obj osc.obj \
-  socket.obj inetadds.obj pssimpl.obj filedesc.obj timezone.obj pmsimpl.obj \
-  pdsimpl.obj fileos.obj
+  $(SHAREDSUB)luni_copyright.obj $(SHAREDSUB)file.obj procimpl.obj \
+  $(SHAREDSUB)oos.obj $(SHAREDSUB)fileis.obj simpl.obj \
+  $(SHAREDSUB)psimpl2.obj nethelp.obj $(SHAREDSUB)floatbits.obj \
+  $(SHAREDSUB)rafile.obj $(SHAREDSUB)ois.obj helpers.obj math.obj \
+  luniglob.obj $(SHAREDSUB)proxy.obj $(SHAREDSUB)netif.obj process.obj \
+  bigint.obj $(SHAREDSUB)osc.obj socket.obj inetadds.obj \
+  $(SHAREDSUB)pssimpl.obj $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj \
+  $(SHAREDSUB)pmsimpl.obj pdsimpl.obj $(SHAREDSUB)fileos.obj
 
 VIRTFILES = hyluni.res
 
@@ -51,28 +44,7 @@ MDLLIBFILES = \
   ..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hyzip.lib ..\lib\hyzlib.lib \
   ..\lib\hypool.lib ..\lib\hyfdlibm.lib ..\lib\hythr.lib ..\lib\vmi.lib
 
-all: $(DLLNAME)
+DLLBASE=0x13200000
+COMMENT=/comment:"LUNI component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-$(LIBPATH)$(LIBNAME).lib: $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
-	$(implib) /NOLOGO -subsystem:windows -out:$(LIBPATH)$(LIBNAME).lib \
-	-def:$(LIBNAME).def -machine:$(CPU) \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
-
-
-$(DLLNAME): $(LIBPATH)$(LIBNAME).lib
-	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
-	-entry:_DllMainCRTStartup@12 -dll /BASE:0x13200000 -machine:$(CPU) \
-	/comment:"LUNI component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable." \
-	-subsystem:windows -out:$(DLLNAME) -map:$(LIBNAME).map  \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES) \
-	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib  $(LIBPATH)$(LIBNAME).exp
-
-clean:
-	-del *.map
-	-del *.obj
-	-del *.res
-	-del *.pdb
-	-del ..\lib\$(LIBNAME).lib
-	-del ..\lib\$(LIBNAME).exp
-	-del ..\$(LIBNAME).pdb
-	-del $(DLLNAME)
+!include <..\rules.mak>

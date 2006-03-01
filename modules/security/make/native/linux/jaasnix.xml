@@ -71,7 +71,7 @@ Version: $Revision$
 
         <exec executable="${compiler.name}" output="${tmp}/outerr.txt" failonerror="true">
             <env key="PATH" value="${cPath}"/>
-            <env key="CPATH" value="${cINCLUDE}:${env.CPATH}:${jni_h.path}:${jni_md_h.path}"/>
+            <env key="CPATH" value="${cINCLUDE}:${env.CPATH}:${native.include.path}:${native.shared.include.path}"/>
             <env key="LIB" value="${cLIB}"/>
             <env key="TMP" value="${tmp}"/>
 

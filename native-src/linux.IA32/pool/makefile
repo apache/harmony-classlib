@@ -18,19 +18,7 @@
 
 include ../makefile.include
 
-LIBNAME=libhypool.a# declaration
+BUILDFILES = pool.o $(SHAREDSUB)pool_cap.o
+LIBNAME = $(LIBPATH)libhypool.a
 
-LIBPATH=../lib/# declaration
-
-BUILDFILES = pool.o pool_cap.o
-
-CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include  $(VMDEBUG)
-
-all: $(LIBPATH)$(LIBNAME)
-
-$(LIBPATH)$(LIBNAME): $(BUILDFILES) 
-	$(AR) rcv $(LIBPATH)$(LIBNAME) $(BUILDFILES)
-
-clean:
-	-rm -f *.o
-	-rm -f $(LIBPATH)$(LIBNAME)
+include ../rules.mk

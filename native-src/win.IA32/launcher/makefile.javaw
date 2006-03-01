@@ -16,35 +16,15 @@
 # Makefile for module 'launcher.javaw'
 #
 
-APPVER=4.0
-TARGETOS=WIN95
-_WIN32_IE=0x0500
-SEHMAP = TRUE
-!include <win32.mak>
+!include <..\defines.mak>
 
-EXENAME=..\javaw.exe# declaration
-
-.c.obj:
-	$(cc) -DWINVER=0x0400 -D_WIN32_WINNT=0x0400 $(cflags) -D_MT -D_DLL -MD -D_WINSOCKAPI_ -DWIN32 -Ogityb1 -Gs -GF -Zm400 -W3 -Zi  /I..\include $(VMDEBUG) $*.c
-
-.rc.res:
-	rc -I..\include $<
-
-BUILDFILES = launcher_copyright.obj main.obj winmain.obj strbuf.obj libhlp.obj
-
+SHAREDSUB=$(SHARED)launcher\# comment to avoid \ being treated as continuation
+EXENAME=$(EXEPATH)javaw.exe
+BUILDFILES = $(SHAREDSUB)launcher_copyright.obj main.obj winmain.obj \
+        $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
 VIRTFILES = javaw.res
-
 MDLLIBFILES =  ..\lib\hyprt.lib ..\lib\hythr.lib 
+EXEFLAGS=$(guilflags) -subsystem:windows
+EXEDLLFILES=$(guilibsdll)
 
-all: $(EXENAME)
-
-$(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
-	link /NOLOGO $(guilflags) /debug /opt:icf /opt:ref $(VMLINK) \
-	-out:$(EXENAME) -subsystem:windows -machine:$(CPU) setargv.obj \
-	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(guilibsdll) 
-
-clean:
-	-del $(EXENAME)
-	-del ..\javaw.pdb
-	-del javaw.RES
-
+!include <..\rules.mak>

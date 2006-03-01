@@ -18,19 +18,8 @@
 
 include ../makefile.include
 
-LIBNAME=libhycommon.a# declaration
+CFLAGS += -I../zlib -I../zip -I../fdlibm 
+BUILDFILES = $(SHAREDSUB)libglob.o iohelp.o utf8encode.o utf8decode.o
+LIBNAME = $(LIBPATH)libhycommon.a
 
-LIBPATH=../lib/# declaration
-
-BUILDFILES = libglob.o iohelp.o utf8encode.o utf8decode.o
-
-CFLAGS= -DLINUX -D_REENTRANT -O1 -march=pentium3 -DIPv6_FUNCTION_SUPPORT  -DHYX86 -I../include -I../common -I../zlib -I../zip -I../fdlibm  $(VMDEBUG)
-
-all: $(LIBPATH)$(LIBNAME)
-
-$(LIBPATH)$(LIBNAME): $(BUILDFILES) 
-	$(AR) rcv $(LIBPATH)$(LIBNAME) $(BUILDFILES)
-
-clean:
-	-rm -f *.o
-	-rm -f $(LIBPATH)$(LIBNAME)
+include ../rules.mk

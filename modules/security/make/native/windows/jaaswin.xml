@@ -73,7 +73,7 @@ Version: $Revision$
 
         <exec executable="${compiler.name}" output="${tmp}/outerr.txt" failonerror="true"  newenvironment="true">
             <env key="PATH" value="${cPath}"/>
-            <env key="INCLUDE" value="${cINCLUDE};${jni_h.path};${jni_md_h.path};${lib_tmp}"/>
+            <env key="INCLUDE" value="${cINCLUDE};${native.include.path};${native.shared.include.path};${lib_tmp}"/>
             <env key="LIB" value="${cLIB}"/>
             <env key="TMP" value="${tmp}"/>
             <arg value="/O2"/>

@@ -158,6 +158,7 @@
     <target name="init.win" depends="init, init.java_home" if="if.win">
     	
     	<property name="native.include.path" value="../../native-src/win.IA32/include" />
+       	<property name="native.shared.include.path" value="../../native-src/shared/include" />
 
     	<property name="cPath" value="${PATH};${env.Path}" />
         <property name="cINCLUDE" value="${INCLUDE};${env.include};${env.INCLUDE};${native.include.path}" />
@@ -176,6 +177,7 @@
     <target name="init.linux" depends="init, init.java_home" if="if.linux">
 
        	<property name="native.include.path" value="../../native-src/linux.IA32/include" />
+       	<property name="native.shared.include.path" value="../../native-src/shared/include" />
 
         <property name="cPath" value="${env.PATH}" />
         <property name="cINCLUDE" value="${env.INCLUDE};${native.include.path}" />
