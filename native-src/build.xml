@@ -28,7 +28,15 @@
          ================================= -->
     <target name="default" 
         description="Compile the native source into component shared libs." 
-        depends="clean-overlay-oss, overlay-oss, make-clean, make-all, clean-layout, layout" />
+        depends="clean, build" />
+
+
+
+    <!-- ================================= 
+          target: build
+         ================================= -->
+    <target name="build"
+            depends="overlay-oss, make-all, layout" />
 
 
     <!-- ================================= 

@@ -25,20 +25,22 @@
     <!-- ================================= 
           target: default              
          ================================= -->
-    <target name="default">
+    <target name="default" depends="clean, build" />
+
+    <target name="build">
         <echo>
 ========================================
 Building Java component archives...
 ========================================
 </echo>
-        <ant antfile="make/build-java.xml" inheritall="false" />
+        <ant antfile="make/build-java.xml" inheritall="false" target="build"/>
 
         <echo>
 ========================================
 Building native libs and executables...
 ========================================
 </echo>
-        <ant antfile="native-src/build.xml" inheritall="false" />
+        <ant antfile="native-src/build.xml" inheritall="false" target="build"/>
     </target>
 
 
@@ -60,7 +62,12 @@ Generating HTML using Doxygen...
     <target name="clean">
         <ant antfile="make/build-java.xml" inheritall="false" target="clean" />
         <ant antfile="native-src/build.xml" inheritall="false" target="clean" />
-        <ant antfile="doc/build.xml" inheritall="false" target="clean" />
+        <!-- Removed this for now since svn diff complains with
+             svn: Working copy 'doc/kernel_doc' is missing or not locked
+             if we run it.  We shouldn't really clean things that are in the
+             repository.
+             <ant antfile="doc/build.xml" inheritall="false" target="clean" />
+         -->
     </target>
 
     <!-- ================================= 

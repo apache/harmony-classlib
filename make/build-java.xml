@@ -44,8 +44,12 @@
          ================================= -->
     <target name="default" 
         description="Compile the Java source and package in component archives." 
-        depends="clean, compile, package, layout" />
+        depends="clean, build" />
 
+    <!-- ================================= 
+          target: build
+         ================================= -->
+    <target name="build" depends="compile, package, layout" />
 
     <!-- ================================= 
           target: clean            
