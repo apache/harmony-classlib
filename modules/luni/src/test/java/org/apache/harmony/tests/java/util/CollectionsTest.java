@@ -16,8 +16,11 @@
 
 package org.apache.harmony.tests.java.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -195,4 +198,86 @@ public class CollectionsTest extends TestCase {
 			// expected
 		}
 	}
+    
+    /**
+     * @tests java.util.Collections#frequency(java.util.Collection,Object)
+     */
+    public void test_frequencyLjava_util_CollectionLint() {
+        try {
+            Collections.frequency(null, null);
+            fail("Assert 0: frequency(null,<any>) must throw NPE");
+        } catch (NullPointerException e) {}
+
+        List strings = Arrays.asList(new String[] { "1", "2", "3", "1", "1" });
+
+        assertEquals("Assert 1: did not find three \"1\" strings", 3,
+                Collections.frequency(strings, "1"));
+
+        assertEquals("Assert 2: did not find one \"2\" strings", 1, Collections
+                .frequency(strings, "2"));
+
+        assertEquals("Assert 3: did not find three \"3\" strings", 1,
+                Collections.frequency(strings, "3"));
+
+        assertEquals("Assert 4: matched on null when there are none", 0,
+                Collections.frequency(strings, null));
+
+        List objects = Arrays.asList(new Object[] { new Integer(1), null, null,
+                new Long(1) });
+
+        assertEquals("Assert 5: did not find one Integer(1)", 1, Collections
+                .frequency(objects, new Integer(1)));
+
+        assertEquals("Assert 6: did not find one Long(1)", 1, Collections
+                .frequency(objects, new Long(1)));
+
+        assertEquals("Assert 7: did not find two null references", 2,
+                Collections.frequency(objects, null));
+    }
+
+    /**
+     * @tests java.util.Collections#reverseOrder()
+     */
+    public void test_reverseOrder() {
+        Comparator roc = Collections.reverseOrder();
+        assertNotNull("Assert 0: comparator must not be null", roc);
+
+        assertTrue("Assert 1: comparator must implement Serializable",
+                roc instanceof Serializable);
+
+        String[] fixtureDesc = new String[] { "2", "1", "0" };
+        String[] numbers = new String[] { "0", "1", "2" };
+        Arrays.sort(numbers, roc);
+        assertTrue("Assert 2: the arrays are not equal, the sort failed",
+                Arrays.equals(fixtureDesc, numbers));
+    }
+
+    /**
+     * @tests java.util.Collections#reverseOrder(java.util.Comparator)
+     */
+    public void test_reverseOrderLjava_util_Comparator() {
+        Comparator roc = Collections
+                .reverseOrder(String.CASE_INSENSITIVE_ORDER);
+        assertNotNull("Assert 0: comparator must not be null", roc);
+
+        assertTrue("Assert 1: comparator must implement Serializable",
+                roc instanceof Serializable);
+
+        String[] fixtureDesc = new String[] { "2", "1", "0" };
+        String[] numbers = new String[] { "0", "1", "2" };
+        Arrays.sort(numbers, roc);
+        assertTrue("Assert 2: the arrays are not equal, the sort failed",
+                Arrays.equals(fixtureDesc, numbers));
+
+        roc = Collections.reverseOrder(null);
+        assertNotNull("Assert 3: comparator must not be null", roc);
+
+        assertTrue("Assert 4: comparator must implement Serializable",
+                roc instanceof Serializable);
+
+        numbers = new String[] { "0", "1", "2" };
+        Arrays.sort(numbers, roc);
+        assertTrue("Assert 5: the arrays are not equal, the sort failed",
+                Arrays.equals(fixtureDesc, numbers));
+    }
 }

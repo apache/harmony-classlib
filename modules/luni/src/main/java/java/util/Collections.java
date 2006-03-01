@@ -138,13 +138,28 @@ public class Collections {
 
 	public static final Map EMPTY_MAP = new EmptyMap();
 
-	private static class ReverseComparator implements Comparator, Serializable {
+	private static final class ReverseComparator implements Comparator, Serializable {
 		private static final long serialVersionUID = 7207038068494060240L;
 
 		public int compare(Object o1, Object o2) {
 			return -((Comparable) o1).compareTo(o2);
 		}
 	}
+    
+    private static final class ReverseComparatorWithComparator implements
+            Comparator, Serializable {
+        private static final long serialVersionUID = 4374092139857L;
+        private final Comparator comparator;
+
+        ReverseComparatorWithComparator(Comparator comparator) {
+            super();
+            this.comparator = comparator;
+        }
+
+        public int compare(Object o1, Object o2) {
+            return comparator.compare(o2, o1);
+        }
+    }
 
 	private static final class SingletonSet extends AbstractSet implements
 			Serializable {
@@ -1579,13 +1594,43 @@ public class Collections {
 	}
 
 	/**
-	 * A Comparator which reverses the natural order of the elements.
-	 * 
-	 * @return a Comparator
-	 */
-	public static Comparator reverseOrder() {
-		return new ReverseComparator();
-	}
+     * <p>
+     * A Comparator which reverses the natural order of the elements. The
+     * <code>Comparator</code> that's returned is serializable.
+     * </p>
+     * 
+     * @return A <code>Comparator</code> instance.
+     * 
+     * @see Comparator
+     * @see Comparable
+     */
+    public static Comparator reverseOrder() {
+        return new ReverseComparator();
+    }
+
+    /**
+     * <p>
+     * Returns a {@link Comparator} that reverses the order of the
+     * <code>Comparator</code> passed. If the <code>Comparatoer</code>
+     * passed is <code>null</code>, then this method is equivalent to
+     * {@link #reverseOrder()}.
+     * </p>
+     * 
+     * <p>
+     * The <code>Comparator</code> that's returned is serializable if the
+     * <code>Comparator</code> passed is serializable or <code>null</code>.
+     * </p>
+     * 
+     * @param c The <code>Comparator</code> to reverse or <code>null</code>.
+     * @return A <code>Comparator</code> instance.
+     * @see Comparator
+     * @since 1.5
+     */
+    public static Comparator reverseOrder(Comparator c) {
+        if (c == null)
+            return reverseOrder();
+        return new ReverseComparatorWithComparator(c);
+    }
 
 	/**
 	 * Moves every element of the List to a random new position in the list.
@@ -2151,4 +2196,35 @@ public class Collections {
 			throw new NullPointerException();
 		return new UnmodifiableSortedSet(set);
 	}
+    
+    /**
+     * <p>
+     * Returns the number of elements in the <code>Collection</code> that
+     * match the <code>Object</code> passed. If the <code>Object</code> is
+     * <code>null</code>, then the number of <code>null</code> elements is
+     * returned.
+     * </p>
+     * 
+     * @param c The <code>Collection</code> to search.
+     * @param o The <code>Object</code> to search for.
+     * @return The number of matching elements.
+     * @throws NullPointerException if the <code>Collection</code> parameter
+     *         is <code>null</code>.
+     *         
+     * @since 1.5
+     */
+    public static int frequency(Collection c, Object o) {
+        if (c == null)
+            throw new NullPointerException();
+        if (c.isEmpty())
+            return 0;
+        int result = 0;
+        Iterator itr = c.iterator();
+        while (itr.hasNext()) {
+            Object e = itr.next();
+            if (o == null ? e == null : o.equals(e))
+                result++;
+        }
+        return result;
+    }
 }
