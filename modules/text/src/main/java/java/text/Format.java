@@ -59,7 +59,7 @@ public abstract class Format implements Serializable, Cloneable {
 				.doPrivileged(new PrivilegedAction() {
 					public Object run() {
 						return ResourceBundle.getBundle(
-								"org.apache.harmony.luni.internal.Locale", locale);
+								"org.apache.harmony.luni.internal.locale.Locale", locale);
 					}
 				});
 	}

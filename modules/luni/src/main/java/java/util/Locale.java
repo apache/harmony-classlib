@@ -694,7 +694,7 @@ public final class Locale implements Cloneable, Serializable {
 		return (ResourceBundle) AccessController
 				.doPrivileged(new PrivilegedAction() {
 					public Object run() {
-						return ResourceBundle.getBundle("com.ibm.oti.locale." //$NON-NLS-1$
+						return ResourceBundle.getBundle("org.apache.harmony.luni.internal.locale." //$NON-NLS-1$
 								+ clName, locale);
 					}
 				});
