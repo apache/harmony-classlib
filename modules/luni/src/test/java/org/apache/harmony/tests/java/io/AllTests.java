@@ -30,6 +30,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(WriterTest.class);
 		suite.addTestSuite(FilePermissionTest.class);
+		suite.addTestSuite(BufferedInputStreamTest.class);
 		suite.addTestSuite(FileTest.class);
 		suite.addTestSuite(BufferedReaderTest.class);
 		suite.addTestSuite(PushBackInputStreamTest.class);

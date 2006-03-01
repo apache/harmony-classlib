@@ -117,15 +117,20 @@ public class BufferedInputStream extends FilterInputStream {
 		if (markpos == -1 || (pos - markpos >= marklimit)) {
 			/* Mark position not set or exceeded readlimit */
 			int result = in.read(buf);
-			markpos = -1;
-			pos = 0;
-			count = result == -1 ? 0 : result;
+			if (result > 0) {
+				markpos = -1;
+				pos = 0;
+				count = result == -1 ? 0 : result;
+			}
 			return result;
 		}
-		if (marklimit > buf.length) {
+		if (markpos == 0 && marklimit > buf.length) {
 			/* Increase buffer size to accomodate the readlimit */
-			byte[] newbuf = new byte[marklimit];
-			System.arraycopy(buf, markpos, newbuf, 0, buf.length - markpos);
+			int newLength = buf.length * 2;
+			if (newLength > marklimit)
+				newLength = marklimit;
+			byte[] newbuf = new byte[newLength];
+			System.arraycopy(buf, 0, newbuf, 0, buf.length);
 			buf = newbuf;
 		} else if (markpos > 0) {
 			System.arraycopy(buf, markpos, buf, 0, buf.length - markpos);

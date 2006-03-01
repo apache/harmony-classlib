@@ -18,6 +18,7 @@ package org.apache.harmony.tests.java.io;
 import java.io.BufferedReader;
 import java.io.CharArrayReader;
 import java.io.IOException;
+import java.io.StringReader;
 
 import junit.framework.TestCase;
 
@@ -57,4 +58,37 @@ public class BufferedReaderTest extends TestCase {
 			// expected
 		}
 	}
+	
+	/**
+	 * @tests java.io.BufferedReader#mark(int)
+	 */
+	public void test_markI() throws IOException {
+		BufferedReader buf = new BufferedReader(new StringReader("01234"), 2);
+		buf.mark(3);
+		char[] chars = new char[3];
+		int result = buf.read(chars);
+		assertEquals(3, result);
+		assertEquals("Assert 0:", '0', chars[0]);
+		assertEquals("Assert 1:", '1', chars[1]);
+		assertEquals("Assert 2:", '2', chars[2]);
+		assertEquals("Assert 3:", '3', buf.read());
+
+		buf = new BufferedReader(new StringReader("01234"), 2);
+		buf.mark(3);
+		chars = new char[4];
+		result = buf.read(chars);
+		assertEquals("Assert 4:", 4, result);
+		assertEquals("Assert 5:", '0', chars[0]);
+		assertEquals("Assert 6:", '1', chars[1]);
+		assertEquals("Assert 7:", '2', chars[2]);
+		assertEquals("Assert 8:", '3', chars[3]);
+		assertEquals("Assert 9:", '4', buf.read());
+		assertEquals("Assert 10:", -1, buf.read());
+
+		BufferedReader reader = new BufferedReader(new StringReader("01234"));
+		reader.mark(Integer.MAX_VALUE);
+		reader.read();
+		reader.close();
+	}
+
 }
