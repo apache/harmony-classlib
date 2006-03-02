@@ -129,6 +129,10 @@ Generating snapshot tar
                 <include name="THIRD_PARTY_NOTICES.txt" />
                 <include name="deploy/**" />
                 <exclude name="deploy/jre/bin/default/**" /> 
+                <exclude name="deploy/jre/bin/java" /> 
+            </tarfileset>
+            <tarfileset dir="${basedir}" prefix="Harmony" mode="755">
+                <include name="deploy/jre/bin/java" />
             </tarfileset>
             <tarfileset dir="${basedir}/make/resources"
                 includes="README-snapshot.txt"
