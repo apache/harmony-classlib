@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#if !defined(jsigunix_h)
-#define jsigunix_h
+#if !defined(hysigunix_h)
+#define hysigunix_h
 #if defined(__cplusplus)
 extern "C"
 {
@@ -34,4 +34,4 @@ extern "C"
 #if defined(__cplusplus)
 }
 #endif
-#endif                          /* jsigunix_h */
+#endif                          /* hysigunix_h */

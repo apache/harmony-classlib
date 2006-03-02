@@ -13,13 +13,13 @@
 # limitations under the License.
 
 #
-# Makefile for module 'jsig'
+# Makefile for module 'hysig'
 #
 
 include ../makefile.include
 
 CFLAGS += -fpic
-BUILDFILES = jsig_copyright.o jsiglinux.o jsigunix.o
+BUILDFILES = hysig_copyright.o hysiglinux.o hysigunix.o
 DLLNAME = ../libhysig.so
 
 include ../rules.mk

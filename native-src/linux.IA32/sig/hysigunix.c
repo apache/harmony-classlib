@@ -31,7 +31,7 @@
 #include <bits/signum.h>
 #endif
 
-#include "jsigunix.h"
+#include "hysigunix.h"
 
 /*********************/
 /* Local Definitions */
@@ -69,7 +69,7 @@ static pthread_mutex_t jsig_mutex = PTHREAD_MUTEX_INITIALIZER;
 #define SIGACTION_UNLOCK pthread_mutex_unlock(&jsig_mutex);
 
 /**************************/
-/* PRIVATE JSIG FUNCTIONS */
+/* PRIVATE HYSIG FUNCTIONS */
 /**************************/
 
 /*********************************************************************/
@@ -92,7 +92,7 @@ jsig_init (void)
                                      (size_t) sizeof (struct sigaction));
       if (saved_sigaction == 0)
         {
-          fprintf (stderr, "libjsig unable to allocate memory\n");
+          fprintf (stderr, "libhysig unable to allocate memory\n");
           abort ();
         }
       memset (saved_sigaction, 0,
@@ -129,7 +129,7 @@ jsig_sigaction_isdefault ()
 }
 
 /*************************/
-/* PUBLIC JSIG FUNCTIONS */
+/* PUBLIC HYSIG FUNCTIONS */
 /*************************/
 
 /*********************************************************************/

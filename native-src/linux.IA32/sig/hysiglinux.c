@@ -23,10 +23,10 @@
 #include <dlfcn.h>
 #include <stdlib.h>
 
-#include "jsigunix.h"
+#include "hysigunix.h"
 
 /**************************/
-/* PRIVATE JSIG FUNCTIONS */
+/* PRIVATE HYSIG FUNCTIONS */
 /**************************/
 
 /*********************************************************************/
@@ -69,7 +69,7 @@ real_sigaction (int sig, const struct sigaction *act, struct sigaction *oact)
         }
       if (real_sigaction_fn == 0)
         {
-          fprintf (stderr, "libjsig unable to find sigaction - %s\n",
+          fprintf (stderr, "libhysig unable to find sigaction - %s\n",
                    dlerror ());
           abort ();
         }
@@ -95,7 +95,7 @@ real_sigprocmask (int option, const sigset_t * new_set, sigset_t * old_set)
 }
 
 /*************************/
-/* PUBLIC JSIG FUNCTIONS */
+/* PUBLIC HYSIG FUNCTIONS */
 /*************************/
 
 /*********************************************************************/
