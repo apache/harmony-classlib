@@ -160,7 +160,7 @@
     	<property name="native.include.path" value="../../native-src/win.IA32/include" />
        	<property name="native.shared.include.path" value="../../native-src/shared/include" />
 
-    	<property name="cPath" value="${PATH};${env.Path}" />
+    	<property name="cPath" value="${PATH};${env.PATH}" />
         <property name="cINCLUDE" value="${INCLUDE};${env.include};${env.INCLUDE};${native.include.path}" />
         <property name="cLIB" value="${LIB};${env.lib};${env.LIB}" />
         <property name="src.java" value="${src.win.java}" />
