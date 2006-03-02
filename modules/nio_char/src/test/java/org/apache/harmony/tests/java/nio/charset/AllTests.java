@@ -28,6 +28,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.apache.harmony.tests.java.nio.charset");
 		//$JUnit-BEGIN$
+		suite.addTestSuite(CharsetEncoderTest.class);
 		suite.addTestSuite(CharsetTest.class);
 		suite.addTestSuite(CharsetDecoderTest.class);
 		//$JUnit-END$

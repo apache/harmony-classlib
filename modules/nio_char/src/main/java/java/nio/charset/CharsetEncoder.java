@@ -182,7 +182,11 @@ public abstract class CharsetEncoder {
 			float maxBytesPerChar, byte[] replacement) {
 		if (averageBytesPerChar <= 0 || maxBytesPerChar <= 0) {
 			throw new IllegalArgumentException(
-					"Bytes number for one character must be positive."); //$NON-NLS-1$
+					"Bytes number for one character must be positive.");
+		}
+		if (averageBytesPerChar > maxBytesPerChar) {
+			throw new IllegalArgumentException(
+					"averageBytesPerChar is greater than maxBytesPerChar.");
 		}
 		this.cs = cs;
 		averBytes = averageBytesPerChar;
