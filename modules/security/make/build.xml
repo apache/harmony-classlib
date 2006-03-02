@@ -93,14 +93,10 @@
 
     <target name="setname.win" if="if.win">
         <property name="platform.name" value="win" />
-        <property name="libpr" value=""/>
-        <property name="libsf" value=".dll"/>
     </target>
 
     <target name="setname.linux" if="if.linux">
         <property name="platform.name" value="lnx" />
-        <property name="libpr" value="lib"/>
-        <property name="libsf" value=".so"/>
     </target>
 
 
@@ -115,13 +111,8 @@
 
         <property name="src" location="${basedir}/src" />
         <property name="src.common.java" location="${src}/common/javasrc" />
-        <property name="src.common.native" location="${src}/common/other" />
-        <property name="src.win.native" location="${src}/windows/other" />
         <property name="src.win.java" location="${src}/windows/javasrc" />
-        <property name="src.linux.native" location="${src}/linux/other" />
         <property name="src.linux.java" location="${src}/linux/javasrc" />
-        <property name="src.windows.other" location="${basedir}/src/windows/other/org/apache/harmony/nativelib/windows" />
-        <property name="src.linux.other" location="${basedir}/src/linux/other/org/apache/harmony/nativelib/X11"/>
         <property name="src.tst" value="${basedir}/test" />
         <property name="src.tst.common" value="${src.tst}/common" />
 
@@ -133,8 +124,6 @@
 
         <property name="tmp" location="${build.path}/tmp" />
         <property name="source.ver" value="1.4" />
-
-        <property name="native.lib.name" value="**/*"/>
 
         <echo message="if.x86_64=${if.x86_64}"/>
         <echo message="if.x86=${if.x86}"/>
@@ -150,46 +139,19 @@
     <target name="init.java_home">
 
         <property name="JAVA_HOME" value="${env.JAVA_HOME}" />
-<!--        <property name="jni_h.path"    location="${env.JAVA_HOME}/include"/> -->
         <echo message="JAVA_HOME=${JAVA_HOME}"/>
 
     </target>
 
     <target name="init.win" depends="init, init.java_home" if="if.win">
-    	
-    	<property name="native.include.path" value="../../native-src/win.IA32/include" />
-       	<property name="native.shared.include.path" value="../../native-src/shared/include" />
-
-    	<property name="cPath" value="${PATH};${env.PATH}" />
-        <property name="cINCLUDE" value="${INCLUDE};${env.include};${env.INCLUDE};${native.include.path}" />
-        <property name="cLIB" value="${LIB};${env.lib};${env.LIB}" />
         <property name="src.java" value="${src.win.java}" />
-        <property name="compile.native.tail" value="windows" />
-
         <property name="src.tst.common.ps" value="${src.tst}/windows" />
-
-        <property name="jni_h.path"    location="${native.include.path}"/>
-        <property name="jni_md_h.path" location="${native.include.path}"/>
-
     </target>
 
     
     <target name="init.linux" depends="init, init.java_home" if="if.linux">
-
-       	<property name="native.include.path" value="../../native-src/linux.IA32/include" />
-       	<property name="native.shared.include.path" value="../../native-src/shared/include" />
-
-        <property name="cPath" value="${env.PATH}" />
-        <property name="cINCLUDE" value="${env.INCLUDE};${native.include.path}" />
-        <property name="cLIB" value="${env.LIB}" />
         <property name="src.java" value="${src.linux.java}" />
-        <property name="compile.native.tail" value="linux" />
-
         <property name="src.tst.common.ps" value="${src.tst}/linux" />
-
-        <property name="jni_h.path"    location="${native.include.path}"/>
-        <property name="jni_md_h.path" location="${native.include.path}"/>
-
     </target>
 
 
@@ -242,7 +204,7 @@
     <!-- SECURITY TARGETS -->
 
 
-    <target name="dist" depends="init, init.win, init.linux, compile.api, build.jars, build.native, copy.security"
+    <target name="dist" depends="init, init.win, init.linux, compile.api, build.jars, copy.security"
         description="Building Security binaries">
         <!-- clean up -->
         <delete dir="${tmp}"/>
@@ -321,18 +283,6 @@
                 <patternset refid="${ref.id}"/>
             </fileset>
         </jar>
-    </target>
-
-
-    <target name="build.native">
-        <!-- Building the native code -->
-
-        <echo message="jni_h.path=${jni_h.path}"/>
-        <echo message="jni_md_h.path=${jni_md_h.path}"/>
-
-        <subant target="" inheritall="true">
-            <fileset dir="make/native/${compile.native.tail}" includes="jaaswin.xml, jaasnix.xml"/>
-        </subant>
     </target>
 
 
