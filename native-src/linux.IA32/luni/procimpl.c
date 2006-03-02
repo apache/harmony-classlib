@@ -22,6 +22,8 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <unistd.h>
+extern char **environ;
+
 #include <sys/wait.h>
 
 #include "procimpl.h"
@@ -126,10 +128,10 @@ execProgram (JNIEnv * vmthread, jobject recv,
         chdir (dir);
 
       /* ===try to perform the execv : on success, it does not return ===== */
-      if (envSize == 0)
-        rc = execvp (cmd, command);
-      else
-        rc = execve (cmd, command, env);
+      if (envSize != 0)
+        environ = env;
+
+      rc = execvp (cmd, command);
       /* ===================================================== */
 
       /* if we get here ==> tell the parent that the execv failed ! */
