@@ -249,6 +249,7 @@ public class Thread implements Runnable {
 	/**
 	 * Destroys the receiver without any monitor cleanup. Not implemented.
 	 * 
+	 * @deprecated Not implemented.
 	 */
 	public void destroy() {
 		return;

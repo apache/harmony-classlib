@@ -21,9 +21,14 @@
 
 package java.security;
 
+import java.security.Principal;
+
 /**
  * @com.intel.drl.spec_ref
- *
+ * 
+ * @deprecated Replaced by behavior in
+ *             {@link java.security.cert java.security.cert} package and
+ *             {@link java.security.Principal Principal}
  */
 
 public abstract class Signer extends Identity {

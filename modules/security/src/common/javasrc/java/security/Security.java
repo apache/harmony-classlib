@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.AlgorithmParameters;
+import java.security.KeyFactory;
 import java.util.Enumeration;
 import java.net.URL;
 import java.util.HashMap;
@@ -132,9 +134,11 @@ public final class Security {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	 * @com.intel.drl.spec_ref
+	 * 
+	 * @deprecated Use {@link KeyFactory} and {@link AlgorithmParameters} to get
+	 *             algorithm property information.
+	 */
     public static String getAlgorithmProperty(String algName, String propName) {
         if (algName == null || propName == null) {
             return null;

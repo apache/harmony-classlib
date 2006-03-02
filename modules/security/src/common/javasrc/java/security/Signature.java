@@ -373,6 +373,7 @@ public abstract class Signature extends SignatureSpi {
     /**
      * @com.intel.drl.spec_ref
      *  
+     * @deprecated Use {@link Signature#setParameter(AlgorithmParameterSpec) setParameter}
      */
     public final void setParameter(String param, Object value)
             throws InvalidParameterException {
@@ -398,7 +399,8 @@ public abstract class Signature extends SignatureSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
+     * @deprecated There is no generally accepted parameter naming convention.
      */
     public final Object getParameter(String param)
             throws InvalidParameterException {

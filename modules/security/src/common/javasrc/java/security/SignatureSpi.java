@@ -153,9 +153,11 @@ public abstract class SignatureSpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	 * @com.intel.drl.spec_ref
+	 * 
+	 * @deprecated Use
+	 *             {@link SignatureSpi#engineSetParameter(AlgorithmParameterSpec) engineSetParameter}
+	 */
     protected abstract void engineSetParameter(String param, Object value)
             throws InvalidParameterException;
 
@@ -177,9 +179,10 @@ public abstract class SignatureSpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	 * @com.intel.drl.spec_ref
+	 * 
+	 * @deprecated There is no generally accepted parameter naming convention.
+	 */
     protected abstract Object engineGetParameter(String param)
             throws InvalidParameterException;
 

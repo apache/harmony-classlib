@@ -28,6 +28,8 @@ import java.io.OutputStream;
 /**
  * @com.intel.drl.spec_ref
  * 
+ * @deprecated Replaced by behavior in
+ *             {@link javax.security.cert javax.security.cert}
  */
 public interface Certificate {
 
