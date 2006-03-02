@@ -156,7 +156,11 @@ public abstract class CharsetDecoder {
 			float maxCharsPerByte) {
 		if (averageCharsPerByte <= 0 || maxCharsPerByte <= 0) {
 			throw new IllegalArgumentException(
-					"Characters number for one byte must be positive."); //$NON-NLS-1$
+					"Characters number for one byte must be positive.");
+		}
+		if(averageCharsPerByte > maxCharsPerByte){
+			throw new IllegalArgumentException(
+					"averageCharsPerByte is greater than maxCharsPerByte");
 		}
 		averChars = averageCharsPerByte;
 		maxChars = maxCharsPerByte;

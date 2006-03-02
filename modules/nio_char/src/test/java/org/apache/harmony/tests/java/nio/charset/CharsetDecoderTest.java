@@ -31,10 +31,39 @@ import junit.framework.TestCase;
 
 public class CharsetDecoderTest extends TestCase {
 
+    /**
+	 * @tests java.nio.charset.CharsetDecoder.CharsetDecoder(Charset, float,
+	 *        float)
+	 */
+	public void test_ConstructorLjava_nio_charset_CharsetFF() {
+		// Regression for HARMONY-142
+		try {
+			Charset cs = Charset.forName("UTF-8"); //$NON-NLS-1$
+			new MockCharsetDecoderForHarmony142(cs, 1.1f, 1);
+			fail("Assert 0: Should throw IllegalArgumentException."); //$NON-NLS-1$
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+	}
+
+	/*
+	 * MockCharsetDecoderForHarmony142: for constructor test
+	 */
+	static class MockCharsetDecoderForHarmony142 extends CharsetDecoder {
+		protected MockCharsetDecoderForHarmony142(Charset cs,
+				float averageBytesPerChar, float maxBytesPerChar) {
+			super(cs, averageBytesPerChar, maxBytesPerChar);
+		}
+
+		protected CoderResult decodeLoop(ByteBuffer in, CharBuffer out) {
+			return null;
+		}
+	}
+ 
 	/**
 	 * @tests java.nio.charset.CharsetDecoder#decode(java.nio.ByteBuffer)
 	 */
-	public static void test_decode() throws CharacterCodingException {
+	public void test_decode() throws CharacterCodingException {
 		// Regression for HARMONY-33
 //		ByteBuffer bb = ByteBuffer.allocate(1);
 //		bb.put(0, (byte) 77);
