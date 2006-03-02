@@ -40,11 +40,13 @@
 #endif
 
 /**
+ * @section pool_new
+ * @fn pool_new(U_32 structSize, U_32 minNumberElements, U_32 elementAlignment, UDATA poolFlags, void *(VMCALL * memAlloc) (void *, U_32), void (VMCALL * memFree) (void *, void *), void *userData)
  *	Returns a handle to a variable sized pool of structures.
  *	This handle should be passed into all other pool functions.
  *
  * @param[in] structSize Size of the pool-elements
- * @param[in] minNumberElelements If zero, will default to 1
+ * @param[in] minNumberElements If zero, will default to 1
  * @param[in] elementAlignment If zero will default to MIN_GRANULARITY
  * @param[in] poolFlags
  * @param[in] memAlloc Allocate function pointer
@@ -52,7 +54,6 @@
  * @param[in] userData
  *
  * @return pointer to a new pool
- *
 */
 HyPool *VMCALL
 pool_new (U_32 structSize, U_32 minNumberElements, U_32 elementAlignment,
@@ -82,7 +83,7 @@ pool_new (U_32 structSize, U_32 minNumberElements, U_32 elementAlignment,
   finalAllocSize = ROUND_TO (OS_PAGE_SIZE, tempAllocSize);
   finalNumberOfElements = minNumberElements;
   finalNumberOfElements +=
-    (finalAllocSize - tempAllocSize) / roundedStructSize;
+    (U_32)((finalAllocSize - tempAllocSize) / roundedStructSize);
 
   /* 
    * finalAllocSize is a U_64 so that we can detect pool sizes which overflow 32-bits. 
@@ -97,7 +98,7 @@ pool_new (U_32 structSize, U_32 minNumberElements, U_32 elementAlignment,
   if (newHandle)
     {
       memset ((void *) newHandle, 0, (size_t) finalAllocSize);
-      newHandle->elementSize = roundedStructSize;
+      newHandle->elementSize = (UDATA)roundedStructSize;
       newHandle->alignment = (U_16) elementAlignment;   /* we assume no alignment is > 64k */
       newHandle->flags = poolFlags | POOL_SORTED;       /* list starts sorted */
       newHandle->numberOfElements = finalNumberOfElements;
@@ -118,7 +119,7 @@ pool_new (U_32 structSize, U_32 minNumberElements, U_32 elementAlignment,
       while (tempNumElems--)
         {
           oldFreeLocation = (UDATA *) freeLocation;
-          freeLocation += roundedStructSize;
+	  freeLocation += (UDATA)roundedStructSize;
           *oldFreeLocation = freeLocation;
         }
       *oldFreeLocation = 0;     /* end of list */
@@ -127,6 +128,7 @@ pool_new (U_32 structSize, U_32 minNumberElements, U_32 elementAlignment,
 }
 
 /**
+ * @fn pool_kill(HyPool * aPool)
  *	Deallocates all memory associated with a pool.
  *
  * @param[in] aPool Pool to be deallocated
@@ -148,6 +150,7 @@ pool_kill (HyPool * aPool)
 }
 
 /**
+ * @fn pool_newElement (HyPool * aPool)
  *	Asks for the address of a new pool element.
  *	If it succeeds, the address returned will have space for
  *	one element of the correct structure size.
@@ -209,6 +212,7 @@ pool_newElement (HyPool * aPool)
 }
 
 /**
+ * @fn pool_removeElement (HyPool * aPool, void *anElement)
  *	Deallocates an element from a pool
  *
  * It is safe to call pool_removeElement() while looping over
@@ -221,7 +225,6 @@ pool_newElement (HyPool * aPool)
  * @param[in] anElement Pointer to the element to be removed
  *
  * @return none
- *
 */
 void VMCALL
 pool_removeElement (HyPool * aPool, void *anElement)
@@ -307,6 +310,7 @@ pool_removeElement (HyPool * aPool, void *anElement)
 }
 
 /**	
+ * @fn pool_do (HyPool * aPool, void (*aFunction) (void *anElement, void *userData), void *userData)
  *	Calls a user provided function for each element in the list.
  *
  * @param[in] aPool The pool to "do" things to
@@ -334,6 +338,7 @@ pool_do (HyPool * aPool, void (*aFunction) (void *anElement, void *userData),
 }
 
 /**
+ * @fn pool_numElements (HyPool * aPool)
  *	Returns the number of elements in a given pool.
  *
  * @param[in] aPool
@@ -356,6 +361,8 @@ pool_numElements (HyPool * aPool)
 }
 
 /**
+ * @section pool_startDo
+ * @fn pool_startDo (HyPool * aPool, pool_state * lastHandle)
  *	Start of an iteration set that will return when code is to be executed.
  *	This is based strongly on pool_sortFreeAndIterateUsed.
  *	Pass in a pointer to an empty pool_state and it will be filled in.
@@ -367,7 +374,6 @@ pool_numElements (HyPool * aPool)
  * @return pointer to element otherwise
  *
  * @see pool_do, pool_nextDo
- *
  */
 void *VMCALL
 pool_startDo (HyPool * aPool, pool_state * lastHandle)
@@ -414,6 +420,8 @@ pool_startDo (HyPool * aPool, pool_state * lastHandle)
 }
 
 /**
+ * @section pool_nextDo
+ * @fn pool_nextDo (pool_state * lastHandle)
  *	Continue an iteration based on state passed in by lastHandle.
  *	It is safe to stop an iteration midway through.
  *
@@ -460,6 +468,7 @@ pool_nextDo (pool_state * lastHandle)
 }
 
 /**
+ * @fn pool_sortFree (HyPool * aPool)
  *	Sorts the free list of the current pool.
  *	(ie: does not follow nextPool pointers...)
  *	This is a O(n) most of the time.
@@ -467,7 +476,6 @@ pool_nextDo (pool_state * lastHandle)
  * @param[in] aPool The pool to be sorted
  *
  * @return none
- *
  */
 void VMCALL
 pool_sortFree (HyPool * aPool)
@@ -525,6 +533,7 @@ pool_sortFree (HyPool * aPool)
 }
 
 /**
+ * @fn pool_forPortLib (U_32 structSize, HyPortLibrary * portLibrary)
  *	Shortcut for @ref pool_new, using the default malloc/free from the portLibrary
  *
  * @param[in] structSize size of pool-element
@@ -533,7 +542,6 @@ pool_sortFree (HyPool * aPool)
  * @return pointer to a Pool
  *
  * @see pool_new
- *
 */
 HyPool *VMCALL
 pool_forPortLib (U_32 structSize, HyPortLibrary * portLibrary)
@@ -542,14 +550,15 @@ pool_forPortLib (U_32 structSize, HyPortLibrary * portLibrary)
 }
 
 /**
+ * @fn pool_clear (HyPool * aPool)
  * Clear the contents of a pool but not delete it
  *
- * @note Make no assumptions about the contents of the pool after invoking this method (it currently does not zero the memory)
+ * @note Make no assumptions about the contents of the pool after invoking
+ *       this method (it currently does not zero the memory)
  *
  * @param[in] aPool The pool to clear
  *
  * @return none
- *
 */
 
 void VMCALL

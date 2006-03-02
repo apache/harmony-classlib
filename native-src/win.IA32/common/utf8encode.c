@@ -15,10 +15,6 @@
 
 #include "hycomp.h"
 
-/* Prototypes */
-U_32 encodeUTF8CharN (UDATA unicode, U_8 * result, U_32 bytesRemaining);
-U_32 encodeUTF8Char (UDATA unicode, U_8 * result);
-
 /**
  * Encode the Unicode character.
  *

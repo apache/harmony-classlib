@@ -33,7 +33,7 @@
 
 #define HYERROR_DEFAULT_BUFFER_SIZE 256 /**< default customized error message size if we need to create one */
 /**
- * @typedef 
+ * @typedef struct PortlibPTBuffers_struct
  * @brief The per thread buffer
  * Storage for data related to the threads state.
  */
@@ -64,7 +64,7 @@ typedef struct PortlibPTBuffers_struct
 
 } PortlibPTBuffers_struct;
 /**
- * @typedef 
+ * @typedef struct PortlibPTBuffers_struct
  * @brief The per thread buffer
  * Storage for data related to the threads state.
  */

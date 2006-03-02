@@ -92,7 +92,7 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
   nameBuf = (char *) &startNameBuf;
 
   jclZipFile =
-    (JCLZipFile *) (*env)->GetLongField (env, recv,
+    (JCLZipFile *) (IDATA) (*env)->GetLongField (env, recv,
                                          JCL_CACHE_GET (env,
                                                         FID_java_util_zip_ZipFile_descriptor));
   if (jclZipFile == (void *) -1)

@@ -96,39 +96,23 @@ JavaVMInitArgs* (JNICALL * GetInitArgs) (VMInterface* vmi);
 	vmiError (JNICALL * IterateSystemProperties) (VMInterface* vmi, vmiSystemPropertyIterator iterator, void* userData);
 };
 /** 
- *
- * @name VM Interface Support Functions 
- * @htmlonly <a name='VMIExports'>&nbsp;</a> @endhtmlonly Non-table VM interface functions. Directly exported from the VMI library.
- */
-/*@{*/ 
-/**
  * Extract the VM interface from a JNIEnv
- *
- * @param[in] env  The JNIEnv to query
- *
- * @return a VMInterface pointer
  */
 VMInterface * JNICALL VMI_GetVMIFromJNIEnv(JNIEnv* env);
 /**
  * Extract the VM interface from a JNI JavaVM
- *
- * @param[in] vm  The JavaVM to query
- *
- * @return a VMInterface pointer
  */
 VMInterface * JNICALL VMI_GetVMIFromJavaVM(JavaVM* vm);
-/*@}*/ 
-/** @name VM Interface Access Macros
- *
+
+/** 
  *  Convenience macros for acquiring a VMInterface
  */
-/*@{*/ 
 #define VMI_ACCESS_FROM_ENV(env) VMInterface* privateVMI = VMI_GetVMIFromJNIEnv(env) 
 #define VMI_ACCESS_FROM_JAVAVM(javaVM) VMInterface* privateVMI = VMI_GetVMIFromJavaVM(javaVM)
 #define VMI privateVMI
-/*@}*/ 
+
 /**
- * @fn VMInterfaceFunctions_::CheckVersion
+ * @fn VMInterfaceFunctions_::CheckVersion(VMInterface * vmi, vmiVersion * version)
  * Check the version of the VM interface
  *
  * @code vmiError JNICALL CheckVersion(VMInterface* vmi, vmiVersion* version); @endcode
@@ -145,7 +129,7 @@ VMInterface * JNICALL VMI_GetVMIFromJavaVM(JavaVM* vm);
  */
 vmiError JNICALL CheckVersion(VMInterface* vmi, vmiVersion* version);
 /**
- * @fn VMInterfaceFunctions_::GetJavaVM
+ * @fn VMInterfaceFunctions_::GetJavaVM(VMInterface * vmi)
  * Return the JNI JavaVM associated with the VM interface
  *
  * @code JavaVM* JNICALL GetJavaVM(VMInterface* vmi); @endcode
@@ -156,9 +140,8 @@ vmiError JNICALL CheckVersion(VMInterface* vmi, vmiVersion* version);
  */
 JavaVM* JNICALL GetJavaVM(VMInterface* vmi);
 /**
- * @fn VMInterfaceFunctions_::GetPortLibrary
+ * @fn VMInterfaceFunctions_::GetPortLibrary(VMInterface * vmi)
  * Return a pointer to an initialized HyPortLibrary structure.
- * 
  * @code HyPortLibrary* JNICALL GetPortLibrary(VMInterface* vmi); @endcode
  *
  * The @ref hyport.h "port library" is a table of functions that implement useful platform specific
@@ -173,7 +156,7 @@ JavaVM* JNICALL GetJavaVM(VMInterface* vmi);
  */
 HyPortLibrary* JNICALL GetPortLibrary(VMInterface* vmi);
 /**
- * @fn VMInterfaceFunctions_::GetVMLSFunctions
+ * @fn VMInterfaceFunctions_::GetVMLSFunctions(VMInterface * vmi)
  * Return a pointer to a HyVMLSFunctionTable. This is a table of functions for allocating,
  * freeing, getting, and setting thread local storage.
  *
@@ -185,7 +168,7 @@ HyPortLibrary* JNICALL GetPortLibrary(VMInterface* vmi);
  */
 HyVMLSFunctionTable* JNICALL GetVMLSFunctions(VMInterface* vmi);
 /**
- * @fn VMInterfaceFunctions_::GetZipCachePool
+ * @fn VMInterfaceFunctions_::GetZipCachePool(VMInterface * vmi)
  * Return a pointer to the HyZipCachePool structure used by the VM. It is the
  * responsibility of the vm to allocate the pool using zipCachePool_new().
  *
@@ -197,7 +180,7 @@ HyVMLSFunctionTable* JNICALL GetVMLSFunctions(VMInterface* vmi);
  */
 HyZipCachePool* JNICALL GetZipCachePool(VMInterface* vmi);
 /**
- * @fn VMInterfaceFunctions_::GetInitArgs
+ * @fn VMInterfaceFunctions_::GetInitArgs(VMInterface * vmi)
  * Return a pointer to a JavaVMInitArgs structure as defined by the 1.2 JNI
  * specification. This structure contains the arguments used to invoke the vm.
  *
@@ -209,42 +192,14 @@ HyZipCachePool* JNICALL GetZipCachePool(VMInterface* vmi);
  */
 JavaVMInitArgs* JNICALL GetInitArgs(VMInterface* vmi);
 /**
- * @fn VMInterfaceFunctions_::GetSystemProperty
+ * @fn VMInterfaceFunctions_::GetSystemProperty(VMInterface * vmi, char *key, char **valuePtr)
  * Retrieve the value of a VM system property. 
  * 
- * @code vmiError JNICALL GetSystemProperty (VMInterface* vmi, char* key, char** valuePtr); @endcode
- *
- * The following properties must be defined by the vm.
- *
- * <TABLE>
- * <TR><TD><B>Property Name</B></TD>			<TD><B>Example Value or Description</B></TD></TR>
- * <TR><TD>java.vendor</TD>			<TD>"MY Corporation"</TD></TR>
- * <TR><TD>java.vendor.url</TD>			<TD>"http://www.MYCorp.com/"</TD></TR>
- * <TR><TD>java.vm.specification.version</TD>	<TD>"1.0"</TD></TR>
- * <TR><TD>java.vm.specification.vendor</TD>	<TD>"Sun Microsystems Inc."</TD></TR>
- * <TR><TD>java.vm.specification.name</TD>	<TD>"Java Virtual Machine Specification"</TD></TR>
- * <TR><TD>java.vm.version</TD>			<TD>"2.3"</TD></TR>
- * <TR><TD>java.vm.vendor</TD>			<TD>"MY Corporation"</TD></TR>
- * <TR><TD>java.vm.name	</TD>		<TD>"MYVM"</TD></TR>
- * <TR><TD>java.vm.info</TD>			<TD>"MYVM 2.3 Windows XP x86-32  (JIT enabled)
-<BR>MYVM version 2.3
- * <TR><TD>java.compiler</TD>			<TD>"MYjit"</TD></TR>
- * <TR><TD>java.runtime.name</TD>		<TD>"MY Virtual Machine"</TD></TR>
- * <TR><TD>java.runtime.version</TD>		<TD>"2.3"</TD></TR>
- * <TR><TD>java.class.version</TD>		<TD>"49.0"</TD></TR>
- * <TR><TD>java.home</TD>			<TD>the absolute path of the parent directory of the directory containing the vm
-<BR>i.e. for a vm /harmony/bin/vm.exe, java.home is /harmony</TD></TR>
- * <TR><TD>java.class.path</TD>			<TD>the application class path</TD></TR>
- * <TR><TD>java.library.path</TD>			<TD>the application library path</TD></TR>
- * </TABLE>
- *
- * @return a @ref vmiError "VMI error code"
- *
  * @note The returned string is owned by the VM, and should not be freed.
  */
 vmiError JNICALL GetSystemProperty (VMInterface* vmi, char* key, char** valuePtr);
 /**
- * @fn VMInterfaceFunctions_::SetSystemProperty
+ * @fn VMInterfaceFunctions_::SetSystemProperty(VMInterface * vmi, char *key, char *value)
  * Override the value of a VM system property
  *
  * @code vmiError JNICALL SetSystemProperty(VMInterface* vmi, char* key, char* value); @endcode
@@ -262,7 +217,7 @@ vmiError JNICALL GetSystemProperty (VMInterface* vmi, char* key, char** valuePtr
  */
 vmiError JNICALL SetSystemProperty(VMInterface* vmi, char* key, char* value);
 /**
- * @fn VMInterfaceFunctions_::CountSystemProperties
+ * @fn VMInterfaceFunctions_::CountSystemProperties(VMInterface * vmi, int *countPtr)
  * Return the number of VM system properties
  * 
  * @code vmiError JNICALL CountSystemProperties(VMInterface* vmi, int* countPtr); @endcode
@@ -277,10 +232,9 @@ vmiError JNICALL SetSystemProperty(VMInterface* vmi, char* key, char* value);
  */
 vmiError JNICALL CountSystemProperties(VMInterface* vmi, int* countPtr);
 /**
- * @fn VMInterfaceFunctions_::IterateSystemProperties
+ * @fn VMInterfaceFunctions_::IterateSystemProperties(VMInterface * vmi, vmiSystemPropertyIterator iterator, void *userData)
  * Iterate over the VM system properties calling a function.
  *
- * @code vmiError JNICALL IterateSystemProperties(VMInterface* vmi, vmiSystemPropertyIterator iterator, void* userData); @endcode
  * 
  * @param[in] vmi  The VM interface pointer
  * @param[in] iterator  The iterator function to call with each property

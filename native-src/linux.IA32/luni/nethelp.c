@@ -904,7 +904,7 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
   static jbyte IPv4ANY[4] = { 0, 0, 0, 0 };
   static jbyte IPv6ANY[16] =
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  int i = 0;
+  U_32 i = 0;
 
   /* check if the address being returned is the any address.  If so we need to check the prefer flags to see how it should be returned
      (either as IPv4 Any or IPv6 ANY) */
@@ -1027,14 +1027,15 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
   static jbyte IPv4ANY[4] = { 0, 0, 0, 0 };
   static jbyte IPv6ANY[16] =
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  int i = 0;
+  U_32 i = 0;
 
   aString = (*env)->NewStringUTF (env, hostName);
 
   /**
     * check if the address being returned is the any address.  
     * If so we need to check the prefer flags to see how it should be returned
-    * (either as IPv4 Any or IPv6 ANY) */
+    * (either as IPv4 Any or IPv6 ANY) 
+    */
 
   if (jcl_supports_ipv6 (env))
     {

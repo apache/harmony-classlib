@@ -43,54 +43,6 @@ typedef struct HyVMLSFunctionTable {
 } HyVMLSFunctionTable;
 #define HYSIZEOF_HyVMLSFunctionTable 16
 
-/**
- * @fn HyVMLSFunctionTable::HYVMLSAllocKeys
- * Allocate one or more slots of VM local storage. 
- *
- * @code UDATA  JNICALL HYVMLSAllocKeys(JNIEnv * env, UDATA * pInitCount, ...); @endcode
- *
- * @param[in] env  A JNIEnv pointer
- * @param[in] pInitCount  Pointer to the reference count for these slots
- * @param[out] ...  Locations to store the allocated keys
- *
- * @return 0 on success, 1 on failure.
- *
- * @note Newly allocated VMLS slots contain NULL in all VMs.
- */
-/**
- * @fn HyVMLSFunctionTable::HYVMLSFreeKeys
- * Destroy one or more slots of VM local storage. 
- *
- * @code void  JNICALL HYVMLSFreeKeys(JNIEnv * env, UDATA * pInitCount, ...); @endcode
- *
- * @param[in] env  A JNIEnv pointer
- * @param[in] pInitCount  Pointer to the reference count for these slots
- * @param[out] ...  Pointers to the allocated keys
- */
-/**
- * @fn HyVMLSFunctionTable::HyVMLSGet
- * Retrieve the value in a VM local storage slot. 
- *
- * @code void*  JNICALL HyVMLSGet(JNIEnv * env, void * key); @endcode
- *
- * @param[in] env  JNIEnv pointer
- * @param[in] key  The VMLS key
- *
- * @return The contents of the VM local storage slot in the VM that contains the specified env
- */
-/**
- * @fn HyVMLSFunctionTable::HyVMLSSet
- * Store a value into a VM local storage slot.
- *
- * @code void*  JNICALL HyVMLSSet(JNIEnv * env, void ** pKey, void * value); @endcode
- *
- * @param[in] env  JNIEnv pointer
- * @param[in] pKey  Pointer to the VM local storage key
- * @param[in] value  Value to store
- *
- * @return The value stored
- */
-
 #if defined(USING_VMI)
 #define HY_VMLS_FNTBL(env) (*VMI_GetVMIFromJNIEnv(env))->GetVMLSFunctions(VMI_GetVMIFromJNIEnv(env))
 #else

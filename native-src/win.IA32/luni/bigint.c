@@ -725,10 +725,11 @@ Java_com_ibm_oti_util_math_BigInteger_remImpl (JNIEnv * env, jclass cls,
       topSize++;
     }
 
-  /* If the bottom int is larger than the top int, the result is the top
-  int.  Subtract one from the topSize before comparison to account for
-  the 0 added to the end.
-  */
+  /**
+   * If the bottom int is larger than the top int, the result is the top
+   * int.  Subtract one from the topSize before comparison to account for
+   * the 0 added to the end.
+   */
   if (bottomSize > (topSize - 1))
     {
       /* clean up and ensure we are returning a new long[] with the same value as that passed in */
@@ -747,8 +748,10 @@ Java_com_ibm_oti_util_math_BigInteger_remImpl (JNIEnv * env, jclass cls,
             }
           else
             {
-              /* we still have the original top, so must copy before returning because
-              we don't want to return the passed in object */
+              /**
+				* we still have the original top, so must copy before returning because
+                * we don't want to return the passed in object 
+                */
               if (!(resultObject = NEW_OBJECT (topLength)))
                 goto error;
               if (!(resultStart = GET_ELEMENTS (resultObject)))
@@ -788,8 +791,10 @@ Java_com_ibm_oti_util_math_BigInteger_remImpl (JNIEnv * env, jclass cls,
 
     /* Initialize */
 
-    /* algorithm wants to make the result a modified (in place) top,
-    * so allocate new result and copy top into it, point top at the result */
+/**
+  * algorithm wants to make the result a modified (in place) top,
+  * so allocate new result and copy top into it, point top at the result 
+  */
     resultLength = topLength;
     if (!(resultObject = NEW_OBJECT (resultLength)))
       goto error;

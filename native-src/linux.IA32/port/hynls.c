@@ -493,10 +493,9 @@ open_catalog (struct HyPortLibrary *portLibrary)
   /* try the following way to look for the catalog:
    * The base name will typically be "<path>/java.properties". Append as many locale descriptors to the file name as possible to find a file. 
    * e.g. 
-   *      java_en_US_Texas.properties
-   *      java_en_US.properties
-   *      java_en.properties
-   *      java.properties
+   *      harmony_en_GB.properties
+   *      harmony_en.properties
+   *      harmony.properties
    */
 
   for (p = 0; p < (I_32) nls->nPaths; p++)
@@ -1080,7 +1079,6 @@ hynls_startup (struct HyPortLibrary *portLibrary)
  * @ref hynls_startup should be destroyed here.
  *
  * @param[in] portLibrary The port library
- *
  */
 void VMCALL
 hynls_shutdown (struct HyPortLibrary *portLibrary)
@@ -1229,6 +1227,3 @@ read_from_catalog (struct HyPortLibrary *portLibrary, IDATA fd, char *buf,
 
 #undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION
-
-#undef CDEV_CURRENT_FUNCTION

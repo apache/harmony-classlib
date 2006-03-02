@@ -1030,8 +1030,11 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
 
   aString = (*env)->NewStringUTF (env, hostName);
 
-  /* check if the address being returned is the any address.  If so we need to check the prefer flags to see how it should be returned
-     (either as IPv4 Any or IPv6 ANY) */
+  /**
+    * check if the address being returned is the any address.  
+    * If so we need to check the prefer flags to see how it should be returned
+    * (either as IPv4 Any or IPv6 ANY) 
+    */
 
   if (jcl_supports_ipv6 (env))
     {

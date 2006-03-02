@@ -327,7 +327,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
 
 /**
   * Throw java.lang.NullPointerException with the message provided
-  * Note: This is not names throwNullPointerException because is conflicts
+  * Note: This is not named throwNullPointerException because it conflicts
   * with a VM function of that same name and this causes problems on
   * some platforms.
   */
@@ -401,7 +401,9 @@ new_ioh_close (JNIEnv * env, jobject recv, jfieldID fdFID)
 
   /* Check for closed file, in, out, and err */
   if (descriptor >= -1 && descriptor <= 2)
+    {
     return;
+    }
 
   hyfile_close (descriptor);
   setJavaIoFileDescriptorContentsAsPointer (env, fd, (void *) -1);

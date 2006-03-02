@@ -53,13 +53,13 @@ Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
   stream->opaque = (void *) privatePortLibrary;
   stream->zalloc = zalloc;
   stream->zfree = zfree;
-  /* Initialize adler for compatibility with zlib 1.1.4 */
   stream->adler = 1;
   jstream->stream = stream;
   jstream->dict = NULL;
   jstream->inaddr = NULL;
 
-  if (noHeader)                 /*Unable to find official doc that this is the way to avoid zlib header use. However doc in zipsup.c claims it is so. */
+  /*Unable to find official doc that this is the way to avoid zlib header use. However doc in zipsup.c claims it is so. */
+  if (noHeader)
     wbits = wbits / -1;
   err = inflateInit2 (stream, wbits);   /*Window bits to use. 15 is fastest but consumes the most memory */
 

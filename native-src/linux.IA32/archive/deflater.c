@@ -117,7 +117,8 @@ Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
   jstream->dict = NULL;
   jstream->inaddr = NULL;
 
-  if (noHeader)			/*Unable to find official doc that this is the way to avoid zlib header use. However doc in zipsup.c claims it is so */
+  /*Unable to find official doc that this is the way to avoid zlib header use. However doc in zipsup.c claims it is so */
+  if (noHeader)
     wbits = wbits / -1;
   err = deflateInit2 (stream, level, Z_DEFLATED,	/*Only supported ZLIB method */
 		      wbits,	/*Window bits to use. 15 is fastest but consumes the most memory */

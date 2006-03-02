@@ -542,6 +542,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   char *portLibOptionStr = NULL;
 
   PORT_ACCESS_FROM_PORT (portLibrary);
+  /* get the path to the executable */
   hysysinfo_get_executable_name (argv[0], &exeName);
   endPathPtr = strrchr (exeName, DIR_SEPERATOR);
   endPathPtr[0] = '\0';
@@ -722,7 +723,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
     }
 
   /* Check that the minimum required -D options have been included.  If not, calculate and add the defaults */
-  initDefaultDefines (portLibrary, &options, argc, argv,
+  initDefaultDefines (portLibrary, (void **)&options, argc, argv,
           isStandaloneJar ? classArg : 0, &classPath2, &javaHome,
           &javaLibraryPath, isJvmSubDir, vmdllsubdir, &j);
 

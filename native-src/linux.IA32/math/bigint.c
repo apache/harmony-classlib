@@ -1089,7 +1089,7 @@ internalBigIntegerNormalize (JNIEnv * env, jlongArray src1)
 {
   IDATA len1, lenR;
   jlong *ar1, *arR;
-  IDATA neg1 = 0, i;
+  IDATA neg1 = 0;
   jlongArray resultObject = NULL;
 
   len1 = GET_LENGTH (src1);
@@ -1134,7 +1134,7 @@ done:
 jlongArray
 grow (JNIEnv * env, jlongArray src1, jlong element)
 {
-  IDATA len1, lenR;
+  IDATA len1;
   jlong *ar1, *arR;
   jlongArray resultObject = NULL;
 
@@ -1269,8 +1269,6 @@ internalBigIntegerNeg (JNIEnv * env, jlongArray src1)
   resultObject = internalBigIntegerAdd (env, negObject, oneObject);
   return resultObject;
 
-error:
-  RELEASE_ELEMENTS_CRITICAL (oneObject, arO, 0);
 releaseN:
   RELEASE_ELEMENTS_CRITICAL (negObject, arN, 0);
 release1:

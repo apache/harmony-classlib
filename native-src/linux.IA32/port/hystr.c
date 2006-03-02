@@ -532,7 +532,7 @@ writeSpec (HyFormatData * data, HyFormatSpecifier * spec, char *result,
           index =
             writeStringToBuffer (result, length, width, precision, " ",
                                  spec->tag);
-          if (index <= length)
+	  if (index <= (I_32)length)
             {
               if (result)
                 {
@@ -587,12 +587,12 @@ static I_32
 writeIntToBuffer (char *buf, U_32 bufLen, U_64 width, U_64 precision,
                   U_64 value, U_8 tag, int isSigned, const char *digits)
 {
-  I_32 index = 0;
-  I_32 length = 0;
+  U_32 index = 0;
+  U_32 length = 0;
   I_32 rightSpace = 0;
   U_64 temp;
   int base = strlen (digits);
-  I_32 actualPrecision = 0;
+  U_32 actualPrecision = 0;
   char signChar = 0;
 
   if (isSigned)
@@ -964,6 +964,7 @@ writeDoubleToBuffer (char *buf, U_32 bufLen, U_64 width, U_64 precision,
 void VMCALL
 hystr_shutdown (struct HyPortLibrary *portLibrary)
 {
+  /* empty */
 }
 
 /**

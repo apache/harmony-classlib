@@ -45,8 +45,7 @@ throwNewInternalError (JNIEnv * env, char *message)
 void
 throwJavaZIOException (JNIEnv * env, char *message)
 {
-  jclass exceptionClass =
-    (*env)->FindClass (env, "java/util/zip/ZipException");
+  jclass exceptionClass = (*env)->FindClass(env, "java/util/zip/ZipException");
   if (0 == exceptionClass)
     {
       /* Just return if we can't load the exception class. */
@@ -108,7 +107,7 @@ Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
   (*env)->SetLongField (env, recv,
 			JCL_CACHE_GET (env,
 				       FID_java_util_zip_ZipFile_descriptor),
-			((IDATA) jclZipFile));
+			           ((IDATA) jclZipFile));
   return 0;
 }
 
@@ -170,7 +169,7 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
   entryClass = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
   mid = JCL_CACHE_GET (env, MID_java_util_zip_ZipEntry_init);
   /* Build a new ZipEntry from the C struct */
-  java_ZipEntry = ((*env)->NewObject (env, entryClass, mid, entryName, NULL,	/* comment */
+  java_ZipEntry = ((*env)->NewObject (env, entryClass, mid, entryName, NULL,
 				      extra,
 				      (jlong) zipEntry.lastModTime,
 				      (jlong) zipEntry.uncompressedSize,
@@ -193,8 +192,7 @@ Java_java_util_zip_ZipFile_closeZipImpl (JNIEnv * env, jobject recv)
   jfieldID descriptorFID =
     JCL_CACHE_GET (env, FID_java_util_zip_ZipFile_descriptor);
 
-  jclZipFile =
-    (JCLZipFile *) (IDATA) (*env)->GetLongField (env, recv, descriptorFID);
+  jclZipFile = (JCLZipFile *) (IDATA) (*env)->GetLongField (env, recv, descriptorFID);
   if (jclZipFile != (void *) -1)
     {
       retval =
@@ -222,8 +220,7 @@ Java_java_util_zip_ZipFile_closeZipImpl (JNIEnv * env, jobject recv)
 void
 throwNewIllegalStateException (JNIEnv * env, char *message)
 {
-  jclass exceptionClass =
-    (*env)->FindClass (env, "java/lang/IllegalStateException");
+  jclass exceptionClass = (*env)->FindClass (env, "java/lang/IllegalStateException");
   if (0 == exceptionClass)
     {
       /* Just return if we can't load the exception class. */
@@ -238,8 +235,7 @@ throwNewIllegalStateException (JNIEnv * env, char *message)
 void
 throwNewIllegalArgumentException (JNIEnv * env, char *message)
 {
-  jclass exceptionClass =
-    (*env)->FindClass (env, "java/lang/IllegalArgumentException");
+  jclass exceptionClass = (*env)->FindClass (env, "java/lang/IllegalArgumentException");
   if (0 == exceptionClass)
     {
       /* Just return if we can't load the exception class. */
@@ -308,7 +304,8 @@ Java_java_util_zip_ZipFile_00024ZFEnum_resetZip (JNIEnv * env, jobject recv,
       return 0;
     }
   zip_resetZipFile (privatePortLibrary,
-		    &(jclZipFile->hyZipFile), &nextEntryPointer);
+		    &(jclZipFile->hyZipFile), 
+		    &nextEntryPointer);
   return nextEntryPointer;
 }
 
@@ -347,7 +344,6 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
 	{
 	  char buf[40];
 	  sprintf (buf, "Error %d getting next zip entry", retval);
-	  /* Cannot throw IOException (or subclasses) */
 	  throwNewInternalError (env, buf);
 	}
       return (jobject) NULL;

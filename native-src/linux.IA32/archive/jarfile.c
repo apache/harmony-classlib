@@ -53,7 +53,7 @@ createZipEntry (JNIEnv * env, HyZipFile * zipFile, HyZipEntry * zipEntry)
 
   javaClass = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
   mid = JCL_CACHE_GET (env, MID_java_util_zip_ZipEntry_init);
-  java_ZipEntry = ((*env)->NewObject (env, javaClass, mid, entryName, NULL,	/* comment */
+  java_ZipEntry = ((*env)->NewObject (env, javaClass, mid, entryName, NULL,
 				      extra,
 				      (jlong) zipEntry->lastModTime,
 				      (jlong) zipEntry->uncompressedSize,

@@ -24,7 +24,7 @@ LITTLE_ENDIAN:				This is for the intel machines or other
 NO_LVALUE_CASTING:	This is for compilers that don't like the left side
 											of assigns to be cast.  It hacks around to do the
 											right thing.
-ATOMIC_FLOAT_ACCESS:	For the hp720 so that float operations will work.
+ATOMIC_FLOAT_ACCESS:  So that float operations will work.
 LINKED_USER_PRIMITIVES:	Indicates that user primitives are statically linked
 													with the VM executeable.
 OLD_SPACE_SIZE_DIFF:	The 68k uses a different amount of old space.
@@ -36,17 +36,14 @@ VMCALL:			Tag for all functions called by the VM.
 VMAPICALL:		Tag for all functions called via the PlatformFunction
 							callWith: mechanism.
 			
-SYS_FLOAT:	For the MPW C compiler on MACintosh. Most of the math functions 
-						there return extended type which has 80 or 96 bits depending on 68881 option.
-						On All other platforms it is double
+SYS_FLOAT:  For some math functions where extended types (80 or 96 bits) are returned
+            Most platforms return as a double
 FLOAT_EXTENDED: If defined, the type name for extended precision floats.
 PLATFORM_IS_ASCII: Must be defined if the platform is ASCII
 EXE_EXTENSION_CHAR: the executable has a delimiter that we want to stop at as part of argv[0].
 */
 /* By default order doubles in the native (i.e. big/little endian) ordering. */
 #define HY_PLATFORM_DOUBLE_ORDER
-
-/* Linux ANSI compiler (gcc) */
 #if defined(LINUX)
 /* NOTE: Linux supports different processors -- do not assume 386 */
 #if defined(LINUXPPC64)
@@ -62,8 +59,6 @@ typedef signed int				I_32;
 typedef signed short				I_16;			
 typedef signed char				I_8;				
 typedef U_32						BOOLEAN; 	
-
-/* LinuxPPC64 is like AIX64 so we need direct function pointers */
 #if defined(LINUXPPC64)
 #define TOC_UNWRAP_ADDRESS(wrappedPointer) ((void *) (wrappedPointer)[0])
 #define TOC_STORE_TOC(dest,wrappedPointer) (dest = ((UDATA*)wrappedPointer)[1])
@@ -110,6 +105,12 @@ typedef double 					SYS_FLOAT;
 
 #define DIR_SEPARATOR '\\'
 #define DIR_SEPARATOR_STR "\\"
+
+/* Modifications for the Alpha running WIN-NT */
+#if defined(_ALPHA_)
+#undef small                    /* defined as char in rpcndr.h */
+typedef double FLOAT_EXTENDED;
+#endif
 
 #define HY_PRIORITY_MAP {	\
 	THREAD_PRIORITY_IDLE,							/* 0 */\
@@ -291,7 +292,7 @@ typedef	float		ESSINGLE;
 #else
 #define NORETURN
 #endif
-/* on some systems (e.g. LinuxPPC) va_list is an array type.  This is probably in
+/* on some systems va_list is an array type.  This is probably in
  * violation of the ANSI C spec, but it's not entirely clear.  Because of this, we end
  * up with an undesired extra level of indirection if we take the address of a
  * va_list argument. 
@@ -301,7 +302,6 @@ typedef	float		ESSINGLE;
 #if !defined(VA_PTR)
 #define VA_PTR(valist) (&valist)
 #endif
-/* Macros used on RS6000 to manipulate wrapped function pointers */
 #if !defined(TOC_UNWRAP_ADDRESS)
 #define TOC_UNWRAP_ADDRESS(wrappedPointer) (wrappedPointer)
 #endif

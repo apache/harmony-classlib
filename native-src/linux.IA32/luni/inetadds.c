@@ -147,7 +147,7 @@ Java_java_net_InetAddress_getHostByNameImpl (JNIEnv * env, jclass clazz,
   U_32 length = 0;
   I_32 family;
   U_32 scope_id = 0;
-  U_32 i = 0;
+  I_32 i = 0;
   I_32 addrLength = 0;
   BOOLEAN preferIPv4StackValue = preferIPv4Stack (env);
 

@@ -15,7 +15,9 @@
 
 #include "jni.h"
 /* #include "fltconst.h" */
+#if defined(__P)
 #undef __P
+#endif /* defined(__P) */
 #include "fdlibm.h"
 
 jdouble internal_ceil (jdouble arg1);

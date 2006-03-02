@@ -15,27 +15,6 @@
 
 #include "hycomp.h"
 
-/* Prototypes */
-U_32 decodeUTF8Char (const U_8 * input, U_16 * result);
-U_32 decodeUTF8CharN (const U_8 * input, U_16 * result, U_32 bytesRemaining);
-
-/**
- * Decode the UTF8 character.
- *
- * Decode the input UTF8 character and stores it into result.
- *
- * @param[in] input The UTF8 character
- * @param[in,out] result buffer for unicode characters
- *
- * @return The number of UTF8 characters consumed (1,2,3) on success, 0 on failure
- */
-U_32
-decodeUTF8Char (const U_8 * input, U_16 * result)
-{
-  /* a UTF8 character can't require more than 3 bytes */
-  return decodeUTF8CharN (input, result, 3);
-}
-
 /**
  * Decode the UTF8 character.
  *
@@ -132,3 +111,20 @@ decodeUTF8CharN (const U_8 * input, U_16 * result, U_32 bytesRemaining)
       return 0;
     }
 }
+/**
+ * Decode the UTF8 character.
+ *
+ * Decode the input UTF8 character and stores it into result.
+ *
+ * @param[in] input The UTF8 character
+ * @param[in,out] result buffer for unicode characters
+ *
+ * @return The number of UTF8 characters consumed (1,2,3) on success, 0 on failure
+ */
+U_32
+decodeUTF8Char (const U_8 * input, U_16 * result)
+{
+  /* a UTF8 character can't require more than 3 bytes */
+  return decodeUTF8CharN (input, result, 3);
+}
+

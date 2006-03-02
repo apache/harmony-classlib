@@ -313,7 +313,7 @@ newJavaLangBoolean (JNIEnv * env, BOOLEAN aBool)
 
   /*former: tempClass = JCL_CACHE_GET (env, CLS_java_lang_Boolean);*/
   tempClass = getJavaLangBooleanClass(env);
-  /*fromer: tempMethod = JCL_CACHE_GET (env, MID_java_lang_Boolean_init);*/
+  /*former: tempMethod = JCL_CACHE_GET (env, MID_java_lang_Boolean_init);*/
   tempMethod = getJavaLangBooleanInit(env);
   return (*env)->NewObject (env, tempClass, tempMethod, (jboolean) aBool);
 }
@@ -333,10 +333,10 @@ newJavaLangByte (JNIEnv * env, U_8 aByte)
   jclass tempClass;
   jmethodID tempMethod;
 
-  /*tempClass = JCL_CACHE_GET (env, CLS_java_lang_Byte);*/
+  /* former: tempClass = JCL_CACHE_GET (env, CLS_java_lang_Byte);*/
   tempClass = getJavaLangByteClass(env);
   tempMethod = getJavaLangByteInit(env);
-  /*tempMethod = JCL_CACHE_GET (env, MID_java_lang_Byte_init);*/
+  /* former: tempMethod = JCL_CACHE_GET (env, MID_java_lang_Byte_init);*/
   return (*env)->NewObject (env, tempClass, tempMethod, (jbyte) aByte);
 }
 
@@ -355,8 +355,8 @@ newJavaLangInteger (JNIEnv * env, I_32 anInt)
   jclass tempClass;
   jmethodID tempMethod;
 
-  /*tempClass = JCL_CACHE_GET (env, CLS_java_lang_Integer);
-  //tempMethod = JCL_CACHE_GET (env, MID_java_lang_Integer_init);*/
+  /* former: tempClass = JCL_CACHE_GET (env, CLS_java_lang_Integer);
+     former: tempMethod = JCL_CACHE_GET (env, MID_java_lang_Integer_init);*/
   tempClass = getJavaLangIntegerClass(env);
   tempMethod = getJavaLangIntegerInit(env);
   return (*env)->NewObject (env, tempClass, tempMethod, (jint) anInt);

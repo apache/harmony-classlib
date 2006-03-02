@@ -171,11 +171,14 @@ ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
 
   result = hyfile_write (descriptor, buf, count);
 
-  /* if there is an error, find the error message before calling free in case hymem_free_memory changes the error code */
+  /**
+   * if there is an error, find the error message before calling free in case 
+   * hymem_free_memory changes the error code 
+   */
   if (result < 0)
     errorMessage = ioLookupErrorString (env, result);
 
-  if (buf != internalBuffer)
+  if (buf != (jbyte*)internalBuffer)
     {
       jclmem_free_memory (env, buf);
     }
@@ -263,8 +266,11 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
     }
 
   len = (*env)->GetArrayLength (env, buffer);
-  /* Throw IndexOutOfBoundsException according to spec. * Must test offset > len, or len - offset < count to avoid * 
-     int overflow caused by offset + count */
+  /** 
+   * Throw IndexOutOfBoundsException according to spec. 
+   * Must test offset > len, or len - offset < count to avoid 
+   * int overflow caused by offset + count 
+   */
   if (offset < 0 || count < 0 || offset > len || (len - offset) < count)
     {
       throwIndexOutOfBoundsException (env);
@@ -297,6 +303,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
 
   if (descriptor == 0)
     {
+      /* hytty_get_chars() returns zero on EOF */
       if ((result = hytty_get_chars (buf, count)) == 0)
         result = -1;
     }
@@ -307,7 +314,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
   if (result > 0)
     (*env)->SetByteArrayRegion (env, buffer, offset, result, buf);
 
-  if (buf != internalBuffer)
+  if (buf != (jbyte*)internalBuffer)
     {
       jclmem_free_memory (env, buf);
     }
@@ -318,7 +325,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
 
 /**
   * Throw java.lang.NullPointerException with the message provided
-  * Note: This is not named throwNullPointerException because is conflicts
+  * Note: This is not named throwNullPointerException because it conflicts
   * with a VM function of that same name and this causes problems on
   * some platforms.
   */
@@ -415,7 +422,7 @@ getJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd)
     {
       return (void *) -1;
     }
-  return (void *) ((*env)->GetLongField (env, fd, descriptorFID));
+  return (void *)(IDATA) ((*env)->GetLongField (env, fd, descriptorFID));
 }
 
 /**
@@ -429,7 +436,7 @@ setJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd,
   jfieldID fid = getJavaIoFileDescriptorDescriptorFID (env);
   if (NULL != fid)
     {
-      (*env)->SetLongField (env, fd, fid, (jlong) value);
+      (*env)->SetLongField (env, fd, fid, (IDATA)value);
     }
 }
 

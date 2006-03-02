@@ -335,7 +335,7 @@ Java_java_net_SocketImpl_receiveStreamImpl (JNIEnv * env, jclass thisClz,
   if (result > 0)
     (*env)->SetByteArrayRegion (env, data, offset, result, message);
 
-  if (message != internalBuffer)
+  if (message != (jbyte *) internalBuffer)
     {
       jclmem_free_memory (env, message);
     }
@@ -409,7 +409,7 @@ Java_java_net_SocketImpl_sendStreamImpl (JNIEnv * env, jclass thisClz,
         getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
       if (!hysock_socketIsValid (socketP))
         {
-          if (message != internalBuffer)
+          if (message != (jbyte *) internalBuffer)
             {
               jclmem_free_memory (env, message);
             }
@@ -427,7 +427,7 @@ Java_java_net_SocketImpl_sendStreamImpl (JNIEnv * env, jclass thisClz,
         break;
       sent += result;
     }
-  if (message != internalBuffer)
+  if (message != (jbyte *) internalBuffer)
     {
       jclmem_free_memory (env, message);
     }

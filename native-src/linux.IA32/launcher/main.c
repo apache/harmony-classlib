@@ -456,8 +456,6 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
             {
               (*env)->ExceptionClear (env);
               (*jvm)->DestroyJavaVM (jvm);
-              /* "-jar option is not available for this class library\n" */
-              //              portLibrary->nls_printf(portLibrary, HYNLS_ERROR, HYNLS_EXE_JAR_OPTION_NOT_AVAIL );
               rc = 3;
               //goto cleanup;
             }
@@ -553,7 +551,6 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   if (rc == 0)
     {
 
-      //printf ("filecontents =%s\n", fileContents);
       lineDelimiter = strstr (fileContents, PLATFORM_LINE_DELIMITER);
       startOfLine = fileContents;
       /* note this logic means you need a line feed at the end of every line */
@@ -581,7 +578,6 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
           lineDelimiter = lineDelimiter + strlen (PLATFORM_LINE_DELIMITER);
           lineDelimiter = strstr (lineDelimiter, PLATFORM_LINE_DELIMITER);
         }
-      //printf ("line count = %d\n", linecount);
     }
   /* now expand strings with %LAUNCHER_HOME% */
   for (l = 0; l < linecount; l++)

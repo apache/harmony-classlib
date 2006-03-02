@@ -173,16 +173,6 @@
                 <include name="jniport.h" />
             </fileset>
         </copy>
-    	
-    	<!-- Copy the binaries for security -->
-    	
-        <copy todir="${target.output}/jre/bin" overwrite="yes"
-        	    verbose="true" >
-        	
-        	<fileset dir="../modules/security/build/deploy/jre/bin/"
-             	includes="*${shlib.suffix}" />
-        </copy>
-
     </target>
 
 

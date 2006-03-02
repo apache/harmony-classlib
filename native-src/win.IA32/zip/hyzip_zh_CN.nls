@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-# This file was automatically deduced from hyzip.nls and java_zh_CN.properties
 HYNLS.MODULE=ZIPS
 HYNLS.HEADER=hyzipnls.h
 

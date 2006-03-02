@@ -15,7 +15,6 @@
 
 #include "hycomp.h"
 #include "hyport.h"
-#include "hythread.h" /* TPE */
 #include <stdlib.h>     /* for malloc for atoe and abort */
 
 struct haCmdlineOptions
@@ -110,7 +109,6 @@ main (int argc, char **argv, char **envp)
       rc = result;
     }
 
-	  hythread_attach(NULL); /* TPE */
       hyportLibrary.port_shutdown_library (&hyportLibrary);
     }
 

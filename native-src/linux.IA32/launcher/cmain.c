@@ -15,7 +15,6 @@
 
 #include "hycomp.h"
 #include "hyport.h"
-//#include "libhlp.h" /* haCmdlineOptions structure moved to here */ 
 #include <stdlib.h>             /* for malloc for atoe and abort */
 
 struct haCmdlineOptions

@@ -311,8 +311,7 @@ typedef float ESSINGLE;
 #define PTR_LONG_STORE(dstPtr, aLongPtr) (*(dstPtr) = *(aLongPtr))
 #define PTR_LONG_VALUE(dstPtr, aLongPtr) (*(aLongPtr) = *(dstPtr))
 #endif
-/* Macro used when declaring tables which require relocations.
- */
+/* Macro used when declaring tables which require relocations.*/
 #if !defined(HYCONST_TABLE)
 #define HYCONST_TABLE const
 #endif
@@ -321,4 +320,4 @@ typedef float ESSINGLE;
 #define HY_SORT(base, nmemb, size, compare) qsort((base), (nmemb), (size), (compare))
 #endif
 
-#endif /* escomp_h */
+#endif /* hycomp_h */

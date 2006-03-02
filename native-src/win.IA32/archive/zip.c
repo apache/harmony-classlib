@@ -30,7 +30,8 @@ void
 throwNewInternalError (JNIEnv * env, char *message)
 {
   jclass exceptionClass = (*env)->FindClass(env, "java/lang/InternalError");
-  if (0 == exceptionClass) { 
+  if (0 == exceptionClass)
+    {
     /* Just return if we can't load the exception class. */
     return;
     }
@@ -44,7 +45,8 @@ void
 throwJavaZIOException (JNIEnv * env, char *message)
 {
   jclass exceptionClass = (*env)->FindClass(env, "java/util/zip/ZipException");
-  if (0 == exceptionClass) { 
+  if (0 == exceptionClass)
+    { 
     /* Just return if we can't load the exception class. */
     return;
     }
@@ -91,8 +93,9 @@ Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
         return 2;
     }
 
-  /* Add the zipFile we just allocated to the list of zip files -- we will free this on UnLoad if its not already
-     free'd */
+  /* Add the zipFile we just allocated to the list of zip files -- we will
+   * free this on UnLoad if its not already free'd.
+   */
   zipfileHandles = JCL_CACHE_GET (env, zipfile_handles);
   jclZipFile->last = (JCLZipFile *) zipfileHandles;
   jclZipFile->next = zipfileHandles->next;
@@ -103,7 +106,7 @@ Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
   (*env)->SetLongField (env, recv,
                         JCL_CACHE_GET (env,
                                        FID_java_util_zip_ZipFile_descriptor),
-                        ((jlong) jclZipFile));
+			            ((IDATA) jclZipFile));
   return 0;
 }
 
@@ -120,14 +123,14 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
   jclass entryClass;
   jmethodID mid;
   const char *entryCopy;
+  JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) zipPointer;
 
-  if ((JCLZipFile *) zipPointer == (void *) -1)
+  if (jclZipFile == (void *) -1)
     {
       throwNewIllegalStateException (env, "");
       return NULL;
     }
-
-  zipFile = &(((JCLZipFile *) zipPointer)->hyZipFile);
+  zipFile = &(jclZipFile->hyZipFile);
   entryCopy = (*env)->GetStringUTFChars (env, entryName, NULL);
   if (entryCopy == NULL)
     return (jobject) NULL;
@@ -188,7 +191,7 @@ Java_java_util_zip_ZipFile_closeZipImpl (JNIEnv * env, jobject recv)
   jfieldID descriptorFID =
     JCL_CACHE_GET (env, FID_java_util_zip_ZipFile_descriptor);
 
-  jclZipFile = (JCLZipFile *) (*env)->GetLongField (env, recv, descriptorFID);
+  jclZipFile = (JCLZipFile *) (IDATA) (*env)->GetLongField (env, recv, descriptorFID);
   if (jclZipFile != (void *) -1)
     {
       retval =
@@ -217,7 +220,8 @@ void
 throwNewIllegalStateException (JNIEnv * env, char *message)
 {
   jclass exceptionClass = (*env)->FindClass(env, "java/lang/IllegalStateException");
-  if (0 == exceptionClass) { 
+  if (0 == exceptionClass)
+    {
     /* Just return if we can't load the exception class. */
     return;
     }
@@ -231,7 +235,8 @@ void
 throwNewIllegalArgumentException (JNIEnv * env, char *message)
 {
   jclass exceptionClass = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
-  if (0 == exceptionClass) { 
+  if (0 == exceptionClass)
+    {
     /* Just return if we can't load the exception class. */
     return;
     }
@@ -290,14 +295,15 @@ Java_java_util_zip_ZipFile_00024ZFEnum_resetZip (JNIEnv * env, jobject recv,
   PORT_ACCESS_FROM_ENV (env);
 
   IDATA nextEntryPointer;
+  JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) descriptor;
 
-  if ((JCLZipFile *) descriptor == (void *) -1)
+  if (jclZipFile == (void *) -1)
     {
       throwNewIllegalStateException (env, "");
       return 0;
     }
   zip_resetZipFile (privatePortLibrary,
-                    &(((JCLZipFile *) descriptor)->hyZipFile),
+		    &(jclZipFile->hyZipFile), 
                     &nextEntryPointer);
   return nextEntryPointer;
 }
@@ -318,13 +324,14 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
   jmethodID mid;
   jstring entryName = NULL;
   IDATA nextEntryPointer;
+  JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) descriptor;
 
-  if ((JCLZipFile *) descriptor == (void *) -1)
+  if (jclZipFile == (void *) -1)
     {
       throwNewIllegalStateException (env, "");
       return NULL;
     }
-  zipFile = &(((JCLZipFile *) descriptor)->hyZipFile);
+  zipFile = &(jclZipFile->hyZipFile);
   zip_initZipEntry (PORTLIB, &zipEntry);
 
   nextEntryPointer = (IDATA) nextEntry;
@@ -387,7 +394,7 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
 
 jbyteArray JNICALL
 Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
-                                              jlong zipPointer,
+					                          jlong descriptor,
                                               jstring entryName)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -397,14 +404,15 @@ Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
   HyZipEntry zipEntry;
   const char *entryCopy;
   jbyteArray buf;
+  JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) descriptor;
 
   /* Build the zipFile */
-  if ((JCLZipFile *) zipPointer == (void *) -1)
+  if (jclZipFile == (void *) -1)
     {
       throwNewIllegalStateException (env, "");
       return NULL;
     }
-  zipFile = &(((JCLZipFile *) zipPointer)->hyZipFile);
+  zipFile = &(jclZipFile->hyZipFile);
   entryCopy = (*env)->GetStringUTFChars (env, entryName, NULL);
   if (entryCopy == NULL)
     return NULL;

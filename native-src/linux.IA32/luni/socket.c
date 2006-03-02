@@ -804,6 +804,7 @@ Java_java_net_Socket_getSocketLocalAddressImpl (JNIEnv * env, jclass thisClz,
   else
     {
       hysock_sockaddr_address6 (&sockaddrP, byte_array, &length, &scope_id);
+      /* Cannot call gethostbyaddr since it is not reentrant on some OS's */
       return newJavaNetInetAddressGenericB (env, byte_array, length,
                                             scope_id);
     }
@@ -927,8 +928,6 @@ Java_java_net_Socket_getSocketOptionImpl (JNIEnv * env, jclass thisClz,
  *
  * @exception SocketException	if an error occurs during the call
  */
-/* Support datagram broadcasts */
-
 void JNICALL
 Java_java_net_Socket_setSocketOptionImpl (JNIEnv * env, jclass thisClz,
                                           jobject aFileDescriptor,
@@ -1027,9 +1026,6 @@ Java_java_net_Socket_setSocketOptionImpl (JNIEnv * env, jclass thisClz,
  * @param	thisClz				pointer to the class of the receiver (of the java message)
  * @param	fileDescriptor 	pointer to the file descriptor of the socket to close
  */
-
-/* Descriptor field now set after socket closed. */
-
 void JNICALL
 Java_java_net_Socket_socketCloseImpl (JNIEnv * env, jclass thisClz,
                                       jobject fileDescriptor)
@@ -1088,7 +1084,6 @@ setBoolSocketOption (JNIEnv * env, hysocket_t hysocketP, int level,
  * @param	env						pointer to the JNI library
  * @param	hysocketP				socket pointer
  * @param	timeout				timeout value
- *
  */
 
 I_32
@@ -1099,7 +1094,7 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
   I_32 result;
   hysocket_t hysocketP;
 
-#if (defined(WIN32))
+#if defined(WIN32)
   PORT_ACCESS_FROM_ENV (env);
   hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (hysocketP))

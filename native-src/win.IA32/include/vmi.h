@@ -209,7 +209,8 @@ extern "C"
  */
   JavaVMInitArgs *JNICALL GetInitArgs (VMInterface * vmi);
 
-  /**
+ /**
+  * @fn VMInterfaceFunctions_::GetSystemProperty(VMInterface * vmi, char *key, char **valuePtr)
   * Retrieve the value of a VM system property. 
   * 
   * @note The returned string is owned by the VM, and should not be freed.

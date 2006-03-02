@@ -90,7 +90,6 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
           goto fail;
         }
 
-      /* This allocate must actually be done by hymem_allocate_memory */
       idCache = (JniIDCache *) hymem_allocate_memory (sizeof (JniIDCache));
       if (!idCache)
         goto fail2;
@@ -484,7 +483,6 @@ readClassPathFromPropertiesFile (JavaVM * vm)
   char propsFile[HyMaxPath];
   char cpSeparator[2];
   char *bootstrapClassPath = NULL;
-  char *fileWritePos;
   vmiError rcGetProperty;
   jint returnCode = JNI_OK;
   IDATA propsFD = -1;
@@ -505,7 +503,7 @@ readClassPathFromPropertiesFile (JavaVM * vm)
     }
 
   /* Make a string version of the CP separator */
-  cpSeparator[0] = hysysinfo_get_classpathSeparator ();
+  cpSeparator[0] = (char)hysysinfo_get_classpathSeparator ();
   cpSeparator[1] = '\0';
 
   /* Load the java.home system property */

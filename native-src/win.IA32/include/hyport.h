@@ -22,12 +22,12 @@
 #if !defined(hyport_h)
 #define hyport_h
 
-#include <stdarg.h>
+#include <stdarg.h>	/* for va_list */
 #include "hycomp.h"
 #include "hythread.h"
 #include "hysocket.h"
 #include "gp.h"                 /* for typedefs of function arguments to gp functions */
-#if defined(LINUX)
+#if (defined(LINUX) || defined(DECUNIX))
 #include <unistd.h>
 #endif
 
@@ -1416,4 +1416,4 @@ extern HY_CFUNC I_32 VMCALL hyport_isCompatible (struct HyPortLibraryVersion
 #endif /* !HYPORT_LIBRARY_DEFINE */
 /** @} */
 
-#endif
+#endif /* hyport_h */

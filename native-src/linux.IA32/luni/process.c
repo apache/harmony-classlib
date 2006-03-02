@@ -116,7 +116,8 @@ Java_com_ibm_oti_lang_SystemProcess_createImpl (JNIEnv * env, jclass clazz,
     }
 
   if (!retVal)
-    {                           /* Failed to exec program */
+    {
+      /* Failed to exec program */
       jclass exClass = (*env)->FindClass (env, "java/io/IOException");
       (*env)->ThrowNew (env, exClass, "Unable to start program");
       goto failed;
@@ -194,19 +195,19 @@ Java_com_ibm_oti_lang_ProcessInputStream_readImpl (JNIEnv * env, jobject recv,
 
 }
 
-/*Return the number of bytes available to be read without blocking */
+/* Return the number of byes available to be read without blocking */
 jint JNICALL
 Java_com_ibm_oti_lang_ProcessInputStream_availableImpl (JNIEnv * env,
                                                         jobject recv)
 {
-  jint sHandle;
+  jlong sHandle;
   int retVal;
 
   sHandle =
     (*env)->GetLongField (env, recv,
                           JCL_CACHE_GET (env,
                                          FID_com_ibm_oti_lang_ProcessInputStream_handle));
-  retVal = getAvailable (sHandle);
+  retVal = getAvailable ((jint)sHandle);
   if (retVal < 0)
     {
       /* Couldn't read bytes */

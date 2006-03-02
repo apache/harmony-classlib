@@ -18,8 +18,10 @@
 
 #include "jclglob.h"
 
-/* Create a System Process with the specified */
-/* environment and arguments */
+/**
+  * Create a System Process with the specified
+  * environment and arguments 
+  */
 jlongArray JNICALL
 Java_com_ibm_oti_lang_SystemProcess_createImpl (JNIEnv * env, jclass clazz,
             jobject recv,
@@ -234,8 +236,7 @@ Java_com_ibm_oti_lang_ProcessInputStream_setFDImpl (JNIEnv * env,
                 jobject recv,
                 jobject arg1, jlong arg2)
 {
-
-  setJavaIoFileDescriptorContentsAsPointer (env, arg1, (void *) arg2);
+  setJavaIoFileDescriptorContentsAsPointer (env, arg1, (void *) ((IDATA) arg2));
 }
 
 void JNICALL
@@ -243,8 +244,7 @@ Java_com_ibm_oti_lang_ProcessOutputStream_setFDImpl (JNIEnv * env,
                  jobject recv,
                  jobject arg1, jlong arg2)
 {
-
-  setJavaIoFileDescriptorContentsAsPointer (env, arg1, (void *) arg2);
+  setJavaIoFileDescriptorContentsAsPointer (env, arg1, (void *) ((IDATA) arg2));
 }
 
 /* Wait for the receiver to finish then return the exit value */

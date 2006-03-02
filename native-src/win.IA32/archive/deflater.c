@@ -32,7 +32,7 @@ Java_java_util_zip_Deflater_setDictionaryImpl (JNIEnv * env, jobject recv,
   PORT_ACCESS_FROM_ENV (env);
   int err = 0;
   char *dBytes;
-  JCLZipStream *stream = (JCLZipStream *) handle;
+  JCLZipStream *stream = (JCLZipStream *) ((IDATA) handle);
 
   dBytes = jclmem_allocate_memory (env, len);
   if (dBytes == NULL)
@@ -57,7 +57,7 @@ Java_java_util_zip_Deflater_getTotalInImpl (JNIEnv * env, jobject recv,
 {
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   return stream->stream->total_in;
 }
 
@@ -67,7 +67,7 @@ Java_java_util_zip_Deflater_getTotalOutImpl (JNIEnv * env, jobject recv,
 {
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   return stream->stream->total_out;
 }
 
@@ -77,7 +77,7 @@ Java_java_util_zip_Deflater_getAdlerImpl (JNIEnv * env, jobject recv,
 {
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
 
   return stream->stream->adler;
 }
@@ -131,7 +131,7 @@ Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
       return -1;
     }
 
-  return (jlong) jstream;
+  return (jlong) ((IDATA) jstream);
 }
 
 void JNICALL
@@ -144,7 +144,7 @@ Java_java_util_zip_Deflater_setInputImpl (JNIEnv * env, jobject recv,
   jbyte *in;
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   if (stream->inaddr != NULL)   /*Input has already been provided, free the old buffer */
     jclmem_free_memory (env, stream->inaddr);
   stream->inaddr = jclmem_allocate_memory (env, len);
@@ -182,7 +182,7 @@ Java_java_util_zip_Deflater_deflateImpl (JNIEnv * env, jobject recv,
      GetIntField (env, recv,
                   JCL_CACHE_GET (env, FID_java_util_zip_Deflater_inRead)));
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   stream->stream->avail_out = len;
   sin = stream->stream->total_in;
   sout = stream->stream->total_out;
@@ -222,7 +222,7 @@ Java_java_util_zip_Deflater_endImpl (JNIEnv * env, jobject recv, jlong handle)
   PORT_ACCESS_FROM_ENV (env);
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
 
   deflateEnd (stream->stream);
   if (stream->inaddr != NULL)
@@ -239,7 +239,7 @@ Java_java_util_zip_Deflater_resetImpl (JNIEnv * env, jobject recv,
 {
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   deflateReset (stream->stream);
 }
 
@@ -259,7 +259,7 @@ Java_java_util_zip_Deflater_setLevelsImpl (JNIEnv * env, jobject recv,
       throwNewIllegalStateException (env, "");
       return;
     }
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   stream->stream->next_out = (Bytef *) & b;
   err = deflateParams (stream->stream, level, strategy);
   if (err != Z_OK)

@@ -23,13 +23,13 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1open
   (JNIEnv * env, jclass clazz)
 {
   UBiDi *pBiDi = ubidi_open ();
-  return (jlong) pBiDi;
+  return (jlong) ((IDATA) pBiDi);
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1close
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
-  ubidi_close ((UBiDi *) pBiDi);
+  ubidi_close ((UBiDi *) ((IDATA) pBiDi));
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1setPara
@@ -48,8 +48,8 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1setPara
         (*env)->GetByteArrayElements (env, embeddingLevels, NULL);
     }
 
-  ubidi_setPara ((UBiDi *) pBiDi, _text, length, paraLevel, _embeddingLevels,
-                 &err);
+  ubidi_setPara ((UBiDi *) ((IDATA) pBiDi), _text, length, paraLevel,
+		 _embeddingLevels, &err);
   check_fail (env, err);
 
   (*env)->ReleaseCharArrayElements (env, text, _text, 0);
@@ -68,28 +68,29 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1setLine
   UBiDi *pLineBiDi = ubidi_openSized (limit - start, 0, &err);
   check_fail (env, err);
 
-  ubidi_setLine ((UBiDi *) pParaBiDi, start, limit, pLineBiDi, &err);
+  ubidi_setLine ((UBiDi *) ((IDATA) pParaBiDi), start, limit, pLineBiDi,
+		 &err);
   check_fail (env, err);
 
-  return (jlong) pLineBiDi;
+  return (jlong) ((IDATA) pLineBiDi);
 }
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getDirection
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
-  return ubidi_getDirection ((const UBiDi *) pBiDi);
+  return ubidi_getDirection ((const UBiDi *) ((IDATA) pBiDi));
 }
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getLength
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
-  return ubidi_getLength ((const UBiDi *) pBiDi);
+  return ubidi_getLength ((const UBiDi *) ((IDATA) pBiDi));
 }
 
 JNIEXPORT jbyte JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getParaLevel
   (JNIEnv * env, jclass clazz, jlong pBiDi)
 {
-  return ubidi_getParaLevel ((const UBiDi *) pBiDi);
+  return ubidi_getParaLevel ((const UBiDi *) ((IDATA) pBiDi));
 }
 
 JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getLevels
@@ -100,10 +101,10 @@ JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1get
   jbyteArray result = NULL;
   int len = 0;
 
-  levels = ubidi_getLevels ((UBiDi *) pBiDi, &err);
+  levels = ubidi_getLevels ((UBiDi *) ((IDATA) pBiDi), &err);
   check_fail (env, err);
 
-  len = ubidi_getLength ((const UBiDi *) pBiDi);
+  len = ubidi_getLength ((const UBiDi *) ((IDATA) pBiDi));
   result = (*env)->NewByteArray (env, len);
   (*env)->SetByteArrayRegion (env, result, 0, len, (jbyte *) levels);
 
@@ -115,7 +116,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1countRuns
 {
   UErrorCode err = 0;
 
-  int count = ubidi_countRuns ((UBiDi *) pBiDi, &err);
+  int count = ubidi_countRuns ((UBiDi *) ((IDATA) pBiDi), &err);
   check_fail (env, err);
 
   return count;
@@ -131,8 +132,8 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getRun
   jmethodID initID = 0;
   jobject run = 0;
 
-  ubidi_getVisualRun ((UBiDi *) pBiDi, index, &start, &length);
-  ubidi_getLogicalRun ((const UBiDi *) pBiDi, start, NULL, &level);
+  ubidi_getVisualRun ((UBiDi *) ((IDATA) pBiDi), index, &start, &length);
+  ubidi_getLogicalRun ((const UBiDi *) ((IDATA) pBiDi), start, NULL, &level);
 
   run_clazz = (*env)->FindClass (env, "org/apache/harmony/text/BidiRun");
   initID = (*env)->GetMethodID (env, run_clazz, "<init>", "(III)V");

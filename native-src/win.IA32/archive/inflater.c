@@ -70,7 +70,7 @@ Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
       return -1;
     }
 
-  return (jlong) jstream;
+  return (jlong) ((IDATA) jstream);
 }
 
 void JNICALL
@@ -82,9 +82,7 @@ Java_java_util_zip_Inflater_setInputImpl (JNIEnv * env, jobject recv,
 
   jbyte *in;
   U_8 *baseAddr;
-  JCLZipStream *stream;
-
-  stream = (JCLZipStream *) handle;
+  JCLZipStream *stream = (JCLZipStream *) ((IDATA) handle);
 
   if (stream->inaddr != NULL)   /*Input has already been provided, free the old buffer */
     jclmem_free_memory (env, stream->inaddr);
@@ -113,7 +111,7 @@ Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
   PORT_ACCESS_FROM_ENV (env);
 
   jbyte *out;
-  JCLZipStream *stream;
+  JCLZipStream *stream = (JCLZipStream *) ((IDATA) handle);
   jint err = 0;
   jfieldID fid = 0, fid2 = 0;
   jint sin, sout, inBytes = 0;
@@ -122,7 +120,6 @@ Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
   fid = JCL_CACHE_GET (env, FID_java_util_zip_Inflater_inRead);
   inBytes = ((*env)->GetIntField (env, recv, fid));
 
-  stream = (JCLZipStream *) handle;
   stream->stream->avail_out = len;
   sin = stream->stream->total_in;
   sout = stream->stream->total_out;
@@ -154,8 +151,9 @@ Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
         }
     }
 
-  /* Need to update the number of input bytes read. Is there a better way(Maybe global the fid then delete when end
-     is called)? */
+  /* Need to update the number of input bytes read. Is there a better way
+   * (Maybe global the fid then delete when end is called)?
+   */
   ((*env)->
    SetIntField (env, recv, fid,
                 (jint) stream->stream->total_in - sin + inBytes));
@@ -169,7 +167,7 @@ Java_java_util_zip_Inflater_getAdlerImpl (JNIEnv * env, jobject recv,
 {
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
 
   return stream->stream->adler;
 }
@@ -180,7 +178,7 @@ Java_java_util_zip_Inflater_endImpl (JNIEnv * env, jobject recv, jlong handle)
   PORT_ACCESS_FROM_ENV (env);
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   inflateEnd (stream->stream);
   if (stream->inaddr != NULL)   /*Input has been provided, free the buffer */
     jclmem_free_memory (env, stream->inaddr);
@@ -198,7 +196,7 @@ Java_java_util_zip_Inflater_setDictionaryImpl (JNIEnv * env, jobject recv,
   PORT_ACCESS_FROM_ENV (env);
   int err = 0;
   U_8 *dBytes;
-  JCLZipStream *stream = (JCLZipStream *) handle;
+  JCLZipStream *stream = (JCLZipStream *) ((IDATA) handle);
 
   dBytes = jclmem_allocate_memory (env, len);
   if (dBytes == NULL)
@@ -223,7 +221,7 @@ Java_java_util_zip_Inflater_resetImpl (JNIEnv * env, jobject recv,
 {
   JCLZipStream *stream;
   int err = 0;
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
 
   err = inflateReset (stream->stream);
   if (err != Z_OK)
@@ -253,7 +251,7 @@ Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env, jobject recv,
 {
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   return stream->stream->total_out;
 }
 
@@ -263,7 +261,7 @@ Java_java_util_zip_Inflater_getTotalInImpl (JNIEnv * env, jobject recv,
 {
   JCLZipStream *stream;
 
-  stream = (JCLZipStream *) handle;
+  stream = (JCLZipStream *) ((IDATA) handle);
   return stream->stream->total_in;
 }
 

@@ -189,7 +189,10 @@ Java_java_net_InetAddress_getHostByNameImpl (JNIEnv * env, jclass clazz,
         }
     }
 
-  /* check if there was no match for the preferIPv6Addresses.  If not just return the first one */
+  /**
+   * check if there was no match for the preferIPv6Addresses.  
+   * If not just return the first one 
+   */
   if (i == addrLength)
     {
       hysock_getaddrinfo_family (&addrinfo, &family, 0);
@@ -292,6 +295,7 @@ Java_java_net_InetAddress_inetNtoaImpl (JNIEnv * env, jclass clazz,
   char *strHost;
 
   nipAddr = hysock_htonl ((I_32) hipAddr);
+  /* if this native method is not synchronized in Java, the underlying implementation of hysock_inetntoa must be threadsafe */
   result = hysock_inetntoa (&strHost, nipAddr);
   if (0 != result)
     {
