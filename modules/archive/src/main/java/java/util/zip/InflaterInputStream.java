@@ -227,5 +227,40 @@ public class InflaterInputStream extends FilterInputStream {
 			super.close();
 		}
 	}
+	
+    /**
+	 * Marks the current position in the stream.
+	 * 
+	 * This implementation overrides the supertype implementation to do nothing
+	 * at all.
+	 * 
+	 * @param readlimit
+	 *            of no use
+	 */
+	public void mark(int readlimit) {
+		// do nothing
+	}
+
+    /**
+	 * Reset the position of the stream to the last mark position.
+	 * 
+	 * This implementation overrides the supertype implementation and always
+	 * throws an {@link IOException IOException} when called.
+	 * 
+	 * @throws IOException
+	 *             if the method is called
+	 */
+    public void reset() throws IOException{
+        throw new IOException();
+    }
+    
+    /**
+	 * Answers whether the receiver implements mark semantics.  This type
+	 * does not support mark, so always responds <code>false</code>.
+	 * @return false 
+	 */
+	public boolean markSupported() {
+		return false;
+	}
 
 }
