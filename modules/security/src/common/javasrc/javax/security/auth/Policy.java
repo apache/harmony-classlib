@@ -33,8 +33,15 @@ import org.apache.harmony.security.x.security.auth.DefaultSubjectPolicy;
 /**
  * @com.intel.drl.spec_ref
  * 
+ * @deprecated Use
+ *             {@link java.security.Policy#getPermissions(java.security.ProtectionDomain)
+ *             Policy.getPermissions(ProtectionDomain)} and
+ *             {@link java.security.ProtectionDomain#ProtectionDomain(java.security.CodeSource, java.security.PermissionCollection, ClassLoader, java.security.Principal[])
+ *             ProtectionDomain(CodeSource, PermissionCollection, ClassLoader,
+ *             Principal[]} to establish a policy's permissions for a principal.
  */
-public abstract class Policy {
+public abstract class Policy 
+{
 
     // Key to security properties, defining default policy provider.
     private static final String POLICY_PROVIDER = "auth.policy.provider";
