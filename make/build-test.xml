@@ -23,14 +23,14 @@
 
     <property name="build.compiler" value="modern"/>
 
-    <property name="tests.output" value="../../target/test_report" />
-    <property name="target.output" value="../../deploy" />
+    <property name="tests.output" value="build/test_report" />
+    <property name="target.output" value="deploy" />
 
     <target name="test-all" depends="clean, test-luni, test-xnet, test-text, test-security, gen-report">
 	</target>
 
 	<target name="clean">
-		<delete dir="target" />
+		<delete dir="${tests.output}" />
 	</target>
 
 	<target name="test-luni">
@@ -69,11 +69,11 @@
 	</target>
 
 	<target name="gen-report">
-		<junitreport todir="target/test_report">
-		  <fileset dir="target/test_report">
+		<junitreport todir="${tests.output}">
+		  <fileset dir="${tests.output}">
 		    <include name="TEST*-*.xml"/>
 		  </fileset>
-		  <report format="frames" todir="target/test_report/html"/>
+		  <report format="frames" todir="${tests.output}/html"/>
 		</junitreport>
     </target>
 
