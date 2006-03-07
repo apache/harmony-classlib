@@ -37,4 +37,8 @@
    </luni>
 
    <target location="../../deploy" />
+
+   <tests>
+      <reports location="../../build/test_report" />
+   </tests>
 </hy>
