@@ -16,6 +16,8 @@
 package java.nio.charset;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
@@ -440,7 +442,13 @@ public abstract class CharsetEncoder {
 		if (in.remaining() > 0) {
 			while (true) {
 				CodingErrorAction action = null;                
-				result = encodeLoop(in, out);
+				try {
+					result = encodeLoop(in, out);
+				} catch (BufferOverflowException ex) { 
+					throw new CoderMalfunctionError(ex);
+				} catch (BufferUnderflowException ex) {
+					throw new CoderMalfunctionError(ex);
+				}
                 int position = in.position();
 				if (endOfInput && result.isUnderflow() && in.hasRemaining()) {
 					result = CoderResult.malformedForLength(in.remaining());

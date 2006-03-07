@@ -15,10 +15,13 @@
 
 package org.apache.harmony.tests.java.nio.charset;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderMalfunctionError;
 import java.nio.charset.CoderResult;
 
 import junit.framework.TestCase;
@@ -68,6 +71,54 @@ public class CharsetEncoderTest extends TestCase {
 		protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
 			return null;
 		}
+	}
 
+	/*
+	 * Test malfunction encode(CharBuffer)
+	 */
+	public void test_EncodeLjava_nio_CharBuffer() throws Exception {
+		MockMalfunctionCharset cs = new MockMalfunctionCharset("mock", null);
+		try {
+			cs.encode(CharBuffer.wrap("AB"));
+			fail("should throw CoderMalfunctionError");// NON-NLS-1$
+		} catch (CoderMalfunctionError e) {
+			// expected
+		}
+	}
+
+	/*
+	 * Mock charset class with malfunction decode & encode.
+	 */
+	static final class MockMalfunctionCharset extends Charset {
+
+		public MockMalfunctionCharset(String canonicalName, String[] aliases) {
+			super(canonicalName, aliases);
+		}
+
+		public boolean contains(Charset cs) {
+			return false;
+		}
+
+		public CharsetDecoder newDecoder() {
+			return Charset.forName("UTF-8").newDecoder();
+		}
+
+		public CharsetEncoder newEncoder() {
+			return new MockMalfunctionEncoder(this);
+		}
+	}
+
+	/*
+	 * Mock encoder. encodeLoop always throws unexpected exception.
+	 */
+	static class MockMalfunctionEncoder extends java.nio.charset.CharsetEncoder {
+
+		public MockMalfunctionEncoder(Charset cs) {
+			super(cs, 1, 3, new byte[] { (byte) '?' });
+		}
+
+		protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
+			throw new BufferOverflowException();
+		}
 	}
 }
