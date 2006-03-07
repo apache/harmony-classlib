@@ -168,7 +168,7 @@ public abstract class NumberFormat extends Format {
 	 * @exception IllegalArgumentException
 	 *                when the object is not a Number
 	 */
-	public final StringBuffer format(Object object, StringBuffer buffer,
+	public StringBuffer format(Object object, StringBuffer buffer,
 			FieldPosition field) {
 		if (object instanceof Number) {
 			double dv = ((Number) object).doubleValue();

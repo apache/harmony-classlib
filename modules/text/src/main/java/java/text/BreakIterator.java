@@ -15,8 +15,9 @@
 
 package java.text;
 
-
 import java.util.Locale;
+
+import org.apache.harmony.luni.util.NotYetImplementedException;
 
 /**
  * This class is used to locate the boundaries of text. Instance of this class
@@ -361,5 +362,29 @@ public abstract class BreakIterator implements Cloneable {
 		} catch (CloneNotSupportedException e) {
 			throw new InternalError(e.getMessage());
 		}
+	}
+
+	/**
+	 * This method is added by Java SE 5 without any spec, but will be removed
+	 * by Java SE 6, so this method is not implemented by Harmony.
+	 */
+	protected static long getLong(byte[] buf, int offset) {
+		throw new NotYetImplementedException();
+	}
+
+	/**
+	 * This method is added by Java SE 5 without any spec, but will be removed
+	 * by Java SE 6, so this method is not implemented by Harmony.
+	 */
+	protected static int getInt(byte[] buf, int offset) {
+		throw new NotYetImplementedException();
+	}
+
+	/**
+	 * This method is added by Java SE 5 without any spec, but will be removed
+	 * by Java SE 6, so this method is not implemented by Harmony.
+	 */
+	protected static short getShort(byte[] buf, int offset) {
+		throw new NotYetImplementedException();
 	}
 }
