@@ -31,11 +31,11 @@
     <!-- jdtCompilerAdapter.jar and org.eclipse.jdt.core_3.1.0.jar   -->
     <property name="build.compiler" value="modern" />
 
-    <property name="build.output" location="../bin" />
+    <property name="build.output" location="../build" />
     <property name="depends.jars" location="../depends/jars" />
     <property name="depends.files" location="../depends/files" />
     <property name="components.patternsets" location="../make/patternsets" />
-    <property name="components.output" location="../components" />
+    <property name="components.output" location="../build/components" />
     <property name="target.output" location="../deploy" />
 
 
