@@ -13,13 +13,21 @@
  * limitations under the License.
  */
 
-package com.ibm.platform;
+package org.apache.harmony.luni.platform;
 
 
 /**
- * ISystemComponent
+ * IAdapterManager
  * 
  */
-public interface ISystemComponent extends IAdaptable {
-	/*empty*/
+public interface IAdapterManager {
+	public Object getAdapter(IAdaptable adaptable, Class adapterType);
+
+	public boolean hasAdapter(IAdaptable adaptable, Class adapterType);
+
+	public void registerAdapters(IAdapterFactory factory, Class adaptable);
+
+	public void unregisterAdapters(IAdapterFactory factory);
+
+	public void unregisterAdapters(IAdapterFactory factory, Class adaptable);
 }

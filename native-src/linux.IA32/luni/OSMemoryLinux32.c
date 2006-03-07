@@ -24,25 +24,25 @@
 #include <harmony.h>
 #include "OSMemory.h"
 
-#define	OS_JNI(func) JNICALL Java_com_ibm_platform_OSMemory_##func
+#define	OS_JNI(func) JNICALL Java_org_apache_harmony_luni_platform_OSMemory_##func
 
-JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLittleEndianImpl(JNIEnv * env, jclass clazz)
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLittleEndianImpl(JNIEnv * env, jclass clazz)
 {
   return JNI_TRUE;
 }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_getPointerSizeImpl (JNIEnv * env, jclass clazz)
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getPointerSizeImpl (JNIEnv * env, jclass clazz)
 {
   return 4;
 }
 
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_getAddress
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getAddress
   (JNIEnv * env, jobject thiz, jlong address)
 {
   return (jlong) * (long *) ((IDATA) address);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setAddress
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setAddress
   (JNIEnv * env, jobject thiz, jlong address, jlong value)
 {
   *(long *) ((IDATA) address) = (long) value;
@@ -57,7 +57,7 @@ int getPageSize()
 	return PAGE_SIZE;
 }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_loadImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_loadImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
    if(mlock((void *)addr, size)!=-1)
    {
@@ -71,7 +71,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_loadImpl
    return -1;
   }
 
-JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLoadedImpl
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoadedImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
 	  PORT_ACCESS_FROM_ENV (env);
   	  jboolean result = 0;
@@ -97,7 +97,7 @@ JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLoadedImpl
       return result;
   }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_flushImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
   return msync((void *)addr, size, MS_SYNC);
 };

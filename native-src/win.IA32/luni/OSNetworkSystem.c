@@ -70,12 +70,12 @@ getConnectContext(JNIEnv *env,jobject longclass){
 
 /*----------------------former cache get/set ------------------------------------
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    oneTimeInitializationDatagram
  * Signature: (Z)V
  */
  /*
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_oneTimeInitializationDatagram(JNIEnv * env,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_oneTimeInitializationDatagram(JNIEnv * env,
 		   jclass clazz,
 		   jboolean
 		   ipv6support)	
@@ -108,12 +108,12 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_oneTimeInitializati
 }
 */
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    oneTimeInitializationSocket
  * Signature: (Z)V
  */
  /*
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_oneTimeInitializationSocket(JNIEnv	* env, jclass clazz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_oneTimeInitializationSocket(JNIEnv	* env, jclass clazz,
 	    jboolean jcl_supports_ipv6)	
 {
   jfieldID fid;	
@@ -137,11 +137,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_oneTimeInitializati
 */
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    createSocketImpl
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createSocketImpl(JNIEnv * env,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createSocketImpl(JNIEnv * env,
 	      jclass thisClz,
 	      jobject thisObjFD,
 	      jboolean
@@ -151,11 +151,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createSocketImpl(JN
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    createDatagramImpl
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createDatagramSocketImpl(JNIEnv * env,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createDatagramSocketImpl(JNIEnv * env,
 		jclass
 		thisClz,
 		jobject	
@@ -167,11 +167,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createDatagramSocke
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    readSocketImpl
  * Signature: (Ljava/io/FileDescriptor;[BIII)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_readSocketImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketImpl(JNIEnv * env, jclass thisClz,
 	      jobject fileDescriptor,
 	      jbyteArray data, jint offset,
 	      jint count, jint timeout)	
@@ -247,11 +247,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_readSocketImpl(JNIE
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    writeSocketImpl
  * Signature: (Ljava/io/FileDescriptor;[BII)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_writeSocketImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketImpl(JNIEnv * env, jclass thisClz,
 	   jobject fileDescriptor,
 	   jbyteArray data, jint offset,
 	   jint	count)
@@ -327,11 +327,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_writeSocketImpl(JNI
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    setNonBlockingImpl
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_setNonBlockingImpl	 (JNIEnv * env,	
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_setNonBlockingImpl	 (JNIEnv * env,	
 	  jclass fileDescriptor,jobject	afd,
 	  jboolean nonblocking)	
 {
@@ -352,11 +352,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_setNonBlockingImpl	
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    connectSocketImpl	
  * Signature: (Ljava/io/FileDescriptor;ILjava/net/InetAddress;I)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_connectSocketImpl(JNIEnv *	env,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_connectSocketImpl(JNIEnv *	env,
 	       jclass thisClz,
 	       jobject
 	       fileDescriptor,
@@ -410,11 +410,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_connectSocketImpl(J
     return result;
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    connectWithTimeoutSocketImpl
  * Signature: (Ljava/io/FileDescriptor;IILjava/net/InetAddress;IILjava/lang/Long;)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_connectWithTimeoutSocketImpl(JNIEnv * env,	
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_connectWithTimeoutSocketImpl(JNIEnv * env,	
 	       jclass thisClz,
 	       jobject
 	       fileDescriptor,
@@ -502,11 +502,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_connectWithTimeoutS
     return result;
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    socketBindImpl
  * Signature: (Ljava/io/FileDescriptor;ILjava/net/InetAddress;)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_socketBindImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_socketBindImpl(JNIEnv * env, jclass thisClz,
 	    jobject fileDescriptor,
 	    jint localPort,
 	    jobject inetAddress)
@@ -556,11 +556,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_socketBindImpl(JNIE
 
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    listenStreamSocketImpl
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_listenStreamSocketImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_listenStreamSocketImpl(JNIEnv * env, jclass thisClz,
 	     jobject fileDescriptor,
 	     jint backlog)
 {
@@ -584,11 +584,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_listenStreamSocketI
     }
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    availableStreamImpl
  * Signature: (Ljava/io/FileDescriptor;)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_availableStreamImpl(JNIEnv	* env, jclass thisClz,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStreamImpl(JNIEnv	* env, jclass thisClz,
 		jobject	fileDescriptor)	
 {
 #define	MSGLEN 2048   /* This could be replaced	by the default stack buffer size */
@@ -636,11 +636,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_availableStreamImpl
     }
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    acceptSocketImpl
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/SocketImpl;Ljava/io/FileDescriptor;I)V	
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_acceptSocketImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_acceptSocketImpl(JNIEnv * env, jclass thisClz,
 	     jobject fileDescriptorServer,
 	     jobject socketImpl,
 	     jobject
@@ -683,11 +683,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_acceptSocketImpl(JN
     }
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    supportsUrgentDataImpl
  * Signature: (Ljava/io/FileDescriptor;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSNetworkSystem_supportsUrgentDataImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_supportsUrgentDataImpl(JNIEnv * env, jclass thisClz,
 	     jobject fileDescriptor)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -705,11 +705,11 @@ JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSNetworkSystem_supportsUrgentD
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    sendUrgentDataImpl
  * Signature: (Ljava/io/FileDescriptor;B)Z
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_sendUrgentDataImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendUrgentDataImpl(JNIEnv * env, jclass thisClz,
 	       jobject fileDescriptor,
 	       jbyte data)
 {
@@ -739,11 +739,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_sendUrgentDataImpl(
     }
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    connectDatagramImpl2
  * Signature: (Ljava/io/FileDescriptor;IILjava/net/InetAddress;)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_connectDatagramImpl2(JNIEnv * env,	
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_connectDatagramImpl2(JNIEnv * env,	
 		  jclass thisClz,
 		  jobject
 		  fileDescriptor,
@@ -794,11 +794,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_connectDatagramImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    disconnectDatagramImpl
  * Signature: (Ljava/io/FileDescriptor;)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_disconnectDatagramImpl(JNIEnv * env,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_disconnectDatagramImpl(JNIEnv * env,
 		    jclass thisClz,
 		    jobject
 		    fileDescriptor)
@@ -836,11 +836,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_disconnectDatagramI
 
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    socketBindImpl2
  * Signature: (Ljava/io/FileDescriptor;IZLjava/net/InetAddress;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSNetworkSystem_socketBindImpl2(JNIEnv	* env,
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_socketBindImpl2(JNIEnv	* env,
 		   jclass thisClz,
 		   jobject fileDescriptor,
 		   jint	localPort,
@@ -893,11 +893,11 @@ JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSNetworkSystem_socketBindImpl2
 
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    peekDatagramImpl
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/InetAddress;I)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_peekDatagramImpl(JNIEnv * env,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_peekDatagramImpl(JNIEnv * env,
 	      jclass thisClz,
 	      jobject
 	      fileDescriptor,
@@ -953,11 +953,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_peekDatagramImpl(JN
     }
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    receiveDatagramImpl
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;[BIIIZ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_receiveDatagramImpl(JNIEnv	* env,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramImpl(JNIEnv	* env,
 		  jclass thisClz,
 		  jobject
 		  fileDescriptor,
@@ -1026,11 +1026,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_receiveDatagramImpl
     }
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    recvConnectedDatagramImpl	
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;[BIIIZ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_recvConnectedDatagramImpl(JNIEnv *	env,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramImpl(JNIEnv *	env,
 		 jclass	
 		 thisClz,
 		 jobject
@@ -1124,11 +1124,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_recvConnectedDatagr
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    sendDatagramImpl
  * Signature: (Ljava/io/FileDescriptor;[BIIIZILjava/net/InetAddress;)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_sendDatagramImpl(JNIEnv * env,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramImpl(JNIEnv * env,
 	       jclass thisClz,
 	       jobject
 	       fileDescriptor,
@@ -1216,11 +1216,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_sendDatagramImpl(JN
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    sendConnectedDatagramImpl	
  * Signature: (Ljava/io/FileDescriptor;[BIIZ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_sendConnectedDatagramImpl(JNIEnv *	env,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramImpl(JNIEnv *	env,
 		 jclass	
 		 thisClz,
 		 jobject
@@ -1301,11 +1301,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_sendConnectedDatagr
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    createServerStreamSocketImpl
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createServerStreamSocketImpl(JNIEnv *
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createServerStreamSocketImpl(JNIEnv *
 								  env,
 								  jclass
 								  thisClz,
@@ -1322,11 +1322,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createServerStreamS
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    createMulticastSocketImpl	
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createMulticastSocketImpl(JNIEnv *	
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createMulticastSocketImpl(JNIEnv *	
 		  env,
 		  jclass
 		  thisClz,
@@ -1346,7 +1346,7 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createMulticastSock
   hysock_setopt_bool (socketP, HY_SOL_SOCKET, HY_SO_REUSEADDR, &value);	
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_connectStreamWithTimeoutSocketImpl(JNIEnv *
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_connectStreamWithTimeoutSocketImpl(JNIEnv *
 		    env,
 		    jclass
 		    thisClz,
@@ -1527,7 +1527,7 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_connectStreamWithTi
     }
 }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_sendDatagramImpl2 (JNIEnv * env,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramImpl2 (JNIEnv * env,
 	      jclass thisClz,
 	      jobject fileDescriptor,
 	      jbyteArray data,
@@ -1613,7 +1613,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_sendDatagramImpl2 (
     }
 }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_receiveStreamImpl(JNIEnv *	env, jclass thisClz,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveStreamImpl(JNIEnv *	env, jclass thisClz,
 	      jobject fileDescriptor,
 	      jbyteArray data, jint offset,
 	      jint count, jint timeout)	
@@ -1682,7 +1682,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_receiveStreamImpl(J
     }
 }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_sendStreamImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendStreamImpl(JNIEnv * env, jclass thisClz,
 	   jobject fileDescriptor,
 	   jbyteArray data, jint offset,
 	   jint	count)
@@ -1758,11 +1758,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_sendStreamImpl(JNIE
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    shutdownInputImpl	
  * Signature: (Ljava/io/FileDescriptor;)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_shutdownInputImpl(JNIEnv *	env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_shutdownInputImpl(JNIEnv *	env, jclass thisClz,
 	      jobject fileDescriptor)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -1786,11 +1786,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_shutdownInputImpl(J
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    shutdownOutputImpl
  * Signature: (Ljava/io/FileDescriptor;)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_shutdownOutputImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_shutdownOutputImpl(JNIEnv * env, jclass thisClz,
 	       jobject fileDescriptor)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -1814,11 +1814,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_shutdownOutputImpl(
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    acceptStreamSocketImpl
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/SocketImpl;Ljava/io/FileDescriptor;I)V	
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_acceptStreamSocketImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_acceptStreamSocketImpl(JNIEnv * env, jclass thisClz,
 	     jobject fileDescriptorServer,
 	     jobject socketImpl,
 	     jobject
@@ -1860,11 +1860,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_acceptStreamSocketI
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    createStreamSocketImpl
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createStreamSocketImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createStreamSocketImpl(JNIEnv * env, jclass thisClz,
 	     jobject thisObjFD,	
 	     jboolean preferIPv4Stack)
 {
@@ -1881,11 +1881,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_createStreamSocketI
 
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    getSocketLocalAddressImpl	
  * Signature: (Ljava/io/FileDescriptor;Z)Ljava/net/InetAddress;	
  */
-JNIEXPORT jobject JNICALL Java_com_ibm_platform_OSNetworkSystem_getSocketLocalAddressImpl(JNIEnv * env,	jclass thisClz,	
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketLocalAddressImpl(JNIEnv * env,	jclass thisClz,	
 	    jobject fileDescriptor,
 	    jboolean preferIPv6Addresses)
 {
@@ -1915,11 +1915,11 @@ JNIEXPORT jobject JNICALL Java_com_ibm_platform_OSNetworkSystem_getSocketLocalAd
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    getSocketLocalPortImpl
  * Signature: (Ljava/io/FileDescriptor;Z)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_getSocketLocalPortImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketLocalPortImpl(JNIEnv * env, jclass thisClz,
 	       jobject fileDescriptor,
 	       jboolean	preferIPv6Addresses)
   {
@@ -1943,11 +1943,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_getSocketLocalPortI
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    getSocketOptionImpl
  * Signature: (Ljava/io/FileDescriptor;I)Ljava/lang/Object;
  */
-JNIEXPORT jobject JNICALL Java_com_ibm_platform_OSNetworkSystem_getSocketOptionImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketOptionImpl(JNIEnv * env, jclass thisClz,
 	    jobject aFileDescriptor,
 	    jint anOption)
 {
@@ -2004,11 +2004,11 @@ JNIEXPORT jobject JNICALL Java_com_ibm_platform_OSNetworkSystem_getSocketOptionI
     }
 }
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    setSocketOptionImpl
  * Signature: (Ljava/io/FileDescriptor;ILjava/lang/Object;)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_setSocketOptionImpl(JNIEnv	* env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_setSocketOptionImpl(JNIEnv	* env, jclass thisClz,
 	    jobject aFileDescriptor,
 	    jint anOption, jobject aValue)
   {
@@ -2097,11 +2097,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_setSocketOptionImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    getSocketFlags
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_getSocketFlagsImpl	
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketFlagsImpl	
   (JNIEnv * env, jclass	thisClz)
 {
   /* Return the	flags indicating the socket state to save in the class library.	*/
@@ -2114,11 +2114,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_getSocketFlagsImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    socketCloseImpl
  * Signature: (Ljava/io/FileDescriptor;)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_socketCloseImpl(JNIEnv * env, jclass thisClz,
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_socketCloseImpl(JNIEnv * env, jclass thisClz,
 	      jobject fileDescriptor)
   {
   PORT_ACCESS_FROM_ENV (env);
@@ -2136,7 +2136,7 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_socketCloseImpl(JNI
     }   	
 }
 
-JNIEXPORT jobject JNICALL Java_com_ibm_platform_OSNetworkSystem_getHostByAddrImpl(JNIEnv * env,	jclass clazz,
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getHostByAddrImpl(JNIEnv * env,	jclass clazz,
 	       jbyteArray addr)	
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -2173,7 +2173,7 @@ JNIEXPORT jobject JNICALL Java_com_ibm_platform_OSNetworkSystem_getHostByAddrImp
   return NULL;
 }
 
-JNIEXPORT jobject JNICALL Java_com_ibm_platform_OSNetworkSystem_getHostByNameImpl(JNIEnv * env,	jclass clazz,
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getHostByNameImpl(JNIEnv * env,	jclass clazz,
 	       jstring aName,
 	       jboolean	preferIPv6Addresses)
 {
@@ -2253,11 +2253,11 @@ JNIEXPORT jobject JNICALL Java_com_ibm_platform_OSNetworkSystem_getHostByNameImp
 }
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    setInetAddressImpl
  * Signature: (Ljava/net/InetAddress;[B)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSNetworkSystem_setInetAddressImpl	
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_setInetAddressImpl	
   (JNIEnv *env,	jobject	thisClz, jobject sender, jbyteArray address){
    PORT_ACCESS_FROM_ENV	(env);
    I_8 * passAddr = NULL;

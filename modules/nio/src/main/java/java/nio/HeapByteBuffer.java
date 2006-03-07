@@ -17,7 +17,7 @@ package java.nio;
 
 
 
-import com.ibm.platform.Endianness;
+import org.apache.harmony.luni.platform.Endianness;
 
 /**
  * HeapByteBuffer, ReadWriteHeapByteBuffer and ReadOnlyHeapByteBuffer compose

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.platform.struct;
+package org.apache.harmony.luni.platform.struct;
 
 
 import java.lang.ref.ReferenceQueue;
@@ -87,7 +87,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ibm.platform.struct.IMemorySpy#autoFree(com.ibm.platform.struct.PlatformAddress)
+	 * @see org.apache.harmony.luni.platform.struct.IMemorySpy#autoFree(org.apache.harmony.luni.platform.struct.PlatformAddress)
 	 */
 	public void autoFree(PlatformAddress address) {
 		AddressWrapper wrapper;

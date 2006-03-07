@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.platform;
+package org.apache.harmony.luni.platform;
 
 
 import com.ibm.oti.vm.VM;

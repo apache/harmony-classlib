@@ -22,7 +22,7 @@ import java.nio.channels.FileLock;
 import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.ReadableByteChannel;
 
-import com.ibm.platform.IMemorySystem;
+import org.apache.harmony.luni.platform.IMemorySystem;
 
 public final class ReadOnlyFileChannel extends FileChannelImpl {
 	public ReadOnlyFileChannel(Object stream, long handle) {

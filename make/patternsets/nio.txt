@@ -17,5 +17,5 @@ java/nio/channels/*
 java/nio/channels/spi/*
 
 com/ibm/io/nio/*
-com/ibm/platform/*
-com/ibm/platform/struct/*
+org/apache/harmony/luni/platform/*
+org/apache/harmony/luni/platform/struct/*

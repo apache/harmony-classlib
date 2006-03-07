@@ -1,4 +1,4 @@
-/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,14 @@
  * limitations under the License.
  */
 
-package com.ibm.platform;
+package org.apache.harmony.luni.platform.struct;
 
-import java.io.FileDescriptor;
 
-/**
- * This interface declares method to get wrapped <code>FileDescritpor</code>.
- */
-public interface FileDescriptorHandler {
+public interface IPlatformConstants {
 
-    /**
-     * Get the wrapped <code>FileDescritpor</code>.
-     * 
-     * @return the wrapped <code>FileDescritpor</code>.
-     */
-    FileDescriptor getFD();
+	public static final int NULL = 0;
 
+	public static final byte TRUE = 1;
+
+	public static final byte FALSE = 0;
 }

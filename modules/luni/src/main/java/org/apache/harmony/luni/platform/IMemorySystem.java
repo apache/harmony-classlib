@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
-package com.ibm.platform;
+package org.apache.harmony.luni.platform;
 
 import java.io.IOException;
 
-import com.ibm.platform.struct.PlatformAddress;
+import org.apache.harmony.luni.platform.struct.PlatformAddress;
 
 /**
  * IMemorySystem

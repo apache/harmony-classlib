@@ -22,7 +22,7 @@
 #include "OSMemory.h"
 #include "IMemorySystem.h"
 
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_malloc
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_malloc
   (JNIEnv * env, jobject thiz, jlong size)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -40,7 +40,7 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_malloc
   return (jlong) ((IDATA) address);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_free
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_free
   (JNIEnv * env, jobject thiz, jlong address)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -48,7 +48,7 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_free
   hymem_free_memory ((void *) ((IDATA) address));
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_memmove
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_memmove
   (JNIEnv * env, jobject thiz, jlong destAddress, jlong srcAddress,
    jlong length)
 {
@@ -56,13 +56,13 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_memmove
 	   (const void *) ((IDATA) srcAddress), (size_t) length);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_memset
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_memset
   (JNIEnv * env, jobject thiz, jlong address, jbyte value, jlong length)
 {
   memset ((void *) ((IDATA) address), (int) value, (size_t) length);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_getByteArray
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByteArray
   (JNIEnv * env, jobject thiz, jlong address, jbyteArray byteArray,
    jint offset, jint length)
 {
@@ -75,7 +75,7 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_getByteArray
     }
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setByteArray
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArray
   (JNIEnv * env, jobject thiz, jlong address, jbyteArray byteArray,
    jint offset, jint length)
 {
@@ -89,73 +89,73 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setByteArray
     }
 }
 
-JNIEXPORT jbyte JNICALL Java_com_ibm_platform_OSMemory_getByte
+JNIEXPORT jbyte JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByte
   (JNIEnv * env, jobject thiz, jlong address)
 {
   return *(jbyte *) ((IDATA) address);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setByte
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByte
   (JNIEnv * env, jobject thiz, jlong address, jbyte value)
 {
   *(jbyte *) ((IDATA) address) = value;
 }
 
-JNIEXPORT jshort JNICALL Java_com_ibm_platform_OSMemory_getShort
+JNIEXPORT jshort JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getShort
   (JNIEnv * env, jobject thiz, jlong address)
 {
   return *(jshort *) ((IDATA) address);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setShort
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setShort
   (JNIEnv * env, jobject thiz, jlong address, jshort value)
 {
   *(jshort *) ((IDATA) address) = value;
 }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_getInt
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getInt
   (JNIEnv * env, jobject thiz, jlong address)
 {
   return *(jint *) ((IDATA) address);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setInt
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setInt
   (JNIEnv * env, jobject thiz, jlong address, jint value)
 {
   *(jint *) ((IDATA) address) = value;
 }
 
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_getLong
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getLong
   (JNIEnv * env, jobject thiz, jlong address)
 {
   return *(jlong *) ((IDATA) address);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setLong
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setLong
   (JNIEnv * env, jobject thiz, jlong address, jlong value)
 {
   *(jlong *) ((IDATA) address) = value;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_ibm_platform_OSMemory_getFloat
+JNIEXPORT jfloat JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getFloat
   (JNIEnv * env, jobject thiz, jlong address)
 {
   return *(jfloat *) ((IDATA) address);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setFloat
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setFloat
   (JNIEnv * env, jobject thiz, jlong address, jfloat value)
 {
   *(jfloat *) ((IDATA) address) = value;
 }
 
-JNIEXPORT jdouble JNICALL Java_com_ibm_platform_OSMemory_getDouble
+JNIEXPORT jdouble JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getDouble
   (JNIEnv * env, jobject thiz, jlong address)
 {
   return *(jdouble *) ((IDATA) address);
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setDouble
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setDouble
   (JNIEnv * env, jobject thiz, jlong address, jdouble value)
 {
   *(jdouble *) ((IDATA) address) = value;
@@ -163,11 +163,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setDouble
 
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    unmapImpl
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_unmapImpl
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
   (JNIEnv * env, jobject thiz, jlong fd)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -175,11 +175,11 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_unmapImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    mmapImpl
  * Signature: (JJJI)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_mmapImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -189,15 +189,15 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_mmapImpl
   // Convert from Java mapping mode to port library mapping mode.
   switch (mmode)
     {
-      case com_ibm_platform_IMemorySystem_MMAP_READ_ONLY:
+      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_READ_ONLY:
 	prot = PROT_READ;
 	flags = MAP_SHARED;
         break;
-      case com_ibm_platform_IMemorySystem_MMAP_READ_WRITE:
+      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_READ_WRITE:
 	prot = PROT_READ|PROT_WRITE;
 	flags = MAP_SHARED;
         break;
-      case com_ibm_platform_IMemorySystem_MMAP_WRITE_COPY:
+      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_WRITE_COPY:
 	prot = PROT_READ|PROT_WRITE;
 	flags = MAP_PRIVATE;
         break;

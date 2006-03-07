@@ -22,13 +22,13 @@
 #include <windows.h>
 #include "OSMemory.h"
 
-JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLittleEndianImpl
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLittleEndianImpl
   (JNIEnv * env, jclass clazz)
 {
   return JNI_TRUE;
 }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_getPointerSizeImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getPointerSizeImpl
   (JNIEnv * env, jclass clazz)
 {
 #if defined(_WIN64)
@@ -39,7 +39,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_getPointerSizeImpl
 
 }
 
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_getAddress
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getAddress
   (JNIEnv * env, jobject thiz, jlong address)
 {
 #if defined(_WIN64)
@@ -50,7 +50,7 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_getAddress
 
 }
 
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setAddress
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setAddress
   (JNIEnv * env, jobject thiz, jlong address, jlong value)
 {
 #if defined(_WIN64)
@@ -62,7 +62,7 @@ JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setAddress
 }
 
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_loadImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_loadImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
     /* FIXME:
      * lock the memory make the pages be loaded into physical memory
@@ -78,7 +78,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_loadImpl
     }
   }
 
-JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLoadedImpl
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoadedImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
     /* FIXME:
      * Windows only provides readiness status of memory pages
@@ -88,7 +88,7 @@ JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLoadedImpl
     return JNI_FALSE;
   }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_flushImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
     return (jint)FlushViewOfFile((void *)addr, (SIZE_T)size);
   }

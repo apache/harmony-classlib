@@ -17,7 +17,7 @@ package com.ibm.io.nio;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 
-import com.ibm.platform.IMemorySystem;
+import org.apache.harmony.luni.platform.IMemorySystem;
 
 public final class ReadWriteFileChannel extends FileChannelImpl {
 	public ReadWriteFileChannel(Object stream, long handle) {

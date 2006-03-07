@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,20 @@
  * limitations under the License.
  */
 
-package com.ibm.platform;
+package org.apache.harmony.luni.platform;
 
+import java.io.FileDescriptor;
 
 /**
- * IAdapterManager
- * 
+ * This interface declares method to get wrapped <code>FileDescritpor</code>.
  */
-public interface IAdapterManager {
-	public Object getAdapter(IAdaptable adaptable, Class adapterType);
+public interface FileDescriptorHandler {
 
-	public boolean hasAdapter(IAdaptable adaptable, Class adapterType);
+    /**
+     * Get the wrapped <code>FileDescritpor</code>.
+     * 
+     * @return the wrapped <code>FileDescritpor</code>.
+     */
+    FileDescriptor getFD();
 
-	public void registerAdapters(IAdapterFactory factory, Class adaptable);
-
-	public void unregisterAdapters(IAdapterFactory factory);
-
-	public void unregisterAdapters(IAdapterFactory factory, Class adaptable);
 }

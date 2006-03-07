@@ -14,126 +14,126 @@
  */
 
 #include <jni.h>
-/* Header for class com_ibm_platform_OSFileSystem */
+/* Header for class org_apache_harmony_luni_platform_OSFileSystem */
 
-#ifndef _Included_com_ibm_platform_OSFileSystem
-#define _Included_com_ibm_platform_OSFileSystem
+#ifndef _Included_org_apache_harmony_luni_platform_OSFileSystem
+#define _Included_org_apache_harmony_luni_platform_OSFileSystem
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    lockImpl
  * Signature: (JJJIZ)I
  */
-  JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_lockImpl
+  JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_lockImpl
     (JNIEnv *, jobject, jlong, jlong, jlong, jint, jboolean);
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    getPageSize
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_getPageSize
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_getPageSize
   (JNIEnv *, jobject);
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    unlockImpl
  * Signature: (JJJ)I
  */
-  JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_unlockImpl
+  JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_unlockImpl
     (JNIEnv *, jobject, jlong, jlong, jlong);
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    fflushImpl
  * Signature: (JZ)I
  */
-  JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_fflushImpl
+  JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_fflushImpl
     (JNIEnv *, jobject, jlong, jboolean);
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    seekImpl
  * Signature: (JJI)J
  */
-  JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_seekImpl
+  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_seekImpl
     (JNIEnv *, jobject, jlong, jlong, jint);
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    readDirectImpl
  * Signature: (JJII)J
  */
-  JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readDirectImpl
+  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readDirectImpl
     (JNIEnv *, jobject, jlong, jlong, jint, jint);
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    writeDirectImpl
  * Signature: (JJII)J
  */
-  JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeDirectImpl
+  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_writeDirectImpl
     (JNIEnv *, jobject, jlong, jlong, jint, jint);
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    readImpl
  * Signature: (J[BII)J
  */
-  JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readImpl
+  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readImpl
     (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    writeImpl
  * Signature: (J[BII)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_writeImpl
   (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    readvImpl
  * Signature: (J[J[I[II)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readvImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readvImpl
   (JNIEnv *, jobject, jlong, jlongArray, jintArray, jintArray, jint);
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    writevImpl
  * Signature: (J[J[I[II)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writevImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_writevImpl
   (JNIEnv *, jobject, jlong, jlongArray, jintArray, jintArray, jint);
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    closeImpl
  * Signature: (J)I
  */
-  JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_closeImpl
+  JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_closeImpl
     (JNIEnv *, jobject, jlong);
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    truncateImpl
  * Signature: (JJ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_truncateImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_truncateImpl
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    openImpl
  * Signature: ([BI)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_openImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_openImpl
   (JNIEnv *, jobject, jbyteArray, jint);
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    transferImpl
  * Signature: (JLjava/io/FileDescriptor;JJ)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_transferImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_transferImpl
   (JNIEnv *, jobject, jlong, jobject, jlong, jlong);
 
 #ifdef __cplusplus

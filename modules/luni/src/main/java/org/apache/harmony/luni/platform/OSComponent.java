@@ -13,36 +13,34 @@
  * limitations under the License.
  */
 
-package com.ibm.platform;
+package org.apache.harmony.luni.platform;
 
+
+import com.ibm.oti.vm.VM;
 
 /**
- * OSComponentFactory
+ * OSComponent
  * 
  */
-public class OSComponentFactory {
+public class OSComponent implements IAdaptable {
 
 	/**
-	 * @return OSFileSystem
+	 * 
 	 */
-	public static IFileSystem getFileSystem() {
-		//  Auto-generated method stub
-		return new OSFileSystem();
+	public OSComponent() {
+		super();
+		if (VM.callerClassLoader() != null) {
+			throw new SecurityException();
+		}
 	}
 
-	/**
-	 * @return OSMemory
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ibm.core.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	public static IMemorySystem getMemorySystem() {
-		// Auto-generated method stub
-		return new OSMemory();
-	}
-
-	/**
-	 * @return OSNetwork
-	 */
-	public static INetworkSystem getNetworkSystem() {
-		return OSNetworkSystem.getOSNetworkSystem();
+	public Object getAdapter(Class adapter) {
+		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
 }

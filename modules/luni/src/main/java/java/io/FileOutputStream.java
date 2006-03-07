@@ -18,8 +18,8 @@ package java.io;
 
 import java.nio.channels.FileChannel;
 
-import com.ibm.platform.IFileSystem;
-import com.ibm.platform.Platform;
+import org.apache.harmony.luni.platform.IFileSystem;
+import org.apache.harmony.luni.platform.Platform;
 
 /**
  * FileOutputStream is a class whose underlying stream is represented by a file

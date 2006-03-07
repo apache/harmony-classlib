@@ -14,7 +14,7 @@
  */
 package com.ibm.io.nio;
 
-import com.ibm.platform.struct.PlatformAddress;
+import org.apache.harmony.luni.platform.struct.PlatformAddress;
 
 public interface DirectBuffer {
 	public PlatformAddress getEffectiveAddress();

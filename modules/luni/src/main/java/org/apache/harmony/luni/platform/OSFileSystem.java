@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.platform;
+package org.apache.harmony.luni.platform;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
@@ -190,7 +190,7 @@ public class OSFileSystem extends OSComponent implements IFileSystem {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ibm.platform.IFileSystem#close(long)
+	 * @see org.apache.harmony.luni.platform.IFileSystem#close(long)
 	 */
 	public void close(long fileDescriptor) throws IOException {
 		int rc = closeImpl(fileDescriptor);

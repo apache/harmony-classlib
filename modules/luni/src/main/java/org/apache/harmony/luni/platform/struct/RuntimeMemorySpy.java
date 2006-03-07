@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.platform.struct;
+package org.apache.harmony.luni.platform.struct;
 
 import java.lang.ref.Reference;
 

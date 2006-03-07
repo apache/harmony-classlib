@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-package com.ibm.platform;
+package org.apache.harmony.luni.platform;
 
 import java.io.IOException;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
-import com.ibm.platform.struct.PlatformAddress;
+import org.apache.harmony.luni.platform.struct.PlatformAddress;
 
 // import com.ibm.oti.vm.VM;
 

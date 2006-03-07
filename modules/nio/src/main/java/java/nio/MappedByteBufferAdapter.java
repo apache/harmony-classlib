@@ -16,7 +16,7 @@
 package java.nio;
 
 import com.ibm.io.nio.DirectBuffer;
-import com.ibm.platform.struct.PlatformAddress;
+import org.apache.harmony.luni.platform.struct.PlatformAddress;
 
 class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 

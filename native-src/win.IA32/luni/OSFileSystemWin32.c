@@ -39,7 +39,7 @@ typedef struct hysocket_struct
  * Lock the file identified by the given handle.
  * The range and lock type are given.
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_lockImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_lockImpl
   (JNIEnv * env, jobject thiz, jlong handle, jlong start, jlong length,
    jint typeFlag, jboolean waitFlag)
 {
@@ -57,7 +57,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_lockImpl
       dwFlags |= LOCKFILE_FAIL_IMMEDIATELY;
     }
 
-  if (typeFlag & com_ibm_platform_IFileSystem_EXCLUSIVE_LOCK_TYPE)
+  if (typeFlag & org_apache_harmony_luni_platform_IFileSystem_EXCLUSIVE_LOCK_TYPE)
     {
       dwFlags |= LOCKFILE_EXCLUSIVE_LOCK;
     }
@@ -84,7 +84,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_lockImpl
 /**
  * Unlocks the specified region of the file.
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_unlockImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_unlockImpl
   (JNIEnv * env, jobject thiz, jlong handle, jlong start, jlong length)
 {
   OVERLAPPED overlapped;
@@ -113,7 +113,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_unlockImpl
   return (jint) - 1;
 }
 
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_getPageSize
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_getPageSize
   (JNIEnv * env, jobject thiz)
 {
   static DWORD pageSize = 0;
@@ -126,11 +126,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_getPageSize
 }
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    readvImpl
  * Signature: (J[J[I[I)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readvImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readvImpl
   (JNIEnv *env, jobject thiz, jlong fd, jlongArray jbuffers, jintArray joffsets, jintArray jlengths, jint size){
   PORT_ACCESS_FROM_ENV (env);
   jboolean bufsCopied = JNI_FALSE;
@@ -163,11 +163,11 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readvImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    writevImpl
  * Signature: (J[J[I[I)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writevImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_writevImpl
   (JNIEnv *env, jobject thiz, jlong fd, jlongArray jbuffers, jintArray joffsets, jintArray jlengths, jint size){
   PORT_ACCESS_FROM_ENV (env);
   jboolean bufsCopied = JNI_FALSE;
@@ -200,11 +200,11 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writevImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    transferImpl
  * Signature: (JLjava/io/FileDescriptor;JJ)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_transferImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_transferImpl
   (JNIEnv *env, jobject thiz, jlong fd, jobject sd, jlong offset, jlong count)
 {
 	PORT_ACCESS_FROM_ENV (env);

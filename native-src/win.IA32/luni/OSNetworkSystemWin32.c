@@ -18,11 +18,11 @@
 #include "portsock.h"
 
 /*
- * Class:     com_ibm_platform_OSNetworkSystem
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    selectImpl
  * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_selectImpl	
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
   (JNIEnv * env, jclass	thisClz, jobjectArray readFDArray, jobjectArray	writeFDArray,
    jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout){
   PORT_ACCESS_FROM_ENV (env);

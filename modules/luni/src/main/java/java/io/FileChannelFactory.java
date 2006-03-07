@@ -21,7 +21,7 @@ import java.nio.channels.FileChannel;
 import com.ibm.io.nio.ReadOnlyFileChannel;
 import com.ibm.io.nio.ReadWriteFileChannel;
 import com.ibm.io.nio.WriteOnlyFileChannel;
-import com.ibm.platform.IFileSystem;
+import org.apache.harmony.luni.platform.IFileSystem;
 
 /**
  * A simple factory to provide a generic way to create FileChannel

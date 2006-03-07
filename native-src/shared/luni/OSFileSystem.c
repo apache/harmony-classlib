@@ -23,11 +23,11 @@
 #include "IFileSystem.h"
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    readDirectImpl
  * Signature: (JJI)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readDirectImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readDirectImpl
   (JNIEnv * env, jobject thiz, jlong fd, jlong buf, jint offset, jint nbytes)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -35,11 +35,11 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readDirectImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    writeDirectImpl
  * Signature: (JJI)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeDirectImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_writeDirectImpl
   (JNIEnv * env, jobject thiz, jlong fd, jlong buf, jint offset, jint nbytes)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -48,11 +48,11 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeDirectImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    readImpl
  * Signature: (J[BII)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readImpl
   (JNIEnv * env, jobject thiz, jlong fd, jbyteArray byteArray, jint offset,
    jint nbytes)
 {
@@ -73,11 +73,11 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_readImpl
 }
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    writeImpl
  * Signature: (J[BII)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_writeImpl
   (JNIEnv * env, jobject thiz, jlong fd, jbyteArray byteArray, jint offset, jint nbytes)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -108,7 +108,7 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writeImpl
  * @return the new file position from the beginning of the file, in bytes;
  * or -1 if a problem occurs.
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_seekImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_seekImpl
   (JNIEnv * env, jobject thiz, jlong fd, jlong offset, jint whence)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -117,13 +117,13 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_seekImpl
   /* Convert whence argument */
   switch (whence)
     {
-    case com_ibm_platform_IFileSystem_SEEK_SET:
+    case org_apache_harmony_luni_platform_IFileSystem_SEEK_SET:
       hywhence = HySeekSet;
       break;
-    case com_ibm_platform_IFileSystem_SEEK_CUR:
+    case org_apache_harmony_luni_platform_IFileSystem_SEEK_CUR:
       hywhence = HySeekCur;
       break;
-    case com_ibm_platform_IFileSystem_SEEK_END:
+    case org_apache_harmony_luni_platform_IFileSystem_SEEK_END:
       hywhence = HySeekEnd;
       break;
     default:
@@ -145,7 +145,7 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_seekImpl
  * Method:    fflushImpl
  * Signature: (JZ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_fflushImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_fflushImpl
   (JNIEnv * env, jobject thiz, jlong fd, jboolean metadata)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -161,11 +161,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_fflushImpl
  * @param fd handle of file to be closed
  * @return zero on success and -1 on failure
  *
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    closeImpl
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_closeImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_closeImpl
   (JNIEnv * env, jobject thiz, jlong fd)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -175,11 +175,11 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_closeImpl
 
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    truncateImpl
  * Signature: (JJ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSFileSystem_truncateImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_truncateImpl
   (JNIEnv * env, jobject thiz, jlong fd, jlong size)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -240,11 +240,11 @@ void convertToPlatform (char *path)
 }
 
 /*
- * Class:     com_ibm_platform_OSFileSystem
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    openImpl
  * Signature: ([BI)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_openImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_openImpl
   (JNIEnv * env, jobject obj, jbyteArray path, jint jflags){
       PORT_ACCESS_FROM_ENV (env);
       I_32 flags = 0;
@@ -254,19 +254,19 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_openImpl
       char pathCopy[HyMaxPath];
 
       switch(jflags){
-        case com_ibm_platform_IFileSystem_O_RDONLY:
+        case org_apache_harmony_luni_platform_IFileSystem_O_RDONLY:
                 flags = HyOpenRead;
                 mode = 0;
                 break;
-        case com_ibm_platform_IFileSystem_O_WRONLY:
+        case org_apache_harmony_luni_platform_IFileSystem_O_WRONLY:
                 flags = HyOpenCreate | HyOpenWrite | HyOpenTruncate;
                 mode = 0666;
                 break;
-        case com_ibm_platform_IFileSystem_O_RDWR:
+        case org_apache_harmony_luni_platform_IFileSystem_O_RDWR:
                 flags = HyOpenRead | HyOpenWrite | HyOpenCreate;
                 mode = 0666;
                 break;
-        case com_ibm_platform_IFileSystem_O_APPEND:
+        case org_apache_harmony_luni_platform_IFileSystem_O_APPEND:
                 flags = HyOpenWrite | HyOpenCreate | HyOpenAppend; 
                 mode = 0666;
                 break;

@@ -16,7 +16,7 @@
 package java.nio;
 
 
-import com.ibm.platform.Platform;
+import org.apache.harmony.luni.platform.Platform;
 
 /**
  * Holds byte order constants.

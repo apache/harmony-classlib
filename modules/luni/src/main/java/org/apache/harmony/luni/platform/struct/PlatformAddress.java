@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
-package com.ibm.platform.struct;
+package org.apache.harmony.luni.platform.struct;
 
-import com.ibm.platform.Endianness;
-import com.ibm.platform.IMemorySystem;
-import com.ibm.platform.Platform;
+import org.apache.harmony.luni.platform.Endianness;
+import org.apache.harmony.luni.platform.IMemorySystem;
+import org.apache.harmony.luni.platform.Platform;
 
 /**
  * The platform address class is an unsafe virtualization of an OS memory block.

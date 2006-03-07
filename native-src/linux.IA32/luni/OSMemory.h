@@ -14,10 +14,10 @@
  */
 
 #include <jni.h>
-/* Header for class com_ibm_platform_OSMemory */
+/* Header for class org_apache_harmony_luni_platform_OSMemory */
 
-#ifndef _Included_com_ibm_platform_OSMemory
-#define _Included_com_ibm_platform_OSMemory
+#ifndef _Included_org_apache_harmony_luni_platform_OSMemory
+#define _Included_org_apache_harmony_luni_platform_OSMemory
 #ifdef __cplusplus
 extern "C"
 {
@@ -26,207 +26,207 @@ extern "C"
 /* Inaccessible static: NATIVE_ORDER */
 /* Inaccessible static: singleton */
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    isLittleEndianImpl
  * Signature: ()Z
  */
-  JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLittleEndianImpl
+  JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLittleEndianImpl
     (JNIEnv *, jclass);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getPointerSizeImpl
  * Signature: ()I
  */
-  JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_getPointerSizeImpl
+  JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getPointerSizeImpl
     (JNIEnv *, jclass);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    malloc
  * Signature: (J)J
  */
-  JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_malloc
+  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_malloc
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    free
  * Signature: (J)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_free
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_free
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    memset
  * Signature: (JBJ)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_memset
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_memset
     (JNIEnv *, jobject, jlong, jbyte, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    memmove
  * Signature: (JJJ)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_memmove
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_memmove
     (JNIEnv *, jobject, jlong, jlong, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getByteArray
  * Signature: (J[BII)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_getByteArray
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByteArray
     (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setByteArray
  * Signature: (J[BII)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setByteArray
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArray
     (JNIEnv *, jobject, jlong, jbyteArray, jint, jint);
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setCharArray
  * Signature: (J[CII)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setCharArray
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setCharArray
   (JNIEnv *, jobject, jlong, jcharArray, jint, jint);
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getByte
  * Signature: (J)B
  */
-  JNIEXPORT jbyte JNICALL Java_com_ibm_platform_OSMemory_getByte
+  JNIEXPORT jbyte JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByte
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setByte
  * Signature: (JB)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setByte
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByte
     (JNIEnv *, jobject, jlong, jbyte);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getShort
  * Signature: (J)S
  */
-  JNIEXPORT jshort JNICALL Java_com_ibm_platform_OSMemory_getShort
+  JNIEXPORT jshort JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getShort
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setShort
  * Signature: (JS)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setShort
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setShort
     (JNIEnv *, jobject, jlong, jshort);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getInt
  * Signature: (J)I
  */
-  JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_getInt
+  JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getInt
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setInt
  * Signature: (JI)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setInt
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setInt
     (JNIEnv *, jobject, jlong, jint);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getLong
  * Signature: (J)J
  */
-  JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_getLong
+  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getLong
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setLong
  * Signature: (JJ)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setLong
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setLong
     (JNIEnv *, jobject, jlong, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getFloat
  * Signature: (J)F
  */
-  JNIEXPORT jfloat JNICALL Java_com_ibm_platform_OSMemory_getFloat
+  JNIEXPORT jfloat JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getFloat
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setFloat
  * Signature: (JF)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setFloat
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setFloat
     (JNIEnv *, jobject, jlong, jfloat);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getDouble
  * Signature: (J)D
  */
-  JNIEXPORT jdouble JNICALL Java_com_ibm_platform_OSMemory_getDouble
+  JNIEXPORT jdouble JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getDouble
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setDouble
  * Signature: (JD)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setDouble
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setDouble
     (JNIEnv *, jobject, jlong, jdouble);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    getAddress
  * Signature: (J)J
  */
-  JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_getAddress
+  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getAddress
     (JNIEnv *, jobject, jlong);
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    setAddress
  * Signature: (JJ)V
  */
-  JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_setAddress
+  JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setAddress
     (JNIEnv *, jobject, jlong, jlong);
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    mmapImpl
  * Signature: (JJJI)J
  */
-JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSMemory_mmapImpl
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   (JNIEnv *, jobject, jlong, jlong, jlong, jint);
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    unmapImpl
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_ibm_platform_OSMemory_unmapImpl
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
   (JNIEnv *, jobject, jlong);
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    loadImpl
  * Signature: (JJ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_loadImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_loadImpl
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    isLoadedImpl
  * Signature: (JJ)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_ibm_platform_OSMemory_isLoadedImpl
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoadedImpl
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
- * Class:     com_ibm_platform_OSMemory
+ * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    flushImpl
  * Signature: (JJ)I
  */
-JNIEXPORT jint JNICALL Java_com_ibm_platform_OSMemory_flushImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
   (JNIEnv *, jobject, jlong, jlong);
 
 #ifdef __cplusplus
