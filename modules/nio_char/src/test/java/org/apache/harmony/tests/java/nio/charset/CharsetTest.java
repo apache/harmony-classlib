@@ -130,4 +130,25 @@ public class CharsetTest extends TestCase {
 			System.setProperties(oldProps);
 		}
 	}
+	
+    /**
+	 * @tests java.nio.charset.Charset#forName(java.lang.String)
+	 */
+	public void test_forNameLjava_lang_String() {
+		/*
+		 * invoke forName two times with the same canonical name, it
+		 * should return the same reference.
+		 */
+		Charset cs1 = Charset.forName("UTF-8");
+		Charset cs2 = Charset.forName("UTF-8");
+		assertSame(cs1, cs2);
+
+		/*
+		 * test forName: invoke forName two times for the same Charset using
+		 * canonical name and alias, it should return the same reference.
+		 */
+		Charset cs3 = Charset.forName("ASCII");
+		Charset cs4 = Charset.forName("US-ASCII");
+		assertSame(cs3, cs4);
+	} 
 }

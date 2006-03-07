@@ -28,6 +28,7 @@ import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
@@ -139,6 +140,8 @@ public abstract class Charset implements Comparable {
 	// the aliases set
 	private final HashSet aliasesSet;
 
+	// cached Charset table
+	private static HashMap cachedCharsetTable = new HashMap();
 	/*
 	 * -------------------------------------------------------------------
 	 * Global initialization
@@ -447,34 +450,63 @@ public abstract class Charset implements Comparable {
 			throw new IllegalArgumentException();
 		}
 		checkCharsetName(charsetName);
-		// Try built-in charsets
-		Charset cs = _builtInProvider.charsetForName(charsetName);
-		if (null != cs) {
-			return cs;
-		}
-
-		// Collect all charsets provided by charset providers
-		final ClassLoader cl = getContextClassLoader();
-		if (null != cl) {
-			try {
-				// Load all configuration files
-				Enumeration e = cl
-						.getResources(PROVIDER_CONFIGURATION_FILE_NAME);
-				// Examine each configuration file
-				while (e.hasMoreElements()) {
-					cs = searchConfiguredCharsets(charsetName, (URL) e
-							.nextElement(), cl);
-					if (null != cs) {
-						return cs;
+		synchronized(Charset.class){
+			// Try to get Charset from cachedCharsetTable
+			Charset cs = getCachedCharset(charsetName);
+			if (null != cs) {
+				return cs;
+			}	
+			// Try built-in charsets
+			cs = _builtInProvider.charsetForName(charsetName);
+			if (null != cs) {
+				cacheCharset(cs);
+				return cs;
+			}
+	
+			// Collect all charsets provided by charset providers
+			final ClassLoader cl = getContextClassLoader();
+			if (null != cl) {
+				try {
+					// Load all configuration files
+					Enumeration e = cl
+							.getResources(PROVIDER_CONFIGURATION_FILE_NAME);
+					// Examine each configuration file
+					while (e.hasMoreElements()) {
+						cs = searchConfiguredCharsets(charsetName, (URL) e
+								.nextElement(), cl);
+						if (null != cs) {
+							cacheCharset(cs);
+							return cs;
+						}
 					}
+				} catch (IOException ex) {
+					// Unexpected ClassLoader exception, ignore
 				}
-			} catch (IOException ex) {
-				// Unexpected ClassLoader exception, ignore
 			}
 		}
 		return null;
 	}
 
+	/*
+	 * save charset into cachedCharsetTable
+	 */
+	private static void cacheCharset(Charset cs){
+		cachedCharsetTable.put(cs.name(), cs);
+		Set aliasesSet = cs.aliases();
+		if(null != aliasesSet){
+			Iterator iter = aliasesSet.iterator();
+			while(iter.hasNext()){
+				String alias = (String)iter.next();
+				cachedCharsetTable.put(alias,cs);
+			}
+		}
+	}
+	/*
+	 * get cached charset reference by name
+	 */
+	private static Charset getCachedCharset(String name){
+		return (Charset)cachedCharsetTable.get(name);
+	}
 	/**
 	 * Gets a <code>Charset</code> instance for the specified charset name.
 	 * 
