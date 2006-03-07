@@ -65,8 +65,7 @@
 
 	<target name="run.tests">
 		
-		<property name="test.dir" value="../../../../target/test_report" />
-		<mkdir dir="${test.dir}" />
+        <mkdir dir="${hy.tests.reports}" />
 
         <junit fork="yes"
             forkmode="once"
@@ -84,23 +83,12 @@
 				<pathelement path="${hy.luni.bin.test}"/>
 			</classpath>
 
-        	<!--
-			<test name="org.apache.harmony.tests.luni.AllTests"
+		<test name="org.apache.harmony.tests.luni.AllTests"
 				haltonfailure="no"
-				todir="${test.dir}">
+				todir="${hy.tests.reports}">
 				<formatter type="xml" />
-			</test>
-			-->
-        	
-            <formatter type="xml" />
-            <batchtest todir="${test.dir}">
-                <fileset dir="../../src/test/java">
-                    <include name="**/*Test.java"/>
-                </fileset>
-            </batchtest>
-
-		</junit>
-		
+		</test>
+	</junit>
     </target>
 	
 	
