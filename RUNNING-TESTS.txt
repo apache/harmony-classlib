@@ -52,11 +52,11 @@ Requirements :
     $ cd make
     $ ant
     
-    This should build and installl all java and native components
+    This should build and install all java and native components
     
  2) Test : 
  
-    in project root : 
+    in make dir : 
     
     $ ant -f build-test.xml
     

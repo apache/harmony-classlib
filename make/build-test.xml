@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 
-<project name="classlib-testt" default="test-all" basedir=".">
+<project name="classlib-testt" default="test-all" basedir="..">
 
     <description> Tests for classlib package</description>
 
