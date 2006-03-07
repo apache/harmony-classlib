@@ -35,6 +35,7 @@ public class AllTests {
 		suite.addTestSuite(BreakIteratorTest.class);
 		suite.addTestSuite(MessageFormatTest.class);
 		suite.addTestSuite(ChoiceFormatTest.class);
+		suite.addTestSuite(DataFormatFieldTest.class);
 		//$JUnit-END$
 		return suite;
 	}

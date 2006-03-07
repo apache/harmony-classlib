@@ -15,7 +15,6 @@
 
 package java.text;
 
-
 import java.io.InvalidObjectException;
 import java.util.Calendar;
 import java.util.Date;
@@ -327,8 +326,9 @@ public abstract class DateFormat extends Format {
 	}
 
 	/**
-	 * Answers a <code>DateFormat</code> instance for the formatting and parsing
-	 * of both dates and times in the manner appropriate to the default Locale.
+	 * Answers a <code>DateFormat</code> instance for the formatting and
+	 * parsing of both dates and times in the manner appropriate to the default
+	 * Locale.
 	 * 
 	 * @param dateStyle
 	 *            one of SHORT, MEDIUM, LONG, FULL, or DEFAULT
@@ -633,7 +633,8 @@ public abstract class DateFormat extends Format {
 		protected Field(String fieldName, int calendarField) {
 			super(fieldName);
 			this.calendarField = calendarField;
-			if (calendarField != -1)
+			if (calendarField != -1
+					&& table.get(new Integer(calendarField)) == null)
 				table.put(new Integer(calendarField), this);
 		}
 
