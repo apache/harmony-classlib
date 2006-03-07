@@ -43,7 +43,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_selectImpl
   FD_ZERO (&fdset_write->handle);
   for (val = 0; val<countReadC; val++){
 	  gotFD	= (*env)->GetObjectArrayElement(env,readFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
+	  hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
 	  if (!hysock_socketIsValid (hysocketP)){
       		continue;
     	  }
@@ -62,7 +62,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_selectImpl
 	}
   for (val = 0; val<countWriteC; val++){
 	  gotFD	= (*env)->GetObjectArrayElement(env,writeFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
+	  hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
 	  if (!hysock_socketIsValid (hysocketP)){
       		continue;
     	  }
@@ -103,7 +103,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_selectImpl
 	  flagArray = (*env)->GetIntArrayElements(env,outFlags,	&isCopy);
 	  for (val=0;val<countReadC;val++){
 		gotFD =	(*env)->GetObjectArrayElement(env,readFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
+		hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
 		if (!hysock_socketIsValid (hysocketP)){
       			continue;
     	  	}
@@ -125,7 +125,7 @@ JNIEXPORT jint JNICALL Java_com_ibm_platform_OSNetworkSystem_selectImpl
 		
 	  for (val=0;val<countWriteC;val++){
 		gotFD =	(*env)->GetObjectArrayElement(env,writeFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
+		hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
 		if (!hysock_socketIsValid (hysocketP)){
       			continue;
     	  	}

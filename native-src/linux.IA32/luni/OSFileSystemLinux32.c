@@ -222,13 +222,14 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_writevImpl
 JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_transferImpl
   (JNIEnv *env, jobject thiz, jlong fd, jobject sd, jlong offset, jlong count)
 {
-	PORT_ACCESS_FROM_ENV (env);
-	int socket;
-	//TODO IPV6
-	hysocket_t hysocketP= (hysocket_t)getJavaIoFileDescriptorContentsAsAPointer (env,sd);
-	if(hysocketP == NULL)
-       return -1;
-	socket = hysocketP->sock;
-	return sendfile(socket,(size_t)fd,(off_t *)&offset,(size_t)count);	
+  PORT_ACCESS_FROM_ENV (env);
+  int socket;
+  //TODO IPV6
+  hysocket_t hysocketP =
+    (hysocket_t)getJavaIoFileDescriptorContentsAsPointer (env,sd);
+  if(hysocketP == NULL)
+    return -1;
+  socket = hysocketP->sock;
+  return sendfile(socket,(size_t)fd,(off_t *)&offset,(size_t)count);	
 }
 

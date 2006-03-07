@@ -56,6 +56,9 @@ jobjectArray createAliasArray (JNIEnv * env, jbyte ** addresses,
 void throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber);
 I_32 netGetSockAddr (JNIEnv * env, jobject fileDescriptor,
          hysockaddr_t sockaddrP, jboolean preferIPv6Addresses);
+jfieldID getJavaNetInetAddressIpaddress(JNIEnv * env);
+void setJavaIoFileDescriptorContents (JNIEnv * env, jobject fd, void *value);
+jfieldID getJavaIoFileDescriptorDescriptorFID (JNIEnv * env);
 
 /**
  * Set the exception state of the VM with a new java.lang.IllegalArgumentException.
@@ -1291,4 +1294,25 @@ netGetJavaNetInetAddressScopeId (JNIEnv * env, jobject anInetAddress,
   /* clear any exception that might have occured */
   (*env)->ExceptionClear (env);
 
+}
+
+jfieldID
+getJavaNetInetAddressIpaddress(JNIEnv * env){
+  jfieldID fid;
+  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
+  if (!lookupClass)
+    return NULL;
+  fid = (*env)->GetFieldID (env, lookupClass, "ipaddress", "[B");
+  if (!fid)
+    return NULL;
+  return fid;
+}
+
+void setJavaIoFileDescriptorContents (JNIEnv * env, jobject fd, void *value)
+{
+  jfieldID fid = getJavaIoFileDescriptorDescriptorFID (env);
+  if (NULL != fid)
+    {
+      (*env)->SetLongField (env, fd, fid, (jlong) value);
+    }
 }

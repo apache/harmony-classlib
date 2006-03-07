@@ -28,7 +28,9 @@ BUILDFILES = \
 	$(SHAREDSUB)proxy.o $(SHAREDSUB)netif.o process.o bigint.o \
 	$(SHAREDSUB)osc.o socket.o inetadds.o $(SHAREDSUB)pssimpl.o \
 	$(SHAREDSUB)filedesc.o $(SHAREDSUB)timezone.o $(SHAREDSUB)pmsimpl.o \
-	pdsimpl.o $(SHAREDSUB)fileos.o
+	pdsimpl.o $(SHAREDSUB)fileos.o \
+	$(SHAREDSUB)OSFileSystem.o OSFileSystemLinux32.o \
+	OSMemory.o OSMemoryLinux32.o OSNetworkSystem.o
 
 MDLLIBFILES = \
 	../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so \

@@ -34,11 +34,13 @@ BUILDFILES = \
   luniglob.obj $(SHAREDSUB)proxy.obj $(SHAREDSUB)netif.obj process.obj \
   bigint.obj $(SHAREDSUB)osc.obj socket.obj inetadds.obj \
   $(SHAREDSUB)pssimpl.obj $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj \
-  $(SHAREDSUB)pmsimpl.obj pdsimpl.obj $(SHAREDSUB)fileos.obj
+  $(SHAREDSUB)pmsimpl.obj pdsimpl.obj $(SHAREDSUB)fileos.obj \
+  OSFileSystemWin32.obj $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj \
+  OSMemory.obj OSNetworkSystem.obj OSNetworkSystemWin32.obj
 
 VIRTFILES = hyluni.res
 
-SYSLIBFILES = ws2_32.lib Iphlpapi.lib
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib Mswsock.lib
 
 MDLLIBFILES = \
   ..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hyzip.lib ..\lib\hyzlib.lib \

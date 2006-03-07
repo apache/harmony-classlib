@@ -21,9 +21,10 @@ include ../makefile.include
 CFLAGS += -fpic -I$(SHARED)common -I../zlib -I../zip -I../fdlibm
 
 BUILDFILES = \
-	$(SHAREDSUB)nio_copyright.o helpers.o $(SHAREDSUB)OSFileSystem.o \
-	OSFileSystemLinux32.o OSMemory.o OSMemoryLinux32.o nethelp.o \
-	OSNetworkSystem.o socket.o
+	$(SHAREDSUB)nio_copyright.o
+# helpers.o $(SHAREDSUB)OSFileSystem.o \
+#	OSFileSystemLinux32.o OSMemory.o OSMemoryLinux32.o nethelp.o \
+#	OSNetworkSystem.o socket.o
 
 MDLLIBFILES = \
 	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \

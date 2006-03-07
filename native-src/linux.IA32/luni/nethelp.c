@@ -56,6 +56,9 @@ jobjectArray createAliasArray (JNIEnv * env, jbyte ** addresses,
 void throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber);
 I_32 netGetSockAddr (JNIEnv * env, jobject fileDescriptor,
                      hysockaddr_t sockaddrP, jboolean preferIPv6Addresses);
+jfieldID getJavaNetInetAddressIpaddress(JNIEnv * env);
+void setJavaIoFileDescriptorContents (JNIEnv * env, jobject fd, void *value);
+
 
 /**
  * Set the exception state of the VM with a new java.lang.IllegalArgumentException.
@@ -1292,4 +1295,51 @@ netGetJavaNetInetAddressScopeId (JNIEnv * env, jobject anInetAddress,
   /* clear any exception that might have occured */
   (*env)->ExceptionClear (env);
 
+}
+
+jfieldID
+getJavaNetInetAddressIpaddress(JNIEnv * env){
+  jfieldID fid;
+  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
+  if (!lookupClass)
+    return NULL;
+  fid = (*env)->GetFieldID (env, lookupClass, "ipaddress", "[B");
+  if (!fid)
+    return NULL;
+  return fid;
+}
+
+void
+setJavaIoFileDescriptorContents (JNIEnv * env, jobject fd,
+                                          void *value)
+{
+  jfieldID fid = getJavaIoFileDescriptorDescriptorFID (env);
+  if (NULL != fid)
+    {
+      (*env)->SetLongField (env, fd, fid, (jlong) value);
+    }
+}
+
+//Alternative Select function
+int 
+selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
+  PORT_ACCESS_FROM_ENV (env);
+  hytimeval_struct timeP;
+  hyfdset_t fdset_read;
+  I_32 result = 0;
+  I_32 size = 0;
+  if (0 <= uSecTime)
+    hysock_timeval_init (0, uSecTime, &timeP);
+
+  fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
+  FD_ZERO (&fdset_read->handle);
+  FD_SET (hysocketP->sock, &fdset_read->handle);
+  size =hysocketP->sock + 1;
+
+  if (0 <= uSecTime)
+    result = hysock_select (size, fdset_read, NULL, NULL,&timeP);  
+  else
+    result = hysock_select (size, fdset_read, NULL, NULL,NULL);  
+  hymem_free_memory(fdset_read);
+  return result;
 }

@@ -214,14 +214,14 @@ JNIEXPORT jlong JNICALL Java_com_ibm_platform_OSFileSystem_transferImpl
     SOCKET socket;
 	//TODO IPV6
 
-	hysocket_t hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env,sd);
+	hysocket_t hysocketP = getJavaIoFileDescriptorContentsAsPointer(env,sd);
 	if (!hysock_socketIsValid (hysocketP)){
       	printf("not valid socket\n");
     }
 	printf("hysocketP:%p\n",hysocketP);
 	if(hysocketP == NULL)
 	{   
-	printf("Error getJavaIoFileDescriptorContentsAsAPointer!\n");
+	printf("Error getJavaIoFileDescriptorContentsAsPointer!\n");
 	return -1;}
 	
 	socket = (SOCKET)hysocketP->ipv4;

@@ -26,11 +26,11 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\zip /I..\fdlibm
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-BUILDFILES = \
-  $(SHAREDSUB)nio_copyright.obj OSFileSystemWin32.obj \
-  $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj \
-  OSMemory.obj nethelp.obj helpers.obj socket.obj OSNetworkSystem.obj \
-  OSNetworkSystemWin32.obj
+BUILDFILES = $(SHAREDSUB)nio_copyright.obj
+# OSFileSystemWin32.obj \
+#  $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj \
+#  OSMemory.obj nethelp.obj helpers.obj socket.obj OSNetworkSystem.obj \
+#  OSNetworkSystemWin32.obj
 
 VIRTFILES = $(LIBBASE).res
 
