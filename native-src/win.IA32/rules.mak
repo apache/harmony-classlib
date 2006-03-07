@@ -51,4 +51,4 @@ $(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 clean:
 	-del $(BUILDFILES) *.res *.pdb \
              $(LIBNAME) $(LIBNAME:.lib=.exp) $(LIBNAME:.lib=.map) \
-             $(DLLNAME) $(EXENAME)
+             $(DLLNAME) $(EXENAME) >nul 2>&1
