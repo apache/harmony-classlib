@@ -15,25 +15,42 @@
 
 package java.lang;
 
-
 /**
- * Bytes are objects (i.e. non-base types) which represent byte values.
+ * <p>Byte is the wrapper for the primitive type <code>byte</code>.</p>
+ * @since 1.0
  */
 public final class Byte extends Number implements Comparable {
-
+    //TODO Add Comparable<Byte> to implements when generics are supported.    
 	private static final long serialVersionUID = -7183698231559129828L;
 
 	/**
 	 * The value which the receiver represents.
 	 */
-	final byte value;
+	private final byte value;
 
 	/**
-	 * Most positive and most negative possible byte values.
-	 */
-	public static final byte MAX_VALUE = (byte) 0x7F;
+     * <p>
+     * Constant for the maximum <code>byte</code> value, 2<sup>7</sup>-1.
+     * </p>
+     */
+    public static final byte MAX_VALUE = (byte) 0x7F;
 
-	public static final byte MIN_VALUE = (byte) 0x80;
+    /**
+     * <p>
+     * Constant for the minimum <code>byte</code> value, -2<sup>7</sup>.
+     * </p>
+     */
+    public static final byte MIN_VALUE = (byte) 0x80;
+    
+    /**
+     * <p>
+     * Constant for the number of bits to represent a <code>byte</code> in
+     * two's compliment form.
+     * </p>
+     * 
+     * @since 1.5
+     */
+    public static final int SIZE = 8;
 
 	/**
 	 * The java.lang.Class that represents this class.
@@ -42,6 +59,13 @@ public final class Byte extends Number implements Comparable {
 
 	// Note: This can't be set to "byte.class", since *that* is
 	// defined to be "java.lang.Byte.TYPE";
+    
+    /**
+     * <p>
+     * A cache of instances used by {@link #valueOf(byte)} and auto-boxing.
+     * </p>
+     */
+    private static final Byte[] CACHE = new Byte[256];
 
 	/**
 	 * Constructs a new instance of the receiver which represents the byte
@@ -99,7 +123,7 @@ public final class Byte extends Number implements Comparable {
 		int intValue = Integer.decode(string).intValue();
 		byte result = (byte) intValue;
 		if (result == intValue)
-			return new Byte(result);
+			return valueOf(result);
 		throw new NumberFormatException();
 	}
 
@@ -255,7 +279,7 @@ public final class Byte extends Number implements Comparable {
 	 *             if the argument could not be parsed as a byte quantity.
 	 */
 	public static Byte valueOf(String string) throws NumberFormatException {
-		return new Byte(parseByte(string));
+		return valueOf(parseByte(string));
 	}
 
 	/**
@@ -274,6 +298,22 @@ public final class Byte extends Number implements Comparable {
 	 */
 	public static Byte valueOf(String string, int radix)
 			throws NumberFormatException {
-		return new Byte(parseByte(string, radix));
+		return valueOf(parseByte(string, radix));
 	}
+    
+    /**
+     * <p>Returns a <code>Byte</code> instance for the <code>byte</code> value passed.
+     * This method is preferred over the constructor, as this method may maintain a cache
+     * of instances.</p>
+     * @param b The byte value.
+     * @return A <code>Byte</code> instance.
+     * @since 1.5
+     */
+    public static Byte valueOf(byte b) {
+        synchronized (CACHE) {
+            int idx = b - MIN_VALUE;
+            Byte result = CACHE[idx];
+            return (result == null ? CACHE[idx] = new Byte(b) : result);
+        }
+    }
 }

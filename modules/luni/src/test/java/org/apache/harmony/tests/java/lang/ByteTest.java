@@ -15,28 +15,23 @@
 
 package org.apache.harmony.tests.java.lang;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
 
-public class AllTests {
+public class ByteTest extends TestCase {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+	/**
+	 * @tests java.lang.Byte#valueOf(byte)
+	 */
+	public void test_valueOfB() {
+		assertEquals(new Byte(Byte.MIN_VALUE), Byte.valueOf(Byte.MIN_VALUE));
+		assertEquals(new Byte(Byte.MAX_VALUE), Byte.valueOf(Byte.MAX_VALUE));
+		assertEquals(new Byte((byte) 0), Byte.valueOf((byte) 0));
+
+		byte b = Byte.MIN_VALUE + 1;
+		while (b < Byte.MAX_VALUE) {
+			assertEquals(new Byte(b), Byte.valueOf(b));
+			assertSame(Byte.valueOf(b), Byte.valueOf(b));
+			b++;
+		}
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.lang");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(FloatTest.class);
-		suite.addTestSuite(StringBufferTest.class);
-		suite.addTestSuite(SecurityManagerTest.class);
-		suite.addTestSuite(DoubleTest.class);
-		suite.addTestSuite(StringBuilderTest.class);
-		suite.addTestSuite(BooleanTest.class);
-		suite.addTestSuite(ByteTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }
