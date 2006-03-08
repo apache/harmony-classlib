@@ -26,7 +26,8 @@
     <property name="tests.output" location="build/test_report" />
     <property name="target.output" location="deploy" />
 
-    <target name="test-all" depends="clean, test-luni, test-xnet, test-text, test-security, gen-report">
+	<!-- this list of components to test will grow to eventually be all modules -->
+	<target name="test-all" depends="clean, test-luni, test-archive, test-text, gen-report">
 	</target>
 
 	<target name="clean">
@@ -40,7 +41,16 @@
 
         <ant antfile="make/build.xml" dir="modules/luni" target="test"/>
 	</target>
-		
+
+	<target name="test-archive">
+        <echo message="=================================="/>
+        <echo message="Running tests for module archive"/>
+        <echo message="=================================="/>
+
+        <ant antfile="make/build.xml" dir="modules/archive" target="test" />
+
+	</target>
+
 	<target name="test-xnet">
         <echo message="=================================="/>
         <echo message="Running tests for module x-net"/>
@@ -75,6 +85,10 @@
 		  </fileset>
 		  <report format="frames" todir="${tests.output}/html"/>
 		</junitreport>
+
+		<!-- use this property just to get the slashes to display right in the echo -->
+		<property name="display-location" location="${tests.output}/html/index.html"/>
+		<echo message="The test report is in ${display-location}"/>
     </target>
 
 </project>
