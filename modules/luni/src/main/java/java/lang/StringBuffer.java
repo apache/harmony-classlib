@@ -23,6 +23,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import org.apache.harmony.luni.util.NotYetImplementedException;
+
 /**
  * StringBuffer is a variable size contiguous indexable array of characters. The
  * length of the StringBuffer is the number of characters it contains. The
@@ -38,8 +40,11 @@ import java.util.Arrays;
  * increased.
  * 
  * @see String
+ * @see StringBuilder
+ * @since 1.0
  */
 public final class StringBuffer implements Serializable, CharSequence {
+    //TODO: Add 'Appendable' to implements when return type covariance is supported.
 	
 	private static final long serialVersionUID = 3388685877147921107L;
 
@@ -87,6 +92,27 @@ public final class StringBuffer implements Serializable, CharSequence {
 		value = new char[count + INITIAL_SIZE];
 		string.getChars(0, count, value, 0);
 	}
+    
+    /**
+     * <p>
+     * Constructs a StringBuffer and initializes it with the characters in the
+     * <code>CharSequence</code>.
+     * </p>
+     * 
+     * @param cs The <code>CharSequence</code> to initialize the instance.
+     * @throws NullPointerException if the <code>cs</code> parameter is
+     *         <code>null</code>.
+     * @since 1.5
+     */
+    public StringBuffer(CharSequence cs) {
+        super();
+        count = cs.length();
+        shared = false;
+        value = new char[count + INITIAL_SIZE];
+        for (int i = 0; i < count; i++) {
+            value[i] = cs.charAt(i);
+        }
+    }
 
 	/**
 	 * Adds the character array to the end of this StringBuffer.
@@ -1081,4 +1107,178 @@ public final class StringBuffer implements Serializable, CharSequence {
 	char[] getValue() {
 		return value;
 	}
+    
+    /**
+     * <p>
+     * Trims the storage capacity of this buffer down to the size of the current
+     * character sequence. Execution of this method may change the results
+     * returned by the {@link #capacity()} method, but this is not required.
+     * </p>
+     * 
+     * @since 1.5
+     */
+    public synchronized void trimToSize() {
+        if (count < value.length) {
+            char[] newValue = new char[count];
+            System.arraycopy(value, 0, newValue, 0, count);
+            value = newValue;
+            shared = false;
+        }
+    }
+
+    /**
+     * <p>
+     * <b>NOTE - This method is currently NOT completely implemented and just
+     * delegates to the {@link #charAt(int)} method.</b>
+     * </p>
+     * TODO javadoc
+     * @since 1.5
+     */
+    public int codePointAt(int index) {
+        // TODO Implement Java 5 code point functionality.
+        //Note: synchronization is handled by 'charAt' method
+        return charAt(index);
+    }
+
+    /**
+     * <p>
+     * <b>NOTE - This method is currently NOT completely implemented and just
+     * delegates to the {@link #charAt(int)} method by retrieving the character
+     * at the preceding index.</b>
+     * </p>
+     * TODO javadoc
+     * @since 1.5
+     */
+    public int codePointBefore(int index) {
+        // TODO Implement Java 5 code point functionality.
+        //Note: synchronization is handled by 'codePointAt' method
+        return codePointAt(index - 1);
+    }
+
+    /**
+     * <p>
+     * <b>NOTE - This method is currently NOT completely implemented and just
+     * return the difference between the index parameters.</b>
+     * </p>
+     * TODO javadoc
+     * @since 1.5
+     */
+    public synchronized int codePointCount(int beginIndex, int endIndex) {
+        // TODO Implement Java 5 code point functionality.
+        if (beginIndex < 0 || endIndex > count || beginIndex > endIndex)
+            throw new IndexOutOfBoundsException();
+        return endIndex - beginIndex;
+    }
+
+    /**
+     * <p>
+     * <b>NOTE - This method is currently not implemented and always throws a
+     * {@link NotYetImplementedException}.</b>
+     * </p>
+     * TODO javadoc
+     * @since 1.5
+     */
+    public synchronized int offsetByCodePoints(int index, int codePointOffset) {
+        // TODO Implement Java 5 code point functionality.
+        throw new NotYetImplementedException();
+    }
+
+    /**
+     * <p>Appends the <code>CharSequence</code> to this buffer. If the
+     * <code>CharSequence</code> is <code>null</code>, then the string
+     * <code>"null"</code> is appended.</p>
+     * @param s The <code>CharSequence</code> to append.
+     * @return A reference to this object.
+     * @since 1.5
+     */
+    public StringBuffer append(CharSequence s) {
+        if (s == null)
+            s = "null";
+        append(s.toString());
+        return this;
+    }
+
+    /**
+     * <p>Appends the subsequence of the <code>CharSequence</code> to this buffer. If the
+     * <code>CharSequence</code> is <code>null</code>, then the string
+     * <code>"null"</code> is used to extract a subsequence.</p>
+     * @param s The <code>CharSequence</code> to append.
+     * @param start The inclusive start index of the subsequence of the <code>CharSequence</code>.
+     * @param end The exclusive end index of the subsequence of the <code>CharSequence</code>.
+     * @return A reference to this object.
+     * @since 1.5
+     * @throws IndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative, <code>start</code> is greater than <code>end</code> or <code>end</code> is greater than the length of <code>s</code>.
+     */
+    public StringBuffer append(CharSequence s, int start, int end) {
+        if (s == null)
+            s = "null";
+        if (start < 0 || end < 0 || start > end || end > s.length())
+            throw new IndexOutOfBoundsException();
+
+        append(s.subSequence(start, end));
+        return this;
+    }
+
+    /**
+     * <p>
+     * <b>NOTE - This method is currently NOT completely implemented and just
+     * casts the <code>codePoint</code> to a <code>char</code> and appends it.</b>
+     * </p>
+     * @param codePoint
+     * @return
+     * @since 1.5
+     */
+    public StringBuffer appendCodePoint(int codePoint) {
+        // TODO Implement Java 5 code point functionality.
+        append((char) codePoint);
+        return this;
+    }
+
+    /**
+     * <p>Inserts the <code>CharSequence</code> into this buffer at the <code>index</code>. If
+     * <code>CharSequence</code> is <code>null</code>, then the string <code>"null"</code> is
+     * inserted.</p>
+     * @param index The index of this buffer to insert the sequence.
+     * @param s The <code>CharSequence</code> to insert.
+     * @return A reference to this object.
+     * @since 1.5
+     * @throws IndexOutOfBoundsException if the index is invalid.
+     */
+    public StringBuffer insert(int index, CharSequence s) {
+        if (s == null)
+            s = "null";
+        insert(index, s.toString());
+        return this;
+    }
+
+    /**
+     * <p>
+     * Inserts the <code>CharSequence</code> into this buffer at the
+     * <code>index</code>. If <code>CharSequence</code> is
+     * <code>null</code>, then the string <code>"null"</code> is inserted.
+     * </p>
+     * 
+     * @param index The index of this buffer to insert the sequence.
+     * @param s The <code>CharSequence</code> to insert.
+     * @param start The inclusive start index of the subsequence of the
+     *        <code>CharSequence</code>.
+     * @param end The exclusive end index of the subsequence of the
+     *        <code>CharSequence</code>.
+     * @return A reference to this object.
+     * @since 1.5
+     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
+     *         greater than the current length, <code>start</code> or
+     *         <code>end</code> are negative, <code>start</code> is greater
+     *         than <code>end</code> or <code>end</code> is greater than the
+     *         length of <code>s</code>.
+     */
+    public StringBuffer insert(int index, CharSequence s, int start, int end) {
+        if (s == null)
+            s = "null";
+        if (index < 0 || index > count || start < 0 || end < 0 || start > end
+                || end > s.length())
+            throw new IndexOutOfBoundsException();
+        insert(index, s.subSequence(start, end));
+        return this;
+    }
 }
