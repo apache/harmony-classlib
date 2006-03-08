@@ -15,11 +15,12 @@
 
 package java.lang;
 
-
 /**
- * Booleans are objects (i.e. non-base types) which represent boolean values.
+ * <p>Boolean is the wrapper for the primitive type <code>boolean</code>.</p>
+ * @since 1.0
  */
 public final class Boolean implements java.io.Serializable {
+    //TODO Add Comparable<Boolean> to implements when generics are supported.
 
 	private static final long serialVersionUID = -3665804199014368530L;
 
@@ -136,8 +137,23 @@ public final class Boolean implements java.io.Serializable {
 	 * @return the boolean value.
 	 */
 	static boolean toBoolean(String string) {
-		return (string != null) && (string.toLowerCase().equals("true"));
+		return parseBoolean(string);
 	}
+    
+    /**
+     * <p>
+     * Parses the string as a <code>boolean</code>. If the string is not
+     * <code>null</code> and is equal to <code>"true"</code>, regardless
+     * case, then <code>true</code> is returned, otherwise <code>false</code>.
+     * </p>
+     * 
+     * @param s The string to parse.
+     * @return A boolean value.
+     * @since 1.5
+     */
+    public static boolean parseBoolean(String s) {
+        return "true".equalsIgnoreCase(s);
+    }
 
 	/**
 	 * Answers a string containing a concise, human-readable description of the

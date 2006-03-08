@@ -33,6 +33,7 @@ public class AllTests {
 		suite.addTestSuite(SecurityManagerTest.class);
 		suite.addTestSuite(DoubleTest.class);
 		suite.addTestSuite(StringBuilderTest.class);
+		suite.addTestSuite(BooleanTest.class);
 		//$JUnit-END$
 		return suite;
 	}
