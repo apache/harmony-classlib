@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 
-<project name="classlib-testt" default="test-all" basedir="..">
+<project name="classlib-test" default="test-all" basedir="..">
 
     <description> Tests for classlib package</description>
 
@@ -28,7 +28,7 @@
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
-		depends="clean, test-luni, test-archive, test-text, test-nio, test-xnet, gen-report">
+		depends="clean, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, gen-report">
 	</target>
 
 	<target name="clean">
@@ -76,6 +76,15 @@
         <echo message="=================================="/>
 
         <ant antfile="make/build.xml" dir="modules/nio" target="test" />
+
+	</target>
+
+	<target name="test-nio_char">
+        <echo message="=================================="/>
+        <echo message="Running tests for module nio_char"/>
+        <echo message="=================================="/>
+
+        <ant antfile="make/build.xml" dir="modules/nio_char" target="test" />
 
 	</target>
 		
