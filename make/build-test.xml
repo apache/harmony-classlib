@@ -27,7 +27,8 @@
     <property name="target.output" location="deploy" />
 
 	<!-- this list of components to test will grow to eventually be all modules -->
-	<target name="test-all" depends="clean, test-luni, test-archive, test-text, gen-report">
+	<target name="test-all"
+		depends="clean, test-luni, test-archive, test-text, test-nio, gen-report">
 	</target>
 
 	<target name="clean">
@@ -66,6 +67,15 @@
         <echo message="=================================="/>
 
         <ant antfile="make/build.xml" dir="modules/text" target="test" />
+
+	</target>
+
+	<target name="test-nio">
+        <echo message="=================================="/>
+        <echo message="Running tests for module nio"/>
+        <echo message="=================================="/>
+
+        <ant antfile="make/build.xml" dir="modules/nio" target="test" />
 
 	</target>
 		
