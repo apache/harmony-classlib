@@ -28,7 +28,7 @@
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
-		depends="clean, test-luni, test-archive, test-text, test-nio, gen-report">
+		depends="clean, test-luni, test-archive, test-text, test-nio, test-xnet, gen-report">
 	</target>
 
 	<target name="clean">
@@ -57,7 +57,7 @@
         <echo message="Running tests for module x-net"/>
         <echo message="=================================="/>
 
-        <ant antfile="build.xml" dir="modules/x-net" target="test-run" />
+        <ant antfile="make/build.xml" dir="modules/x-net" target="test" />
 
 	</target>
 
