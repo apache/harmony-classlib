@@ -34,7 +34,8 @@ import java.util.zip.ZipEntry;
 
 import org.apache.harmony.luni.util.BASE64Decoder;
 
-import com.ibm.oti.util.JarUtils;
+import org.apache.harmony.security.utils.JarUtils;
+
 import com.ibm.oti.util.Msg;
 
 /**
