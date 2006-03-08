@@ -23,8 +23,8 @@
 
     <property name="build.compiler" value="modern"/>
 
-    <property name="tests.output" value="build/test_report" />
-    <property name="target.output" value="deploy" />
+    <property name="tests.output" location="build/test_report" />
+    <property name="target.output" location="deploy" />
 
     <target name="test-all" depends="clean, test-luni, test-xnet, test-text, test-security, gen-report">
 	</target>
@@ -55,7 +55,7 @@
         <echo message="Running tests for module text"/>
         <echo message="=================================="/>
 
-        <ant antfile="build.xml" dir="modules/text" target="test-run" />
+        <ant antfile="make/build.xml" dir="modules/text" target="test" />
 
 	</target>
 		
