@@ -78,7 +78,7 @@
 
 			<jvmarg value="-showversion"/>
 
-			<env key="JAVA_HOME" value=""/>
+			<env key="JAVA_HOME" value="${hy.target}/jre"/>
 
 			<classpath>
 				<pathelement path="${hy.text.bin.test}"/>
