@@ -18,6 +18,7 @@
 
 #include <harmony.h>
 #include <string.h>
+#include "iohelp.h"
 
 #include "OSFileSystem.h"
 #include "IFileSystem.h"
@@ -188,57 +189,6 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trunca
 
 }
 
-#define jclSeparator DIR_SEPARATOR
-/**
-  * This will convert all separators to the proper platform separator
-  * and remove duplicates on non POSIX platforms.
-  */
-void convertToPlatform (char *path)
-{
-  char *pathIndex;
-  int length = strlen (path);
-
-  /* Convert all separators to the same type */
-  pathIndex = path;
-  while (*pathIndex != '\0')
-    {
-      if ((*pathIndex == '\\' || *pathIndex == '/')
-          && (*pathIndex != jclSeparator))
-        *pathIndex = jclSeparator;
-      pathIndex++;
-    }
-
-  /* Remove duplicate separators */
-  if (jclSeparator == '/')
-    return;                     /* Do not do POSIX platforms */
-
-  /* Remove duplicate initial separators */
-  pathIndex = path;
-  while ((*pathIndex != '\0') && (*pathIndex == jclSeparator))
-    {
-      pathIndex++;
-    }
-  if ((pathIndex > path) && (length > (pathIndex - path))
-      && (*(pathIndex + 1) == ':'))
-    {
-      /* For Example '////c:/*' */
-      int newlen = length - (pathIndex - path);
-      memmove (path, pathIndex, newlen);
-      path[newlen] = '\0';
-    }
-  else
-    {
-      if ((pathIndex - path > 3) && (length > (pathIndex - path)))
-        {
-          /* For Example '////serverName/*' */
-          int newlen = length - (pathIndex - path) + 2;
-          memmove (path, pathIndex - 2, newlen);
-          path[newlen] = '\0';
-        }
-    }
-  /* This will have to handle extra \'s but currently doesn't */
-}
-
 /*
  * Class:     org_apache_harmony_luni_platform_OSFileSystem
  * Method:    openImpl
@@ -276,7 +226,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_openI
       length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
       ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
       pathCopy[length] = '\0';
-      convertToPlatform (pathCopy);
+      ioh_convertToPlatform (pathCopy);
 
       portFD = hyfile_open (pathCopy, flags, mode);
       return (jlong)portFD;
