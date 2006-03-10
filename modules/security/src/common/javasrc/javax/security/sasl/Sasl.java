@@ -79,13 +79,13 @@ public class Sasl {
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String POLICY_PASS_CREDENTIALS = "javax.security.sasl.policy.credential";
+    public static final String POLICY_PASS_CREDENTIALS = "javax.security.sasl.policy.credentials";
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String MAX_BUFFER = "javax.security.sasl.maxbuffe";
+    public static final String MAX_BUFFER = "javax.security.sasl.maxbuffer";
 
     /**
      * @com.intel.drl.spec_ref
