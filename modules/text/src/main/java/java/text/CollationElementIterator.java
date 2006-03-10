@@ -54,13 +54,13 @@ package java.text;
  * 
  * <p>
  * <code>
- * Since the character '�' is a composed character of 'a' and 'e', the iterator
- * returns two collation elements for the single character '�'
+ * Since the character '\u0086' is a composed character of 'a' and 'e', the iterator
+ * returns two collation elements for the single character '\u0086'
  * </code>
  * </p>
  * <p>
  * <code>
- * "�b" -> the first
+ * "\u0086b" -> the first
  * collation element is collation_element('a'), the second collation element is
  * collation_element('e'), and the third collation element is
  * collation_element('b').
