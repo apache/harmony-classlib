@@ -15,29 +15,21 @@
 
 package org.apache.harmony.tests.java.util;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.Vector;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+public class VectorTest extends TestCase {
+
+	/**
+	 * @tests java.util.Vector#toString()
+	 */
+	public void test_toString() {
+		// Ensure toString works with self-referencing elements.
+		Vector vec = new Vector(3);
+		vec.add(null);
+		vec.add(new Object());
+		vec.add(vec);
+		vec.toString();
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.util");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(CollectionsTest.class);
-		suite.addTestSuite(BitSetTest.class);
-		suite.addTestSuite(ArraysTest.class);
-		suite.addTestSuite(WeakHashMapTest.class);
-		suite.addTestSuite(IdentityHashMapTest.class);
-		suite.addTestSuite(DateTest.class);
-		suite.addTestSuite(VectorTest.class);
-		suite.addTestSuite(LocaleTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }

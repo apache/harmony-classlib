@@ -940,15 +940,23 @@ public class Vector extends AbstractList implements List, RandomAccess,
 	 */
 	public synchronized String toString() {
 		if (elementCount == 0)
-			return "[]"; //$NON-NLS-1$
+			return "[]";
 		int length = elementCount - 1;
 		StringBuffer buffer = new StringBuffer(size() * 16);
 		buffer.append('[');
 		for (int i = 0; i < length; i++) {
-			buffer.append(elementData[i]);
-			buffer.append(", "); //$NON-NLS-1$
+			if (elementData[i] == this) {
+				buffer.append("(this Collection)");
+			} else {
+				buffer.append(elementData[i]);
+			}
+			buffer.append(", ");
 		}
-		buffer.append(elementData[length]);
+		if (elementData[length] == this) {
+			buffer.append("(this Collection)");
+		} else {
+			buffer.append(elementData[length]);
+		}
 		buffer.append(']');
 		return buffer.toString();
 	}
