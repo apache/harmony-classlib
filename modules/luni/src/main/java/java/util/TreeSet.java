@@ -36,32 +36,29 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 
 	private static final class SubSet extends TreeMap.SubMap.SubMapSet
 			implements SortedSet {
-		SubSet() {
-			type = new MapEntry.Type() {
+		private SubSet(TreeMap map) {
+			super(map, new MapEntry.Type() {
 				public Object get(MapEntry entry) {
 					return entry.key;
 				}
-			};
+			});
 		}
 
 		private SubSet(Object start, TreeMap map) {
-			this();
-			this.backingMap = map;
+			this(map);
 			hasStart = true;
 			startKey = start;
 		}
 
 		private SubSet(Object start, TreeMap map, Object end) {
-			this();
-			this.backingMap = map;
+			this(map);
 			hasStart = hasEnd = true;
 			startKey = start;
 			endKey = end;
 		}
 
 		private SubSet(TreeMap map, Object end) {
-			this();
-			this.backingMap = map;
+			this(map);
 			hasEnd = true;
 			endKey = end;
 		}
@@ -84,7 +81,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 		public Object first() {
 			if (!hasStart)
 				return this.backingMap.firstKey();
-			TreeMapEntry node = this.backingMap.findAfter(startKey);
+			TreeMap.Entry node = this.backingMap.findAfter(startKey);
 			if (node != null && checkRange(node.key, false, hasEnd))
 				return node.key;
 			throw new NoSuchElementException();
@@ -100,7 +97,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 		public Object last() {
 			if (!hasEnd)
 				return this.backingMap.lastKey();
-			TreeMapEntry node = this.backingMap.findBefore(endKey);
+			TreeMap.Entry node = this.backingMap.findBefore(endKey);
 			if (node != null && checkRange(node.key, hasStart, false))
 				return node.key;
 			throw new NoSuchElementException();
@@ -182,12 +179,12 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 		Iterator it = set.iterator();
 		if (it.hasNext()) {
 			Object object = it.next();
-			TreeMapEntry last = new TreeMapEntry(object, object);
+			TreeMap.Entry last = new TreeMap.Entry(object, object);
 			backingMap.root = last;
 			backingMap.size = 1;
 			while (it.hasNext()) {
 				object = it.next();
-				TreeMapEntry x = new TreeMapEntry(object, object);
+				TreeMap.Entry x = new TreeMap.Entry(object, object);
 				x.parent = last;
 				last.right = x;
 				backingMap.size++;
@@ -454,7 +451,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 		stream.writeObject(backingMap.comparator());
 		stream.writeInt(backingMap.size);
 		if (backingMap.size > 0) {
-			TreeMapEntry node = TreeMap.minimum(backingMap.root);
+			TreeMap.Entry node = TreeMap.minimum(backingMap.root);
 			while (node != null) {
 				stream.writeObject(node.key);
 				node = TreeMap.successor(node);
@@ -467,9 +464,9 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 		stream.defaultReadObject();
 		backingMap = new TreeMap((Comparator) stream.readObject());
 		backingMap.size = stream.readInt();
-		TreeMapEntry last = null;
+		TreeMap.Entry last = null;
 		for (int i = backingMap.size; --i >= 0;) {
-			TreeMapEntry node = new TreeMapEntry(stream.readObject());
+			TreeMap.Entry node = new TreeMap.Entry(stream.readObject());
 			node.value = this;
 			if (last == null)
 				backingMap.root = node;
