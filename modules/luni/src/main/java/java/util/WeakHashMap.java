@@ -15,7 +15,6 @@
 
 package java.util;
 
-
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
@@ -26,14 +25,14 @@ import java.lang.ref.WeakReference;
  * be any objects.
  */
 public class WeakHashMap extends AbstractMap implements Map {
-	
-	private ReferenceQueue referenceQueue;
+
+	private final ReferenceQueue referenceQueue;
 
 	int elementCount;
 
-	WeakHashMapEntry[] elementData;
+	Entry[] elementData;
 
-	private int loadFactor;
+	private final int loadFactor;
 
 	private int threshold;
 
@@ -41,101 +40,103 @@ public class WeakHashMap extends AbstractMap implements Map {
 
 	private static final int DEFAULT_SIZE = 16;
 
-	private static final class WeakHashMapEntry extends WeakReference {
+	private static final class Entry extends WeakReference implements Map.Entry {
 		int hash;
 
 		boolean isNull;
 
 		Object value;
 
-		WeakHashMapEntry next;
+		Entry next;
 
-		private WeakHashMapEntry(Object key, Object object, ReferenceQueue queue) {
+		interface Type {
+			Object get(Map.Entry entry);
+		}
+
+		Entry(Object key, Object object, ReferenceQueue queue) {
 			super(key, queue);
 			isNull = key == null;
 			hash = isNull ? 0 : key.hashCode();
 			value = object;
 		}
-	}
-
-	private static final class KeyEntry implements Map.Entry {
-		private Object key;
-
-		private WeakHashMapEntry entry;
-
-		interface Type {
-			Object get(KeyEntry entry);
-		}
-
-		KeyEntry(Object key, WeakHashMapEntry entry) {
-			this.key = key;
-			this.entry = entry;
-		}
 
 		public Object getKey() {
-			return key;
+			return super.get();
 		}
 
 		public Object getValue() {
-			return entry.value;
+			return value;
 		}
 
 		public Object setValue(Object object) {
-			Object result = entry.value;
-			entry.value = object;
+			Object result = value;
+			value = object;
 			return result;
+		}
+
+		public boolean equals(Object other) {
+			if (!(other instanceof Map.Entry))
+				return false;
+			Map.Entry entry = (Map.Entry) other;
+			Object key = super.get();
+			return (key == null ? key == entry.getKey() : key.equals(entry
+					.getKey()))
+					&& (value == null ? value == entry.getValue() : value
+							.equals(entry.getValue()));
+		}
+
+		public int hashCode() {
+			return hash + (value == null ? 0 : value.hashCode());
+		}
+
+		public String toString() {
+			return super.get() + "=" + value;
 		}
 	}
 
 	class HashIterator implements Iterator {
 		private int position = 0, expectedModCount;
 
-		private boolean canRemove = false;
+		private Entry currentEntry, nextEntry;
 
-		private WeakHashMapEntry entry, lastEntry;
+		private Object nextKey;
 
-		private KeyEntry next;
+		final Entry.Type type;
 
-		KeyEntry.Type type;
-
-		HashIterator(KeyEntry.Type type, WeakHashMap map) {
+		HashIterator(Entry.Type type) {
 			this.type = type;
 			expectedModCount = modCount;
 		}
 
 		public boolean hasNext() {
-			if (next != null)
+			if (nextEntry != null)
 				return true;
 			while (true) {
-				if (entry == null) {
-					lastEntry = null;
+				if (nextEntry == null) {
 					while (position < elementData.length)
-						if ((entry = elementData[position++]) != null)
+						if ((nextEntry = elementData[position++]) != null)
 							break;
-					if (entry == null)
+					if (nextEntry == null)
 						return false;
 				}
-				Object key = entry.get();
-				if (key != null || entry.isNull) {
-					next = new KeyEntry(key, entry);
+				// ensure key of next entry is not gc'ed
+				nextKey = nextEntry.get();
+				if (nextKey != null || nextEntry.isNull) {
 					return true;
 				}
-				entry = entry.next;
+				nextEntry = nextEntry.next;
 			}
 		}
 
 		public Object next() {
 			if (expectedModCount == modCount) {
 				if (hasNext()) {
-					if (lastEntry == null)
-						lastEntry = entry;
-					else if (lastEntry.next != entry)
-						lastEntry = lastEntry.next;
-					entry = entry.next;
-					canRemove = true;
-					KeyEntry result = next;
-					next = null;
-					return type.get(result);
+					currentEntry = nextEntry;
+					nextEntry = currentEntry.next;
+					Object result = type.get(currentEntry);
+					// free the key
+					nextKey = null;
+					return result;
 				} else
 					throw new NoSuchElementException();
 			} else
@@ -144,20 +145,11 @@ public class WeakHashMap extends AbstractMap implements Map {
 
 		public void remove() {
 			if (expectedModCount == modCount) {
-				if (canRemove) {
-					canRemove = false;
-					modCount++;
-					if (lastEntry.next == entry) {
-						while (elementData[--position] == null) {
-							// do nothing
-						}
-						elementData[position] = elementData[position].next;
-						entry = null;
-					} else
-						lastEntry.next = entry;
-					elementCount--;
+				if (currentEntry != null) {
+					removeEntry(currentEntry);
+					currentEntry = null;
 					expectedModCount++;
-					poll();
+					// cannot poll() as that would change the expectedModCount
 				} else
 					throw new IllegalStateException();
 			} else
@@ -184,7 +176,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 	public WeakHashMap(int capacity) {
 		if (capacity >= 0) {
 			elementCount = 0;
-			elementData = new WeakHashMapEntry[capacity == 0 ? 1 : capacity];
+			elementData = new Entry[capacity == 0 ? 1 : capacity];
 			loadFactor = 7500; // Default load factor of 0.75
 			computeMaxSize();
 			referenceQueue = new ReferenceQueue();
@@ -208,7 +200,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 	public WeakHashMap(int capacity, float loadFactor) {
 		if (capacity >= 0 && loadFactor > 0) {
 			elementCount = 0;
-			elementData = new WeakHashMapEntry[capacity == 0 ? 1 : capacity];
+			elementData = new Entry[capacity == 0 ? 1 : capacity];
 			this.loadFactor = (int) (loadFactor * 10000);
 			computeMaxSize();
 			referenceQueue = new ReferenceQueue();
@@ -270,6 +262,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 	 * @return a Set of the mappings
 	 */
 	public Set entrySet() {
+		poll();
 		return new AbstractSet() {
 			public int size() {
 				return WeakHashMap.this.size();
@@ -289,19 +282,23 @@ public class WeakHashMap extends AbstractMap implements Map {
 
 			public boolean contains(Object object) {
 				if (object instanceof Map.Entry) {
-					WeakHashMapEntry entry = getEntry(((Map.Entry) object)
-							.getKey());
-					return object.equals(entry);
+					Entry entry = getEntry(((Map.Entry) object).getKey());
+					if (entry != null) {
+						Object key = entry.get();
+						if (key != null || entry.isNull) {
+							return object.equals(entry);
+						}
+					}
 				}
 				return false;
 			}
 
 			public Iterator iterator() {
-				return new HashIterator(new KeyEntry.Type() {
-					public Object get(KeyEntry entry) {
+				return new HashIterator(new Entry.Type() {
+					public Object get(Map.Entry entry) {
 						return entry;
 					}
-				}, WeakHashMap.this);
+				});
 			}
 		};
 	}
@@ -314,6 +311,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 	 * @return a Set of the keys
 	 */
 	public Set keySet() {
+		poll();
 		if (keySet == null) {
 			keySet = new AbstractSet() {
 				public boolean contains(Object object) {
@@ -337,11 +335,11 @@ public class WeakHashMap extends AbstractMap implements Map {
 				}
 
 				public Iterator iterator() {
-					return new HashIterator(new KeyEntry.Type() {
-						public Object get(KeyEntry entry) {
+					return new HashIterator(new Entry.Type() {
+						public Object get(Map.Entry entry) {
 							return entry.getKey();
 						}
-					}, WeakHashMap.this);
+					});
 				}
 			};
 		}
@@ -356,6 +354,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 	 * @return a Collection of the values
 	 */
 	public Collection values() {
+		poll();
 		if (valuesCollection == null) {
 			valuesCollection = new AbstractCollection() {
 				public int size() {
@@ -371,11 +370,11 @@ public class WeakHashMap extends AbstractMap implements Map {
 				}
 
 				public Iterator iterator() {
-					return new HashIterator(new KeyEntry.Type() {
-						public Object get(KeyEntry entry) {
+					return new HashIterator(new Entry.Type() {
+						public Object get(Map.Entry entry) {
 							return entry.getValue();
 						}
-					}, WeakHashMap.this);
+					});
 				}
 			};
 		}
@@ -390,9 +389,10 @@ public class WeakHashMap extends AbstractMap implements Map {
 	 * @return the value of the mapping with the specified key
 	 */
 	public Object get(Object key) {
+		poll();
 		if (key != null) {
 			int index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
-			WeakHashMapEntry entry = elementData[index];
+			Entry entry = elementData[index];
 			while (entry != null) {
 				if (key.equals(entry.get()))
 					return entry.value;
@@ -400,7 +400,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 			}
 			return null;
 		}
-		WeakHashMapEntry entry = elementData[0];
+		Entry entry = elementData[0];
 		while (entry != null) {
 			if (entry.isNull)
 				return entry.value;
@@ -409,10 +409,11 @@ public class WeakHashMap extends AbstractMap implements Map {
 		return null;
 	}
 
-	WeakHashMapEntry getEntry(Object key) {
+	Entry getEntry(Object key) {
+		poll();
 		if (key != null) {
 			int index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
-			WeakHashMapEntry entry = elementData[index];
+			Entry entry = elementData[index];
 			while (entry != null) {
 				if (key.equals(entry.get()))
 					return entry;
@@ -420,7 +421,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 			}
 			return null;
 		}
-		WeakHashMapEntry entry = elementData[0];
+		Entry entry = elementData[0];
 		while (entry != null) {
 			if (entry.isNull)
 				return entry;
@@ -439,20 +440,24 @@ public class WeakHashMap extends AbstractMap implements Map {
 	 *         false otherwise
 	 */
 	public boolean containsValue(Object value) {
+		poll();
 		if (value != null) {
 			for (int i = elementData.length; --i >= 0;) {
-				WeakHashMapEntry entry = elementData[i];
+				Entry entry = elementData[i];
 				while (entry != null) {
-					if (value.equals(entry.value))
+					Object key = entry.get();
+					if ((key != null || entry.isNull)
+							&& value.equals(entry.value))
 						return true;
 					entry = entry.next;
 				}
 			}
 		} else {
 			for (int i = elementData.length; --i >= 0;) {
-				WeakHashMapEntry entry = elementData[i];
+				Entry entry = elementData[i];
 				while (entry != null) {
-					if (entry.value == null)
+					Object key = entry.get();
+					if ((key != null || entry.isNull) && entry.value == null)
 						return true;
 					entry = entry.next;
 				}
@@ -473,26 +478,30 @@ public class WeakHashMap extends AbstractMap implements Map {
 	}
 
 	void poll() {
-		WeakHashMapEntry toRemove;
-		while ((toRemove = (WeakHashMapEntry) referenceQueue.poll()) != null) {
-			WeakHashMapEntry entry, last = null;
-			int index = (toRemove.hash & 0x7FFFFFFF) % elementData.length;
-			entry = elementData[index];
-			// Ignore queued entries which cannot be found, the user could
-			// have removed them before they were queued, i.e. using clear()
-			while (entry != null) {
-				if (toRemove == entry) {
-					modCount++;
-					if (last == null)
-						elementData[index] = entry.next;
-					else
-						last.next = entry.next;
-					elementCount--;
-					break;
-				}
-				last = entry;
-				entry = entry.next;
+		Entry toRemove;
+		while ((toRemove = (Entry) referenceQueue.poll()) != null) {
+			removeEntry(toRemove);
+		}
+	}
+
+	void removeEntry(Entry toRemove) {
+		Entry entry, last = null;
+		int index = (toRemove.hash & 0x7FFFFFFF) % elementData.length;
+		entry = elementData[index];
+		// Ignore queued entries which cannot be found, the user could
+		// have removed them before they were queued, i.e. using clear()
+		while (entry != null) {
+			if (toRemove == entry) {
+				modCount++;
+				if (last == null)
+					elementData[index] = entry.next;
+				else
+					last.next = entry.next;
+				elementCount--;
+				break;
 			}
+			last = entry;
+			entry = entry.next;
 		}
 	}
 
@@ -509,7 +518,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 	public Object put(Object key, Object value) {
 		poll();
 		int index = 0;
-		WeakHashMapEntry entry;
+		Entry entry;
 		if (key != null) {
 			index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
 			entry = elementData[index];
@@ -527,7 +536,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 				index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
 						% elementData.length;
 			}
-			entry = new WeakHashMapEntry(key, value, referenceQueue);
+			entry = new Entry(key, value, referenceQueue);
 			entry.next = elementData[index];
 			elementData[index] = entry;
 			return null;
@@ -541,13 +550,13 @@ public class WeakHashMap extends AbstractMap implements Map {
 		int length = elementData.length << 1;
 		if (length == 0)
 			length = 1;
-		WeakHashMapEntry[] newData = new WeakHashMapEntry[length];
+		Entry[] newData = new Entry[length];
 		for (int i = 0; i < elementData.length; i++) {
-			WeakHashMapEntry entry = elementData[i];
+			Entry entry = elementData[i];
 			while (entry != null) {
 				int index = entry.isNull ? 0 : (entry.hash & 0x7FFFFFFF)
 						% length;
-				WeakHashMapEntry next = entry.next;
+				Entry next = entry.next;
 				entry.next = newData[index];
 				newData[index] = entry;
 				entry = next;
@@ -568,7 +577,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 	public Object remove(Object key) {
 		poll();
 		int index = 0;
-		WeakHashMapEntry entry, last = null;
+		Entry entry, last = null;
 		if (key != null) {
 			index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
 			entry = elementData[index];
@@ -601,15 +610,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 	 * @return the number of mappings in this WeakHashMap
 	 */
 	public int size() {
-		int size = 0;
-		for (int i = elementData.length; --i >= 0;) {
-			WeakHashMapEntry entry = elementData[i];
-			while (entry != null) {
-				if (entry.get() != null || entry.isNull)
-					size++;
-				entry = entry.next;
-			}
-		}
-		return size;
+		poll();
+		return elementCount;
 	}
 }

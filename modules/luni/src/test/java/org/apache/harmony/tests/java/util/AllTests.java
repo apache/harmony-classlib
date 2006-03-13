@@ -31,6 +31,7 @@ public class AllTests {
 		suite.addTestSuite(CollectionsTest.class);
 		suite.addTestSuite(BitSetTest.class);
 		suite.addTestSuite(ArraysTest.class);
+		suite.addTestSuite(WeakHashMapTest.class);
 		suite.addTestSuite(IdentityHashMapTest.class);
 		suite.addTestSuite(DateTest.class);
 		suite.addTestSuite(LocaleTest.class);
