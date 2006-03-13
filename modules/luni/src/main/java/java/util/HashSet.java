@@ -176,10 +176,10 @@ public class HashSet extends AbstractSet implements Set, Cloneable,
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.defaultWriteObject();
 		stream.writeInt(backingMap.elementData.length);
-		stream.writeFloat((float) backingMap.loadFactor / 10000);
+		stream.writeFloat(backingMap.loadFactor);
 		stream.writeInt(backingMap.elementCount);
 		for (int i = backingMap.elementData.length; --i >= 0;) {
-			HashMap.HashMapEntry entry = backingMap.elementData[i];
+			HashMap.Entry entry = backingMap.elementData[i];
 			while (entry != null) {
 				stream.writeObject(entry.key);
 				entry = entry.next;

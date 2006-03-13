@@ -15,17 +15,14 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamField;
 import java.io.Serializable;
 
 /**
  * HashMap is an implementation of Map. All optional operations are supported,
  * adding and removing. Keys and values can be any objects.
- * 
  */
 public class HashMap extends AbstractMap implements Map, Cloneable,
 		Serializable {
@@ -33,9 +30,9 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 
 	transient int elementCount;
 
-	transient HashMapEntry[] elementData;
+	transient Entry[] elementData;
 
-	int loadFactor;
+	final float loadFactor;
 
 	int threshold;
 
@@ -43,17 +40,17 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 
 	private static final int DEFAULT_SIZE = 16;
 
-	static class HashMapEntry extends MapEntry {
-		HashMapEntry next;
+	static class Entry extends MapEntry {
+		Entry next;
 
-		HashMapEntry(Object theKey, Object theValue) {
+		Entry(Object theKey, Object theValue) {
 			super(theKey, theValue);
 		}
 
 		public Object clone() {
-			HashMapEntry entry = (HashMapEntry) super.clone();
+			Entry entry = (Entry) super.clone();
 			if (next != null)
-				entry.next = (HashMapEntry) next.clone();
+				entry.next = (Entry) next.clone();
 			return entry;
 		}
 
@@ -67,15 +64,15 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 
 		int expectedModCount;
 
-		MapEntry.Type type;
+		final MapEntry.Type type;
 
 		boolean canRemove = false;
 
-		HashMapEntry entry;
+		Entry entry;
 
-		HashMapEntry lastEntry;
+		Entry lastEntry;
 
-		HashMap associatedMap;
+		final HashMap associatedMap;
 
 		HashMapIterator(MapEntry.Type value, HashMap hm) {
 			associatedMap = hm;
@@ -105,7 +102,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 			if (!hasNext())
 				throw new NoSuchElementException();
 
-			HashMapEntry result;
+			Entry result;
 			if (entry == null) {
 				result = lastEntry = associatedMap.elementData[position++];
 				entry = lastEntry.next;
@@ -139,7 +136,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	}
 
 	static class HashMapEntrySet extends AbstractSet {
-		private HashMap associatedMap;
+		private final HashMap associatedMap;
 
 		public HashMapEntrySet(HashMap hm) {
 			associatedMap = hm;
@@ -167,8 +164,8 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 
 		public boolean contains(Object object) {
 			if (object instanceof Map.Entry) {
-				HashMapEntry entry = associatedMap
-						.getEntry(((Map.Entry) object).getKey());
+				Entry entry = associatedMap.getEntry(((Map.Entry) object)
+						.getKey());
 				return object.equals(entry);
 			}
 			return false;
@@ -189,8 +186,8 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 * @param s
 	 * @return Reference to the element array
 	 */
-	HashMapEntry[] newElementArray(int s) {
-		return new HashMapEntry[s];
+	Entry[] newElementArray(int s) {
+		return new Entry[s];
 	}
 
 	/**
@@ -214,7 +211,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		if (capacity >= 0) {
 			elementCount = 0;
 			elementData = newElementArray(capacity == 0 ? 1 : capacity);
-			loadFactor = 7500; // Default load factor of 0.75
+			loadFactor = 0.75f; // Default load factor of 0.75
 			computeMaxSize();
 		} else
 			throw new IllegalArgumentException();
@@ -238,7 +235,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		if (capacity >= 0 && loadFactor > 0) {
 			elementCount = 0;
 			elementData = newElementArray(capacity == 0 ? 1 : capacity);
-			this.loadFactor = (int) (loadFactor * 10000);
+			this.loadFactor = loadFactor;
 			computeMaxSize();
 		} else
 			throw new IllegalArgumentException();
@@ -281,10 +278,10 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		try {
 			HashMap map = (HashMap) super.clone();
 			map.elementData = newElementArray(elementData.length);
-			HashMapEntry entry;
+			Entry entry;
 			for (int i = 0; i < elementData.length; i++) {
 				if ((entry = elementData[i]) != null)
-					map.elementData[i] = (HashMapEntry) entry.clone();
+					map.elementData[i] = (Entry) entry.clone();
 			}
 			return map;
 		} catch (CloneNotSupportedException e) {
@@ -293,7 +290,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	}
 
 	private void computeMaxSize() {
-		threshold = (int) ((long) elementData.length * loadFactor / 10000);
+		threshold = (int) (elementData.length * loadFactor);
 	}
 
 	/**
@@ -333,7 +330,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	public boolean containsValue(Object value) {
 		if (value != null) {
 			for (int i = elementData.length; --i >= 0;) {
-				HashMapEntry entry = elementData[i];
+				Entry entry = elementData[i];
 				while (entry != null) {
 					if (value.equals(entry.value))
 						return true;
@@ -342,7 +339,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 			}
 		} else {
 			for (int i = elementData.length; --i >= 0;) {
-				HashMapEntry entry = elementData[i];
+				Entry entry = elementData[i];
 				while (entry != null) {
 					if (entry.value == null)
 						return true;
@@ -372,14 +369,14 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 * @return the value of the mapping with the specified key
 	 */
 	public Object get(Object key) {
-		HashMapEntry m = getEntry(key);
+		Entry m = getEntry(key);
 		if (m != null) {
 			return m.value;
 		}
 		return null;
 	}
 
-	HashMapEntry getEntry(Object key) {
+	Entry getEntry(Object key) {
 		int index = getModuloHash(key);
 		return findEntry(key, index);
 	}
@@ -390,8 +387,8 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		return (key.hashCode() & 0x7FFFFFFF) % elementData.length;
 	}
 
-	HashMapEntry findEntry(Object key, int index) {
-		HashMapEntry m;
+	Entry findEntry(Object key, int index) {
+		Entry m;
 		m = elementData[index];
 		if (key != null) {
 			while (m != null && !keysEqual(key, m.key))
@@ -468,7 +465,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 */
 	public Object put(Object key, Object value) {
 		int index = getModuloHash(key);
-		HashMapEntry entry = findEntry(key, index);
+		Entry entry = findEntry(key, index);
 
 		if (entry == null) {
 			modCount++;
@@ -484,8 +481,8 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		return result;
 	}
 
-	HashMapEntry createEntry(Object key, int index, Object value) {
-		HashMapEntry entry = new HashMapEntry(key, value);
+	Entry createEntry(Object key, int index, Object value) {
+		Entry entry = new Entry(key, value);
 		entry.next = elementData[index];
 		elementData[index] = entry;
 		return entry;
@@ -505,14 +502,14 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		int length = elementData.length << 1;
 		if (length == 0)
 			length = 1;
-		HashMapEntry[] newData = newElementArray(length);
+		Entry[] newData = newElementArray(length);
 		for (int i = 0; i < elementData.length; i++) {
-			HashMapEntry entry = elementData[i];
+			Entry entry = elementData[i];
 			while (entry != null) {
 				Object key = entry.key;
 				int index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
 						% length;
-				HashMapEntry next = entry.next;
+				Entry next = entry.next;
 				entry.next = newData[index];
 				newData[index] = entry;
 				entry = next;
@@ -531,17 +528,17 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 *         this HashMap
 	 */
 	public Object remove(Object key) {
-		HashMapEntry entry = removeEntry(key);
+		Entry entry = removeEntry(key);
 		if (entry != null) {
 			return entry.value;
 		}
 		return null;
 	}
 
-	HashMapEntry removeEntry(Object key) {
+	Entry removeEntry(Object key) {
 		int index = 0;
-		HashMapEntry entry;
-		HashMapEntry last = null;
+		Entry entry;
+		Entry last = null;
 		if (key != null) {
 			index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
 			entry = elementData[index];
@@ -610,20 +607,13 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		return valuesCollection;
 	}
 
-	private static final ObjectStreamField[] serialPersistentFields = {
-			new ObjectStreamField("loadFactor", Float.TYPE),
-			new ObjectStreamField("threshold", Integer.TYPE) };
-
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		ObjectOutputStream.PutField fields = stream.putFields();
-		fields.put("loadFactor", (float) loadFactor / 10000);
-		fields.put("threshold", threshold);
-		stream.writeFields();
+		stream.defaultWriteObject();
 		stream.writeInt(elementData.length);
 		stream.writeInt(elementCount);
 		Iterator iterator = entrySet().iterator();
 		while (iterator.hasNext()) {
-			HashMapEntry entry = (HashMapEntry) iterator.next();
+			Entry entry = (Entry) iterator.next();
 			stream.writeObject(entry.key);
 			stream.writeObject(entry.value);
 			entry = entry.next;
@@ -632,11 +622,9 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 
 	private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
-		ObjectInputStream.GetField fields = stream.readFields();
-		loadFactor = (int) (fields.get("loadFactor", 0.75f) * 10000);
-		threshold = fields.get("threshold", 0);
+		stream.defaultReadObject();
 		int length = stream.readInt();
-		elementData = new HashMapEntry[length];
+		elementData = new Entry[length];
 		elementCount = stream.readInt();
 		for (int i = elementCount; --i >= 0;) {
 			Object key = stream.readObject();

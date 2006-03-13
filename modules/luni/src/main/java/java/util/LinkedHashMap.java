@@ -17,14 +17,22 @@ package java.util;
 
 
 /**
- * LinkedHashMap
- * 
+ * LinkedHashMap is a variant on HashMap. Its entries are kept in a doubly-linked list.
+ * The iteration order is, by default, the order in which keys were inserted.
+ * <p> 
+ * If the three arg constructor is used, and <code>order</code> is specified as <code>true</code>, 
+ * the iteration would be in the order that entries were accessed. The access order gets 
+ * affected by put(), get(), putAll() operations, but not by operations on the collection views.
+ * <p>
+ * Null elements are allowed, and all the optional Map operations are supported.
+ * <p>
+ *
  */
 public class LinkedHashMap extends HashMap {
 	
 	private static final long serialVersionUID = 3801124242820219131L;
 
-	private boolean accessOrder;
+	private final boolean accessOrder;
 
 	transient private LinkedHashMapEntry head, tail;
 
@@ -173,7 +181,7 @@ public class LinkedHashMap extends HashMap {
 		}
 	}
 
-	static final class LinkedHashMapEntry extends HashMapEntry {
+	static final class LinkedHashMapEntry extends Entry {
 		LinkedHashMapEntry chainForward, chainBackward;
 
 		LinkedHashMapEntry(Object theKey, Object theValue) {
@@ -199,7 +207,7 @@ public class LinkedHashMap extends HashMap {
 	 * @param s
 	 * @return Reference to the element array
 	 */
-	HashMapEntry[] newElementArray(int s) {
+	Entry[] newElementArray(int s) {
 		return new LinkedHashMapEntry[s];
 	}
 
@@ -233,9 +241,9 @@ public class LinkedHashMap extends HashMap {
 	/*
 	 * @param key
 	 * @param index
-	 * @return
+	 * @return Entry
 	 */
-	HashMapEntry createEntry(Object key, int index, Object value) {
+	Entry createEntry(Object key, int index, Object value) {
 		LinkedHashMapEntry m = new LinkedHashMapEntry(key, value);
 		m.next = elementData[index];
 		elementData[index] = m;
