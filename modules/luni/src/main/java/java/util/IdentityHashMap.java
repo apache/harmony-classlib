@@ -111,11 +111,11 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		// the position of the entry that was last returned from next()
 		private int lastPosition = 0;
 
-		IdentityHashMap associatedMap;
+		final IdentityHashMap associatedMap;
 
 		int expectedModCount;
 
-		MapEntry.Type type;
+		final MapEntry.Type type;
 
 		boolean canRemove = false;
 
@@ -165,7 +165,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	}
 
 	static class IdentityHashMapEntrySet extends AbstractSet {
-		private IdentityHashMap associatedMap;
+		private final IdentityHashMap associatedMap;
 
 		public IdentityHashMapEntrySet(IdentityHashMap hm) {
 			associatedMap = hm;
