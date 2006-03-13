@@ -171,4 +171,61 @@ public class CharsetDecoderTest extends TestCase {
 			throw new BufferOverflowException();
 		}
 	} 
+	
+	/*
+	 * Test the method decode(ByteBuffer) .
+	 */
+	public void testDecodeLjava_nio_ByteBuffer_ReplaceOverflow()
+			throws Exception {
+		String replaceString = "a";
+		Charset cs = Charset.forName("UTF-8");
+		MockMalformedDecoder decoder = new MockMalformedDecoder(cs);
+		decoder.onMalformedInput(CodingErrorAction.REPLACE);
+		decoder.replaceWith(replaceString);
+		CharBuffer out = CharBuffer.allocate(1);
+		// MockMalformedDecoder treats the second byte '0x38' as malformed,
+		// but "out" doesn't have enough space for replace string.
+		ByteBuffer in = ByteBuffer.wrap(new byte[] { 0x45, 0x38, 0x45, 0x45 });
+		CoderResult result = decoder.decode(in, out, false);
+		assertTrue(result.isOverflow());
+
+		// allocate enough space for "out"
+		out = CharBuffer.allocate(10);
+		// replace string should be put into "out" firstly,
+		// and then decode "in".
+		result = decoder.decode(in, out, true);
+		out.flip();
+		assertTrue(result.isUnderflow());
+		// TODO: the following assertion fails on the Reference Impl -- see HARMONY-148
+		assertEquals("abb", out.toString());
+	}
+
+	/*
+	 * Mock decoder. It treats byte whose value is less than "0x40" as
+	 * malformed.
+	 */
+	static class MockMalformedDecoder extends java.nio.charset.CharsetDecoder {
+
+		public MockMalformedDecoder(Charset cs) {
+			super(cs, 1, 10);
+		}
+
+		/*
+		 * It treats byte whose value is less than "0x40" as malformed.
+		 * Otherwise, it's decoded as 'b'.
+		 */
+		protected CoderResult decodeLoop(ByteBuffer in, CharBuffer out) {
+			while (in.hasRemaining()) {
+				byte b = in.get();
+				if (b < 0x40) {
+					return CoderResult.malformedForLength(1);
+				}
+				if (!out.hasRemaining()) {
+					return CoderResult.OVERFLOW;
+				}
+				out.put((char) 'b');
+			}
+			return CoderResult.UNDERFLOW;
+		}
+	}
 }
