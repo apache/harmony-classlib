@@ -42,7 +42,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 
 	transient int elementCount;
 
-	transient HashtableEntry[] elementData;
+	transient Entry[] elementData;
 
 	private float loadFactor;
 
@@ -57,21 +57,21 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	private static final Enumeration emptyEnumerator = new Hashtable(0)
 			.getEmptyEnumerator();
 
-	private static HashtableEntry newEntry(Object key, Object value, int hash) {
-		return new HashtableEntry(key, value);
+	private static Entry newEntry(Object key, Object value, int hash) {
+		return new Entry(key, value);
 	}
 
-	private static class HashtableEntry extends MapEntry {
-		HashtableEntry next;
+	private static class Entry extends MapEntry {
+		Entry next;
 
-		HashtableEntry(Object theKey, Object theValue) {
+		Entry(Object theKey, Object theValue) {
 			super(theKey, theValue);
 		}
 
 		public Object clone() {
-			HashtableEntry entry = (HashtableEntry) super.clone();
+			Entry entry = (Entry) super.clone();
 			if (next != null)
-				entry.next = (HashtableEntry) next.clone();
+				entry.next = (Entry) next.clone();
 			return entry;
 		}
 
@@ -101,7 +101,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 
 		private MapEntry.Type type;
 
-		private HashtableEntry lastEntry;
+		private Entry lastEntry;
 
 		private int lastPosition;
 
@@ -158,7 +158,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 					canRemove = false;
 					synchronized (Hashtable.this) {
 						boolean removed = false;
-						HashtableEntry entry = elementData[lastPosition];
+						Entry entry = elementData[lastPosition];
 						if (entry == lastEntry) {
 							elementData[lastPosition] = entry.next;
 							removed = true;
@@ -196,7 +196,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 
 		int start;
 
-		HashtableEntry entry;
+		Entry entry;
 
 		HashEnumerator(boolean isKey) {
 			key = isKey;
@@ -241,7 +241,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	public Hashtable(int capacity) {
 		if (capacity >= 0) {
 			elementCount = 0;
-			elementData = new HashtableEntry[capacity == 0 ? 1 : capacity];
+			elementData = new Entry[capacity == 0 ? 1 : capacity];
 			firstSlot = elementData.length;
 			loadFactor = 0.75f;
 			computeMaxSize();
@@ -261,7 +261,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 		if (capacity >= 0 && loadFactor > 0) {
 			elementCount = 0;
 			firstSlot = capacity;
-			elementData = new HashtableEntry[capacity == 0 ? 1 : capacity];
+			elementData = new Entry[capacity == 0 ? 1 : capacity];
 			this.loadFactor = loadFactor;
 			computeMaxSize();
 		} else
@@ -308,11 +308,11 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	public synchronized Object clone() {
 		try {
 			Hashtable hashtable = (Hashtable) super.clone();
-			hashtable.elementData = (HashtableEntry[]) elementData.clone();
-			HashtableEntry entry;
+			hashtable.elementData = (Entry[]) elementData.clone();
+			Entry entry;
 			for (int i = elementData.length; --i >= 0;)
 				if ((entry = elementData[i]) != null)
-					hashtable.elementData[i] = (HashtableEntry) entry.clone();
+					hashtable.elementData[i] = (Entry) entry.clone();
 			return hashtable;
 		} catch (CloneNotSupportedException e) {
 			return null;
@@ -339,7 +339,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 			throw new NullPointerException();
 
 			for (int i = elementData.length; --i >= 0;) {
-				HashtableEntry entry = elementData[i];
+				Entry entry = elementData[i];
 				while (entry != null) {
 					if (value.equals(entry.value))
 						return true;
@@ -420,8 +420,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 
 			public boolean contains(Object object) {
 				if (object instanceof Map.Entry) {
-					HashtableEntry entry = getEntry(((Map.Entry) object)
-							.getKey());
+					Entry entry = getEntry(((Map.Entry) object).getKey());
 					return object.equals(entry);
 				}
 				return false;
@@ -480,7 +479,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	public synchronized Object get(Object key) {
 		int hash = key.hashCode();
 		int index = (hash & 0x7FFFFFFF) % elementData.length;
-		HashtableEntry entry = elementData[index];
+		Entry entry = elementData[index];
 		while (entry != null) {
 			if (entry.equalsKey(key, hash))
 				return entry.value;
@@ -489,10 +488,10 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 		return null;
 	}
 
-	HashtableEntry getEntry(Object key) {
+	Entry getEntry(Object key) {
 		int hash = key.hashCode();
 		int index = (hash & 0x7FFFFFFF) % elementData.length;
-		HashtableEntry entry = elementData[index];
+		Entry entry = elementData[index];
 		while (entry != null) {
 			if (entry.equalsKey(key, hash))
 				return entry;
@@ -612,7 +611,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 		if (key != null && value != null) {
 			int hash = key.hashCode();
 			int index = (hash & 0x7FFFFFFF) % elementData.length;
-			HashtableEntry entry = elementData[index];
+			Entry entry = elementData[index];
 			while (entry != null && !entry.equalsKey(key, hash))
 				entry = entry.next;
 			if (entry == null) {
@@ -661,16 +660,16 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 			length = 1;
 		int newFirst = length;
 		int newLast = -1;
-		HashtableEntry[] newData = new HashtableEntry[length];
+		Entry[] newData = new Entry[length];
 		for (int i = lastSlot + 1; --i >= firstSlot;) {
-			HashtableEntry entry = elementData[i];
+			Entry entry = elementData[i];
 			while (entry != null) {
 				int index = (entry.getKeyHash() & 0x7FFFFFFF) % length;
 				if (index < newFirst)
 					newFirst = index;
 				if (index > newLast)
 					newLast = index;
-				HashtableEntry next = entry.next;
+				Entry next = entry.next;
 				entry.next = newData[index];
 				newData[index] = entry;
 				entry = next;
@@ -696,8 +695,8 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	public synchronized Object remove(Object key) {
 		int hash = key.hashCode();
 		int index = (hash & 0x7FFFFFFF) % elementData.length;
-		HashtableEntry last = null;
-		HashtableEntry entry = elementData[index];
+		Entry last = null;
+		Entry entry = elementData[index];
 		while (entry != null && !entry.equalsKey(key, hash)) {
 			last = entry;
 			entry = entry.next;
@@ -740,7 +739,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 		StringBuffer buffer = new StringBuffer(size() * 28);
 		buffer.append('{');
 		for (int i = lastSlot; i >= firstSlot; i--) {
-			HashtableEntry entry = elementData[i];
+			Entry entry = elementData[i];
 			while (entry != null) {
 				if (entry.key != this) {
 					buffer.append(entry.key);
@@ -801,7 +800,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 		stream.writeInt(elementData.length);
 		stream.writeInt(elementCount);
 		for (int i = elementData.length; --i >= 0;) {
-			HashtableEntry entry = elementData[i];
+			Entry entry = elementData[i];
 			while (entry != null) {
 				stream.writeObject(entry.key);
 				stream.writeObject(entry.value);
@@ -814,7 +813,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 			ClassNotFoundException {
 		stream.defaultReadObject();
 		int length = stream.readInt();
-		elementData = new HashtableEntry[length];
+		elementData = new Entry[length];
 		elementCount = stream.readInt();
 		for (int i = elementCount; --i >= 0;) {
 			Object key = stream.readObject();
@@ -824,7 +823,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 				firstSlot = index;
 			if (index > lastSlot)
 				lastSlot = index;
-			HashtableEntry entry = newEntry(key, stream.readObject(), hash);
+			Entry entry = newEntry(key, stream.readObject(), hash);
 			entry.next = elementData[index];
 			elementData[index] = entry;
 		}
