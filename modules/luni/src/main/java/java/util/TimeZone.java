@@ -27,6 +27,13 @@ import com.ibm.oti.util.PriviAction;
  * daylight savings time rules. Subclasses support a particular calendar type,
  * such as the gregorian calendar.
  * 
+ * Please note the type returned by factory methods, i.e. <code>getDefault()</code> 
+ * and <code>getTimeZone(String)</code>, is implementation dependent, so that 
+ * it may introduce serialization incompatibility issue between different implementations. 
+ * Harmony returns instance of {@link SimpleTimeZone SimpleTimeZone} so that the 
+ * bytes serialized by Harmony can be deserialized on other implementation successfully, 
+ * but the reverse compatibility cannot be guaranteed. 
+ * 
  * @see GregorianCalendar
  * @see SimpleTimeZone
  */
