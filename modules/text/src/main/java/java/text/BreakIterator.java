@@ -61,6 +61,10 @@ public abstract class BreakIterator implements Cloneable {
 	 */
 	public static final int DONE = -1;
 
+	private static final int LONG_LENGTH = 8;
+	private static final int INT_LENGTH = 4;
+	private static final int SHORT_LENGTH = 2;
+
 	/*
 	 * -----------------------------------------------------------------------
 	 * variables
@@ -365,26 +369,65 @@ public abstract class BreakIterator implements Cloneable {
 	}
 
 	/**
-	 * This method is added by Java SE 5 without any spec, but will be removed
-	 * by Java SE 6, so this method is not implemented by Harmony.
+	 * Get a long value from the given byte array, start from given offset.
+	 * 
+	 * @param buf	the bytes to be converted
+	 * @param offset	the start position of conversion
+	 * @return	the converted long value
 	 */
 	protected static long getLong(byte[] buf, int offset) {
-		throw new NotYetImplementedException();
+		if(null == buf){
+			throw new NullPointerException();
+		}
+		if(offset < 0 || offset + LONG_LENGTH > buf.length){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		long result = 0;
+		for (int i = offset; i < offset + LONG_LENGTH; i++) {
+			result = (result << 8) | (buf[i] & 0xff);
+		}
+		return result;
 	}
 
 	/**
-	 * This method is added by Java SE 5 without any spec, but will be removed
-	 * by Java SE 6, so this method is not implemented by Harmony.
-	 */
+	 * Get a ing value from the given byte array, start from given offset.
+	 * 
+	 * @param buf	the bytes to be converted
+	 * @param offset	the start position of conversion
+	 * @return	the converted int value
+	 */	
 	protected static int getInt(byte[] buf, int offset) {
-		throw new NotYetImplementedException();
+		if(null == buf){
+			throw new NullPointerException();
+		}
+		if(offset < 0 || offset + INT_LENGTH > buf.length){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		int result = 0;
+		for (int i = offset; i < offset + INT_LENGTH; i++) {
+			result = (result << 8) | (buf[i] & 0xff);
+		}
+		return result;
 	}
 
 	/**
-	 * This method is added by Java SE 5 without any spec, but will be removed
-	 * by Java SE 6, so this method is not implemented by Harmony.
+	 * Get a short value from the given byte array, start from given offset.
+	 * 
+	 * @param buf	the bytes to be converted
+	 * @param offset	the start position of conversion
+	 * @return	the converted short value
 	 */
 	protected static short getShort(byte[] buf, int offset) {
-		throw new NotYetImplementedException();
+		if(null == buf){
+			throw new NullPointerException();
+		}
+		if(offset < 0 || offset + SHORT_LENGTH > buf.length){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		short result = 0;
+		for (int i = offset; i < offset + SHORT_LENGTH; i++) {
+			result = (short)((result << 8) | (buf[i] & 0xff));
+		}
+		return result;
 	}
 }
