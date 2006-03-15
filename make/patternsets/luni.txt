@@ -13,13 +13,12 @@
 # limitations under the License.
 
 java/lang/*
+com/ibm/oti/lang/*
 
 java/util/*
 com/ibm/oti/util/*
-org/apache/harmony/luni/util/*
 
 java/net/*
-org/apache/harmony/luni/internal/net/www/*
 com/ibm/oti/net/www/protocol/file/*
 com/ibm/oti/net/www/protocol/ftp/*
 com/ibm/oti/net/www/protocol/http/*
@@ -31,10 +30,12 @@ com/ibm/oti/io/*
 java/lang/ref/*
 
 java/lang/reflect/*
-org/apache/harmony/luni/internal/reflect/*
 
-org/apache/harmony/luni/internal/locale/*
 
 com/ibm/oti/vm/*
 
-com/ibm/oti/lang/*
+org/apache/harmony/luni/internal/locale/*
+org/apache/harmony/luni/internal/net/www/*
+org/apache/harmony/luni/internal/reflect/*
+org/apache/harmony/luni/platform/*
+org/apache/harmony/luni/util/*
