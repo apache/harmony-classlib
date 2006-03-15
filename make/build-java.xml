@@ -282,7 +282,7 @@
 
         <!-- Copy across the dependency jars -->
         <copy todir="${target.output}/jre/lib/boot" overwrite="yes"
-              verbose="yes">
+              verbose="yes" flatten="yes">
             <fileset dir="${depends.jars}">
                 <patternset includes="*.jar" />
                 <patternset includes="xerces_2.6.2/*.jar" />
