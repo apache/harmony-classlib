@@ -28,13 +28,14 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.apache.harmony.tests.java.lang");
 		//$JUnit-BEGIN$
+		suite.addTestSuite(CharacterTest.class);
+		suite.addTestSuite(ByteTest.class);
 		suite.addTestSuite(FloatTest.class);
+		suite.addTestSuite(StringBuilderTest.class);
+		suite.addTestSuite(BooleanTest.class);
 		suite.addTestSuite(StringBufferTest.class);
 		suite.addTestSuite(SecurityManagerTest.class);
 		suite.addTestSuite(DoubleTest.class);
-		suite.addTestSuite(StringBuilderTest.class);
-		suite.addTestSuite(BooleanTest.class);
-		suite.addTestSuite(ByteTest.class);
 		//$JUnit-END$
 		return suite;
 	}
