@@ -68,15 +68,6 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 	}
 
 	/**
-	 * Close this stream and any underlying streams.
-	 */
-	public void close() throws IOException {
-		if (!done)
-			finish();
-		super.close();
-	}
-
-	/**
 	 * Write up to nbytes of data from buf, starting at offset off, to the
 	 * underlying stream in GZIP format.
 	 */
