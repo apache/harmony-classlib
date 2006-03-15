@@ -1,0 +1,476 @@
+/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package tests.api.java.util;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
+import tests.support.Support_ListTest;
+
+public class LinkedListTest extends junit.framework.TestCase {
+
+	LinkedList ll;
+
+	static Object[] objArray;
+	{
+		objArray = new Object[100];
+		for (int i = 0; i < objArray.length; i++)
+			objArray[i] = new Integer(i);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#LinkedList()
+	 */
+	public void test_Constructor() {
+		// Test for method java.util.LinkedList()
+		new Support_ListTest("", ll).runTest();
+
+		LinkedList subList = new LinkedList();
+		for (int i = -50; i < 150; i++)
+			subList.add(new Integer(i));
+		new Support_ListTest("", subList.subList(50, 150)).runTest();
+	}
+
+	/**
+	 * @tests java.util.LinkedList#LinkedList(java.util.Collection)
+	 */
+	public void test_ConstructorLjava_util_Collection() {
+		// Test for method java.util.LinkedList(java.util.Collection)
+		assertTrue("Incorrect LinkedList constructed", new LinkedList(ll)
+				.equals(ll));
+	}
+
+	/**
+	 * @tests java.util.LinkedList#add(int, java.lang.Object)
+	 */
+	public void test_addILjava_lang_Object() {
+		// Test for method void java.util.LinkedList.add(int, java.lang.Object)
+		Object o;
+		ll.add(50, o = "Test");
+		assertTrue("Failed to add Object>: " + ll.get(50).toString(), ll
+				.get(50) == o);
+		assertTrue("Failed to fix up list after insert",
+				ll.get(51) == objArray[50] && (ll.get(52) == objArray[51]));
+		ll.add(50, null);
+		assertTrue("Did not add null correctly", ll.get(50) == null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#add(java.lang.Object)
+	 */
+	public void test_addLjava_lang_Object() {
+		// Test for method boolean java.util.LinkedList.add(java.lang.Object)
+		Object o;
+		ll.add(o = new Object());
+		assertTrue("Failed to add Object", ll.getLast() == o);
+		ll.add(null);
+		assertTrue("Did not add null correctly", ll.get(ll.size() - 1) == null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#addAll(int, java.util.Collection)
+	 */
+	public void test_addAllILjava_util_Collection() {
+		// Test for method boolean java.util.LinkedList.addAll(int,
+		// java.util.Collection)
+		ll.addAll(50, (Collection) ll.clone());
+		assertTrue("Returned incorrect size after adding to existing list", ll
+				.size() == 200);
+		for (int i = 0; i < 50; i++)
+			assertTrue("Manipulated elements < index", ll.get(i) == objArray[i]);
+		for (int i = 0; i >= 50 && (i < 150); i++)
+			assertTrue("Failed to ad elements properly",
+					ll.get(i) == objArray[i - 50]);
+		for (int i = 0; i >= 150 && (i < 200); i++)
+			assertTrue("Failed to ad elements properly",
+					ll.get(i) == objArray[i - 100]);
+		List myList = new LinkedList();
+		myList.add(null);
+		myList.add("Blah");
+		myList.add(null);
+		myList.add("Booga");
+		myList.add(null);
+		ll.addAll(50, myList);
+		assertTrue("a) List w/nulls not added correctly", ll.get(50) == null);
+		assertTrue("b) List w/nulls not added correctly", ll.get(51).equals(
+				"Blah"));
+		assertTrue("c) List w/nulls not added correctly", ll.get(52) == null);
+		assertTrue("d) List w/nulls not added correctly", ll.get(53).equals(
+				"Booga"));
+		assertTrue("e) List w/nulls not added correctly", ll.get(54) == null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#addAll(java.util.Collection)
+	 */
+	public void test_addAllLjava_util_Collection() {
+		// Test for method boolean
+		// java.util.LinkedList.addAll(java.util.Collection)
+		List l = new ArrayList();
+		l.addAll((Collection) ll.clone());
+		for (int i = 0; i < ll.size(); i++)
+			assertTrue("Failed to add elements properly", l.get(i).equals(
+					ll.get(i)));
+		ll.addAll((Collection) ll.clone());
+		assertTrue("Returned incorrect siZe after adding to existing list", ll
+				.size() == 200);
+		for (int i = 0; i < 100; i++) {
+			assertTrue("Added to list in incorrect order", ll.get(i).equals(
+					l.get(i)));
+			assertTrue("Failed to add to existing list", ll.get(i + 100)
+					.equals(l.get(i)));
+		}
+		List myList = new LinkedList();
+		myList.add(null);
+		myList.add("Blah");
+		myList.add(null);
+		myList.add("Booga");
+		myList.add(null);
+		ll.addAll(myList);
+		assertTrue("a) List w/nulls not added correctly", ll.get(200) == null);
+		assertTrue("b) List w/nulls not added correctly", ll.get(201).equals(
+				"Blah"));
+		assertTrue("c) List w/nulls not added correctly", ll.get(202) == null);
+		assertTrue("d) List w/nulls not added correctly", ll.get(203).equals(
+				"Booga"));
+		assertTrue("e) List w/nulls not added correctly", ll.get(204) == null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#addFirst(java.lang.Object)
+	 */
+	public void test_addFirstLjava_lang_Object() {
+		// Test for method void java.util.LinkedList.addFirst(java.lang.Object)
+		Object o;
+		ll.addFirst(o = new Object());
+		assertTrue("Failed to add Object", ll.getFirst() == o);
+		ll.addFirst(null);
+		assertTrue("Failed to add null", ll.getFirst() == null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#addLast(java.lang.Object)
+	 */
+	public void test_addLastLjava_lang_Object() {
+		// Test for method void java.util.LinkedList.addLast(java.lang.Object)
+		Object o;
+		ll.addLast(o = new Object());
+		assertTrue("Failed to add Object", ll.getLast() == o);
+		ll.addLast(null);
+		assertTrue("Failed to add null", ll.getLast() == null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#clear()
+	 */
+	public void test_clear() {
+		// Test for method void java.util.LinkedList.clear()
+		ll.clear();
+		for (int i = 0; i < ll.size(); i++)
+			assertTrue("Failed to clear list", ll.get(i) == null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#clone()
+	 */
+	public void test_clone() {
+		// Test for method java.lang.Object java.util.LinkedList.clone()
+		Object x = ll.clone();
+		assertTrue("Cloned list was inequal to cloned", x.equals(ll));
+		for (int i = 0; i < ll.size(); i++)
+			assertTrue("Cloned list contains incorrect elements", ll.get(i)
+					.equals(((LinkedList) x).get(i)));
+		ll.addFirst(null);
+		x = ll.clone();
+		assertTrue("List with a null did not clone properly", ll.equals(x));
+	}
+
+	/**
+	 * @tests java.util.LinkedList#contains(java.lang.Object)
+	 */
+	public void test_containsLjava_lang_Object() {
+		// Test for method boolean
+		// java.util.LinkedList.contains(java.lang.Object)
+		assertTrue("Returned false for valid element", ll
+				.contains(objArray[99]));
+		assertTrue("Returned false for equal element", ll.contains(new Integer(
+				8)));
+		assertTrue("Returned true for invalid element", !ll
+				.contains(new Object()));
+		assertTrue("Should not contain null", !ll.contains(null));
+		ll.add(25, null);
+		assertTrue("Should contain null", ll.contains(null));
+	}
+
+	/**
+	 * @tests java.util.LinkedList#get(int)
+	 */
+	public void test_getI() {
+		// Test for method java.lang.Object java.util.LinkedList.get(int)
+		assertTrue("Returned incorrect element", ll.get(22) == objArray[22]);
+		try {
+			ll.get(8765);
+		} catch (IndexOutOfBoundsException e) {
+			// Correct
+			return;
+		}
+		fail("Failed to throw expected exception for index > size");
+	}
+
+	/**
+	 * @tests java.util.LinkedList#getFirst()
+	 */
+	public void test_getFirst() {
+		// Test for method java.lang.Object java.util.LinkedList.getFirst()
+		assertTrue("Returned incorrect first element", ll.getFirst().equals(
+				objArray[0]));
+	}
+
+	/**
+	 * @tests java.util.LinkedList#getLast()
+	 */
+	public void test_getLast() {
+		// Test for method java.lang.Object java.util.LinkedList.getLast()
+		assertTrue("Returned incorrect first element", ll.getLast().equals(
+				objArray[objArray.length - 1]));
+	}
+
+	/**
+	 * @tests java.util.LinkedList#indexOf(java.lang.Object)
+	 */
+	public void test_indexOfLjava_lang_Object() {
+		// Test for method int java.util.LinkedList.indexOf(java.lang.Object)
+		assertTrue("Returned incorrect index", ll.indexOf(objArray[87]) == 87);
+		assertTrue("Returned index for invalid Object", ll
+				.indexOf(new Object()) == -1);
+		ll.add(20, null);
+		ll.add(24, null);
+		assertTrue("Index of null should be 20, but got: " + ll.indexOf(null),
+				ll.indexOf(null) == 20);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#lastIndexOf(java.lang.Object)
+	 */
+	public void test_lastIndexOfLjava_lang_Object() {
+		// Test for method int
+		// java.util.LinkedList.lastIndexOf(java.lang.Object)
+		ll.add(new Integer(99));
+		assertTrue("Returned incorrect index",
+				ll.lastIndexOf(objArray[99]) == 100);
+		assertTrue("Returned index for invalid Object", ll
+				.lastIndexOf(new Object()) == -1);
+		ll.add(20, null);
+		ll.add(24, null);
+		assertTrue("Last index of null should be 20, but got: "
+				+ ll.lastIndexOf(null), ll.lastIndexOf(null) == 24);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#listIterator(int)
+	 */
+	public void test_listIteratorI() {
+		// Test for method java.util.ListIterator
+		// java.util.LinkedList.listIterator(int)
+		ListIterator i = ll.listIterator();
+		Object elm;
+		int n = 0;
+		while (i.hasNext()) {
+			if (n == 0 || n == objArray.length - 1) {
+				if (n == 0)
+					assertTrue("First element claimed to have a previous", !i
+							.hasPrevious());
+				if (n == objArray.length)
+					assertTrue("Last element claimed to have next", !i
+							.hasNext());
+			}
+			elm = i.next();
+			assertTrue("Iterator returned elements in wrong order",
+					elm == objArray[n]);
+			if (n > 0 && n < objArray.length - 1) {
+				assertTrue("Next index returned incorrect value",
+						i.nextIndex() == n + 1);
+				assertTrue("previousIndex returned incorrect value : "
+						+ i.previousIndex() + ", n val: " + n, i
+						.previousIndex() == n);
+			}
+			++n;
+		}
+		List myList = new LinkedList();
+		myList.add(null);
+		myList.add("Blah");
+		myList.add(null);
+		myList.add("Booga");
+		myList.add(null);
+		ListIterator li = myList.listIterator();
+		assertTrue("li.hasPrevious() should be false", !li.hasPrevious());
+		assertTrue("li.next() should be null", li.next() == null);
+		assertTrue("li.hasPrevious() should be true", li.hasPrevious());
+		assertTrue("li.prev() should be null", li.previous() == null);
+		assertTrue("li.next() should be null", li.next() == null);
+		assertTrue("li.next() should be Blah", li.next().equals("Blah"));
+		assertTrue("li.next() should be null", li.next() == null);
+		assertTrue("li.next() should be Booga", li.next().equals("Booga"));
+		assertTrue("li.hasNext() should be true", li.hasNext());
+		assertTrue("li.next() should be null", li.next() == null);
+		assertTrue("li.hasNext() should be false", !li.hasNext());
+	}
+
+	/**
+	 * @tests java.util.LinkedList#remove(int)
+	 */
+	public void test_removeI() {
+		// Test for method java.lang.Object java.util.LinkedList.remove(int)
+		ll.remove(10);
+		assertTrue("Failed to remove element", ll.indexOf(objArray[10]) == -1);
+		try {
+			ll.remove(999);
+		} catch (IndexOutOfBoundsException e) {
+			// Correct
+			return;
+		}
+		fail("Failed to throw expected exception when index out of range");
+		ll.add(20, null);
+		ll.remove(20);
+		assertTrue("Should have removed null", ll.get(20) != null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#remove(java.lang.Object)
+	 */
+	public void test_removeLjava_lang_Object() {
+		// Test for method boolean java.util.LinkedList.remove(java.lang.Object)
+		assertTrue("Failed to remove valid Object", ll.remove(objArray[87]));
+		assertTrue("Removed invalid object", !ll.remove(new Object()));
+		assertTrue("Found Object after removal", ll.indexOf(objArray[87]) == -1);
+		ll.add(null);
+		ll.remove(null);
+		assertTrue("Should not contain null afrer removal", !ll.contains(null));
+	}
+
+	/**
+	 * @tests java.util.LinkedList#removeFirst()
+	 */
+	public void test_removeFirst() {
+		// Test for method java.lang.Object java.util.LinkedList.removeFirst()
+		ll.removeFirst();
+		assertTrue("Failed to remove first element",
+				ll.getFirst() != objArray[0]);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#removeLast()
+	 */
+	public void test_removeLast() {
+		// Test for method java.lang.Object java.util.LinkedList.removeLast()
+		ll.removeLast();
+		assertTrue("Failed to remove last element",
+				ll.getLast() != objArray[objArray.length - 1]);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#set(int, java.lang.Object)
+	 */
+	public void test_setILjava_lang_Object() {
+		// Test for method java.lang.Object java.util.LinkedList.set(int,
+		// java.lang.Object)
+		Object obj;
+		ll.set(65, obj = new Object());
+		assertTrue("Failed to set object", ll.get(65) == obj);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#size()
+	 */
+	public void test_size() {
+		// Test for method int java.util.LinkedList.size()
+		assertTrue("Returned incorrect size", ll.size() == objArray.length);
+		ll.removeFirst();
+		assertTrue("Returned incorrect size", ll.size() == objArray.length - 1);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#toArray()
+	 */
+	public void test_toArray() {
+		// Test for method java.lang.Object [] java.util.LinkedList.toArray()
+		ll.add(null);
+		Object[] obj = ll.toArray();
+		assertEquals("Returned array of incorrect size", objArray.length + 1, obj.length);
+		
+		for (int i = 0; i < obj.length - 1; i++)
+			assertTrue("Returned incorrect array: " + i, obj[i] == objArray[i]);
+		assertTrue("Returned incorrect array--end isn't null",
+				obj[obj.length - 1] == null);
+	}
+
+	/**
+	 * @tests java.util.LinkedList#toArray(java.lang.Object[])
+	 */
+	public void test_toArray$Ljava_lang_Object() {
+		// Test for method java.lang.Object []
+		// java.util.LinkedList.toArray(java.lang.Object [])
+		Integer[] argArray = new Integer[100];
+		Object[] retArray;
+		retArray = ll.toArray(argArray);
+		assertTrue("Returned different array than passed", retArray == argArray);
+		List retList = new LinkedList(Arrays.asList(retArray));
+		Iterator li = ll.iterator();
+		Iterator ri = retList.iterator();
+		while (li.hasNext())
+			assertTrue("Lists are not equal", li.next() == ri.next());
+		argArray = new Integer[1000];
+		retArray = ll.toArray(argArray);
+		assertTrue("Failed to set first extra element to null", argArray[ll
+				.size()] == null);
+		for (int i = 0; i < ll.size(); i++)
+			assertTrue("Returned incorrect array: " + i,
+					retArray[i] == objArray[i]);
+		ll.add(50, null);
+		argArray = new Integer[101];
+		retArray = ll.toArray(argArray);
+		assertTrue("Returned different array than passed", retArray == argArray);
+		retArray = ll.toArray(argArray);
+		assertTrue("Returned different array than passed", retArray == argArray);
+		retList = new LinkedList(Arrays.asList(retArray));
+		li = ll.iterator();
+		ri = retList.iterator();
+		while (li.hasNext())
+			assertTrue("Lists are not equal", li.next() == ri.next());
+	}
+
+	/**
+	 * Sets up the fixture, for example, open a network connection. This method
+	 * is called before a test is executed.
+	 */
+	protected void setUp() {
+		ll = new LinkedList();
+		for (int i = 0; i < objArray.length; i++)
+			ll.add(objArray[i]);
+	}
+
+	/**
+	 * Tears down the fixture, for example, close a network connection. This
+	 * method is called after a test is executed.
+	 */
+	protected void tearDown() {
+	}
+}

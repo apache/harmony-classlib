@@ -1,0 +1,1182 @@
+/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package tests.api.java.util;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import tests.support.Support_UnmodifiableCollectionTest;
+
+public class ArraysTest extends junit.framework.TestCase {
+
+	public static class ReversedIntegerComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			return -(((Integer) o1).compareTo((Integer) o2));
+		}
+
+		public boolean equals(Object o1, Object o2) {
+			return ((Integer) o1).compareTo((Integer) o2) == 0;
+		}
+	}
+
+	final static int arraySize = 100;
+
+	static Object[] objArray;
+
+	static boolean[] booleanArray;
+
+	static byte[] byteArray;
+
+	static char[] charArray;
+
+	static double[] doubleArray;
+
+	static float[] floatArray;
+
+	static int[] intArray;
+
+	static long[] longArray;
+
+	static Object[] objectArray;
+
+	static short[] shortArray;
+	{
+		objArray = new Object[arraySize];
+		for (int i = 0; i < objArray.length; i++)
+			objArray[i] = new Integer(i);
+	}
+
+	/**
+	 * @tests java.util.Arrays#asList(java.lang.Object[])
+	 */
+	public void test_asList$Ljava_lang_Object() {
+		// Test for method java.util.List
+		// java.util.Arrays.asList(java.lang.Object [])
+		List convertedList = Arrays.asList(objectArray);
+		for (int counter = 0; counter < arraySize; counter++) {
+			assertTrue(
+					"Array and List converted from array do not contain identical elements",
+					convertedList.get(counter) == objectArray[counter]);
+		}
+		convertedList.set(50, new Integer(1000));
+		assertTrue("set/get did not work on coverted list", convertedList.get(
+				50).equals(new Integer(1000)));
+		convertedList.set(50, new Integer(50));
+		new Support_UnmodifiableCollectionTest("", convertedList).runTest();
+
+		Object[] myArray = (Object[]) (objectArray.clone());
+		myArray[30] = null;
+		myArray[60] = null;
+		convertedList = Arrays.asList(myArray);
+		for (int counter = 0; counter < arraySize; counter++) {
+			assertTrue(
+					"Array and List converted from array do not contain identical elements",
+					convertedList.get(counter) == myArray[counter]);
+		}
+
+		try {
+			Arrays.asList(null);
+		} catch (NullPointerException e) {
+			return;
+		}
+		fail("asList with null arg didn't throw NPE");
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(byte[], byte)
+	 */
+	public void test_binarySearch$BB() {
+		// Test for method int java.util.Arrays.binarySearch(byte [], byte)
+		for (byte counter = 0; counter < arraySize; counter++)
+			assertTrue("Binary search on byte[] answered incorrect position",
+					Arrays.binarySearch(byteArray, counter) == counter);
+		assertTrue("Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(intArray, (byte) -1) == -1);
+		assertTrue(
+				"Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(intArray, (byte) arraySize) == -(arraySize + 1));
+		for (byte counter = 0; counter < arraySize; counter++)
+			byteArray[counter] -= 50;
+		for (byte counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on byte[] involving negative numbers answered incorrect position",
+					Arrays.binarySearch(byteArray, (byte) (counter - 50)) == counter);
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(char[], char)
+	 */
+	public void test_binarySearch$CC() {
+		// Test for method int java.util.Arrays.binarySearch(char [], char)
+		for (char counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on char[] answered incorrect position",
+					Arrays.binarySearch(charArray, (char) (counter + 1)) == counter);
+		assertTrue("Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(charArray, '\u0000') == -1);
+		assertTrue(
+				"Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(charArray, (char) (arraySize + 1)) == -(arraySize + 1));
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(double[], double)
+	 */
+	public void test_binarySearch$DD() {
+		// Test for method int java.util.Arrays.binarySearch(double [], double)
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on double[] answered incorrect position",
+					Arrays.binarySearch(doubleArray, (double) counter) == (double) counter);
+		assertTrue("Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(doubleArray, (double) -1) == -1);
+		assertTrue(
+				"Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(doubleArray, (double) arraySize) == -(arraySize + 1));
+		for (int counter = 0; counter < arraySize; counter++)
+			doubleArray[counter] -= (double) 50;
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on double[] involving negative numbers answered incorrect position",
+					Arrays.binarySearch(doubleArray, (double) (counter - 50)) == (double) counter);
+
+		double[] specials = new double[] { Double.NEGATIVE_INFINITY,
+				-Double.MAX_VALUE, -2d, -Double.MIN_VALUE, -0d, 0d,
+				Double.MIN_VALUE, 2d, Double.MAX_VALUE,
+				Double.POSITIVE_INFINITY, Double.NaN };
+		for (int i = 0; i < specials.length; i++) {
+			int result = Arrays.binarySearch(specials, specials[i]);
+			assertTrue(specials[i] + " invalid: " + result, result == i);
+		}
+		assertTrue("-1d", Arrays.binarySearch(specials, -1d) == -4);
+		assertTrue("1d", Arrays.binarySearch(specials, 1d) == -8);
+
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(float[], float)
+	 */
+	public void test_binarySearch$FF() {
+		// Test for method int java.util.Arrays.binarySearch(float [], float)
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on float[] answered incorrect position",
+					Arrays.binarySearch(floatArray, (float) counter) == (float) counter);
+		assertTrue("Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(floatArray, (float) -1) == -1);
+		assertTrue(
+				"Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(floatArray, (float) arraySize) == -(arraySize + 1));
+		for (int counter = 0; counter < arraySize; counter++)
+			floatArray[counter] -= (float) 50;
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on float[] involving negative numbers answered incorrect position",
+					Arrays.binarySearch(floatArray, (float) counter - 50) == (float) counter);
+
+		float[] specials = new float[] { Float.NEGATIVE_INFINITY,
+				-Float.MAX_VALUE, -2f, -Float.MIN_VALUE, -0f, 0f,
+				Float.MIN_VALUE, 2f, Float.MAX_VALUE, Float.POSITIVE_INFINITY,
+				Float.NaN };
+		for (int i = 0; i < specials.length; i++) {
+			int result = Arrays.binarySearch(specials, specials[i]);
+			assertTrue(specials[i] + " invalid: " + result, result == i);
+		}
+		assertTrue("-1f", Arrays.binarySearch(specials, -1f) == -4);
+		assertTrue("1f", Arrays.binarySearch(specials, 1f) == -8);
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(int[], int)
+	 */
+	public void test_binarySearch$II() {
+		// Test for method int java.util.Arrays.binarySearch(int [], int)
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Binary search on int[] answered incorrect position",
+					Arrays.binarySearch(intArray, counter) == counter);
+		assertTrue("Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(intArray, -1) == -1);
+		assertTrue("Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(intArray, arraySize) == -(arraySize + 1));
+		for (int counter = 0; counter < arraySize; counter++)
+			intArray[counter] -= 50;
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on int[] involving negative numbers answered incorrect position",
+					Arrays.binarySearch(intArray, counter - 50) == counter);
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(long[], long)
+	 */
+	public void test_binarySearch$JJ() {
+		// Test for method int java.util.Arrays.binarySearch(long [], long)
+		for (long counter = 0; counter < arraySize; counter++)
+			assertTrue("Binary search on long[] answered incorrect position",
+					Arrays.binarySearch(longArray, counter) == counter);
+		assertTrue("Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(longArray, (long) -1) == -1);
+		assertTrue(
+				"Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(longArray, (long) arraySize) == -(arraySize + 1));
+		for (long counter = 0; counter < arraySize; counter++)
+			longArray[(int) counter] -= (long) 50;
+		for (long counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on long[] involving negative numbers answered incorrect position",
+					Arrays.binarySearch(longArray, counter - (long) 50) == counter);
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(java.lang.Object[],
+	 *        java.lang.Object)
+	 */
+	public void test_binarySearch$Ljava_lang_ObjectLjava_lang_Object() {
+		// Test for method int java.util.Arrays.binarySearch(java.lang.Object
+		// [], java.lang.Object)
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on Object[] answered incorrect position",
+					Arrays.binarySearch(objectArray, objArray[counter]) == counter);
+		assertTrue("Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(objectArray, new Integer(-1)) == -1);
+		assertTrue(
+				"Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(objectArray, new Integer(arraySize)) == -(arraySize + 1));
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(java.lang.Object[],
+	 *        java.lang.Object, java.util.Comparator)
+	 */
+	public void test_binarySearch$Ljava_lang_ObjectLjava_lang_ObjectLjava_util_Comparator() {
+		// Test for method int java.util.Arrays.binarySearch(java.lang.Object
+		// [], java.lang.Object, java.util.Comparator)
+		Comparator comp = new ReversedIntegerComparator();
+		for (int counter = 0; counter < arraySize; counter++)
+			objectArray[counter] = objArray[arraySize - counter - 1];
+		assertTrue(
+				"Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(objectArray, new Integer(-1), comp) == -(arraySize + 1));
+		assertTrue(
+				"Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(objectArray, new Integer(arraySize), comp) == -1);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on Object[] with custom comparator answered incorrect position",
+					Arrays.binarySearch(objectArray, objArray[counter], comp) == arraySize
+							- counter - 1);
+	}
+
+	/**
+	 * @tests java.util.Arrays#binarySearch(short[], short)
+	 */
+	public void test_binarySearch$SS() {
+		// Test for method int java.util.Arrays.binarySearch(short [], short)
+		for (short counter = 0; counter < arraySize; counter++)
+			assertTrue("Binary search on short[] answered incorrect position",
+					Arrays.binarySearch(shortArray, counter) == counter);
+		assertTrue("Binary search suceeded for value not present in array 1",
+				Arrays.binarySearch(intArray, (short) -1) == -1);
+		assertTrue(
+				"Binary search suceeded for value not present in array 2",
+				Arrays.binarySearch(intArray, (short) arraySize) == -(arraySize + 1));
+		for (short counter = 0; counter < arraySize; counter++)
+			shortArray[counter] -= 50;
+		for (short counter = 0; counter < arraySize; counter++)
+			assertTrue(
+					"Binary search on short[] involving negative numbers answered incorrect position",
+					Arrays.binarySearch(shortArray, (short) (counter - 50)) == counter);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(byte[], byte)
+	 */
+	public void test_fill$BB() {
+		// Test for method void java.util.Arrays.fill(byte [], byte)
+
+		byte d[] = new byte[1000];
+		Arrays.fill(d, Byte.MAX_VALUE);
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill byte array correctly",
+					d[i] == Byte.MAX_VALUE);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(byte[], int, int, byte)
+	 */
+	public void test_fill$BIIB() {
+		// Test for method void java.util.Arrays.fill(byte [], int, int, byte)
+		byte val = Byte.MAX_VALUE;
+		byte d[] = new byte[1000];
+		Arrays.fill(d, 400, d.length, val);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == val));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill byte array correctly", d[i] == val);
+
+		int result;
+		try {
+			Arrays.fill(new byte[2], 2, 1, (byte) 27);
+			result = 0;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			result = 1;
+		} catch (IllegalArgumentException e) {
+			result = 2;
+		}
+		assertTrue("Wrong exception1", result == 2);
+		try {
+			Arrays.fill(new byte[2], -1, 1, (byte) 27);
+			result = 0;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			result = 1;
+		} catch (IllegalArgumentException e) {
+			result = 2;
+		}
+		assertTrue("Wrong exception2", result == 1);
+		try {
+			Arrays.fill(new byte[2], 1, 4, (byte) 27);
+			result = 0;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			result = 1;
+		} catch (IllegalArgumentException e) {
+			result = 2;
+		}
+		assertTrue("Wrong exception", result == 1);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(short[], short)
+	 */
+	public void test_fill$SS() {
+		// Test for method void java.util.Arrays.fill(short [], short)
+
+		short d[] = new short[1000];
+		Arrays.fill(d, Short.MAX_VALUE);
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill short array correctly",
+					d[i] == Short.MAX_VALUE);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(short[], int, int, short)
+	 */
+	public void test_fill$SIIS() {
+		// Test for method void java.util.Arrays.fill(short [], int, int, short)
+		short val = Short.MAX_VALUE;
+		short d[] = new short[1000];
+		Arrays.fill(d, 400, d.length, val);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == val));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill short array correctly", d[i] == val);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(char[], char)
+	 */
+	public void test_fill$CC() {
+		// Test for method void java.util.Arrays.fill(char [], char)
+
+		char d[] = new char[1000];
+		Arrays.fill(d, 'V');
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill char array correctly", d[i] == 'V');
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(char[], int, int, char)
+	 */
+	public void test_fill$CIIC() {
+		// Test for method void java.util.Arrays.fill(char [], int, int, char)
+		char val = 'T';
+		char d[] = new char[1000];
+		Arrays.fill(d, 400, d.length, val);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == val));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill char array correctly", d[i] == val);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(int[], int)
+	 */
+	public void test_fill$II() {
+		// Test for method void java.util.Arrays.fill(int [], int)
+
+		int d[] = new int[1000];
+		Arrays.fill(d, Integer.MAX_VALUE);
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill int array correctly",
+					d[i] == Integer.MAX_VALUE);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(int[], int, int, int)
+	 */
+	public void test_fill$IIII() {
+		// Test for method void java.util.Arrays.fill(int [], int, int, int)
+		int val = Integer.MAX_VALUE;
+		int d[] = new int[1000];
+		Arrays.fill(d, 400, d.length, val);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == val));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill int array correctly", d[i] == val);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(long[], long)
+	 */
+	public void test_fill$JJ() {
+		// Test for method void java.util.Arrays.fill(long [], long)
+
+		long d[] = new long[1000];
+		Arrays.fill(d, Long.MAX_VALUE);
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill long array correctly",
+					d[i] == Long.MAX_VALUE);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(long[], int, int, long)
+	 */
+	public void test_fill$JIIJ() {
+		// Test for method void java.util.Arrays.fill(long [], int, int, long)
+		long d[] = new long[1000];
+		Arrays.fill(d, 400, d.length, Long.MAX_VALUE);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == Long.MAX_VALUE));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill long array correctly",
+					d[i] == Long.MAX_VALUE);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(float[], float)
+	 */
+	public void test_fill$FF() {
+		// Test for method void java.util.Arrays.fill(float [], float)
+		float d[] = new float[1000];
+		Arrays.fill(d, Float.MAX_VALUE);
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill float array correctly",
+					d[i] == Float.MAX_VALUE);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(float[], int, int, float)
+	 */
+	public void test_fill$FIIF() {
+		// Test for method void java.util.Arrays.fill(float [], int, int, float)
+		float val = Float.MAX_VALUE;
+		float d[] = new float[1000];
+		Arrays.fill(d, 400, d.length, val);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == val));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill float array correctly", d[i] == val);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(double[], double)
+	 */
+	public void test_fill$DD() {
+		// Test for method void java.util.Arrays.fill(double [], double)
+
+		double d[] = new double[1000];
+		Arrays.fill(d, Double.MAX_VALUE);
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill double array correctly",
+					d[i] == Double.MAX_VALUE);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(double[], int, int, double)
+	 */
+	public void test_fill$DIID() {
+		// Test for method void java.util.Arrays.fill(double [], int, int,
+		// double)
+		double val = Double.MAX_VALUE;
+		double d[] = new double[1000];
+		Arrays.fill(d, 400, d.length, val);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == val));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill double array correctly", d[i] == val);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(boolean[], boolean)
+	 */
+	public void test_fill$ZZ() {
+		// Test for method void java.util.Arrays.fill(boolean [], boolean)
+
+		boolean d[] = new boolean[1000];
+		Arrays.fill(d, true);
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill boolean array correctly", d[i] == true);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(boolean[], int, int, boolean)
+	 */
+	public void test_fill$ZIIZ() {
+		// Test for method void java.util.Arrays.fill(boolean [], int, int,
+		// boolean)
+		boolean val = true;
+		boolean d[] = new boolean[1000];
+		Arrays.fill(d, 400, d.length, val);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == val));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill boolean array correctly", d[i] == val);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(java.lang.Object[], java.lang.Object)
+	 */
+	public void test_fill$Ljava_lang_ObjectLjava_lang_Object() {
+		// Test for method void java.util.Arrays.fill(java.lang.Object [],
+		// java.lang.Object)
+		Object val = new Object();
+		Object d[] = new Object[1000];
+		Arrays.fill(d, 0, d.length, val);
+		for (int i = 0; i < d.length; i++)
+			assertTrue("Failed to fill Object array correctly", d[i] == val);
+	}
+
+	/**
+	 * @tests java.util.Arrays#fill(java.lang.Object[], int, int,
+	 *        java.lang.Object)
+	 */
+	public void test_fill$Ljava_lang_ObjectIILjava_lang_Object() {
+		// Test for method void java.util.Arrays.fill(java.lang.Object [], int,
+		// int, java.lang.Object)
+		Object val = new Object();
+		Object d[] = new Object[1000];
+		Arrays.fill(d, 400, d.length, val);
+		for (int i = 0; i < 400; i++)
+			assertTrue("Filled elements not in range", !(d[i] == val));
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill Object array correctly", d[i] == val);
+
+		Arrays.fill(d, 400, d.length, null);
+		for (int i = 400; i < d.length; i++)
+			assertTrue("Failed to fill Object array correctly with nulls",
+					d[i] == null);
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(byte[], byte[])
+	 */
+	public void test_equals$B$B() {
+		// Test for method boolean java.util.Arrays.equals(byte [], byte [])
+		byte d[] = new byte[1000];
+		byte x[] = new byte[1000];
+		Arrays.fill(d, Byte.MAX_VALUE);
+		Arrays.fill(x, Byte.MIN_VALUE);
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, Byte.MAX_VALUE);
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(short[], short[])
+	 */
+	public void test_equals$S$S() {
+		// Test for method boolean java.util.Arrays.equals(short [], short [])
+		short d[] = new short[1000];
+		short x[] = new short[1000];
+		Arrays.fill(d, Short.MAX_VALUE);
+		Arrays.fill(x, Short.MIN_VALUE);
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, Short.MAX_VALUE);
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(char[], char[])
+	 */
+	public void test_equals$C$C() {
+		// Test for method boolean java.util.Arrays.equals(char [], char [])
+		char d[] = new char[1000];
+		char x[] = new char[1000];
+		char c = 'T';
+		Arrays.fill(d, c);
+		Arrays.fill(x, 'L');
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, c);
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(int[], int[])
+	 */
+	public void test_equals$I$I() {
+		// Test for method boolean java.util.Arrays.equals(int [], int [])
+		int d[] = new int[1000];
+		int x[] = new int[1000];
+		Arrays.fill(d, Integer.MAX_VALUE);
+		Arrays.fill(x, Integer.MIN_VALUE);
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, Integer.MAX_VALUE);
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+
+		assertTrue("wrong result for null array1", !Arrays.equals(new int[2],
+				null));
+		assertTrue("wrong result for null array2", !Arrays.equals(null,
+				new int[2]));
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(long[], long[])
+	 */
+	public void test_equals$J$J() {
+		// Test for method boolean java.util.Arrays.equals(long [], long [])
+		long d[] = new long[1000];
+		long x[] = new long[1000];
+		Arrays.fill(d, Long.MAX_VALUE);
+		Arrays.fill(x, Long.MIN_VALUE);
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, Long.MAX_VALUE);
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+
+		assertTrue("should be false", !Arrays.equals(
+				new long[] { 0x100000000L }, new long[] { 0x200000000L }));
+
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(float[], float[])
+	 */
+	public void test_equals$F$F() {
+		// Test for method boolean java.util.Arrays.equals(float [], float [])
+		float d[] = new float[1000];
+		float x[] = new float[1000];
+		Arrays.fill(d, Float.MAX_VALUE);
+		Arrays.fill(x, Float.MIN_VALUE);
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, Float.MAX_VALUE);
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+
+		assertTrue("NaN not equals", Arrays.equals(new float[] { Float.NaN },
+				new float[] { Float.NaN }));
+		assertTrue("0f equals -0f", !Arrays.equals(new float[] { 0f },
+				new float[] { -0f }));
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(double[], double[])
+	 */
+	public void test_equals$D$D() {
+		// Test for method boolean java.util.Arrays.equals(double [], double [])
+		double d[] = new double[1000];
+		double x[] = new double[1000];
+		Arrays.fill(d, Double.MAX_VALUE);
+		Arrays.fill(x, Double.MIN_VALUE);
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, Double.MAX_VALUE);
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+
+		assertTrue("should be false", !Arrays.equals(new double[] { 1.0 },
+				new double[] { 2.0 }));
+
+		assertTrue("NaN not equals", Arrays.equals(new double[] { Double.NaN },
+				new double[] { Double.NaN }));
+		assertTrue("0d equals -0d", !Arrays.equals(new double[] { 0d },
+				new double[] { -0d }));
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(boolean[], boolean[])
+	 */
+	public void test_equals$Z$Z() {
+		// Test for method boolean java.util.Arrays.equals(boolean [], boolean
+		// [])
+		boolean d[] = new boolean[1000];
+		boolean x[] = new boolean[1000];
+		Arrays.fill(d, true);
+		Arrays.fill(x, false);
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, true);
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+	}
+
+	/**
+	 * @tests java.util.Arrays#equals(java.lang.Object[], java.lang.Object[])
+	 */
+	public void test_equals$Ljava_lang_Object$Ljava_lang_Object() {
+		// Test for method boolean java.util.Arrays.equals(java.lang.Object [],
+		// java.lang.Object [])
+		Object d[] = new Object[1000];
+		Object x[] = new Object[1000];
+		Object o = new Object();
+		Arrays.fill(d, o);
+		Arrays.fill(x, new Object());
+		assertTrue("Inequal arrays returned true", !Arrays.equals(d, x));
+		Arrays.fill(x, o);
+		d[50] = null;
+		x[50] = null;
+		assertTrue("equal arrays returned false", Arrays.equals(d, x));
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(byte[])
+	 */
+	public void test_sort$B() {
+		// Test for method void java.util.Arrays.sort(byte [])
+		byte[] reversedArray = new byte[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			reversedArray[counter] = (byte) (arraySize - counter - 1);
+		Arrays.sort(reversedArray);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Resulting array not sorted",
+					reversedArray[counter] == (byte) counter);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(byte[], int, int)
+	 */
+	public void test_sort$BII() {
+		// Test for method void java.util.Arrays.sort(byte [], int, int)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		byte[] reversedArray = new byte[arraySize];
+		byte[] originalReversedArray = new byte[arraySize];
+		for (int counter = 0; counter < arraySize; counter++) {
+			reversedArray[counter] = (byte) (arraySize - counter - 1);
+			originalReversedArray[counter] = reversedArray[counter];
+		}
+		Arrays.sort(reversedArray, startIndex, endIndex);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds",
+					reversedArray[counter] <= reversedArray[counter + 1]);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(char[])
+	 */
+	public void test_sort$C() {
+		// Test for method void java.util.Arrays.sort(char [])
+		char[] reversedArray = new char[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			reversedArray[counter] = (char) (arraySize - counter - 1);
+		Arrays.sort(reversedArray);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Resulting array not sorted",
+					reversedArray[counter] == (char) counter);
+
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(char[], int, int)
+	 */
+	public void test_sort$CII() {
+		// Test for method void java.util.Arrays.sort(char [], int, int)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		char[] reversedArray = new char[arraySize];
+		char[] originalReversedArray = new char[arraySize];
+		for (int counter = 0; counter < arraySize; counter++) {
+			reversedArray[counter] = (char) (arraySize - counter - 1);
+			originalReversedArray[counter] = reversedArray[counter];
+		}
+		Arrays.sort(reversedArray, startIndex, endIndex);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds",
+					reversedArray[counter] <= reversedArray[counter + 1]);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(double[])
+	 */
+	public void test_sort$D() {
+		// Test for method void java.util.Arrays.sort(double [])
+		double[] reversedArray = new double[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			reversedArray[counter] = (double) (arraySize - counter - 1);
+		Arrays.sort(reversedArray);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Resulting array not sorted",
+					reversedArray[counter] == (double) counter);
+
+		double[] specials1 = new double[] { Double.NaN, Double.MAX_VALUE,
+				Double.MIN_VALUE, 0d, -0d, Double.POSITIVE_INFINITY,
+				Double.NEGATIVE_INFINITY };
+		double[] specials2 = new double[] { 0d, Double.POSITIVE_INFINITY, -0d,
+				Double.NEGATIVE_INFINITY, Double.MIN_VALUE, Double.NaN,
+				Double.MAX_VALUE };
+		double[] answer = new double[] { Double.NEGATIVE_INFINITY, -0d, 0d,
+				Double.MIN_VALUE, Double.MAX_VALUE, Double.POSITIVE_INFINITY,
+				Double.NaN };
+
+		Arrays.sort(specials1);
+		Object[] print1 = new Object[specials1.length];
+		for (int i = 0; i < specials1.length; i++)
+			print1[i] = new Double(specials1[i]);
+		assertTrue("specials sort incorrectly 1: " + Arrays.asList(print1),
+				Arrays.equals(specials1, answer));
+
+		Arrays.sort(specials2);
+		Object[] print2 = new Object[specials2.length];
+		for (int i = 0; i < specials2.length; i++)
+			print2[i] = new Double(specials2[i]);
+		assertTrue("specials sort incorrectly 2: " + Arrays.asList(print2),
+				Arrays.equals(specials2, answer));
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(double[], int, int)
+	 */
+	public void test_sort$DII() {
+		// Test for method void java.util.Arrays.sort(double [], int, int)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		double[] reversedArray = new double[arraySize];
+		double[] originalReversedArray = new double[arraySize];
+		for (int counter = 0; counter < arraySize; counter++) {
+			reversedArray[counter] = (double) (arraySize - counter - 1);
+			originalReversedArray[counter] = reversedArray[counter];
+		}
+		Arrays.sort(reversedArray, startIndex, endIndex);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds",
+					reversedArray[counter] <= reversedArray[counter + 1]);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(float[])
+	 */
+	public void test_sort$F() {
+		// Test for method void java.util.Arrays.sort(float [])
+		float[] reversedArray = new float[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			reversedArray[counter] = (float) (arraySize - counter - 1);
+		Arrays.sort(reversedArray);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Resulting array not sorted",
+					reversedArray[counter] == (float) counter);
+
+		float[] specials1 = new float[] { Float.NaN, Float.MAX_VALUE,
+				Float.MIN_VALUE, 0f, -0f, Float.POSITIVE_INFINITY,
+				Float.NEGATIVE_INFINITY };
+		float[] specials2 = new float[] { 0f, Float.POSITIVE_INFINITY, -0f,
+				Float.NEGATIVE_INFINITY, Float.MIN_VALUE, Float.NaN,
+				Float.MAX_VALUE };
+		float[] answer = new float[] { Float.NEGATIVE_INFINITY, -0f, 0f,
+				Float.MIN_VALUE, Float.MAX_VALUE, Float.POSITIVE_INFINITY,
+				Float.NaN };
+
+		Arrays.sort(specials1);
+		Object[] print1 = new Object[specials1.length];
+		for (int i = 0; i < specials1.length; i++)
+			print1[i] = new Float(specials1[i]);
+		assertTrue("specials sort incorrectly 1: " + Arrays.asList(print1),
+				Arrays.equals(specials1, answer));
+
+		Arrays.sort(specials2);
+		Object[] print2 = new Object[specials2.length];
+		for (int i = 0; i < specials2.length; i++)
+			print2[i] = new Float(specials2[i]);
+		assertTrue("specials sort incorrectly 2: " + Arrays.asList(print2),
+				Arrays.equals(specials2, answer));
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(float[], int, int)
+	 */
+	public void test_sort$FII() {
+		// Test for method void java.util.Arrays.sort(float [], int, int)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		float[] reversedArray = new float[arraySize];
+		float[] originalReversedArray = new float[arraySize];
+		for (int counter = 0; counter < arraySize; counter++) {
+			reversedArray[counter] = (float) (arraySize - counter - 1);
+			originalReversedArray[counter] = reversedArray[counter];
+		}
+		Arrays.sort(reversedArray, startIndex, endIndex);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds",
+					reversedArray[counter] <= reversedArray[counter + 1]);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(int[])
+	 */
+	public void test_sort$I() {
+		// Test for method void java.util.Arrays.sort(int [])
+		int[] reversedArray = new int[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			reversedArray[counter] = arraySize - counter - 1;
+		Arrays.sort(reversedArray);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Resulting array not sorted",
+					reversedArray[counter] == counter);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(int[], int, int)
+	 */
+	public void test_sort$III() {
+		// Test for method void java.util.Arrays.sort(int [], int, int)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		int[] reversedArray = new int[arraySize];
+		int[] originalReversedArray = new int[arraySize];
+		for (int counter = 0; counter < arraySize; counter++) {
+			reversedArray[counter] = arraySize - counter - 1;
+			originalReversedArray[counter] = reversedArray[counter];
+		}
+		Arrays.sort(reversedArray, startIndex, endIndex);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds",
+					reversedArray[counter] <= reversedArray[counter + 1]);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(long[])
+	 */
+	public void test_sort$J() {
+		// Test for method void java.util.Arrays.sort(long [])
+		long[] reversedArray = new long[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			reversedArray[counter] = (long) (arraySize - counter - 1);
+		Arrays.sort(reversedArray);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Resulting array not sorted",
+					reversedArray[counter] == (long) counter);
+
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(long[], int, int)
+	 */
+	public void test_sort$JII() {
+		// Test for method void java.util.Arrays.sort(long [], int, int)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		long[] reversedArray = new long[arraySize];
+		long[] originalReversedArray = new long[arraySize];
+		for (int counter = 0; counter < arraySize; counter++) {
+			reversedArray[counter] = (long) (arraySize - counter - 1);
+			originalReversedArray[counter] = reversedArray[counter];
+		}
+		Arrays.sort(reversedArray, startIndex, endIndex);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds",
+					reversedArray[counter] <= reversedArray[counter + 1]);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(java.lang.Object[])
+	 */
+	public void test_sort$Ljava_lang_Object() {
+		// Test for method void java.util.Arrays.sort(java.lang.Object [])
+		Object[] reversedArray = new Object[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			reversedArray[counter] = objectArray[arraySize - counter - 1];
+		Arrays.sort(reversedArray);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Resulting array not sorted",
+					reversedArray[counter] == objectArray[counter]);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(java.lang.Object[], int, int)
+	 */
+	public void test_sort$Ljava_lang_ObjectII() {
+		// Test for method void java.util.Arrays.sort(java.lang.Object [], int,
+		// int)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		Object[] reversedArray = new Object[arraySize];
+		Object[] originalReversedArray = new Object[arraySize];
+		for (int counter = 0; counter < arraySize; counter++) {
+			reversedArray[counter] = objectArray[arraySize - counter - 1];
+			originalReversedArray[counter] = reversedArray[counter];
+		}
+		Arrays.sort(reversedArray, startIndex, endIndex);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds",
+					((Comparable) reversedArray[counter])
+							.compareTo(reversedArray[counter + 1]) <= 0);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(java.lang.Object[], int, int,
+	 *        java.util.Comparator)
+	 */
+	public void test_sort$Ljava_lang_ObjectIILjava_util_Comparator() {
+		// Test for method void java.util.Arrays.sort(java.lang.Object [], int,
+		// int, java.util.Comparator)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		ReversedIntegerComparator comp = new ReversedIntegerComparator();
+		Object[] originalArray = new Object[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			originalArray[counter] = objectArray[counter];
+		Arrays.sort(objectArray, startIndex, endIndex, comp);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					objectArray[counter] == originalArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds", comp.compare(
+					objectArray[counter], objectArray[counter + 1]) <= 0);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					objectArray[counter] == originalArray[counter]);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(java.lang.Object[], java.util.Comparator)
+	 */
+	public void test_sort$Ljava_lang_ObjectLjava_util_Comparator() {
+		// Test for method void java.util.Arrays.sort(java.lang.Object [],
+		// java.util.Comparator)
+		ReversedIntegerComparator comp = new ReversedIntegerComparator();
+		Arrays.sort(objectArray, comp);
+		for (int counter = 0; counter < arraySize - 1; counter++)
+			assertTrue("Array not sorted correctly with custom comparator",
+					comp
+							.compare(objectArray[counter],
+									objectArray[counter + 1]) <= 0);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(short[])
+	 */
+	public void test_sort$S() {
+		// Test for method void java.util.Arrays.sort(short [])
+		short[] reversedArray = new short[arraySize];
+		for (int counter = 0; counter < arraySize; counter++)
+			reversedArray[counter] = (short) (arraySize - counter - 1);
+		Arrays.sort(reversedArray);
+		for (int counter = 0; counter < arraySize; counter++)
+			assertTrue("Resulting array not sorted",
+					reversedArray[counter] == (short) counter);
+	}
+
+	/**
+	 * @tests java.util.Arrays#sort(short[], int, int)
+	 */
+	public void test_sort$SII() {
+		// Test for method void java.util.Arrays.sort(short [], int, int)
+		int startIndex = arraySize / 4;
+		int endIndex = 3 * arraySize / 4;
+		short[] reversedArray = new short[arraySize];
+		short[] originalReversedArray = new short[arraySize];
+		for (int counter = 0; counter < arraySize; counter++) {
+			reversedArray[counter] = (short) (arraySize - counter - 1);
+			originalReversedArray[counter] = reversedArray[counter];
+		}
+		Arrays.sort(reversedArray, startIndex, endIndex);
+		for (int counter = 0; counter < startIndex; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+		for (int counter = startIndex; counter < endIndex - 1; counter++)
+			assertTrue("Array not sorted within bounds",
+					reversedArray[counter] <= reversedArray[counter + 1]);
+		for (int counter = endIndex; counter < arraySize; counter++)
+			assertTrue("Array modified outside of bounds",
+					reversedArray[counter] == originalReversedArray[counter]);
+	}
+
+	/**
+	 * Sets up the fixture, for example, open a network connection. This method
+	 * is called before a test is executed.
+	 */
+	protected void setUp() {
+		booleanArray = new boolean[arraySize];
+		byteArray = new byte[arraySize];
+		charArray = new char[arraySize];
+		doubleArray = new double[arraySize];
+		floatArray = new float[arraySize];
+		intArray = new int[arraySize];
+		longArray = new long[arraySize];
+		objectArray = new Object[arraySize];
+		shortArray = new short[arraySize];
+
+		for (int counter = 0; counter < arraySize; counter++) {
+			byteArray[counter] = (byte) counter;
+			charArray[counter] = (char) (counter + 1);
+			doubleArray[counter] = counter;
+			floatArray[counter] = counter;
+			intArray[counter] = counter;
+			longArray[counter] = counter;
+			objectArray[counter] = objArray[counter];
+			shortArray[counter] = (short) counter;
+		}
+		for (int counter = 0; counter < arraySize; counter += 2) {
+			booleanArray[counter] = false;
+			booleanArray[counter + 1] = true;
+		}
+	}
+
+	/**
+	 * Tears down the fixture, for example, close a network connection. This
+	 * method is called after a test is executed.
+	 */
+	protected void tearDown() {
+	}
+}

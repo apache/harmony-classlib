@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hy:suite xmlns:hy="http://incubator.apache.org/harmony/testing"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://incubator.apache.org/harmony/testing excludes.xsd">
+
+    <hy:type id="tests.api.java.io.BufferedInputStreamTest">
+        <hy:exclude id="test_reset" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.io.FileTest">
+        <hy:exclude id="test_Constructor_String_String_112270" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_Constructor_File_String_112270" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_deleteOnExit" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.io.ObjectInputStreamTest">
+        <hy:exclude id="test_ConstructorLjava_io_InputStream_subtest0" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.io.ObjectOutputStreamTest">
+        <hy:exclude id="test_ConstructorLjava_io_OutputStream_subtest0" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_writeObject_NotSerializable" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.io.PipedInputStreamTest">
+        <hy:exclude id="test_receive" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.io.PushbackReaderTest">
+        <hy:exclude id="test_skip$J" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.text.AttributedCharacterIteratorTest">
+        <hy:exclude id="test_getRunLimitLjava_text_AttributedCharacterIterator$Attribute" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.text.ChoiceFormatTest">
+        <hy:exclude id="test_toPattern" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.text.CollationKeyTest">
+        <hy:exclude id="test_toByteArray" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.text.CollatorTest">
+        <hy:exclude id="test_getAvailableLocales" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getDecomposition" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_setDecompositionI" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.text.DateFormatFieldTest">
+        <hy:exclude id="test_ConstructorLjava_lang_StringI" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_Constructor2" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_readResolve" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.text.MessageFormatTest">
+        <hy:exclude id="test_applyPatternLjava_lang_String" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.text.SimpleDateFormatTest">
+        <hy:exclude id="test_equalsLjava_lang_Object" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_formatLjava_util_DateLjava_lang_StringBufferLjava_text_FieldPosition" shouldfix="true">
+            <hy:reason>Wrong format: " h" expected:  3 result:  4</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_parseLjava_lang_StringLjava_text_ParsePosition" shouldfix="true">
+            <hy:reason>Wrong result: MM'M' input: 4M expected: Wed Apr 01 00:00:00 GMT 1970 result: Tue Mar 31 23:00:00 GMT 1970</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.math.BigDecimalTest">
+        <hy:exclude id="test_constructor_String_115522" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.lang.reflect.ReflectPermissionTest">
+        <hy:exclude id="test_ConstructorLjava_lang_String" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_ConstructorLjava_lang_StringLjava_lang_String" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.jar.JarFileTest">
+        <hy:exclude id="test_entries" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getInputStreamLjava_util_jar_JarEntry_subtest0" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.zip.ZipFileTest">
+        <hy:exclude id="test_entries" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.zip.ZipInputStreamTest">
+        <hy:exclude id="test_skipJ" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.ArraysTest">
+        <hy:exclude id="test_binarySearch$DD" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_binarySearch$FF" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_equals$F$F" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_equals$D$D" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_sort$D" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_sort$F" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.util.BitSetTest">
+        <hy:exclude id="test_111478" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.CalendarTest">
+        <hy:exclude id="test_setII" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.util.CollectionsTest">
+        <hy:exclude id="test_rotate2" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.util.IdentityHashMap2Test">
+        <hy:exclude id="test_null_Keys_and_Values" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_entrySet_removeAll" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_values" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_keySet_removeAll" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_keySet_retainAll" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_keyset_remove" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.util.LocaleTest">
+        <hy:exclude id="test_toString" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.lang.AssertionErrorTest">
+        <hy:exclude id="test_ObjectConstructor" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.lang.DoubleTest">
+        <hy:exclude id="test_compare" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.lang.FloatTest">
+        <hy:exclude id="test_compare" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.lang.StringTest">
+        <hy:exclude id="test_concatLjava_lang_String" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getBytes" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getBytesII$BI" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getBytesLjava_lang_String" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_substringI" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_substringII" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.lang.ThreadGroupTest">
+        <hy:exclude id="test_list" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.net.InetAddressTest">
+        <hy:exclude id="test_getHostName" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.net.URITest">
+        <hy:exclude id="test_URI_String" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_String" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_fiveArgConstructor" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_compareToLjava_lang_Object" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_compareTo2" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_equals2" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getAuthority2" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getPort2" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_normalize3" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_relativize2" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_StringLjava_lang_StringLjava_lang_String" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.net.URLClassLoaderTest">
+        <hy:exclude id="test_findClassLjava_lang_String" shouldfix="true">
+            <hy:reason>Undiagnosed failure</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.lang.OutOfMemoryErrorTest">
+        <hy:exclude id="all" shouldfix="true">
+            <hy:reason>Really, really slow to run!</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.util.VectorTest">
+        <hy:exclude id="test_toString" shouldfix="true">
+            <hy:reason>Fails because of stack overflow !</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.jar.JarOutputStreamTest">
+        <hy:exclude id="test_putNextEntryLjava_util_zip_ZipEntry" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.zip.CheckedInputStreamTest">
+        <hy:exclude id="test_getChecksum" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.zip.DeflaterTest">
+        <hy:exclude id="test_setStrategyI" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.lang.ClassTest">
+        <hy:exclude id="test_getResourceLjava_lang_String" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getResourceAsStreamLjava_lang_String" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.lang.ProcessTest">
+        <hy:exclude id="test_getInputStream" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_getOutputStream" shouldfix="true">
+            <hy:reason>Needs investigation...</hy:reason>
+        </hy:exclude>
+    </hy:type>
+    
+    <hy:type id="tests.api.java.net.Inet6AddressTest">
+        <hy:exclude id="all" shouldfix="true">
+            <hy:reason>Need to configure correctly</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.zip.GZIPInputStreamTest">
+        <hy:exclude id="test_read$BII" shouldfix="true">
+            <hy:reason>java.io.IOException: Size mismatch</hy:reason>
+        </hy:exclude>
+        <hy:exclude id="test_close" shouldfix="true">
+            <hy:reason>java.io.IOException: Size mismatch</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.zip.InflaterTest">
+        <hy:exclude id="test_setDictionary$B" shouldfix="true">
+            <hy:reason>java.lang.IllegalArgumentException in native method</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.zip.InflaterInputStreamTest">
+        <hy:exclude id="test_ConstructorLjava_io_InputStream" shouldfix="true">
+            <hy:reason>read() threw an exception while testing constructor</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.io.InputStreamReaderTest">
+        <hy:exclude id="test_read" shouldfix="true">
+            <hy:reason>UTF-16BE unexpected 1: java.io.IOException: CoderResult[Malformed-input error with erroneous input length 1]</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.io.OutputStreamWriterTest">
+        <hy:exclude id="test_close" shouldfix="true">
+            <hy:reason>invalid conversion</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.util.ResourceBundleTest">
+        <hy:exclude id="test_getBundleLjava_lang_StringLjava_util_LocaleLjava_lang_ClassLoader" shouldfix="true">
+            <hy:reason>Problem with Jar URLs containing relative paths needs investigating</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+    <hy:type id="tests.api.java.text.NumberFormatTest">
+        <hy:exclude id="test_formatLjava_lang_ObjectLjava_lang_StringBufferLjava_text_FieldPosition" shouldfix="true">
+            <hy:reason>Depends on a real implementation of BigInteger</hy:reason>
+        </hy:exclude>
+    </hy:type>
+
+</hy:suite>    

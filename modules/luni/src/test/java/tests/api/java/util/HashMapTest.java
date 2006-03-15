@@ -1,0 +1,397 @@
+/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package tests.api.java.util;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import tests.support.Support_MapTest2;
+import tests.support.Support_UnmodifiableCollectionTest;
+
+public class HashMapTest extends junit.framework.TestCase {
+
+	HashMap hm;
+
+	final static int hmSize = 1000;
+
+	static Object[] objArray;
+
+	static Object[] objArray2;
+	{
+		objArray = new Object[hmSize];
+		objArray2 = new Object[hmSize];
+		for (int i = 0; i < objArray.length; i++) {
+			objArray[i] = new Integer(i);
+			objArray2[i] = objArray[i].toString();
+		}
+	}
+
+	/**
+	 * @tests java.util.HashMap#HashMap()
+	 */
+	public void test_Constructor() {
+		// Test for method java.util.HashMap()
+		new Support_MapTest2(new HashMap()).runTest();
+
+		HashMap hm2 = new HashMap();
+		assertTrue("Created incorrect HashMap", hm2.size() == 0);
+	}
+
+	/**
+	 * @tests java.util.HashMap#HashMap(int)
+	 */
+	public void test_ConstructorI() {
+		// Test for method java.util.HashMap(int)
+		HashMap hm2 = new HashMap(5);
+		assertTrue("Created incorrect HashMap", hm2.size() == 0);
+		try {
+			new HashMap(-1);
+		} catch (IllegalArgumentException e) {
+			return;
+		}
+		fail(
+				"Failed to throw IllegalArgumentException for initial capacity < 0");
+
+		HashMap empty = new HashMap(0);
+		assertTrue("Empty hashmap access", empty.get("nothing") == null);
+		empty.put("something", "here");
+		assertTrue("cannot get element", empty.get("something") == "here");
+	}
+
+	/**
+	 * @tests java.util.HashMap#HashMap(int, float)
+	 */
+	public void test_ConstructorIF() {
+		// Test for method java.util.HashMap(int, float)
+		HashMap hm2 = new HashMap(5, (float) 0.5);
+		assertTrue("Created incorrect HashMap", hm2.size() == 0);
+		try {
+			new HashMap(0, 0);
+		} catch (IllegalArgumentException e) {
+			return;
+		}
+		fail(
+				"Failed to throw IllegalArgumentException for initial load factor <= 0");
+
+		HashMap empty = new HashMap(0, 0.75f);
+		assertTrue("Empty hashtable access", empty.get("nothing") == null);
+		empty.put("something", "here");
+		assertTrue("cannot get element", empty.get("something") == "here");
+	}
+
+	/**
+	 * @tests java.util.HashMap#HashMap(java.util.Map)
+	 */
+	public void test_ConstructorLjava_util_Map() {
+		// Test for method java.util.HashMap(java.util.Map)
+		Map myMap = new TreeMap();
+		for (int counter = 0; counter < hmSize; counter++)
+			myMap.put(objArray2[counter], objArray[counter]);
+		HashMap hm2 = new HashMap(myMap);
+		for (int counter = 0; counter < hmSize; counter++)
+			assertTrue("Failed to construct correct HashMap", hm
+					.get(objArray2[counter]) == hm2.get(objArray2[counter]));
+	}
+
+	/**
+	 * @tests java.util.HashMap#clear()
+	 */
+	public void test_clear() {
+		// Test for method void java.util.HashMap.clear()
+		hm.clear();
+		assertTrue("Clear failed to reset size", hm.size() == 0);
+		for (int i = 0; i < hmSize; i++)
+			assertTrue("Failed to clear all elements",
+					hm.get(objArray2[i]) == null);
+
+	}
+
+	/**
+	 * @tests java.util.HashMap#clone()
+	 */
+	public void test_clone() {
+		// Test for method java.lang.Object java.util.HashMap.clone()
+		HashMap hm2 = (HashMap) hm.clone();
+		assertTrue("Clone answered equivalent HashMap", hm2 != hm);
+		for (int counter = 0; counter < hmSize; counter++)
+			assertTrue("Clone answered unequal HashMap", hm
+					.get(objArray2[counter]) == hm2.get(objArray2[counter]));
+
+		HashMap map = new HashMap();
+		map.put("key", "value");
+		// get the keySet() and values() on the original Map
+		Set keys = map.keySet();
+		Collection values = map.values();
+		assertTrue("values() does not work", values.iterator().next().equals(
+				"value"));
+		assertTrue("keySet() does not work", keys.iterator().next().equals(
+				"key"));
+		AbstractMap map2 = (AbstractMap) map.clone();
+		map2.put("key", "value2");
+		Collection values2 = map2.values();
+		assertTrue("values() is identical", values2 != values);
+		// values() and keySet() on the cloned() map should be different
+		assertTrue("values() was not cloned", values2.iterator().next().equals(
+				"value2"));
+		map2.clear();
+		map2.put("key2", "value3");
+		Set key2 = map2.keySet();
+		assertTrue("keySet() is identical", key2 != keys);
+		assertTrue("keySet() was not cloned", key2.iterator().next().equals(
+				"key2"));
+	}
+
+	/**
+	 * @tests java.util.HashMap#containsKey(java.lang.Object)
+	 */
+	public void test_containsKeyLjava_lang_Object() {
+		// Test for method boolean
+		// java.util.HashMap.containsKey(java.lang.Object)
+		assertTrue("Returned false for valid key", hm.containsKey(new Integer(
+				876).toString()));
+		assertTrue("Returned true for invalid key", !hm.containsKey("KKDKDKD"));
+
+		HashMap m = new HashMap();
+		m.put(null, "test");
+		assertTrue("Failed with null key", m.containsKey(null));
+		assertTrue("Failed with missing key matching null hash", !m
+				.containsKey(new Integer(0)));
+	}
+
+	/**
+	 * @tests java.util.HashMap#containsValue(java.lang.Object)
+	 */
+	public void test_containsValueLjava_lang_Object() {
+		// Test for method boolean
+		// java.util.HashMap.containsValue(java.lang.Object)
+		assertTrue("Returned false for valid value", hm
+				.containsValue(new Integer(875)));
+		assertTrue("Returned true for invalid valie", !hm
+				.containsValue(new Integer(-9)));
+	}
+
+	/**
+	 * @tests java.util.HashMap#entrySet()
+	 */
+	public void test_entrySet() {
+		// Test for method java.util.Set java.util.HashMap.entrySet()
+		Set s = hm.entrySet();
+		Iterator i = s.iterator();
+		assertTrue("Returned set of incorrect size", hm.size() == s.size());
+		while (i.hasNext()) {
+			Map.Entry m = (Map.Entry) i.next();
+			assertTrue("Returned incorrect entry set", hm.containsKey(m
+					.getKey())
+					&& hm.containsValue(m.getValue()));
+		}
+	}
+
+	/**
+	 * @tests java.util.HashMap#get(java.lang.Object)
+	 */
+	public void test_getLjava_lang_Object() {
+		// Test for method java.lang.Object
+		// java.util.HashMap.get(java.lang.Object)
+		assertTrue("Get returned non-null for non existent key",
+				hm.get("T") == null);
+		hm.put("T", "HELLO");
+		assertTrue("Get returned incorecct value for existing key", hm.get("T")
+				.equals("HELLO"));
+
+		HashMap m = new HashMap();
+		m.put(null, "test");
+		assertTrue("Failed with null key", m.get(null).equals("test"));
+		assertTrue("Failed with missing key matching null hash", m
+				.get(new Integer(0)) == null);
+	}
+
+	/**
+	 * @tests java.util.HashMap#isEmpty()
+	 */
+	public void test_isEmpty() {
+		// Test for method boolean java.util.HashMap.isEmpty()
+		assertTrue("Returned false for new map", new HashMap().isEmpty());
+		assertTrue("Returned true for non-empty", !hm.isEmpty());
+	}
+
+	/**
+	 * @tests java.util.HashMap#keySet()
+	 */
+	public void test_keySet() {
+		// Test for method java.util.Set java.util.HashMap.keySet()
+		Set s = hm.keySet();
+		assertTrue("Returned set of incorrect size()", s.size() == hm.size());
+		for (int i = 0; i < objArray.length; i++)
+			assertTrue("Returned set does not contain all keys", s
+					.contains(objArray[i].toString()));
+
+		HashMap m = new HashMap();
+		m.put(null, "test");
+		assertTrue("Failed with null key", m.keySet().contains(null));
+		assertTrue("Failed with null key", m.keySet().iterator().next() == null);
+
+		Map map = new HashMap(101);
+		map.put(new Integer(1), "1");
+		map.put(new Integer(102), "102");
+		map.put(new Integer(203), "203");
+		Iterator it = map.keySet().iterator();
+		Integer remove1 = (Integer) it.next();
+		it.hasNext();
+		it.remove();
+		Integer remove2 = (Integer) it.next();
+		it.remove();
+		ArrayList list = new ArrayList(Arrays.asList(new Integer[] {
+				new Integer(1), new Integer(102), new Integer(203) }));
+		list.remove(remove1);
+		list.remove(remove2);
+		assertTrue("Wrong result", it.next().equals(list.get(0)));
+		assertTrue("Wrong size", map.size() == 1);
+		assertTrue("Wrong contents", map.keySet().iterator().next().equals(
+				list.get(0)));
+
+		Map map2 = new HashMap(101);
+		map2.put(new Integer(1), "1");
+		map2.put(new Integer(4), "4");
+		Iterator it2 = map2.keySet().iterator();
+		Integer remove3 = (Integer) it2.next();
+		Integer next;
+		if (remove3.intValue() == 1)
+			next = new Integer(4);
+		else
+			next = new Integer(1);
+		it2.hasNext();
+		it2.remove();
+		assertTrue("Wrong result 2", it2.next().equals(next));
+		assertTrue("Wrong size 2", map2.size() == 1);
+		assertTrue("Wrong contents 2", map2.keySet().iterator().next().equals(
+				next));
+	}
+
+	/**
+	 * @tests java.util.HashMap#put(java.lang.Object, java.lang.Object)
+	 */
+	public void test_putLjava_lang_ObjectLjava_lang_Object() {
+		// Test for method java.lang.Object
+		// java.util.HashMap.put(java.lang.Object, java.lang.Object)
+		hm.put("KEY", "VALUE");
+		assertTrue("Failed to install key/value pair", hm.get("KEY").equals(
+				"VALUE"));
+
+		HashMap m = new HashMap();
+		m.put(new Short((short) 0), "short");
+		m.put(null, "test");
+		m.put(new Integer(0), "int");
+		assertTrue("Failed adding to bucket containing null", m.get(
+				new Short((short) 0)).equals("short"));
+		assertTrue("Failed adding to bucket containing null2", m.get(
+				new Integer(0)).equals("int"));
+	}
+
+	/**
+	 * @tests java.util.HashMap#putAll(java.util.Map)
+	 */
+	public void test_putAllLjava_util_Map() {
+		// Test for method void java.util.HashMap.putAll(java.util.Map)
+		HashMap hm2 = new HashMap();
+		hm2.putAll(hm);
+		for (int i = 0; i < 1000; i++)
+			assertTrue("Failed to clear all elements", hm2.get(
+					new Integer(i).toString()).equals((new Integer(i))));
+	}
+
+	/**
+	 * @tests java.util.HashMap#remove(java.lang.Object)
+	 */
+	public void test_removeLjava_lang_Object() {
+		// Test for method java.lang.Object
+		// java.util.HashMap.remove(java.lang.Object)
+		int size = hm.size();
+		Integer y = new Integer(9);
+		Integer x = ((Integer) hm.remove(y.toString()));
+		assertTrue("Remove returned incorrect value", x.equals(new Integer(9)));
+		assertTrue("Failed to remove given key", hm.get(new Integer(9)) == null);
+		assertTrue("Failed to decrement size", hm.size() == (size - 1));
+		assertTrue("Remove of non-existent key returned non-null", hm
+				.remove("LCLCLC") == null);
+
+		HashMap m = new HashMap();
+		m.put(null, "test");
+		assertTrue("Failed with same hash as null",
+				m.remove(new Integer(0)) == null);
+		assertTrue("Failed with null key", m.remove(null).equals("test"));
+	}
+
+	/**
+	 * @tests java.util.HashMap#size()
+	 */
+	public void test_size() {
+		// Test for method int java.util.HashMap.size()
+		assertTrue("Returned incorrect size",
+				hm.size() == (objArray.length + 2));
+	}
+
+	/**
+	 * @tests java.util.HashMap#values()
+	 */
+	public void test_values() {
+		// Test for method java.util.Collection java.util.HashMap.values()
+		Collection c = hm.values();
+		assertTrue("Returned collection of incorrect size()", c.size() == hm
+				.size());
+		for (int i = 0; i < objArray.length; i++)
+			assertTrue("Returned collection does not contain all keys", c
+					.contains(objArray[i]));
+
+		HashMap myHashMap = new HashMap();
+		for (int i = 0; i < 100; i++)
+			myHashMap.put(objArray2[i], objArray[i]);
+		Collection values = myHashMap.values();
+		new Support_UnmodifiableCollectionTest(
+				"Test Returned Collection From HashMap.values()", values)
+				.runTest();
+		values.remove(new Integer(0));
+		assertTrue(
+				"Removing from the values collection should remove from the original map",
+				!myHashMap.containsValue(new Integer(0)));
+
+	}
+
+	/**
+	 * Sets up the fixture, for example, open a network connection. This method
+	 * is called before a test is executed.
+	 */
+	protected void setUp() {
+		hm = new HashMap();
+		for (int i = 0; i < objArray.length; i++)
+			hm.put(objArray2[i], objArray[i]);
+		hm.put("test", null);
+		hm.put(null, "test");
+	}
+
+	/**
+	 * Tears down the fixture, for example, close a network connection. This
+	 * method is called after a test is executed.
+	 */
+	protected void tearDown() {
+	}
+}

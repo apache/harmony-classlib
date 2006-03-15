@@ -1,0 +1,323 @@
+/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package tests.api.java.util;
+
+import java.util.Locale;
+
+public class LocaleTest extends junit.framework.TestCase {
+
+	Locale testLocale;
+
+	Locale l;
+
+	/**
+	 * @tests java.util.Locale#Locale(java.lang.String, java.lang.String)
+	 */
+	public void test_ConstructorLjava_lang_StringLjava_lang_String() {
+		// Test for method java.util.Locale(java.lang.String, java.lang.String)
+		Locale x = new Locale("xx", "CV");
+		assertTrue("Failed to create Locale", x.getCountry().equals("CV")
+				&& x.getVariant().equals(""));
+	}
+
+	/**
+	 * @tests java.util.Locale#Locale(java.lang.String, java.lang.String,
+	 *        java.lang.String)
+	 */
+	public void test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_String() {
+		// Test for method java.util.Locale(java.lang.String, java.lang.String,
+		// java.lang.String)
+		Locale x = new Locale("xx", "CV", "ZZ");
+		assertTrue("Failed to create Locale", x.getLanguage().equals("xx")
+				&& (x.getCountry().equals("CV") && x.getVariant().equals("ZZ")));
+	}
+
+	/**
+	 * @tests java.util.Locale#clone()
+	 */
+	public void test_clone() {
+		// Test for method java.lang.Object java.util.Locale.clone()
+		assertTrue("Clone failed", l.clone().equals(l));
+	}
+
+	/**
+	 * @tests java.util.Locale#equals(java.lang.Object)
+	 */
+	public void test_equalsLjava_lang_Object() {
+		// Test for method boolean java.util.Locale.equals(java.lang.Object)
+		Locale l2 = new Locale("en", "CA", "WIN32");
+		assertTrue("Same object returned false", testLocale.equals(testLocale));
+		assertTrue("Same values returned false", testLocale.equals(l2));
+		assertTrue("Different locales returned true", !testLocale.equals(l));
+
+	}
+
+	/**
+	 * @tests java.util.Locale#getAvailableLocales()
+	 */
+	public void test_getAvailableLocales() {
+		// Test for method java.util.Locale []
+		// java.util.Locale.getAvailableLocales()
+		// Assumes there will generally be about 100+ available locales...
+		try {
+			Locale[] locales = testLocale.getAvailableLocales();
+			assertTrue("Wrong number of locales: ", locales.length > 100);
+		} catch (Exception e) {
+			fail("Exception during test : " + e.getMessage());
+		}
+	}
+
+	/**
+	 * @tests java.util.Locale#getCountry()
+	 */
+	public void test_getCountry() {
+		// Test for method java.lang.String java.util.Locale.getCountry()
+		assertTrue("Returned incorrect country: " + testLocale.getCountry(),
+				testLocale.getCountry().equals("CA"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDefault()
+	 */
+	public void test_getDefault() {
+		// Test for method java.util.Locale java.util.Locale.getDefault()
+		assertTrue("returns copy", Locale.getDefault() == Locale.getDefault());
+		Locale org = Locale.getDefault();
+		Locale.setDefault(l);
+		Locale x = Locale.getDefault();
+		Locale.setDefault(org);
+		assertTrue("Failed to get locale", x.toString().equals("fr_CA_WIN32"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDisplayCountry()
+	 */
+	public void test_getDisplayCountry() {
+		// Test for method java.lang.String java.util.Locale.getDisplayCountry()
+		assertTrue("Returned incorrect country: "
+				+ testLocale.getDisplayCountry(), testLocale
+				.getDisplayCountry().equals("Canada"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDisplayCountry(java.util.Locale)
+	 */
+	public void test_getDisplayCountryLjava_util_Locale() {
+		// Test for method java.lang.String
+		// java.util.Locale.getDisplayCountry(java.util.Locale)
+		assertTrue("Returned incorrect country", Locale.ITALY
+				.getDisplayCountry(l).equals("Italie"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDisplayLanguage()
+	 */
+	public void test_getDisplayLanguage() {
+		// Test for method java.lang.String
+		// java.util.Locale.getDisplayLanguage()
+		Locale l = new Locale("fr", "CA", "WIN32");
+		assertTrue("Returned incorrect language: "
+				+ testLocale.getDisplayLanguage(l), testLocale
+				.getDisplayLanguage(l).equals("anglais"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDisplayLanguage(java.util.Locale)
+	 */
+	public void test_getDisplayLanguageLjava_util_Locale() {
+		// Test for method java.lang.String
+		// java.util.Locale.getDisplayLanguage(java.util.Locale)
+		assertTrue("Returned incorrect language: "
+				+ testLocale.getDisplayLanguage(), testLocale
+				.getDisplayLanguage().equals("English"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDisplayName()
+	 */
+	public void test_getDisplayName() {
+		// Test for method java.lang.String java.util.Locale.getDisplayName()
+		assertTrue("Returned incorrect name: " + testLocale.getDisplayName(),
+				testLocale.getDisplayName().equals("English (Canada,WIN32)"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDisplayName(java.util.Locale)
+	 */
+	public void test_getDisplayNameLjava_util_Locale() {
+		// Test for method java.lang.String
+		// java.util.Locale.getDisplayName(java.util.Locale)
+		assertTrue("Returned incorrect name: " + testLocale.getDisplayName(l),
+				testLocale.getDisplayName(l).equals("anglais (Canada,WIN32)"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDisplayVariant()
+	 */
+	public void test_getDisplayVariant() {
+		// Test for method java.lang.String java.util.Locale.getDisplayVariant()
+		assertTrue("Returned incorrect variant: "
+				+ testLocale.getDisplayVariant(), testLocale
+				.getDisplayVariant().equals("WIN32"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getDisplayVariant(java.util.Locale)
+	 */
+	public void test_getDisplayVariantLjava_util_Locale() {
+		// Test for method java.lang.String
+		// java.util.Locale.getDisplayVariant(java.util.Locale)
+		assertTrue("Returned incorrect variant: "
+				+ testLocale.getDisplayVariant(l), testLocale
+				.getDisplayVariant(l).equals("WIN32"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getISO3Country()
+	 */
+	public void test_getISO3Country() {
+		// Test for method java.lang.String java.util.Locale.getISO3Country()
+		assertTrue("Returned incorrect ISO3 country: "
+				+ testLocale.getISO3Country(), testLocale.getISO3Country()
+				.equals("CAN"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getISO3Language()
+	 */
+	public void test_getISO3Language() {
+		// Test for method java.lang.String java.util.Locale.getISO3Language()
+		assertTrue("Returned incorrect ISO3 language: "
+				+ testLocale.getISO3Language(), testLocale.getISO3Language()
+				.equals("eng"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getISOCountries()
+	 */
+	public void test_getISOCountries() {
+		// Test for method java.lang.String []
+		// java.util.Locale.getISOCountries()
+		// Assumes all countries are 2 digits, and that there will always be
+		// 230 countries on the list...
+		String[] isoCountries = Locale.getISOCountries();
+		int length = isoCountries.length;
+		int familiarCount = 0;
+		for (int i = 0; i < length; i++) {
+			if (isoCountries[i].length() != 2) {
+				fail("Wrong format for ISOCountries.");
+			}
+			if (isoCountries[i].equals("CA") || isoCountries[i].equals("BB")
+					|| isoCountries[i].equals("US")
+					|| isoCountries[i].equals("KR"))
+				familiarCount++;
+		}
+		assertTrue("ISOCountries missing.", familiarCount == 4 && length > 230);
+	}
+
+	/**
+	 * @tests java.util.Locale#getISOLanguages()
+	 */
+	public void test_getISOLanguages() {
+		// Test for method java.lang.String []
+		// java.util.Locale.getISOLanguages()
+		// Assumes always at least 131 ISOlanguages...
+		String[] isoLang = testLocale.getISOLanguages();
+		int length = isoLang.length;
+		assertTrue("Random element in wrong format.", (isoLang[length / 2]
+				.length() == 2)
+				&& isoLang[length / 2].toLowerCase()
+						.equals(isoLang[length / 2]));
+		assertTrue("Wrong number of ISOLanguages.", length > 130);
+	}
+
+	/**
+	 * @tests java.util.Locale#getLanguage()
+	 */
+	public void test_getLanguage() {
+		// Test for method java.lang.String java.util.Locale.getLanguage()
+		assertTrue("Returned incorrect language: " + testLocale.getLanguage(),
+				testLocale.getLanguage().equals("en"));
+	}
+
+	/**
+	 * @tests java.util.Locale#getVariant()
+	 */
+	public void test_getVariant() {
+		// Test for method java.lang.String java.util.Locale.getVariant()
+		assertTrue("Returned incorrect variant: " + testLocale.getVariant(),
+				testLocale.getVariant().equals("WIN32"));
+	}
+
+	/**
+	 * @tests java.util.Locale#setDefault(java.util.Locale)
+	 */
+	public void test_setDefaultLjava_util_Locale() {
+		// Test for method void java.util.Locale.setDefault(java.util.Locale)
+
+		Locale org = Locale.getDefault();
+		Locale.setDefault(l);
+		Locale x = Locale.getDefault();
+		Locale.setDefault(org);
+		assertTrue("Failed to set locale", x.toString().equals("fr_CA_WIN32"));
+
+		Locale.setDefault(new Locale("tr", ""));
+		String res1 = "\u0069".toUpperCase();
+		String res2 = "\u0049".toLowerCase();
+		Locale.setDefault(org);
+		assertTrue("Wrong toUppercase conversion", res1.equals("\u0130"));
+		assertTrue("Wrong toLowercase conversion", res2.equals("\u0131"));
+	}
+
+	/**
+	 * @tests java.util.Locale#toString()
+	 */
+	public void test_toString() {
+		// Test for method java.lang.String java.util.Locale.toString()
+		assertTrue("Returned incorrect string representation", testLocale
+				.toString().equals("en_CA_WIN32"));
+
+		Locale l = new Locale("en", "");
+		assertTrue("Wrong representation 1", l.toString().equals("en"));
+		l = new Locale("", "CA");
+		assertTrue("Wrong representation 2", l.toString().equals("_CA"));
+		l = new Locale("", "CA", "var");
+		assertTrue("Wrong representation 2.5", l.toString().equals("_CA_var"));
+		l = new Locale("en", "", "WIN");
+		assertTrue("Wrong representation 4", l.toString().equals("en__WIN"));
+		l = new Locale("en", "CA");
+		assertTrue("Wrong representation 6", l.toString().equals("en_CA"));
+		l = new Locale("en", "CA", "VAR");
+		assertTrue("Wrong representation 7", l.toString().equals("en_CA_VAR"));
+	}
+
+	/**
+	 * Sets up the fixture, for example, open a network connection. This method
+	 * is called before a test is executed.
+	 */
+	protected void setUp() {
+
+		testLocale = new Locale("en", "CA", "WIN32");
+		l = new Locale("fr", "CA", "WIN32");
+	}
+
+	/**
+	 * Tears down the fixture, for example, close a network connection. This
+	 * method is called after a test is executed.
+	 */
+	protected void tearDown() {
+	}
+}

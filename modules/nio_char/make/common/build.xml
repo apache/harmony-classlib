@@ -60,6 +60,7 @@
 					<include name="*.jar" />
 				</fileset>
 			</bootclasspath>
+                        <classpath location="../../../../build/tests" />
 		</javac>
 	</target>
 
@@ -89,6 +90,31 @@
 			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
 				<fileset dir="${hy.nio_char.src.test.java}">
 					<include name="**/*Test.java"/>
+                                        <exclude name="**/ASCCharsetDecoderTest.java"/>
+                                        <exclude name="**/ASCCharsetEncoderTest.java"/>
+                                        <exclude name="**/CharacterCodingExceptionTest.java"/>
+                                        <exclude name="**/CharsetDecoderTest.java"/>
+                                        <exclude name="**/CharsetEncoderTest.java"/>
+                                        <exclude name="**/CharsetProviderTest.java"/>
+                                        <exclude name="**/CharsetTest.java"/>
+                                        <exclude name="**/CoderMalfunctionErrorTest.java"/>
+                                        <exclude name="**/ConcreteCharsetTest.java"/>
+                                        <exclude name="**/GBCharsetDecoderTest.java"/>
+                                        <exclude name="**/GBCharsetEncoderTest.java"/>
+                                        <exclude name="**/ISOCharsetDecoderTest.java"/>
+                                        <exclude name="**/ISOCharsetEncoderTest.java"/>
+                                        <exclude name="**/IllegalCharsetNameExceptionTest.java"/>
+                                        <exclude name="**/MalformedInputExceptionTest.java"/>
+                                        <exclude name="**/UTF16BECharsetDecoderTest.java"/>
+                                        <exclude name="**/UTF16BECharsetEncoderTest.java"/>
+                                        <exclude name="**/UTF16CharsetDecoderTest.java"/>
+                                        <exclude name="**/UTF16CharsetEncoderTest.java"/>
+                                        <exclude name="**/UTF16LECharsetDecoderTest.java"/>
+                                        <exclude name="**/UTF16LECharsetEncoderTest.java"/>
+                                        <exclude name="**/UTFCharsetDecoderTest.java"/>
+                                        <exclude name="**/UTFCharsetEncoderTest.java"/>
+                                        <exclude name="**/UnmappableCharacterExceptionTest.java"/>
+                                        <exclude name="**/UnsupportedCharsetExceptionTest.java"/>
 				</fileset>
 			</batchtest>
 		</junit>
