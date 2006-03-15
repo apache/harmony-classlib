@@ -1,0 +1,1460 @@
+/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package tests.api.javax.naming.spi;
+
+import java.util.Hashtable;
+
+import javax.naming.CompositeName;
+import javax.naming.Context;
+import javax.naming.InvalidNameException;
+import javax.naming.Name;
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import javax.naming.Referenceable;
+import javax.naming.StringRefAddr;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
+import javax.naming.spi.DirStateFactory;
+import javax.naming.spi.DirectoryManager;
+
+import junit.framework.TestCase;
+import tests.api.javax.naming.mock.MockContext;
+import tests.api.javax.naming.mock.MockDirContext2;
+import tests.api.javax.naming.mock.MockDirContext3;
+import tests.api.javax.naming.spi.TestNamingManager.MockRefAddr;
+import tests.api.javax.naming.spi.TestNamingManager.MockReferenceable;
+import tests.api.javax.naming.util.Log;
+import com.sun.jndi.url.dir2.dir2URLContextFactory;
+
+
+public class TestDirectoryManager extends TestCase {
+	/*
+	 * -------------------------------------------------------------------
+	 * Instance variables (Should be private)
+	 * -------------------------------------------------------------------
+	 */
+	private static Log log = new Log(TestDirectoryManager.class);
+
+	/**
+	 * Constructor for TestDirectoryManager.
+	 * 
+	 * @param arg0
+	 */
+	public TestDirectoryManager(String arg0) {
+		super(arg0);
+	}
+
+	/*
+	 * @see TestCase#setUp()
+	 */
+	protected void setUp() throws Exception {
+		super.setUp();
+
+		Hashtable env = new Hashtable();
+		env.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		// env.put(
+		// Context.INITIAL_CONTEXT_FACTORY,
+		// "dazzle.jndi.testing.spi.DazzleContextFactory");
+		TestNamingManager.writeProviderResource(
+				MockDirContext2.class.getName(), env);
+	}
+
+	/*
+	 * @see TestCase#tearDown()
+	 */
+	protected void tearDown() throws Exception {
+		super.tearDown();
+	}
+
+	/*
+	 * -------------------------------------------------------------------
+	 * Methods
+	 * -------------------------------------------------------------------
+	 */
+	// public void testDefaultConstructor() {
+	// log.setMethod("testDefaultConstructor()");
+	// // for coverage only, no meaning!
+	// try {
+	// DirectoryManager manager = new DirectoryManager();
+	// } catch (Throwable t) {
+	// }
+	// }
+	/*
+	 * ------------------------------------------------------- test
+	 * getObjectInstance -------------------------------------------------------
+	 */
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with a
+	 * valid factory name which works properly. Should return an object
+	 * successfully.
+	 * 
+	 * Try the same when the fed object is Referenceable.
+	 */
+	public void testGetObjectInstance_NoBuilder_ReferenceValidFactory()
+			throws NamingException {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceValidFactory()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		Reference r = new Reference(null,
+				"tests.api.javax.naming.mock.MockDirObjectFactory", null);
+
+		Attributes a = new BasicAttributes();
+		assertGetObjectResult(r, null, null, env, a);
+
+		// test Referenceable
+		MockReferenceable mr = new MockReferenceable(r);
+		assertGetObjectResult(mr, null, null, env, a);
+	}
+
+	/**
+	 * @param r
+	 * @param object
+	 * @param object2
+	 * @param env
+	 * @param a
+	 * @return
+	 */
+	private void assertGetObjectResult(Object o, Name n, Context c,
+			Hashtable h, Attributes a) throws NamingException {
+		Object obj = null;
+		try {
+			obj = (Object) DirectoryManager.getObjectInstance(o, n, c, h, a);
+		} catch (Exception e) {
+			log.log(e);
+			fail();
+		}
+
+		Hashtable t = (Hashtable) obj;
+		if (o instanceof Referenceable) {
+			assertSame(t.get("o"), ((Referenceable) o).getReference());
+		} else {
+			assertSame(t.get("o"), o);
+		}
+		assertSame(t.get("n"), n);
+		assertSame(t.get("c"), c);
+		assertSame(t.get("h"), h);
+		assertSame(t.get("a"), a);
+
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with an
+	 * invalid factory name. Should return the original object.
+	 * 
+	 * Try the same when the fed object is Referenceable.
+	 */
+	public void testGetObjectInstance_NoBuilder_ReferenceInvalidFactory()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceInvalidFactory()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		Reference r = new Reference(null, "junk.factory", null);
+		Attributes a = new BasicAttributes();
+		Object obj = DirectoryManager.getObjectInstance(r, null, null, env, a);
+		assertSame(r, obj);
+
+		// test Referenceable
+		MockReferenceable mr = new MockReferenceable(r);
+		obj = DirectoryManager.getObjectInstance(mr, null, null, env, a);
+		assertSame(mr, obj);
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with a
+	 * valid factory name but the factory fails to create an object. Should
+	 * throw the exception.
+	 * 
+	 * Try the same when the fed object is Referenceable.
+	 */
+	public void testGetObjectInstance_NoBuilder_ReferenceException()
+			throws Exception {
+		log.setMethod("testGetObjectInstance_NoBuilder_ReferenceException()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		Reference r = new Reference(null,
+				"tests.api.javax.naming.mock.MockDirObjectFactory", null);
+		TestNamingManager.indicateNullPointerException(env);
+		Attributes a = new BasicAttributes();
+		try {
+			Object obj = DirectoryManager.getObjectInstance(r, null, null, env,
+					a);
+			fail("Should throw NullPointerException.");
+		} catch (NullPointerException e) {
+			// log.log(e);
+		}
+
+		// test Referenceable
+		MockReferenceable mr = new MockReferenceable(r);
+		TestNamingManager.indicateNamingException(env);
+		try {
+			Object obj = DirectoryManager.getObjectInstance(mr, null, null,
+					env, a);
+			fail("Should throw NamingException.");
+		} catch (NamingException e) {
+			// log.log(e);
+		}
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with a
+	 * valid factory name but the factory returns null. Should return null.
+	 * 
+	 * Try the same when the fed object is Referenceable.
+	 */
+	public void testGetObjectInstance_NoBuilder_ReferenceReturnNull()
+			throws Exception {
+		log.setMethod("testGetObjectInstance_NoBuilder_ReferenceReturnNull()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		Reference r = new Reference(null,
+				"tests.api.javax.naming.mock.MockDirObjectFactory", null);
+		TestNamingManager.indicateReturnNull(env);
+		Attributes a = new BasicAttributes();
+		Object obj = DirectoryManager.getObjectInstance(r, null, null, env, a);
+		assertNull(obj);
+
+		// test Referenceable
+		MockReferenceable mr = new MockReferenceable(r);
+		TestNamingManager.indicateReturnNull(env);
+		obj = DirectoryManager.getObjectInstance(mr, null, null, env, a);
+		assertNull(obj);
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with no
+	 * factory name, and there are one MockRefAddr which contains a valid URL
+	 * and another MockRefAddr whose type is null. Should return the original
+	 * object o.
+	 */
+	public void testGetObjectInstance_NoBuilder_ReferenceNullTypedNonStrAddr()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceNullTypedNonStrAddr()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		env.put(Context.URL_PKG_PREFIXES, "tests.api.javax.naming.spi.mock");
+		Reference r = new Reference(null);
+		MockRefAddr mockAddr = new MockRefAddr("URL", "dire://www.apache.org/");
+		r.add(mockAddr);
+		mockAddr = new MockRefAddr(null, "dire://www.apache.org/");
+		r.add(mockAddr);
+		Attributes a = new BasicAttributes();
+
+		Object obj = DirectoryManager.getObjectInstance(r, new CompositeName(
+				"compositename"), new MockContext(new Hashtable()), env, a);
+		assertSame(obj, r);
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with no
+	 * factory name, and there is a StringRefAddr whose type is null. Should
+	 * throw NullPointerException.
+	 */
+	public void testGetObjectInstance_NoBuilder_ReferenceNullTypedStrAddr()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceNullTypedStrAddr()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		env.put(Context.URL_PKG_PREFIXES, "tests.api.javax.naming.spi.mock");
+		Reference r = new Reference(null);
+		StringRefAddr nullTypeAddr = new StringRefAddr(null,
+				"dire://www.apache.org/");
+		r.add(nullTypeAddr);
+		Attributes a = new BasicAttributes();
+
+		try {
+			Object obj = DirectoryManager.getObjectInstance(r,
+					new CompositeName("compositename"), new MockContext(
+							new Hashtable()), env, a);
+			fail("Should throw NullPointerException.");
+		} catch (NullPointerException e) {
+			// log.log(e);
+		}
+
+		// test Referenceable
+		MockReferenceable mr = new MockReferenceable(r);
+		try {
+			Object obj = DirectoryManager.getObjectInstance(mr,
+					new CompositeName("compositename"), new MockContext(
+							new Hashtable()), env, a);
+			fail("Should throw NullPointerException.");
+		} catch (NullPointerException e) {
+			// log.log(e);
+		}
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with no
+	 * factory name, and there is a StringRefAddr with a valid URL which can be
+	 * used to create the object successfully. Before this URL, there are
+	 * several "invalid" URLs: one without scheme, and next without corresponding
+	 * factory, and a third one corresponding to a factory that returns null.
+	 * The types of these StringRefAddr is "URL". Before all these
+	 * StringRefAddr, there is a StringRefAddr whose type is neither "URL" nor
+	 * "url" but contains a vaild URL. Should return an object corresponding to
+	 * the URL mentioned in the beginning successfully.
+	 * 
+	 * Try the same when the fed object is Referenceable. Replace the address
+	 * type "URL" with "url" and try again.
+	 * 
+	 * URL_PKG_PREFIXES is contained in the fed environment properties.
+	 */
+	private void myTestGetObjectInstance_NoBuilder_ReferenceValidURL(String url)
+			throws Exception {
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		env.put(Context.URL_PKG_PREFIXES, "tests.api.javax.naming.spi.mock");
+		Reference r = new Reference(null);
+		// invalid StringRefAddr with wrong type
+		StringRefAddr notUrlTypeAddr = new StringRefAddr("uurl",
+				"dire://www.apache.org/");
+		r.add(notUrlTypeAddr);
+		// invalid StringRefAddr without scheme
+		StringRefAddr noSchemeAddr = new StringRefAddr("URL", "www.apache.org");
+		r.add(noSchemeAddr);
+		// invalid StringRefAddr without relevant ObjectFactory
+		StringRefAddr noFactorySchemeAddr = new StringRefAddr(url,
+				"httpss://www.apache.org/");
+		r.add(noFactorySchemeAddr);
+		// invalid StringRefAddr without ObjectFactory which getObjectInstance()
+		// method return null
+		StringRefAddr returnNullFactoryAddr = new StringRefAddr(url,
+				"news://www.apache.org/");
+		r.add(returnNullFactoryAddr);
+		// valid StringRefAddr, should call its related
+		// DirObjectFactory.getObjectInstance(Object o,Name n,Context
+		// c,Hashtable h,Attributes a)
+		// the class of DirObjectFactory should be
+		// javax.naming.spi.mock.dire.direURLContextFactory
+		StringRefAddr validFactoryAddr = new StringRefAddr(url,
+				"dire://www.apache.org/");
+		r.add(validFactoryAddr);
+		Attributes a = new BasicAttributes();
+		Hashtable temp = new Hashtable();
+		temp.put("mockkey", "mockobj");
+		MockContext c = new MockContext(temp);
+		Name n = new CompositeName("compositename");
+
+		MockDirContext3 ctx = (MockDirContext3) DirectoryManager
+				.getObjectInstance(r, n, c, env, a);
+		log.log(ctx.getEnvironment().toString());
+		boolean equals = ctx.parameterEquals(validFactoryAddr.getContent(), n,
+				c, env, null); // it's NOT a!!
+		assertTrue(equals);
+
+		// test Referenceable
+		MockReferenceable mr = new MockReferenceable(r);
+		ctx = (MockDirContext3) DirectoryManager.getObjectInstance(mr, n, c,
+				env, a);
+		log.log(ctx.getEnvironment().toString());
+		assertTrue(ctx.parameterEquals(validFactoryAddr.getContent(), n, c,
+				env, null)); // it's NOT a!!
+	}
+
+	/*
+	 * pls. refer to comments of
+	 * myTestGetObjectInstance_NoBuilder_ReferenceValidURL(String)
+	 */
+	public void testGetObjectInstance_NoBuilder_ReferenceValidURL_URL()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceValidURL_URL()");
+		myTestGetObjectInstance_NoBuilder_ReferenceValidURL("URL");
+	}
+
+	public void testGetObjectInstance_NoBuilder_ReferenceValidURL_url()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceValidURL_url()");
+		myTestGetObjectInstance_NoBuilder_ReferenceValidURL("url");
+	}
+
+	/**
+	 * Test the default URL context factory: com.sun.jndi.url
+	 */
+	public void testGetObjectInstance_NoBuilder_ReferenceDefaultURL()
+			throws Exception {
+		log.setMethod("testGetObjectInstance_NoBuilder_ReferenceDefaultURL()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		env.put(Context.URL_PKG_PREFIXES, "tests.api.javax.naming.spi.mock");
+
+		Reference r = new Reference(null);
+		StringRefAddr addr = new StringRefAddr("url", "dir2://www.apache.org/");
+		r.add(addr);
+		Attributes a = new BasicAttributes();
+
+		dir2URLContextFactory.MockObject obj = (dir2URLContextFactory.MockObject) DirectoryManager
+				.getObjectInstance(r, new CompositeName("compositename"), null,
+						env, a);
+
+		assertEquals(obj,
+				new dir2URLContextFactory.MockObject(addr.getContent(),
+						new CompositeName("compositename"), null, env, a));
+
+		// test Referenceable
+		MockReferenceable mr = new MockReferenceable(r);
+		obj = (dir2URLContextFactory.MockObject) DirectoryManager
+				.getObjectInstance(mr.getReference(), new CompositeName(
+						"compositename"), null, env, a);
+
+		assertEquals(obj,
+				new dir2URLContextFactory.MockObject(addr.getContent(),
+						new CompositeName("compositename"), null, env, a));
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with no
+	 * factory name, and there is a StringRefAddr with a valid URL which results
+	 * in a NullPointerException when creating an object. After this URL there
+	 * is another URL which can be used to create the object successfully. The
+	 * types of these StringRefAddr is "URL". Should throw a
+	 * NullPointerException.
+	 * 
+	 * Try the same when the fed object is Referenceable. Replace the address
+	 * type "URL" with "url" and try again.
+	 * 
+	 * URL_PKG_PREFIXES is contained in the fed context's provider resource
+	 * file.
+	 * 
+	 */
+	private void myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL(
+			String url) throws Exception {
+		try {
+			Hashtable env = new Hashtable();
+
+			Reference r = new Reference(null);
+			StringRefAddr exceptionalFactoryAddr = new StringRefAddr(url,
+					"http://www.apache.org/");
+			r.add(exceptionalFactoryAddr);
+			StringRefAddr validFactoryAddr = new StringRefAddr(url,
+					"dire://www.apache.org/");
+			r.add(validFactoryAddr);
+
+			Hashtable ctxEnv = new Hashtable();
+			/*
+			 * ctxEnv.put( Context.INITIAL_CONTEXT_FACTORY,
+			 * "dazzle.jndi.testing.spi.DazzleContextFactory");
+			 */
+			// ctxEnv.put(Context.URL_PKG_PREFIXES,
+			// "tests.api.javax.naming.spi.mock");
+			Attributes a = new BasicAttributes();
+			env
+					.put(Context.URL_PKG_PREFIXES,
+							"tests.api.javax.naming.spi.mock");
+			// TestNamingManager.writeProviderResource(
+			// "tests.api.javax.naming.spi.dummy",
+			// ctxEnv);
+			try {
+				TestNamingManager.indicateNullPointerException(env);
+				Object ctx = DirectoryManager.getObjectInstance(r,
+						new CompositeName("compositename"), new MockContext(
+								ctxEnv), env, a);
+				fail("Should throw NamingException.");
+			} catch (NamingException e) {
+				assertTrue(e.getRootCause() instanceof NullPointerException);
+			}
+
+			// test Referenceable
+			MockReferenceable mr = new MockReferenceable(r);
+			try {
+				TestNamingManager.indicateNamingException(env);
+				MockContext ctx = (MockContext) DirectoryManager
+						.getObjectInstance(mr, new CompositeName(
+								"compositename"), new MockContext(ctxEnv), env,
+								a);
+
+				fail("Should throw NamingException.");
+			} catch (NamingException e) {
+				assertNull(e.getRootCause());
+			}
+		} finally {
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", new Hashtable());
+		}
+	}
+
+	private void myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL2(
+			String url) throws Exception {
+		try {
+			Hashtable env = new Hashtable();
+
+			Reference r = new Reference(null);
+			StringRefAddr exceptionalFactoryAddr = new StringRefAddr(url,
+					"http://www.apache.org/");
+			r.add(exceptionalFactoryAddr);
+			StringRefAddr validFactoryAddr = new StringRefAddr(url,
+					"dire://www.apache.org/");
+			r.add(validFactoryAddr);
+
+			Hashtable ctxEnv = new Hashtable();
+
+			ctxEnv.put(Context.INITIAL_CONTEXT_FACTORY,
+					"dazzle.jndi.testing.spi.DazzleContextFactory");
+
+			ctxEnv.put(Context.URL_PKG_PREFIXES,
+					"tests.api.javax.naming.spi.mock");
+
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", ctxEnv);
+			Attributes a = new BasicAttributes();
+			try {
+				TestNamingManager.indicateNullPointerException(ctxEnv);
+				Object ctx = DirectoryManager.getObjectInstance(r,
+						new CompositeName("compositename"), new MockContext(
+								ctxEnv), ctxEnv, a);
+				fail("Should throw NamingException.");
+			} catch (NamingException e) {
+				assertTrue(e.getRootCause() instanceof NullPointerException);
+			}
+
+			// test Referenceable
+			MockReferenceable mr = new MockReferenceable(r);
+			try {
+				TestNamingManager.indicateNamingException(ctxEnv);
+				MockContext ctx = (MockContext) DirectoryManager
+						.getObjectInstance(mr, new CompositeName(
+								"compositename"), new MockContext(ctxEnv),
+								ctxEnv, a);
+				fail("Should throw NamingException.");
+			} catch (NamingException e) {
+				assertNull(e.getRootCause());
+			}
+		} finally {
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", new Hashtable());
+		}
+	}
+
+	public void testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_URL()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_URL()");
+		myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL("URL");
+	}
+
+	public void testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_URL2()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_URL2()");
+		myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL2("URL");
+	}
+
+	public void testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_url()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_url()");
+		myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL("url");
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is neither Reference
+	 * nor Referenceable (e.g., String), and the environment properties contains
+	 * a vaild factory name, while the fed context's provider resource file also
+	 * contains a vaild factory name. Should return an object created by the
+	 * factory specified by the fed environment properties.
+	 */
+	public void testGetObjectInstance_NoBuilder_NotRef_ValidFactory()
+			throws NamingException, Throwable {
+		log.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactory()");
+		try {
+			log
+					.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactory");
+			Hashtable env = new Hashtable();
+			env.put(Context.INITIAL_CONTEXT_FACTORY,
+					"dazzle.jndi.testing.spi.DazzleContextFactory");
+			env.put(Context.OBJECT_FACTORIES,
+					"tests.api.javax.naming.mock.MockDirObjectFactory");
+
+			Hashtable ctxEnv = new Hashtable();
+
+			ctxEnv
+					.put(Context.OBJECT_FACTORIES,
+							"tests.api.javax.naming.mock.MockDirObjectFactoryNoException");
+			ctxEnv.put(Context.URL_PKG_PREFIXES,
+					"tests.api.javax.naming.spi.mock");
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", ctxEnv);
+			Context ctx = new MockContext(ctxEnv);
+			Attributes a = new BasicAttributes();
+			assertGetObjectResult("Junk", new CompositeName("compositeName"),
+					ctx, env, a);
+		} finally {
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", new Hashtable());
+		}
+	}
+
+	/**
+	 * When no factory builder is set and the fed object is Reference with no
+	 * factory name but contains several "invalid" URLs: one without scheme, and
+	 * next without corresponding factory, and a third one corresponding to a
+	 * factory that returns null. The types of these StringRefAddr is "url".
+	 * Before all these StringRefAddr, there is is a MockRefAddr whose type is
+	 * also "url" and contains a valid URL which can be used to create an object
+	 * successfully, and a StringRefAddr whose type is neither "URL" nor "url"
+	 * but contains a vaild URL. And fed context's provider resource file does
+	 * contain a vaild factory name following another factory that returns null.
+	 * Should return an object created by the factory specified by the fed
+	 * context's environment properties.
+	 * 
+	 */
+	public void testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull()
+			throws Throwable {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull()");
+		try {
+			log
+					.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull");
+			Hashtable ctxEnv = new Hashtable();
+			ctxEnv
+					.put(
+							Context.OBJECT_FACTORIES,
+							":tests.api.javax.naming.spi.news.newsURLContextFactory:"
+									+ "tests.api.javax.naming.mock.MockDirObjectFactory");
+			ctxEnv.put(Context.URL_PKG_PREFIXES,
+					"tests.api.javax.naming.spi.mock");
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", ctxEnv);
+			Attributes a = new BasicAttributes();
+			Context ctx = new MockContext(ctxEnv);
+
+			Hashtable env = new Hashtable();
+			/*
+			 * env.put( Context.INITIAL_CONTEXT_FACTORY,
+			 * "dazzle.jndi.testing.spi.DazzleContextFactory");
+			 */
+			env
+					.put(Context.URL_PKG_PREFIXES,
+							"tests.api.javax.naming.spi.mock");
+
+			Reference r = new Reference("");
+			MockRefAddr mockAddr = new MockRefAddr("URL",
+					"dire://www.apache.org/");
+			r.add(mockAddr);
+			StringRefAddr notUrlTypeAddr = new StringRefAddr("uurl",
+					"dire://www.apache.org/");
+			r.add(notUrlTypeAddr);
+			StringRefAddr noSchemeAddr = new StringRefAddr("URL",
+					"www.apache.org");
+			r.add(noSchemeAddr);
+			StringRefAddr noFactorySchemeAddr = new StringRefAddr("url",
+					"httpss://www.apache.org/");
+			r.add(noFactorySchemeAddr);
+			StringRefAddr returnNullFactoryAddr = new StringRefAddr("url",
+					"news://www.apache.org/");
+			r.add(returnNullFactoryAddr);
+
+			assertSame(r, DirectoryManager.getObjectInstance(r,
+					new CompositeName("compositename"), ctx, env, a));
+			// assertGetObjectResult(
+			// r,
+			// new CompositeName("compositename"),
+			// ctx,
+			// env,
+			// a);
+		} catch (Throwable t) {
+			log.log("throwable occured", t);
+			throw t;
+		} finally {
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", new Hashtable());
+		}
+	}
+
+	public void testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_1()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_1()");
+		try {
+			log
+					.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_1");
+			Hashtable ctxEnv = new Hashtable();
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", ctxEnv);
+
+			Context ctx = new MockContext(ctxEnv);
+
+			Hashtable env = new Hashtable();
+			env
+					.put(Context.URL_PKG_PREFIXES,
+							"tests.api.javax.naming.spi.mock");
+			env.put(Context.OBJECT_FACTORIES,
+					":tests.api.javax.naming.spi.news.newsURLContextFactory");
+
+			Reference r = new Reference("");
+			MockRefAddr mockAddr = new MockRefAddr("URL",
+					"dire://www.apache.org/");
+			r.add(mockAddr);
+			StringRefAddr notUrlTypeAddr = new StringRefAddr("uurl",
+					"dire://www.apache.org/");
+			r.add(notUrlTypeAddr);
+			StringRefAddr noSchemeAddr = new StringRefAddr("URL",
+					"www.apache.org");
+			r.add(noSchemeAddr);
+			StringRefAddr noFactorySchemeAddr = new StringRefAddr("url",
+					"httpss://www.apache.org/");
+			r.add(noFactorySchemeAddr);
+			StringRefAddr returnNullFactoryAddr = new StringRefAddr("url",
+					"news://www.apache.org/");
+			r.add(returnNullFactoryAddr);
+			Attributes a = new BasicAttributes();
+
+			Object obj = DirectoryManager.getObjectInstance(r,
+					new CompositeName("compositename"), ctx, env, a);
+			assertEquals(r, obj);
+		} finally {
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", new Hashtable());
+		}
+	}
+
+	public void testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_2()
+			throws InvalidNameException, Throwable {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_2()");
+		try {
+			log
+					.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_2");
+			Hashtable ctxEnv = new Hashtable();
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", ctxEnv);
+
+			DirContext ctx = new MockDirContext2(ctxEnv);
+
+			Hashtable env = new Hashtable();
+			env.put(Context.INITIAL_CONTEXT_FACTORY,
+					"dazzle.jndi.testing.spi.DazzleContextFactory");
+			env
+					.put(Context.URL_PKG_PREFIXES,
+							"tests.api.javax.naming.spi.mock");
+			env
+					.put(
+							Context.OBJECT_FACTORIES,
+							":tests.api.javax.naming.spi.news.newsURLContextFactory"
+									+ ":tests.api.javax.naming.mock.MockDirObjectFactory");
+
+			Reference r = new Reference("");
+			MockRefAddr mockAddr = new MockRefAddr("URL",
+					"dire://www.apache.org/");
+			r.add(mockAddr);
+			StringRefAddr notUrlTypeAddr = new StringRefAddr("uurl",
+					"dire://www.apache.org/");
+			r.add(notUrlTypeAddr);
+			StringRefAddr noSchemeAddr = new StringRefAddr("URL",
+					"www.apache.org");
+			r.add(noSchemeAddr);
+			StringRefAddr noFactorySchemeAddr = new StringRefAddr("url",
+					"httpss://www.apache.org/");
+			r.add(noFactorySchemeAddr);
+			StringRefAddr returnNullFactoryAddr = new StringRefAddr("url",
+					"news://www.apache.org/");
+			r.add(returnNullFactoryAddr);
+			Attributes a = new BasicAttributes();
+			assertGetObjectResult(r, new CompositeName("compositename"), ctx,
+					env, a);
+		} finally {
+			TestNamingManager.writeProviderResource(
+					"tests.api.javax.naming.spi.dummy", new Hashtable());
+		}
+	}
+
+	/**
+	 * When no factory builder is set, and all fed parameters are null. Should
+	 * return the original object.
+	 */
+	public void testGetObjectInstance_NoBuilder_AllNull() throws Exception {
+		log.setMethod("testGetObjectInstance_NoBuilder_AllNull()");
+		Object obj = DirectoryManager.getObjectInstance(null, null, null, null,
+				null);
+		assertNull(obj);
+
+		Object originalObject = "original object";
+		obj = DirectoryManager.getObjectInstance(originalObject, null, null,
+				null, null);
+		assertSame(obj, originalObject);
+	}
+
+	/**
+	 * When no factory builder is set, and all fed parameters are null except
+	 * the original object and the environment properties. The environment
+	 * properties contains an invalid factory name, and a valid factory name
+	 * that follows. Should return an object created by the valid factory.
+	 */
+	public void testGetObjectInstance_NoBuilder_NotRef_InvalidFactory()
+			throws Throwable {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_NotRef_InvalidFactory()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		env.put(Context.OBJECT_FACTORIES, "junk.factory:"
+				+ "tests.api.javax.naming.mock.MockDirObjectFactory");
+
+		assertGetObjectResult(null, null, null, env, null);
+
+		assertGetObjectResult("abc", null, null, env, null);
+	}
+
+	/**
+	 * When no factory builder is set, and all fed parameters are null except
+	 * the original object and the environment properties. The environment
+	 * properties contains a valid factory that throws an exception, and a valid
+	 * factory name that follows. Should throw an exception.
+	 */
+	public void testGetObjectInstance_NoBuilder_NotRef_ExceptionalFactory()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_NotRef_ExceptionalFactory()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		env
+				.put(
+						Context.OBJECT_FACTORIES,
+						"tests.api.javax.naming.mock.MockDirObjectFactory:"
+								+ "tests.api.javax.naming.mock.MockDirObjectFactoryNoException");
+		Attributes a = new BasicAttributes();
+
+		try {
+			TestNamingManager.indicateNullPointerException(env);
+			Object obj = DirectoryManager.getObjectInstance(null, null, null,
+					env, a);
+			fail("Should throw NullPointerException.");
+		} catch (NullPointerException e) {
+		}
+
+		try {
+			TestNamingManager.indicateNamingException(env);
+			Object obj = DirectoryManager.getObjectInstance(null, null, null,
+					env, a);
+			fail("Should throw NamingException.");
+		} catch (NamingException e) {
+		}
+
+	}
+
+	/**
+	 * When no factory builder is set, and all fed parameters are null except
+	 * the original object and the environment properties. The environment
+	 * properties contains a valid factory that returns null. Should return the
+	 * original object.
+	 */
+	public void testGetObjectInstance_NoBuilder_NotRef_FactoryWithNull()
+			throws Exception {
+		log
+				.setMethod("testGetObjectInstance_NoBuilder_NotRef_FactoryWithNull()");
+		Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,
+				"dazzle.jndi.testing.spi.DazzleContextFactory");
+		env.put(Context.OBJECT_FACTORIES,
+				"tests.api.javax.naming.spi.news.newsURLContextFactory");
+		Attributes a = new BasicAttributes();
+
+		Object obj = DirectoryManager.getObjectInstance(null, null, null, env,
+				a);
+		assertNull(obj);
+
+		Object obj2 = new Object();
+		obj = DirectoryManager.getObjectInstance(obj2, null, null, env, a);
+		assertSame(obj2, obj);
+	}
+
+	/*
+	 * ------------------------------------------------------- test
+	 * getStateToBind -------------------------------------------------------
+	 */
+
+	public void testGetStateToBind_null_null_null_null_null()
+			throws NamingException {
+		log.setMethod("testGetStateToBind_null_null_null_null_null()");
+		Object o = null;
+		Name n = null;
+		Context c = null;
+		Hashtable h = null;
+		Attributes a = null;
+		DirStateFactory.Result r = DirectoryManager.getStateToBind(o, n, c, h,
+				a);
+		assertNull(r.getObject());
+		assertNull(r.getAttributes());
+	}
+
+	public void testGetStateToBind_null_null_null_null_attr()
+			throws NamingException {
+		log.setMethod("testGetStateToBind_null_null_null_null_attr()");
+		Object o = null;
+		Name n = null;
+		Context c = null;
+		Hashtable h = null;
+		Attributes a = new BasicAttributes();
+		DirStateFactory.Result r = DirectoryManager.getStateToBind(o, n, c, h,
+				a);
+		assertNull(r.getObject());
+		assertSame(a, r.getAttributes());
+	}
+
+	public void testGetStateToBind_null_null_null_hash_null() {
+		log.setMethod("testGetStateToBind_null_null_null_hash_null()");
+		Object o = null;
+		Name n = null;
+		Context c = null;
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (Throwable e) {
+			fail();
+		}
+	}
+
+	public void testGetStateToBind_null_null_null_hash_attr() {
+		log.setMethod("testGetStateToBind_null_null_null_hash_attr()");
+		Object o = null;
+		Name n = null;
+		Context c = null;
+		Hashtable h = new Hashtable();
+		Attributes a = new BasicAttributes();
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (Throwable e) {
+			fail();
+		}
+	}
+
+	private void assertGetStateResults(Object o, Name n, Context c,
+			Hashtable h, Attributes a) throws NamingException {
+		DirStateFactory.Result r = DirectoryManager.getStateToBind(o, n, c, h,
+				a);
+		Hashtable t = (Hashtable) r.getObject();
+		assertEquals(a, r.getAttributes());
+		assertEquals(t.get("o"), o);
+		assertEquals(t.get("n"), n);
+		assertEquals(t.get("c"), c);
+		assertEquals(t.get("h"), h);
+		assertEquals(t.get("a"), a);
+	}
+
+	// public void testGetStateToBind_null_null_ctx_null_null() {
+	// log.setMethod("testGetStateToBind_null_null_ctx_null_null()");
+	// Object o = null;
+	// Name n = null;
+	// Context c = new MockDirContext2(new Hashtable());
+	// Hashtable h = null;
+	// Attributes a = null;
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	// public void testGetStateToBind_null_null_ctx_null_attr() {
+	// log.setMethod("testGetStateToBind_null_null_ctx_null_attr()");
+	// Object o = null;
+	// Name n = null;
+	// Context c = new MockDirContext2(new Hashtable());
+	// Hashtable h = null;
+	// Attributes a = new BasicAttributes();
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	// public void testGetStateToBind_null_null_ctx_empty_null() {
+	// log.setMethod("testGetStateToBind_null_null_ctx_empty_null()");
+	// Object o = null;
+	// Name n = null;
+	// Context c = new MockDirContext2(new Hashtable());
+	// // lead to state factory
+	// Hashtable h = new Hashtable();
+	// Attributes a = null;
+	//
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	// public void testGetStateToBind_null_null_ctx_empty_attr() {
+	// log.setMethod("testGetStateToBind_null_null_ctx_empty_attr()");
+	// Object o = null;
+	// Name n = null;
+	// Context c = new MockDirContext2(new Hashtable());
+	// // lead to state factory
+	// Hashtable h = new Hashtable();
+	// Attributes a = new BasicAttributes();
+	//
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	public void testGetStateToBind_null_name_ctx_hash_null() {
+		log.setMethod("testGetStateToBind_null_name_ctx_hash_null()");
+		Object o = null;
+		Name n = new CompositeName();
+		Context c = new MockDirContext2(new Hashtable());
+		// lead to state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (NamingException e) {
+			fail("NamingException occured");
+		}
+	}
+
+	public void testGetStateToBind_null_name_ctx_hash_attr() {
+		log.setMethod("testGetStateToBind_null_name_ctx_hash_attr()");
+		Object o = null;
+		Name n = new CompositeName();
+		Context c = new MockDirContext2(new Hashtable());
+		// lead to state factory
+		Hashtable h = new Hashtable();
+		Attributes a = new BasicAttributes();
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (NamingException e) {
+			fail("NamingException occured");
+		}
+	}
+
+	// public void testGetStateToBind_obj_name_ctx_empty_null() {
+	// log.setMethod("testGetStateToBind_obj_name_ctx_empty_null()");
+	// Object o = "object";
+	// Name n = new CompositeName();
+	// Context c = new MockDirContext2(new Hashtable());
+	// // lead to state factory
+	// Hashtable h = new Hashtable();
+	// Attributes a = null;
+	//
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	// public void testGetStateToBind_obj_name_ctx_empty_attr() {
+	// log.setMethod("testGetStateToBind_obj_name_ctx_empty_attr()");
+	// Object o = "object";
+	// Name n = new CompositeName();
+	// Context c = new MockDirContext2(new Hashtable());
+	// // lead to state factory
+	// Hashtable h = new Hashtable();
+	// Attributes a = new BasicAttributes();
+	//
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	// public void testGetStateToBind_obj_name_ctx_empty2_null() {
+	// log.setMethod("testGetStateToBind_obj_name_ctx_empty2_null()");
+	// Object o = "object";
+	// Name n = new CompositeName();
+	// Context c = new MockContext(new Hashtable()); // no state factory
+	// Hashtable h = new Hashtable();
+	// Attributes a = null;
+	//
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	// public void testGetStateToBind_obj_name_ctx_empty2_attr() {
+	// log.setMethod("testGetStateToBind_obj_name_ctx_empty2_attr()");
+	// Object o = "object";
+	// Name n = new CompositeName();
+	// Context c = new MockContext(new Hashtable()); // no state factory
+	// Hashtable h = new Hashtable();
+	// Attributes a = new BasicAttributes();
+	//
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	public void testGetStateToBind_obj_name_ctx_hash_null() {
+		log.setMethod("testGetStateToBind_obj_name_ctx_hash_null()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockDirContext2(new Hashtable());
+		// lead to state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (NamingException e) {
+			fail("NamingException occured");
+		}
+	}
+
+	public void testGetStateToBind_obj_name_ctx_hash_attr() {
+		log.setMethod("testGetStateToBind_obj_name_ctx_hash_attr()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockDirContext2(new Hashtable());
+		// lead to state factory
+		Hashtable h = new Hashtable();
+		Attributes a = new BasicAttributes();
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (NamingException e) {
+			fail("NamingException occured");
+		}
+	}
+
+	public void testGetStateToBind_f1BadClassName_Success() {
+		log.setMethod("testGetStateToBind_f1BadClassName_Success()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockContext(new Hashtable()); // no state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES, "bad.class.Name" + ":"
+				+ "tests.api.javax.naming.mock.MockDirStateFactory");
+
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (NamingException e) {
+			fail("NamingException occured");
+		}
+	}
+
+	// public void testGetStateToBind_f2Success() {
+	// log.setMethod("testGetStateToBind_f2Success()");
+	// Object o = "object";
+	// Name n = new CompositeName();
+	// Context c = new MockDirContext2(new Hashtable());
+	// // lead to state factory
+	// Hashtable h = new Hashtable();
+	// Attributes a = null;
+	// try {
+	// Object ro = DirectoryManager.getStateToBind(o, n, c, h, a);
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	// public void testGetStateToBind_f1BadClassName_f2Success() {
+	// log.setMethod("testGetStateToBind_f1BadClassName_f2Success()");
+	// Object o = "object";
+	// Name n = new CompositeName();
+	// Context c = new MockDirContext2(new Hashtable());
+	// // lead to state factory
+	// Hashtable h = new Hashtable();
+	// h.put(Context.STATE_FACTORIES, "bad.class.Name");
+	// Attributes a = null;
+	// try {
+	// Object ro = DirectoryManager.getStateToBind(o, n, c, h, a);
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	public void testGetStateToBind_f1NamingException_f2Success() {
+		log.setMethod("testGetStateToBind_f1NamingException_f2Success()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockDirContext2(new Hashtable());
+		// lead to state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		TestNamingManager.indicateNamingException(h);
+		try {
+			assertGetStateResults(o, n, c, h, a);
+			fail();
+		} catch (NamingException e) {
+			assertTrue(e.getMessage().indexOf("Simulated") >= 0);
+		}
+	}
+
+	public void testGetStateToBind_f1RuntimeException_f2Success() {
+		log.setMethod("testGetStateToBind_f1RuntimeException_f2Success()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockDirContext2(new Hashtable());
+		// lead to state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		TestNamingManager.indicateRuntimeException(h);
+
+		try {
+			assertGetStateResults(o, n, c, h, a);
+			fail();
+		} catch (RuntimeException e) {
+			assertTrue(e.getMessage().indexOf("Simulated") >= 0);
+		} catch (NamingException e) {
+			fail("should throw runtime exception");
+		}
+	}
+
+	public void testGetStateToBind_f1ReturnNull_Success() {
+		log.setMethod("testGetStateToBind_f1ReturnNull_Success()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockContext(new Hashtable()); // no state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h
+				.put(
+						Context.STATE_FACTORIES,
+						"tests.api.javax.naming.mock.MockDirStateFactory"
+								+ ":"
+								+ "tests.api.javax.naming.mock.SuccessMockDirStateFactory");
+		TestNamingManager.indicateReturnNull(h);
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (NamingException e) {
+			fail("NamingException occured");
+		}
+	}
+
+	public void testGetStateToBind_f1ReturnNull_f2Success() {
+		log.setMethod("testGetStateToBind_f1ReturnNull_f2Success()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockDirContext2(new Hashtable());
+		// lead to state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		TestNamingManager.indicateReturnNull(h);
+
+		try {
+			Object ro = DirectoryManager.getStateToBind(o, n, c, h, a);
+			assertGetStateResults(o, n, c, h, a);
+		} catch (NamingException e) {
+			fail("NamingException occured");
+		}
+	}
+
+	public void testGetStateToBind_f1Success_f2Success() {
+		log.setMethod("testGetStateToBind_f1Success_f2Success()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockDirContext2(new Hashtable());
+		// lead to state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.SuccessMockDirStateFactory");
+		TestNamingManager.indicateRuntimeException(h);
+
+		try {
+			assertGetStateResults(o, n, c, h, a);
+		} catch (NamingException e) {
+			fail("NamingException occured");
+		}
+	}
+
+	public void testGetStateToBind_f1ReturnNull() throws NamingException {
+		log.setMethod("testGetStateToBind_f1ReturnNull()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockContext(new Hashtable()); // no state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		TestNamingManager.indicateReturnNull(h);
+		DirStateFactory.Result result = DirectoryManager.getStateToBind(o, n,
+				c, h, a);
+		assertGetStateResults(o, n, c, h, a);
+	}
+
+	// public void testGetStateToBind_f1BadClassName() {
+	// log.setMethod("testGetStateToBind_f1BadClassName()");
+	// Object o = "object";
+	// Name n = new CompositeName();
+	// Context c = new MockContext(new Hashtable()); // no state factory
+	// Hashtable h = new Hashtable();
+	// Attributes a = null;
+	// h.put(Context.STATE_FACTORIES, "bad.class.Name");
+	//
+	// try {
+	// assertGetStateResults(o, n, c, h, a);
+	// } catch (NamingException e) {
+	// fail("NamingException occured");
+	// }
+	// }
+
+	public void testGetStateToBind_f1NamingException() {
+		log.setMethod("testGetStateToBind_f1NamingException()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockContext(new Hashtable()); // no state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		TestNamingManager.indicateNamingException(h);
+
+		try {
+			Object r = DirectoryManager.getStateToBind(o, n, c, h, a);
+			fail();
+		} catch (NamingException e) {
+			assertTrue(e.getMessage().indexOf("Simulated") >= 0);
+		}
+	}
+
+	public void testGetStateToBind_f1RuntimeException() {
+		log.setMethod("testGetStateToBind_f1RuntimeException()");
+		Object o = "object";
+		Name n = new CompositeName();
+		Context c = new MockContext(new Hashtable()); // no state factory
+		Hashtable h = new Hashtable();
+		Attributes a = null;
+		h.put(Context.STATE_FACTORIES,
+				"tests.api.javax.naming.mock.MockDirStateFactory");
+		TestNamingManager.indicateRuntimeException(h);
+
+		try {
+			Object r = DirectoryManager.getStateToBind(o, n, c, h, a);
+			fail("should throw RuntimeException");
+		} catch (RuntimeException e) {
+			assertTrue(e.getMessage().indexOf("Simulated") >= 0);
+		} catch (Throwable e) {
+			fail("should throw RuntimeException");
+		}
+	}
+
+	// public void testGetContinuationContext_MockDirContext2_null_null_null() {
+	// log.setMethod(
+	// "testGetContinuationContext_MockDirContext2_null_null_null()");
+	//
+	// CannotProceedException cpe = new CannotProceedException();
+	// Object resolvedObj = new MockDirContext2(new Hashtable());
+	// cpe.setResolvedObj(resolvedObj);
+	//
+	// try {
+	// DirContext r = DirectoryManager.getContinuationDirContext(cpe);
+	// log.log(r.toString());
+	// assertSame(cpe, cpe.getEnvironment().get(DirectoryManager.CPE));
+	// assertSame(resolvedObj, r);
+	// } catch (Throwable t) {
+	// logThrowable(t);
+	// fail();
+	// }
+	// }
+	//
+	// public void testGetContinuationContext_null_null_null_h() {
+	// log.setMethod("testGetContinuationContext_null_null_null_h()");
+	// Hashtable h = new Hashtable();
+	// CannotProceedException cpe = new CannotProceedException();
+	// h.put(
+	// Context.OBJECT_FACTORIES,
+	// "tests.api.javax.naming.mock.MockDirContextObjectFactory");
+	// cpe.setEnvironment(h);
+	// try {
+	// DirContext r = DirectoryManager.getContinuationDirContext(cpe);
+	// log.log(r.toString());
+	// assertSame(cpe, cpe.getEnvironment().get(DirectoryManager.CPE));
+	// assertSame(r, MockDirContextObjectFactory.DIR_CONTEXT);
+	// } catch (NamingException t) {
+	// logThrowable(t);
+	// }
+	// }
+	//
+	// public void testGetContinuationContext_null_null_null_null() {
+	// log.setMethod("testGetContinuationContext_null_null_null_null()");
+	// CannotProceedException cpe = new CannotProceedException();
+	// try {
+	// DirContext r = DirectoryManager.getContinuationDirContext(cpe);
+	// log.log(r.toString());
+	// } catch (NamingException t) {
+	// logThrowable(t);
+	// fail();
+	// }
+	// }
+	//
+	// public void testGetContinuationContext_null_null_null_wrongh() {
+	// log.setMethod("testGetContinuationContext_null_null_null_wrongh()");
+	// CannotProceedException cpe = new CannotProceedException();
+	// Hashtable h = new Hashtable();
+	// h.put(
+	// Context.OBJECT_FACTORIES,
+	// "tests.api.javax.naming.spi.TestNamingManager$MockObjectFactory");
+	// cpe.setEnvironment(h);
+	// try {
+	// Context r = DirectoryManager.getContinuationDirContext(cpe);
+	// fail();
+	// } catch (NamingException e) {
+	// logThrowable(e);
+	// }
+	// }
+	//
+	// public void testGetContinuationContext_null_null_null_badnameh() {
+	// log.setMethod("testGetContinuationContext_null_null_null_badnameh()");
+	// CannotProceedException cpe = new CannotProceedException();
+	// Hashtable h = new Hashtable();
+	// h.put(Context.OBJECT_FACTORIES, "bad name: javax.naming.spi.Test");
+	// cpe.setEnvironment(h);
+	// try {
+	// Context r = DirectoryManager.getContinuationDirContext(cpe);
+	// fail();
+	// } catch (NamingException e) {
+	// logThrowable(e);
+	// }
+	// }
+
+}

@@ -47,7 +47,7 @@
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
-		depends="clean, compile-support, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, gen-report">
+		depends="clean, compile-support, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-jndi, test-sql, test-prefs, gen-report">
 	</target>
 
 	<target name="clean">
@@ -105,6 +105,35 @@
 
         <ant antfile="make/build.xml" dir="modules/nio_char" target="test" />
 
+	</target>
+
+	<target name="test-jndi">
+            <echo message="=================================="/>
+            <echo message="Running tests for module jndi"/>
+            <echo message="=================================="/>
+            <ant antfile="make/build.xml" dir="modules/jndi" target="test" />
+	</target>
+
+	<target name="test-logging">
+            <fail>LogManager depends on java.beans</fail>
+            <echo message="=================================="/>
+            <echo message="Running tests for module logging"/>
+            <echo message="=================================="/>
+            <ant antfile="make/build.xml" dir="modules/logging" target="test" />
+	</target>
+
+	<target name="test-prefs">
+            <echo message="=================================="/>
+            <echo message="Running tests for module prefs"/>
+            <echo message="=================================="/>
+            <ant antfile="make/build.xml" dir="modules/prefs" target="test" />
+	</target>
+
+	<target name="test-sql">
+            <echo message="=================================="/>
+            <echo message="Running tests for module sql"/>
+            <echo message="=================================="/>
+            <ant antfile="make/build.xml" dir="modules/sql" target="test" />
 	</target>
 		
 	<target name="test-security">

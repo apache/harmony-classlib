@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony Logging
+Bundle-SymbolicName: org.apache.harmony.logging
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Eclipse-JREBundle: true
+Export-Package: java.util.logging
+Import-Package: java.lang,
+ java.beans,
+ java.io,
+ java.security,
+ java.util,
+ java.nio.channels,
+ java.text,
+ java.nio.charset,
+ java.net
+
+

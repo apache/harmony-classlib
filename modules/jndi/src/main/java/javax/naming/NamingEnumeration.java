@@ -1,0 +1,63 @@
+/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+package javax.naming;
+
+import java.util.Enumeration;
+import javax.naming.NamingException;
+
+/**
+ * A <code>NamingEnumeration</code> interface is an <code>Enumeration</code> 
+ * which has been extended to support <code>NamingException</code>s. They can 
+ * be thrown when getting the next element, checking if the Enumeration has 
+ * more elements or on closing the <code>Enumeration</code>.
+ * 
+ */
+public interface NamingEnumeration extends Enumeration {
+
+    /*
+     * -------------------------------------------------------------------
+     * Methods
+     * -------------------------------------------------------------------
+     */
+
+    /**
+     * Get the next element.
+     *
+     * @return  the next element - can be null.
+     * @exception NamingException if a naming error occurs
+     * @exception java.util.NoSuchElementException when no more elements exist.
+     */
+    public Object next() throws NamingException;
+
+    /**
+     * Check for more elements.
+     *
+     * @return  if more elements exist return true else return false.
+     * @exception NamingException if a naming error occurs
+     */
+    public boolean hasMore() throws NamingException;
+
+    /**
+     * Close the enumeration.
+     * 
+     * @exception NamingException if a naming error occurs
+     */
+    public void close() throws NamingException;
+
+}
+
+
