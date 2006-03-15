@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ibm.io.nio;
+package org.apache.harmony.nio.internal;
 
-import org.apache.harmony.luni.platform.struct.PlatformAddress;
+import org.apache.harmony.luni.platform.PlatformAddress;
 
 public interface DirectBuffer {
 	public PlatformAddress getEffectiveAddress();

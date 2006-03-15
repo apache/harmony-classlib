@@ -13,8 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.io.nio;
-
+package org.apache.harmony.nio.internal;
 
 import java.io.Closeable;
 import java.io.FileDescriptor;
@@ -26,10 +25,11 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+
 import org.apache.harmony.luni.platform.IFileSystem;
 import org.apache.harmony.luni.platform.IMemorySystem;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.platform.struct.PlatformAddress;
+import org.apache.harmony.luni.platform.PlatformAddress;
 
 /*
  * The file channel impl class is the bridge between the logical channels

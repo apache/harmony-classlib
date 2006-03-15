@@ -15,9 +15,10 @@
 
 package java.nio;
 
-import com.ibm.io.nio.DirectBuffer;
 import org.apache.harmony.luni.platform.IMemorySystem;
-import org.apache.harmony.luni.platform.struct.PlatformAddress;
+import org.apache.harmony.luni.platform.PlatformAddress;
+import org.apache.harmony.nio.internal.DirectBuffer;
+
 
 /**
  * <code>MappedByteBuffer</code> is a special kind of direct byte buffer,

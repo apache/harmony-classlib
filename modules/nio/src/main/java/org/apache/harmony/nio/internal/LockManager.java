@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.ibm.io.nio;
+package org.apache.harmony.nio.internal;
 
 
 import java.nio.channels.FileLock;

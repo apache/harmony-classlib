@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 
-package com.ibm.io.nio;
+package org.apache.harmony.nio.internal;
 
 import java.lang.reflect.Constructor;
 import java.nio.MappedByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.apache.harmony.luni.platform.struct.PlatformAddress;
+import org.apache.harmony.luni.platform.PlatformAddress;
 
 class MappedByteBufferFactory {
 

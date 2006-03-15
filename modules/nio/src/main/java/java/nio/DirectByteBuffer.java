@@ -15,10 +15,9 @@
 
 package java.nio;
 
+import org.apache.harmony.luni.platform.PlatformAddress;
+import org.apache.harmony.nio.internal.DirectBuffer;
 
-
-import com.ibm.io.nio.DirectBuffer;
-import org.apache.harmony.luni.platform.struct.PlatformAddress;
 
 /**
  * DirectByteBuffer, ReadWriteDirectByteBuffer and ReadOnlyDirectByteBuffer
