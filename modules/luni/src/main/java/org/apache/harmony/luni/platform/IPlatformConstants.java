@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.luni.platform.struct;
+package org.apache.harmony.luni.platform;
 
 
 public interface IPlatformConstants {

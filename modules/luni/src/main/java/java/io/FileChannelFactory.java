@@ -18,9 +18,9 @@ package java.io;
 
 import java.nio.channels.FileChannel;
 
-import com.ibm.io.nio.ReadOnlyFileChannel;
-import com.ibm.io.nio.ReadWriteFileChannel;
-import com.ibm.io.nio.WriteOnlyFileChannel;
+import org.apache.harmony.nio.internal.ReadOnlyFileChannel;
+import org.apache.harmony.nio.internal.ReadWriteFileChannel;
+import org.apache.harmony.nio.internal.WriteOnlyFileChannel;
 import org.apache.harmony.luni.platform.IFileSystem;
 
 /**

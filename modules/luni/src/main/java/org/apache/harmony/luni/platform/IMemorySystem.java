@@ -17,7 +17,6 @@ package org.apache.harmony.luni.platform;
 
 import java.io.IOException;
 
-import org.apache.harmony.luni.platform.struct.PlatformAddress;
 
 /**
  * IMemorySystem

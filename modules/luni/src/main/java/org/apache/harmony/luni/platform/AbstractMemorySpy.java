@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.luni.platform.struct;
+package org.apache.harmony.luni.platform;
 
 
 import java.lang.ref.ReferenceQueue;

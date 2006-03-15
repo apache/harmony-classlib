@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.apache.harmony.luni
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: com.ibm.io.nio,
+Import-Package: org.apache.harmony.nio.internal,
  java.math,
  java.nio.charset,
  java.util.jar,
@@ -21,4 +21,6 @@ Export-Package: com.ibm.oti.util,
  java.lang.reflect,
  java.net,
  java.util,
- org.apache.harmony.luni.util
+ org.apache.harmony.luni.util,
+ org.apache.harmony.luni.platform
+

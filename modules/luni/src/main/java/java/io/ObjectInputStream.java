@@ -26,6 +26,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 
 import com.ibm.oti.util.PriviAction;
 
@@ -1235,29 +1236,38 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 			streamClassList.add(0, nextStreamClass);
 			nextStreamClass = nextStreamClass.getSuperclass();
 		}
-		ArrayList classList = new ArrayList(32);
-		Class nextClass = object.getClass();
-		while (nextClass != null) {
-			Class testClass = nextClass.getSuperclass();
-			if (testClass != null) {
-				classList.add(0, nextClass);
+		if (object == null) {
+			Iterator streamIt = streamClassList.iterator();
+			while (streamIt.hasNext()) {
+				ObjectStreamClass streamClass = (ObjectStreamClass) streamIt
+						.next();
+				readObjectForClass(object, streamClass);
 			}
-			nextClass = testClass;
-		}
-		int lastIndex = 0;
-		for (int i = 0; i < classList.size(); i++) {
-			Class superclass = (Class) classList.get(i);
-			int index = findStreamSuperclass(superclass, streamClassList,
-					lastIndex);
-			if (index == -1) {
-				readObjectNoData(object, superclass);
-			} else {
-				for (int j = lastIndex; j <= index; j++) {
-					readObjectForClass(object,
-							(ObjectStreamClass) streamClassList.get(j));
+		} else {
+			ArrayList classList = new ArrayList(32);
+			Class nextClass = object.getClass();
+			while (nextClass != null) {
+				Class testClass = nextClass.getSuperclass();
+				if (testClass != null) {
+					classList.add(0, nextClass);
 				}
+				nextClass = testClass;
 			}
-			lastIndex = index + 1;
+			int lastIndex = 0;
+			for (int i = 0; i < classList.size(); i++) {
+				Class superclass = (Class) classList.get(i);
+				int index = findStreamSuperclass(superclass, streamClassList,
+						lastIndex);
+				if (index == -1) {
+					readObjectNoData(object, superclass);
+				} else {
+					for (int j = lastIndex; j <= index; j++) {
+						readObjectForClass(object,
+								(ObjectStreamClass) streamClassList.get(j));
+					}
+				}
+				lastIndex = index + 1;
+			}
 		}
 	}
 
@@ -2100,12 +2110,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 	 */
 	private Object registeredObjectRead(Integer handle)
 			throws InvalidObjectException {
-		Object objectRead = objectsRead.get(handle);
-		if (objectRead == null) {
-			throw new InvalidObjectException(
-					"Back reference to unshared object"); //$NON-NLS-1$
-		}
-		return objectRead;
+		return objectsRead.get(handle);
 	}
 
 	/**

@@ -19,7 +19,6 @@ import java.io.IOException;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
-import org.apache.harmony.luni.platform.struct.PlatformAddress;
 
 // import com.ibm.oti.vm.VM;
 

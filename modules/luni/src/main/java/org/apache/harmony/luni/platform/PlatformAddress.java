@@ -13,11 +13,8 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.luni.platform.struct;
+package org.apache.harmony.luni.platform;
 
-import org.apache.harmony.luni.platform.Endianness;
-import org.apache.harmony.luni.platform.IMemorySystem;
-import org.apache.harmony.luni.platform.Platform;
 
 /**
  * The platform address class is an unsafe virtualization of an OS memory block.
