@@ -14,6 +14,3 @@ Import-Package: java.lang,
  java.lang.ref, 
  java.security, 
  java.nio
-Require-Bundle: org.apache.harmony.luni,
- org.apache.harmony.nio,
- org.apache.harmony.security
