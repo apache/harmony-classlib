@@ -34,6 +34,7 @@ import javax.security.auth.AuthPermission;
 import javax.security.auth.login.AppConfigurationEntry;
 
 import junit.framework.TestCase;
+import org.apache.harmony.security.test.TestUtils;
 import org.apache.harmony.security.x.security.auth.login.DefaultConfiguration;
 
 
@@ -43,6 +44,8 @@ import org.apache.harmony.security.x.security.auth.login.DefaultConfiguration;
 
 public class DefaultConfigurationTest extends TestCase {
 
+    private static final String LOGIN_CONFIG = "java.security.auth.login.config";
+    
     static String outputPath = System.getProperty("TEST_SRC_DIR", "test/common/unit");
     
     static String otherConfFile = outputPath + File.separator + "org" + 
@@ -62,21 +65,17 @@ public class DefaultConfigurationTest extends TestCase {
 
 	public void setUp() throws Exception {
 		createConfFile();
-		try {
-			oldp1 = Security.getProperty("login.config.url.1");
-			oldp2 = Security.getProperty("login.config.url.2");
-		} catch (NullPointerException e) {
-		}
-
+		
+		oldp1 = Security.getProperty("login.config.url.1");
+		oldp2 = Security.getProperty("login.config.url.2");
 	}
 
 	public void tearDown() throws Exception {
 		System.setSecurityManager(old);
-		try {
-			Security.setProperty("login.config.url.1", oldp1);
-			Security.setProperty("login.config.url.2", oldp2);
-		} catch (NullPointerException e) {
-		}
+
+		TestUtils.setSystemProperty("login.config.url.1", oldp1);
+		TestUtils.setSystemProperty("login.config.url.2", oldp2);
+
 		defaultConfFile.delete();
 	}
 
@@ -133,9 +132,10 @@ public class DefaultConfigurationTest extends TestCase {
 	 * using -Djava.security.auth.login.config    
 	 */
 	public void testLoadConfigFile_1() throws IOException {
+		
+	    String oldp = System.getProperty(LOGIN_CONFIG);	
 		try {
-		String oldp = System.getProperty("java.security.auth.login.config");	
-		System.setProperty("java.security.auth.login.config", 
+		System.setProperty(LOGIN_CONFIG, 
 				new File(otherConfFile).getCanonicalPath());
 		DefaultConfiguration dc = new DefaultConfiguration();
 		assertNotNull(dc);
@@ -188,16 +188,17 @@ public class DefaultConfigurationTest extends TestCase {
 		assertEquals(m, ents[3].getOptions());
 
 		} finally {
-			System.setProperty("java.security.auth.login.config","");
+		    TestUtils.setSystemProperty(LOGIN_CONFIG, oldp);
 		}
 	}
 	/**
 	 * test of the refresh method
 	 */
 	public void testRefresh() throws IOException {
+	    
+	    String oldp = System.getProperty(LOGIN_CONFIG);
 		try {
-			String oldp = System.getProperty("java.security.auth.login.config");	
-			System.setProperty("java.security.auth.login.config", 
+			System.setProperty(LOGIN_CONFIG, 
 					new File(otherConfFile).getCanonicalPath());
 
 		DefaultConfiguration dc = new DefaultConfiguration();
@@ -214,7 +215,7 @@ public class DefaultConfigurationTest extends TestCase {
 		} catch (SecurityException ex) {
 		}
 		} finally {
-		    System.setProperty("java.security.auth.login.config","");
+		    TestUtils.setSystemProperty(LOGIN_CONFIG, oldp);
 		}
 
 	}

@@ -35,6 +35,7 @@ import java.util.Enumeration;
 
 import junit.framework.TestCase;
 import org.apache.harmony.security.test.SecurityChecker;
+import org.apache.harmony.security.test.TestUtils;
 
 
 /**
@@ -156,8 +157,7 @@ public class PolicyTest extends TestCase {
             } catch (SecurityException ok) {
             }
         } finally {
-            Security.setProperty(POLICY_PROVIDER, (oldProvider == null) ? ""
-                    : oldProvider);
+            TestUtils.setSystemProperty(POLICY_PROVIDER, oldProvider);
             Policy.setPolicy(oldPolicy);
         }
     }
@@ -179,6 +179,8 @@ public class PolicyTest extends TestCase {
             + File.separator + "security" + File.separator + "auth"
             + File.separator + "jaas_policy2.txt";
 
+    private static final String POLICY_PROP = "java.security.auth.policy";
+    
     public void test_GetPermissions() throws Exception {
 
         PermissionCollection c;
@@ -186,8 +188,6 @@ public class PolicyTest extends TestCase {
         Subject subject;
         Enumeration e;
         CodeSource source;
-
-        String POLICY_PROP = "java.security.auth.policy";
 
         String oldProp = System.getProperty(POLICY_PROP);
         try {
@@ -323,7 +323,7 @@ public class PolicyTest extends TestCase {
             }
 
         } finally {
-            System.setProperty(POLICY_PROP, (oldProp == null) ? "" : oldProp);
+            TestUtils.setSystemProperty(POLICY_PROP, oldProp);
         }
     }
 
@@ -333,8 +333,6 @@ public class PolicyTest extends TestCase {
         Permission per;
         Subject subject;
         Enumeration e;
-
-        String POLICY_PROP = "java.security.auth.policy";
 
         String oldProp = System.getProperty(POLICY_PROP);
         try {
@@ -370,7 +368,7 @@ public class PolicyTest extends TestCase {
             assertEquals("Permission: ", per, new RuntimePermission(
                     "createClassLoader"));
         } finally {
-            System.setProperty(POLICY_PROP, (oldProp == null) ? "" : oldProp);
+            TestUtils.setSystemProperty(POLICY_PROP, oldProp);
         }
     }
 }

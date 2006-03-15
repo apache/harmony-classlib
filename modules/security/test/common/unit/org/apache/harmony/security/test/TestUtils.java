@@ -22,6 +22,7 @@
 package org.apache.harmony.security.test;
 
 import java.io.File;
+import java.util.Properties;
 
 /**
  * Test utility class
@@ -64,5 +65,21 @@ public class TestUtils {
             }
         }
         System.out.println("");
+    }
+    
+    /**
+     * Sets system property
+     *
+     * @param key - the name of the system property.
+     * @param value - the value to be set
+     */
+    public static void setSystemProperty(String key, String value) {
+        Properties properties = System.getProperties();
+        if (value == null) {
+            properties.remove(key);
+        } else {
+            properties.setProperty(key, value);
+        }
+        System.setProperties(properties);
     }
 }
