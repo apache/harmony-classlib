@@ -27,4 +27,6 @@ Export-Package: java.security,
  javax.security.cert,
  javax.security.sasl,
  org.ietf.jgss,
- org.apache.harmony.security.utils;version="1.0.0";x-friends:="org.apache.harmony.luni"
+ org.apache.harmony.security.utils;version="1.0.0";x-friends:="org.apache.harmony.luni",
+ org.apache.harmony.security.fortress;version="1.0.0"
+
