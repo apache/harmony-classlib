@@ -92,8 +92,8 @@
 		<get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
 	</target>
 
-	<target name="set-proxy" if="proxy.hostname">
-		<setproxy proxyhost="${proxy.hostname}" proxyport="${proxy.port}" />
+	<target name="set-proxy" if="http.proxyHost">
+		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 	</target>
 
 	<target name="check-one-jar">
