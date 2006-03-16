@@ -36,6 +36,7 @@ public class AllTests {
 		suite.addTestSuite(StringBufferTest.class);
 		suite.addTestSuite(SecurityManagerTest.class);
 		suite.addTestSuite(DoubleTest.class);
+		suite.addTestSuite(ShortTest.class);
 		//$JUnit-END$
 		return suite;
 	}

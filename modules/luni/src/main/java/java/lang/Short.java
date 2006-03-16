@@ -15,25 +15,46 @@
 
 package java.lang;
 
-
 /**
- * Shorts are objects (non-base types) which represent short values.
+ * <p>
+ * Short is the wrapper for the primitive type <code>short</code>.
+ * </p>
+ * 
+ * @see java.lang.Number
+ * @since 1.1
  */
 public final class Short extends Number implements Comparable {
-
+    //TODO Add Comparable<Short> to implements when generics are supported.
 	private static final long serialVersionUID = 7515723908773894738L;
 
 	/**
-	 * The value which the receiver represents.
-	 */
-	final short value;
+     * The value which the receiver represents.
+     */
+    private final short value;
 
-	/**
-	 * Most positive and most negative possible short values.
-	 */
-	public static final short MAX_VALUE = (short) 0x7FFF;
+    /**
+     * <p>
+     * Constant for the maximum <code>short</code> value, 2<sup>15</sup>-1.
+     * </p>
+     */
+    public static final short MAX_VALUE = (short) 0x7FFF;
 
-	public static final short MIN_VALUE = (short) 0x8000;
+    /**
+     * <p>
+     * Constant for the minimum <code>short</code> value, -2<sup>15</sup>.
+     * </p>
+     */
+    public static final short MIN_VALUE = (short) 0x8000;
+
+    /**
+     * <p>
+     * Constant for the number of bits to represent a <code>short</code> in
+     * two's compliment form.
+     * </p>
+     * 
+     * @since 1.5
+     */
+    public static final int SIZE = 16;
 
 	/**
 	 * The java.lang.Class that represents this class.
@@ -43,6 +64,13 @@ public final class Short extends Number implements Comparable {
 	// Note: This can't be set to "short.class", since *that* is
 	// defined to be "java.lang.Short.TYPE";
 
+    /**
+     * <p>
+     * A cache of instances used by {@link #valueOf(short)} and auto-boxing.
+     * </p>
+     */
+    private static final Short[] CACHE = new Short[256];
+    
 	/**
 	 * Constructs a new instance of this class given a string.
 	 * 
@@ -99,7 +127,7 @@ public final class Short extends Number implements Comparable {
 		int intValue = Integer.decode(string).intValue();
 		short result = (short) intValue;
 		if (result == intValue)
-			return new Short(result);
+			return valueOf(result);
 		throw new NumberFormatException();
 	}
 
@@ -251,7 +279,7 @@ public final class Short extends Number implements Comparable {
 	 *                if the argument could not be parsed as a short quantity.
 	 */
 	public static Short valueOf(String string) throws NumberFormatException {
-		return new Short(parseShort(string));
+		return valueOf(parseShort(string));
 	}
 
 	/**
@@ -270,6 +298,43 @@ public final class Short extends Number implements Comparable {
 	 */
 	public static Short valueOf(String string, int radix)
 			throws NumberFormatException {
-		return new Short(parseShort(string, radix));
+		return valueOf(parseShort(string, radix));
 	}
+    
+    /**
+     * <p>
+     * Reverses the bytes of a <code>short</code>.
+     * </p>
+     * 
+     * @param s The <code>short</code> to reverse.
+     * @return The reversed value.
+     * @since 1.5
+     */
+    public static short reverseBytes(short s) {
+        int high = (s >> 8) & 0xFF;
+        int low = (s & 0xFF) << 8;
+        return (short) (low | high);
+    }
+
+    /**
+     * <p>
+     * Returns a <code>Short</code> instance for the <code>short</code>
+     * value passed. This method is preferred over the constructor, as this
+     * method may maintain a cache of instances.
+     * </p>
+     * 
+     * @param s The short value.
+     * @return A <code>Short</code> instance.
+     * @since 1.5
+     */
+    public static Short valueOf(short s) {
+        if (s < -128 || s > 127) {
+            return new Short(s);
+        }
+        synchronized (CACHE) {
+            int idx = 128 + s; // 128 matches a cache size of 256
+            Short result = CACHE[idx];
+            return (result == null ? CACHE[idx] = new Short(s) : result);
+        }
+    }
 }
