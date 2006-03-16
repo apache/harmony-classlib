@@ -167,11 +167,11 @@
             <classpath refid="xalan.id" />
             <classpath location="${junit.jar}" />
             <classpath location="${tests.build.output}" />
-            <classpath>
+            <bootclasspath>
                 <fileset dir="${tests.depends.jars}">
                     <include name="*.jar" />
                 </fileset>
-            </classpath>
+            </bootclasspath>
         </javac>
     	
     </target>
