@@ -40,7 +40,7 @@ public class URITest extends junit.framework.TestCase {
 						new URI(
 								"ascheme://user\u00DF\u00A3info@host:0/a\u20ACpath?qu\u00A9\u00AEery#fr\u00E4\u00E8g"),
 						// unicode chars equivalent to = new
-						// URI("ascheme://userﬂ£info@host:0/aÄpath?qu©Æery#fr‰Ëg"),
+						// URI("ascheme://user\u00df\u00a3info@host:0/a\u0080path?qu\u00a9\u00aeery#fr\u00e4\u00e8g"),
 
 						// multiple arg constructors
 						new URI("http", "user%60%20info", "host", 80,
@@ -54,7 +54,7 @@ public class URITest extends junit.framework.TestCase {
 								"/a\u20ACpath", "qu\u00A9\u00AEery",
 								"fr\u00E4\u00E8g"),
 						// unicode chars equivalent to = new
-						// URI("ascheme", "userﬂ£info", "host", 80, "/aÄpath", "qu©Æery", "fr‰Ëg"),
+						// URI("ascheme", "user\u00df\u00a3info", "host", 80, "/a\u0080path", "qu\u00a9\u00aeery", "fr\u00e4\u00e8g"),
 						new URI("http", "user` info", "host", 81, "/a path",
 								"qu` ery", "fr^ ag"), // illegal chars
 						new URI("http", "user%info", "host", 0, "/a%path",
@@ -118,12 +118,12 @@ public class URITest extends junit.framework.TestCase {
 				// path with escaped octet for unicode char, not USASCII
 				"http://host/a\u20ACpath#frag",
 				// path with unicode char, not USASCII equivalent to
-				// = "http://host/aÄpath#frag",
+				// = "http://host/a\u0080path#frag",
 				"http://host%20name/", // escaped octets in host (becomes
 				// registry based)
 				"http://host\u00DFname/", // unicodechar in host (becomes
 				// registry based)
-				// equivalent to = "http://hostﬂname/",
+				// equivalent to = "http://host\u00dfname/",
 				"ht123-+tp://www.google.com:80/test", // legal chars in scheme
 		};
 
@@ -201,7 +201,7 @@ public class URITest extends junit.framework.TestCase {
 				// scheme validation
 				"a scheme://reg/", // illegal char
 				"1scheme://reg/", // non alpha char as 1st char
-				"ascheﬂme:ssp", // unicode char , not USASCII
+				"asche\u00dfme:ssp", // unicode char , not USASCII
 				"asc%20heme:ssp" // escape octets
 		};
 
@@ -301,7 +301,7 @@ public class URITest extends junit.framework.TestCase {
 		// check for URISyntaxException for invalid Server Authority
 		construct1("http", "user", "host\u00DFname", -1, "/file", "query",
 				"fragment"); // unicode chars in host name
-		// equivalent to construct1("http", "user", "hostﬂname", -1, "/file",
+		// equivalent to construct1("http", "user", "host\u00dfname", -1, "/file",
 		// "query", "fragment");
 		construct1("http", "user", "host%20name", -1, "/file", "query",
 				"fragment"); // escaped octets in host name
@@ -331,7 +331,7 @@ public class URITest extends junit.framework.TestCase {
 		// check for URISyntaxException for invalid scheme
 		construct1("ht\u00DFtp", "user", "hostname", -1, "/file", "query",
 				"fragment"); // unicode chars in scheme
-		// equivalent to construct1("htﬂtp", "user", "hostname", -1, "/file",
+		// equivalent to construct1("ht\u00dftp", "user", "hostname", -1, "/file",
 		// "query", "fragment");
 		
 		construct1("ht%20tp", "user", "hostname", -1, "/file", "query",
@@ -410,7 +410,7 @@ public class URITest extends junit.framework.TestCase {
 			uri = new URI("http", "host", "/a%E2%82%ACpath", "frag");
 
 			// frag with unicode char, not USASCII
-			// equivalent to = uri = new URI("http", "host", "/apath", "Äfrag");
+			// equivalent to = uri = new URI("http", "host", "/apath", "\u0080frag");
 			uri = new URI("http", "host", "/apath", "\u20ACfrag"); 
 
 		} catch (URISyntaxException e) {
@@ -442,7 +442,7 @@ public class URITest extends junit.framework.TestCase {
 			uri = new URI("ht12-3+tp", "", "/p#a%E2%82%ACth", "q^u%25ery",
 					"f/r\u00DFag");
 			// equivalent to = uri = new URI("ht12-3+tp", "", "/p#a%E2%82%ACth",
-			// "q^u%25ery", "f/rﬂag");
+			// "q^u%25ery", "f/r\u00dfag");
 		} catch (URISyntaxException e) {
 			fail("Unexpected URISyntaxException: " + e);
 		}
@@ -456,14 +456,14 @@ public class URITest extends junit.framework.TestCase {
 		assertTrue("wrong query", uri.getQuery().equals("q^u%25ery"));
 		assertTrue("wrong fragment", uri.getFragment().equals("f/r\u00DFag"));
 		// equivalent to = assertTrue("wrong fragment",
-		// uri.getFragment().equals("f/rﬂag"));
+		// uri.getFragment().equals("f/r\u00dfag"));
 		assertTrue("wrong SchemeSpecificPart", uri.getSchemeSpecificPart()
 				.equals("///p#a%E2%82%ACth?q^u%25ery"));
 		assertTrue("wrong RawSchemeSpecificPart", uri
 				.getRawSchemeSpecificPart().equals(
 						"///p%23a%25E2%2582%25ACth?q%5Eu%2525ery"));
 		assertTrue("incorrect toString()", uri.toString().equals(
-				"ht12-3+tp:///p%23a%25E2%2582%25ACth?q%5Eu%2525ery#f/rﬂag"));
+				"ht12-3+tp:///p%23a%25E2%2582%25ACth?q%5Eu%2525ery#f/r\u00dfag"));
 		assertTrue(
 				"incorrect toASCIIString()",
 				uri
@@ -740,11 +740,11 @@ public class URITest extends junit.framework.TestCase {
 
 		String[] getAuthorityResults = {
 				"user` info@host",
-				"user\u00DF\u00A3info@host:80", // = "userﬂ£info@host:80",
-				"user\u00DF\u00A3info@host:0", // = "userﬂ£info@host:0",
+				"user\u00DF\u00A3info@host:80", // = "user\u00df\u00a3info@host:80",
+				"user\u00DF\u00A3info@host:0", // = "user\u00df\u00a3info@host:0",
 				"user%60%20info@host:80",
 				"user%C3%9F%C2%A3info@host",
-				"user\u00DF\u00A3info@host:80", // = "userﬂ£info@host:80",
+				"user\u00DF\u00A3info@host:80", // = "user\u00df\u00a3info@host:80",
 				"user` info@host:81", "user%info@host:0", null, null, null,
 				null, "server.org", "reg:istry", null, };
 
@@ -818,10 +818,10 @@ public class URITest extends junit.framework.TestCase {
 		URI[] uris = getUris();
 
 		String[] getFragmentResults = { "fr^ ag", "fr\u00E4\u00E8g", // =
-				// "fr‰Ëg",
-				"fr\u00E4\u00E8g", // = "fr‰Ëg",
+				// "fr\u00e4\u00e8g",
+				"fr\u00E4\u00E8g", // = "fr\u00e4\u00e8g",
 				"fr%5E%20ag", "fr%C3%A4%C3%A8g", "fr\u00E4\u00E8g", // =
-				// "fr‰Ëg",
+				// "fr\u00e4\u00e8g",
 				"fr^ ag", "f%rag", null, "", null, "fragment", null, null, null };
 
 		for (int i = 0; i < uris.length; i++) {
@@ -870,10 +870,10 @@ public class URITest extends junit.framework.TestCase {
 		URI[] uris = getUris();
 
 		String[] getPathResults = { "/a path",
-				"/a\u20ACpath", // = "/aÄpath",
-				"/a\u20ACpath", // = "/aÄpath",
+				"/a\u20ACpath", // = "/a\u0080path",
+				"/a\u20ACpath", // = "/a\u0080path",
 				"/a%20path", "/a%E2%82%ACpath",
-				"/a\u20ACpath", // = "/aÄpath",
+				"/a\u20ACpath", // = "/a\u0080path",
 				"/a path", "/a%path", null, "../adirectory/file.html", null,
 				"", "", "", "/c:/temp/calculate.pl" };
 
@@ -951,10 +951,10 @@ public class URITest extends junit.framework.TestCase {
 		URI[] uris = getUris();
 
 		String[] getQueryResults = { "qu` ery", "qu\u00A9\u00AEery", // =
-				// "qu©Æery",
-				"qu\u00A9\u00AEery", // = "qu©Æery",
+				// "qu\u00a9\u00aeery",
+				"qu\u00A9\u00AEery", // = "qu\u00a9\u00aeery",
 				"qu%60%20ery", "qu%C2%A9%C2%AEery", "qu\u00A9\u00AEery", // =
-				// "qu©Æery",
+				// "qu\u00a9\u00aeery",
 				"qu` ery", "que%ry", null, null, null, null, null, "query", "" };
 
 		for (int i = 0; i < uris.length; i++) {
@@ -981,10 +981,10 @@ public class URITest extends junit.framework.TestCase {
 				"user%60%20info@host",
 				"user%C3%9F%C2%A3info@host:80",
 				"user\u00DF\u00A3info@host:0", // =
-				// "userﬂ£info@host:0",
+				// "user\u00df\u00a3info@host:0",
 				"user%2560%2520info@host:80",
 				"user%25C3%259F%25C2%25A3info@host",
-				"user\u00DF\u00A3info@host:80", // = "userﬂ£info@host:80",
+				"user\u00DF\u00A3info@host:80", // = "user\u00df\u00a3info@host:80",
 				"user%60%20info@host:81", "user%25info@host:0", null, null,
 				null, null, "server.org", "reg:istry", null };
 
@@ -1010,10 +1010,10 @@ public class URITest extends junit.framework.TestCase {
 
 		String[] getRawFragmentResults = { "fr%5E%20ag",
 				"fr%C3%A4%C3%A8g",
-				"fr\u00E4\u00E8g", // = "fr‰Ëg",
+				"fr\u00E4\u00E8g", // = "fr\u00e4\u00e8g",
 				"fr%255E%2520ag", "fr%25C3%25A4%25C3%25A8g",
 				"fr\u00E4\u00E8g", // =
-				// "fr‰Ëg",
+				// "fr\u00e4\u00e8g",
 				"fr%5E%20ag", "f%25rag", null, "", null, "fragment", null,
 				null, null };
 
@@ -1039,10 +1039,10 @@ public class URITest extends junit.framework.TestCase {
 
 		String[] getRawPathResults = { "/a%20path",
 				"/a%E2%82%ACpath",
-				"/a\u20ACpath", // = "/aÄpath",
+				"/a\u20ACpath", // = "/a\u0080path",
 				"/a%2520path", "/a%25E2%2582%25ACpath",
 				"/a\u20ACpath", // =
-				// "/aÄpath",
+				// "/a\u0080path",
 				"/a%20path", "/a%25path", null, "../adirectory/file.html",
 				null, "", "", "", "/c:/temp/calculate.pl" };
 
@@ -1069,10 +1069,10 @@ public class URITest extends junit.framework.TestCase {
 		String[] getRawQueryResults = {
 				"qu%60%20ery",
 				"qu%C2%A9%C2%AEery",
-				"qu\u00A9\u00AEery", // = "qu©Æery",
+				"qu\u00A9\u00AEery", // = "qu\u00a9\u00aeery",
 				"qu%2560%2520ery",
 				"qu%25C2%25A9%25C2%25AEery",
-				"qu\u00A9\u00AEery", // = "qu©Æery",
+				"qu\u00A9\u00AEery", // = "qu\u00a9\u00aeery",
 				"qu%60%20ery", "que%25ry", null, null, null, null, null,
 				"query", "" };
 
@@ -1101,11 +1101,11 @@ public class URITest extends junit.framework.TestCase {
 				"//user%60%20info@host/a%20path?qu%60%20ery",
 				"//user%C3%9F%C2%A3info@host:80/a%E2%82%ACpath?qu%C2%A9%C2%AEery",
 				"//user\u00DF\u00A3info@host:0/a\u20ACpath?qu\u00A9\u00AEery", // =
-				// "//userﬂ£info@host:0/aÄpath?qu©Æery"
+				// "//user\u00df\u00a3info@host:0/a\u0080path?qu\u00a9\u00aeery"
 				"//user%2560%2520info@host:80/a%2520path?qu%2560%2520ery",
 				"//user%25C3%259F%25C2%25A3info@host/a%25E2%2582%25ACpath?qu%25C2%25A9%25C2%25AEery",
 				"//user\u00DF\u00A3info@host:80/a\u20ACpath?qu\u00A9\u00AEery", // =
-				// "//userﬂ£info@host:80/aÄpath?qu©Æery"
+				// "//user\u00df\u00a3info@host:80/a\u0080path?qu\u00a9\u00aeery"
 				"//user%60%20info@host:81/a%20path?qu%60%20ery",
 				"//user%25info@host:0/a%25path?que%25ry", "user@domain.com",
 				"../adirectory/file.html", "comp.infosystems.www.servers.unix",
@@ -1134,10 +1134,10 @@ public class URITest extends junit.framework.TestCase {
 		String[] getRawUserInfoResults = {
 				"user%60%20info",
 				"user%C3%9F%C2%A3info",
-				"user\u00DF\u00A3info", // = "userﬂ£info",
+				"user\u00DF\u00A3info", // = "user\u00df\u00a3info",
 				"user%2560%2520info",
 				"user%25C3%259F%25C2%25A3info",
-				"user\u00DF\u00A3info", // = "userﬂ£info",
+				"user\u00DF\u00A3info", // = "user\u00df\u00a3info",
 				"user%60%20info", "user%25info", null, null, null, null, null,
 				null, null };
 
@@ -1188,13 +1188,13 @@ public class URITest extends junit.framework.TestCase {
 		String[] getSspResults = {
 				"//user` info@host/a path?qu` ery",
 				"//user\u00DF\u00A3info@host:80/a\u20ACpath?qu\u00A9\u00AEery", // =
-				// "//userﬂ£info@host:80/aÄpath?qu©Æery",
+				// "//user\u00df\u00a3info@host:80/a\u0080path?qu\u00a9\u00aeery",
 				"//user\u00DF\u00A3info@host:0/a\u20ACpath?qu\u00A9\u00AEery", // =
-				// "//userﬂ£info@host:0/aÄpath?qu©Æery",
+				// "//user\u00df\u00a3info@host:0/a\u0080path?qu\u00a9\u00aeery",
 				"//user%60%20info@host:80/a%20path?qu%60%20ery",
 				"//user%C3%9F%C2%A3info@host/a%E2%82%ACpath?qu%C2%A9%C2%AEery",
 				"//user\u00DF\u00A3info@host:80/a\u20ACpath?qu\u00A9\u00AEery", // =
-				// "//userﬂ£info@host:80/aÄpath?qu©Æery",
+				// "//user\u00df\u00a3info@host:80/a\u0080path?qu\u00a9\u00aeery",
 				"//user` info@host:81/a path?qu` ery",
 				"//user%info@host:0/a%path?que%ry", "user@domain.com",
 				"../adirectory/file.html", "comp.infosystems.www.servers.unix",
@@ -1224,11 +1224,11 @@ public class URITest extends junit.framework.TestCase {
 		String[] getUserInfoResults = {
 				"user` info",
 				"user\u00DF\u00A3info", // =
-				// "userﬂ£info",
-				"user\u00DF\u00A3info", // = "userﬂ£info",
+				// "user\u00df\u00a3info",
+				"user\u00DF\u00A3info", // = "user\u00df\u00a3info",
 				"user%60%20info",
 				"user%C3%9F%C2%A3info",
-				"user\u00DF\u00A3info", // = "userﬂ£info",
+				"user\u00DF\u00A3info", // = "user\u00df\u00a3info",
 				"user` info", "user%info", null, null, null, null, null, null,
 				null };
 
@@ -1491,11 +1491,11 @@ public class URITest extends junit.framework.TestCase {
 					new URI("http://foo:bar/file#fragment"),
 					new URI("http", "//foo:bar/file", "fragment"),
 					
-					// unicode char in the hostname = new URI("http://hostﬂname/")
+					// unicode char in the hostname = new URI("http://host\u00dfname/")
 					new URI("http://host\u00DFname/"),
 					
 					new URI("http", "//host\u00DFname/", null), 
-					// = new URI("http://hostﬂname/", null),
+					// = new URI("http://host\u00dfname/", null),
 					
 					// escaped octets in host name
 					new URI("http://host%20name/"),
@@ -1833,11 +1833,11 @@ public class URITest extends junit.framework.TestCase {
 				"http://user%60%20info@host/a%20path?qu%60%20ery#fr%5E%20ag",
 				"http://user%C3%9F%C2%A3info@host:80/a%E2%82%ACpath?qu%C2%A9%C2%AEery#fr%C3%A4%C3%A8g",
 				"ascheme://user\u00DF\u00A3info@host:0/a\u20ACpath?qu\u00A9\u00AEery#fr\u00E4\u00E8g",
-				// = "ascheme://userﬂ£info@host:0/aÄpath?qu©Æery#fr‰Ëg",
+				// = "ascheme://user\u00df\u00a3info@host:0/a\u0080path?qu\u00a9\u00aeery#fr\u00e4\u00e8g",
 				"http://user%2560%2520info@host:80/a%2520path?qu%2560%2520ery#fr%255E%2520ag",
 				"http://user%25C3%259F%25C2%25A3info@host/a%25E2%2582%25ACpath?qu%25C2%25A9%25C2%25AEery#fr%25C3%25A4%25C3%25A8g",
 				"ascheme://user\u00DF\u00A3info@host:80/a\u20ACpath?qu\u00A9\u00AEery#fr\u00E4\u00E8g",
-				// = "ascheme://userﬂ£info@host:80/aÄpath?qu©Æery#fr‰Ëg",
+				// = "ascheme://user\u00df\u00a3info@host:80/a\u0080path?qu\u00a9\u00aeery#fr\u00e4\u00e8g",
 				"http://user%60%20info@host:81/a%20path?qu%60%20ery#fr%5E%20ag",
 				"http://user%25info@host:0/a%25path?que%25ry#f%25rag",
 				"mailto:user@domain.com", "../adirectory/file.html#",

@@ -53,8 +53,7 @@ public class AllTests {
 		suite.addTestSuite(SocketPermissionTest.class);
 		suite.addTestSuite(UnknownHostExceptionTest.class);
 		suite.addTestSuite(UnknownServiceExceptionTest.class);
-		// TOFIX: remove non-ascii from the source for this test
-                // suite.addTestSuite(URITest.class);
+                suite.addTestSuite(URITest.class);
 		suite.addTestSuite(URISyntaxExceptionTest.class);
 		suite.addTestSuite(URLTest.class);
 		suite.addTestSuite(URLClassLoaderTest.class);
