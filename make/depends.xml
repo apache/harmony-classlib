@@ -20,87 +20,90 @@
  -->
 
 <project name="dependencies" default="check" basedir="..">
-  <description>
+	<description>
     Confirm that dependencies are present and fetch missing dependencies
     where possible.
-  </description>
+	</description>
 
-  <property file="make/depends.properties" />
-  
-  <target name="check">
+	<property file="make/depends.properties" />
 
-    <antcall target="check-one-jar">
-      <param name="src" value="${xalan.url}" />
-      <param name="dest" value="${xalan.jar}" />
-    </antcall>
-    
-    <antcall target="check-one-jar">
-      <param name="src" value="${resolver.url}" />
-      <param name="dest" value="${resolver.jar}" />
-    </antcall>
+	<target name="check">
 
-    <antcall target="check-one-jar">
-      <param name="src" value="${xerces.impl.url}" />
-      <param name="dest" value="${xerces.impl.jar}" />
-    </antcall>
+		<antcall target="check-one-jar">
+			<param name="src" value="${xalan.url}" />
+			<param name="dest" value="${xalan.jar}" />
+		</antcall>
 
-    <antcall target="check-one-jar">
-      <param name="src" value="${xml.apis.url}" />
-      <param name="dest" value="${xml.apis.jar}" />
-    </antcall>
+		<antcall target="check-one-jar">
+			<param name="src" value="${resolver.url}" />
+			<param name="dest" value="${resolver.jar}" />
+		</antcall>
 
-    <antcall target="check-one-jar">
-      <param name="src" value="${junit.url}" />
-      <param name="dest" value="${junit.jar}" />
-    </antcall>
-    
-  </target>
+		<antcall target="check-one-jar">
+			<param name="src" value="${xerces.impl.url}" />
+			<param name="dest" value="${xerces.impl.jar}" />
+		</antcall>
 
-  <target name="download"
-    	  description="Download required jars">
+		<antcall target="check-one-jar">
+			<param name="src" value="${xml.apis.url}" />
+			<param name="dest" value="${xml.apis.jar}" />
+		</antcall>
 
-    <mkdir dir="${xalan.dir}" />
-    <antcall target="download-one-jar">
-      <param name="src" value="${xalan.url}" />
-      <param name="dest" value="${xalan.jar}" />
-    </antcall>
+		<antcall target="check-one-jar">
+			<param name="src" value="${junit.url}" />
+			<param name="dest" value="${junit.jar}" />
+		</antcall>
 
-    <mkdir dir="${xerces.dir}" />
-    <antcall target="download-one-jar">
-      <param name="src" value="${resolver.url}" />
-      <param name="dest" value="${resolver.jar}" />
-    </antcall>
+	</target>
 
-    <antcall target="download-one-jar">
-      <param name="src" value="${xerces.impl.url}" />
-      <param name="dest" value="${xerces.impl.jar}" />
-    </antcall>
+	<target name="download" depends="set-proxy" description="Download required jars">
 
-    <antcall target="download-one-jar">
-      <param name="src" value="${xml.apis.url}" />
-      <param name="dest" value="${xml.apis.jar}" />
-    </antcall>
+		<mkdir dir="${xalan.dir}" />
+		<antcall target="download-one-jar">
+			<param name="src" value="${xalan.url}" />
+			<param name="dest" value="${xalan.jar}" />
+		</antcall>
 
-    <mkdir dir="${junit.dir}" />
-    <antcall target="download-one-jar">
-      <param name="src" value="${junit.url}" />
-      <param name="dest" value="${junit.jar}" />
-    </antcall>
+		<mkdir dir="${xerces.dir}" />
+		<antcall target="download-one-jar">
+			<param name="src" value="${resolver.url}" />
+			<param name="dest" value="${resolver.jar}" />
+		</antcall>
 
-  </target>
-    	
-  <target name="download-one-jar">
-    <get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
-  </target>
+		<antcall target="download-one-jar">
+			<param name="src" value="${xerces.impl.url}" />
+			<param name="dest" value="${xerces.impl.jar}" />
+		</antcall>
 
-  <target name="check-one-jar">
-    <available file="${dest}" type="file" property="${dest}.exists" />
-    <fail>
-      <condition>
-        <not>
-          <isset property="${dest}.exists"/>
-        </not>
-      </condition>
+		<antcall target="download-one-jar">
+			<param name="src" value="${xml.apis.url}" />
+			<param name="dest" value="${xml.apis.jar}" />
+		</antcall>
+
+		<mkdir dir="${junit.dir}" />
+		<antcall target="download-one-jar">
+			<param name="src" value="${junit.url}" />
+			<param name="dest" value="${junit.jar}" />
+		</antcall>
+
+	</target>
+
+	<target name="download-one-jar">
+		<get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
+	</target>
+
+	<target name="set-proxy" if="proxy.hostname">
+		<setproxy proxyhost="${proxy.hostname}" proxyport="${proxy.port}" />
+	</target>
+
+	<target name="check-one-jar">
+		<available file="${dest}" type="file" property="${dest}.exists" />
+		<fail>
+			<condition>
+				<not>
+					<isset property="${dest}.exists" />
+				</not>
+			</condition>
 ...
 
 Missing dependency.  The jar from:
@@ -111,8 +114,8 @@ should be downloaded to:
 
   ${dest}
 
-(Run "ant -f make/depends.xml download" to automatically fetch this file.)
-    </fail>
-  </target>
+(Run "ant -f make/depends.xml download" to automatically fetch dependencies.)
+</fail>
+	</target>
 
 </project>
