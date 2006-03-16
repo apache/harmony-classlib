@@ -116,7 +116,6 @@ public class RuleBasedCollatorTest extends TestCase {
 			Locale locale = new Locale("es", "", "TRADITIONAL");
 			RuleBasedCollator coll = (RuleBasedCollator) Collator
 					.getInstance(locale);
-			System.out.println("Rules: " + coll.getRules());
 			String source = "cha";
 			CollationElementIterator iterator = coll
 					.getCollationElementIterator(source);
