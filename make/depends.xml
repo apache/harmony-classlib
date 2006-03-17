@@ -56,7 +56,7 @@
 
 	</target>
 
-	<target name="download" depends="set-proxy" description="Download required jars">
+	<target name="download" description="Download required jars">
 
 		<mkdir dir="${xalan.dir}" />
 		<antcall target="download-one-jar">
@@ -90,10 +90,6 @@
 
 	<target name="download-one-jar">
 		<get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
-	</target>
-
-	<target name="set-proxy" if="http.proxyHost">
-		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 	</target>
 
 	<target name="check-one-jar">
