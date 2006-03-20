@@ -15,26 +15,54 @@
 
 package java.lang;
 
-
 /**
- * Integers are objects (non-base types) which represent int values.
+ * <p>
+ * Integer is the wrapper for the primitive type <code>int</code>.
+ * </p>
+ * 
+ * <p>
+ * As with the specification, this implementation relied on code laid out in <a
+ * href="http://www.hackersdelight.org/">Henry S. Warren, Jr.'s Hacker's
+ * Delight, (Addison Wesley, 2002)</a> as well as <a
+ * href="http://aggregate.org/MAGIC/">The Aggregate's Magic Algorithms</a>.
+ * </p>
+ * 
+ * @see java.lang.Number
+ * @since 1.1
  */
 public final class Integer extends Number implements Comparable {
-
+    //TODO Add Comparable<Integer> to implements when generics are supported.
 	private static final long serialVersionUID = 1360826667806852920L;
 
 	/**
-	 * The value which the receiver represents.
-	 */
-	final int value;
+     * The value which the receiver represents.
+     */
+    private final int value;
 
-	/**
-	 * Most positive and most negative possible int values.
-	 */
-	public static final int MAX_VALUE = 0x7FFFFFFF;
+    /**
+     * <p>
+     * Constant for the maximum <code>int</code> value, 2<sup>31</sup>-1.
+     * </p>
+     */
+    public static final int MAX_VALUE = 0x7FFFFFFF;
 
-	public static final int MIN_VALUE = 0x80000000;
+    /**
+     * <p>
+     * Constant for the minimum <code>int</code> value, -2<sup>31</sup>.
+     * </p>
+     */
+    public static final int MIN_VALUE = 0x80000000;
 
+    /**
+     * <p>
+     * Constant for the number of bits to represent an <code>int</code> in
+     * two's compliment form.
+     * </p>
+     * 
+     * @since 1.5
+     */
+    public static final int SIZE = 32;
+    
 	/**
 	 * The java.lang.Class that represents this class.
 	 */
@@ -43,6 +71,13 @@ public final class Integer extends Number implements Comparable {
 	// Note: This can't be set to "int.class", since *that* is
 	// defined to be "java.lang.Integer.TYPE";
 
+    /**
+     * <p>
+     * A cache of instances used by {@link #valueOf(int)} and auto-boxing.
+     * </p>
+     */
+    private static final Integer[] CACHE = new Integer[256];
+    
 	/**
 	 * Constructs a new instance of the receiver which represents the int valued
 	 * argument.
@@ -110,7 +145,7 @@ public final class Integer extends Number implements Comparable {
 		int base = 10;
 		if (firstDigit == '0') {
 			if (++i == length)
-				return new Integer(0);
+				return valueOf(0);
 			if ((firstDigit = string.charAt(i)) == 'x' || firstDigit == 'X') {
 				if (i == length)
 					throw new NumberFormatException(string);
@@ -127,7 +162,7 @@ public final class Integer extends Number implements Comparable {
 		}
 
 		int result = parse(string, i, base, negative);
-		return new Integer(result);
+		return valueOf(result);
 	}
 
 	/**
@@ -200,14 +235,14 @@ public final class Integer extends Number implements Comparable {
 	 */
 	public static Integer getInteger(String string, int defaultValue) {
 		if (string == null || string.length() == 0)
-			return new Integer(defaultValue);
+			return valueOf(defaultValue);
 		String prop = System.getProperty(string);
 		if (prop == null)
-			return new Integer(defaultValue);
+			return valueOf(defaultValue);
 		try {
 			return decode(prop);
 		} catch (NumberFormatException ex) {
-			return new Integer(defaultValue);
+			return valueOf(defaultValue);
 		}
 	}
 
@@ -494,7 +529,7 @@ public final class Integer extends Number implements Comparable {
 	 *                if the argument could not be parsed as an int quantity.
 	 */
 	public static Integer valueOf(String string) throws NumberFormatException {
-		return new Integer(parseInt(string));
+		return valueOf(parseInt(string));
 	}
 
 	/**
@@ -513,6 +548,184 @@ public final class Integer extends Number implements Comparable {
 	 */
 	public static Integer valueOf(String string, int radix)
 			throws NumberFormatException {
-		return new Integer(parseInt(string, radix));
+		return valueOf(parseInt(string, radix));
 	}
+    
+    /**
+     * <p>Determines the highest (leftmost) bit that is 1 and returns
+     * the value that is the bit mask for that bit. This is sometimes
+     * referred to as the Most Significant 1 Bit.</p>
+     * @param i The <code>int</code> to interrogate.
+     * @return The bit mask indicating the highest 1 bit.
+     * @since 1.5
+     */
+    public static int highestOneBit(int i) {
+        i |= (i >> 1);
+        i |= (i >> 2);
+        i |= (i >> 4);
+        i |= (i >> 8);
+        i |= (i >> 16);
+        return (i & ~(i >>> 1));
+    }
+
+    /**
+     * <p>Determines the lowest (rightmost) bit that is 1 and returns
+     * the value that is the bit mask for that bit. This is sometimes
+     * referred to as the Least Significant 1 Bit.</p>
+     * @param i The <code>int</code> to interrogate.
+     * @return The bit mask indicating the lowest 1 bit.
+     * @since 1.5
+     */
+    public static int lowestOneBit(int i) {
+        return (i & (-i));
+    }
+
+    /**
+     * <p>Determines the number of leading zeros in the
+     * <code>int</code> passed prior to the {@link #highestOneBit(int) highest one bit}.</p>
+     * @param i The <code>int</code> to process.
+     * @return The number of leading zeros.
+     * @since 1.5
+     */
+    public static int numberOfLeadingZeros(int i) {
+        i |= i >> 1;
+        i |= i >> 2;
+        i |= i >> 4;
+        i |= i >> 8;
+        i |= i >> 16;
+        return bitCount(~i);
+    }
+
+    /**
+     * <p>Determines the number of trailing zeros in the
+     * <code>int</code> passed after the {@link #lowestOneBit(int) lowest one bit}.</p>
+     * @param i The <code>int</code> to process.
+     * @return The number of trailing zeros.
+     * @since 1.5
+     */
+    public static int numberOfTrailingZeros(int i) {
+        return bitCount((i & -i) - 1);
+    }
+
+    /**
+     * <p>Counts the number of 1 bits in the <code>int</code>
+     * value passed; this is sometimes referred to as a 
+     * population count.</p>
+     * @param i The <code>int</code> value to process.
+     * @return The number of 1 bits.
+     * @since 1.5
+     */
+    public static int bitCount(int i) {
+        i -= ((i >> 1) & 0x55555555);
+        i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
+        i = (((i >> 4) + i) & 0x0F0F0F0F);
+        i += (i >> 8);
+        i += (i >> 16);
+        return (i & 0x0000003F);
+    }
+
+    /**
+     * <p>Rotates the bits of <code>i</code> to the left by
+     * the <code>distance</code> bits.</p>
+     * @param i The <code>int</code> value to rotate left.
+     * @param distance The number of bits to rotate.
+     * @return The rotated value.
+     * @since 1.5
+     */
+    public static int rotateLeft(int i, int distance) {
+        if (distance == 0)
+            return i;
+        /*
+         * According to JLS3, 15.19, the right operand of a shift is always
+         * implicitly masked with 0x1F, which the negation of 'distance' is
+         * taking advantage of.
+         */
+        return ((i << distance) | (i >>> (-distance)));
+    }
+
+    /**
+     * <p>Rotates the bits of <code>i</code> to the right by
+     * the <code>distance</code> bits.</p>
+     * @param i The <code>int</code> value to rotate right.
+     * @param distance The number of bits to rotate.
+     * @return The rotated value.
+     * @since 1.5
+     */
+    public static int rotateRight(int i, int distance) {
+        if (distance == 0)
+            return i;
+        /*
+         * According to JLS3, 15.19, the right operand of a shift is always
+         * implicitly masked with 0x1F, which the negation of 'distance' is
+         * taking advantage of.
+         */
+        return ((i >>> distance) | (i << (-distance)));
+    }
+
+    /**
+     * <p>
+     * Reverses the bytes of a <code>int</code>.
+     * </p>
+     * 
+     * @param i The <code>int</code> to reverse.
+     * @return The reversed value.
+     * @since 1.5
+     */
+    public static int reverseBytes(int i) {
+        int b3 = i >>> 24;
+        int b2 = (i >>> 8) & 0xFF00;
+        int b1 = (i & 0xFF00) << 8;
+        int b0 = i << 24;
+        return (b0 | b1 | b2 | b3);
+    }
+
+    /**
+     * <p>
+     * Reverses the bytes of a <code>int</code>.
+     * </p>
+     * 
+     * @param i The <code>int</code> to reverse.
+     * @return The reversed value.
+     * @since 1.5
+     */
+    public static int reverse(int i) {
+        //From Hacker's Delight, 7-1, Figure 7-1
+        i = (i & 0x55555555) << 1 | (i >> 1) & 0x55555555;
+        i = (i & 0x33333333) << 2 | (i >> 2) & 0x33333333;
+        i = (i & 0x0F0F0F0F) << 4 | (i >> 4) & 0x0F0F0F0F;
+        return reverseBytes(i);
+    }
+
+    /**
+     * <p>The <code>signum</code> function for <code>int</code> values. This method returns -1 for
+     * negative values, 1 for positive values and 0 for the value 0.</p>
+     * @param i The <code>int</code> value.
+     * @return -1 if negative, 1 if positive otherwise 0.
+     * @since 1.5
+     */
+    public static int signum(int i) {
+        return (i == 0 ? 0 : (i < 0 ? -1 : 1));
+    }
+
+    /**
+     * <p>
+     * Returns a <code>Integer</code> instance for the <code>int</code>
+     * value passed. This method is preferred over the constructor, as this
+     * method may maintain a cache of instances.
+     * </p>
+     * 
+     * @param i The int value.
+     * @return A <code>Integer</code> instance.
+     * @since 1.5
+     */
+    public static Integer valueOf(int i) {
+        if (i < -128 || i > 127) {
+            return new Integer(i);
+        }
+        synchronized (CACHE) {
+            int idx = 128 + i; // 128 matches a cache size of 256
+            Integer result = CACHE[idx];
+            return (result == null ? CACHE[idx] = new Integer(i) : result);
+        }
+    }
 }
