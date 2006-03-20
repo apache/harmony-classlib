@@ -126,10 +126,17 @@
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
-        <!-- Create x-nets jar -->
+        <!-- Create x-net jar -->
         <jar destfile="${components.output}/x-net.jar" manifest="x-net/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
                 includesfile="${components.patternsets}/x-net.txt"
+                excludesfile="${components.patternsets}/kernel.txt" />
+        </jar>
+
+        <!-- Create crypto jar -->
+        <jar destfile="${components.output}/crypto.jar">  <!-- TODO: manifest -->
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/crypto.txt"
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
