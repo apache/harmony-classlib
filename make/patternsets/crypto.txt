@@ -13,4 +13,8 @@
 # limitations under the License.
  
 javax/crypto/*
+javax/crypto/interfaces/*
+javax/crypto/spec/*
+
 org/apache/harmony/security/x/crypto/*
+org/apache/harmony/security/x/crypto/utils/*
