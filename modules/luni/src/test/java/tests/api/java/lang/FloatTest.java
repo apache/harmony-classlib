@@ -108,7 +108,6 @@ public class FloatTest extends junit.framework.TestCase {
 
 	private void doTestCompareRawBits(String originalFloatString,
 			int expectedRawBits, String expectedString) {
-		System.out.print(originalFloatString + " ");
 		int rawBits;
 		String convertedString;
 		float result = Float.parseFloat(originalFloatString);
