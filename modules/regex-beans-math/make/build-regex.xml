@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Author:  Alexei Y. Zakharov
+Version: $Revision: 1.1.2.5 $
+-->
+<!--
+    Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="regex" basedir=".">
+
+    <!-- List of sources -->
+    <patternset id="src.list.regex">
+        <include name="java/util/regex/**/*.java"/>
+    </patternset>
+    <!-- List of class files -->
+    <patternset id="classes.list.regex">
+        <include name="java/util/regex/**/*.class"/>
+    </patternset>
+
+    <!-- List of test sources -->
+    <patternset id="tst.src.list.regex">
+        <include name="java/util/regex/**/*.java"/>
+    </patternset>
+    <!-- List of test class files -->
+    <patternset id="tst.classes.list.regex">
+        <include name="java/util/regex/**/*.class"/>
+    </patternset>
+
+    <!-- JAR files names -->
+    <property name="jar.name.regex" value="regex.jar"/>
+    <property name="tst.jar.name.regex" value="regex-tests.jar"/>
+
+    <!-- targets specific to REGEX module -->
+
+    <target name="compile.regex">
+        <antcall target="compile.common">
+            <reference refid="src.list.regex" torefid="src.list"/>
+        </antcall>
+    </target>
+    <target name="tst.compile.regex" depends="compile.regex">
+        <antcall target="tst.compile.common">
+            <reference refid="tst.src.list.regex" torefid="tst.src.list"/>
+        </antcall>
+    </target>
+    <target name="jar.regex" depends="compile.regex">
+        <antcall target="jar.common">
+            <param name="jar.name" value="${jar.name.regex}"/>
+            <reference refid="classes.list.regex" torefid="classes.list"/>
+        </antcall>
+    </target>
+    <target name="tst.jar.regex" depends="tst.compile.regex">
+        <antcall target="tst.jar.common">
+            <param name="tst.jar.name" value="${tst.jar.name.regex}"/>
+            <reference refid="tst.classes.list.regex"
+                       torefid="tst.classes.list"/>
+        </antcall>
+    </target>
+    
+    <target name="test.regex" description="run all java.util.regex tests"
+            depends="jar.regex, tst.compile.regex">
+        <mkdir dir="${tst.reports.dir}"/>
+        <path id="bootclasspath.regex">
+            <pathelement location="${jar.dir}/${jar.name.regex}"/>
+            <pathelement location="${tst.classes.dir}"/>
+            <pathelement location="${junit.path}"/>
+        </path>
+        <pathconvert targetos="${os.family}" refId="bootclasspath.regex"
+                 property="bootclasspath.regex.str" setOnEmpty="true"/>
+        <junit printsummary="true" haltonfailure="no" fork="yes"
+               forkmode="once">
+          <jvmarg value="-Xbootclasspath/p:${bootclasspath.regex.str}"/>
+          <formatter type="plain" usefile="true"/>
+
+          <batchtest todir="${tst.reports.dir}">
+              <fileset dir="${tst.classes.dir}"
+                       includes="java/util/regex/**/*Test.class"/>
+          </batchtest>
+        </junit>
+    </target>
+
+</project>

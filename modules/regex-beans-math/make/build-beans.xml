@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Author:  Alexei Y. Zakharov
+Version: $Revision: 1.1.2.8 $
+-->
+<!--
+    Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="beans" basedir=".">
+
+    <!-- List of sources -->
+    <patternset id="src.list.beans">
+        <include name="java/beans/**/*.java"/>
+        <include name="org/apache/harmony/beans/**/*.java"/>
+        <include name="java/awt/**/*.java"/>
+        <include name="java/applet/**/*.java"/>
+    </patternset>
+    <!-- List of class files -->
+    <patternset id="classes.list.beans">
+        <include name="java/beans/**/*.class"/>
+        <include name="org/apache/harmony/beans/**/*.class"/>
+        <include name="java/awt/**/*.class"/>
+        <include name="java/applet/**/*.class"/>
+    </patternset>
+    
+    <!-- List of test sources -->
+    <patternset id="tst.src.list.beans">
+        <include name="java/beans/**/*.java"/>
+        <!--exclude name="java/beans/beancontext/BeanContextSupportTest.java"/-->
+    </patternset>
+    <patternset id="tst.classes.list.beans">
+        <include name="java/beans/**/*.class"/>
+    </patternset>
+
+    <!-- JAR files names -->
+    <property name="jar.name.beans" value="beans.jar"/>
+    <property name="tst.jar.name.beans" value="beans-tests.jar"/>
+
+
+    <!-- targets specific to BEANS module -->
+
+    <target name="compile.beans">
+        <antcall target="compile.common">
+            <reference refid="src.list.beans" torefid="src.list"/>
+        </antcall>
+    </target>
+    <target name="tst.compile.beans" depends="compile.beans">
+        <antcall target="tst.compile.common">
+            <reference refid="tst.src.list.beans" torefid="tst.src.list"/>
+        </antcall>
+        <copy todir="${tst.classes.dir}/java/beans/xml">
+            <fileset dir="${tst.src.dir}/java/beans/xml">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+        <copy todir="${tst.classes.dir}/java/beans/auxiliary">
+            <fileset dir="${tst.src.dir}/java/beans/auxiliary">
+                <include name="*.ser"/>
+            </fileset>
+        </copy>
+        <copy todir="${tst.classes.dir}/java/beans/gif">
+            <fileset dir="${tst.src.dir}/java/beans/gif">
+                <include name="*.gif"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="jar.beans" depends="compile.beans">
+        <antcall target="jar.common">
+            <param name="jar.name" value="${jar.name.beans}"/>
+            <reference refid="classes.list.beans" torefid="classes.list"/>
+        </antcall>
+    </target>
+    <target name="tst.jar.beans" depends="tst.compile.beans">
+        <antcall target="tst.jar.common">
+            <param name="tst.jar.name" value="${tst.jar.name.beans}"/>
+            <reference refid="tst.classes.list.beans"
+                       torefid="tst.classes.list"/>
+        </antcall>
+    </target>
+
+    <target name="test.beans" description="run all java beans tests"
+            depends="jar.beans, tst.compile.beans">
+        <mkdir dir="${tst.reports.dir}"/>
+        <path id="bootclasspath.beans">
+            <pathelement location="${jar.dir}/${jar.name.beans}"/>
+            <pathelement location="${tst.classes.dir}"/>
+            <pathelement location="${junit.path}"/>
+            <pathelement location="${xerces.path}"/>
+            <pathelement location="${xml_apis.path}"/>
+        </path>
+        <pathconvert targetos="${os.family}" refId="bootclasspath.beans"
+                 property="bootclasspath.beans.str" setOnEmpty="true"/>
+        <junit printsummary="true" haltonfailure="no" fork="yes"
+               forkmode="once">
+          <jvmarg value="-Xbootclasspath/p:${bootclasspath.beans.str}"/>
+          <jvmarg value="-Xmx16m"/>
+          <formatter type="plain" usefile="true"/>
+
+          <batchtest todir="${tst.reports.dir}">
+              <fileset dir="${tst.classes.dir}" includes="java/beans/**/*Test.class"/>
+          </batchtest>
+        </junit>
+    </target>
+
+</project>
