@@ -92,6 +92,13 @@
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
+        <!-- Create beans jar -->
+        <jar destfile="${components.output}/beans.jar" manifest="beans/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/beans.txt" 
+                excludesfile="${components.patternsets}/kernel.txt" />
+        </jar>
+
         <!-- Create (non-functional) kernel jar (to compile against) -->
         <jar destfile="${components.output}/kernel-stubs.jar" manifest="kernel/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
@@ -204,6 +211,7 @@
             <src path="regex/src/main/java" />
             <src path="math/src/main/java" />
             <src path="archive/src/main/java" />
+            <src path="beans/src/main/java" />
             <src path="luni/src/main/java" />
             <src path="nio/src/main/java" />
             <src path="nio_char/src/main/java" />
@@ -247,6 +255,9 @@
 
         <copy todir="${build.output}" includeemptydirs="false">
             <fileset dir="archive/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="beans/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
             <fileset dir="luni/src/main/java">
