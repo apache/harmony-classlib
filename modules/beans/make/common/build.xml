@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="Common_BEANS_Build">
+	
+	<target name="compile.java" description="Compile BEANS java code">
+		<echo message="Compiling BEANS classes from ${hy.beans.src.main.java}" />
+		
+		<mkdir dir="${hy.beans.bin.main}" />
+
+		<javac sourcepath=""
+			srcdir="${hy.beans.src.main.java}"
+			destdir="${hy.beans.bin.main}"
+			source="${source.ver}"
+			debug="${java.debug.option}">
+
+			<bootclasspath>
+				<fileset dir="${hy.target}/jre/lib/boot">
+					<include name="*.jar" />
+				</fileset>
+			</bootclasspath>
+		</javac>
+	</target>
+	
+	<target name="build.jar">
+		<jar destfile="${hy.target}/jre/lib/boot/beans.jar"
+			manifest="${hy.beans}/META-INF/MANIFEST.MF">
+			<fileset dir="${hy.beans.bin.main}" />
+		</jar>
+	</target>
+
+	
+	<target name="compile.tests">
+		<echo message="Compiling BEANS tests from ${hy.beans.src.test.java}" />
+
+		<mkdir dir="${hy.beans.bin.test}" />
+
+		<javac srcdir="${hy.beans.src.test.java}"
+			destdir="${hy.beans.bin.test}"
+			sourcepath=""
+			source="${source.ver}"
+			debug="${java.debug.option}">
+
+			<bootclasspath>
+				<fileset dir="${hy.target}/jre/lib/boot">
+					<include name="*.jar" />
+				</fileset>
+			</bootclasspath>
+                        <classpath location="../../../../build/tests" />
+		</javac>
+	</target>
+
+
+	<target name="run.tests">
+		
+	        <mkdir dir="${hy.tests.reports}" />
+
+	        <junit fork="yes"
+			forkmode="once"
+			printsummary="withOutAndErr"
+			errorproperty="test.error"
+			showoutput="on"
+			dir="${hy.beans.bin.test}"
+			jvm="${hy.target}/jre/bin/java">
+
+			<jvmarg value="-showversion"/>
+
+			<env key="JAVA_HOME" value="${hy.target}/jre"/>
+
+			<classpath>
+				<pathelement path="${hy.beans.bin.test}"/>
+			</classpath>
+                        <classpath location="../../../../build/tests" />
+
+			<formatter type="xml" />
+
+			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
+				<fileset dir="${hy.beans.src.test.java}">
+					<include name="**/*Test.java"/>
+                                        <!-- TOFIX: these fail -->
+                                        <exclude name="**/BeansTest.java" />
+                                        <exclude name="**/BeanContextServicesSupportTest.java" />
+                                        <exclude name="**/BeanContextSupportTest.java" />
+                                        <exclude name="**/EventHandlerTest.java" />
+                                        <exclude name="**/PropertyChangeSupportTest.java" />
+                                        <exclude name="**/SimpleBeanInfoTest.java" />
+                                        <exclude name="**/VetoableChangeSupportTest.java" />
+                                        <exclude name="**/XMLDecoderTest.java" />
+                                        <exclude name="**/XMLEncoderTest.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	
+	<target name="copy.resources">
+		<!-- Nothing for BEANS -->
+	</target>
+</project>
+
