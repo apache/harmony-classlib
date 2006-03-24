@@ -20,8 +20,8 @@
 
 SHAREDSUB=$(SHARED)launcher\# comment to avoid \ being treated as continuation
 EXENAME=$(EXEPATH)javaw.exe
-BUILDFILES = $(SHAREDSUB)launcher_copyright.obj main.obj winmain.obj \
-        $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
+BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \
+        winmain.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
 VIRTFILES = javaw.res
 MDLLIBFILES =  ..\lib\hyprt.lib ..\lib\hythr.lib 
 EXEFLAGS=$(guilflags) -subsystem:windows

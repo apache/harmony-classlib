@@ -26,10 +26,11 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = \
   $(SHAREDSUB)thread_copyright.obj thrhelp.obj thrspinlock.obj hythread.obj \
   $(SHAREDSUB)hythreadinspect.obj $(SHAREDSUB)rwmutex.obj thrdsup.obj \
-  thrprof.obj
+  $(SHAREDSUB)thrprof.obj
 
 # TOFIX $(LIBBASE).def should be a dependency on all libs
 VIRTFILES = $(LIBBASE).res
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 
 MDLLIBFILES = ..\lib\hypool.lib ..\lib\hycommon.lib

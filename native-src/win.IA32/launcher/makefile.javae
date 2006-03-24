@@ -22,8 +22,8 @@ SHAREDSUB=$(SHARED)launcher\# comment to avoid \ being treated as continuation
 EXENAME=$(EXEPATH)java.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
-BUILDFILES = $(SHAREDSUB)launcher_copyright.obj cmain.obj main.obj \
-        $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
+BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
+        $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
 VIRTFILES = java.res
 MDLLIBFILES = ..\lib\hyprt.lib ..\lib\hythr.lib 
 EXEFLAGS=$(conlflags) -subsystem:console

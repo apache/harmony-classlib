@@ -27,8 +27,9 @@ HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\zlib\dist \
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-	$(SHAREDSUB)archive_copyright.obj $(SHAREDSUB)jclcrc32.obj zip.obj \
-	$(SHAREDSUB)adler32.obj inflater.obj jarfile.obj deflater.obj \
+	$(SHAREDSUB)archive_copyright.obj $(SHAREDSUB)jclcrc32.obj \
+	$(SHAREDSUB)zip.obj $(SHAREDSUB)adler32.obj $(SHAREDSUB)inflater.obj \
+	$(SHAREDSUB)jarfile.obj $(SHAREDSUB)deflater.obj \
 	$(SHAREDSUB)archiveglob.obj
 
 VIRTFILES = $(LIBBASE).res

@@ -29,11 +29,12 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 BUILDFILES = \
   $(SHAREDSUB)port_copyright.obj hycpu.obj $(SHAREDSUB)hyerror.obj \
   hyerrorhelpers.obj $(SHAREDSUB)hyexit.obj hyfile.obj hyfiletext.obj \
-  $(SHAREDSUB)hygp.obj hyipcmutex.obj hymem.obj hymmap.obj hynls.obj \
-  hynlshelpers.obj hyosdump.obj hyport.obj $(SHAREDSUB)hyportcontrol.obj \
-  hyportptb.obj hyshmem.obj hyshsem.obj hysignal.obj hysl.obj hysock.obj \
-  hystr.obj $(SHAREDSUB)hystrftime.obj $(SHAREDSUB)hystsl.obj hysysinfo.obj \
-  hytime.obj $(SHAREDSUB)hytlshelpers.obj hytty.obj hyvmem.obj
+  $(SHAREDSUB)hygp.obj hyipcmutex.obj hymem.obj hymmap.obj \
+  $(SHAREDSUB)hynls.obj hynlshelpers.obj hyosdump.obj $(SHAREDSUB)hyport.obj \
+  $(SHAREDSUB)hyportcontrol.obj hyportptb.obj hyshmem.obj hyshsem.obj \
+  hysignal.obj hysl.obj hysock.obj $(SHAREDSUB)hystr.obj \
+  $(SHAREDSUB)hystrftime.obj $(SHAREDSUB)hystsl.obj hysysinfo.obj hytime.obj \
+  $(SHAREDSUB)hytlshelpers.obj hytty.obj hyvmem.obj
 
 VIRTFILES = hyprt.res
 

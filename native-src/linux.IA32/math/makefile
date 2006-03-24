@@ -22,7 +22,7 @@ CFLAGS += -fpic -I$(SHARED)common -I../zlib -I../zip -I../fdlibm
 
 BUILDFILES = \
 	$(SHAREDSUB)math_copyright.o $(SHAREDSUB)fltparse.o \
-	$(SHAREDSUB)mathglob.o $(SHAREDSUB)dblparse.o bigint.o \
+	$(SHAREDSUB)mathglob.o $(SHAREDSUB)dblparse.o $(SHAREDSUB)bigint.o \
 	$(SHAREDSUB)cbigint.o
 
 MDLLIBFILES = \

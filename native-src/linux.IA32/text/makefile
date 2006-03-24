@@ -19,7 +19,7 @@
 include ../makefile.include
 
 CFLAGS += -fpic -I../zlib -I../zip -I../fdlibm 
-BUILDFILES = text_copyright.o BidiWrapper.o
+BUILDFILES = text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
 MDLLIBFILES = \
 	libicuuc.so.34 \

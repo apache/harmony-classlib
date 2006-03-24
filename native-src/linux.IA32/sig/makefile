@@ -19,7 +19,7 @@
 include ../makefile.include
 
 CFLAGS += -fpic
-BUILDFILES = hysig_copyright.o hysiglinux.o hysigunix.o
+BUILDFILES = $(SHAREDSUB)hysig_copyright.o hysiglinux.o hysigunix.o
 DLLNAME = ../libhysig.so
 
 include ../rules.mk

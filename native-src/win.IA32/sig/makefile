@@ -18,10 +18,11 @@
 
 !include <..\defines.mak>
 
+SHAREDSUB=$(SHARED)sig\# comment to avoid \ being treated as continuation
 LIBBASE=hysig
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
-BUILDFILES = hysig_copyright.obj hysigwin.obj
+BUILDFILES = $(SHAREDSUB)hysig_copyright.obj hysigwin.obj
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 VIRTFILES = $(LIBBASE).res
 DLLBASE=0x13100000

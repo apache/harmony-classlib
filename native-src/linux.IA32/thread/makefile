@@ -23,7 +23,7 @@ CFLAGS += -fpic
 BUILDFILES = \
 	$(SHAREDSUB)thread_copyright.o thrhelp.o thrspinlock.o hythread.o \
 	$(SHAREDSUB)hythreadinspect.o linuxonexit.o priority.o rasthrsup.o \
-	$(SHAREDSUB)rwmutex.o thrcreate.o thrdsup.o thrprof.o
+	$(SHAREDSUB)rwmutex.o thrcreate.o thrdsup.o $(SHAREDSUB)thrprof.o
 
 SYSLIBFILES = -lpthread
 MDLLIBFILES = ../lib/libhypool.a ../lib/libhycommon.a

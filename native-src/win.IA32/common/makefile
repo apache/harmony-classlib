@@ -22,8 +22,9 @@ SHAREDSUB=$(SHARED)common\# comment to avoid \ being treated as continuation
 LIBNAME=$(LIBPATH)hycommon.lib
 
 BUILDFILES = \
-	$(SHAREDSUB)libglob.obj iohelp.obj locklbl.obj lock386.obj \
-	utf8decode.obj utf8encode.obj
+	$(SHAREDSUB)libglob.obj $(SHAREDSUB)iohelp.obj \
+	locklbl.obj lock386.obj \
+	$(SHAREDSUB)utf8decode.obj $(SHAREDSUB)utf8encode.obj
 
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\zip /I..\fdlibm
 

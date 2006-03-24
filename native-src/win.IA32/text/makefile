@@ -24,7 +24,7 @@ DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\zip /I..\fdlibm
-BUILDFILES = text_copyright.obj BidiWrapper.obj
+BUILDFILES = text_copyright.obj $(SHAREDSUB)BidiWrapper.obj
 VIRTFILES = hytext.res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 

@@ -28,15 +28,16 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
   $(SHAREDSUB)luni_copyright.obj $(SHAREDSUB)file.obj procimpl.obj \
-  $(SHAREDSUB)oos.obj $(SHAREDSUB)fileis.obj simpl.obj \
+  $(SHAREDSUB)oos.obj $(SHAREDSUB)fileis.obj $(SHAREDSUB)simpl.obj \
   $(SHAREDSUB)psimpl2.obj nethelp.obj $(SHAREDSUB)floatbits.obj \
-  $(SHAREDSUB)rafile.obj $(SHAREDSUB)ois.obj helpers.obj math.obj \
-  luniglob.obj $(SHAREDSUB)proxy.obj $(SHAREDSUB)netif.obj process.obj \
-  bigint.obj $(SHAREDSUB)osc.obj socket.obj inetadds.obj \
-  $(SHAREDSUB)pssimpl.obj $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj \
-  $(SHAREDSUB)pmsimpl.obj pdsimpl.obj $(SHAREDSUB)fileos.obj \
-  OSFileSystemWin32.obj $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj \
-  OSMemory.obj OSNetworkSystem.obj OSNetworkSystemWin32.obj
+  $(SHAREDSUB)rafile.obj $(SHAREDSUB)ois.obj helpers.obj $(SHAREDSUB)math.obj \
+  $(SHAREDSUB)luniglob.obj $(SHAREDSUB)proxy.obj $(SHAREDSUB)netif.obj \
+  $(SHAREDSUB)process.obj $(SHAREDSUB)bigint.obj $(SHAREDSUB)osc.obj \
+  $(SHAREDSUB)socket.obj $(SHAREDSUB)inetadds.obj $(SHAREDSUB)pssimpl.obj \
+  $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj $(SHAREDSUB)pmsimpl.obj \
+  pdsimpl.obj $(SHAREDSUB)fileos.obj OSFileSystemWin32.obj \
+  $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj OSMemory.obj \
+  OSNetworkSystem.obj OSNetworkSystemWin32.obj
 
 VIRTFILES = hyluni.res
 

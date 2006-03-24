@@ -18,7 +18,7 @@
 
 include ../makefile.include
 
-BUILDFILES = pool.o $(SHAREDSUB)pool_cap.o
+BUILDFILES = $(SHAREDSUB)pool.o $(SHAREDSUB)pool_cap.o
 LIBNAME = $(LIBPATH)libhypool.a
 
 include ../rules.mk

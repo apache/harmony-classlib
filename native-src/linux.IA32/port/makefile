@@ -24,11 +24,11 @@ BUILDFILES = \
 	$(SHAREDSUB)port_copyright.o hycpu.o $(SHAREDSUB)hyerror.o \
 	hyerrorhelpers.o $(SHAREDSUB)hyexit.o hyfile.o hyfiletext.o \
 	$(SHAREDSUB)hygp.o hyipcmutex.o hymem.o \
-	hymmap.o hynls.o hynlshelpers.o hyosdump.o hyport.o \
-	$(SHAREDSUB)hyportcontrol.o hyportptb.o hysharedhelper.o hyshmem.o \
-	hyshsem.o hysignal.o hysl.o hysock.o hystr.o $(SHAREDSUB)hystrftime.o \
-	$(SHAREDSUB)hystsl.o hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o \
-	hytty.o hyvmem.o
+	hymmap.o $(SHAREDSUB)hynls.o hynlshelpers.o hyosdump.o \
+	$(SHAREDSUB)hyport.o $(SHAREDSUB)hyportcontrol.o hyportptb.o \
+	hysharedhelper.o hyshmem.o hyshsem.o hysignal.o hysl.o hysock.o \
+	$(SHAREDSUB)hystr.o $(SHAREDSUB)hystrftime.o $(SHAREDSUB)hystsl.o \
+	hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o hytty.o hyvmem.o
 
 MDLLIBFILES = ../libhythr.so ../lib/libhycommon.a ../libhysig.so
 

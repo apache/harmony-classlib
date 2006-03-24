@@ -20,9 +20,9 @@ include ../makefile.include
 
 CFLAGS += -fpic -I$(SHARED)common -I../zlib/dist -I../zip -I../fdlibm
 
-BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o zip.o \
-	$(SHAREDSUB)adler32.o inflater.o jarfile.o deflater.o \
-	$(SHAREDSUB)archiveglob.o
+BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
+	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
+	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
 
 MDLLIBFILES = \
 	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \

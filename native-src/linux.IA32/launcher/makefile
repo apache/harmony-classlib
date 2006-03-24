@@ -18,8 +18,9 @@
 
 include ../makefile.include
 
-BUILDFILES = main.o cmain.o $(SHAREDSUB)launcher_copyright.o \
-	$(SHAREDSUB)strbuf.o $(SHAREDSUB)libhlp.o  
+BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
+	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
+	$(SHAREDSUB)libhlp.o  
 MDLLIBFILES = ../libhyprt.so ../libhythr.so
 EXENAME = $(EXEPATH)java
 

@@ -27,7 +27,7 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
   $(SHAREDSUB)math_copyright.obj $(SHAREDSUB)fltparse.obj \
-  $(SHAREDSUB)mathglob.obj $(SHAREDSUB)dblparse.obj bigint.obj \
+  $(SHAREDSUB)mathglob.obj $(SHAREDSUB)dblparse.obj $(SHAREDSUB)bigint.obj \
   $(SHAREDSUB)cbigint.obj
 
 VIRTFILES = $(LIBBASE).res

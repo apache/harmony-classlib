@@ -20,6 +20,6 @@
 
 SHAREDSUB=$(SHARED)pool\# comment to avoid \ being treated as continuation
 LIBNAME=$(LIBPATH)hypool.lib
-BUILDFILES = pool.obj $(SHAREDSUB)pool_cap.obj
+BUILDFILES = $(SHAREDSUB)pool.obj $(SHAREDSUB)pool_cap.obj
 
 !include <..\rules.mak>
