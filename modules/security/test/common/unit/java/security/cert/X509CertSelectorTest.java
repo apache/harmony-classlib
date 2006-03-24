@@ -22,8 +22,6 @@
 package java.security.cert;
 
 import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -2938,6 +2936,25 @@ public class X509CertSelectorTest extends TestCase {
                                     selector.match((X509Certificate) null));
         assertTrue("The certificate should mathc the selector", 
                                     selector.match(cert));
+    }
+
+    /**
+     * @tests java.security.cert.X509CertSelector#match(java.security.cert.Certificate)
+     */
+    public void test_matchLjava_security_cert_Certificate() {
+
+        // Regression for HARMONY-186
+        TestCert cert = new TestCert();
+        cert.setKeyUsage(new boolean[] { true, false, true, false, false,
+                false, false, false, false });
+
+        X509CertSelector certSelector = new X509CertSelector();
+
+        certSelector.setKeyUsage(new boolean[] { true, false, true });
+        assertTrue("Assert 1: ", certSelector.match(cert));
+
+        certSelector.setKeyUsage(new boolean[] { true, true, true });
+        assertFalse("Assert 2: ", certSelector.match(cert));
     }
 
     /**
