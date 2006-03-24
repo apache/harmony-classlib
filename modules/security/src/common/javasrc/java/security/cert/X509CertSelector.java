@@ -909,7 +909,9 @@ public class X509CertSelector implements CertSelector {
             boolean[] ku = cert.getKeyUsage();
             if (ku != null) {
                 int i = 0;
-                for (; i<ku.length; i++) {
+                int min_length = (ku.length < keyUsage.length) ? ku.length
+                        : keyUsage.length;
+                for (; i < min_length; i++) {
                     if (keyUsage[i] && !ku[i]) {
                         // the specified keyUsage allows,
                         // but certificate does not.
