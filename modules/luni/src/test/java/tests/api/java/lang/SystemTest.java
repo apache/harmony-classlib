@@ -271,7 +271,7 @@ public class SystemTest extends junit.framework.TestCase {
 		// Test for method void java.lang.System.runFinalizersOnExit(boolean)
 		// Can we call the method at least?
 		try {
-			System.runFinalizersOnExit(true);
+			System.runFinalizersOnExit(false);
 		} catch (Throwable t) {
 			fail("Failed to set runFinalizersOnExit");
 		}
