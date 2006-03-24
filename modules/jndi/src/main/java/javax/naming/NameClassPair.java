@@ -40,7 +40,7 @@ public class NameClassPair implements Serializable {
      * -------------------------------------------------------------------
      */
 
-    // J2SE 1.4.2
+    // J2SE 1.5.0
     private static final long serialVersionUID = 5620776610160863339L;
 
     /*
@@ -65,6 +65,12 @@ public class NameClassPair implements Serializable {
      */
     private String className;
 
+	/**
+	 * 
+	 * @serial
+	 */
+	private String fullName;
+
     /**
      * This flag indicates whether the name s used in a naming service is relative
      * to the context. It is set by setRelative and is not derived. This field has
@@ -75,7 +81,7 @@ public class NameClassPair implements Serializable {
      */
     private boolean isRel;
 
-    /*
+	/*
      * -------------------------------------------------------------------
      * Constructors
      * -------------------------------------------------------------------
@@ -102,9 +108,13 @@ public class NameClassPair implements Serializable {
      * @param relative  a relative flag
      */
     public NameClassPair(String name, String className, boolean relative) {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
         this.name = name;
         this.className = className;
         this.isRel = relative;
+        this.fullName = null;
     }
 
     /*
@@ -155,6 +165,9 @@ public class NameClassPair implements Serializable {
      * @param name  a name used in naming service
      */
     public void setName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
         this.name = name;
     }
 
@@ -165,6 +178,30 @@ public class NameClassPair implements Serializable {
      */
     public void setRelative(boolean relative) {
         this.isRel = relative;
+    }
+
+    /**
+     * Returns the value of the full name field which may be null.
+     * 
+     * @return the value of the full name field which may be null.
+     *
+     * @throws UnsupportedOperationException
+     */
+    public String getNameInNamespace() {
+        if (fullName == null) {
+            throw new UnsupportedOperationException(
+                    "full name doesn't apply to this binding");
+        }
+        return fullName;
+    }
+
+    /**
+     * Set the full name of this object. The argument can be null.
+     * 
+     * @param fullName  a full name
+     */
+    public void setNameInNamespace(String fullName) {
+        this.fullName = fullName;
     }
 
     /*
