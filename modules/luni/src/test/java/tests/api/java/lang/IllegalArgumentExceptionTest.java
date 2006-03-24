@@ -20,7 +20,7 @@ public class IllegalArgumentExceptionTest extends junit.framework.TestCase {
 	class TestThread implements Runnable {
 		public void run() {
 			try {
-				Thread.currentThread().sleep(5000);
+				Thread.sleep(5000);
 			} catch (Exception e) {
 				System.out.println("Unable to start thread");
 			}

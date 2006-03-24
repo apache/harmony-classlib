@@ -291,12 +291,12 @@ public class ZipEntryTest extends junit.framework.TestCase {
 	public void test_setMethodI() {
 		// Test for method void java.util.zip.ZipEntry.setMethod(int)
 		zentry = zfile.getEntry("File3.txt");
-		zentry.setMethod(zentry.STORED);
+		zentry.setMethod(ZipEntry.STORED);
 		assertTrue("Failed to set compression method",
-				zentry.getMethod() == zentry.STORED);
-		zentry.setMethod(zentry.DEFLATED);
+				zentry.getMethod() == ZipEntry.STORED);
+		zentry.setMethod(ZipEntry.DEFLATED);
 		assertTrue("Failed to set compression method",
-				zentry.getMethod() == zentry.DEFLATED);
+				zentry.getMethod() == ZipEntry.DEFLATED);
 		try {
 			int error = 1;
 			zentry = new ZipEntry("test.tst");

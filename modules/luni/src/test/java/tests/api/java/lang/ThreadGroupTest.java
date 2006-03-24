@@ -1489,7 +1489,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	protected void myassertTrue(String msg, boolean b) {
 		// This method is defined here just to solve a visibility problem
 		// of protected methods with inner types
-		this.assertTrue(msg, b);
+		assertTrue(msg, b);
 	}
 
 	private ThreadGroup getRootThreadGroup() {

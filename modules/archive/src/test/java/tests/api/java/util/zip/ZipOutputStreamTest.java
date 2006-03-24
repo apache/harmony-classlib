@@ -174,7 +174,7 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
 	public void test_setMethodI() {
 		try {
 			ZipEntry ze = new ZipEntry("test");
-			zos.setMethod(zos.STORED);
+			zos.setMethod(ZipOutputStream.STORED);
 			CRC32 tempCrc = new CRC32();
 			tempCrc.update(data.getBytes());
 			ze.setCrc(tempCrc.getValue());
@@ -183,7 +183,7 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
 			zos.write(data.getBytes());
 			zos.closeEntry();
 			long csize = ze.getCompressedSize();
-			zos.setMethod(zos.DEFLATED);
+			zos.setMethod(ZipOutputStream.DEFLATED);
 			zos.putNextEntry(ze = new ZipEntry("test2"));
 			zos.write(data.getBytes());
 			zos.closeEntry();

@@ -51,11 +51,11 @@ public class ServerSocketTest extends SocketTestCase {
 		public void run() {
 			try {
 				 // Go to sleep so the server can setup and wait for connection
-				Thread.currentThread().sleep(1000);
+				Thread.sleep(1000);
 				cs = new Socket(InetAddress.getLocalHost().getHostName(), port);
 				// Sleep again to allow server side processing. Thread is
 				// stopped by server.
-				Thread.currentThread().sleep(10000);
+				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 				return;
 			} catch (Throwable e) {
@@ -914,7 +914,7 @@ public class ServerSocketTest extends SocketTestCase {
 		t = new Thread(new SSClient(port), "SSClient");
 		t.start();
 		try {
-			Thread.currentThread().sleep(1000);
+			Thread.sleep(1000);
 		} catch (java.lang.InterruptedException e) {
 			System.out.println("Exception during startClinet()" + e.toString());
 		}

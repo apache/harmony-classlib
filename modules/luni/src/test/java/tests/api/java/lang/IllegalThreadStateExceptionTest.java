@@ -20,7 +20,7 @@ public class IllegalThreadStateExceptionTest extends junit.framework.TestCase {
 	class TestThread implements Runnable {
 		public void run() {
 			try {
-				Thread.currentThread().sleep(1000);
+				Thread.sleep(1000);
 			} catch (Exception e) {
 				System.out.println("Unable to start thread");
 			}

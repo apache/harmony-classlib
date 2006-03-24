@@ -221,17 +221,17 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	 * @tests java.net.URLConnection#getFileNameMap()
 	 */
 	public void test_getFileNameMap() {
-		uc.setFileNameMap(new FileNameMap() {
+		URLConnection.setFileNameMap(new FileNameMap() {
 			public String getContentTypeFor(String fileName) {
 				return "Spam!";
 			}
 		});
 		try {
-			assertTrue("Incorrect FileNameMap returned", uc.getFileNameMap()
+			assertTrue("Incorrect FileNameMap returned", URLConnection.getFileNameMap()
 					.getContentTypeFor(null).equals("Spam!"));
 		} finally {
 			// unset the map so other tests don't fail
-			uc.setFileNameMap(null);
+			URLConnection.setFileNameMap(null);
 		}
 	}
 

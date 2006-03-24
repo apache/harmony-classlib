@@ -69,12 +69,12 @@ public class URLTest extends junit.framework.TestCase {
 		}
 		try {
 			u = new URL("http://www.yahoo.com");
-			u.setURLStreamHandlerFactory(new TestFactory());
+			URL.setURLStreamHandlerFactory(new TestFactory());
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
 		try {
-			u.setURLStreamHandlerFactory(new TestFactory());
+			URL.setURLStreamHandlerFactory(new TestFactory());
 			fail("Can only set Factory once.");
 		} catch (Error e) {
 		}

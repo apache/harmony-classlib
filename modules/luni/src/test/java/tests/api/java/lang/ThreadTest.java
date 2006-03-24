@@ -245,7 +245,7 @@ public class ThreadTest extends junit.framework.TestCase {
 	public void test_activeCount() {
 		// Test for method int java.lang.Thread.activeCount()
 		Thread t = new Thread(new SimpleThread(1));
-		int active = t.activeCount();
+		int active = Thread.activeCount();
 		assertTrue("Incorrect read made: " + active, active > 0);
 		t.start();
 		try {
@@ -840,7 +840,7 @@ public class ThreadTest extends junit.framework.TestCase {
 		long stime = 0, ftime = 0;
 		try {
 			stime = System.currentTimeMillis();
-			Thread.currentThread().sleep(1000);
+			Thread.sleep(1000);
 			ftime = System.currentTimeMillis();
 		} catch (InterruptedException e) {
 			fail("Unexpected interrupt received");
@@ -858,7 +858,7 @@ public class ThreadTest extends junit.framework.TestCase {
 		long stime = 0, ftime = 0;
 		try {
 			stime = System.currentTimeMillis();
-			Thread.currentThread().sleep(1000, 999999);
+			Thread.sleep(1000, 999999);
 			ftime = System.currentTimeMillis();
 		} catch (InterruptedException e) {
 			fail("Unexpected interrupt received");

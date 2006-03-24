@@ -81,7 +81,7 @@ public class ProcessTest extends junit.framework.TestCase {
 			String str3 = "Here is some more data.\n";
 			os.write(str1.getBytes());
 			try {
-				Thread.currentThread().sleep(1000);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

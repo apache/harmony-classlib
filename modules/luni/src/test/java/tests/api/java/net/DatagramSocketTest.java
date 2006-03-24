@@ -734,7 +734,7 @@ public class DatagramSocketTest extends SocketTestCase {
 				InetAddress localHost = null;
 				try {
 					localHost = InetAddress.getLocalHost();
-					Thread.currentThread().sleep(1000);
+					Thread.sleep(1000);
 					DatagramSocket sds = new DatagramSocket(Support_PortManager
 							.getNextPort());
 					DatagramPacket rdp = new DatagramPacket("Test String"
@@ -910,7 +910,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			try {
 				Thread.sleep(500);
 				ds.send(dp);
-				Thread.currentThread().sleep(5000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				ds.close();
 				assertTrue("Incorrect data sent: " + retval, retval

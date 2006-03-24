@@ -309,7 +309,7 @@ public class BeanContextServicesSupport extends BeanContextSupport
             for (Iterator it = this.services.keySet().iterator(); it.hasNext(); ) {
                 Object key = it.next();
                 
-                if (this.getChildSerializable(key) != null) {
+                if (BeanContextSupport.getChildSerializable(key) != null) {
                     oos.writeObject(this.services.get(key));
                 }
             }

@@ -125,8 +125,7 @@ public class Support_HttpServer {
 					// release the lock so the tests will finish running
 					if (!shuttingDown) {
 						e.printStackTrace();
-						testcase
-								.fail("Test server error on HTTP Server on port "
+						TestCase.fail("Test server error on HTTP Server on port "
 										+ port + ": " + e);
 					}
 					synchronized (lock) {
@@ -228,26 +227,25 @@ public class Support_HttpServer {
 					}
 					if (lline.startsWith("content-length")) {
 						if (contentLength)
-							testcase.fail("Duplicate Content-Length: " + line);
+							TestCase.fail("Duplicate Content-Length: " + line);
 						contentLength = true;
 						length = Integer.parseInt(line.substring(line
 								.indexOf(' ') + 1));
 					}
 					if (line.startsWith("transfer-encoding")) {
 						if (chunked)
-							testcase.fail("Duplicate Transfer-Encoding: "
+							TestCase.fail("Duplicate Transfer-Encoding: "
 									+ line);
 						chunked = true;
 						String encoding = line.substring(line.indexOf(' ') + 1);
 						if ("chunked".equals(encoding))
-							testcase.fail("Unknown Transfer-Encoding: "
+							TestCase.fail("Unknown Transfer-Encoding: "
 									+ encoding);
 					}
 
 				}
 				if (contentLength && chunked)
-					testcase
-							.fail("Found both Content-Length and Transfer-Encoding");
+					TestCase.fail("Found both Content-Length and Transfer-Encoding");
 
 				// call the test function based on the requested resource
 				if (resourceName.equals(CHUNKEDTEST))
@@ -407,9 +405,9 @@ public class Support_HttpServer {
 				String header = (String) headers.elementAt(i);
 				if (header.startsWith("header1:")) {
 					found++;
-					testcase.assertTrue("unexpected header: " + header,
+					TestCase.assertTrue("unexpected header: " + header,
 							found == 1);
-					testcase.assertTrue("invalid header: " + header,
+					TestCase.assertTrue("invalid header: " + header,
 							"header1: value2".equals(header));
 				}
 			}

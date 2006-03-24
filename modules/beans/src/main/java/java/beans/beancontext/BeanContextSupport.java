@@ -1188,7 +1188,7 @@ public class BeanContextSupport extends BeanContextChildSupport
         for (Iterator it = coll.iterator(); it.hasNext(); ) {
             Object l = it.next();
             
-            if (this.getChildSerializable(l) != null) {
+            if (getChildSerializable(l) != null) {
                 oos.writeObject(l);
             }
         }

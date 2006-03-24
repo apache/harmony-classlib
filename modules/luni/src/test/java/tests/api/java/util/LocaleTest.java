@@ -73,7 +73,7 @@ public class LocaleTest extends junit.framework.TestCase {
 		// java.util.Locale.getAvailableLocales()
 		// Assumes there will generally be about 100+ available locales...
 		try {
-			Locale[] locales = testLocale.getAvailableLocales();
+			Locale[] locales = Locale.getAvailableLocales();
 			assertTrue("Wrong number of locales: ", locales.length > 100);
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
@@ -235,7 +235,7 @@ public class LocaleTest extends junit.framework.TestCase {
 		// Test for method java.lang.String []
 		// java.util.Locale.getISOLanguages()
 		// Assumes always at least 131 ISOlanguages...
-		String[] isoLang = testLocale.getISOLanguages();
+		String[] isoLang = Locale.getISOLanguages();
 		int length = isoLang.length;
 		assertTrue("Random element in wrong format.", (isoLang[length / 2]
 				.length() == 2)
