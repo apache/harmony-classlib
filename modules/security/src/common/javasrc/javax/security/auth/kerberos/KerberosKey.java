@@ -39,6 +39,8 @@ import org.apache.harmony.security.utils.Array;
  */
 public class KerberosKey implements SecretKey, Destroyable {
 
+    private static final long serialVersionUID = -4625402278148246993L;
+    
     //principal    
     private KerberosPrincipal principal;
 

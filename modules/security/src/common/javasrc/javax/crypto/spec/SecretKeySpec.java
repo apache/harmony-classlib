@@ -31,6 +31,11 @@ import javax.crypto.SecretKey;
  */
 public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
 
+    // The 5.0 spec. doesn't declare this serialVersionUID field
+    // In order to be compatible it is explicitly declared here
+    // for details see HARMONY-233
+    private static final long serialVersionUID = 6577238317307289933L;
+
     private final byte[] key;
     private final String algorithm;
     private final String format = "RAW";
