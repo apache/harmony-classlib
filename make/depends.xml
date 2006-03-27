@@ -54,6 +54,12 @@
 			<param name="dest" value="${junit.jar}" />
 		</antcall>
 
+		<antcall target="check-one-jar">
+			<param name="src" value="${bcprov.url}" />
+			<param name="dest" value="${signed.bcprov.jar}" />
+		</antcall>
+		<uptodate property="bcprov.uptodate" srcfile="${signed.bcprov.jar}" targetfile="${bcprov.jar}" />
+		<antcall target="create-unsigned-bcprov-jar" />
 	</target>
 
 	<target name="download" description="Download required jars">
@@ -86,6 +92,11 @@
 			<param name="dest" value="${junit.jar}" />
 		</antcall>
 
+		<mkdir dir="${bcprov.dir}" />
+		<antcall target="download-one-jar">
+			<param name="src" value="${bcprov.url}" />
+			<param name="dest" value="${signed.bcprov.jar}" />
+		</antcall>
 	</target>
 
 	<target name="download-one-jar">
@@ -110,8 +121,20 @@ should be downloaded to:
 
   ${dest}
 
-(Run "ant -f make/depends.xml download" to automatically fetch dependencies.)
+Run  "ant -f make/depends.xml download"  to automatically fetch dependencies.
+Note: Some of Harmony's dependencies are licensed under terms other than the ASLv2.
 </fail>
 	</target>
 
+	<target name="create-unsigned-bcprov-jar" unless="bcprov.uptodate">
+		<delete dir="${bcprov.dir}/temp" />
+		<unzip src="${signed.bcprov.jar}" dest="${bcprov.dir}/temp">
+			<patternset>
+				<exclude name="META-INF/BCKEY.SF" />
+			</patternset>
+		</unzip>
+		<jar destfile="${bcprov.jar}" basedir="${bcprov.dir}/temp"
+          manifest="${bcprov.dir}/temp/META-INF/MANIFEST.MF" />
+		<delete dir="${bcprov.dir}/temp" />
+	</target>
 </project>
