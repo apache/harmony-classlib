@@ -113,7 +113,12 @@ public class TestSearchResult extends TestCase {
 		log.setMethod("testSearchResult_NullAttributes()");
 		SearchResult r;
 
-		r = new SearchResult(null, null, null);
+		try {
+			r = new SearchResult(null, null, null);
+		} 
+		catch (IllegalArgumentException e) {
+			// Expected, name cannot be null
+		}
 	}
 
 	public void testGetterAndSetter() {

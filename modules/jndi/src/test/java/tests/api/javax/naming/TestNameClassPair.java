@@ -59,29 +59,29 @@ public class TestNameClassPair extends TestCase {
 	public void testConstructor_NullValue() {
 		NameClassPair p;
 
-		p = new NameClassPair(null, null);
-		assertTrue(null == p.getName());
+		p = new NameClassPair("name1", null);
+		assertEquals("name1", p.getName());
 		assertTrue(null == p.getClassName());
 	}
 
 	public void testConstructor_DefaultRelativeValue() {
 		NameClassPair p;
 
-		p = new NameClassPair(null, null);
+		p = new NameClassPair("name1", null);
 		assertEquals(true, p.isRelative());
 	}
 
 	public void testToString() {
 		NameClassPair p;
 
-		p = new NameClassPair(null, null, false);
+		p = new NameClassPair("name1", null, false);
 		assertTrue(p.toString().startsWith("(not relative"));
 	}
 
 	public void testGetSetName() {
 		NameClassPair p;
 
-		p = new NameClassPair(null, null, true);
+		p = new NameClassPair("name1", null, true);
 		p.setName("aname");
 		assertEquals("aname", p.getName());
 	}
@@ -89,7 +89,7 @@ public class TestNameClassPair extends TestCase {
 	public void testGetSetClassName() {
 		NameClassPair p;
 
-		p = new NameClassPair(null, null, true);
+		p = new NameClassPair("name1", null, true);
 		p.setClassName("aclassname");
 		assertEquals("aclassname", p.getClassName());
 	}
@@ -97,9 +97,8 @@ public class TestNameClassPair extends TestCase {
 	public void testGetSetRelative() {
 		NameClassPair p;
 
-		p = new NameClassPair(null, null, true);
+		p = new NameClassPair("name1", null, true);
 		p.setRelative(false);
 		assertEquals(false, p.isRelative());
 	}
-
 }

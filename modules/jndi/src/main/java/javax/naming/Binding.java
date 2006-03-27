@@ -53,11 +53,10 @@ public class Binding extends NameClassPair {
 
     /**
      * Construct a <code>Binding</code> from a name and a class.
-     * The name and class parameters may be null.
      * Relative flag is true.
      *
-     * @param name  a name
-     * @param obj   an object bound with the name
+     * @param name  a name, may not be <code>null</code>.
+     * @param obj   an object bound with the name, may be <code>null</code>.
      */
     public Binding(String name, Object obj) {
         this(name, null, obj, true);
@@ -65,10 +64,10 @@ public class Binding extends NameClassPair {
 
     /**
      * Construct a <code>Binding</code> from a name, an object and a relative
-     * flag. The name and object parameters may be null.
+     * flag.
      *
-     * @param name      a name
-     * @param obj       an object bound with the name
+     * @param name      a name, which may not be <code>null</code>.
+     * @param obj       an object bound with the name, may be <code>null</code>.
      * @param relative  a relative flag
      */
     public Binding(String name, Object obj, boolean relative) {
@@ -77,12 +76,12 @@ public class Binding extends NameClassPair {
 
     /**
      * Construct a <code>Binding</code> from a name, a class, and an object.
-     * The name, class and object parameters may be null.
+     * The class and object parameters may be null.
      * Relative flag is true.
      *
-     * @param name      a name
-     * @param className a class name
-     * @param obj       an object bound with the name
+     * @param name      a name, which may not be <code>null</code>.
+     * @param className a class name, may be <code>null</code>.
+     * @param obj       an object bound with the name, may be <code>null</code>.
      */
     public Binding(String name, String className, Object obj) {
         this(name, className, obj, true);
@@ -90,11 +89,11 @@ public class Binding extends NameClassPair {
 
     /**
      * Construct a <code>Binding</code> from a name, a class, an object and a
-     * relative flag. The name, class and object parameters may be null.
+     * relative flag. The class and object parameters may be null.
      *
-     * @param name      a name
-     * @param className a class name
-     * @param obj       an object bound with the name
+     * @param name      a name, which may not be <code>null</code>.
+     * @param className a class name, may be <code>null</code>.
+     * @param obj       an object bound with the name, may be <code>null</code>.
      * @param relative  a relative flag
      */
     public Binding(

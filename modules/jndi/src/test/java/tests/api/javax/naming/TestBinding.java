@@ -58,8 +58,9 @@ public class TestBinding extends TestCase {
 
 	public void testConstructor_NullValue() {
 		Binding p;
-		p = new Binding(null, null, null);
-		assertTrue(null == p.getName());
+
+		p = new Binding("name1", null, null);
+		assertEquals("name1", p.getName());
 		assertTrue(null == p.getClassName());
 		assertTrue(null == p.getObject());
 	}
@@ -67,14 +68,15 @@ public class TestBinding extends TestCase {
 	public void testConstructor_DefaultRelativeValue() {
 		Binding p;
 
-		p = new Binding(null, null);
+		p = new Binding("name1", null);
 		assertEquals(true, p.isRelative());
 	}
 
 	public void testToString() {
 		log.setMethod("testToString");
 		Binding p;
-		p = new Binding(null, null, false);
+
+		p = new Binding("name1", null, false);
 		assertTrue(p.toString().startsWith("(not relative"));
 		p = new Binding("name1", new Integer(3));
 		String str = p.toString();
@@ -102,15 +104,14 @@ public class TestBinding extends TestCase {
 	}
 
 	public void testGetSetName() {
-		Binding p = new Binding("name", new Integer(1));
+		Binding p;
 
+		p = new Binding("name", new Integer(1));
 		assertEquals("name", p.getName());
 		p.setName("name1");
 		assertEquals("name1", p.getName());
 		p.setName("");
 		assertEquals("", p.getName());
-		p.setName(null);
-		assertEquals(null, p.getName());
 	}
 
 	public void testGetSetClassName() {
@@ -124,10 +125,10 @@ public class TestBinding extends TestCase {
 
 	public void testGetSetRelative() {
 		Binding p;
+
 		p = new Binding("name", new Integer(1));
 		assertTrue(p.isRelative());
 		p.setRelative(false);
 		assertFalse(p.isRelative());
 	}
-
 }
