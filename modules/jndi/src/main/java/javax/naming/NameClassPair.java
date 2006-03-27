@@ -65,11 +65,11 @@ public class NameClassPair implements Serializable {
      */
     private String className;
 
-	/**
-	 * 
-	 * @serial
-	 */
-	private String fullName;
+    /**
+     *
+     * @serial
+     */
+    private String fullName;
 
     /**
      * This flag indicates whether the name s used in a naming service is relative
@@ -81,7 +81,7 @@ public class NameClassPair implements Serializable {
      */
     private boolean isRel;
 
-	/*
+    /*
      * -------------------------------------------------------------------
      * Constructors
      * -------------------------------------------------------------------
