@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 public class StringBuilderTest extends TestCase {
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.StringBuilder()
 	 */
 	public void test_Constructor() {
@@ -32,7 +32,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(16, sb.capacity());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.StringBuilder(int)
 	 */
 	public void test_ConstructorI() {
@@ -50,7 +50,7 @@ public class StringBuilderTest extends TestCase {
 		assertNotNull(new StringBuilder(0));
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.StringBuilder(CharSequence)
 	 */
 	public void test_ConstructorLjava_lang_CharSequence() {
@@ -70,7 +70,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.StringBuilder(String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
@@ -85,7 +85,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(boolean)
 	 */
 	public void test_appendZ() {
@@ -97,7 +97,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("false", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(char)
 	 */
 	public void test_appendC() {
@@ -109,7 +109,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("b", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(char[])
 	 */
 	public void test_append$C() {
@@ -127,7 +127,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(char[], int, int)
 	 */
 	public void test_append$CII() {
@@ -179,7 +179,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(CharSequence)
 	 */
 	public void test_appendLjava_lang_CharSequence() {
@@ -194,7 +194,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("null", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(CharSequence, int, int)
 	 */
 	public void test_appendLjava_lang_CharSequenceII() {
@@ -215,7 +215,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("nu", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(double)
 	 */
 	public void test_appendD() {
@@ -245,7 +245,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(String.valueOf(Double.MAX_VALUE), sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(float)
 	 */
 	public void test_appendF() {
@@ -275,7 +275,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(String.valueOf(Float.MAX_VALUE), sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(int)
 	 */
 	public void test_appendI() {
@@ -296,7 +296,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(String.valueOf(Integer.MAX_VALUE), sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(long)
 	 */
 	public void test_appendL() {
@@ -317,7 +317,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(String.valueOf(Integer.MAX_VALUE), sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(Object)'
 	 */
 	public void test_appendLjava_lang_Object() {
@@ -330,7 +330,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("null", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(String)
 	 */
 	public void test_appendLjava_lang_String() {
@@ -345,7 +345,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("null", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.append(StringBuffer)
 	 */
 	public void test_appendLjava_lang_StringBuffer() {
@@ -360,14 +360,20 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("null", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.appendCodePoint(int)'
 	 */
 	public void test_appendCodePointI() {
-		// TODO Implement Java 5 code point functionality.
+		StringBuilder sb = new StringBuilder();
+        sb.appendCodePoint(0x10000);
+        assertEquals("\uD800\uDC00", sb.toString());
+        sb.append("fixture");
+        assertEquals("\uD800\uDC00fixture", sb.toString());
+        sb.appendCodePoint(0x00010FFFF);
+        assertEquals("\uD800\uDC00fixture\uDBFF\uDFFF", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.capacity()'
 	 */
 	public void test_capacity() {
@@ -377,7 +383,7 @@ public class StringBuilderTest extends TestCase {
 		assertTrue(sb.capacity() > 16);
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.charAt(int)'
 	 */
 	public void test_charAtI() {
@@ -407,28 +413,48 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.codePointAt(int)
 	 */
 	public void test_codePointAtI() {
-		// TODO Implement Java 5 code point functionality.
+        StringBuilder sb = new StringBuilder("abc");
+        assertEquals('a', sb.codePointAt(0));
+        assertEquals('b', sb.codePointAt(1));
+        assertEquals('c', sb.codePointAt(2));
+        
+        sb = new StringBuilder("\uD800\uDC00");
+        assertEquals(0x10000, sb.codePointAt(0));
+        assertEquals('\uDC00', sb.codePointAt(1));
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.codePointBefore(int)
 	 */
 	public void test_codePointBeforeI() {
-		// TODO Implement Java 5 code point functionality.
+        StringBuilder sb = new StringBuilder("abc");
+        assertEquals('a', sb.codePointBefore(1));
+        assertEquals('b', sb.codePointBefore(2));
+        assertEquals('c', sb.codePointBefore(3));
+        
+        sb = new StringBuilder("\uD800\uDC00");
+        assertEquals(0x10000, sb.codePointBefore(2));
+        assertEquals('\uD800', sb.codePointBefore(1));
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.codePointCount(int, int)
 	 */
 	public void test_codePointCountII() {
-		// TODO Implement Java 5 code point functionality.
+        assertEquals(1, new StringBuilder("\uD800\uDC00").codePointCount(0, 2));
+        assertEquals(1, new StringBuilder("\uD800\uDC01").codePointCount(0, 2));
+        assertEquals(1, new StringBuilder("\uD801\uDC01").codePointCount(0, 2));
+        assertEquals(1, new StringBuilder("\uDBFF\uDFFF").codePointCount(0, 2));
+
+        assertEquals(3, new StringBuilder("a\uD800\uDC00b").codePointCount(0, 4));
+        assertEquals(4, new StringBuilder("a\uD800\uDC00b\uD800").codePointCount(0, 5));
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.delete(int, int)
 	 */
 	public void test_deleteII() {
@@ -472,7 +498,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.deleteCharAt(int)
 	 */
 	public void test_deleteCharAtI() {
@@ -512,7 +538,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.ensureCapacity(int)'
 	 */
 	public void test_ensureCapacityI() {
@@ -526,7 +552,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(55, sb.capacity());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.getChars(int, int, char[], int)'
 	 */
 	public void test_getCharsII$CI() {
@@ -597,7 +623,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.indexOf(String)
 	 */
 	public void test_indexOfLjava_lang_String() {
@@ -616,7 +642,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.indexOf(String, int)
 	 */
 	public void test_IndexOfStringInt() {
@@ -645,7 +671,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, boolean)
 	 */
 	public void test_insertIZ() {
@@ -687,7 +713,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, char)
 	 */
 	public void test_insertIC() {
@@ -734,7 +760,7 @@ public class StringBuilderTest extends TestCase {
 //		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, char[])'
 	 */
 	public void test_insertI$C() {
@@ -785,7 +811,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, char[], int, int)
 	 */
 	public void test_insertI$CII() {
@@ -875,7 +901,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, CharSequence)
 	 */
 	public void test_insertILjava_lang_CharSequence() {
@@ -917,7 +943,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, CharSequence, int, int)
 	 */
 	public void test_insertILjava_lang_CharSequenceII() {
@@ -998,7 +1024,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, double)
 	 */
 	public void test_insertID() {
@@ -1040,7 +1066,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, float)
 	 */
 	public void test_insertIF() {
@@ -1082,7 +1108,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, int)
 	 */
 	public void test_insertII() {
@@ -1124,7 +1150,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, long)
 	 */
 	public void test_insertIJ() {
@@ -1166,7 +1192,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, Object)
 	 */
 	public void test_insertILjava_lang_Object() {
@@ -1208,7 +1234,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.insert(int, String)
 	 */
 	public void test_insertILjava_lang_String() {
@@ -1250,7 +1276,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.lastIndexOf(String)
 	 */
 	public void test_lastIndexOfLjava_lang_String() {
@@ -1269,7 +1295,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.lastIndexOf(String, int)
 	 */
 	public void test_lastIndexOfLjava_lang_StringI() {
@@ -1298,7 +1324,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.length()
 	 */
 	public void test_length() {
@@ -1308,14 +1334,36 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(4, sb.length());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.offsetByCodePoints(int, int)'
 	 */
 	public void test_offsetByCodePointsII() {
-		// TODO Implement Java 5 code point functionality.
+        int result = new StringBuilder("a\uD800\uDC00b").offsetByCodePoints(0, 2);
+        assertEquals(3, result);
+
+        result = new StringBuilder("abcd").offsetByCodePoints(3, -1);
+        assertEquals(2, result);
+
+        result = new StringBuilder("a\uD800\uDC00b").offsetByCodePoints(0, 3);
+        assertEquals(4, result);
+
+        result = new StringBuilder("a\uD800\uDC00b").offsetByCodePoints(3, -1);
+        assertEquals(1, result);
+
+        result = new StringBuilder("a\uD800\uDC00b").offsetByCodePoints(3, 0);
+        assertEquals(3, result);
+
+        result = new StringBuilder("\uD800\uDC00bc").offsetByCodePoints(3, 0);
+        assertEquals(3, result);
+
+        result = new StringBuilder("a\uDC00bc").offsetByCodePoints(3, -1);
+        assertEquals(2, result);
+
+        result = new StringBuilder("a\uD800bc").offsetByCodePoints(3, -1);
+        assertEquals(2, result);
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.replace(int, int, String)'
 	 */
 	public void test_replaceIILjava_lang_String() {
@@ -1373,7 +1421,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.reverse()
 	 */
 	public void test_reverse() {
@@ -1395,7 +1443,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("", sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.setCharAt(int, char)
 	 */
 	public void test_setCharAtIC() {
@@ -1432,7 +1480,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.setLength(int)'
 	 */
 	public void test_setLengthI() {
@@ -1456,7 +1504,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.subSequence(int, int)
 	 */
 	public void test_subSequenceII() {
@@ -1497,7 +1545,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.substring(int)
 	 */
 	public void test_substringI() {
@@ -1531,7 +1579,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.substring(int, int)
 	 */
 	public void test_substringII() {
@@ -1572,7 +1620,7 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.toString()'
 	 */
 	public void test_toString() {
@@ -1581,7 +1629,7 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(fixture, sb.toString());
 	}
 
-	/*
+	/**
 	 * @tests java.lang.StringBuilder.trimToSize()'
 	 */
 	public void test_trimToSize() {

@@ -20,8 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.apache.harmony.luni.util.NotYetImplementedException;
-
 /**
  * <p>
  * A modifiable {@link CharSequence sequence of characters} for use in creating
@@ -78,10 +76,10 @@ public final class StringBuilder implements CharSequence, Serializable {
 
     /**
      * <p>
-     * Constructs an instance with a specificed capacity.
+     * Constructs an instance with a specified capacity.
      * </p>
      * 
-     * @param capacity The initial capicity to use.
+     * @param capacity The initial capacity to use.
      * 
      * @throws NegativeArraySizeException if the <code>capacity</code>
      *         parameter is <code>null</code>.
@@ -357,14 +355,17 @@ public final class StringBuilder implements CharSequence, Serializable {
 
     /**
      * <p>
-     * <b>NOTE - This method is currently not implemented and always throws a
-     * {@link NotYetImplementedException}.</b>
+     * Appends the encoded Unicode code point to this object. The code point is
+     * converted to a <code>char[]</code> as defined by
+     * {@link Character#toChars(int)}.
      * </p>
-     * TODO javadoc
+     * 
+     * @param codePoint The Unicode code point to encode and append.
+     * @return A reference to this object.
+     * @see Character#toChars(int)
      */
     public StringBuilder appendCodePoint(int codePoint) {
-        // TODO Implement Java 5 code point functionality.
-        throw new NotYetImplementedException();
+        return append(Character.toChars(codePoint));
     }
 
     /**
@@ -396,41 +397,57 @@ public final class StringBuilder implements CharSequence, Serializable {
 
     /**
      * <p>
-     * <b>NOTE - This method is currently NOT completely implemented and just
-     * delegates to the {@link #charAt(int)} method.</b>
+     * Retrieves the Unicode code point value at the <code>index</code>.
      * </p>
-     * TODO javadoc
+     * 
+     * @param index The index to the <code>char</code> code unit within this
+     *        object.
+     * @return The Unicode code point value.
+     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
+     *         greater than or equal to {@link #length()}.
+     * @see Character
+     * @see Character#codePointAt(char[], int, int)
      */
     public int codePointAt(int index) {
-        // TODO Implement Java 5 code point functionality.
-        return charAt(index);
+        return Character.codePointAt(buffer, index, length);
     }
 
     /**
      * <p>
-     * <b>NOTE - This method is currently NOT completely implemented and just
-     * delegates to the {@link #charAt(int)} method by retrieving the character
-     * at the preceding index.</b>
+     * Retrieves the Unicode code point value that precedes the
+     * <code>index</code>.
      * </p>
-     * TODO javadoc
+     * 
+     * @param index The index to the <code>char</code> code unit within this
+     *        object.
+     * @return The Unicode code point value.
+     * @throws IndexOutOfBoundsException if <code>index</code> is less than 1
+     *         or greater than {@link #length()}.
+     * @see Character
+     * @see Character#codePointBefore(char[], int, int)
      */
     public int codePointBefore(int index) {
-        // TODO Implement Java 5 code point functionality.
-        return codePointAt(index - 1);
+        return Character.codePointBefore(buffer, index);
     }
 
     /**
      * <p>
-     * <b>NOTE - This method is currently NOT completely implemented and just
-     * return the difference between the index parameters.</b>
+     * Calculates the number of Unicode code points between
+     * <code>beginIndex</code> and <code>endIndex</code>.
      * </p>
-     * TODO javadoc
+     * 
+     * @param beginIndex The inclusive beginning index of the subsequence.
+     * @param endIndex The exclusive end index of the subsequence.
+     * @return The number of Unicode code points in the subsequence.
+     * @throws IndexOutOfBoundsException if <code>beginIndex</code> is
+     *         negative or greater than <code>endIndex</code> or
+     *         <code>endIndex</code> is greater than {@link #length()}.
      */
     public int codePointCount(int beginIndex, int endIndex) {
-        // TODO Implement Java 5 code point functionality.
         if (beginIndex < 0 || endIndex > length || beginIndex > endIndex)
             throw new IndexOutOfBoundsException();
-        return endIndex - beginIndex;
+        return Character.codePointCount(buffer, beginIndex, endIndex
+                - beginIndex);
     }
 
     /**
@@ -470,7 +487,7 @@ public final class StringBuilder implements CharSequence, Serializable {
      * @param index The index of the character to delete.
      * @return A reference to this object.
      * @throws StringIndexOutOfBoundsException if <code>index</code> is less
-     *         than zero or is greather than or equal to the current length.
+     *         than zero or is greater than or equal to the current length.
      */
     public StringBuilder deleteCharAt(int index) {
         // check for index values past length, as 'delete' will massage them out
@@ -481,12 +498,12 @@ public final class StringBuilder implements CharSequence, Serializable {
 
     /**
      * <p>
-     * Ensures that this object has a minimum capicity available before
-     * requiring the internal buffer to be enlarged. The general policy of thi
+     * Ensures that this object has a minimum capacity available before
+     * requiring the internal buffer to be enlarged. The general policy of this
      * method is that if the <code>minimumCapacity</code> is larger than the
      * current {@link #capacity()}, then the capacity will be increased to the
      * largest value of either the <code>minimumCapacity</code> or the current
-     * capcity multiplied by two plus two. Although this is the general policy,
+     * capacity multiplied by two plus two. Although this is the general policy,
      * there is no guarantee that the capacity will change.
      * </p>
      * 
@@ -523,7 +540,7 @@ public final class StringBuilder implements CharSequence, Serializable {
      * @throws IndexOutOfBoundsException if the <code>srcBegin</code> is
      *         negative, the <code>dstBegin</code> is negative, the
      *         <code>srcBegin</code> is greater than <code>srcEnd</code>,
-     *         the <code>srcEnd</code> is greather than the current
+     *         the <code>srcEnd</code> is greater than the current
      *         {@link #length()} or <code>dstBegin + srcEnd - srcBegin</code>
      *         is greater than <code>dst.lenbth</code>.
      */
@@ -558,8 +575,7 @@ public final class StringBuilder implements CharSequence, Serializable {
     public int indexOf(String str) {
         if (str == null)
             throw new NullPointerException();
-        // TODO optimize
-        return this.toString().indexOf(str);
+        return indexOf(str, 0);
     }
 
     /**
@@ -584,7 +600,7 @@ public final class StringBuilder implements CharSequence, Serializable {
     public int indexOf(String str, int fromIndex) {
         if (str == null)
             throw new NullPointerException();
-        // TODO optimize
+        //TODO optimize
         return this.toString().indexOf(str, fromIndex);
     }
 
@@ -923,8 +939,7 @@ public final class StringBuilder implements CharSequence, Serializable {
     public int lastIndexOf(String str) {
         if (str == null)
             throw new NullPointerException();
-        // TODO optimize
-        return this.toString().lastIndexOf(str);
+        return lastIndexOf(str, length);
     }
 
     /**
@@ -966,14 +981,21 @@ public final class StringBuilder implements CharSequence, Serializable {
 
     /**
      * <p>
-     * <b>NOTE - This method is currently not implemented and always throws a
-     * {@link NotYetImplementedException}.</b>
+     * Returns the index within this object that is offset from
+     * <code>index</code> by <code>codePointOffset</code> code points.
      * </p>
-     * TODO javadoc
+     * 
+     * @param index The index within this object to calculate the offset from.
+     * @param codePointOffset The number of code points to count.
+     * @return The index within this object that is the offset.
+     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
+     *         greater than {@link #length()} or if there aren't enough code
+     *         points before or after <code>index</code> to match
+     *         <code>codePointOffset</code>.
      */
     public int offsetByCodePoints(int index, int codePointOffset) {
-        // TODO Implement Java 5 code point functionality.
-        throw new NotYetImplementedException();
+        return Character.offsetByCodePoints(buffer, 0, length, index,
+                codePointOffset);
     }
 
     /**
