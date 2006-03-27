@@ -64,6 +64,11 @@ EsTranslateOpenFlags (I_32 flags)
     {
       realFlags |= O_EXCL | O_CREAT;
     }
+#ifdef O_SYNC
+	if (flags & HyOpenSync) {
+		realFlags |= O_SYNC;
+	}
+#endif    
   if (flags & HyOpenRead)
     {
       if (flags & HyOpenWrite)
@@ -168,8 +173,6 @@ hyfile_open (struct HyPortLibrary *portLibrary, const char *path, I_32 flags,
                                          findError (EINVAL));
       return -1;
     }
-
-  /* Neutrino does not handle NULL for stat */
 
   if (!stat (path, &buffer))
     {

@@ -41,6 +41,8 @@ public interface IFileSystem extends ISystemComponent {
 
 	public final int O_RDWR = 0x00000010;
 
+	public final int O_RDWRSYNC = 0x00000020;
+	
 	public final int O_APPEND = 0x00000100;
 
 	public final int O_CREAT = 0x00001000;

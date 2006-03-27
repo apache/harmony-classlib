@@ -36,6 +36,8 @@ class FileChannelFactory {
             return new WriteOnlyFileChannel(stream, fd);
         case IFileSystem.O_RDWR:
             return new ReadWriteFileChannel(stream, fd);
+        case IFileSystem.O_RDWRSYNC:
+            return new ReadWriteFileChannel(stream, fd);
         case IFileSystem.O_APPEND:
             return new WriteOnlyFileChannel(stream, fd, true);
         default:

@@ -94,6 +94,7 @@ HyPortLibrary *privatePortLibrary = (*portPrivateVMI)->GetPortLibrary(portPrivat
 #define HyOpenAppend  16
 #define HyOpenText    32
 #define HyOpenCreateNew 64      /* Use this flag with HyOpenCreate, if this flag is specified then trying to create an existing file will fail */
+#define HyOpenSync		128
 #define HyIsDir   0       /* Return values for HyFileAttr */
 #define HyIsFile  1
 

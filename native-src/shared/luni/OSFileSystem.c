@@ -220,6 +220,10 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_openI
                 flags = HyOpenWrite | HyOpenCreate | HyOpenAppend; 
                 mode = 0666;
                 break;
+        case org_apache_harmony_luni_platform_IFileSystem_O_RDWRSYNC:
+        		flags = HyOpenRead | HyOpenWrite | HyOpenCreate | HyOpenSync;
+        		mode = 0666;
+        		break;
       }
 
       length = (*env)->GetArrayLength (env, path);

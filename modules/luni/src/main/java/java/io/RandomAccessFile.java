@@ -35,6 +35,8 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 	 */
 	FileDescriptor fd;
 
+	private boolean syncMetadata = false;
+	
 	// The unique file channel associated with this FileInputStream (lazily
 	// initialized).
 	private FileChannel channel;
@@ -66,10 +68,24 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 	public RandomAccessFile(File file, String mode)
 			throws FileNotFoundException {
 		super();
+		
+		int options = 0;
+		
 		if (mode.equals("r")) { //$NON-NLS-1$
             isReadOnly = true;
+            options = IFileSystem.O_RDONLY;
         } else if (mode.equals("rw") || mode.equals("rws") || mode.equals("rwd")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             isReadOnly = false;
+            options = IFileSystem.O_RDWR;
+            
+            if (mode.equals("rws")) {
+            	// Sync file and metadata with every write
+            	syncMetadata = true;
+            } else if (mode.equals("rwd")) {
+            	// Sync file, but not necessarily metadata
+            	options = IFileSystem.O_RDWRSYNC;
+            }
+            
         } else {
             throw new IllegalArgumentException(com.ibm.oti.util.Msg
                     .getString("K0081")); //$NON-NLS-1$
@@ -83,12 +99,17 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
         }
 
         fd = new FileDescriptor();
-        // FIXME: add support to "rwd", "rws"
-        fd.descriptor = fileSystem.open(file.properPath(true),
-                isReadOnly ? IFileSystem.O_RDONLY : IFileSystem.O_RDWR);
-        channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
-                isReadOnly ? IFileSystem.O_RDONLY : IFileSystem.O_RDWR);
+        fd.descriptor = fileSystem.open(file.properPath(true), options);
+        channel = FileChannelFactory.getFileChannel(this, fd.descriptor, options);
+        
+        // if we are in "rws" mode, attempt to sync file+metadata
+        if (syncMetadata) {
+			try {
+				fd.sync();
+			} catch (IOException e) {}
+		}
 	}
+
 
 	/**
 	 * Constructs a new RandomAccessFile on the file named <code>fileName</code>
@@ -616,6 +637,11 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
             fileSystem.truncate(fd.descriptor, newLength);            
             seek(position > newLength ? newLength : position);
         }
+        
+        // if we are in "rws" mode, attempt to sync file+metadata
+        if (syncMetadata) {
+			fd.sync();
+		}
 	}
 
 	/**
@@ -688,6 +714,11 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
         synchronized (repositionLock) {
             fileSystem.write(fd.descriptor, buffer, offset, count);
         }
+        
+        // if we are in "rws" mode, attempt to sync file+metadata
+        if (syncMetadata) {
+        	fd.sync();
+		}
 	}
 
 	/**
@@ -713,6 +744,11 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
         synchronized (repositionLock) {
             fileSystem.write(fd.descriptor, bytes, 0, 1);
         }
+        
+        // if we are in "rws" mode, attempt to sync file+metadata
+        if (syncMetadata) {
+			fd.sync();
+		}
 	}
 
 	/**

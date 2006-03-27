@@ -34,6 +34,7 @@ public class AllTests {
 		suite.addTestSuite(FileTest.class);
 		suite.addTestSuite(BufferedReaderTest.class);
 		suite.addTestSuite(PushBackInputStreamTest.class);
+		suite.addTestSuite(RandomAccessFileTest.class);
 		//$JUnit-END$
 		return suite;
 	}

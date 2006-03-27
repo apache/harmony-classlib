@@ -399,7 +399,7 @@ IDATA VMCALL
 hyfile_open (struct HyPortLibrary * portLibrary, const char *path, I_32 flags,
 	     I_32 mode)
 {
-  DWORD accessMode, shareMode, createMode;
+  DWORD accessMode, shareMode, createMode, flagsAndAttributes;
   HANDLE aHandle;
   I_32 error;
 
@@ -430,9 +430,14 @@ hyfile_open (struct HyPortLibrary * portLibrary, const char *path, I_32 flags,
       createMode = OPEN_EXISTING;
     }
 
+  flagsAndAttributes = FILE_ATTRIBUTE_NORMAL;
+	if (flags & HyOpenSync) {
+		flagsAndAttributes |= FILE_FLAG_WRITE_THROUGH;
+	}
+
   aHandle =
     CreateFile (path, accessMode, shareMode, NULL, createMode,
-		FILE_ATTRIBUTE_NORMAL, NULL);
+		flagsAndAttributes, NULL);
   if (aHandle == INVALID_HANDLE_VALUE)
     {
       error = GetLastError ();
@@ -452,7 +457,7 @@ hyfile_open (struct HyPortLibrary * portLibrary, const char *path, I_32 flags,
 
       aHandle =
 	CreateFile (path, accessMode, shareMode, NULL, TRUNCATE_EXISTING,
-		    FILE_ATTRIBUTE_NORMAL, NULL);
+		    flagsAndAttributes, NULL);
       if (aHandle == INVALID_HANDLE_VALUE)
 	{
 	  error = GetLastError ();
