@@ -1121,7 +1121,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 					mustResolve = false;
 				}
 				Object toSet;
-				if (field != null && field.getUnshared())
+				if (field != null && field.isUnshared())
 					toSet = readUnshared();
 				else
 					toSet = readObject();

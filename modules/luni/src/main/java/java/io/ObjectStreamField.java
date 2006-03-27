@@ -334,7 +334,12 @@ public class ObjectStreamField extends Object implements Comparable {
 		}
 	}
 
-	boolean getUnshared() {
+	/**
+	 * Answers whether this serialized field is unshared.
+	 * 
+	 * @return true if the field is unshared, false otherwise.
+	 */
+	boolean isUnshared() {
 		return unshared;
 	}
 }

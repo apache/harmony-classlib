@@ -1230,7 +1230,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 					// Object type (array included).
 					Object field = getFieldObj(obj, declaringClass, fieldDesc
 							.getName(), fieldDesc.getTypeString());
-					if (fieldDesc.getUnshared()) {
+					if (fieldDesc.isUnshared()) {
 						writeUnshared(field);
 					} else
 						writeObject(field);
