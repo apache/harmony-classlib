@@ -339,7 +339,7 @@ public class ObjectStreamField extends Object implements Comparable {
 	 * 
 	 * @return true if the field is unshared, false otherwise.
 	 */
-	boolean isUnshared() {
+	public boolean isUnshared() {
 		return unshared;
 	}
 }
