@@ -223,6 +223,18 @@ public class HashMapTest extends junit.framework.TestCase {
 		assertTrue("Failed with null key", m.get(null).equals("test"));
 		assertTrue("Failed with missing key matching null hash", m
 				.get(new Integer(0)) == null);
+		
+		// Regression for HARMONY-206
+		ReusableKey k = new ReusableKey();
+		HashMap map = new HashMap();
+		k.setKey(1);
+		map.put(k, "value1");
+
+		k.setKey(18);
+		assertNull(map.get(k));
+
+		k.setKey(17);
+		assertNull(map.get(k));
 	}
 
 	/**
@@ -376,6 +388,28 @@ public class HashMapTest extends junit.framework.TestCase {
 
 	}
 
+	private static class ReusableKey {
+		private int key = 0;
+
+		public void setKey(int key) {
+			this.key = key;
+		}
+
+		public int hashCode() {
+			return key;
+		}
+
+		public boolean equals(Object o) {
+			if (o == this) {
+				return true;
+			}
+			if (!(o instanceof ReusableKey)) {
+				return false;
+			}
+			return key == ((ReusableKey) o).key;
+		}
+	}
+	
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

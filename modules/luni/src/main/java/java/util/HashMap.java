@@ -41,10 +41,13 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	private static final int DEFAULT_SIZE = 16;
 
 	static class Entry extends MapEntry {
+		final int hash;
+
 		Entry next;
 
 		Entry(Object theKey, Object theValue) {
 			super(theKey, theValue);
+			this.hash = (theKey == null) ? 0 : theKey.hashCode();
 		}
 
 		public Object clone() {
@@ -56,6 +59,10 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 
 		public String toString() {
 			return key + "=" + value;
+		}
+
+		public int hashCode() {
+			return hash;
 		}
 	}
 
@@ -315,8 +322,8 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 *            second key to compare
 	 * @return true iff the keys are considered equal
 	 */
-	boolean keysEqual(Object k1, Object k2) {
-		return k1.equals(k2);
+	boolean keysEqual(Object k1, Entry entry) {
+		return entry.hashCode() == k1.hashCode() && k1.equals(entry.key);
 	}
 
 	/**
@@ -391,8 +398,9 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		Entry m;
 		m = elementData[index];
 		if (key != null) {
-			while (m != null && !keysEqual(key, m.key))
+			while(m != null && !keysEqual(key,m)){
 				m = m.next;
+			}
 		} else {
 			while (m != null && m.key != null)
 				m = m.next;
@@ -542,7 +550,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 		if (key != null) {
 			index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
 			entry = elementData[index];
-			while (entry != null && !keysEqual(key, entry.key)) {
+			while (entry != null && !keysEqual(key, entry)) {
 				last = entry;
 				entry = entry.next;
 			}
