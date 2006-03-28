@@ -86,6 +86,14 @@
     <target name="package" depends="compile" description="Create component jars">
         <mkdir dir="${components.output}" />
 
+        <!-- Create applet jar -->
+        <jar destfile="${components.output}/applet.jar"
+        	manifest="modules/applet/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/applet.txt" 
+                excludesfile="${components.patternsets}/kernel.txt" />
+        </jar>
+
         <!-- Create archive jar -->
         <jar destfile="${components.output}/archive.jar"
         	manifest="modules/archive/META-INF/MANIFEST.MF">
@@ -223,6 +231,7 @@
         <mkdir dir="${build.output}" />
 
         <javac destdir="${build.output}" source="1.4" target="1.4" debug="on">
+            <src path="modules/applet/src/main/java" />
             <src path="modules/beans/src/main/java" />
             <src path="modules/kernel/src/main/java" />
             <src path="modules/regex/src/main/java" />
