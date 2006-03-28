@@ -409,6 +409,8 @@ public final class StringBuilder implements CharSequence, Serializable {
      * @see Character#codePointAt(char[], int, int)
      */
     public int codePointAt(int index) {
+        if (index < 0 || index >= length)
+            throw new IndexOutOfBoundsException();
         return Character.codePointAt(buffer, index, length);
     }
 
@@ -427,6 +429,8 @@ public final class StringBuilder implements CharSequence, Serializable {
      * @see Character#codePointBefore(char[], int, int)
      */
     public int codePointBefore(int index) {
+        if (index < 1 || index > length)
+            throw new IndexOutOfBoundsException();
         return Character.codePointBefore(buffer, index);
     }
 

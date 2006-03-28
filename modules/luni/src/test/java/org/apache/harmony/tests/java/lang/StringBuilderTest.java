@@ -425,6 +425,29 @@ public class StringBuilderTest extends TestCase {
         sb = new StringBuilder("\uD800\uDC00");
         assertEquals(0x10000, sb.codePointAt(0));
         assertEquals('\uDC00', sb.codePointAt(1));
+        
+        sb = new StringBuilder();
+        sb.append("abc");
+        try {
+            sb.codePointAt(-1);
+            fail("No IOOBE on negative index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointAt(sb.length());
+            fail("No IOOBE on index equal to length.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointAt(sb.length() + 1);
+            fail("No IOOBE on index greater than length.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
 	}
 
 	/**
@@ -439,6 +462,30 @@ public class StringBuilderTest extends TestCase {
         sb = new StringBuilder("\uD800\uDC00");
         assertEquals(0x10000, sb.codePointBefore(2));
         assertEquals('\uD800', sb.codePointBefore(1));
+        
+        sb = new StringBuilder();
+        sb.append("abc");
+        
+        try {
+            sb.codePointBefore(0);
+            fail("No IOOBE on zero index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointBefore(-1);
+            fail("No IOOBE on negative index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointBefore(sb.length() + 1);
+            fail("No IOOBE on index greater than length.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
 	}
 
 	/**
@@ -452,6 +499,29 @@ public class StringBuilderTest extends TestCase {
 
         assertEquals(3, new StringBuilder("a\uD800\uDC00b").codePointCount(0, 4));
         assertEquals(4, new StringBuilder("a\uD800\uDC00b\uD800").codePointCount(0, 5));
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("abc");
+        try {
+            sb.codePointCount(-1, 2);
+            fail("No IOOBE for negative begin index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointCount(0, 4);
+            fail("No IOOBE for end index that's too large.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointCount(3, 2);
+            fail("No IOOBE for begin index larger than end index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
 	}
 
 	/**
@@ -1361,6 +1431,43 @@ public class StringBuilderTest extends TestCase {
 
         result = new StringBuilder("a\uD800bc").offsetByCodePoints(3, -1);
         assertEquals(2, result);
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("abc");
+        try {
+            sb.offsetByCodePoints(-1, 1);
+            fail("No IOOBE for negative index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.offsetByCodePoints(0, 4);
+            fail("No IOOBE for offset that's too large.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.offsetByCodePoints(3, -4);
+            fail("No IOOBE for offset that's too small.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.offsetByCodePoints(3, 1);
+            fail("No IOOBE for index that's too large.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.offsetByCodePoints(4, -1);
+            fail("No IOOBE for index that's too large.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
 	}
 
 	/**

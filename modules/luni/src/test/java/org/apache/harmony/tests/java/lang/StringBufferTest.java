@@ -214,4 +214,187 @@ public class StringBufferTest extends TestCase {
             // Expected
         }
     }
+    
+    /**
+     * @tests java.lang.StringBuffer.appendCodePoint(int)'
+     */
+    public void test_appendCodePointI() {
+        StringBuffer sb = new StringBuffer();
+        sb.appendCodePoint(0x10000);
+        assertEquals("\uD800\uDC00", sb.toString());
+        sb.append("fixture");
+        assertEquals("\uD800\uDC00fixture", sb.toString());
+        sb.appendCodePoint(0x00010FFFF);
+        assertEquals("\uD800\uDC00fixture\uDBFF\uDFFF", sb.toString());
+    }
+    
+    /**
+     * @tests java.lang.StringBuffer.codePointAt(int)
+     */
+    public void test_codePointAtI() {
+        StringBuffer sb = new StringBuffer("abc");
+        assertEquals('a', sb.codePointAt(0));
+        assertEquals('b', sb.codePointAt(1));
+        assertEquals('c', sb.codePointAt(2));
+        
+        sb = new StringBuffer("\uD800\uDC00");
+        assertEquals(0x10000, sb.codePointAt(0));
+        assertEquals('\uDC00', sb.codePointAt(1));
+        
+        try {
+            sb.codePointAt(-1);
+            fail("No IOOBE on negative index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointAt(sb.length());
+            fail("No IOOBE on index equal to length.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointAt(sb.length() + 1);
+            fail("No IOOBE on index greater than length.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+    }
+
+    /**
+     * @tests java.lang.StringBuffer.codePointBefore(int)
+     */
+    public void test_codePointBeforeI() {
+        StringBuffer sb = new StringBuffer("abc");
+        assertEquals('a', sb.codePointBefore(1));
+        assertEquals('b', sb.codePointBefore(2));
+        assertEquals('c', sb.codePointBefore(3));
+        
+        sb = new StringBuffer("\uD800\uDC00");
+        assertEquals(0x10000, sb.codePointBefore(2));
+        assertEquals('\uD800', sb.codePointBefore(1));
+        
+        try {
+            sb.codePointBefore(0);
+            fail("No IOOBE on zero index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointBefore(-1);
+            fail("No IOOBE on negative index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointBefore(sb.length() + 1);
+            fail("No IOOBE on index greater than length.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+    }
+
+    /**
+     * @tests java.lang.StringBuffer.codePointCount(int, int)
+     */
+    public void test_codePointCountII() {
+        assertEquals(1, new StringBuffer("\uD800\uDC00").codePointCount(0, 2));
+        assertEquals(1, new StringBuffer("\uD800\uDC01").codePointCount(0, 2));
+        assertEquals(1, new StringBuffer("\uD801\uDC01").codePointCount(0, 2));
+        assertEquals(1, new StringBuffer("\uDBFF\uDFFF").codePointCount(0, 2));
+
+        assertEquals(3, new StringBuffer("a\uD800\uDC00b").codePointCount(0, 4));
+        assertEquals(4, new StringBuffer("a\uD800\uDC00b\uD800").codePointCount(0, 5));
+        
+        StringBuffer sb = new StringBuffer("abc");
+        try {
+            sb.codePointCount(-1, 2);
+            fail("No IOOBE for negative begin index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointCount(0, 4);
+            fail("No IOOBE for end index that's too large.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.codePointCount(3, 2);
+            fail("No IOOBE for begin index larger than end index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+    }
+    
+    /**
+     * @tests java.lang.StringBuffer.offsetByCodePoints(int, int)'
+     */
+    public void test_offsetByCodePointsII() {
+        int result = new StringBuffer("a\uD800\uDC00b").offsetByCodePoints(0, 2);
+        assertEquals(3, result);
+
+        result = new StringBuffer("abcd").offsetByCodePoints(3, -1);
+        assertEquals(2, result);
+
+        result = new StringBuffer("a\uD800\uDC00b").offsetByCodePoints(0, 3);
+        assertEquals(4, result);
+
+        result = new StringBuffer("a\uD800\uDC00b").offsetByCodePoints(3, -1);
+        assertEquals(1, result);
+
+        result = new StringBuffer("a\uD800\uDC00b").offsetByCodePoints(3, 0);
+        assertEquals(3, result);
+
+        result = new StringBuffer("\uD800\uDC00bc").offsetByCodePoints(3, 0);
+        assertEquals(3, result);
+
+        result = new StringBuffer("a\uDC00bc").offsetByCodePoints(3, -1);
+        assertEquals(2, result);
+
+        result = new StringBuffer("a\uD800bc").offsetByCodePoints(3, -1);
+        assertEquals(2, result);
+        
+        StringBuffer sb = new StringBuffer("abc");
+        try {
+            sb.offsetByCodePoints(-1, 1);
+            fail("No IOOBE for negative index.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.offsetByCodePoints(0, 4);
+            fail("No IOOBE for offset that's too large.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.offsetByCodePoints(3, -4);
+            fail("No IOOBE for offset that's too small.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.offsetByCodePoints(3, 1);
+            fail("No IOOBE for index that's too large.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+        
+        try {
+            sb.offsetByCodePoints(4, -1);
+            fail("No IOOBE for index that's too large.");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
+    }
 }

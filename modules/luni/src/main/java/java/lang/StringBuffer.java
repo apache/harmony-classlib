@@ -15,15 +15,12 @@
 
 package java.lang;
 
-
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
-
-import org.apache.harmony.luni.util.NotYetImplementedException;
 
 /**
  * StringBuffer is a variable size contiguous indexable array of characters. The
@@ -1128,59 +1125,84 @@ public final class StringBuffer implements Serializable, CharSequence {
 
     /**
      * <p>
-     * <b>NOTE - This method is currently NOT completely implemented and just
-     * delegates to the {@link #charAt(int)} method.</b>
+     * Retrieves the Unicode code point value at the <code>index</code>.
      * </p>
-     * TODO javadoc
+     * 
+     * @param index The index to the <code>char</code> code unit within this
+     *        object.
+     * @return The Unicode code point value.
+     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
+     *         greater than or equal to {@link #length()}.
+     * @see Character
+     * @see Character#codePointAt(char[], int, int)
      * @since 1.5
      */
-    public int codePointAt(int index) {
-        // TODO Implement Java 5 code point functionality.
-        //Note: synchronization is handled by 'charAt' method
-        return charAt(index);
+    public synchronized int codePointAt(int index) {
+        if (index < 0 || index >= count)
+            throw new IndexOutOfBoundsException();
+        return Character.codePointAt(value, index, count);
     }
 
     /**
      * <p>
-     * <b>NOTE - This method is currently NOT completely implemented and just
-     * delegates to the {@link #charAt(int)} method by retrieving the character
-     * at the preceding index.</b>
+     * Retrieves the Unicode code point value that precedes the
+     * <code>index</code>.
      * </p>
-     * TODO javadoc
+     * 
+     * @param index The index to the <code>char</code> code unit within this
+     *        object.
+     * @return The Unicode code point value.
+     * @throws IndexOutOfBoundsException if <code>index</code> is less than 1
+     *         or greater than {@link #length()}.
+     * @see Character
+     * @see Character#codePointBefore(char[], int, int)
      * @since 1.5
      */
-    public int codePointBefore(int index) {
-        // TODO Implement Java 5 code point functionality.
-        //Note: synchronization is handled by 'codePointAt' method
-        return codePointAt(index - 1);
+    public synchronized int codePointBefore(int index) {
+        if (index < 1 || index > count)
+            throw new IndexOutOfBoundsException();
+        return Character.codePointBefore(value, index);
     }
 
     /**
      * <p>
-     * <b>NOTE - This method is currently NOT completely implemented and just
-     * return the difference between the index parameters.</b>
+     * Calculates the number of Unicode code points between
+     * <code>beginIndex</code> and <code>endIndex</code>.
      * </p>
-     * TODO javadoc
+     * 
+     * @param beginIndex The inclusive beginning index of the subsequence.
+     * @param endIndex The exclusive end index of the subsequence.
+     * @return The number of Unicode code points in the subsequence.
+     * @throws IndexOutOfBoundsException if <code>beginIndex</code> is
+     *         negative or greater than <code>endIndex</code> or
+     *         <code>endIndex</code> is greater than {@link #length()}.
      * @since 1.5
      */
     public synchronized int codePointCount(int beginIndex, int endIndex) {
-        // TODO Implement Java 5 code point functionality.
         if (beginIndex < 0 || endIndex > count || beginIndex > endIndex)
             throw new IndexOutOfBoundsException();
-        return endIndex - beginIndex;
+        return Character.codePointCount(value, beginIndex, endIndex
+                - beginIndex);
     }
 
     /**
      * <p>
-     * <b>NOTE - This method is currently not implemented and always throws a
-     * {@link NotYetImplementedException}.</b>
+     * Returns the index within this object that is offset from
+     * <code>index</code> by <code>codePointOffset</code> code points.
      * </p>
-     * TODO javadoc
+     * 
+     * @param index The index within this object to calculate the offset from.
+     * @param codePointOffset The number of code points to count.
+     * @return The index within this object that is the offset.
+     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
+     *         greater than {@link #length()} or if there aren't enough code
+     *         points before or after <code>index</code> to match
+     *         <code>codePointOffset</code>.
      * @since 1.5
      */
     public synchronized int offsetByCodePoints(int index, int codePointOffset) {
-        // TODO Implement Java 5 code point functionality.
-        throw new NotYetImplementedException();
+        return Character.offsetByCodePoints(value, 0, count, index,
+                codePointOffset);
     }
 
     /**
@@ -1221,17 +1243,18 @@ public final class StringBuffer implements Serializable, CharSequence {
 
     /**
      * <p>
-     * <b>NOTE - This method is currently NOT completely implemented and just
-     * casts the <code>codePoint</code> to a <code>char</code> and appends it.</b>
+     * Appends the encoded Unicode code point to this object. The code point is
+     * converted to a <code>char[]</code> as defined by
+     * {@link Character#toChars(int)}.
      * </p>
-     * @param codePoint
-     * @return
+     * 
+     * @param codePoint The Unicode code point to encode and append.
+     * @return A reference to this object.
+     * @see Character#toChars(int)
      * @since 1.5
      */
     public StringBuffer appendCodePoint(int codePoint) {
-        // TODO Implement Java 5 code point functionality.
-        append((char) codePoint);
-        return this;
+        return append(Character.toChars(codePoint));
     }
 
     /**
