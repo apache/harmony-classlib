@@ -8,4 +8,3 @@ Eclipse-JREBundle: true
 Import-Package: java.lang,
  java.util
 Export-Package: java.util.regex
-Require-Bundle: org.apache.harmony.luni
