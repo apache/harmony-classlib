@@ -5,13 +5,6 @@ Bundle-SymbolicName: org.apache.harmony.sql
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Export-Package: java.sql,
- javax.sql,
- javax.sql.rowset,
- javax.sql.rowset.serial,
- javax.sql.rowset.spi,
- javax.transaction,
- javax.transaction.xa
 Import-Package: java.lang,
  java.util,
  java.io,
@@ -21,3 +14,10 @@ Import-Package: java.lang,
  java.net,
  java.text,
  java.rmi
+Export-Package: java.sql,
+ javax.sql,
+ javax.sql.rowset,
+ javax.sql.rowset.serial,
+ javax.sql.rowset.spi,
+ javax.transaction,
+ javax.transaction.xa
