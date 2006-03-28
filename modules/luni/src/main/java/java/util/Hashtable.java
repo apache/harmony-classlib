@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,9 +63,12 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 
 	private static class Entry extends MapEntry {
 		Entry next;
+		
+		final int hashcode;
 
 		Entry(Object theKey, Object theValue) {
 			super(theKey, theValue);
+			hashcode = theKey.hashCode();
 		}
 
 		public Object clone() {
@@ -88,7 +91,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 		}
 
 		public boolean equalsKey(Object aKey, int hash) {
-			return key.equals(aKey);
+			return hashcode == aKey.hashCode() && key.equals(aKey);
 		}
 
 		public String toString() {

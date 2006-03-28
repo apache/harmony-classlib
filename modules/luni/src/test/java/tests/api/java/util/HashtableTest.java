@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import tests.api.java.util.HashMapTest.ReusableKey;
 import tests.support.Support_MapTest2;
 import tests.support.Support_UnmodifiableCollectionTest;
 
@@ -275,6 +276,19 @@ public class HashtableTest extends junit.framework.TestCase {
 		Hashtable h = hashtableClone(htfull);
 		assertTrue("Could not retrieve element", ((String) h.get("FKey 2"))
 				.equals("FVal 2"));
+		
+		
+		// Regression for HARMONY-262
+		ReusableKey k = new ReusableKey();
+		Hashtable h2 = new Hashtable();
+		k.setKey(1);
+		h2.put(k, "value1");
+
+		k.setKey(13);
+		assertNull(h2.get(k));
+
+		k.setKey(12);
+		assertNull(h2.get(k));
 	}
 
 	/**
