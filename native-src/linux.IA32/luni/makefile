@@ -23,14 +23,15 @@ CFLAGS += -fpic -I$(SHARED)common -I../zlib -I../zip -I$(SHARED)fdlibm
 BUILDFILES = \
 	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \
 	$(SHAREDSUB)oos.o $(SHAREDSUB)fileis.o \
-	$(SHAREDSUB)simpl.o $(SHAREDSUB)psimpl2.o nethelp.o $(SHAREDSUB)floatbits.o \
-	$(SHAREDSUB)rafile.o $(SHAREDSUB)ois.o helpers.o $(SHAREDSUB)math.o \
-	$(SHAREDSUB)luniglob.o $(SHAREDSUB)proxy.o $(SHAREDSUB)netif.o \
-	$(SHAREDSUB)process.o $(SHAREDSUB)bigint.o $(SHAREDSUB)osc.o $(SHAREDSUB)socket.o \
-	$(SHAREDSUB)inetadds.o $(SHAREDSUB)pssimpl.o $(SHAREDSUB)filedesc.o \
+	$(SHAREDSUB)simpl.o $(SHAREDSUB)psimpl2.o $(SHAREDSUB)nethelp.o \
+	$(SHAREDSUB)floatbits.o $(SHAREDSUB)rafile.o $(SHAREDSUB)ois.o \
+	helpers.o $(SHAREDSUB)math.o $(SHAREDSUB)luniglob.o $(SHAREDSUB)proxy.o \
+	$(SHAREDSUB)netif.o $(SHAREDSUB)process.o $(SHAREDSUB)bigint.o \
+	$(SHAREDSUB)osc.o $(SHAREDSUB)socket.o $(SHAREDSUB)inetadds.o \
+	$(SHAREDSUB)pssimpl.o $(SHAREDSUB)filedesc.o \
 	$(SHAREDSUB)timezone.o $(SHAREDSUB)pmsimpl.o pdsimpl.o \
 	$(SHAREDSUB)fileos.o $(SHAREDSUB)OSFileSystem.o OSFileSystemLinux32.o \
-	OSMemory.o OSMemoryLinux32.o OSNetworkSystem.o
+	OSMemory.o OSMemoryLinux32.o OSNetworkSystem.o OSNetworkSystemLinux.o
 
 MDLLIBFILES = \
 	../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so \
