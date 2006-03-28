@@ -15,7 +15,7 @@
     limitations under the License.
 -->
 
-<project name="TEXT Build" default="build" basedir="..">
+<project name="APPLET Build" default="build" basedir="..">
 	<description>Build for APPLET component</description>
 
 	<!-- set global properties for this build. -->
