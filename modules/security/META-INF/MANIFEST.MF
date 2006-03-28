@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.apache.harmony.security;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
+Eclipse-ExtensibleAPI: true
 Import-Package: java.io,
  java.lang,
  java.lang.reflect,
