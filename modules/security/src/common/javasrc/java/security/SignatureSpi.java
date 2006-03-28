@@ -127,7 +127,10 @@ public abstract class SignatureSpi {
             throw new SignatureException(
                     "The value of len parameter is less than the actual signature length");
         }
-        if ((offset < 0) || (offset + len > outbuf.length)) {
+        if (offset < 0) {
+            throw new SignatureException("Invalid negative offset");
+        }
+        if (offset + len > outbuf.length) {
             throw new SignatureException("Incorrect offset or len value");
         }
         System.arraycopy(tmp, 0, outbuf, offset, tmp.length);

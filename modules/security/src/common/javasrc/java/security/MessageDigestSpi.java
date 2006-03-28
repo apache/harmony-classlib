@@ -89,7 +89,11 @@ public abstract class MessageDigestSpi {
             engineReset();
             throw new DigestException("The value of len parameter is less than the actual digest length"); 
         }
-        if ((offset < 0) || (offset + len > buf.length)) {
+        if (offset < 0) {
+            engineReset();
+            throw new DigestException("Invalid negative offset");
+        }
+        if (offset + len > buf.length) {
             engineReset();
             throw new DigestException("Incorrect offset or len value");
         }

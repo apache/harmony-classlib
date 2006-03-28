@@ -489,9 +489,11 @@ public class KeyStore {
      */
     public final boolean entryInstanceOf(String alias, Class entryClass)
             throws KeyStoreException {
-        if ((alias == null) || (entryClass == null)) {
-            throw new NullPointerException("alias or entryClass is null");
-        }
+        if (alias == null)
+            throw new NullPointerException("alias is null");
+        if (entryClass == null)
+            throw new NullPointerException("entryClass is null");
+
         if (!isInit) {
             throw new KeyStoreException(NOTINITKEYSTORE);
         }
@@ -530,10 +532,11 @@ public class KeyStore {
          */
         public static Builder newInstance(KeyStore keyStore,
                 ProtectionParameter protectionParameter) {
-            if ((keyStore == null) || (protectionParameter == null)) {
-                throw new NullPointerException(
-                        "keystore or protectionParameter is null");
-            }
+            if (keyStore == null)
+                throw new NullPointerException("keystore is null");
+            if (protectionParameter == null)
+                throw new NullPointerException("protectionParameter is null");
+
             if (!keyStore.isInit) {
                 throw new IllegalArgumentException(NOTINITKEYSTORE);
             }
@@ -894,9 +897,11 @@ public class KeyStore {
          *  
          */
         public PrivateKeyEntry(PrivateKey privateKey, Certificate[] chain) {
-            if ((privateKey == null) || (chain == null)) {
-                throw new NullPointerException("privateKey or chain is null");
-            }
+            if (privateKey == null)
+                throw new NullPointerException("privateKey is null");
+            if (chain == null)
+                throw new NullPointerException("chain is null");
+
             if (chain.length == 0) {
                 throw new IllegalArgumentException("chain length equals 0");
             }

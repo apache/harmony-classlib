@@ -40,17 +40,20 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     private final String algorithm;
     private final String format = "RAW";
 
-    private static final IllegalArgumentException BADPARAMS_EXC =
-            new IllegalArgumentException(
-                    "algorithm is null or key is null, empty, or too short.");
-
     /**
      * @com.intel.drl.spec_ref
      */
     public SecretKeySpec(byte[] key, String algorithm) {
-        if ((key == null) || (key.length == 0) || (algorithm == null)) {
-            throw BADPARAMS_EXC;
+    	if (key == null) {
+    		throw new IllegalArgumentException("key is null");
+    	}
+    	if (key.length == 0) {
+    		throw new IllegalArgumentException("key is empty");
+    	}
+        if (algorithm == null) {
+            throw new IllegalArgumentException("algorithm is null");
         }
+
         this.algorithm = algorithm;
         this.key = new byte[key.length];
         System.arraycopy(key, 0, this.key, 0, key.length);
@@ -60,9 +63,17 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
      * @com.intel.drl.spec_ref
      */
     public SecretKeySpec(byte[] key, int offset, int len, String algorithm) {
-        if ((key == null) || (key.length == 0)
-                || (key.length - offset < len) || (algorithm == null)) {
-            throw BADPARAMS_EXC;
+    	if (key == null) {
+    		throw new IllegalArgumentException("key is null");
+    	}
+    	if (key.length == 0) {
+    		throw new IllegalArgumentException("key is empty");
+    	}
+    	if ((key.length - offset < len)) {
+    		throw new IllegalArgumentException("key is too short");
+    	}
+        if (algorithm == null) {
+            throw new IllegalArgumentException("algorithm is null");
         }
         this.algorithm = algorithm;
         this.key = new byte[len];
