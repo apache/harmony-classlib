@@ -301,6 +301,12 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 		format.format(new Date());
 		assertTrue("not equal after format", format.equals(clone));
 	}
+	
+    public void test_equals_afterFormat() {
+        SimpleDateFormat df = new SimpleDateFormat();
+        df.format(new Date());
+        assertEquals(df, new SimpleDateFormat());
+    }
 
 	/**
 	 * @tests java.text.SimpleDateFormat#formatToCharacterIterator(java.lang.Object)

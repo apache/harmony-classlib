@@ -306,8 +306,10 @@ public class SimpleDateFormat extends DateFormat {
 	}
 
 	private void appendNumber(StringBuffer buffer, int count, int value) {
+		int minimumIntegerDigits = numberFormat.getMinimumIntegerDigits();
 		numberFormat.setMinimumIntegerDigits(count);
 		numberFormat.format(new Integer(value), buffer, new FieldPosition(0));
+		numberFormat.setMinimumIntegerDigits(minimumIntegerDigits);
 	}
 
 	/**
