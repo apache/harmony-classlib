@@ -5,16 +5,17 @@ Bundle-SymbolicName: org.apache.harmony.jndi
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
+Import-Package: java.applet,
+ java.io,
+ java.lang,
+ java.lang.reflect,
+ java.net,
+ java.security,
+ java.util
 Export-Package: javax.naming,
  javax.naming.directory,
  javax.naming.event,
  javax.naming.ldap,
  javax.naming.spi
-Import-Package: java.lang,
- java.io,
- java.applet,
- java.net,
- java.security,
- java.util,
- java.lang.reflect
+
 
