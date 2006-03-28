@@ -102,6 +102,14 @@
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
+        <!-- Create awt jar -->
+        <jar destfile="${components.output}/awt.jar"
+        	manifest="modules/awt/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/awt.txt" 
+                excludesfile="${components.patternsets}/kernel.txt" />
+        </jar>
+
         <!-- Create beans jar -->
         <jar destfile="${components.output}/beans.jar"
         	manifest="modules/beans/META-INF/MANIFEST.MF">
@@ -232,6 +240,7 @@
 
         <javac destdir="${build.output}" source="1.4" target="1.4" debug="on">
             <src path="modules/applet/src/main/java" />
+            <src path="modules/awt/src/main/java" />
             <src path="modules/beans/src/main/java" />
             <src path="modules/kernel/src/main/java" />
             <src path="modules/regex/src/main/java" />
@@ -280,6 +289,12 @@
 
         <copy todir="${build.output}" includeemptydirs="false">
             <fileset dir="modules/archive/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/applet/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/awt/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
             <fileset dir="modules/beans/src/main/java">

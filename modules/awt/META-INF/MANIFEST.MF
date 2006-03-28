@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony AWT
+Bundle-SymbolicName: org.apache.harmony.awt
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Eclipse-JREBundle: true
+Import-Package: java.lang
+Export-Package: java.awt,
+ java.awt.event
+
