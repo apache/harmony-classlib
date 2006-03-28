@@ -18,13 +18,13 @@
 <project name="Common_APPLET_Build">
 	
 	<target name="compile.java" description="Compile APPLET java code">
-		<echo message="Compiling APPLET classes from ${hy.text.src.main.java}" />
+		<echo message="Compiling APPLET classes from ${hy.applet.src.main.java}" />
 		
-		<mkdir dir="${hy.text.bin.main}" />
+		<mkdir dir="${hy.applet.bin.main}" />
 
 		<javac sourcepath=""
-			srcdir="${hy.text.src.main.java}"
-			destdir="${hy.text.bin.main}"
+			srcdir="${hy.applet.src.main.java}"
+			destdir="${hy.applet.bin.main}"
 			source="${source.ver}"
 			debug="${java.debug.option}">
 
