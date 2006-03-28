@@ -38,6 +38,7 @@ public class AllTests {
 		suite.addTestSuite(DoubleTest.class);
 		suite.addTestSuite(IntegerTest.class);
 		suite.addTestSuite(ShortTest.class);
+		suite.addTestSuite(LongTest.class);
 		//$JUnit-END$
 		return suite;
 	}
