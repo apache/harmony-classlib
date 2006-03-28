@@ -1,17 +1,20 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmony LUNI
-Bundle-SymbolicName: org.apache.harmony.luni
+Bundle-SymbolicName: org.apache.harmony.luni;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: org.apache.harmony.nio.internal,
  java.math,
+ java.nio,
+ java.nio.channels,
  java.nio.charset,
  java.util.jar,
  java.util.regex,
  java.util.zip,
  java.security,
+ java.security.cert,
  java.text
 Export-Package: com.ibm.oti.util,
  com.ibm.oti.vm,
@@ -24,4 +27,3 @@ Export-Package: com.ibm.oti.util,
  org.apache.harmony.luni.util,
  org.apache.harmony.luni.net,
  org.apache.harmony.luni.platform
-
