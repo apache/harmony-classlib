@@ -5,12 +5,10 @@ Bundle-SymbolicName: org.apache.harmony.text
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Export-Package: java.text
 Import-Package: java.lang,
  java.util, 
  java.net, 
  java.io, 
  java.security, 
  com.ibm.oti.util
-Require-Bundle: org.apache.harmony.luni,
- org.apache.harmony.security
+Export-Package: java.text
