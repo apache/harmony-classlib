@@ -60,33 +60,6 @@ public class TypesTest extends TestCase {
 		thePublicStatics.put("TINYINT", new Integer(-6));
 		thePublicStatics.put("BIT", new Integer(-7));
 
-		/*
-		 * System.out.println( "BOOLEAN: " + Types.BOOLEAN );
-		 * System.out.println( "DATALINK: " + Types.DATALINK );
-		 * System.out.println( "REF: " + Types.REF ); System.out.println( "CLOB: " +
-		 * Types.CLOB ); System.out.println( "BLOB: " + Types.BLOB );
-		 * System.out.println( "ARRAY: " + Types.ARRAY ); System.out.println(
-		 * "STRUCT: " + Types.STRUCT ); System.out.println( "DISTINCT: " +
-		 * Types.DISTINCT ); System.out.println( "JAVA_OBJECT: " +
-		 * Types.JAVA_OBJECT ); System.out.println( "OTHER: " + Types.OTHER );
-		 * System.out.println( "NULL: " + Types.NULL ); System.out.println(
-		 * "LONGVARBINARY: " + Types.LONGVARBINARY ); System.out.println(
-		 * "VARBINARY: " + Types.VARBINARY ); System.out.println( "BINARY: " +
-		 * Types.BINARY ); System.out.println( "TIMESTAMP: " + Types.TIMESTAMP );
-		 * System.out.println( "TIME: " + Types.TIME ); System.out.println(
-		 * "DATE: " + Types.DATE ); System.out.println( "LONGVARCHAR: " +
-		 * Types.LONGVARCHAR ); System.out.println( "VARCHAR: " + Types.VARCHAR );
-		 * System.out.println( "CHAR: " + Types.CHAR ); System.out.println(
-		 * "DECIMAL: " + Types.DECIMAL ); System.out.println( "NUMERIC: " +
-		 * Types.NUMERIC ); System.out.println( "DOUBLE: " + Types.DOUBLE );
-		 * System.out.println( "REAL: " + Types.REAL ); System.out.println(
-		 * "FLOAT: " + Types.FLOAT ); System.out.println( "BIGINT: " +
-		 * Types.BIGINT ); System.out.println( "INTEGER: " + Types.INTEGER );
-		 * System.out.println( "SMALLINT: " + Types.SMALLINT );
-		 * System.out.println( "TINYINT: " + Types.TINYINT );
-		 * System.out.println( "BIT: " + Types.BIT );
-		 */
-
 		Class typesClass;
 		try {
 			typesClass = Class.forName("java.sql.Types");

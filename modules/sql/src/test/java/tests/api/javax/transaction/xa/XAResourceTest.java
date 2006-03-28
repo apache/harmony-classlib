@@ -43,18 +43,6 @@ public class XAResourceTest extends TestCase {
 		thePublicStatics.put("TMFAIL", new Integer(536870912));
 		thePublicStatics.put("TMENDRSCAN", new Integer(8388608));
 
-		System.out.println("XA_OK: " + XAResource.XA_OK);
-		System.out.println("XA_RDONLY: " + XAResource.XA_RDONLY);
-		System.out.println("TMSUSPEND: " + XAResource.TMSUSPEND);
-		System.out.println("TMSUCCESS: " + XAResource.TMSUCCESS);
-		System.out.println("TMSTARTRSCAN: " + XAResource.TMSTARTRSCAN);
-		System.out.println("TMRESUME: " + XAResource.TMRESUME);
-		System.out.println("TMONEPHASE: " + XAResource.TMONEPHASE);
-		System.out.println("TMNOFLAGS: " + XAResource.TMNOFLAGS);
-		System.out.println("TMJOIN: " + XAResource.TMJOIN);
-		System.out.println("TMFAIL: " + XAResource.TMFAIL);
-		System.out.println("TMENDRSCAN: " + XAResource.TMENDRSCAN);
-
 		Class xAResourceClass;
 		try {
 			xAResourceClass = Class.forName("javax.transaction.xa.XAResource");
