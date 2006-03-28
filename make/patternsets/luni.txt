@@ -37,5 +37,6 @@ com/ibm/oti/vm/*
 org/apache/harmony/luni/internal/locale/*
 org/apache/harmony/luni/internal/net/www/*
 org/apache/harmony/luni/internal/reflect/*
+org/apache/harmony/luni/net/*
 org/apache/harmony/luni/platform/*
 org/apache/harmony/luni/util/*

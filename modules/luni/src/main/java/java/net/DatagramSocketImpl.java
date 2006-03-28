@@ -19,6 +19,10 @@ package java.net;
 import java.io.FileDescriptor;
 import java.io.IOException;
 
+import org.apache.harmony.luni.net.NetUtil;
+import org.apache.harmony.luni.platform.INetworkSystem;
+import org.apache.harmony.luni.platform.Platform;
+
 /**
  * The abstract superclass of datagram & multicast socket implementatations.
  */
@@ -79,8 +83,9 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 * 
 	 * @return InetAddress the local address to which the socket is bound.
 	 */
-	abstract InetAddress getLocalAddress();
-
+    InetAddress getLocalAddress() {
+        return Platform.getNetworkSystem().getSocketLocalAddress(fd, NetUtil.preferIPv6Addresses());
+    }
 	/**
 	 * Answer the local port. If the socket was bound to any available port, as
 	 * flagged by a <code>localPort</code> value of -1, query the IP stack.

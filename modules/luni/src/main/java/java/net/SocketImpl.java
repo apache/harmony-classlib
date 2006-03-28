@@ -1,17 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/* $$COPYRIGHT$$[1998, 2005]$$ */
 
 package java.net;
 
@@ -21,6 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
+
+import org.apache.harmony.luni.platform.INetworkSystem;
+import org.apache.harmony.luni.platform.Platform;
+
 
 /**
  * The abstract superclass of all classes that implement streaming sockets.
@@ -45,19 +36,23 @@ public abstract class SocketImpl implements SocketOptions {
 	protected FileDescriptor fd;
 
 	protected int localport;
+    
+    INetworkSystem netImpl;
+    
+    int receiveTimeout = 0;
 
-	int receiveTimeout;
+    boolean streaming = true;
 
-	boolean streaming = true;
+    boolean shutdownInput = false;
 
-	boolean shutdownInput = false;
-
-	// Fill in the JNI id caches
-	private static native void oneTimeInitialization(boolean jcl_supports_ipv6);
-
-	static {
-		oneTimeInitialization(true);
-	}
+//	Used when cache mode is OK
+//  Fill in the JNI id caches
+//	private static native void oneTimeInitialization(boolean jcl_supports_ipv6);
+//
+//	static {
+//		//OSNetworkSystem.oneTimeInitializationSocket(true);
+//        oneTimeInitialization(true);
+//	}
 
 	/**
 	 * Construct a connection-oriented SocketImpl.
@@ -66,6 +61,7 @@ public abstract class SocketImpl implements SocketOptions {
 	 */
 	public SocketImpl() {
 		initializeSocket();
+        this.netImpl = Platform.getNetworkSystem();        
 	}
 
 	/**
@@ -223,7 +219,6 @@ public abstract class SocketImpl implements SocketOptions {
 	 */
 	void initializeSocket() {
 		fd = new FileDescriptor();
-		receiveTimeout = 0;
 	}
 
 	/**
@@ -239,115 +234,116 @@ public abstract class SocketImpl implements SocketOptions {
 
 	protected abstract void listen(int backlog) throws IOException;
 
-	/**
-	 * Answer the result of attempting to accept a connection request to this
-	 * stream socket in the IP stack.
-	 * 
-	 * @param fdServer
-	 *            the server socket FileDescriptor
-	 * @param newSocket
-	 *            the host socket a connection will be accepted on
-	 * @param fdnewSocket
-	 *            the FileDescriptor for the host socket
-	 * @param timeout
-	 *            the timeout that the server should listen for
-	 * @exception SocketException
-	 *                if an error occurs while accepting connections
-	 */
-	static native void acceptStreamSocketImpl(FileDescriptor fdServer,
-			SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
-			throws IOException;
-
-	/**
-	 * Answer the number of bytes available to read on the socket without
-	 * blocking.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @exception SocketException
-	 *                if an error occurs while peeking
-	 */
-	static native int availableStreamImpl(FileDescriptor aFD)
-			throws SocketException;
-
-	/**
-	 * Answer the result of attempting to create a stream socket in the IP
-	 * stack.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @exception SocketException
-	 *                if an error occurs while creating the socket
-	 */
-	static native void createStreamSocketImpl(FileDescriptor aFD,
-			boolean preferIPv4Stack) throws SocketException;
-
-	/**
-	 * Allocate a datagram socket in the IP stack. The socket is associated with
-	 * the <code>aFD</code>.
-	 * 
-	 * @param aFD
-	 *            the FileDescriptor to associate with the socket
-	 * 
-	 * @exception SocketException
-	 *                upon an allocation error
-	 */
-
-	static native void createDatagramSocketImpl(FileDescriptor aFD,
-			boolean preferIPv4Stack) throws SocketException;
-
-	/**
-	 * Answer the result of attempting to listen on a stream socket in the IP
-	 * stack.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @param backlog
-	 *            the number of connection requests that may be queued before
-	 *            requests are rejected
-	 * @exception SocketException
-	 *                if an error occurs while listening
-	 */
-	static native void listenStreamSocketImpl(FileDescriptor aFD, int backlog)
-			throws SocketException;
-
-	/**
-	 * Recieve at most <code>count</code> bytes into the buffer
-	 * <code>data</code> at the <code>offset</code> on the socket.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @param data
-	 *            the receive buffer
-	 * @param offset
-	 *            the offset into the buffer
-	 * @param count
-	 *            the max number of bytes to receive
-	 * @param timeout
-	 *            the max time the read operation should block waiting for data
-	 * @return int the actual number of bytes read
-	 * @exception SocketException
-	 *                if an error occurs while reading
-	 */
-	static native int receiveStreamImpl(FileDescriptor aFD, byte[] data,
-			int offset, int count, int timeout) throws IOException;
-
-	/**
-	 * Send <code>count</code> bytes from the buffer <code>data</code> at
-	 * the <code>offset</code>, on the socket.
-	 * 
-	 * @param data
-	 *            the send buffer
-	 * @param offset
-	 *            the offset into the buffer
-	 * @param count
-	 *            the number of bytes to receive
-	 * @return int the actual number of bytes sent
-	 * @exception SocketException
-	 *                if an error occurs while writing
-	 */
-	static native int sendStreamImpl(FileDescriptor fd, byte[] data,
-			int offset, int count) throws IOException;
+    
+//	/**
+//	 * Answer the result of attempting to accept a connection request to this
+//	 * stream socket in the IP stack.
+//	 * 
+//	 * @param fdServer
+//	 *            the server socket FileDescriptor
+//	 * @param newSocket
+//	 *            the host socket a connection will be accepted on
+//	 * @param fdnewSocket
+//	 *            the FileDescriptor for the host socket
+//	 * @param timeout
+//	 *            the timeout that the server should listen for
+//	 * @exception SocketException
+//	 *                if an error occurs while accepting connections
+//	 */
+//	static native void acceptStreamSocketImpl(FileDescriptor fdServer,
+//			SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
+//			throws IOException;
+//
+//	/**
+//	 * Answer the number of bytes available to read on the socket without
+//	 * blocking.
+//	 * 
+//	 * @param aFD
+//	 *            the socket FileDescriptor
+//	 * @exception SocketException
+//	 *                if an error occurs while peeking
+//	 */
+//	static native int availableStreamImpl(FileDescriptor aFD)
+//			throws SocketException;
+//
+//	/**
+//	 * Answer the result of attempting to create a stream socket in the IP
+//	 * stack.
+//	 * 
+//	 * @param aFD
+//	 *            the socket FileDescriptor
+//	 * @exception SocketException
+//	 *                if an error occurs while creating the socket
+//	 */
+//	static native void createStreamSocketImpl(FileDescriptor aFD,
+//			boolean preferIPv4Stack) throws SocketException;
+//
+//	/**
+//	 * Allocate a datagram socket in the IP stack. The socket is associated with
+//	 * the <code>aFD</code>.
+//	 * 
+//	 * @param aFD
+//	 *            the FileDescriptor to associate with the socket
+//	 * 
+//	 * @exception SocketException
+//	 *                upon an allocation error
+//	 */
+//
+//	static native void createDatagramSocketImpl(FileDescriptor aFD,
+//			boolean preferIPv4Stack) throws SocketException;
+//
+//	/**
+//	 * Answer the result of attempting to listen on a stream socket in the IP
+//	 * stack.
+//	 * 
+//	 * @param aFD
+//	 *            the socket FileDescriptor
+//	 * @param backlog
+//	 *            the number of connection requests that may be queued before
+//	 *            requests are rejected
+//	 * @exception SocketException
+//	 *                if an error occurs while listening
+//	 */
+//	static native void listenStreamSocketImpl(FileDescriptor aFD, int backlog)
+//			throws SocketException;
+//
+//	/**
+//	 * Recieve at most <code>count</code> bytes into the buffer
+//	 * <code>data</code> at the <code>offset</code> on the socket.
+//	 * 
+//	 * @param aFD
+//	 *            the socket FileDescriptor
+//	 * @param data
+//	 *            the receive buffer
+//	 * @param offset
+//	 *            the offset into the buffer
+//	 * @param count
+//	 *            the max number of bytes to receive
+//	 * @param timeout
+//	 *            the max time the read operation should block waiting for data
+//	 * @return int the actual number of bytes read
+//	 * @exception SocketException
+//	 *                if an error occurs while reading
+//	 */
+//	static native int receiveStreamImpl(FileDescriptor aFD, byte[] data,
+//			int offset, int count, int timeout) throws IOException;
+//
+//	/**
+//	 * Send <code>count</code> bytes from the buffer <code>data</code> at
+//	 * the <code>offset</code>, on the socket.
+//	 * 
+//	 * @param data
+//	 *            the send buffer
+//	 * @param offset
+//	 *            the offset into the buffer
+//	 * @param count
+//	 *            the number of bytes to receive
+//	 * @return int the actual number of bytes sent
+//	 * @exception SocketException
+//	 *                if an error occurs while writing
+//	 */
+//	static native int sendStreamImpl(FileDescriptor fd, byte[] data,
+//			int offset, int count) throws IOException;
 
 	/**
 	 * In the IP stack, read at most <code>count</code> bytes off the socket
@@ -370,8 +366,10 @@ public abstract class SocketImpl implements SocketOptions {
 		if (shutdownInput)
 			return -1;
 		try {
-			int read = receiveStreamImpl(fd, buffer, offset, count,
-					receiveTimeout);
+//			int read = receiveStreamImpl(fd, buffer, offset, count,
+//					receiveTimeout);
+            int read = this.netImpl.receiveStream(fd, buffer, offset, count,
+                    receiveTimeout);
 			if (read == -1)
 				shutdownInput = true;
 			return read;
@@ -423,10 +421,12 @@ public abstract class SocketImpl implements SocketOptions {
 
 	int write(byte[] buffer, int offset, int count) throws IOException {
 		if (!streaming) {
-			PlainSocketImpl2.sendDatagramImpl2(fd, buffer, offset, count, port,
-					address);
+//			PlainSocketImpl2.sendDatagramImpl2(fd, buffer, offset, count, port,
+//					address);
+            this.netImpl.sendDatagram2(fd, buffer, offset, count, port,address);
 		}
-		return sendStreamImpl(fd, buffer, offset, count);
+//		return sendStreamImpl(fd, buffer, offset, count);
+        return this.netImpl.sendStream(fd, buffer, offset, count);
 	}
 
 	/**
@@ -434,20 +434,22 @@ public abstract class SocketImpl implements SocketOptions {
 	 */
 	protected void shutdownInput() throws IOException {
 		shutdownInput = true;
-		shutdownInputImpl(fd);
+//		shutdownInputImpl(fd);
+        this.netImpl.shutdownInput(fd);
 	}
 
-	private native void shutdownInputImpl(FileDescriptor descriptor) throws IOException;
+//	private native void shutdownInputImpl(FileDescriptor descriptor) throws IOException;
 
 	/**
 	 * Shutdown the output portion of the socket.
 	 */
 	protected void shutdownOutput() throws IOException {
-		shutdownOutputImpl(fd);
+//		shutdownOutputImpl(fd);
+        this.netImpl.shutdownOutput(fd);
 	}
 
-	private native void shutdownOutputImpl(FileDescriptor descriptor)
-			throws IOException;
+//	private native void shutdownOutputImpl(FileDescriptor descriptor)
+//			throws IOException;
 
 	/**
 	 * Connect the socket to the host/port specified by the SocketAddress with a
@@ -486,7 +488,7 @@ public abstract class SocketImpl implements SocketOptions {
 	 */
 	protected abstract void sendUrgentData(int value) throws IOException;
 
-	static native boolean supportsUrgentDataImpl(FileDescriptor fd);
-
-	static native boolean sendUrgentDataImpl(FileDescriptor fd, byte value);
+//	static native boolean supportsUrgentDataImpl(FileDescriptor fd);
+//
+//	static native boolean sendUrgentDataImpl(FileDescriptor fd, byte value);
 }

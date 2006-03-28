@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,13 @@
  * limitations under the License.
  */
 
-package java.net;
-
+package org.apache.harmony.luni.net;
 
 import java.io.FileDescriptor;
+import java.net.SocketException;
+
+import org.apache.harmony.luni.platform.Platform;
+
 
 /**
  * This class was added so we can create sockets with options that are needed
@@ -27,24 +30,25 @@ import java.io.FileDescriptor;
  * used, for earlier versions the original PlainSocketImpl is used.
  */
 class PlainMulticastSocketImpl extends PlainDatagramSocketImpl {
+    
+	// /**
+	// * Answer the result of attempting to create a multicast socket in the IP
+	// * stack. Any special options required for server sockets will be set by
+	// * this method.
+	// *
+	// * @param aFD
+	// * the socket FileDescriptor
+	// * @exception SocketException
+	// * if an error occurs while creating the socket
+	// */
+	// static native void createMulticastSocketImpl(FileDescriptor aFD,
+	// boolean preferIPv4Stack) throws SocketException;
 
-	/**
-	 * Answer the result of attempting to create a multicast socket in the IP
-	 * stack. Any special options required for server sockets will be set by
-	 * this method.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @exception SocketException
-	 *                if an error occurs while creating the socket
-	 */
-	static native void createMulticastSocketImpl(FileDescriptor aFD,
-			boolean preferIPv4Stack) throws SocketException;
-
-	/**
+    /**
 	 * Allocate the socket descriptor in the IP stack.
 	 */
-	protected void create() throws SocketException {
-		createMulticastSocketImpl(fd, Socket.preferIPv4Stack());
+	public void create() throws SocketException {
+		Platform.getNetworkSystem()
+				.createMulticastSocket(fd, NetUtil.preferIPv4Stack());
 	}
 }

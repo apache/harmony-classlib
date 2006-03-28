@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,14 @@
  * limitations under the License.
  */
 
-package java.net;
-
+package org.apache.harmony.luni.net;
 
 import java.io.FileDescriptor;
+import java.net.SocketException;
+
+import org.apache.harmony.luni.net.NetUtil;
+import org.apache.harmony.luni.net.PlainSocketImpl;
+
 
 /**
  * This class was added so we can create sockets with options that are needed
@@ -27,6 +31,15 @@ import java.io.FileDescriptor;
  * used, for earlier versions the original PlainSocketImpl is used.
  */
 class PlainServerSocketImpl extends PlainSocketImpl {
+    
+    public PlainServerSocketImpl(){
+        super();
+    }
+    
+    public PlainServerSocketImpl(FileDescriptor fd){
+        super();
+        this.fd = fd;
+    }
 
 	/**
 	 * Answer the result of attempting to create a server stream socket in the
@@ -38,9 +51,8 @@ class PlainServerSocketImpl extends PlainSocketImpl {
 	 * @exception SocketException
 	 *                if an error occurs while creating the socket
 	 */
-	static native void createServerStreamSocketImpl(FileDescriptor aFD,
-			boolean preferIPv4Stack) throws SocketException;
-
+	// static native void createServerStreamSocketImpl(FileDescriptor aFD,
+	// boolean preferIPv4Stack) throws SocketException;
 	/**
 	 * Creates a new unconnected socket. If streaming is true, create a stream
 	 * socket, else a datagram socket. The deprecated datagram usage is not
@@ -52,11 +64,16 @@ class PlainServerSocketImpl extends PlainSocketImpl {
 	 *                if an error occurs while creating the socket
 	 */
 	protected void create(boolean isStreaming) throws SocketException {
-		this.streaming = isStreaming;
+		streaming = isStreaming;
+		// if (isStreaming) {
+		// createServerStreamSocketImpl(fd, Socket.preferIPv4Stack());
+		// } else {
+		// createDatagramSocketImpl(fd, Socket.preferIPv4Stack());
+		// }
 		if (isStreaming) {
-			createServerStreamSocketImpl(fd, Socket.preferIPv4Stack());
+			netImpl.createServerStreamSocket(fd, NetUtil.preferIPv4Stack());
 		} else {
-			createDatagramSocketImpl(fd, Socket.preferIPv4Stack());
+			netImpl.createDatagramSocket(fd, NetUtil.preferIPv4Stack());
 		}
 	}
 }

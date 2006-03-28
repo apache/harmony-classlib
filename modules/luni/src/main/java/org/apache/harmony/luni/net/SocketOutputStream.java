@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,21 @@
  * limitations under the License.
  */
 
-package java.net;
+package org.apache.harmony.luni.net;
 
-
-/**
- * The SocketOutputStream supports the streamed writing of bytes to the socket.
- * Multiple streams may be opened on a socket, so care should be taken to manage
- * opened streams and coordinate write operations between threads.
- */
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketImpl;
+
 
 class SocketOutputStream extends OutputStream {
 
-	SocketImpl socket;
+	private static final String ERRCODE_BUFFER_NULL = "K0047"; //$NON-NLS-1$
+
+	private static final String ERRCODE_OFFSET_OUTOFBOUND = "K002f"; //$NON-NLS-1$
+
+	PlainSocketImpl socket;
 
 	/**
 	 * Constructs a SocketOutputStream for the <code>socket</code>. Write
@@ -39,7 +40,7 @@ class SocketOutputStream extends OutputStream {
 
 	public SocketOutputStream(SocketImpl socket) {
 		super();
-		this.socket = socket;
+		this.socket = (PlainSocketImpl) socket;
 	}
 
 	/**
@@ -86,12 +87,14 @@ class SocketOutputStream extends OutputStream {
 			if (0 <= offset && offset <= buffer.length && 0 <= count
 					&& count <= buffer.length - offset) {
 				socket.write(buffer, offset, count);
-			} else
+			} else {
 				throw new ArrayIndexOutOfBoundsException(com.ibm.oti.util.Msg
-						.getString("K002f"));
-		} else
+						.getString(ERRCODE_OFFSET_OUTOFBOUND));
+			}
+		} else {
 			throw new NullPointerException(com.ibm.oti.util.Msg
-					.getString("K0047"));
+					.getString(ERRCODE_BUFFER_NULL));
+		}
 	}
 
 	/**

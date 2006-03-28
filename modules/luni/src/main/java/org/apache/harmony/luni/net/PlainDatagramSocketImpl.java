@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,26 @@
  * limitations under the License.
  */
 
-package java.net;
-
+package org.apache.harmony.luni.net;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocketImpl;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketOptions;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.security.AccessController;
+
+import org.apache.harmony.luni.platform.INetworkSystem;
+import org.apache.harmony.luni.platform.Platform;
 
 import com.ibm.oti.util.Msg;
 import com.ibm.oti.util.PriviAction;
@@ -31,6 +44,14 @@ import com.ibm.oti.util.PriviAction;
  */
 
 class PlainDatagramSocketImpl extends DatagramSocketImpl {
+
+	static final int MULTICAST_IF = 1;
+
+	static final int MULTICAST_TTL = 2;
+
+	static final int TCP_NODELAY = 4;
+
+	static final int FLAG_SHUTDOWN = 8;
 
 	private final static int SO_BROADCAST = 32;
 
@@ -46,7 +67,15 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 
 	private int ttl = 1;
 
+	private INetworkSystem netImpl = Platform.getNetworkSystem();
+
 	private volatile boolean isNativeConnected = false;
+
+	public int receiveTimeout = 0;
+
+	public boolean streaming = true;
+
+	public boolean shutdownInput = false;
 
 	// for datagram and multicast sockets we have to set
 	// REUSEADDR and REUSEPORT when REUSEADDR is set
@@ -70,13 +99,25 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	private int trafficClass = 0;
 
 	// Fill in the JNI id caches
-	private static native void oneTimeInitialization(boolean jcl_IPv6_support);
+	// private static native void oneTimeInitialization(boolean
+	// jcl_IPv6_support);
+	//
+	// static {
+	// oneTimeInitialization(true);
+	// }
 
-	static {
-		oneTimeInitialization(true);
-	}
+    
+    public PlainDatagramSocketImpl(FileDescriptor fd, int localPort) {
+        super();
+        this.fd = fd;
+        this.localPort = localPort;
+    }
+    
+    public PlainDatagramSocketImpl(){
+        super();
+    }
 
-	/**
+    /**
 	 * Bind the datagram socket to the nominated localhost/port. Sockets must be
 	 * bound prior to attempting to send or receive data.
 	 * 
@@ -89,17 +130,17 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 *                if an error occured during bind, such as if the port was
 	 *                already bound
 	 */
-	protected void bind(int port, InetAddress addr) throws SocketException {
+	public void bind(int port, InetAddress addr) throws SocketException {
 		String prop = (String) AccessController.doPrivileged(new PriviAction(
 				"bindToDevice"));
 		boolean useBindToDevice = prop != null
 				&& prop.toLowerCase().equals("true");
-		bindToDevice = socketBindImpl2(fd, port, useBindToDevice, addr);
+		bindToDevice = netImpl.bind2(fd, port, useBindToDevice, addr);
 		if (0 != port) {
 			localPort = port;
 		} else {
-			localPort = Socket.getSocketLocalPortImpl(fd, InetAddress
-					.preferIPv6Addresses());
+			localPort = netImpl.getSocketLocalPort(fd,
+					NetUtil.preferIPv6Addresses());
 		}
 
 		try {
@@ -112,12 +153,15 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	/**
 	 * Close the socket.
 	 */
-	protected void close() {
-
+	public void close() {
 		synchronized (fd) {
 			if (fd.valid()) {
-				Socket.socketCloseImpl(fd);
-				initializeSocket();
+				try {
+					netImpl.socketClose(fd);
+				} catch (IOException e) {
+					// TODO do nothing?
+				}
+				fd = new FileDescriptor();
 			}
 		}
 	}
@@ -125,24 +169,12 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	/**
 	 * Allocate the socket descriptor in the IP stack.
 	 */
-	protected void create() throws SocketException {
-		createDatagramSocketImpl(fd, Socket.preferIPv4Stack());
+	public void create() throws SocketException {
+		netImpl.createDatagramSocket(fd, NetUtil.preferIPv4Stack());
 	}
 
 	protected void finalize() {
 		close();
-	}
-
-	/**
-	 * Answer the local address from the IP stack. This method should not be
-	 * called directly as it does not check the security policy.
-	 * 
-	 * @return InetAddress the local address to which the socket is bound.
-	 * @see DatagramSocket
-	 */
-	InetAddress getLocalAddress() {
-		return Socket.getSocketLocalAddressImpl(fd, InetAddress
-				.preferIPv6Addresses());
 	}
 
 	/**
@@ -159,31 +191,36 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 		} else {
 			// Call the native first so there will be
 			// an exception if the socket if closed.
-			Object result = Socket.getSocketOptionImpl(fd, optID);
+			Object result = netImpl.getSocketOption(fd, optID);
 			if (optID == SocketOptions.IP_MULTICAST_IF
-					&& (Socket.getSocketFlags() & Socket.MULTICAST_IF) != 0) {
-
-				return new Inet4Address(ipaddress);
+					&& (netImpl.getSocketFlags() & MULTICAST_IF) != 0) {
+				try {
+					return Inet4Address.getByAddress(ipaddress);
+				} catch (UnknownHostException e) {
+					return null;
+				}
 			}
 			return result;
 		}
 	}
 
-	protected int getTimeToLive() throws IOException {
+	public int getTimeToLive() throws IOException {
 		// Call the native first so there will be an exception if the socket if
 		// closed.
 		int result = (((Byte) getOption(IP_MULTICAST_TTL)).byteValue()) & 0xFF;
-		if ((Socket.getSocketFlags() & Socket.MULTICAST_TTL) != 0)
+		if ((netImpl.getSocketFlags() & MULTICAST_TTL) != 0) {
 			return ttl;
+		}
 		return result;
 	}
 
-	protected byte getTTL() throws IOException {
+	public byte getTTL() throws IOException {
 		// Call the native first so there will be an exception if the socket if
 		// closed.
 		byte result = ((Byte) getOption(IP_MULTICAST_TTL)).byteValue();
-		if ((Socket.getSocketFlags() & Socket.MULTICAST_TTL) != 0)
+		if ((netImpl.getSocketFlags() & MULTICAST_TTL) != 0) {
 			return (byte) ttl;
+		}
 		return result;
 	}
 
@@ -197,7 +234,7 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 * @exception java.io.IOException
 	 *                may be thrown while joining a group
 	 */
-	protected void join(InetAddress addr) throws IOException {
+	public void join(InetAddress addr) throws IOException {
 		setOption(IP_MULTICAST_ADD, new GenericIPMreq(addr));
 	}
 
@@ -213,7 +250,7 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 * @exception java.io.IOException
 	 *                may be thrown while joining a group
 	 */
-	protected void joinGroup(SocketAddress addr, NetworkInterface netInterface)
+	public void joinGroup(SocketAddress addr, NetworkInterface netInterface)
 			throws IOException {
 		if (addr instanceof InetSocketAddress) {
 			InetAddress groupAddr = ((InetSocketAddress) addr).getAddress();
@@ -230,7 +267,7 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 * @exception java.io.IOException
 	 *                May be thrown while leaving the group
 	 */
-	protected void leave(InetAddress addr) throws IOException {
+	public void leave(InetAddress addr) throws IOException {
 		setOption(IP_MULTICAST_DROP, new GenericIPMreq(addr));
 	}
 
@@ -244,7 +281,7 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 * @exception java.io.IOException
 	 *                May be thrown while leaving the group
 	 */
-	protected void leaveGroup(SocketAddress addr, NetworkInterface netInterface)
+	public void leaveGroup(SocketAddress addr, NetworkInterface netInterface)
 			throws IOException {
 		if (addr instanceof InetSocketAddress) {
 			InetAddress groupAddr = ((InetSocketAddress) addr).getAddress();
@@ -253,189 +290,190 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 		}
 	}
 
-	/**
-	 * Connect the socket to a port and address
-	 * 
-	 * @param aFD
-	 *            the FileDescriptor to associate with the socket
-	 * @param port
-	 *            the port to connect to
-	 * @param trafficClass
-	 *            the traffic Class to be used then the connection is made
-	 * @param inetAddress
-	 *            address to connect to.
-	 * 
-	 * @exception SocketException
-	 *                if the connect fails
-	 */
-	protected static native void connectDatagramImpl2(FileDescriptor aFD,
-			int port, int trafficClass, InetAddress inetAddress)
-			throws SocketException;
-
-	/**
-	 * Disconnect the socket to a port and address
-	 * 
-	 * @param aFD
-	 *            the FileDescriptor to associate with the socket
-	 * 
-	 * @exception SocketException
-	 *                if the disconnect fails
-	 */
-	protected static native void disconnectDatagramImpl(FileDescriptor aFD)
-			throws SocketException;
-
-	/**
-	 * Allocate a datagram socket in the IP stack. The socket is associated with
-	 * the <code>aFD</code>.
-	 * 
-	 * @param aFD
-	 *            the FileDescriptor to associate with the socket
-	 * @param preferIPv4Stack
-	 *            IP stack preference if underlying platform is V4/V6
-	 * @exception SocketException
-	 *                upon an allocation error
-	 */
-	protected static native void createDatagramSocketImpl(FileDescriptor aFD,
-			boolean preferIPv4Stack) throws SocketException;
-
-	/**
-	 * Bind the socket to the port/localhost in the IP stack.
-	 * 
-	 * @param aFD
-	 *            the socket descriptor
-	 * @param port
-	 *            the option selector
-	 * @param bindToDevice
-	 *            bind the socket to the specified interface
-	 * @param inetAddress
-	 *            address to connect to.
-	 * @exception SocketException
-	 *                thrown if bind operation fails
-	 */
-	protected static native boolean socketBindImpl2(FileDescriptor aFD,
-			int port, boolean bindToDevice, InetAddress inetAddress)
-			throws SocketException;
-
-	/**
-	 * Peek on the socket, update <code>sender</code> address and answer the
-	 * sender port.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @param sender
-	 *            an InetAddress, to be updated with the sender's address
-	 * @param receiveTimeout
-	 *            the maximum length of time the socket should block, reading
-	 * @return int the sender port
-	 * 
-	 * @exception IOException
-	 *                upon an read error or timeout
-	 */
-	protected static native int peekDatagramImpl(FileDescriptor aFD,
-			InetAddress sender, int receiveTimeout) throws IOException;
-
-	/**
-	 * Recieve data on the socket into the specified buffer. The packet fields
-	 * <code>data</code> & <code>length</code> are passed in addition to
-	 * <code>packet</code> to eliminate the JNI field access calls.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @param packet
-	 *            the DatagramPacket to receive into
-	 * @param data
-	 *            the data buffer of the packet
-	 * @param offset
-	 *            the offset in the data buffer
-	 * @param length
-	 *            the length of the data buffer in the packet
-	 * @param receiveTimeout
-	 *            the maximum length of time the socket should block, reading
-	 * @param peek
-	 *            indicates to peek at the data
-	 * @exception IOException
-	 *                upon an read error or timeout
-	 */
-	protected static native int receiveDatagramImpl2(FileDescriptor aFD,
-			DatagramPacket packet, byte[] data, int offset, int length,
-			int receiveTimeout, boolean peek) throws IOException;
-
-	/**
-	 * Recieve data on the connected socket into the specified buffer. The
-	 * packet fields <code>data</code> & <code>length</code> are passed in
-	 * addition to <code>packet</code> to eliminate the JNI field access
-	 * calls.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @param packet
-	 *            the DatagramPacket to receive into
-	 * @param data
-	 *            the data buffer of the packet
-	 * @param offset
-	 *            the offset in the data buffer
-	 * @param length
-	 *            the length of the data buffer in the packet
-	 * @param receiveTimeout
-	 *            the maximum length of time the socket should block, reading
-	 * @param peek
-	 *            indicates to peek at the data
-	 * @exception IOException
-	 *                upon an read error or timeout
-	 */
-	protected static native int recvConnectedDatagramImpl(FileDescriptor aFD,
-			DatagramPacket packet, byte[] data, int offset, int length,
-			int receiveTimeout, boolean peek) throws IOException;
-
-	/**
-	 * Send the <code>data</code> to the nominated target <code>address</code>
-	 * and <code>port</code>. These values are derived from the
-	 * DatagramPacket to reduce the field calls within JNI.
-	 * 
-	 * @param fd
-	 *            the socket FileDescriptor
-	 * @param data
-	 *            the data buffer of the packet
-	 * @param offset
-	 *            the offset in the data buffer
-	 * @param length
-	 *            the length of the data buffer in the packet
-	 * @param port
-	 *            the target host port
-	 * @param trafficClass
-	 *            the traffic class to be used when the datagram is sent
-	 * @param inetAddress
-	 *            address to connect to.
-	 * 
-	 * @exception IOException
-	 *                upon an read error or timeout
-	 */
-	protected static native int sendDatagramImpl2(FileDescriptor fd,
-			byte[] data, int offset, int length, int port,
-			boolean bindToDevice, int trafficClass, InetAddress inetAddress)
-			throws IOException;
-
-	/**
-	 * Send the <code>data</code> to the address and port to which the was
-	 * connnected and <code>port</code>.
-	 * 
-	 * @param fd
-	 *            the socket FileDescriptor
-	 * @param data
-	 *            the data buffer of the packet
-	 * @param offset
-	 *            the offset in the data buffer
-	 * @param length
-	 *            the length of the data buffer in the packet
-	 * @param bindToDevice
-	 *            not used, current kept in case needed as was the case for
-	 *            sendDatagramImpl
-	 * @exception IOException
-	 *                upon an read error or timeout
-	 */
-	protected static native int sendConnectedDatagramImpl(FileDescriptor fd,
-			byte[] data, int offset, int length, boolean bindToDevice)
-			throws IOException;
+	// /**
+	// * Connect the socket to a port and address
+	// *
+	// * @param aFD
+	// * the FileDescriptor to associate with the socket
+	// * @param port
+	// * the port to connect to
+	// * @param trafficClass
+	// * the traffic Class to be used then the connection is made
+	// * @param inetAddress
+	// * address to connect to.
+	// *
+	// * @exception SocketException
+	// * if the connect fails
+	// */
+	// protected static native void connectDatagramImpl2(FileDescriptor aFD,
+	// int port, int trafficClass, InetAddress inetAddress)
+	// throws SocketException;
+	//
+	// /**
+	// * Disconnect the socket to a port and address
+	// *
+	// * @param aFD
+	// * the FileDescriptor to associate with the socket
+	// *
+	// * @exception SocketException
+	// * if the disconnect fails
+	// */
+	// protected static native void disconnectDatagramImpl(FileDescriptor aFD)
+	// throws SocketException;
+	//
+	// /**
+	// * Allocate a datagram socket in the IP stack. The socket is associated
+	// with
+	// * the <code>aFD</code>.
+	// *
+	// * @param aFD
+	// * the FileDescriptor to associate with the socket
+	// * @param preferIPv4Stack
+	// * IP stack preference if underlying platform is V4/V6
+	// * @exception SocketException
+	// * upon an allocation error
+	// */
+	// protected static native void createDatagramSocketImpl(FileDescriptor aFD,
+	// boolean preferIPv4Stack) throws SocketException;
+	//
+	// /**
+	// * Bind the socket to the port/localhost in the IP stack.
+	// *
+	// * @param aFD
+	// * the socket descriptor
+	// * @param port
+	// * the option selector
+	// * @param bindToDevice
+	// * bind the socket to the specified interface
+	// * @param inetAddress
+	// * address to connect to.
+	// * @exception SocketException
+	// * thrown if bind operation fails
+	// */
+	// protected static native boolean socketBindImpl2(FileDescriptor aFD,
+	// int port, boolean bindToDevice, InetAddress inetAddress)
+	// throws SocketException;
+	//
+	// /**
+	// * Peek on the socket, update <code>sender</code> address and answer the
+	// * sender port.
+	// *
+	// * @param aFD
+	// * the socket FileDescriptor
+	// * @param sender
+	// * an InetAddress, to be updated with the sender's address
+	// * @param receiveTimeout
+	// * the maximum length of time the socket should block, reading
+	// * @return int the sender port
+	// *
+	// * @exception IOException
+	// * upon an read error or timeout
+	// */
+	// protected static native int peekDatagramImpl(FileDescriptor aFD,
+	// InetAddress sender, int receiveTimeout) throws IOException;
+	//
+	// /**
+	// * Recieve data on the socket into the specified buffer. The packet fields
+	// * <code>data</code> & <code>length</code> are passed in addition to
+	// * <code>packet</code> to eliminate the JNI field access calls.
+	// *
+	// * @param aFD
+	// * the socket FileDescriptor
+	// * @param packet
+	// * the DatagramPacket to receive into
+	// * @param data
+	// * the data buffer of the packet
+	// * @param offset
+	// * the offset in the data buffer
+	// * @param length
+	// * the length of the data buffer in the packet
+	// * @param receiveTimeout
+	// * the maximum length of time the socket should block, reading
+	// * @param peek
+	// * indicates to peek at the data
+	// * @exception IOException
+	// * upon an read error or timeout
+	// */
+	// protected static native int receiveDatagramImpl2(FileDescriptor aFD,
+	// DatagramPacket packet, byte[] data, int offset, int length,
+	// int receiveTimeout, boolean peek) throws IOException;
+	//
+	// /**
+	// * Recieve data on the connected socket into the specified buffer. The
+	// * packet fields <code>data</code> & <code>length</code> are passed in
+	// * addition to <code>packet</code> to eliminate the JNI field access
+	// * calls.
+	// *
+	// * @param aFD
+	// * the socket FileDescriptor
+	// * @param packet
+	// * the DatagramPacket to receive into
+	// * @param data
+	// * the data buffer of the packet
+	// * @param offset
+	// * the offset in the data buffer
+	// * @param length
+	// * the length of the data buffer in the packet
+	// * @param receiveTimeout
+	// * the maximum length of time the socket should block, reading
+	// * @param peek
+	// * indicates to peek at the data
+	// * @exception IOException
+	// * upon an read error or timeout
+	// */
+	// protected static native int recvConnectedDatagramImpl(FileDescriptor aFD,
+	// DatagramPacket packet, byte[] data, int offset, int length,
+	// int receiveTimeout, boolean peek) throws IOException;
+	//
+	// /**
+	// * Send the <code>data</code> to the nominated target <code>address</code>
+	// * and <code>port</code>. These values are derived from the
+	// * DatagramPacket to reduce the field calls within JNI.
+	// *
+	// * @param fd
+	// * the socket FileDescriptor
+	// * @param data
+	// * the data buffer of the packet
+	// * @param offset
+	// * the offset in the data buffer
+	// * @param length
+	// * the length of the data buffer in the packet
+	// * @param port
+	// * the target host port
+	// * @param trafficClass
+	// * the traffic class to be used when the datagram is sent
+	// * @param inetAddress
+	// * address to connect to.
+	// *
+	// * @exception IOException
+	// * upon an read error or timeout
+	// */
+	// protected static native int sendDatagramImpl2(FileDescriptor fd,
+	// byte[] data, int offset, int length, int port,
+	// boolean bindToDevice, int trafficClass, InetAddress inetAddress)
+	// throws IOException;
+	//
+	// /**
+	// * Send the <code>data</code> to the address and port to which the was
+	// * connnected and <code>port</code>.
+	// *
+	// * @param fd
+	// * the socket FileDescriptor
+	// * @param data
+	// * the data buffer of the packet
+	// * @param offset
+	// * the offset in the data buffer
+	// * @param length
+	// * the length of the data buffer in the packet
+	// * @param bindToDevice
+	// * not used, current kept in case needed as was the case for
+	// * sendDatagramImpl
+	// * @exception IOException
+	// * upon an read error or timeout
+	// */
+	// protected static native int sendConnectedDatagramImpl(FileDescriptor fd,
+	// byte[] data, int offset, int length, boolean bindToDevice)
+	// throws IOException;
 
 	protected int peek(InetAddress sender) throws IOException {
 		if (isNativeConnected) {
@@ -447,12 +485,14 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 			byte[] storageArray = new byte[10];
 			DatagramPacket pack = new DatagramPacket(storageArray,
 					storageArray.length);
-			recvConnectedDatagramImpl(fd, pack, pack.getData(), pack
+			netImpl.recvConnectedDatagram(fd, pack, pack.getData(), pack
 					.getOffset(), pack.getLength(), receiveTimeout, true); // peek
-			sender.ipaddress = connectedAddress.getAddress();
+			// to set the sender ,we now use a native function
+			// sender.ipaddress = connectedAddress.getAddress();
+			netImpl.setInetAddress(sender, connectedAddress.getAddress());
 			return connectedPort;
 		}
-		return peekDatagramImpl(fd, sender, receiveTimeout);
+		return netImpl.peekDatagram(fd, sender, receiveTimeout);
 	}
 
 	/**
@@ -463,18 +503,18 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 * @exception IOException
 	 *                if an error or timeout occurs during a read
 	 */
-	protected void receive(DatagramPacket pack) throws java.io.IOException {
+	public void receive(DatagramPacket pack) throws java.io.IOException {
 		try {
 			if (isNativeConnected) {
 				// do not peek
-				recvConnectedDatagramImpl(fd, pack, pack.getData(), pack
-						.getOffset(), pack.getLength(), receiveTimeout, false);
+				netImpl.recvConnectedDatagram(fd, pack, pack.getData(),
+						pack.getOffset(), pack.getLength(), receiveTimeout,
+						false);
 				updatePacketRecvAddress(pack);
 			} else {
-				receiveDatagramImpl2(fd, pack, pack.getData(),
-						pack.getOffset(), pack.getLength(), receiveTimeout,
-						false // do not peek
-				);
+				// receiveDatagramImpl2
+				netImpl.receiveDatagram(fd, pack, pack.getData(), pack
+						.getOffset(), pack.getLength(), receiveTimeout, false);
 			}
 		} catch (InterruptedIOException e) {
 			throw new SocketTimeoutException(e.getMessage());
@@ -487,15 +527,16 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 * @exception IOException
 	 *                if an error occurs during the write
 	 */
-	protected void send(DatagramPacket packet) throws IOException {
+	public void send(DatagramPacket packet) throws IOException {
 
 		if (isNativeConnected) {
-			sendConnectedDatagramImpl(fd, packet.getData(), packet.getOffset(),
-					packet.getLength(), bindToDevice);
+			netImpl.sendConnectedDatagram(fd, packet.getData(), packet
+					.getOffset(), packet.getLength(), bindToDevice);
 		} else {
-			sendDatagramImpl2(fd, packet.getData(), packet.getOffset(), packet
-					.getLength(), packet.getPort(), bindToDevice, trafficClass,
-					packet.getAddress());
+			// sendDatagramImpl2
+			netImpl.sendDatagram(fd, packet.getData(), packet.getOffset(),
+					packet.getLength(), packet.getPort(), bindToDevice,
+					trafficClass, packet.getAddress());
 		}
 	}
 
@@ -518,9 +559,9 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 		if (optID == SocketOptions.SO_TIMEOUT) {
 			receiveTimeout = ((Integer) val).intValue();
 		} else {
-			int flags = Socket.getSocketFlags();
+			int flags = netImpl.getSocketFlags();
 			try {
-				Socket.setSocketOptionImpl(fd, optID | (flags << 16), val);
+				netImpl.setSocketOption(fd, optID | (flags << 16), val);
 			} catch (SocketException e) {
 				// we don't throw an exception for IP_TOS even if the platform
 				// won't let us set the requested value
@@ -529,10 +570,10 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 				}
 			}
 			if (optID == SocketOptions.IP_MULTICAST_IF
-					&& (flags & Socket.MULTICAST_IF) != 0) {
+					&& (flags & MULTICAST_IF) != 0) {
 				InetAddress inet = (InetAddress) val;
-				if (InetAddress.bytesToInt(inet.ipaddress, 0) == 0
-						|| inet.equals(InetAddress.LOOPBACK)) {
+				if (bytesToInt(inet.getAddress(), 0) == 0
+						|| inet.isLoopbackAddress()) {
 					ipaddress = ((InetAddress) val).getAddress();
 				} else {
 					InetAddress local = null;
@@ -563,16 +604,16 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 		}
 	}
 
-	protected void setTimeToLive(int ttl) throws java.io.IOException {
+	public void setTimeToLive(int ttl) throws java.io.IOException {
 		setOption(IP_MULTICAST_TTL, new Byte((byte) (ttl & 0xFF)));
-		if ((Socket.getSocketFlags() & Socket.MULTICAST_TTL) != 0) {
+		if ((netImpl.getSocketFlags() & MULTICAST_TTL) != 0) {
 			this.ttl = ttl;
 		}
 	}
 
-	protected void setTTL(byte ttl) throws java.io.IOException {
+	public void setTTL(byte ttl) throws java.io.IOException {
 		setOption(IP_MULTICAST_TTL, new Byte(ttl));
-		if ((Socket.getSocketFlags() & Socket.MULTICAST_TTL) != 0) {
+		if ((netImpl.getSocketFlags() & MULTICAST_TTL) != 0) {
 			this.ttl = ttl;
 		}
 	}
@@ -589,10 +630,10 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 *                possibly thrown, if the datagram socket cannot be
 	 *                connected to the specified remote address and port
 	 */
-	protected void connect(InetAddress inetAddr, int port)
-			throws SocketException {
+	public void connect(InetAddress inetAddr, int port) throws SocketException {
 
-		connectDatagramImpl2(fd, port, trafficClass, inetAddr);
+		// connectDatagram impl2
+		netImpl.connectDatagram(fd, port, trafficClass, inetAddr);
 
 		// if we get here then we are connected at the native level
 		try {
@@ -610,9 +651,9 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	/**
 	 * Disconnect the socket from the remote address and port.
 	 */
-	protected void disconnect() {
+	public void disconnect() {
 		try {
-			disconnectDatagramImpl(fd);
+			netImpl.disconnectDatagram(fd);
 		} catch (Exception e) {
 			// there is currently no way to return an error so just eat any
 			// exception
@@ -637,16 +678,17 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 * @exception IOException
 	 *                if an error occurs
 	 */
-	protected int peekData(DatagramPacket pack) throws IOException {
+	public int peekData(DatagramPacket pack) throws IOException {
 		try {
 			if (isNativeConnected) {
-				recvConnectedDatagramImpl(fd, pack, pack.getData(), pack
-						.getOffset(), pack.getLength(), receiveTimeout, true); // peek
-				updatePacketRecvAddress(pack);
-			} else {
-				receiveDatagramImpl2(fd, pack, pack.getData(),
+				netImpl.recvConnectedDatagram(fd, pack, pack.getData(),
 						pack.getOffset(), pack.getLength(), receiveTimeout,
 						true); // peek
+				updatePacketRecvAddress(pack);
+			} else {
+				// receiveDatagram 2
+				netImpl.receiveDatagram(fd, pack, pack.getData(), pack
+						.getOffset(), pack.getLength(), receiveTimeout, true); // peek
 			}
 		} catch (InterruptedIOException e) {
 			throw new SocketTimeoutException(e.getMessage());
@@ -665,6 +707,29 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 */
 	private void updatePacketRecvAddress(DatagramPacket packet) {
 		packet.setAddress(connectedAddress);
-		packet.port = connectedPort;
+		packet.setPort(connectedPort);
+	}
+
+	static void intToBytes(int value, byte bytes[], int start) {
+		// Shift the int so the current byte is right-most
+		// Use a byte mask of 255 to single out the last byte.
+		bytes[start] = (byte) ((value >> 24) & 255);
+		bytes[start + 1] = (byte) ((value >> 16) & 255);
+		bytes[start + 2] = (byte) ((value >> 8) & 255);
+		bytes[start + 3] = (byte) (value & 255);
+	}
+
+	static int bytesToInt(byte bytes[], int start) {
+		// First mask the byte with 255, as when a negative
+		// signed byte converts to an integer, it has bits
+		// on in the first 3 bytes, we are only concerned
+		// about the right-most 8 bits.
+		// Then shift the rightmost byte to align with its
+		// position in the integer.
+		int value = ((bytes[start + 3] & 255))
+				| ((bytes[start + 2] & 255) << 8)
+				| ((bytes[start + 1] & 255) << 16)
+				| ((bytes[start] & 255) << 24);
+		return value;
 	}
 }

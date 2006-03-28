@@ -1,4 +1,4 @@
-/* Copyright 2000, 2003 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,7 @@
  * limitations under the License.
  */
 
-package java.net;
-
+package org.apache.harmony.luni.net;
 
 import java.io.UnsupportedEncodingException;
 
@@ -202,8 +201,9 @@ class Socks4Message {
 		int lastIndex = index + maxLength;
 		String result;
 
-		while (index < lastIndex && (buffer[index] != 0))
+		while (index < lastIndex && (buffer[index] != 0)) {
 			index++;
+		}
 		try {
 			result = new String(buffer, offset, index - offset, "ISO8859_1");
 		} catch (UnsupportedEncodingException e) {

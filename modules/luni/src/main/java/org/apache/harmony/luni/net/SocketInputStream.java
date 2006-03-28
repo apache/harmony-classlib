@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,13 @@
  * limitations under the License.
  */
 
-package java.net;
-
+package org.apache.harmony.luni.net;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
+import java.net.SocketImpl;
+
 
 import com.ibm.oti.util.Msg;
 
@@ -28,7 +30,13 @@ import com.ibm.oti.util.Msg;
  */
 class SocketInputStream extends InputStream {
 
-	SocketImpl socket;
+	private static final String ERRCODE_OFFSETCOUNT_OUTOFBOUND = "K002f"; //$NON-NLS-1$
+
+	private static final String ERRCODE_OFFSET_OUTOFBOUND = "K002e"; //$NON-NLS-1$
+
+	private static final String ERRCODE_BUFFER_NULL = "K0047"; //$NON-NLS-1$
+
+	PlainSocketImpl socket;
 
 	/**
 	 * Constructs a SocketInputStream for the <code>socket</code>. Read
@@ -40,7 +48,7 @@ class SocketInputStream extends InputStream {
 	 */
 	public SocketInputStream(SocketImpl socket) {
 		super();
-		this.socket = socket;
+		this.socket = (PlainSocketImpl) socket;
 	}
 
 	/**
@@ -119,16 +127,22 @@ class SocketInputStream extends InputStream {
 	 *                bounds are incorrect or an error occurs during the read
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException {
-		if (null == buffer)
-			throw new IOException(Msg.getString("K0047"));
-		
-		if (0 == count)
-			return 0;
+		if (null == buffer) {
+			throw new IOException(Msg.getString(ERRCODE_BUFFER_NULL));
+		}
 
-		if (0 > offset || offset >= buffer.length)
-			throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e"));
-		if (0 > count || offset + count > buffer.length)
-			throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f"));
+		if (0 == count) {
+			return 0;
+		}
+
+		if (0 > offset || offset >= buffer.length) {
+			throw new ArrayIndexOutOfBoundsException(Msg
+					.getString(ERRCODE_OFFSET_OUTOFBOUND));
+		}
+		if (0 > count || offset + count > buffer.length) {
+			throw new ArrayIndexOutOfBoundsException(Msg
+					.getString(ERRCODE_OFFSETCOUNT_OUTOFBOUND));
+		}
 
 		return socket.read(buffer, offset, count);
 	}

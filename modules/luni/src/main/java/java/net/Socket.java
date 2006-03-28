@@ -1,26 +1,16 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/* $$COPYRIGHT$$[1998, 2005]$$ */
 
 package java.net;
 
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessController;
+
+import org.apache.harmony.luni.net.NetUtil;
+import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.platform.Platform;
 
 import com.ibm.oti.util.Msg;
 import com.ibm.oti.util.PriviAction;
@@ -57,13 +47,13 @@ public class Socket {
 
 	static final int FLAG_SHUTDOWN = 8;
 
-	// Fill in the JNI id caches
-
-	private static native void oneTimeInitialization(boolean jcl_supports_ipv6);
-
-	static {
-		oneTimeInitialization(true);
-	}
+//	This is used in cache get/set
+//
+//	private static native void oneTimeInitialization(boolean jcl_supports_ipv6);
+//
+//	static {
+//		oneTimeInitialization(true);
+//	}
 
 	/**
 	 * Construct a connection-oriented Socket. The Socket is created in the
@@ -73,7 +63,7 @@ public class Socket {
 	 */
 	public Socket() {
 		impl = factory != null ? factory.createSocketImpl()
-				: new PlainSocketImpl2();
+				: SocketImplProvider.getSocketImpl();
 	}
 
 	/**
@@ -284,7 +274,7 @@ public class Socket {
 	 * @throws IOException
 	 *             if an error occurs creating the stream
 	 * 
-	 * @see java.net.SocketInputStream
+	 * @see org.apache.harmony.luni.net.SocketInputStream
 	 */
 	public InputStream getInputStream() throws IOException {
 		checkClosedAndCreate(false);
@@ -316,7 +306,7 @@ public class Socket {
 	public InetAddress getLocalAddress() {
 		if (!isBound())
 			return InetAddress.ANY;
-		return Socket.getSocketLocalAddressImpl(impl.fd, InetAddress
+		return Platform.getNetworkSystem().getSocketLocalAddress(impl.fd, InetAddress
 				.preferIPv6Addresses());
 	}
 
@@ -340,7 +330,7 @@ public class Socket {
 	 * @throws IOException
 	 *             if an error occurs creating the stream
 	 * 
-	 * @see java.net.SocketOutputStream
+	 * @see org.apache.harmony.luni.net.SocketOutputStream
 	 */
 	public OutputStream getOutputStream() throws IOException {
 		checkClosedAndCreate(false);
@@ -430,51 +420,51 @@ public class Socket {
 				.booleanValue();
 	}
 
-	static native InetAddress getSocketLocalAddressImpl(FileDescriptor aFD,
-			boolean preferIPv6Addresses);
-
-	/**
-	 * Query the IP stack for the local port to which this socket is bound.
-	 * 
-	 * @param aFD
-	 *            the socket descriptor
-	 * @param preferIPv6Addresses
-	 *            address preference for nodes that support both IPv4 and IPv6
-	 * @return int the local port to which the socket is bound
-	 */
-	static native int getSocketLocalPortImpl(FileDescriptor aFD,
-			boolean preferIPv6Addresses);
-
-	/**
-	 * Query the IP stack for the nominated socket option.
-	 * 
-	 * @param aFD
-	 *            the socket descriptor
-	 * @param opt
-	 *            the socket option type
-	 * @return the nominated socket option value
-	 * 
-	 * @throws SocketException
-	 *             if the option is invalid
-	 */
-	static native Object getSocketOptionImpl(FileDescriptor aFD, int opt)
-			throws SocketException;
-
-	/**
-	 * Set the nominated socket option in the IP stack.
-	 * 
-	 * @param aFD
-	 *            the socket descriptor
-	 * @param opt
-	 *            the option selector
-	 * @param optVal
-	 *            the nominated option value
-	 * 
-	 * @throws SocketException
-	 *             if the option is invalid or cannot be set
-	 */
-	static native void setSocketOptionImpl(FileDescriptor aFD, int opt,
-			Object optVal) throws SocketException;
+//	static native InetAddress getSocketLocalAddressImpl(FileDescriptor aFD,
+//			boolean preferIPv6Addresses);
+//
+//	/**
+//	 * Query the IP stack for the local port to which this socket is bound.
+//	 * 
+//	 * @param aFD
+//	 *            the socket descriptor
+//	 * @param preferIPv6Addresses
+//	 *            address preference for nodes that support both IPv4 and IPv6
+//	 * @return int the local port to which the socket is bound
+//	 */
+//	static native int getSocketLocalPortImpl(FileDescriptor aFD,
+//			boolean preferIPv6Addresses);
+//
+//	/**
+//	 * Query the IP stack for the nominated socket option.
+//	 * 
+//	 * @param aFD
+//	 *            the socket descriptor
+//	 * @param opt
+//	 *            the socket option type
+//	 * @return the nominated socket option value
+//	 * 
+//	 * @throws SocketException
+//	 *             if the option is invalid
+//	 */
+//	static native Object getSocketOptionImpl(FileDescriptor aFD, int opt)
+//			throws SocketException;
+//
+//	/**
+//	 * Set the nominated socket option in the IP stack.
+//	 * 
+//	 * @param aFD
+//	 *            the socket descriptor
+//	 * @param opt
+//	 *            the option selector
+//	 * @param optVal
+//	 *            the nominated option value
+//	 * 
+//	 * @throws SocketException
+//	 *             if the option is invalid or cannot be set
+//	 */
+//	static native void setSocketOptionImpl(FileDescriptor aFD, int opt,
+//			Object optVal) throws SocketException;
 
 	/**
 	 * Set the SO_KEEPALIVE option for this socket.
@@ -491,15 +481,15 @@ public class Socket {
 				: Boolean.FALSE);
 	}
 
-	static native int getSocketFlags();
-
-	/**
-	 * Close the socket in the IP stack.
-	 * 
-	 * @param aFD
-	 *            the socket descriptor
-	 */
-	static native void socketCloseImpl(FileDescriptor aFD);
+//	static native int getSocketFlags();
+//
+//	/**
+//	 * Close the socket in the IP stack.
+//	 * 
+//	 * @param aFD
+//	 *            the socket descriptor
+//	 */
+//	static native void socketCloseImpl(FileDescriptor aFD);
 
 	/**
 	 * Specifies the application's socket implementation factory. This may only
@@ -642,7 +632,7 @@ public class Socket {
 			impl.create(streaming);
 			isCreated = true;
 			try {
-				if (!streaming || !PlainSocketImpl.usingSocks())
+				if (!streaming || !NetUtil.usingSocks())
 					impl.bind(addr, localPort);
 				isBound = true;
 				impl.connect(dstAddress, dstPort);
@@ -708,6 +698,9 @@ public class Socket {
 			if (!isConnected())
 				throw new SocketException(Msg.getString("K0320"));
 			// a connected socket must be created
+            
+            /* return directly to fix a possible bug, if !create, should return here*/ 
+            return;
 		}
 		if (isCreated)
 			return;
@@ -813,7 +806,7 @@ public class Socket {
 
 		synchronized (this) {
 			try {
-				if (!PlainSocketImpl.usingSocks())
+				if (!NetUtil.usingSocks())
 					impl.bind(addr, port);
 				isBound = true;
 			} catch (IOException e) {
@@ -884,7 +877,7 @@ public class Socket {
 					// checkClosedAndCreate
 					// this caused us to lose socket options on create
 					// impl.create(true);
-					if (!PlainSocketImpl.usingSocks())
+					if (!NetUtil.usingSocks())
 						impl.bind(InetAddress.ANY, 0);
 					isBound = true;
 				}
