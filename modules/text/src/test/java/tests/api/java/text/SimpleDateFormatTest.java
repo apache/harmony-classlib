@@ -303,7 +303,8 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 	}
 	
     public void test_equals_afterFormat() {
-        SimpleDateFormat df = new SimpleDateFormat();
+        // Regression test for HARMONY-209
+		SimpleDateFormat df = new SimpleDateFormat();
         df.format(new Date());
         assertEquals(df, new SimpleDateFormat());
     }
