@@ -43,14 +43,14 @@
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
-		depends="clean, compile-support, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-jndi, test-sql, test-prefs, test-beans, gen-report">
+		depends="clean, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-jndi, test-sql, test-prefs, test-beans, gen-report">
 	</target>
 
 	<target name="clean">
 		<delete dir="${tests.output}" />
 	</target>
 
-	<target name="test-luni">
+	<target name="test-luni" depends="compile-support">
         <echo message="=================================="/>
         <echo message="Running tests for module luni"/>
         <echo message="=================================="/>
@@ -58,7 +58,7 @@
         <ant antfile="make/build.xml" dir="modules/luni" target="test"/>
 	</target>
 
-	<target name="test-archive">
+	<target name="test-archive" depends="compile-support">
         <echo message="=================================="/>
         <echo message="Running tests for module archive"/>
         <echo message="=================================="/>
@@ -67,7 +67,7 @@
 
 	</target>
 
-	<target name="test-xnet">
+	<target name="test-xnet" depends="compile-support">
         <echo message="=================================="/>
         <echo message="Running tests for module x-net"/>
         <echo message="=================================="/>
@@ -76,7 +76,7 @@
 
 	</target>
 
-	<target name="test-text">
+	<target name="test-text" depends="compile-support">
         <echo message="=================================="/>
         <echo message="Running tests for module text"/>
         <echo message="=================================="/>
@@ -85,7 +85,7 @@
 
 	</target>
 
-	<target name="test-nio">
+	<target name="test-nio" depends="compile-support">
         <echo message="=================================="/>
         <echo message="Running tests for module nio"/>
         <echo message="=================================="/>
@@ -94,7 +94,7 @@
 
 	</target>
 
-	<target name="test-nio_char">
+	<target name="test-nio_char" depends="compile-support">
         <echo message="=================================="/>
         <echo message="Running tests for module nio_char"/>
         <echo message="=================================="/>
@@ -103,14 +103,14 @@
 
 	</target>
 
-	<target name="test-jndi">
+	<target name="test-jndi" depends="compile-support">
             <echo message="=================================="/>
             <echo message="Running tests for module jndi"/>
             <echo message="=================================="/>
             <ant antfile="make/build.xml" dir="modules/jndi" target="test" />
 	</target>
 
-	<target name="test-logging">
+	<target name="test-logging" depends="compile-support">
             <fail>LogManager depends on java.beans</fail>
             <echo message="=================================="/>
             <echo message="Running tests for module logging"/>
@@ -118,21 +118,21 @@
             <ant antfile="make/build.xml" dir="modules/logging" target="test" />
 	</target>
 
-	<target name="test-prefs">
+	<target name="test-prefs" depends="compile-support">
             <echo message="=================================="/>
             <echo message="Running tests for module prefs"/>
             <echo message="=================================="/>
             <ant antfile="make/build.xml" dir="modules/prefs" target="test" />
 	</target>
 
-	<target name="test-sql">
+	<target name="test-sql" depends="compile-support">
             <echo message="=================================="/>
             <echo message="Running tests for module sql"/>
             <echo message="=================================="/>
             <ant antfile="make/build.xml" dir="modules/sql" target="test" />
 	</target>
 
-	<target name="test-beans">
+	<target name="test-beans" depends="compile-support">
             <echo message="=================================="/>
             <echo message="Running tests for module beans"/>
             <echo message="=================================="/>
