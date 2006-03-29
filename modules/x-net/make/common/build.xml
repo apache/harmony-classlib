@@ -85,6 +85,12 @@
 			jvm="${hy.target}/jre/bin/java">
 
 			<jvmarg value="-showversion"/>
+	        
+			<!-- Required for running the serialization unit tests -->
+			<!-- Note: will be deleted after improving             -->
+			<!-- SerializationTest support class: all resource     -->
+			<!-- files will be placed on the classpath             -->
+			<jvmarg value="-DTEST_SRC_DIR=${hy.x-net.src.test.java}"/>
 
 			<env key="JAVA_HOME" value="${hy.target}/jre"/>
 
@@ -104,11 +110,6 @@
                     <exclude name="**/HttpsURLConnectionTest.java"/>
                     <exclude name="**/SSLServerSocketFactoryTest.java"/>
                     <exclude name="**/SSLSocketFactoryTest.java"/>
-                    <exclude name="**/SSLExceptionTest.java"/>
-                    <exclude name="**/SSLHandshakeExceptionTest.java"/>
-                    <exclude name="**/SSLKeyExceptionTest.java"/>
-                    <exclude name="**/SSLPeerUnverifiedExceptionTest.java"/>
-                    <exclude name="**/SSLProtocolExceptionTest.java"/>
                     <exclude name="**/ServerSocketFactoryTest.java"/>
                     <exclude name="**/SocketFactoryTest.java"/>
 				</fileset>
