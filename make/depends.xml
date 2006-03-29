@@ -68,43 +68,73 @@
 		<antcall target="download-one-jar">
 			<param name="src" value="${xalan.url}" />
 			<param name="dest" value="${xalan.jar}" />
+                        <param name="md5" value="${xalan.md5}" />
 		</antcall>
 
 		<mkdir dir="${xerces.dir}" />
 		<antcall target="download-one-jar">
 			<param name="src" value="${resolver.url}" />
 			<param name="dest" value="${resolver.jar}" />
+                        <param name="md5" value="${resolver.md5}" />
 		</antcall>
 
 		<antcall target="download-one-jar">
 			<param name="src" value="${xerces.impl.url}" />
 			<param name="dest" value="${xerces.impl.jar}" />
+                        <param name="md5" value="${xerces.impl.md5}" />
 		</antcall>
 
 		<antcall target="download-one-jar">
 			<param name="src" value="${xml.apis.url}" />
 			<param name="dest" value="${xml.apis.jar}" />
+                        <param name="md5" value="${xml.apis.md5}" />
 		</antcall>
 
 		<mkdir dir="${junit.dir}" />
 		<antcall target="download-one-jar">
 			<param name="src" value="${junit.url}" />
 			<param name="dest" value="${junit.jar}" />
+                        <param name="md5" value="${junit.md5}" />
 		</antcall>
 
 		<mkdir dir="${bcprov.dir}" />
 		<antcall target="download-one-jar">
 			<param name="src" value="${bcprov.url}" />
 			<param name="dest" value="${signed.bcprov.jar}" />
+                        <param name="md5" value="${signed.bcprov.md5}" />
 		</antcall>
 	</target>
 
 	<target name="download-one-jar">
-		<get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
+		<get src="${src}" dest="${dest}" usetimestamp="true"
+                     verbose="true" />
+                <checksum file="${dest}" property="new.md5" />
+                <condition property="md5.verified" value="true">
+                        <equals arg1="${new.md5}"
+                                arg2="${md5}" />
+                </condition>
+                <antcall target="remove-bad-jar">
+                        <param name="jar" value="${dest}" />
+                </antcall>
+		<fail unless="md5.verified">
+...
+
+File ${dest} has incorrect md5 checksum.  Expected:
+  ${md5}
+found:
+  ${new.md5}
+
+                </fail>
+                <echo>Checksum verified (${md5.verified})</echo>
 	</target>
 
+        <target name="remove-bad-jar" unless="md5.verified">
+                <delete file="${dest}" />
+        </target>
+
 	<target name="check-one-jar">
-		<available file="${dest}" type="file" property="${dest}.exists" />
+		<available file="${dest}" type="file"
+                           property="${dest}.exists" />
 		<fail>
 			<condition>
 				<not>
