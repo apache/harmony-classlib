@@ -15,7 +15,6 @@
 
 package java.nio.charset;
 
-
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
@@ -31,14 +30,16 @@ import java.nio.CharBuffer;
  * following sequence, which is referred to as a encoding operation:
  * <ol>
  * <li>Invoking the {@link #reset() reset} method to reset the encoder if the
- * encoder has been used;</li> <li>Invoking the
- * {@link #encode(CharBuffer, ByteBuffer, boolean) encode} method until the
- * addtional input is not needed, the <code>endOfInput</code> parameter must
- * be set to false, the input buffer must be filled and the output buffer must
- * be flushed between invocations;</li> <li>Invoking the
- * {@link #encode(CharBuffer, ByteBuffer, boolean) encode} method last time, and
- * the the <code>endOfInput</code> parameter must be set to true</li>
- * <li>Invoking the {@link #flush(ByteBuffer) flush} method to flush the output.</li>
+ * encoder has been used;</li>
+ * <li>Invoking the {@link #encode(CharBuffer, ByteBuffer, boolean) encode}
+ * method until the addtional input is not needed, the <code>endOfInput</code>
+ * parameter must be set to false, the input buffer must be filled and the
+ * output buffer must be flushed between invocations;</li>
+ * <li>Invoking the {@link #encode(CharBuffer, ByteBuffer, boolean) encode}
+ * method last time, and the the <code>endOfInput</code> parameter must be set
+ * to true</li>
+ * <li>Invoking the {@link #flush(ByteBuffer) flush} method to flush the
+ * output.</li>
  * </ol>
  * </p>
  * <p>
@@ -118,6 +119,11 @@ public abstract class CharsetEncoder {
 
 	// internal status
 	private int status;
+
+	//
+	private char[] remains = null;
+
+	private boolean needReplace = false;
 
 	// action for malformed input
 	private CodingErrorAction malformAction;
@@ -339,22 +345,57 @@ public abstract class CharsetEncoder {
 		ByteBuffer output = ByteBuffer.allocate(length);
 		CoderResult result = null;
 		while (true) {
-			result = encode(in, output, true);
-			if (!result.isOverflow()) {
+			result = encode(in, output, false);
+			if (result.isUnderflow()) {
+				break;
+			} else if (result.isOverflow()) {
+				output = allocateMore(output);
+			}
+		}
+		result = encode(in, output, true);
+		checkCoderResult(result);
+
+		while (true) {
+			result = flush(output);
+			checkCoderResult(result);
+			if (result.isOverflow()) {
+				output = allocateMore(output);
+			} else {
 				break;
 			}
-			output = allocateMore(output);
 		}
-		while (flush(output) != CoderResult.UNDERFLOW) {
-			output = allocateMore(output);
-		}
+
 		output.flip();
 		if (result.isMalformed()) {
 			throw new MalformedInputException(result.length());
 		} else if (result.isUnmappable()) {
 			throw new UnmappableCharacterException(result.length());
 		}
-		return output;
+		ByteBuffer truncatedBuffer = null;
+		// truncate elements after limit in the output.
+		// clippedBuffer has the same value of capcity and limit.
+		if (output.limit() == output.capacity()) {
+			truncatedBuffer = output;
+		} else {
+			truncatedBuffer = ByteBuffer.allocate(output.remaining());
+			truncatedBuffer.put(output);
+			truncatedBuffer.flip();
+		}
+		status = FLUSH;
+		return truncatedBuffer;
+	}
+
+	/*
+	 * checks the result whether it needs to throw CharacterCodingException.
+	 */
+	private void checkCoderResult(CoderResult result)
+			throws CharacterCodingException {
+		if (result.isMalformed() && malformAction == CodingErrorAction.REPORT) {
+			throw new MalformedInputException(result.length());
+		} else if (result.isUnmappable()
+				&& unmapAction == CodingErrorAction.REPORT) {
+			throw new UnmappableCharacterException(result.length());
+		}
 	}
 
 	// allocate more spaces to the given ByteBuffer
@@ -385,20 +426,21 @@ public abstract class CharsetEncoder {
 	 * characters start at the input buffer's postion and their number can be
 	 * got by result's {@link CoderResult#length() length}. This kind of result
 	 * can be returned only if the malformed action is
-	 * {@link CodingErrorAction#REPORT CodingErrorAction.REPORT}. </li> <li>{@link CoderResult#UNDERFLOW CoderResult.UNDERFLOW}
-	 * indicates that as many characters as possible in the input buffer has
-	 * been encoded. If there is no further input and no characters left in the
-	 * input buffer then this task is complete. If this is not the case then the
-	 * client should call this method again supplying some more input
-	 * characters.</li> <li>{@link CoderResult#OVERFLOW CoderResult.OVERFLOW}
-	 * indicates that the output buffer has been filled, while there are still
-	 * some characters remaining in the input buffer. This method should be
-	 * invoked again with a non-full output buffer </li> <li>A
-	 * {@link CoderResult#unmappableForLength(int) unmappable character} result
-	 * indicates that some unmappable character error was encountered, and the
-	 * erroneous characters start at the input buffer's postion and their number
-	 * can be got by result's {@link CoderResult#length() length}. This kind of
-	 * result can be returned only on
+	 * {@link CodingErrorAction#REPORT CodingErrorAction.REPORT}. </li>
+	 * <li>{@link CoderResult#UNDERFLOW CoderResult.UNDERFLOW} indicates that
+	 * as many characters as possible in the input buffer has been encoded. If
+	 * there is no further input and no characters left in the input buffer then
+	 * this task is complete. If this is not the case then the client should
+	 * call this method again supplying some more input characters.</li>
+	 * <li>{@link CoderResult#OVERFLOW CoderResult.OVERFLOW} indicates that the
+	 * output buffer has been filled, while there are still some characters
+	 * remaining in the input buffer. This method should be invoked again with a
+	 * non-full output buffer </li>
+	 * <li>A {@link CoderResult#unmappableForLength(int) unmappable character}
+	 * result indicates that some unmappable character error was encountered,
+	 * and the erroneous characters start at the input buffer's postion and
+	 * their number can be got by result's {@link CoderResult#length() length}.
+	 * This kind of result can be returned only on
 	 * {@link CodingErrorAction#REPORT CodingErrorAction.REPORT}. </li>
 	 * </ul>
 	 * </p>
@@ -438,36 +480,97 @@ public abstract class CharsetEncoder {
 		if ((status == FLUSH) || (!endOfInput && status == END)) {
 			throw new IllegalStateException();
 		}
+
+		// construct encodingBuffer for encode.
+		// put "remains" and "in" into encodingBuffer.
+		int remainsLength = 0;
+		int inOldPosition = in.position();
+		CharBuffer encodingBuffer = null;
+
+		// check whether need to put the last unput replace string.
+		if (needReplace) {
+			if (out.remaining() >= replace.length) {
+				out.put(replace);
+				needReplace = false;
+			} else {
+				return CoderResult.OVERFLOW;
+			}
+		}
+
+		if (remains != null) {
+			remainsLength = remains.length;
+			encodingBuffer = CharBuffer.allocate(remains.length
+					+ in.remaining());
+			encodingBuffer.put(remains);
+			remains = null;
+		} else {
+			encodingBuffer = CharBuffer.allocate(in.remaining());
+		}
+		encodingBuffer.put(in);
+		encodingBuffer.flip();
+
 		CoderResult result = CoderResult.UNDERFLOW;
-		if (in.remaining() > 0) {
+		if (encodingBuffer.remaining() > 0) {
 			while (true) {
-				CodingErrorAction action = null;                
+				CodingErrorAction action = null;
 				try {
-					result = encodeLoop(in, out);
-				} catch (BufferOverflowException ex) { 
+					result = encodeLoop(encodingBuffer, out);
+				} catch (BufferOverflowException ex) {
 					throw new CoderMalfunctionError(ex);
 				} catch (BufferUnderflowException ex) {
 					throw new CoderMalfunctionError(ex);
 				}
-                int position = in.position();
-				if (endOfInput && result.isUnderflow() && in.hasRemaining()) {
-					result = CoderResult.malformedForLength(in.remaining());
-                    in.position(position + result.length());
-					action = malformAction;
-				} else if (result.isMalformed()) {
+				/*
+				 * result handling
+				 */
+				if (result.isUnderflow()) {
+					if (endOfInput) {
+						if (encodingBuffer.hasRemaining()) {
+							result = CoderResult
+									.malformedForLength(encodingBuffer
+											.remaining());
+							encodingBuffer.position(encodingBuffer.limit());
+						}
+					} else {
+						if (encodingBuffer.hasRemaining()) {
+							remains = new char[encodingBuffer.remaining()];
+							encodingBuffer.get(remains);
+						}
+					}
+				}
+				// set coding error handle action
+				if (result.isMalformed()) {
 					action = malformAction;
 				} else if (result.isUnmappable()) {
 					action = unmapAction;
 				}
+				// If the action is IGNORE or REPLACE, we should continue
+				// decoding.
 				if (action == CodingErrorAction.IGNORE) {
 					continue;
 				} else if (action == CodingErrorAction.REPLACE) {
-					out.put(replace);
-					continue;
+					if (out.remaining() < replace.length) {
+						if (!endOfInput) {
+							// set needReplace flag.
+							// replace string will be put next time.
+							needReplace = true;
+						}
+						result = CoderResult.OVERFLOW;
+					} else {
+						out.put(replace);
+						continue;
+					}
 				}
+				// otherwise, the decode process ends.
 				break;
 			}
 		}
+		// set in new position
+		int offset = encodingBuffer.position() > remainsLength ? (encodingBuffer
+				.position() - remainsLength)
+				: 0;
+		in.position(inOldPosition + offset);
+
 		status = endOfInput ? END : ONGOING;
 		return result;
 	}

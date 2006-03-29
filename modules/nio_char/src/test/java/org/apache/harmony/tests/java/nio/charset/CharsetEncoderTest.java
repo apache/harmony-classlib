@@ -121,4 +121,21 @@ public class CharsetEncoderTest extends TestCase {
 			throw new BufferOverflowException();
 		}
 	}
+
+	/*
+	 * Test reserve bytes encode(CharBuffer,ByteBuffer,boolean)
+	 */
+	public void test_EncodeLjava_nio_CharBufferLjava_nio_ByteBufferB() {
+		CharsetEncoder encoder = Charset.forName("utf-8").newEncoder();
+		CharBuffer in1 = CharBuffer.wrap("\ud800");
+		CharBuffer in2 = CharBuffer.wrap("\udc00");
+		ByteBuffer out = ByteBuffer.allocate(4);
+		encoder.reset();
+		CoderResult result = encoder.encode(in1, out, false);
+		assertEquals(4, out.remaining());
+		assertTrue(result.isUnderflow());
+		result = encoder.encode(in2, out, true);
+		assertEquals(0, out.remaining());
+		assertTrue(result.isUnderflow());
+	}
 }
