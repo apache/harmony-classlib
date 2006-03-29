@@ -112,25 +112,29 @@ public final class Pattern implements Serializable {
         ArrayList res = new ArrayList();
         Matcher mat = matcher(input);
         int index = 0;
-        int curPos = 0;
-        while (mat.find() && (index + 1 < limit || limit <= 0)) {
-            res.add(input.subSequence(curPos, mat.start()).toString());
-            curPos = mat.end();
-            index++;
-        }
-
-        if (curPos < input.length()) {
+        int curPos = 0;       
+        
+        if (input.length() == 0) {
+            return new String [] {""};
+        } else {
+            while (mat.find() && (index + 1 < limit || limit <= 0)) {
+                  res.add(input.subSequence(curPos, mat.start()).toString());
+                  curPos = mat.end();
+                  index++;
+            }
+                
             res.add(input.subSequence(curPos, input.length()).toString());
             index++;
-        }
-
-        // discard trailing empty strings
-        // //
-        if (limit == 0)
-            while (--index >= 0 && res.get(index).toString().length() == 0) {
-                res.remove(index);
+                             
+            /*
+             * discard trailing empty strings
+             */
+            if (limit == 0) {
+                while (--index >= 0 && res.get(index).toString().length() == 0) {
+                       res.remove(index);
+                }
             }
-
+        }
         return (String[]) res.toArray(new String[index >= 0 ? index : 0]);
     }
 

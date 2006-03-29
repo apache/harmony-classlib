@@ -49,18 +49,106 @@ public class PatternTest extends TestCase {
 
 	public void testMatcher() {
 	}
-
+     	 
 	/*
 	 * Class under test for String[] split(CharSequence, int)
 	 */
-	public void testSplitCharSequenceint() {
-	}
-
+    public void testSplitCharSequenceint() {
+        //splitting CharSequence which ends with pattern
+     	//bug6193
+     	assertEquals(",,".split(",", 3).length, 3);
+     	assertEquals(",,".split(",", 4).length, 3);
+     	//bug6193
+        //bug5391
+    	assertEquals(Pattern.compile("o").split("boo:and:foo",5).length, 5);
+     	assertEquals(Pattern.compile("b").split("ab", -1).length, 2);
+     	//bug5391
+     	String s[];
+     	Pattern pat = Pattern.compile("x");
+     	s = pat.split("zxx:zzz:zxx",10);
+     	assertEquals(s.length, 5);
+     	s = pat.split("zxx:zzz:zxx",3);
+     	assertEquals(s.length, 3);
+     	s = pat.split("zxx:zzz:zxx",-1);
+     	assertEquals(s.length, 5);
+     	s = pat.split("zxx:zzz:zxx",0);
+     	assertEquals(s.length, 3);
+     	//other splitting
+     	//negative limit
+     	pat = Pattern.compile("b");
+     	s = pat.split("abccbadfebb",-1);
+     	assertEquals(s.length, 5);
+     	s = pat.split("",-1);
+     	assertEquals(s.length, 1);
+     	pat = Pattern.compile("");
+     	s = pat.split("",-1);
+    	assertEquals(s.length, 1);
+     	s = pat.split("abccbadfe", -1);
+     	assertEquals(s.length, 11);
+     	//zero limit    
+     	pat = Pattern.compile("b");
+     	s = pat.split("abccbadfebb", 0);
+     	assertEquals(s.length, 3);
+     	s = pat.split("", 0);
+     	assertEquals(s.length, 1);
+    	pat = Pattern.compile("");
+     	s = pat.split("", 0);
+     	assertEquals(s.length, 1);
+    	s = pat.split("abccbadfe", 0);
+     	assertEquals(s.length, 10);
+     	//positive limit    
+     	pat = Pattern.compile("b");
+     	s = pat.split("abccbadfebb", 12);
+    	assertEquals(s.length, 5);
+     	s = pat.split("", 6);
+     	assertEquals(s.length, 1);
+     	pat = Pattern.compile("");
+     	s = pat.split("", 11);
+     	assertEquals(s.length, 1);
+     	s = pat.split("abccbadfe", 15);
+     	assertEquals(s.length, 11);
+     	    
+     	pat = Pattern.compile("b");
+        s = pat.split("abccbadfebb", 5);
+     	assertEquals(s.length, 5);
+    	s = pat.split("", 1);
+     	assertEquals(s.length, 1);
+        pat = Pattern.compile("");
+        s = pat.split("", 1);
+        assertEquals(s.length, 1);
+        s = pat.split("abccbadfe", 11);
+        assertEquals(s.length, 11);
+     	    
+        pat = Pattern.compile("b");
+        s = pat.split("abccbadfebb", 3);
+        assertEquals(s.length, 3);
+        pat = Pattern.compile("");
+        s = pat.split("abccbadfe", 5);
+        assertEquals(s.length, 5);	 	    
+    }
+      	
 	/*
 	 * Class under test for String[] split(CharSequence)
 	 */
-	public void testSplitCharSequence() {
+    public void testSplitCharSequence(){
+        String s[];
+        Pattern pat = Pattern.compile("b");
+        s = pat.split("abccbadfebb");
+        assertEquals(s.length, 3);
+        s = pat.split("");
+        assertEquals(s.length, 1);
+        pat = Pattern.compile("");
+        s = pat.split("");
+        assertEquals(s.length, 1);
+        s = pat.split("abccbadfe");
+        assertEquals(s.length, 10);	  
+        //bug6544
+        String s1 = "";
+        String[] arr = s1.split(":");
+        assertEquals(arr.length, 1);	  
+        //bug6544
 	}
+
 
 	public void testPattern() {
 	}
@@ -534,9 +622,7 @@ public class PatternTest extends TestCase {
         assertFalse(pat.matcher("cde.log").matches());
         
     }
-    
-    
-    
+        
     public static void main(String[] args) {
         junit.textui.TestRunner.run(PatternTest.class);
     }
