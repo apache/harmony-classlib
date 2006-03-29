@@ -17,10 +17,10 @@ package java.net;
 
 
 import java.io.IOException;
-import java.security.AccessController;
+
+import org.apache.harmony.luni.net.SocketImplProvider;
 
 import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PriviAction;
 
 /**
  * This class models a socket for sending & receiving datagram packets.
@@ -173,7 +173,7 @@ public class DatagramSocket {
 	synchronized void createSocket(int aPort, InetAddress addr)
 			throws SocketException {
 		impl = factory != null ? factory.createDatagramSocketImpl()
-				: createSocketImpl();
+				: SocketImplProvider.getDatagramSocketImpl();
 		impl.create();
 		try {
 			impl.bind(aPort, addr);
@@ -184,31 +184,6 @@ public class DatagramSocket {
 		}
 	}
 
-	/**
-	 * Answer a concrete instance of DatagramSocketImpl, either as declared in
-	 * the system properties or the default, PlainDatagramSocketImpl. The latter
-	 * does not support security checks.
-	 * 
-	 * @return DatagramSocketImpl the concrete instance
-	 * 
-	 * @exception SocketException
-	 *                if an error occurs during the instantiation of a type
-	 *                declared in the system properties
-	 */
-	DatagramSocketImpl createSocketImpl() throws SocketException {
-		Object socketImpl = null;
-		String prefix;
-		prefix = (String) AccessController.doPrivileged(new PriviAction(
-				"impl.prefix", "Plain"));
-		try {
-			Class aClass = Class.forName("java.net." + prefix
-					+ "DatagramSocketImpl");
-			socketImpl = aClass.newInstance();
-		} catch (Exception e) {
-			throw new SocketException(Msg.getString("K0033"));
-		}
-		return (DatagramSocketImpl) socketImpl;
-	}
 
 	/**
 	 * Returns an {@link InetAddress} instance representing the address this
@@ -551,7 +526,7 @@ public class DatagramSocket {
 			checkListen(((InetSocketAddress) localAddr).getPort());
 		}
 		impl = factory != null ? factory.createDatagramSocketImpl()
-				: createSocketImpl();
+				: SocketImplProvider.getDatagramSocketImpl();
 		impl.create();
 		if (localAddr != null) {
 			try {

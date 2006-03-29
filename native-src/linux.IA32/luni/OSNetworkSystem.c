@@ -23,8 +23,156 @@
 #include "jclglob.h"
 
 
+void setSocketImplPort (JNIEnv * env, jobject socketImpl, U_16 hPort);
+void setSocketImplAddress (JNIEnv * env, jobject socketImpl,
+	 jobject anInetAddress);
+void updateSocket (JNIEnv * env, hysockaddr_t sockaddrP, hysocket_t socketNew,
+       jobject socketImpl, jobject fileDescriptorSocketImpl);
 void * getConnectContext(JNIEnv	*env,jobject longclass);
 void setConnectContext(JNIEnv *env,jobject longclass,U_8 * context);
+
+void setDatagramPacketAddress (JNIEnv *	env, jobject datagramPacket,
+	     jobject anInetAddress);
+void setDatagramPacketPort (JNIEnv * env, jobject datagramPacket, U_16 hPort);
+void updateAddress (JNIEnv * env, hysockaddr_t sockaddrP,
+	jobject	senderAddress);	
+void updatePacket (JNIEnv * env, hysockaddr_t sockaddrP,
+       jobject datagramPacket, I_32 bytesRead);	
+void setDatagramPacketLength (JNIEnv * env, jobject datagramPacket,
+	    I_32 length);
+int 
+selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept);
+
+/**
+ * A helper method, to set the remote address into the DatagramPacket.
+ *
+ * @param env		pointer	to the JNI library
+ * @param datagramPacket  pointer to the java DatagramPacket object to update
+ * @param anInetAddress	  pointer to the java InetAddress to update the	packet with
+ *
+ */
+
+void
+setDatagramPacketAddress (JNIEnv * env,	jobject	datagramPacket,	
+	jobject	anInetAddress)
+{
+  /*----------------------former cache get/set ----------------------------
+  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_address);
+  */
+  jfieldID fid = getJavaNetDatagramPacketAddress(env);
+  (*env)->SetObjectField (env, datagramPacket, fid, anInetAddress);
+}
+
+/**
+ * A helper method, to set the remote port into	the java DatagramPacket.
+ *
+ * @param env		pointer	to the JNI library
+ * @param datagramPacket  pointer to the java DatagramPacket object to update
+ * @param hPort		the port value to update the packet with, in host order	
+ */
+
+void
+setDatagramPacketPort (JNIEnv *	env, jobject datagramPacket, U_16 hPort)
+{
+  /*----------------------former cache get/set ----------------------------
+  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_port);
+  */
+  jfieldID fid = getJavaNetDatagramPacketPort(env);
+  (*env)->SetIntField (env, datagramPacket, fid, hPort);
+}
+
+/**
+ * A helper method, to set the data length into	a java DatagramPacket.
+ *
+ * @param env		pointer	to the JNI library
+ * @param datagramPacket  pointer to the java DatagramPacket object to update
+ * @param length	  the length value to update the packet	with
+ */
+
+void
+setDatagramPacketLength	(JNIEnv	* env, jobject datagramPacket, I_32 length)
+{
+  /*----------------------former cache get/set ----------------------------
+  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_DatagramPacket_length);
+  */
+  jfieldID fid = getJavaNetDatagramPacketLength(env);
+  (*env)->SetIntField (env, datagramPacket, fid, length);
+}
+
+/**
+ * A helper method, to update the java DatagramPacket argument.	 Used after receiving a	datagram packet, 
+ * to update the DatagramPacket	with the network address and port of the sending machine.
+ *
+ * @param env		pointer	to the JNI library
+ * @param sockaddrP	pointer	to the hysockaddr struct with the sending host address & port
+ * @param datagramPacket  pointer to the java DatagramPacket object to update
+ * @param bytesRead	the bytes read value to	update the packet with
+ */
+
+void
+updatePacket (JNIEnv * env, hysockaddr_t sockaddrP, jobject datagramPacket,
+	I_32 bytesRead)	
+{
+  PORT_ACCESS_FROM_ENV (env);
+  jobject anInetAddress;
+  U_16 nPort;
+  U_32 length;
+  U_32 scope_id	= 0;
+  jbyte	byte_array[HYSOCK_INADDR6_LEN];	
+  hysock_sockaddr_address6 (sockaddrP, (U_8 *) byte_array, &length,
+	  &scope_id);
+
+  nPort	= hysock_sockaddr_port (sockaddrP);
+  anInetAddress	=
+    newJavaNetInetAddressGenericB (env,	byte_array, length, scope_id);
+
+  setDatagramPacketAddress (env, datagramPacket, anInetAddress);
+  setDatagramPacketPort	(env, datagramPacket, hysock_ntohs (nPort));
+  setDatagramPacketLength (env,	datagramPacket,	bytesRead);
+}
+
+/**
+ * A helper method, to set address of the java InetAddress argument.
+ *
+ * @param env		pointer	to the JNI library
+ * @param sockaddrP	pointer	to the hysockaddr struct containing the	network	address	
+ * @param senderAddress	pointer	to the java InetAddress	object to update
+ */
+
+void
+updateAddress (JNIEnv *	env, hysockaddr_t sockaddrP, jobject senderAddress)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  jbyte	ipv4Addr[16];
+  U_32 length;
+  U_32 scope_id	= 0;
+  hysock_sockaddr_address6 (sockaddrP, (U_8 *) ipv4Addr, &length, &scope_id);
+  /*-------------- Here is the cache get/set,remain for next change  ---------------
+  
+  //(*env)->SetObjectField (env, senderAddress,	
+  //	  JCL_CACHE_GET	(env,
+  //	     FID_java_net_InetAddress_address),	
+  //	  newJavaByteArray (env, ipv4Addr, length));
+  */
+  (*env)->SetObjectField (env, senderAddress,
+	getJavaNetInetAddressIpaddress(env),
+	newJavaByteArray (env, ipv4Addr, length));
+  if (jcl_supports_ipv6	(env) && (scope_id != 0))
+    {
+      jclass tempClass = getJavaNetInetAddressClass(env);
+      jfieldID fid = NULL;
+
+      fid = (*env)->GetFieldID (env, tempClass,	"scope_id", "I");
+      if ((*env)->ExceptionCheck (env))	
+	{
+	  (*env)->ExceptionClear (env);	
+	}
+      else
+	{
+	  (*env)->SetIntField (env, senderAddress, fid,	scope_id);
+	}
+    }
+}
 
 /**
  * A helper method, to set the connect context to a Long object.
@@ -38,7 +186,7 @@ setConnectContext(JNIEnv *env,jobject longclass,U_8 * context){
   jfieldID descriptorFID;
   descriptorCLS	= (*env)->FindClass (env, "java/lang/Long");
   descriptorFID	= (*env)->GetFieldID (env, descriptorCLS, "value","J");	
-  (*env)->SetLongField(env,longclass,descriptorFID,(jlong)context);
+  (*env)->SetLongField(env,  longclass,	descriptorFID,(jlong)context);
 };
 
 /**
@@ -51,12 +199,82 @@ void *
 getConnectContext(JNIEnv *env,jobject longclass){
   jclass descriptorCLS;	
   jfieldID descriptorFID;
-  void * retConnectContext;
   descriptorCLS	= (*env)->FindClass (env, "java/lang/Long");
   descriptorFID	= (*env)->GetFieldID (env, descriptorCLS, "value", "J");
-  retConnectContext = (void *) ((*env)->GetLongField (env, longclass, descriptorFID));
-  return retConnectContext;
+  return  (void	*) ((*env)->GetLongField (env, longclass, descriptorFID));
+};
+
+/**
+ * A helper method, to set the remote address into the socketImpl.
+ *
+ * @param env		pointer	to the JNI library
+ * @param socketImpl	  pointer to the java SocketImpl object	to update
+ * @param anInetAddress	  pointer to the java InetAddress to update the	socket with
+ */
+
+void
+setSocketImplAddress (JNIEnv * env, jobject socketImpl,	jobject	anInetAddress)
+{
+  /*-------------- Here is the cache get/set,remain for next change  ---------------
+  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_SocketImpl_address);
+  */
+  jfieldID fid = getJavaNetSocketImplAddress(env);
+  (*env)->SetObjectField (env, socketImpl, fid,	anInetAddress);	
 }
+
+/**
+ * A helper method, to set the remote port into	the socketImpl.	
+ *
+ * @param env	      pointer to the JNI library
+ * @param socketImpl	pointer	to the java SocketImpl object to update	
+ * @param hPort	      the port number, in host order, to update	the socket with	
+ */
+
+void
+setSocketImplPort (JNIEnv * env, jobject socketImpl, U_16 hPort)
+{
+  /*----------------------former cache get/set ---------------
+  //jfieldID fid = JCL_CACHE_GET (env, FID_java_net_SocketImpl_port);
+  */
+  jfieldID fid = getJavaNetSocketImplPort( env);
+  (*env)->SetIntField (env, socketImpl,	fid, hPort);
+}
+
+/**
+ * A helper method, to update the java SocketImpl argument.  Used after	connecting, to 'link' the 
+ * system socket with the java socketImpl and update the address/port fields with the values
+ * corresponding to the	remote machine.	
+ *
+ * @param env			pointer	to the JNI library
+ * @param sockaddrP		pointer	to the hysockaddr struct with the remote host address &	port
+ * @param socketNew		pointer	to the new hysocket
+ * @param socketImpl		  pointer to the new java (connected) socket
+ * @param fileDescriptorSocketImpl    pointer to the java file descriptor of the socketImpl
+ */
+
+void
+updateSocket (JNIEnv * env,
+	hysockaddr_t sockaddrP,	hysocket_t socketNew,
+	jobject	socketImpl, jobject fileDescriptorSocketImpl)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  U_8 nipAddress[HYSOCK_INADDR6_LEN];
+  U_32 length;
+  jobject anInetAddress;
+  U_16 nPort;
+  U_32 scope_id	= 0;
+
+  hysock_sockaddr_address6 (sockaddrP, nipAddress, &length, &scope_id);	
+  nPort	= hysock_sockaddr_port (sockaddrP);
+  anInetAddress	=
+    newJavaNetInetAddressGenericB (env,	nipAddress, length, scope_id);
+
+  setJavaIoFileDescriptorContents (env,	fileDescriptorSocketImpl,
+	      socketNew);
+  setSocketImplAddress (env, socketImpl, anInetAddress);
+  setSocketImplPort (env, socketImpl, hysock_ntohs (nPort));
+}
+
 
 /*----------------------former cache get/set ------------------------------------
 /*
@@ -175,7 +393,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
 #define	INTERNAL_RECEIVE_BUFFER_MAX 2048
   U_8 internalBuffer[INTERNAL_RECEIVE_BUFFER_MAX];
 
-  hysocketP =getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  hysocketP =getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
 
   /*----------------the older form,nearly the same with below------------
   //result = pollSelectRead (env, fileDescriptor, timeout, TRUE);
@@ -272,7 +490,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
   while	(sent <	count)
     {
       socketP =	
-	getJavaIoFileDescriptorContentsAsPointer (env,	fileDescriptor);
+	getJavaIoFileDescriptorContentsAsAPointer (env,	fileDescriptor);
       if (!hysock_socketIsValid	(socketP))
 	{
 	  if (((U_8 *)message) != internalBuffer)
@@ -326,7 +544,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_set
 	PORT_ACCESS_FROM_ENV (env);
 	hysocket_t socketP;
 	int result;		
-	socketP	=getJavaIoFileDescriptorContentsAsPointer (env, afd);
+	socketP	=getJavaIoFileDescriptorContentsAsAPointer (env, afd);
 	if (!hysock_socketIsValid (socketP))
     	{
       		//throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -362,7 +580,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
   hysockaddr_struct sockaddrP;
   U_32 scope_id	= 0;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -425,7 +643,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
   U_8 *	context	= NULL;	
   context = getConnectContext(env,passContext);	
   
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
 
   if (!hysock_socketIsValid (socketP))
     {
@@ -509,7 +727,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_soc
   hysockaddr_struct sockaddrP;
   U_32 scope_id	= 0;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -557,7 +775,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_lis
   hysocket_t socketP;
   I_32 result;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -587,7 +805,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_ava
 
   I_32 result, flags = 0;
 
-  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, fileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
   if (!hysock_socketIsValid (hysocketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -649,7 +867,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_acc
     return;
 
   socketS =
-    getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptorServer);
+    getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptorServer);
   if (!hysock_socketIsValid (socketS))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -684,7 +902,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem
   I_32 flags = 0;
   I_32 result;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       return FALSE;
@@ -707,7 +925,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
   I_32 flags = 0;
   I_32 result =	0;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -750,7 +968,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
   hysockaddr_struct sockaddrP;
   U_32 scope_id	= 0;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -799,7 +1017,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_dis
   hysocket_t socketP;
   hysockaddr_struct sockaddrP;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -845,7 +1063,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem
   hysockaddr_struct sockaddrP;
   U_32 scope_id = 0;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_BADSOCKET);
@@ -906,7 +1124,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_pee
   if (0	> result)
     return (jint) 0;
 
-  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, fileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
   if (!hysock_socketIsValid (hysocketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -965,7 +1183,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
   I_32 flags = HYSOCK_NOFLAGS;
   jbyte	nlocalAddrBytes[HYSOCK_INADDR6_LEN];
 
-  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, fileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
   result = pollSelectRead (env,	fileDescriptor,	timeout, TRUE);	
   //result = selectRead (env,hysocketP, timeout, FALSE);
   if (0	> result)
@@ -1050,7 +1268,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
     }
 
   /* get the handle to the socket */
-  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, fileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
   if (!hysock_socketIsValid (hysocketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -1144,7 +1362,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
   netGetJavaNetInetAddressValue	(env, inetAddress, nhostAddrBytes, &length);
   nPort	= hysock_htons ((U_16) targetPort);
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (length ==	HYSOCK_INADDR6_LEN)
     {
       netGetJavaNetInetAddressScopeId (env, inetAddress, &scope_id);
@@ -1172,7 +1390,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
   do
     {
       socketP =	
-	getJavaIoFileDescriptorContentsAsPointer (env,	fileDescriptor);
+	getJavaIoFileDescriptorContentsAsAPointer (env,	fileDescriptor);
       if (!hysock_socketIsValid	(socketP))
 	{
 	  hymem_free_memory ( message);	
@@ -1242,7 +1460,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
     {
       /* make sure the socket is still valid */	
       socketP =	
-	(hysocket_t) getJavaIoFileDescriptorContentsAsPointer (env,
+	(hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env,
 	fileDescriptor);
       if (!hysock_socketIsValid	(socketP))
 	{
@@ -1326,7 +1544,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_cre
   hysocket_t socketP;
   createSocket (env, thisObjFD,	HYSOCK_STREAM, preferIPv4Stack);
   socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsPointer (env, thisObjFD);
+    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env, thisObjFD);
   setDefaultServerSocketOptions	(env, socketP);	
 }
 
@@ -1349,7 +1567,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_cre
   hysocket_t socketP;
   createSocket (env, thisObjFD,	HYSOCK_DGRAM, preferIPv4Stack);	
   socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsPointer (env, thisObjFD);
+    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env, thisObjFD);
 
   hysock_setopt_bool (socketP, HY_SOL_SOCKET, HY_SO_REUSEPORT, &value);	
   hysock_setopt_bool (socketP, HY_SOL_SOCKET, HY_SO_REUSEADDR, &value);	
@@ -1390,7 +1608,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
       finishTime = hytime_msec_clock ()	+ (UDATA) timeout;
     }
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -1464,7 +1682,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
 	  /* now check if the socket is	still connected.  Do it	here as	some platforms seem to think they 
 	   * are connected if the socket is closed on them. */
 	  socketP =
-	    getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+	    getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
 	  if (!hysock_socketIsValid (socketP))
 	    {
 	      hysock_connect_with_timeout (socketP, &sockaddrP,	0,
@@ -1560,7 +1778,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 	&length);
 
       socketP =	
-	(hysocket_t) getJavaIoFileDescriptorContentsAsPointer (env,
+	(hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env,
 	fileDescriptor);
       nPort = hysock_htons ((U_16) targetPort);	
       if (length == HYSOCK_INADDR_LEN)
@@ -1588,7 +1806,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
   while	(sent <	msgLength)
     {
       socketP =	
-	(hysocket_t) getJavaIoFileDescriptorContentsAsPointer (env,
+	(hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env,
 	fileDescriptor);
       if (!hysock_socketIsValid	(socketP))
 	{
@@ -1640,7 +1858,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
   if (0	> result)
     return (jint) 0;
 
-  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, fileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, fileDescriptor);
   if (!hysock_socketIsValid (hysocketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -1722,7 +1940,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
   while	(sent <	count)
     {
       socketP =	
-	getJavaIoFileDescriptorContentsAsPointer (env,	fileDescriptor);
+	getJavaIoFileDescriptorContentsAsAPointer (env,	fileDescriptor);
       if (!hysock_socketIsValid	(socketP))
 	{
 	  if (((U_8 *)message) != internalBuffer)
@@ -1777,7 +1995,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_shu
   hysocket_t socketP;
 
   socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsPointer (env,
+    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env,
 		 fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
@@ -1805,7 +2023,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_shu
   hysocket_t socketP;
 
   socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsPointer (env,
+    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env,
 		 fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
@@ -1843,7 +2061,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_acc
     return;
 
   socketS =
-    getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptorServer);
+    getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptorServer);
   if (!hysock_socketIsValid (socketS))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -1878,7 +2096,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_cre
   hysocket_t socketP;
   createSocket (env, thisObjFD,	HYSOCK_STREAM, preferIPv4Stack);
   socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsPointer (env, thisObjFD);
+    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env, thisObjFD);
   setPlatformBindOptions (env, socketP);
 }
 
@@ -1910,7 +2128,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   FD_ZERO (&fdset_write->handle);
   for (val = 0; val<countReadC; val++){
 	  gotFD	= (*env)->GetObjectArrayElement(env,readFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, gotFD);
+	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
 	  /*No difference between ipv4 and ipv6 as in windows*/
 		FD_SET (hysocketP->sock, &fdset_read->handle);
 		if (0 >	(size -	hysocketP->sock))
@@ -1918,7 +2136,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	}
   for (val = 0; val<countWriteC; val++){
 	  gotFD	= (*env)->GetObjectArrayElement(env,writeFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, gotFD);
+	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
 	  /*No difference between ipv4 and ipv6 as in windows*/
 	  FD_SET (hysocketP->sock, &fdset_write->handle);	
 		if (0 >	(size -	hysocketP->sock))
@@ -1948,7 +2166,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	  flagArray = (*env)->GetIntArrayElements(env,outFlags,	&isCopy);
 	  for (val=0;val<countReadC;val++){
 		gotFD =	(*env)->GetObjectArrayElement(env,readFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
 		if (FD_ISSET(hysocketP->sock,&fdset_read->handle))
 			flagArray[val] = SOCKET_OP_READ;
 		else
@@ -1958,7 +2176,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 		
 	  for (val=0;val<countWriteC;val++){
 		gotFD =	(*env)->GetObjectArrayElement(env,writeFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
 		if (FD_ISSET(hysocketP->sock,&fdset_write->handle))
 			flagArray[val+countReadC] = SOCKET_OP_WRITE;
 		else
@@ -2048,7 +2266,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
   PORT_ACCESS_FROM_ENV (env);
   hysocket_t hysocketP;	
 
-  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, aFileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, aFileDescriptor);
   if (!hysock_socketIsValid (hysocketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -2109,7 +2327,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_set
   PORT_ACCESS_FROM_ENV (env);
   hysocket_t hysocketP;	
 
-  hysocketP = getJavaIoFileDescriptorContentsAsPointer	(env, aFileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, aFileDescriptor);
   if (!hysock_socketIsValid (hysocketP))
     {
       throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
@@ -2219,7 +2437,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_soc
   hysocket_t socketP;
   I_32 result =	0;
 
-  socketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (hysock_socketIsValid (socketP))
     {
       /* Set the file descriptor before	closing	so the select polling loop will	terminate. */

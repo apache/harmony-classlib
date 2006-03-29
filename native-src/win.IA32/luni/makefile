@@ -28,14 +28,14 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
   $(SHAREDSUB)luni_copyright.obj $(SHAREDSUB)file.obj procimpl.obj \
-  $(SHAREDSUB)oos.obj $(SHAREDSUB)fileis.obj $(SHAREDSUB)simpl.obj \
-  $(SHAREDSUB)psimpl2.obj $(SHAREDSUB)nethelp.obj $(SHAREDSUB)floatbits.obj \
-  $(SHAREDSUB)rafile.obj $(SHAREDSUB)ois.obj helpers.obj $(SHAREDSUB)math.obj \
+  $(SHAREDSUB)oos.obj \
+  $(SHAREDSUB)nethelp.obj $(SHAREDSUB)floatbits.obj \
+  $(SHAREDSUB)ois.obj helpers.obj $(SHAREDSUB)math.obj \
   $(SHAREDSUB)luniglob.obj $(SHAREDSUB)proxy.obj $(SHAREDSUB)netif.obj \
   $(SHAREDSUB)process.obj $(SHAREDSUB)bigint.obj $(SHAREDSUB)osc.obj \
-  $(SHAREDSUB)socket.obj $(SHAREDSUB)inetadds.obj $(SHAREDSUB)pssimpl.obj \
-  $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj $(SHAREDSUB)pmsimpl.obj \
-  pdsimpl.obj $(SHAREDSUB)fileos.obj OSFileSystemWin32.obj \
+  $(SHAREDSUB)socket.obj $(SHAREDSUB)inetadds.obj \
+  $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj \
+  OSFileSystemWin32.obj \
   $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj OSMemory.obj \
   OSNetworkSystem.obj OSNetworkSystemWin32.obj
 
