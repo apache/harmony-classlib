@@ -7,4 +7,6 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Export-Package: java.math
 Import-Package: java.util,
- java.lang
+ java.lang,
+ java.io
+

@@ -43,7 +43,7 @@
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
-		depends="clean, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-jndi, test-sql, test-prefs, test-beans, gen-report">
+		depends="clean, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-jndi, test-sql, test-prefs, test-beans, test-math, gen-report">
 	</target>
 
 	<target name="clean">
@@ -138,7 +138,14 @@
             <echo message="=================================="/>
             <ant antfile="make/build.xml" dir="modules/beans" target="test" />
 	</target>
-		
+
+	<target name="test-math">
+            <echo message="=================================="/>
+            <echo message="Running tests for module math"/>
+            <echo message="=================================="/>
+            <ant antfile="make/build.xml" dir="modules/math" target="test" />
+	</target>
+
 	<target name="test-security">
 	
         <echo message="=================================="/>
