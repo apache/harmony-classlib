@@ -91,12 +91,6 @@
 			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
 				<fileset dir="${hy.logging.src.test.java}">
 					<include name="**/*Test.java"/>
-                                        <exclude name="**/JarFileTest.java"/>
-                                        <exclude name="**/JarOutputStreamTest.java"/>
-                                        <exclude name="**/GZIPInputStreamTest.java"/>
-                                        <exclude name="**/InflaterInputStreamTest.java"/>
-                                        <exclude name="**/InflaterTest.java"/>
-
 				</fileset>
 			</batchtest>
 		</junit>

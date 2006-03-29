@@ -196,6 +196,14 @@
                 excludesfile="${components.patternsets}/kernel.txt" />
         </jar>
 
+        <!-- Create rmi jar -->
+        <jar destfile="${components.output}/rmi.jar"
+        	manifest="modules/rmi/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/rmi.txt" 
+                excludesfile="${components.patternsets}/kernel.txt" />
+        </jar>
+
         <!-- Create sql jar -->
         <jar destfile="${components.output}/sql.jar"
         	manifest="modules/sql/META-INF/MANIFEST.MF">
@@ -255,11 +263,8 @@
 
             <src path="modules/x-net/src/main/java/" />
 
+            <src path="modules/rmi/src/main/java" />
             <src path="modules/sql/src/main/java" />
-            <!-- these need java.rmi.RemoteException -->
-            <exclude name="**/InvalidTransactionException.java" />
-            <exclude name="**/TransactionRequiredException.java" />
-            <exclude name="**/TransactionRolledbackException.java" />
 
             <src path="modules/text/src/main/java" />
 

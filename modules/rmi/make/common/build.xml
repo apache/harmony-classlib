@@ -15,16 +15,16 @@
     limitations under the License.
 -->
 
-<project name="Common_SQL_Build">
+<project name="Common_RMI_Build">
 	
-	<target name="compile.java" description="Compile SQL java code">
-		<echo message="Compiling SQL classes from ${hy.sql.src.main.java}" />
+	<target name="compile.java" description="Compile RMI java code">
+		<echo message="Compiling RMI classes from ${hy.rmi.src.main.java}" />
 		
-		<mkdir dir="${hy.sql.bin.main}" />
+		<mkdir dir="${hy.rmi.bin.main}" />
 
 		<javac sourcepath=""
-			srcdir="${hy.sql.src.main.java}"
-			destdir="${hy.sql.bin.main}"
+			srcdir="${hy.rmi.src.main.java}"
+			destdir="${hy.rmi.bin.main}"
 			source="${source.ver}"
 			debug="${java.debug.option}">
 
@@ -37,20 +37,20 @@
 	</target>
 	
 	<target name="build.jar">
-		<jar destfile="${hy.target}/jre/lib/boot/sql.jar"
-			manifest="${hy.sql}/META-INF/MANIFEST.MF">
-			<fileset dir="${hy.sql.bin.main}" />
+		<jar destfile="${hy.target}/jre/lib/boot/rmi.jar"
+			manifest="${hy.rmi}/META-INF/MANIFEST.MF">
+			<fileset dir="${hy.rmi.bin.main}" />
 		</jar>
 	</target>
 
 	
 	<target name="compile.tests">
-		<echo message="Compiling SQL tests from ${hy.sql.src.test.java}" />
+		<echo message="Compiling RMI tests from ${hy.rmi.src.test.java}" />
 
-		<mkdir dir="${hy.sql.bin.test}" />
+		<mkdir dir="${hy.rmi.bin.test}" />
 
-		<javac srcdir="${hy.sql.src.test.java}"
-			destdir="${hy.sql.bin.test}"
+		<javac srcdir="${hy.rmi.src.test.java}"
+			destdir="${hy.rmi.bin.test}"
 			sourcepath=""
 			source="${source.ver}"
 			debug="${java.debug.option}">
@@ -74,7 +74,7 @@
 			printsummary="withOutAndErr"
 			errorproperty="test.error"
 			showoutput="on"
-			dir="${hy.sql.bin.test}"
+			dir="${hy.rmi.bin.test}"
 			jvm="${hy.target}/jre/bin/java">
 
 			<jvmarg value="-showversion"/>
@@ -82,25 +82,20 @@
 			<env key="JAVA_HOME" value="${hy.target}/jre"/>
 
 			<classpath>
-				<pathelement path="${hy.sql.bin.test}"/>
+				<pathelement path="${hy.rmi.bin.test}"/>
 			</classpath>
-                        <classpath location="../../../../build/tests" />
 
 			<formatter type="xml" />
 
 			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
-				<fileset dir="${hy.sql.src.test.java}">
-					<include name="**/*Test.java"/>
-                                        <exclude name="**/ArrayTest.java" />
-                                        <exclude name="**/DriverManagerTest.java" />
-				</fileset>
+				<fileset dir="${hy.rmi.src.test.java}"/>
 			</batchtest>
 		</junit>
 	</target>
 	
 	
 	<target name="copy.resources">
-		<!-- Nothing for SQL -->
+		<!-- Nothing for RMI -->
 	</target>
 </project>
 
