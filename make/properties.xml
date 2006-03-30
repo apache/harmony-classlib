@@ -1,0 +1,136 @@
+<!--
+
+  Copyright 2006 The Apache Software Foundation or its
+  licensors, as applicable
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you
+  may not use this file except in compliance with the License.  You
+  may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+  implied.  See the License for the specific language governing
+  permissions and limitations under the License.
+
+ -->
+
+<project name="Common Platform definitions" default="echo" basedir="..">
+
+    <!-- Conditions for operating systems -->
+    <condition property="is.windows">
+        <os family="Windows" />
+    </condition>
+    <condition property="is.linux">
+        <os name="linux" />
+    </condition>
+    <condition property="is.unix">
+        <os family="unix" />
+    </condition>
+
+    <!-- Normalized operating system name -->
+
+    <!-- this special case makes sense -->
+    <condition property="hy.os" value="windows">
+        <isset property="is.windows"/>
+    </condition>
+    <condition property="hy.os" value="linux">
+        <os name="linux" />
+    </condition>
+
+    <property name="hy.os" value="${os.name}" />
+
+
+
+    <!-- Conditions for different architectures -->
+    <condition property="is.x86_64">
+        <os arch="x86_64"/>
+    </condition>
+    <condition property="is.x86">
+        <os arch="x86"/>
+    </condition>
+    <condition property="is.ia64">
+        <os arch="ia64" />
+    </condition>
+    <condition property="is.64bit">
+        <or>
+            <os arch="ia64" />
+            <os arch="x86_64"/>
+        </or>
+    </condition>
+    <condition property="is.32bit">
+        <or>
+            <os arch="x86"/>
+        </or>
+    </condition>
+    <condition property="hy.bits" value="32">
+        <isset property="is.32bit" />
+    </condition>
+    <property name="hy.bits" value="64" />
+
+    <!-- Normalized architecture name -->
+    <property name="hy.arch" value="${os.arch}" />
+
+    <!-- Normalized platform name -->
+    <property name="hy.platform" value="${hy.os}.${hy.arch}"/>
+    <property name="hy.platform.path" value="${hy.os}/${hy.arch}"/>
+
+    <condition property="exe.suffix" value=".exe">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="exe.suffix" value="" />
+
+    <condition property="shlib.suffix" value=".dll">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="shlib.suffix" value=".so" />
+
+    <target name="echo" depends="svn-prop" >
+        <echo>
+
+  hy.os = ${hy.os}
+  hy.arch = ${hy.arch}
+  hy.bits = ${hy.bits}
+  hy.platform = ${hy.platform}
+  hy.platform.path = ${hy.platform.path}
+
+  is.windows = ${is.windows}
+  is.unix = ${is.unix}
+  is.linux = ${is.linux}
+  is.32bit = ${is.32bit}
+  is.64bit = ${is.64bit}
+  is.x86 = ${is.x86}
+  is.x86_64 = ${is.x86_64}
+  is.ia64 = ${is.ia64}
+
+  svn.revision = ${svn.revision}
+
+  exe.suffix = ${exe.suffix}
+  shlib.suffix = ${shlib.suffix}
+
+  os.name = ${os.name}
+  os.arch = ${os.arch}
+
+        </echo>
+    </target>
+
+    <target name="svn-prop">
+        <exec executable="svn">
+            <arg value="--non-interactive" />
+            <arg value="info" />
+            <redirector outputproperty="svn.revision">
+                <outputfilterchain>
+                    <linecontains>
+                        <contains value="Revision: " />
+                    </linecontains>
+                    <tokenfilter>
+                        <replacestring from="Revision: " to=""/>
+                    </tokenfilter>
+                </outputfilterchain>
+            </redirector>
+        </exec>
+    </target>
+
+</project>

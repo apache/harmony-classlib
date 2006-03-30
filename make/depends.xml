@@ -20,151 +20,150 @@
  -->
 
 <project name="dependencies" default="check" basedir="..">
-	<description>
+    <description>
     Confirm that dependencies are present and fetch missing dependencies
     where possible.
-	</description>
+    </description>
 
-	<property file="make/depends.properties" />
+    <property file="make/depends.properties" />
+    <import file="${basedir}/make/properties.xml" />
 
-	<target name="check">
+    <target name="check">
 
-		<antcall target="check-one-jar">
-			<param name="src" value="${xalan.url}" />
-			<param name="dest" value="${xalan.jar}" />
-		</antcall>
+	<check-one-file src="${xalan.url}" dest="${xalan.jar}" />
 
-		<antcall target="check-one-jar">
-			<param name="src" value="${resolver.url}" />
-			<param name="dest" value="${resolver.jar}" />
-		</antcall>
+	<check-one-file src="${resolver.url}" dest="${resolver.jar}" />
 
-		<antcall target="check-one-jar">
-			<param name="src" value="${xerces.impl.url}" />
-			<param name="dest" value="${xerces.impl.jar}" />
-		</antcall>
+	<check-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}" />
 
-		<antcall target="check-one-jar">
-			<param name="src" value="${xml.apis.url}" />
-			<param name="dest" value="${xml.apis.jar}" />
-		</antcall>
+	<check-one-file src="${xml.apis.url}" dest="${xml.apis.jar}" />
 
-		<antcall target="check-one-jar">
-			<param name="src" value="${junit.url}" />
-			<param name="dest" value="${junit.jar}" />
-		</antcall>
+	<check-one-file src="${junit.url}" dest="${junit.jar}" />
 
-		<antcall target="check-one-jar">
-			<param name="src" value="${bcprov.url}" />
-			<param name="dest" value="${signed.bcprov.jar}" />
-		</antcall>
-		<uptodate property="bcprov.uptodate" srcfile="${signed.bcprov.jar}" targetfile="${bcprov.jar}" />
-		<antcall target="create-unsigned-bcprov-jar" />
-	</target>
+	<check-one-file src="${bcprov.url}" dest="${signed.bcprov.jar}" />
 
-	<target name="download" description="Download required jars">
+	<uptodate property="bcprov.uptodate"
+                  srcfile="${signed.bcprov.jar}"
+                  targetfile="${bcprov.jar}" />
+	<antcall target="create-unsigned-bcprov-jar" />
 
-		<mkdir dir="${xalan.dir}" />
-		<antcall target="download-one-jar">
-			<param name="src" value="${xalan.url}" />
-			<param name="dest" value="${xalan.jar}" />
-                        <param name="md5" value="${xalan.md5}" />
-		</antcall>
+        <antcall target="check-win" />
 
-		<mkdir dir="${xerces.dir}" />
-		<antcall target="download-one-jar">
-			<param name="src" value="${resolver.url}" />
-			<param name="dest" value="${resolver.jar}" />
-                        <param name="md5" value="${resolver.md5}" />
-		</antcall>
+    </target>
 
-		<antcall target="download-one-jar">
-			<param name="src" value="${xerces.impl.url}" />
-			<param name="dest" value="${xerces.impl.jar}" />
-                        <param name="md5" value="${xerces.impl.md5}" />
-		</antcall>
+    <target name="check-win" if="is.windows">
+        
+	<check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
 
-		<antcall target="download-one-jar">
-			<param name="src" value="${xml.apis.url}" />
-			<param name="dest" value="${xml.apis.jar}" />
-                        <param name="md5" value="${xml.apis.md5}" />
-		</antcall>
+    </target>
 
-		<mkdir dir="${junit.dir}" />
-		<antcall target="download-one-jar">
-			<param name="src" value="${junit.url}" />
-			<param name="dest" value="${junit.jar}" />
-                        <param name="md5" value="${junit.md5}" />
-		</antcall>
+    <target name="download" description="Download required jars">
 
-		<mkdir dir="${bcprov.dir}" />
-		<antcall target="download-one-jar">
-			<param name="src" value="${bcprov.url}" />
-			<param name="dest" value="${signed.bcprov.jar}" />
-                        <param name="md5" value="${signed.bcprov.md5}" />
-		</antcall>
-	</target>
+	<mkdir dir="${xalan.dir}" />
+	<download-one-file src="${xalan.url}" dest="${xalan.jar}"
+                           md5="${xalan.md5}" />
 
-	<target name="download-one-jar">
-		<get src="${src}" dest="${dest}" usetimestamp="true"
-                     verbose="true" />
-                <checksum file="${dest}" property="new.md5" />
-                <condition property="md5.verified" value="true">
-                        <equals arg1="${new.md5}"
-                                arg2="${md5}" />
-                </condition>
-                <antcall target="remove-bad-jar">
-                        <param name="jar" value="${dest}" />
-                </antcall>
-		<fail unless="md5.verified">
+	<mkdir dir="${xerces.dir}" />
+	<download-one-file src="${resolver.url}" dest="${resolver.jar}"
+                           md5="${resolver.md5}" />
+
+	<download-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}"
+                           md5="${xerces.impl.md5}" />
+
+	<download-one-file src="${xml.apis.url}" dest="${xml.apis.jar}"
+                           md5="${xml.apis.md5}" />
+
+	<mkdir dir="${junit.dir}" />
+	<download-one-file src="${junit.url}" dest="${junit.jar}"
+                           md5="${junit.md5}" />
+
+	<mkdir dir="${bcprov.dir}" />
+	<download-one-file src="${bcprov.url}" dest="${signed.bcprov.jar}"
+                           md5="${signed.bcprov.md5}" />
+
+        <antcall target="download-win" />
+
+    </target>
+
+    <target name="download-win" if="is.windows">
+        
+	<download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
+                           md5="${msvcr71.md5}" />
+
+    </target>
+
+    <macrodef name="download-one-file">
+        <attribute name="src" />
+        <attribute name="dest" />
+        <attribute name="md5" />
+        <sequential>
+            <echo>Fetching @{dest}</echo>
+	    <get src="@{src}" dest="@{dest}" usetimestamp="true"
+                 verbose="true" />
+            <checksum file="@{dest}" property="new.md5" />
+            <condition property="md5.verified" value="true">
+                <equals arg1="${new.md5}" arg2="@{md5}" />
+            </condition>
+            <antcall target="remove-file-if-bad">
+                <param name="jar" value="@{dest}" />
+            </antcall>
+	    <fail unless="md5.verified">
 ...
 
-File ${dest} has incorrect md5 checksum.  Expected:
-  ${md5}
+File @{dest} has incorrect md5 checksum.  Expected:
+  @{md5}
 found:
   ${new.md5}
 
-                </fail>
-                <echo>Checksum verified (${md5.verified})</echo>
-	</target>
+            </fail>
+            <echo>Checksum verified (${md5.verified})</echo>
+        </sequential>
+    </macrodef>
 
-        <target name="remove-bad-jar" unless="md5.verified">
-                <delete file="${dest}" />
-        </target>
+    <target name="remove-file-if-bad" unless="md5.verified">
+        <delete file="${dest}" />
+    </target>
 
-	<target name="check-one-jar">
-		<available file="${dest}" type="file"
-                           property="${dest}.exists" />
-		<fail>
-			<condition>
-				<not>
-					<isset property="${dest}.exists" />
-				</not>
-			</condition>
+    <macrodef name="check-one-file">
+        <attribute name="src" />
+        <attribute name="dest" />
+        <sequential>
+            <echo>Checking for @{dest}</echo>
+	    <available file="@{dest}" type="file"
+                       property="@{dest}.exists" />
+	    <fail>
+		<condition>
+		    <not>
+			<isset property="@{dest}.exists" />
+		    </not>
+		</condition>
 ...
 
 Missing dependency.  The jar from:
 
-  ${src}
+  @{src}
 
 should be downloaded to:
 
-  ${dest}
+  @{dest}
 
-Run  "ant -f make/depends.xml download"  to automatically fetch dependencies.
-Note: Some of Harmony's dependencies are licensed under terms other than the ASLv2.
-</fail>
-	</target>
+Run "ant -f make/depends.xml download" to automatically fetch
+dependencies.  Note: Some of Harmony's dependencies are licensed under
+terms other than the ASLv2.
+            </fail>
+        </sequential>
+    </macrodef>
 
-	<target name="create-unsigned-bcprov-jar" unless="bcprov.uptodate">
-		<delete dir="${bcprov.dir}/temp" />
-		<unzip src="${signed.bcprov.jar}" dest="${bcprov.dir}/temp">
-			<patternset>
-				<exclude name="META-INF/BCKEY.SF" />
-			</patternset>
-		</unzip>
-		<jar destfile="${bcprov.jar}" basedir="${bcprov.dir}/temp"
-          manifest="${bcprov.dir}/temp/META-INF/MANIFEST.MF" />
-		<delete dir="${bcprov.dir}/temp" />
-	</target>
+    <target name="create-unsigned-bcprov-jar" unless="bcprov.uptodate">
+        <echo>Removing signature from bcprov.jar</echo>
+	<delete dir="${bcprov.dir}/temp" />
+	<unzip src="${signed.bcprov.jar}" dest="${bcprov.dir}/temp">
+	    <patternset>
+		<exclude name="META-INF/BCKEY.SF" />
+	    </patternset>
+	</unzip>
+	<jar destfile="${bcprov.jar}" basedir="${bcprov.dir}/temp"
+             manifest="${bcprov.dir}/temp/META-INF/MANIFEST.MF" />
+	<delete dir="${bcprov.dir}/temp" />
+    </target>
 </project>
