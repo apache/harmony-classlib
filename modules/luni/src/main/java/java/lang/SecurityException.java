@@ -38,4 +38,23 @@ public class SecurityException extends java.lang.RuntimeException {
 	public SecurityException(String detailMessage) {
 		super(detailMessage);
 	}
+    
+    /**
+     * <p>Constructs a new instance with a message and cause.</p>
+     * @param message The message to assign to this exception.
+     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * @since 1.5
+     */
+    public SecurityException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    
+    /**
+     * <p>Constructs a new instance with a cause.</p>
+     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * @since 1.5
+     */
+    public SecurityException(Throwable cause) {
+        super((cause == null ? null : cause.toString()), cause);
+    }
 }

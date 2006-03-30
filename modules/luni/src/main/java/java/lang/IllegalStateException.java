@@ -39,4 +39,23 @@ public class IllegalStateException extends RuntimeException {
 	public IllegalStateException(String detailMessage) {
 		super(detailMessage);
 	}
+    
+    /**
+     * <p>Constructs a new instance with a message and cause.</p>
+     * @param message The message to assign to this exception.
+     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * @since 1.5
+     */
+    public IllegalStateException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    
+    /**
+     * <p>Constructs a new instance with a cause.</p>
+     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * @since 1.5
+     */
+    public IllegalStateException(Throwable cause) {
+        super((cause == null ? null : cause.toString()), cause);
+    }
 }
