@@ -19,4 +19,4 @@ Import-Package: com.ibm.oti.vm,
 Export-Package: java.nio,
  java.nio.channels,
  java.nio.channels.spi,
- org.apache.harmony.nio.internal;version="1.0.0";x-friends:="org.apache.harmony.luni"
+ org.apache.harmony.nio

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package java.io;
+package org.apache.harmony.nio;
 
 
 import java.nio.channels.FileChannel;
@@ -27,8 +27,8 @@ import org.apache.harmony.luni.platform.IFileSystem;
  * A simple factory to provide a generic way to create FileChannel
  * implementation from within the java.io package.
  */
-class FileChannelFactory {
-	static FileChannel getFileChannel(Object stream, long fd, int mode) {
+public class FileChannelFactory {
+	public static FileChannel getFileChannel(Object stream, long fd, int mode) {
         switch(mode){
         case IFileSystem.O_RDONLY:
             return new ReadOnlyFileChannel(stream, fd);

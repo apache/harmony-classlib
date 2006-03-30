@@ -20,6 +20,7 @@ import java.nio.channels.FileChannel;
 
 import org.apache.harmony.luni.platform.IFileSystem;
 import org.apache.harmony.luni.platform.Platform;
+import org.apache.harmony.nio.FileChannelFactory;
 
 /**
  * RandomAccessFile is a class which allows positioning of the next read

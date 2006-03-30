@@ -16,5 +16,6 @@ java/nio/*
 java/nio/channels/*
 java/nio/channels/spi/*
 
+org/apache/harmony/nio/*
 org/apache/harmony/nio/internal/*
 
