@@ -15,45 +15,76 @@
 
 package java.lang;
 
-
 /**
- * Floats are objects (non-base types) which represent float values.
+ * <p>
+ * Float is the wrapper for the primitive type <code>float</code>.
+ * </p>
+ * 
+ * @see java.lang.Number
+ * @since 1.0
  */
 public final class Float extends Number implements Comparable {
-
+    //TODO Add Comparable<Float> to implements when generics are supported.
 	private static final long serialVersionUID = -2671257302660747028L;
 
 	/**
 	 * The value which the receiver represents.
 	 */
-	final float value;
+	private final float value;
 
-	/**
-	 * Largest and smallest possible float values.
-	 */
+    /**
+     * <p>
+     * Constant for the maximum <code>float</code> value, (2 - 2<sup>-23</sup>) * 2<sup>127</sup>.
+     * </p>
+     */
 	public static final float MAX_VALUE = 3.40282346638528860e+38f;
 
+    /**
+     * <p>
+     * Constant for the minimum <code>float</code> value, 2<sup>-149</sup>.
+     * </p>
+     */
 	public static final float MIN_VALUE = 1.40129846432481707e-45f;
 
-	/**
-	 * A value which represents all invalid float results (NaN ==> Not a Number)
-	 */
+    /**
+     * <p>
+     * Constant for the Not-a-Number (NaN) value of the <code>float</code> type.
+     * </p>
+     */
 	public static final float NaN = 0.0f / 0.0f;
 
-	/**
-	 * Values to represent infinite results
-	 */
+    /**
+     * <p>
+     * Constant for the Positive Infinity value of the <code>float</code> type.
+     * </p>
+     */
 	public static final float POSITIVE_INFINITY = 1.0f / 0.0f;
 
+    /**
+     * <p>
+     * Constant for the Negative Infinity value of the <code>float</code> type.
+     * </p>
+     */
 	public static final float NEGATIVE_INFINITY = -1.0f / 0.0f;
 
 	/**
 	 * The java.lang.Class that represents this class.
+     * @since 1.1
 	 */
 	public static final Class TYPE = new float[0].getClass().getComponentType();
 
 	// Note: This can't be set to "float.class", since *that* is
 	// defined to be "java.lang.Float.TYPE";
+    
+    /**
+     * <p>
+     * Constant for the number of bits to represent a <code>float</code> in
+     * two's compliment form.
+     * </p>
+     * 
+     * @since 1.5
+     */
+    public static final int SIZE = 32;
 
 	/**
 	 * Constructs a new instance of the receiver which represents the float
@@ -100,6 +131,7 @@ public final class Float extends Number implements Comparable {
 	 *         object.floatValue(), zero when this.floatValue() equals
 	 *         object.floatValue(), and less than zero when this.floatValue() is
 	 *         less than object.floatValue()
+     * @since 1.2
 	 */
 	public int compareTo(Float object) {
 		int f1, f2;
@@ -303,6 +335,8 @@ public final class Float extends Number implements Comparable {
 	 * @param string
 	 *            the value to convert
 	 * @return a float which would print as the argument
+     * @see #valueOf(String)
+     * @since 1.2
 	 */
 	public static float parseFloat(String string) throws NumberFormatException {
 		return com.ibm.oti.util.FloatingPointParser.parseFloat(string);
@@ -312,6 +346,7 @@ public final class Float extends Number implements Comparable {
 	 * Answers the short value which the receiver represents
 	 * 
 	 * @return short the value of the receiver.
+     * @since 1.1
 	 */
 	public short shortValue() {
 		return (short) value;
@@ -348,7 +383,7 @@ public final class Float extends Number implements Comparable {
 	 * @return a float which would print as the argument
 	 */
 	public static Float valueOf(String string) throws NumberFormatException {
-		return new Float(parseFloat(string));
+		return valueOf(parseFloat(string));
 	}
 
 	/**
@@ -363,6 +398,7 @@ public final class Float extends Number implements Comparable {
 	 * @return Returns greater than zero when float1 is greater than float2,
 	 *         zero when float1 equals float2, and less than zero when float1 is
 	 *         less than float2
+     * @since 1.4
 	 */
 	public static int compare(float float1, float float2) {
 		int f1, f2;
@@ -385,4 +421,96 @@ public final class Float extends Number implements Comparable {
 		}
 		return float1 > float2 ? 1 : -1;
 	}
+    
+    /**
+     * <p>
+     * Returns a <code>Float</code> instance for the <code>float</code>
+     * value passed. This method is preferred over the constructor, as this
+     * method may maintain a cache of instances.
+     * </p>
+     * 
+     * @param f The float value.
+     * @return A <code>Float</code> instance.
+     * @since 1.5
+     */
+    public static Float valueOf(float f) {
+        return new Float(f);
+    }
+
+    /**
+     * <p>
+     * Converts a <code>float</code> into a hexadecimal string representation.
+     * </p>
+     * 
+     * @param f The <code>float</code> to convert.
+     * @return The hexadecimal string representation of <code>f</code>.
+     * @since 1.5
+     */
+    public static String toHexString(float f) {
+        /*
+         * Reference: http://en.wikipedia.org/wiki/IEEE_754
+         */
+        if (f != f) // isNaN
+            return "NaN";
+        if (f == POSITIVE_INFINITY)
+            return "Infinity";
+        if (f == NEGATIVE_INFINITY)
+            return "-Infinity";
+
+        int bitValue = floatToIntBits(f);
+
+        boolean negative = (bitValue & 0x80000000) != 0;
+        // mask exponent bits and shift down
+        int exponent = (bitValue & 0x7f800000) >>> 23;
+        // mask significand bits and shift up
+        // significand is 23-bits, so we shift to treat it like 24-bits
+        int significand = (bitValue & 0x007FFFFF) << 1;
+
+        if (exponent == 0 && significand == 0)
+            return (negative ? "-0x0.0p0" : "0x0.0p0");
+
+        StringBuilder hexString = new StringBuilder(10);
+        if (negative)
+            hexString.append("-0x");
+        else
+            hexString.append("0x");
+
+        if (exponent == 0) { // denormal (subnormal) value
+            hexString.append("0.");
+            // significand is 23-bits, so there can be 6 hex digits
+            int fractionDigits = 6;
+            // remove trailing hex zeros, so Integer.toHexString() won't print
+            // them
+            while ((significand != 0) && ((significand & 0xF) == 0)) {
+                significand >>>= 4;
+                fractionDigits--;
+            }
+            // this assumes Integer.toHexString() returns lowercase characters
+            String hexSignificand = Integer.toHexString(significand);
+
+            // if there are digits left, then insert some '0' chars first
+            if (fractionDigits > hexSignificand.length()) {
+                int digitDiff = fractionDigits - hexSignificand.length();
+                while (digitDiff-- != 0)
+                    hexString.append('0');
+            }
+            hexString.append(hexSignificand);
+            hexString.append("p-126");
+        } else { // normal value
+            hexString.append("1.");
+            // remove trailing hex zeros, so Integer.toHexString() won't print
+            // them
+            while ((significand != 0) && ((significand & 0xF) == 0)) {
+                significand >>>= 4;
+            }
+            // this assumes Integer.toHexString() returns lowercase characters
+            String hexSignificand = Integer.toHexString(significand);
+
+            hexString.append(hexSignificand);
+            hexString.append('p');
+            // remove exponent's 'bias' and convert to a string
+            hexString.append(Integer.toString(exponent - 127));
+        }
+        return hexString.toString();
+    }
 }
