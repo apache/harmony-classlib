@@ -151,7 +151,7 @@ public class GeneralSubtree {
             new ASN1Implicit(1, ASN1Integer.getInstance()) }) {
         {
             setDefault(new byte[] {0}, 1);  // minimum 0
-            setOptional(2);                 // maximun optional
+            setOptional(2);                 // maximum optional
         }
 
         protected Object getDecodedObject(BerInputStream in) {

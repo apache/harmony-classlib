@@ -416,7 +416,7 @@ public class CodeSourceTest extends TestCase {
             // remove all providers for x509
             // 'for' loop here for the sake of avoding endless loop - well, just 
             // in case if something is wrong with add/remove machinery.
-            // '100' seems reasonable big to remove all neccessary providers
+            // '100' seems reasonable big to remove all necessary providers
             // ...
             for (int i = 0; i < 100; i++) {
                 try {

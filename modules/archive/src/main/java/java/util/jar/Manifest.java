@@ -262,7 +262,7 @@ public class Manifest implements Cloneable {
 
 	/**
 	 * Contructs a new Manifest instance obtaining Attribute information from
-	 * the paramter InputStream.
+	 * the parameter InputStream.
 	 * 
 	 * @param is
 	 *            The InputStream to read from

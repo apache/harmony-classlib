@@ -218,7 +218,7 @@ execProgram (JNIEnv * vmthread, jobject recv,
   retVal = CreateProcess (NULL, commandAsString, NULL, NULL, TRUE, GetVersion () & 0x80 ? 0 : CREATE_NO_WINDOW, /*use DEBUG_ONLY_THIS_PROCESS for smoother debugging, however */
         envString, dir, &sinfo, &pinfo);
   jclmem_free_memory (env, commandAsString);
-  /* retVal is non-zero if successfull */
+  /* retVal is non-zero if successful */
   if (!retVal)
     goto failed;
 

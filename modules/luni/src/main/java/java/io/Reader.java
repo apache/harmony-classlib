@@ -25,7 +25,7 @@ package java.io;
  */
 public abstract class Reader {
 	/**
-	 * The object used to syncronize access to the reader.
+	 * The object used to synchronize access to the reader.
 	 */
 	protected Object lock;
 

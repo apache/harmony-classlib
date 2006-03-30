@@ -1399,7 +1399,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
 	/**
 	 * Read a new array from the receiver. It is assumed the array has not been
-	 * read yet (not a cyclic rfeference). Return the array read.
+	 * read yet (not a cyclic reference). Return the array read.
 	 * 
 	 * @param unshared
 	 *            read the object unshared
@@ -1488,7 +1488,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
 	/**
 	 * Reads a new class from the receiver. It is assumed the class has not been
-	 * read yet (not a cyclic rfeference). Return the class read.
+	 * read yet (not a cyclic reference). Return the class read.
 	 * 
 	 * @param unshared
 	 *            read the object unshared
@@ -1515,7 +1515,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
 	/**
 	 * Reads a new class descriptor from the receiver. It is assumed the class
-	 * descriptor has not been read yet (not a cyclic rfeference). Return the
+	 * descriptor has not been read yet (not a cyclic reference). Return the
 	 * class descriptor read.
 	 * 
 	 * @param unshared
@@ -1570,7 +1570,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
 	/**
 	 * Reads a new proxy class descriptor from the receiver. It is assumed the
-	 * proxy class descriptor has not been read yet (not a cyclic rfeference).
+	 * proxy class descriptor has not been read yet (not a cyclic reference).
 	 * Return the proxy class descriptor read.
 	 * 
 	 * @return The <code>Class</code> read from the stream.

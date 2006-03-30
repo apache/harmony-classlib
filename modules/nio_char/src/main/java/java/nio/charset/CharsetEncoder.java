@@ -74,7 +74,7 @@ import java.nio.CharBuffer;
  * encoding process for all charsets. encoder for specific charset should extend
  * this class and need only implement
  * {@link #encodeLoop(CharBuffer, ByteBuffer) encodeLoop} method for basic
- * encoding loop. If a subclass mantains internl state, it should override the
+ * encoding loop. If a subclass maintains internal state, it should override the
  * {@link #implFlush(ByteBuffer) implFlush} method and
  * {@link #implReset() implReset} method in addition.
  * </p>
@@ -845,7 +845,7 @@ public abstract class CharsetEncoder {
 	}
 
 	/**
-	 * Reset this encoder. This method will reset internla status, and then call
+	 * Reset this encoder. This method will reset internal status, and then call
 	 * <code>implReset()</code> to reset any status related to specific
 	 * charset.
 	 * 

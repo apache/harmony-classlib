@@ -543,7 +543,7 @@ public class LoginContextTest_1 extends TestCase {
     }
 
     /**
-     * A special-purpose LoginModule whose operations are always successfull.
+     * A special-purpose LoginModule whose operations are always successful.
      */
     public static final class TestLoginModule_Success extends TestLoginModule {
         public TestLoginModule_Success() {
@@ -863,7 +863,7 @@ public class LoginContextTest_1 extends TestCase {
 
     /**
      * Tests LoginContext.login()<br>
-     * Second attemt to login() on context already logged, must be successfull.<br>
+     * Second attempt to login() on context already logged, must be successful.<br>
      * This is how the RI works.
      */
     public void testLogin_00() throws Exception {
@@ -1124,7 +1124,7 @@ public class LoginContextTest_1 extends TestCase {
         assertTrue(TestLoginModule.size() == 0);
         // fail nowhere
         TestLoginModule.staticMask = 0;
-        lc.login(); // must be successfull now
+        lc.login(); // must be successful now
         assertTrue(TestLoginModule.size() == 1);
         assertTrue(TestLoginModule.get(0).initCalled);
         assertTrue(TestLoginModule.get(0).loginCalled);
@@ -1186,7 +1186,7 @@ public class LoginContextTest_1 extends TestCase {
 
     /**
      * Tests LoginContext.login()<br>
-     * If no class found, then following modules must not be instantizted
+     * If no class found, then following modules must not be instantiated
      */
     public void testLogin_07() throws Exception {
         TestConfig.addInstalledOptional("TestLoginModule_Success");
@@ -1786,7 +1786,7 @@ public class LoginContextTest_1 extends TestCase {
 
     /**
      * Tests LoginContext.getSubject()<br>
-     * Must return null if no subject was provided by user an no login attemt 
+     * Must return null if no subject was provided by user an no login attempt 
      * was made.
      */
     public void testGetSubject_00() throws Exception {
@@ -1798,7 +1798,7 @@ public class LoginContextTest_1 extends TestCase {
 
     /**
      * Tests LoginContext.getSubject()<br>
-     * Must return subject created after succesfull login.
+     * Must return subject created after succesful login.
      */
     public void testGetSubject_01() throws Exception {
         TestConfig.addInstalledRequired("TestLoginModule_Success");
@@ -1811,7 +1811,7 @@ public class LoginContextTest_1 extends TestCase {
 
     /**
      * Tests LoginContext.getSubject()<br>
-     * Must return null until succesfull login().
+     * Must return null until succesful login().
      */
     public void testGetSubject_02() throws Exception {
         TestConfig.addInstalledRequired("TestLoginModule");

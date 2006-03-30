@@ -380,7 +380,7 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 			iis.close();
 			f1.delete();
 
-			// Test for trying to write more bytes than availble from the array
+			// Test for trying to write more bytes than available from the array
 			File f2 = new File("writeBII2.tst");
 			FileOutputStream fos2 = new FileOutputStream(f2);
 			DeflaterOutputStream dos2 = new DeflaterOutputStream(fos2);

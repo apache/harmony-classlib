@@ -21,7 +21,7 @@ import java.nio.CharBuffer;
 /**
  * Readable marks that the implementing class provides character sequence.
  * Readable gives a reference to character sequence from within itself to caller
- * through a <code>CharBuffer</code> paramter of the <code>read</code>
+ * through a <code>CharBuffer</code> parameter of the <code>read</code>
  * method.
  */
 public interface Readable {

@@ -29,7 +29,7 @@ import javax.naming.NamingException;
  * single value, attempting to clear a value on an attribute that must have a 
  * value, and so on.</p> 
  * <p>
- * The serialization and synchonization specification for <code>NamingException</code>
+ * The serialization and synchronization specification for <code>NamingException</code>
  * applies equally to this class.</p>
  * 
  * @see NamingException

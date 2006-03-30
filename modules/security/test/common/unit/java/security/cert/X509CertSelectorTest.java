@@ -1898,7 +1898,7 @@ public class X509CertSelectorTest extends TestCase {
                 NameConstraints constraints;
                 subtrees.addSubtree(subtree);
                 // start the checking for each alt. name corresponding
-                // to curent name_constraints[i]
+                // to current name_constraints[i]
                 boolean check_matching = true;
                 for (int j=0; j<alternative_names[i].length; j++) {
                     GeneralNames alt_names_extension = new GeneralNames();
@@ -2050,7 +2050,7 @@ public class X509CertSelectorTest extends TestCase {
                 NameConstraints constraints;
                 subtrees.addSubtree(subtree);
                 // start the checking for each alt. name corresponding
-                // to curent name_constraints[i]
+                // to current name_constraints[i]
                 boolean check_matching = true;
                 for (int j=0; j<alternative_names[i].length; j++) {
                     GeneralNames alt_names_extension = new GeneralNames();

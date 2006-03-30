@@ -479,8 +479,8 @@ public class BeanContextSupport extends BeanContextChildSupport
             Collection col = new ArrayList();
             
             // Remove all children from BeanContext that are in the collection
-            // one by one. This operation is successfull if all the
-            // removals succeded
+            // one by one. This operation is successful if all the
+            // removals succeeded
             for (Iterator i = iterator(); i.hasNext(); ) {
                 try {  
                     Object next = i.next();
@@ -1066,8 +1066,8 @@ public class BeanContextSupport extends BeanContextChildSupport
             Collection col = new ArrayList();
             
             // Remove all children from BeanContext that are in the collection
-            // one by one. This operation is successfull if all the
-            // removals succeded
+            // one by one. This operation is successful if all the
+            // removals succeeded
             for (Iterator i = c.iterator(); i.hasNext(); ) {
                 try {
                     Object next = i.next();
@@ -1153,7 +1153,7 @@ public class BeanContextSupport extends BeanContextChildSupport
                 
                 // Remove all children from BeanContext that are not in the 
                 // collection
-                // This operation is successfull if all the removals succeded
+                // This operation is successful if all the removals succeeded
                 for (Iterator i = iterator(); i.hasNext(); ) {   
                     Object nextKey = i.next();
                     Object nextValue = this.children.get(nextKey);

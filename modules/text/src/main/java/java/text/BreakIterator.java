@@ -37,7 +37,7 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
  * <li>
  * <code>getSentenceInstance()</code> returns a BreakIterator that iterate the 
  * sentence-breaks.</li>
- * <li><code>getLineInstance()</code> retuens a BreakIterator that iterate the 
+ * <li><code>getLineInstance()</code> returns a BreakIterator that iterate the 
  * line-breaks which can be used to wrap lines. This iterator can handle whitespaces, 
  * hyphens and punctuations.  
  * </ul>

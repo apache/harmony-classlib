@@ -223,7 +223,7 @@ public class PipedReader extends Reader {
 					}
 
 					/*
-					 * Did the read fully suceed in the previous copy or is the
+					 * Did the read fully succeed in the previous copy or is the
 					 * buffer empty?
 					 */
 					if (copyLength == count || in == -1)

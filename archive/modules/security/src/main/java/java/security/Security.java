@@ -573,7 +573,7 @@ public final class Security {
 	 */
 	private static void loadSecurityProviders() {
 		synchronized (providersByPriority) {
-			// needed for syncronization issues
+			// needed for synchronization issues
 			if (providersLoaded)
 				return;
 			// must be set before calling addProvider()

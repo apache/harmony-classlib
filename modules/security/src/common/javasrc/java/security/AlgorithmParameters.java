@@ -40,7 +40,7 @@ public class AlgorithmParameters {
     private static final String SEVICE = "AlgorithmParameters";
 
     /**
-     * Used to accesess common engine functionality
+     * Used to access common engine functionality
      */
     private static Engine engine = new Engine(SEVICE);
 

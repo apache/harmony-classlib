@@ -165,7 +165,7 @@ public class URLTest extends junit.framework.TestCase {
 			assertTrue("u3b returns a wrong file", u3b.getFile().equals(""));
 			assertTrue("u3b returns a wrong anchor", u3b.getRef() == null);
 
-			// test for non-port ":" and wierd characters occurences
+			// test for non-port ":" and wierd characters occurrences
 			u4 = new URL(
 					"http://www.yahoo5.com/di!@$%^&*()_+r1/di:::r2/test.cgi?point1.html#anchor1");
 			assertTrue("u4 returns a wrong protocol", u4.getProtocol().equals(

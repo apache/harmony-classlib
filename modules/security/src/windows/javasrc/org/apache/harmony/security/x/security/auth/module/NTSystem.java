@@ -54,7 +54,7 @@ public final class NTSystem {
     private boolean debugNative;
 
     /**
-     * The default ctor. Loads jaaswin library if neccessary.
+     * The default ctor. Loads jaaswin library if necessary.
      * @throws UnsatisfiedLinkError if library jaaswin not found
      */
     public NTSystem() {

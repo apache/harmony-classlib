@@ -19,7 +19,7 @@ package java.net;
 import java.io.IOException;
 
 /**
- * This UnknownHostException is thrown when an IP address resolution is attemped
+ * This UnknownHostException is thrown when an IP address resolution is attempted
  * and no host or resolver may be found.
  */
 public class UnknownHostException extends IOException {

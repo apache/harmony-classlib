@@ -292,7 +292,7 @@ public class LoginContext {
         for (int i = 0; i < modules.length; i++) {
             try {
                 // if a module fails during Class.forName(), then it breaks overall 
-                // attemp - see catch() below
+                // attempt - see catch() below
                 modules[i].create(subject, callbackHandler, sharedState);
 
                 if (modules[i].module.login()) {

@@ -664,7 +664,7 @@ public abstract class Preferences {
 	public abstract void remove (String key);
 	
 	/**
-	 * Remove this preferences node and its all descendents. The removal maybe
+	 * Remove this preferences node and its all descendants. The removal maybe
 	 * won't be persisted until the <code>flush()</code> method is invoked. 
 	 * 
 	 * @throws BackingStoreException
@@ -725,8 +725,8 @@ public abstract class Preferences {
 	public abstract void removePreferenceChangeListener (PreferenceChangeListener pcl);
 	
 	/**
-	 * Synchronize this prefernces node and its descendants' data with the back 
-	 * end prefernces store. The changes of back end should be reflect by this 
+	 * Synchronize this preferences node and its descendants' data with the back 
+	 * end preferences store. The changes of back end should be reflect by this 
 	 * node and its descendants, meanwhile, the changes of this node and descendants 
 	 * should be persisted.
 	 * 

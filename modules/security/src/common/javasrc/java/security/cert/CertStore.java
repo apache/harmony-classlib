@@ -42,7 +42,7 @@ public class CertStore {
     // Store spi implementation service name
     private static final String SERVICE = "CertStore";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Store default property name

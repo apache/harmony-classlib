@@ -45,7 +45,7 @@ public class SecureRandom extends Random {
     // The service name.
     private static final transient String SERVICE = "SecureRandom";
     
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static transient Engine engine = new Engine(SERVICE);
     
     /**

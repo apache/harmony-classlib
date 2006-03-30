@@ -51,7 +51,7 @@ public class Random implements Serializable {
 	double nextNextGaussian = 0;
 
 	/**
-	 * Construct a random generator with the curent time of day in milliseconds
+	 * Construct a random generator with the current time of day in milliseconds
 	 * as the initial state.
 	 * 
 	 * @see #setSeed

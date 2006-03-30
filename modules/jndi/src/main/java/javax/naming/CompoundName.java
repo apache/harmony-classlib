@@ -71,7 +71,7 @@ import java.util.Vector;
  * When a non-escaped quote appears at the start of an element it must be matched at the
  * end. That element can then be said to be quoted. When an escape sequence appears
  * within a quoted element then it is treated as normal characters unless it precedes
- * an occurence of the quote in which case it is assumed that the quoted element
+ * an occurrence of the quote in which case it is assumed that the quoted element
  * contains a quote which is escaped.</p>
  * <p>
  * If the element does not start with a quote, then any quote strings within that

@@ -678,7 +678,7 @@ zip_populateCache (HyPortLibrary * portLib, HyZipFile * zipFile)
           current += sizeof (U_32);     /* skip external attributes field */
           ZIP_NEXT_U32 (localHeaderOffset, current);
 
-          /* Increase filename buffer size if neccessary. */
+          /* Increase filename buffer size if necessary. */
           if (filenameSize < entry.filenameLength + 1)
             {
               hymem_free_memory (filename);

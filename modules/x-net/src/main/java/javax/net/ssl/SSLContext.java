@@ -40,7 +40,7 @@ public class SSLContext {
     // StoreSSLContext service name
     private static final String SERVICE = "SSLContext";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Storeused provider

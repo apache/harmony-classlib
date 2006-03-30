@@ -1009,7 +1009,7 @@ public class X509CertSelector implements CertSelector {
                 return false;
             }
             if (policies.size() == 0) {
-                // if certificate has such exstension than it has at least
+                // if certificate has such extension than it has at least
                 // one policy in it.
                 return true;
             }

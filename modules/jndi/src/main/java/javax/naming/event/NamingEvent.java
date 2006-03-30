@@ -123,7 +123,7 @@ public class NamingEvent extends EventObject {
      * @param type			the constant value that specifies the type of event
      * @param newBinding    binding after the event. <code>newBinding</code> might 
      * 						be null depending on the value of the <code>type</code>
-     * 						paramater as follows:
+     * 						parameter as follows:
      * 						<ul>
      * 						<li>
      * 						<code>OBJECT_ADDED</code> - <code>newBinding</code> cannot be null
@@ -141,7 +141,7 @@ public class NamingEvent extends EventObject {
      * 						The names are relative to the <code>eventContext</code>
      * @param oldBinding	the binding before the event. <code>oldBinding</code> might 
      * 						be null depending on the value of the <code>type</code>
-     * 						paramater as follows:
+     * 						parameter as follows:
      * 						<ul>
      * 						<li>
      * 						<code>OBJECT_ADDED</code> - <code>oldBinding</code> 

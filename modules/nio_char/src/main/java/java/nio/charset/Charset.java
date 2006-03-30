@@ -653,7 +653,7 @@ public abstract class Charset implements Comparable {
 	}
 
 	/**
-	 * Encodes a string and outputs to a byte buffer that is to be retured.
+	 * Encodes a string and outputs to a byte buffer that is to be returned.
 	 * <p>
 	 * The default action in case of encoding errors is
 	 * <code>CodingErrorAction.REPLACE</code>.
@@ -669,7 +669,7 @@ public abstract class Charset implements Comparable {
 
 	/**
 	 * Decodes the content of the give byte buffer and outputs to a character
-	 * buffer that is to be retured.
+	 * buffer that is to be returned.
 	 * <p>
 	 * The default action in case of decoding errors is
 	 * <code>CodingErrorAction.REPLACE</code>.

@@ -41,7 +41,7 @@ public abstract class Signature extends SignatureSpi {
     // The service name.
     private static final String SERVICE = "Signature";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // The provider

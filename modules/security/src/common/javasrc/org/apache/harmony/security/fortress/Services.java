@@ -119,7 +119,7 @@ public class Services {
     }
 
     /**
-     * Insertrs a proveder at a specified position
+     * Inserts a provider at a specified position
      * 
      * @param provider
      * @param position

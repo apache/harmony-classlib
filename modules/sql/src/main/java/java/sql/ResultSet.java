@@ -835,7 +835,7 @@ public interface ResultSet {
 
 	/**
 	 * Gets the Statement that produced this ResultSet. If the ResultSet was not
-	 * created by a Statement (eg it was retuned fromone of the DatabaseMetaData
+	 * created by a Statement (eg it was returned from one of the DatabaseMetaData
 	 * methods), null is returned.
 	 * 
 	 * @return the Statement which produced this ResultSet, or null if the

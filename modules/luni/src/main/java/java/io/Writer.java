@@ -24,7 +24,7 @@ package java.io;
  * @see Reader
  */
 public abstract class Writer {
-	/** The object used to syncronize access to the writer. */
+	/** The object used to synchronize access to the writer. */
 	protected Object lock;
 
 	/**

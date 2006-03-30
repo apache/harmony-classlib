@@ -839,7 +839,7 @@ public class FileTest extends junit.framework.TestCase {
 					.equals(base + "temp.tst"));
 
 			// Finding a non-existent directory for tests 3 and 4
-			// This is necessay because getCanonicalPath is case sensitive and
+			// This is necessary because getCanonicalPath is case sensitive and
 			// could
 			// cause a failure in the test if the directory exists but with
 			// different

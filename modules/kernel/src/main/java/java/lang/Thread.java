@@ -645,7 +645,7 @@ public class Thread implements Runnable {
 	 * This is a no-op if the receiver is suspended. If the receiver
 	 * <code>isAlive()</code> however, suspended it until
 	 * <code>resume()</code> is sent to it. Suspend requests are not queued,
-	 * which means that N requests are equivalenet to just one - only one resume
+	 * which means that N requests are equivalent to just one - only one resume
 	 * request is needed in this case.
 	 * 
 	 * @exception SecurityException

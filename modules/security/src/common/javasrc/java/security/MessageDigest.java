@@ -36,7 +36,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
     // The service name
     private static final String SERVICE = "MessageDigest";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // The provider

@@ -71,7 +71,7 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
 			assertTrue("Available returned incorrect number of bytes", pis
 					.available() == fileString.getBytes().length);
 		} catch (IOException e) {
-			fail("Exception during avaialable test: " + e.toString());
+			fail("Exception during available test: " + e.toString());
 		}
 	}
 

@@ -36,7 +36,7 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
     // Store KeyPairGenerator SERVICE name
     private static final String SERVICE = "KeyPairGenerator";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Store SecureRandom

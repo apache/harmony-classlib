@@ -985,7 +985,7 @@ public class File implements Serializable, Comparable {
 	 * directory already exists, answer false. If the directories were created
 	 * successfully, answer <code>true</code>.
 	 * 
-	 * @return <code>true</code> if the neccessary directories were created,
+	 * @return <code>true</code> if the necessary directories were created,
 	 *         <code>false</code> otherwise.
 	 * 
 	 */

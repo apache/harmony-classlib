@@ -103,10 +103,10 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (byte counter = 0; counter < arraySize; counter++)
 			assertTrue("Binary search on byte[] answered incorrect position",
 					Arrays.binarySearch(byteArray, counter) == counter);
-		assertTrue("Binary search suceeded for value not present in array 1",
+		assertTrue("Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(intArray, (byte) -1) == -1);
 		assertTrue(
-				"Binary search suceeded for value not present in array 2",
+				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(intArray, (byte) arraySize) == -(arraySize + 1));
 		for (byte counter = 0; counter < arraySize; counter++)
 			byteArray[counter] -= 50;
@@ -125,10 +125,10 @@ public class ArraysTest extends junit.framework.TestCase {
 			assertTrue(
 					"Binary search on char[] answered incorrect position",
 					Arrays.binarySearch(charArray, (char) (counter + 1)) == counter);
-		assertTrue("Binary search suceeded for value not present in array 1",
+		assertTrue("Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(charArray, '\u0000') == -1);
 		assertTrue(
-				"Binary search suceeded for value not present in array 2",
+				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(charArray, (char) (arraySize + 1)) == -(arraySize + 1));
 	}
 
@@ -141,10 +141,10 @@ public class ArraysTest extends junit.framework.TestCase {
 			assertTrue(
 					"Binary search on double[] answered incorrect position",
 					Arrays.binarySearch(doubleArray, (double) counter) == (double) counter);
-		assertTrue("Binary search suceeded for value not present in array 1",
+		assertTrue("Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(doubleArray, (double) -1) == -1);
 		assertTrue(
-				"Binary search suceeded for value not present in array 2",
+				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(doubleArray, (double) arraySize) == -(arraySize + 1));
 		for (int counter = 0; counter < arraySize; counter++)
 			doubleArray[counter] -= (double) 50;
@@ -175,10 +175,10 @@ public class ArraysTest extends junit.framework.TestCase {
 			assertTrue(
 					"Binary search on float[] answered incorrect position",
 					Arrays.binarySearch(floatArray, (float) counter) == (float) counter);
-		assertTrue("Binary search suceeded for value not present in array 1",
+		assertTrue("Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(floatArray, (float) -1) == -1);
 		assertTrue(
-				"Binary search suceeded for value not present in array 2",
+				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(floatArray, (float) arraySize) == -(arraySize + 1));
 		for (int counter = 0; counter < arraySize; counter++)
 			floatArray[counter] -= (float) 50;
@@ -207,9 +207,9 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (int counter = 0; counter < arraySize; counter++)
 			assertTrue("Binary search on int[] answered incorrect position",
 					Arrays.binarySearch(intArray, counter) == counter);
-		assertTrue("Binary search suceeded for value not present in array 1",
+		assertTrue("Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(intArray, -1) == -1);
-		assertTrue("Binary search suceeded for value not present in array 2",
+		assertTrue("Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(intArray, arraySize) == -(arraySize + 1));
 		for (int counter = 0; counter < arraySize; counter++)
 			intArray[counter] -= 50;
@@ -227,10 +227,10 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (long counter = 0; counter < arraySize; counter++)
 			assertTrue("Binary search on long[] answered incorrect position",
 					Arrays.binarySearch(longArray, counter) == counter);
-		assertTrue("Binary search suceeded for value not present in array 1",
+		assertTrue("Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(longArray, (long) -1) == -1);
 		assertTrue(
-				"Binary search suceeded for value not present in array 2",
+				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(longArray, (long) arraySize) == -(arraySize + 1));
 		for (long counter = 0; counter < arraySize; counter++)
 			longArray[(int) counter] -= (long) 50;
@@ -251,10 +251,10 @@ public class ArraysTest extends junit.framework.TestCase {
 			assertTrue(
 					"Binary search on Object[] answered incorrect position",
 					Arrays.binarySearch(objectArray, objArray[counter]) == counter);
-		assertTrue("Binary search suceeded for value not present in array 1",
+		assertTrue("Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(objectArray, new Integer(-1)) == -1);
 		assertTrue(
-				"Binary search suceeded for value not present in array 2",
+				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(objectArray, new Integer(arraySize)) == -(arraySize + 1));
 	}
 
@@ -269,10 +269,10 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (int counter = 0; counter < arraySize; counter++)
 			objectArray[counter] = objArray[arraySize - counter - 1];
 		assertTrue(
-				"Binary search suceeded for value not present in array 1",
+				"Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(objectArray, new Integer(-1), comp) == -(arraySize + 1));
 		assertTrue(
-				"Binary search suceeded for value not present in array 2",
+				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(objectArray, new Integer(arraySize), comp) == -1);
 		for (int counter = 0; counter < arraySize; counter++)
 			assertTrue(
@@ -289,10 +289,10 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (short counter = 0; counter < arraySize; counter++)
 			assertTrue("Binary search on short[] answered incorrect position",
 					Arrays.binarySearch(shortArray, counter) == counter);
-		assertTrue("Binary search suceeded for value not present in array 1",
+		assertTrue("Binary search succeeded for value not present in array 1",
 				Arrays.binarySearch(intArray, (short) -1) == -1);
 		assertTrue(
-				"Binary search suceeded for value not present in array 2",
+				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(intArray, (short) arraySize) == -(arraySize + 1));
 		for (short counter = 0; counter < arraySize; counter++)
 			shortArray[counter] -= 50;

@@ -36,7 +36,7 @@ public class AlgorithmParameterGenerator {
     // Store spi service name
     private static final String SERVICE = "AlgorithmParameterGenerator";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Store SecureRandom

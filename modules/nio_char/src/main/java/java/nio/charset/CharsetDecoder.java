@@ -75,7 +75,7 @@ import java.nio.CharBuffer;
  * decoding process for all charsets. Decoder for specific charset should extend
  * this class and need only implement
  * {@link #decodeLoop(ByteBuffer, CharBuffer) decodeLoop} method for basic
- * decoding loop. If a subclass mantains internl state, it should override the
+ * decoding loop. If a subclass maintains internal state, it should override the
  * {@link #implFlush(CharBuffer) implFlush} method and
  * {@link #implReset() implReset} method in addition.
  * </p>

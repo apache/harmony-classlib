@@ -151,7 +151,7 @@ class MatchResultImpl implements MatchResult {
     }
 
     /*
-     * This method being called after any successfull match; For now it's being
+     * This method being called after any successful match; For now it's being
      * used to check zero group for empty match;
      */
     public void finalizeMatch() {

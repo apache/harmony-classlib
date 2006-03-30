@@ -62,7 +62,7 @@ public class Encoder {
      * @com.intel.drl.spec_ref
      */
     public Object remove(Object oldInstance) {
-        //TODO - notify refernces on node deletion
+        //TODO - notify references on node deletion
         if(oldInstance == null) {
             return null;
         }

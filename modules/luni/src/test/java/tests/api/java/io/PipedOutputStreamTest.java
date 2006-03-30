@@ -125,7 +125,7 @@ public class PipedOutputStreamTest extends junit.framework.TestCase {
 			return;
 		}
 		fail(
-				"Failed to throw exception attemting connect on already connected stream");
+				"Failed to throw exception attempting connect on already connected stream");
 
 	}
 

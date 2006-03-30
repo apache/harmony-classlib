@@ -17,7 +17,7 @@ package java.lang;
 
 
 /**
- * The CharSequence interface represets an ordered set of characters and the
+ * The CharSequence interface represents an ordered set of characters and the
  * functions to probe them.
  */
 public interface CharSequence {

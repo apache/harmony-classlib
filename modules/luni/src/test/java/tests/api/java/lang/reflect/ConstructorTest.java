@@ -177,7 +177,7 @@ public class ConstructorTest extends junit.framework.TestCase {
 			fail("Exception during getParameterTypes test:"
 					+ e.toString());
 		}
-		assertTrue("Incorrect paramter returned", types.length == 0);
+		assertTrue("Incorrect parameter returned", types.length == 0);
 
 		Class[] parms = null;
 		try {
@@ -190,7 +190,7 @@ public class ConstructorTest extends junit.framework.TestCase {
 			fail("Exception during getParameterTypes test:"
 					+ e.toString());
 		}
-		assertTrue("Incorrect paramter returned", types[0].equals(parms[0]));
+		assertTrue("Incorrect parameter returned", types[0].equals(parms[0]));
 	}
 
 	/**

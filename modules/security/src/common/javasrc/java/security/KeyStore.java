@@ -50,7 +50,7 @@ public class KeyStore {
     // Store KeyStore SERVICE name
     private static final String SERVICE = "KeyStore";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     //  Store KeyStore property name
@@ -113,7 +113,7 @@ public class KeyStore {
     public static KeyStore getInstance(String type, String provider)
             throws KeyStoreException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
-            throw new IllegalArgumentException("Proveder is null or empty");
+            throw new IllegalArgumentException("Provider is null or empty");
         }
         Provider impProvider = Security.getProvider(provider);
         if (impProvider == null) {
@@ -136,7 +136,7 @@ public class KeyStore {
             throws KeyStoreException {
         // check parameters
         if (provider == null) {
-            throw new IllegalArgumentException("Proveder is null");
+            throw new IllegalArgumentException("Provider is null");
         }
         if (type == null) {
             throw new NullPointerException("type is null");

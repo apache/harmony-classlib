@@ -253,7 +253,7 @@ public class NamingException extends Exception {
      * 
      * @param flag Indicates if the resolved object need to be returned. 
      * 
-     * @return the string represenatation of this <code>NamingException</code>.
+     * @return the string representation of this <code>NamingException</code>.
      */
     public String toString(boolean flag) {
         return toStringImpl(flag);
@@ -345,7 +345,7 @@ public class NamingException extends Exception {
      */
 
     /**
-     * Returns the string represenatation of this <code>NamingException</code>.
+     * Returns the string representation of this <code>NamingException</code>.
      * The string contains the string representation of this exception together
      * with details of the exception which caused this and any remaining 
      * portion of the <code>Name</code>. 

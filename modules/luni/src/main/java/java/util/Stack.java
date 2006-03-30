@@ -94,9 +94,9 @@ public class Stack extends Vector {
 	}
 
 	/**
-	 * Returns the index of the first occurence of the object.
+	 * Returns the index of the first occurrence of the object.
 	 * 
-	 * @return the index of the first occurence of the object
+	 * @return the index of the first occurrence of the object
 	 * @param o
 	 *            the object to be searched
 	 */

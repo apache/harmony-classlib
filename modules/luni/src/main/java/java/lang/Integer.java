@@ -226,7 +226,7 @@ public final class Integer extends Number implements Comparable {
 	/**
 	 * Answers an Integer representing the integer value of the property named
 	 * by the argument. If the property could not be found, or its value could
-	 * not be parsed as an integer, answer an Integer reperesenting the second
+	 * not be parsed as an integer, answer an Integer representing the second
 	 * argument.
 	 * 
 	 * @param string

@@ -212,7 +212,7 @@ public abstract class AbstractPreferences extends Preferences {
 
     /**
      * Flush changes of this node to the backing store. This method should only 
-     * flush this node, and should not include the descendent nodes. The 
+     * flush this node, and should not include the descendant nodes. The 
      * implementation which want to flush all nodes at once should override 
      * {@link #flush() flush()} method. 
      *
@@ -303,7 +303,7 @@ public abstract class AbstractPreferences extends Preferences {
 
     /**
      * Synchronize this node with the backing store. This method should only 
-     * synchronize this node, and should not include the descendent nodes. The 
+     * synchronize this node, and should not include the descendant nodes. The 
      * implementation which want to synchronize all nodes at once should override 
      * {@link #sync() sync()} method. 
      * 

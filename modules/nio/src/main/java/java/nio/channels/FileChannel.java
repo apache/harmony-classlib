@@ -443,7 +443,7 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	 * no bytes beyond the given size then the file contents are unmodified.
 	 * </p>
 	 * <p>
-	 * If the file position is curently greater than the given size, then it is
+	 * If the file position is currently greater than the given size, then it is
 	 * set to be the given size.
 	 * </p>
 	 * 

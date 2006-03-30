@@ -427,7 +427,7 @@ public final class TestCertUtils {
      * 
      * TestX509CErtificate.<br>
      * Does nothing interesting, but<br> 
-     * a) is not abstaract, so it can be instantiated<br>
+     * a) is not abstract, so it can be instantiated<br>
      * b) returns Encoded form<br>
      * 
      */

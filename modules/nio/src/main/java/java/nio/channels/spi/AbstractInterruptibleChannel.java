@@ -80,7 +80,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	/**
 	 * Start an IO operation that is potentially blocking.
 	 * <p>
-	 * Once the operation is completed the applicaion should invoke a
+	 * Once the operation is completed the application should invoke a
 	 * corresponding <code>end(boolean)</code>.
 	 */
 	protected final void begin() {

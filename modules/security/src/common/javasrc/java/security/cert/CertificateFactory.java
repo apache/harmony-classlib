@@ -43,7 +43,7 @@ public class CertificateFactory {
     // Store CertificateFactory service name
     private static final String SERVICE = "CertificateFactory";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Store used provider
@@ -120,7 +120,7 @@ public class CertificateFactory {
     public static final CertificateFactory getInstance(String type,
             Provider provider) throws CertificateException {
         if (provider == null) {
-            throw new IllegalArgumentException("Proveder is null");
+            throw new IllegalArgumentException("Provider is null");
         }
         if (type == null) {
             throw new NullPointerException("type is null");

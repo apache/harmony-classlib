@@ -40,7 +40,7 @@ public class KeyFactory {
     private Provider provider;
     
     
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     static private Engine engine = new Engine(SERVICE);
     
     // The SPI implementation.
