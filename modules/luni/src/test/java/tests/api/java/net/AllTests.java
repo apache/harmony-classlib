@@ -38,6 +38,7 @@ public class AllTests {
 		suite.addTestSuite(Inet4AddressTest.class);
 		suite.addTestSuite(Inet6AddressTest.class);
 		suite.addTestSuite(InetAddressTest.class);
+		suite.addTestSuite(InetSocketAddressTest.class);
 		suite.addTestSuite(JarURLConnectionTest.class);
 		suite.addTestSuite(MalformedURLExceptionTest.class);
 		suite.addTestSuite(MulticastSocketTest.class);
@@ -53,7 +54,7 @@ public class AllTests {
 		suite.addTestSuite(SocketPermissionTest.class);
 		suite.addTestSuite(UnknownHostExceptionTest.class);
 		suite.addTestSuite(UnknownServiceExceptionTest.class);
-                suite.addTestSuite(URITest.class);
+		suite.addTestSuite(URITest.class);
 		suite.addTestSuite(URISyntaxExceptionTest.class);
 		suite.addTestSuite(URLTest.class);
 		suite.addTestSuite(URLClassLoaderTest.class);

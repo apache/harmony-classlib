@@ -45,17 +45,42 @@ public class InetSocketAddress extends SocketAddress {
 	}
 
 	public InetSocketAddress(String host, int port) {
+		this(host,port,true);
+	}
+	
+	/*
+	 * Internal contructor for InetSocketAddress(String, int) and 
+	 * createUnresolved(String, int);
+	 */
+	InetSocketAddress(String host, int port, boolean needResolved){
 		if (host == null || port < 0 || port > 65535)
 			throw new IllegalArgumentException();
 		hostName = host;
 		this.port = port;
-		try {
-			addr = InetAddress.getByName(hostName);
-			hostName = addr.getHostName();
-		} catch (UnknownHostException e) {
+		if(needResolved){
+			try {
+				addr = InetAddress.getByName(hostName);
+				hostName = addr.getHostName();
+			} catch (UnknownHostException e) {
+			}
+		}else{
+			addr = null;
 		}
 	}
 
+	/**
+	 * Creats an <code>InetSocketAddress</code> without trying to resolve 
+	 * hostname into an InetAddress. The address field is marked as unresolved. 
+	 * @param host
+	 * @param port
+	 * @return an <code>InetSocketAddress</code> instance.
+	 * @throws IllegalArgumentException
+	 *             if host is null or the port is not in the range between 0 and 65535.  
+	 */
+	public static InetSocketAddress createUnresolved(String host, int port){
+		return new InetSocketAddress(host,port,false);
+	}
+	
 	public final int getPort() {
 		return port;
 	}
