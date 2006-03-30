@@ -73,7 +73,7 @@
 	<property name="hy.platform" value="${hy.os_family}.${hy.cpu_family}"/>
 
 	<!-- Set the java compiler to be the Eclipse Java compiler -->
-	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+	<!-- <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" /> -->
 
 
 	<target name="init">
