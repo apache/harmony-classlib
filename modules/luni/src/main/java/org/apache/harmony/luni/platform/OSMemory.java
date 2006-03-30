@@ -20,8 +20,6 @@ import java.io.IOException;
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
 
-// import com.ibm.oti.vm.VM;
-
 /**
  * This class enables direct access to OS memory.
  * <p>

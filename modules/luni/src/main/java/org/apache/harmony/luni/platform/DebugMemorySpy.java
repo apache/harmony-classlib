@@ -21,7 +21,7 @@ package org.apache.harmony.luni.platform;
  * posible for misbehaving allocators.
  * 
  */
-public final class DebugMemorySpy extends AbstractMemorySpy {
+final class DebugMemorySpy extends AbstractMemorySpy {
 
 	private final boolean stackDump = true;
 

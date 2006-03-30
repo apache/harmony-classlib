@@ -17,7 +17,7 @@ package org.apache.harmony.luni.platform;
 
 import java.lang.ref.Reference;
 
-public final class RuntimeMemorySpy extends AbstractMemorySpy {
+final class RuntimeMemorySpy extends AbstractMemorySpy {
 
 	public RuntimeMemorySpy() {
 		super();

@@ -20,7 +20,7 @@ package org.apache.harmony.luni.platform;
  * OSComponentFactory
  * 
  */
-public class OSComponentFactory {
+class OSComponentFactory {
 
 	/**
 	 * @return OSFileSystem

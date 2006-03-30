@@ -25,7 +25,7 @@ import java.util.List;
  * Adapter Manager
  *  
  */
-public final class AdapterManager implements IAdapterManager {
+final class AdapterManager implements IAdapterManager {
 
 	/*
 	 * key is adaptable type, and value is list of adapter factories for that

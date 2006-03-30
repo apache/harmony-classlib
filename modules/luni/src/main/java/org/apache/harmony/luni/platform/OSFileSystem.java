@@ -23,7 +23,7 @@ import java.io.IOException;
  * This is the portable implementation of the file system interface.
  * 
  */
-public class OSFileSystem extends OSComponent implements IFileSystem {
+class OSFileSystem extends OSComponent implements IFileSystem {
 
 	/**
 	 * 

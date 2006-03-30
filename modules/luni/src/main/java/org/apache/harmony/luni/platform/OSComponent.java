@@ -22,7 +22,7 @@ import com.ibm.oti.vm.VM;
  * OSComponent
  * 
  */
-public class OSComponent implements IAdaptable {
+class OSComponent implements IAdaptable {
 
 	/**
 	 * 
