@@ -47,6 +47,7 @@ public class AllTests {
 		suite.addTestSuite(NoRouteToHostExceptionTest.class);
 		suite.addTestSuite(PasswordAuthenticationTest.class);
 		suite.addTestSuite(ProtocolExceptionTest.class);
+		suite.addTestSuite(ResponseCacheTest.class);
 		suite.addTestSuite(ServerSocketTest.class);
 		suite.addTestSuite(SocketTest.class);
 		suite.addTestSuite(SocketExceptionTest.class);
