@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony Crypto
+Bundle-SymbolicName: org.apache.harmony.crypto
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Eclipse-JREBundle: true
+Import-Package: org.apache.harmony.security.asn1,
+ org.apache.harmony.security.fortress,
+ org.apache.harmony.security.x509,
+ java.io,
+ java.lang,
+ java.math,
+ java.nio,
+ java.security,
+ java.security.cert,
+ java.security.spec,
+ java.util,
+Export-Package: javax.crypto,
+ javax.crypto.interfaces,
+ javax.crypto.spec

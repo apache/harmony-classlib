@@ -76,6 +76,15 @@
 
 	</target>
 
+	<target name="test-crypto" depends="compile-support">
+        <echo message="=================================="/>
+        <echo message="Running tests for module crypto"/>
+        <echo message="=================================="/>
+
+        <ant antfile="make/build.xml" dir="modules/crypto" target="test" />
+
+	</target>
+
 	<target name="test-text" depends="compile-support">
         <echo message="=================================="/>
         <echo message="Running tests for module text"/>

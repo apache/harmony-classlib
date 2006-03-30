@@ -15,6 +15,7 @@ Import-Package: java.io,
  java.text,
  java.util,
  java.util.zip
+ org.apache.harmony.security.x.crypto.utils
 Export-Package: java.security,
  java.security.acl,
  java.security.cert,
@@ -29,5 +30,7 @@ Export-Package: java.security,
  javax.security.cert,
  javax.security.sasl,
  org.ietf.jgss,
+ org.apache.harmony.security.asn1;version="1.0.0",
+ org.apache.harmony.security.x509;version="1.0.0",
  org.apache.harmony.security.utils;version="1.0.0";x-friends:="org.apache.harmony.archive,org.apache.harmony.luni",
  org.apache.harmony.security.fortress;version="1.0.0"

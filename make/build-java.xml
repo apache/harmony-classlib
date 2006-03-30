@@ -166,7 +166,8 @@
         </jar>
 
         <!-- Create crypto jar -->
-        <jar destfile="${components.output}/crypto.jar">  <!-- TODO: manifest -->
+        <jar destfile="${components.output}/crypto.jar"
+        	manifest="modules/crypto/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
                 includesfile="${components.patternsets}/crypto.txt"
                 excludesfile="${components.patternsets}/kernel.txt" />
@@ -250,6 +251,7 @@
             <src path="modules/applet/src/main/java" />
             <src path="modules/awt/src/main/java" />
             <src path="modules/beans/src/main/java" />
+            <src path="modules/crypto/src/main/java" />
             <src path="modules/kernel/src/main/java" />
             <src path="modules/regex/src/main/java" />
             <src path="modules/math/src/main/java" />
@@ -303,6 +305,9 @@
                 <exclude name="**/*.java" />
             </fileset>
             <fileset dir="modules/beans/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/crypto/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
             <fileset dir="modules/luni/src/main/java">
