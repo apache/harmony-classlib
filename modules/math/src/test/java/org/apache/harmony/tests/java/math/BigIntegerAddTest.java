@@ -18,7 +18,7 @@
  * @version $Revision: 1.5.6.2 $
  */
 
-package org.apache.harmony.tests.math;
+package org.apache.harmony.tests.java.math;
 
 import junit.framework.TestCase;
 import java.math.BigInteger;
