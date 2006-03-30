@@ -152,7 +152,7 @@
         <echo message="Running tests for module security"/>
         <echo message="=================================="/>
 
-        <ant antfile="make/build.xml" dir="modules/security" target="test.classlib"/>
+        <ant antfile="make/build.xml" dir="modules/security" target="test"/>
 	</target>
 
 	<target name="gen-report">
