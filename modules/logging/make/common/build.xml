@@ -47,8 +47,22 @@
 	<target name="compile.tests">
 		<echo message="Compiling LOGGING tests from ${hy.logging.src.test.java}" />
 
+		<mkdir dir="${hy.logging.bin.injected}" />
 		<mkdir dir="${hy.logging.bin.test}" />
 
+		<javac srcdir="${hy.logging.src.test.injected}"
+			destdir="${hy.logging.bin.injected}"
+			sourcepath=""
+			source="${source.ver}"
+			debug="${java.debug.option}">
+
+			<bootclasspath>
+				<fileset dir="${hy.target}/jre/lib/boot">
+					<include name="*.jar" />
+				</fileset>
+			</bootclasspath>
+                        <classpath location="../../../../build/tests" />
+		</javac>
 		<javac srcdir="${hy.logging.src.test.java}"
 			destdir="${hy.logging.bin.test}"
 			sourcepath=""
@@ -59,6 +73,7 @@
 				<fileset dir="${hy.target}/jre/lib/boot">
 					<include name="*.jar" />
 				</fileset>
+			        <pathelement path="${hy.logging.bin.injected}"/>
 			</bootclasspath>
                         <classpath location="../../../../build/tests" />
 		</javac>
@@ -81,6 +96,12 @@
 
 			<env key="JAVA_HOME" value="${hy.target}/jre"/>
 
+			<bootclasspath>
+				<fileset dir="${hy.target}/jre/lib/boot">
+					<include name="*.jar" />
+				</fileset>
+			        <pathelement path="${hy.logging.bin.injected}"/>
+			</bootclasspath>
 			<classpath>
 				<pathelement path="${hy.logging.bin.test}"/>
 			</classpath>
@@ -91,6 +112,16 @@
 			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
 				<fileset dir="${hy.logging.src.test.java}">
 					<include name="**/*Test.java"/>
+     <exclude name="**/FileHandlerTest.java" />
+     <exclude name="**/FormatterTest.java" />
+     <exclude name="**/LevelTest.java" />
+     <exclude name="**/LogManagerTest.java" />
+     <exclude name="**/LogRecordTest.java" />
+     <exclude name="**/LoggerTest.java" />
+     <exclude name="**/LoggingPermissionTest.java" />
+     <exclude name="**/SimpleFormatterTest.java" />
+     <exclude name="**/SocketHandlerTest.java" />
+     <exclude name="**/XMLFormatterTest.java" />
 				</fileset>
 			</batchtest>
 		</junit>
