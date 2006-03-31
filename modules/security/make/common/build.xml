@@ -40,7 +40,7 @@
 
 			<bootclasspath>
 				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="*.jar" />
+					<include name="**/*.jar" />
 				</fileset>
 			</bootclasspath>
 		</javac>
@@ -76,7 +76,7 @@
 
 			<bootclasspath>
 				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="*.jar" />
+					<include name="**/*.jar" />
 				</fileset>
 			</bootclasspath>
 		</javac>
