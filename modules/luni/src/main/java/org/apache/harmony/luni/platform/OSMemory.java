@@ -56,8 +56,6 @@ final class OSMemory extends OSComponent implements IMemorySystem {
 	private static final OSMemory singleton = new OSMemory();
 
 	static {
-		// FIXME: OSMemory, OSFileSystem, OSNetwork, should be moved to luni
-		System.loadLibrary("hynio");
 		POINTER_SIZE = getPointerSizeImpl();
 
 		if (isLittleEndianImpl()) {
@@ -68,9 +66,6 @@ final class OSMemory extends OSComponent implements IMemorySystem {
 	}
 
 	public static OSMemory getOSMemory() {
-		/*
-		 * if (VM.callerClassLoader() != null) { throw new SecurityException(); }
-		 */
 		return singleton;
 	}
 
