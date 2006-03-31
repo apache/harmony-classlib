@@ -19,7 +19,7 @@
 all: \
 	_sig _common _pool _thread _port _fdlibm _zip \
 	_zlib _vmi _luni _nio _archive _auth \
-	_math _text _launcher
+	_math _text _vmls _launcher
 
 _auth:
 	(cd auth && $(MAKE) )
@@ -65,7 +65,10 @@ _math: _common _sig _zip _zlib _pool _fdlibm _thread _vmi
 	
 _text: _sig _zip _zlib _pool _fdlibm _thread _vmi
 	(cd text && $(MAKE) )
-	
+
+_vmls: _thread _port
+	(cd vmls && $(MAKE) )	
+
 _launcher: _thread _port
 	(cd launcher && $(MAKE) )	
 
@@ -85,4 +88,5 @@ clean:
 	(cd archive && $(MAKE) clean )
 	(cd math && $(MAKE) clean )
 	(cd text && $(MAKE) clean )
+	(cd vmls && $(MAKE) clean )
 	(cd launcher && $(MAKE) clean )
