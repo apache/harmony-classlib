@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony LUNI Kernel
+Bundle-ClassPath: .
+Fragment-Host: org.apache.harmony.luni;bundle-version="1.0.0"
+Eclipse-JREBundle: true
+Bundle-SymbolicName: org.apache.harmony.luni.kernel
+Bundle-Version: 1.0.0
+Export-Package: java.lang,
+ java.lang.reflect,
+ java.lang.ref,
+ com.ibm.oti.vm

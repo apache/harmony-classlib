@@ -90,39 +90,40 @@
         <jar destfile="${components.output}/applet.jar"
         	manifest="modules/applet/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/applet.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/applet.txt" />
         </jar>
 
         <!-- Create archive jar -->
         <jar destfile="${components.output}/archive.jar"
         	manifest="modules/archive/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/archive.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/archive.txt" />
         </jar>
 
         <!-- Create awt jar -->
         <jar destfile="${components.output}/awt.jar"
         	manifest="modules/awt/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/awt.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/awt.txt" />
         </jar>
 
         <!-- Create beans jar -->
         <jar destfile="${components.output}/beans.jar"
         	manifest="modules/beans/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/beans.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/beans.txt" />
         </jar>
 
-        <!-- Create (non-functional) kernel jar (to compile against) -->
-        <jar destfile="${components.output}/kernel-stubs.jar"
-        	manifest="modules/kernel/META-INF/MANIFEST.MF">
+        <!-- Create (non-functional) kernel jars (to compile against) -->
+        <jar destfile="${components.output}/luni-kernel-stubs.jar"
+        	manifest="modules/luni-kernel/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/luni-kernel.txt" />
+        </jar>
+        <jar destfile="${components.output}/security-kernel-stubs.jar"
+        	manifest="modules/security-kernel/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/security-kernel.txt" />
         </jar>
 
         <!-- Create luni jar -->
@@ -130,23 +131,21 @@
         	manifest="modules/luni/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
                 includesfile="${components.patternsets}/luni.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                excludesfile="${components.patternsets}/luni-kernel.txt" />
         </jar>
 
         <!-- Create nio jar -->
         <jar destfile="${components.output}/nio.jar"
         	manifest="modules/nio/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/nio.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/nio.txt" />
         </jar>
 
         <!-- Create nio_char jar -->
         <jar destfile="${components.output}/nio_char.jar"
         	manifest="modules/nio_char/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/nio_char.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/nio_char.txt" />
         </jar>
 
         <!-- Create security jar -->
@@ -154,87 +153,77 @@
         	manifest="modules/security/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
                 includesfile="${components.patternsets}/security.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                excludesfile="${components.patternsets}/security-kernel.txt" />
         </jar>
 
         <!-- Create x-net jar -->
         <jar destfile="${components.output}/x-net.jar"
         	manifest="modules/x-net/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/x-net.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/x-net.txt"/>
         </jar>
 
         <!-- Create crypto jar -->
         <jar destfile="${components.output}/crypto.jar"
         	manifest="modules/crypto/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/crypto.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/crypto.txt"/>
         </jar>
 
         <!-- Create text jar -->
         <jar destfile="${components.output}/text.jar"
         	manifest="modules/text/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/text.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/text.txt"/>
         </jar>
 
         <!-- Create math jar -->
         <jar destfile="${components.output}/math.jar"
         	manifest="modules/math/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/math.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/math.txt"/>
         </jar>
 
         <!-- Create regex jar -->
         <jar destfile="${components.output}/regex.jar"
         	manifest="modules/regex/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/regex.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/regex.txt" />
         </jar>
 
         <!-- Create rmi jar -->
         <jar destfile="${components.output}/rmi.jar"
         	manifest="modules/rmi/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/rmi.txt" 
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/rmi.txt" />
         </jar>
 
         <!-- Create sql jar -->
         <jar destfile="${components.output}/sql.jar"
         	manifest="modules/sql/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/sql.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/sql.txt" />
         </jar>
 
         <!-- Create jndi jar -->
         <jar destfile="${components.output}/jndi.jar"
         	manifest="modules/jndi/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/jndi.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/jndi.txt" />
         </jar>
 
         <!-- Create logging jar -->
         <jar destfile="${components.output}/logging.jar"
         	manifest="modules/logging/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/logging.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/logging.txt" />
         </jar>
 
         <!-- Create prefs jar -->
         <jar destfile="${components.output}/prefs.jar"
         	manifest="modules/prefs/META-INF/MANIFEST.MF">
             <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/prefs.txt"
-                excludesfile="${components.patternsets}/kernel.txt" />
+                includesfile="${components.patternsets}/prefs.txt" />
         </jar>
 
     </target>
@@ -252,17 +241,17 @@
             <src path="modules/awt/src/main/java" />
             <src path="modules/beans/src/main/java" />
             <src path="modules/crypto/src/main/java" />
-            <src path="modules/kernel/src/main/java" />
             <src path="modules/regex/src/main/java" />
             <src path="modules/math/src/main/java" />
             <src path="modules/archive/src/main/java" />
             <src path="modules/luni/src/main/java" />
+            <src path="modules/luni-kernel/src/main/java" />
             <src path="modules/nio/src/main/java" />
             <src path="modules/nio_char/src/main/java" />
             <src path="modules/security/src/common/javasrc" />
             <src path="modules/security/src/windows/javasrc" />
             <src path="modules/security/src/linux/javasrc" />
-
+            <src path="modules/security-kernel/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
 
             <src path="modules/rmi/src/main/java" />
