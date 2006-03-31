@@ -37,4 +37,25 @@ public class PushBackInputStreamTest extends TestCase {
 			// expected
 		}
 	}
+
+	public void test_reset() {
+		PushbackInputStream pb = new PushbackInputStream(
+				new ByteArrayInputStream(new byte[] { 0 }), 2);
+		try {
+			pb.reset();
+			fail("Should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+	}
+
+	public void test_mark() {
+		PushbackInputStream pb = new PushbackInputStream(
+				new ByteArrayInputStream(new byte[] { 0 }), 2);
+		pb.mark(Integer.MAX_VALUE);
+		pb.mark(0);
+		pb.mark(-1);
+		pb.mark(Integer.MIN_VALUE);
+	}
+
 }

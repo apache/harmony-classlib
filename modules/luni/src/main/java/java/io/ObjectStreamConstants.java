@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public abstract interface ObjectStreamConstants {
 
 	public static final byte TC_PROXYCLASSDESC = (byte) 0x7D;
 
-	public static final byte TC_MAX = 0x7D;
+	public static final byte TC_MAX = 0x7E;
 
 	/**
 	 * The first object dumped gets assigned this handle/ID
@@ -90,5 +90,15 @@ public abstract interface ObjectStreamConstants {
 	public static final byte SC_EXTERNALIZABLE = 0x04;
 
 	public static final byte SC_BLOCK_DATA = 0x08; // If SC_EXTERNALIZABLE
-
+	
+	/**
+	 * constant for new enum
+	 */
+	public static final byte TC_ENUM = 0x7E;
+	
+	/**
+	 * the bitmask denoting that the object is a enum
+	 */
+	public static final byte SC_ENUM = 0x10;
+	
 }

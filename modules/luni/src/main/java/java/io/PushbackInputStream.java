@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  */
 
 package java.io;
-
 
 /**
  * PushbackInputStream is a filter class which allows bytes read to be pushed
@@ -291,5 +290,31 @@ public class PushbackInputStream extends FilterInputStream {
 				throw new IOException(com.ibm.oti.util.Msg.getString("K007e")); //$NON-NLS-1$
 		} else
 			throw new IOException();
+	}
+
+	/**
+	 * Make a mark of the current position in the stream but the mark method
+	 * does nothing.
+	 * 
+	 * @param readlimit
+	 *            the maximum number of bytes that are able to be read before the
+	 *            mark becomes invalid
+	 * @override the method mark in FilterInputStream
+	 */
+	public void mark(int readlimit) {
+		return;
+	}
+
+	/**
+	 * Reset current position to the mark made previously int the stream, but
+	 * the reset method will throw IOException and do nothing else if called.
+	 * 
+	 * @override the method reset in FilterInputStream
+	 * @throws IOException
+	 *             If the method is called
+	 */
+
+	public void reset() throws IOException {
+		throw new IOException();
 	}
 }

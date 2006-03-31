@@ -29,7 +29,7 @@ public class FilterInputStream extends InputStream {
 	/**
 	 * The target InputStream which is being filtered.
 	 */
-	protected InputStream in;
+	protected volatile InputStream in;
 
 	/**
 	 * Constructs a new FilterInputStream on the InputStream <code>in</code>.
@@ -184,5 +184,4 @@ public class FilterInputStream extends InputStream {
 	public long skip(long count) throws IOException {
 		return in.skip(count);
 	}
-
 }
