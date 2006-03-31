@@ -191,7 +191,7 @@
             <classpath location="${tests.build.output}" />
             <bootclasspath>
                 <fileset dir="${tests.depends.jars}">
-                    <include name="*.jar" />
+                    <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
         </javac>
