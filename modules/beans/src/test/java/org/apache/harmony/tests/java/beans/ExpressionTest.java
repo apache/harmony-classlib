@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
-import org.apache.harmony.tests.beans.auxiliary.SampleBean;
+import org.apache.harmony.tests.java.beans.auxiliary.SampleBean;
 
 /**
  * The test checks the class java.beans.Expression
