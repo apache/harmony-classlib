@@ -42,6 +42,8 @@
 
 	<check-one-file src="${bcprov.url}" dest="${signed.bcprov.jar}" />
 
+	<check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
+
 	<uptodate property="bcprov.uptodate"
                   srcfile="${signed.bcprov.jar}"
                   targetfile="${bcprov.jar}" />
@@ -80,6 +82,10 @@
 	<mkdir dir="${bcprov.dir}" />
 	<download-one-file src="${bcprov.url}" dest="${signed.bcprov.jar}"
                            md5="${signed.bcprov.md5}" />
+
+	<mkdir dir="${icu4j.dir}" />
+	<download-one-file src="${icu4j.url}" dest="${icu4j.jar}"
+                           md5="${icu4j.md5}" />
 
         <antcall target="download-win" />
 
