@@ -51,7 +51,7 @@ Java_java_util_zip_Deflater_setDictionaryImpl (JNIEnv * env, jobject recv,
   stream->dict = dBytes;
 }
 
-jint JNICALL
+jlong JNICALL
 Java_java_util_zip_Deflater_getTotalInImpl (JNIEnv * env, jobject recv,
 					    jlong handle)
 {
@@ -61,7 +61,7 @@ Java_java_util_zip_Deflater_getTotalInImpl (JNIEnv * env, jobject recv,
   return stream->stream->total_in;
 }
 
-int JNICALL
+jlong JNICALL
 Java_java_util_zip_Deflater_getTotalOutImpl (JNIEnv * env, jobject recv,
 					     jlong handle)
 {

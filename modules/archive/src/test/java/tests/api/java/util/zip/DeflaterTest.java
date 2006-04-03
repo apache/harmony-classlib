@@ -1129,6 +1129,17 @@ public class DeflaterTest extends junit.framework.TestCase {
 		}
 	}
 
+    /**
+     * @tests java.util.zip.Deflater()
+     */
+    public void test_needsDictionary() {
+        Deflater inf = new Deflater();
+        assertEquals(0, inf.getTotalIn());
+        assertEquals(0, inf.getTotalOut());
+        assertEquals(0, inf.getBytesRead());
+        assertEquals(0, inf.getBytesWritten());
+    }
+    
 	protected void setUp() {
 	}
 

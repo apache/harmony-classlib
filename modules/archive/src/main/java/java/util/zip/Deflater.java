@@ -177,10 +177,10 @@ public class Deflater {
 		if (streamHandle == -1)
 			throw new IllegalStateException();
 
-		return getTotalInImpl(streamHandle);
+		return (int)getTotalInImpl(streamHandle);
 	}
 
-	private native synchronized int getTotalInImpl(long handle);
+	private native synchronized long getTotalInImpl(long handle);
 
 	/**
 	 * Returns the total number of compressed bytes output nby this Deflater.
@@ -191,10 +191,10 @@ public class Deflater {
 		if (streamHandle == -1)
 			throw new IllegalStateException();
 
-		return getTotalOutImpl(streamHandle);
+		return (int)getTotalOutImpl(streamHandle);
 	}
 
-	private synchronized native int getTotalOutImpl(long handle);
+	private synchronized native long getTotalOutImpl(long handle);
 
 	/**
 	 * Indicates whether or not all bytes of uncompressed input have been
@@ -371,6 +371,30 @@ public class Deflater {
 	public Deflater(int level) {
 		this(level, false);
 	}
+	
+    /**
+     * return a long int instead of int
+     * @see getTotalIn
+     * @return bytes exactly read by deflater
+     */
+    public synchronized long getBytesRead() {
+        // Throw NPE here
+        if (streamHandle == -1)
+            throw new NullPointerException();
+        return getTotalInImpl(streamHandle);
+    }
+
+    /**
+     * return a long int instead of int
+     * @see getTotalOut
+     * @return bytes exactly write by deflater
+     */
+    public synchronized long getBytesWritten() {
+        // Throw NPE here
+        if (streamHandle == -1)
+            throw new NullPointerException();
+        return getTotalOutImpl(streamHandle);
+    }
 
 	private native long createStream(int level, int strategy1, boolean noHeader1);
 }

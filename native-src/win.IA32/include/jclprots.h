@@ -58,7 +58,7 @@ extern "C"
                 jlong handle));
   void JNICALL Java_java_util_zip_Deflater_resetImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
-  int JNICALL Java_java_util_zip_Deflater_getTotalOutImpl
+  jlong JNICALL Java_java_util_zip_Deflater_getTotalOutImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
   void JNICALL Java_java_util_zip_Deflater_endImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
@@ -76,7 +76,7 @@ extern "C"
   jlong JNICALL Java_java_util_zip_Deflater_createStream
     PROTOTYPE ((JNIEnv * env, jobject recv, jint level, jint strategy,
                 jboolean noHeader));
-  jint JNICALL Java_java_util_zip_Deflater_getTotalInImpl
+  jlong JNICALL Java_java_util_zip_Deflater_getTotalInImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
   jint JNICALL Java_java_util_zip_Deflater_getAdlerImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
@@ -316,11 +316,12 @@ extern "C"
     PROTOTYPE ((JNIEnv * env, jclass clazz));
   void JNICALL Java_java_util_zip_Inflater_resetImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
-  int JNICALL Java_java_util_zip_Inflater_getTotalOutImpl
+
+  jlong JNICALL Java_java_util_zip_Inflater_getTotalOutImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
   jlong JNICALL Java_java_util_zip_Inflater_createStream
     PROTOTYPE ((JNIEnv * env, jobject recv, jboolean noHeader));
-  int JNICALL Java_java_util_zip_Inflater_getTotalInImpl
+  jlong JNICALL Java_java_util_zip_Inflater_getTotalInImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
   jint JNICALL Java_java_util_zip_Inflater_getAdlerImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));

@@ -47,13 +47,13 @@ void JNICALL Java_java_util_zip_Inflater_oneTimeInitialization (JNIEnv * env,
 void JNICALL Java_java_util_zip_Inflater_resetImpl (JNIEnv * env,
                                                     jobject recv,
                                                     jlong handle);
-int JNICALL Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env,
+jlong JNICALL Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env,
                                                          jobject recv,
                                                          jlong handle);
 jlong JNICALL Java_java_util_zip_Inflater_createStream (JNIEnv * env,
                                                         jobject recv,
                                                         jboolean noHeader);
-int JNICALL Java_java_util_zip_Inflater_getTotalInImpl (JNIEnv * env,
+jlong JNICALL Java_java_util_zip_Inflater_getTotalInImpl (JNIEnv * env,
                                                         jobject recv,
                                                         jlong handle);
 jint JNICALL Java_java_util_zip_Inflater_getAdlerImpl (JNIEnv * env,

@@ -15,7 +15,6 @@
 
 package java.util.zip;
 
-
 /**
  * The Inflater class is used to decompress bytes using the DEFLATE compression
  * algorithm. Inflation is performed by the ZLIB compression library.
@@ -108,11 +107,12 @@ public class Inflater {
 	public synchronized int getTotalIn() {
 		if (streamHandle == -1)
 			throw new IllegalStateException();
-
-		return getTotalInImpl(streamHandle);
+		long totalIn = getTotalInImpl(streamHandle);
+		return (totalIn <= Integer.MAX_VALUE ? (int) totalIn
+				: Integer.MAX_VALUE);
 	}
 
-	private synchronized native int getTotalInImpl(long handle);
+	private synchronized native long getTotalInImpl(long handle);
 
 	/**
 	 * Returns total number of bytes of input output by the Inflater.
@@ -122,11 +122,12 @@ public class Inflater {
 	public synchronized int getTotalOut() {
 		if (streamHandle == -1)
 			throw new IllegalStateException();
-
-		return getTotalOutImpl(streamHandle);
+		long totalOut = getTotalOutImpl(streamHandle);
+		return (totalOut <= Integer.MAX_VALUE ? (int) totalOut
+				: Integer.MAX_VALUE);
 	}
 
-	private native synchronized int getTotalOutImpl(long handle);
+	private native synchronized long getTotalOutImpl(long handle);
 
 	/**
 	 * Inflates bytes from current input and stores them in buf.
@@ -294,6 +295,34 @@ public class Inflater {
 			setInputImpl(buf, off, nbytes, streamHandle);
 		} else
 			throw new ArrayIndexOutOfBoundsException();
+	}
+
+	/**
+	 * Returns a long int of total number of bytes of input read by the
+	 * Inflater.
+	 * 
+	 * @see getTotalIn
+	 * @return Total bytes read
+	 */
+	public synchronized long getBytesRead() {
+		// Throw NPE here
+		if (streamHandle == -1)
+			throw new NullPointerException();
+		return getTotalInImpl(streamHandle);
+	}
+
+	/**
+	 * Returns a long int of total number of bytes of input output by the
+	 * Inflater.
+	 * 
+	 * @see getTotalOut
+	 * @return Total bytes output
+	 */
+	public synchronized long getBytesWritten() {
+		// Throw NPE here
+		if (streamHandle == -1)
+			throw new NullPointerException();
+		return getTotalOutImpl(streamHandle);
 	}
 
 	private native synchronized void setInputImpl(byte[] buf, int off,

@@ -246,7 +246,7 @@ throwNewDataFormatException (JNIEnv * env, char *message)
   (*env)->ThrowNew(env, exceptionClass, message);
 }
 
-int JNICALL
+jlong JNICALL
 Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env, jobject recv,
                                              jlong handle)
 {
@@ -257,7 +257,7 @@ Java_java_util_zip_Inflater_getTotalOutImpl (JNIEnv * env, jobject recv,
 
 }
 
-int JNICALL
+jlong JNICALL
 Java_java_util_zip_Inflater_getTotalInImpl (JNIEnv * env, jobject recv,
                                             jlong handle)
 {

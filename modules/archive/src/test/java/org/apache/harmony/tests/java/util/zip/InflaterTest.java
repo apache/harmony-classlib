@@ -28,5 +28,9 @@ public class InflaterTest extends TestCase {
     	// Regression test for HARMONY-86
         Inflater inf = new Inflater();
         assertFalse(inf.needsDictionary());
+        assertEquals(0,inf.getTotalIn());
+        assertEquals(0,inf.getTotalOut());
+        assertEquals(0,inf.getBytesRead());
+        assertEquals(0,inf.getBytesWritten());
     } 
 }
