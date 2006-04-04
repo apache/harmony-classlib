@@ -220,9 +220,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 									.getByInetAddress((InetAddress) notOkAddresses
 											.get(i)) != null);
 				} catch (Exception e) {
-					assertFalse(
-							"get NetworkInterface for address with no perm - exception",
-							true);
+					fail("get NetworkInterface for address with no perm - exception");
 				}
 			}
 
@@ -237,9 +235,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 											.get(i)) != null);
 				}
 			} catch (Exception e) {
-				assertFalse(
-						"get NetworkInterface for address with perm - exception",
-						true);
+				fail("get NetworkInterface for address with perm - exception");
 			}
 
 			System.setSecurityManager(null);
@@ -299,9 +295,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 							NetworkInterface.getByName(theName).equals(
 									networkInterface1));
 				} catch (Exception e) {
-					assertFalse(
-							"validate to get network interface using name - socket exception",
-							true);
+					fail("validate to get network interface using name - socket exception");
 				}
 			}
 		}
@@ -317,9 +311,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 							NetworkInterface.getByName(theName).equals(
 									networkInterface2));
 				} catch (Exception e) {
-					assertFalse(
-							"validate to get network interface using name - socket exception",
-							true);
+					fail("validate to get network interface using name - socket exception");
 				}
 			}
 		}
@@ -339,13 +331,12 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		try {
 			assertTrue("validate null handled ok", null == NetworkInterface
 					.getByInetAddress(null));
-			assertFalse(
-					"should not get here if getByInetAddress throws NullPointerException if null passed in",
-					true);
+			fail("should not get here if getByInetAddress throws "
+					+ "NullPointerException if null passed in");
 		} catch (NullPointerException e) {
 		} catch (Exception e) {
-			fail("getByInetAddress, null inetAddress - raised exception : "
-					+ e.getMessage());
+			fail("getByInetAddress, null inetAddress should have raised NPE"
+					+ " but instead threw a : " + e.getMessage());
 		}
 
 		try {
@@ -354,8 +345,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 					null == NetworkInterface.getByInetAddress(InetAddress
 							.getByAddress(addressBytes)));
 		} catch (Exception e) {
-			assertFalse("getByInetAddress, unknown inetAddress - exception",
-					true);
+			fail("getByInetAddress, unknown inetAddress threw exception : " + e);
 		}
 
 		// for each address in an interface validate that we get the right
@@ -372,9 +362,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 								NetworkInterface.getByInetAddress(theAddress)
 										.equals(networkInterface1));
 					} catch (Exception e) {
-						assertFalse(
-								"validate to get address using inetAddress - socket exception",
-								true);
+						fail("validate to get address using inetAddress " +
+								"threw exception : " + e);
 					}
 				}
 			}
@@ -394,9 +383,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 								NetworkInterface.getByInetAddress(theAddress)
 										.equals(networkInterface2));
 					} catch (Exception e) {
-						assertFalse(
-								"validate to get address using inetAddress - socket exception",
-								true);
+						fail("validate to get address using inetAddress "
+								+ "threw exception : " + e);
 					}
 				}
 			}
@@ -477,15 +465,30 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		try {
 			theInterfaces = NetworkInterface.getNetworkInterfaces();
 		} catch (Exception e) {
+			fail("Exception occurred getting network interfaces : " + e);
 		}
+		
+		// Set up NetworkInterface instance members. Note that because the call
+		// to NetworkInterface.getNetworkInterfaces() returns *all* of the 
+		// interfaces on the test machine it is possible that one or more of 
+		// them will not currently be bound to an InetAddress. e.g. a laptop
+		// running connected by a wire to the local network may also have a 
+		// wireless interface that is not active and so has no InetAddress 
+		// bound to it. For these tests only work with NetworkInterface objects 
+		// that are bound to an InetAddress.   
 		if ((theInterfaces != null) && (theInterfaces.hasMoreElements())) {
 			while ((theInterfaces.hasMoreElements())
 					&& (atLeastOneInterface == false)) {
 				NetworkInterface theInterface = (NetworkInterface) theInterfaces
 						.nextElement();
 				if (theInterface.getInetAddresses() != null) {
-					atLeastOneInterface = true;
-					networkInterface1 = theInterface;
+					// Ensure that the current NetworkInterface has at least
+					// one InetAddress bound to it.  
+					Enumeration addrs = theInterface.getInetAddresses();
+					if ((addrs != null) && (addrs.hasMoreElements())) {
+						atLeastOneInterface = true;
+						networkInterface1 = theInterface;
+					}// end if 
 				}
 			}
 
@@ -494,22 +497,33 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 				NetworkInterface theInterface = (NetworkInterface) theInterfaces
 						.nextElement();
 				if (theInterface.getInetAddresses() != null) {
-					atLeastTwoInterfaces = true;
-					networkInterface2 = theInterface;
+					// Ensure that the current NetworkInterface has at least
+					// one InetAddress bound to it.  
+					Enumeration addrs = theInterface.getInetAddresses();
+					if ((addrs != null) && (addrs.hasMoreElements())) {
+						atLeastTwoInterfaces = true;
+						networkInterface2 = theInterface;
+					}// end if 
 				}
 			}
 
-			Enumeration addresses = networkInterface1.getInetAddresses();
-			if (addresses != null) {
-				try {
-					sameAsNetworkInterface1 = NetworkInterface
+			// Only set sameAsNetworkInterface1 if we succeeded in finding 
+			// at least one good NetworkInterface
+			if (atLeastOneInterface) {
+				Enumeration addresses = networkInterface1.getInetAddresses();
+				if (addresses != null) {
+					try {
+						if (addresses.hasMoreElements()) {
+							sameAsNetworkInterface1 = NetworkInterface
 							.getByInetAddress((InetAddress) addresses
 									.nextElement());
-				} catch (SocketException e) {
+						}
+					} catch (SocketException e) {
+						fail("SocketException occurred : " + e);
+					}
 				}
-			}
+			}// end if atLeastOneInterface
 		}
-
 	}
 
 	protected void tearDown() {
