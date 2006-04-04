@@ -43,7 +43,7 @@
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
-		depends="clean, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-logging, test-jndi, test-sql, test-prefs, test-beans, test-math, gen-report">
+		depends="clean, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-logging, test-jndi, test-sql, test-prefs, test-beans, test-math, test-crypto, gen-report">
 	</target>
 
 	<target name="clean">

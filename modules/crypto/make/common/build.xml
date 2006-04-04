@@ -59,7 +59,8 @@
                         <pathelement location="${hy.crypto}/../security/test/common/unit"/>
                     </src>
 
-                    <include name="javax/crypto/**/*Test*.java" />
+                    <include name="javax/crypto/**/*.java" />
+                    <include name="org/apache/harmony/security/x/crypto/*Test.java" />
                     <include name="org/apache/harmony/security/test/**/*" />
                     <exclude name="**/SecurityTest.java"/>
 
