@@ -386,6 +386,172 @@ public class JarFileTest extends junit.framework.TestCase {
 		assertTrue("Failed to throw SecurityException", exception);
 	}
 
+    /*
+     * The jar created by 1.4 which does not provide a
+     * algorithm-Digest-Manifest-Main-Attributes entry in .SF file.
+     */
+    public void test_Jar_created_before_java_5() throws IOException {
+        String modifiedJarName = "Created_by_1_4.jar";
+        Support_Resources.copyFile(resources, null, modifiedJarName);
+        JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
+                true);
+        Enumeration entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            jarFile.getInputStream(zipEntry);
+        }
+    }
+
+    /* The jar is intact, then everything is all right. */
+    public void test_JarFile_Integrate_Jar() throws IOException {
+        String modifiedJarName = "Integrate.jar";
+        Support_Resources.copyFile(resources, null, modifiedJarName);
+        JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
+                true);
+        Enumeration entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            jarFile.getInputStream(zipEntry);
+        }
+    }
+
+    /*
+     * If another entry is inserted into Manifest, no security exception will be
+     * thrown out.
+     */
+    public void test_JarFile_InsertEntry_in_Manifest_Jar() throws IOException {
+        String modifiedJarName = "Inserted_Entry_Manifest.jar";
+        Support_Resources.copyFile(resources, null, modifiedJarName);
+        JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
+                true);
+        Enumeration entries = jarFile.entries();
+        int count = 0;
+        while (entries.hasMoreElements()) {
+
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            jarFile.getInputStream(zipEntry);
+            count++;
+        }
+        assertEquals(5, count);
+    }
+
+    /*
+     * If another entry is inserted into Manifest, no security exception will be
+     * thrown out.
+     */
+    public void test_Inserted_Entry_Manifest_with_DigestCode()
+            throws IOException {
+        String modifiedJarName = "Inserted_Entry_Manifest_with_DigestCode.jar";
+        Support_Resources.copyFile(resources, null, modifiedJarName);
+        JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
+                true);
+        Enumeration entries = jarFile.entries();
+        int count = 0;
+        while (entries.hasMoreElements()) {
+
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            jarFile.getInputStream(zipEntry);
+            count++;
+        }
+        assertEquals(5, count);
+    }
+
+    /*
+     * The content of Test.class is modified, jarFile.getInputStream will not
+     * throw security Exception, but it will anytime before the inputStream got
+     * from getInputStream method has been read to end.
+     */
+    public void test_JarFile_Modified_Class() throws IOException {
+        String modifiedJarName = "Modified_Class.jar";
+        Support_Resources.copyFile(resources, null, modifiedJarName);
+        JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
+                true);
+        Enumeration entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            jarFile.getInputStream(zipEntry);
+        }
+        /* The content of Test.class has been tampered. */
+        ZipEntry zipEntry = jarFile.getEntry("Test.class");
+        InputStream in = jarFile.getInputStream(zipEntry);
+        byte[] buffer = new byte[1024];
+        try {
+            while (in.available() > 0) {
+                in.read(buffer);
+            }
+            fail("should throw Security Excetpion");
+        } catch (SecurityException e) {
+            // desired
+        }
+    }
+
+    /*
+     * In the Modified.jar, the main attributes of META-INF/MANIFEST.MF is
+     * tampered manually. Hence the RI 5.0 JarFile.getInputStream of any
+     * JarEntry will throw security exception, but the apache harmony will not.
+     */
+    public void test_JarFile_Modified_Manifest_MainAttributes()
+            throws IOException {
+        String modifiedJarName = "Modified_Manifest_MainAttributes.jar";
+        Support_Resources.copyFile(resources, null, modifiedJarName);
+        JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
+                true);
+        Enumeration entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            try {
+                jarFile.getInputStream(zipEntry);
+                fail("should throw Security Excetpion");
+            } catch (SecurityException e) {
+                // desired
+            }
+        }
+    }
+
+    /*
+     * It is all right in our original JarFile. If the Entry Attributes, for
+     * example Test.class in our jar, the jarFile.getInputStream will throw
+     * Security Exception.
+     */
+    public void test_JarFile_Modified_Manifest_EntryAttributes()
+            throws IOException {
+        String modifiedJarName = "Modified_Manifest_EntryAttributes.jar";
+        Support_Resources.copyFile(resources, null, modifiedJarName);
+        JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
+                true);
+        Enumeration entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            try {
+                jarFile.getInputStream(zipEntry);
+                fail("should throw Security Excetpion");
+            } catch (SecurityException e) {
+                // desired
+            }
+        }
+    }
+
+    /*
+     * If the content of the .SA file is modified, no matter what it resides,
+     * JarFile.getInfputStream of any JarEntry will throw Security Exception.
+     */
+    public void test_JarFile_Modified_SF_EntryAttributes() throws IOException {
+        String modifiedJarName = "Modified_SF_EntryAttributes.jar";
+        Support_Resources.copyFile(resources, null, modifiedJarName);
+        JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
+                true);
+        Enumeration entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            try {
+                jarFile.getInputStream(zipEntry);
+                fail("should throw Security Excetpion");
+            } catch (SecurityException e) {
+                // desired
+            }
+        }
+    }
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

@@ -47,6 +47,8 @@ class InitManifest {
 	private boolean usingUTF8 = true;
 
 	private Map attributeNames = new HashMap();
+	
+	private byte[] mainAttributesChunk;
 
 	InitManifest(InputStream is, Attributes main, Map entries, Map chunks,
 			String verString) throws IOException {
@@ -58,7 +60,10 @@ class InitManifest {
 
 		Attributes current = main;
 		ArrayList list = new ArrayList();
-		readLines(is, list);
+
+		//Return the chunk of main attributes in the manifest.
+		mainAttributesChunk = nextChunk(is,list);		
+
 		Iterator it = list.iterator();
 		while (it.hasNext())
 			addAttribute((String) it.next(), current);
@@ -87,6 +92,11 @@ class InitManifest {
 			list.clear();
 		}
 
+	}
+	
+	byte[] getMainAttributesChunk()
+	{
+		return mainAttributesChunk;
 	}
 
 	private void addLine(int length, List lines) throws IOException {

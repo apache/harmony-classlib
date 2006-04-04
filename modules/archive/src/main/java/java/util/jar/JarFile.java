@@ -295,8 +295,11 @@ public class JarFile extends java.util.zip.ZipFile {
 					signed = true;
 					InputStream is = super.getInputStream(entry);
 					byte[] buf = new byte[is.available()];
-					is.read(buf, 0, buf.length);
-					is.close();
+					try {
+						is.read(buf, 0, buf.length);
+					} finally {
+						is.close();
+					}
 					verifier.addMetaEntry(entryName, buf);
 				}
 			}
@@ -319,6 +322,10 @@ public class JarFile extends java.util.zip.ZipFile {
 			getManifest();
 		if (verifier != null) {
 			verifier.setManifest(getManifest());
+			if (manifest != null) {
+				verifier.mainAttributesChunk = manifest
+						.getMainAttributesChunk();
+			}
 			if (verifier.readCertificates()) {
 				verifier.removeMetaEntries();
 				if (manifest != null)

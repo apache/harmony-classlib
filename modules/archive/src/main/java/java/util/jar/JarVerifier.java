@@ -68,6 +68,8 @@ class JarVerifier {
 
 	private Hashtable verifiedEntries = new Hashtable();
 
+	byte[] mainAttributesChunk;
+
 	/**
 	 * TODO Type description
 	 */
@@ -294,12 +296,29 @@ class JarVerifier {
 		if (createdByValue != null) {
 			createdBySigntool = createdByValue.indexOf("signtool") != -1;
 		}
+
+		// Use .SF to verify the mainAttributes of the manifest
+		// If there is no -Digest-Manifest-Main-Attributes entry in .SF
+		// file, such as those created before java 1.5, then we ignore
+		// such verification.
+		// FIXME: The meaning of createdBySigntool
+		if (this.mainAttributesChunk != null && !createdBySigntool) {
+			String digestAttribute = "-Digest-Manifest-Main-Attributes";
+			if (!verify(attributes, digestAttribute, this.mainAttributesChunk,
+					false, true)) {
+				/* [MSG "K00eb", "{0} failed verification of {1}"] */
+				throw new SecurityException(Msg.getString("K00eb", jarName,
+						signatureFile));
+			}
+		}
+
 		byte[] manifest = (byte[]) metaEntries.get(JarFile.MANIFEST_NAME);
 		if (manifest == null)
 			return;
+		// Use .SF to verify the whole manifest
 		String digestAttribute = createdBySigntool ? "-Digest"
 				: "-Digest-Manifest";
-		if (!verify(attributes, digestAttribute, manifest, false)) {
+		if (!verify(attributes, digestAttribute, manifest, false,false)) {
 			Iterator it = hm.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry entry = (Map.Entry) it.next();
@@ -307,7 +326,7 @@ class JarVerifier {
 				if (chunk == null)
 					return;
 				if (!verify((Attributes) entry.getValue(), "-Digest", chunk,
-						createdBySigntool))
+						createdBySigntool,false))
 					/* [MSG "K00ec", "{0} has invalid digest for {1} in {2}"] */
 					throw new SecurityException(Msg.getString("K00ec",
 							new Object[] { signatureFile, entry.getKey(),
@@ -370,10 +389,10 @@ class JarVerifier {
 
 	/*
 	 * @param attributes @param entry @param data @param ignoreSecondEndline
-	 * @return
+	 * @param ignorable @return
 	 */
 	private boolean verify(Attributes attributes, String entry, byte[] data,
-			boolean ignoreSecondEndline) {
+			boolean ignoreSecondEndline, boolean ignorable) {
 		String algorithms = attributes.getValue("Digest-Algorithms");
 		if (algorithms == null)
 			algorithms = "SHA SHA1";
@@ -405,7 +424,11 @@ class JarVerifier {
 			}
 			return MessageDigest.isEqual(b, BASE64Decoder.decode(hashBytes));
 		}
-		return false;
+		if (ignorable) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**

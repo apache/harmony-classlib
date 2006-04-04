@@ -39,7 +39,10 @@ public class Manifest implements Cloneable {
 	private HashMap entryAttributes = new HashMap();
 
 	private HashMap chunks;
-
+	
+	/*The data chunk of Main Attributes in the manifest is needed in verification.*/
+	private byte[] mainAttributesChunk;
+	
 	/**
 	 * Contructs a new Manifest instance.
 	 */
@@ -270,7 +273,8 @@ public class Manifest implements Cloneable {
 	 *             If an error occurs reading the Manifest.
 	 */
 	public void read(InputStream is) throws IOException {
-		new InitManifest(is, mainAttributes, entryAttributes, chunks, null);
+		InitManifest initManifest = new InitManifest(is, mainAttributes, entryAttributes, chunks, null);
+		mainAttributesChunk = initManifest.getMainAttributesChunk();
 	}
 
 	/**
@@ -308,5 +312,10 @@ public class Manifest implements Cloneable {
 
 	void removeChunks() {
 		chunks = null;
+	}
+	
+	byte[] getMainAttributesChunk()
+	{
+		return this.mainAttributesChunk;
 	}
 }
