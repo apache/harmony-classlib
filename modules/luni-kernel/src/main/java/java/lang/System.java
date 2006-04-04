@@ -22,6 +22,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.security.AccessController;
+import java.security.Policy;
+import java.security.PrivilegedAction;
 import java.util.Properties;
 import java.util.PropertyPermission;
 
@@ -60,6 +63,10 @@ public final class System {
 	// The System default SecurityManager
 	private static SecurityManager security;
 
+    // Indicates whether the classes needed for
+    // permission checks was initialized or not
+    private static boolean security_initialized;
+    
 	// Initialize all the slots in System on first use.
 	static {
 		// Fill in the properties from the VM information.
@@ -790,12 +797,14 @@ public final class System {
 	 */
 	public static void setSecurityManager(final SecurityManager s) {
 		final SecurityManager currentSecurity = security;
-		try {
-			// Preload classes used for checkPackageAccess(),
-			// otherwise we could go recursive
-			s.checkPackageAccess("java.lang");
-		} catch (Exception e) {
-		}
+        if (!security_initialized) {
+            try {
+                // Preload and initialize Policy implementation classes
+                // otherwise we could go recursive
+                Policy.getPolicy();
+            } catch (Exception e) { }
+            security_initialized = true;
+        }
 
 		security = s;
 	}

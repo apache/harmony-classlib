@@ -179,6 +179,7 @@ public class DefaultPolicy extends Policy {
     public DefaultPolicy(DefaultPolicyParser dpr) {
         parser = dpr;
         initiailized = false;
+        refresh();
     }
 
     /**
