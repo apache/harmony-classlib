@@ -1001,9 +1001,10 @@ done:
     {
       if (rc == 0)
         rc = 100;
+
+	  (*env)->ExceptionDescribe (env);
     }
 
-  (*env)->ExceptionDescribe (env);
   return rc;
 }
 
