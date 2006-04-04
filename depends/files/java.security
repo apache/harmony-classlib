@@ -15,37 +15,85 @@
 # This is the system security properties file
 # It should be named: ${java.home}/lib/security/java.security
 
-# set the provider for security
-security.provider.1=org.bouncycastle.jce.provider.BouncyCastleProvider
 
-# Default system policy class. This handles loading and managing
-# the system security policy.
-policy.provider=com.ibm.oti.util.DefaultPolicy
+#
+# Providers
+# See also: J2SE doc. "How to Implement a Provider for the JavaTM Cryptography Architecture"
+#
+# Open Source providers
+security.provider.1=org.apache.harmony.security.provider.cert.DRLCertFactory
+security.provider.2=org.bouncycastle.jce.provider.BouncyCastleProvider
 
-# First load the system policy file, then search the user's home
-# directory for their personal policy file.
-policy.url.1=file:${java.home}/lib/security/java.policy
-policy.url.2=file:${user.home}/.java.policy
 
-# enables the expansion of special property tags inside policy files
-# for example, ${java.home} will be expanded to the system property
-# java.home
+#
+# Class to instantiate as a default Configuration implementation
+# See specification for javax.security.auth.login.Configuration class.
+#
+login.configuration.provider=org.apache.harmony.security.x.security.auth.login.DefaultConfiguration
+
+
+#
+# Flag to enable/disable append/overwrite this properties file by the 
+# extra properties file passed on the command line with
+# -Djava.security.properties=<file|url> or -Djava.security.properties==<file|url>
+# Possible values: true/false.
+#
+security.allowCustomePropertiesFile=true
+
+
+# Class to instantiate as the default system Policy.
+# The class should be available via bootclasspath.
+# See specification for java.security.Policy class.
+policy.provider=org.apache.harmony.security.fortress.DefaultPolicy
+
+
+# The default is to have a single system-wide policy file,
+# and an optional policy file in the user's home directory.
+# It is possible to specify any number of policy files, via policy.url.n keys.
+# See also: "JavaTM 2 Platform Security Architecture.", chapter 3. Permissions and Security Policy
+policy.url.1=file:/${java.home}/lib/security/java.policy
+policy.url.2=file:/${user.home}/.java.policy
+
+
+# Flag to enable/disable properties expansion (${...}) in policy files. 
+# Possible values: true/false.
+# See also: "JavaTM 2 Platform Security Architecture.", chapter 3. Permissions and Security Policy
 policy.expandProperties=true
 
-# enables the use of command line policy file additions
-# for example, -Djava.security.policy=file:/c:/mypolicy.policy
+
+# Flag to enable/disable an extra policy to be passed on the command line
+# with -Djava.security.policy=<file|url>. Possible values: true/false.
+# See also: "JavaTM 2 Platform Security Architecture.", chapter 3. Permissions and Security Policy
 policy.allowSystemProperty=true
 
-# Default keystore file format.  "bks" is the BouncyCastle keystore format.
-keystore.type=bks
 
-# packages (or prefixes of) to checkPackageAccess...
-# require RuntimePermission ("accessClassInPackage."+package)
-package.access=com.ibm.oti.
+# A comma-separated list of package prefixes that require 
+# extra protection at ClassLoader's level. 
+# See java/lang/SecurityManager#checkPackageAccess for more details.
+package.access=org.apache.harmony.security.fortress.,com.intel.fortress.,com.ibm.oti.
 
-# packages (or prefixes of) to checkPackageDefinition ...
-# require RuntimePermission ("defineClassInPackage."+package)
-#
-# no class loaders call checkPackageDefinition.
-#
-#package.definition=
+
+# Class to instantiate as default JGSS manager.
+jgss.spi.manager=
+
+
+# The default SSLSocketFactory and SSLServerSocketFactory provider implementations.
+# See specification for 
+# javax/net/ssl/SSLSocketFactory.html#getDefault()
+# javax/net/ssl/SSLServerSocketFactory.html#getDefault()
+#ssl.SocketFactory.provider=
+#ssl.ServerSocketFactory.provider=
+
+
+# Default KeyStore type.
+# See specification for java/security/KeyStore.html#getDefaultType()
+keystore.type=BKS
+
+
+# Default KeyManagerFactory and TrustManagerFactory algorithms. 
+# See specification for
+# javax/net/ssl/KeyManagerFactory.html#getDefaultAlgorithm()
+# javax/net/ssl/TrustManagerFactory.html#getDefaultAlgorithm()
+#ssl.KeyManagerFactory.algorithm=
+#ssl.TrustManagerFactory.algorithm=
+

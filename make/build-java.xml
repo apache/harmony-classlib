@@ -370,16 +370,10 @@
         <copy todir="${target.output}/jre/lib/security" overwrite="yes">
              <fileset dir="${depends.files}">
                  <include name="java.policy" />
+                 <include name="java.security" />
              </fileset>
          </copy>
    	
-        <copy todir="${target.output}/jre/lib/security" overwrite="yes">
-            <fileset dir="modules/security/src/java.home/lib/security/">
-                <include name="drl.policy" />
-                <include name="java.security" />
-            </fileset>
-        </copy>
-
 <!-- TOFIX: logging.properties file needs copying to jre/lib -->
     	
     </target>
