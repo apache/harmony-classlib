@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,9 @@ public class JarInputStream extends ZipInputStream {
 	public JarInputStream(InputStream stream, boolean verify)
 			throws IOException {
 		super(stream);
-		if (verify)
-			verifier = new JarVerifier("JarInputStream");
+		if (verify) {
+			verifier = new JarVerifier("JarInputStream");			
+		}
 		if ((mEntry = getNextJarEntry()) == null)
 			return;
 		String name = mEntry.getName().toUpperCase();
@@ -60,12 +61,20 @@ public class JarInputStream extends ZipInputStream {
 			mEntry = null;
 			manifest = new Manifest(this, verify);
 			closeEntry();
-			if (verify)
+			if (verify) {
 				verifier.setManifest(manifest);
+				if (manifest != null)
+					verifier.mainAttributesChunk = manifest
+							.getMainAttributesChunk();
+			}
+
 		} else {
 			Attributes temp = new Attributes(3);
 			temp.map.put("hidden", null);
 			mEntry.setAttributes(temp);
+			/* if not from the first entry, we will not get
+			 enough information,so no verify will be taken out.*/
+			verifier = null;
 		}
 	}
 
@@ -101,16 +110,28 @@ public class JarInputStream extends ZipInputStream {
 		int r = super.read(buffer, offset, length);
 		if (verStream != null && !eos) {
 			if (r == -1) {
-				eos = true;
-				if (isMeta) {
-					verifier.addMetaEntry(jarEntry.getName(),
-							((ByteArrayOutputStream) verStream).toByteArray());
-					verifier.readCertificates();
-				} else
-					verifier.verifySignatures(
-							(JarVerifier.VerifierEntry) verStream, jarEntry);
-			} else
+				eos = true;				
+				if (verifier != null) {
+					if (isMeta) {
+						verifier.addMetaEntry(jarEntry.getName(),
+								((ByteArrayOutputStream) verStream)
+					    					.toByteArray());
+						try {
+							verifier.readCertificates();
+						} catch (SecurityException e) {
+							verifier = null;
+							throw e;
+						}
+					}
+					else {
+                        verifier.verifySignatures(
+                                (JarVerifier.VerifierEntry) this.verStream,
+                                jarEntry);
+                    }
+				}
+			} else {
 				verStream.write(buffer, offset, r);
+            }
 		}
 		return r;
 	}
@@ -124,25 +145,26 @@ public class JarInputStream extends ZipInputStream {
 	 *                If an error occurs while reading the entry
 	 */
 	public ZipEntry getNextEntry() throws IOException {
-		eos = false;
 		if (mEntry != null) {
 			jarEntry = mEntry;
 			mEntry = null;
-			jarEntry.setAttributes(null);
-			return jarEntry;
+			jarEntry.setAttributes(null);			
 		}
-		jarEntry = (JarEntry) super.getNextEntry();
-		if (jarEntry == null)
-			return null;
-		if (verifier != null) {
-			isMeta = jarEntry.getName().toUpperCase().startsWith(
-					JarFile.META_DIR);
-			if (isMeta) {
-				verStream = new ByteArrayOutputStream();
-			} else {
-				verStream = verifier.initEntry(jarEntry.getName());
-			}
-		}
+		else {
+            jarEntry = (JarEntry) super.getNextEntry();
+            if (jarEntry == null)
+                return null;
+            if (verifier != null) {
+                isMeta = jarEntry.getName().toUpperCase().startsWith(
+                        JarFile.META_DIR);
+                if (isMeta) {
+                    verStream = new ByteArrayOutputStream();
+                } else {
+                    verStream = verifier.initEntry(jarEntry.getName());
+                }
+            }
+        }
+		eos = false;			
 		return jarEntry;
 	}
 

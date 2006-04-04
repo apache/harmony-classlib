@@ -32,6 +32,8 @@ public class AllTests {
 		// $JUnit-BEGIN$
 		suite.addTest(tests.api.java.util.jar.AllTests.suite());
 		suite.addTest(tests.api.java.util.zip.AllTests.suite());
+        suite.addTest(org.apache.harmony.tests.java.util.jar.AllTests.suite());
+        suite.addTest(org.apache.harmony.tests.java.util.zip.AllTests.suite());
 		// $JUnit-END$
 		return suite;
 	}
