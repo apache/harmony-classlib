@@ -98,7 +98,7 @@
 			<!-- to pick up junit.jar               -->
 			<!-- FIXME: package access tests and    -->
 			<!-- public API tests must be separated -->
-			<jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}${path.separator}${env.CLASSPATH}"/>
+			<jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}${path.separator}../../../../depends/jars/junit_3.8.1/junit.jar"/>
 
 			<formatter type="xml" />
 
