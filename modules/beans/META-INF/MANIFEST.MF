@@ -5,12 +5,14 @@ Bundle-SymbolicName: org.apache.harmony.beans
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.lang,
- java.util,
- java.net,
+Import-Package: java.applet,
+ java.awt,
  java.io,
+ java.lang,
  java.lang.reflect,
+ java.net,
  java.security,
+ java.util,
  org.xml.sax,
  org.xml.sax.helpers
 Export-Package: java.beans, java.beans.beancontext
