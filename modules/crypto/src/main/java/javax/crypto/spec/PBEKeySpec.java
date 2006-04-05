@@ -29,11 +29,6 @@ import java.util.Arrays;
  */
 public class PBEKeySpec implements KeySpec {
 
-    private static final NullPointerException NULLSALT_EXC =
-        new NullPointerException("Salt is null.");
-    private static final IllegalArgumentException BADPARAMS_EXC =
-        new IllegalArgumentException("Bad initialization parameters.");
-
     private char[] password;
     private final byte[] salt;
     private final int iterationCount;
@@ -60,13 +55,18 @@ public class PBEKeySpec implements KeySpec {
     public PBEKeySpec(char[] password, byte[] salt, int iterationCount,
                       int keyLength) {
         if (salt == null) {
-            throw NULLSALT_EXC;
+            throw new NullPointerException("Salt is null.");
         }
-        if ((salt.length == 0) || (iterationCount < 0) || (keyLength < 0)) {
-            throw BADPARAMS_EXC;
-            //throw new IllegalArgumentException(
-            //        "salt is empty or iterationCount < 0 or keyLength < 0");
+        if (salt.length == 0) {
+            throw new IllegalArgumentException("salt is empty");
         }
+        if (iterationCount < 0) {
+            throw new IllegalArgumentException("iterationCount < 0");
+        }
+        if (keyLength < 0) {
+            throw new IllegalArgumentException("keyLength < 0");
+        }
+
         if (password == null) {
             this.password = new char[0];
         } else {
@@ -84,13 +84,15 @@ public class PBEKeySpec implements KeySpec {
      */
     public PBEKeySpec(char[] password, byte[] salt, int iterationCount) {
         if (salt == null) {
-            throw NULLSALT_EXC;
+            throw new NullPointerException("Salt is null.");
         }
-        if ((salt.length == 0) || (iterationCount < 0)) {
-            throw BADPARAMS_EXC;
-            //throw new IllegalArgumentException(
-            //        "salt is empty or iterationCount < 0");
+        if (salt.length == 0) {
+            throw new IllegalArgumentException("salt is empty");
         }
+        if (iterationCount < 0) {
+            throw new IllegalArgumentException("iterationCount < 0");
+        }
+
         if (password == null) {
             this.password = new char[0];
         } else {

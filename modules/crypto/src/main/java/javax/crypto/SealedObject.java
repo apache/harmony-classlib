@@ -47,9 +47,6 @@ public class SealedObject implements Serializable {
      */
     private static final long serialVersionUID = 4482838265551344752L;
 
-    private static final NullPointerException NULLCIPHER_EXC =
-            new NullPointerException("Cipher is null!");
-
     /**
      * @com.intel.drl.spec_ref
      */
@@ -72,8 +69,7 @@ public class SealedObject implements Serializable {
     public SealedObject(Serializable object, Cipher c)
                 throws IOException, IllegalBlockSizeException {
         if (c == null) {
-            throw NULLCIPHER_EXC;
-            //throw new NullPointerException("Cipher is null!");
+            throw new NullPointerException("Cipher is null!");
         }
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -162,8 +158,7 @@ public class SealedObject implements Serializable {
                 throws IOException, ClassNotFoundException,
                        IllegalBlockSizeException, BadPaddingException {
         if (c == null) {
-            throw NULLCIPHER_EXC;
-            //throw new NullPointerException("Cipher is null.");
+            throw new NullPointerException("Cipher is null.");
         }
         byte[] serialized = c.doFinal(encryptedContent);
         ObjectInputStream ois =

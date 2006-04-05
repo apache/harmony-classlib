@@ -35,23 +35,17 @@ public class DESedeKeySpec implements KeySpec {
 
     private final byte[] key;
 
-    private static final NullPointerException NULL_KEY_EXC =
-        new NullPointerException("Specified key material is null.");
-    private static final InvalidKeyException INVALID_KEY_EXC =
-        new InvalidKeyException("The key material is shorter than 24 bytes.");
-
     /**
      * @com.intel.drl.spec_ref
      */
     public DESedeKeySpec(byte[] key)
                 throws InvalidKeyException {
         if (key == null) {
-            throw NULL_KEY_EXC;
+            throw new NullPointerException("Specified key material is null.");
         }
         if (key.length < DES_EDE_KEY_LEN) {
-            throw INVALID_KEY_EXC;
-            //throw new InvalidKeyException(
-            //        "The key material is shorter than 24 bytes.");
+            throw new InvalidKeyException(
+                    "The key material is shorter than 24 bytes.");
         }
         this.key = new byte[DES_EDE_KEY_LEN];
         System.arraycopy(key, 0, this.key, 0, DES_EDE_KEY_LEN);
@@ -63,12 +57,11 @@ public class DESedeKeySpec implements KeySpec {
     public DESedeKeySpec(byte[] key, int offset)
                 throws InvalidKeyException {
         if (key == null) {
-            throw NULL_KEY_EXC;
+            throw new NullPointerException("Specified key material is null.");
         }
         if (key.length - offset < DES_EDE_KEY_LEN) {
-            throw INVALID_KEY_EXC;
-            //throw new InvalidKeyException(
-            //        "The key material is shorter than 24 bytes.");
+            throw new InvalidKeyException(
+                    "The key material is shorter than 24 bytes.");
         }
         this.key = new byte[DES_EDE_KEY_LEN];
         System.arraycopy(key, offset, this.key, 0, DES_EDE_KEY_LEN);
@@ -89,9 +82,8 @@ public class DESedeKeySpec implements KeySpec {
     public static boolean isParityAdjusted(byte[] key, int offset)
                 throws InvalidKeyException {
         if (key.length - offset < DES_EDE_KEY_LEN) {
-            throw INVALID_KEY_EXC;
-            //throw new InvalidKeyException(
-            //        "The key material is shorter than 24 bytes.");
+            throw new InvalidKeyException(
+                    "The key material is shorter than 24 bytes.");
         }
         for (int i=offset; i<DES_EDE_KEY_LEN+offset; i++) {
             int b = key[i];

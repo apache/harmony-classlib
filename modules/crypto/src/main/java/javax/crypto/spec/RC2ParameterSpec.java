@@ -32,9 +32,6 @@ public class RC2ParameterSpec implements AlgorithmParameterSpec {
     private final int effectiveKeyBits;
     private final byte[] iv;
 
-    private static final IllegalArgumentException INCORRECTIV_EXC =
-            new IllegalArgumentException("iv is null or shorter than 8 bytes.");
-
     /**
      * @com.intel.drl.spec_ref
      */
@@ -47,8 +44,11 @@ public class RC2ParameterSpec implements AlgorithmParameterSpec {
      * @com.intel.drl.spec_ref
      */
     public RC2ParameterSpec(int effectiveKeyBits, byte[] iv) {
-        if ((iv == null) || (iv.length < 8)) {
-            throw INCORRECTIV_EXC;
+        if (iv == null) {
+            throw new IllegalArgumentException("iv is null");
+        }
+        if (iv.length < 8) {
+            throw new IllegalArgumentException("iv is shorter than 8 bytes");
         }
         this.effectiveKeyBits = effectiveKeyBits;
         this.iv = new byte[8];
@@ -59,8 +59,11 @@ public class RC2ParameterSpec implements AlgorithmParameterSpec {
      * @com.intel.drl.spec_ref
      */
     public RC2ParameterSpec(int effectiveKeyBits, byte[] iv, int offset) {
-        if ((iv == null) || (iv.length - offset < 8)) {
-            throw INCORRECTIV_EXC;
+        if (iv == null) {
+            throw new IllegalArgumentException("iv is null");
+        }
+        if (iv.length - offset < 8) {
+            throw new IllegalArgumentException("iv is shorter than 8 bytes");
         }
         this.effectiveKeyBits = effectiveKeyBits;
         this.iv = new byte[8];

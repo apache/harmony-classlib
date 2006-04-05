@@ -37,13 +37,6 @@ import java.nio.ByteBuffer;
 
 public abstract class CipherSpi {
 
-    // This is exception which will be thrown by
-    // engineUpdate(ByteBuffer input,ByteBuffer output) and
-    // engineDoFinal(ByteBuffer input,ByteBuffer output) methods when
-    // there is no enough space in output byte buffer to store result
-    private static final ShortBufferException SHORTOUTPUT = new ShortBufferException(
-            "Output is small");
-
     /**
      * @com.intel.drl.spec_ref
      *  
@@ -157,7 +150,7 @@ public abstract class CipherSpi {
             bOutput = engineUpdate(bInput, 0, limit - position);
         }
         if (output.remaining() < bOutput.length) {
-            throw SHORTOUTPUT;
+            throw new ShortBufferException("Output is small");
         }
         try {
             output.put(bOutput);
@@ -216,7 +209,7 @@ public abstract class CipherSpi {
             bOutput = engineDoFinal(bInput, 0, limit - position);
         }
         if (output.remaining() < bOutput.length) {
-            throw SHORTOUTPUT;
+            throw new ShortBufferException("Output is small");
         }
         try {
             output.put(bOutput);

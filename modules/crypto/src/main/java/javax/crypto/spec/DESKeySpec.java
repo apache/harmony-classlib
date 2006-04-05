@@ -93,9 +93,6 @@ public class DESKeySpec implements KeySpec {
 
                 };
 
-    private static final InvalidKeyException INCORRECT_KEY_EXCEPTION =
-            new InvalidKeyException("The specified key material is incorrect.");
-
     /**
      * @com.intel.drl.spec_ref
      */
@@ -112,9 +109,8 @@ public class DESKeySpec implements KeySpec {
             throw new NullPointerException("Key material is null.");
         }
         if (key.length - offset < DES_KEY_LEN) {
-            throw INCORRECT_KEY_EXCEPTION;
-            //new InvalidKeyException(
-            //        "The key material is shorter than 8 bytes");
+            throw new InvalidKeyException(
+                    "The key material is shorter than 8 bytes");
         }
         this.key = new byte[DES_KEY_LEN];
         System.arraycopy(key, offset, this.key, 0, DES_KEY_LEN);
@@ -134,9 +130,12 @@ public class DESKeySpec implements KeySpec {
      */
     public static boolean isParityAdjusted(byte[] key, int offset)
                 throws InvalidKeyException {
-        if (key == null || key.length - offset < DES_KEY_LEN) {
-            throw INCORRECT_KEY_EXCEPTION;
-            //throw new InvalidKeyException("Incorrect key material.");
+        if (key == null) {
+            throw new InvalidKeyException("Key material is null.");
+        }
+        if (key.length - offset < DES_KEY_LEN) {
+            throw new InvalidKeyException(
+                    "The key material is shorter than 8 bytes");
         }
         for (int i=offset; i<DES_KEY_LEN+offset; i++) {
             int b = key[i];
@@ -154,9 +153,12 @@ public class DESKeySpec implements KeySpec {
      */
     public static boolean isWeak(byte[] key, int offset)
               throws InvalidKeyException {
-        if (key == null || key.length - offset < DES_KEY_LEN) {
-            throw INCORRECT_KEY_EXCEPTION;
-            //throw new InvalidKeyException("Incorrect key material.");
+        if (key == null) {
+            throw new InvalidKeyException("Key material is null.");
+        }
+        if (key.length - offset < DES_KEY_LEN) {
+            throw new InvalidKeyException(
+                    "The key material is shorter than 8 bytes");
         }
         I:
         for (int i=0; i<SEMIWEAKS.length; i++) {

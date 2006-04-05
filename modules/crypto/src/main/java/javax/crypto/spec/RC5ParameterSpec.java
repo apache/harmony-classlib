@@ -34,9 +34,6 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
     private final int wordSize;
     private final byte[] iv;
 
-    private static final IllegalArgumentException BADPARAMS_EXC = 
-            new IllegalArgumentException(
-                    "IV is null or (iv.length - offset < 2 * (wordSize / 8)).");
     /**
      * @com.intel.drl.spec_ref
      */
@@ -51,10 +48,12 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
      * @com.intel.drl.spec_ref
      */
     public RC5ParameterSpec(int version, int rounds, int wordSize, byte[] iv) {
-        if ((iv == null) || (iv.length < 2 * (wordSize / 8))) {
-            throw BADPARAMS_EXC;
-            //throw new IllegalArgumentException(
-            //        "iv is null or (iv.length < 2 * (wordSize / 8)).");
+        if (iv == null) {
+            throw new IllegalArgumentException("iv is null");
+        }
+        if (iv.length < 2 * (wordSize / 8)) {
+            throw new IllegalArgumentException(
+                    "iv.length < 2 * (wordSize / 8)");
         }
         this.version = version;
         this.rounds = rounds;
@@ -68,10 +67,12 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
      */
     public RC5ParameterSpec(int version, int rounds,
                                 int wordSize, byte[] iv, int offset) {
-        if ((iv == null) || (iv.length - offset < 2 * (wordSize / 8))) {
-            throw BADPARAMS_EXC;
-            //throw new IllegalArgumentException(
-            //    "iv is null or (iv.length - offset < 2 * (wordSize / 8)).");
+        if (iv == null) {
+            throw new IllegalArgumentException("iv is null");
+        }
+        if (iv.length - offset < 2 * (wordSize / 8)) {
+            throw new IllegalArgumentException(
+                    "iv.length - offset < 2 * (wordSize / 8)");
         }
         this.version = version;
         this.rounds = rounds;
