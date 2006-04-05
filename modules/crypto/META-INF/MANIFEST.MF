@@ -15,7 +15,7 @@ Import-Package: org.apache.harmony.security.asn1,
  java.security,
  java.security.cert,
  java.security.spec,
- java.util,
+ java.util
 Export-Package: javax.crypto,
  javax.crypto.interfaces,
  javax.crypto.spec,
