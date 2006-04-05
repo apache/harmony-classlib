@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 
 package java.io;
 
+import java.nio.CharBuffer;
 
 /**
  * Reader is an Abstract class for reading Character Streams. Subclasses of
@@ -23,7 +24,7 @@ package java.io;
  * 
  * @see Writer
  */
-public abstract class Reader {
+public abstract class Reader implements Readable, Closeable {
 	/**
 	 * The object used to synchronize access to the reader.
 	 */
@@ -226,5 +227,34 @@ public abstract class Reader {
 			}
 		}
 		throw new IllegalArgumentException();
+	}
+
+	/**
+	 * Read chars from the Reader and then put them to the <code>target</code>
+	 * CharBuffer. Only put method is called on the <code>target</code>.
+	 * 
+	 * @param target
+	 *            the destination CharBuffer
+	 * @return the actual number of chars put to the <code>target</code>. -1
+	 *         when the Reader has reached the end before the method is called.
+	 * @throws IOException
+	 *             if any I/O error raises in the procedure
+	 * @throws NullPointerException
+	 *             if the target CharBuffer is null
+	 * @throws ReadOnlyBufferException
+	 *             if the target CharBuffer is readonly
+	 * 
+	 */
+	public int read(CharBuffer target) throws IOException {
+		if (null == target) {
+			throw new NullPointerException();
+		}
+		int length = target.length();
+		char[] buf = new char[length];
+		length = Math.min(length, read(buf));
+		if (length > 0) {
+			target.put(buf, 0, length);
+		}
+		return length;
 	}
 }

@@ -37,6 +37,10 @@ public class AllTests {
 		suite.addTest(tests.api.java.net.AllTests.suite());
 		suite.addTest(tests.api.java.util.AllTests.suite());
 		suite.addTest(tests.impl.com.ibm.misc.util.AllTests.suite());
+        suite.addTest(org.apache.harmony.tests.java.io.AllTests.suite());
+        suite.addTest(org.apache.harmony.tests.java.lang.AllTests.suite());
+        suite.addTest(org.apache.harmony.tests.java.net.AllTests.suite());
+        suite.addTest(org.apache.harmony.tests.java.util.AllTests.suite());
 		// $JUnit-END$
 		return suite;
 	}

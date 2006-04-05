@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ package java.io;
  * 
  * @see OutputStream
  */
-public abstract class InputStream extends Object {
+public abstract class InputStream extends Object implements Closeable {
 
 	private static byte[] skipBuf;
 
