@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Harmony Text
-Bundle-SymbolicName: org.apache.harmony.text
+Bundle-Name: Harmony Applet
+Bundle-SymbolicName: org.apache.harmony.applet
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.lang
-Export-Package: java.text
+Export-Package: java.applet
