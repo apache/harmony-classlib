@@ -43,7 +43,7 @@ import java.util.Set;
 import java.util.List;
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.harmony.security.x.crypto.utils.AlgNameMapper;
+import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.x509.CertificateList;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.TBSCertList;

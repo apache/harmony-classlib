@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.x.crypto.utils;
+package org.apache.harmony.crypto.utils;
 
 import java.security.Provider;
 import java.security.Security;

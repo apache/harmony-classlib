@@ -60,7 +60,7 @@
                     </src>
 
                     <include name="javax/crypto/**/*.java" />
-                    <include name="org/apache/harmony/security/x/crypto/*Test.java" />
+                    <include name="org/apache/harmony/crypto/internal/*Test.java" />
                     <include name="org/apache/harmony/security/test/**/*" />
                     <exclude name="**/SecurityTest.java"/>
 

@@ -25,7 +25,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.SecureRandom;
 
-import org.apache.harmony.security.x.crypto.NullCipherSpi;
+import org.apache.harmony.crypto.internal.NullCipherSpi;
 
 
 /**

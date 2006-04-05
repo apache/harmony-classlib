@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.x.crypto;
+package org.apache.harmony.crypto.internal;
 
 import java.nio.ByteBuffer;
 import java.security.AlgorithmParameters;

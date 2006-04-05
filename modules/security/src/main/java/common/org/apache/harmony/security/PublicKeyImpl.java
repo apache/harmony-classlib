@@ -24,7 +24,7 @@ package org.apache.harmony.security;
 import java.security.PublicKey;
 import java.util.Arrays;
 
-import org.apache.harmony.security.x.crypto.utils.AlgNameMapper;
+import org.apache.harmony.crypto.utils.AlgNameMapper;
 
 /**
  * PublicKeyImpl

@@ -56,7 +56,7 @@
                     <!-- FIXME: X-NET tests should not reach into security module code -->
                     <src>
                         <pathelement location="${hy.x-net.src.test.java}"/>
-                        <pathelement location="${hy.x-net}/../security/test/common/unit"/>
+                        <pathelement location="${hy.x-net}/../security/src/test/java/common"/>
                     </src>
 
                     <include name="javax/net/**/*Test*.java" />
