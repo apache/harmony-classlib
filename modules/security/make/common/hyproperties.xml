@@ -19,11 +19,11 @@
    <security location=".">
       <src>
          <main>
-            <java location="src/common/javasrc" />
+            <java location="src/main/java/common" />
         	<resources location="src/main/resources" />
          </main>
          <test>
-            <java location="test/common/unit" />
+            <java location="src/test/java/common" />
             <resources location="src/main/resources" />
          </test>
          <natives location="src/natives" />

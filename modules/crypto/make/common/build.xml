@@ -56,7 +56,7 @@
                     <!-- FIXME: CRYPTO tests should not reach into security module code -->
                     <src>
                         <pathelement location="${hy.crypto.src.test.java}"/>
-                        <pathelement location="${hy.crypto}/../security/test/common/unit"/>
+                        <pathelement location="${hy.crypto}/../security/src/test/java/common"/>
                     </src>
 
                     <include name="javax/crypto/**/*.java" />

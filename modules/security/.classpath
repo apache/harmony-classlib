@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java/common"/>
+	<classpathentry kind="src" path="src/main/resources/common"/>
+	<classpathentry kind="src" path="src/main/native/linux"/>
+	<classpathentry kind="src" path="src/main/native/win"/>
+	<classpathentry output="bin/test" kind="src" path="src/test/java/win"/>
+	<classpathentry output="bin/test" kind="src" path="src/test/java/linux"/>
+	<classpathentry output="bin/test" kind="src" path="src/test/java/common"/>
+	<classpathentry kind="src" path="src/main/java/linux"/>
+	<classpathentry kind="src" path="src/main/java/win"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry sourcepath="JUNIT_SRC_HOME/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
+	<classpathentry kind="output" path="bin/main"/>
+</classpath>

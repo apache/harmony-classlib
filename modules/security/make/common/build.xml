@@ -18,10 +18,10 @@
 <project name="Common_Security_Build">
 
 	<property name="hy.security.src.main.java.platform"
-		value="${hy.security.src.main.java}/../../${hy.os_family}/javasrc" />
+		value="${hy.security.src.main.java}/../${hy.os_family}" />
 
 	<property name="hy.security.src.test.java.platform"
-		value="${hy.security.src.test.java}/../../${hy.os_family}/unit" />
+		value="${hy.security.src.test.java}/../${hy.os_family}" />
 	
 	<target name="compile.java" description="Compile SECURITY java code">
 		<echo message="Compiling SECURITY classes from ${hy.security.src.main.java}" />
