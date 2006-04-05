@@ -60,11 +60,12 @@ public class PBEKeySpec implements KeySpec {
         if (salt.length == 0) {
             throw new IllegalArgumentException("salt is empty");
         }
-        if (iterationCount < 0) {
-            throw new IllegalArgumentException("iterationCount < 0");
+        if (iterationCount <= 0) {
+            throw new IllegalArgumentException(
+                    "iterationCount is not positive.");
         }
-        if (keyLength < 0) {
-            throw new IllegalArgumentException("keyLength < 0");
+        if (keyLength <= 0) {
+            throw new IllegalArgumentException("keyLength is not positive.");
         }
 
         if (password == null) {
@@ -89,8 +90,9 @@ public class PBEKeySpec implements KeySpec {
         if (salt.length == 0) {
             throw new IllegalArgumentException("salt is empty");
         }
-        if (iterationCount < 0) {
-            throw new IllegalArgumentException("iterationCount < 0");
+        if (iterationCount <= 0) {
+            throw new IllegalArgumentException(
+                    "iterationCount is not positive.");
         }
 
         if (password == null) {

@@ -111,6 +111,22 @@ public class PBEKeySpecTest extends TestCase {
         } catch (IllegalArgumentException e) {
         }
 
+        try {
+            PBEKeySpec pbeks = new PBEKeySpec(password, salt,
+                                              0, keyLength);
+            fail("An IllegalArgumentException should be thrown "
+                    + "in the case of zero iterationCount.");
+        } catch (IllegalArgumentException e) {
+        }
+
+        try {
+            PBEKeySpec pbeks = new PBEKeySpec(password, salt,
+                                              iterationCount, 0);
+            fail("An IllegalArgumentException should be thrown "
+                    + "in the case of zero keyLength.");
+        } catch (IllegalArgumentException e) {
+        }
+
         PBEKeySpec pbeks = new PBEKeySpec(password, salt,
                                                 iterationCount, keyLength);
         password[0] ++;
@@ -165,6 +181,13 @@ public class PBEKeySpecTest extends TestCase {
             PBEKeySpec pbeks = new PBEKeySpec(password, salt, -1);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of negative iterationCount.");
+        } catch (IllegalArgumentException e) {
+        }
+
+        try {
+            PBEKeySpec pbeks = new PBEKeySpec(password, salt, 0);
+            fail("An IllegalArgumentException should be thrown "
+                    + "in the case of zero iterationCount.");
         } catch (IllegalArgumentException e) {
         }
 
