@@ -19,6 +19,9 @@
     <property name="vm.doc.dir" value="vm_doc" />
     <property name="kernel.doc.dir" value="kernel_doc" />
 
+    <!-- import share properties -->
+    <import file="${basedir}/../make/properties.xml" />
+
     <!-- ================================= 
           target: all
          ================================= -->
@@ -29,35 +32,22 @@
     <!-- ================================= 
           target: properties
          ================================= -->
-    <target name="properties" depends="init, windows-properties, linux-properties" />
+    <target name="properties" depends="windows-properties, linux-properties" />
 
     <!-- ================================= 
           target: windows-properties              
          ================================= -->
     <target name="windows-properties" if="is.windows">
+        <!-- FIXME: consistent platform names should be used -->
         <property name="target.platform" value="win.IA32" />
-        <property name="exe.suffix" value=".exe" />
     </target>
 
     <!-- ================================= 
           target: linux-properties              
          ================================= -->
     <target name="linux-properties" if="is.linux">
+        <!-- FIXME: consistent platform names should be used -->
         <property name="target.platform" value="linux.IA32" />
-        <property name="exe.suffix" value="" />
-    </target>
-
-    <!-- ================================= 
-          target: init                      
-         ================================= -->
-    <target name="init">
-        <condition property="is.windows">
-            <os family="windows" />
-        </condition>
-
-        <condition property="is.linux">
-            <os name="linux" />
-        </condition>
     </target>
 
     <!-- ================================= 
@@ -69,6 +59,7 @@
         <exec executable="doxygen${exe.suffix}" dir="..">
             <arg line="doc/kernel/kernel.cfg" />
             <env key="HARMONY_DOC_DIR" value="${basedir}" />
+            <env key="HARMONY_OS" value="${hy.os}" />
         </exec>
     </target>
 
@@ -82,6 +73,7 @@
             <arg line="doc/vminterface/natives.cfg" />
             <env key="HARMONY_DOC_DIR" value="${basedir}" />
             <env key="HARMONY_NATIVE_SRC_DIR" value="${basedir}/../native-src/${target.platform}" />
+            <env key="HARMONY_NATIVE_SHARED_SRC_DIR" value="${basedir}/../native-src/shared" />
         </exec>
     </target>
 
