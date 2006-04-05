@@ -59,10 +59,8 @@ typedef signed int I_32;
 typedef signed short I_16;
 typedef signed char I_8;
 typedef U_32 BOOLEAN;
-#if defined(LINUXPPC64)
 #define TOC_UNWRAP_ADDRESS(wrappedPointer) ((void *) (wrappedPointer)[0])
 #define TOC_STORE_TOC(dest,wrappedPointer) (dest = ((UDATA*)wrappedPointer)[1])
-#endif
 #else
 typedef long long I_64;
 typedef unsigned long long U_64;
