@@ -106,11 +106,6 @@
             dir="${target.platform}">
             <arg line="all" />
         </exec>
-    	
-       <!-- invoke the build for the security module native code -->
-
-    	<ant dir="../modules/security/"  antfile="make/build.xml" />
-
     </target>
 
 
