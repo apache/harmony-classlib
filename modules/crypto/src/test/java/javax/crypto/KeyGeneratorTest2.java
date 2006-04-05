@@ -30,7 +30,6 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
@@ -262,8 +261,6 @@ public class KeyGeneratorTest2 extends TestCase {
             }
         }
         KeyGenerator keyGen;
-        SecretKey sk;
-        KeySpec keySpec;
         for (int i = 0; i < validValues.length; i++) {
             keyGen = KeyGenerator.getInstance(validValues[i], mProv);
             assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),

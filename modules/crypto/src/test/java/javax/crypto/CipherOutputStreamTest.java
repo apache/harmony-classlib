@@ -45,7 +45,7 @@ public class CipherOutputStreamTest extends TestCase {
         public boolean wasClosed() {
             return closed;
         }
-    };
+    }
 
     /**
      * CipherOutputStream(OutputStream os) method testing. Tests that

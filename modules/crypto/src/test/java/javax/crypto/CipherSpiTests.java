@@ -56,8 +56,7 @@ public class CipherSpiTests extends TestCase {
     public void testCipherSpiTests01() throws IllegalBlockSizeException,
             BadPaddingException, ShortBufferException {
         
-        CipherSpi cSpi = (CipherSpi) new myCipherSpi();
-        assertTrue("Not cipherSpi object", cSpi instanceof CipherSpi);
+        CipherSpi cSpi = new myCipherSpi();
         assertEquals("BlockSize is not 0", cSpi.engineGetBlockSize(), 0);
         assertEquals("OutputSize is not 0", cSpi.engineGetOutputSize(1), 0);
         byte[] bb = cSpi.engineGetIV();
@@ -84,8 +83,7 @@ public class CipherSpiTests extends TestCase {
      * Assertion: It throws UnsupportedOperationException if it is not overriden
      */
     public void testCipherSpi02() {
-        CipherSpi cSpi = (CipherSpi) new myCipherSpi();
-        assertTrue(cSpi instanceof CipherSpi);
+        CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineGetKeySize(null);
             assertTrue("UnsupportedOperationException must be thrown", false);
@@ -102,8 +100,7 @@ public class CipherSpiTests extends TestCase {
      * Assertion: It throws UnsupportedOperationException if it is not overriden
      */
     public void testCipherSpi03() {
-        CipherSpi cSpi = (CipherSpi) new myCipherSpi();
-        assertTrue(cSpi instanceof CipherSpi);
+        CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineWrap(null);
             assertTrue("UnsupportedOperationException must be thrown", false);
@@ -120,8 +117,7 @@ public class CipherSpiTests extends TestCase {
      * Assertion: It throws UnsupportedOperationException if it is not overriden
      */
     public void testCipherSpi04() {
-        CipherSpi cSpi = (CipherSpi) new myCipherSpi();
-        assertTrue(cSpi instanceof CipherSpi);
+        CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineUnwrap(new byte[0], "", 0);
             assertTrue("UnsupportedOperationException must be thrown", false);
@@ -140,8 +136,7 @@ public class CipherSpiTests extends TestCase {
      * throws ShortBufferException is there is no space in output to hold result
      */
     public void testCipherSpi05() throws ShortBufferException {
-        CipherSpi cSpi = (CipherSpi) new myCipherSpi();
-        assertTrue(cSpi instanceof CipherSpi);
+        CipherSpi cSpi = new myCipherSpi();
         byte[] bb = { (byte) 0, (byte) 1, (byte) 2, (byte) 3, (byte) 4,
                 (byte) 5, (byte) 6, (byte) 7, (byte) 8, (byte) 9, (byte) 10 };
         int pos = 5;
@@ -194,8 +189,7 @@ public class CipherSpiTests extends TestCase {
      */
     public void testCipherSpi06() throws BadPaddingException,
             ShortBufferException, IllegalBlockSizeException {
-        CipherSpi cSpi = (CipherSpi) new myCipherSpi();
-        assertTrue(cSpi instanceof CipherSpi);
+        CipherSpi cSpi = new myCipherSpi();
         int len = 10;
         byte[] bbuf = new byte[len];
         for (int i = 0; i < bbuf.length; i++) {
@@ -241,8 +235,6 @@ public class CipherSpiTests extends TestCase {
  */
 
 class myCipherSpi extends CipherSpi {
-    private String cipherMode;
-
     private byte[] initV;
 
     private static byte[] resV = { (byte) 7, (byte) 6, (byte) 5, (byte) 4,
@@ -253,7 +245,6 @@ class myCipherSpi extends CipherSpi {
     }
 
     protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
-        this.cipherMode = mode;
     }
 
     protected void engineSetPadding(String padding)

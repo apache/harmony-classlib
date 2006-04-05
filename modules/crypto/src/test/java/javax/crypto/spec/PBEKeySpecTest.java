@@ -78,8 +78,7 @@ public class PBEKeySpecTest extends TestCase {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, null,
-                                                iterationCount, keyLength);
+            new PBEKeySpec(password, null, iterationCount, keyLength);
             fail("A NullPointerException should be was thrown "
                     + "in the case of null salt.");
         } catch (IllegalArgumentException e) {
@@ -88,40 +87,35 @@ public class PBEKeySpecTest extends TestCase {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, new byte [0],
-                                                iterationCount, keyLength);
+            new PBEKeySpec(password, new byte [0], iterationCount, keyLength);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of empty salt.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, salt,
-                                                -1, keyLength);
+            new PBEKeySpec(password, salt, -1, keyLength);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of negative iterationCount.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, salt,
-                                                iterationCount, -1);
+            new PBEKeySpec(password, salt, iterationCount, -1);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of negative keyLength.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, salt,
-                                              0, keyLength);
+            new PBEKeySpec(password, salt, 0, keyLength);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of zero iterationCount.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, salt,
-                                              iterationCount, 0);
+            new PBEKeySpec(password, salt, iterationCount, 0);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of zero keyLength.");
         } catch (IllegalArgumentException e) {
@@ -161,7 +155,7 @@ public class PBEKeySpecTest extends TestCase {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, null, iterationCount);
+            new PBEKeySpec(password, null, iterationCount);
             fail("A NullPointerException should be was thrown "
                     + "in the case of null salt.");
         } catch (IllegalArgumentException e) {
@@ -170,7 +164,7 @@ public class PBEKeySpecTest extends TestCase {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, new byte [0],
+            new PBEKeySpec(password, new byte [0],
                                                 iterationCount);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of empty salt.");
@@ -178,14 +172,14 @@ public class PBEKeySpecTest extends TestCase {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, salt, -1);
+            new PBEKeySpec(password, salt, -1);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of negative iterationCount.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            PBEKeySpec pbeks = new PBEKeySpec(password, salt, 0);
+            new PBEKeySpec(password, salt, 0);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of zero iterationCount.");
         } catch (IllegalArgumentException e) {

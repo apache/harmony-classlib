@@ -51,8 +51,7 @@ public class SecretKeyFactorySpiTests extends TestCase {
      */
     public void testSecretKeyFactorySpi01() throws InvalidKeyException,
             InvalidKeySpecException {
-        SecretKeyFactorySpi skfSpi = (SecretKeyFactorySpi) new MySecretKeyFactorySpi();
-        assertTrue(skfSpi instanceof SecretKeyFactorySpi);
+        SecretKeyFactorySpi skfSpi = new MySecretKeyFactorySpi();
         SecretKey sk = null;
         assertNull("Not null result", skfSpi.engineTranslateKey(sk));
 

@@ -30,7 +30,6 @@ import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.KeySpec;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -191,8 +190,6 @@ public class ExemptionMechanismTest1 extends TestCase {
         ExemptionMechanism exMech;
         for (int i = 0; i < validValues.length; i++) {
             exMech = ExemptionMechanism.getInstance(validValues[i]);
-            assertTrue("Not instanceof ExemptionMechanism object",
-                    exMech instanceof ExemptionMechanism);
             assertEquals("Incorrect algorithm", exMech.getName(),
                     validValues[i]);
             assertEquals("Incorrect provider", exMech.getProvider(), mProv);
@@ -254,8 +251,6 @@ public class ExemptionMechanismTest1 extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             exMech = ExemptionMechanism.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof ExemptionMechanism object",
-                    exMech instanceof ExemptionMechanism);
             assertEquals("Incorrect algorithm", exMech.getName(),
                     validValues[i]);
             assertEquals("Incorrect provider", exMech.getProvider().getName(),
@@ -301,12 +296,8 @@ public class ExemptionMechanismTest1 extends TestCase {
             }
         }
         ExemptionMechanism exMech;
-        SecretKey sk;
-        KeySpec keySpec;
         for (int i = 0; i < validValues.length; i++) {
             exMech = ExemptionMechanism.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof ExemptionMechanism object",
-                    exMech instanceof ExemptionMechanism);
             assertEquals("Incorrect algorithm", exMech.getName(),
                     validValues[i]);
             assertEquals("Incorrect provider", exMech.getProvider(), mProv);
@@ -323,7 +314,6 @@ public class ExemptionMechanismTest1 extends TestCase {
         ExemptionMechanismSpi spi = new MyExemptionMechanismSpi();
         ExemptionMechanism em = new myEM(spi, mProv, defaultAlg);
         
-        assertTrue("Not ExemptionMechanism object", em instanceof ExemptionMechanism);
         assertEquals("Incorrect provider", em.getProvider(), mProv);
         assertEquals("Incorrect algorithm", em.getName(), defaultAlg);
         try {
@@ -337,7 +327,6 @@ public class ExemptionMechanismTest1 extends TestCase {
         } catch (IllegalStateException e) {
         }        
         em = new myEM(null, null, null);
-        assertTrue("Not ExemptionMechanism object", em instanceof ExemptionMechanism);
         assertNull("Incorrect mechanism", em.getName());
         assertNull("Incorrect provider", em.getProvider());
         try {

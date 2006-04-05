@@ -119,8 +119,6 @@ public class SecretKeyFactoryTest2 extends TestCase {
         SecretKeyFactory skf;
         for (int i = 0; i < validValues.length; i++) {
             skf = SecretKeyFactory.getInstance(validValues[i]);
-            assertTrue("Not instanceof SecretKeyFactory object",
-                    skf instanceof SecretKeyFactory);
             assertEquals("Incorrect algorithm", skf.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", skf.getProvider(), mProv);
@@ -185,8 +183,6 @@ public class SecretKeyFactoryTest2 extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             skf = SecretKeyFactory.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof SecretKeyFactory object",
-                    skf instanceof SecretKeyFactory);
             assertEquals("Incorrect algorithm", skf.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", skf.getProvider().getName(),
@@ -233,8 +229,6 @@ public class SecretKeyFactoryTest2 extends TestCase {
         SecretKeyFactory skf;
         for (int i = 0; i < validValues.length; i++) {
             skf = SecretKeyFactory.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof SecretKeyFactory object",
-                    skf instanceof SecretKeyFactory);
             assertEquals("Incorrect algorithm", skf.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", skf.getProvider(), mProv);

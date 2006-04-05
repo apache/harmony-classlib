@@ -44,15 +44,14 @@ public class RC2ParameterSpecTest extends TestCase {
         byte[] iv = {1, 2, 3, 4, 5, 6, 7, 8};
 
         try {
-            RC2ParameterSpec ps = new RC2ParameterSpec(effectiveKeyBits, null);
+            new RC2ParameterSpec(effectiveKeyBits, null);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of null iv.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            RC2ParameterSpec ps = new RC2ParameterSpec(effectiveKeyBits,
-                                                new byte[] {1, 2, 3, 4, 5});
+            new RC2ParameterSpec(effectiveKeyBits, new byte[] {1, 2, 3, 4, 5});
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of short iv.");
         } catch (IllegalArgumentException e) {
@@ -77,16 +76,14 @@ public class RC2ParameterSpecTest extends TestCase {
         int offset = 2;
 
         try {
-            RC2ParameterSpec ps = new RC2ParameterSpec(effectiveKeyBits,
-                                                                null, offset);
+            new RC2ParameterSpec(effectiveKeyBits, null, offset);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of null iv.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            RC2ParameterSpec ps = new RC2ParameterSpec(effectiveKeyBits,
-                                                                        iv, 4);
+            new RC2ParameterSpec(effectiveKeyBits, iv, 4);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of short iv.");
         } catch (IllegalArgumentException e) {

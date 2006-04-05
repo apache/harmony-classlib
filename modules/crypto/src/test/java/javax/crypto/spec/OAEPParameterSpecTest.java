@@ -48,24 +48,21 @@ public class OAEPParameterSpecTest extends TestCase {
         PSource pSrc = PSource.PSpecified.DEFAULT;
 
         try {
-            OAEPParameterSpec ps = new OAEPParameterSpec(null, mgfName,
-                                                                mgfSpec, pSrc);
+            new OAEPParameterSpec(null, mgfName, mgfSpec, pSrc);
             fail("NullPointerException should be thrown in the case of "
                     + "null mdName.");
         } catch (NullPointerException e) {
         }
 
         try {
-            OAEPParameterSpec ps = new OAEPParameterSpec(mdName, null,
-                                                                mgfSpec, pSrc);
+            new OAEPParameterSpec(mdName, null, mgfSpec, pSrc);
             fail("NullPointerException should be thrown in the case of "
                     + "null mgfName.");
         } catch (NullPointerException e) {
         }
 
         try {
-            OAEPParameterSpec ps = new OAEPParameterSpec(mdName, mgfName,
-                                                                mgfSpec, null);
+            new OAEPParameterSpec(mdName, mgfName, mgfSpec, null);
             fail("NullPointerException should be thrown in the case of "
                     + "null pSrc.");
         } catch (NullPointerException e) {

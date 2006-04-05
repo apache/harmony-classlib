@@ -128,7 +128,6 @@ public class SecretKeyFactoryTest1 extends TestCase {
         SecretKeyFactorySpi spi = new MySecretKeyFactorySpi();
         SecretKeyFactory secKF = new mySecretKeyFactory(spi, defaultProvider,
                 defaultAlgorithm);
-        assertTrue("Not SecretKeyFactory object", secKF instanceof SecretKeyFactory);
         assertEquals("Incorrect algorithm", secKF.getAlgorithm(),
                 defaultAlgorithm);
         assertEquals("Incorrect provider", secKF.getProvider(), defaultProvider);
@@ -136,7 +135,6 @@ public class SecretKeyFactoryTest1 extends TestCase {
         assertNull("Incorrect result", secKF.getKeySpec(null, null));
         assertNull("Incorrect result", secKF.translateKey(null));
         secKF = new mySecretKeyFactory(null, null, null);
-        assertTrue("Not SecretKeyFactory object", secKF instanceof SecretKeyFactory);
         assertNull("Algorithm must be null", secKF.getAlgorithm());
         assertNull("Provider must be null", secKF.getProvider());
         try {
@@ -180,8 +178,6 @@ public class SecretKeyFactoryTest1 extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             SecretKeyFactory secKF = SecretKeyFactory
                     .getInstance(validValues[i]);
-            assertTrue("Not SecretKeyFactory object",
-                    secKF instanceof SecretKeyFactory);
             assertEquals("Incorrect algorithm", secKF.getAlgorithm(),
                     validValues[i]);
         }
@@ -271,8 +267,6 @@ public class SecretKeyFactoryTest1 extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             SecretKeyFactory secKF = SecretKeyFactory.getInstance(
                     validValues[i], defaultProviderName);
-            assertTrue("Not SecretKeyFactory object",
-                    secKF instanceof SecretKeyFactory);
             assertEquals("Incorrect algorithm", secKF.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", secKF.getProvider().getName(),
@@ -341,8 +335,6 @@ public class SecretKeyFactoryTest1 extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             SecretKeyFactory secKF = SecretKeyFactory.getInstance(
                     validValues[i], defaultProvider);
-            assertTrue("Not SecretKeyFactory object",
-                    secKF instanceof SecretKeyFactory);
             assertEquals("Incorrect algorithm", secKF.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", secKF.getProvider(),
@@ -445,8 +437,8 @@ public class SecretKeyFactoryTest1 extends TestCase {
             } catch (InvalidKeyException e) {
             }
             try { 
-                SecretKey sk = skF[i].translateKey(secKeySpec);
-                assertTrue(sk instanceof SecretKey);
+                skF[i].translateKey(secKeySpec);
+                fail("InvalidKeyException must be thrown");
             } catch (InvalidKeyException e) {
             }            
         }

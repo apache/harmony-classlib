@@ -31,7 +31,6 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
@@ -259,8 +258,6 @@ public class KeyAgreementTest2 extends TestCase {
             }
         }
         KeyAgreement keyAgr;
-        SecretKey sk;
-        KeySpec keySpec;
         for (int i = 0; i < validValues.length; i++) {
             keyAgr = KeyAgreement.getInstance(validValues[i], mProv);
             assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),

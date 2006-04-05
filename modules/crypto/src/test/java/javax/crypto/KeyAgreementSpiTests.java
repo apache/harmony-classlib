@@ -52,9 +52,7 @@ public class KeyAgreementSpiTests extends TestCase {
     public void testKeyAgreementSpi01() throws InvalidKeyException,
             ShortBufferException, NoSuchAlgorithmException, 
             InvalidAlgorithmParameterException {
-        KeyAgreementSpi kaSpi = (KeyAgreementSpi) new MyKeyAgreementSpi();
-        assertTrue("Not KeyAgreementSpi object",
-                kaSpi instanceof KeyAgreementSpi);
+        KeyAgreementSpi kaSpi = new MyKeyAgreementSpi();
 
         assertNull("Not null result", kaSpi.engineDoPhase(null, true));
         try {

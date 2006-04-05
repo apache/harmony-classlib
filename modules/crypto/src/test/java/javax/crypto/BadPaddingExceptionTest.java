@@ -65,8 +65,6 @@ public class BadPaddingExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not BadPaddingException";
-
     static String createErr(Exception tE, Exception eE) {
         return "BadPaddingException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());

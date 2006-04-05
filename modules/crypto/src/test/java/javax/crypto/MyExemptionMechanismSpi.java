@@ -104,10 +104,8 @@ public class MyExemptionMechanismSpi  extends ExemptionMechanismSpi {
         }
     }
     public class tmp1Key implements Key {
-        private String alg;
         private byte[] enc;
         public tmp1Key(String alg, byte[] enc) {
-            this.alg = alg;
             this.enc = enc;
         }
         public String getAlgorithm() {

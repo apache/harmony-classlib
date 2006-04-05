@@ -66,8 +66,6 @@ public class NoSuchPaddingExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not NoSuchPaddingException";
-
     static String createErr(Exception tE, Exception eE) {
         return "NoSuchPaddingException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());

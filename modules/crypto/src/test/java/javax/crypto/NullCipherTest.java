@@ -100,7 +100,7 @@ public class NullCipherTest extends TestCase {
 	 * Class under test for void init(int, Key, AlgorithmParameterSpec)
 	 */
 	public void testInitintKeyAlgorithmParameterSpec() {
-		class myAlgorithmParameterSpec implements java.security.spec.AlgorithmParameterSpec {};
+		class myAlgorithmParameterSpec implements java.security.spec.AlgorithmParameterSpec {}
 		try {
 			c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(new byte[1], "algorithm"), new myAlgorithmParameterSpec());
 		} catch (InvalidKeyException e) {

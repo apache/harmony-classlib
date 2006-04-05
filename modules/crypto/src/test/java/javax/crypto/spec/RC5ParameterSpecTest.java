@@ -45,24 +45,21 @@ public class RC5ParameterSpecTest extends TestCase {
         byte[] iv = {1, 2, 3, 4};
 
         try {
-            RC5ParameterSpec ps = new RC5ParameterSpec(version, rounds,
-                                                            wordSize, null);
+            new RC5ParameterSpec(version, rounds, wordSize, null);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of null iv.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            RC5ParameterSpec ps = new RC5ParameterSpec(version, rounds,
-                                                            wordSize+8, iv);
+            new RC5ParameterSpec(version, rounds, wordSize+8, iv);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of short iv.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            RC5ParameterSpec ps = new RC5ParameterSpec(version, rounds,
-                                                wordSize, new byte[] {1, 2, 3});
+            new RC5ParameterSpec(version, rounds, wordSize, new byte[] {1, 2, 3});
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of short iv.");
         } catch (IllegalArgumentException e) {
@@ -90,32 +87,29 @@ public class RC5ParameterSpecTest extends TestCase {
         int offset = 2;
 
         try {
-            RC5ParameterSpec ps = new RC5ParameterSpec(version, rounds,
-                                                        wordSize, null, offset);
+            new RC5ParameterSpec(version, rounds, wordSize, null, offset);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of null iv.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            RC5ParameterSpec ps = new RC5ParameterSpec(version, rounds,
-                                                        wordSize+8, iv, offset);
+            new RC5ParameterSpec(version, rounds, wordSize+8, iv, offset);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of short iv.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            RC5ParameterSpec ps = new RC5ParameterSpec(version, rounds,
-                                                        wordSize, iv, offset+1);
+            new RC5ParameterSpec(version, rounds, wordSize, iv, offset+1);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of short iv.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            RC5ParameterSpec ps = new RC5ParameterSpec(version, rounds,
-                                    wordSize, new byte[] {1, 2, 3, 4}, offset);
+            new RC5ParameterSpec(version, rounds, wordSize, new byte[] { 1, 2,
+                    3, 4 }, offset);
             fail("An IllegalArgumentException should be thrown "
                     + "in the case of short iv.");
         } catch (IllegalArgumentException e) {

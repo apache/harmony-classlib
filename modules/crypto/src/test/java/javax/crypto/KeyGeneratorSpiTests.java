@@ -51,9 +51,7 @@ public class KeyGeneratorSpiTests extends TestCase {
      * KeyGeneratorSpi
      */
     public void testKeyGeneratorSpi01() throws InvalidAlgorithmParameterException {
-        KeyGeneratorSpi kgSpi = (KeyGeneratorSpi) new MyKeyGeneratorSpi();
-        assertTrue("Not KeyGeneratorSpi object",
-                kgSpi instanceof KeyGeneratorSpi);
+        KeyGeneratorSpi kgSpi = new MyKeyGeneratorSpi();
         assertNull("Not null result", kgSpi.engineGenerateKey());
         try {
             kgSpi.engineInit(77, new SecureRandom());

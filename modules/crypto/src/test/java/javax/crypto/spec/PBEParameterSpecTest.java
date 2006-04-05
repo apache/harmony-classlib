@@ -42,7 +42,7 @@ public class PBEParameterSpecTest extends TestCase {
         int iterationCount = 10;
 
         try {
-            PBEParameterSpec pbeps = new PBEParameterSpec(null, iterationCount);
+            new PBEParameterSpec(null, iterationCount);
             fail("A NullPointerException should be was thrown "
                     + "in the case of null salt.");
         } catch (NullPointerException e) {

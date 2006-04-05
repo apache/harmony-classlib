@@ -28,7 +28,7 @@ public class PSource {
 
     private String pSrcName;
 
-    private PSource() {};
+    private PSource() {}
 
     /**
      * @com.intel.drl.spec_ref

@@ -29,7 +29,6 @@ import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.KeySpec;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -154,8 +153,6 @@ public class MacTest2 extends TestCase {
         Mac keyAgr;
         for (int i = 0; i < validValues.length; i++) {
             keyAgr = Mac.getInstance(validValues[i]);
-            assertTrue("Not instanceof Mac object",
-                    keyAgr instanceof Mac);
             assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyAgr.getProvider(), mProv);
@@ -216,8 +213,6 @@ public class MacTest2 extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             keyAgr = Mac.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof Mac object",
-                    keyAgr instanceof Mac);
             assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyAgr.getProvider().getName(),
@@ -263,12 +258,8 @@ public class MacTest2 extends TestCase {
             }
         }
         Mac keyAgr;
-        SecretKey sk;
-        KeySpec keySpec;
         for (int i = 0; i < validValues.length; i++) {
             keyAgr = Mac.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof Mac object",
-                    keyAgr instanceof Mac);
             assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider", keyAgr.getProvider(), mProv);

@@ -24,11 +24,8 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
-import java.util.Enumeration;
 
 import org.apache.harmony.security.TestKeyPair;
 
