@@ -14,8 +14,10 @@ Import-Package: java.io,
  java.nio,
  java.text,
  java.util,
- java.util.zip
- org.apache.harmony.security.x.crypto.utils
+ java.util.zip,
+ javax.crypto,
+ javax.crypto.spec,
+ org.apache.harmony.crypto.utils
 Export-Package: java.security,
  java.security.acl,
  java.security.cert,
