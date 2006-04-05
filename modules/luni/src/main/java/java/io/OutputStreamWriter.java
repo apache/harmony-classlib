@@ -13,8 +13,7 @@
  * limitations under the License.
  */
 
-package java.io; 
-
+package java.io;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -192,7 +191,11 @@ public class OutputStreamWriter extends Writer {
 	 */
 
 	public String getEncoding() {
-		return encoder.charset().name();
+		if (encoder == null) {
+			return null;
+		}
+		return InputStreamReader.HistoricalNamesUtil.getHistoricalName(encoder
+				.charset().name());
 	}
 
 	/**
@@ -226,15 +229,15 @@ public class OutputStreamWriter extends Writer {
 	private void convert(CharBuffer chars) throws IOException {
 		synchronized (lock) {
 			checkStatus();
-            CoderResult result = encoder.encode(chars, bytes, true);
+			CoderResult result = encoder.encode(chars, bytes, true);
 			while (true) {
 				if (result.isError()) {
 					throw new IOException(result.toString());
 				} else if (result.isOverflow()) {
-					//flush the output buffer
+					// flush the output buffer
 					flush();
 					result = encoder.encode(chars, bytes, true);
-                    continue;
+					continue;
 				}
 				break;
 			}
@@ -291,4 +294,3 @@ public class OutputStreamWriter extends Writer {
 		convert(chars);
 	}
 }
-

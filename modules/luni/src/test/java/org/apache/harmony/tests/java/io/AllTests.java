@@ -32,11 +32,13 @@ public class AllTests {
 		suite.addTestSuite(FilePermissionTest.class);
 		suite.addTestSuite(BufferedInputStreamTest.class);
 		suite.addTestSuite(FileTest.class);
+        suite.addTestSuite(InputStreamReaderTest.class);
 		suite.addTestSuite(BufferedReaderTest.class);
 		suite.addTestSuite(PushBackInputStreamTest.class);
 		suite.addTestSuite(RandomAccessFileTest.class);
         suite.addTestSuite(ReaderTest.class);
 		suite.addTestSuite(ObjectStreamConstantsTest.class);
+        suite.addTestSuite(OutputStreamWriterTest.class);
 		//$JUnit-END$
 		return suite;
 	}
