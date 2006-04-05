@@ -30,16 +30,6 @@
     <property name="support.dir" location="support"/>
     <property name="tests.depends.jars" location="deploy/jre/lib/boot" />
     <property file="make/depends.properties" />
-    <path id="xerces.id">
-        <fileset dir="${xerces.dir}">
-            <include name="*.jar" />
-        </fileset>
-    </path>
-    <path id="xalan.id">
-        <fileset dir="${xalan.dir}">
-            <include name="*.jar" />
-        </fileset>
-    </path>
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
@@ -185,8 +175,6 @@
             <src path="modules/luni/src/test/java" />
             <src path="modules/nio_char/src/test/java" />
             <src path="modules/text/src/test/java" />
-       	    <classpath refid="xerces.id" />
-            <classpath refid="xalan.id" />
             <classpath location="${junit.jar}" />
             <classpath location="${tests.build.output}" />
             <bootclasspath>
@@ -260,8 +248,6 @@
         	
             <classpath>
                 <path refid="classpath.id" />
-            	<path refid="xerces.id" />
-            	<path refid="xalan.id" />
                 <pathelement location="${junit.jar}" />
             </classpath>
    		</java>
@@ -305,8 +291,6 @@
         	
             <classpath>
                 <path refid="classpath.id" />
-            	<path refid="xerces.id" />
-            	<path refid="xalan.id" />
                 <pathelement location="${junit.jar}" />
             </classpath>
         	
