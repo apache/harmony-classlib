@@ -233,7 +233,7 @@ public abstract class CipherSpi {
     protected byte[] engineWrap(Key key) throws IllegalBlockSizeException,
             InvalidKeyException {
         throw new UnsupportedOperationException(
-                "engineWrap(Key key) is not suppoerted");
+                "engineWrap(Key key) is not supported");
     }
 
     /**
@@ -244,7 +244,7 @@ public abstract class CipherSpi {
             int wrappedKeyType) throws InvalidKeyException,
             NoSuchAlgorithmException {
         throw new UnsupportedOperationException(
-                "engineUnwrap(byte[] wrappedKey, String wrappedKeyAlgorithm, int wrappedKeyType) is not suppoerted");
+                "engineUnwrap(byte[] wrappedKey, String wrappedKeyAlgorithm, int wrappedKeyType) is not supported");
     }
 
     /**
@@ -253,6 +253,6 @@ public abstract class CipherSpi {
      */
     protected int engineGetKeySize(Key key) throws InvalidKeyException {
         throw new UnsupportedOperationException(
-                "engineGetKeySize(Key key) is not suppoerted");
+                "engineGetKeySize(Key key) is not supported");
     }
 }
