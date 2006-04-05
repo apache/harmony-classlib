@@ -638,7 +638,7 @@ hysock_bind (struct HyPortLibrary * portLibrary, hysocket_t sock,
     }
 
   /* If we are the any address, then we want to bind on the other IP stack as well, if that socket is still open */
-  if (isAnyAddress
+  if (anyAddress
       && ((isIPv4 && (sock->flags & SOCKET_IPV6_OPEN_MASK))
 	  || (!isIPv4 && (sock->flags & SOCKET_IPV4_OPEN_MASK))))
     {
