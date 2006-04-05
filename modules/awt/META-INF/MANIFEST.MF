@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.apache.harmony.awt
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.lang
+Import-Package: java.lang,
+ java.util
 Export-Package: java.awt,
  java.awt.event
 
