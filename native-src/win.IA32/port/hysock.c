@@ -5048,9 +5048,9 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
 	  portLibrary->mem_free_memory (portLibrary, *context);
 	  *context = NULL;
 	}
-    }
-    
     return 0;
+    }
+  return HYPORT_ERROR_SOCKET_ARGSINVALID;
 }
 
 #undef CDEV_CURRENT_FUNCTION
