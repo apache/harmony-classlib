@@ -46,9 +46,10 @@ public class SubjectDomainCombinerTest extends SecurityTest {
     }
 
     /**
-     * Testing getSubject() & constructor
+     * @tests javax.security.auth.SubjectDomainCombiner#SubjectDomainCombiner(
+     *        javax.security.auth.Subject)
      */
-    public final void testGetSubject() {
+    public final void test_ConstructorLjavax_security_auth_Subject() {
 
         Subject subject = new Subject();
 
@@ -57,14 +58,11 @@ public class SubjectDomainCombinerTest extends SecurityTest {
         assertTrue("Subject is not null", subject == combiner.getSubject());
 
         try {
-            combiner = new SubjectDomainCombiner(null);
+            // Regression for HARMONY-219
+            new SubjectDomainCombiner(null);
+            fail("Constructor should throw NullPointerException");
         } catch (NullPointerException e) {
-            if(!testing){
-                throw e;
-            }
-            return;
         }
-        assertNull("Subject is null", combiner.getSubject());
     }
 
     /**
@@ -120,38 +118,6 @@ public class SubjectDomainCombinerTest extends SecurityTest {
         // check inherited domains
         pd = combiner.combine(null, new ProtectionDomain[] { domain });
         assertTrue("Inherited domain", domain == pd[0]);
-    }
-
-    public final void testCombine_NullSubject() throws Exception {
-
-        if(testing){
-            return;
-        }
-        
-        SubjectDomainCombiner combiner = new SubjectDomainCombiner(null);
-
-        // check assigned principals
-        URL url = new URL("file://foo.txt");
-
-        CodeSource source = new CodeSource(url, (Certificate[]) null);
-        PermissionCollection permissions = new Permissions();
-        ClassLoader classLoader = new URLClassLoader(new URL[] { url });
-
-        Principal p = new Principal() {
-            public String getName() {
-                return "p";
-            }
-        };
-        Principal[] principals = new Principal[] { p };
-
-        ProtectionDomain domain = new ProtectionDomain(source, permissions,
-                classLoader, principals);
-
-        ProtectionDomain[] pd = combiner.combine(
-                new ProtectionDomain[] { domain }, null);
-        
-        assertTrue("Size", pd[0].getPrincipals().length==0);
-
     }
 
     public final void testSecurityException() {

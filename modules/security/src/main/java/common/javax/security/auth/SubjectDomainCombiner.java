@@ -44,6 +44,8 @@ public class SubjectDomainCombiner implements DomainCombiner {
      * @com.intel.drl.spec_ref
      */
     public SubjectDomainCombiner(Subject subject) {
+        if (subject == null)
+            throw new NullPointerException();
         this.subject = subject;
     }
 
@@ -84,15 +86,9 @@ public class SubjectDomainCombiner implements DomainCombiner {
         int cur = 0;
         if (currentDomains != null) {
 
-            Principal[] p;
-            if (subject == null) {
-                p = new Principal[0];
-            } else {
-                Set s = subject.getPrincipals();
-
-                p = new Principal[s.size()];
-                s.toArray(p);
-            }
+            Set s = subject.getPrincipals();
+            Principal[] p = new Principal[s.size()];
+            s.toArray(p);
 
             for (cur = 0; cur < currentDomains.length; cur++) {
                 ProtectionDomain newPD;
