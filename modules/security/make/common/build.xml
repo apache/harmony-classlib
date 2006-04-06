@@ -17,6 +17,8 @@
 
 <project name="Common_Security_Build">
 
+        <property file="../../../../make/depends.properties" />
+
 	<property name="hy.security.src.main.java.platform"
 		value="${hy.security.src.main.java}/../${hy.os_family}" />
 
@@ -104,7 +106,7 @@
 			<jvmarg value="-DTEST_SRC_DIR=${hy.security.src.test.java}"/>
 
 			<!-- to pick up junit.jar -->
-			<jvmarg value="-Xbootclasspath/a:${hy.security.bin.test}${path.separator}${env.CLASSPATH}"/>
+			<jvmarg value="-Xbootclasspath/a:${hy.security.bin.test}${path.separator}../../../../${junit.jar}"/>
 
 			<env key="JAVA_HOME" value="${hy.target}/jre"/>
 
