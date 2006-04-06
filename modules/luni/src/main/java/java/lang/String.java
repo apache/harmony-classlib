@@ -19,19 +19,18 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
 import java.util.Locale;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
-import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
-import java.nio.CharBuffer;
+import java.util.regex.Pattern;
+
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
+import java.security.AccessController;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.harmony.luni.util.PriviAction;
-
-import java.security.AccessController;
 
 /**
  * The implementation of this class is provided, but the documented native must
@@ -45,27 +44,27 @@ public final class String implements Serializable, Comparable, CharSequence {
 	private static final long serialVersionUID = -6849794470754667710L;
 
 	/**
-	 * An PrintStream used for System.out which performs the 
-	 * correct character conversion for the console, since the
-	 * console may use a different conversion than the default
-	 * file.encoding.
+	 * An PrintStream used for System.out which performs the correct character
+	 * conversion for the console, since the console may use a different
+	 * conversion than the default file.encoding.
 	 */
 	static class ConsolePrintStream extends java.io.PrintStream {
+		private static String charset;
 
 		static {
-			/**
-			 * The encoding used for console conversions.
-			 */
-			String consoleEncoding = System.getProperty("console.encoding");
-			if (consoleEncoding == null)
-				consoleEncoding = "ISO8859_1";
+			charset = (String) AccessController.doPrivileged(new PriviAction(
+					"console.encoding", "ISO8859_1")); //$NON-NLS-1$ //$NON-NLS-2$
+			if (!Charset.isSupported(charset)) {
+				charset = "ISO-8859-1"; //$NON-NLS-1$
+			}
 		}
 
 		/**
-		 * Create a ConsolePrintStream on the specified OutputStream,
-		 * usually System.out.
+		 * Create a ConsolePrintStream on the specified OutputStream, usually
+		 * System.out.
 		 * 
-		 * @param out the console OutputStream
+		 * @param out
+		 *            the console OutputStream
 		 */
 		public ConsolePrintStream(java.io.OutputStream out) {
 			super(out, true);
@@ -73,15 +72,21 @@ public final class String implements Serializable, Comparable, CharSequence {
 		}
 
 		/**
-		 * Override the print(String) method from PrintStream to perform
-		 * the character conversion using the console character converter.
+		 * Override the print(String) method from PrintStream to perform the
+		 * character conversion using the console character converter.
 		 * 
-		 * @param str the String to convert
+		 * @param str
+		 *            the String to convert
 		 */
 		public void print(String str) {
 			if (str == null)
 				str = "null";
 
+			try {
+				write(str.getBytes(charset));
+			} catch (java.io.IOException e) {
+				setError();
+			}
 		}
 	}
 
@@ -94,15 +99,17 @@ public final class String implements Serializable, Comparable, CharSequence {
 		private static final long serialVersionUID = 8575799808933029326L;
 
 		/**
-		 * Compare the two objects to determine
-		 * the relative ordering. 
-		 *
-		 * @param		o1	an Object to compare
-		 * @param		o2	an Object to compare
-		 * @return		an int < 0 if object1 is less than object2,
-		 *				0 if they are equal, and > 0 if object1 is greater
-		 *
-		 * @exception	ClassCastException when objects are not the correct type
+		 * Compare the two objects to determine the relative ordering.
+		 * 
+		 * @param o1
+		 *            an Object to compare
+		 * @param o2
+		 *            an Object to compare
+		 * @return an int < 0 if object1 is less than object2, 0 if they are
+		 *         equal, and > 0 if object1 is greater
+		 * 
+		 * @exception ClassCastException
+		 *                when objects are not the correct type
 		 */
 		public int compare(Object o1, Object o2) {
 			return ((String) o1).compareToIgnoreCase((String) o2);
@@ -123,6 +130,10 @@ public final class String implements Serializable, Comparable, CharSequence {
 	private final int count;
 
 	private int hashCode;
+
+	private static Charset DefaultCharset;
+
+	private static Charset lastCharset;
 
 	static {
 		ascii = new char[128];
@@ -229,9 +240,22 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 * 
 	 */
 	public String(byte[] data, int start, int length) {
-		value = new char[0];
-		offset = 0;
-		count = 0;
+		// start + length could overflow, start/length maybe MaxInt
+		if (start >= 0 && 0 <= length && length <= data.length - start) {
+			offset = 0;
+			Charset charset = defaultCharset();
+			int result;
+			CharBuffer cb = charset
+					.decode(ByteBuffer.wrap(data, start, length));
+			if ((result = cb.length()) > 0) {
+				value = cb.array();
+				count = result;
+			} else {
+				count = 0;
+				value = new char[0];
+			}
+		} else
+			throw new StringIndexOutOfBoundsException();
 	}
 
 	/**
@@ -307,7 +331,29 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 */
 	public String(byte[] data, int start, int length, final String encoding)
 			throws UnsupportedEncodingException {
-		throw new UnsupportedEncodingException();
+		if (encoding == null)
+			throw new NullPointerException();
+		// start + length could overflow, start/length maybe MaxInt
+		if (start >= 0 && 0 <= length && length <= data.length - start) {
+			offset = 0;
+			Charset charset;
+			try {
+				charset = Charset.forName(encoding);
+			} catch (UnsupportedCharsetException e) {
+				throw new UnsupportedEncodingException();
+			}
+			int result;
+			CharBuffer cb = charset
+					.decode(ByteBuffer.wrap(data, start, length));
+			if ((result = cb.length()) > 0) {
+				value = cb.array();
+				count = result;
+			} else {
+				count = 0;
+				value = new char[0];
+			}
+		} else
+			throw new StringIndexOutOfBoundsException();
 	}
 
 	/**
@@ -420,10 +466,10 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 *            the StringBuffer
 	 */
 	public String(StringBuffer stringbuffer) {
-		value = new char[0];
 		offset = 0;
-		count = 0;
 		synchronized (stringbuffer) {
+			value = stringbuffer.shareValue();
+			count = stringbuffer.length();
 		}
 	}
 
@@ -546,7 +592,7 @@ public final class String implements Serializable, Comparable, CharSequence {
 	public String concat(String string) {
 		if (string.count > 0 && count > 0) {
 			char[] buffer = new char[count + string.count];
-			System.arraycopy(value, offset, buffer, 0, count);
+				System.arraycopy(value, offset, buffer, 0, count);
 			System.arraycopy(string.value, string.offset, buffer, count,
 					string.count);
 			return new String(0, buffer.length, buffer);
@@ -591,6 +637,27 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 */
 	public static String copyValueOf(char[] data, int start, int length) {
 		return new String(data, start, length);
+	}
+
+	private Charset defaultCharset() {
+		if (DefaultCharset == null) {
+			String encoding = (String) AccessController
+					.doPrivileged(new PriviAction("file.encoding", "ISO8859_1"));
+			// calling System.getProperty() may cause DefaultCharset to be
+			// initialized
+			try {
+				DefaultCharset = Charset.forName(encoding);
+			} catch (IllegalCharsetNameException e) {
+				//
+			} catch (UnsupportedCharsetException e) {
+				//
+			}
+
+			if (DefaultCharset == null) {
+				DefaultCharset = Charset.forName("ISO-8859-1");
+			}
+		}
+		return DefaultCharset;
 	}
 
 	/**
@@ -674,7 +741,11 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 * @see String
 	 */
 	public byte[] getBytes() {
-		return null;
+		ByteBuffer buffer = defaultCharset().encode(
+				CharBuffer.wrap(this.value, this.offset, this.count));
+		byte[] bytes = new byte[buffer.limit()];
+		buffer.get(bytes);
+		return bytes;
 	}
 
 	/**
@@ -699,22 +770,16 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 * @deprecated Use getBytes() or getBytes(String)
 	 */
 	public void getBytes(int start, int end, byte[] data, int index) {
-		if (data != null) {
-			// index < 0, and end - start > data.length - index are caught by
-			// the catch below
-			// end > count not caught below when start == end
-			if (0 <= start && start <= end && end <= count) {
-				end += offset;
-				try {
-					for (int i = offset + start; i < end; i++)
-						data[index++] = (byte) value[i];
-				} catch (ArrayIndexOutOfBoundsException e) {
-					throw new StringIndexOutOfBoundsException();
-				}
-			} else
+		if (0 <= start && start <= end && end <= count) {
+			end += offset;
+			try {
+				for (int i = offset + start; i < end; i++)
+					data[index++] = (byte) value[i];
+			} catch (ArrayIndexOutOfBoundsException e) {
 				throw new StringIndexOutOfBoundsException();
+			}
 		} else
-			throw new NullPointerException();
+			throw new StringIndexOutOfBoundsException();
 	}
 
 	/**
@@ -731,7 +796,25 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 * @see UnsupportedEncodingException
 	 */
 	public byte[] getBytes(String encoding) throws UnsupportedEncodingException {
-		return null;
+		ByteBuffer buffer = getCharset(encoding).encode(
+				CharBuffer.wrap(this.value, this.offset, this.count));
+		byte[] bytes = new byte[buffer.limit()];
+		buffer.get(bytes);
+		return bytes;
+	}
+
+	private Charset getCharset(final String encoding)
+			throws UnsupportedEncodingException {
+		Charset charset = lastCharset;
+		if (charset == null || !encoding.equalsIgnoreCase(charset.name())) {
+			try {
+				charset = Charset.forName(encoding);
+			} catch (UnsupportedCharsetException e) {
+				throw new UnsupportedEncodingException(encoding);
+			}
+			lastCharset = charset;
+		}
+		return charset;
 	}
 
 	/**
@@ -903,9 +986,6 @@ public final class String implements Serializable, Comparable, CharSequence {
 	}
 
 	/**
-	 * Only this native must be implemented, the implementation for the rest of
-	 * this class is provided.
-	 * 
 	 * Searches an internal table of strings for a string equal to this String.
 	 * If the string is not in the table, it is added. Answers the string
 	 * contained in the table which is equal to this String. The same string
@@ -1203,8 +1283,11 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 *             <code>start > length()</code>
 	 */
 	public String substring(int start) {
-		if (0 <= start && start <= count)
+		if (start == 0)
+			return this;
+		if (0 <= start && start <= count) {
 			return new String(offset + start, count - start, value);
+		}
 		throw new StringIndexOutOfBoundsException(start);
 	}
 
@@ -1222,10 +1305,13 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 *             <code>end > length()</code>
 	 */
 	public String substring(int start, int end) {
+		if (start == 0 && end == count)
+			return this;
 		// NOTE last character not copied!
 		// Fast range check.
-		if (0 <= start && start <= end && end <= count)
+		if (0 <= start && start <= end && end <= count) {
 			return new String(offset + start, end - start, value);
+		}
 		throw new StringIndexOutOfBoundsException();
 	}
 
@@ -1267,9 +1353,9 @@ public final class String implements Serializable, Comparable, CharSequence {
 				char[] buffer = new char[count];
 				int i = o - offset;
 				System.arraycopy(value, offset, buffer, 0, i); // not worth
-				// checking for
-				// i == 0 case
-				if (locale.getLanguage() != "tr") { // Turkish
+																// checking for
+																// i == 0 case
+				if (!"tr".equals(locale.getLanguage())) { // Turkish
 					while (i < count)
 						buffer[i++] = Character.toLowerCase(value[o++]);
 				} else {
@@ -1312,7 +1398,8 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 * three characters are the upper case conversion. If only two characters
 	 * are used, the third character in the table is \u0000.
 	 * 
-	 * @param ch the char being converted to upper case
+	 * @param ch
+	 *            the char being converted to upper case
 	 * 
 	 * @return the index into the upperValues table, or -1
 	 */
@@ -1486,7 +1573,7 @@ public final class String implements Serializable, Comparable, CharSequence {
 	public static String valueOf(char value) {
 		String s;
 		if (value < 128)
-			s = new String(value, 1, ascii);
+			s = new String((int) value, 1, ascii);
 		else
 			s = new String(0, 1, new char[] { value });
 		s.hashCode = value;
