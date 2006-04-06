@@ -16,17 +16,13 @@
 -->
 
 <project name="Common_LUNI_Build">
-	
+
 	<target name="compile.java" description="Compile LUNI java code">
 		<echo message="Compiling LUNI classes from ${hy.luni.src.main.java}" />
-		
+
 		<mkdir dir="${hy.luni.bin.main}" />
 
-		<javac sourcepath=""
-			srcdir="${hy.luni.src.main.java}"
-            destdir="${hy.luni.bin.main}"
-            source="${source.ver}"
-            debug="${java.debug.option}">
+		<javac sourcepath="" srcdir="${hy.luni.src.main.java}" destdir="${hy.luni.bin.main}" source="${source.ver}" debug="${java.debug.option}">
 
 			<bootclasspath>
 				<fileset dir="${hy.target}/jre/lib/boot">
@@ -35,24 +31,20 @@
 			</bootclasspath>
 		</javac>
 	</target>
-	
+
 	<target name="build.jar">
 		<jar destfile="${hy.target}/jre/lib/boot/luni.jar" manifest="${hy.luni}/META-INF/MANIFEST.MF">
 			<fileset dir="${hy.luni.bin.main}" />
 		</jar>
 	</target>
 
-	
+
 	<target name="compile.tests">
 		<echo message="Compiling LUNI tests from ${hy.luni.src.test.java}" />
 
 		<mkdir dir="${hy.luni.bin.test}" />
 
-		<javac srcdir="${hy.luni.src.test.java}"
-               destdir="${hy.luni.bin.test}"
-               sourcepath=""
-               source="${source.ver}"
-               debug="${java.debug.option}">
+		<javac srcdir="${hy.luni.src.test.java}" destdir="${hy.luni.bin.test}" sourcepath="" source="${source.ver}" debug="${java.debug.option}">
 
 			<bootclasspath>
 				<fileset dir="${hy.target}/jre/lib/boot">
@@ -65,101 +57,95 @@
 
 
 	<target name="run.tests">
-		
-        <mkdir dir="${hy.tests.reports}" />
 
-        <junit fork="yes"
-               forkmode="once"
-               printsummary="withOutAndErr"
-               errorproperty="test.error"
-               showoutput="on"
-               dir="${hy.luni.bin.test}"
-               jvm="${hy.target}/jre/bin/java">
-          
-	    <jvmarg value="-showversion"/>
+		<mkdir dir="${hy.tests.reports}" />
 
-            <!-- Required by various tests that set security manager etc -->
-            <jvmarg value="-Djava.security.policy=../../../../support/src/test/resources/config/testing.policy" />
+		<junit fork="yes" forkmode="once" printsummary="withOutAndErr" errorproperty="test.error" showoutput="on" dir="${hy.luni.bin.test}" jvm="${hy.target}/jre/bin/java">
 
-            <!-- Required for running the java.net unit tests -->
-            <jvmarg value="-Dtest.ini.file=../../../../src/test/resources/config/localhosttest.ini" />
+			<jvmarg value="-showversion" />
 
-            <env key="JAVA_HOME" value="${hy.target}/jre"/>
+			<!-- Required by various tests that set security manager etc -->
+			<jvmarg value="-Djava.security.policy=../../../../support/src/test/resources/config/testing.policy" />
 
-            <classpath>
-	        <pathelement path="${hy.luni.bin.test}"/>
-	    </classpath>
+			<!-- Required for running the java.net unit tests -->
+			<jvmarg value="-Dtest.ini.file=../../../../src/test/resources/config/localhosttest.ini" />
 
-	    <formatter type="xml" />
+			<env key="JAVA_HOME" value="${hy.target}/jre" />
 
-	    <batchtest todir="${hy.tests.reports}" haltonfailure="no">
-	        <fileset dir="${hy.luni.src.test.java}">
-		    <include name="**/*Test.java"/>
-                    <exclude name="**/BufferedInputStreamTest.java"/>
-                    <exclude name="**/BufferedReaderTest.java"/>
-                    <exclude name="**/BufferedWriterTest.java"/>
-                    <exclude name="**/FileInputStreamTest.java"/>
-                    <exclude name="**/FileTest.java"/>
-                    <exclude name="**/FilterInputStreamTest.java"/>
-                    <exclude name="**/InputStreamReaderTest.java"/>
-                    <exclude name="**/NotSerializableExceptionTest.java"/>
-                    <exclude name="**/ObjectInputStreamTest.java"/>
-                    <exclude name="**/ObjectOutputStreamTest.java"/>
-                    <exclude name="**/OutputStreamWriterTest.java"/>
-                    <exclude name="**/PipedInputStreamTest.java"/>
-                    <exclude name="**/PrintWriterTest.java"/>
-                    <exclude name="**/RandomAccessFileTest.java"/>
-                    <exclude name="**/StreamTokenizerTest.java"/>
-                    <exclude name="**/ArrayIndexOutOfBoundsExceptionTest.java"/>
-                    <exclude name="**/AssertionErrorTest.java"/>
-                    <exclude name="**/ClassLoaderTest.java"/>
-                    <exclude name="**/ClassTest.java"/>
-                    <exclude name="**/PackageTest.java"/>
-                    <exclude name="**/ProcessTest.java"/>
-                    <exclude name="**/StringTest.java"/>
-                    <exclude name="**/FieldTest.java"/>
-                    <exclude name="**/ProxyTest.java"/>
-                    <exclude name="**/ConnectExceptionTest.java"/>
-                    <exclude name="**/DatagramPacketTest.java"/>
-                    <exclude name="**/DatagramSocketTest.java"/>
-                    <exclude name="**/HttpURLConnectionTest.java"/>
-                    <exclude name="**/InetAddressTest.java"/>
-                    <exclude name="**/JarURLConnectionTest.java"/>
-                    <exclude name="**/MulticastSocketTest.java"/>
-                    <exclude name="**/ServerSocketTest.java"/>
-                    <exclude name="**/SocketImplTest.java"/>
-                    <exclude name="**/SocketPermissionTest.java"/>
-                    <exclude name="**/SocketTest.java"/>
-                    <exclude name="**/URISyntaxExceptionTest.java"/>
-                    <exclude name="**/URLClassLoaderTest.java"/>
-                    <exclude name="**/URLConnectionTest.java"/>
-                    <exclude name="**/URLDecoderTest.java"/>
-                    <exclude name="**/URLEncoderTest.java"/>
-                    <exclude name="**/URLTest.java"/>
-                    <exclude name="**/ArrayListTest.java"/>
-                    <exclude name="**/ArraysTest.java"/>
-                    <exclude name="**/CalendarTest.java"/>
-                    <exclude name="**/CollectionsTest.java"/>
-                    <exclude name="**/HashMapTest.java"/>
-                    <exclude name="**/HashtableTest.java"/>
-                    <exclude name="**/IdentityHashMapTest.java"/>
-                    <exclude name="**/LinkedHashMapTest.java"/>
-                    <exclude name="**/LinkedListTest.java"/>
-                    <exclude name="**/ListResourceBundleTest.java"/>
-                    <exclude name="**/LocaleTest.java"/>
-                    <exclude name="**/PropertiesTest.java"/>
-                    <exclude name="**/ResourceBundleTest.java"/>
-                    <exclude name="**/TimeZoneTest.java"/>
-                    <exclude name="**/TreeMapTest.java"/>
-                    <exclude name="**/VectorTest.java"/>
-                    <exclude name="**/WeakHashMapTest.java"/>
-                    <exclude name="**/NYITest.java"/>
-		</fileset>
-	    </batchtest>
-	</junit>
-    </target>
-	
-	
+			<classpath>
+				<pathelement path="${hy.luni.bin.test}" />
+			</classpath>
+
+			<formatter type="xml" />
+
+			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
+				<fileset dir="${hy.luni.src.test.java}">
+					<include name="**/*Test.java" />
+					<exclude name="**/BufferedInputStreamTest.java" />
+					<exclude name="**/BufferedReaderTest.java" />
+					<exclude name="**/BufferedWriterTest.java" />
+					<exclude name="**/FileInputStreamTest.java" />
+					<exclude name="**/FileTest.java" />
+					<exclude name="**/FilterInputStreamTest.java" />
+					<exclude name="**/InputStreamReaderTest.java" />
+					<exclude name="**/NotSerializableExceptionTest.java" />
+					<exclude name="**/ObjectInputStreamTest.java" />
+					<exclude name="**/ObjectOutputStreamTest.java" />
+					<exclude name="**/OutputStreamWriterTest.java" />
+					<exclude name="**/PipedInputStreamTest.java" />
+					<exclude name="**/PrintWriterTest.java" />
+					<exclude name="**/RandomAccessFileTest.java" />
+					<exclude name="**/StreamTokenizerTest.java" />
+					<exclude name="**/ArrayIndexOutOfBoundsExceptionTest.java" />
+					<exclude name="**/AssertionErrorTest.java" />
+					<exclude name="**/ClassLoaderTest.java" />
+					<exclude name="**/ClassTest.java" />
+					<exclude name="**/PackageTest.java" />
+					<exclude name="**/ProcessTest.java" />
+					<exclude name="**/StringTest.java" />
+					<exclude name="**/FieldTest.java" />
+					<exclude name="**/ProxyTest.java" />
+					<exclude name="**/ConnectExceptionTest.java" />
+					<exclude name="**/DatagramPacketTest.java" />
+					<exclude name="**/DatagramSocketTest.java" />
+					<exclude name="**/HttpURLConnectionTest.java" />
+					<exclude name="**/InetAddressTest.java" />
+					<exclude name="**/JarURLConnectionTest.java" />
+					<exclude name="**/MulticastSocketTest.java" />
+					<exclude name="**/ServerSocketTest.java" />
+					<exclude name="**/SocketImplTest.java" />
+					<exclude name="**/SocketPermissionTest.java" />
+					<exclude name="**/SocketTest.java" />
+					<exclude name="**/URISyntaxExceptionTest.java" />
+					<exclude name="**/URLClassLoaderTest.java" />
+					<exclude name="**/URLConnectionTest.java" />
+					<exclude name="**/URLDecoderTest.java" />
+					<exclude name="**/URLEncoderTest.java" />
+					<exclude name="**/URLTest.java" />
+					<exclude name="**/ArrayListTest.java" />
+					<exclude name="**/ArraysTest.java" />
+					<exclude name="**/CalendarTest.java" />
+					<exclude name="**/CollectionsTest.java" />
+					<exclude name="**/HashMapTest.java" />
+					<exclude name="**/HashtableTest.java" />
+					<exclude name="**/IdentityHashMapTest.java" />
+					<exclude name="**/LinkedHashMapTest.java" />
+					<exclude name="**/LinkedListTest.java" />
+					<exclude name="**/ListResourceBundleTest.java" />
+					<exclude name="**/LocaleTest.java" />
+					<exclude name="**/PropertiesTest.java" />
+					<exclude name="**/ResourceBundleTest.java" />
+					<exclude name="**/TimeZoneTest.java" />
+					<exclude name="**/TreeMapTest.java" />
+					<exclude name="**/VectorTest.java" />
+					<exclude name="**/WeakHashMapTest.java" />
+					<exclude name="**/NYITest.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+
 	<target name="copy.resources">
 		<!-- Nothing for LUNI -->
 	</target>
