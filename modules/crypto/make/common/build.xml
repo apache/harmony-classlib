@@ -17,7 +17,7 @@
 
 <project name="Common_CRYPTO_Build">
 
-        <property file="../../../../make/depends.properties" />
+	<property file="../../../../make/depends.properties" />
 
 	<target name="compile.java" description="Compile CRYPTO java code">
 		<echo message="Compiling CRYPTO classes from ${hy.crypto.src.main.java}" />

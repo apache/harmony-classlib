@@ -17,7 +17,7 @@
 
 <project name="Common_Security_Build">
 
-        <property file="../../../../make/depends.properties" />
+	<property file="../../../../make/depends.properties" />
 
 	<property name="hy.security.src.main.java.platform"
 		value="${hy.security.src.main.java}/../${hy.os_family}" />
