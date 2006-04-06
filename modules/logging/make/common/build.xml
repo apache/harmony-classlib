@@ -129,7 +129,11 @@
 	
 	
 	<target name="copy.resources">
-		<!-- Nothing for LOGGING -->
+            <copy todir="${hy.target}/jre/lib" overwrite="yes" flatten="yes">
+                 <fileset dir="${hy.logging.src.main.java}">
+                     <include name="**/logging.properties" />
+                 </fileset>
+            </copy>
 	</target>
 </project>
 

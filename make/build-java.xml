@@ -374,7 +374,11 @@
              </fileset>
          </copy>
    	
-<!-- TOFIX: logging.properties file needs copying to jre/lib -->
+        <copy todir="${target.output}/jre/lib" overwrite="yes" flatten="yes">
+             <fileset dir="modules/logging/src/main/java">
+                 <include name="**/logging.properties" />
+             </fileset>
+        </copy>
     	
     </target>
 
