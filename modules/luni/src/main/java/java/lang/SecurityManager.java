@@ -33,7 +33,7 @@ import java.security.SecurityPermission;
 import java.util.PropertyPermission;
 import java.util.StringTokenizer;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * SecurityManager is the abstract superclass of the classes which can provide

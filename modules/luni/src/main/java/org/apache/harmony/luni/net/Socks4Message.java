@@ -159,13 +159,13 @@ class Socks4Message {
 	public String getErrorString(int error) {
 		switch (error) {
 		case RETURN_FAILURE:
-			return com.ibm.oti.util.Msg.getString("K00cd");
+			return org.apache.harmony.luni.util.Msg.getString("K00cd");
 		case RETURN_CANNOT_CONNECT_TO_IDENTD:
-			return com.ibm.oti.util.Msg.getString("K00ce");
+			return org.apache.harmony.luni.util.Msg.getString("K00ce");
 		case RETURN_DIFFERENT_USER_IDS:
-			return com.ibm.oti.util.Msg.getString("K00cf");
+			return org.apache.harmony.luni.util.Msg.getString("K00cf");
 		default:
-			return com.ibm.oti.util.Msg.getString("K00d0");
+			return org.apache.harmony.luni.util.Msg.getString("K00d0");
 		}
 	}
 

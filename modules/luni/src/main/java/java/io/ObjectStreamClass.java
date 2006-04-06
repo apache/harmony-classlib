@@ -26,7 +26,7 @@ import java.util.WeakHashMap;
 
 import org.apache.harmony.luni.util.Sorter;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * Instances of ObjectStreamClass are used to describe classes of objects used
@@ -323,7 +323,7 @@ public class ObjectStreamClass implements Serializable {
 							return field.getLong(null); // Static field,
 														// parameter is ignored
 						} catch (IllegalAccessException iae) {
-							throw new RuntimeException(com.ibm.oti.util.Msg
+							throw new RuntimeException(org.apache.harmony.luni.util.Msg
 									.getString("K0071", iae.toString())); //$NON-NLS-1$
 						}
 					}
@@ -493,7 +493,7 @@ public class ObjectStreamClass implements Serializable {
 				}
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(com.ibm.oti.util.Msg.getString("K0072", //$NON-NLS-1$
+			throw new RuntimeException(org.apache.harmony.luni.util.Msg.getString("K0072", //$NON-NLS-1$
 					e.toString()));
 		}
 

@@ -18,7 +18,7 @@ package java.io;
 
 import java.security.AccessController;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * BufferedWriter is for writing buffered character output. Characters written
@@ -69,7 +69,7 @@ public class BufferedWriter extends Writer {
 			this.out = out;
 			this.buf = new char[size];
 		} else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K0058")); //$NON-NLS-1$
 	}
 
@@ -109,7 +109,7 @@ public class BufferedWriter extends Writer {
 				pos = 0;
 				out.flush();
 			} else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K005d")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005d")); //$NON-NLS-1$
 		}
 	}
 
@@ -191,7 +191,7 @@ public class BufferedWriter extends Writer {
 						}
 					}
 				} else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K005d")); //$NON-NLS-1$
 			}
 		} else
@@ -216,7 +216,7 @@ public class BufferedWriter extends Writer {
 				}
 				buf[pos++] = (char) oneChar;
 			} else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K005d")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005d")); //$NON-NLS-1$
 		}
 	}
 
@@ -277,7 +277,7 @@ public class BufferedWriter extends Writer {
 						}
 					}
 				} else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K005d")); //$NON-NLS-1$
 			}
 		} else

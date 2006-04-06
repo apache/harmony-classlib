@@ -17,8 +17,8 @@ Import-Package: java.math,
  java.util.regex,
  java.util.zip,
  org.apache.harmony.nio
-Export-Package: com.ibm.oti.util,
- com.ibm.oti.vm,
+Export-Package: org.apache.harmony.luni.util,
+ org.apache.harmony.kernel.vm,
  java.io,
  java.lang,
  java.lang.ref,
@@ -28,3 +28,4 @@ Export-Package: com.ibm.oti.util,
  org.apache.harmony.luni.util,
  org.apache.harmony.luni.net,
  org.apache.harmony.luni.platform
+

@@ -136,7 +136,7 @@ public class SimpleDateFormat extends DateFormat {
 		int field = -1;
 		int index = patternChars.indexOf(format);
 		if (index == -1)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K002b", format));
 
 		int beginPosition = buffer.length();
@@ -471,7 +471,7 @@ public class SimpleDateFormat extends DateFormat {
 	private void validateFormat(char format) {
 		int index = patternChars.indexOf(format);
 		if (index == -1)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K002b", format));
 	}
 
@@ -527,7 +527,7 @@ public class SimpleDateFormat extends DateFormat {
 			validateFormat((char) last);
 
 		if (quote)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K0019"));
 
 	}
@@ -644,7 +644,7 @@ public class SimpleDateFormat extends DateFormat {
 	private int parse(String string, int offset, char format, int count) {
 		int index = patternChars.indexOf(format);
 		if (index == -1)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K002b", format));
 		int field = -1;
 		int absolute = 0;

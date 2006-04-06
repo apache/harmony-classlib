@@ -158,7 +158,7 @@ public class SimpleTimeZone extends TimeZone {
 			int endDay, int endDayOfWeek, int endTime, int daylightSavings) {
 		this(offset, name);
 		if (daylightSavings <= 0)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00e9", daylightSavings)); //$NON-NLS-1$
 		dstSavings = daylightSavings;
 
@@ -213,13 +213,13 @@ public class SimpleTimeZone extends TimeZone {
 				endMonth, endDay, endDayOfWeek, endTime, daylightSavings);
 
 		if (startTimeMode > 4 || startTimeMode < 1) {
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00e9", startTimeMode)); //$NON-NLS-1$
 		}
 		startMode = startTimeMode;
 
 		if (endTimeMode > 4 || endTimeMode < 1) {
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00e9", endTimeMode)); //$NON-NLS-1$
 		}
 		endMode = endTimeMode;
@@ -305,7 +305,7 @@ public class SimpleTimeZone extends TimeZone {
 	public int getOffset(int era, int year, int month, int day, int dayOfWeek,
 			int time) {
 		if (era != GregorianCalendar.BC && era != GregorianCalendar.AD)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00ea", era)); //$NON-NLS-1$
 		checkRange(month, dayOfWeek, time);
 		if (month != Calendar.FEBRUARY || day != 29 || !isLeapYear(year))
@@ -532,19 +532,19 @@ public class SimpleTimeZone extends TimeZone {
 
 	private void checkRange(int month, int dayOfWeek, int time) {
 		if (month < Calendar.JANUARY || month > Calendar.DECEMBER)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00e5", month)); //$NON-NLS-1$
 		if (dayOfWeek < Calendar.SUNDAY || dayOfWeek > Calendar.SATURDAY)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00e7", dayOfWeek)); //$NON-NLS-1$
 		if (time < 0 || time >= 24 * 3600000)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00e8", time)); //$NON-NLS-1$
 	}
 
 	private void checkDay(int month, int day) {
 		if (day <= 0 || day > GregorianCalendar.DaysInMonth[month])
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00e6", day)); //$NON-NLS-1$
 	}
 
@@ -568,7 +568,7 @@ public class SimpleTimeZone extends TimeZone {
 				checkDay(endMonth, endDay);
 			else {
 				if (endDay < -5 || endDay > 5)
-					throw new IllegalArgumentException(com.ibm.oti.util.Msg
+					throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 							.getString("K00f8", endDay)); //$NON-NLS-1$
 			}
 		}
@@ -674,7 +674,7 @@ public class SimpleTimeZone extends TimeZone {
 				checkDay(startMonth, startDay);
 			else {
 				if (startDay < -5 || startDay > 5)
-					throw new IllegalArgumentException(com.ibm.oti.util.Msg
+					throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 							.getString("K00f8", startDay)); //$NON-NLS-1$
 			}
 		}

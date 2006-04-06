@@ -16,7 +16,7 @@ package org.apache.harmony.luni.net;
 
 import java.security.AccessController;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 public class NetUtil {
     

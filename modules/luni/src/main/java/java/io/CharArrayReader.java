@@ -121,7 +121,7 @@ public class CharArrayReader extends Reader {
 			if (isOpen())
 				markedPos = pos;
 			else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0060")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
 		}
 	}
 
@@ -152,7 +152,7 @@ public class CharArrayReader extends Reader {
 					return buf[pos++];
 				return -1;
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0060")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
 		}
 	}
 
@@ -191,7 +191,7 @@ public class CharArrayReader extends Reader {
 					}
 					return -1;
 				}
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0060")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
 			}
 		}
 		throw new ArrayIndexOutOfBoundsException();
@@ -217,7 +217,7 @@ public class CharArrayReader extends Reader {
 			if (isOpen()) {
 				return pos != count;
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0060")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
 		}
 	}
 
@@ -235,7 +235,7 @@ public class CharArrayReader extends Reader {
 			if (isOpen())
 				pos = markedPos != -1 ? markedPos : 0;
 			else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0060")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
 		}
 	}
 
@@ -266,7 +266,7 @@ public class CharArrayReader extends Reader {
 				}
 				return skipped;
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0060")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
 		}
 	}
 }

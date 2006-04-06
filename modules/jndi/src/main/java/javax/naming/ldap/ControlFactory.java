@@ -22,7 +22,7 @@ import javax.naming.NamingException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import com.ibm.jndi.EnvironmentReader;
+import org.apache.harmony.jndi.internal.EnvironmentReader;
 
 /**
  * This abstract class is used for factories which create controls as used in 

@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * DateFormat is the abstract superclass of formats which format and parse

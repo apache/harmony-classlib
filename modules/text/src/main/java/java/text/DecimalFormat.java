@@ -23,7 +23,7 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.Vector;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * DecimalFormat is used to format and parse numbers, both integers and
@@ -1814,7 +1814,7 @@ public class DecimalFormat extends NumberFormat {
 				|| getMaximumIntegerDigits() > DOUBLE_INTEGER_DIGITS
 				|| getMinimumFractionDigits() > DOUBLE_FRACTION_DIGITS
 				|| getMaximumFractionDigits() > DOUBLE_FRACTION_DIGITS)
-			throw new InvalidObjectException(com.ibm.oti.util.Msg
+			throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
 					.getString("K00f9"));
 	}
 

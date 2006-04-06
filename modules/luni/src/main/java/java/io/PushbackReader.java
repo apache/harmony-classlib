@@ -67,7 +67,7 @@ public class PushbackReader extends FilterReader {
 			buf = new char[size];
 			pos = size;
 		} else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K0058")); //$NON-NLS-1$
 	}
 
@@ -97,7 +97,7 @@ public class PushbackReader extends FilterReader {
 	 *             Since mark is not supported byt PushbackReader.
 	 */
 	public void mark(int readAheadLimit) throws IOException {
-		throw new IOException(com.ibm.oti.util.Msg.getString("K007f")); //$NON-NLS-1$
+		throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007f")); //$NON-NLS-1$
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class PushbackReader extends FilterReader {
 		synchronized (lock) {
 			if (buf != null)
 				return (buf.length - pos > 0 || in.ready());
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0080")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0080")); //$NON-NLS-1$
 		}
 	}
 
@@ -228,7 +228,7 @@ public class PushbackReader extends FilterReader {
 	 *             Since mark is not supported.
 	 */
 	public void reset() throws IOException {
-		throw new IOException(com.ibm.oti.util.Msg.getString("K007f")); //$NON-NLS-1$
+		throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007f")); //$NON-NLS-1$
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class PushbackReader extends FilterReader {
 	public void unread(char[] buffer, int offset, int count) throws IOException {
 		if (count > pos)
 			// Pushback buffer full
-			throw new IOException(com.ibm.oti.util.Msg.getString("K007e"));
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007e"));
 		// avoid int overflow
 		if (0 <= offset && offset <= buffer.length && 0 <= count
 				&& count <= buffer.length - offset) {
@@ -298,7 +298,7 @@ public class PushbackReader extends FilterReader {
 				if (pos != 0)
 					buf[--pos] = (char) oneChar;
 				else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K007e")); //$NON-NLS-1$
 			} else
 				throw new IOException();

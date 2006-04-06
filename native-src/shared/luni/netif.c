@@ -89,7 +89,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
       return NULL;
     }
 
-  utilClass = (*env)->FindClass (env, "com/ibm/oti/util/Util");
+  utilClass = (*env)->FindClass (env, "org/apache/harmony/luni/util/Util");
   if (!utilClass)
     {
       return NULL;

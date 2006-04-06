@@ -15,7 +15,7 @@
 
 package java.net;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 
 /**

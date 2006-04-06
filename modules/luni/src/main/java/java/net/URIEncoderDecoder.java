@@ -19,7 +19,7 @@ package java.net;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This class is used to encode a string using the format required by

@@ -99,7 +99,7 @@ public abstract class OutputStream implements Closeable,Flushable{
 			for (int i = offset; i < offset + count; i++)
 				write(buffer[i]);
 		} else
-			throw new ArrayIndexOutOfBoundsException(com.ibm.oti.util.Msg
+			throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 					.getString("K002f")); //$NON-NLS-1$
 	}
 

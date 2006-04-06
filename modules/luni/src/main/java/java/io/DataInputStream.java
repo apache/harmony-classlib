@@ -204,7 +204,7 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 			} else
 				throw new IndexOutOfBoundsException();
 		} else
-			throw new NullPointerException(com.ibm.oti.util.Msg
+			throw new NullPointerException(org.apache.harmony.luni.util.Msg
 					.getString("K0047")); //$NON-NLS-1$
 	}
 
@@ -404,7 +404,7 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 
 		readFully(buf, 0, utfSize);
 		String result;
-		result = com.ibm.oti.util.Util.convertUTF8WithBuf(buf, out, 0, utfSize);
+		result = org.apache.harmony.luni.util.Util.convertUTF8WithBuf(buf, out, 0, utfSize);
 		if (!makeBuf)
 			useShared = true;
 		return result;

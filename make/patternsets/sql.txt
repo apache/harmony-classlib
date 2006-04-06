@@ -20,4 +20,4 @@ javax/sql/rowset/spi/*
 javax/transaction/*
 javax/transaction/xa/*
 
-com/ibm/common/*
+org/apache/harmony/sql/internal/common/*

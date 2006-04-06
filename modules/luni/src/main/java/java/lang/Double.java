@@ -300,7 +300,7 @@ public final class Double extends Number implements Comparable {
 	 */
 	public static double parseDouble(String string)
 			throws NumberFormatException {
-		return com.ibm.oti.util.FloatingPointParser.parseDouble(string);
+		return org.apache.harmony.luni.util.FloatingPointParser.parseDouble(string);
 	}
 
 	/**
@@ -330,7 +330,7 @@ public final class Double extends Number implements Comparable {
 	 * @return a printable representation of the argument.
 	 */
 	public static String toString(double d) {
-		return com.ibm.oti.util.NumberConverter.convert(d);
+		return org.apache.harmony.luni.util.NumberConverter.convert(d);
 	}
 
 	/**

@@ -80,7 +80,7 @@ public class BufferedInputStream extends FilterInputStream {
 		if (size > 0)
 			buf = new byte[size];
 		else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K0058")); //$NON-NLS-1$
 	}
 
@@ -96,7 +96,7 @@ public class BufferedInputStream extends FilterInputStream {
 	 */
 	public synchronized int available() throws IOException {
 		if (buf == null) {
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0059")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0059")); //$NON-NLS-1$
 		}
 		return count - pos + in.available();
 	}
@@ -194,7 +194,7 @@ public class BufferedInputStream extends FilterInputStream {
 				return buf[pos++] & 0xFF;
 			return -1;
 		}
-		throw new IOException(com.ibm.oti.util.Msg.getString("K0059")); //$NON-NLS-1$
+		throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0059")); //$NON-NLS-1$
 	}
 
 	/**
@@ -271,9 +271,9 @@ public class BufferedInputStream extends FilterInputStream {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		if (buf == null) {
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0059")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0059")); //$NON-NLS-1$
 		}
-		throw new NullPointerException(com.ibm.oti.util.Msg.getString("K0047")); //$NON-NLS-1$
+		throw new NullPointerException(org.apache.harmony.luni.util.Msg.getString("K0047")); //$NON-NLS-1$
 	}
 
 	/**
@@ -292,9 +292,9 @@ public class BufferedInputStream extends FilterInputStream {
 			if (buf != null) {
 				pos = markpos;
 			} else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0059")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0059")); //$NON-NLS-1$
 		} else
-			throw new IOException(com.ibm.oti.util.Msg.getString("K005a")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005a")); //$NON-NLS-1$
 	}
 
 	/**

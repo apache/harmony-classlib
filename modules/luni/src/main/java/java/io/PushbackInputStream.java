@@ -15,6 +15,7 @@
 
 package java.io;
 
+
 /**
  * PushbackInputStream is a filter class which allows bytes read to be pushed
  * back into the stream so that they can be reread. Parsers may find this
@@ -65,7 +66,7 @@ public class PushbackInputStream extends FilterInputStream {
 			buf = new byte[size];
 			pos = size;
 		} else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K0058")); //$NON-NLS-1$
 	}
 
@@ -219,7 +220,7 @@ public class PushbackInputStream extends FilterInputStream {
 			}
 			return numSkipped;
 		}
-		throw new IOException(com.ibm.oti.util.Msg.getString("K0059")); //$NON-NLS-1$
+		throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0059")); //$NON-NLS-1$
 	}
 
 	/**
@@ -261,7 +262,7 @@ public class PushbackInputStream extends FilterInputStream {
 			throws IOException {
 		if (length > pos)
 			// Pushback buffer full
-			throw new IOException(com.ibm.oti.util.Msg.getString("K007e"));
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007e"));
 		// avoid int overflow
 		if (0 <= offset && offset <= buffer.length && 0 <= length
 				&& length <= buffer.length - offset) {
@@ -287,7 +288,7 @@ public class PushbackInputStream extends FilterInputStream {
 			if (pos != 0)
 				buf[--pos] = (byte) oneByte;
 			else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K007e")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007e")); //$NON-NLS-1$
 		} else
 			throw new IOException();
 	}
@@ -304,7 +305,7 @@ public class PushbackInputStream extends FilterInputStream {
 	public void mark(int readlimit) {
 		return;
 	}
-
+	
 	/**
 	 * Reset current position to the mark made previously int the stream, but
 	 * the reset method will throw IOException and do nothing else if called.

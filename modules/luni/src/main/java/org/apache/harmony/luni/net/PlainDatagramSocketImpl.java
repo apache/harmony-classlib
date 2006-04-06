@@ -34,8 +34,8 @@ import java.security.AccessController;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * The default, concrete instance of datagram sockets. This class does not

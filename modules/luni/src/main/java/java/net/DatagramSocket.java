@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.apache.harmony.luni.net.SocketImplProvider;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This class models a socket for sending & receiving datagram packets.

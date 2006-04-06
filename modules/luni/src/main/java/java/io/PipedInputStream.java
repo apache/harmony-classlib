@@ -156,7 +156,7 @@ public class PipedInputStream extends InputStream {
 							return -1;
 						if (!first && lastWriter != null
 								&& !lastWriter.isAlive())
-							throw new IOException(com.ibm.oti.util.Msg
+							throw new IOException(org.apache.harmony.luni.util.Msg
 									.getString("K0076")); //$NON-NLS-1$
 						first = false;
 						// Notify callers of receive()
@@ -177,9 +177,9 @@ public class PipedInputStream extends InputStream {
 				}
 				return result & 0xff;
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0075")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0075")); //$NON-NLS-1$
 		}
-		throw new IOException(com.ibm.oti.util.Msg.getString("K0074")); //$NON-NLS-1$
+		throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0074")); //$NON-NLS-1$
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class PipedInputStream extends InputStream {
 							return -1;
 						if (!first && lastWriter != null
 								&& !lastWriter.isAlive())
-							throw new IOException(com.ibm.oti.util.Msg
+							throw new IOException(org.apache.harmony.luni.util.Msg
 									.getString("K0076")); //$NON-NLS-1$
 						first = false;
 						// Notify callers of receive()
@@ -273,9 +273,9 @@ public class PipedInputStream extends InputStream {
 				return bytesCopied + copyLength;
 			}
 			if (!isConnected) {
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0074")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0074")); //$NON-NLS-1$
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0075")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0075")); //$NON-NLS-1$
 		}
 		if (bytes == null) {
 			throw new NullPointerException();
@@ -311,7 +311,7 @@ public class PipedInputStream extends InputStream {
 					notifyAll();
 					wait(1000);
 					if (lastReader != null && !lastReader.isAlive())
-						throw new IOException(com.ibm.oti.util.Msg
+						throw new IOException(org.apache.harmony.luni.util.Msg
 								.getString("K0076")); //$NON-NLS-1$
 				}
 			} catch (InterruptedException e) {
@@ -326,7 +326,7 @@ public class PipedInputStream extends InputStream {
 				return;
 			}
 		}
-		throw new IOException(com.ibm.oti.util.Msg.getString("K0078")); //$NON-NLS-1$
+		throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
 	}
 
 	synchronized void done() {

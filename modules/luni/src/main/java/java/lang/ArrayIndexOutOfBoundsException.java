@@ -16,7 +16,7 @@
 package java.lang;
 
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This runtime exception is thrown when the an array is indexed with a value

@@ -18,7 +18,7 @@ package java.util;
 
 import java.io.Serializable;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * The BitSet class implements a bit field. Each element in a BitSet can be
@@ -280,7 +280,7 @@ public class BitSet implements Serializable, Cloneable {
 				growBits(pos);
 			bits[pos / ELM_SIZE] |= 1L << (pos % ELM_SIZE);
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
+			throw new IndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 					.getString("K0006")); //$NON-NLS-1$
 	}
 
@@ -450,7 +450,7 @@ public class BitSet implements Serializable, Cloneable {
 				growBits(pos);
 			bits[pos / ELM_SIZE] ^= 1L << (pos % ELM_SIZE);
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
+			throw new IndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 					.getString("K0006")); //$NON-NLS-1$
 	}
 
@@ -688,7 +688,7 @@ public class BitSet implements Serializable, Cloneable {
 
 			return -1;
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
+			throw new IndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 					.getString("K0006")); //$NON-NLS-1$
 	}
 
@@ -728,7 +728,7 @@ public class BitSet implements Serializable, Cloneable {
 
 			return bssize;
 		} else
-			throw new IndexOutOfBoundsException(com.ibm.oti.util.Msg
+			throw new IndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 					.getString("K0006")); //$NON-NLS-1$
 	}
 

@@ -65,7 +65,7 @@ public final class Currency implements Serializable {
 			try {
 				defaultFractionDigits = bundle.getString(currencyCode);
 			} catch (MissingResourceException e) {
-				throw new IllegalArgumentException(com.ibm.oti.util.Msg
+				throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 						.getString("K0322", currencyCode)); //$NON-NLS-1$
 			}
 			currency.defaultFractionDigits = Integer
@@ -98,7 +98,7 @@ public final class Currency implements Serializable {
 		try {
 			currencyCode = bundle.getString(country);
 		} catch (MissingResourceException e) {
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K0323", locale.toString())); //$NON-NLS-1$
 		}
 

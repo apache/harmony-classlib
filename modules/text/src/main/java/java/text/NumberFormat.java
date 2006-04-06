@@ -25,7 +25,7 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * NumberFormat is the abstract superclass of Formats which format and parse
@@ -614,11 +614,11 @@ public abstract class NumberFormat extends Format {
 		}
 		if (minimumIntegerDigits > maximumIntegerDigits
 				|| minimumFractionDigits > maximumFractionDigits)
-			throw new InvalidObjectException(com.ibm.oti.util.Msg
+			throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
 					.getString("K00fa"));
 		if (minimumIntegerDigits < 0 || maximumIntegerDigits < 0
 				|| minimumFractionDigits < 0 || maximumFractionDigits < 0)
-			throw new InvalidObjectException(com.ibm.oti.util.Msg
+			throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
 					.getString("K00fb"));
 	}
 

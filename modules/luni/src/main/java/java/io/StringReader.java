@@ -81,7 +81,7 @@ public class StringReader extends Reader {
 				if (isOpen())
 					markpos = pos;
 				else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K0083")); //$NON-NLS-1$
 			}
 		} else
@@ -118,7 +118,7 @@ public class StringReader extends Reader {
 				}
 				return -1;
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0083")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0083")); //$NON-NLS-1$
 		}
 	}
 
@@ -142,7 +142,7 @@ public class StringReader extends Reader {
 					pos = end;
 					return read;
 				}
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0083")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0083")); //$NON-NLS-1$
 			}
 		}
 		throw new ArrayIndexOutOfBoundsException();
@@ -167,7 +167,7 @@ public class StringReader extends Reader {
 		synchronized (lock) {
 			if (isOpen())
 				return true;
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0083")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0083")); //$NON-NLS-1$
 		}
 	}
 
@@ -185,7 +185,7 @@ public class StringReader extends Reader {
 			if (isOpen())
 				pos = markpos != -1 ? markpos : 0;
 			else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0083")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0083")); //$NON-NLS-1$
 		}
 	}
 
@@ -210,7 +210,7 @@ public class StringReader extends Reader {
 				}
 				return skipped;
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0083")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0083")); //$NON-NLS-1$
 		}
 	}
 }

@@ -87,9 +87,9 @@ public class PipedOutputStream extends OutputStream {
 				stream.isConnected = true;
 				this.dest = stream;
 			} else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K007a")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007a")); //$NON-NLS-1$
 		} else
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0079")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0079")); //$NON-NLS-1$
 	}
 
 	/**

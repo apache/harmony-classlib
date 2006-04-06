@@ -24,7 +24,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.security.AccessController;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * Properties is a Hashtable where the keys and values must be Strings. Each

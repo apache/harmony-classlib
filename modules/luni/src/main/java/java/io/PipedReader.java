@@ -122,11 +122,11 @@ public class PipedReader extends Reader {
 	void establishConnection(PipedWriter src) throws IOException {
 		synchronized (lock) {
 			if (data == null)
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0078")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
 			if (!isConnected) {
 				isConnected = true;
 			} else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K007a")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007a")); //$NON-NLS-1$
 		}
 	}
 
@@ -195,7 +195,7 @@ public class PipedReader extends Reader {
 								return -1;
 							if (!first && lastWriter != null
 									&& !lastWriter.isAlive())
-								throw new IOException(com.ibm.oti.util.Msg
+								throw new IOException(org.apache.harmony.luni.util.Msg
 										.getString("K0076")); //$NON-NLS-1$
 							first = false;
 							// Notify callers of receive()
@@ -244,10 +244,10 @@ public class PipedReader extends Reader {
 					return charsCopied + copyLength;
 				}
 				if (!isConnected) {
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K007b")); //$NON-NLS-1$
 				}
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0078")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
 			}
 		}
 		throw new ArrayIndexOutOfBoundsException();
@@ -268,9 +268,9 @@ public class PipedReader extends Reader {
 				if (data != null) {
 					return in != -1;
 				}
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0078")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K007b")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007b")); //$NON-NLS-1$
 		}
 	}
 
@@ -302,7 +302,7 @@ public class PipedReader extends Reader {
 						notifyAll();
 						wait(1000);
 						if (lastReader != null && !lastReader.isAlive())
-							throw new IOException(com.ibm.oti.util.Msg
+							throw new IOException(org.apache.harmony.luni.util.Msg
 									.getString("K0076")); //$NON-NLS-1$
 					}
 				} catch (InterruptedException e) {
@@ -317,7 +317,7 @@ public class PipedReader extends Reader {
 					return;
 				}
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0078")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
 		}
 	}
 
@@ -354,7 +354,7 @@ public class PipedReader extends Reader {
 							notifyAll();
 							wait(1000);
 							if (lastReader != null && !lastReader.isAlive())
-								throw new IOException(com.ibm.oti.util.Msg
+								throw new IOException(org.apache.harmony.luni.util.Msg
 										.getString("K0076")); //$NON-NLS-1$
 						}
 					} catch (InterruptedException e) {
@@ -388,7 +388,7 @@ public class PipedReader extends Reader {
 				if (count == 0)
 					return;
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K0078")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
 		}
 	}
 

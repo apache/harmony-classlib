@@ -21,7 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 
-import com.ibm.oti.util.Inet6Util;
+import org.apache.harmony.luni.util.Inet6Util;
 
 public final class Inet6Address extends InetAddress {
 

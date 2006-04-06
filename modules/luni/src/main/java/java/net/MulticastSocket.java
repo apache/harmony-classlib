@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.security.AccessController;
 import java.util.Enumeration;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * This class models a multicast socket for sending & receiving datagram packets

@@ -523,7 +523,6 @@ public final class System {
 			systemProperties.put("console.encoding", consoleEncoding);
 		}
 
-		systemProperties.put("com.ibm.oti.jcl.build", "plugin");
 	}
 
 	/**

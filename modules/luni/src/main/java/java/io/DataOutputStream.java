@@ -87,7 +87,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
 			out.write(buffer, offset, count);
 			written += count;
 		} else
-			throw new NullPointerException(com.ibm.oti.util.Msg
+			throw new NullPointerException(org.apache.harmony.luni.util.Msg
 					.getString("K0047")); //$NON-NLS-1$
 	}
 
@@ -356,7 +356,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
 				writeShort((int) utfCount);
 				writeUTFBytes(str, utfCount);
 			} else
-				throw new UTFDataFormatException(com.ibm.oti.util.Msg
+				throw new UTFDataFormatException(org.apache.harmony.luni.util.Msg
 						.getString("K0068")); //$NON-NLS-1$
 		}
 	}

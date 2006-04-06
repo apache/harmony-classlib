@@ -28,9 +28,9 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.Vector;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PositionedInputStream;
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PositionedInputStream;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * This class implements ASN.1 decoding, but just the smallest subset possible,

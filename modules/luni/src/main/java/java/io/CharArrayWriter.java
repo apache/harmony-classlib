@@ -59,7 +59,7 @@ public class CharArrayWriter extends Writer {
 			buf = new char[initialSize];
 			lock = buf;
 		} else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K005e")); //$NON-NLS-1$
 	}
 

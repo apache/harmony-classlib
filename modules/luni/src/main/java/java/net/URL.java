@@ -22,7 +22,7 @@ import java.security.AccessController;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * An instance of class URL specifies the location of a resource on the world
@@ -130,7 +130,7 @@ public final class URL implements java.io.Serializable {
 	public static synchronized void setURLStreamHandlerFactory(
 			URLStreamHandlerFactory streamFactory) {
 		if (streamHandlerFactory != null)
-			throw new Error(com.ibm.oti.util.Msg.getString("K004b"));
+			throw new Error(org.apache.harmony.luni.util.Msg.getString("K004b"));
 		SecurityManager sm = System.getSecurityManager();
 		if (sm != null)
 			sm.checkSetFactory();
@@ -281,7 +281,7 @@ public final class URL implements java.io.Serializable {
 			// values in the context, but still allow them to be over-ridden
 			// by the values in the ("relative") spec.
 			if (context == null)
-				throw new MalformedURLException(com.ibm.oti.util.Msg.getString(
+				throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
 						"K00d8", spec));
 			set(context.getProtocol(), context.getHost(), context.getPort(),
 					context.getAuthority(), context.getUserInfo(), context
@@ -295,7 +295,7 @@ public final class URL implements java.io.Serializable {
 		if (strmHandler == null) {
 			setupStreamHandler();
 			if (strmHandler == null)
-				throw new MalformedURLException(com.ibm.oti.util.Msg.getString(
+				throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
 						"K00b3", protocol));
 		}
 
@@ -314,7 +314,7 @@ public final class URL implements java.io.Serializable {
 		}
 
 		if (port < -1)
-			throw new MalformedURLException(com.ibm.oti.util.Msg.getString(
+			throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
 					"K0325", port)); //$NON-NLS-1$
 	}
 
@@ -379,7 +379,7 @@ public final class URL implements java.io.Serializable {
 	public URL(String protocol, String host, int port, String file,
 			URLStreamHandler handler) throws MalformedURLException {
 		if (port < -1)
-			throw new MalformedURLException(com.ibm.oti.util.Msg.getString(
+			throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
 					"K0325", port)); //$NON-NLS-1$
 
 		if (host != null && host.indexOf(":") != -1 && host.charAt(0) != '[') {
@@ -408,7 +408,7 @@ public final class URL implements java.io.Serializable {
 		if (handler == null) {
 			setupStreamHandler();
 			if (strmHandler == null)
-				throw new MalformedURLException(com.ibm.oti.util.Msg.getString(
+				throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
 						"K00b3", protocol));
 		} else {
 			SecurityManager sm = System.getSecurityManager();
@@ -566,7 +566,7 @@ public final class URL implements java.io.Serializable {
 
 		// No one else has provided a handler, so try our internal one.
 		try {
-			String className = "com.ibm.oti.net.www.protocol." + protocol
+			String className = "org.apache.harmony.luni.internal.net.www.protocol." + protocol
 					+ ".Handler";
 			strmHandler = (URLStreamHandler) Class.forName(className)
 					.newInstance();
@@ -681,7 +681,7 @@ public final class URL implements java.io.Serializable {
 			}
 			setupStreamHandler();
 			if (strmHandler == null)
-				throw new IOException(com.ibm.oti.util.Msg.getString("K00b3",
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K00b3",
 						protocol));
 		} catch (ClassNotFoundException e) {
 			throw new java.io.IOException(e.toString());

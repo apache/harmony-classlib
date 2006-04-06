@@ -91,10 +91,10 @@ public class PipedWriter extends Writer {
 					stream.establishConnection(this);
 					this.dest = stream;
 				} else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K0078")); //$NON-NLS-1$
 			} else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0079")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0079")); //$NON-NLS-1$
 		}
 	}
 
@@ -146,10 +146,10 @@ public class PipedWriter extends Writer {
 					if (dest != null)
 						dest.receive(buffer, offset, count);
 					else
-						throw new IOException(com.ibm.oti.util.Msg
+						throw new IOException(org.apache.harmony.luni.util.Msg
 								.getString("K007b")); //$NON-NLS-1$
 				} else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K0078")); //$NON-NLS-1$
 			}
 		} else
@@ -182,10 +182,10 @@ public class PipedWriter extends Writer {
 				if (dest != null)
 					dest.receive((char) c);
 				else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K007b")); //$NON-NLS-1$
 			} else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K0078")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
 		}
 	}
 }

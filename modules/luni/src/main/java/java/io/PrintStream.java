@@ -19,7 +19,7 @@ package java.io;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * PrintStream is a class which takes an OutputStream and provides convenience
@@ -451,7 +451,7 @@ public class PrintStream extends FilterOutputStream {
 					}
 				}
 			} else
-				throw new ArrayIndexOutOfBoundsException(com.ibm.oti.util.Msg
+				throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 						.getString("K002f")); //$NON-NLS-1$
 		} else
 			throw new NullPointerException();

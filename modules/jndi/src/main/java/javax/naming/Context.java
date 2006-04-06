@@ -166,10 +166,10 @@ import java.util.Hashtable;
  * in which dot separator characters are converted into slash path separator
  * characters to construct a filepath appended with "jndiprovider.properties".
  * Consider the example where you have a service provider which supplies
- * a context <code>com.ibm.jndi.example.exampleCtx</code>.
- * In this case the package prefix is <code>com.ibm.jndi.example</code>. 
+ * a context <code>org.apache.harmony.jndi.example.exampleCtx</code>.
+ * In this case the package prefix is <code>org.apache.harmony.jndi.example</code>. 
  * Substituting slash chars for dots & appending "jndiprovider.properties" 
- * gives you <code>com/ibm/jndi/example/jndiprovider.properties</code>.</p>
+ * gives you <code>org/apache/harmony/jndi/example/jndiprovider.properties</code>.</p>
  * <p>
  * An important part of service provider implementation is to specify certain
  * standard JNDI properties that are using to locate any of the various

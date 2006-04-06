@@ -10,5 +10,5 @@ Import-Package: java.lang,
  java.net, 
  java.io, 
  java.security, 
- com.ibm.oti.util
+ org.apache.harmony.luni.util
 Export-Package: java.text

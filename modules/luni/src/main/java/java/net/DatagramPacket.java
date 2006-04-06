@@ -15,7 +15,7 @@
 
 package java.net;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 
 /**
@@ -181,7 +181,7 @@ public final class DatagramPacket {
 	public synchronized void setData(byte[] buf, int anOffset, int aLength) {
 		if (0 > anOffset || anOffset > buf.length || 0 > aLength
 				|| aLength > buf.length - anOffset)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K002f"));
 		data = buf;
 		offset = anOffset;

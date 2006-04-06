@@ -26,8 +26,8 @@ import java.util.StringTokenizer;
 
 import javax.naming.CannotProceedException;
 import javax.naming.Context;
-import com.ibm.jndi.EnvironmentReader;
-import com.ibm.jndi.UrlParser;
+import org.apache.harmony.jndi.internal.EnvironmentReader;
+import org.apache.harmony.jndi.internal.UrlParser;
 
 import javax.naming.Name;
 import javax.naming.NamingException;

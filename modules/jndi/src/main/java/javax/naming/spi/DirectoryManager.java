@@ -40,8 +40,8 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.spi.DirStateFactory.Result;
 
-import com.ibm.jndi.EnvironmentReader;
-import com.ibm.jndi.UrlParser;
+import org.apache.harmony.jndi.internal.EnvironmentReader;
+import org.apache.harmony.jndi.internal.UrlParser;
 
 /**
  * The <code>DirectoryManager</code> class cannot be instantiated. All its

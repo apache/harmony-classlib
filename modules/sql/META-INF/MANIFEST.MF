@@ -8,7 +8,7 @@ Eclipse-JREBundle: true
 Import-Package: java.lang,
  java.util,
  java.io,
- com.ibm.oti.vm,
+ org.apache.harmony.kernel.vm,
  java.security,
  java.math,
  java.net,

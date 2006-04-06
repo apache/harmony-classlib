@@ -15,6 +15,7 @@
 
 package java.util.zip;
 
+
 /**
  * The Inflater class is used to decompress bytes using the DEFLATE compression
  * algorithm. Inflation is performed by the ZLIB compression library.
@@ -169,7 +170,7 @@ public class Inflater {
 			needsDictionary = false;
 			int result = inflateImpl(buf, off, nbytes, streamHandle);
 			if (needsDictionary && neededDict)
-				throw new DataFormatException(com.ibm.oti.util.Msg
+				throw new DataFormatException(org.apache.harmony.luni.util.Msg
 						.getString("K0324"));
 			return result;
 		}

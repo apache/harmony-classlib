@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * AttributedCharacterIterator

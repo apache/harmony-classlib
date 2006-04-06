@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import com.ibm.oti.vm.VM;
+import org.apache.harmony.kernel.vm.VM;
 
 /**
  * ResourceBundle is an abstract class which is the superclass of classes which

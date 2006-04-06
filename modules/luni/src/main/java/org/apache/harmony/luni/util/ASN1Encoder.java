@@ -35,7 +35,7 @@ import org.apache.harmony.luni.util.ASN1Decoder.Set;
 import org.apache.harmony.luni.util.ASN1Decoder.Set2;
 import org.apache.harmony.luni.util.ASN1Decoder.UTCTime;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 
 /**

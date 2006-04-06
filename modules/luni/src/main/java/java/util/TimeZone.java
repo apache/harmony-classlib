@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.security.AccessController;
 import java.text.DateFormatSymbols;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * TimeZone is an abstract class which represents a local time zone and its

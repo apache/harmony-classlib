@@ -117,10 +117,10 @@ extern "C"
     
   /* NativesCommonDoubleParsing*/
   JNIEXPORT jdouble JNICALL
-    Java_com_ibm_oti_util_FloatingPointParser_parseDblImpl
+    Java_org_apache_harmony_luni_util_FloatingPointParser_parseDblImpl
     PROTOTYPE ((JNIEnv * env, jclass clazz, jstring s, jint e));
   JNIEXPORT void JNICALL
-    Java_com_ibm_oti_util_NumberConverter_bigIntDigitGeneratorInstImpl
+    Java_org_apache_harmony_luni_util_NumberConverter_bigIntDigitGeneratorInstImpl
     PROTOTYPE ((JNIEnv * env, jobject inst, jlong f, jint e,
                 jboolean isDenormalized, jboolean mantissaIsZero, jint p));
                 
@@ -545,7 +545,7 @@ extern "C"
     
   /* NativesCommonFloatParsing*/
   JNIEXPORT jfloat JNICALL
-    Java_com_ibm_oti_util_FloatingPointParser_parseFltImpl
+    Java_org_apache_harmony_luni_util_FloatingPointParser_parseFltImpl
     PROTOTYPE ((JNIEnv * env, jclass clazz, jstring s, jint e));
     
   /* NativesCommonNetHelpers*/
@@ -708,36 +708,36 @@ extern "C"
     PROTOTYPE ((JNIEnv * env, jobject recv));
     
   /* NativesCommonProcess*/
-  jint JNICALL Java_com_ibm_oti_lang_ProcessInputStream_availableImpl
+  jint JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_availableImpl
     PROTOTYPE ((JNIEnv * env, jobject recv));
-  void JNICALL Java_com_ibm_oti_lang_ProcessInputStream_oneTimeInitialization
+  void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_oneTimeInitialization
     PROTOTYPE ((JNIEnv * env, jclass clazz));
-  void JNICALL Java_com_ibm_oti_lang_SystemProcess_destroyImpl
+  void JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_destroyImpl
     PROTOTYPE ((JNIEnv * env, jobject recv));
-  void JNICALL Java_com_ibm_oti_lang_ProcessOutputStream_writeImpl
+  void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_writeImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
                 jint nbytes, jlong handle));
-  jint JNICALL Java_com_ibm_oti_lang_SystemProcess_waitForCompletionImpl
+  jint JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_waitForCompletionImpl
     PROTOTYPE ((JNIEnv * env, jobject recv));
-  void JNICALL Java_com_ibm_oti_lang_SystemProcess_closeImpl
+  void JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_closeImpl
     PROTOTYPE ((JNIEnv * env, jobject recv));
-  void JNICALL Java_com_ibm_oti_lang_ProcessOutputStream_closeImpl
+  void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_closeImpl
     PROTOTYPE ((JNIEnv * env, jobject recv));
-  void JNICALL Java_com_ibm_oti_lang_ProcessOutputStream_oneTimeInitialization
+  void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_oneTimeInitialization
     PROTOTYPE ((JNIEnv * env, jclass clazz));
-  jint JNICALL Java_com_ibm_oti_lang_ProcessInputStream_readImpl
+  jint JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_readImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
                 jint nbytes, jlong handle));
-  void JNICALL Java_com_ibm_oti_lang_ProcessOutputStream_setFDImpl
+  void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_setFDImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jobject arg1, jlong arg2));
-  void JNICALL Java_com_ibm_oti_lang_ProcessInputStream_closeImpl
+  void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_closeImpl
     PROTOTYPE ((JNIEnv * env, jobject recv));
-  jlongArray JNICALL Java_com_ibm_oti_lang_SystemProcess_createImpl
+  jlongArray JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl
     PROTOTYPE ((JNIEnv * env, jclass clazz, jobject recv, jobjectArray arg1,
                 jobjectArray arg2, jbyteArray dir));
-  void JNICALL Java_com_ibm_oti_lang_ProcessInputStream_setFDImpl
+  void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_setFDImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jobject arg1, jlong arg2));
-  void JNICALL Java_com_ibm_oti_lang_SystemProcess_oneTimeInitialization
+  void JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_oneTimeInitialization
     PROTOTYPE ((JNIEnv * env, jclass clazz));
     
   /* NativesCommonServerSocket*/

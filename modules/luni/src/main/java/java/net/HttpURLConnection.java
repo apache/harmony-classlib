@@ -392,7 +392,7 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	 */
 	public void setRequestMethod(String method) throws ProtocolException {
 		if (connected)
-			throw new ProtocolException(com.ibm.oti.util.Msg.getString("K0037"));
+			throw new ProtocolException(org.apache.harmony.luni.util.Msg.getString("K0037"));
 		for (int i = 0; i < methodTokens.length; i++) {
 			if (methodTokens[i].equals(method)) {
 				// if there is a supported method that matches the desired

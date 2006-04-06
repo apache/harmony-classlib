@@ -18,7 +18,7 @@ package java.io;
 
 import java.security.AccessController;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * PrintWriter is a class which takes either an OutputStream or Writer and

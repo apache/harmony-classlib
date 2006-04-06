@@ -33,11 +33,11 @@
 #define DEFAULT_WIDTH MAX_ACCURACY_WIDTH
 
 JNIEXPORT jdouble JNICALL
-Java_com_ibm_oti_util_FloatingPointParser_parseDblImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_util_FloatingPointParser_parseDblImpl (JNIEnv * env,
                                                         jclass clazz,
                                                         jstring s, jint e);
 JNIEXPORT void JNICALL
-Java_com_ibm_oti_util_NumberConverter_bigIntDigitGeneratorInstImpl (JNIEnv *
+Java_org_apache_harmony_luni_util_NumberConverter_bigIntDigitGeneratorInstImpl (JNIEnv *
                                                                     env,
                                                                     jobject
                                                                     inst,
@@ -622,7 +622,7 @@ OutOfMemory:
 #endif
 
 JNIEXPORT jdouble JNICALL
-Java_com_ibm_oti_util_FloatingPointParser_parseDblImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_util_FloatingPointParser_parseDblImpl (JNIEnv * env,
                                                         jclass clazz,
                                                         jstring s, jint e)
 {
@@ -681,7 +681,7 @@ Java_com_ibm_oti_util_FloatingPointParser_parseDblImpl (JNIEnv * env,
  * 
  */
 JNIEXPORT void JNICALL
-Java_com_ibm_oti_util_NumberConverter_bigIntDigitGeneratorInstImpl (JNIEnv *
+Java_org_apache_harmony_luni_util_NumberConverter_bigIntDigitGeneratorInstImpl (JNIEnv *
                                                                     env,
                                                                     jobject
                                                                     inst,

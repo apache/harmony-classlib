@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * The Manifest class is used to obtain attribute information for a JarFile and
@@ -39,7 +39,7 @@ public class Manifest implements Cloneable {
 	private HashMap entryAttributes = new HashMap();
 
 	private HashMap chunks;
-	
+
 	/*The data chunk of Main Attributes in the manifest is needed in verification.*/
 	private byte[] mainAttributesChunk;
 	

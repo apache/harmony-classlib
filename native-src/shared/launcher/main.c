@@ -642,7 +642,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
                                    HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
               return 1;
             }
-          strcpy (mainClassJar, "com.ibm.oti.vm.JarRunner");
+          strcpy (mainClassJar, "org.apache.harmony.kernel.vm.JarRunner");
         }
     }
   /* entries from command line, properties file, 3 defaults plus the port library option */

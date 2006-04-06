@@ -23,8 +23,8 @@ import java.io.PushbackInputStream;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.Util;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * ZipInputStream is an input stream for reading zip files.

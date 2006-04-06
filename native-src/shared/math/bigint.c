@@ -112,7 +112,7 @@ RIGHT_SHIFT (void *arIn, IDATA lenIn, IDATA shiftval)
 }
 
 jlongArray JNICALL
-Java_com_ibm_oti_util_math_BigInteger_addImpl (JNIEnv * env, jclass cls,
+Java_org_apache_harmony_math_util_BigInteger_addImpl (JNIEnv * env, jclass cls,
                                                jlongArray src1,
                                                jlongArray src2)
 {
@@ -120,7 +120,7 @@ Java_com_ibm_oti_util_math_BigInteger_addImpl (JNIEnv * env, jclass cls,
 }
 
 jint JNICALL
-Java_com_ibm_oti_util_math_BigInteger_compImpl (JNIEnv * env, jclass cls,
+Java_org_apache_harmony_math_util_BigInteger_compImpl (JNIEnv * env, jclass cls,
                                                 jlongArray src1,
                                                 jlongArray src2)
 {
@@ -182,7 +182,7 @@ done:
 }
 
 jlongArray JNICALL
-Java_com_ibm_oti_util_math_BigInteger_divImpl (JNIEnv * env, jclass cls,
+Java_org_apache_harmony_math_util_BigInteger_divImpl (JNIEnv * env, jclass cls,
                                                jlongArray topObject,
                                                jlongArray bottomObject)
 {
@@ -461,7 +461,7 @@ error:
 }
 
 jlongArray JNICALL
-Java_com_ibm_oti_util_math_BigInteger_mulImpl (JNIEnv * env, jclass cls,
+Java_org_apache_harmony_math_util_BigInteger_mulImpl (JNIEnv * env, jclass cls,
                                                jlongArray src1,
                                                jlongArray src2)
 {
@@ -595,14 +595,14 @@ error:
 }
 
 jlongArray JNICALL
-Java_com_ibm_oti_util_math_BigInteger_negImpl (JNIEnv * env, jclass cls,
+Java_org_apache_harmony_math_util_BigInteger_negImpl (JNIEnv * env, jclass cls,
                                                jlongArray src)
 {
   return internalBigIntegerNeg (env, src);
 }
 
 jlongArray JNICALL
-Java_com_ibm_oti_util_math_BigInteger_remImpl (JNIEnv * env, jclass cls,
+Java_org_apache_harmony_math_util_BigInteger_remImpl (JNIEnv * env, jclass cls,
                                                jlongArray topObject,
                                                jlongArray bottomObject)
 {
@@ -920,7 +920,7 @@ error:
 }
 
 jlongArray JNICALL
-Java_com_ibm_oti_util_math_BigInteger_shlImpl (JNIEnv * env, jclass cls,
+Java_org_apache_harmony_math_util_BigInteger_shlImpl (JNIEnv * env, jclass cls,
                                                jlongArray src, jint shiftval)
 {
   IDATA len, lenR;
@@ -1056,7 +1056,7 @@ error:
 }
 
 jlongArray JNICALL
-Java_com_ibm_oti_util_math_BigInteger_subImpl (JNIEnv * env, jclass cls,
+Java_org_apache_harmony_math_util_BigInteger_subImpl (JNIEnv * env, jclass cls,
                                                jlongArray src1,
                                                jlongArray src2)
 {

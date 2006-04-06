@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.Vector;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * Collator is an abstract class which is the root of classes which provide

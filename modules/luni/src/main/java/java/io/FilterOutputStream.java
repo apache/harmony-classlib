@@ -115,7 +115,7 @@ public class FilterOutputStream extends OutputStream {
 				// override the write() method.
 				write(buffer[offset + i]);
 		} else
-			throw new ArrayIndexOutOfBoundsException(com.ibm.oti.util.Msg
+			throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 					.getString("K002f")); //$NON-NLS-1$
 	}
 

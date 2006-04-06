@@ -25,8 +25,8 @@ import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.net.SocketImplProvider;
 import org.apache.harmony.luni.platform.Platform;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * This class represents sockets to be used in connection-oriented (streaming)

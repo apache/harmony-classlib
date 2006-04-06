@@ -36,7 +36,7 @@ import org.apache.harmony.luni.util.BASE64Decoder;
 
 import org.apache.harmony.security.utils.JarUtils;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * Non-public class used by {@link java.util.jar.JarFile} and
@@ -427,8 +427,8 @@ class JarVerifier {
 		if (ignorable) {
 			return true;
 		} else {
-			return false;
-		}
+		return false;
+	}
 	}
 
 	/**

@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * File is a class which represents a file name or directory. The file may be
@@ -176,36 +176,36 @@ public class File implements Serializable, Comparable {
 
 	private void checkURI(URI uri) {
 		if (!uri.isAbsolute()) {
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K031a", uri)); //$NON-NLS-1$
 		} else if (!uri.getRawSchemeSpecificPart().startsWith("/")) { //$NON-NLS-1$
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K031b", uri)); //$NON-NLS-1$
 		}
 
 		String temp = uri.getScheme();
 		if (temp == null || !temp.equals("file")) { //$NON-NLS-1$
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K031c", uri)); //$NON-NLS-1$
 		}
 
 		temp = uri.getRawPath();
 		if (temp == null || temp.length() == 0) {
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K031d", uri)); //$NON-NLS-1$
 		}
 
 		if (uri.getRawAuthority() != null) {
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K031e", new String[] { "authority", uri.toString() })); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		if (uri.getRawQuery() != null)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K031e", new String[] { "query", uri.toString() }));  //$NON-NLS-1$//$NON-NLS-2$
 
 		if (uri.getRawFragment() != null)
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K031e", new String[] { "fragment", uri.toString() })); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
@@ -228,7 +228,7 @@ public class File implements Serializable, Comparable {
 			return new File[0];
 		File result[] = new File[rootsList.length];
 		for (int i = 0; i < rootsList.length; i++)
-			result[i] = new File(com.ibm.oti.util.Util.toString(rootsList[i]));
+			result[i] = new File(org.apache.harmony.luni.util.Util.toString(rootsList[i]));
 		return result;
 	}
 
@@ -334,7 +334,7 @@ public class File implements Serializable, Comparable {
 	public int compareTo(Object another) {
 		if (this.getClass() == another.getClass())
 			return this.getPath().compareTo(((File) another).getPath());
-		throw new ClassCastException(com.ibm.oti.util.Msg.getString("K0069")); //$NON-NLS-1$
+		throw new ClassCastException(org.apache.harmony.luni.util.Msg.getString("K0069")); //$NON-NLS-1$
 	}
 
 	/**
@@ -385,7 +385,7 @@ public class File implements Serializable, Comparable {
 		if (security != null)
 			security.checkDelete(path);
 
-		com.ibm.oti.util.DeleteOnExit.addFile(com.ibm.oti.util.Util
+		org.apache.harmony.luni.util.DeleteOnExit.addFile(org.apache.harmony.luni.util.Util
 				.toString(properPath(true)));
 	}
 
@@ -438,7 +438,7 @@ public class File implements Serializable, Comparable {
 	 */
 	public String getAbsolutePath() {
 		byte[] absolute = properPath(false);
-		return com.ibm.oti.util.Util.toString(absolute);
+		return org.apache.harmony.luni.util.Util.toString(absolute);
 	}
 
 	/**
@@ -552,7 +552,7 @@ public class File implements Serializable, Comparable {
 		newResult[newLength] = 0;
 		newResult = getCanonImpl(newResult);
 		newLength = newResult.length;
-		return com.ibm.oti.util.Util.toString(newResult, 0, newLength);
+		return org.apache.harmony.luni.util.Util.toString(newResult, 0, newLength);
 	}
 
 	/**
@@ -656,7 +656,7 @@ public class File implements Serializable, Comparable {
 	 * @see #getPath
 	 */
 	public boolean isAbsolute() {
-		return isAbsoluteImpl(com.ibm.oti.util.Util.getBytes(path));
+		return isAbsoluteImpl(org.apache.harmony.luni.util.Util.getBytes(path));
 	}
 
 	private native boolean isAbsoluteImpl(byte[] filePath);
@@ -764,7 +764,7 @@ public class File implements Serializable, Comparable {
 				security.checkWrite(path);
 			return (setLastModifiedImpl(properPath(true), time));
 		}
-		throw new IllegalArgumentException(com.ibm.oti.util.Msg
+		throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 				.getString("K006a")); //$NON-NLS-1$
 	}
 
@@ -828,7 +828,7 @@ public class File implements Serializable, Comparable {
 			return new String[0];
 		String result[] = new String[implList.length];
 		for (int index = 0; index < implList.length; index++)
-			result[index] = com.ibm.oti.util.Util.toString(implList[index]);
+			result[index] = org.apache.harmony.luni.util.Util.toString(implList[index]);
 		return result;
 	}
 
@@ -912,7 +912,7 @@ public class File implements Serializable, Comparable {
 			return new File[0];
 		java.util.Vector tempResult = new java.util.Vector();
 		for (int index = 0; index < implList.length; index++) {
-			String aName = com.ibm.oti.util.Util.toString(implList[index]);
+			String aName = org.apache.harmony.luni.util.Util.toString(implList[index]);
 			File aFile = new File(this, aName);
 			if (filter == null || filter.accept(aFile))
 				tempResult.addElement(aFile);
@@ -950,7 +950,7 @@ public class File implements Serializable, Comparable {
 			return new String[0];
 		java.util.Vector tempResult = new java.util.Vector();
 		for (int index = 0; index < implList.length; index++) {
-			String aName = com.ibm.oti.util.Util.toString(implList[index]);
+			String aName = org.apache.harmony.luni.util.Util.toString(implList[index]);
 			if (filter == null || filter.accept(this, aName))
 				tempResult.addElement(aName);
 		}
@@ -1032,9 +1032,9 @@ public class File implements Serializable, Comparable {
 		case 1:
 			return false;
 		case 3:
-			throw new IOException(com.ibm.oti.util.Msg.getString("K01c1")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K01c1")); //$NON-NLS-1$
 		default:
-			throw new IOException(com.ibm.oti.util.Msg.getString("K01c2", path)); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K01c2", path)); //$NON-NLS-1$
 		}
 	}
 
@@ -1089,7 +1089,7 @@ public class File implements Serializable, Comparable {
 				} while (!result.createNewFile());
 				return result;
 			}
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K006b")); //$NON-NLS-1$
 		}
 		throw new NullPointerException();
@@ -1118,7 +1118,7 @@ public class File implements Serializable, Comparable {
 	byte[] properPath(boolean internal) {
 		if (properPath != null)
 			return properPath;
-		byte[] pathBytes = com.ibm.oti.util.Util.getBytes(path);
+		byte[] pathBytes = org.apache.harmony.luni.util.Util.getBytes(path);
 		if (isAbsoluteImpl(pathBytes))
 			return properPath = pathBytes;
 		// Check security by getting user.dir when the path is not absolute
@@ -1131,24 +1131,24 @@ public class File implements Serializable, Comparable {
 		if ((properPath = properPathImpl(pathBytes)) != null)
 			return properPath;
 		if (path.length() == 0)
-			return properPath = com.ibm.oti.util.Util.getBytes(userdir);
+			return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir);
 		int length = userdir.length();
 		if (path.charAt(0) == '\\') {
 			if (length > 1 && userdir.charAt(1) == ':') {
-				return properPath = com.ibm.oti.util.Util.getBytes(userdir
+				return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir
 						.substring(0, 2)
 						+ path);
 			}
 			if (length > 0 && userdir.charAt(length - 1) == separatorChar) {
-				return properPath = com.ibm.oti.util.Util.getBytes(userdir
+				return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir
 						+ path.substring(1));
 			}
-			return properPath = com.ibm.oti.util.Util.getBytes(userdir + path);
+			return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir + path);
 		}
 		if (length > 0 && userdir.charAt(length - 1) == separatorChar) {
-			return properPath = com.ibm.oti.util.Util.getBytes(userdir + path);
+			return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir + path);
 		}
-		return properPath = com.ibm.oti.util.Util.getBytes(userdir + separator
+		return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir + separator
 				+ path);
 	}
 

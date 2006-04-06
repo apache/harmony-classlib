@@ -23,7 +23,7 @@ import java.util.WeakHashMap;
 
 import org.apache.harmony.luni.internal.reflect.ProxyClassFile;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This class provides methods to creating dynamic proxy classes and instances.

@@ -79,7 +79,7 @@ public class BufferedReader extends Reader {
 			this.in = in;
 			buf = new char[size];
 		} else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K0058")); //$NON-NLS-1$
 	}
 
@@ -164,7 +164,7 @@ public class BufferedReader extends Reader {
 					marklimit = readlimit;
 					markpos = pos;
 				} else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K005b")); //$NON-NLS-1$
 			}
 		} else
@@ -205,7 +205,7 @@ public class BufferedReader extends Reader {
 					return buf[pos++];
 				return -1;
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K005b")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -287,7 +287,7 @@ public class BufferedReader extends Reader {
 				}
 				throw new ArrayIndexOutOfBoundsException();
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K005b")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -347,7 +347,7 @@ public class BufferedReader extends Reader {
 					pos = count;
 				}
 			}
-			throw new IOException(com.ibm.oti.util.Msg.getString("K005b")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -371,7 +371,7 @@ public class BufferedReader extends Reader {
 		synchronized (lock) {
 			if (isOpen())
 				return ((count - pos) > 0) || in.ready();
-			throw new IOException(com.ibm.oti.util.Msg.getString("K005b")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -391,10 +391,10 @@ public class BufferedReader extends Reader {
 				if (markpos != -1)
 					pos = markpos;
 				else
-					throw new IOException(com.ibm.oti.util.Msg
+					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K005c")); //$NON-NLS-1$
 			} else
-				throw new IOException(com.ibm.oti.util.Msg.getString("K005b")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -439,7 +439,7 @@ public class BufferedReader extends Reader {
 					}
 					return amount;
 				}
-				throw new IOException(com.ibm.oti.util.Msg.getString("K005b")); //$NON-NLS-1$
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
 			}
 		}
 		throw new IllegalArgumentException();

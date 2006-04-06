@@ -22,7 +22,7 @@ import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.util.IdentityHashMap;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * An ObjectOutputStream can be used to save Java objects into a stream where
@@ -1223,7 +1223,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 								fieldDesc.getName()));
 						break;
 					default:
-						throw new IOException(com.ibm.oti.util.Msg.getString(
+						throw new IOException(org.apache.harmony.luni.util.Msg.getString(
 								"K00d5", fieldDesc.getTypeCode())); //$NON-NLS-1$
 					}
 				} else {
@@ -1446,7 +1446,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 				for (int i = 0; i < doubleArray.length; i++)
 					output.writeDouble(doubleArray[i]);
 			} else {
-				throw new InvalidClassException(com.ibm.oti.util.Msg.getString(
+				throw new InvalidClassException(org.apache.harmony.luni.util.Msg.getString(
 						"K00d7", arrayClass.getName())); //$NON-NLS-1$
 			}
 		} else {

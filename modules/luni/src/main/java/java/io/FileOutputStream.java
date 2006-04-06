@@ -107,7 +107,7 @@ public class FileOutputStream extends OutputStream implements Closeable{
 	public FileOutputStream(FileDescriptor fd) {
 		super();
         if (fd == null) {
-            throw new NullPointerException(com.ibm.oti.util.Msg
+            throw new NullPointerException(org.apache.harmony.luni.util.Msg
                     .getString("K006c")); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();

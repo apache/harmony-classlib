@@ -18,4 +18,4 @@ javax/naming/event/*
 javax/naming/ldap/*
 javax/naming/spi/*
 
-com/ibm/jndi/*
+org/apache/harmony/jndi/internal/*

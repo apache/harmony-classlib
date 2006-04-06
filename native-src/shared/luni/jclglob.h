@@ -25,11 +25,11 @@ typedef struct LUNIJniIDCache
   jfieldID FID_java_io_FileDescriptor_descriptor;
   jfieldID FID_java_io_FileInputStream_fd;
   jfieldID FID_java_io_FileOutputStream_fd;
-  jfieldID FID_com_ibm_oti_lang_ProcessInputStream_handle;
-  jfieldID FID_com_ibm_oti_lang_ProcessInputStream_fd;
-  jfieldID FID_com_ibm_oti_lang_ProcessOutputStream_handle;
-  jfieldID FID_com_ibm_oti_lang_ProcessOutputStream_fd;
-  jfieldID FID_com_ibm_oti_lang_SystemProcess_handle;
+  jfieldID FID_org_apache_harmony_luni_internal_process_ProcessInputStream_handle;
+  jfieldID FID_org_apache_harmony_luni_internal_process_ProcessInputStream_fd;
+  jfieldID FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_handle;
+  jfieldID FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_fd;
+  jfieldID FID_org_apache_harmony_luni_internal_process_SystemProcess_handle;
   jfieldID FID_java_net_SocketImpl_address;
   jfieldID FID_java_net_SocketImpl_port;
   jfieldID FID_java_net_DatagramPacket_length;

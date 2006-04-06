@@ -25,8 +25,8 @@ import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.Util;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * ZipFile is used to read zip entries and their associated data from zip files.

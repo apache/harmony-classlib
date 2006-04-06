@@ -15,6 +15,7 @@
 
 package java.lang;
 
+
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -915,7 +916,7 @@ public final class StringBuffer implements Serializable, CharSequence {
 			ClassNotFoundException {
 		stream.defaultReadObject();
 		if (count > value.length)
-			throw new InvalidObjectException(com.ibm.oti.util.Msg
+			throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
 					.getString("K0199"));
 		shared = false;
 	}

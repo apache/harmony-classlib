@@ -28,7 +28,7 @@ import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * An ObjectInputStream can be used to load Java objects from a stream where the
@@ -691,7 +691,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 		case TC_NULL:
 			return null;
 		default:
-			throw new StreamCorruptedException(com.ibm.oti.util.Msg.getString(
+			throw new StreamCorruptedException(org.apache.harmony.luni.util.Msg.getString(
 					"K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
 		}
 	}
@@ -736,13 +736,13 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 			return null;
 		case TC_EXCEPTION:
 			Exception exc = readException();
-			throw new WriteAbortedException(com.ibm.oti.util.Msg
+			throw new WriteAbortedException(org.apache.harmony.luni.util.Msg
 					.getString("K00d3"), exc); //$NON-NLS-1$
 		case TC_RESET:
 			resetState();
 			return null;
 		default:
-			throw new StreamCorruptedException(com.ibm.oti.util.Msg.getString(
+			throw new StreamCorruptedException(org.apache.harmony.luni.util.Msg.getString(
 					"K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
 		}
 	}
@@ -797,7 +797,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 				return null;
 			case TC_EXCEPTION:
 				Exception exc = readException();
-				throw new WriteAbortedException(com.ibm.oti.util.Msg
+				throw new WriteAbortedException(org.apache.harmony.luni.util.Msg
 						.getString("K00d3"), exc); //$NON-NLS-1$
 			case TC_RESET:
 				resetState();
@@ -808,7 +808,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 				e.eof = true;
 				throw e;
 			default:
-				throw new StreamCorruptedException(com.ibm.oti.util.Msg
+				throw new StreamCorruptedException(org.apache.harmony.luni.util.Msg
 						.getString("K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
 			}
 			// Only TC_RESET falls through
@@ -1106,7 +1106,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 								input.readBoolean());
 						break;
 					default:
-						throw new StreamCorruptedException(com.ibm.oti.util.Msg
+						throw new StreamCorruptedException(org.apache.harmony.luni.util.Msg
 								.getString("K00d5", fieldDesc.getTypeCode())); //$NON-NLS-1$
 					}
 				} catch (NoSuchFieldError err) {
@@ -1132,7 +1132,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 						Class fieldType = field.getType();
 						Class valueType = toSet.getClass();
 						if (!fieldType.isAssignableFrom(valueType))
-							throw new ClassCastException(com.ibm.oti.util.Msg
+							throw new ClassCastException(org.apache.harmony.luni.util.Msg
 									.getString("K00d4", new String[] { //$NON-NLS-1$
 											fieldType.toString(),
 											valueType.toString(),
@@ -1417,7 +1417,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 		ObjectStreamClass classDesc = readClassDesc();
 
 		if (classDesc == null)
-			throw new InvalidClassException(com.ibm.oti.util.Msg
+			throw new InvalidClassException(org.apache.harmony.luni.util.Msg
 					.getString("K00d1")); //$NON-NLS-1$
 
 		Integer newHandle = new Integer(nextHandle());
@@ -1471,7 +1471,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 				for (int i = 0; i < size; i++)
 					doubleArray[i] = input.readDouble();
 			} else
-				throw new ClassNotFoundException(com.ibm.oti.util.Msg
+				throw new ClassNotFoundException(org.apache.harmony.luni.util.Msg
 						.getString("K00d7", classDesc.getName())); //$NON-NLS-1$
 		} else {
 			// Array of Objects
@@ -1510,7 +1510,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 				registerObjectRead(localClass, newHandle);
 			return localClass;
 		}
-		throw new InvalidClassException(com.ibm.oti.util.Msg.getString("K00d1")); //$NON-NLS-1$
+		throw new InvalidClassException(org.apache.harmony.luni.util.Msg.getString("K00d1")); //$NON-NLS-1$
 	}
 
 	/**
@@ -1638,7 +1638,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 	 */
 	protected Class resolveProxyClass(String[] interfaceNames)
 			throws IOException, ClassNotFoundException {
-		ClassLoader loader = com.ibm.oti.vm.VM.getNonBootstrapClassLoader();
+		ClassLoader loader = org.apache.harmony.kernel.vm.VM.getNonBootstrapClassLoader();
 		Class[] interfaces = new Class[interfaceNames.length];
 		for (int i = 0; i < interfaceNames.length; i++) {
 			interfaces[i] = Class.forName(interfaceNames[i], false, loader);
@@ -1689,7 +1689,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 		ObjectStreamClass classDesc = readClassDesc();
 
 		if (classDesc == null)
-			throw new InvalidClassException(com.ibm.oti.util.Msg
+			throw new InvalidClassException(org.apache.harmony.luni.util.Msg
 					.getString("K00d1")); //$NON-NLS-1$
 
 		Integer newHandle = new Integer(nextHandle());
@@ -1739,7 +1739,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 			// Has to have an empty constructor
 			if (constructor == null)
 				throw new InvalidClassException(constructorClass.getName(),
-						com.ibm.oti.util.Msg.getString("K00dc")); //$NON-NLS-1$
+						org.apache.harmony.luni.util.Msg.getString("K00dc")); //$NON-NLS-1$
 
 			int constructorModifiers = constructor.getModifiers();
 
@@ -1749,7 +1749,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 					|| (wasExternalizable && !Modifier
 							.isPublic(constructorModifiers)))
 				throw new InvalidClassException(constructorClass.getName(),
-						com.ibm.oti.util.Msg.getString("K00dc")); //$NON-NLS-1$
+						org.apache.harmony.luni.util.Msg.getString("K00dc")); //$NON-NLS-1$
 
 			// We know we are testing from a subclass, so the only other case
 			// where the visibility
@@ -1762,7 +1762,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 				// visibility. Check if same package
 				if (!inSamePackage(constructorClass, objectClass))
 					throw new InvalidClassException(constructorClass.getName(),
-							com.ibm.oti.util.Msg.getString("K00dc")); //$NON-NLS-1$
+							org.apache.harmony.luni.util.Msg.getString("K00dc")); //$NON-NLS-1$
 			}
 
 			// Now we know which class to instantiate and which constructor to
@@ -1966,7 +1966,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 			// original/outside caller
 			if (++nestedLevels == 1) {
 				// Remember the caller's class loader
-				callerClassLoader = com.ibm.oti.vm.VM
+				callerClassLoader = org.apache.harmony.kernel.vm.VM
 						.getNonBootstrapClassLoader();
 			}
 
@@ -2182,7 +2182,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 			} else
 				throw new NotActiveException();
 		} else
-			throw new InvalidObjectException(com.ibm.oti.util.Msg
+			throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
 					.getString("K00d9")); //$NON-NLS-1$
 	}
 
@@ -2545,7 +2545,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 		if (loadedStreamClass.getSerialVersionUID() != localStreamClass
 				.getSerialVersionUID())
 			throw new InvalidClassException(loadedStreamClass.getName(),
-					com.ibm.oti.util.Msg.getString("K00da", loadedStreamClass, //$NON-NLS-1$
+					org.apache.harmony.luni.util.Msg.getString("K00da", loadedStreamClass, //$NON-NLS-1$
 							localStreamClass));
 	}
 }

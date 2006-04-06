@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Vector;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * MessageFormat is used to format and parse arguments based on a pattern. The

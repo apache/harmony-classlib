@@ -27,9 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PriviAction;
-import com.ibm.oti.util.Util;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PriviAction;
+import org.apache.harmony.luni.util.Util;
 
 class InitManifest {
 	private byte[] inbuf = new byte[1024];
@@ -47,7 +47,7 @@ class InitManifest {
 	private boolean usingUTF8 = true;
 
 	private Map attributeNames = new HashMap();
-	
+
 	private byte[] mainAttributesChunk;
 
 	InitManifest(InputStream is, Attributes main, Map entries, Map chunks,
@@ -93,7 +93,7 @@ class InitManifest {
 		}
 
 	}
-	
+
 	byte[] getMainAttributesChunk()
 	{
 		return mainAttributesChunk;
@@ -147,7 +147,7 @@ class InitManifest {
                     if (inbufCount == inbuf.length && in.available() == 0) {
                         /* KA000 = "line too long" */
                         throw new IOException(Msg.getString("KA000"));
-                    }
+				}
                 } 
 				inbufPos = 0;
 			}

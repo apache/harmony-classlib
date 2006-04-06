@@ -26,9 +26,9 @@ import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import com.ibm.oti.util.Inet6Util;
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.Inet6Util;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * The Internet Protocol (IP) address class. This class encapsulates an IP

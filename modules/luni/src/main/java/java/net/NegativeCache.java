@@ -20,7 +20,7 @@ import java.security.AccessController;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * This class is used to manage the negative name lookup cache.

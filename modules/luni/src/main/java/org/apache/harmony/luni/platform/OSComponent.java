@@ -16,7 +16,7 @@
 package org.apache.harmony.luni.platform;
 
 
-import com.ibm.oti.vm.VM;
+import org.apache.harmony.kernel.vm.VM;
 
 /**
  * OSComponent
@@ -37,7 +37,7 @@ class OSComponent implements IAdaptable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ibm.core.IAdaptable#getAdapter(java.lang.Class)
+	 * @see org.apache.harmony.luni.platform.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);

@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Vector;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * ZipOuputStream is used to write ZipEntries to the underlying stream. Output

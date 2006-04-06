@@ -23,7 +23,7 @@ import java.io.OutputStream;
 /**
  * This class, with the exception of the exec() APIs, must be implemented by the
  * vm vendor. The exec() APIs must first do any required security checks, and
- * then call com.ibm.oti.lang.SystemProcess.create(). The Runtime interface.
+ * then call org.apache.harmony.luni.internal.process.SystemProcess.create(). The Runtime interface.
  */
 
 public class Runtime {

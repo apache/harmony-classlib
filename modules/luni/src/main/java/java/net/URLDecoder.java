@@ -19,8 +19,8 @@ package java.net;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.Util;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * This class is used to decode a string which is encoded in the

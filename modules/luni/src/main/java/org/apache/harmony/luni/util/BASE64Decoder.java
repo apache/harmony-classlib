@@ -15,7 +15,7 @@
 
 package org.apache.harmony.luni.util;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 
 /**

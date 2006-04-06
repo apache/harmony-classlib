@@ -22,7 +22,7 @@ import java.security.PrivilegedAction;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * Format is the abstract superclass of classes which format and parse objects

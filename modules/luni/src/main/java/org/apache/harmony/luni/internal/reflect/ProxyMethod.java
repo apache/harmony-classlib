@@ -71,7 +71,7 @@ class ProxyMethod {
 				return false;
 
 		if (method.getReturnType() != otherMethod.getReturnType())
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg.getString(
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
 					"K00f2", method.getName()));
 		if (commonExceptions.length != 0) {
 			Class[] otherExceptions = otherMethod.getExceptionTypes();

@@ -96,10 +96,10 @@ public final class FilePermission extends Permission implements Serializable {
 				}
 				this.actions = toCanonicalActionString(pathActions);
 			} else
-				throw new NullPointerException(com.ibm.oti.util.Msg
+				throw new NullPointerException(org.apache.harmony.luni.util.Msg
 						.getString("K006e")); //$NON-NLS-1$
 		} else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K006d")); //$NON-NLS-1$
 	}
 
@@ -162,7 +162,7 @@ public final class FilePermission extends Permission implements Serializable {
 				actionInt |= 1;
 			else
 				throw new java.lang.IllegalArgumentException(
-						com.ibm.oti.util.Msg.getString("K006f", action)); //$NON-NLS-1$
+						org.apache.harmony.luni.util.Msg.getString("K006f", action)); //$NON-NLS-1$
 			head = tail + 1;
 		} while (tail > 0);
 		return actionInt;

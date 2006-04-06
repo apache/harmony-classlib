@@ -23,7 +23,7 @@
   * environment and arguments 
   */
 jlongArray JNICALL
-Java_com_ibm_oti_lang_SystemProcess_createImpl (JNIEnv * env, jclass clazz,
+Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv * env, jclass clazz,
             jobject recv,
             jobjectArray arg1,
             jobjectArray arg2,
@@ -150,41 +150,41 @@ failed:
 
 /* Kill the receiver */
 void JNICALL
-Java_com_ibm_oti_lang_SystemProcess_destroyImpl (JNIEnv * env, jobject recv)
+Java_org_apache_harmony_luni_internal_process_SystemProcess_destroyImpl (JNIEnv * env, jobject recv)
 {
   jlong pHandle;
   pHandle =
     (*env)->GetLongField (env, recv,
         JCL_CACHE_GET (env,
-           FID_com_ibm_oti_lang_SystemProcess_handle));
+           FID_org_apache_harmony_luni_internal_process_SystemProcess_handle));
   termProc ((IDATA) pHandle);
 }
 
 /* Close the input stream*/
 void JNICALL
-Java_com_ibm_oti_lang_ProcessInputStream_closeImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_ProcessInputStream_closeImpl (JNIEnv * env,
                 jobject recv)
 {
   PORT_ACCESS_FROM_ENV (env);
 
   new_ioh_close (env, recv,
      JCL_CACHE_GET (env,
-        FID_com_ibm_oti_lang_ProcessInputStream_fd));
+        FID_org_apache_harmony_luni_internal_process_ProcessInputStream_fd));
 }
 
 void JNICALL
-Java_com_ibm_oti_lang_ProcessOutputStream_closeImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_closeImpl (JNIEnv * env,
                  jobject recv)
 {
   PORT_ACCESS_FROM_ENV (env);
   new_ioh_close (env, recv,
      JCL_CACHE_GET (env,
-        FID_com_ibm_oti_lang_ProcessOutputStream_fd));
+        FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_fd));
 }
 
 /* Read nbytes from the receiver */
 jint JNICALL
-Java_com_ibm_oti_lang_ProcessInputStream_readImpl (JNIEnv * env, jobject recv,
+Java_org_apache_harmony_luni_internal_process_ProcessInputStream_readImpl (JNIEnv * env, jobject recv,
                jbyteArray buffer,
                jint offset, jint nbytes,
                jlong handle)
@@ -197,7 +197,7 @@ Java_com_ibm_oti_lang_ProcessInputStream_readImpl (JNIEnv * env, jobject recv,
 
 /* Return the number of byes available to be read without blocking */
 jint JNICALL
-Java_com_ibm_oti_lang_ProcessInputStream_availableImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_ProcessInputStream_availableImpl (JNIEnv * env,
               jobject recv)
 {
   jlong sHandle;
@@ -206,7 +206,7 @@ Java_com_ibm_oti_lang_ProcessInputStream_availableImpl (JNIEnv * env,
   sHandle =
     (*env)->GetLongField (env, recv,
         JCL_CACHE_GET (env,
-           FID_com_ibm_oti_lang_ProcessInputStream_handle));
+           FID_org_apache_harmony_luni_internal_process_ProcessInputStream_handle));
   retVal = getAvailable ((jint)sHandle);
   if (retVal < 0)
     {
@@ -219,7 +219,7 @@ Java_com_ibm_oti_lang_ProcessInputStream_availableImpl (JNIEnv * env,
 
 /* Write nbytes to the receiver */
 void JNICALL
-Java_com_ibm_oti_lang_ProcessOutputStream_writeImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_writeImpl (JNIEnv * env,
                  jobject recv,
                  jbyteArray buffer,
                  jint offset, jint nbytes,
@@ -232,7 +232,7 @@ Java_com_ibm_oti_lang_ProcessOutputStream_writeImpl (JNIEnv * env,
 
 /* Set the descriptor field od the receiver */
 void JNICALL
-Java_com_ibm_oti_lang_ProcessInputStream_setFDImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_ProcessInputStream_setFDImpl (JNIEnv * env,
                 jobject recv,
                 jobject arg1, jlong arg2)
 {
@@ -240,7 +240,7 @@ Java_com_ibm_oti_lang_ProcessInputStream_setFDImpl (JNIEnv * env,
 }
 
 void JNICALL
-Java_com_ibm_oti_lang_ProcessOutputStream_setFDImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_setFDImpl (JNIEnv * env,
                  jobject recv,
                  jobject arg1, jlong arg2)
 {
@@ -249,29 +249,29 @@ Java_com_ibm_oti_lang_ProcessOutputStream_setFDImpl (JNIEnv * env,
 
 /* Wait for the receiver to finish then return the exit value */
 jint JNICALL
-Java_com_ibm_oti_lang_SystemProcess_waitForCompletionImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_SystemProcess_waitForCompletionImpl (JNIEnv * env,
                  jobject recv)
 {
   jlong pHandle;
   pHandle =
     (*env)->GetLongField (env, recv,
         JCL_CACHE_GET (env,
-           FID_com_ibm_oti_lang_SystemProcess_handle));
+           FID_org_apache_harmony_luni_internal_process_SystemProcess_handle));
   return (jint) waitForProc ((IDATA) pHandle);
 }
 
 void JNICALL
-Java_com_ibm_oti_lang_SystemProcess_oneTimeInitialization (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_SystemProcess_oneTimeInitialization (JNIEnv * env,
                  jclass clazz)
 {
   jfieldID fid = (*env)->GetFieldID (env, clazz, "handle", "J");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_com_ibm_oti_lang_SystemProcess_handle, fid);
+  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_SystemProcess_handle, fid);
 }
 
 void JNICALL
-Java_com_ibm_oti_lang_ProcessOutputStream_oneTimeInitialization (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_oneTimeInitialization (JNIEnv * env,
                  jclass clazz)
 {
   jfieldID fid;
@@ -279,16 +279,16 @@ Java_com_ibm_oti_lang_ProcessOutputStream_oneTimeInitialization (JNIEnv * env,
   fid = (*env)->GetFieldID (env, clazz, "handle", "J");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_com_ibm_oti_lang_ProcessOutputStream_handle, fid);
+  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_handle, fid);
 
   fid = (*env)->GetFieldID (env, clazz, "fd", "Ljava/io/FileDescriptor;");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_com_ibm_oti_lang_ProcessOutputStream_fd, fid);
+  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_fd, fid);
 }
 
 void JNICALL
-Java_com_ibm_oti_lang_ProcessInputStream_oneTimeInitialization (JNIEnv * env,
+Java_org_apache_harmony_luni_internal_process_ProcessInputStream_oneTimeInitialization (JNIEnv * env,
                 jclass clazz)
 {
   jfieldID fid;
@@ -296,22 +296,22 @@ Java_com_ibm_oti_lang_ProcessInputStream_oneTimeInitialization (JNIEnv * env,
   fid = (*env)->GetFieldID (env, clazz, "handle", "J");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_com_ibm_oti_lang_ProcessInputStream_handle, fid);
+  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessInputStream_handle, fid);
 
   fid = (*env)->GetFieldID (env, clazz, "fd", "Ljava/io/FileDescriptor;");
   if (!fid)
     return;
-  JCL_CACHE_SET (env, FID_com_ibm_oti_lang_ProcessInputStream_fd, fid);
+  JCL_CACHE_SET (env, FID_org_apache_harmony_luni_internal_process_ProcessInputStream_fd, fid);
 }
 
 /* Close the handle */
 void JNICALL
-Java_com_ibm_oti_lang_SystemProcess_closeImpl (JNIEnv * env, jobject recv)
+Java_org_apache_harmony_luni_internal_process_SystemProcess_closeImpl (JNIEnv * env, jobject recv)
 {
   jlong pHandle;
   pHandle =
     (*env)->GetLongField (env, recv,
         JCL_CACHE_GET (env,
-           FID_com_ibm_oti_lang_SystemProcess_handle));
+           FID_org_apache_harmony_luni_internal_process_SystemProcess_handle));
   closeProc ((IDATA) pHandle);
 }

@@ -19,8 +19,8 @@ package javax.naming;
 import java.util.Hashtable;
 import javax.naming.spi.NamingManager;
 
-import com.ibm.jndi.UrlParser;
-import com.ibm.jndi.EnvironmentReader;
+import org.apache.harmony.jndi.internal.UrlParser;
+import org.apache.harmony.jndi.internal.EnvironmentReader;
 
 /**
  * An <code>InitialContext</code> object is required as the starting context

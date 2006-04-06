@@ -20,7 +20,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * The GZIPInputStream class is used to read data stored in the GZIP format.

@@ -44,7 +44,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
-import com.ibm.oti.util.InvalidJarIndexException;
+import org.apache.harmony.luni.util.InvalidJarIndexException;
 
 /**
  * This class loader is responsible for loading classes and resources from a
@@ -1079,7 +1079,7 @@ public class URLClassLoader extends SecureClassLoader {
 									exception = packageObj.isSealed();
 								if (exception)
 									throw new SecurityException(
-											com.ibm.oti.util.Msg
+											org.apache.harmony.luni.util.Msg
 													.getString("K004c"));
 							}
 						}

@@ -39,8 +39,8 @@ import org.apache.harmony.luni.net.Socks4Message;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * A concrete connected-socket implementation.

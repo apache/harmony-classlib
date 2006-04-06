@@ -99,7 +99,7 @@ public class SequenceInputStream extends InputStream {
 				nextStream();
 			e = null;
 		} else
-			throw new IOException(com.ibm.oti.util.Msg.getString("K00b7")); //$NON-NLS-1$
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K00b7")); //$NON-NLS-1$
 	}
 
 	/**

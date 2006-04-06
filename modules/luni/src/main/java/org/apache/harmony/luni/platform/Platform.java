@@ -16,7 +16,7 @@
 package org.apache.harmony.luni.platform;
 
 
-import com.ibm.oti.vm.VM;
+import org.apache.harmony.kernel.vm.VM;
 
 /**
  * Platform

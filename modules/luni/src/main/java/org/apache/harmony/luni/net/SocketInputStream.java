@@ -21,7 +21,7 @@ import java.net.Socket;
 import java.net.SocketImpl;
 
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * The SocketInputStream supports the streamed reading of bytes from a socket.

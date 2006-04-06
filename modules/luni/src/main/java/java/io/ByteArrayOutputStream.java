@@ -60,7 +60,7 @@ public class ByteArrayOutputStream extends OutputStream {
 		if (size >= 0)
 			buf = new byte[size];
 		else
-			throw new IllegalArgumentException(com.ibm.oti.util.Msg
+			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K005e")); //$NON-NLS-1$
 	}
 
@@ -202,10 +202,10 @@ public class ByteArrayOutputStream extends OutputStream {
 				System.arraycopy(buffer, offset, buf, this.count, len);
 				this.count += len;
 			} else
-				throw new ArrayIndexOutOfBoundsException(com.ibm.oti.util.Msg
+				throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 						.getString("K002f")); //$NON-NLS-1$
 		} else
-			throw new NullPointerException(com.ibm.oti.util.Msg
+			throw new NullPointerException(org.apache.harmony.luni.util.Msg
 					.getString("K0047")); //$NON-NLS-1$
 	}
 

@@ -292,7 +292,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 			exception = false;
 			try {
 				Class.forName("bpack.Bart", true, ucl);
-			} catch (com.ibm.oti.util.InvalidJarIndexException e) {
+			} catch (org.apache.harmony.luni.util.InvalidJarIndexException e) {
 				exception = true;
 			} catch (ClassNotFoundException e) {
 				exception = false;
@@ -302,7 +302,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 			goodException = false;
 			try {
 				Class.forName("Main4", true, ucl);
-			} catch (com.ibm.oti.util.InvalidJarIndexException e) {
+			} catch (org.apache.harmony.luni.util.InvalidJarIndexException e) {
 				goodException = false;
 			} catch (ClassNotFoundException e) {
 				goodException = true;
@@ -322,7 +322,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 			exception = false;
 			try {
 				Class.forName("cpack.Mock", true, ucl);
-			} catch (com.ibm.oti.util.InvalidJarIndexException e) {
+			} catch (org.apache.harmony.luni.util.InvalidJarIndexException e) {
 				exception = false;
 			} catch (ClassNotFoundException e) {
 				exception = true;

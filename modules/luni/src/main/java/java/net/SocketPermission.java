@@ -23,8 +23,8 @@ import java.io.Serializable;
 import java.security.Permission;
 import java.security.PermissionCollection;
 
-import com.ibm.oti.util.Inet6Util;
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Inet6Util;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * SocketPermissions represent permission to access resources via sockets. The

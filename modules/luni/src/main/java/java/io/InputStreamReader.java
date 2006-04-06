@@ -13,7 +13,8 @@
  * limitations under the License.
  */
 
-package java.io;
+package java.io; 
+
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -23,7 +24,7 @@ import java.nio.charset.CoderResult;
 import java.security.AccessController;
 import java.util.HashMap;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * InputStreamReader is class for turning a byte Stream into a character Stream.

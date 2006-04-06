@@ -31,7 +31,7 @@ import java.util.zip.ZipFile;
 import org.apache.harmony.luni.internal.locale.Country;
 import org.apache.harmony.luni.internal.locale.Language;
 
-import com.ibm.oti.util.PriviAction;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * Locale represents a language/country/variant combination. It is an identifier

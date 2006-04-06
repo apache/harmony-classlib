@@ -30,7 +30,7 @@
 #define DEFAULT_WIDTH MAX_ACCURACY_WIDTH
 
 JNIEXPORT jfloat JNICALL
-Java_com_ibm_oti_util_FloatingPointParser_parseFltImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_util_FloatingPointParser_parseFltImpl (JNIEnv * env,
                                                         jclass clazz,
                                                         jstring s, jint e);
 
@@ -525,7 +525,7 @@ OutOfMemory:
 #endif
 
 JNIEXPORT jfloat JNICALL
-Java_com_ibm_oti_util_FloatingPointParser_parseFltImpl (JNIEnv * env,
+Java_org_apache_harmony_luni_util_FloatingPointParser_parseFltImpl (JNIEnv * env,
                                                         jclass clazz,
                                                         jstring s, jint e)
 {

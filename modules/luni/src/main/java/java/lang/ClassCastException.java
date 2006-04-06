@@ -54,7 +54,7 @@ public class ClassCastException extends RuntimeException {
 	 *            Class The class being cast to.
 	 */
 	ClassCastException(Class instanceClass, Class castClass) {
-		super(com.ibm.oti.util.Msg.getString("K0340", instanceClass.getName(),
+		super(org.apache.harmony.luni.util.Msg.getString("K0340", instanceClass.getName(),
 				castClass.getName()));
 	}
 }

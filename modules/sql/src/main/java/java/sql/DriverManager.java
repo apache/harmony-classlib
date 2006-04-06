@@ -22,8 +22,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Vector;
-import com.ibm.common.ClassUtils;
-import com.ibm.oti.vm.VM;
+import org.apache.harmony.sql.internal.common.ClassUtils;
+import org.apache.harmony.kernel.vm.VM;
 
 /**
  * Provides facilities for managing JDBC Drivers.

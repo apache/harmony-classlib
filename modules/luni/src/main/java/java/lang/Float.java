@@ -15,6 +15,7 @@
 
 package java.lang;
 
+
 /**
  * <p>
  * Float is the wrapper for the primitive type <code>float</code>.
@@ -32,11 +33,11 @@ public final class Float extends Number implements Comparable {
 	 */
 	private final float value;
 
-    /**
+	/**
      * <p>
      * Constant for the maximum <code>float</code> value, (2 - 2<sup>-23</sup>) * 2<sup>127</sup>.
      * </p>
-     */
+	 */
 	public static final float MAX_VALUE = 3.40282346638528860e+38f;
 
     /**
@@ -46,18 +47,18 @@ public final class Float extends Number implements Comparable {
      */
 	public static final float MIN_VALUE = 1.40129846432481707e-45f;
 
-    /**
+	/**
      * <p>
      * Constant for the Not-a-Number (NaN) value of the <code>float</code> type.
      * </p>
-     */
+	 */
 	public static final float NaN = 0.0f / 0.0f;
 
-    /**
+	/**
      * <p>
      * Constant for the Positive Infinity value of the <code>float</code> type.
      * </p>
-     */
+	 */
 	public static final float POSITIVE_INFINITY = 1.0f / 0.0f;
 
     /**
@@ -75,8 +76,8 @@ public final class Float extends Number implements Comparable {
 
 	// Note: This can't be set to "float.class", since *that* is
 	// defined to be "java.lang.Float.TYPE";
-    
-    /**
+
+	/**
      * <p>
      * Constant for the number of bits to represent a <code>float</code> in
      * two's compliment form.
@@ -339,7 +340,7 @@ public final class Float extends Number implements Comparable {
      * @since 1.2
 	 */
 	public static float parseFloat(String string) throws NumberFormatException {
-		return com.ibm.oti.util.FloatingPointParser.parseFloat(string);
+		return org.apache.harmony.luni.util.FloatingPointParser.parseFloat(string);
 	}
 
 	/**
@@ -370,7 +371,7 @@ public final class Float extends Number implements Comparable {
 	 * @return a printable representation of the argument.
 	 */
 	public static String toString(float f) {
-		return com.ibm.oti.util.NumberConverter.convert(f);
+		return org.apache.harmony.luni.util.NumberConverter.convert(f);
 	}
 
 	/**
@@ -435,8 +436,8 @@ public final class Float extends Number implements Comparable {
      */
     public static Float valueOf(float f) {
         return new Float(f);
-    }
-
+	}
+	
     /**
      * <p>
      * Converts a <code>float</code> into a hexadecimal string representation.

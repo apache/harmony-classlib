@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This class provides an methods that are used to get information about the

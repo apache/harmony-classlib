@@ -88,11 +88,11 @@ class SocketOutputStream extends OutputStream {
 					&& count <= buffer.length - offset) {
 				socket.write(buffer, offset, count);
 			} else {
-				throw new ArrayIndexOutOfBoundsException(com.ibm.oti.util.Msg
+				throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 						.getString(ERRCODE_OFFSET_OUTOFBOUND));
 			}
 		} else {
-			throw new NullPointerException(com.ibm.oti.util.Msg
+			throw new NullPointerException(org.apache.harmony.luni.util.Msg
 					.getString(ERRCODE_BUFFER_NULL));
 		}
 	}

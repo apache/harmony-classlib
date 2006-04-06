@@ -9,4 +9,4 @@ Bundle-Version: 1.0.0
 Export-Package: java.lang,
  java.lang.reflect,
  java.lang.ref,
- com.ibm.oti.vm
+ org.apache.harmony.kernel.vm

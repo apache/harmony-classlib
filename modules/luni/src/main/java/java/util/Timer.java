@@ -16,7 +16,7 @@
 package java.util;
 
 
-import com.ibm.oti.util.Msg;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * Timers are used to schedule jobs for execution in a background process. A

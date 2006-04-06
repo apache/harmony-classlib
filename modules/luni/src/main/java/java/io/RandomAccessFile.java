@@ -88,7 +88,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
             }
             
         } else {
-            throw new IllegalArgumentException(com.ibm.oti.util.Msg
+            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
                     .getString("K0081")); //$NON-NLS-1$
         }
 
@@ -433,7 +433,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 			} else
 				throw new IndexOutOfBoundsException();
 		} else
-			throw new NullPointerException(com.ibm.oti.util.Msg
+			throw new NullPointerException(org.apache.harmony.luni.util.Msg
 					.getString("K0047")); //$NON-NLS-1$
 	}
 
@@ -592,7 +592,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 		}
 		byte[] buf = new byte[utfSize];
 		if (read(buf, 0, buf.length) == buf.length) {
-			return com.ibm.oti.util.Util.convertFromUTF8(buf, 0, utfSize);
+			return org.apache.harmony.luni.util.Util.convertFromUTF8(buf, 0, utfSize);
 		}
 		throw new EOFException();
 	}
@@ -997,7 +997,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 			utfBytes[1] = (byte) utfCount;
 			write(utfBytes);
 		} else
-			throw new UTFDataFormatException(com.ibm.oti.util.Msg
+			throw new UTFDataFormatException(org.apache.harmony.luni.util.Msg
 					.getString("K0068")); //$NON-NLS-1$
 	}
 }

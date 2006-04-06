@@ -28,9 +28,9 @@ import java.util.StringTokenizer;
 
 import org.apache.harmony.luni.internal.net.www.MimeTable;
 
-import com.ibm.oti.util.Msg;
-import com.ibm.oti.util.PriviAction;
-import com.ibm.oti.util.Util;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PriviAction;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * The URLConnection class is responsible for establishing a connection to an
@@ -229,7 +229,7 @@ public abstract class URLConnection {
 			cHandler = AccessController.doPrivileged(new PrivilegedAction() {
 				public Object run() {
 					try {
-						String className = "com.ibm.oti.www.content."
+						String className = "org.apache.harmony.luni.internal.net.www.content."
 								+ typeString;
 						return Class.forName(className).newInstance();
 					} catch (ClassNotFoundException e) {
