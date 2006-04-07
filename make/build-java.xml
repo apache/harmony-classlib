@@ -101,6 +101,13 @@
                 includesfile="${components.patternsets}/archive.txt" />
         </jar>
 
+		<!-- Create auth jar -->
+		<jar destfile="${components.output}/auth.jar"
+			manifest="modules/auth/META-INF/MANIFEST.MF">
+			<fileset dir="${build.output}" 
+				includesfile="${components.patternsets}/auth.txt" />
+		</jar>
+
         <!-- Create awt jar -->
         <jar destfile="${components.output}/awt.jar"
         	manifest="modules/awt/META-INF/MANIFEST.MF">
@@ -239,6 +246,9 @@
 
         <javac destdir="${build.output}" source="1.4" target="1.4" debug="on">
             <src path="modules/applet/src/main/java" />
+            <src path="modules/auth/src/main/java/common" />
+            <src path="modules/auth/src/main/java/windows" />
+            <src path="modules/auth/src/main/java/linux" />
             <src path="modules/awt/src/main/java" />
             <src path="modules/beans/src/main/java" />
             <src path="modules/crypto/src/main/java" />
@@ -250,8 +260,6 @@
             <src path="modules/nio/src/main/java" />
             <src path="modules/nio_char/src/main/java" />
             <src path="modules/security/src/main/java/common" />
-            <src path="modules/security/src/main/java/windows" />
-            <src path="modules/security/src/main/java/linux" />
             <src path="modules/security-kernel/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
             <src path="modules/rmi/src/main/java" />
@@ -282,6 +290,9 @@
                 <exclude name="**/*.java" />
             </fileset>
             <fileset dir="modules/applet/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/auth/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
             <fileset dir="modules/awt/src/main/java">

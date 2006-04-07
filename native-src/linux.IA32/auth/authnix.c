@@ -53,7 +53,7 @@ jfieldID jf_groupsNames = NULL;
 jclass jclassString = NULL;
 
 JNIEXPORT void JNICALL
-Java_org_apache_harmony_security_x_security_auth_module_UnixSystem_load
+Java_org_apache_harmony_auth_module_UnixSystem_load
   (JNIEnv * jenv, jobject thiz)
 {
 	PORT_ACCESS_FROM_ENV(jenv);

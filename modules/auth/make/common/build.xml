@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="Common_Auth_Build">
+
+	<property file="../../../../make/depends.properties" />
+
+	<property name="hy.auth.src.main.java.platform"
+		value="${hy.auth.src.main.java}/../${hy.os_family}" />
+
+	<property name="hy.auth.src.test.java.platform"
+		value="${hy.auth.src.test.java}/../${hy.os_family}" />
+	
+	<target name="compile.java" description="Compile AUTH java code">
+		<echo message="Compiling AUTH classes from ${hy.auth.src.main.java}" />
+		
+		<mkdir dir="${hy.auth.bin.main}" />
+
+		<javac sourcepath=""
+			destdir="${hy.auth.bin.main}"
+			source="${source.ver}"
+			debug="${java.debug.option}">
+
+			<src>
+				<pathelement location="${hy.auth.src.main.java}"/>
+				<pathelement location="${hy.auth.src.main.java.platform}"/>
+			</src>
+
+			<bootclasspath>
+				<fileset dir="${hy.target}/jre/lib/boot">
+					<include name="**/*.jar" />
+				</fileset>
+			</bootclasspath>
+		</javac>
+	</target>
+	
+	<target name="build.jar">
+		<jar destfile="${hy.target}/jre/lib/boot/${hy.auth.packaging.jarname}.jar"
+			manifest="${hy.auth}/META-INF/MANIFEST.MF">
+			<fileset dir="${hy.auth.bin.main}" />
+		</jar>
+	</target>
+
+	
+	<target name="compile.tests">
+		<echo message="Compiling AUTH tests from ${hy.auth.src.test.java}" />
+
+		<mkdir dir="${hy.auth.bin.test}" />
+
+		<javac 	destdir="${hy.auth.bin.test}"
+			source="${source.ver}"
+			debug="${java.debug.option}">
+
+			<!-- FIXME: AUTH tests should not reach into security module code -->
+			<src>
+				<pathelement location="${hy.auth.src.test.java}"/>
+				<pathelement location="${hy.auth.src.test.java.platform}"/>
+				<pathelement location="${hy.auth}/../security/src/test/java/common"/>
+			</src>
+
+			<include name="javax/security/auth/**/*Test*.java" />
+			<include name="javax/security/sasl/**/*Test*.java" />
+			<include name="org/ietf/jgss/*Test.java" />
+			<include name="org/apache/harmony/auth/**/*Test.java" />
+			<include name="org/apache/harmony/security/test/*.java" />
+
+			<bootclasspath>
+				<fileset dir="${hy.target}/jre/lib/boot">
+					<include name="**/*.jar" />
+				</fileset>
+			</bootclasspath>
+		</javac>
+	</target>
+
+
+	<target name="run.tests">
+		
+		<mkdir dir="${hy.tests.reports}" />
+
+        <junit fork="yes"
+			forkmode="once"
+			printsummary="withOutAndErr"
+			errorproperty="test.error"
+			showoutput="on"
+			dir="${hy.auth.bin.test}"
+			jvm="${hy.target}/jre/bin/java">
+
+			<!--jvmarg value="-showversion"/-->
+	        
+			<!-- Required for running the serialization unit tests -->
+			<!-- Note: will be deleted after improving             -->
+			<!-- SerializationTest support class: all resource     -->
+			<!-- files will be placed on the classpath             -->
+			<jvmarg value="-DTEST_SRC_DIR=${hy.auth.src.test.java}"/>
+
+			<!-- to pick up junit.jar -->
+			<jvmarg value="-Xbootclasspath/a:${hy.auth.bin.test}${path.separator}../../../../${junit.jar}"/>
+
+			<env key="JAVA_HOME" value="${hy.target}/jre"/>
+
+			<formatter type="xml" />
+
+			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
+				<fileset dir="${hy.auth.src.test.java.platform}">
+					<include name="**/*Test.java"/>
+				</fileset>
+				<fileset dir="${hy.auth.src.test.java}">
+					<include name="**/*Test.java"/>
+
+					<!-- Not a test -->
+					<exclude name="org/apache/harmony/auth/internal/SecurityTest.java"/>
+
+					<!-- Harmony exclude list -->
+
+					<exclude name="javax/security/auth/SubjectDomainCombinerTest.java"/>
+					<exclude name="javax/security/auth/SubjectTest.java"/>
+					<exclude name="javax/security/auth/login/LoginContextTest.java"/>
+					<exclude name="javax/security/auth/login/serialization/SerAccountExpiredExceptionTest.java"/>
+					<exclude name="javax/security/auth/login/serialization/SerCredentialExpiredExceptionTest.java"/>
+					<exclude name="javax/security/auth/x500/X500PrincipalTest.java" />
+
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	
+	<target name="copy.resources">
+		<!-- Nothing for AUTH -->
+	</target>
+</project>
+

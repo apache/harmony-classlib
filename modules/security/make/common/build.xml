@@ -19,26 +19,16 @@
 
 	<property file="../../../../make/depends.properties" />
 
-	<property name="hy.security.src.main.java.platform"
-		value="${hy.security.src.main.java}/../${hy.os_family}" />
-
-	<property name="hy.security.src.test.java.platform"
-		value="${hy.security.src.test.java}/../${hy.os_family}" />
-	
 	<target name="compile.java" description="Compile SECURITY java code">
 		<echo message="Compiling SECURITY classes from ${hy.security.src.main.java}" />
 		
 		<mkdir dir="${hy.security.bin.main}" />
 
 		<javac sourcepath=""
+			srcdir="${hy.security.src.main.java}"
 			destdir="${hy.security.bin.main}"
 			source="${source.ver}"
 			debug="${java.debug.option}">
-
-			<src>
-				<pathelement location="${hy.security.src.main.java}"/>
-				<pathelement location="${hy.security.src.main.java.platform}"/>
-			</src>
 
 			<bootclasspath>
 				<fileset dir="${hy.target}/jre/lib/boot">
@@ -55,26 +45,16 @@
 		</jar>
 	</target>
 
-	
 	<target name="compile.tests">
 		<echo message="Compiling SECURITY tests from ${hy.security.src.test.java}" />
 
 		<mkdir dir="${hy.security.bin.test}" />
 
 		<javac 	destdir="${hy.security.bin.test}"
+			srcdir="${hy.security.src.test.java}"
 			source="${source.ver}"
 			sourcepath=""
 			debug="${java.debug.option}">
-
-			<src>
-				<pathelement location="${hy.security.src.test.java}"/>
-				<pathelement location="${hy.security.src.test.java.platform}"/>
-			</src>
-
-			<exclude name="org/apache/harmony/security/test/SecurityTest.java"/>
-			<exclude name="javax/security/auth/SubjectDomainCombinerTest.java"/>
-			<exclude name="javax/security/auth/SubjectTest.java"/>
-			<exclude name="javax/security/auth/login/LoginContextTest.java"/>
 
 			<bootclasspath>
 				<fileset dir="${hy.target}/jre/lib/boot">
@@ -113,9 +93,6 @@
 			<formatter type="xml" />
 
 			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
-				<fileset dir="${hy.security.src.test.java.platform}">
-					<include name="**/*Test.java"/>
-				</fileset>
 				<fileset dir="${hy.security.src.test.java}">
 					<include name="**/*Test.java"/>
 
@@ -128,12 +105,6 @@
 
 					<!-- Harmony exclude list -->
 					<exclude name="java/security/serialization/KeyPairTest.java"/>
-					<exclude name="javax/security/auth/SubjectDomainCombinerTest.java"/>
-					<exclude name="javax/security/auth/SubjectTest.java"/>
-					<exclude name="javax/security/auth/login/LoginContextTest.java"/>
-					<exclude name="javax/security/auth/login/serialization/SerAccountExpiredExceptionTest.java"/>
-					<exclude name="javax/security/auth/login/serialization/SerCredentialExpiredExceptionTest.java"/>
-					<exclude name="javax/security/auth/x500/X500PrincipalTest.java" />
 
 				</fileset>
 			</batchtest>

@@ -1,4 +1,4 @@
-# Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+# Copyright 2006 The Apache Software Foundation or its licensors, as applicable
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-java/security/*
-java/security/acl/*
-java/security/cert/*
-java/security/interfaces/*
-java/security/spec/*
-javax/security/cert/*
-org/apache/harmony/security/**/*
-org/apache/harmony/misc/*
+javax/security/auth/*
+javax/security/auth/callback/*
+javax/security/auth/kerberos/*
+javax/security/auth/login/*
+javax/security/auth/spi/*
+javax/security/auth/x500/*
+javax/security/sasl/*
+org/ietf/jgss/*
