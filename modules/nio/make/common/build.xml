@@ -60,6 +60,7 @@
 					<include name="**/*.jar" />
 				</fileset>
 			</bootclasspath>
+                        <classpath location="../../../../build/tests" />
 		</javac>
 	</target>
 
@@ -82,6 +83,7 @@
 
 			<classpath>
 				<pathelement path="${hy.nio.bin.test}"/>
+				<pathelement path="../../../../build/tests" />
 			</classpath>
 
 			<formatter type="xml" />
@@ -89,6 +91,7 @@
 			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
 				<fileset dir="${hy.nio.src.test.java}">
 					<include name="**/*Test.java"/>
+					<exclude name="**/ServerSocketChannelTest.java"/>
 				</fileset>
 			</batchtest>
 		</junit>

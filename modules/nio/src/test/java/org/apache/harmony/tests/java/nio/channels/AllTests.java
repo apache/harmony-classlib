@@ -24,7 +24,10 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.apache.harmony.tests.java.nio.channels");
 		//$JUnit-BEGIN$
+		suite.addTestSuite(ServerSocketChannelTest.class);
+		suite.addTestSuite(SocketChannelTest.class);
 		suite.addTestSuite(FileChannelTest.class);
+		suite.addTestSuite(DatagramChannelTest.class);
 		//$JUnit-END$
 		return suite;
 	}

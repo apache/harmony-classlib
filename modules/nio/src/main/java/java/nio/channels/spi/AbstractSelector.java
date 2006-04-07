@@ -16,6 +16,7 @@
 package java.nio.channels.spi;
 
 
+import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 
 /**
@@ -23,5 +24,10 @@ import java.nio.channels.Selector;
  * 
  */
 public abstract class AbstractSelector extends Selector {
+
+	public SelectionKey register(AbstractSelectableChannel channel, int interestSet, Object attachment) {
+		//FIXME: waiting for patch for JIRA-41
+		return null;
+	}
 
 }
