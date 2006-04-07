@@ -64,49 +64,48 @@ public class DelegationPermissionTest extends TestCase {
      * testing of a incorrect ctor
      */
     public void testFailCtor() {
-        DelegationPermission dp;
         try {
-            dp = new DelegationPermission(null);
+            new DelegationPermission(null);
             fail("no expected NPE");
         } catch(NullPointerException e){
         }
         try {
-            dp = new DelegationPermission("");
+            new DelegationPermission("");
             fail("no expected IAE");
         } catch(IllegalArgumentException e){
         }
         try {
-            dp = new DelegationPermission("\"aaa.bbb.com\" ccc.ddd.com");
+            new DelegationPermission("\"aaa.bbb.com\" ccc.ddd.com");
             fail("Target name must be enveloped by quotes");
         } catch(IllegalArgumentException e){
         }
         try {
-            dp = new DelegationPermission("\"aaa.bbb.com\" ccc.ddd.com\"");
+            new DelegationPermission("\"aaa.bbb.com\" ccc.ddd.com\"");
             fail("Target name must be enveloped by quotes");
         } catch(IllegalArgumentException e){
         }
         try {
-            dp = new DelegationPermission("\"aaa.bbb.com\" \"ccc.ddd.com");
+            new DelegationPermission("\"aaa.bbb.com\" \"ccc.ddd.com");
             fail("Target name must be enveloped by quotes");
         } catch(IllegalArgumentException e){
         }
         try {
-            dp = new DelegationPermission("\" \" \" \"");
-            //XXX fail("Target name is empty");
+            new DelegationPermission("\" \" \" \"");
+            //TODO: fail("Target name is empty");
         }catch(IllegalArgumentException e){
         }
         try {
-            dp = new DelegationPermission("\"\"");
+            new DelegationPermission("\"\"");
             fail("Target name is incorrect");
         } catch(IllegalArgumentException e){
         } 
         try {
-            dp = new DelegationPermission("\"aaa.bbb.com\" \"\"");
+            new DelegationPermission("\"aaa.bbb.com\" \"\"");
             fail("service principal is empty");
         } catch(IllegalArgumentException e){
         }
         try {
-            dp = new DelegationPermission("\"\" \"aaa.bbb.com\"");
+            new DelegationPermission("\"\" \"aaa.bbb.com\"");
             fail("subordinate service principal is empty");
         } catch(IllegalArgumentException e){
         }
@@ -114,14 +113,11 @@ public class DelegationPermissionTest extends TestCase {
     }
 
     public void testFailCtor_2() {
-        DelegationPermission dp = null;
         try {
-            dp = new DelegationPermission("\"AAA\"");
+            new DelegationPermission("\"AAA\"");
             fail("target name should be specifies a pair of kerberos service principals");
         } catch (IllegalArgumentException e) {
         }
-        //dp.equals(dp);
-        //dp.implies(dp);
     } 
     
     // testing of the equals method

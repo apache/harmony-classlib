@@ -132,8 +132,6 @@ public class CertPathBuilder2Test extends TestCase {
         CertPathBuilder cerPB;
         for (int i = 0; i < validValues.length; i++) {
             cerPB = CertPathBuilder.getInstance(validValues[i]);
-            assertTrue("Not instanceof CertPathBuilder object",
-                    cerPB instanceof CertPathBuilder);
             assertEquals("Incorrect type", cerPB.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", cerPB.getProvider(), mProv);
             checkResult(cerPB);
@@ -198,8 +196,6 @@ public class CertPathBuilder2Test extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             cerPB = CertPathBuilder.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof CertPathBuilder object",
-                    cerPB instanceof CertPathBuilder);
             assertEquals("Incorrect type", cerPB.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", cerPB.getProvider().getName(),
                     mProv.getName());
@@ -244,8 +240,6 @@ public class CertPathBuilder2Test extends TestCase {
         CertPathBuilder cerPB;
         for (int i = 0; i < validValues.length; i++) {
             cerPB = CertPathBuilder.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof CertPathBuilder object",
-                    cerPB instanceof CertPathBuilder);
             assertEquals("Incorrect type", cerPB.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", cerPB.getProvider(), mProv);
             checkResult(cerPB);

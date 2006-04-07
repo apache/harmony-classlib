@@ -23,10 +23,9 @@ package org.apache.harmony.security.x509;
 
 import java.io.IOException;
 
+import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.BerOutputStream;
-
-import org.apache.harmony.security.asn1.ASN1BitString;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 

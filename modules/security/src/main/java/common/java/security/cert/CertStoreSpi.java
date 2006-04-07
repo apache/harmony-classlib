@@ -30,15 +30,13 @@ import java.util.Collection;
  */
 
 public abstract class CertStoreSpi {
-    // Store used parameters
-    private final CertStoreParameters certStoreParams;
-
     /**
      * @com.intel.drl.spec_ref
+     * 
+     * Parameter 'params' is unusable but required by the spec
      */
     public CertStoreSpi(CertStoreParameters params)
             throws InvalidAlgorithmParameterException {
-        this.certStoreParams = params;
     }
 
     /**

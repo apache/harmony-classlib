@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.asn1.ASN1Boolean;
 import org.apache.harmony.security.asn1.ASN1Enumerated;
 import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
@@ -41,8 +42,6 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.BitString;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
-
-import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.x501.Name;
 
 /**
@@ -137,20 +136,6 @@ public class Extension {
         this(extnID, NON_CRITICAL, extnValue);
     }
 
-    // 
-    // TODO
-    // @param   extnID: String
-    // @param   critical:   boolean
-    // @param   extnValue:  byte[]
-    // @param   encoding:   byte[]
-    // 
-    private Extension(String extnID, boolean critical, byte[] extnValue,
-            byte[] rawExtnValue, byte[] encoding) {
-        this(extnID, critical, extnValue);
-        this.rawExtnValue = rawExtnValue;
-        this.encoding = encoding;
-    }
-    
     // 
     // TODO
     // @param   extnID: int[]
@@ -299,13 +284,6 @@ public class Extension {
             super(EXTENDED_KEY_USAGE, critical,
                 ASN1BitString.getInstance().encode(ASN1.encode(keys)));
             this.keys = keys;
-        }
-
-        private ExtendedKeyUsage(boolean critical, byte[] extnValue, 
-                byte[] rawExtnValue, byte[] encoding) throws IOException {
-            super(EXTENDED_KEY_USAGE, critical, 
-                    extnValue, rawExtnValue, encoding);
-            this.keys = (List) ASN1.decode(extnValue);
         }
 
         public List getExtendedKeyUsage() {
@@ -485,11 +463,8 @@ public class Extension {
      */
     public static class AuthKeyId extends Extension {
 
-        private final AuthorityKeyIdentifier authKeyID;
-        
         public AuthKeyId(AuthorityKeyIdentifier authKeyID) {
             super(AUTH_KEY_ID, NON_CRITICAL, authKeyID.getEncoded());
-            this.authKeyID = authKeyID;
         }
     }
    
@@ -508,11 +483,8 @@ public class Extension {
      */
     public static class CertificateIssuer extends Extension {
 
-        private final GeneralName issuer;
-        
         public CertificateIssuer(GeneralName issuer) {
             super(CERTIFICATE_ISSUER, CRITICAL, ASN1.encode(issuer));
-            this.issuer = issuer;
         }
         
         public static ASN1Type ASN1 = new ASN1Sequence(new ASN1Type[] {
@@ -542,11 +514,8 @@ public class Extension {
      */
     public static class InvalidityDate extends Extension {
 
-        private final Date date;
-        
         public InvalidityDate(Date date) {
             super(INVALIDITY_DATE, NON_CRITICAL, ASN1.encode(date));
-            this.date = date;
         }
         
         public static ASN1Type ASN1 = ASN1GeneralizedTime.getInstance();
@@ -575,12 +544,9 @@ public class Extension {
      */
     public static class ReasonCode extends Extension {
 
-        private final int code;
-        
         public ReasonCode(int code) {
             super(REASON_CODE, NON_CRITICAL, 
                     ASN1.encode(new byte[] {(byte) code}));
-            this.code = code;
         }
         
         public static ASN1Type ASN1 = ASN1Enumerated.getInstance();

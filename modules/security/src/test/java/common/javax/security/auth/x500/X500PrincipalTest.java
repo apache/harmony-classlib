@@ -736,9 +736,7 @@ public class X500PrincipalTest extends TestCase {
     public void testGetNameUnicodeNormalized() throws Exception {
         String unicodeStr = "CN= \u0401\u0410";
         X500Principal principal = new X500Principal(unicodeStr);
-        String s = principal.getName(X500Principal.CANONICAL);
-        //System.out.println("s = " + s);
-        //assertEquals("CN=\u0415\u0308\u0410".toLowerCase(Locale.US), s);
+        principal.getName(X500Principal.CANONICAL);
     }
 
     /**
@@ -875,7 +873,7 @@ public class X500PrincipalTest extends TestCase {
     public void testIllegalInputName_15() {
         try {
             String dn = "CN=,C";
-            X500Principal p = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper attribute value");
         } catch (IllegalArgumentException e) {
         }
@@ -884,7 +882,7 @@ public class X500PrincipalTest extends TestCase {
     public void testIllegalInputName_16() {
         try {
             String dn = "CN=,C=+";
-            X500Principal p = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper attribute value");
         } catch (IllegalArgumentException e) {
         }
@@ -910,7 +908,7 @@ public class X500PrincipalTest extends TestCase {
     public void testIllegalInputName_05() {
         try {
             String dn = "CN=X+YZ";
-            X500Principal p = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper attribute value");
         } catch (IllegalArgumentException e) {
         }
@@ -956,7 +954,7 @@ public class X500PrincipalTest extends TestCase {
     public void testIllegalInputName_09() {
         try {
             String dn = "CN=#";
-            X500Principal p = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper attribute hex value");
         } catch (IllegalArgumentException e) {
             //ignore
@@ -971,7 +969,7 @@ public class X500PrincipalTest extends TestCase {
     public void testIllegalInputName_10() {
         try {
             String dn = "CN=#13";
-            X500Principal p = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper attribute hex value");
         } catch (IllegalArgumentException e) {
             //ignore
@@ -986,7 +984,7 @@ public class X500PrincipalTest extends TestCase {
     public void testIllegalInputName_11() {
         try {
             String dn = "CN=#1301";
-            X500Principal p = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper attribute hex value");
         } catch (IllegalArgumentException e) {
             //ignore
@@ -1001,7 +999,7 @@ public class X500PrincipalTest extends TestCase {
     public void testIllegalInputName_12() {
         try {
             String dn = "CN=#13010101";
-            X500Principal p = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper attribute hex value");
         } catch (IllegalArgumentException e) {
         }
@@ -1014,7 +1012,7 @@ public class X500PrincipalTest extends TestCase {
     public void testIllegalInputName_13() {
         try {
             String dn = "CN=# 0";
-            X500Principal p = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper attribute hex value");
         } catch (IllegalArgumentException e) {
         }
@@ -1486,7 +1484,7 @@ public class X500PrincipalTest extends TestCase {
     public void testNameWithQuotation_01() throws Exception {
         String dn = "CN=\"ABCDEF";
         try {
-            X500Principal principal = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on string with no closing quotations");
         } catch (IllegalArgumentException e) {
         }
@@ -1800,7 +1798,7 @@ public class X500PrincipalTest extends TestCase {
     public void testNameQu() throws Exception {
         String dn = "CN=\"\"B";
         try {
-            X500Principal principal = new X500Principal(dn);
+            new X500Principal(dn);
             fail("No IllegalArgumentException on improper string");
         } catch (IllegalArgumentException e) {
         }

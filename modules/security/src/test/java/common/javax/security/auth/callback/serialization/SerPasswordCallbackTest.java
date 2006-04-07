@@ -45,13 +45,13 @@ public class SerPasswordCallbackTest extends SerializationTest {
 
   
     protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(((PasswordCallback) test) instanceof PasswordCallback);
+        assertTrue(test instanceof PasswordCallback);
         assertEquals(((PasswordCallback) golden).getPrompt(),
                 ((PasswordCallback) test).getPrompt());
         if (((PasswordCallback) test).getPassword() != null) {
-            assertEquals(new String((char[]) ((PasswordCallback) golden)
+            assertEquals(new String(((PasswordCallback) golden)
                     .getPassword()), new String(
-                    (char[]) ((PasswordCallback) test).getPassword()));
+                    ((PasswordCallback) test).getPassword()));
         }
     }
 }

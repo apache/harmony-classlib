@@ -163,7 +163,7 @@ public class IdentityTest extends TestCase {
         try {
             i.addCertificate(new CertificateStub("ccc", null, null, new PublicKeyStub("k2", "fff", new byte[]{6,7,8,9,0})));
             fail("KeyManagementException should be thrown");
-        } catch (KeyManagementException ok) {};        
+        } catch (KeyManagementException ok) {}        
     }
 
     /**
@@ -353,7 +353,7 @@ public class IdentityTest extends TestCase {
         try {
             i2.setPublicKey(null);
             //fail("KeyManagementException should be thrown - key is null");            
-        } catch (KeyManagementException ok) {};
+        } catch (KeyManagementException ok) {}
     }
     
 //

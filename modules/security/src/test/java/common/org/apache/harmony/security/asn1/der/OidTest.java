@@ -107,8 +107,7 @@ public class OidTest extends TestCase {
     public void testEncode() throws IOException {
 
         for (int i = 0; i < oid.length; i++) {
-            DerOutputStream out = new DerOutputStream(ASN1Oid.getInstance(),
-                    (int[]) oid[i][1]);
+            DerOutputStream out = new DerOutputStream(ASN1Oid.getInstance(), oid[i][1]);
             assertTrue((String) oid[i][0], Arrays.equals((byte[]) oid[i][2],
                     out.encoded));
         }

@@ -21,13 +21,7 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.*;
-import java.security.cert.*;
-import java.util.*;
-import org.apache.harmony.security.asn1.*;
-import org.apache.harmony.security.x509.EDIPartyName;
-import org.apache.harmony.security.x509.GeneralName;
-import org.apache.harmony.security.x509.GeneralNames;
+import java.util.Arrays;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -80,7 +74,7 @@ public class EDIPartyNameTest extends TestCase {
                 printAsHex(16, "", " ", _encoded);
                 System.out.println("");
                 pass = false;
-            };
+            }
 
             GeneralName gName = new GeneralName(ediPN);
             encoded = gName.getEncoded();
@@ -102,7 +96,7 @@ public class EDIPartyNameTest extends TestCase {
                 printAsHex(16, "", " ", _encoded);
                 System.out.println("");
                 pass = false;
-            };
+            }
 
             GeneralNames gNames = new GeneralNames();
             gNames.addName(gName);
@@ -126,7 +120,7 @@ public class EDIPartyNameTest extends TestCase {
                 printAsHex(16, "", " ", _encoded);
                 System.out.println("");
                 pass = false;
-            };
+            }
         } catch (Exception e) {
             e.printStackTrace();
             fail("Unexpected Exception was thrown.");

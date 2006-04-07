@@ -38,8 +38,6 @@ import org.apache.harmony.security.asn1.ASN1StringType;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
-
-import org.apache.harmony.security.asn1.*;
 import org.apache.harmony.security.x501.Name;
 
 /**
@@ -158,7 +156,7 @@ public class GeneralName {
                 this.name = name;
                 break;
             case REG_ID:
-                this.name = ObjectIdentifier.toIntArray((String) name);
+                this.name = ObjectIdentifier.toIntArray(name);
                 break;
             case DIR_NAME :
                 try {

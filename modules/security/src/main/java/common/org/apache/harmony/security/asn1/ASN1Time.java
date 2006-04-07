@@ -85,7 +85,7 @@ public abstract class ASN1Time extends ASN1StringType {
         // the number of passed leap years without this year
         int leap_years_num =
             (times[0] > 1970) ? (times[0] - 1969)/4 : (times[0] - 1971)/4;
-        res += (long) (times[0] - 1970) * 31536000000l 
+        res += (times[0] - 1970) * 31536000000l 
                             + (long) leap_years_num * 86400000;
         // if this year is a leap year and this is time after the february
         if ((times[0] % 4 == 0) && (times[1] > 2)) {

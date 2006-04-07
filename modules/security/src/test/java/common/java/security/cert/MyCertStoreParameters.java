@@ -32,7 +32,7 @@ public class MyCertStoreParameters implements CertStoreParameters {
     }
     public Object clone() {
         try {
-            return (Object)super.clone();
+            return super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
         }

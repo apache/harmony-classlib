@@ -27,7 +27,6 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.KeyStore;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.fortress.Services;
@@ -55,7 +54,6 @@ class DefaultSSLContext {
 
     private static SSLContext findDefault() {
         // FIXME EXPORT CONTROL
-        Set s;
         Provider.Service service;
         for (Iterator it1 = Services.getProvidersList().iterator(); it1
                 .hasNext();) {

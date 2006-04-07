@@ -23,9 +23,6 @@ package org.apache.harmony.security.x509;
 
 import java.util.Iterator;
 import java.util.List;
-import org.apache.harmony.security.asn1.*;
-import org.apache.harmony.security.x509.CertificatePolicies;
-import org.apache.harmony.security.x509.PolicyInformation;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

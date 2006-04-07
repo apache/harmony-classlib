@@ -46,9 +46,7 @@ public class CertPathValidatorSpiTest extends TestCase {
      */
     public void testCertPathValidatorSpi01() throws CertPathValidatorException,
             InvalidAlgorithmParameterException {
-        CertPathValidatorSpi certPathValid = 
-            (CertPathValidatorSpi) new MyCertPathValidatorSpi();
-        assertTrue(certPathValid instanceof CertPathValidatorSpi);
+        CertPathValidatorSpi certPathValid = new MyCertPathValidatorSpi();
         CertPathParameters params = null;
         CertPath certPath = null;
         CertPathValidatorResult cpvResult = certPathValid.engineValidate(

@@ -53,7 +53,7 @@ public final class TestCertUtils {
 
     private TestCertUtils() {
         throw new Error("statics only");
-    };
+    }
 
     /**
      * Returns new instance of test certificate each time the method is called.
@@ -618,8 +618,6 @@ public final class TestCertUtils {
             int len;
             try {
                 while ((len = is.read(chunk)) > 0) {
-                    String sch = new String(chunk);
-                    String sdata = new String(data);
                     byte[] tmp = new byte[data.length + len];
                     System.arraycopy(data, 0, tmp, 0, data.length);
                     System.arraycopy(chunk, 0, tmp, data.length, len);

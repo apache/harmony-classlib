@@ -189,7 +189,6 @@ public class SaslTest4 extends TestCase {
         SaslServer saslS = Sasl.createSaslServer("MECH-2", "protocol", null,
                 null, cbH);
         assertNotNull("Null result", saslS);
-        assertTrue("Not SaslServer", saslS instanceof SaslServer);
         try {
             saslS.unwrap(null, 1, 1);
             fail("SaslException sould be thrown");
@@ -228,7 +227,6 @@ public class SaslTest4 extends TestCase {
         SaslServer saslS = Sasl.createSaslServer("MECH-2", "protocol", null,
                 null, cbH);
         assertNotNull("Null result for MECH-2", saslS);
-        assertTrue("Not SaslServer", saslS instanceof SaslServer);
         assertFalse("Incorrect isComplete() result", saslS.isComplete());
         // try to create Server for wrong mechanism
         try {
@@ -276,7 +274,6 @@ public class SaslTest4 extends TestCase {
 
         saslS = Sasl.createSaslServer("MECH-2", "protocol", null, null, cbH);
         assertNotNull("Null result for MECH-2", saslS);
-        assertTrue("Incorrect object", saslS instanceof SaslServer);
         try {
             saslS.unwrap(null, 1, 1);
             fail("SaslException sould be thrown");
@@ -294,10 +291,8 @@ public class SaslTest4 extends TestCase {
         // in another provider
         saslS = Sasl.createSaslServer("MECH-6", "protocol", null, null, cbH);
         assertNotNull("Null result for MECH-6", saslS);
-        assertTrue("Incorrect object", saslS instanceof SaslServer);
         saslS = Sasl.createSaslServer("MECH-5", "protocol", null, null, cbH);
         assertNotNull("Null result for MECH-5", saslS);
-        assertTrue("Incorrect object", saslS instanceof SaslServer);
     }
 }
 

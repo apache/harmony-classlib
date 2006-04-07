@@ -28,8 +28,6 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
-import org.apache.harmony.security.asn1.*;
-
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
  * with the DistributionPoint stucture which is the part of X.509 CRL

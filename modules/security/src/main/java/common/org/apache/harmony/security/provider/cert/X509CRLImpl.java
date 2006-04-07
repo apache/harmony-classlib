@@ -21,37 +21,33 @@
 
 package org.apache.harmony.security.provider.cert;
 
-import java.security.cert.X509CRL;
-import java.security.cert.X509Certificate;
-import java.security.cert.Certificate;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Principal;
 import java.security.PublicKey;
+import java.security.Signature;
 import java.security.SignatureException;
-import java.security.cert.CRL;
 import java.security.cert.CRLException;
+import java.security.cert.Certificate;
+import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
-import java.security.cert.X509Extension;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
+
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.x509.CertificateList;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.TBSCertList;
-
-
-import java.io.InputStream;
-import java.io.IOException;
-import java.security.Signature;
 
 
 /**

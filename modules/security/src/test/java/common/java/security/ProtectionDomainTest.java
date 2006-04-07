@@ -251,7 +251,7 @@ public class ProtectionDomainTest extends TestCase {
 
         boolean getPdTracked() {
             return pdTracked;
-        };
+        }
 
         public PermissionCollection getPermissions(CodeSource cs) {
             return new Permissions();

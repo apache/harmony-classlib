@@ -42,13 +42,12 @@ public class SerChoiceCallbackTest extends SerializationTest {
         String prompt = "prompt";
         int defaultChoice = 1;
         String[] choices = {"AAA", "BBB"};
-        int index[] = {1, 2, 3};
         
         return new Object[] {new ChoiceCallback(prompt, choices, defaultChoice, true)};
     }
 
     protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(((ChoiceCallback) golden) instanceof ChoiceCallback);
+        assertTrue(golden instanceof ChoiceCallback);
         assertEquals(((ChoiceCallback) golden).getPrompt(),
                 ((ChoiceCallback) test).getPrompt());
         assertEquals(((ChoiceCallback) golden).getDefaultChoice(),

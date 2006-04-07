@@ -21,7 +21,6 @@
 
 package javax.security.auth.callback.serialization;
 
-import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.LanguageCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
@@ -41,7 +40,7 @@ public class SerUnsupportedCallbackExceptionTest extends SerializationTest {
     }
 
     protected Object[] getData() {
-        return new Object[] {new UnsupportedCallbackException((Callback) nc)};
+        return new Object[] {new UnsupportedCallbackException(nc)};
     }
     
     protected void assertDeserialized(Object golden, Object test) {

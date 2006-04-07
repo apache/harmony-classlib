@@ -39,7 +39,6 @@ public class AuthenticationExceptionTest extends SerializationTest {
     protected Object[] getData() {
         String msg = null;
         Exception cause = new Exception(msgs[1]);
-        AuthenticationException excAuthorication = new AuthenticationException(msgs[0]);
         return new Object[] { new AuthenticationException(),
                 new AuthenticationException(msg),
                 new AuthenticationException(msgs[1]),

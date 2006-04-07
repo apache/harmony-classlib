@@ -43,7 +43,7 @@ public class SerTextInputCallbackTest extends SerializationTest {
     }
 
     protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(((TextInputCallback) test) instanceof TextInputCallback);
+        assertTrue(test instanceof TextInputCallback);
         assertEquals(((TextInputCallback) golden).getDefaultText(),
                 ((TextInputCallback) test).getDefaultText());
         assertEquals(((TextInputCallback) golden).getPrompt(),

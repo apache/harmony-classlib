@@ -96,7 +96,7 @@ public class RSAPrivateCrtKeySpecTest extends TestCase {
      * object using valid parameters
      */
     public final void testRSAPrivateCrtKeySpec03() {
-        RSAPrivateKeySpec ks = new RSAPrivateCrtKeySpec(
+        new RSAPrivateCrtKeySpec(
                 null,
                 null,
                 null,
@@ -105,7 +105,6 @@ public class RSAPrivateCrtKeySpecTest extends TestCase {
                 null,
                 null,
                 null);
-        assertTrue(ks instanceof KeySpec);
     }
     
     /**

@@ -60,8 +60,9 @@ public class BerOutputStream {
         if (length > 127) { //long form
             int eLen = length >> 8;
             byte numOctets = 1;
-            for (; eLen > 0; eLen = eLen >> 8, numOctets++)
-                ;
+            for (; eLen > 0; eLen = eLen >> 8) {
+                numOctets++;
+            }
 
             encoded[offset] = (byte) (numOctets | 0x80);
             offset++;
@@ -78,7 +79,7 @@ public class BerOutputStream {
     }
 
     public void encodeANY() {
-        System.arraycopy(((byte[]) content), 0, encoded, offset, length);
+        System.arraycopy(content, 0, encoded, offset, length);
         offset += length;
     }
 
@@ -108,22 +109,22 @@ public class BerOutputStream {
     }
 
     public void encodeGeneralizedTime() {
-        System.arraycopy(((byte[]) content), 0, encoded, offset, length);
+        System.arraycopy(content, 0, encoded, offset, length);
         offset += length;
     }
 
     public void encodeUTCTime() {
-        System.arraycopy(((byte[]) content), 0, encoded, offset, length);
+        System.arraycopy(content, 0, encoded, offset, length);
         offset += length;
     }
 
     public void encodeInteger() {
-        System.arraycopy(((byte[]) content), 0, encoded, offset, length);
+        System.arraycopy(content, 0, encoded, offset, length);
         offset += length;
     }
 
     public void encodeOctetString() {
-        System.arraycopy(((byte[]) content), 0, encoded, offset, length);
+        System.arraycopy(content, 0, encoded, offset, length);
         offset += length;
     }
 
@@ -184,7 +185,7 @@ public class BerOutputStream {
     }
 
     public void encodeString() {
-        System.arraycopy(((byte[]) content), 0, encoded, offset, length);
+        System.arraycopy(content, 0, encoded, offset, length);
         offset += length;
     }
 

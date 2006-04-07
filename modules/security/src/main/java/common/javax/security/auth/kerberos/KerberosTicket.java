@@ -224,7 +224,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
      */
     public final SecretKey getSessionKey() {
         checkState();
-        return (SecretKey)sessionKey;
+        return sessionKey;
     }
 
     /**

@@ -130,11 +130,6 @@ public class SecureRandom extends Random {
         return null;
     }
     
-    // Returns secureRandomSpi
-    private SecureRandomSpi getSpi() {
-        return secureRandomSpi;
-    }
-
     /**
      * @com.intel.drl.spec_ref
      * 

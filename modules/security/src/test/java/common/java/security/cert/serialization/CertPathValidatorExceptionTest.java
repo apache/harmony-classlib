@@ -23,7 +23,6 @@ package java.security.cert.serialization;
 
 import java.security.cert.CertPath;
 import java.security.cert.CertPathValidatorException;
-import java.security.cert.myCertPath;
 
 import org.apache.harmony.security.test.SerializationTest;
 
@@ -45,9 +44,6 @@ public class CertPathValidatorExceptionTest extends SerializationTest {
                 msgs[0], cause);
         String msg = null;
         Throwable th = null;
-        byte[] enc = { (byte) 0, (byte) 1, (byte) 2, (byte) 3, (byte) 4 };
-        //        MyCertPath mcp = new MyCertPath(enc);
-        myCertPath mcp = new myCertPath("X.509", "");
         return new Object[] { new CertPathValidatorException(),
                 new CertPathValidatorException(msg),
                 new CertPathValidatorException(msgs[1]),

@@ -214,7 +214,7 @@ public class BerInputStream {
         }
         //    tag length long_form content
         return 1 + 1 + numOctets + length;
-    };
+    }
 
     /**
      * Decodes ASN.1 bitstring type

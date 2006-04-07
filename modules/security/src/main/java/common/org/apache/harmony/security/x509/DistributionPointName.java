@@ -24,8 +24,6 @@ package org.apache.harmony.security.x509;
 import org.apache.harmony.security.asn1.ASN1Choice;
 import org.apache.harmony.security.asn1.ASN1Implicit;
 import org.apache.harmony.security.asn1.ASN1Type;
-
-import org.apache.harmony.security.asn1.*;
 import org.apache.harmony.security.x501.Name;
 
 /**

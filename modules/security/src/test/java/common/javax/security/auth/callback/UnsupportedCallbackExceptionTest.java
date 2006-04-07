@@ -41,7 +41,7 @@ public class UnsupportedCallbackExceptionTest extends TestCase {
      */
     public final void testUnsupportedCallbackException_01() {
         UnsupportedCallbackException ce = new UnsupportedCallbackException(nc);
-        assertEquals((Callback)nc, ce.getCallback());
+        assertEquals(nc, ce.getCallback());
         try {
             throw ce;
         }catch (Exception e){
@@ -55,14 +55,14 @@ public class UnsupportedCallbackExceptionTest extends TestCase {
      * Test for UnsupportedCallbackException(Callback c, String msg) ctor 
      */
     public final void testUnsupportedCallbackException_02() {
-        UnsupportedCallbackException ce = new UnsupportedCallbackException((Callback)nc, "message");
+        UnsupportedCallbackException ce = new UnsupportedCallbackException(nc, "message");
         assertEquals ("message", ce.getMessage());
-        assertEquals((Callback)nc, ce.getCallback());
+        assertEquals(nc, ce.getCallback());
         try {
             throw ce;
         }catch (Exception e){
             assertTrue(ce.equals(e));
-            assertEquals((Callback)nc, ce.getCallback());
+            assertEquals(nc, ce.getCallback());
         }
 
     }

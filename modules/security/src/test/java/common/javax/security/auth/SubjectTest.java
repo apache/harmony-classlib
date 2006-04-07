@@ -192,7 +192,7 @@ public class SubjectTest extends SecurityTest {
         // all sets modifications are denied
         denyPermission(new AuthPermission("*"));
 
-        Subject subject = new Subject(true, h1, h2, h3);
+        new Subject(true, h1, h2, h3);
     }
 
     /**
@@ -202,22 +202,19 @@ public class SubjectTest extends SecurityTest {
     public final void testSubject_3Set_NPE() {
 
         try {
-            Subject subject = new Subject(false, null, new HashSet(),
-                    new HashSet());
+            new Subject(false, null, new HashSet(), new HashSet());
             fail("No expected NullPointerException");
         } catch (NullPointerException e) {
         }
 
         try {
-            Subject subject = new Subject(false, new HashSet(), null,
-                    new HashSet());
+            new Subject(false, new HashSet(), null, new HashSet());
             fail("No expected NullPointerException");
         } catch (NullPointerException e) {
         }
 
         try {
-            Subject subject = new Subject(false, new HashSet(), new HashSet(),
-                    null);
+            new Subject(false, new HashSet(), new HashSet(), null);
             fail("No expected NullPointerException");
         } catch (NullPointerException e) {
         }
@@ -233,8 +230,7 @@ public class SubjectTest extends SecurityTest {
         hash.add(null);
 
         try {
-            Subject subject = new Subject(false, hash, new HashSet(),
-                    new HashSet());
+            new Subject(false, hash, new HashSet(), new HashSet());
 
             if (!testing) {
                 // possible to add 'null' principal via constructor
@@ -244,8 +240,7 @@ public class SubjectTest extends SecurityTest {
         }
 
         try {
-            Subject subject = new Subject(false, new HashSet(), hash,
-                    new HashSet());
+            new Subject(false, new HashSet(), hash, new HashSet());
 
             if (!testing) {
                 fail("No expected NullPointerException");
@@ -254,8 +249,7 @@ public class SubjectTest extends SecurityTest {
         }
 
         try {
-            Subject subject = new Subject(false, new HashSet(), new HashSet(),
-                    hash);
+            new Subject(false, new HashSet(), new HashSet(), hash);
 
             if (!testing) {
                 fail("No expected NullPointerException");
@@ -266,8 +260,7 @@ public class SubjectTest extends SecurityTest {
         hash.clear();
         hash.add(new Object());
         try {
-            Subject subject = new Subject(false, hash, new HashSet(),
-                    new HashSet());
+            new Subject(false, hash, new HashSet(), new HashSet());
 
             if (!testing) {
                 // possible to add 'null' principal via constructor

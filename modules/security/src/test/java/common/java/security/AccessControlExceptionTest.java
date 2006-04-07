@@ -50,7 +50,7 @@ public class AccessControlExceptionTest extends TestCase {
      */
     public void testAccessControlExceptionStringPermission() {
         Permission perm = new AllPermission();
-        AccessControlException ex = new AccessControlException("001", perm);
+        new AccessControlException("001", perm);
     }
 
     /**

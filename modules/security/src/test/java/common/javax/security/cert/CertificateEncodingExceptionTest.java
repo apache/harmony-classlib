@@ -65,8 +65,6 @@ public class CertificateEncodingExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not CertificateEncodingException";
-
     static String createErr(Exception tE, Exception eE) {
         return "CertificateEncodingException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());

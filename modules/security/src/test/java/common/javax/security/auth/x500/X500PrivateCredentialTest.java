@@ -163,7 +163,7 @@ public class X500PrivateCredentialTest extends TestCase {
 	
 	public void testIllegalArg() {
 		try {
-			X500PrivateCredential cred= new X500PrivateCredential(cert, key, null);
+			new X500PrivateCredential(cert, key, null);
 			fail("No IllegalArgumentException on null value");
 		}
 		catch(IllegalArgumentException e) {
@@ -173,7 +173,7 @@ public class X500PrivateCredentialTest extends TestCase {
 
 	public void testIllegalArg_0() {
 		try {
-			X500PrivateCredential cred= new X500PrivateCredential(cert, null, null);
+			new X500PrivateCredential(cert, null, null);
 			fail("No IllegalArgumentException on null value");
 		}
 		catch(IllegalArgumentException e) {
@@ -183,7 +183,7 @@ public class X500PrivateCredentialTest extends TestCase {
 
 	public void testIllegalArg_1() {
 		try {
-			X500PrivateCredential cred= new X500PrivateCredential(null, key, "");
+			new X500PrivateCredential(null, key, "");
 			fail("No IllegalArgumentException on null value");
 		}
 		catch(IllegalArgumentException e) {

@@ -312,8 +312,8 @@ final class KrbServicePermissionCollection extends PermissionCollection
         Vector permissions;
         synchronized (this) {
             permissions = new Vector(offset);
-            for (int i = 0; i < offset; permissions.add(items[i++]))
-                ;
+            for (int i = 0; i < offset; permissions.add(items[i++])) {
+            }
         }
         ObjectOutputStream.PutField fields = out.putFields();
         fields.put("permissions", permissions);

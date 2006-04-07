@@ -64,7 +64,6 @@ public class PrivateCredentialPermissionTest extends TestCase {
         s_this = "a.b.Credential a.b.Principal \"duke\"";
         p_that = new PrivateCredentialPermission(s_that, "read");
         p_this = new PrivateCredentialPermission(s_this, "read");
-        assertTrue(p_this instanceof PrivateCredentialPermission);
         assertTrue(p_this.implies(p_that));
         assertTrue(p_this.implies(p_this));
     }
@@ -740,8 +739,7 @@ public class PrivateCredentialPermissionTest extends TestCase {
 
     public final void testSerialization_Golden() throws Exception {
 
-        PrivateCredentialPermission z = new PrivateCredentialPermission(
-                "a b \"c\" d \"e\"", "read");
+        new PrivateCredentialPermission("a b \"c\" d \"e\"", "read");
 
         ByteArrayInputStream in = new ByteArrayInputStream(gForm);
         ObjectInputStream sIn = new ObjectInputStream(in);

@@ -896,9 +896,6 @@ public class SecurityTest extends TestCase {
         }
 
         public void testToArray_NotEmptySet() {
-
-            Object[] sample;
-
             set.add(element);
             assertEquals("Set is not empty", set.toArray().length, 1);
             assertTrue("Set element", set.toArray()[0] == element);
@@ -1419,8 +1416,6 @@ public class SecurityTest extends TestCase {
         }
 
         public void testToArray_NotEmptySet() {
-            Object[] sample;
-
             set.add(element);
             setReadOnly();
 
@@ -1701,8 +1696,6 @@ public class SecurityTest extends TestCase {
         }
 
         public void testToArray_NotEmptySet() {
-            Object[] sample;
-
             set.add(element);
             setSecure();
 

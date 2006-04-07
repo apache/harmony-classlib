@@ -29,8 +29,6 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
-import org.apache.harmony.security.asn1.*;
-
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
  * with OtherName structure which is a subpart of GeneralName

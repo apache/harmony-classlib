@@ -50,9 +50,7 @@ public class TrustManagerFactorySpiTests extends TestCase {
      * Assertion: constructs TrustManagerFactorySpi
      */
     public void testTrustManagerFactorySpi01() throws InvalidAlgorithmParameterException {
-        TrustManagerFactorySpi kmfSpi = (TrustManagerFactorySpi) new MyTrustManagerFactorySpi();        
-        assertTrue("Not TrustManagerFactorySpi",
-                kmfSpi instanceof TrustManagerFactorySpi);
+        TrustManagerFactorySpi kmfSpi = new MyTrustManagerFactorySpi();        
         assertNull("Not null results", kmfSpi.engineGetTrustManagers());
         KeyStore kStore = null;
         ManagerFactoryParameters mfp = null;
@@ -85,7 +83,7 @@ public class TrustManagerFactorySpiTests extends TestCase {
         } catch (KeyStoreException e) {
             fail("Unexpected KeyStoreException was thrown");            
         }
-        mfp = (ManagerFactoryParameters) new MyTrustManagerFactorySpi.Parameters(null);
+        mfp = new MyTrustManagerFactorySpi.Parameters(null);
         try {
             kmfSpi.engineInit(mfp);
             fail("RuntimeException must be thrown");
@@ -94,7 +92,7 @@ public class TrustManagerFactorySpiTests extends TestCase {
         } catch (InvalidAlgorithmParameterException e) {
             fail("Unexpected: ".concat(e.toString()));
         }
-        mfp = (ManagerFactoryParameters) new MyTrustManagerFactorySpi.Parameters(kStore);
+        mfp = new MyTrustManagerFactorySpi.Parameters(kStore);
         kmfSpi.engineInit(mfp);
     }
 }

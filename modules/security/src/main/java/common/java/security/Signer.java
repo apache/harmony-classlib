@@ -21,8 +21,6 @@
 
 package java.security;
 
-import java.security.Principal;
-
 /**
  * @com.intel.drl.spec_ref
  * 

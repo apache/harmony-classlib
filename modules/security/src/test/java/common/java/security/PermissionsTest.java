@@ -190,7 +190,6 @@ public class PermissionsTest extends TestCase {
      */
     public void testNull(){
     	Permissions ps = new Permissions();
-    	Permissions ps1 = new Permissions();
     	try {
     		ps.elements().nextElement();
     		fail("should throw NoSuchElementException");

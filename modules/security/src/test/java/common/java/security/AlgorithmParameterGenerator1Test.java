@@ -53,7 +53,7 @@ public class AlgorithmParameterGenerator1Test extends TestCase {
 
     private static String validProviderName = null;
 
-    private static Provider validProvider = null;;
+    private static Provider validProvider = null;
 
     private static boolean DSASupported = false;
 

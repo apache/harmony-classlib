@@ -66,8 +66,6 @@ public class InvalidParameterSpecExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not InvalidParameterSpecException";
-
     static String createErr(Exception tE, Exception eE) {
         return "InvalidParameterSpecException:  ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());

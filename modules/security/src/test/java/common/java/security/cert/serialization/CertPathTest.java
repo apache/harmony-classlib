@@ -178,7 +178,7 @@ public class CertPathTest extends TestCase {
         serialize(cp1, bos);
         // try to deserialize it
         try {
-            CertPath cp2 = deserialize(new ByteArrayInputStream(bos.toByteArray()));
+            deserialize(new ByteArrayInputStream(bos.toByteArray()));
         } catch (Exception e) {
         	System.out.println(getName() + ": " + e);
             if (e instanceof ObjectStreamException) {

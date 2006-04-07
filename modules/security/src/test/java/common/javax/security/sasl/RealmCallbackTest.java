@@ -22,7 +22,6 @@
 package javax.security.sasl;
 
 import junit.framework.TestCase;
-;
 
 /**
  * Tests for constructors and methods of RealmCallback class
@@ -90,7 +89,6 @@ public class RealmCallbackTest extends TestCase {
         for (int i = 0; i < prompts.length; i++) {
             for (int j = 0; j < prompts.length; j++) {
                 rCB = new RealmCallback(prompts[i], defInfo[j]);
-                assertTrue("Incorrect object", rCB instanceof RealmCallback);
                 assertEquals("Incoorect default info", rCB.getDefaultText(),
                         defInfo[j]);
                 assertEquals("Incorrect prompt", rCB.getPrompt(), prompts[i]);
@@ -134,7 +132,6 @@ public class RealmCallbackTest extends TestCase {
         String ss;
         for (int i = 0; i < prompts.length; i++) {
             rCB = new RealmCallback(prompts[i]);
-            assertTrue("Incorrect object", rCB instanceof RealmCallback);
             assertNull("Incoorect default info", rCB.getDefaultText());
             assertEquals("Incorrect prompt", rCB.getPrompt(), prompts[i]);
             assertNull("Not null text", rCB.getText());

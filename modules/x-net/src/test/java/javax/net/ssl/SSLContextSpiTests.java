@@ -22,8 +22,6 @@
 package javax.net.ssl;
 
 import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import javax.net.ssl.SSLContextSpi;
@@ -51,7 +49,7 @@ public class SSLContextSpiTests extends TestCase {
      * Assertion: constructs SSLContextSpi
      */
     public void testSSLContextSpi01() throws KeyManagementException {
-        SSLContextSpi sslConSpi = (SSLContextSpi) new MySSLContextSpi();
+        SSLContextSpi sslConSpi = new MySSLContextSpi();
         try {
             sslConSpi.engineGetSocketFactory();
             fail("RuntimeException must be thrown");
@@ -89,7 +87,6 @@ public class SSLContextSpiTests extends TestCase {
             assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
         }
         sslConSpi.engineInit(null, null, new SecureRandom());
-        assertTrue("Not SSLContextSpi object", sslConSpi instanceof SSLContextSpi);
         assertNull("Not null result", sslConSpi.engineGetSocketFactory());
         assertNull("Not null result", sslConSpi.engineGetServerSocketFactory());
         assertNotNull("Null result", sslConSpi.engineCreateSSLEngine());

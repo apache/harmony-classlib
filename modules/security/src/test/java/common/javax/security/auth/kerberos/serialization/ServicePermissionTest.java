@@ -39,7 +39,7 @@ public class ServicePermissionTest extends SerializationTest {
     }
 
     protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(((ServicePermission) golden) instanceof ServicePermission);
+        assertTrue(golden instanceof ServicePermission);
         assertEquals(((ServicePermission) golden).getName(),
                 ((ServicePermission) test).getName());
         assertEquals(((ServicePermission) golden).getActions(),

@@ -280,7 +280,7 @@ public class KSBuilderTest extends TestCase {
         KeyStore.Builder ksB1;
         KeyStore ks = null;
         KeyStore ks1 = null;
-        ;
+
         myProtectionParameter myPP = new myProtectionParameter(new byte[5]);
         // check exceptions
         try {

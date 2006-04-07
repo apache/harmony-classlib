@@ -52,16 +52,15 @@ public class CertificateFactorySpiTest extends TestCase {
      */
     public void testCertificateFactorySpi01() throws CertificateException,
             CRLException {
-        CertificateFactorySpi certFactorySpi = (CertificateFactorySpi) new extCertificateFactorySpi();
-        assertTrue(certFactorySpi instanceof CertificateFactorySpi);
+        CertificateFactorySpi certFactorySpi = new extCertificateFactorySpi();
         ByteArrayInputStream bais = new ByteArrayInputStream(new byte[0]);
         try {
-            certFactorySpi.engineGenerateCertPath((InputStream) bais);
+            certFactorySpi.engineGenerateCertPath(bais);
             fail("UnsupportedOperationException must be thrown");
         } catch (UnsupportedOperationException e) {
         }
         try {
-            certFactorySpi.engineGenerateCertPath((InputStream) bais, "");
+            certFactorySpi.engineGenerateCertPath(bais, "");
             fail("UnsupportedOperationException must be thrown");
         } catch (UnsupportedOperationException e) {
         }
@@ -77,7 +76,7 @@ public class CertificateFactorySpiTest extends TestCase {
         } catch (UnsupportedOperationException e) {
         }
         Certificate cc = certFactorySpi
-                .engineGenerateCertificate((InputStream) bais);
+                .engineGenerateCertificate(bais);
         assertNull("Not null Cerificate", cc);
         try {
             certFactorySpi.engineGenerateCertificate(null);
@@ -85,7 +84,7 @@ public class CertificateFactorySpiTest extends TestCase {
         } catch (CertificateException e) {
         }
         Collection col = certFactorySpi
-                .engineGenerateCertificates((InputStream) bais);
+                .engineGenerateCertificates(bais);
         assertNull("Not null Collection", col);
         try {
             certFactorySpi.engineGenerateCertificates(null);
@@ -93,7 +92,7 @@ public class CertificateFactorySpiTest extends TestCase {
         } catch (CertificateException e) {
         }
 
-        CRL ccCRL = certFactorySpi.engineGenerateCRL((InputStream) bais);
+        CRL ccCRL = certFactorySpi.engineGenerateCRL(bais);
         assertNull("Not null CRL", ccCRL);
         try {
             certFactorySpi.engineGenerateCRL(null);
@@ -102,7 +101,7 @@ public class CertificateFactorySpiTest extends TestCase {
         }
 
         Collection colCRL = certFactorySpi
-                .engineGenerateCRLs((InputStream) bais);
+                .engineGenerateCRLs(bais);
         assertNull("Not null CRL", colCRL);
         try {
             certFactorySpi.engineGenerateCRLs(null);
@@ -117,31 +116,30 @@ public class CertificateFactorySpiTest extends TestCase {
      */
     public void testCertificateFactorySpi02() throws CertificateException,
             CRLException {
-        CertificateFactorySpi certFactorySpi = (CertificateFactorySpi) new MyCertificateFactorySpi();
+        CertificateFactorySpi certFactorySpi = new MyCertificateFactorySpi();
         MyCertificateFactorySpi.putMode(true);
-        assertTrue(certFactorySpi instanceof CertificateFactorySpi);
         ByteArrayInputStream bais = new ByteArrayInputStream(new byte[0]);
         DataInputStream dis = new DataInputStream(bais);
         try {
-            certFactorySpi.engineGenerateCertPath((InputStream) bais);
+            certFactorySpi.engineGenerateCertPath(bais);
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
-        certFactorySpi.engineGenerateCertPath((InputStream) dis);
+        certFactorySpi.engineGenerateCertPath(dis);
         try {
-            certFactorySpi.engineGenerateCertPath((InputStream) bais, "aa");
+            certFactorySpi.engineGenerateCertPath(bais, "aa");
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
         try {
-            certFactorySpi.engineGenerateCertPath((InputStream) dis, "");
+            certFactorySpi.engineGenerateCertPath(dis, "");
             fail("IllegalArgumentException must be thrown");
         } catch (IllegalArgumentException e) {
         }
-        certFactorySpi.engineGenerateCertPath((InputStream) dis, "ss");
+        certFactorySpi.engineGenerateCertPath(dis, "ss");
 
         try {
-            certFactorySpi.engineGenerateCertificate((InputStream) bais);
+            certFactorySpi.engineGenerateCertificate(bais);
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
@@ -151,14 +149,14 @@ public class CertificateFactorySpiTest extends TestCase {
         } catch (CertificateException e) {
         }
         Certificate cert = certFactorySpi
-                .engineGenerateCertificate((InputStream) dis);
+                .engineGenerateCertificate(dis);
         assertNull("Result must be null", cert);
         Collection col = certFactorySpi
-                .engineGenerateCertificates((InputStream) dis);
+                .engineGenerateCertificates(dis);
         assertNull("Result must be null", col);
 
         try {
-            certFactorySpi.engineGenerateCRL((InputStream) bais);
+            certFactorySpi.engineGenerateCRL(bais);
             fail("CRLException must be thrown");
         } catch (CRLException e) {
         }
@@ -167,9 +165,9 @@ public class CertificateFactorySpiTest extends TestCase {
             fail("CRLException must be thrown");
         } catch (CRLException e) {
         }
-        CRL crl = certFactorySpi.engineGenerateCRL((InputStream) dis);
+        CRL crl = certFactorySpi.engineGenerateCRL(dis);
         assertNull("Result must be null", crl);
-        col = certFactorySpi.engineGenerateCRLs((InputStream) dis);
+        col = certFactorySpi.engineGenerateCRLs(dis);
         assertNull("Result must be null", col);
 
         List list = null;
@@ -179,7 +177,6 @@ public class CertificateFactorySpiTest extends TestCase {
         } catch (NullPointerException e) {            
         }
         Iterator enc = certFactorySpi.engineGetCertPathEncodings();
-        assertTrue("Not Iterator object", enc instanceof Iterator);
         assertTrue("Incorrect Iterator", enc.hasNext());
     }
     
@@ -189,31 +186,30 @@ public class CertificateFactorySpiTest extends TestCase {
      */
     public void testCertificateFactorySpi03() throws CertificateException,
             CRLException {
-        CertificateFactorySpi certFactorySpi = (CertificateFactorySpi) new MyCertificateFactorySpi();
+        CertificateFactorySpi certFactorySpi = new MyCertificateFactorySpi();
         MyCertificateFactorySpi.putMode(false);
-        assertTrue(certFactorySpi instanceof CertificateFactorySpi);
         ByteArrayInputStream bais = new ByteArrayInputStream(new byte[0]);
         DataInputStream dis = new DataInputStream(bais);
         try {
-            certFactorySpi.engineGenerateCertPath((InputStream) bais);
+            certFactorySpi.engineGenerateCertPath(bais);
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
         try {
-            certFactorySpi.engineGenerateCertPath((InputStream) dis);
+            certFactorySpi.engineGenerateCertPath(dis);
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
         try {
-            certFactorySpi.engineGenerateCertPath((InputStream) bais, "aa");
+            certFactorySpi.engineGenerateCertPath(bais, "aa");
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
-        certFactorySpi.engineGenerateCertPath((InputStream) dis, "");
-        certFactorySpi.engineGenerateCertPath((InputStream) dis, "ss");
+        certFactorySpi.engineGenerateCertPath(dis, "");
+        certFactorySpi.engineGenerateCertPath(dis, "ss");
 
         try {
-            certFactorySpi.engineGenerateCertificate((InputStream) bais);
+            certFactorySpi.engineGenerateCertificate(bais);
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
@@ -223,14 +219,14 @@ public class CertificateFactorySpiTest extends TestCase {
         } catch (CertificateException e) {
         }
         Certificate cert = certFactorySpi
-                .engineGenerateCertificate((InputStream) dis);
+                .engineGenerateCertificate(dis);
         assertNull("Result must be null", cert);
         Collection col = certFactorySpi
-                .engineGenerateCertificates((InputStream) dis);
+                .engineGenerateCertificates(dis);
         assertNull("Result must be null", col);
 
         try {
-            certFactorySpi.engineGenerateCRL((InputStream) bais);
+            certFactorySpi.engineGenerateCRL(bais);
             fail("CRLException must be thrown");
         } catch (CRLException e) {
         }
@@ -239,15 +235,14 @@ public class CertificateFactorySpiTest extends TestCase {
             fail("CRLException must be thrown");
         } catch (CRLException e) {
         }
-        CRL crl = certFactorySpi.engineGenerateCRL((InputStream) dis);
+        CRL crl = certFactorySpi.engineGenerateCRL(dis);
         assertNull("Result must be null", crl);
-        col = certFactorySpi.engineGenerateCRLs((InputStream) dis);
+        col = certFactorySpi.engineGenerateCRLs(dis);
         assertNull("Result must be null", col);
 
         List list = null;
         certFactorySpi.engineGenerateCertPath(list);
         Iterator enc = certFactorySpi.engineGetCertPathEncodings();
-        assertTrue("Not Iterator object", enc instanceof Iterator);
         assertFalse("Incorrect Iterator", enc.hasNext());
     }
 

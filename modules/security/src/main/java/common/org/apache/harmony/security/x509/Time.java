@@ -21,15 +21,10 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.IOException;
-import java.util.Date;
-
 import org.apache.harmony.security.asn1.ASN1Choice;
 import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.ASN1UTCTime;
-
-import org.apache.harmony.security.asn1.*;
 
 /**
  * Class represents the work with the following X.509 structure:

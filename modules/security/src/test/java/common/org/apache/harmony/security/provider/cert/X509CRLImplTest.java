@@ -21,31 +21,27 @@
 package org.apache.harmony.security.provider.cert;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
-import java.security.cert.CRL;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.security.cert.CRLException;
+import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PublicKey;
-import java.security.PrivateKey;
+
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.apache.harmony.security.asn1.ASN1Integer;
-import org.apache.harmony.security.asn1.ASN1OctetString;
-import org.apache.harmony.security.provider.cert.X509CRLImpl;
-import org.apache.harmony.security.provider.cert.X509CertImpl;
 import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.AuthorityKeyIdentifier;
@@ -59,10 +55,6 @@ import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
 import org.apache.harmony.security.x509.TBSCertList;
 import org.apache.harmony.security.x509.TBSCertificate;
 import org.apache.harmony.security.x509.Validity;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * X509CRLImplTest

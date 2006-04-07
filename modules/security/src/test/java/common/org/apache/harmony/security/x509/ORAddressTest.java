@@ -21,12 +21,6 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.*;
-
-import org.apache.harmony.security.x509.GeneralName;
-import org.apache.harmony.security.x509.GeneralNames;
-import org.apache.harmony.security.x509.ORAddress;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

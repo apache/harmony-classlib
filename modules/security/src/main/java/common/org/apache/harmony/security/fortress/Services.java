@@ -111,7 +111,6 @@ public class Services {
      * @return
      */
     public static Provider getProvider(String name) {
-        Provider p;
         if (name == null) {
             return null;
         }

@@ -62,7 +62,7 @@ public class ECGenParameterSpecTest extends TestCase {
      * using valid <code>name</code> 
      */
     public final void testECGenParameterSpec01() {
-        AlgorithmParameterSpec ps = new ECGenParameterSpec("someName");
+        new ECGenParameterSpec("someName");
     }
 
     /**
@@ -73,7 +73,8 @@ public class ECGenParameterSpecTest extends TestCase {
      */
     public final void testECGenParameterSpec02() {
         try {
-            AlgorithmParameterSpec ps = new ECGenParameterSpec(null);
+            new ECGenParameterSpec(null);
+            fail("NPE expected");
         } catch (NullPointerException ok) {}
     }
 

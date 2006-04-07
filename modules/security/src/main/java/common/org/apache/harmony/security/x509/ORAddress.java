@@ -21,13 +21,9 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.IOException;
-
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
-
-import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
@@ -57,14 +53,6 @@ public class ORAddress {
      * TODO
      */
     public ORAddress() {}
-    
-    // 
-    // TODO
-    // @param   encoding:   byte[]
-    // 
-    private ORAddress(byte[] encoding) {
-        this.encoding = encoding;
-    }
     
     /**
      * Returns ASN.1 encoded form of this X.509 ORAddress value.

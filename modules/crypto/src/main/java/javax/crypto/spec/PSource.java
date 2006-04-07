@@ -60,6 +60,7 @@ public class PSource {
         public static final PSpecified DEFAULT = new PSpecified();
 
         private PSpecified() {
+            super("PSpecified");
             p = new byte[0];
         }
 
@@ -67,6 +68,7 @@ public class PSource {
          * @com.intel.drl.spec_ref
          */
         public PSpecified(byte[] p) {
+            super("PSpecified");
             if (p == null) {
                 throw new NullPointerException("encoding input is null!");
             }

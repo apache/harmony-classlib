@@ -23,7 +23,6 @@ package java.security.cert;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.InputStream;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
@@ -91,12 +90,12 @@ public class CertificateFactory2Test extends TestCase {
         ByteArrayInputStream bais = new ByteArrayInputStream(new byte[0]);
         DataInputStream dis = new DataInputStream(bais);
         try {
-            certFactory.generateCertPath((InputStream) bais);
+            certFactory.generateCertPath(bais);
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
         try {
-            certFactory.generateCertPath((InputStream) dis);
+            certFactory.generateCertPath(dis);
             if (!mode) {
                 fail("CertificateException must be thrown because encodings list is empty");
             }
@@ -106,12 +105,12 @@ public class CertificateFactory2Test extends TestCase {
             }
         }
         try {
-            certFactory.generateCertPath((InputStream) bais, "aa");
+            certFactory.generateCertPath(bais, "aa");
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
         try {
-            certFactory.generateCertPath((InputStream) dis, "");
+            certFactory.generateCertPath(dis, "");
             if (mode) {
                 fail("IllegalArgumentException must be thrown");
             }
@@ -120,10 +119,10 @@ public class CertificateFactory2Test extends TestCase {
                 fail("Unexpected IllegalArgumentException was thrown");
             }
         }
-        certFactory.generateCertPath((InputStream) dis, "ss");
+        certFactory.generateCertPath(dis, "ss");
 
         try {
-            certFactory.generateCertificate((InputStream) bais);
+            certFactory.generateCertificate(bais);
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
@@ -132,13 +131,13 @@ public class CertificateFactory2Test extends TestCase {
             fail("CertificateException must be thrown");
         } catch (CertificateException e) {
         }
-        Certificate cert = certFactory.generateCertificate((InputStream) dis);
+        Certificate cert = certFactory.generateCertificate(dis);
         assertNull("Result must be null", cert);
-        Collection col = certFactory.generateCertificates((InputStream) dis);
+        Collection col = certFactory.generateCertificates(dis);
         assertNull("Result must be null", col);
 
         try {
-            certFactory.generateCRL((InputStream) bais);
+            certFactory.generateCRL(bais);
             fail("CRLException must be thrown");
         } catch (CRLException e) {
         }
@@ -147,9 +146,9 @@ public class CertificateFactory2Test extends TestCase {
             fail("CRLException must be thrown");
         } catch (CRLException e) {
         }
-        CRL crl = certFactory.generateCRL((InputStream) dis);
+        CRL crl = certFactory.generateCRL(dis);
         assertNull("Result must be null", crl);
-        col = certFactory.generateCRLs((InputStream) dis);
+        col = certFactory.generateCRLs(dis);
         assertNull("Result must be null", col);
 
         List list = null;
@@ -167,7 +166,6 @@ public class CertificateFactory2Test extends TestCase {
             }
         }
         Iterator it = certFactory.getCertPathEncodings();
-        assertTrue("Not Iterator object", it instanceof Iterator);
         if (mode) {
             assertTrue(it.hasNext());
         } else {
@@ -200,8 +198,6 @@ public class CertificateFactory2Test extends TestCase {
         CertificateFactory cerF;
         for (int i = 0; i < validValues.length; i++) {
             cerF = CertificateFactory.getInstance(validValues[i]);
-            assertTrue("Not instanceof CertificateFactory object",
-                    cerF instanceof CertificateFactory);
             assertEquals("Incorrect type", cerF.getType(), validValues[i]);
             assertEquals("Incorrect provider", cerF.getProvider(), mProv);
             checkResult(cerF, mode);
@@ -265,8 +261,6 @@ public class CertificateFactory2Test extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             cerF = CertificateFactory.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof CertificateFactory object",
-                    cerF instanceof CertificateFactory);
             assertEquals("Incorrect type", cerF.getType(), validValues[i]);
             assertEquals("Incorrect provider", cerF.getProvider().getName(),
                     mProv.getName());
@@ -311,8 +305,6 @@ public class CertificateFactory2Test extends TestCase {
         CertificateFactory cerF;
         for (int i = 0; i < validValues.length; i++) {
             cerF = CertificateFactory.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof CertificateFactory object",
-                    cerF instanceof CertificateFactory);
             assertEquals("Incorrect type", cerF.getType(), validValues[i]);
             assertEquals("Incorrect provider", cerF.getProvider(), mProv);            
             checkResult(cerF,  mode);

@@ -255,9 +255,6 @@ public class SignatureTest2 extends TestCase {
 	
 	private void checkSig2(Signature s, Provider p) {
 		byte[] b = {1, 2, 3, 4};
-		if (!(s instanceof SignatureSpi)) {
-			fail("getInstance() failed");
-		}
 		if (s.getProvider() != p) {
 			fail("getProvider() failed");
 		}

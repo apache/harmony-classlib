@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 
-import org.apache.harmony.security.fortress.DefaultPolicy;
 import junit.framework.TestCase;
 import org.apache.harmony.security.test.SecurityChecker;
 
@@ -185,14 +184,18 @@ public class PolicyTest extends TestCase {
         pc4pd = policy.getPermissions(pd);
         assertNotNull(pc4pd);
         Collection c = new HashSet();
-        for (en = pc4pd.elements();en.hasMoreElements(); c.add(en.nextElement()));
+        for (en = pc4pd.elements();en.hasMoreElements(); c.add(en.nextElement())) {
+        }
+
         assertTrue(c.contains(sp));
         
         //case4: non-empty policy, some static permissions in PD
         pc4pd = policy.getPermissions(pd2);
         assertNotNull(pc4pd);
         c = new HashSet();
-        for (en = pc4pd.elements();en.hasMoreElements(); c.add(en.nextElement()));
+        for (en = pc4pd.elements();en.hasMoreElements(); c.add(en.nextElement())) {
+        }
+
         assertTrue(c.contains(sp));
         //no check for static permissions
     }

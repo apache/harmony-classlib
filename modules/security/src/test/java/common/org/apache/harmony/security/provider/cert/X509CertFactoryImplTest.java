@@ -24,18 +24,11 @@ package org.apache.harmony.security.provider.cert;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CRL;
 import java.security.cert.CRLException;
-import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import org.apache.harmony.security.pkcs7.ContentInfo;
-import org.apache.harmony.security.pkcs7.SignedData;
-import org.apache.harmony.security.provider.cert.X509CertFactoryImpl;
-
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -99,7 +92,6 @@ public class X509CertFactoryImplTest extends TestCase {
      */
     public void testEngineGenerateCertificates() {
         X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
-        Certificate cert;
         
         // DER encoded certificate generation testing
         ByteArrayInputStream bais = 
@@ -159,7 +151,6 @@ public class X509CertFactoryImplTest extends TestCase {
      */
     public void testEngineGenerateCRLs() {
         X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
-        CRL crl;
         
         // DER encoded crt generation testing
         ByteArrayInputStream bais = 

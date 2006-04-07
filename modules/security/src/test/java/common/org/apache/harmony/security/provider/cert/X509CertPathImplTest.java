@@ -22,21 +22,12 @@
 package org.apache.harmony.security.provider.cert;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.security.cert.CertPath;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.harmony.security.asn1.BerInputStream;
-import org.apache.harmony.security.provider.cert.X509CertImplTest;
-import org.apache.harmony.security.provider.cert.X509CertPathImpl;
-import org.apache.harmony.security.x509.Certificate;
-
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -144,34 +135,15 @@ public class X509CertPathImplTest extends TestCase {
     /**
      * getEncoded() method testing.
      */
-    public void testGetEncoded1() {
-        try {
-            byte[] encoding = certPath.getEncoded();
-        } catch (CertificateEncodingException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateEncodingException was thrown:"
-                    + e.getMessage());
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException was thrown:"
-                    + e.getMessage());
-        }
+    public void testGetEncoded1() throws Exception {
+        certPath.getEncoded();
     }
     
     /**
      * getEncoded(String encoding) method testing.
      */
-    public void testGetEncoded2() {
-        try {
-            certPath.getEncoded("ABRACADABRA");
-            fail("CertificateEncodingException should be thrown");
-        } catch (CertificateEncodingException e) {
-            // pass
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException was thrown:"
-                    + e.getMessage());
-        }
+    public void testGetEncoded2() throws Exception {
+        certPath.getEncoded("ABRACADABRA");
     }
     
     /**

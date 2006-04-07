@@ -40,7 +40,6 @@ import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.pkcs7.ContentInfo;
 import org.apache.harmony.security.pkcs7.SignedData;
 import org.apache.harmony.security.x509.Certificate;
-import org.apache.harmony.security.x509.Extensions;
 
 
 /**
@@ -56,7 +55,7 @@ public class X509CertPathImpl extends CertPath {
     private static final String[] encodingsArr = 
                                         new String[] {"PkiPath", "PKCS7"};
     static final List encodings = Collections.unmodifiableList(
-                                            Arrays.asList(encodingsArr));;
+                                            Arrays.asList(encodingsArr));
     private final List certificates;
     private byte[] pkiPathEncoding;
     private byte[] pkcs7Encoding;

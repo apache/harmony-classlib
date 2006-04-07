@@ -130,8 +130,6 @@ public class CertPathValidator2Test extends TestCase {
         CertPathValidator cerPV;
         for (int i = 0; i < validValues.length; i++) {
             cerPV = CertPathValidator.getInstance(validValues[i]);
-            assertTrue("Not instanceof CertPathValidator object",
-                    cerPV instanceof CertPathValidator);
             assertEquals("Incorrect type", cerPV.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", cerPV.getProvider(), mProv);
             checkResult(cerPV);
@@ -196,8 +194,6 @@ public class CertPathValidator2Test extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             cerPV = CertPathValidator.getInstance(validValues[i], mProv
                     .getName());
-            assertTrue("Not instanceof CertPathValidator object",
-                    cerPV instanceof CertPathValidator);
             assertEquals("Incorrect type", cerPV.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", cerPV.getProvider().getName(),
                     mProv.getName());
@@ -243,8 +239,6 @@ public class CertPathValidator2Test extends TestCase {
         CertPathValidator cerPV;
         for (int i = 0; i < validValues.length; i++) {
             cerPV = CertPathValidator.getInstance(validValues[i], mProv);
-            assertTrue("Not instanceof CertPathValidator object",
-                    cerPV instanceof CertPathValidator);
             assertEquals("Incorrect type", cerPV.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider", cerPV.getProvider(), mProv);
             checkResult(cerPV);

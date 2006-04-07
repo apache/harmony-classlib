@@ -50,10 +50,7 @@ public class AlgorithmParameterGeneratorSpiTest extends TestCase {
      */
     public void testAlgorithmParameterGeneratorSpi01()
             throws InvalidAlgorithmParameterException {
-        AlgorithmParameterGeneratorSpi algParGen = 
-            (AlgorithmParameterGeneratorSpi) new MyAlgorithmParameterGeneratorSpi();
-        assertTrue("Not AlgorithmParameterGeneratorSpi object",
-                algParGen instanceof AlgorithmParameterGeneratorSpi);
+        AlgorithmParameterGeneratorSpi algParGen = new MyAlgorithmParameterGeneratorSpi();
         AlgorithmParameters param = algParGen.engineGenerateParameters();
         assertNull("Not null parameters", param);
         AlgorithmParameterSpec pp = null;

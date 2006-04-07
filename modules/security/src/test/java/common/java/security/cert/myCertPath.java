@@ -32,7 +32,7 @@ import java.security.cert.CertPath;
 public class myCertPath extends CertPath {
 
     public List getCertificates() {
-        return (List) (new Vector());
+        return new Vector();
     }
 
     public byte[] getEncoded() {
@@ -52,7 +52,7 @@ public class myCertPath extends CertPath {
     }
 
     public CertPath get(String s) {
-        return (CertPath) (new myCertPath(s));
+        return new myCertPath(s);
     }
 
     public myCertPath(String s, String s1) {

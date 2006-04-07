@@ -47,9 +47,6 @@ public class CertPathValidator3Test extends TestCase {
         super(name);
     }
     private static final String defaultType = CertPathBuilder1Test.defaultType;    
-    private static final String [] validValues = CertPathBuilder1Test.validValues;
-     
-    private static String [] invalidValues = SpiEngUtils.invalidValues;
     
     private static boolean PKIXSupport = false;
 
@@ -99,7 +96,7 @@ public class CertPathValidator3Test extends TestCase {
             return;
         }
         MyCertPath mCP = new MyCertPath(new byte[0]);
-        CertPathParameters params = (CertPathParameters)new PKIXParameters(TestUtils.getTrustAnchorSet()); 
+        CertPathParameters params = new PKIXParameters(TestUtils.getTrustAnchorSet()); 
         CertPathValidator [] certPV = createCPVs();
         assertNotNull("CertPathValidator objects were not created", certPV);
         for (int i = 0; i < certPV.length; i++) {            

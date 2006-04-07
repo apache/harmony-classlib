@@ -42,7 +42,7 @@ public class SerTextOutputCallbackTest extends SerializationTest {
     }
 
     protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(((TextOutputCallback) test) instanceof TextOutputCallback);
+        assertTrue(test instanceof TextOutputCallback);
         assertEquals(((TextOutputCallback) golden).getMessage(),
                 ((TextOutputCallback) test).getMessage());
         assertEquals(((TextOutputCallback) golden).getMessageType(),

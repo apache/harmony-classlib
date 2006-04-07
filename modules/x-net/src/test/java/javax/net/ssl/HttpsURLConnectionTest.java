@@ -90,7 +90,7 @@ public class HttpsURLConnectionTest extends TestCase {
 
     public final void testGetDefaultSSLSocketFactory() {
         SSLSocketFactory sf = HttpsURLConnection.getDefaultSSLSocketFactory();
-        if (!sf.equals((SSLSocketFactory) SSLSocketFactory.getDefault())) {
+        if (!sf.equals(SSLSocketFactory.getDefault())) {
             fail("incorrect DefaultSSLSocketFactory");
         }
     }
@@ -98,7 +98,7 @@ public class HttpsURLConnectionTest extends TestCase {
     public final void testGetSSLSocketFactory() {
         HttpsURLConnection con = new MyHttpsURLConnection(null);
         SSLSocketFactory sf = con.getSSLSocketFactory();
-        if (!sf.equals((SSLSocketFactory) SSLSocketFactory.getDefault())) {
+        if (!sf.equals(SSLSocketFactory.getDefault())) {
             fail("incorrect DefaultSSLSocketFactory");
         }
     }

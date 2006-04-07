@@ -39,7 +39,7 @@ public class DelegationPermissionTest extends SerializationTest {
     }
 
     protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(((DelegationPermission) golden) instanceof DelegationPermission);
+        assertTrue(golden instanceof DelegationPermission);
         assertEquals(((DelegationPermission) golden).getName(),
                 ((DelegationPermission) test).getName());
     }

@@ -333,7 +333,6 @@ public class X509CertFactoryPerfTest extends TestCase {
     }
 
     private static int XXX = 0, flag = 0;
-    private static java.security.cert.Certificate prev = null;
 
     public void testCreationCRL() {
         try {
@@ -653,7 +652,7 @@ public class X509CertFactoryPerfTest extends TestCase {
             if (certSans == null) {
                 fail("Returned value should not be null.");
             }
-            List sans = (List) extnSANames.getPairsList();
+            List sans = extnSANames.getPairsList();
             if (sans.size() != certSans.size()) {
                 fail("Size of returned collection does not match to the actual");
             }
@@ -663,7 +662,7 @@ public class X509CertFactoryPerfTest extends TestCase {
                 Integer tag = (Integer) extnSan.get(0);
                 for (int i=0; i< sans.size(); i++) {
                     List san = (List) sans.get(i);
-                    if (tag.equals((Integer) san.get(0))) {
+                    if (tag.equals(san.get(0))) {
                         assertEquals(
                                 "Incorrect value of Subject Alternative Name",
                                 extnSan.get(1), san.get(1));
@@ -684,7 +683,7 @@ public class X509CertFactoryPerfTest extends TestCase {
             if (certIans == null) {
                 fail("Returned value should not be null.");
             }
-            List ians = (List) extnSANames.getPairsList();
+            List ians = extnSANames.getPairsList();
             if (ians.size() != certIans.size()) {
                 fail("Size of returned collection does not match to the actual");
             }
@@ -694,7 +693,7 @@ public class X509CertFactoryPerfTest extends TestCase {
                 Integer tag = (Integer) extnIan.get(0);
                 for (int i=0; i< ians.size(); i++) {
                     List ian = (List) ians.get(i);
-                    if (tag.equals((Integer) ian.get(0))) {
+                    if (tag.equals(ian.get(0))) {
                         assertEquals(
                                 "Incorrect value of Issuer Alternative Name",
                                 extnIan.get(1), ian.get(1));

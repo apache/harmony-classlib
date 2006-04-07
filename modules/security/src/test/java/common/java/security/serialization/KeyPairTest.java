@@ -21,14 +21,10 @@
 
 package java.security.serialization;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -130,25 +126,6 @@ public class KeyPairTest extends TestCase {
         deserializeAndCheck(kp, new FileInputStream(fileName));
     }
 
-    /**
-     * Test case start template - serialization
-     *
-     * @param kp
-     * <code>KeyPair</code> object to be serialized
-     * @param os
-     * Serialization <code>OutputStream</code> for <code>kp</code>
-     */
-    private void serialize(KeyPair kp, OutputStream os)
-            throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(os);
-        try {
-            // Serialize it to the os
-            oos.writeObject(kp);
-            oos.flush();
-        } finally {
-            oos.close();
-        }
-    }
     /**
      * Test case end template - deserialization and checks
      *

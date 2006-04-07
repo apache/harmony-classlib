@@ -55,74 +55,74 @@ public class ServicePermissionTest extends TestCase {
     
     public void testFailedCtor() {
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "read");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "read");
         	fail("incorrect actions"); 
         } catch(IllegalArgumentException e){
         }
 
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "");
         	fail("actions is empty"); 
         } catch(IllegalArgumentException e){
         }
 
         try {
-            ServicePermission sp = new ServicePermission("krbtgt/AAA.COM@BBB.COM", null);
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", null);
         	fail("actions is null");
         } catch(NullPointerException e){
         } catch(IllegalArgumentException e){}
 
         try {
-            ServicePermission sp = new ServicePermission(null, "accept");
+            new ServicePermission(null, "accept");
         	fail("permission is null");
         } catch(NullPointerException e){
         }
         try {
-            ServicePermission sp = new ServicePermission("", "accept");
-        	//fail("No expected IAE");  // 
+            new ServicePermission("", "accept");
+        	//TODO: fail("No expected IAE");  // 
         } catch(IllegalArgumentException e){}
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "accept, read");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "accept, read");
         	fail("Incorrect actions"); 
         } catch(IllegalArgumentException e){
         }
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate, read");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate, read");
         	fail("Incorrect actions"); 
         } catch(IllegalArgumentException e){
         }
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "read, initiate ");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "read, initiate ");
         	fail("Incorrect actions"); 
         } catch(Exception e){
         }
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "read, accept ");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "read, accept ");
         	fail("Incorrect actions"); 
         }catch(IllegalArgumentException e){
         }
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", ", accept ");
-        	//fail("No expected IAE"); 
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", ", accept ");
+        	//TODO: fail("No expected IAE"); 
         } catch(IllegalArgumentException e){
         }
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate, accept, read");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate, accept, read");
         	fail("Incorrect actions"); 
         } catch(IllegalArgumentException e){
         }
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate, read, accept");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate, read, accept");
         	fail("Incorrect actions"); 
         } catch(IllegalArgumentException e){
         }
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate, accept, accept");
-        	//fail("Incorrect actions"); 
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate, accept, accept");
+        	//TODO: fail("Incorrect actions"); 
         } catch(IllegalArgumentException e){
         }
         try {
-            ServicePermission sp1 = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate accept");
+            new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate accept");
         	fail("Incorrect actions"); 
         } catch(IllegalArgumentException e){
         }

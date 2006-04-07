@@ -22,14 +22,15 @@
 package org.apache.harmony.security.x509;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
@@ -82,17 +83,6 @@ public class Extensions {
         this.extensions = extensions;
     }
     
-    // 
-    // TODO
-    // @param   extensions: List
-    // @param   encoding:   byte[]
-    // 
-    private Extensions(List extensions, byte[] encoding) {
-        this.extensions = extensions;
-        this.encoding = new byte[encoding.length];
-        System.arraycopy(encoding, 0, this.encoding, 0, encoding.length);
-    }
-
     /**
      * Returns the values of extensions.
      * @return  extensions

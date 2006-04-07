@@ -27,8 +27,6 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
-import org.apache.harmony.security.asn1.*;
-
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
  * with the GeneralSubtree structure which is a part of X.509 certificate:
@@ -91,22 +89,6 @@ public class GeneralSubtree {
         this.maximum = maximum;
     }
     
-    // 
-    // TODO
-    // @param   base:   GeneralName
-    // @param   minimum:    int
-    // @param   maximum:    int
-    // @param   encoding:   byte[]
-    // 
-    private GeneralSubtree(GeneralName base, int minimum, int maximum, 
-                           byte[] encoding) {
-        this.base = base;
-        this.minimum = minimum;
-        this.maximum = maximum;
-        this.encoding = new byte[encoding.length];
-        System.arraycopy(encoding, 0, this.encoding, 0, encoding.length);
-    }
-
     /**
      * Returns the value of base field of the structure.
      * @return  base
@@ -158,10 +140,10 @@ public class GeneralSubtree {
             Object[] values = (Object[]) in.content;
             int maximum = -1; // is optional maximum missing?
             if (values[2] != null) {
-                maximum = ASN1Integer.toIntValue((byte[]) values[2]); // no!
+                maximum = ASN1Integer.toIntValue(values[2]); // no!
             }
             return new GeneralSubtree((GeneralName) values[0],
-                    ASN1Integer.toIntValue((byte[]) values[1]),
+                    ASN1Integer.toIntValue(values[1]),
                     maximum);
         }
 

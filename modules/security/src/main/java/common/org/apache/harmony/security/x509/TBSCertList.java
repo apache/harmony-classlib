@@ -25,8 +25,9 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
+
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.ASN1Explicit;
@@ -100,15 +101,6 @@ public class TBSCertList {
             this.crlEntryExtensions = crlEntryExtensions;
         }
 
-        private RevokedCertificate(BigInteger userCertificate,
-                Date revocationDate, Extensions crlEntryExtensions,
-                byte[] encoding) {
-            this.userCertificate = userCertificate;
-            this.revocationDate = revocationDate;
-            this.crlEntryExtensions = crlEntryExtensions;
-            this.encoding = encoding;
-        }
-       
         public Extensions getCrlEntryExtensions() {
             return crlEntryExtensions;
         }

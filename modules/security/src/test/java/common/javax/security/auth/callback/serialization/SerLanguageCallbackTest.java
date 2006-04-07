@@ -44,7 +44,7 @@ public class SerLanguageCallbackTest extends SerializationTest {
     }
 
     protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(((LanguageCallback) test) instanceof LanguageCallback);
+        assertTrue(test instanceof LanguageCallback);
         assertEquals(((LanguageCallback) golden).getLocale(),
                 ((LanguageCallback) test).getLocale());
     }

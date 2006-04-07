@@ -96,7 +96,7 @@ public class SecureRandomTest1 extends TestCase {
 	 */
 	public final void testSecureRandombyteArray() {
 		byte[] b = {1,2,3};
-		SecureRandom sr = new SecureRandom(b);
+		new SecureRandom(b);
 		if (!RandomImpl.runEngineSetSeed) {
 			fail("No setSeed");
 		}

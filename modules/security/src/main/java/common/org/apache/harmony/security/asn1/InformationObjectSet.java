@@ -36,8 +36,6 @@ public class InformationObjectSet {
 
     private final int capacity;
 
-    private final int size;
-
     private final Entry[][] pool;
 
     public InformationObjectSet() {
@@ -46,8 +44,6 @@ public class InformationObjectSet {
 
     public InformationObjectSet(int capacity, int size) {
         this.capacity = capacity;
-        this.size = size;
-
         pool = new Entry[capacity][size];
     }
 

@@ -120,7 +120,6 @@ public class RealmChoiceCallbackTest extends TestCase {
         RealmChoiceCallback rCCB;
         for (int i = 0; i < prompts.length; i++) {
             rCCB = new RealmChoiceCallback(prompts[i], choices, 0, false);
-            assertTrue("Incorrect object", rCCB instanceof RealmChoiceCallback);
             assertEquals("Incorrect prompt", rCCB.getPrompt(), prompts[i]);
             String [] ch = rCCB.getChoices();
             assertEquals("Incorrect choices length", ch.length, choices.length);
@@ -161,7 +160,6 @@ public class RealmChoiceCallbackTest extends TestCase {
         RealmChoiceCallback rCCB;
         for (int i = 0; i < prompts.length; i++) {
             rCCB = new RealmChoiceCallback(prompts[i], choices, 0, true);
-            assertTrue("Incorrect object", rCCB instanceof RealmChoiceCallback);
             assertEquals("Incorrect prompt", rCCB.getPrompt(), prompts[i]);
             String[] ch = rCCB.getChoices();
             assertEquals("Incorrect choices length", ch.length, choices.length);

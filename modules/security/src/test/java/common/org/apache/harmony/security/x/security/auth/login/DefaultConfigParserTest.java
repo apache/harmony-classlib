@@ -114,7 +114,6 @@ public class DefaultConfigParserTest extends TestCase {
 	 */
 	public final void testConfigParser_02() throws Exception {
 
-			DefaultConfigurationParser dcp  =  new DefaultConfigurationParser();
 			Map config = DefaultConfigurationParser.configParser(url, p, new HashMap());
 			entriesList = (LinkedList) config.get("Login1");
 
@@ -144,8 +143,6 @@ public class DefaultConfigParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public final void testNegConfig() throws Exception {
-
-		final String path = p.getProperty("java.io.tmpdir") + File.separator;
 		String[] str = {
 				
 				"Login ERR {\n com.intel.security.auth.module.LoginModule required debug=\"true\" test=false;\n};",
@@ -179,7 +176,7 @@ public class DefaultConfigParserTest extends TestCase {
 			os.flush();
 			os.close();
 			try {
-				Map config = DefaultConfigurationParser.configParser(file.toURL(), p, new HashMap());
+				DefaultConfigurationParser.configParser(file.toURL(), p, new HashMap());
 				fail("no expected InvalidFormatException" + i);
 			} catch (NullPointerException e) {
 				System.out.println(file.getCanonicalPath());

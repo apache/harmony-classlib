@@ -43,7 +43,6 @@ public class SSLEngineTest extends TestCase {
      */
     public void test01() {
         SSLEngine e = new mySSLEngine();
-        assertTrue(e instanceof SSLEngine);
         assertNull(e.getPeerHost());
         assertEquals(e.getPeerPort(), -1);
         String[] suites = { "a", "b", "c" };
@@ -57,7 +56,6 @@ public class SSLEngineTest extends TestCase {
     public void test02() throws SSLException {
         int port = 1010;
         SSLEngine e = new mySSLEngine(null, port);
-        assertTrue(e instanceof SSLEngine);
         assertNull(e.getPeerHost());
         assertEquals(e.getPeerPort(), port);
         try {
@@ -73,7 +71,6 @@ public class SSLEngineTest extends TestCase {
         String host = "new host";
         int port = 8080;
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
         assertEquals(e.getPeerHost(), host);
         assertEquals(e.getPeerPort(), port);
         String[] suites = { "a", "b", "c" };
@@ -99,7 +96,6 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer bbN = null;
         ByteBuffer bb = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
         try {
             e.wrap(bbN, bb);
             fail("IllegalArgumentException must be thrown for null src byte buffer");
@@ -141,7 +137,6 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer bb = ByteBuffer.allocate(10);
         ByteBuffer bbN = null;
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
         try {
             e.wrap(bbNA, bb);
             fail("IllegalArgumentException must be thrown for null srcs byte buffer array");
@@ -182,14 +177,12 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer bbs = ByteBuffer.allocate(100);
         ByteBuffer bbd = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine1(host, port);
-        assertTrue(e instanceof SSLEngine);
         try {
             e.wrap(bbs, bbd);
             fail("SSLException must be thrown");
         } catch (SSLException ex) {
         }
         SSLEngineResult res = e.wrap(bbd, bbs);
-        assertTrue(res instanceof SSLEngineResult);
         assertEquals(res.bytesConsumed(), 10);
         assertEquals(res.bytesProduced(), 20);
 
@@ -199,7 +192,6 @@ public class SSLEngineTest extends TestCase {
         } catch (SSLException ex) {
         }
         res = e.wrap(new ByteBuffer[] { bbd }, bbs);
-        assertTrue(res instanceof SSLEngineResult);
         assertEquals(res.bytesConsumed(), 10);
         assertEquals(res.bytesProduced(), 20);
     }
@@ -215,10 +207,8 @@ public class SSLEngineTest extends TestCase {
         int port = 8080;
         ByteBuffer bb = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
         
         SSLEngineResult res = e.wrap(bb, ByteBuffer.allocate(10));
-        assertTrue(res instanceof SSLEngineResult);
         assertEquals(res.bytesConsumed(), 10);
         assertEquals(res.bytesProduced(), 20);
     }
@@ -236,10 +226,8 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer[] bbA = { ByteBuffer.allocate(5), ByteBuffer.allocate(10), ByteBuffer.allocate(5) };
 
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
 
         SSLEngineResult res = e.wrap(bbA, bb);
-        assertTrue(res instanceof SSLEngineResult);
         assertEquals(res.bytesConsumed(), 10);
         assertEquals(res.bytesProduced(), 20);
     }
@@ -261,7 +249,6 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer bbN = null;
         ByteBuffer bb = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
         try {
             e.unwrap(bbN, bb);
             fail("IllegalArgumentException must be thrown for null src byte buffer");
@@ -303,7 +290,6 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer bb = ByteBuffer.allocate(10);
         ByteBuffer bbN = null;
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
         try {
             e.unwrap(bb, bbNA);
             fail("IllegalArgumentException must be thrown for null dsts byte buffer array");
@@ -344,14 +330,12 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer bbs = ByteBuffer.allocate(100);
         ByteBuffer bbd = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine1();
-        assertTrue(e instanceof SSLEngine);
         try {
             e.unwrap(bbs, bbd);
             fail("SSLException must be thrown");
         } catch (SSLException ex) {
         }
         SSLEngineResult res = e.unwrap(bbd, bbs);
-        assertTrue(res instanceof SSLEngineResult);
         assertEquals(res.bytesConsumed(), 1);
         assertEquals(res.bytesProduced(), 2);
 
@@ -361,7 +345,6 @@ public class SSLEngineTest extends TestCase {
         } catch (SSLException ex) {
         }
         res = e.unwrap(bbd, new ByteBuffer[] { bbs });
-        assertTrue(res instanceof SSLEngineResult);
         assertEquals(res.bytesConsumed(), 1);
         assertEquals(res.bytesProduced(), 2);
     }
@@ -376,10 +359,8 @@ public class SSLEngineTest extends TestCase {
         int port = 8080;
         ByteBuffer bb = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
         SSLEngineResult res = e.unwrap(bb, ByteBuffer.allocate(10));
         
-        assertTrue(res instanceof SSLEngineResult);
         assertEquals(res.bytesConsumed(), 1);
         assertEquals(res.bytesProduced(), 2);
     }
@@ -397,10 +378,8 @@ public class SSLEngineTest extends TestCase {
 
         ByteBuffer bb = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine(host, port);
-        assertTrue(e instanceof SSLEngine);
 
         SSLEngineResult res = e.unwrap(bb, bbA);
-        assertTrue(res instanceof SSLEngineResult);
         assertEquals(res.bytesConsumed(), 1);
         assertEquals(res.bytesProduced(), 2);
     }

@@ -38,7 +38,6 @@ public class Engine {
     // for getInstance(String algorithm, Object param) optimization:
     // previous result
     private Provider.Service returnedService;
-    private Provider returnedProvider;
 
     // previous parameter
     private String lastAlgorithm;
@@ -80,9 +79,6 @@ public class Engine {
      */
     public synchronized void getInstance(String algorithm, Object param)
             throws NoSuchAlgorithmException {
-        String className;
-        Class c;
-        Provider p;
         Provider.Service serv;
 
         if (algorithm == null) {
@@ -126,8 +122,6 @@ public class Engine {
     public synchronized void getInstance(String algorithm, Provider provider,
             Object param) throws NoSuchAlgorithmException {
 
-        String className;
-        Object o;
         Provider.Service serv = null;
         if (algorithm == null) {
             throw new NoSuchAlgorithmException(serviceName

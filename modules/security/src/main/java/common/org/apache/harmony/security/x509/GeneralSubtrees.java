@@ -21,17 +21,13 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
-
-import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
@@ -70,16 +66,6 @@ public class GeneralSubtrees {
         this.generalSubtrees = generalSubtrees;
     }
     
-    // 
-    // TODO
-    // @param   generalSubtrees:    List
-    // @param   encoding:   byte[]
-    // 
-    private GeneralSubtrees(List generalSubtrees, byte[] encoding) {
-        this.generalSubtrees = generalSubtrees;
-        this.encoding = encoding;
-    }
-
     /**
      * Returns the list of values of subtrees.
      * @return  subtrees

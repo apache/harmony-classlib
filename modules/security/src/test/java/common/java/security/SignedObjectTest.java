@@ -70,7 +70,7 @@ public class SignedObjectTest extends TestCase {
     	assertEquals("SHA1withDSA", so.getAlgorithm());
  
         try {
-            assertEquals((Properties)so.getObject(), prop);      	
+            assertEquals(so.getObject(), prop);      	
         } catch (ClassNotFoundException e) {
            	fail(e.toString());  
         } catch (IOException e) {

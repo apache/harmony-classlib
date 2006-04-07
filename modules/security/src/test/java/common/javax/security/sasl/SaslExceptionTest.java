@@ -58,8 +58,6 @@ public class SaslExceptionTest extends TestCase {
  
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not SaslException";
-
     static String createErr(Exception tE, Exception eE) {
         return "SaslException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());
@@ -73,7 +71,6 @@ public class SaslExceptionTest extends TestCase {
     public void testSaslException01() {
         SaslException tE;
         tE = new SaslException();
-        assertTrue(errNotExc, tE instanceof SaslException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
@@ -88,8 +85,6 @@ public class SaslExceptionTest extends TestCase {
         SaslException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SaslException(msgs[i]);
-            assertTrue(errNotExc.concat(" (detail: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SaslException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -108,7 +103,6 @@ public class SaslExceptionTest extends TestCase {
     public void testSaslException03() {
         String msg = null;
         SaslException tE = new SaslException(msg);
-        assertTrue(errNotExc, tE instanceof SaslException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -125,7 +119,6 @@ public class SaslExceptionTest extends TestCase {
      */
     public void testSaslException04() {
         SaslException tE = new SaslException(null, null);
-        assertTrue(errNotExc, tE instanceof SaslException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -144,8 +137,6 @@ public class SaslExceptionTest extends TestCase {
         SaslException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SaslException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (detail: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SaslException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -164,7 +155,6 @@ public class SaslExceptionTest extends TestCase {
      */
     public void testSaslException06() {        
         SaslException tE = new SaslException(null, tCause);
-        assertTrue(errNotExc, tE instanceof SaslException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -194,8 +184,6 @@ public class SaslExceptionTest extends TestCase {
         SaslException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new SaslException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (detail: ").concat(msgs[i]).concat(")"),
-                    tE instanceof SaslException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

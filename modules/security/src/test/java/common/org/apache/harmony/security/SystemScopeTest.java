@@ -21,11 +21,11 @@
 
 package org.apache.harmony.security;
 
-import junit.framework.TestCase;
-import java.security.*;
+import java.security.Identity;
+import java.security.IdentityScope;
+import java.security.KeyManagementException;
 import java.util.Enumeration;
 
-import org.apache.harmony.security.SystemScope;
 import junit.framework.TestCase;
 
 

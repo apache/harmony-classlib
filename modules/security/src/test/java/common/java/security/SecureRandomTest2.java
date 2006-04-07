@@ -21,6 +21,7 @@
 
 package java.security;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import junit.framework.TestCase;
@@ -87,11 +88,15 @@ public class SecureRandomTest2 extends TestCase {
 	 * Class under test for void SecureRandom()
 	 */
 	public final void testSecureRandom() {
-		SecureRandom sr = new SecureRandom();
-		Random r = new Random(0);
-		sr.setSeed(0);
-		byte[] b1 = new byte[8];
-		sr.nextBytes(b1);			
+        SecureRandom sr = new SecureRandom();
+        Random r = new Random();
+        byte[] b1 = new byte[8];
+        byte[] b2 = new byte[8];
+        sr.nextBytes(b1);
+        r.nextBytes(b2);
+        if (!Arrays.equals(b1, b2)) {
+            fail("incorrect random bytes");
+        }
 	}
 
 	/*
@@ -110,11 +115,9 @@ public class SecureRandomTest2 extends TestCase {
 		byte[] b2 = new byte[8];
 		sr.nextBytes(b1);
 		r.nextBytes(b2);
-		for (int i = 0; i < b1.length; i++) {
-			if (b1[i] != b2[i]) {
-				fail("incorrect random bytes");
-			}
-		}
+        if (!Arrays.equals(b1, b2)) {
+            fail("incorrect random bytes");
+        }
 	}
 
 

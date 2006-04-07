@@ -189,7 +189,7 @@ public final class DerOutputStream extends BerOutputStream {
         push(compLens, values);
 
         int seqLen = 0;
-        for (int i = 0, cur = 0; i < type.length; i++) {
+        for (int i = 0; i < type.length; i++) {
             if (values[i] == null) {
                 continue; //FIXME raise exception if non-optional data is missing
             }
@@ -233,7 +233,7 @@ public final class DerOutputStream extends BerOutputStream {
 
         push(compLens, values);
         int seqLen = 0;
-        for (int i = 0, cur = 0; i < values.length; i++) {
+        for (int i = 0; i < values.length; i++) {
 
             content = cv[i];
 

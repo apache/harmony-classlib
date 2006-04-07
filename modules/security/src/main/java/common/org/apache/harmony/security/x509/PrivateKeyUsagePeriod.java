@@ -21,7 +21,6 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.IOException;
 import java.util.Date;
 
 import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
@@ -29,8 +28,6 @@ import org.apache.harmony.security.asn1.ASN1Implicit;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
-
-import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 

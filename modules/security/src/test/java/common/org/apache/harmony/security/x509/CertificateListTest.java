@@ -24,34 +24,22 @@ package org.apache.harmony.security.x509;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.math.BigInteger;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
-import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
-import org.apache.harmony.security.asn1.ASN1Integer;
-import org.apache.harmony.security.asn1.ASN1OctetString;
-import org.apache.harmony.security.x501.Name;
-import org.apache.harmony.security.x509.AlgorithmIdentifier;
-import org.apache.harmony.security.x509.CertificateList;
-import org.apache.harmony.security.x509.Extension;
-import org.apache.harmony.security.x509.Extensions;
-import org.apache.harmony.security.x509.GeneralName;
-import org.apache.harmony.security.x509.GeneralNames;
-import org.apache.harmony.security.x509.TBSCertList;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.harmony.security.asn1.ASN1GeneralizedTime;
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.x501.Name;
 
 /**
  * CertificateListTest
@@ -216,7 +204,7 @@ public class CertificateListTest extends TestCase {
         Set rcerts = crl.getRevokedCertificates();
         System.out.println(">> rcerts:"+rcerts);
  
-        System.out.println("}>> "+((X509CRLEntry) rcerts.toArray()[0]));
+        System.out.println("}>> "+ rcerts.toArray()[0]);
         System.out.println("}>> "+((X509CRLEntry) rcerts.toArray()[0]).getCertificateIssuer());
         System.out.println("}>> "+((X509CRLEntry) rcerts.toArray()[1]).getCertificateIssuer());
         System.out.println("}>> "+((X509CRLEntry) rcerts.toArray()[2]).getCertificateIssuer());

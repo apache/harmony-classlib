@@ -219,7 +219,6 @@ public class SSLEngineResultTest extends TestCase {
             }
         }
     } 
-*/
     
     private boolean findEl(Object[] arr, Object el) {
         boolean ok = false;
@@ -231,4 +230,5 @@ public class SSLEngineResultTest extends TestCase {
         }
         return ok;
     }
+*/
 }

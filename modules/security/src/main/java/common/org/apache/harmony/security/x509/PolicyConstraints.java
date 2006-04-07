@@ -21,20 +21,13 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.IOException;
-import java.security.cert.X509Certificate;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.harmony.security.asn1.ASN1Implicit;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
-
-import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
@@ -73,7 +66,7 @@ public class PolicyConstraints {
      */
     public PolicyConstraints() {
         this(null, null);
-    };
+    }
     
     /**
      * TODO
@@ -84,7 +77,7 @@ public class PolicyConstraints {
             BigInteger inhibitPolicyMapping) {
         this.requireExplicitPolicy = requireExplicitPolicy;
         this.inhibitPolicyMapping = inhibitPolicyMapping;
-    };
+    }
 
     //
     // TODO

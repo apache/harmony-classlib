@@ -110,7 +110,7 @@ public class JarUtils {
             return null;
         }
 
-        if (((X509Certificate)certs[issuerSertIndex]).hasUnsupportedCriticalExtension()) {
+        if (certs[issuerSertIndex].hasUnsupportedCriticalExtension()) {
             throw new SecurityException("Can not recognize a critical extension");
         }
 

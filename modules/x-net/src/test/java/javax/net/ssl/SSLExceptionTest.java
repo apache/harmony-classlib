@@ -65,8 +65,6 @@ public class SSLExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not SSLException";
-
     static String createErr(Exception tE, Exception eE) {
         return "SSLException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());

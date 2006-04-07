@@ -37,7 +37,7 @@ public class SSLServerSocketTest extends TestCase {
      */
     public void testSSLServerSocket() {
         try {
-            SSLServerSocket soc = new MySSLServerSocket();
+            new MySSLServerSocket();
         } catch (IOException e) {
             fail(e.toString());
         }
@@ -48,7 +48,7 @@ public class SSLServerSocketTest extends TestCase {
      */
     public void testSSLServerSocketint() {
         try {
-            SSLServerSocket soc = new MySSLServerSocket(0);
+            new MySSLServerSocket(0);
         } catch (IOException e) {
             fail(e.toString());
         }
@@ -59,7 +59,7 @@ public class SSLServerSocketTest extends TestCase {
      */
     public void testSSLServerSocketintint() {
         try {
-            SSLServerSocket soc = new MySSLServerSocket(0, 10);
+            new MySSLServerSocket(0, 10);
         } catch (IOException e) {
             fail(e.toString());
         }
@@ -70,8 +70,7 @@ public class SSLServerSocketTest extends TestCase {
      */
     public void testSSLServerSocketintintInetAddress() {
         try {
-            SSLServerSocket soc = new MySSLServerSocket(0, 10, InetAddress
-                    .getLocalHost());
+            new MySSLServerSocket(0, 10, InetAddress.getLocalHost());
         } catch (IOException e) {
             fail(e.toString());
         }

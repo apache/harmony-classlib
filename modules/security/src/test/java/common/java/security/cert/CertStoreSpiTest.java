@@ -56,14 +56,11 @@ public class CertStoreSpiTest extends TestCase {
                                                           // X509CertSelector();
         CRLSelector crlSelector = new tmpCRLSelector();//new X509CRLSelector();
         try {
-            certStoreSpi = (CertStoreSpi) new MyCertStoreSpi(null);
+            certStoreSpi = new MyCertStoreSpi(null);
             fail("InvalidAlgorithmParameterException must be thrown");
         } catch (InvalidAlgorithmParameterException e) {
         }
-        certStoreSpi = (CertStoreSpi) new MyCertStoreSpi(
-                (CertStoreParameters) new MyCertStoreParameters());
-        assertTrue("Not CertStoreSpi object",
-                certStoreSpi instanceof CertStoreSpi);
+        certStoreSpi = new MyCertStoreSpi(new MyCertStoreParameters());
         assertNull("Not null collection", certStoreSpi
                 .engineGetCertificates(certSelector));
         assertNull("Not null collection", certStoreSpi

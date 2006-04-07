@@ -22,14 +22,10 @@
 package javax.security.cert;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import javax.security.cert.CertificateEncodingException;
 import javax.security.cert.CertificateException;
 import javax.security.cert.X509Certificate;
@@ -103,9 +99,7 @@ public class X509CertificateTest extends TestCase {
             ByteArrayInputStream bais =
                 new ByteArrayInputStream(cert.getEncoded());
 
-            X509Certificate c = X509Certificate.getInstance(bais);
-            assertTrue("The returned value is not an instance "
-                        + "of X509Certificate", c instanceof X509Certificate);
+            X509Certificate.getInstance(bais);
         } catch (java.security.cert.CertificateEncodingException e) {
             e.printStackTrace();
             fail("Unexpected CertificateEncodingException was thrown.");
@@ -128,9 +122,7 @@ public class X509CertificateTest extends TestCase {
             return;
         }
         try {
-            X509Certificate c = X509Certificate.getInstance(cert.getEncoded());
-            assertTrue("The returned value is not an instance "
-                        + "of X509Certificate", c instanceof X509Certificate);
+            X509Certificate.getInstance(cert.getEncoded());
         } catch (java.security.cert.CertificateEncodingException e) {
             e.printStackTrace();
             fail("Unexpected CertificateEncodingException was thrown.");

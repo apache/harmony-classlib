@@ -151,7 +151,6 @@ public class CertPathBuilder1Test extends TestCase {
         }
         for (int i = 0; i < validValues.length; i++) {
             CertPathBuilder cpb = CertPathBuilder.getInstance(validValues[i]);
-            assertTrue("Not CertPathBuilder object", cpb instanceof CertPathBuilder);
             assertEquals("Incorrect algorithm", cpb.getAlgorithm(), validValues[i]);
         }
     }
@@ -243,7 +242,6 @@ public class CertPathBuilder1Test extends TestCase {
         CertPathBuilder certPB;
         for (int i = 0; i < validValues.length; i++) {
             certPB = CertPathBuilder.getInstance(validValues[i], defaultProviderName);
-            assertTrue("Not CertPathBuilder object", certPB instanceof CertPathBuilder);
             assertEquals("Incorrect algorithm", certPB.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider name", certPB.getProvider().getName(), defaultProviderName);
         }        
@@ -308,7 +306,6 @@ public class CertPathBuilder1Test extends TestCase {
         CertPathBuilder certPB;
         for (int i = 0; i < invalidValues.length; i++) {
             certPB = CertPathBuilder.getInstance(validValues[i], defaultProvider);
-            assertTrue("Not CertPathBuilder object", certPB instanceof CertPathBuilder);
             assertEquals("Incorrect algorithm", certPB.getAlgorithm(), validValues[i]);
             assertEquals("Incorrect provider name", certPB.getProvider(), defaultProvider);
         }        
@@ -350,7 +347,6 @@ public class CertPathBuilder1Test extends TestCase {
         CertPathBuilderSpi spi = new MyCertPathBuilderSpi();
         CertPathBuilder certPB = new myCertPathBuilder(spi, 
                     defaultProvider, defaultType);
-        assertTrue("Not CertPathBuilder object", certPB instanceof CertPathBuilder);
         assertEquals("Incorrect algorithm", certPB.getAlgorithm(), defaultType);
         assertEquals("Incorrect provider", certPB.getProvider(), defaultProvider);
         try {
@@ -359,7 +355,6 @@ public class CertPathBuilder1Test extends TestCase {
         } catch (CertPathBuilderException e) {            
         }
         certPB = new myCertPathBuilder(null, null, null);
-        assertTrue("Not CertPathBuilder object", certPB instanceof CertPathBuilder);
         assertNull("Incorrect algorithm", certPB.getAlgorithm());
         assertNull("Incorrect provider", certPB.getProvider());            
         try {

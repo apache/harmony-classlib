@@ -54,73 +54,73 @@ public class X509CertificateTest extends TestCase {
 
             public void checkValidity()
                     throws CertificateExpiredException,
-                           CertificateNotYetValidException {};
+                           CertificateNotYetValidException {}
 
             public void checkValidity(Date date)
                     throws CertificateExpiredException,
-                           CertificateNotYetValidException {};
+                           CertificateNotYetValidException {}
 
             public int getVersion() {
                 return 3;
-            };
+            }
 
             public BigInteger getSerialNumber() {
                 return null;
-            };
+            }
 
             public Principal getIssuerDN() {
                 return null;
-            };
+            }
 
             public Principal getSubjectDN() {
                 return null;
-            };
+            }
 
             public Date getNotBefore() {
                 return null;
-            };
+            }
 
             public Date getNotAfter() {
                 return null;
-            };
+            }
 
             public byte[] getTBSCertificate()
                                 throws CertificateEncodingException
             {
                 return null;
-            };
+            }
 
             public byte[] getSignature() {
                 return null;
-            };
+            }
 
             public String getSigAlgName() {
                 return null;
-            };
+            }
 
             public String getSigAlgOID() {
                 return null;
-            };
+            }
 
             public byte[] getSigAlgParams() {
                 return null;
-            };
+            }
 
             public boolean[] getIssuerUniqueID() {
                 return null;
-            };
+            }
 
             public boolean[] getSubjectUniqueID() {
                 return null;
-            };
+            }
 
             public boolean[] getKeyUsage() {
                 return null;
-            };
+            }
 
             public int getBasicConstraints() {
                 return 0;
-            };
+            }
 
             public void verify(PublicKey key)
                          throws CertificateException, NoSuchAlgorithmException,

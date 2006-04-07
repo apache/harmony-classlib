@@ -189,9 +189,6 @@ public class AlgorithmParametersTest extends TestCase {
 	}
 	
 	private void checkAP(AlgorithmParameters ap, Provider p) {	
-		if (!(ap instanceof AlgorithmParameters)) {
-			fail("getInstance() failed");
-		}
 		if (ap.getProvider() != p) {
 			fail("getProvider() failed");
 		}

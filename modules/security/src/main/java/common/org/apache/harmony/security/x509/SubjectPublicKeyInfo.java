@@ -21,20 +21,16 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 
 import org.apache.harmony.crypto.utils.AlgNameMapper;
-import org.apache.harmony.security.PublicKeyImpl;
+import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.BitString;
-
-
-import org.apache.harmony.security.asn1.*;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work

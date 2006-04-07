@@ -291,7 +291,7 @@ public final class UnresolvedPermission extends Permission
         ClassNotFoundException {
         checkType(getUnresolvedType());
         ObjectInputStream.GetField fields = in.readFields();
-        if (!getUnresolvedType().equals((String)fields.get("type", null))) {
+        if (!getUnresolvedType().equals(fields.get("type", null))) {
             throw new InvalidObjectException("target type field is corrupted");
         }
         targetName = (String)fields.get("name", null);

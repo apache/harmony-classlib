@@ -33,8 +33,6 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
-import org.apache.harmony.security.asn1.*;
-
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
  * with the following structure which is a part of X.509 certificate
@@ -75,7 +73,7 @@ public class NameConstraints {
      */
     public NameConstraints() {
         this(null, null);
-    };
+    }
     
     /**
      * Constructs <code>NameConstrains</code> object
@@ -100,7 +98,7 @@ public class NameConstraints {
         }
         this.permittedSubtrees = permittedSubtrees;
         this.excludedSubtrees = excludedSubtrees;
-    };
+    }
 
     //
     // Constructs NameConstrains object

@@ -66,8 +66,6 @@ public class UnrecoverableKeyExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not UnrecoverableKeyException";
-
     static String createErr(Exception tE, Exception eE) {
         return "UnrecoverableKeyException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());

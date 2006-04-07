@@ -22,12 +22,10 @@
 package javax.net.ssl;
 
 import java.io.IOException;
-import javax.net.SocketFactory;
-
-import junit.framework.TestCase;
-
 import java.net.ServerSocket;
 import java.security.cert.Certificate;
+
+import junit.framework.TestCase;
 
 
 /**

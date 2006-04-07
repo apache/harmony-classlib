@@ -79,7 +79,7 @@ public class SignedObjectTest extends SerializationTest {
     	assertEquals(test.getAlgorithm(), ref.getAlgorithm());
  
         try {
-            assertEquals((Properties)test.getObject(), prop);      	
+            assertEquals(test.getObject(), prop);      	
         } catch (ClassNotFoundException e) {
            	fail(e.toString());  
         } catch (IOException e) {

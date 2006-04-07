@@ -186,8 +186,6 @@ public class Cache {
         //*/
     }
 
-    private int XXX = 0;
-    
     public Object get(long hash, byte[] encoding) {
         hash |= getSuffHash(encoding);
         int idx = -1*Arrays.binarySearch(hashes_idx, hash)-1;

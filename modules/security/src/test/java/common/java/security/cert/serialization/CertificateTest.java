@@ -176,7 +176,7 @@ public class CertificateTest extends TestCase {
         serialize(c1, bos);
         // try to deserialize it
         try {
-            Certificate c2 = deserialize(new ByteArrayInputStream(bos.toByteArray()));
+            deserialize(new ByteArrayInputStream(bos.toByteArray()));
         } catch (Exception e) {
         	System.out.println(getName() + ": " + e);
             if (e instanceof ObjectStreamException) {

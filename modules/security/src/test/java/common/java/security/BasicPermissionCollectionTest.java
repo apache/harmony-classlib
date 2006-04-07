@@ -170,8 +170,7 @@ public class BasicPermissionCollectionTest extends TestCase {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(
             baos.toByteArray()));
         try {
-            BasicPermissionCollection b = (BasicPermissionCollection)in
-                .readObject();
+            in.readObject();
             fail("should throw InvalidObjectException");
         } catch (java.io.InvalidObjectException e) {
         } finally {
@@ -198,8 +197,7 @@ public class BasicPermissionCollectionTest extends TestCase {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(
             baos.toByteArray()));
         try {
-            BasicPermissionCollection b = (BasicPermissionCollection)in
-                .readObject();
+            in.readObject();
             fail("should throw InvalidObjectException");
         } catch (java.io.InvalidObjectException e) {
         } finally {

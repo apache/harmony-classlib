@@ -40,7 +40,6 @@ public class AuthorizeCallbackTest extends TestCase {
      */
     public void test01() {
         AuthorizeCallback auth = new AuthorizeCallback(null, null);
-        assertTrue(auth instanceof AuthorizeCallback);
         assertNull(auth.getAuthenticationID());
         assertNull(auth.getAuthorizationID());
         assertNull(auth.getAuthorizedID());
@@ -83,7 +82,6 @@ public class AuthorizeCallbackTest extends TestCase {
             for (int j = 0; j < authorizedIDs.length; j++) {
                 auth = new AuthorizeCallback(authenticationIDs[i],
                         authorizedIDs[j]);
-                assertTrue(auth instanceof AuthorizeCallback);
                 assertEquals(auth.getAuthenticationID(), authenticationIDs[i]);
                 assertEquals(auth.getAuthorizationID(), authorizedIDs[j]);
                 assertNull(auth.getAuthorizedID());

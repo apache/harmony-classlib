@@ -52,7 +52,7 @@ public class CertStore1Test extends TestCase {
 
     private static final String defaultType = "LDAP";  
     public static final String [] validValues =  {
-            "LDAP", "ldap", "Ldap", "lDAP", "lDaP" };;
+            "LDAP", "ldap", "Ldap", "lDAP", "lDaP" };
     public static  String [] validValuesC = null;
      
     private static String [] invalidValues = SpiEngUtils.invalidValues;
@@ -67,16 +67,13 @@ public class CertStore1Test extends TestCase {
     private static String defaultProviderColName;
     
     private static String NotSupportMsg = "";
-    private static String NotSLDAP = "";
-    private static String NotSColl = "";
+
     static {
         defaultProvider = SpiEngUtils.isSupport(defaultType,
                 srvCertStore);
         LDAPSupport = (defaultProvider != null);
         defaultProviderName = (LDAPSupport ? defaultProvider.getName() : null);
         NotSupportMsg = "LDAP and Collection algorithm are not supported";
-        NotSLDAP = "LDAP is not supported";
-        NotSColl = "Collection is not supported";
         
         defaultProviderCol = SpiEngUtils.isSupport(CollectionType,
                 srvCertStore);
@@ -163,7 +160,6 @@ public class CertStore1Test extends TestCase {
         MyCertStoreParameters pp = new MyCertStoreParameters();
         CertStoreSpi spi = new MyCertStoreSpi(pp);
         CertStore certS = new myCertStore(spi, dProv, dType, pp);
-        assertTrue("Not CertStore object", certS instanceof CertStore);
         assertEquals("Incorrect algorithm", certS.getType(), dType);
         assertEquals("Incorrect provider", certS.getProvider(), dProv); 
         assertTrue("Incorrect parameters", certS.getCertStoreParameters()
@@ -174,7 +170,6 @@ public class CertStore1Test extends TestCase {
         } catch (CertStoreException e) {
         }
         certS = new myCertStore(null, null, null, null);
-        assertTrue("Not CertStore object", certS instanceof CertStore);
         assertNull("Incorrect algorithm", certS.getType());
         assertNull("Incorrect provider", certS.getProvider()); 
         assertNull("Incorrect parameters", certS.getCertStoreParameters());         
@@ -222,7 +217,7 @@ public class CertStore1Test extends TestCase {
         CertStoreParameters paramsContr = null; 
         if (CollectionSupport) {
             if (LDAPSupport) {
-                paramsContr = (CertStoreParameters)new LDAPCertStoreParameters();
+                paramsContr = new LDAPCertStoreParameters();
             }
         }
         for (int i = 0; i < dValid.length; i++ ) { 
@@ -253,10 +248,8 @@ public class CertStore1Test extends TestCase {
         CertStore certS;
         for (int i = 0; i < dValid.length; i++) {
             certS = CertStore.getInstance(dValid[i], dParams);
-            assertTrue("Not CertStore object", certS instanceof CertStore);
             assertEquals("Incorrect type", certS.getType(), dValid[i]);
-            assertTrue("Incorrect parameters", certS.getCertStoreParameters()
-                    instanceof CertStoreParameters); 
+            certS.getCertStoreParameters();
         }
     }
     /**
@@ -349,7 +342,7 @@ public class CertStore1Test extends TestCase {
         CertStoreParameters paramsContr = null; 
         if (CollectionSupport) {
             if (LDAPSupport) {
-                paramsContr = (CertStoreParameters)new LDAPCertStoreParameters();
+                paramsContr = new LDAPCertStoreParameters();
             }
         }
         for (int i = 0; i < dValid.length; i++ ) { 
@@ -380,10 +373,8 @@ public class CertStore1Test extends TestCase {
         CertStore certS;
         for (int i = 0; i < dValid.length; i++) {
             certS = CertStore.getInstance(dValid[i], dParams, dName);
-            assertTrue("Not CertStore object", certS instanceof CertStore);
             assertEquals("Incorrect type", certS.getType(), dValid[i]);
-            assertTrue("Incorrect parameters", certS.getCertStoreParameters()
-                    instanceof CertStoreParameters); 
+            certS.getCertStoreParameters();
         }
     }
 
@@ -448,7 +439,7 @@ public class CertStore1Test extends TestCase {
         CertStoreParameters paramsContr = null; 
         if (CollectionSupport) {
             if (LDAPSupport) {
-                paramsContr = (CertStoreParameters)new LDAPCertStoreParameters();
+                paramsContr = new LDAPCertStoreParameters();
             }
         }     
         for (int i = 0; i < dValid.length; i++ ) {
@@ -479,10 +470,8 @@ public class CertStore1Test extends TestCase {
         CertStore certS;
         for (int i = 0; i < dValid.length; i++) {
             certS = CertStore.getInstance(dValid[i], dParams, dProv);
-            assertTrue("Not CertStore object", certS instanceof CertStore);
             assertEquals("Incorrect type", certS.getType(), dValid[i]);
-            assertTrue("Incorrect parameters", certS.getCertStoreParameters()
-                    instanceof CertStoreParameters); 
+            certS.getCertStoreParameters();
         }
     }
     /**

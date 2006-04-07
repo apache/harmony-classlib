@@ -27,8 +27,6 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
-import org.apache.harmony.security.asn1.*;
-
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
  * with PolicyInformation structure which is a subpart of certificatePolicies
@@ -64,16 +62,6 @@ public class PolicyInformation {
         this.policyIdentifier = policyIdentifier;
     }
 
-    // 
-    // TODO
-    // @param   policyIdentifier:   String
-    // @param   encoding:   byte[]
-    // 
-    private PolicyInformation(String policyIdentifier, byte[] encoding) {
-        this.policyIdentifier = policyIdentifier;
-        this.encoding = encoding;
-    }
-        
     /**
      * Returns the value of policyIdentifier field of the structure.
      * @return  policyIdentifier

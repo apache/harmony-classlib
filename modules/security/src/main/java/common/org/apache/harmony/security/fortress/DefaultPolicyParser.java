@@ -254,7 +254,7 @@ public class DefaultPolicyParser {
             boolean resolve) throws Exception {
         if (pe.name != null) {
             pe.name = PolicyUtils.expandGeneral(pe.name,
-                    new PermissionExpander().configure(ge, pe, ks));
+                    new PermissionExpander().configure(ge, ks));
         }
         if (resolve) {
             if (pe.name != null) {
@@ -292,16 +292,12 @@ public class DefaultPolicyParser {
         // Store GrantEntry
         private DefaultPolicyScanner.GrantEntry ge;
 
-        // Store PermissionEntry
-        private DefaultPolicyScanner.PermissionEntry pe;
-
         /** 
          * Combined setter of all required fields. 
          */
         public PermissionExpander configure(DefaultPolicyScanner.GrantEntry ge,
-                DefaultPolicyScanner.PermissionEntry pe, KeyStore ks) {
+                KeyStore ks) {
             this.ge = ge;
-            this.pe = pe;
             this.ks = ks;
             return this;
         }

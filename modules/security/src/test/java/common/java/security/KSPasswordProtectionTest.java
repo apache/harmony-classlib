@@ -54,8 +54,6 @@ public class KSPasswordProtectionTest extends TestCase {
     public void testGetPassword() throws DestroyFailedException {
         char [] pass = {'a', 'b', 'c'};
         KeyStore.PasswordProtection ksPWP = new KeyStore.PasswordProtection(pass);
-        assertTrue("Not KeyStore.PasswordProtection object",
-                ksPWP instanceof KeyStore.PasswordProtection);
         char [] rPass = ksPWP.getPassword();
         assertFalse("PasswordProtection Should not be descroyed", ksPWP.isDestroyed());        
         assertEquals("Incorrect password length", pass.length, rPass.length);

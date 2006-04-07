@@ -46,8 +46,7 @@ public class CertPathBuilderSpiTest extends TestCase {
      */
     public void testCertPathBuilderSpi01() throws CertPathBuilderException,
             InvalidAlgorithmParameterException {
-        CertPathBuilderSpi certPathBuilder = (CertPathBuilderSpi) new MyCertPathBuilderSpi();
-        assertTrue(certPathBuilder instanceof CertPathBuilderSpi);
+        CertPathBuilderSpi certPathBuilder = new MyCertPathBuilderSpi();
         CertPathParameters cpp = null;
         try {
             certPathBuilder.engineBuild(cpp);

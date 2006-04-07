@@ -24,7 +24,6 @@ package org.apache.harmony.security.provider.cert;
 import java.security.AccessController;
 import java.security.Provider;
 
-import java.security.cert.CertificateFactory;
 
 /**
  * DRLCertFactory

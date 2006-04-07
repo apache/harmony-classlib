@@ -397,8 +397,9 @@ public class TwoKeyHashMap extends AbstractMap {
                 curr_entry = curr_entry.next;
             }
             if (curr_entry == null) {
-                for (curr++; curr < arr.length && arr[curr] == null; curr++)
-                    ;
+                for (curr++; curr < arr.length && arr[curr] == null; curr++) {
+                }
+
                 if (curr < arr.length) {
                     curr_entry = arr[curr];
                 }

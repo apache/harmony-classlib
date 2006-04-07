@@ -331,12 +331,6 @@ public class LoginContextTest_1 extends TestCase {
 
         public CallbackHandler cbHandler;
 
-        private Subject subject;
-
-        private Map sharedState;
-
-        private Map options;
-
         //
         private int mask;
 
@@ -475,10 +469,7 @@ public class LoginContextTest_1 extends TestCase {
         public void initialize(Subject subject,
                 CallbackHandler callbackHandler, Map sharedState, Map options) {
 
-            this.subject = subject;
             this.cbHandler = callbackHandler;
-            this.sharedState = sharedState;
-            this.options = options;
             initCalled = true;
 
             boolean doit = ((mask == -1) && (staticMask & FAIL_AT_INIT) != 0)
@@ -724,7 +715,7 @@ public class LoginContextTest_1 extends TestCase {
 
         Security.setProperty(DEFAULT_CBHANDLER_PROPERTY, klassName);
         // This also shows that the cbHandler is instantiated at the ctor
-        LoginContext lc = new LoginContext(CONFIG_NAME);
+        new LoginContext(CONFIG_NAME);
         assertTrue(TestCallbackHandler.size() == 1);
         // ugh... cant set 'null' here... 
         Security.setProperty(DEFAULT_CBHANDLER_PROPERTY, "");
@@ -1072,7 +1063,7 @@ public class LoginContextTest_1 extends TestCase {
         TestConfig.clear();
         boolean expectedResult = ((Boolean) variants[0][2]).booleanValue();
         String caseName = variants[0][1].toString();
-        ;
+
         int startIndex = 0;
         for (int i = 0; i < variants.length; i++) {
             int flag = ((Integer) variants[i][0]).intValue();
@@ -2046,7 +2037,7 @@ public class LoginContextTest_1 extends TestCase {
         lc.login();
         lc.logout();
         //
-        assertTrue(TestCallbackHandler_Contexted.size() == 1);
+        assertTrue(TestCallbackHandler.size() == 1);
 
         // now, get abort() called
         TestLoginModule.staticMask = TestLoginModule.FAIL_AT_LOGIN;

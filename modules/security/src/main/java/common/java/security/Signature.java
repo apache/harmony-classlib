@@ -188,7 +188,7 @@ public abstract class Signature extends SignatureSpi {
             boolean critical = false;
             if (ce != null && !ce.isEmpty()) {
                 for (Iterator i = ce.iterator(); i.hasNext();) {
-                    if ("2.5.29.15".equals((String) i.next())) { 
+                    if ("2.5.29.15".equals(i.next())) { 
                         //KeyUsage OID = 2.5.29.15
                         critical = true;
                         break;

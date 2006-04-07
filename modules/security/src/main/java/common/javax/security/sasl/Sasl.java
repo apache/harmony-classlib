@@ -160,7 +160,7 @@ public class Sasl {
             while (keys.hasMoreElements()) {
                 String s = (String) keys.nextElement();
                 if (s.startsWith(service)) {
-                    prop = (String) pp[i].getProperty(s);
+                    prop = pp[i].getProperty(s);
                     try {
                         if (props.add(prName.concat(prop))) {
                             fact.add(newInstance(prop, pp[i]));

@@ -329,7 +329,6 @@ public class PolicyTest extends TestCase {
 
     public void test_Refresh() {
 
-        PermissionCollection c;
         Permission per;
         Subject subject;
         Enumeration e;

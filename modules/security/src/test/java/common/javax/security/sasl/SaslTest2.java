@@ -47,8 +47,6 @@ public class SaslTest2 extends TestCase {
 
     private static final String fClientClass01 = "javax.security.sasl.myClientFactory01";
 
-    private static final String fClientClass02 = "javax.security.sasl.myClientFactory02";
-
     private static final String fServerClass01 = "javax.security.sasl.myServerFactory01";
 
     private static final String fServerClass02 = "javax.security.sasl.myServerFactory02";
@@ -213,9 +211,7 @@ public class SaslTest2 extends TestCase {
                 .hasMoreElements());
 
         myClientFactory01 mm1 = new myClientFactory01();
-        myClientFactory02 mm2 = new myClientFactory02();
         String[] mech01 = mm1.getMechanismNames(null);
-        String[] mech02 = mm1.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
             SaslClientFactory f = (SaslClientFactory) en.nextElement();
@@ -437,9 +433,7 @@ public class SaslTest2 extends TestCase {
                 .hasMoreElements());
 
         myServerFactory01 mm1 = new myServerFactory01();
-        myServerFactory02 mm2 = new myServerFactory02();
         String[] mech01 = mm1.getMechanismNames(null);
-        String[] mech02 = mm1.getMechanismNames(null);
         int l = 0;
         while (en.hasMoreElements()) {
             SaslServerFactory f = (SaslServerFactory) en.nextElement();
@@ -497,7 +491,6 @@ public class SaslTest2 extends TestCase {
         assertNotNull("List of SaslServerFactories should not be null", en);
         assertTrue("List of SaslServerFactories should have elements", en
                 .hasMoreElements());
-        myServerFactory02 mm = new myServerFactory02();
         int l = 0;
         while (en.hasMoreElements()) {
             SaslServerFactory f = (SaslServerFactory) en.nextElement();

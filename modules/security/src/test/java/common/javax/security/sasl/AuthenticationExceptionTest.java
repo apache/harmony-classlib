@@ -49,8 +49,6 @@ public class AuthenticationExceptionTest extends TestCase {
 
     static Throwable tCause = new Throwable("Throwable for exception");
 
-    private static String errNotExc = "Exception is not AuthenticationException";
-
     static String createErr(Exception tE, Exception eE) {
         return "AuthenticationException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());
@@ -64,7 +62,6 @@ public class AuthenticationExceptionTest extends TestCase {
     public void testAuthenticationException01() {
         AuthenticationException tE;
         tE = new AuthenticationException();
-        assertTrue(errNotExc, tE instanceof AuthenticationException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
@@ -79,8 +76,6 @@ public class AuthenticationExceptionTest extends TestCase {
         AuthenticationException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new AuthenticationException(msgs[i]);
-            assertTrue(errNotExc.concat(" (detail: ").concat(msgs[i]).concat(")"),
-                    tE instanceof AuthenticationException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -99,7 +94,6 @@ public class AuthenticationExceptionTest extends TestCase {
     public void testAuthenticationException03() {
         String msg = null;
         AuthenticationException tE = new AuthenticationException(msg);
-        assertTrue(errNotExc, tE instanceof AuthenticationException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -116,7 +110,6 @@ public class AuthenticationExceptionTest extends TestCase {
      */
     public void testAuthenticationException04() {
         AuthenticationException tE = new AuthenticationException(null, null);
-        assertTrue(errNotExc, tE instanceof AuthenticationException);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -135,8 +128,6 @@ public class AuthenticationExceptionTest extends TestCase {
         AuthenticationException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new AuthenticationException(msgs[i], null);
-            assertTrue(errNotExc.concat(" (detail: ").concat(msgs[i]).concat(")"),
-                    tE instanceof AuthenticationException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -155,7 +146,6 @@ public class AuthenticationExceptionTest extends TestCase {
      */
     public void testAuthenticationException06() {        
         AuthenticationException tE = new AuthenticationException(null, tCause);
-        assertTrue(errNotExc, tE instanceof AuthenticationException);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -180,8 +170,6 @@ public class AuthenticationExceptionTest extends TestCase {
         AuthenticationException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new AuthenticationException(msgs[i], tCause);
-            assertTrue(errNotExc.concat(" (detail: ").concat(msgs[i]).concat(")"),
-                    tE instanceof AuthenticationException);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

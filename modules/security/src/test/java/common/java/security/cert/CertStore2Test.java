@@ -135,8 +135,6 @@ public class CertStore2Test extends TestCase {
         CertStore certS;
         for (int i = 0; i < validValues.length; i++) {
             certS = CertStore.getInstance(validValues[i], p);      
-            assertTrue("Not instanceof CertStore object",
-                    certS instanceof CertStore);
             assertEquals("Incorrect type", certS.getType(), validValues[i]);
             assertEquals("Incorrect provider", certS.getProvider(), mProv);
             assertTrue("Invalid parameters",certS.getCertStoreParameters() instanceof MyCertStoreParameters);
@@ -218,8 +216,6 @@ public class CertStore2Test extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             certS = CertStore.getInstance(validValues[i], p, mProv
                     .getName());
-            assertTrue("Not instanceof CertStore object",
-                    certS instanceof CertStore);
             assertEquals("Incorrect type", certS.getType(), validValues[i]);
             assertEquals("Incorrect provider", certS.getProvider().getName(),
                     mProv.getName());
@@ -281,8 +277,6 @@ public class CertStore2Test extends TestCase {
         CertStore certS;
         for (int i = 0; i < validValues.length; i++) {
             certS = CertStore.getInstance(validValues[i], p, mProv);
-            assertTrue("Not instanceof CertStore object",
-                    certS instanceof CertStore);
             assertEquals("Incorrect type", certS.getType(), validValues[i]);
             assertEquals("Incorrect provider", certS.getProvider(), mProv);
             assertTrue("Invalid parameters",certS.getCertStoreParameters() instanceof MyCertStoreParameters);
@@ -305,7 +299,7 @@ class mPar implements CertStoreParameters {
             return null;
         }
         try {
-            return (Object)super.clone();
+            return super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
         }

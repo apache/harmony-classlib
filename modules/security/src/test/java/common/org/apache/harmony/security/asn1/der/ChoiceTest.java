@@ -185,11 +185,10 @@ public class ChoiceTest extends TestCase {
 
         byte[] encoded = new byte[] { (byte) 0xA0, 0x03, 0x01, 0x01, 0x00 };
 
-        assertEquals("False: ", Boolean.FALSE, (Boolean) explicit
-                .decode(encoded));
+        assertEquals("False: ", Boolean.FALSE, explicit.decode(encoded));
 
         encoded[4] = (byte) 0xFF;
 
-        assertEquals("True: ", Boolean.TRUE, (Boolean) explicit.decode(encoded));
+        assertEquals("True: ", Boolean.TRUE, explicit.decode(encoded));
     }
 }

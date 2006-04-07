@@ -549,7 +549,7 @@ public class CodeSourceTest extends TestCase {
             return false;
         }
         return true;
-    };
+    }
 
     /**
      * must not imply null CodeSource
@@ -748,8 +748,8 @@ public class CodeSourceTest extends TestCase {
         Certificate[] thizCerts = { c0, c1 };
         Certificate[] thatCerts = { c1, c0, c2 };
 
-        CodeSource thiz = new CodeSource(urlSite, (Certificate[]) thizCerts);
-        CodeSource that = new CodeSource(urlSite, (Certificate[]) thatCerts);
+        CodeSource thiz = new CodeSource(urlSite, thizCerts);
+        CodeSource that = new CodeSource(urlSite, thatCerts);
         // two CodeSource-s with different set of certificates
         assertTrue(thiz.implies(that));
 

@@ -56,7 +56,7 @@ public class AccessControlExceptionTest extends SerializationTest {
         } else {
             assertTrue(s.equals(test.getMessage()));
         }
-        ;
+
         Permission p = ref.getPermission();
         if (p == null) {
             assertNull(test.getPermission());

@@ -540,7 +540,7 @@ public class KeyStore {
             if (!keyStore.isInit) {
                 throw new IllegalArgumentException(NOTINITKEYSTORE);
             }
-            return (Builder) new BuilderImpl(keyStore, protectionParameter,
+            return new BuilderImpl(keyStore, protectionParameter,
                     null, null, null, null);
         }
 
@@ -577,7 +577,7 @@ public class KeyStore {
                         + " does not refer to a normal file");
             }
             // create new instance
-            return (Builder) new BuilderImpl(null, protectionParameter, file,
+            return new BuilderImpl(null, protectionParameter, file,
                     type, provider, AccessController.getContext());
         }
 
@@ -593,7 +593,7 @@ public class KeyStore {
             if (protectionParameter == null) {
                 throw new NullPointerException("protectionParameter is null");
             }
-            return (Builder) new BuilderImpl(null, protectionParameter, null,
+            return new BuilderImpl(null, protectionParameter, null,
                     type, provider, AccessController.getContext());
         }
 
@@ -674,10 +674,11 @@ public class KeyStore {
                     isGetKeyStore = true;
                     return keyStore;
                 }
-                KeyStore ks;
-                char[] passwd = null;
-                FileInputStream fis = null;
+
                 try {
+                    final KeyStore ks;
+                    final char[] passwd;
+
                     // get KeyStore instance using type or type and provider
                     ks = (providerForKeyStore == null ? KeyStore
                             .getInstance(typeForKeyStore) : KeyStore
@@ -685,7 +686,6 @@ public class KeyStore {
                     // protection parameter should be PasswordProtection
                     // or CallbackHandlerProtection
                     if (protParameter instanceof PasswordProtection) {
-                        PasswordProtection pwp = (PasswordProtection) protParameter;
                         passwd = ((PasswordProtection) protParameter)
                                 .getPassword();
                     } else if (protParameter instanceof CallbackHandlerProtection) {
@@ -696,32 +696,40 @@ public class KeyStore {
                                 "ProtectionParameter object is not PasswordProtection "
                                         + "and  CallbackHandlerProtection");
                     }
+
                     // load KeyStore from file
-                    if (fileForLoad != null) {
-                        fis = new FileInputStream(fileForLoad);
-                        ks.load(fis, passwd);
-                    } else {
-                        ks.load(new TmpLSParameter(protParameter));
-                    }
+                    AccessController.doPrivileged(
+                            new PrivilegedExceptionAction() {
+                                public Object run() throws Exception {
+                                    if (fileForLoad != null) {
+                                        FileInputStream fis = null;
+                                        try {
+                                            fis = new FileInputStream(fileForLoad);
+                                            ks.load(fis, passwd);
+                                        } finally {
+                                            // close file input stream
+                                            if( fis != null ) {
+                                                fis.close();   
+                                            }
+                                        }
+                                    } else {
+                                        ks.load(new TmpLSParameter(
+                                                protParameter));
+                                    }
+                                    return null;
+                                }
+                            }, accControlContext);
+
+                    
                     isGetKeyStore = true;
                     keyStore = ks;
                     return keyStore;
                 } catch (KeyStoreException e) {
                     // Store exception
-                    lastException = e;
                     throw lastException = e;
                 } catch (Exception e) {
                     // Override exception
                     throw lastException = new KeyStoreException(e);
-                } finally {
-                    // close file input stream
-                    if (fis != null) {
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            throw lastException = new KeyStoreException(e);
-                        }
-                    }
                 }
             }
 

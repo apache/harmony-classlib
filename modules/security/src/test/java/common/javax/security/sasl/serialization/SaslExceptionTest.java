@@ -39,7 +39,6 @@ public class SaslExceptionTest extends SerializationTest {
     protected Object[] getData() {
         String msg = null;
         Exception cause = new Exception(msgs[1]);
-        SaslException excSasl = new SaslException(msgs[0]);
         return new Object[] { new SaslException(),
                 new SaslException(msg),
                 new SaslException(msgs[1]),

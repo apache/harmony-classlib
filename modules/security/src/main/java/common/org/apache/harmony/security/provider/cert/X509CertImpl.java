@@ -21,33 +21,33 @@
 
 package org.apache.harmony.security.provider.cert;
 
-import java.security.cert.X509Certificate;
-import java.math.BigInteger;
-import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Date;
-import java.util.Set;
-import java.security.Signature;
-import java.security.PublicKey;
-import java.security.Principal;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
+import java.security.Principal;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.crypto.utils.AlgNameMapper;
-import org.apache.harmony.security.asn1.*;
-import org.apache.harmony.security.x509.*;
+import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.TBSCertificate;
 
 /**
  * X509CertImpl
@@ -115,7 +115,7 @@ public class X509CertImpl extends X509Certificate {
         if (time > notAfter) {
             throw new CertificateExpiredException();
         }
-    };
+    }
 
     public void checkValidity(Date date) 
                                 throws CertificateExpiredException, 
@@ -131,18 +131,18 @@ public class X509CertImpl extends X509Certificate {
         if (time > notAfter) {
             throw new CertificateExpiredException();
         }
-    };
+    }
     
     public int getVersion() {
         return 3;
-    };
+    }
 
     public BigInteger getSerialNumber() {
         if (serialNumber == null) {
             serialNumber = tbsCert.getSerialNumber();
         }
         return serialNumber;
-    };
+    }
 
     public Principal getIssuerDN() {
         if (issuer == null) {
@@ -150,7 +150,7 @@ public class X509CertImpl extends X509Certificate {
                     tbsCert.getIssuer().getName(X500Principal.RFC2253));
         }
         return issuer;
-    };
+    }
 
     public X500Principal getIssuerX500Principal() {
         if (issuer == null) {
@@ -166,7 +166,7 @@ public class X509CertImpl extends X509Certificate {
                     tbsCert.getSubject().getName(X500Principal.RFC2253));
         }
         return subject;
-    };
+    }
 
     public X500Principal getSubjectX500Principal() {
         if (subject == null) {
@@ -182,7 +182,7 @@ public class X509CertImpl extends X509Certificate {
             notAfter = tbsCert.getValidity().getNotAfter().getTime();
         }
         return new Date(notBefore);
-    };
+    }
 
     public Date getNotAfter() {
         if (notBefore == -1) {
@@ -190,7 +190,7 @@ public class X509CertImpl extends X509Certificate {
             notAfter = tbsCert.getValidity().getNotAfter().getTime();
         }
         return new Date(notAfter);
-    };
+    }
 
     public byte[] getTBSCertificate()
                         throws CertificateEncodingException
@@ -201,7 +201,7 @@ public class X509CertImpl extends X509Certificate {
         byte[] result = new byte[tbsCertificate.length];
         System.arraycopy(tbsCertificate, 0, result, 0, tbsCertificate.length);
         return result;
-    };
+    }
 
     public byte[] getSignature() {
         if (signature == null) {
@@ -210,7 +210,7 @@ public class X509CertImpl extends X509Certificate {
         byte[] result = new byte[signature.length];
         System.arraycopy(signature, 0, result, 0, signature.length);
         return result;
-    };
+    }
 
     public String getSigAlgName() {
         if (sigAlgOID == null) {
@@ -221,7 +221,7 @@ public class X509CertImpl extends X509Certificate {
             }
         }
         return sigAlgName;
-    };
+    }
 
     public String getSigAlgOID() {
         if (sigAlgOID == null) {
@@ -232,7 +232,7 @@ public class X509CertImpl extends X509Certificate {
             }
         }
         return sigAlgOID;
-    };
+    }
 
     public byte[] getSigAlgParams() {
         if (nullSigAlgParams) {
@@ -246,21 +246,21 @@ public class X509CertImpl extends X509Certificate {
             }
         }
         return sigAlgParams;
-    };
+    }
 
     /**
      * @return
      */
     public boolean[] getIssuerUniqueID() {
         return tbsCert.getIssuerUniqueID();
-    };
+    }
 
     /**
      * @return
      */
     public boolean[] getSubjectUniqueID() {
         return tbsCert.getSubjectUniqueID();
-    };
+    }
 
     /**
      * @return
@@ -270,7 +270,7 @@ public class X509CertImpl extends X509Certificate {
             return null;
         }
         return extensions.valueOfKeyUsage();
-    };
+    }
 
     public List/*<String>*/ getExtendedKeyUsage()
                                 throws CertificateParsingException {
@@ -289,7 +289,7 @@ public class X509CertImpl extends X509Certificate {
             return Integer.MAX_VALUE;
         }
         return extensions.valueOfBasicConstrains();
-    };
+    }
 
     public Collection/*<List<?>>*/ getSubjectAlternativeNames()
                                 throws CertificateParsingException {

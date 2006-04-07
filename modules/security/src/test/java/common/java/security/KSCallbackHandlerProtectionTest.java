@@ -62,8 +62,6 @@ public class KSCallbackHandlerProtectionTest extends TestCase {
     public void testGetCallBackHandler() {
         CallbackHandler cbh = new tmpCallbackHandler();
         KeyStore.CallbackHandlerProtection ksCBH = new KeyStore.CallbackHandlerProtection(cbh);
-        assertTrue("Not KeyStore.CallbackHandlerProtection object",
-                ksCBH instanceof KeyStore.CallbackHandlerProtection);
         assertEquals("Incorrect CallbackHandler", cbh,
                 ksCBH.getCallbackHandler());
     }

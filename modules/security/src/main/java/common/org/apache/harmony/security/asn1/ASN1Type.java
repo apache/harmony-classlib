@@ -259,8 +259,9 @@ public abstract class ASN1Type implements ASN1Constants {
         if (out.length > 127) {
 
             len++;
-            for (int cur = out.length >> 8; cur > 0; len++, cur = cur >> 8)
-                ;
+            for (int cur = out.length >> 8; cur > 0; len++) {
+                cur = cur >> 8;
+            }
         }
         len += out.length;
 

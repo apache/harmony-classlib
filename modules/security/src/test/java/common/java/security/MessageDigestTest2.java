@@ -187,9 +187,6 @@ public class MessageDigestTest2 extends TestCase {
 	private void checkMD2(MessageDigest md2, Provider p) {
 		byte[] b = {1, 2, 3, 4, 5};
 		
-		if (!(md2 instanceof MessageDigestSpi)) {
-			fail("getInstance() failed");
-		}
 		if (md2.getProvider() != p) {
 			fail("getProvider() failed");
 		}

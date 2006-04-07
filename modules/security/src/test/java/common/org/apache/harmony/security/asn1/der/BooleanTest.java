@@ -21,16 +21,15 @@
 
 package org.apache.harmony.security.asn1.der;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+
+import junit.framework.TestCase;
 
 import org.apache.harmony.security.asn1.ASN1Boolean;
 import org.apache.harmony.security.asn1.ASN1Exception;
 import org.apache.harmony.security.asn1.DerInputStream;
 import org.apache.harmony.security.asn1.DerOutputStream;
-
-import junit.framework.TestCase;
 
 
 /**

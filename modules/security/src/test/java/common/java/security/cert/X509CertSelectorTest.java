@@ -52,9 +52,25 @@ import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 
-import org.apache.harmony.security.asn1.*;
 import org.apache.harmony.security.x501.Name;
-import org.apache.harmony.security.x509.*;
+import org.apache.harmony.security.x509.AlgorithmIdentifier;
+import org.apache.harmony.security.x509.CertificatePolicies;
+import org.apache.harmony.security.x509.EDIPartyName;
+import org.apache.harmony.security.x509.Extension;
+import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.GeneralName;
+import org.apache.harmony.security.x509.GeneralNames;
+import org.apache.harmony.security.x509.GeneralSubtree;
+import org.apache.harmony.security.x509.GeneralSubtrees;
+import org.apache.harmony.security.x509.NameConstraints;
+import org.apache.harmony.security.x509.ORAddress;
+import org.apache.harmony.security.x509.OtherName;
+import org.apache.harmony.security.x509.PolicyInformation;
+import org.apache.harmony.security.x509.PrivateKeyUsagePeriod;
+import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
+import org.apache.harmony.security.x509.TBSCertificate;
+import org.apache.harmony.security.x509.Validity;
+
 
 
 import junit.framework.Test;
@@ -90,79 +106,79 @@ public class X509CertSelectorTest extends TestCase {
         protected NameConstraints nameConstraints = null;
         
         /* Stuff methods */
-        public TestCert() {};
+        public TestCert() {}
         
         public TestCert(GeneralNames sans) {
             setSubjectAlternativeNames(sans);
-        };
+        }
 
         public TestCert(NameConstraints nameConstraints) {
             this.nameConstraints = nameConstraints;
-        };
+        }
 
         public TestCert(String equalCriteria) {
             setEqualCriteria(equalCriteria);
-        };
+        }
         
         public TestCert(String[] policies) {
             setPolicies(policies);
-        };
+        }
         
         public TestCert(BigInteger serial) {
             setSerialNumber(serial);
-        };
+        }
         
         public TestCert(X500Principal principal) {
             setIssuer(principal);
             setSubject(principal);
-        };
+        }
         
         public TestCert(byte[] array) {
             setKeyIdentifier(array);
-        };
+        }
         
         public TestCert(Date date) {
             setDate(date);
-        };
+        }
         
         public TestCert(Date notBefore, Date notAfter) {
             setPeriod(notBefore, notAfter);
-        };
+        }
         
         public TestCert(PublicKey key) {
             setPublicKey(key);
-        };
+        }
         
         public TestCert(boolean[] keyUsage) {
             setKeyUsage(keyUsage);
-        };
+        }
         
         public TestCert(Set extKeyUsage) {
             setExtendedKeyUsage(extKeyUsage);
-        };
+        }
         
         public TestCert(int pathLen) {
             this.pathLen = pathLen;
-        };
+        }
         
         public void setPolicies(String[] policies) {
             this.policies = policies;
-        };
+        }
         
         public void setSubjectAlternativeNames(GeneralNames sans) {
             this.sans = sans;
-        };
+        }
 
         public void setExtendedKeyUsage(Set extKeyUsage) {
             this.extKeyUsage = (extKeyUsage == null) 
                                 ? null 
                                 : new ArrayList(extKeyUsage);
-        };
+        }
         
         public void setKeyUsage(boolean[] keyUsage) {
             this.keyUsage = (keyUsage == null) ? null
                                                : (boolean[]) keyUsage.clone();
-        };
+        }
         
         public void setPublicKey(PublicKey key) {
             this.key = key;
@@ -175,7 +191,7 @@ public class X509CertSelectorTest extends TestCase {
             
         public void setSerialNumber(BigInteger serial) {
             this.serialNumber = serial;
-        };
+        }
 
         public void setEqualCriteria(String equalCriteria) {
             this.equalCriteria = equalCriteria; 
@@ -222,7 +238,7 @@ public class X509CertSelectorTest extends TestCase {
         }
         
         public void checkValidity() throws CertificateExpiredException,
-                                           CertificateNotYetValidException {};
+                                           CertificateNotYetValidException {}
 
         public void checkValidity(Date date) 
                                     throws CertificateExpiredException, 
@@ -237,21 +253,21 @@ public class X509CertSelectorTest extends TestCase {
             if (result < 0) {
                 throw new CertificateNotYetValidException();
             }
-        };
+        }
 
         public int getVersion() {
             return 3;
-        };
+        }
 
         public BigInteger getSerialNumber() {
             return (serialNumber == null) 
                     ? new BigInteger("1111") 
                     : serialNumber;
-        };
+        }
 
         public Principal getIssuerDN() {
             return issuer;
-        };
+        }
         
         public X500Principal getIssuerX500Principal() {
             return issuer;
@@ -259,7 +275,7 @@ public class X509CertSelectorTest extends TestCase {
             
         public Principal getSubjectDN() {
             return subject;
-        };
+        }
 
         public X500Principal getSubjectX500Principal() {
             return subject;
@@ -267,45 +283,45 @@ public class X509CertSelectorTest extends TestCase {
 
         public Date getNotBefore() {
             return null;
-        };
+        }
 
         public Date getNotAfter() {
             return null;
-        };
+        }
 
         public byte[] getTBSCertificate()
                             throws CertificateEncodingException
         {
             return null;
-        };
+        }
 
         public byte[] getSignature() {
             return null;
-        };
+        }
 
         public String getSigAlgName() {
             return null;
-        };
+        }
 
         public String getSigAlgOID() {
             return null;
-        };
+        }
 
         public byte[] getSigAlgParams() {
             return null;
-        };
+        }
 
         public boolean[] getIssuerUniqueID() {
             return null;
-        };
+        }
 
         public boolean[] getSubjectUniqueID() {
             return null;
-        };
+        }
 
         public boolean[] getKeyUsage() {
             return keyUsage;
-        };
+        }
 
         public List/*<String>*/ getExtendedKeyUsage()
                                     throws CertificateParsingException {
@@ -314,7 +330,7 @@ public class X509CertSelectorTest extends TestCase {
 
         public int getBasicConstraints() {
             return pathLen;
-        };
+        }
 
         public Collection/*<List<?>>*/ getSubjectAlternativeNames()
                                     throws CertificateParsingException {
@@ -357,15 +373,13 @@ public class X509CertSelectorTest extends TestCase {
         public byte[] getExtensionValue(String oid) {
             if (("2.5.29.14".equals(oid)) || ("2.5.29.35".equals(oid))) {
                 // Extension value is represented as an OctetString
-                return (byte[]) 
-                    ASN1OctetString.getInstance().encode(keyIdentifier);
+                return ASN1OctetString.getInstance().encode(keyIdentifier);
             }
             if ("2.5.29.16".equals(oid)) {
                 PrivateKeyUsagePeriod pkup = 
                                 new PrivateKeyUsagePeriod(notBefore, notAfter);
                 byte[] encoded = pkup.getEncoded();
-                return (byte[]) 
-                    ASN1OctetString.getInstance().encode(encoded);
+                return ASN1OctetString.getInstance().encode(encoded);
             }
             if (("2.5.29.37".equals(oid)) && (extKeyUsage != null)) {
                 ASN1Oid[] oa = new ASN1Oid[extKeyUsage.size()];
@@ -376,13 +390,11 @@ public class X509CertSelectorTest extends TestCase {
                     oa[id] = ASN1Oid.getInstanceForString();
                     val[id++] = (String) it.next();
                 }
-                return (byte[]) 
-                    ASN1OctetString.getInstance().encode(
+                return ASN1OctetString.getInstance().encode(
                     new ASN1Sequence(oa).encode(val));
             }
             if ("2.5.29.19".equals(oid)) {
-                return (byte[]) 
-                    ASN1OctetString.getInstance().encode(
+                return ASN1OctetString.getInstance().encode(
                             new ASN1Sequence(
                                     new ASN1Type[] {
                                             ASN1Boolean.getInstance(),
@@ -399,8 +411,7 @@ public class X509CertSelectorTest extends TestCase {
                 if (sans.getNames() == null) {
                     return null;
                 }
-                return (byte[]) 
-                    ASN1OctetString.getInstance().encode(
+                return ASN1OctetString.getInstance().encode(
                             GeneralNames.ASN1.encode(sans));
             }
             if ("2.5.29.32".equals(oid) && (policies != null) 
@@ -413,14 +424,12 @@ public class X509CertSelectorTest extends TestCase {
                                             new PolicyInformation(policies[i]);
                     certificatePolicies.addPolicyInformation(policyInformation);
                 }
-                return (byte[]) 
-                    ASN1OctetString.getInstance().encode(
+                return ASN1OctetString.getInstance().encode(
                             certificatePolicies.getEncoded());
             }
             if ("2.5.29.30".equals(oid) && (nameConstraints != null)) {
                 // Name Constraints Extension (as specified in rfc 3280)
-                return (byte[]) 
-                    ASN1OctetString.getInstance().encode(
+                return ASN1OctetString.getInstance().encode(
                             nameConstraints.getEncoded());
             }
             return null;
@@ -429,7 +438,7 @@ public class X509CertSelectorTest extends TestCase {
         public boolean hasUnsupportedCriticalExtension() {
             return false;
         }
-    };
+    }
 
     /* ********************************************************************** */
     /* ************************* Test implementation ************************ */

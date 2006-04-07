@@ -225,19 +225,19 @@ public class X509CRLSelector implements CRLSelector {
                     + ((X500Principal) issuerNames.get(i)).getName()); 
             }
             result.append("\n  ]");
-        };
+        }
         if (minCRL != null) {
             result.append("\n  minCRL: " + minCRL);
-        };
+        }
         if (maxCRL != null) {
             result.append("\n  maxCRL: " + maxCRL);
-        };
+        }
         if (dateAndTime != -1) {
             result.append("\n  dateAndTime: " + (new Date(dateAndTime)));
         }
         if (certificateChecking != null) {
             result.append("\n  certificateChecking: " + certificateChecking);
-        };
+        }
         result.append("\n]");
         return result.toString();
     }
@@ -254,7 +254,7 @@ public class X509CRLSelector implements CRLSelector {
                 // the search speed depends on the class of issuerNames
                 !(issuerNames.contains(crlist.getIssuerX500Principal()))) {
             return false;
-        };
+        }
         if ((minCRL != null) || (maxCRL != null)) {
             try {
                 // As specified in rfc 3280 (http://www.ietf.org/rfc/rfc3280.txt)
@@ -274,7 +274,7 @@ public class X509CRLSelector implements CRLSelector {
                 //e.printStackTrace();
                 return false;
             }
-        };
+        }
         if (dateAndTime != -1) {
             Date thisUp = crlist.getThisUpdate();
             Date nextUp = crlist.getNextUpdate();
@@ -285,7 +285,7 @@ public class X509CRLSelector implements CRLSelector {
                                 || (dateAndTime > nextUp.getTime())) {
                 return false;
             }
-        };
+        }
         return true;
     }
     
@@ -296,7 +296,7 @@ public class X509CRLSelector implements CRLSelector {
         X509CRLSelector result = new X509CRLSelector();
         if (issuerNames != null) {
             result.setIssuers(issuerNames);
-        };
+        }
         result.minCRL = minCRL;
         result.maxCRL = maxCRL;
         result.dateAndTime = dateAndTime;

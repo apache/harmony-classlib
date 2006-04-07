@@ -22,12 +22,21 @@
 package org.apache.harmony.security.provider.cert;
 
 
-import java.io.*;
-import java.util.*;
-import java.security.cert.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.cert.CRL;
+import java.security.cert.CRLException;
+import java.security.cert.CertPath;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactorySpi;
+import java.security.cert.X509CRL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.harmony.misc.Base64;
-import org.apache.harmony.security.asn1.ASN1Any;
 import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
@@ -55,7 +64,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             if (inStream.read(buff) < 28) {
                 throw new CertificateException(
                         "Input Stream contains not enought data.");
-            };
+            }
             if ("-----BEGIN CERTIFICATE-----".equals(new String(buff, 0, 27))) {
                 int size = inStream.available();
                 if (size == 0) {
@@ -167,7 +176,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             if (inStream.read(buff) < 28) {
                 throw new CRLException(
                         "Input Stream contains not enought data.");
-            };
+            }
 
             inStream.reset();
             long hash = CRL_CASHE.getHash(buff);
@@ -312,7 +321,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 }
             }
             return inStream.read();
-        };
+        }
 
         public int read(byte[] b) throws IOException {
             return read(b, 0, b.length);

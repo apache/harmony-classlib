@@ -156,7 +156,6 @@ public class CertPathValidator1Test extends TestCase {
         CertPathValidator certPV;
         for (int i = 0; i < validValues.length; i++) {
             certPV = CertPathValidator.getInstance(validValues[i]);
-            assertTrue("Not CertPathValidator object", certPV instanceof CertPathValidator);
             assertEquals("Incorrect algorithm", certPV.getAlgorithm(), validValues[i]);
         }
     }
@@ -248,8 +247,6 @@ public class CertPathValidator1Test extends TestCase {
         for (int i = 0; i < validValues.length; i++) {
             certPV = CertPathValidator.getInstance(validValues[i],
                     defaultProviderName);
-            assertTrue("Not CertPathValidator object",
-                    certPV instanceof CertPathValidator);
             assertEquals("Incorrect algorithm", certPV.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider name", certPV.getProvider()
@@ -317,8 +314,6 @@ public class CertPathValidator1Test extends TestCase {
         for (int i = 0; i < invalidValues.length; i++) {
             certPV = CertPathValidator.getInstance(validValues[i],
                     defaultProvider);
-            assertTrue("Not CertPathValidator object",
-                    certPV instanceof CertPathValidator);
             assertEquals("Incorrect algorithm", certPV.getAlgorithm(),
                     validValues[i]);
             assertEquals("Incorrect provider name", certPV.getProvider(),
@@ -370,7 +365,6 @@ public class CertPathValidator1Test extends TestCase {
         CertPathValidatorSpi spi = new MyCertPathValidatorSpi();
         CertPathValidator certPV = new myCertPathValidator(spi, 
                     defaultProvider, defaultType);
-        assertTrue("Not CertPathValidator object", certPV instanceof CertPathValidator);
         assertEquals("Incorrect algorithm", certPV.getAlgorithm(), defaultType);
         assertEquals("Incorrect provider", certPV.getProvider(), defaultProvider);
         certPV.validate(null, null);
@@ -380,7 +374,6 @@ public class CertPathValidator1Test extends TestCase {
         } catch (CertPathValidatorException e) {
         }        
         certPV = new myCertPathValidator(null, null, null);
-        assertTrue("Not CertPathValidator object", certPV instanceof CertPathValidator);
         assertEquals("Incorrect algorithm", certPV.getAlgorithm(), null);
         assertEquals("Incorrect provider", certPV.getProvider(), null);
         try {

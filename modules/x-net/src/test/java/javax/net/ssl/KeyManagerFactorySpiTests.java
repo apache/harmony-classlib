@@ -52,8 +52,7 @@ public class KeyManagerFactorySpiTests extends TestCase {
      * Assertion: constructs KeyManagerFactorySpi
      */
     public void testKeyManagerFactorySpi01() {
-        KeyManagerFactorySpi kmfSpi = (KeyManagerFactorySpi) new MyKeyManagerFactorySpi();
-        assertTrue(kmfSpi instanceof KeyManagerFactorySpi);
+        KeyManagerFactorySpi kmfSpi = new MyKeyManagerFactorySpi();
         assertNull(kmfSpi.engineGetKeyManagers());
         KeyStore kStore = null;
         ManagerFactoryParameters mfp = null;
@@ -97,13 +96,13 @@ public class KeyManagerFactorySpiTests extends TestCase {
         } catch (Exception e) {
             fail("Unexpected: ".concat(e.toString()));
         }
-        mfp = (ManagerFactoryParameters) new MyKeyManagerFactorySpi.Parameters(kStore, null);
+        mfp = new MyKeyManagerFactorySpi.Parameters(kStore, null);
         try {
             kmfSpi.engineInit(mfp);
             fail("InvalidAlgorithmParameterException must be thrown");
         } catch (InvalidAlgorithmParameterException e) {
         }
-        mfp = (ManagerFactoryParameters) new MyKeyManagerFactorySpi.Parameters(kStore, pass);
+        mfp = new MyKeyManagerFactorySpi.Parameters(kStore, pass);
         try {
             kmfSpi.engineInit(mfp);
         } catch (InvalidAlgorithmParameterException e) {

@@ -23,6 +23,7 @@ package org.apache.harmony.security.x509;
 
 import java.math.BigInteger;
 
+import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.asn1.ASN1Explicit;
 import org.apache.harmony.security.asn1.ASN1Implicit;
 import org.apache.harmony.security.asn1.ASN1Integer;
@@ -30,8 +31,6 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.BitString;
-
-import org.apache.harmony.security.asn1.*;
 import org.apache.harmony.security.x501.Name;
 
 /**

@@ -43,7 +43,7 @@ public class SerNameCallbackTest extends SerializationTest {
     }
 
     protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(((NameCallback) test) instanceof NameCallback);
+        assertTrue(test instanceof NameCallback);
         assertEquals(((NameCallback) golden).getDefaultName(),
                 ((NameCallback) test).getDefaultName());
         assertEquals(((NameCallback) golden).getName(), ((NameCallback) test)

@@ -56,7 +56,6 @@ public class UnrecoverableEntryExceptionTest extends TestCase {
      */
     public void testUnrecoverableEntryException() {
         UnrecoverableEntryException tE = new UnrecoverableEntryException();
-        assertTrue(errNotExc, tE instanceof UnrecoverableEntryException);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {
@@ -73,8 +72,6 @@ public class UnrecoverableEntryExceptionTest extends TestCase {
         UnrecoverableEntryException tE;
         for (int i = 0; i < msgs.length; i++) {
             tE = new UnrecoverableEntryException(msgs[i]);
-            assertTrue(errNotExc.concat(" (msg: ").concat(msgs[i]).concat(")"),
-                    tE instanceof UnrecoverableEntryException);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());

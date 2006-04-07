@@ -21,12 +21,11 @@
 
 package org.apache.harmony.security.x509;
 
-import org.apache.harmony.security.x501.Name;
-import org.apache.harmony.security.x509.*;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.harmony.security.x501.Name;
 
 
 /**

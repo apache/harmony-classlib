@@ -33,13 +33,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.StringTokenizer;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.ASN1OctetString;
-import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.CertificatePolicies;
 import org.apache.harmony.security.x509.GeneralName;
@@ -705,39 +702,39 @@ public class X509CertSelector implements CertSelector {
         result.append("X509CertSelector: \n[");
         if (this.certificateEquals != null) {
             result.append("\n  certificateEquals: " + certificateEquals);
-        };
+        }
         if (this.serialNumber != null) {
             //FIXME: needs DRL's BigInteger.toString implementation
             //result.append("\n  serialNumber: " + serialNumber);
-        };
+        }
         if (this.issuer != null) {
             result.append("\n  issuer: " + issuer);
-        };
+        }
         if (this.subject != null) {
             result.append("\n  subject: " + subject);
-        };
+        }
         if (this.subjectKeyIdentifier != null) {
             result.append("\n  subjectKeyIdentifier: "
                     + getBytesAsString(subjectKeyIdentifier));
-        };
+        }
         if (this.authorityKeyIdentifier != null) {
             result.append("\n  authorityKeyIdentifier: "
                     + getBytesAsString(authorityKeyIdentifier));
-        };
+        }
         if (this.certificateValid != null) {
             result.append("\n  certificateValid: " + certificateValid);
-        };
+        }
         if (this.subjectPublicKeyAlgID != null) {
             result.append("\n  subjectPublicKeyAlgID: "
                     + subjectPublicKeyAlgID);
-        };
+        }
         if (this.privateKeyValid != null) {
             result.append("\n  privateKeyValid: " + privateKeyValid);
-        };
+        }
         if (this.subjectPublicKey != null) {
             result.append("\n  subjectPublicKey: "
                     + getBytesAsString(subjectPublicKey));
-        };
+        }
         if (this.keyUsage != null) {
             result.append("\n  keyUsage: \n  [");
             String[] kuNames = new String[] {
@@ -751,7 +748,7 @@ public class X509CertSelector implements CertSelector {
                 }
             }
             result.append("\n  ]");
-        };
+        }
         if (this.extendedKeyUsage != null) {
             result.append("\n  extendedKeyUsage: "
                     + extendedKeyUsage.toString());
@@ -771,20 +768,20 @@ public class X509CertSelector implements CertSelector {
                 }
             }
             result.append("\n  ]");
-        };
+        }
         if (this.nameConstraints != null) {
-        };
+        }
         if (this.policies != null) {
             result.append("\n  policies: " + policies.toString());
-        };
+        }
         if (this.pathToNames != null) {
             result.append("\n  pathToNames:  \n  [");
             int size = pathToNames.size();
-            for (int i=0; i<pathToNames.size(); i++) {
+            for (int i = 0; i < size; i++) {
                 result.append("\n    "
                     + ((GeneralName)pathToNames.get(i)).toString());
             }
-        };
+        }
         result.append("\n]");
         return result.toString();
     }
@@ -872,15 +869,14 @@ public class X509CertSelector implements CertSelector {
                 if ((notBefore == null) && (notAfter == null)) {
                     return false;
                 }
-                boolean result = true;
                 if ((notBefore != null)
                     && notBefore.compareTo(privateKeyValid) > 0) {
                     return false;
-                };
+                }
                 if ((notAfter != null)
                     && notAfter.compareTo(privateKeyValid) < 0) {
                     return false;
-                };
+                }
             } catch (IOException e) {
                 return false;
             }
@@ -1099,7 +1095,7 @@ public class X509CertSelector implements CertSelector {
                         new ArrayList(this.subjectAltNames[i]);
                 }
             }
-        };
+        }
         result.nameConstraints = this.nameConstraints;
         result.policies = (this.policies == null)
             ? null

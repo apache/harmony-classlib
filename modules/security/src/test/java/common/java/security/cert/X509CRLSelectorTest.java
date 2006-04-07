@@ -40,8 +40,6 @@ import javax.security.auth.x500.X500Principal;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
 
-import org.apache.harmony.security.asn1.*;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -568,7 +566,6 @@ public class X509CRLSelectorTest extends TestCase {
         X509CRLSelector selector = new X509CRLSelector();
         X500Principal iss1 = new X500Principal("O=First Org.");
         X500Principal iss2 = new X500Principal("O=Second Org.");
-        X500Principal iss3 = new X500Principal("O=Third Org.");
         BigInteger minCRL = new BigInteger("10000");
         BigInteger maxCRL = new BigInteger("10000");
         Date date = new Date(200);

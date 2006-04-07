@@ -98,7 +98,7 @@ public class CodeSourceTest extends SerializationTest {
         ObjectInputStream ois = new ObjectInputStream(bais);
         
         try {
-            CodeSource got = (CodeSource)ois.readObject();
+            ois.readObject();
             fail("must not pass here");
         }
         catch(ClassNotFoundException ex) {
@@ -121,7 +121,7 @@ public class CodeSourceTest extends SerializationTest {
             ObjectInputStream ois = new ObjectInputStream(bais);
             
             try {
-                CodeSource got = (CodeSource)ois.readObject();
+                ois.readObject();
                 fail("must not pass here");
             }
             catch(IOException ex) {

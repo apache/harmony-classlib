@@ -21,32 +21,19 @@
 
 package org.apache.harmony.security.x509;
 
-import java.io.*;
-import java.math.*;
-import java.util.*;
-import java.security.cert.*;
-
-import org.apache.harmony.security.asn1.ASN1Integer;
-
-import org.apache.harmony.security.asn1.*;
-import org.apache.harmony.security.x501.Name;
-import org.apache.harmony.security.x509.AlgorithmIdentifier;
-import org.apache.harmony.security.x509.Certificate;
-import org.apache.harmony.security.x509.EDIPartyName;
-import org.apache.harmony.security.x509.Extension;
-import org.apache.harmony.security.x509.Extensions;
-import org.apache.harmony.security.x509.GeneralName;
-import org.apache.harmony.security.x509.GeneralNames;
-import org.apache.harmony.security.x509.NameConstraints;
-import org.apache.harmony.security.x509.ORAddress;
-import org.apache.harmony.security.x509.OtherName;
-import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
-import org.apache.harmony.security.x509.TBSCertificate;
-import org.apache.harmony.security.x509.Validity;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.cert.CertificateFactory;
+import java.util.Arrays;
+import java.util.Date;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.x501.Name;
 
 /**
  * Testing the encoding/decoding work of the following structure:
@@ -155,33 +142,31 @@ public class CertificateTest extends TestCase {
         extensions.addExtension(extension);
         
         byte[] encoding = extensions.getEncoded();
-        Extensions exts = (Extensions) Extensions.ASN1.decode(encoding);
+        Extensions.ASN1.decode(encoding);
         
         TBSCertificate tbsCertificate = new TBSCertificate(version, serialNumber, 
                 signature, issuer, validity, subject, subjectPublicKeyInfo, 
                 issuerUniqueID, subjectUniqueID, extensions);
 
         encoding = tbsCertificate.getEncoded();
-        TBSCertificate tbsCert = (TBSCertificate) 
-            TBSCertificate.ASN1.decode(encoding);
+        TBSCertificate.ASN1.decode(encoding);
 
         Certificate certificate = new Certificate(tbsCertificate, signature, new byte[10]);
 
         encoding = certificate.getEncoded();
         
-        Certificate cert = (Certificate) Certificate.ASN1.decode(encoding);
+        Certificate.ASN1.decode(encoding);
 
         encoding = Certificate.ASN1.encode(certificate);
         
-        ByteArrayInputStream bais =
-            new ByteArrayInputStream(encoding);
+        ByteArrayInputStream bais = new ByteArrayInputStream(encoding);
 
-        try {
+        //try {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            X509Certificate _cert = (X509Certificate) cf.generateCertificate(bais);
-        } catch (CertificateException e) {
+            cf.generateCertificate(bais);
+        //} catch (CertificateException e) {
             // there is no X.509 certificate factory implementation installed
-        }
+        //}
     }
     
     /**

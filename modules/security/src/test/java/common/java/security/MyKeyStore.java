@@ -177,17 +177,17 @@ public class MyKeyStore extends KeyStoreSpi {
         Enumeration e = Keys.keys();
         while (e.hasMoreElements()) {
             alias = (String) e.nextElement();
-            KeysSL.put(alias, (Key) Keys.get(alias));
-            DatesSL.put(alias, (Date) Dates.get(alias));
+            KeysSL.put(alias, Keys.get(alias));
+            DatesSL.put(alias, Dates.get(alias));
             if (Chain.containsKey(alias)) {
-                ChainSL.put(alias, (Certificate[]) Chain.get(alias));
+                ChainSL.put(alias, Chain.get(alias));
             }
         }
         e = Cert.keys();
         while (e.hasMoreElements()) {
             alias = (String) e.nextElement();
-            CertSL.put(alias, (Certificate) Cert.get(alias));
-            DatesSL.put(alias, (Date) Dates.get(alias));
+            CertSL.put(alias, Cert.get(alias));
+            DatesSL.put(alias, Dates.get(alias));
         }
     }
 
@@ -201,17 +201,17 @@ public class MyKeyStore extends KeyStoreSpi {
         Enumeration e = KeysSL.keys();
         while (e.hasMoreElements()) {
             alias = (String) e.nextElement();
-            Keys.put(alias, (Key) KeysSL.get(alias));
-            Dates.put(alias, (Date) DatesSL.get(alias));
+            Keys.put(alias, KeysSL.get(alias));
+            Dates.put(alias, DatesSL.get(alias));
             if (ChainSL.containsKey(alias)) {
-                Chain.put(alias, (Certificate[]) ChainSL.get(alias));
+                Chain.put(alias, ChainSL.get(alias));
             }
         }
         e = CertSL.keys();
         while (e.hasMoreElements()) {
             alias = (String) e.nextElement();
-            Cert.put(alias, (Certificate) CertSL.get(alias));
-            Dates.put(alias, (Date) DatesSL.get(alias));
+            Cert.put(alias, CertSL.get(alias));
+            Dates.put(alias, DatesSL.get(alias));
         }
     }
 

@@ -126,8 +126,9 @@ public class ASN1Oid extends ASN1Primitive {
         if (elem == 0) {
             length = 1;
         } else {
-            for (; elem > 0; length++, elem = elem >> 7)
-                ;
+            for (; elem > 0; elem = elem >> 7) {
+                length++;
+            }
         }
 
         // the rest of subidentifiers
@@ -136,8 +137,9 @@ public class ASN1Oid extends ASN1Primitive {
                 length++;
                 continue;
             }
-            for (elem = oid[i]; elem > 0; length++, elem = elem >> 7)
-                ;
+            for (elem = oid[i]; elem > 0; elem = elem >> 7) {
+                length++;
+            }
         }
         out.length = length;
     }

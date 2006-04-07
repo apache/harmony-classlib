@@ -191,7 +191,6 @@ public class SaslTest3 extends TestCase {
         SaslClient saslC = Sasl.createSaslClient(new String[] { "NAME-2" },
                 null, "protocol", null, null, cbH);
         assertNotNull("Null result", saslC);
-        assertTrue("Not SaslClient", saslC instanceof SaslClient);
         try {
             saslC.unwrap(null, 1, 1);
             fail("SaslException sould be thrown");
@@ -228,7 +227,6 @@ public class SaslTest3 extends TestCase {
         SaslClient saslC = Sasl.createSaslClient(new String[] { "NAME-2" },
                 null, "protocol", null, null, cbH);
         assertNotNull("Null result for NAME-2", saslC);
-        assertTrue("Not SaslClient", saslC instanceof SaslClient);
         assertFalse("Incorrect isComplete() result", saslC.isComplete());
         // try to create client for wrong mechanism
         try {
@@ -276,7 +274,6 @@ public class SaslTest3 extends TestCase {
         saslC = Sasl.createSaslClient(new String[] { "NAME-2" }, null,
                 "protocol", null, null, cbH);
         assertNotNull("Null result for NAME-2", saslC);
-        assertTrue("Incorrect object", saslC instanceof SaslClient);
         try {
             saslC.unwrap(null, 1, 1);
             fail("SaslException sould be thrown");
@@ -297,7 +294,6 @@ public class SaslTest3 extends TestCase {
         saslC = Sasl.createSaslClient(new String[] { "NAME-6", "NAME-5" },
                 null, "protocol", null, null, cbH);
         assertNotNull("Null result for NAME-6 and NAME-5", saslC);
-        assertTrue("Incorrect object", saslC instanceof SaslClient);
     }
 }
 
