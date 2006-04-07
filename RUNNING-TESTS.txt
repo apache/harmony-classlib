@@ -23,14 +23,15 @@ Requirements :
    
 2) JUnit.jar - any modern version. http://www.junit.org
    
-   Put this on your classpath because 
-   we self-host to test (i.e. use both the Harmony class library
-   and the external non-open source J9 VM that is available to us
-   under an evaluation license
+   Put this on your ant/lib directory too.
    
-3) bcprov-jdk14-131.jar : from http://www.bouncycastle.org/
+3) Ensure you have the build time dependencies installed, these
+   can be downloaded using the following command:
 
-  Put in classpath - we'll fix this problem too.
+   ant -f make/depends.xml download
+
+   Warning: Some of the dependencies are made available under
+            licences other than the ASLv2.
   
 4) J9 VM from IBM (evaluation)
     
@@ -39,7 +40,7 @@ Requirements :
    Warning - this is not open source, and you must go through a minor 
    registration process.
    
-   This is IBMs production VM that for now works with the Harmony classlib. 
+   This is IBM's VM that works with the Harmony class libraries.
    We will use this until our own VM efforts come up to speed.
    
    Installation - drop into deploy/jre/bin/default
@@ -58,11 +59,10 @@ Requirements :
  
     in make dir : 
     
-    $ ant -f build-test.xml
+    $ ant test
     
     and wait.  You can find a html report in
     
-       target/test_report/html/index.html
+       build/test_report/html/index.html
        
    when it's finished.
-    
