@@ -44,7 +44,7 @@ public class Mac implements Cloneable {
     // Store spi implementation service name
     private static final String SERVICE = "Mac";
 
-    //Used to accesess common engine functionality
+    //Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Warning for reporting about not initialized Mac

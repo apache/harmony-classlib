@@ -43,7 +43,7 @@ public class ExemptionMechanism {
     // Store spi implementation service name
     private static final String SERVICE = "ExemptionMechanism";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Warning for reporting about not initializes ExemptionMechanism

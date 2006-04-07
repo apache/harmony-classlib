@@ -303,7 +303,7 @@ public class IdentityTest extends TestCase {
     }
 
     /**
-     * verify Identity.toString(boolean) return string represention of identity
+     * verify Identity.toString(boolean) return string representation of identity
      */
     public void testToStringboolean() throws Exception {
         new IdentityStub("aaa").toString(false);

@@ -65,7 +65,7 @@ public class ExpressionTest extends TestCase {
                 SampleBean bean = (SampleBean) result;
                 assertEquals("hello", bean.getText());
             } else {
-                fail("Cannot instantialte an instance of Bean class.");
+                fail("Cannot instantiate an instance of Bean class.");
             }
         } catch (Exception e) {
             System.out.println(e.getClass() + ": " + e.getMessage());
@@ -87,7 +87,7 @@ public class ExpressionTest extends TestCase {
                 assertEquals("hello", bean.getText());
                 assertEquals(theBean, bean.getObject());
             } else {
-                fail("Cannot instantialte an instance of Bean class by "
+                fail("Cannot instantiate an instance of Bean class by "
                         + "static method.");
             }
         } catch (Exception e) {

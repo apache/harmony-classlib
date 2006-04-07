@@ -98,7 +98,7 @@ public class Cipher {
     private static final String SERVICE = "Cipher";
 
     /**
-     * Used to accesess common engine functionality
+     * Used to access common engine functionality
      */
     private static Engine engine = new Engine(SERVICE);
 

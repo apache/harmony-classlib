@@ -2732,10 +2732,10 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
      * @throws NoSuchAlgorithmException
      */
     private static byte[] getValidEncryptedPrivateKeyInfoEncoding(
-            String algName, boolean includingAlgPararameters)
+            String algName, boolean includingAlgParameters)
             throws NoSuchAlgorithmException {
         String algNameUC = algName.toUpperCase();
-        byte[] ret = includingAlgPararameters
+        byte[] ret = includingAlgParameters
                     ? (byte[])validEPKIEncodings.get(algNameUC)
                     : (byte[])validEPKIEncodingsNP.get(algNameUC);
         if (ret != null) {

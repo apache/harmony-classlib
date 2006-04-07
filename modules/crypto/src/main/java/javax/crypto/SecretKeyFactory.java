@@ -41,7 +41,7 @@ public class SecretKeyFactory {
     // Store spi implementation service name
     private static final String SERVICE = "SecretKeyFactory";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Store used provider

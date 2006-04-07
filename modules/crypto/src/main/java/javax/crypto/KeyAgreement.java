@@ -44,7 +44,7 @@ public class KeyAgreement {
     // Store spi implementation service name
     private static final String SERVICE = "KeyAgreement";
 
-    // Used to accesess common engine functionality
+    // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Store SecureRandom
