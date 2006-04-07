@@ -142,8 +142,12 @@ public class X509CertPathImplTest extends TestCase {
     /**
      * getEncoded(String encoding) method testing.
      */
-    public void testGetEncoded2() throws Exception {
-        certPath.getEncoded("ABRACADABRA");
+    public void testGetEncoded2() {
+        try {
+            certPath.getEncoded("ABRACADABRA");
+            fail("CertificateEncodingException should be thrown");
+        } catch (CertificateEncodingException e) {
+        }
     }
     
     /**
