@@ -15,9 +15,13 @@
 
 package java.lang;
 
-
 /**
- * Doubles are objects (non-base types) which represent double values.
+ * <p>
+ * Double is the wrapper for the primitive type <code>double</code>.
+ * </p>
+ * 
+ * @see java.lang.Number
+ * @since 1.0
  */
 public final class Double extends Number implements Comparable {
 
@@ -26,32 +30,48 @@ public final class Double extends Number implements Comparable {
 	/**
 	 * The value which the receiver represents.
 	 */
-	final double value;
+	private final double value;
 
-	/**
-	 * Largest and smallest possible double values.
-	 */
+    /**
+     * <p>
+     * Constant for the maximum <code>double</code> value, (2 - 2<sup>-52/sup>) * 2<sup>1023</sup>.
+     * </p>
+     */
 	public static final double MAX_VALUE = 1.79769313486231570e+308;
 
+    /**
+     * <p>
+     * Constant for the minimum <code>double</code> value, 2<sup>-1074</sup>.
+     * </p>
+     */
 	public static final double MIN_VALUE = 5e-324;
 
 	/* 4.94065645841246544e-324 gets rounded to 9.88131e-324 */
 
-	/**
-	 * A value which represents all invalid double results (NaN ==> Not a
-	 * Number)
-	 */
+    /**
+     * <p>
+     * Constant for the Not-a-Number (NaN) value of the <code>double</code> type.
+     * </p>
+     */
 	public static final double NaN = 0.0 / 0.0;
 
-	/**
-	 * Values to represent infinite results
-	 */
+    /**
+     * <p>
+     * Constant for the Positive Infinity value of the <code>double</code> type.
+     * </p>
+     */
 	public static final double POSITIVE_INFINITY = 1.0 / 0.0;
 
+    /**
+     * <p>
+     * Constant for the Negative Infinity value of the <code>double</code> type.
+     * </p>
+     */
 	public static final double NEGATIVE_INFINITY = -1.0 / 0.0;
 
 	/**
 	 * The java.lang.Class that represents this class.
+     * @since 1.1
 	 */
 	public static final Class TYPE = new double[0].getClass()
 			.getComponentType();
@@ -59,6 +79,16 @@ public final class Double extends Number implements Comparable {
 	// Note: This can't be set to "double.class", since *that* is
 	// defined to be "java.lang.Double.TYPE";
 
+    /**
+     * <p>
+     * Constant for the number of bits to represent a <code>double</code> in
+     * two's compliment form.
+     * </p>
+     * 
+     * @since 1.5
+     */
+    public static final int SIZE = 64;
+    
 	/**
 	 * Constructs a new instance of the receiver which represents the double
 	 * valued argument.
@@ -380,4 +410,95 @@ public final class Double extends Number implements Comparable {
 		}
 		return double1 > double2 ? 1 : -1;
 	}
+    
+    /**
+     * <p>
+     * Returns a <code>Double</code> instance for the <code>double</code>
+     * value passed. This method is preferred over the constructor, as this
+     * method may maintain a cache of instances.
+     * </p>
+     * 
+     * @param d The double value.
+     * @return A <code>Double</code> instance.
+     * @since 1.5
+     */
+    public static Double valueOf(double d) {
+        return new Double(d);
+    }
+
+    /**
+     * <p>
+     * Converts a <code>double</code> into a hexadecimal string representation.
+     * </p>
+     * 
+     * @param d The <code>double</code> to convert.
+     * @return The hexadecimal string representation of <code>f</code>.
+     * @since 1.5
+     */
+    public static String toHexString(double d) {
+        /*
+         * Reference: http://en.wikipedia.org/wiki/IEEE_754
+         */
+        if (d != d) // isNaN
+            return "NaN";
+        if (d == POSITIVE_INFINITY)
+            return "Infinity";
+        if (d == NEGATIVE_INFINITY)
+            return "-Infinity";
+
+        long bitValue = doubleToLongBits(d);
+
+        boolean negative = (bitValue & 0x8000000000000000L) != 0;
+        // mask exponent bits and shift down
+        long exponent = (bitValue & 0x7FF0000000000000L) >>> 52;
+        // mask significand bits and shift up
+        long significand = bitValue & 0x000FFFFFFFFFFFFFL;
+
+        if (exponent == 0 && significand == 0)
+            return (negative ? "-0x0.0p0" : "0x0.0p0");
+
+        StringBuilder hexString = new StringBuilder(10);
+        if (negative)
+            hexString.append("-0x");
+        else
+            hexString.append("0x");
+
+        if (exponent == 0) { // denormal (subnormal) value
+            hexString.append("0.");
+            // significand is 52-bits, so there can be 13 hex digits
+            int fractionDigits = 13;
+            // remove trailing hex zeros, so Integer.toHexString() won't print
+            // them
+            while ((significand != 0) && ((significand & 0xF) == 0)) {
+                significand >>>= 4;
+                fractionDigits--;
+            }
+            // this assumes Integer.toHexString() returns lowercase characters
+            String hexSignificand = Long.toHexString(significand);
+
+            // if there are digits left, then insert some '0' chars first
+            if (fractionDigits > hexSignificand.length()) {
+                int digitDiff = fractionDigits - hexSignificand.length();
+                while (digitDiff-- != 0)
+                    hexString.append('0');
+            }
+            hexString.append(hexSignificand);
+            hexString.append("p-1022");
+        } else { // normal value
+            hexString.append("1.");
+            // remove trailing hex zeros, so Integer.toHexString() won't print
+            // them
+            while ((significand != 0) && ((significand & 0xF) == 0)) {
+                significand >>>= 4;
+            }
+            // this assumes Integer.toHexString() returns lowercase characters
+            String hexSignificand = Long.toHexString(significand);
+
+            hexString.append(hexSignificand);
+            hexString.append('p');
+            // remove exponent's 'bias' and convert to a string
+            hexString.append(Long.toString(exponent - 1023));
+        }
+        return hexString.toString();
+    }
 }

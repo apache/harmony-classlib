@@ -75,4 +75,49 @@ public class DoubleTest extends TestCase {
 		assertTrue("Assert 5: -0d should not be equals() 0d",
 				!new Double(0d).equals(new Double(-0d)));
 	}
+    
+    /**
+     * @tests java.lang.Double#toHexString(double)
+     */
+    public void test_toHexStringF() {
+        //the follow values come from the Double Javadoc/Spec
+        assertEquals("0x0.0p0", Double.toHexString(0.0D));
+        assertEquals("-0x0.0p0", Double.toHexString(-0.0D));
+        assertEquals("0x1.0p0", Double.toHexString(1.0D));
+        assertEquals("-0x1.0p0", Double.toHexString(-1.0D));
+        assertEquals("0x1.0p1", Double.toHexString(2.0D));
+        assertEquals("0x1.8p1", Double.toHexString(3.0D));
+        assertEquals("0x1.0p-1", Double.toHexString(0.5D));
+        assertEquals("0x1.0p-2", Double.toHexString(0.25D));
+        assertEquals("0x1.fffffffffffffp1023", Double.toHexString(Double.MAX_VALUE));
+        assertEquals("0x0.0000000000001p-1022", Double.toHexString(Double.MIN_VALUE));
+        
+        //test edge cases
+        assertEquals("NaN", Double.toHexString(Double.NaN));
+        assertEquals("-Infinity", Double.toHexString(Double.NEGATIVE_INFINITY));
+        assertEquals("Infinity", Double.toHexString(Double.POSITIVE_INFINITY));
+        
+        //test various numbers
+        assertEquals("-0x1.da8p6", Double.toHexString(-118.625D));
+        assertEquals("0x1.2957874cccccdp23", Double.toHexString(9743299.65D));
+        assertEquals("0x1.2957874cccccdp23", Double.toHexString(9743299.65000D));
+        assertEquals("0x1.2957874cccf63p23", Double.toHexString(9743299.650001234D));
+        assertEquals("0x1.700d1061d3333p33", Double.toHexString(12349743299.65000D));
+    }
+    
+    /**
+     * @tests java.lang.Double#valueOf(double)
+     */
+    public void test_valueOfD() {
+        assertEquals(new Double(Double.MIN_VALUE), Double.valueOf(Double.MIN_VALUE));
+        assertEquals(new Double(Double.MAX_VALUE), Double.valueOf(Double.MAX_VALUE));
+        assertEquals(new Double(0), Double.valueOf(0));
+
+        int s = -128;
+        while (s < 128) {
+            assertEquals(new Double(s), Double.valueOf(s));
+            assertEquals(new Double(s + 0.1D), Double.valueOf(s + 0.1D));
+            s++;
+        }
+    }
 }
