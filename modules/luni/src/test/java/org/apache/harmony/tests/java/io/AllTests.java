@@ -32,6 +32,8 @@ public class AllTests {
 		suite.addTestSuite(FilePermissionTest.class);
 		suite.addTestSuite(BufferedInputStreamTest.class);
 		suite.addTestSuite(FileTest.class);
+        suite.addTestSuite(FileInputStreamTest.class);
+        suite.addTestSuite(FileOutputStreamTest.class);
         suite.addTestSuite(InputStreamReaderTest.class);
 		suite.addTestSuite(BufferedReaderTest.class);
 		suite.addTestSuite(PushBackInputStreamTest.class);
