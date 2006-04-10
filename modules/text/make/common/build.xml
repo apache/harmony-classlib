@@ -84,6 +84,7 @@
 			<classpath>
 				<pathelement path="${hy.text.bin.test}"/>
 			</classpath>
+            <classpath location="../../../../build/tests" />	
 
 			<formatter type="xml" />
 
@@ -94,7 +95,7 @@
                                         <exclude name="**/ChoiceFormatTest.java"/>
                                         <exclude name="**/CollationKeyTest.java"/>
                                         <exclude name="**/CollatorTest.java"/>
-                                        <exclude name="**/DecimalFormatTest.java"/>
+                                        <exclude name="tests/api/java/text/DecimalFormatTest.java"/>
                                         <exclude name="**/MessageFormatTest.java"/>
                                         <exclude name="**/NumberFormatTest.java"/>
                                         <exclude name="**/SimpleDateFormatTest.java"/>
