@@ -70,6 +70,10 @@ public class Oid {
      * @com.intel.drl.spec_ref
      */
     public Oid(InputStream derOid) throws GSSException {
+        if (derOid == null) {
+            throw new NullPointerException();
+        }
+
         try {
             oid = new ObjectIdentifier((int[]) ASN1.decode(derOid));
         } catch (IOException e) {

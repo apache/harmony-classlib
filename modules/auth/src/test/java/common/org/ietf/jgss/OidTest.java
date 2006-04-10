@@ -102,6 +102,9 @@ public class OidTest extends TestCase {
         }
     }
     
+    /**
+     * @tests org.ieft.jgss.Oid#containedIn(org.ieft.jgss.Oid[])
+     */
     public void testContainedIn() throws Exception {
         Oid oid= new Oid("1.2.1.2.1");
         Oid [] oidArr= new Oid [] { 
@@ -111,6 +114,12 @@ public class OidTest extends TestCase {
                 new Oid("1.2.1.2.5")
                 };
         assertTrue(oid.containedIn(oidArr) );
+
+        try {
+            oid.containedIn(null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
     }
     
     /**
@@ -267,7 +276,44 @@ public class OidTest extends TestCase {
         assertEquals(0x03, in.read());
         assertEquals(0, in.available());
     }
-    
+
+    /**
+     * @tests org.ieft.jgss.Oid#Oid(byte[])
+     */
+    public final void test_ConstructorLbyte_array() throws GSSException {
+
+        try {
+            new Oid((byte[]) null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+    }
+
+    /**
+     * @tests org.ieft.jgss.Oid#Oid(java.io.InputStream)
+     */
+    public final void test_ConstructorLjava_io_InputStream()
+            throws GSSException {
+
+        try {
+            new Oid((java.io.InputStream) null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+    }
+
+    /**
+     * @tests org.ieft.jgss.Oid#Oid(java.lang.String)
+     */
+    public final void test_ConstructorLjava_lang_String() {
+
+        try {
+            new Oid((java.lang.String) null);
+            fail("No expected GSSException");
+        } catch (GSSException e) {
+        }
+    }
+
     public static Test suite() {
         return new TestSuite(OidTest.class);
     }
