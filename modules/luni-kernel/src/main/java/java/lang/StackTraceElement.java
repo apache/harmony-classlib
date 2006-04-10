@@ -18,11 +18,12 @@ package java.lang;
 
 /**
  * An implementation of this class is provided, but the documented constructor
- * can be used by the vm specific implementation to create instances.
+ * can be used by the VM specific implementation to create instances.
  * 
  * StackTraceElement represents a stack frame.
  * 
  * @see Throwable#getStackTrace()
+ * @since 1.4
  */
 public final class StackTraceElement implements java.io.Serializable {
 	private static final long serialVersionUID = 6992337162326171013L;
@@ -32,18 +33,24 @@ public final class StackTraceElement implements java.io.Serializable {
 	int lineNumber;
 
 	/**
-	 * Create a StackTraceElement from the parameters.
-	 * 
-	 * @param cls
-	 *            The class name
-	 * @param method
-	 *            The method name
-	 * @param file
-	 *            The file name
-	 * @param line
-	 *            The line number
-	 */
-	StackTraceElement(String cls, String method, String file, int line) {
+     * <p>
+     * Constructs a <code>StackTraceElement</code> for an execution point.
+     * </p>
+     * 
+     * @param cls The fully qualified name of the class where execution is at.
+     * @param method The name of the method where execution is at.
+     * @param file The name of the file where execution is at or
+     *        <code>null</code>.
+     * @param line The line of the file where execution is at, a negative number
+     *        if unknown or <code>-2</code> if the execution is in a native
+     *        method.
+     * 
+     * @throws NullPointerException if <code>cls</code> or <code>method</code>
+     *         is <code>null</code>.
+     * 
+     * @since 1.5
+     */
+	public StackTraceElement(String cls, String method, String file, int line) {
 		if (cls == null || method == null)
 			throw new NullPointerException();
 		declaringClass = cls;
@@ -52,7 +59,11 @@ public final class StackTraceElement implements java.io.Serializable {
 		lineNumber = line;
 	}
 
-	// prevent instantiation from java code - only the VM creates these
+	/**
+     * <p>
+     * Private, nullary constructor for VM use only.
+     * </p>
+     */
 	private StackTraceElement() {
 		// Empty
 	}
@@ -107,7 +118,7 @@ public final class StackTraceElement implements java.io.Serializable {
 	 * is executing.
 	 * 
 	 * @return if available, the name of the file containing the Java code
-	 *         source for the stack trace element's excuting class. If no such
+	 *         source for the stack trace element's executing class. If no such
 	 *         detail is available, a <code>null</code> value is returned.
 	 */
 	public String getFileName() {
@@ -168,7 +179,7 @@ public final class StackTraceElement implements java.io.Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		StringBuffer buf = new StringBuffer(80);
+		StringBuilder buf = new StringBuilder(80);
 
 		buf.append(getClassName());
 		buf.append('.');
