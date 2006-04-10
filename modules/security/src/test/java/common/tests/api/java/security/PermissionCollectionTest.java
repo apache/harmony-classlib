@@ -244,10 +244,4 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
 		assertNotNull("toString should have returned a string of elements",
 				permi.newPermissionCollection().toString());
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

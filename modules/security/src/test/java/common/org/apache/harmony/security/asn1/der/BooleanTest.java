@@ -39,20 +39,6 @@ import org.apache.harmony.security.asn1.DerOutputStream;
  */
 public class BooleanTest extends TestCase {
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Constructor for BooleanTest.
      * @param arg0

@@ -90,10 +90,4 @@ public class PolicyTest extends junit.framework.TestCase {
 			Policy.setPolicy(sysPolicy);
 		}
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

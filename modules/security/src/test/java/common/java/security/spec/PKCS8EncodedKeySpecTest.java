@@ -32,20 +32,6 @@ import junit.framework.TestCase;
  */
 public class PKCS8EncodedKeySpecTest extends TestCase {
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Constructor for PKCS8EncodedKeySpecTest.
      * @param name

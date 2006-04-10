@@ -303,18 +303,4 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 			assertTrue("getInstance did not find algorithm", false);
 		}
 	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
 }

@@ -43,9 +43,6 @@ public class X509CertificateTest extends junit.framework.TestCase {
 		}
 	}
 
-	protected void tearDown() {
-	}
-
 	/**
 	 * @tests java.security.cert.X509Certificate#getExtensionValue(java.lang.String)
 	 */

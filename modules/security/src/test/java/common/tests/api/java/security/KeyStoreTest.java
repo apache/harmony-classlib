@@ -790,12 +790,4 @@ public class KeyStoreTest extends junit.framework.TestCase {
 	protected void setUp() {
 		Security.addProvider(new Support_TestProvider());
 	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-		Security.removeProvider("TestProvider");
-	}
 }

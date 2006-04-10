@@ -47,20 +47,6 @@ public class CodeSignerTest extends TestCase {
 
     private Timestamp ts = new Timestamp(now, cpath);
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Tests CodeSigner.hashCode()
      */

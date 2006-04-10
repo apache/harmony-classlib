@@ -171,10 +171,4 @@ public class KeyPairGeneratorTest extends junit.framework.TestCase {
 			fail("caught a InvalidAlgorithmParameterException");
 		}
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

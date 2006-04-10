@@ -223,7 +223,8 @@ public class KeyFactoryTest extends junit.framework.TestCase {
 
 		// Test2: Test with null provider name
 		try {
-			KeyFactory kf = KeyFactory.getInstance("DSA", (String) null);
+			KeyFactory.getInstance("DSA", (String) null);
+            fail("Expected IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			// Expected
 		} catch (Exception e) {
@@ -399,12 +400,5 @@ public class KeyFactoryTest extends junit.framework.TestCase {
 			return java.security.spec.DSAPublicKeySpec.class;
 		}
 		return null;
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }

@@ -45,20 +45,6 @@ public class TimestampTest extends TestCase {
 
     private CertPath cpath = new MyCertPath(encoding);
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testHashCode() {
         assertTrue(new Timestamp(now, cpath).hashCode() == (now.hashCode() ^ cpath
                 .hashCode()));

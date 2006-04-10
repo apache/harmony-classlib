@@ -34,20 +34,6 @@ public class LastOwnerExceptionTest extends TestCase {
         junit.textui.TestRunner.run(LastOwnerExceptionTest.class);
     }
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testLastOwnerException() {
         assertNotNull(new LastOwnerException());
         assertNull(new LastOwnerException().getMessage());

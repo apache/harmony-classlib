@@ -127,12 +127,6 @@ public class EncodedKeySpecTest extends TestCase {
 		return (String[]) algs.toArray(new String[algs.size()]);
 	}
 
-	protected void setUp() {
-	}
-	
-	protected void tearDown() {
-	}
-
 	private boolean isEqual(Key key1, Key key2) {
 		if (key1 instanceof RSAPublicKey && key2 instanceof RSAPublicKey) {
 			RSAPublicKey rsa1 = ((RSAPublicKey) key1);

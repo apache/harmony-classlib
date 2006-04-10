@@ -104,10 +104,4 @@ public class SignerTest extends junit.framework.TestCase {
 			fail("Caught exception : " + e);
 		}
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

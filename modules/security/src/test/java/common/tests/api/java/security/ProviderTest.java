@@ -97,10 +97,4 @@ public class ProviderTest extends junit.framework.TestCase {
 			// expected
 		}
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

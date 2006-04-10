@@ -61,20 +61,6 @@ public class DigestOutputStreamTest extends TestCase {
      */
     private static final int MY_MESSAGE_LEN = myMessage.length;
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Constructor for DigestInputStreamTest.
      * @param name

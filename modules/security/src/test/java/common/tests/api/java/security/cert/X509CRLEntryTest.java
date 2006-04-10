@@ -44,9 +44,6 @@ public class X509CRLEntryTest extends junit.framework.TestCase {
 		}
 	}
 
-	protected void tearDown() {
-	}
-
 	/**
 	 * @tests java.security.cert.X509CRLEntry#getExtensionValue(java.lang.String)
 	 */

@@ -74,13 +74,6 @@ public class ProtectionDomainTest extends TestCase {
                 new TestPrincipal("3"), new TestPrincipal("4"), };
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Class under test for void ProtectionDomain(CodeSource,
      * PermissionCollection)

@@ -376,7 +376,4 @@ public class IdentityTest extends junit.framework.TestCase {
 			fail("Unable to find DSA algorithm");
 		}
 	}
-
-	protected void tearDown() {
-	}
 }

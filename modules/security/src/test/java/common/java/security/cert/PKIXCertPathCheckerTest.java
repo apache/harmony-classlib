@@ -34,20 +34,6 @@ import junit.framework.TestCase;
  */
 public class PKIXCertPathCheckerTest extends TestCase {
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Constructor for PKIXCertPathCheckerTest.
      * @param name

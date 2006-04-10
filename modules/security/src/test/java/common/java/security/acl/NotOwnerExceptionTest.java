@@ -34,20 +34,6 @@ public class NotOwnerExceptionTest extends TestCase {
         junit.textui.TestRunner.run(NotOwnerExceptionTest.class);
     }
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testNotOwnerException() {
         assertNotNull(new NotOwnerException());
         assertNull(new NotOwnerException().getMessage());

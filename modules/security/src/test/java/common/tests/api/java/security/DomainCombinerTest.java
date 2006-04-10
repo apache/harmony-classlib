@@ -109,10 +109,4 @@ public class DomainCombinerTest extends junit.framework.TestCase {
 			System.setSecurityManager(null);
 		}
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

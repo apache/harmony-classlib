@@ -21,7 +21,6 @@ import java.security.KeyManagementException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
 import java.security.PublicKey;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -215,7 +214,7 @@ public class IdentityScopeTest extends junit.framework.TestCase {
 			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
 					new IdentityScopeSubclass());
 			sub.addIdentity(id);
-			Identity returnedId = sub.getIdentity((Principal) id);
+			Identity returnedId = sub.getIdentity(id);
 			assertEquals("Returned Identity not the same as the added one", id,
 					returnedId);
 		} catch (Exception e) {
@@ -303,8 +302,5 @@ public class IdentityScopeTest extends junit.framework.TestCase {
 		} catch (NoSuchAlgorithmException e) {
 			fail("Unable to find DSA algorithm");
 		}
-	}
-
-	protected void tearDown() {
 	}
 }

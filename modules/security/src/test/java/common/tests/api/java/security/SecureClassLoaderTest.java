@@ -44,7 +44,7 @@ public class SecureClassLoaderTest extends junit.framework.TestCase {
 				return defineClass(name, bytes, 0, bytes.length,
 						(ProtectionDomain) null);
 			}
-		};
+		}
 
 		MyClassLoader myloader = new MyClassLoader();
 		PermissionCollection pc = myloader.getPerms();

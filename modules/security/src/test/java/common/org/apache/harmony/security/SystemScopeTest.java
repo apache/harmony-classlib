@@ -56,13 +56,6 @@ public class SystemScopeTest extends TestCase {
         }
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Constructor for SystemScopeTest.
      * @param arg0

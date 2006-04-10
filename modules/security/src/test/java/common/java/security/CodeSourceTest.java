@@ -123,10 +123,6 @@ public class CodeSourceTest extends TestCase {
         chain = TestCertUtils.getCertChain();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Tests hashCode().<br>
      * javadoc says nothing, so test DRL-specific implementation. 

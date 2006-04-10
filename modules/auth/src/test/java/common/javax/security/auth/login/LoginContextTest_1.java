@@ -656,13 +656,6 @@ public class LoginContextTest_1 extends TestCase {
         Security.setProperty(DEFAULT_CBHANDLER_PROPERTY, "");
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Tests LoginContext(String)
      */

@@ -33,10 +33,4 @@ public class PrincipalTest extends junit.framework.TestCase {
 				"C=US,ST=California,L=San Diego,O=Apache,OU=Project Harmony,CN=Test cert",
 				xp1.getName());
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

@@ -86,21 +86,6 @@ public class MessageDigestTest extends junit.framework.TestCase {
 		}
 	}
 
-	/**
-	 * Convenience method to print out a byte array
-	 * 
-	 * @param arr
-	 *            an array of bytes
-	 */
-	private void printDigestArray(byte[] arr) {
-		System.out.print('{');
-		for (int i = 0; i < arr.length; i++) {
-			System.out.print(arr[i]);
-			System.out.print(',');
-		}
-		System.out.print('}');
-	}
-
 	private static final byte[] SHA_DATA_2 = { 70, -54, 124, 120, -29, 57, 56,
 			119, -108, -54, -97, -76, -97, -50, -63, -73, 2, 85, -53, -79, };
 
@@ -440,8 +425,5 @@ public class MessageDigestTest extends junit.framework.TestCase {
 		}// end while
 
 		return (String[]) algs.toArray(new String[algs.size()]);
-	}
-
-	protected void tearDown() {
 	}
 }

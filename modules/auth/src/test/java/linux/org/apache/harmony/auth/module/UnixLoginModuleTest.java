@@ -58,13 +58,6 @@ public class UnixLoginModuleTest extends TestCase {
         lm.initialize(subj, cbh, sharedState, options);
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-    
     private static class TestCallbackHandler implements CallbackHandler {
         public void handle(Callback[] cbs) {
             // does nothing

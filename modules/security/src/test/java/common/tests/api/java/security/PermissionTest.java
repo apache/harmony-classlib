@@ -27,19 +27,19 @@ public class PermissionTest extends junit.framework.TestCase {
 
 		public boolean equals(Object obj) {
 			return true;
-		};
+		}
 
 		public String getActions() {
 			return "none";
-		};
+		}
 
 		public int hashCode() {
 			return 1;
-		};
+		}
 
 		public boolean implies(Permission p) {
 			return true;
-		};
+		}
 	}
 
 	/**
@@ -106,11 +106,5 @@ public class PermissionTest extends junit.framework.TestCase {
 		String toString = permi.toString();
 		assertNotNull("toString should have returned a string of elements",
 				toString);
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
 	}
 }

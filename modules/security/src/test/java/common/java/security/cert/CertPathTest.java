@@ -37,20 +37,6 @@ public class CertPathTest extends TestCase {
             (byte)1, (byte)2, (byte)3, (byte)4, (byte)5
     };
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Constructor for CertPathTest.
      * @param name

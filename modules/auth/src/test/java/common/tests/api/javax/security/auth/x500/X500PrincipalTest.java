@@ -41,10 +41,4 @@ public class X500PrincipalTest extends junit.framework.TestCase {
 		assertEquals("CANONICAL output differs from expected result", expected,
 				canonical);
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

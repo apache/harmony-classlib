@@ -152,18 +152,4 @@ public class PermissionsTest extends junit.framework.TestCase {
 				.implies(new FilePermission(s + "tmp" + s + "test" + s
 						+ "test2.file", "write")));
 	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
 }

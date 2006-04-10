@@ -44,10 +44,4 @@ public class PrivilegedActionExceptionTest extends junit.framework.TestCase {
 		assertEquals("Did not encapsulate test IOexception!", e, pe
 				.getException());
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

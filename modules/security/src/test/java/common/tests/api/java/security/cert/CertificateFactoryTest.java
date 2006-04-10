@@ -25,10 +25,8 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.cert.CRL;
 import java.security.cert.CRLException;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Collection;
 
 import tests.support.Support_GetResource;
@@ -61,13 +59,12 @@ public class CertificateFactoryTest extends junit.framework.TestCase {
 				if (CERTIFICATES_ENCODED_X509[i] != null) {
 					ByteArrayInputStream bais = new ByteArrayInputStream(
 							CERTIFICATES_ENCODED_X509[i].getBytes());
-					X509Certificate cert = (X509Certificate) fact
-							.generateCertificate(bais);
+					fact.generateCertificate(bais);
 					
 					// try again with generateCertificates()
 					bais = new ByteArrayInputStream(
 							CERTIFICATES_ENCODED_X509[i].getBytes());
-					cert = (X509Certificate) fact.generateCertificate(bais);
+					fact.generateCertificate(bais);
 				}
 		} catch (CertificateException e) {
 			fail("CertificateException in getInstance or generateCertificate["
@@ -79,7 +76,7 @@ public class CertificateFactoryTest extends junit.framework.TestCase {
 		boolean caughtException = false;
 		try {
 			CertificateFactory fact = CertificateFactory.getInstance("X.509");
-			Certificate cert = fact.generateCertificate(is);
+			fact.generateCertificate(is);
 		} catch (CertificateException e) {
 			caughtException = true;
 		} finally {
@@ -223,8 +220,7 @@ public class CertificateFactoryTest extends junit.framework.TestCase {
 
 		// exception case
 		try {
-			CertificateFactory fact = CertificateFactory.getInstance("X.509",
-					"IHaventBeenConfigured");
+			CertificateFactory.getInstance("X.509", "IHaventBeenConfigured");
 			fail("Should have thrown NoSuchProviderException");
 		} catch (NoSuchProviderException e) {
 			// Expected
@@ -245,20 +241,6 @@ public class CertificateFactoryTest extends junit.framework.TestCase {
 		} catch (CertificateException e) {
 			fail("CertificateException in getInstance");
 		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 
 	static final String[] CERTIFICATES_ENCODED_X509 = new String[17];

@@ -456,10 +456,4 @@ public class SignatureTest extends junit.framework.TestCase {
 
 		assertTrue("Sign/Verify does not pass", ok);
 	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

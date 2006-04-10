@@ -34,20 +34,6 @@ public class MGF1ParameterSpecTest extends TestCase {
      */
     private static final String testAlgName = "TEST";
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Constructor for MGF1ParameterSpecTest.
      * @param arg0

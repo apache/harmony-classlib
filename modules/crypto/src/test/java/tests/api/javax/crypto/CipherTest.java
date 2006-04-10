@@ -83,7 +83,7 @@ public class CipherTest extends junit.framework.TestCase {
 
 		// Exception case
 		try {
-			Cipher cipher = Cipher.getInstance("DES", (String) null);
+			Cipher.getInstance("DES", (String) null);
 			fail("Should have thrown an IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			// Expected
@@ -93,7 +93,7 @@ public class CipherTest extends junit.framework.TestCase {
 
 		// Exception case
 		try {
-			Cipher cipher = Cipher.getInstance("DES", "IHaveNotBeenConfigured");
+			Cipher.getInstance("DES", "IHaveNotBeenConfigured");
 			fail("Should have thrown an NoSuchProviderException");
 		} catch (NoSuchProviderException e) {
 			// Expected
@@ -321,12 +321,7 @@ public class CipherTest extends junit.framework.TestCase {
 		final int keyLen = 168;
 
 		Key cipherKey = null;
-		SecureRandom sr = new SecureRandom();
 		Cipher cipher = null;
-
-		byte[] apEncoding = null;
-
-		byte[] iv = null;
 
 		try {
 			KeyGenerator kg = null;
@@ -362,10 +357,6 @@ public class CipherTest extends junit.framework.TestCase {
 		Key cipherKey = null;
 		SecureRandom sr = new SecureRandom();
 		Cipher cipher = null;
-
-		byte[] apEncoding = null;
-
-		byte[] iv = null;
 
 		try {
 			KeyGenerator kg = null;
@@ -625,11 +616,5 @@ public class CipherTest extends junit.framework.TestCase {
 			}
 		}
 		return true;
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
 	}
 }

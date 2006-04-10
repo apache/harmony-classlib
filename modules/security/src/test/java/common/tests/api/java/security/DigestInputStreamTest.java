@@ -197,11 +197,4 @@ public class DigestInputStreamTest extends junit.framework.TestCase {
 			fail("Unable to find SHA-1 algorithim");
 		}
 	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
 }
