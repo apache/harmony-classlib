@@ -44,41 +44,107 @@ public class OidTest extends TestCase {
         junit.textui.TestRunner.run(OidTest.class);
     }
 
-    private static Object[][] oid = new Object[][] {
-    //oid array format: string / int array / byte array
-            // OID=0.0 
-            new Object[] { "OID=0.0", // as string 
+    private static Object[][] oid = {
+            //oid array format: string / int array / DER encoding
+            { "0.0", // as string
                     new int[] { 0, 0 }, // as int array
                     new byte[] { 0x06, 0x01, 0x00 } },
-            // OID=0.5 
-            new Object[] { "OID=0.5", // as string
+            //
+            { "0.0.3", // as string
+                    new int[] { 0, 0, 3 }, // as int array
+                    new byte[] { 0x06, 0x02, 0x00, 0x03 } },
+            //
+            { "0.1.3", // as string
+                    new int[] { 0, 1, 3 }, // as int array
+                    new byte[] { 0x06, 0x02, 0x01, 0x03 } },
+            //
+            { "0.5", // as string
                     new int[] { 0, 5 }, // as int array
                     new byte[] { 0x06, 0x01, 0x05 } },
-            // OID=1.1 
-            new Object[] { "OID=1.1", // as string
+            //
+            { "0.39.3", // as string
+                    new int[] { 0, 39, 3 }, // as int array
+                    new byte[] { 0x06, 0x02, 0x27, 0x03 } },
+            //
+            { "1.0.3", // as string
+                    new int[] { 1, 0, 3 }, // as int array
+                    new byte[] { 0x06, 0x02, 0x28, 0x03 } },
+            //
+            { "1.1", // as string
                     new int[] { 1, 1 }, // as int array
                     new byte[] { 0x06, 0x01, 0x29 } },
-            // OID=2.47 
-            new Object[] { "OID=2.47", // as string
+            //
+            { "1.2.1.2.1",// as string
+                    new int[] { 1, 2, 1, 2, 1 }, // as int array
+                    new byte[] { 0x06, 0x04, 0x2A, 0x01, 0x02, 0x01 } },
+            //
+            {
+                    "1.2.840.113554.1.2.2",// as string
+                    new int[] { 1, 2, 840, 113554, 1, 2, 2 }, // as int array
+                    new byte[] { 0x06, 0x09, 0x2A, (byte) 0x86, 0x48,
+                            (byte) 0x86, (byte) 0xF7, 0x12, 0x01, 0x02, 0x02 } },
+            //
+            { "1.39.3",// as string
+                    new int[] { 1, 39, 3 }, // as int array
+                    new byte[] { 0x06, 0x02, 0x4F, 0x03 } },
+            //
+            { "2.0.3",// as string
+                    new int[] { 2, 0, 3 }, // as int array
+                    new byte[] { 0x06, 0x02, 0x50, 0x03 } },
+            //
+            { "2.5.4.3",// as string
+                    new int[] { 2, 5, 4, 3 }, // as int array
+                    new byte[] { 0x06, 0x03, 0x55, 0x04, 0x03 } },
+            // 
+            { "2.39.3", // as string
+                    new int[] { 2, 39, 3 }, // as int array
+                    new byte[] { 0x06, 0x02, 0x77, 0x03 } },
+            //
+            { "2.40.3", // as string
+                    new int[] { 2, 40, 3 }, // as int array
+                    new byte[] { 0x06, 0x02, 0x78, 0x03 } },
+            //
+            { "2.47", // as string
                     new int[] { 2, 47 }, // as int array
                     new byte[] { 0x06, 0x01, 0x7F } },
-            // OID=2.48
-            new Object[] { "OID=2.48", // as string
+            //
+            { "2.48", // as string
                     new int[] { 2, 48 }, // as int array
                     new byte[] { 0x06, 0x02, (byte) 0x81, 0x00 } },
-            // OID=2.48.5 
-            new Object[] { "OID=2.48.5", // as string
+            //
+            { "2.48.5", // as string
                     new int[] { 2, 48, 5 }, // as int array
-                    new byte[] { 0x06, 0x03, (byte) 0x81, 0x00, 0x05 } }
+                    new byte[] { 0x06, 0x03, (byte) 0x81, 0x00, 0x05 } },
+            //
+            { "2.100.3", // as string
+                    new int[] { 2, 100, 3 }, // as int array
+                    new byte[] { 0x06, 0x03, (byte) 0x81, 0x34, 0x03 } } };
 
-    };
+    public void test_MappingToIntArray() throws IOException {
 
-    public void testDecode_Valid() throws IOException {
+        // oid decoder/encoder for testing
+        ASN1Oid asn1 = ASN1Oid.getInstance();
 
+        // testing decoding
         for (int i = 0; i < oid.length; i++) {
-            DerInputStream in = new DerInputStream((byte[]) oid[i][2]);
-            assertTrue((String) oid[i][0], Arrays.equals((int[]) oid[i][1],
-                    (int[]) ASN1Oid.getInstance().decode(in)));
+
+            int[] decoded = (int[]) asn1.decode(new DerInputStream(
+                    (byte[]) oid[i][2]));
+
+            assertTrue("Failed to decode oid: " + oid[i][0], // error message
+                    Arrays.equals((int[]) oid[i][1], // expected array
+                            decoded));
+        }
+        
+        // testing encoding
+        for (int i = 0; i < oid.length; i++) {
+
+            byte[] encoded = new DerOutputStream(ASN1Oid.getInstance(),
+                    oid[i][1]).encoded;
+
+            assertTrue("Failed to encode oid: " + oid[i][0], // error message
+                    Arrays.equals((byte[]) oid[i][2], // expected encoding
+                            encoded));
         }
     }
 
@@ -104,61 +170,23 @@ public class OidTest extends TestCase {
         }
     }
 
-    public void testEncode() throws IOException {
-
-        for (int i = 0; i < oid.length; i++) {
-            DerOutputStream out = new DerOutputStream(ASN1Oid.getInstance(), oid[i][1]);
-            assertTrue((String) oid[i][0], Arrays.equals((byte[]) oid[i][2],
-                    out.encoded));
-        }
-    }
-
     public void test_MappingToString() throws IOException {
 
-        //
-        // Test cases
-        //
-
-        Object[][] stringOids = new Object[][] {
-        //oid array format: string / byte array
-                // OID=0.0 
-                new Object[] { "0.0", // as string 
-                        new byte[] { 0x06, 0x01, 0x00 } },
-                // OID=0.5 
-                new Object[] { "0.5", // as string
-                        new byte[] { 0x06, 0x01, 0x05 } },
-                // OID=1.1 
-                new Object[] { "1.1", // as string
-                        new byte[] { 0x06, 0x01, 0x29 } },
-                // OID=2.47 
-                new Object[] { "2.47", // as string
-                        new byte[] { 0x06, 0x01, 0x7F } },
-                // OID=2.48
-                new Object[] { "2.48", // as string
-                        new byte[] { 0x06, 0x02, (byte) 0x81, 0x00 } },
-                // OID=2.48.5 
-                new Object[] { "2.48.5", // as string
-                        new byte[] { 0x06, 0x03, (byte) 0x81, 0x00, 0x05 } }
-
-        };
-
-        //
-        // Decoding
-        //
-        for (int i = 0; i < stringOids.length; i++) {
-            DerInputStream in = new DerInputStream((byte[]) stringOids[i][1]);
-            assertEquals((String) oid[i][0], stringOids[i][0], ASN1Oid
-                    .getInstanceForString().decode(in));
+        // oid decoder/encoder for testing
+        ASN1Oid asn1 = ASN1Oid.getInstanceForString();
+        
+        // testing decoding
+        for (int i = 0; i < oid.length; i++) {
+            assertEquals("Failed to decode oid: " + oid[i][0], // error message
+                    oid[i][0], // expected string
+                    asn1.decode(new DerInputStream((byte[]) oid[i][2])));
         }
 
-        //
-        // Encoding
-        //
-        for (int i = 0; i < stringOids.length; i++) {
-            DerOutputStream out = new DerOutputStream(ASN1Oid
-                    .getInstanceForString(), stringOids[i][0]);
-            assertTrue((String) oid[i][0], Arrays.equals((byte[]) stringOids[i][1],
-                    out.encoded));
+        // testing encoding
+        for (int i = 0; i < oid.length; i++) {
+            assertTrue("Failed to encode oid: " + oid[i][0], // error message
+                    Arrays.equals((byte[]) oid[i][2], // expected encoding
+                            new DerOutputStream(asn1, oid[i][0]).encoded));
         }
     }
 }
