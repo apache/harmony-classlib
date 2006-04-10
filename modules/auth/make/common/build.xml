@@ -132,6 +132,7 @@
 					<exclude name="javax/security/auth/login/serialization/SerAccountExpiredExceptionTest.java"/>
 					<exclude name="javax/security/auth/login/serialization/SerCredentialExpiredExceptionTest.java"/>
 					<exclude name="javax/security/auth/x500/X500PrincipalTest.java" />
+					<exclude name="tests/api/javax/security/auth/x500/X500PrincipalTest.java" />
 
 				</fileset>
 			</batchtest>

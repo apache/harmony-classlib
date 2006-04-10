@@ -61,8 +61,9 @@
                         <pathelement location="${hy.crypto}/../security/src/test/java/common"/>
                     </src>
 
+                    <include name="tests/api/javax/crypto/**/*.java" />
                     <include name="javax/crypto/**/*.java" />
-                    <include name="org/apache/harmony/crypto/internal/*Test.java" />
+                    <include name="org/apache/harmony/crypto/**/*Test.java" />
                     <include name="org/apache/harmony/security/test/**/*" />
                     <exclude name="**/SecurityTest.java"/>
 
@@ -71,6 +72,7 @@
                             <include name="**/*.jar" />
                         </fileset>
                     </bootclasspath>
+                    <classpath location="../../../../build/tests" />
 		</javac>
 	</target>
 
@@ -100,18 +102,22 @@
 			<!-- to pick up junit.jar               -->
 			<!-- FIXME: package access tests and    -->
 			<!-- public API tests must be separated -->
-			<jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}${path.separator}../../../../${junit.jar}"/>
+			<jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests"/>
 
 			<formatter type="xml" />
 
 			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
 				<fileset dir="${hy.crypto.src.test.java}">
 					<include name="**/*Test.java"/>
+
+					<!-- Harmony exclude list -->
+					<exclude name="tests/api/javax/crypto/CipherTest.java"/>
 				</fileset>
 			</batchtest>
 		</junit>
 	</target>
 	
+
 	
 	<target name="copy.resources">
 		<!-- Nothing for CRYPTO -->
