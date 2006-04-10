@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,9 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Tests for java.net");
 		// $JUnit-BEGIN$
+		suite.addTestSuite(AuthenticatorTest.class);
 		suite.addTestSuite(BindExceptionTest.class);
+		suite.addTestSuite(CookieHandlerTest.class);
 		suite.addTestSuite(ConnectExceptionTest.class);
 		suite.addTestSuite(DatagramPacketTest.class);
 		suite.addTestSuite(DatagramSocketTest.class);
@@ -47,6 +49,8 @@ public class AllTests {
 		suite.addTestSuite(NoRouteToHostExceptionTest.class);
 		suite.addTestSuite(PasswordAuthenticationTest.class);
 		suite.addTestSuite(ProtocolExceptionTest.class);
+		suite.addTestSuite(ProxyTest.class);
+		suite.addTestSuite(ProxySelectorTest.class);
 		suite.addTestSuite(ResponseCacheTest.class);
 		suite.addTestSuite(ServerSocketTest.class);
 		suite.addTestSuite(SocketTest.class);

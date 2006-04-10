@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  */
 
 package java.net;
-
 
 /**
  * This class is able to obtain authentication info for an connection, usually
@@ -34,10 +33,10 @@ public abstract class Authenticator {
 	private static Authenticator thisAuthenticator;
 
 	private static final NetPermission requestPasswordAuthenticationPermission = new NetPermission(
-			"requestPasswordAuthentication");
+			"requestPasswordAuthentication"); //$NON-NLS-1$
 
 	private static final NetPermission setDefaultAuthenticatorPermission = new NetPermission(
-			"setDefaultAuthenticator");
+			"setDefaultAuthenticator"); //$NON-NLS-1$
 
 	// the requester connection info
 	private String host;
@@ -141,10 +140,12 @@ public abstract class Authenticator {
 			InetAddress rAddr, int rPort, String rProtocol, String rPrompt,
 			String rScheme) {
 		SecurityManager sm = System.getSecurityManager();
-		if (sm != null)
+		if (sm != null) {
 			sm.checkPermission(requestPasswordAuthenticationPermission);
-		if (thisAuthenticator == null)
+		}
+		if (thisAuthenticator == null) {
 			return null;
+		}
 		// set the requester info so it knows what it is requesting
 		// authentication for
 		thisAuthenticator.addr = rAddr;
@@ -169,8 +170,9 @@ public abstract class Authenticator {
 	 */
 	public static void setDefault(Authenticator a) {
 		SecurityManager sm = System.getSecurityManager();
-		if (sm != null)
+		if (sm != null) {
 			sm.checkPermission(setDefaultAuthenticatorPermission);
+		}
 		thisAuthenticator = a;
 	}
 
@@ -204,10 +206,12 @@ public abstract class Authenticator {
 			String rHost, InetAddress rAddr, int rPort, String rProtocol,
 			String rPrompt, String rScheme) {
 		SecurityManager sm = System.getSecurityManager();
-		if (sm != null)
+		if (sm != null) {
 			sm.checkPermission(requestPasswordAuthenticationPermission);
-		if (thisAuthenticator == null)
+		}
+		if (thisAuthenticator == null) {
 			return null;
+		}
 		// set the requester info so it knows what it is requesting
 		// authentication for
 		thisAuthenticator.host = rHost;
@@ -228,5 +232,60 @@ public abstract class Authenticator {
 	 */
 	protected final String getRequestingHost() {
 		return host;
+	}
+
+	/**
+	 * an enum class of requestor type
+	 * 
+	 */
+	// FIXME: This class needs java 5 Enum feature support.
+	// The code will be modified when Enum feature is ready.
+	public static final class RequestorType {
+
+		private String name;
+
+		/**
+		 * type of proxy server
+		 */
+		public static final Authenticator.RequestorType PROXY = new RequestorType(
+				"PROXY"); //$NON-NLS-1$
+
+		/**
+		 * type of origin server
+		 */
+		public static final Authenticator.RequestorType SERVER = new RequestorType(
+				"SERVER"); //$NON-NLS-1$
+
+		private static final RequestorType[] rt = { PROXY, SERVER };
+
+		private RequestorType(String name) {
+			this.name = name;
+		}
+
+		/**
+		 * 
+		 * @return an array of requestor types
+		 */
+		public static final RequestorType[] values() {
+			return rt;
+		}
+
+		/**
+		 * 
+		 * @param name
+		 *            requestor types name
+		 * @return a requestor type according to name if exist
+		 */
+		public static RequestorType valueOf(String name) {
+			if (null == name) {
+				throw new NullPointerException();
+			}
+			for (int i = 0; i < rt.length; i++) {
+				if (rt[i].name.equals(name)) {
+					return rt[i];
+				}
+			}
+			throw new IllegalArgumentException(name);
+		}
 	}
 }
