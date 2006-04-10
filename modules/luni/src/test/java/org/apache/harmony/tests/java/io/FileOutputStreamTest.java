@@ -35,5 +35,4 @@ public class FileOutputStreamTest extends TestCase {
         } catch (NullPointerException e) {
         }
     }
-
 }
