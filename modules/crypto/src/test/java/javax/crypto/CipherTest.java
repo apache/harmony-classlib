@@ -136,7 +136,7 @@ public class CipherTest extends TestCase {
 		
 		try {
 			Cipher.getInstance("DES/CBC/");
-			fail("Case1: No excpected NoSuchAlgorithmException");
+			fail("Case1: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
 		} catch (NoSuchPaddingException e) {
 			fail(e.toString());
@@ -144,7 +144,7 @@ public class CipherTest extends TestCase {
 
 		try {
 			Cipher.getInstance("DES//PKCS5Padding");
-			fail("Case2: No excpected NoSuchAlgorithmException");
+			fail("Case2: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
 		} catch (NoSuchPaddingException e) {
 			fail(e.toString());
@@ -152,7 +152,7 @@ public class CipherTest extends TestCase {
 
 		try {
 			Cipher.getInstance("DES/CBC/IncorrectPadding");
-			fail("No excpected NoSuchPaddingException");
+			fail("No expected NoSuchPaddingException");
 		} catch (NoSuchAlgorithmException e) {
 			fail(e.toString());
 		} catch (NoSuchPaddingException e) {
@@ -166,7 +166,7 @@ public class CipherTest extends TestCase {
 	public void testGetInstanceStringString1() {
 		try {
 			Cipher.getInstance("DES/CBC/", "MyProvider2");
-			fail("Case1: No excpected NoSuchAlgorithmException");
+			fail("Case1: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
 		} catch (NoSuchPaddingException e) {
 			fail(e.toString());
@@ -176,7 +176,7 @@ public class CipherTest extends TestCase {
 
 		try {
 			Cipher.getInstance("DES//PKCS5Padding", "MyProvider2");
-			fail("Case2: No excpected NoSuchAlgorithmException");
+			fail("Case2: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
 		} catch (NoSuchPaddingException e) {
 			fail(e.toString());
@@ -186,7 +186,7 @@ public class CipherTest extends TestCase {
 
 		try {
 			Cipher.getInstance("DES/CBC/IncorrectPadding", "MyProvider2");
-			fail("No excpected NoSuchProviderException");
+			fail("No expected NoSuchProviderException");
 		} catch (NoSuchAlgorithmException e) {
 			fail(e.toString());
 		} catch (NoSuchPaddingException e) {
@@ -196,7 +196,7 @@ public class CipherTest extends TestCase {
 		
 		try {
 			Cipher.getInstance("DES/CBC/PKCS5Padding", "IncorrectProvider");
-			fail("No excpected NoSuchProviderException");
+			fail("No expected NoSuchProviderException");
 		} catch (NoSuchAlgorithmException e) {
 			fail(e.toString());
 		} catch (NoSuchPaddingException e) {
@@ -242,7 +242,7 @@ public class CipherTest extends TestCase {
 	public void testGetInstanceStringProvider1() {
 		try {
 			Cipher.getInstance("DES/CBC/", p2);
-			fail("Case1: No excpected NoSuchAlgorithmException");
+			fail("Case1: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
 		} catch (NoSuchPaddingException e) {
 			fail(e.toString());
@@ -250,7 +250,7 @@ public class CipherTest extends TestCase {
 
 		try {
 			Cipher.getInstance("DES//PKCS5Padding", p2);
-			fail("Case2: No excpected NoSuchAlgorithmException");
+			fail("Case2: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
 		} catch (NoSuchPaddingException e) {
 			fail(e.toString());
@@ -258,7 +258,7 @@ public class CipherTest extends TestCase {
 
 		try {
 			Cipher.getInstance("DES/CBC/IncorrectPadding", p2);
-			fail("No excpected NoSuchProviderException");
+			fail("No expected NoSuchProviderException");
 		} catch (NoSuchAlgorithmException e) {
 			fail(e.toString());
 		} catch (NoSuchPaddingException e) {
@@ -266,7 +266,7 @@ public class CipherTest extends TestCase {
 		
 		try {
 			Cipher.getInstance("DES/CBC/PKCS5Padding", "IncorrectProvider");
-			fail("No excpected NoSuchProviderException");
+			fail("No expected NoSuchProviderException");
 		} catch (NoSuchAlgorithmException e) {
 			fail(e.toString());
 		} catch (NoSuchPaddingException e) {
@@ -332,7 +332,7 @@ public class CipherTest extends TestCase {
 		
 		try {
 			c.getOutputSize(111);
-			fail("No excpected IllegalStateException");
+			fail("No expected IllegalStateException");
 		} catch (IllegalStateException e){
 		}
 		if (noKey) {
@@ -443,7 +443,7 @@ public class CipherTest extends TestCase {
 		byte[] b = {1,2,3,4};
 		try {
 			c.update(b);
-			fail("No excpected IllegalStateException");
+			fail("No expected IllegalStateException");
 		} catch (IllegalStateException e){
 		}
 		if (noKey) {
@@ -456,7 +456,7 @@ public class CipherTest extends TestCase {
 		}
 		try {
 			c.update(null);
-			fail("No excpected IllegalArgumentException");
+			fail("No expected IllegalArgumentException");
 		} catch (IllegalArgumentException e){
 		}
 		if (c.update(new byte[0]) != null) {
