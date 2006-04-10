@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -373,22 +373,28 @@ public class Deflater {
 	}
 	
     /**
-     * return a long int instead of int
-     * @see getTotalIn
-     * @return bytes exactly read by deflater
-     */
-    public synchronized long getBytesRead() {
-        // Throw NPE here
-        if (streamHandle == -1)
-            throw new NullPointerException();
-        return getTotalInImpl(streamHandle);
-    }
+	 * Returns a long int of total number of bytes read by the Deflater. This
+	 * method performs the same as getTotalIn except it returns a long value
+	 * instead of an integer
+	 * 
+	 * @see getTotalIn
+	 * @return bytes exactly read by deflater
+	 */
+	public synchronized long getBytesRead() {
+		// Throw NPE here
+		if (streamHandle == -1)
+			throw new NullPointerException();
+		return getTotalInImpl(streamHandle);
+	}
 
-    /**
-     * return a long int instead of int
-     * @see getTotalOut
-     * @return bytes exactly write by deflater
-     */
+	/**
+	 * Returns a long int of total number of bytes of read by the Deflater. This
+	 * method performs the same as getTotalOut except it returns a long value
+	 * instead of an integer
+	 * 
+	 * @see getTotalOut
+	 * @return bytes exactly write by deflater
+	 */
     public synchronized long getBytesWritten() {
         // Throw NPE here
         if (streamHandle == -1)

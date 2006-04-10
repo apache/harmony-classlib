@@ -15,6 +15,9 @@
 
 package org.apache.harmony.tests.java.util.zip;
 
+import java.io.UnsupportedEncodingException;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import junit.framework.TestCase;
@@ -33,4 +36,57 @@ public class InflaterTest extends TestCase {
         assertEquals(0,inf.getBytesRead());
         assertEquals(0,inf.getBytesWritten());
     } 
+    
+	/**
+	 * @tests java.util.zip.Deflater#getBytesRead()
+	 */
+	public void test_getBytesRead() throws DataFormatException,
+			UnsupportedEncodingException {
+		// Regression test for HARMONY-158
+		Deflater def = new Deflater();
+		Inflater inf = new Inflater();
+		assertEquals(0, def.getTotalIn());
+		assertEquals(0, def.getTotalOut());
+		assertEquals(0, def.getBytesRead());
+		// Encode a String into bytes
+		String inputString = "blahblahblah??";
+		byte[] input = inputString.getBytes("UTF-8");
+
+		// Compress the bytes
+		byte[] output = new byte[100];
+		def.setInput(input);
+		def.finish();
+		def.deflate(output);
+		inf.setInput(output);
+		int compressedDataLength =inf.inflate(input);
+		assertEquals(16, inf.getTotalIn());
+		assertEquals(compressedDataLength, inf.getTotalOut());
+		assertEquals(16, inf.getBytesRead());
+	}
+	
+	/**
+	 * @tests java.util.zip.Deflater#getBytesRead()
+	 */
+	public void test_getBytesWritten() throws DataFormatException, UnsupportedEncodingException {
+		// Regression test for HARMONY-158
+		Deflater def = new Deflater();
+		Inflater inf = new Inflater();
+		assertEquals(0, def.getTotalIn());
+		assertEquals(0, def.getTotalOut());
+		assertEquals(0, def.getBytesWritten());
+		// Encode a String into bytes
+		String inputString = "blahblahblah??";
+		byte[] input = inputString.getBytes("UTF-8");
+
+		// Compress the bytes
+		byte[] output = new byte[100];
+		def.setInput(input);
+		def.finish();
+		def.deflate(output);
+		inf.setInput(output);
+		int compressedDataLength =inf.inflate(input);
+		assertEquals(16, inf.getTotalIn());
+		assertEquals(compressedDataLength, inf.getTotalOut());
+		assertEquals(14, inf.getBytesWritten());
+	}
 }

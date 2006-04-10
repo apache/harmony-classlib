@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -301,6 +301,8 @@ public class Inflater {
 	/**
 	 * Returns a long int of total number of bytes of input read by the
 	 * Inflater.
+	 * This method performs the same as getTotalIn except it returns a 
+	 * long value instead of an integer
 	 * 
 	 * @see getTotalIn
 	 * @return Total bytes read
@@ -315,6 +317,8 @@ public class Inflater {
 	/**
 	 * Returns a long int of total number of bytes of input output by the
 	 * Inflater.
+	 * This method performs the same as getTotalOut except it returns a 
+	 * long value instead of an integer
 	 * 
 	 * @see getTotalOut
 	 * @return Total bytes output
