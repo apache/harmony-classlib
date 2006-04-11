@@ -44,64 +44,41 @@ public class SignerTest extends junit.framework.TestCase {
 	 * @tests java.security.Signer#Signer()
 	 */
 	public void test_Constructor() {
-		try {
-			new SignerImpl();
-		} catch (Exception e) {
-			fail("Caught exception : " + e);
-		}
+		new SignerImpl();
 	}
 
 	/**
 	 * @tests java.security.Signer#Signer(java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
-		try {
-			new SignerImpl("test");
-		} catch (Exception e) {
-			fail("Caught exception : " + e);
-		}
+		new SignerImpl("test");
 	}
 
 	/**
 	 * @tests java.security.Signer#Signer(java.lang.String,
 	 *        java.security.IdentityScope)
 	 */
-	public void test_ConstructorLjava_lang_StringLjava_security_IdentityScope() {
-		try {
-			new SignerImpl("test", new IdentityScopeSubclass());
-		} catch (Exception e) {
-			fail("Caught exception : " + e);
-		}
+	public void test_ConstructorLjava_lang_StringLjava_security_IdentityScope() throws Exception {
+		new SignerImpl("test", new IdentityScopeSubclass());
 	}
 
 	/**
 	 * @tests java.security.Signer#getPrivateKey()
 	 */
-	public void test_getPrivateKey() {
-
-		fail("Test hangs - could be dependent on reall math implementation ??");
-
-		try {
-			SignerImpl signer = new SignerImpl("test");
-			KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
-			KeyPair pair = gen.genKeyPair();
-			signer.setKeyPair(pair);
-			signer.getPrivateKey();
-		} catch (Exception e) {
-			fail("Caught exception : " + e);
-		}
+	public void test_getPrivateKey() throws Exception {
+		SignerImpl signer = new SignerImpl("test");
+		KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
+		KeyPair pair = gen.genKeyPair();
+		signer.setKeyPair(pair);
+		signer.getPrivateKey();
 	}
 
 	/**
 	 * @tests java.security.Signer#toString()
 	 */
 	public void test_toString() {
-		try {
-			SignerImpl signer = new SignerImpl("test");
-			assertEquals("Unexpected return from toString method",
-					"[Signer]test", signer.toString());
-		} catch (Exception e) {
-			fail("Caught exception : " + e);
-		}
+		SignerImpl signer = new SignerImpl("test");
+		assertEquals("Unexpected return from toString method",
+				"[Signer]test", signer.toString());
 	}
 }

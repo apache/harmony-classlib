@@ -20,7 +20,6 @@ import java.security.IdentityScope;
 import java.security.KeyManagementException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -109,198 +108,146 @@ public class IdentityScopeTest extends junit.framework.TestCase {
 	 * @tests java.security.IdentityScope#IdentityScope()
 	 */
 	public void test_Constructor() {
-		try {
-			assertNotNull(new IdentityScopeSubclass());
-		} catch (Exception e) {
-			fail("Caught an exception : " + e);
-		}
+		new IdentityScopeSubclass();
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#IdentityScope(java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
-		try {
-			assertNotNull(new IdentityScopeSubclass("test"));
-		} catch (Exception e) {
-			fail("Caught an exception : " + e);
-		}
+		new IdentityScopeSubclass("test");
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#IdentityScope(java.lang.String,
 	 *        java.security.IdentityScope)
 	 */
-	public void test_ConstructorLjava_lang_StringLjava_security_IdentityScope() {
-		try {
-			assertNotNull(new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass()));
-		} catch (Exception e) {
-			fail("Caught an exception : " + e);
-		}
+	public void test_ConstructorLjava_lang_StringLjava_security_IdentityScope() throws Exception {
+		new IdentityScopeSubclass("test", new IdentityScopeSubclass());
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#addIdentity(java.security.Identity)
 	 */
-	public void test_addIdentityLjava_security_Identity() {
-		try {
-			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass());
-			Identity id = new IdentitySubclass("id1");
-			id.setPublicKey(pubKey);
-			sub.addIdentity(id);
-			try {
-				Identity id2 = new IdentitySubclass("id2");
-				id2.setPublicKey(pubKey);
-				sub.addIdentity(id2);
-				fail("KeyManagementException should have been thrown");
-			} catch (KeyManagementException e) {
-				// Expected
-			}
-		} catch (Exception e) {
-			fail("Caught an unexpected exception : " + e);
-		}
+	public void test_addIdentityLjava_security_Identity() throws Exception {
+       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+       				new IdentityScopeSubclass());
+       		Identity id = new IdentitySubclass("id1");
+       		id.setPublicKey(pubKey);
+       		sub.addIdentity(id);
+       		try {
+       			Identity id2 = new IdentitySubclass("id2");
+       			id2.setPublicKey(pubKey);
+       			sub.addIdentity(id2);
+       			fail("KeyManagementException should have been thrown");
+       		} catch (KeyManagementException e) {
+       			// Expected
+       		}
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#removeIdentity(java.security.Identity)
 	 */
-	public void test_removeIdentityLjava_security_Identity() {
-		try {
-			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass());
-			Identity id = new IdentitySubclass();
-			id.setPublicKey(pubKey);
-			sub.addIdentity(id);
-			sub.removeIdentity(id);
-			try {
-				sub.removeIdentity(id);
-				fail("KeyManagementException should have been thrown");
-			} catch (KeyManagementException e) {
-				// expected
-			}
-		} catch (Exception e) {
-			fail("Caught an unexpected exception : " + e);
-		}
+	public void test_removeIdentityLjava_security_Identity() throws Exception {
+       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+       				new IdentityScopeSubclass());
+       		Identity id = new IdentitySubclass();
+       		id.setPublicKey(pubKey);
+       		sub.addIdentity(id);
+       		sub.removeIdentity(id);
+       		try {
+       			sub.removeIdentity(id);
+       			fail("KeyManagementException should have been thrown");
+       		} catch (KeyManagementException e) {
+       			// expected
+       		}
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#identities()
 	 */
-	public void test_identities() {
-		try {
-			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass());
-			Identity id = new IdentitySubclass();
-			id.setPublicKey(pubKey);
-			sub.addIdentity(id);
-			Enumeration en = sub.identities();
-			assertTrue("Wrong object contained in identities", en.nextElement()
-					.equals(id));
-			assertTrue("Contains too many elements", !en.hasMoreElements());
-		} catch (Exception e) {
-			fail("Caught unexpected exception : " + e);
-		}
+	public void test_identities() throws Exception {
+       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+       				new IdentityScopeSubclass());
+       		Identity id = new IdentitySubclass();
+       		id.setPublicKey(pubKey);
+       		sub.addIdentity(id);
+       		Enumeration en = sub.identities();
+       		assertTrue("Wrong object contained in identities", en.nextElement()
+       				.equals(id));
+       		assertTrue("Contains too many elements", !en.hasMoreElements());
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#getIdentity(java.security.Principal)
 	 */
-	public void test_getIdentityLjava_security_Principal() {
-		try {
-			Identity id = new IdentitySubclass("principal name");
-			id.setPublicKey(pubKey);
-			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass());
-			sub.addIdentity(id);
-			Identity returnedId = sub.getIdentity(id);
-			assertEquals("Returned Identity not the same as the added one", id,
-					returnedId);
-		} catch (Exception e) {
-			fail("Caught an exception : " + e);
-		}
+	public void test_getIdentityLjava_security_Principal() throws Exception {
+       		Identity id = new IdentitySubclass("principal name");
+       		id.setPublicKey(pubKey);
+       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+       				new IdentityScopeSubclass());
+       		sub.addIdentity(id);
+       		Identity returnedId = sub.getIdentity(id);
+       		assertEquals("Returned Identity not the same as the added one", id,
+       				returnedId);
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#getIdentity(java.security.PublicKey)
 	 */
-	public void test_getIdentityLjava_security_PublicKey() {
-		try {
-			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass());
-			Identity id = new IdentitySubclass();
-			id.setPublicKey(pubKey);
-			sub.addIdentity(id);
-			Identity returnedId = sub.getIdentity(pubKey);
-			assertEquals("Returned Identity not the same as the added one", id,
-					returnedId);
-		} catch (Exception e) {
-			fail("Caught an exception : " + e);
-		}
+	public void test_getIdentityLjava_security_PublicKey() throws Exception {
+       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+       				new IdentityScopeSubclass());
+       		Identity id = new IdentitySubclass();
+       		id.setPublicKey(pubKey);
+       		sub.addIdentity(id);
+       		Identity returnedId = sub.getIdentity(pubKey);
+       		assertEquals("Returned Identity not the same as the added one", id,
+       				returnedId);
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#getIdentity(java.lang.String)
 	 */
-	public void test_getIdentityLjava_lang_String() {
-		try {
-			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass());
-			Identity id = new IdentitySubclass("test");
-			id.setPublicKey(pubKey);
-			sub.addIdentity(id);
-			Identity returnedId = sub.getIdentity("test");
-			assertEquals("Returned Identity not the same as the added one", id,
-					returnedId);
-		} catch (Exception e) {
-			fail("Caught an exception : " + e);
-		}
+	public void test_getIdentityLjava_lang_String() throws Exception {
+       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+       				new IdentityScopeSubclass());
+       		Identity id = new IdentitySubclass("test");
+       		id.setPublicKey(pubKey);
+       		sub.addIdentity(id);
+       		Identity returnedId = sub.getIdentity("test");
+       		assertEquals("Returned Identity not the same as the added one", id,
+       				returnedId);
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#size()
 	 */
-	public void test_size() {
-		try {
-			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass());
-			Identity id = new IdentitySubclass();
-			id.setPublicKey(pubKey);
-			sub.addIdentity(id);
-			assertEquals("Wrong size", 1, sub.size());
-		} catch (Exception e) {
-			fail("Caught unexpected exception : " + e);
-		}
+	public void test_size() throws Exception {
+       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+       				new IdentityScopeSubclass());
+       		Identity id = new IdentitySubclass();
+       		id.setPublicKey(pubKey);
+       		sub.addIdentity(id);
+       		assertEquals("Wrong size", 1, sub.size());
 	}
 
 	/**
 	 * @tests java.security.IdentityScope#toString()
 	 */
-	public void test_toString() {
-		try {
-			IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-					new IdentityScopeSubclass());
-			Identity id = new IdentitySubclass();
-			id.setPublicKey(pubKey);
-			sub.addIdentity(id);
-			assertNotNull("toString returned a null", sub.toString());
-			assertTrue("Not a valid String ", sub.toString().length() > 0);
-		} catch (Exception e) {
-			fail("Caught unexpected exception : " + e);
-		}
+	public void test_toString() throws Exception {
+       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+       				new IdentityScopeSubclass());
+       		Identity id = new IdentitySubclass();
+       		id.setPublicKey(pubKey);
+       		sub.addIdentity(id);
+       		assertNotNull("toString returned a null", sub.toString());
+       		assertTrue("Not a valid String ", sub.toString().length() > 0);
 	}
 
-	protected void setUp() {
-		
-		fail("Set up hangs - requires a full math implementation ??");
-		
-		try {
-			KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
-			KeyPair pair = gen.genKeyPair();
-			pubKey = pair.getPublic();
-		} catch (NoSuchAlgorithmException e) {
-			fail("Unable to find DSA algorithm");
-		}
+	protected void setUp() throws Exception {
+       		KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
+       		KeyPair pair = gen.genKeyPair();
+       		pubKey = pair.getPublic();
 	}
 }

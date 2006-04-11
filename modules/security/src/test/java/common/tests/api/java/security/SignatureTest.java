@@ -16,17 +16,13 @@
 package tests.api.java.security;
 
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
 import java.security.InvalidParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
-import java.security.SignatureException;
 import java.security.spec.DSAParameterSpec;
 
 public class SignatureTest extends junit.framework.TestCase {
@@ -36,170 +32,101 @@ public class SignatureTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.security.Signature#clone()
 	 */
-	public void test_clone() {
-		try {
-			Signature s = Signature.getInstance("DSA");
-			try {
-				s.clone();
-				fail("A Signature may not be cloneable");
-			} catch (CloneNotSupportedException e) {
-				// Expected - a Signature may not be cloneable
-			}
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm");
-		}
+	public void test_clone() throws Exception {
+       		Signature s = Signature.getInstance("DSA");
+       		try {
+       			s.clone();
+       			fail("A Signature may not be cloneable");
+       		} catch (CloneNotSupportedException e) {
+       			// Expected - a Signature may not be cloneable
+       		}
 	}
 
 	/**
 	 * @tests java.security.Signature#getAlgorithm()
 	 */
-	public void test_getAlgorithm() {
-		try {
-			String alg = Signature.getInstance("DSA").getAlgorithm();
-			assertTrue("getAlgorithm did not get DSA (" + alg + ")", alg
-					.indexOf("DSA") != -1);
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm");
-		}
+	public void test_getAlgorithm() throws Exception {
+       		String alg = Signature.getInstance("DSA").getAlgorithm();
+       		assertTrue("getAlgorithm did not get DSA (" + alg + ")", alg
+       				.indexOf("DSA") != -1);
 	}
 
 	/**
 	 * @tests java.security.Signature#getInstance(java.lang.String)
 	 */
-	public void test_getInstanceLjava_lang_String() {
-		try {
-			Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm");
-		}
+	public void test_getInstanceLjava_lang_String() throws Exception {
+		Signature.getInstance("DSA");
 	}
 
 	/**
 	 * @tests java.security.Signature#getInstance(java.lang.String,
 	 *        java.lang.String)
 	 */
-	public void test_getInstanceLjava_lang_StringLjava_lang_String() {
-		try {
-			Provider[] providers = Security.getProviders("Signature.DSA");
-			assertNotNull("No providers support Signature.DSA", providers);
-			for (int i = 0; i < providers.length; i++) {
-				Signature.getInstance("DSA", providers[i].getName());
-			}// end for
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		} catch (NoSuchProviderException e) {
-			fail("getInstance did not find named provider : " + e);
-		}
+	public void test_getInstanceLjava_lang_StringLjava_lang_String() throws Exception {
+       		Provider[] providers = Security.getProviders("Signature.DSA");
+
+       		for (int i = 0; i < providers.length; i++) {
+       			Signature.getInstance("DSA", providers[i].getName());
+       		}// end for
 	}
 
 	/**
 	 * @tests java.security.Signature#getParameter(java.lang.String)
 	 */
-	public void test_getParameterLjava_lang_String() {
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+	public void test_getParameterLjava_lang_String() throws Exception {
+		Signature sig = Signature.getInstance("DSA");
 
-		boolean passed = false;
 		try {
 			sig.getParameter("r");
 			sig.getParameter("s");
-			passed = true;
 		} catch (UnsupportedOperationException e) {
-			passed = true;
-		} catch (Exception e) {
-			passed = false;
 		}
-		assertTrue("getParameter did not pass or threw incorrect exception",
-				passed);
 	}
 
 	/**
 	 * @tests java.security.Signature#getProvider()
 	 */
-	public void test_getProvider() {
-		try {
-			Provider p = Signature.getInstance("DSA").getProvider();
-			assertNotNull("provider is null", p);
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+	public void test_getProvider() throws Exception {
+       		Provider p = Signature.getInstance("DSA").getProvider();
+       		assertNotNull("provider is null", p);
 	}
 
 	/**
 	 * @tests java.security.Signature#initSign(java.security.PrivateKey)
 	 */
-	public void test_initSignLjava_security_PrivateKey() {
+	public void test_initSignLjava_security_PrivateKey() throws Exception {
 
-		fail("Test hangs - dependent on full math implementation ??");
+		Signature sig = Signature.getInstance("DSA");
 
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 
-		KeyPairGenerator keyGen = null;
-		try {
-			keyGen = KeyPairGenerator.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
 		SecureRandom random = new SecureRandom();
 		keyGen.initialize(1024, random);
 		KeyPair keys = keyGen.generateKeyPair();
-		try {
-			sig.initSign(keys.getPrivate());
-		} catch (InvalidKeyException e) {
-			fail("Invalid key : " + e);
-		}
+
+		sig.initSign(keys.getPrivate());
 	}
 
 	/**
 	 * @tests java.security.Signature#initVerify(java.security.PublicKey)
 	 */
-	public void test_initVerifyLjava_security_PublicKey() {
+	public void test_initVerifyLjava_security_PublicKey() throws Exception {
 
-		fail("Test hangs - dependent on full math implementation ??");
+		Signature sig = Signature.getInstance("DSA");
 
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
-
-		KeyPairGenerator keyGen = null;
-		try {
-			keyGen = KeyPairGenerator.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 		SecureRandom random = new SecureRandom();
 		keyGen.initialize(1024, random);
 		KeyPair keys = keyGen.generateKeyPair();
-		try {
-			sig.initVerify(keys.getPublic());
-		} catch (InvalidKeyException e) {
-			fail("Invalid key : " + e);
-		}
+		sig.initVerify(keys.getPublic());
 	}
 
 	/**
 	 * @tests java.security.Signature#setParameter(java.lang.String,
 	 *        java.lang.Object)
 	 */
-	public void test_setParameterLjava_lang_StringLjava_lang_Object() {
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+	public void test_setParameterLjava_lang_StringLjava_lang_Object() throws Exception {
+		Signature sig = Signature.getInstance("DSA");
 
 		try {
 			sig.setParameter("r", BigInteger.ONE);
@@ -208,22 +135,15 @@ public class SignatureTest extends junit.framework.TestCase {
 			// Could be that it's an invalid param for the found algorithm
 		} catch (UnsupportedOperationException e) {
 			// Could be that the operation is not supported
-		} catch (Exception e) {
-			fail("test_setParameterLjava_lang_StringLjava_lang_Object "
-					+ "threw incorrect exception : " + e);
 		}
 	}
 
 	/**
 	 * @tests java.security.Signature#setParameter(java.security.spec.AlgorithmParameterSpec)
 	 */
-	public void test_setParameterLjava_security_spec_AlgorithmParameterSpec() {
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+	public void test_setParameterLjava_security_spec_AlgorithmParameterSpec() throws Exception {
+		Signature sig = Signature.getInstance("DSA");
+
 		try {
 			DSAParameterSpec spec = new DSAParameterSpec(BigInteger.ONE,
 					BigInteger.ONE, BigInteger.ONE);
@@ -232,228 +152,111 @@ public class SignatureTest extends junit.framework.TestCase {
 			// Could be that it's an invalid param for the found algorithm
 		} catch (UnsupportedOperationException e) {
 			// Could be that the operation is not supported
-		} catch (Exception e) {
-			fail("test_setParameterLjava_security_spec_AlgorithmParameterSpec "
-					+ "threw incorrect exception : " + e);
 		}
 	}
 
 	/**
 	 * @tests java.security.Signature#sign()
 	 */
-	public void test_sign() {
+	public void test_sign() throws Exception {
 
-		fail("Test hangs - dependent on full math implementation ??");
+		Signature sig = Signature.getInstance("DSA");
 
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 
-		KeyPairGenerator keyGen = null;
-		try {
-			keyGen = KeyPairGenerator.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
 		SecureRandom random = new SecureRandom();
 		keyGen.initialize(1024, random);
 		KeyPair keys = keyGen.generateKeyPair();
-		try {
-			sig.initSign(keys.getPrivate());
-		} catch (InvalidKeyException e) {
-			fail("Invalid key : " + e);
-		}
-		try {
-			sig.update(MESSAGE.getBytes());
-		} catch (SignatureException e) {
-			fail("Problem updating Signature bytes : " + e);
-		}
-		try {
-			sig.sign();
-		} catch (SignatureException e) {
-			fail("Signature problem signing bytes : " + e);
-		}
+
+		sig.initSign(keys.getPrivate());
+		sig.update(MESSAGE.getBytes());
+		sig.sign();
 	}
 
 	/**
 	 * @tests java.security.Signature#toString()
 	 */
-	public void test_toString() {
-		try {
-			String str = Signature.getInstance("DSA").toString();
-			assertNotNull("toString is null", str);
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+	public void test_toString() throws Exception {
+		String str = Signature.getInstance("DSA").toString();
+		assertNotNull("toString is null", str);
 	}
 
 	/**
 	 * @tests java.security.Signature#update(byte[])
 	 */
-	public void test_update$B() {
+	public void test_update$B() throws Exception {
 
-		fail("Test hangs - dependent on full math implementation ??");
+		Signature sig = Signature.getInstance("DSA");
 
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 
-		KeyPairGenerator keyGen = null;
-		try {
-			keyGen = KeyPairGenerator.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
 		SecureRandom random = new SecureRandom();
 		keyGen.initialize(1024, random);
 		KeyPair keys = keyGen.generateKeyPair();
-		try {
-			sig.initSign(keys.getPrivate());
-		} catch (InvalidKeyException e) {
-			fail("Invalid key : " + e);
-		}
-		try {
-			byte[] bytes = MESSAGE.getBytes();
-			sig.update(bytes);
-		} catch (SignatureException e) {
-			fail("Problem updating Signature bytes : " + e);
-		}
+
+		sig.initSign(keys.getPrivate());
+
+		byte[] bytes = MESSAGE.getBytes();
+		sig.update(bytes);
 	}
 
 	/**
 	 * @tests java.security.Signature#update(byte[], int, int)
 	 */
-	public void test_update$BII() {
+	public void test_update$BII() throws Exception {
 
-		fail("Test hangs - dependent on full math implementation ??");
+		Signature sig = Signature.getInstance("DSA");
 
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 
-		KeyPairGenerator keyGen = null;
-		try {
-			keyGen = KeyPairGenerator.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
 		SecureRandom random = new SecureRandom();
 		keyGen.initialize(1024, random);
 		KeyPair keys = keyGen.generateKeyPair();
-		try {
-			sig.initSign(keys.getPrivate());
-		} catch (InvalidKeyException e) {
-			fail("Invalid key : " + e);
-		}
-		try {
-			byte[] bytes = MESSAGE.getBytes();
-			sig.update(bytes, 0, bytes.length);
-		} catch (SignatureException e) {
-			fail("Signature problem updating bytes : " + e);
-		}
+
+		sig.initSign(keys.getPrivate());
+
+		byte[] bytes = MESSAGE.getBytes();
+		sig.update(bytes, 0, bytes.length);
 	}
 
 	/**
 	 * @tests java.security.Signature#update(byte)
 	 */
-	public void test_updateB() {
+	public void test_updateB() throws Exception {
 
-		fail("Test hangs - dependent on full math implementation ??");
+		Signature sig = Signature.getInstance("DSA");
 
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 
-		KeyPairGenerator keyGen = null;
-		try {
-			keyGen = KeyPairGenerator.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
 		SecureRandom random = new SecureRandom();
 		keyGen.initialize(1024, random);
 		KeyPair keys = keyGen.generateKeyPair();
-		try {
-			sig.initSign(keys.getPrivate());
-		} catch (InvalidKeyException e) {
-			fail("Invalid key : " + e);
-		}
-		try {
-			sig.update(MESSAGE.getBytes()[0]);
-		} catch (SignatureException e) {
-			fail("Problem updating Signature bytes : " + e);
-		}
+
+		sig.initSign(keys.getPrivate());
+
+		sig.update(MESSAGE.getBytes()[0]);
 	}
 
 	/**
 	 * @tests java.security.Signature#verify(byte[])
 	 */
-	public void test_verify$B() {
+	public void test_verify$B() throws Exception {
 
-		fail("Test hangs - dependent on full math implementation ??");
+		Signature sig = Signature.getInstance("DSA");
 
-		Signature sig = null;
-		try {
-			sig = Signature.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 
-		KeyPairGenerator keyGen = null;
-		try {
-			keyGen = KeyPairGenerator.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm : " + e);
-		}
 		SecureRandom random = new SecureRandom();
 		keyGen.initialize(1024, random);
 		KeyPair keys = keyGen.generateKeyPair();
-		try {
-			sig.initSign(keys.getPrivate());
-		} catch (InvalidKeyException e) {
-			fail("Invalid key : " + e);
-		}
-		try {
-			sig.update(MESSAGE.getBytes());
-		} catch (SignatureException e) {
-			fail("Problem updating Signature bytes : " + e);
-		}
-		byte[] signature = null;
-		try {
-			signature = sig.sign();
-		} catch (SignatureException e) {
-			fail("Signature problem signing bytes : " + e);
-		}
 
-		try {
-			sig.initVerify(keys.getPublic());
-		} catch (InvalidKeyException e) {
-			fail("Invalid key : " + e);
-		}
-		try {
-			sig.update(MESSAGE.getBytes());
-		} catch (SignatureException e) {
-			fail("Problem updating Signature bytes : " + e);
-		}
-		boolean ok = false;
-		try {
-			ok = sig.verify(signature);
-		} catch (SignatureException e) {
-			fail("Signature problem verifying bytes : " + e);
-		}
+		sig.initSign(keys.getPrivate());
+		sig.update(MESSAGE.getBytes());
+		byte[] signature = sig.sign();
 
-		assertTrue("Sign/Verify does not pass", ok);
+
+		sig.initVerify(keys.getPublic());
+		sig.update(MESSAGE.getBytes());
+		assertTrue("Sign/Verify does not pass", sig.verify(signature));
 	}
 }

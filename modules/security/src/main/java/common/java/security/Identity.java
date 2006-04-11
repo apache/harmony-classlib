@@ -245,7 +245,8 @@ public abstract class Identity implements Principal, Serializable {
             return false;
         }
         Identity i = (Identity) obj;
-        if (name.equals(i.name) && (scope == i.scope)) {
+        if ((name == i.name || (name != null && name.equals(i.name)))
+                && (scope == i.scope || (scope != null && scope.equals(i.scope)))) {
             return true;
         }
         return identityEquals(i);
@@ -262,7 +263,14 @@ public abstract class Identity implements Principal, Serializable {
      * @com.intel.drl.spec_ref 
      */
     public int hashCode() {
-        return name.hashCode();
+        int hash = 0;
+        if (name != null) {
+            hash += name.hashCode();
+        }
+        if (scope != null) {
+            hash += scope.hashCode();
+        }
+        return hash;
     }
 
     /**

@@ -87,7 +87,7 @@
 			<jvmarg value="-DTEST_SRC_DIR=${hy.security.src.test.java}"/>
 
 			<!-- to pick up junit.jar -->
-			<jvmarg value="-Xbootclasspath/a:${hy.security.bin.test}${path.separator}../../../../${junit.jar}"/>
+			<jvmarg value="-Xbootclasspath/a:${hy.security.bin.test}${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests"/>
 
 			<env key="JAVA_HOME" value="${hy.target}/jre"/>
 
@@ -106,30 +106,20 @@
 
 					<!-- Harmony exclude list -->
 					<exclude name="java/security/serialization/KeyPairTest.java"/>
+					<exclude name="java/security/serialization/AccessControlExceptionTest.java"/>
+					<exclude name="java/security/serialization/InvalidParameterExceptionTest.java"/>
+
 					<exclude name="tests/api/java/security/AccessControllerTest.java"/>
 					<exclude name="tests/api/java/security/AlgorithmParameterGeneratorTest.java"/>
 					<exclude name="tests/api/java/security/AlgorithmParametersTest.java"/>
-					<exclude name="tests/api/java/security/CodeSourceTest.java"/>
-					<exclude name="tests/api/java/security/DigestInputStreamTest.java"/>
-					<exclude name="tests/api/java/security/DigestOutputStreamTest.java"/>
-					<exclude name="tests/api/java/security/IdentityScopeTest.java"/>
-					<exclude name="tests/api/java/security/IdentityTest.java"/>
-					<exclude name="tests/api/java/security/KeyPairGeneratorTest.java"/>
 					<exclude name="tests/api/java/security/KeyStoreTest.java"/>
 					<exclude name="tests/api/java/security/PermissionCollectionTest.java"/>
-					<exclude name="tests/api/java/security/SecureClassLoaderTest.java"/>
 					<exclude name="tests/api/java/security/SecureRandomTest.java"/>
 					<exclude name="tests/api/java/security/SecurityTest.java"/>
-					<exclude name="tests/api/java/security/SignerTest.java"/>
-					<exclude name="tests/api/java/security/SignatureTest.java"/>
 					<exclude name="tests/api/java/security/cert/CertificateFactoryTest.java"/>
 					<exclude name="tests/api/java/security/cert/X509CertificateTest.java"/>
 					<exclude name="tests/api/java/security/cert/X509CRLEntryTest.java"/>
 					<exclude name="tests/api/java/security/cert/X509CRLTest.java"/>
-					<exclude name="tests/api/java/security/spec/EncodedKeySpecTest.java"/>
-					<exclude name="java/security/serialization/AccessControlExceptionTest.java"/>
-					<exclude name="java/security/serialization/InvalidParameterExceptionTest.java"/>
-
 				</fileset>
 			</batchtest>
 		</junit>

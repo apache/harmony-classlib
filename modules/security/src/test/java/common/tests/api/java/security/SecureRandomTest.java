@@ -103,16 +103,6 @@ public class SecureRandomTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.security.SecureRandom#getProvider()
-	 */
-	public void test_getProvider() {
-		// Test for method java.security.Provider
-		// java.security.SecureRandom.getProvider()
-		Provider p = new SecureRandom().getProvider();
-		assertNotNull("SecureRandom provider is null", p);
-	}
-
-	/**
 	 * @tests java.security.SecureRandom#getSeed(int)
 	 */
 	public void test_getSeedI() {

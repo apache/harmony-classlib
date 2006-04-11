@@ -17,22 +17,16 @@ package tests.api.java.security;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -110,41 +104,29 @@ public class KeyStoreTest extends junit.framework.TestCase {
 	ByteArrayInputStream certArray3 = new ByteArrayInputStream(certificate3
 			.getBytes());
 
-	private byte[] creatCertificate() {
+	private byte[] creatCertificate() throws Exception {
 		ByteArrayOutputStream out = null;
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
-			// alias 1
-			PublicKey pub = cert[0].getPublicKey();
-			keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 2
-			keyTest.setCertificateEntry("alias2", cert[0]);
-			keyTest.setKeyEntry("alias2", pub, pssWord, cert);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
+		// alias 1
+		PublicKey pub = cert[0].getPublicKey();
+		keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 3
-			keyTest.setCertificateEntry("alias3", cert[1]);
+		// alias 2
+		keyTest.setCertificateEntry("alias2", cert[0]);
+		keyTest.setKeyEntry("alias2", pub, pssWord, cert);
 
-			out = new ByteArrayOutputStream();
-			keyTest.store(out, pssWord);
-			out.close();
+		// alias 3
+		keyTest.setCertificateEntry("alias3", cert[1]);
 
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (KeyStoreException e) {
-			fail("problem setting keyEntry and CertificateEntry : " + e);
-		} catch (FileNotFoundException e) {
-			fail("file not found for writing : " + e);
-		} catch (IOException e) {
-			fail("An IO problem was found when writing the keystore: " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("The data integrity algorithm for the keystore cannot be found");
-		}
+		out = new ByteArrayOutputStream();
+		keyTest.store(out, pssWord);
+		out.close();
 
 		return out.toByteArray();
 	}
@@ -152,635 +134,468 @@ public class KeyStoreTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.security.KeyStore#aliases()
 	 */
-	public void test_aliases() {
+	public void test_aliases() throws Exception {
 		// Test for method java.util.Enumeration
 		// java.security.KeyStore.aliases()
 		// NOT COMPATIBLE WITH PCS#12
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
 
-			// KeyStore keyTest =
-			// KeyStore.getInstance(KeyStore.getDefaultType());
-			// alias 1
-			keyTest.setCertificateEntry("alias1", cert[0]);
+		// KeyStore keyTest =
+		// KeyStore.getInstance(KeyStore.getDefaultType());
+		// alias 1
+		keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 2
-			keyTest.setCertificateEntry("alias2", cert[0]);
+		// alias 2
+		keyTest.setCertificateEntry("alias2", cert[0]);
 
-			// alias 3
-			keyTest.setCertificateEntry("alias3", cert[0]);
+		// alias 3
+		keyTest.setCertificateEntry("alias3", cert[0]);
 
-			// obtaining the aliase
-			Enumeration aliase = keyTest.aliases();
-			Set alia = new HashSet();
-			int i = 0;
-			while (aliase.hasMoreElements()) {
-				alia.add(aliase.nextElement());
-				i++;
-			}
-			assertTrue("the alias names were returned wrong", i == 3
-					&& alia.contains("alias1") && alia.contains("alias2")
-					&& alia.contains("alias3"));
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (KeyStoreException e) {
-			fail("problem with setting keyEntry and CertificateEntry : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred");
+		// obtaining the aliase
+		Enumeration aliase = keyTest.aliases();
+		Set alia = new HashSet();
+		int i = 0;
+		while (aliase.hasMoreElements()) {
+			alia.add(aliase.nextElement());
+			i++;
 		}
+		assertTrue("the alias names were returned wrong", i == 3
+				&& alia.contains("alias1") && alia.contains("alias2")
+				&& alia.contains("alias3"));
 	}
 
 	/**
 	 * @tests java.security.KeyStore#containsAlias(java.lang.String)
 	 */
-	public void test_containsAliasLjava_lang_String() {
+	public void test_containsAliasLjava_lang_String() throws Exception {
 		// Test for method boolean
 		// java.security.KeyStore.containsAlias(java.lang.String)
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
 
-			// alias 1
-			keyTest.setCertificateEntry("alias1", cert[0]);
+		// alias 1
+		keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 2
-			keyTest.setCertificateEntry("alias2", cert[0]);
+		// alias 2
+		keyTest.setCertificateEntry("alias2", cert[0]);
 
-			assertTrue("alias1 does not exist", keyTest.containsAlias("alias1"));
-			assertTrue("alias2 does not exist", keyTest.containsAlias("alias2"));
-			assertFalse("alias3 exists", keyTest.containsAlias("alias3"));
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (KeyStoreException e) {
-			fail("problem with setting keyEntry and CertificateEntry : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
+		assertTrue("alias1 does not exist", keyTest.containsAlias("alias1"));
+		assertTrue("alias2 does not exist", keyTest.containsAlias("alias2"));
+		assertFalse("alias3 exists", keyTest.containsAlias("alias3"));
 	}
 
 	/**
 	 * @tests java.security.KeyStore#getCertificate(java.lang.String)
 	 */
-	public void test_getCertificateLjava_lang_String() {
+	public void test_getCertificateLjava_lang_String() throws Exception {
 		// Test for method java.security.cert.Certificate
 		// java.security.KeyStore.getCertificate(java.lang.String)
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
 
-			// alias 1
-			PublicKey pub = cert[0].getPublicKey();
-			keyTest.setCertificateEntry("alias1", cert[0]);
+		// alias 1
+		PublicKey pub = cert[0].getPublicKey();
+		keyTest.setCertificateEntry("alias1", cert[0]);
 
-			java.security.cert.Certificate certRes = keyTest
-					.getCertificate("alias1");
-			assertTrue(
-					"the public key of the certificate from getCertificate() "
-							+ "did not equal the original certificate", certRes
-							.getPublicKey() == pub);
+		java.security.cert.Certificate certRes = keyTest
+				.getCertificate("alias1");
+		assertTrue("the public key of the certificate from getCertificate() "
+				+ "did not equal the original certificate", certRes
+				.getPublicKey() == pub);
 
-			// alias 2
-			keyTest.setCertificateEntry("alias2", cert[0]);
+		// alias 2
+		keyTest.setCertificateEntry("alias2", cert[0]);
 
-			// testing for a certificate chain
-			java.security.cert.Certificate cert2 = keyTest
-					.getCertificate("alias2");
-			assertTrue("the certificate for alias2 is supposed to exist",
-					cert2 != null && cert2.equals(cert[0]));
+		// testing for a certificate chain
+		java.security.cert.Certificate cert2 = keyTest.getCertificate("alias2");
+		assertTrue("the certificate for alias2 is supposed to exist",
+				cert2 != null && cert2.equals(cert[0]));
 
-		} catch (KeyStoreException e) {
-			fail("keyStore is not initialized : " + e);
-		} catch (CertificateException e) {
-			fail("the certificate is not generated correctly : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred " + e);
-		}
 	}
 
 	/**
 	 * @tests java.security.KeyStore#getCertificateAlias(java.security.cert.Certificate)
 	 */
-	public void test_getCertificateAliasLjava_security_cert_Certificate() {
+	public void test_getCertificateAliasLjava_security_cert_Certificate()
+			throws Exception {
 		// Test for method java.lang.String
 		// java.security.KeyStore.getCertificateAlias(java.security.cert.Certificate)
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
 
-			// certificate entry
-			keyTest.setCertificateEntry("alias1", cert[1]);
-			String alias = keyTest.getCertificateAlias(cert[1]);
-			assertTrue("certificate entry - the alias returned for this "
-					+ "certificate was wrong", alias.equals("alias1"));
+		// certificate entry
+		keyTest.setCertificateEntry("alias1", cert[1]);
+		String alias = keyTest.getCertificateAlias(cert[1]);
+		assertTrue("certificate entry - the alias returned for this "
+				+ "certificate was wrong", alias.equals("alias1"));
 
-			// key entry
-			PublicKey pub = cert[0].getPublicKey();
+		// key entry
+		PublicKey pub = cert[0].getPublicKey();
 
-			// If next line throws a NPE check that a full math implementation
-			// is being used.
-			keyTest.setKeyEntry("alias2", pub, pssWord, cert);
-			alias = keyTest.getCertificateAlias(cert[0]);
-			assertTrue("key entry - the alias returned for this "
-					+ "certificate was wrong", alias.equals("alias2"));
+		// If next line throws a NPE check that a full math implementation
+		// is being used.
+		keyTest.setKeyEntry("alias2", pub, pssWord, cert);
+		alias = keyTest.getCertificateAlias(cert[0]);
+		assertTrue("key entry - the alias returned for this "
+				+ "certificate was wrong", alias.equals("alias2"));
 
-			// testing case with a nonexistant certificate
-			X509Certificate cert2 = (X509Certificate) cf
-					.generateCertificate(certArray3);
-			String aliasNull = keyTest.getCertificateAlias(cert2);
-			assertNull("the alias returned for the nonexist certificate "
-					+ "was NOT null", aliasNull);
-		} catch (KeyStoreException e) {
-			fail("unexpected keyStore exception : " + e);
-		} catch (CertificateException e) {
-			fail("the certificate is not generated correctly : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
+		// testing case with a nonexistant certificate
+		X509Certificate cert2 = (X509Certificate) cf
+				.generateCertificate(certArray3);
+		String aliasNull = keyTest.getCertificateAlias(cert2);
+		assertNull("the alias returned for the nonexist certificate "
+				+ "was NOT null", aliasNull);
 	}
 
 	/**
 	 * @tests java.security.KeyStore#getCertificateChain(java.lang.String)
 	 */
-	public void test_getCertificateChainLjava_lang_String() {
+	public void test_getCertificateChainLjava_lang_String() throws Exception {
 		// Test for method java.security.cert.Certificate []
 		// java.security.KeyStore.getCertificateChain(java.lang.String)
-		try {
-			// creatCertificate();
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
+		// creatCertificate();
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
 
-			// alias 1
-			PublicKey pub = cert[0].getPublicKey();
-			keyTest.setCertificateEntry("alias1", cert[0]);
+		// alias 1
+		PublicKey pub = cert[0].getPublicKey();
+		keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 2
-			keyTest.setCertificateEntry("alias2", cert[0]);
-			keyTest.setKeyEntry("alias2", pub, pssWord, cert);
+		// alias 2
+		keyTest.setCertificateEntry("alias2", cert[0]);
+		keyTest.setKeyEntry("alias2", pub, pssWord, cert);
 
-			java.security.cert.Certificate[] certRes = keyTest
-					.getCertificateChain("alias2");
-			assertTrue("there are more than two certificate returned "
-					+ "from getCertificateChain", certRes.length == 2);
-			assertTrue("the certificates returned from getCertificateChain "
-					+ "is not correct", cert[0].getPublicKey() == certRes[0]
-					.getPublicKey()
-					&& cert[1].getPublicKey() == certRes[1].getPublicKey());
-			java.security.cert.Certificate[] certResNull = keyTest
-					.getCertificateChain("alias1");
-			assertTrue("the certificate chain returned from "
-					+ "getCertificateChain is NOT null", certResNull == null);
-		} catch (KeyStoreException e) {
-			fail("keyStore is not initialized : " + e);
-		} catch (CertificateException e) {
-			fail("the certificate is not generated correctly : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
+		java.security.cert.Certificate[] certRes = keyTest
+				.getCertificateChain("alias2");
+		assertTrue("there are more than two certificate returned "
+				+ "from getCertificateChain", certRes.length == 2);
+		assertTrue("the certificates returned from getCertificateChain "
+				+ "is not correct", cert[0].getPublicKey() == certRes[0]
+				.getPublicKey()
+				&& cert[1].getPublicKey() == certRes[1].getPublicKey());
+		java.security.cert.Certificate[] certResNull = keyTest
+				.getCertificateChain("alias1");
+		assertTrue("the certificate chain returned from "
+				+ "getCertificateChain is NOT null", certResNull == null);
 	}
 
 	/**
 	 * @tests java.security.KeyStore#getInstance(java.lang.String)
 	 */
-	public void test_getInstanceLjava_lang_String() {
+	public void test_getInstanceLjava_lang_String() throws Exception {
 		// Test for method java.security.KeyStore
 		// java.security.KeyStore.getInstance(java.lang.String)
-		try {
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			assertTrue("the method getInstance did not obtain "
-					+ "the correct type", keyTest.getType().equals(
-					KeyStore.getDefaultType()));
-		} catch (KeyStoreException e) {
-			fail("keyStore is not loaded : " + e);
-		}
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		assertTrue("the method getInstance did not obtain "
+				+ "the correct type", keyTest.getType().equals(
+				KeyStore.getDefaultType()));
 	}
 
 	/**
 	 * @tests java.security.KeyStore#getInstance(java.lang.String,
 	 *        java.lang.String)
 	 */
-	public void test_getInstanceLjava_lang_StringLjava_lang_String() {
+	public void test_getInstanceLjava_lang_StringLjava_lang_String()
+			throws Exception {
 		// Test for method java.security.KeyStore
 		// java.security.KeyStore.getInstance(java.lang.String,
 		// java.lang.String)
-		try {
-			KeyStore keyTest = KeyStore.getInstance("PKCS#12/Netscape",
-					"TestProvider");
-			assertTrue("the method getInstance did not obtain the "
-					+ "correct provider and type", keyTest.getProvider()
-					.getName().equals("TestProvider")
-					&& keyTest.getType().equals("PKCS#12/Netscape"));
-		} catch (KeyStoreException e) {
-			fail("keyStore is not loaded : " + e);
-		} catch (NoSuchProviderException e) {
-			fail("no such provider : " + e);
-		}
+		KeyStore keyTest = KeyStore.getInstance("PKCS#12/Netscape",
+				"TestProvider");
+		assertTrue("the method getInstance did not obtain the "
+				+ "correct provider and type", keyTest.getProvider().getName()
+				.equals("TestProvider")
+				&& keyTest.getType().equals("PKCS#12/Netscape"));
 	}
 
 	/**
 	 * @tests java.security.KeyStore#getKey(java.lang.String, char[])
 	 */
-	public void test_getKeyLjava_lang_String$C() {
-
-		fail("Test hangs - requires a full math implementation ??");
+	public void test_getKeyLjava_lang_String$C() throws Exception {
 
 		// Test for method java.security.Key
 		// java.security.KeyStore.getKey(java.lang.String, char [])
+		// creatCertificate();
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA");
+		SecureRandom secureRandom = new SecureRandom();
+		keyPairGenerator.initialize(1024, secureRandom);
+		KeyPair keyPair = keyPairGenerator.genKeyPair();
+		PrivateKey privateKey = keyPair.getPrivate();
+		keyTest.setKeyEntry("alias2", privateKey, pssWord, cert);
+		PrivateKey returnedKey = (PrivateKey) keyTest.getKey("alias2", pssWord);
+		byte[] retB = returnedKey.getEncoded();
+		byte[] priB = privateKey.getEncoded();
+		boolean equality = Arrays.equals(retB, priB);
+		equality &= returnedKey.getAlgorithm()
+				.equals(privateKey.getAlgorithm());
+		equality &= returnedKey.getFormat().equals(privateKey.getFormat());
+		assertTrue("the private key returned from getKey for a "
+				+ "key entry did not equal the original key", equality);
+
 		try {
-			// creatCertificate();
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
-			KeyPairGenerator keyPairGenerator = KeyPairGenerator
-					.getInstance("DSA");
-			SecureRandom secureRandom = new SecureRandom();
-			keyPairGenerator.initialize(1024, secureRandom);
-			KeyPair keyPair = keyPairGenerator.genKeyPair();
-			PrivateKey privateKey = keyPair.getPrivate();
-			keyTest.setKeyEntry("alias2", privateKey, pssWord, cert);
-			PrivateKey returnedKey = (PrivateKey) keyTest.getKey("alias2",
-					pssWord);
-			byte[] retB = returnedKey.getEncoded();
-			byte[] priB = privateKey.getEncoded();
-			boolean equality = Arrays.equals(retB, priB);
-			equality &= returnedKey.getAlgorithm().equals(
-					privateKey.getAlgorithm());
-			equality &= returnedKey.getFormat().equals(privateKey.getFormat());
-			assertTrue("the private key returned from getKey for a "
-					+ "key entry did not equal the original key", equality);
-
-			try {
-				keyTest.getKey("alias2", "wrong".toCharArray());
-				fail("Should have thrown UnrecoverableKeyException");
-			} catch (UnrecoverableKeyException e) {
-				// expected
-			}
-
-			keyTest.setCertificateEntry("alias1", cert[1]);
-			assertNull("the private key returned from getKey for "
-					+ "a certificate entry is not null", keyTest.getKey(
-					"alias1", pssWord));
-
-		} catch (KeyStoreException e) {
-			fail("type is not found : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("algorithm to recover the key cannot be found " + e);
+			keyTest.getKey("alias2", "wrong".toCharArray());
+			fail("Should have thrown UnrecoverableKeyException");
 		} catch (UnrecoverableKeyException e) {
-			fail("the key can't be recovered : " + e);
-		} catch (CertificateException e) {
-			fail("the certificate is not generated correctly : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
+			// expected
 		}
+
+		keyTest.setCertificateEntry("alias1", cert[1]);
+		assertNull("the private key returned from getKey for "
+				+ "a certificate entry is not null", keyTest.getKey("alias1",
+				pssWord));
 	}
 
 	/**
 	 * @tests java.security.KeyStore#getProvider()
 	 */
-	public void test_getProvider() {
+	public void test_getProvider() throws Exception {
 		// Test for method java.security.Provider
 		// java.security.KeyStore.getProvider()
-		try {
-			KeyStore keyTest = KeyStore.getInstance("PKCS#12/Netscape",
-					"TestProvider");
-			Provider provKeyStore = keyTest.getProvider();
-			assertEquals("the provider should be TestProvider", "TestProvider",
-					provKeyStore.getName());
-		} catch (KeyStoreException e) {
-			fail("type is not found : " + e);
-		} catch (NoSuchProviderException e) {
-			fail("no such provider : " + e);
-		}
+		KeyStore keyTest = KeyStore.getInstance("PKCS#12/Netscape",
+				"TestProvider");
+		Provider provKeyStore = keyTest.getProvider();
+		assertEquals("the provider should be TestProvider", "TestProvider",
+				provKeyStore.getName());
 	}
 
 	/**
 	 * @tests java.security.KeyStore#getType()
 	 */
-	public void test_getType() {
+	public void test_getType() throws Exception {
 		// Test for method java.lang.String java.security.KeyStore.getType()
-		try {
-			KeyStore keyTest = KeyStore.getInstance("PKCS#12/Netscape",
-					"TestProvider");
-			assertEquals(
-					"type should be PKCS#12/Netscape for provider TestProvider",
-					"PKCS#12/Netscape", keyTest.getType());
-		} catch (KeyStoreException e) {
-			fail("type is not found : " + e);
-		} catch (NoSuchProviderException e) {
-			fail("no such provider : " + e);
-		}
+		KeyStore keyTest = KeyStore.getInstance("PKCS#12/Netscape",
+				"TestProvider");
+		assertEquals(
+				"type should be PKCS#12/Netscape for provider TestProvider",
+				"PKCS#12/Netscape", keyTest.getType());
 	}
 
 	/**
 	 * @tests java.security.KeyStore#isCertificateEntry(java.lang.String)
 	 */
-	public void test_isCertificateEntryLjava_lang_String() {
+	public void test_isCertificateEntryLjava_lang_String() throws Exception {
 		// Test for method boolean
 		// java.security.KeyStore.isCertificateEntry(java.lang.String)
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
-			// alias 1
-			PublicKey pub = cert[0].getPublicKey();
-			keyTest.setCertificateEntry("alias1", cert[0]);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
+		// alias 1
+		PublicKey pub = cert[0].getPublicKey();
+		keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 2
-			keyTest.setCertificateEntry("alias2", cert[0]);
-			keyTest.setKeyEntry("alias2", pub, pssWord, cert);
+		// alias 2
+		keyTest.setCertificateEntry("alias2", cert[0]);
+		keyTest.setKeyEntry("alias2", pub, pssWord, cert);
 
-			assertTrue(
-					"isCertificateEntry method returns false for a certificate",
-					keyTest.isCertificateEntry("alias1") == true);
-			assertTrue(
-					"isCertificateEntry method returns true for noncertificate",
-					keyTest.isCertificateEntry("alias2") == false);
-		} catch (KeyStoreException e) {
-			fail("alias already exists for an untrusted certificate : " + e);
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
+		assertTrue("isCertificateEntry method returns false for a certificate",
+				keyTest.isCertificateEntry("alias1") == true);
+		assertTrue("isCertificateEntry method returns true for noncertificate",
+				keyTest.isCertificateEntry("alias2") == false);
 	}
 
 	/**
 	 * @tests java.security.KeyStore#isKeyEntry(java.lang.String)
 	 */
-	public void test_isKeyEntryLjava_lang_String() {
+	public void test_isKeyEntryLjava_lang_String() throws Exception {
 		// Test for method boolean
 		// java.security.KeyStore.isKeyEntry(java.lang.String)
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
-			// alias 1
-			PublicKey pub = cert[0].getPublicKey();
-			keyTest.setCertificateEntry("alias1", cert[0]);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
+		// alias 1
+		PublicKey pub = cert[0].getPublicKey();
+		keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 2
-			keyTest.setCertificateEntry("alias2", cert[0]);
-			keyTest.setKeyEntry("alias2", pub, pssWord, cert);
+		// alias 2
+		keyTest.setCertificateEntry("alias2", cert[0]);
+		keyTest.setKeyEntry("alias2", pub, pssWord, cert);
 
-			assertTrue("isKeyEntry method returns false for a certificate",
-					keyTest.isKeyEntry("alias2") == true);
-			assertTrue("isKeyEntry method returns true for noncertificate",
-					keyTest.isKeyEntry("alias1") == false);
-		} catch (KeyStoreException e) {
-			fail("alias already exists for an untrusted certificate : " + e);
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
+		assertTrue("isKeyEntry method returns false for a certificate", keyTest
+				.isKeyEntry("alias2") == true);
+		assertTrue("isKeyEntry method returns true for noncertificate", keyTest
+				.isKeyEntry("alias1") == false);
 	}
 
 	/**
 	 * @tests java.security.KeyStore#load(java.io.InputStream, char[])
 	 */
-	public void test_loadLjava_io_InputStream$C() {
+	public void test_loadLjava_io_InputStream$C() throws Exception {
 		// Test for method void java.security.KeyStore.load(java.io.InputStream,
 		// char [])
-		try {
-			byte[] keyStore = creatCertificate();
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			InputStream in = new ByteArrayInputStream(keyStore);
-			keyTest.load(in, pssWord);
-			in.close();
-			assertTrue("alias1 is not a certificate", keyTest
-					.isCertificateEntry("alias1") == true);
-			assertTrue("alias2 is not a keyEntry",
-					keyTest.isKeyEntry("alias2") == true);
-			assertTrue("alias3 is not a certificate", keyTest
-					.isCertificateEntry("alias3") == true);
+		byte[] keyStore = creatCertificate();
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		InputStream in = new ByteArrayInputStream(keyStore);
+		keyTest.load(in, pssWord);
+		in.close();
+		assertTrue("alias1 is not a certificate", keyTest
+				.isCertificateEntry("alias1") == true);
+		assertTrue("alias2 is not a keyEntry",
+				keyTest.isKeyEntry("alias2") == true);
+		assertTrue("alias3 is not a certificate", keyTest
+				.isCertificateEntry("alias3") == true);
 
-			// test with null password
-			keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			in = new ByteArrayInputStream(keyStore);
-			keyTest.load(in, null);
-			in.close();
-			assertTrue("alias1 is not a certificate", keyTest
-					.isCertificateEntry("alias1") == true);
-			assertTrue("alias2 is not a keyEntry",
-					keyTest.isKeyEntry("alias2") == true);
-			assertTrue("alias3 is not a certificate", keyTest
-					.isCertificateEntry("alias3") == true);
+		// test with null password
+		keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		in = new ByteArrayInputStream(keyStore);
+		keyTest.load(in, null);
+		in.close();
+		assertTrue("alias1 is not a certificate", keyTest
+				.isCertificateEntry("alias1") == true);
+		assertTrue("alias2 is not a keyEntry",
+				keyTest.isKeyEntry("alias2") == true);
+		assertTrue("alias3 is not a certificate", keyTest
+				.isCertificateEntry("alias3") == true);
 
-			keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			InputStream v1in = Support_Resources.getStream("hyts_ks.bks");
-			char[] pass = "abcdef".toCharArray();
-			keyTest.load(v1in, pass);
-			v1in.close();
-			keyTest.getKey("mykey", pass);
-		} catch (UnrecoverableKeyException e) {
-			fail("Caught an UnrecoverableKeyException : " + e);
-		} catch (KeyStoreException e) {
-			fail("alias already exists for an untrusted certificate : " + e);
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("An IO problem was found when reading the keystore : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("The data integrity algorithm for the keystore "
-					+ "cannot be found : " + e);
-		}
+		keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		InputStream v1in = Support_Resources.getStream("hyts_ks.bks");
+		char[] pass = "abcdef".toCharArray();
+		keyTest.load(v1in, pass);
+		v1in.close();
+		keyTest.getKey("mykey", pass);
 	}
 
 	/**
 	 * @tests java.security.KeyStore#setCertificateEntry(java.lang.String,
 	 *        java.security.cert.Certificate)
 	 */
-	public void test_setCertificateEntryLjava_lang_StringLjava_security_cert_Certificate() {
+	public void test_setCertificateEntryLjava_lang_StringLjava_security_cert_Certificate()
+			throws Exception {
 		// Test for method void
 		// java.security.KeyStore.setCertificateEntry(java.lang.String,
 		// java.security.cert.Certificate)
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert = (X509Certificate) cf
-					.generateCertificate(certArray);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert = (X509Certificate) cf
+				.generateCertificate(certArray);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
 
-			PublicKey pub = cert.getPublicKey();
-			keyTest.setCertificateEntry("alias1", cert);
-			assertTrue(
-					"the entry specified by the alias alias1 is not a certificate",
-					keyTest.isCertificateEntry("alias1") == true);
-			java.security.cert.Certificate resultCert = keyTest
-					.getCertificate("alias1");
-			assertTrue(
-					"the public key of the certificate from getCertificate() did not equal the original certificate",
-					resultCert.getPublicKey() == pub);
-		} catch (KeyStoreException e) {
-			fail("alias already exists for an untrusted certificate : " + e);
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
-
+		PublicKey pub = cert.getPublicKey();
+		keyTest.setCertificateEntry("alias1", cert);
+		assertTrue(
+				"the entry specified by the alias alias1 is not a certificate",
+				keyTest.isCertificateEntry("alias1") == true);
+		java.security.cert.Certificate resultCert = keyTest
+				.getCertificate("alias1");
+		assertTrue(
+				"the public key of the certificate from getCertificate() did not equal the original certificate",
+				resultCert.getPublicKey() == pub);
 	}
 
 	/**
 	 * @tests java.security.KeyStore#setKeyEntry(java.lang.String, byte[],
 	 *        java.security.cert.Certificate[])
 	 */
-	public void test_setKeyEntryLjava_lang_String$B$Ljava_security_cert_Certificate() {
+	public void test_setKeyEntryLjava_lang_String$B$Ljava_security_cert_Certificate()
+			throws Exception {
 
 		fail("Test hangs - requires a full math implementation ??");
 
 		// Test for method void
 		// java.security.KeyStore.setKeyEntry(java.lang.String, byte [],
 		// java.security.cert.Certificate [])
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
-			// generator
-			KeyPairGenerator keyPairGenerator = KeyPairGenerator
-					.getInstance("DSA");
-			SecureRandom secureRandom = new SecureRandom();
-			keyPairGenerator.initialize(1024, secureRandom);
-			KeyPair keyPair = keyPairGenerator.genKeyPair();
-			// set the same alias as keyEntry
-			keyTest.setKeyEntry("alias2", keyPair.getPrivate().getEncoded(),
-					cert);
-			assertTrue(
-					"the entry specified by the alias alias2 is not a keyEntry",
-					keyTest.isKeyEntry("alias2"));
-		} catch (KeyStoreException e) {
-			fail("Setting keyEntry for the alias failed : " + e);
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
+
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
+		// generator
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA");
+		SecureRandom secureRandom = new SecureRandom();
+		keyPairGenerator.initialize(1024, secureRandom);
+		KeyPair keyPair = keyPairGenerator.genKeyPair();
+		// set the same alias as keyEntry
+		keyTest.setKeyEntry("alias2", keyPair.getPrivate().getEncoded(), cert);
+		assertTrue("the entry specified by the alias alias2 is not a keyEntry",
+				keyTest.isKeyEntry("alias2"));
 	}
 
 	/**
 	 * @tests java.security.KeyStore#setKeyEntry(java.lang.String,
 	 *        java.security.Key, char[], java.security.cert.Certificate[])
 	 */
-	public void test_setKeyEntryLjava_lang_StringLjava_security_Key$C$Ljava_security_cert_Certificate() {
-
-		fail("Test hangs - requires a full math implementation ??");
+	public void test_setKeyEntryLjava_lang_StringLjava_security_Key$C$Ljava_security_cert_Certificate()
+			throws Exception {
 
 		// Test for method void
 		// java.security.KeyStore.setKeyEntry(java.lang.String,
 		// java.security.Key, char [], java.security.cert.Certificate [])
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
-			// generator
-			KeyPairGenerator keyPairGenerator = KeyPairGenerator
-					.getInstance("DSA");
-			SecureRandom secureRandom = new SecureRandom();
-			keyPairGenerator.initialize(1024, secureRandom);
-			KeyPair keyPair = keyPairGenerator.genKeyPair();
-			PrivateKey privateKey = keyPair.getPrivate();
-			keyTest.setKeyEntry("alias3", privateKey, pssWord, cert);
-			assertTrue(
-					"the entry specified by the alias alias3 is not a keyEntry",
-					keyTest.isKeyEntry("alias3"));
-		} catch (KeyStoreException e) {
-			fail("Setting keyEntry for the alias failed : " + e);
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
+
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
+		// generator
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA");
+		SecureRandom secureRandom = new SecureRandom();
+		keyPairGenerator.initialize(1024, secureRandom);
+		KeyPair keyPair = keyPairGenerator.genKeyPair();
+		PrivateKey privateKey = keyPair.getPrivate();
+		keyTest.setKeyEntry("alias3", privateKey, pssWord, cert);
+		assertTrue("the entry specified by the alias alias3 is not a keyEntry",
+				keyTest.isKeyEntry("alias3"));
 	}
 
 	/**
 	 * @tests java.security.KeyStore#size()
 	 */
-	public void test_size() {
+	public void test_size() throws Exception {
 		// Test for method int java.security.KeyStore.size()
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			X509Certificate cert[] = new X509Certificate[2];
-			cert[0] = (X509Certificate) cf.generateCertificate(certArray);
-			cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
-			KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
-			keyTest.load(null, null);
-			// alias 1
-			PublicKey pub = cert[0].getPublicKey();
-			keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 2
-			keyTest.setCertificateEntry("alias2", cert[0]);
-			keyTest.setKeyEntry("alias2", pub, pssWord, cert);
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		X509Certificate cert[] = new X509Certificate[2];
+		cert[0] = (X509Certificate) cf.generateCertificate(certArray);
+		cert[1] = (X509Certificate) cf.generateCertificate(certArray2);
+		KeyStore keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyTest.load(null, null);
+		// alias 1
+		PublicKey pub = cert[0].getPublicKey();
+		keyTest.setCertificateEntry("alias1", cert[0]);
 
-			// alias 3
-			keyTest.setCertificateEntry("alias3", cert[1]);
+		// alias 2
+		keyTest.setCertificateEntry("alias2", cert[0]);
+		keyTest.setKeyEntry("alias2", pub, pssWord, cert);
 
-			assertTrue("the size of the keyStore is not 3", keyTest.size() == 3);
-		} catch (KeyStoreException e) {
-			fail("alias already exists for an untrusted certificate : " + e);
-		} catch (CertificateException e) {
-			fail("creating a certificate failed : " + e);
-		} catch (IOException e) {
-			fail("IOException occurred : " + e);
-		} catch (NoSuchAlgorithmException e) {
-			fail("NoSuchAlgorithmException occurred : " + e);
-		}
+		// alias 3
+		keyTest.setCertificateEntry("alias3", cert[1]);
+
+		assertTrue("the size of the keyStore is not 3", keyTest.size() == 3);
 	}
 
 	/**

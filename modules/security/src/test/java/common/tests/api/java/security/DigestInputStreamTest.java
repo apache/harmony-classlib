@@ -171,17 +171,6 @@ public class DigestInputStreamTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.security.DigestInputStream#toString()
-	 */
-	public void test_toString() {
-		// Test for method java.lang.String
-		// java.security.DigestInputStream.toString()
-		DigestInputStream dis = new DigestInputStream(inStream, digest);
-		assertEquals("[Digest Input Stream] SHA-1 Message Digest from "
-				+ digest.getProvider().getName() + ", <on>", dis.toString());
-	}
-
-	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
