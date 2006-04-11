@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry including="java/security/**" output="bin/kernel" kind="src" path="src.kernel"/>
-	<classpathentry output="bin/main" kind="src" path="src/main/java"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry output="bin/test" kind="src" path="src/test/java"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
