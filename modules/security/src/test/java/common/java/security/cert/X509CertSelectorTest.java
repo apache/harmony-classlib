@@ -2943,7 +2943,7 @@ public class X509CertSelectorTest extends TestCase {
 
         assertFalse("The null object should not match", 
                                     selector.match((X509Certificate) null));
-        assertTrue("The certificate should mathc the selector", 
+        assertTrue("The certificate should match the selector", 
                                     selector.match(cert));
     }
 
@@ -3040,7 +3040,7 @@ public class X509CertSelectorTest extends TestCase {
         selector.setMatchAllSubjectAltNames(true);
         selector.setPolicy(new HashSet(Arrays.asList(policies)));
 
-        assertTrue("The certificate should mathc the selector", 
+        assertTrue("The certificate should match the selector", 
                             ((X509CertSelector)selector.clone()).match(cert));
     }
 
