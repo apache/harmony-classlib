@@ -36,7 +36,6 @@ public class AllTests {
 		suite.addTestSuite(MessageFormatTest.class);
 		suite.addTestSuite(ChoiceFormatTest.class);
 		suite.addTestSuite(DataFormatFieldTest.class);
-		suite.addTestSuite(DecimalFormatTest.class);
 		//$JUnit-END$
 		return suite;
 	}
