@@ -45,6 +45,7 @@ public class AllTests {
 		suite.addTestSuite(DateTest.class);
 		suite.addTestSuite(EmptyStackExceptionTest.class);
 		suite.addTestSuite(EventObjectTest.class);
+        suite.addTestSuite(FormattableFlagsTest.class);
 		suite.addTestSuite(GregorianCalendarTest.class);
 		suite.addTestSuite(HashMapTest.class);
 		suite.addTestSuite(HashSetTest.class);
