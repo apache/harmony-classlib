@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -624,6 +624,17 @@ public final class URL implements java.io.Serializable {
 	 */
 	public URLConnection openConnection() throws IOException {
 		return strmHandler.openConnection(this);
+	}
+    
+    /**
+	 * Creates a URI related with this URL
+	 * 
+	 * @return a URI related to this URL
+	 * @throws URISyntaxException
+	 *             if this URL cannot format into URI
+	 */
+	public URI toURI() throws URISyntaxException {
+		return new URI(toExternalForm());
 	}
 
 	/**

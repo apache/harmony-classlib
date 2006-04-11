@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
@@ -1049,6 +1050,15 @@ public class URLTest extends junit.framework.TestCase {
 		;
 
 	}
+    
+    /**
+     * @tests java.net.URL#toURL()
+     */
+    public void test_toURI() throws Exception {
+        u = new URL("http://www.apache.org"); 
+        URI uri = u.toURI();
+        assertTrue(u.equals(uri.toURL()));
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
