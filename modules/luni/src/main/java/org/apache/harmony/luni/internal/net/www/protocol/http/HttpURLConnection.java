@@ -941,7 +941,7 @@ void doRequest() throws java.io.IOException {
 			connected = false;
 			// base64 encode the username and password
 			byte[] bytes = (pa.getUserName() + ":" + new String(pa.getPassword())).getBytes("ISO8859_1");
-			String encoded = new String(org.apache.harmony.luni.util.BASE64Encoder.encode(bytes), "ISO8859_1");
+			String encoded = org.apache.harmony.misc.Base64.encode(bytes, "ISO8859_1");
 			setRequestProperty("Authorization", scheme + " " + encoded);
 			continue;
 		}

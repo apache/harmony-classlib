@@ -25,8 +25,7 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import org.apache.harmony.luni.util.BASE64Decoder;
-import org.apache.harmony.luni.util.BASE64Encoder;
+import org.apache.harmony.misc.Base64;
 
 /**
  * This class is partly implementation of <code>Preferences</code>, which can be 
@@ -445,7 +444,7 @@ public abstract class AbstractPreferences extends Preferences {
             if (bavalue.length % 4 != 0) {
                 return deflt;
             }
-            dres = BASE64Decoder.decode(bavalue);
+            dres = Base64.decode(bavalue);
         } catch (Exception e) {
             dres = deflt;
         }
@@ -700,9 +699,8 @@ public abstract class AbstractPreferences extends Preferences {
      * @see java.util.prefs.Preferences#putByteArray(java.lang.String, byte[])
      */
     public void putByteArray(String key, byte[] value) {
-        byte[] result = BASE64Encoder.encode(value);
         try {
-            put(key, new String(result, "ascii")); //$NON-NLS-1$
+            put(key, Base64.encode(value, "ascii")); //$NON-NLS-1$
         } catch (UnsupportedEncodingException e) {
             //should not happen
         }

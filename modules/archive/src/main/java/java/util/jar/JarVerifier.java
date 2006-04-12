@@ -32,7 +32,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
-import org.apache.harmony.luni.util.BASE64Decoder;
+import org.apache.harmony.misc.Base64;
 
 import org.apache.harmony.security.utils.JarUtils;
 
@@ -366,7 +366,7 @@ class JarVerifier {
 	 */
 	void verifySignatures(VerifierEntry entry, ZipEntry zipEntry) {
 		byte[] digest = entry.digest.digest();
-		if (!MessageDigest.isEqual(digest, BASE64Decoder.decode(entry.hash)))
+		if (!MessageDigest.isEqual(digest, Base64.decode(entry.hash)))
 			/* [MSG "K00ec", "{0} has invalid digest for {1} in {2}"] */
 			throw new SecurityException(Msg.getString("K00ec", new Object[] {
 					JarFile.MANIFEST_NAME, zipEntry.getName(), jarName }));
@@ -422,7 +422,7 @@ class JarVerifier {
 			} catch (UnsupportedEncodingException e) {
 				throw new RuntimeException(e.toString());
 			}
-			return MessageDigest.isEqual(b, BASE64Decoder.decode(hashBytes));
+			return MessageDigest.isEqual(b, Base64.decode(hashBytes));
 		}
 		if (ignorable) {
 			return true;

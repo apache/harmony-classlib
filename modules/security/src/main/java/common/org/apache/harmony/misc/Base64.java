@@ -21,6 +21,8 @@
 
 package org.apache.harmony.misc;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * This class implements Base64 encoding/decoding functionality
  * as specified in RFC 2045 (http://www.ietf.org/rfc/rfc2045.txt).
@@ -32,59 +34,87 @@ public class Base64 {
     }
     
     public static byte[] decode(byte[] in, int len) {
+        // approximate output length
         int length = len / 4 * 3;
+        // temporary array
         byte[] out = new byte[length];
-        int pad = 0, index = 0, j = 0, bits = 0;
-        byte[] bytes = new byte[4];
+        // number of padding characters ('=')
+        int pad = 0;
         byte chr;
-        for (int i=0; i<len; i++) {
-            if (in[i] == '\n' || in[i] =='\r') {
+        // compute the number of the padding characters
+        // and adjust the length of the input
+        for (;;len--) {
+            chr = in[len-1];
+            // skip the neutral characters
+            if ((chr == '\n') || (chr == '\r') || 
+                    (chr == ' ') || (chr == '\t')) {
                 continue;
             }
+            if (chr == '=') {
+                pad++;
+            } else {
+                break;
+            }
+        }
+        // index in the output array
+        int out_index = 0;
+        // index in the input array
+        int in_index = 0;
+        // holds the value of the input character
+        int bits = 0;
+        // holds the value of the input quantum
+        int quantum = 0;
+        for (int i=0; i<len; i++) {
             chr = in[i];
-            // char ASCII value
-            //  +    43    62
-            //  /    47    63
-            //  0    48    52
-            //     .  .  .
-            //  9    57    61 (ASCII + 4)
-            //  =    61   pad
-            //  A    65    0
-            //     .  .  .
-            //  Z    90    25 (ASCII - 65)
-            //  a    97    26
-            //     .  .  .
-            //  z    122   51 (ASCII - 71)
-            if (chr == '+') {
+            // skip the neutral characters
+            if ((chr == '\n') || (chr == '\r') || 
+                    (chr == ' ') || (chr == '\t')) {
+                continue;
+            }
+            if ((chr >= 'A') && (chr <= 'Z')) {
+                // char ASCII value
+                //  A    65    0
+                //  Z    90    25 (ASCII - 65)
+                bits = chr - 65;
+            } else if ((chr >= 'a') && (chr <= 'z')) {
+                // char ASCII value
+                //  a    97    26
+                //  z    122   51 (ASCII - 71)
+                bits = chr - 71;
+            } else if ((chr >= '0') && (chr <= '9')) {
+                // char ASCII value
+                //  0    48    52
+                //  9    57    61 (ASCII + 4)
+                bits = chr + 4;
+            } else if (chr == '+') {
                 bits = 62;
             } else if (chr == '/') {
                 bits = 63;
-            } else if ((chr >= '0') && (chr <= '9')) {
-                bits = chr + 4;
-            } else if (chr == '=') {
-                bits = 0;
-                pad ++;
-            } else if ((chr >= 'A') && (chr <= 'Z')) {
-                bits = chr - 65;
-            } else if ((chr >= 'a') && (chr <= 'z')) {
-                bits = chr - 71;
             } else {
                 return null;
             }
-            bytes[j%4] = (byte) bits;
-            if (j%4 == 3) {
-                out[index++] = (byte) (bytes[0] << 2 | bytes[1] >> 4);
-                if (pad != 2) {
-                    out[index++] = (byte) (bytes[1] << 4 | bytes[2] >> 2);
-                    if (pad != 1) {
-                        out[index++] = (byte) (bytes[2] << 6 | bytes[3]);
-                    }
-                }
+            // append the value to the quantum
+            quantum = (quantum << 6) | (byte) bits;
+            if (in_index%4 == 3) {
+                // 4 characters were read, so make the output:
+                out[out_index++] = (byte) ((quantum & 0x00FF0000) >> 16);
+                out[out_index++] = (byte) ((quantum & 0x0000FF00) >> 8);
+                out[out_index++] = (byte) (quantum & 0x000000FF);
             }
-            j++;
+            in_index++;
         }
-        byte[] result = new byte[index];
-        System.arraycopy(out, 0, result, 0, index);
+        if (pad > 0) {
+            // adjust the quantum value according to the padding
+            quantum = quantum << (6*pad);
+            // make output
+            out[out_index++] = (byte) ((quantum & 0x00FF0000) >> 16);
+            if (pad == 1) {
+                out[out_index++] = (byte) ((quantum & 0x0000FF00) >> 8);
+            }
+        }
+        // create the resulting array
+        byte[] result = new byte[out_index];
+        System.arraycopy(out, 0, result, 0, out_index);
         return result;
     }
 
@@ -95,7 +125,7 @@ public class Base64 {
          'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', 
          '4', '5', '6', '7', '8', '9', '+', '/'};
 
-    public static String encode(byte[] in) {
+    public static String encode(byte[] in, String charsetName) throws UnsupportedEncodingException {
         int length = in.length * 4 / 3;
         length += length / 76 + 3; // for crlr
         byte[] out = new byte[length];
@@ -129,7 +159,7 @@ public class Base64 {
                 out[index++] = '=';
                 break;
         }
-        return new String(out, 0, index);
+        return new String(out, 0, index, charsetName);
     }
 }
 
