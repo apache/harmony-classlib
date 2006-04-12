@@ -123,12 +123,12 @@
 	<target name="touch-failures-file" if="test.failures">
 		<echo file="${hy.tests.reports}/test.failures"
 			append="true" >x-net
-		</echo>
+</echo>
 	</target>
 	<target name="touch-errors-file" if="test.errors">
 		<echo file="${hy.tests.reports}/test.errors"
 			append="true" >x-net
-		</echo>
+</echo>
 	</target>
 	
 	<target name="copy.resources">
