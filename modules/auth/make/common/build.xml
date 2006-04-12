@@ -33,6 +33,7 @@
 		<javac sourcepath=""
 			destdir="${hy.auth.bin.main}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<src>
@@ -63,6 +64,7 @@
 
 		<javac 	destdir="${hy.auth.bin.test}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<!-- FIXME: AUTH tests should not reach into security module code -->

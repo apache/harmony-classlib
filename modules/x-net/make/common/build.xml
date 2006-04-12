@@ -26,6 +26,7 @@
 			srcdir="${hy.x-net.src.main.java}"
 			destdir="${hy.x-net.bin.main}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -51,6 +52,7 @@
 
 		<javac 	destdir="${hy.x-net.bin.test}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
                     <!-- FIXME: X-NET tests should not reach into security module code -->

@@ -22,7 +22,12 @@
 
 		<mkdir dir="${hy.luni.bin.main}" />
 
-		<javac sourcepath="" srcdir="${hy.luni.src.main.java}" destdir="${hy.luni.bin.main}" source="${source.ver}" debug="${java.debug.option}">
+		<javac sourcepath=""
+			srcdir="${hy.luni.src.main.java}"
+			destdir="${hy.luni.bin.main}"
+			source="${source.ver}"
+			target="jsr14"
+			debug="${java.debug.option}">
 
 			<bootclasspath>
 				<fileset dir="${hy.target}/jre/lib/boot">
@@ -44,7 +49,12 @@
 
 		<mkdir dir="${hy.luni.bin.test}" />
 
-		<javac srcdir="${hy.luni.src.test.java}" destdir="${hy.luni.bin.test}" sourcepath="" source="${source.ver}" debug="${java.debug.option}">
+		<javac srcdir="${hy.luni.src.test.java}"
+			destdir="${hy.luni.bin.test}"
+			sourcepath=""
+			source="${source.ver}"
+			target="jsr14"
+			debug="${java.debug.option}">
 
 			<bootclasspath>
 				<fileset dir="${hy.target}/jre/lib/boot">

@@ -178,7 +178,7 @@
     <target name="compile-support" depends="copy-test-resources, check-support-jars"
     	description="Compile the unit test source">
     	<mkdir dir="${tests.build.output}" />
-        <javac destdir="${tests.build.output}" source="1.4" target="1.4" debug="on">
+        <javac destdir="${tests.build.output}" source="1.5" target="jsr14" debug="on">
             <src path="${support.dir}/src/test/java" />
             <src path="modules/archive/src/test/java" />
             <src path="modules/luni/src/test/java" />

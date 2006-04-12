@@ -71,9 +71,9 @@
 	<!-- Define the platform property dependant upon the OS and platform -->
 	<property name="hy.platform" value="${hy.os_family}.${hy.cpu_family}"/>
 
-	<!-- Set the java compiler to be the Eclipse Java compiler -->
-	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
-
+	<!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
+	     use the Eclipse Java compiler. But it does not support jsr14 target -->
+	<property name="build.compiler" value="modern" />
 
 	<target name="init">
 		<tstamp>
@@ -89,7 +89,7 @@
 		<property name="java.debug.option" value="on" />
 		<property name="native.debug.option" value="on" />
 
-		<property name="source.ver" value="1.4" />
+		<property name="source.ver" value="1.5" />
 	</target>
 	
 	<!-- TEXT TARGETS -->

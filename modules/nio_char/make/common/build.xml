@@ -26,6 +26,7 @@
 			srcdir="${hy.nio_char.src.main.java}"
 			destdir="${hy.nio_char.bin.main}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -53,6 +54,7 @@
 			destdir="${hy.nio_char.bin.test}"
 			sourcepath=""
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>

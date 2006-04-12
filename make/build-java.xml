@@ -244,7 +244,7 @@
             description="Compile the source">
         <mkdir dir="${build.output}" />
 
-        <javac destdir="${build.output}" source="1.4" target="1.4" debug="on">
+        <javac destdir="${build.output}" source="1.5" target="jsr14" debug="on">
             <src path="modules/applet/src/main/java" />
             <src path="modules/auth/src/main/java/common" />
             <src path="modules/auth/src/main/java/windows" />

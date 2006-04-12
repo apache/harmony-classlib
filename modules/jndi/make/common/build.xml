@@ -26,6 +26,7 @@
 			srcdir="${hy.jndi.src.main.java}"
 			destdir="${hy.jndi.bin.main}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -53,6 +54,7 @@
 			destdir="${hy.jndi.bin.test}"
 			sourcepath=""
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>

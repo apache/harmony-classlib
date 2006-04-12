@@ -26,6 +26,7 @@
 			srcdir="${hy.logging.src.main.java}"
 			destdir="${hy.logging.bin.main}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -54,6 +55,7 @@
 			destdir="${hy.logging.bin.injected}"
 			sourcepath=""
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -67,6 +69,7 @@
 			destdir="${hy.logging.bin.test}"
 			sourcepath=""
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>

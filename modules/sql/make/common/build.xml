@@ -26,6 +26,7 @@
 			srcdir="${hy.sql.src.main.java}"
 			destdir="${hy.sql.bin.main}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -53,6 +54,7 @@
 			destdir="${hy.sql.bin.test}"
 			sourcepath=""
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>

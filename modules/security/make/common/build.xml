@@ -28,6 +28,7 @@
 			srcdir="${hy.security.src.main.java}"
 			destdir="${hy.security.bin.main}"
 			source="${source.ver}"
+			target="jsr14"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -53,6 +54,7 @@
 		<javac 	destdir="${hy.security.bin.test}"
 			srcdir="${hy.security.src.test.java}"
 			source="${source.ver}"
+			target="jsr14"
 			sourcepath=""
 			debug="${java.debug.option}">
 
