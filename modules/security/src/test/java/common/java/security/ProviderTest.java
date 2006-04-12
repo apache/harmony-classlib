@@ -493,24 +493,31 @@ public class ProviderTest extends TestCase {
             fail("Incorrect class name "+ s.getClassName());
         }
     }
-    
+
+ /*
     public final void testService2() {
         Provider[] pp = Security.getProviders("MessageDigest.SHA-1");
         if (pp == null) {
             return;
         }
-        p = pp[0];
-        p.put("MessageDigest.SHA-1", "AnotherClassName");
-        Provider.Service s = p.getService("MessageDigest", "SHA-1");
-        if (!"AnotherClassName".equals(s.getClassName())) {
-            fail("Incorrect class name "+ s.getClassName());
-        }
+        Provider p2 = pp[0];
+        String old = p2.getProperty("MessageDigest.SHA-1");
         try {
-            s.newInstance(null);
-            fail("No expected NoSuchAlgorithmException");
-        } catch (NoSuchAlgorithmException e) {    
+            p2.put("MessageDigest.SHA-1", "AnotherClassName");
+            Provider.Service s = p2.getService("MessageDigest", "SHA-1");
+            if (!"AnotherClassName".equals(s.getClassName())) {
+                fail("Incorrect class name "+ s.getClassName());
+            }
+            try {
+                s.newInstance(null);
+                fail("No expected NoSuchAlgorithmException");
+            } catch (NoSuchAlgorithmException e) {    
+            }
+        } finally {
+            p2.put("MessageDigest.SHA-1", old);
         }
     }
+*/
 
     class MyProvider extends Provider {
         MyProvider() {

@@ -20,6 +20,7 @@ import java.security.AccessController;
 import java.security.AllPermission;
 import java.security.CodeSource;
 import java.security.DomainCombiner;
+import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Permissions;
 import java.security.PrivilegedAction;
@@ -35,7 +36,7 @@ public class DomainCombinerTest extends junit.framework.TestCase {
 	 */
 	public void test_combine$Ljava_security_ProtectionDomain$Ljava_security_ProtectionDomain() {
 		final boolean[] calledDomainCombiner = new boolean[] { false, false };
-		
+
 		class MyCombiner implements DomainCombiner {
 			int i;
 
@@ -52,7 +53,7 @@ public class DomainCombinerTest extends junit.framework.TestCase {
 				ProtectionDomain pd;
 				// if run with the system classloader then there will be no
 				// execution domains 
-				if (executionDomains.length > 0) { 
+				if (executionDomains.length > 0) {
 					pd = new ProtectionDomain(executionDomains[0]
 							.getCodeSource(), pc);
 				} else {
@@ -66,39 +67,38 @@ public class DomainCombinerTest extends junit.framework.TestCase {
 		ProtectionDomain[] domains = new ProtectionDomain[] { new ProtectionDomain(
 				new CodeSource(null, (Certificate[]) null), new Permissions()) };
 
-		final AccessControlContext parent = new AccessControlContext(domains);
-		final AccessControlContext c0 = new AccessControlContext(parent,
+		AccessControlContext parent = new AccessControlContext(domains);
+		AccessControlContext c0 = new AccessControlContext(parent,
 				new MyCombiner(0));
 		final AccessControlContext c1 = new AccessControlContext(parent,
 				new MyCombiner(1));
-		System.setSecurityManager(new SecurityManager());
+
+        
+        SecurityManager sm = new SecurityManager() {
+            public void checkPermission(Permission p) {
+                if( p == null || !"setSecurityManager".equals(p.getName()) ) {
+                    super.checkPermission(p);   
+                }
+            }
+        };
+        
+        System.setSecurityManager(sm);
 		try {
 			AccessController.doPrivileged(new PrivilegedAction() {
 				public Object run() {
-					try {
-						// AccessController.getContext();
-						AccessController
-								.checkPermission(new SecurityPermission(
-										"MyTest"));
+					// AccessController.getContext();
+					AccessController.checkPermission(new SecurityPermission(
+							"MyTest"));
 
-						AccessController.doPrivileged(new PrivilegedAction() {
-							public Object run() {
-								try {
-									AccessController
-											.checkPermission(new SecurityPermission(
-													"MyTest"));
-									return new Integer(1);
-								} catch (SecurityException ex) {
-									calledDomainCombiner[1] = false;
-									return new Integer(-1);
-								}
-							}
-						}, c1);
-						return new Integer(10);
-					} catch (SecurityException ex) {
-						calledDomainCombiner[0] = false;
-						return new Integer(-10);
-					}
+					AccessController.doPrivileged(new PrivilegedAction() {
+						public Object run() {
+							AccessController
+									.checkPermission(new SecurityPermission(
+											"MyTest"));
+							return null;
+						}
+					}, c1);
+					return null;
 				}
 			}, c0);
 			assertTrue("Failed to combine domains for security permission",

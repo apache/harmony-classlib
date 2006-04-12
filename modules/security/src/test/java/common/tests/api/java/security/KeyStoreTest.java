@@ -40,6 +40,7 @@ import tests.support.resource.Support_Resources;
 public class KeyStoreTest extends junit.framework.TestCase {
 
 	final char[] pssWord = { 'a', 'b', 'c' };
+        private Provider support_TestProvider;
 
 	// creating a certificate
 	String certificate = "-----BEGIN CERTIFICATE-----\n"
@@ -602,7 +603,14 @@ public class KeyStoreTest extends junit.framework.TestCase {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	protected void setUp() {
+	protected void setUp() throws Exception {
+                super.setUp();
 		Security.addProvider(new Support_TestProvider());
+	}
+
+
+	protected void tearDown() throws Exception {
+                super.tearDown();
+		Security.removeProvider(support_TestProvider.getName());
 	}
 }

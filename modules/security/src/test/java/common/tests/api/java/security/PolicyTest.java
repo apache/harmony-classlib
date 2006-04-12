@@ -15,7 +15,9 @@
 
 package tests.api.java.security;
 
+import java.security.AccessControlException;
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Policy;
 
@@ -34,37 +36,31 @@ public class PolicyTest extends junit.framework.TestCase {
 	 * @tests java.security.Policy#Policy()
 	 */
 	public void test_Constructor() {
-		try {
-			new TestPolicy();
-		} catch (Exception e) {
-			fail("Caught exception: " + e + " during construction");
-		}
+		new TestPolicy();
 	}
 
 	/**
 	 * @tests java.security.Policy#getPolicy()
 	 */
 	public void test_getPolicy() {
-		try {
-			assertNotNull("Got a null system security policy", Policy
-					.getPolicy());
-		} catch (Exception e) {
-			fail("Caught a " + e.toString() + " exception!");
-		}
+		assertNotNull("Got a null system security policy", Policy.getPolicy());
 
-		try {
-			// set a security manager and then try getting the policy
-			System.setSecurityManager(new SecurityManager());
+        SecurityManager sm = new SecurityManager() {
+            public void checkPermission(Permission p) {
+                if( p == null || !"setSecurityManager".equals(p.getName()) ) {
+                    super.checkPermission(p);   
+                }
+            }
+        };
+        
+        // set a security manager and then try getting the policy
+        System.setSecurityManager(sm);
 
-			assertNotNull("Got a null system security policy", Policy
-					.getPolicy());
+        try {
+			Policy.getPolicy();
 			fail("We shouldn't have been able to get the policy "
 					+ "with a SecurityManager in place!");
-		} catch (Exception e) {
-			assertTrue("Policy.getPolicy() should have thrown "
-					+ "a: java.security.AccessControlException but "
-					+ "instead threw a: " + e.toString(),
-					e instanceof java.security.AccessControlException);
+		} catch (AccessControlException e) {
 		} finally {
 			System.setSecurityManager(null);
 		}
@@ -83,8 +79,6 @@ public class PolicyTest extends junit.framework.TestCase {
 			// make sure it was set
 			assertEquals("Policy could not be set!", newPolicy, Policy
 					.getPolicy());
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
 		} finally {
 			// restore the policy
 			Policy.setPolicy(sysPolicy);

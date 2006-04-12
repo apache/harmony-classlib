@@ -71,7 +71,7 @@
 	        <mkdir dir="${hy.tests.reports}" />
 
 	        <junit fork="yes"
-			forkmode="perTest"
+			forkmode="once"
 			printsummary="withOutAndErr"
 			errorproperty="test.errors"
 			failureproperty="test.failures"
