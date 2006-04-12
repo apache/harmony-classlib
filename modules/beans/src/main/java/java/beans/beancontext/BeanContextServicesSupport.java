@@ -182,7 +182,6 @@ public class BeanContextServicesSupport extends BeanContextSupport
      */
     public BeanContextServicesSupport() {
         super();
-        System.out.println("DRL implementation");
     }
     
     /**
