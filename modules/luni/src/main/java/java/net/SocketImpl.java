@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -500,8 +500,24 @@ public abstract class SocketImpl implements SocketOptions {
 	 *                when an error occurs sending urgent data
 	 */
 	protected abstract void sendUrgentData(int value) throws IOException;
-
-//	static native boolean supportsUrgentDataImpl(FileDescriptor fd);
+    
+    /**
+     * sets performance preference for connectionTime,latency and bandwidth
+     * defaultly does nothing at all.
+     * @param connectionTime
+     *            the importance of connect time
+     * @param latency
+     *            the importance of latency
+     * @param bandwidth
+     *            the importance of bandwidth
+     */
+    protected void setPerformancePreferences(int connectionTime, int latency,
+            int bandwidth) {
+        // Our socket implementation only provide one protocol: TCP/IP, so 
+        // we do nothing for this method
+    }
+    
+// static native boolean supportsUrgentDataImpl(FileDescriptor fd);
 //
 //	static native boolean sendUrgentDataImpl(FileDescriptor fd, byte value);
 }

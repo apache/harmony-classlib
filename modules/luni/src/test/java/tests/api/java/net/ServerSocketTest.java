@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -880,6 +880,14 @@ public class ServerSocketTest extends SocketTestCase {
 		} catch (Exception e) {
 			handleException(e, SO_RCVBUF);
 		}
+	}
+	
+	/*
+	* @tests java.net.ServerSocket#setPerformancePreference()
+	*/
+	public void test_setPerformancePreference_Int_Int_Int() throws Exception {
+		ServerSocket theSocket = new ServerSocket();
+		theSocket.setPerformancePreferences(1,1,1);
 	}
 
 	/**

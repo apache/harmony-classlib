@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2498,6 +2498,14 @@ public class SocketTest extends SocketTestCase {
 		}
 	}
 
+	/*
+	* @tests java.net.Socket#setPerformancePreference()
+	*/
+	public void test_setPerformancePreference_Int_Int_Int() throws Exception {
+		Socket theSocket = new Socket();
+		theSocket.setPerformancePreferences(1,1,1);
+	}
+	
 	/**
 	 * 
 	 */

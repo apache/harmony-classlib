@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class ServerSocket {
 	private boolean isBound = false;
 
 	private boolean isClosed = false;
-
+	
 	/**
 	 * Construct a ServerSocket, which is not bound to any port. The default
 	 * number of pending connections may be backlogged.
@@ -500,4 +500,21 @@ public class ServerSocket {
 		checkClosedAndCreate(true);
 		return ((Integer) impl.getOption(SocketOptions.SO_RCVBUF)).intValue();
 	}
+	
+    /**
+	 * sets performance preference for connectionTime,latency and bandwidth
+	 * 
+	 * @param connectionTime
+	 *            the importance of connect time
+	 * @param latency
+	 *            the importance of latency
+	 * @param bandwidth
+	 *            the importance of bandwidth
+	 */
+    public void setPerformancePreferences(int connectionTime, int latency,
+            int bandwidth) {
+        // Our socket implementation only provide one protocol: TCP/IP, so 
+        // we do nothing for this method
+    }
+
 }
