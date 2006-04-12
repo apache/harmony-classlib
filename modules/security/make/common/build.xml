@@ -73,7 +73,8 @@
 	        <junit fork="yes"
 			forkmode="perTest"
 			printsummary="withOutAndErr"
-			errorproperty="test.error"
+			errorproperty="test.errors"
+			failureproperty="test.failures"
 			showoutput="on"
 			dir="${hy.security.bin.test}"
 			jvm="${hy.target}/jre/bin/java">
@@ -123,8 +124,20 @@
 				</fileset>
 			</batchtest>
 		</junit>
+		<antcall target="touch-failures-file" />
+		<antcall target="touch-errors-file" />
 	</target>
 	
+	<target name="touch-failures-file" if="test.failures">
+		<echo file="${hy.tests.reports}/test.failures"
+			append="true" >security
+		</echo>
+	</target>
+	<target name="touch-errors-file" if="test.errors">
+		<echo file="${hy.tests.reports}/test.errors"
+			append="true" >security
+		</echo>
+	</target>
 	
 	<target name="copy.resources">
 		<!-- Nothing for SECURITY -->

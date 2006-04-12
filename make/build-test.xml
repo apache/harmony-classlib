@@ -33,7 +33,7 @@
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
-		depends="clean, test-security, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-logging, test-jndi, test-sql, test-prefs, test-beans, test-math, test-crypto, test-auth, gen-report">
+		depends="clean, test-security, test-luni, test-archive, test-text, test-nio, test-xnet, test-nio_char, test-logging, test-jndi, test-sql, test-prefs, test-beans, test-math, test-crypto, test-auth, gen-report, check-test-result">
 	</target>
 
 	<target name="clean">
@@ -195,6 +195,15 @@
     	
     </target>
 	
+    <target name="check-test-result">
+        <available property="test.errors"
+            file="${tests.output}/test.errors" />
+        <available property="test.failures"
+            file="${tests.output}/test.failures" />
+        <fail if="test.errors" message="There were test errors." />
+        <fail if="test.failures" message="There were test failures." />
+    </target>
+
     <!-- ================================= 
           target: copy-test-resources              
          ================================= -->

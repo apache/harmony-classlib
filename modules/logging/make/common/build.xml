@@ -87,7 +87,8 @@
 	        <junit fork="yes"
 			forkmode="once"
 			printsummary="withOutAndErr"
-			errorproperty="test.error"
+			errorproperty="test.errors"
+			failureproperty="test.failures"
 			showoutput="on"
 			dir="${hy.logging.bin.test}"
 			jvm="${hy.target}/jre/bin/java">
@@ -125,8 +126,20 @@
 				</fileset>
 			</batchtest>
 		</junit>
+		<antcall target="touch-failures-file" />
+		<antcall target="touch-errors-file" />
 	</target>
 	
+	<target name="touch-failures-file" if="test.failures">
+		<echo file="${hy.tests.reports}/test.failures"
+			append="true" >logging
+		</echo>
+	</target>
+	<target name="touch-errors-file" if="test.errors">
+		<echo file="${hy.tests.reports}/test.errors"
+			append="true" >logging
+		</echo>
+	</target>
 	
 	<target name="copy.resources">
             <copy todir="${hy.target}/jre/lib" overwrite="yes" flatten="yes">
