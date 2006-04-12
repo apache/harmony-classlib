@@ -412,9 +412,9 @@ public class FileTest extends junit.framework.TestCase {
 
 			f1 = new File(base);
 			try {
-				f1.createNewFile();
-				fail("IOException expected in createNewFile with file is existing directory");
+				assertFalse(f1.createNewFile());
 			} catch (IOException innerE) {
+                fail("Incorrectly threw IOException from createNewFile when file is existing directory");
 			}
 		} catch (IOException e) {
 			fail("Unexpected IOException During Test: " + e);

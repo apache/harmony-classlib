@@ -81,6 +81,7 @@
 
 			<classpath>
 				<pathelement path="${hy.luni.bin.test}" />
+				<pathelement path="../../../../build/tests" />
 			</classpath>
 
 			<formatter type="xml" />
@@ -92,7 +93,6 @@
 					<exclude name="**/BufferedReaderTest.java" />
 					<exclude name="**/BufferedWriterTest.java" />
 					<exclude name="**/FileInputStreamTest.java" />
-					<exclude name="**/FileTest.java" />
 					<exclude name="**/FilterInputStreamTest.java" />
 					<exclude name="**/InputStreamReaderTest.java" />
 					<exclude name="**/NotSerializableExceptionTest.java" />
