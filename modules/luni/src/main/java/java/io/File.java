@@ -1030,9 +1030,8 @@ public class File implements Serializable, Comparable {
 		case 0:
 			return true;
 		case 1:
-			return false;
 		case 3:
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K01c1")); //$NON-NLS-1$
+			return false;
 		default:
 			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K01c2", path)); //$NON-NLS-1$
 		}
