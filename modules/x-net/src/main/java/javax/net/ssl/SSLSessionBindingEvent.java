@@ -29,6 +29,12 @@ import java.util.EventObject;
  * 
  */
 public class SSLSessionBindingEvent extends EventObject implements Serializable {
+
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = 3989172637106345L;
+
     private String name;
 
     public SSLSessionBindingEvent(SSLSession session, String name) {

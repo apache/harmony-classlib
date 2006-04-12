@@ -34,6 +34,11 @@ import java.util.EventObject;
 public class HandshakeCompletedEvent extends EventObject implements
         Serializable {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = 7914963744257769778L;
+
     private transient SSLSession session;
 
     public HandshakeCompletedEvent(SSLSocket sock, SSLSession s) {
