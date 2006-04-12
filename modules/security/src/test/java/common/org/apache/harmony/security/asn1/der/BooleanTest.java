@@ -39,14 +39,6 @@ import org.apache.harmony.security.asn1.DerOutputStream;
  */
 public class BooleanTest extends TestCase {
 
-    /**
-     * Constructor for BooleanTest.
-     * @param arg0
-     */
-    public BooleanTest(String arg0) {
-        super(arg0);
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(BooleanTest.class);
     }
@@ -55,16 +47,26 @@ public class BooleanTest extends TestCase {
 
     private static byte[] eTrue = new byte[] { 0x01, 0x01, (byte) 0xFF };
 
-    public void testDecode_Valid() throws IOException {
+    public void test_Decode_Encode() throws IOException {
+
+        // oid decoder/encoder for testing
+        ASN1Boolean asn1 = ASN1Boolean.getInstance();
 
         // decoding false
         DerInputStream in = new DerInputStream(eFalse);
-        assertEquals("False", Boolean.FALSE, ASN1Boolean.getInstance().decode(
-                in));
+        assertEquals("Decoding false value", Boolean.FALSE, asn1.decode(in));
 
         // decoding true
         in = new DerInputStream(eTrue);
-        assertEquals("True", Boolean.TRUE, ASN1Boolean.getInstance().decode(in));
+        assertEquals("Decoding true value", Boolean.TRUE, asn1.decode(in));
+
+        // encoding false
+        DerOutputStream out = new DerOutputStream(asn1, Boolean.FALSE);
+        assertTrue("Encoding false value", Arrays.equals(eFalse, out.encoded));
+
+        // encoding true
+        out = new DerOutputStream(asn1, Boolean.TRUE);
+        assertTrue("Encoding true value", Arrays.equals(eTrue, out.encoded));
     }
 
     public void testDecode_Invalid() throws IOException {
@@ -85,17 +87,5 @@ public class BooleanTest extends TestCase {
             } catch (ASN1Exception e) {
             }
         }
-    }
-
-    public void testEncode() throws IOException {
-
-        // encoding false
-        DerOutputStream out = new DerOutputStream(ASN1Boolean.getInstance(),
-                Boolean.FALSE);
-        assertTrue("False", Arrays.equals(eFalse, out.encoded));
-
-        // encoding true
-        out = new DerOutputStream(ASN1Boolean.getInstance(), Boolean.TRUE);
-        assertTrue("True", Arrays.equals(eTrue, out.encoded));
     }
 }
