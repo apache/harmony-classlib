@@ -22,7 +22,7 @@ Version: $Revision$
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <TITLE>ASN.1 Framework</TITLE>
-<LINK rel="Stylesheet" type="text/css" media="all" href="drl.css">
+<LINK rel="Stylesheet" type="text/css" media="all" href="harmony.css">
 </HEAD>
 <BODY>
 <H1 align="center"><A name="Top"></A>ASN.1 Framework</H1>
@@ -35,10 +35,10 @@ Version: $Revision$
 <p class="TOCHeading"><A href="#Overview">Introduction to ASN.1</A> </p>
 <p class="TOC"><A href="#About">About</A> </p>
 <p class="TOC"><A href="#Basic_Types">ASN.1 Basic Types</A> </p>
-<p class="TOCHeading"><A href="#Implementation">ASN.1 Framework in DRL</A></p>
+<p class="TOCHeading"><A href="#Implementation">ASN.1 Framework in Harmony</A></p>
 <p class="TOC"><a href="#About_ASN_Framework">About</a></p>
 <p class="TOC"><A href="#Mapping_ASN_Java">Mapping between ASN.1 and Java Types</A></p>
-<p class="TOC"><A href="#DRL_Classes">DRL ASN.1 Classes</A></p>
+<p class="TOC"><A href="#Harmony_Classes">Harmony ASN.1 Classes</A></p>
 <p class="TOC"><A href="#Encoding_Rules">Encoding Rules</A> </p>
 <p class="TOC"><A href="#Notations_Implementation">Implementing ASN.1 Notations</A></p>
 <p class="TOCHeading"><A href="#Appendix">Appendix: Usage Examples</A> </p>
@@ -76,7 +76,7 @@ Version: $Revision$
 <H1><A name="About_this_document"></A>About This Document</H1>
 <H2><A name="Purpose"></A>Purpose</H2>
 <P>This document introduces the ASN.1 (Abstract Syntax Notation) framework delivered 
-  as part of the DRL (Dynamic Run-time Layer) initiative. This document provides 
+  as part of the Harmony classlibrary. This document provides
   an overview of ASN.1 types and encoding rules with focus on the characteristics 
   of the current implementation. The document gives details on the framework design 
   and provides an overall description of the ASN.1 package. </p>
@@ -87,7 +87,7 @@ Version: $Revision$
   ASN.1 notation and the Java<a href="#*">*</a> programming language. </P>
 <H2><A name="Documentation_Conventions"></A>Documentation Conventions</H2>
 <P>This document uses the <A href="conventions.htm">unified conventions</A> for 
-  the DRL documentation kit.</P>
+  the Harmony documentation kit.</P>
 <P class="backtotop"><A href="#Top">Back to Top</A></P>
 <H1><A name="Overview"></A>Introduction to ASN.1</H1>
 <H2><A name="About"></A>About</H2>
@@ -144,8 +144,8 @@ Version ::= INTEGER { v1(0), v2(1), v3(2) }
   this type.</P>
 
 <P class="backtotop"><A href="#Top">Back to Top</A></P>
-<H1><A name="Implementation"></A>ASN.1 Framework in DRL</H1>
-<P>This section part of the document describes the ASN.1 DRL framework as a whole, 
+<H1><A name="Implementation"></A>ASN.1 Framework in Harmony</H1>
+<P>This section part of the document describes the ASN.1 framework as a whole,
   defines the mapping principles to establish the correspondence between ASN.1 
   and Java<A href="#*">*</A> types, and represents the hierarchy of ASN.1 types 
   representation in the current framework.</P>
@@ -157,7 +157,7 @@ Version ::= INTEGER { v1(0), v2(1), v3(2) }
 <P></P>
 <P align="center"><IMG src="images/ASN_framework.gif" alt="overview"></P>
 <P  class="special" style="text-align: center" >Figure 1: ASN.1 Framework Layer</P>
-<P>The DRL ASN.1 framework is characterized by:</P>
+<P>The Harmony ASN.1 framework is characterized by:</P>
 <UL>
   <LI>A clear API for decoding and encoding objects 
   <LI>Low resource consuming 
@@ -359,7 +359,7 @@ public class Extensions {
   </TR>
 </TABLE>
 <P class="backtotop"><A href="#Top">Back to Top</A></P>
-<H2><A name="DRL_Classes"></A>DRL ASN.1 Classes</H2>
+<H2><A name="Harmony_Classes"></A>Harmony ASN.1 Classes</H2>
 <P>Basic ASN.1 types are in the <CODE>org.apache.harmony.security.asn1</CODE> package 
   in accordance with the hierarchy shown in Figure 2.</P>
 <P align="center"><IMG src="images/package_content.gif" alt="package" width="469" height="352"></P>
