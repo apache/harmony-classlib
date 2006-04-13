@@ -22,11 +22,11 @@ package java.util;
  * not support adding or replacing. A subclass must implement the abstract
  * methods get() and size().
  */
-public abstract class AbstractList extends AbstractCollection implements List {
+public abstract class AbstractList<E> extends AbstractCollection<E> implements List<E> {
 
 	protected transient int modCount = 0;
 
-	private class SimpleListIterator implements Iterator {
+	private class SimpleListIterator implements Iterator<E> {
 		int pos = -1, expectedModCount;
 
 		int lastPosition = -1;
@@ -39,10 +39,10 @@ public abstract class AbstractList extends AbstractCollection implements List {
 			return pos + 1 < size();
 		}
 
-		public Object next() {
+		public E next() {
 			if (expectedModCount == modCount) {
 				try {
-					Object result = get(pos + 1);
+					E result = get(pos + 1);
 					lastPosition = ++pos;
 					return result;
 				} catch (IndexOutOfBoundsException e) {
@@ -70,7 +70,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	}
 
 	private final class FullListIterator extends SimpleListIterator implements
-			ListIterator {
+			ListIterator<E> {
 		FullListIterator(int start) {
 			if (0 <= start && start <= size())
 				pos = start - 1;
@@ -78,7 +78,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 				throw new IndexOutOfBoundsException();
 		}
 
-		public void add(Object object) {
+		public void add(E object) {
 			if (expectedModCount == modCount) {
 				try {
 					AbstractList.this.add(pos + 1, object);
@@ -101,10 +101,10 @@ public abstract class AbstractList extends AbstractCollection implements List {
 			return pos + 1;
 		}
 
-		public Object previous() {
+		public E previous() {
 			if (expectedModCount == modCount) {
 				try {
-					Object result = get(pos);
+					E result = get(pos);
 					lastPosition = pos;
 					pos--;
 					return result;
@@ -119,7 +119,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 			return pos;
 		}
 
-		public void set(Object object) {
+		public void set(E object) {
 			if (expectedModCount == modCount) {
 				try {
 					AbstractList.this.set(lastPosition, object);
@@ -353,7 +353,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public void add(int location, Object object) {
+	public void add(int location, E object) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -373,7 +373,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * @exception IllegalArgumentException
 	 *                when the object cannot be added to this List
 	 */
-	public boolean add(Object object) {
+	public boolean add(E object) {
 		add(size(), object);
 		return true;
 	}
@@ -399,8 +399,8 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public boolean addAll(int location, Collection collection) {
-		Iterator it = collection.iterator();
+	public boolean addAll(int location, Collection<? extends E> collection) {
+		Iterator<E> it = collection.iterator();
 		while (it.hasNext())
 			add(location++, it.next());
 		return !collection.isEmpty();
@@ -463,7 +463,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public abstract Object get(int location);
+	public abstract E get(int location);
 
 	/**
 	 * Answers an integer hash code for the receiver. Objects which are equal
@@ -516,7 +516,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * 
 	 * @see Iterator
 	 */
-	public Iterator iterator() {
+	public Iterator<E> iterator() {
 		return new SimpleListIterator();
 	}
 
@@ -552,7 +552,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * 
 	 * @see ListIterator
 	 */
-	public ListIterator listIterator() {
+	public ListIterator<E> listIterator() {
 		return listIterator(0);
 	}
 
@@ -571,7 +571,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * 
 	 * @see ListIterator
 	 */
-	public ListIterator listIterator(int location) {
+	public ListIterator<E> listIterator(int location) {
 		return new FullListIterator(location);
 	}
 
@@ -588,7 +588,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public Object remove(int location) {
+	public E remove(int location) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -635,7 +635,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public Object set(int location, Object object) {
+	public E set(int location, E object) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -644,7 +644,7 @@ public abstract class AbstractList extends AbstractCollection implements List {
 	 * 
 	 * @see java.util.List#subList(int, int)
 	 */
-	public List subList(int start, int end) {
+	public List<E> subList(int start, int end) {
 		if (0 <= start && end <= size()) {
 			if (start <= end) {
 				if (this instanceof RandomAccess)

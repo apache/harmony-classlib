@@ -28,7 +28,7 @@ package java.lang;
  * true.
  * 
  */
-public interface Comparable {
+public interface Comparable<T> {
 	
 	/**
 	 * Answers an integer indicating the relative positions of the receiver and
@@ -45,5 +45,5 @@ public interface Comparable {
 	 *             if the argument can not be converted into something
 	 *             comparable with the receiver.
 	 */
-	int compareTo(Object another);
+	int compareTo(T another);
 }

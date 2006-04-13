@@ -187,7 +187,7 @@ public class AlgorithmParameters {
      * @com.intel.drl.spec_ref
      *  
      */
-    public final AlgorithmParameterSpec getParameterSpec(Class paramSpec)
+    public final <T extends AlgorithmParameterSpec> T getParameterSpec(Class<T> paramSpec)
             throws InvalidParameterSpecException {
         if (!initialized) {
             throw new InvalidParameterSpecException(

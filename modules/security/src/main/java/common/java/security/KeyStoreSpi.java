@@ -104,7 +104,7 @@ public abstract class KeyStoreSpi {
      * 
      * FIXME: 1.5 updates are needed Enumeration <String>
      */
-    public abstract Enumeration engineAliases();
+    public abstract Enumeration<String> engineAliases();
 
     /**
      * @com.intel.drl.spec_ref
@@ -303,7 +303,8 @@ public abstract class KeyStoreSpi {
      * 
      * FIXME: 1.5 updates Class <? extends KeyStore.Entry> should be done
      */
-    public boolean engineEntryInstanceOf(String alias, Class entryClass) {
+    public boolean engineEntryInstanceOf(String alias, 
+            Class<? extends KeyStore.Entry> entryClass) {
         if (!engineContainsAlias(alias)) {
             return false;
         }

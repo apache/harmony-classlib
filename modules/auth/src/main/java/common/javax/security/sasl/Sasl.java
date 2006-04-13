@@ -179,7 +179,7 @@ public class Sasl {
      * @com.intel.drl.spec_ref
      *  
      */
-    public static Enumeration getSaslClientFactories() {
+    public static Enumeration<SaslClientFactory> getSaslClientFactories() {
         //        Vector res = findFactories(CLIENTFACTORYSRV);
         Collection res = findFactories(CLIENTFACTORYSRV);
         return Collections.enumeration(res);
@@ -190,7 +190,7 @@ public class Sasl {
      * @com.intel.drl.spec_ref
      *  
      */
-    public static Enumeration getSaslServerFactories() {
+    public static Enumeration<SaslServerFactory> getSaslServerFactories() {
         //        Vector res = findFactories(SERVERFACTORYSRV);
         Collection res = findFactories(SERVERFACTORYSRV);
         return Collections.enumeration(res);
@@ -201,7 +201,7 @@ public class Sasl {
      *  
      */
     public static SaslServer createSaslServer(String mechanism,
-            String protocol, String serverName, Map prop, CallbackHandler cbh)
+            String protocol, String serverName, Map<String,?> prop, CallbackHandler cbh)
             throws SaslException {
         if (mechanism == null) {
             throw new NullPointerException("mechanism is null");
@@ -244,7 +244,7 @@ public class Sasl {
      */
     public static SaslClient createSaslClient(String[] mechanisms,
             String authanticationID, String protocol, String serverName,
-            Map prop, CallbackHandler cbh) throws SaslException {
+            Map<String,?> prop, CallbackHandler cbh) throws SaslException {
         if (mechanisms == null) {
             throw new NullPointerException("mechanisms is null");
         }

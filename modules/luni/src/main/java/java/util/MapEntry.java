@@ -19,19 +19,20 @@ package java.util;
 /**
  * MapEntry is an internal class which provides an implementation of Map.Entry.
  */
-class MapEntry implements Map.Entry, Cloneable {
+class MapEntry<K,V> implements Map.Entry<K,V>, Cloneable {
 	
-	Object key, value;
+	K key;
+    V value;
 
 	interface Type {
 		Object get(MapEntry entry);
 	}
 
-	MapEntry(Object theKey) {
+	MapEntry(K theKey) {
 		key = theKey;
 	}
 
-	MapEntry(Object theKey, Object theValue) {
+	MapEntry(K theKey, V theValue) {
 		key = theKey;
 		value = theValue;
 	}
@@ -57,11 +58,11 @@ class MapEntry implements Map.Entry, Cloneable {
 			return false;
 	}
 
-	public Object getKey() {
+	public K getKey() {
 		return key;
 	}
 
-	public Object getValue() {
+	public V getValue() {
 		return value;
 	}
 
@@ -70,8 +71,8 @@ class MapEntry implements Map.Entry, Cloneable {
 				^ (value == null ? 0 : value.hashCode());
 	}
 
-	public Object setValue(Object object) {
-		Object result = value;
+	public V setValue(V object) {
+		V result = value;
 		value = object;
 		return result;
 	}

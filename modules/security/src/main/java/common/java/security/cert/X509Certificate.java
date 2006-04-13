@@ -147,7 +147,7 @@ public abstract class X509Certificate
     /**
      * @com.intel.drl.spec_ref
      */
-    public List/*<String>*/ getExtendedKeyUsage()
+    public List<String> getExtendedKeyUsage()
                         throws CertificateParsingException {
         return null;
     }
@@ -160,7 +160,7 @@ public abstract class X509Certificate
     /**
      * @com.intel.drl.spec_ref
      */
-    public Collection/*<List<?>>*/ getSubjectAlternativeNames()
+    public Collection<List<?>> getSubjectAlternativeNames()
                                     throws CertificateParsingException {
         return null;
     }
@@ -168,7 +168,7 @@ public abstract class X509Certificate
     /**
      * @com.intel.drl.spec_ref
      */
-    public Collection/*<List<?>>*/ getIssuerAlternativeNames()
+    public Collection<List<?>> getIssuerAlternativeNames()
                                     throws CertificateParsingException {
         return null;
     }

@@ -34,7 +34,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * @see Hashtable
  * @see java.lang.System#getProperties
  */
-public class Properties extends Hashtable {
+public class Properties extends Hashtable<Object,Object> {
 	
 	private static final long serialVersionUID = 4112578634029874840L;
 

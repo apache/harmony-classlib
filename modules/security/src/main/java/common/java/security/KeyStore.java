@@ -309,7 +309,7 @@ public class KeyStore {
      * 
      * FIXME: update to Enumeration <String>
      */
-    public final Enumeration aliases() throws KeyStoreException {
+    public final Enumeration<String> aliases() throws KeyStoreException {
         if (!isInit) {
             throw new KeyStoreException(NOTINITKEYSTORE);
         }
@@ -487,7 +487,8 @@ public class KeyStore {
      * 
      * FIXME: for 1.5 update to Class <? extends KeyStore.Entry>
      */
-    public final boolean entryInstanceOf(String alias, Class entryClass)
+    public final boolean entryInstanceOf(String alias, 
+            Class<? extends KeyStore.Entry> entryClass)
             throws KeyStoreException {
         if (alias == null)
             throw new NullPointerException("alias is null");

@@ -150,7 +150,7 @@ public abstract class X509CRL extends CRL implements X509Extension {
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract Set/*<? extends X509CRLEntry>*/ getRevokedCertificates();
+    public abstract Set<? extends X509CRLEntry> getRevokedCertificates();
 
     /**
      * @com.intel.drl.spec_ref

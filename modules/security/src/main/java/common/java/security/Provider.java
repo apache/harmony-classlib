@@ -198,7 +198,7 @@ public abstract class Provider extends Properties {
      * @com.intel.drl.spec_ref
      *  
      */
-    public synchronized void putAll(Map t) {
+    public synchronized void putAll(Map<?,?> t) {
 
         // Implementation note:
         // checkSecurityAccess method call is NOT specified
@@ -211,7 +211,7 @@ public abstract class Provider extends Properties {
         myPutAll(t);
     }
 
-    private void myPutAll(Map t) {
+    private void myPutAll(Map<?,?> t) {
         if (changedProperties == null) {
             changedProperties = new Properties();
         }
@@ -242,7 +242,7 @@ public abstract class Provider extends Properties {
      * @com.intel.drl.spec_ref
      *  
      */
-    public synchronized Set entrySet() {
+    public synchronized Set<Map.Entry<Object,Object>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
 
@@ -250,7 +250,7 @@ public abstract class Provider extends Properties {
      * @com.intel.drl.spec_ref
      *  
      */
-    public Set keySet() {
+    public Set<Object> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
@@ -258,7 +258,7 @@ public abstract class Provider extends Properties {
      * @com.intel.drl.spec_ref
      *  
      */
-    public Collection values() {
+    public Collection<Object> values() {
         return Collections.unmodifiableCollection(super.values());
     }
 
@@ -460,7 +460,7 @@ public abstract class Provider extends Properties {
      * @com.intel.drl.spec_ref
      *  
      */
-    public synchronized Set getServices() {
+    public synchronized Set<Provider.Service> getServices() {
         //FIXME 1.5 signature public Set<Provider.Service> getServices() {
         updatePropertyServiceTable();
         if (lastServicesSet != null) {
@@ -648,8 +648,8 @@ public abstract class Provider extends Properties {
 
     // Update provider Servises if the properties was changed
     private void updatePropertyServiceTable() {
-        Object key;
-        Object value;
+        Object _key;
+        Object _value;
         Provider.Service s;
         String serviceName;
         String algorithm;
@@ -659,20 +659,21 @@ public abstract class Provider extends Properties {
         for (Iterator it = changedProperties.entrySet().iterator(); it
                 .hasNext();) {
             Map.Entry entry = (Map.Entry) it.next();
-            key = entry.getKey();
-            value = entry.getValue();
-            if (key == null || value == null || !(key instanceof String)
-                    || !(value instanceof String)) {
+            _key = entry.getKey();
+            _value = entry.getValue();
+            if (_key == null || _value == null || !(_key instanceof String)
+                    || !(_value instanceof String)) {
                 continue;
             }
-            String k = (String) key;
-            if (k.startsWith("Provider")) { // Provider service type is reserved
+            String key = (String) _key;
+            String value = (String) _value;
+            if (key.startsWith("Provider")) { // Provider service type is reserved
                 continue;
             }
             int i;
-            if (k.startsWith("Alg.Alias.")) { // Alg.Alias.<crypto_service>.<aliasName>=<stanbdardName>
+            if (key.startsWith("Alg.Alias.")) { // Alg.Alias.<crypto_service>.<aliasName>=<stanbdardName>
                 String aliasName;
-                String service_alias = k.substring(10);
+                String service_alias = key.substring(10);
                 i = service_alias.indexOf(".");
                 serviceName = service_alias.substring(0, i);
                 aliasName = service_alias.substring(i + 1);
@@ -713,14 +714,14 @@ public abstract class Provider extends Properties {
                 }
                 continue;
             }
-            int j = k.indexOf(".");
+            int j = key.indexOf(".");
             if (j == -1) { // unknown format
                 continue;
             }
-            i = k.indexOf(" ");
+            i = key.indexOf(" ");
             if (i == -1) { // <crypto_service>.<algorithm_or_type>=<className>
-                serviceName = k.substring(0, j);
-                algorithm = k.substring(j + 1);
+                serviceName = key.substring(0, j);
+                algorithm = key.substring(j + 1);
                 String alg = algorithm.toUpperCase();
                 Object o = null;
                 if (propertyServiceTable != null) {
@@ -743,9 +744,9 @@ public abstract class Provider extends Properties {
                 }
             } else { // <crypto_service>.<algorithm_or_type>
                      // <attribute_name>=<attrValue>
-                serviceName = k.substring(0, j);
-                algorithm = k.substring(j + 1, i);
-                String attribute = k.substring(i + 1);
+                serviceName = key.substring(0, j);
+                algorithm = key.substring(j + 1, i);
+                String attribute = key.substring(i + 1);
                 String alg = algorithm.toUpperCase();
                 Object o = null;
                 if (propertyServiceTable != null) {
@@ -830,10 +831,10 @@ public abstract class Provider extends Properties {
         private String className;
 
         // The aliases
-        private List aliases;
+        private List<String> aliases;
 
         // The attributes
-        private Map attributes;
+        private Map<String,String> attributes;
 
         // Service implementation
         private Class implementation = null;
@@ -846,7 +847,7 @@ public abstract class Provider extends Properties {
          *  
          */
         public Service(Provider provider, String type, String algorithm,
-                String className, List aliases, Map attributes) {
+                String className, List<String> aliases, Map<String,String> attributes) {
             if (provider == null || type == null || algorithm == null
                     || className == null) {
                 throw new NullPointerException();
@@ -902,7 +903,7 @@ public abstract class Provider extends Properties {
             if (attributes == null) {
                 return null;
             }
-            return (String) attributes.get(name);
+            return attributes.get(name);
         }
 
         Iterator getAliases() {

@@ -47,11 +47,9 @@ public abstract class CertificateFactorySpi {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: 1.5 updates are needed Collection <? extends Certificate>
      */
-    public abstract Collection engineGenerateCertificates(InputStream inStream)
-            throws CertificateException;
+    public abstract Collection<? extends Certificate> 
+        engineGenerateCertificates(InputStream inStream) throws CertificateException;
 
     /**
      * @com.intel.drl.spec_ref
@@ -61,11 +59,9 @@ public abstract class CertificateFactorySpi {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: 1.5 updates are needed Collection <? extends CRL>
      */
-    public abstract Collection engineGenerateCRLs(InputStream inStream)
-            throws CRLException;
+    public abstract Collection<? extends CRL> 
+        engineGenerateCRLs(InputStream inStream) throws CRLException;
 
     /**
      * @com.intel.drl.spec_ref
@@ -88,7 +84,7 @@ public abstract class CertificateFactorySpi {
     /**
      * @com.intel.drl.spec_ref
      */
-    public CertPath engineGenerateCertPath(List certificates)
+    public CertPath engineGenerateCertPath(List<? extends Certificate>  certificates) 
             throws CertificateException {
         throw new UnsupportedOperationException(
                 "Method engineGenerateCertPath(List certificates) is not supported");
@@ -96,10 +92,8 @@ public abstract class CertificateFactorySpi {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: 1.5 updates are needed Iterator <String>
      */
-    public Iterator engineGetCertPathEncodings() {
+    public Iterator<String> engineGetCertPathEncodings() {
         throw new UnsupportedOperationException(
                 "Method engineGetCertPathEncodings() is not supported");
     }

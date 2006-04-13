@@ -149,8 +149,8 @@ public class KeyFactory {
      * @com.intel.drl.spec_ref
      * 
      */
-    public final KeySpec getKeySpec(Key key,
-                                    Class keySpec)
+    public final <T extends KeySpec> T getKeySpec(Key key,
+                                    Class<T> keySpec)
                             throws InvalidKeySpecException {
         return spiImpl.engineGetKeySpec(key, keySpec);
     }

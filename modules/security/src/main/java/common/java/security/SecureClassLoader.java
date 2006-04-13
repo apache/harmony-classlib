@@ -59,7 +59,7 @@ public class SecureClassLoader extends ClassLoader {
     /**
      * @com.intel.drl.spec_ref 
      */
-    protected final Class defineClass(String name, byte[] b, int off, int len,
+    protected final Class<?> defineClass(String name, byte[] b, int off, int len,
             CodeSource cs) {
         return cs == null ? defineClass(name, b, off, len) : defineClass(name,
                 b, off, len, getPD(cs));
@@ -68,7 +68,7 @@ public class SecureClassLoader extends ClassLoader {
     /**
      * @com.intel.drl.spec_ref 
      */
-    protected final Class defineClass(String name, ByteBuffer b, CodeSource cs) {
+    protected final Class<?> defineClass(String name, ByteBuffer b, CodeSource cs) {
         //FIXME 1.5 - remove b.array(), call super.defineClass(,ByteBuffer,)
         // directly
         byte[] data = b.array();

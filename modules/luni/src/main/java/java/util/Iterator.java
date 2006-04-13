@@ -19,7 +19,7 @@ package java.util;
 /**
  * An Iterator is used to sequence over a collection of objects.
  */
-public interface Iterator {
+public interface Iterator<E> {
 	/**
 	 * Answers if there are more elements to iterate.
 	 * 
@@ -39,7 +39,7 @@ public interface Iterator {
 	 * 
 	 * @see #hasNext
 	 */
-	public Object next();
+	public E next();
 
 	/**
 	 * Removes the last object returned by <code>next</code> from the

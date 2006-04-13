@@ -23,7 +23,7 @@ package java.util;
  * @see Properties
  * @see Vector
  */
-public interface Enumeration {
+public interface Enumeration<E> {
 	/**
 	 * Answers if this Enumeration has more elements.
 	 * 

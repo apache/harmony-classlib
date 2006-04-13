@@ -123,100 +123,24 @@ public class SSLEngineResult {
     
     /**
      * 
-     * FIXME: Template for HandshakeStatus class
+     * @com.intel.drl.spec_ref 
      *  
      */
-    public static final class HandshakeStatus {
-        public static final SSLEngineResult.HandshakeStatus NOT_HANDSHAKING = new HandshakeStatus();
-
-        public static final SSLEngineResult.HandshakeStatus FINISHED = new HandshakeStatus();
-
-        public static final SSLEngineResult.HandshakeStatus NEED_TASK = new HandshakeStatus();
-
-        public static final SSLEngineResult.HandshakeStatus NEED_WRAP = new HandshakeStatus();
-
-        public static final SSLEngineResult.HandshakeStatus NEED_UNWRAP = new HandshakeStatus();
-
-        private static final HandshakeStatus[] values = { NOT_HANDSHAKING,
-                FINISHED, NEED_TASK, NEED_WRAP, NEED_UNWRAP };
-
-        private HandshakeStatus() {
-        }
-
-        public static SSLEngineResult.HandshakeStatus valueOf(String str) {
-            if ("FINISHED".equals(str)) {
-                return FINISHED;
-            }
-            if ("NEED_TASK".equals(str)) {
-                return NEED_TASK;
-            }
-            if ("NEED_TASK".equals(str)) {
-                return NEED_TASK;
-            }
-            if ("NEED_WRAP".equals(str)) {
-                return NEED_WRAP;
-            }
-            if ("NEED_UNWRAP".equals(str)) {
-                return NEED_UNWRAP;
-            }
-            return null;
-        }
-
-        public static final SSLEngineResult.HandshakeStatus[] values() {
-            return values;
-        }
+    public enum HandshakeStatus {
+        NOT_HANDSHAKING,
+        FINISHED,
+        NEED_TASK,
+        NEED_WRAP,
+        NEED_UNWRAP
     }
 
     /**
      * @com.intel.drl.spec_ref 
-     * 
-     * FIXME: this is class which was introduced in 1.5  specification
      */
-    /*
-     * public static enum Status {
-     *     BUFFER_OVERFLOW,
-     *     BUFFER_UNDERFLOW,
-     *     CLOSED,
-     *     OK;
-     * }
-     */
-    /**
-     * 
-     * FIXME: Template for Status class
-     */
-    public static final class Status {
-        public static final SSLEngineResult.Status BUFFER_UNDERFLOW = new Status();
-
-        public static final SSLEngineResult.Status BUFFER_OVERFLOW = new Status();
-
-        public static final SSLEngineResult.Status OK = new Status();
-
-        public static final SSLEngineResult.Status CLOSED = new Status();
-
-        private static final Status[] values = { BUFFER_UNDERFLOW,
-                BUFFER_OVERFLOW, OK, CLOSED };
-
-        private Status() {
-        }
-
-        public static SSLEngineResult.Status valueOf(String str) {
-            if ("BUFFER_UNDERFLOW".equals(str)) {
-                return BUFFER_UNDERFLOW;
-            }
-            if ("BUFFER_OVERFLOW".equals(str)) {
-                return BUFFER_OVERFLOW;
-            }
-            if ("OK".equals(str)) {
-                return OK;
-            }
-            if ("CLOSED".equals(str)) {
-                return CLOSED;
-            }
-            return null;
-        }
-
-        public static final SSLEngineResult.Status[] values() {
-            return values;
-        }
+    public static enum Status {
+        BUFFER_OVERFLOW,
+        BUFFER_UNDERFLOW,
+        CLOSED,
+        OK
     }
 }

@@ -35,7 +35,7 @@ import java.io.Serializable;
  * @see java.lang.Object#hashCode
  */
 
-public class Hashtable extends Dictionary implements Map, Cloneable,
+public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneable,
 		Serializable {
 
 	private static final long serialVersionUID = 1421746759512286392L;
@@ -61,12 +61,12 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 		return new Entry(key, value);
 	}
 
-	private static class Entry extends MapEntry {
+	private static class Entry<K,V> extends MapEntry<K,V> {
 		Entry next;
 		
 		final int hashcode;
 
-		Entry(Object theKey, Object theValue) {
+		Entry(K theKey, V theValue) {
 			super(theKey, theValue);
 			hashcode = theKey.hashCode();
 		}
@@ -78,10 +78,10 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 			return entry;
 		}
 
-		public Object setValue(Object object) {
+		public V setValue(V object) {
 			if (object == null)
 				throw new NullPointerException();
-			Object result = value;
+			V result = value;
 			value = object;
 			return result;
 		}
@@ -90,7 +90,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 			return key.hashCode();
 		}
 
-		public boolean equalsKey(Object aKey, int hash) {
+		public boolean equalsKey(K aKey, int hash) {
 			return hashcode == aKey.hashCode() && key.equals(aKey);
 		}
 
@@ -404,7 +404,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	 * @return a Set of the mappings
 	 */
 	public Set entrySet() {
-		return new Collections.SynchronizedSet(new AbstractSet() {
+		return new Collections.SynchronizedSet(new AbstractSet<Map.Entry<K,V>>() {
 			public int size() {
 				return elementCount;
 			}
@@ -413,20 +413,17 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 				Hashtable.this.clear();
 			}
 
-			public boolean remove(Object object) {
+			public boolean remove(Map.Entry<K,V> object) {
 				if (contains(object)) {
-					Hashtable.this.remove(((Map.Entry) object).getKey());
+					Hashtable.this.remove(object.getKey());
 					return true;
 				}
 				return false;
 			}
 
-			public boolean contains(Object object) {
-				if (object instanceof Map.Entry) {
-					Entry entry = getEntry(((Map.Entry) object).getKey());
-					return object.equals(entry);
-				}
-				return false;
+			public boolean contains(Map.Entry<K,V> object) {
+				Entry entry = getEntry(object.getKey());
+				return object.equals(entry);
 			}
 
 			public Iterator iterator() {
@@ -479,10 +476,10 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	 * 
 	 * @see #put
 	 */
-	public synchronized Object get(Object key) {
+	public synchronized V get(K key) {
 		int hash = key.hashCode();
 		int index = (hash & 0x7FFFFFFF) % elementData.length;
-		Entry entry = elementData[index];
+		Entry<K,V> entry = elementData[index];
 		while (entry != null) {
 			if (entry.equalsKey(key, hash))
 				return entry.value;
@@ -562,7 +559,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	 * @return a Set of the keys
 	 */
 	public Set keySet() {
-		return new Collections.SynchronizedSet(new AbstractSet() {
+		return new Collections.SynchronizedSet(new AbstractSet<K>() {
 			public boolean contains(Object object) {
 				return containsKey(object);
 			}
@@ -583,7 +580,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 				return false;
 			}
 
-			public Iterator iterator() {
+			public Iterator<MapEntry.Type> iterator() {
 				return new HashIterator(new MapEntry.Type() {
 					public Object get(MapEntry entry) {
 						return entry.key;
@@ -610,11 +607,11 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	 * @see #keys
 	 * @see java.lang.Object#equals
 	 */
-	public synchronized Object put(Object key, Object value) {
+	public synchronized V put(K key, V value) {
 		if (key != null && value != null) {
 			int hash = key.hashCode();
 			int index = (hash & 0x7FFFFFFF) % elementData.length;
-			Entry entry = elementData[index];
+			Entry<K,V> entry = elementData[index];
 			while (entry != null && !entry.equalsKey(key, hash))
 				entry = entry.next;
 			if (entry == null) {
@@ -632,7 +629,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 				elementData[index] = entry;
 				return null;
 			}
-			Object result = entry.value;
+			V result = entry.value;
 			entry.value = value;
 			return result;
 		} else
@@ -645,10 +642,10 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	 * @param map
 	 *            the Map to copy mappings from
 	 */
-	public synchronized void putAll(Map map) {
-		Iterator it = map.entrySet().iterator();
+	public synchronized void putAll(Map<? extends K,? extends V> map) {
+		Iterator<Map.Entry<K,V>> it = map.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
+			Map.Entry<K,V> entry = it.next();
 			put(entry.getKey(), entry.getValue());
 		}
 	}
@@ -695,11 +692,11 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	 * @see #get
 	 * @see #put
 	 */
-	public synchronized Object remove(Object key) {
+	public synchronized V remove(Object key) {
 		int hash = key.hashCode();
 		int index = (hash & 0x7FFFFFFF) % elementData.length;
-		Entry last = null;
-		Entry entry = elementData[index];
+		Entry<Object,V> last = null;
+		Entry<Object,V> entry = elementData[index];
 		while (entry != null && !entry.equalsKey(key, hash)) {
 			last = entry;
 			entry = entry.next;
@@ -711,7 +708,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 			else
 				last.next = entry.next;
 			elementCount--;
-			Object result = entry.value;
+			V result = entry.value;
 			entry.value = null;
 			return result;
 		}
@@ -773,7 +770,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 	 * 
 	 * @return a Collection of the values
 	 */
-	public Collection values() {
+	public Collection<V> values() {
 		return new Collections.SynchronizedCollection(new AbstractCollection() {
 			public boolean contains(Object object) {
 				return Hashtable.this.contains(object);
@@ -787,7 +784,7 @@ public class Hashtable extends Dictionary implements Map, Cloneable,
 				Hashtable.this.clear();
 			}
 
-			public Iterator iterator() {
+			public Iterator<MapEntry.Type> iterator() {
 				return new HashIterator(new MapEntry.Type() {
 					public Object get(MapEntry entry) {
 						return entry.value;

@@ -108,7 +108,7 @@ public final class AccessController {
 	 * Used to keep the context live during doPrivileged().
 	 * 
 	 * 
-	 * @see #doPrivileged(PrivilegedAction, AccessControlContext)
+	 * @see #doPrivileged(PrivilegedAction<T>, AccessControlContext)
 	 */
 	private static void keepalive(AccessControlContext context) {
 	}
@@ -183,9 +183,9 @@ public final class AccessController {
 	 * chain.
 	 * 
 	 * 
-	 * @see #doPrivileged(PrivilegedAction)
+	 * @see #doPrivileged(PrivilegedAction<T>)
 	 */
-	public static Object doPrivileged(PrivilegedAction action) {
+	public static <T> T doPrivileged(PrivilegedAction<T> action) {
 		return action.run();
 	}
 
@@ -203,11 +203,11 @@ public final class AccessController {
 	 * chain.
 	 * 
 	 * 
-	 * @see #doPrivileged(PrivilegedAction)
+	 * @see #doPrivileged(PrivilegedAction<T>)
 	 */
-	public static Object doPrivileged(PrivilegedAction action,
+	public static <T> T doPrivileged(PrivilegedAction<T> action,
 			AccessControlContext context) {
-		Object result = action.run();
+		T result = action.run();
 		keepalive(context);
 		return result;
 	}
@@ -225,9 +225,9 @@ public final class AccessController {
 	 * PrivilegedActionExceptions
 	 * 
 	 * 
-	 * @see #doPrivileged(PrivilegedAction)
+	 * @see #doPrivileged(PrivilegedAction<T>)
 	 */
-	public static Object doPrivileged(PrivilegedExceptionAction action)
+	public static <T> T doPrivileged(PrivilegedExceptionAction<T> action)
 			throws PrivilegedActionException {
 		try {
 			return action.run();
@@ -253,12 +253,12 @@ public final class AccessController {
 	 * PrivilegedActionExceptions
 	 * 
 	 * 
-	 * @see #doPrivileged(PrivilegedAction)
+	 * @see #doPrivileged(PrivilegedAction<T>)
 	 */
-	public static Object doPrivileged(PrivilegedExceptionAction action,
+	public static <T> T doPrivileged(PrivilegedExceptionAction<T> action,
 			AccessControlContext context) throws PrivilegedActionException {
 		try {
-			Object result = action.run();
+			T result = action.run();
 			keepalive(context);
 			return result;
 		} catch (RuntimeException ex) {

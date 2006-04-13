@@ -21,7 +21,7 @@ package java.util;
  * implemenation does not support adding. A subclass must implement the abstract
  * methods iterator() and size().
  */
-public abstract class AbstractSet extends AbstractCollection implements Set {
+public abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E> {
 	
 	/**
 	 * Constructs a new instance of this AbstractSet.

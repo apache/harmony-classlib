@@ -19,7 +19,7 @@ package java.util;
 /**
  * Collection is the root of the collection hierarchy.
  */
-public interface Collection {
+public interface Collection<E> {
 
 	/**
 	 * Attempts to add <code>object</code> to the contents of this
@@ -38,7 +38,7 @@ public interface Collection {
 	 * @exception IllegalArgumentException
 	 *                when the object cannot be added to this Collection
 	 */
-	public boolean add(Object object);
+	public boolean add(E object);
 
 	/**
 	 * Attempts to add all of the objects contained in <code>collection</code>
@@ -56,7 +56,7 @@ public interface Collection {
 	 * @exception IllegalArgumentException
 	 *                when an object cannot be added to this Collection
 	 */
-	public boolean addAll(Collection collection);
+	public boolean addAll(Collection<? extends E> collection);
 
 	/**
 	 * Removes all elements from this Collection, leaving it empty.
@@ -86,7 +86,7 @@ public interface Collection {
 	 * @return true if all objects in the specified Collection are elements of
 	 *         this Collection, false otherwise
 	 */
-	public boolean containsAll(Collection collection);
+	public boolean containsAll(Collection<?> collection);
 
 	/**
 	 * Compares the argument to the receiver, and answers true if they represent
@@ -151,7 +151,7 @@ public interface Collection {
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Collection is not supported
 	 */
-	public boolean removeAll(Collection collection);
+	public boolean removeAll(Collection<?> collection);
 
 	/**
 	 * Removes all objects from this Collection that are not also found in the
@@ -164,7 +164,7 @@ public interface Collection {
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Collection is not supported
 	 */
-	public boolean retainAll(Collection collection);
+	public boolean retainAll(Collection<?> collection);
 
 	/**
 	 * Returns a count of how many objects are contained by this collection.
@@ -195,5 +195,5 @@ public interface Collection {
 	 *                when the type of an element in this Collection cannot be
 	 *                stored in the type of the specified array
 	 */
-	public Object[] toArray(Object[] array);
+	public <T> T[] toArray(T[] array);
 }

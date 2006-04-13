@@ -47,7 +47,7 @@ public class CollectionCertStoreParameters implements CertStoreParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public CollectionCertStoreParameters(Collection collection) {
+    public CollectionCertStoreParameters(Collection<?> collection) {
         this.collection = collection;
         if (this.collection == null) {
             throw new NullPointerException();
@@ -64,7 +64,7 @@ public class CollectionCertStoreParameters implements CertStoreParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Collection getCollection() {
+    public Collection<?> getCollection() {
         return collection;
     }
 

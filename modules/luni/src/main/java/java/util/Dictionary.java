@@ -22,7 +22,7 @@ package java.util;
  * 
  * @see Hashtable
  */
-public abstract class Dictionary {
+public abstract class Dictionary<K,V> {
 	/**
 	 * Constructs a new instance of this class.
 	 * 
@@ -52,7 +52,7 @@ public abstract class Dictionary {
 	 * 
 	 * @see #put
 	 */
-	abstract public Object get(Object key);
+	abstract public V get(K key);
 
 	/**
 	 * Answers if this Dictionary has no key/value pairs, a size of zero.
@@ -92,7 +92,7 @@ public abstract class Dictionary {
 	 * @see #get
 	 * @see #keys
 	 */
-	abstract public Object put(Object key, Object value);
+	abstract public V put(K key, V value);
 
 	/**
 	 * Remove the key/value pair with the specified <code>key</code> from this
@@ -106,7 +106,7 @@ public abstract class Dictionary {
 	 * @see #get
 	 * @see #put
 	 */
-	abstract public Object remove(Object key);
+	abstract public V remove(K key);
 
 	/**
 	 * Answers the number of key/value pairs in this Dictionary.

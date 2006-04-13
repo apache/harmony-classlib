@@ -20,7 +20,7 @@ package java.util;
  * An ListIterator is used to sequence over a List of objects. ListIterator can
  * move backwards or forwards through the List.
  */
-public interface ListIterator extends Iterator {
+public interface ListIterator<E> extends Iterator<E> {
 	
 	/**
 	 * Inserts the specified object into the list between <code>next</code>
@@ -37,7 +37,7 @@ public interface ListIterator extends Iterator {
 	 * @exception IllegalArgumentException
 	 *                when the object cannot be added to the list
 	 */
-	void add(Object object);
+	void add(E object);
 
 	/**
 	 * Answers if there are more elements to iterate.
@@ -67,7 +67,7 @@ public interface ListIterator extends Iterator {
 	 * 
 	 * @see #hasNext
 	 */
-	public Object next();
+	public E next();
 
 	/**
 	 * Answers the index of the next object in the iteration.
@@ -91,7 +91,7 @@ public interface ListIterator extends Iterator {
 	 * 
 	 * @see #hasPrevious
 	 */
-	public Object previous();
+	public E previous();
 
 	/**
 	 * Answers the index of the previous object in the iteration.
@@ -138,5 +138,5 @@ public interface ListIterator extends Iterator {
 	 *                <code>add</code> have already been called after the last
 	 *                call to <code>next</code> or <code>previous</code>
 	 */
-	void set(Object object);
+	void set(E object);
 }

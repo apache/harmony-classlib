@@ -44,7 +44,7 @@ public abstract class CertStoreSpi {
      * 
      * FIXME: 1.5 updated are needed Collection <? extends Certificate>
      */
-    public abstract Collection engineGetCertificates(CertSelector selector)
+    public abstract Collection<? extends Certificate> engineGetCertificates(CertSelector selector)
             throws CertStoreException;
 
     /**
@@ -52,6 +52,6 @@ public abstract class CertStoreSpi {
      * 
      * FIXME: 1.5 updated are needed Collection <? extends CRL>
      */
-    public abstract Collection engineGetCRLs(CRLSelector selector)
+    public abstract Collection<? extends CRL> engineGetCRLs(CRLSelector selector)
             throws CertStoreException;
 }

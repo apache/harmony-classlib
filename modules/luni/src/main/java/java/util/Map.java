@@ -19,12 +19,12 @@ package java.util;
 /**
  * Map has a set of keys, each key is mapped to a single value.
  */
-public interface Map {
+public interface Map<K,V> {
 	/**
 	 * Map.Entry is a key/value mapping which is contained in a Map.
 	 * 
 	 */
-	public abstract static interface Entry {
+	public abstract static interface Entry<K,V> {
 		/**
 		 * Compares the specified object to this Map.Entry and answer if they
 		 * are equal. The object must be an instance of Map.Entry and have the
@@ -44,14 +44,14 @@ public interface Map {
 		 * 
 		 * @return the key
 		 */
-		public Object getKey();
+		public K getKey();
 
 		/**
 		 * Gets the value.
 		 * 
 		 * @return the value
 		 */
-		public Object getValue();
+		public V getValue();
 
 		/**
 		 * Answers an integer hash code for the receiver. Objects which are
@@ -70,7 +70,7 @@ public interface Map {
 		 *            the new value
 		 * @return object
 		 */
-		public Object setValue(Object object);
+		public V setValue(V object);
 	};
 
 	/**
@@ -91,7 +91,7 @@ public interface Map {
 	 *            the object to search for
 	 * @return true if <code>key</code> is a key of this Map, false otherwise
 	 */
-	public boolean containsKey(Object key);
+	public boolean containsKey(K key);
 
 	/**
 	 * Searches this Map for the specified value.
@@ -101,7 +101,7 @@ public interface Map {
 	 * @return true if <code>value</code> is a value of this Map, false
 	 *         otherwise
 	 */
-	public boolean containsValue(Object value);
+	public boolean containsValue(V value);
 
 	/**
 	 * Returns a <code>Set</code> whose elements comprise all of the mappings
@@ -113,7 +113,7 @@ public interface Map {
 	 * 
 	 * @return a <code>Set</code> of the mappings
 	 */
-	public Set entrySet();
+	public Set<Map.Entry<K,V>> entrySet();
 
 	/**
 	 * Compares the argument to the receiver, and answers true if they represent
@@ -134,7 +134,7 @@ public interface Map {
 	 *            the key
 	 * @return the value of the mapping with the specified key
 	 */
-	public Object get(Object key);
+	public V get(K key);
 
 	/**
 	 * Answers an integer hash code for the receiver. Objects which are equal
@@ -162,7 +162,7 @@ public interface Map {
 	 * 
 	 * @return a Set of the keys
 	 */
-	public Set keySet();
+	public Set<K> keySet();
 
 	/**
 	 * Maps the specified key to the specified value.
@@ -185,7 +185,7 @@ public interface Map {
 	 *                when the key or value is null and this Map does not
 	 *                support null keys or values
 	 */
-	public Object put(Object key, Object value);
+	public V put(K key, V value);
 
 	/**
 	 * Copies every mapping in the specified Map to this Map.
@@ -204,7 +204,7 @@ public interface Map {
 	 *                when a key or value is null and this Map does not support
 	 *                null keys or values
 	 */
-	public void putAll(Map map);
+	public void putAll(Map<? extends K,? extends V> map);
 
 	/**
 	 * Removes a mapping with the specified key from this Map.
@@ -217,7 +217,7 @@ public interface Map {
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Map is not supported
 	 */
-	public Object remove(Object key);
+	public V remove(K key);
 
 	/**
 	 * Answers the number of elements in this Map.
@@ -234,5 +234,5 @@ public interface Map {
 	 * 
 	 * @return a Collection of the values
 	 */
-	public Collection values();
+	public Collection<V> values();
 }

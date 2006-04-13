@@ -28,7 +28,7 @@ import java.lang.reflect.Array;
  * operations are supported, adding, removing, and replacing. The elements can
  * be any objects.
  */
-public class ArrayList extends AbstractList implements List, Cloneable,
+public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		Serializable, RandomAccess {
 
 	private static final long serialVersionUID = 8683452581122892189L;
@@ -68,7 +68,7 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 * @param collection
 	 *            the collection of elements to add
 	 */
-	public ArrayList(Collection collection) {
+	public ArrayList(Collection<? extends E> collection) {
 		int size = collection.size();
 		firstIndex = lastIndex = 0;
 		array = new Object[size + (size / 10)];
@@ -89,7 +89,7 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public void add(int location, Object object) {
+	public void add(int location, E object) {
 		int size = size();
 		if (0 < location && location < size) {
 			if (firstIndex == 0 && lastIndex == array.length) {
@@ -126,7 +126,7 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 *            the object to add
 	 * @return true
 	 */
-	public boolean add(Object object) {
+	public boolean add(E object) {
 		if (lastIndex == array.length)
 			growAtEnd(1);
 		array[lastIndex++] = object;
@@ -148,7 +148,7 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public boolean addAll(int location, Collection collection) {
+	public boolean addAll(int location, Collection<? extends E> collection) {
 		int size = size();
 		int growSize = collection.size();
 		if (0 < location && location < size) {
@@ -202,7 +202,7 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 *            the Collection of objects
 	 * @return true if this ArrayList is modified, false otherwise
 	 */
-	public boolean addAll(Collection collection) {
+	public boolean addAll(Collection<? extends E> collection) {
 		int growSize = collection.size();
 		if (growSize > 0) {
 			if (lastIndex > array.length - growSize)
@@ -297,9 +297,9 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public Object get(int location) {
+	public E get(int location) {
 		if (0 <= location && location < size())
-			return array[firstIndex + location];
+			return (E)array[firstIndex + location];
 		throw new IndexOutOfBoundsException();
 	}
 
@@ -442,19 +442,19 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public Object remove(int location) {
-		Object result;
+	public E remove(int location) {
+		E result;
 		int size = size();
 		if (0 <= location && location < size) {
 			if (location == size - 1) {
-				result = array[--lastIndex];
+				result = (E)array[--lastIndex];
 				array[lastIndex] = null;
 			} else if (location == 0) {
-				result = array[firstIndex];
+				result = (E)array[firstIndex];
 				array[firstIndex++] = null;
 			} else {
 				int elementIndex = firstIndex + location;
-				result = array[elementIndex];
+				result = (E)array[elementIndex];
 				if (location < size / 2) {
 					System.arraycopy(array, firstIndex, array, firstIndex + 1,
 							location);
@@ -521,9 +521,9 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public Object set(int location, Object object) {
+	public E set(int location, E object) {
 		if (0 <= location && location < size()) {
-			Object result = array[firstIndex + location];
+			E result = (E)array[firstIndex + location];
 			array[firstIndex + location] = object;
 			return result;
 		}
@@ -566,10 +566,10 @@ public class ArrayList extends AbstractList implements List, Cloneable,
 	 *                when the type of an element in this ArrayList cannot be
 	 *                stored in the type of the specified array
 	 */
-	public Object[] toArray(Object[] contents) {
+	public <T> T[] toArray(T[] contents) {
 		int size = size();
 		if (size > contents.length)
-			contents = (Object[]) Array.newInstance(contents.getClass()
+			contents = (T[]) Array.newInstance(contents.getClass()
 					.getComponentType(), size);
 		System.arraycopy(array, firstIndex, contents, 0, size);
 		if (size < contents.length)

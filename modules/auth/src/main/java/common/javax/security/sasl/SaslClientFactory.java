@@ -31,18 +31,14 @@ import javax.security.auth.callback.CallbackHandler;
 public interface SaslClientFactory {
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: Map <String,?>props for 1.5
      */
     public SaslClient createSaslClient(String[] mechanisms,
             String authorizationId, String protocol, String serverName,
-            Map props, CallbackHandler cbh) throws SaslException;
+            Map<String,?> props, CallbackHandler cbh) throws SaslException;
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: Map <String,?>props for 1.5
      */
-    public String[] getMechanismNames(Map props);
+    public String[] getMechanismNames(Map<String,?> props);
 
 }

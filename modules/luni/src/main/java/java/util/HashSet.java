@@ -25,7 +25,7 @@ import java.io.Serializable;
  * HashSet is an implementation of Set. All optional operations are supported,
  * adding and removing. The elements can be any objects.
  */
-public class HashSet extends AbstractSet implements Set, Cloneable,
+public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 		Serializable {
 
 	private static final long serialVersionUID = -5024744406713321676L;

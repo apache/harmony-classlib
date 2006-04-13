@@ -183,7 +183,7 @@ public class CertStore {
     /**
      * @com.intel.drl.spec_ref
      */
-    public final Collection getCertificates(CertSelector selector)
+    public final Collection<? extends Certificate> getCertificates(CertSelector selector)
             throws CertStoreException {
         return spiImpl.engineGetCertificates(selector);
     }
@@ -191,7 +191,7 @@ public class CertStore {
     /**
      * @com.intel.drl.spec_ref
      */
-    public final Collection getCRLs(CRLSelector selector)
+    public final Collection<? extends CRL> getCRLs(CRLSelector selector)
             throws CertStoreException {
         return spiImpl.engineGetCRLs(selector);
     }

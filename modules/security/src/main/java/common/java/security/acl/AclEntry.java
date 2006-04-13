@@ -68,9 +68,8 @@ public interface AclEntry extends Cloneable {
     
     /**
      * @com.intel.drl.spec_ref
-     * TODO change in 1.5
      */
-    Enumeration permissions();
+    Enumeration<Permission> permissions();
     
     /**
      * @com.intel.drl.spec_ref

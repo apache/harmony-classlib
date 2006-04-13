@@ -31,10 +31,8 @@ public interface X509Extension {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: for 1.5 update Set <String>getCriticalExtensionOIDs();
      */
-    public Set getCriticalExtensionOIDs();
+    public Set<String> getCriticalExtensionOIDs();
 
     /**
      * @com.intel.drl.spec_ref
@@ -43,10 +41,8 @@ public interface X509Extension {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: for 1.5 update Set <String>getNonCriticalExtensionOIDs();
      */
-    public Set getNonCriticalExtensionOIDs();
+    public Set<String> getNonCriticalExtensionOIDs();
 
     /**
      * @com.intel.drl.spec_ref

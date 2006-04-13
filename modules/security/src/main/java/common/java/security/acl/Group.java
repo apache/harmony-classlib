@@ -48,8 +48,7 @@ public interface Group extends Principal {
     
     /**
      * @com.intel.drl.spec_ref
-     * TODO change in 1.5
      */
-    Enumeration members();
+    Enumeration<? extends Principal> members();
     
 }

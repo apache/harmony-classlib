@@ -105,7 +105,7 @@ public abstract class CertPath implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract List getCertificates();
+    public abstract List<? extends Certificate> getCertificates();
 
     /**
      * @com.intel.drl.spec_ref
@@ -122,7 +122,7 @@ public abstract class CertPath implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract Iterator getEncodings();
+    public abstract Iterator<String> getEncodings();
 
     /**
      * @com.intel.drl.spec_ref

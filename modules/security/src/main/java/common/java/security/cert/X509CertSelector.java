@@ -442,7 +442,7 @@ public class X509CertSelector implements CertSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setExtendedKeyUsage(Set/*FIXME<String>*/keyUsage)
+    public void setExtendedKeyUsage(Set<String> keyUsage)
                              throws IOException {
         extendedKeyUsage = null;
         if ((keyUsage == null) || (keyUsage.size() == 0)) {
@@ -461,7 +461,7 @@ public class X509CertSelector implements CertSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set/*FIXME<String>*/ getExtendedKeyUsage() {
+    public Set<String> getExtendedKeyUsage() {
         return extendedKeyUsage;
     }
 
@@ -482,7 +482,7 @@ public class X509CertSelector implements CertSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setSubjectAlternativeNames(Collection/*FIXME<List<?>>*/ names)
+    public void setSubjectAlternativeNames(Collection<List<?>> names)
                                     throws IOException {
         subjectAltNames = null;
         if ((names == null) || (names.size() == 0)) {
@@ -539,7 +539,7 @@ public class X509CertSelector implements CertSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Collection/*FIXME<List<?>>*/ getSubjectAlternativeNames() {
+    public Collection<List<?>> getSubjectAlternativeNames() {
         if (subjectAltNames == null) {
             return null;
         }
@@ -603,7 +603,7 @@ public class X509CertSelector implements CertSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setPolicy(Set/*FIXME<String>*/ policies) throws IOException {
+    public void setPolicy(Set<String> policies) throws IOException {
         if (policies == null) {
             this.policies = null;
             return;
@@ -621,14 +621,14 @@ public class X509CertSelector implements CertSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set/*FIXME<String>*/ getPolicy() {
+    public Set<String> getPolicy() {
         return policies;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setPathToNames(Collection/*FIXME<List<?>>*/ names)
+    public void setPathToNames(Collection<List<?>> names)
                                                         throws IOException {
         pathToNames = null;
         if ((names == null) || (names.size() == 0)) {
@@ -677,7 +677,7 @@ public class X509CertSelector implements CertSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Collection/*FIXME<List<?>>*/ getPathToNames() {
+    public Collection<List<?>> getPathToNames() {
         if (pathToNames == null) {
             return null;
         }

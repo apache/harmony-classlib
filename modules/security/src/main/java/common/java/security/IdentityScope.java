@@ -122,7 +122,7 @@ public abstract class IdentityScope extends Identity {
      * @com.intel.drl.spec_ref 
      * TODO change in 1.5
      */
-    public abstract Enumeration identities();
+    public abstract Enumeration<Identity> identities();
 
     /**
      * @com.intel.drl.spec_ref 

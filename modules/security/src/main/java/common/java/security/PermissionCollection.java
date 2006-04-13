@@ -49,7 +49,7 @@ public abstract class PermissionCollection implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract Enumeration elements();
+    public abstract Enumeration<Permission> elements();
 
     /**
      * @com.intel.drl.spec_ref

@@ -25,9 +25,9 @@ package java.security;
  * @com.intel.drl.spec_ref 
  */
 
-public interface PrivilegedAction {
+public interface PrivilegedAction<T> {
     /**
      * @com.intel.drl.spec_ref 
      */
-    public Object run();
+    public T run();
 }

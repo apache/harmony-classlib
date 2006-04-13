@@ -54,15 +54,13 @@ public interface Acl extends Owner {
     
     /**
      * @com.intel.drl.spec_ref
-     * TODO change in 1.5
      */
-    Enumeration getPermissions(Principal user); 
+    Enumeration<Permission> getPermissions(Principal user); 
     
     /**
      * @com.intel.drl.spec_ref
-     * TODO change in 1.5
      */
-    Enumeration entries();
+    Enumeration<AclEntry> entries();
     
     /**
      * @com.intel.drl.spec_ref

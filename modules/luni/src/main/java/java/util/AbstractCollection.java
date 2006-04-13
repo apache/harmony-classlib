@@ -24,7 +24,7 @@ import java.lang.reflect.Array;
  * abstract methods iterator() and size().
  */
 
-public abstract class AbstractCollection implements Collection {
+public abstract class AbstractCollection<E> implements Collection<E> {
 
 	/**
 	 * Constructs a new instance of this AbstractCollection.
@@ -38,7 +38,7 @@ public abstract class AbstractCollection implements Collection {
 	 * 
 	 * @see java.util.Collection#add(java.lang.Object)
 	 */
-	public boolean add(Object object) {
+	public boolean add(E object) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -57,9 +57,9 @@ public abstract class AbstractCollection implements Collection {
 	 * @exception IllegalArgumentException
 	 *                when an object cannot be added to this Collection
 	 */
-	public boolean addAll(Collection collection) {
+	public boolean addAll(Collection<? extends E> collection) {
 		boolean result = false;
-		Iterator it = collection.iterator();
+		Iterator<? extends E> it = collection.iterator();
 		while (it.hasNext())
 			if (add(it.next()))
 				result = true;
@@ -109,7 +109,7 @@ public abstract class AbstractCollection implements Collection {
 	 * @return true if all objects in the specified Collection are elements of
 	 *         this Collection, false otherwise
 	 */
-	public boolean containsAll(Collection collection) {
+	public boolean containsAll(Collection<?> collection) {
 		Iterator it = collection.iterator();
 		while (it.hasNext())
 			if (!contains(it.next()))
@@ -178,7 +178,7 @@ public abstract class AbstractCollection implements Collection {
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Collection is not supported
 	 */
-	public boolean removeAll(Collection collection) {
+	public boolean removeAll(Collection<?> collection) {
 		boolean result = false;
 		Iterator it = iterator();
 		while (it.hasNext()) {
@@ -201,7 +201,7 @@ public abstract class AbstractCollection implements Collection {
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Collection is not supported
 	 */
-	public boolean retainAll(Collection collection) {
+	public boolean retainAll(Collection<?> collection) {
 		boolean result = false;
 		Iterator it = iterator();
 		while (it.hasNext()) {
@@ -249,11 +249,11 @@ public abstract class AbstractCollection implements Collection {
 	 *                when the type of an element in this Collection cannot be
 	 *                stored in the type of the specified array
 	 */
-	public Object[] toArray(Object[] contents) {
+	public <T> T[] toArray(T[] contents) {
 		int size = size(), index = 0;
-		Iterator it = iterator();
+		Iterator<T> it = iterator();
 		if (size > contents.length)
-			contents = (Object[]) Array.newInstance(contents.getClass()
+			contents = (T[]) Array.newInstance(contents.getClass()
 					.getComponentType(), size);
 		while (index < size)
 			contents[index++] = it.next();

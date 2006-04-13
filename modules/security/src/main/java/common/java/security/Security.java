@@ -261,7 +261,7 @@ public final class Security {
      * @com.intel.drl.spec_ref
      *  
      */
-    public static synchronized Provider[] getProviders(Map filter) {
+    public static synchronized Provider[] getProviders(Map<String,String> filter) {
         if (filter == null) {
             throw new NullPointerException("The filter is null");
         }
@@ -348,7 +348,7 @@ public final class Security {
      * @com.intel.drl.spec_ref
      *  
      */
-    public static Set getAlgorithms(String serviceName) {
+    public static Set<String> getAlgorithms(String serviceName) {
         //         FIXME for 1.5 classes
         //        new HashSet() -> emptySet()
         Set result = new HashSet();

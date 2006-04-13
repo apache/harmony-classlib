@@ -58,7 +58,7 @@ public class X509CRLSelector implements CRLSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setIssuers(Collection/*FIXME<X500Principal>*/ issuers) {
+    public void setIssuers(Collection<X500Principal> issuers) {
         if (issuers == null) {
             issuerNames = null;
             return;
@@ -69,7 +69,7 @@ public class X509CRLSelector implements CRLSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setIssuerNames(Collection/*FIXME<?>*/names) throws IOException {
+    public void setIssuerNames(Collection<?> names) throws IOException {
         if (names == null) {
             issuerNames = null;
             return;
@@ -158,7 +158,7 @@ public class X509CRLSelector implements CRLSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Collection/*FIXME<X500Principal>*/ getIssuers() {
+    public Collection<X500Principal> getIssuers() {
         if (issuerNames == null) {
             return null;
         }
@@ -168,7 +168,7 @@ public class X509CRLSelector implements CRLSelector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Collection/*FIXME<Object>*/ getIssuerNames() {
+    public Collection<Object> getIssuerNames() {
         if (issuerNames == null) {
             return null;
         }

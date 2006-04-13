@@ -65,7 +65,7 @@ import java.security.ProtectionDomain;
  * </dl>
  * 
  */
-public final class Class implements java.io.Serializable {
+public final class Class<T> implements java.io.Serializable {
 	private static final long serialVersionUID = 3206093459760846163L;
 
 	/**

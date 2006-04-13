@@ -60,11 +60,11 @@ public abstract class PKIXCertPathChecker implements Cloneable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract Set getSupportedExtensions();
+    public abstract Set<String> getSupportedExtensions();
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract void check(Certificate cert, Collection unresolvedCritExts)
+    public abstract void check(Certificate cert, Collection<String> unresolvedCritExts)
         throws CertPathValidatorException;
 }

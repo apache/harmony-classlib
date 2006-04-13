@@ -50,7 +50,7 @@ public abstract class KeyFactorySpi {
      * @com.intel.drl.spec_ref
      * 
      */
-    protected abstract KeySpec engineGetKeySpec(Key key, Class keySpec)
+    protected abstract <T extends KeySpec> T engineGetKeySpec(Key key, Class<T> keySpec)
                                     throws InvalidKeySpecException;
     //FIXME 1.5 signature: protected abstract <T extends KeySpec> T engineGetKeySpec(Key key, Class<T> keySpec) throws InvalidKeySpecException
     

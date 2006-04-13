@@ -38,7 +38,7 @@ public class PKIXBuilderParameters extends PKIXParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public PKIXBuilderParameters(Set trustAnchors,
+    public PKIXBuilderParameters(Set<TrustAnchor> trustAnchors,
             CertSelector targetConstraints)
         throws InvalidAlgorithmParameterException {
         super(trustAnchors);

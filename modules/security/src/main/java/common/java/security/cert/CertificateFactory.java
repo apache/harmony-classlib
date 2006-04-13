@@ -160,10 +160,8 @@ public class CertificateFactory {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: update to Iterator <String>getCertPathEncodings()
      */
-    public final Iterator getCertPathEncodings() {
+    public final Iterator<String> getCertPathEncodings() {
         return spiImpl.engineGetCertPathEncodings();
     }
 
@@ -189,20 +187,16 @@ public class CertificateFactory {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: update parameter to (List <? extends Certificate> certificates)
      */
-    public final CertPath generateCertPath(List certificates)
+    public final CertPath generateCertPath(List<? extends Certificate> certificates)
             throws CertificateException {
         return spiImpl.engineGenerateCertPath(certificates);
     }
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: update returned value to Collection <? extends Certificate>
      */
-    public final Collection generateCertificates(InputStream inStream)
+    public final Collection<? extends Certificate> generateCertificates(InputStream inStream)
             throws CertificateException {
         return spiImpl.engineGenerateCertificates(inStream);
     }
@@ -216,10 +210,8 @@ public class CertificateFactory {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: update returned value to Collection <? extends CRL>
      */
-    public final Collection generateCRLs(InputStream inStream)
+    public final Collection<? extends CRL> generateCRLs(InputStream inStream)
             throws CRLException {
         return spiImpl.engineGenerateCRLs(inStream);
     }

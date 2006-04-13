@@ -32,10 +32,8 @@ public interface PolicyNode {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: for 1.5 update Iterator <? extends PolicyNode> getChildren();
      */
-    public Iterator getChildren();
+    public Iterator<? extends PolicyNode> getChildren();
 
     /**
      * @com.intel.drl.spec_ref
@@ -44,10 +42,8 @@ public interface PolicyNode {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: for 1.5 update Set <String>getExpectedPolicies();
      */
-    public Set getExpectedPolicies();
+    public Set<String> getExpectedPolicies();
 
     /**
      * @com.intel.drl.spec_ref
@@ -56,11 +52,8 @@ public interface PolicyNode {
 
     /**
      * @com.intel.drl.spec_ref
-     * 
-     * FIXME: for 1.5 update Set <? extends PolicyQualifierInfo>
-     * getPolicyQualifiers();
      */
-    public Set getPolicyQualifiers();
+    public Set<? extends PolicyQualifierInfo> getPolicyQualifiers();
 
     /**
      * @com.intel.drl.spec_ref

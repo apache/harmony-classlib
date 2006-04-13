@@ -39,16 +39,16 @@ import java.util.Set;
  */
 public class PKIXParameters implements CertPathParameters {
     // Set of trust anchors - most trusted CAs
-    private Set trustAnchors;
+    private Set<TrustAnchor> trustAnchors;
     // Set of acceptable initial policy identifiers (OID strings)
-    private Set initialPolicies;
+    private Set<String> initialPolicies;
     // List of cert stores that used to find certificates and CRLs
-    private List certStores;
+    private List<CertStore> certStores;
     // Time for which the valididty of the certification
     // patch should be determined
     private Date date;
     // List of certification patch checkers (PKIXCertPathChecker)
-    private List certPathCheckers;
+    private List<PKIXCertPathChecker> certPathCheckers;
     // Preferred signature provider name
     private String sigProvider;
     // Required constraints on the target certificate
@@ -69,14 +69,14 @@ public class PKIXParameters implements CertPathParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public PKIXParameters(Set trustAnchors)
+    public PKIXParameters(Set<TrustAnchor> trustAnchors)
         throws InvalidAlgorithmParameterException {
         if (trustAnchors == null) {
             throw new NullPointerException(
                     "the trustAnchors parameter is null");
         }
         checkTrustAnchors(trustAnchors);
-        this.trustAnchors = new HashSet(trustAnchors);
+        this.trustAnchors = new HashSet<TrustAnchor>(trustAnchors);
     }
 
     /**
@@ -95,7 +95,7 @@ public class PKIXParameters implements CertPathParameters {
                     "the keystore is empty");
         }
         // keyStore is not null and loaded
-        trustAnchors = new HashSet();
+        trustAnchors = new HashSet<TrustAnchor>();
         for (Enumeration i = keyStore.aliases(); i.hasMoreElements();) {
             String alias = (String) i.nextElement();
             if (keyStore.isCertificateEntry(alias)) {
@@ -115,14 +115,14 @@ public class PKIXParameters implements CertPathParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set getTrustAnchors() {
+    public Set<TrustAnchor> getTrustAnchors() {
         return Collections.unmodifiableSet(trustAnchors);
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setTrustAnchors(Set trustAnchors)
+    public void setTrustAnchors(Set<TrustAnchor> trustAnchors)
         throws InvalidAlgorithmParameterException {
         if (trustAnchors == null) {
             throw new NullPointerException(
@@ -130,7 +130,7 @@ public class PKIXParameters implements CertPathParameters {
         }
         checkTrustAnchors(trustAnchors);
         // make shallow copy
-        this.trustAnchors = new HashSet(trustAnchors);
+        this.trustAnchors = new HashSet<TrustAnchor>(trustAnchors);
     }
 
     /**
@@ -150,10 +150,10 @@ public class PKIXParameters implements CertPathParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public List getCertPathCheckers() {
+    public List<PKIXCertPathChecker> getCertPathCheckers() {
         if (certPathCheckers == null) {
             // set to empty List if has not been set yet
-            certPathCheckers = new ArrayList();
+            certPathCheckers = new ArrayList<PKIXCertPathChecker>();
         }
         if (certPathCheckers.isEmpty()) {
             // no content - no need to copy,
@@ -162,9 +162,11 @@ public class PKIXParameters implements CertPathParameters {
             return Collections.unmodifiableList(certPathCheckers);
         }
         // List is not empty - do deep copy
-        ArrayList modifiableList = new ArrayList();
-        for (Iterator i = certPathCheckers.iterator(); i.hasNext();) {
-            modifiableList.add(((PKIXCertPathChecker)i.next()).clone());
+        ArrayList<PKIXCertPathChecker> modifiableList = 
+            new ArrayList<PKIXCertPathChecker>();
+        for (Iterator<PKIXCertPathChecker> i 
+                = certPathCheckers.iterator(); i.hasNext();) {
+            modifiableList.add((PKIXCertPathChecker)i.next().clone());
         }
         return Collections.unmodifiableList(modifiableList);
     }
@@ -172,7 +174,7 @@ public class PKIXParameters implements CertPathParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setCertPathCheckers(List certPathCheckers) {
+    public void setCertPathCheckers(List<PKIXCertPathChecker> certPathCheckers) {
         if (certPathCheckers == null || certPathCheckers.isEmpty()) {
             // empty list or null provided
             if (this.certPathCheckers != null &&
@@ -183,9 +185,10 @@ public class PKIXParameters implements CertPathParameters {
             return;
         }
         // non-empty list provided - do deep copy
-        this.certPathCheckers = new ArrayList();
-        for (Iterator i = certPathCheckers.iterator(); i.hasNext();) {
-            this.certPathCheckers.add(((PKIXCertPathChecker)i.next()).clone());
+        this.certPathCheckers = new ArrayList<PKIXCertPathChecker>();
+        for (Iterator<PKIXCertPathChecker> i 
+                = certPathCheckers.iterator(); i.hasNext();) {
+            this.certPathCheckers.add((PKIXCertPathChecker)i.next().clone());
         }
     }
 
@@ -199,19 +202,19 @@ public class PKIXParameters implements CertPathParameters {
         }
         if (certPathCheckers == null) {
             // set to empty List if has not been set yet
-            certPathCheckers = new ArrayList();
+            certPathCheckers = new ArrayList<PKIXCertPathChecker>();
         }
         // add a copy to avoid possible modifications
-        certPathCheckers.add(checker.clone());
+        certPathCheckers.add((PKIXCertPathChecker) checker.clone());
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public List getCertStores() {
+    public List<CertStore> getCertStores() {
         if (certStores == null) {
             // set to empty List if has not been set yet
-            certStores = new ArrayList();
+            certStores = new ArrayList<CertStore>();
         }
         if (certStores.isEmpty()) {
             // no content - no need to copy,
@@ -220,14 +223,15 @@ public class PKIXParameters implements CertPathParameters {
             return Collections.unmodifiableList(certStores);
         }
         // List is not empty - do shallow copy
-        ArrayList modifiableList = new ArrayList(certStores);
+        ArrayList<CertStore> modifiableList 
+            = new ArrayList<CertStore>(certStores);
         return Collections.unmodifiableList(modifiableList);
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setCertStores(List certStores) {
+    public void setCertStores(List<CertStore> certStores) {
         if (certStores == null || certStores.isEmpty()) {
             // empty list or null provided
             if (this.certStores != null && !this.certStores.isEmpty()) {
@@ -294,7 +298,7 @@ public class PKIXParameters implements CertPathParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set getInitialPolicies() {
+    public Set<String> getInitialPolicies() {
         if (initialPolicies == null) {
             // set to empty Set if has not been set yet
             initialPolicies = new HashSet();
@@ -313,7 +317,7 @@ public class PKIXParameters implements CertPathParameters {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setInitialPolicies(Set initialPolicies) {
+    public void setInitialPolicies(Set<String> initialPolicies) {
         if (initialPolicies == null || initialPolicies.isEmpty()) {
             // empty list or null provided
             if (this.initialPolicies != null &&

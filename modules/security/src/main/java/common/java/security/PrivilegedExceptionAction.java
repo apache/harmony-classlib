@@ -24,9 +24,9 @@ package java.security;
 /**
  * @com.intel.drl.spec_ref
  */
-public interface PrivilegedExceptionAction {
+public interface PrivilegedExceptionAction<T> {
     /**
      * @com.intel.drl.spec_ref
      */
-    Object run() throws Exception;
+    T run() throws Exception;
 }
