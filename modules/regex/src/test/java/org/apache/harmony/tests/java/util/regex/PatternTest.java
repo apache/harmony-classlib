@@ -176,8 +176,6 @@ public class PatternTest extends TestCase {
                 fail("PatternSyntaxException was expected, but compilation succeeds");
             } catch (PatternSyntaxException pse) {
                 continue;
-            } catch (Throwable e) {
-                fail("PatternSyntaxException was expected, but other one was thrown: " + e);
             }
         }
 	}
@@ -347,9 +345,6 @@ public class PatternTest extends TestCase {
             Pattern.compile("+++++");
             fail("PatternSyntaxException expected");
         } catch (PatternSyntaxException pse) {
-            System.out.println(pse);
-        } catch (Throwable e) {
-            fail("PatternSyntaxException expected other one was thrown: " + e);
         }
     }
     
@@ -358,8 +353,6 @@ public class PatternTest extends TestCase {
             Pattern pat = Pattern.compile("\\d+*");
             fail("PatternSyntaxException expected");
         } catch (PatternSyntaxException pse) {
-        } catch (Throwable e) {
-            fail("PatternSyntaxException expected other one was thrown: " + e);
         }
     }
     
@@ -548,10 +541,6 @@ public class PatternTest extends TestCase {
             Pattern.compile("\\y");
             fail("PatternSyntaxException expected");
         } catch (PatternSyntaxException pse) {
-            
-        } catch (Exception t) {
-            fail("PatternSyntaxException was expected" +
-                    "but other one was thrown: " + t);
         }
     }
     
