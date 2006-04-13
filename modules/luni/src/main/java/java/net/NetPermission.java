@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,8 @@ package java.net;
  * @see SecurityManager
  */
 public final class NetPermission extends java.security.BasicPermission {
+
+	private static final long serialVersionUID = -8343910153355041693L;
 
 	/**
 	 * Creates an instance of this class with the given name.
