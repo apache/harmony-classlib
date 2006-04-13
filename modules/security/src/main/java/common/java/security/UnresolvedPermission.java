@@ -48,7 +48,7 @@ import org.apache.harmony.security.fortress.PolicyUtils;
  * actual checking.
  * 
  */
-public final class UnresolvedPermission extends Permission 
+public final class UnresolvedPermission extends Permission
     implements Serializable {
 
     /** 
@@ -250,12 +250,19 @@ public final class UnresolvedPermission extends Permission
      * Outputs <code>type</code>,<code>name</code>,<code>actions</code>
      * fields via default mechanism; next manually writes certificates in the
      * following format: <br>
-     * an initial <code>int</code> indicating the number of certificates to
-     * follow (a value of "zero" denotes that there are no certificates). Each
-     * certificate is written out starting with a <code>String</code> denoting
-     * the certificate type, followed by an <code>int</code> specifying the
-     * length of the certificate encoding, followed by the certificate encoding
-     * itself which is written out as an array of bytes.
+     *
+     * <ol>
+     * <li> int : number of certs or zero </li>
+     * <li> each cert in the following format
+     *     <ol>
+     *     <li> String : certificate type </li>
+     *     <li> int : length in bytes of certificate </li>
+     *     <li> byte[] : certificate encoding </li>
+     *     </ol>
+     * </li>
+     * </ol>
+     *
+     *  @see  <a href="http://java.sun.com/j2se/1.5.0/docs/api/serialized-form.html#java.security.UnresolvedPermission">Java Spec</a>
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
         ObjectOutputStream.PutField fields = out.putFields();
