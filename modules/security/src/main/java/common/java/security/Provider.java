@@ -314,9 +314,9 @@ public abstract class Provider extends Properties {
 
     /**
      * 
-     * returns true if the provider implements the specified algorithm or type
-     * for the specified cryptographic service and its implementation meets the
-     * constraint expressed by the specified attribute name/value pair.
+     * returns true if the provider implements the specified algorithm.  Caller must
+     * specify the cryptographic service and specify constraints via the
+     * attribute name the attribute value
      * 
      * @param serv
      *            Crypto service
