@@ -29,8 +29,8 @@ import java.lang.reflect.Method;
 
 public class MethodDescriptor extends FeatureDescriptor {
     
-    private Method method = null;
-    private ParameterDescriptor[] parameterDescriptors = {};
+    private Method method;
+    private ParameterDescriptor[] parameterDescriptors;
 
     /**
      * @com.intel.drl.spec_ref
@@ -39,13 +39,14 @@ public class MethodDescriptor extends FeatureDescriptor {
             ParameterDescriptor[] parameterDescriptors) {
         super();
         
+        if (method == null) {
+            throw new NullPointerException();
+        }
         this.method = method;
         this.parameterDescriptors = parameterDescriptors;
-        
-        if(method != null) {
-            setName(method.getName());
-            setDisplayName(method.getName());
-        }
+
+        setName(method.getName());
+        setDisplayName(method.getName());
     }
 
     /**
@@ -54,11 +55,14 @@ public class MethodDescriptor extends FeatureDescriptor {
     public MethodDescriptor(Method method) {
         super();
         
-        this.method = method;
-        if(method != null) {
-            setName(method.getName());
-            setDisplayName(method.getName());
+        if (method == null) {
+            throw new NullPointerException();
         }
+        this.method = method;
+        this.parameterDescriptors = new ParameterDescriptor[0];
+
+        setName(method.getName());
+        setDisplayName(method.getName());
     }
 
     /**
