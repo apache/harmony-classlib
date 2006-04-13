@@ -32,6 +32,8 @@ public class SSLSessionBindingEvent extends EventObject implements Serializable 
 
     /**
      * @serial
+     * The 5.0 spec. doesn't declare this serialVersionUID field
+     * In order to be compatible it is explicitly declared here
      */
     private static final long serialVersionUID = 3989172637106345L;
 
