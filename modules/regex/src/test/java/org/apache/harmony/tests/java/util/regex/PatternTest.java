@@ -18,9 +18,12 @@
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.12.2.2 $
  */
-package java.util.regex;
+package org.apache.harmony.tests.java.util.regex;
 
 import junit.framework.TestCase;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * @author Nikolay A. Kuznetsov
