@@ -20,6 +20,7 @@
 
 package javax.crypto;
 
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -84,77 +85,49 @@ public class CipherTest extends TestCase {
 	/*
 	 * Class under test for Cipher getInstance(String)
 	 */
-	public void testGetInstanceString1() {
+	public void testGetInstanceString1() throws NoSuchAlgorithmException,
+            NoSuchPaddingException {
 		
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		}
-		if (c.getProvider() != p2) {
-			fail("Case1: getInstance() failed");
-		}	
+		Cipher c = Cipher.getInstance("DES");
+		assertSame(p2, c.getProvider());
 	}
 
 	/*
 	 * Class under test for Cipher getInstance(String)
 	 */
-	public void testGetInstanceString2() {
+	public void testGetInstanceString2() throws NoSuchAlgorithmException,
+            NoSuchPaddingException {
 		
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES/CBC/PKCS5Padding");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		}
+		Cipher c = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		assertSame("Case1:", p1, c.getProvider());
 
-		if (c.getProvider() != p1) {
-			fail("Case1: getInstance() failed");
-		}
 		Security.removeProvider(p1.getName());
-		try {
-			c = Cipher.getInstance("DES/CBC/PKCS5Padding");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		}
-		if (c.getProvider() != p2) {
-			fail("Case2: getInstance() failed");
-		}	
+
+		c = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		assertSame("Case2:", p2, c.getProvider());
 	}
 
 	/*
 	 * Class under test for Cipher getInstance(String)
 	 */
-	public void testGetInstanceString3() {
+	public void testGetInstanceString3() throws NoSuchAlgorithmException,
+            NoSuchPaddingException {
 		
 		try {
 			Cipher.getInstance("DES/CBC/");
 			fail("Case1: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
 		}
 
 		try {
 			Cipher.getInstance("DES//PKCS5Padding");
 			fail("Case2: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
 		}
 
 		try {
 			Cipher.getInstance("DES/CBC/IncorrectPadding");
 			fail("No expected NoSuchPaddingException");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
 		} catch (NoSuchPaddingException e) {
 		}
 	}	
@@ -163,44 +136,30 @@ public class CipherTest extends TestCase {
 	/*
 	 * Class under test for Cipher getInstance(String, String)
 	 */
-	public void testGetInstanceStringString1() {
+	public void testGetInstanceStringString1() throws NoSuchAlgorithmException,
+            NoSuchProviderException, NoSuchPaddingException {
+
 		try {
 			Cipher.getInstance("DES/CBC/", "MyProvider2");
 			fail("Case1: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} catch (NoSuchProviderException e) {
-			fail(e.toString());
 		}
 
 		try {
 			Cipher.getInstance("DES//PKCS5Padding", "MyProvider2");
 			fail("Case2: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} catch (NoSuchProviderException e) {
-			fail(e.toString());
 		}
 
 		try {
 			Cipher.getInstance("DES/CBC/IncorrectPadding", "MyProvider2");
-			fail("No expected NoSuchProviderException");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
+			fail("No expected NoSuchPaddingException");
 		} catch (NoSuchPaddingException e) {
-		} catch (NoSuchProviderException e) {
-			fail(e.toString());
 		}
 		
 		try {
 			Cipher.getInstance("DES/CBC/PKCS5Padding", "IncorrectProvider");
 			fail("No expected NoSuchProviderException");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
 		} catch (NoSuchProviderException e) {
 		}		
 	}
@@ -208,69 +167,42 @@ public class CipherTest extends TestCase {
 	/*
 	 * Class under test for Cipher getInstance(String, String)
 	 */
-	public void testGetInstanceStringString2() {
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES", "MyProvider2");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} catch (NoSuchProviderException e) {
-			fail(e.toString());
-		}
-		if (c.getProvider() != p2) {
-			fail("Case2: getInstance() failed");
-		}
+	public void testGetInstanceStringString2() throws NoSuchAlgorithmException,
+            NoSuchProviderException, NoSuchPaddingException {
+
+		Cipher c = Cipher.getInstance("DES", "MyProvider2");
+		assertSame("Case1:", p2, c.getProvider());
 		
-		try {
-			c = Cipher.getInstance("DES/CBC/PKCS5Padding", "MyProvider2");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} catch (NoSuchProviderException e) {
-			fail(e.toString());
-		}
-		if (c.getProvider() != p2) {
-			fail("Case2: getInstance() failed");
-		}
+		c = Cipher.getInstance("DES/CBC/PKCS5Padding", "MyProvider2");
+		assertSame("Case2:", p2, c.getProvider());
 	}
 	/*
 	 * Class under test for Cipher getInstance(String, Provider)
 	 */
-	public void testGetInstanceStringProvider1() {
+	public void testGetInstanceStringProvider1()
+            throws NoSuchAlgorithmException, NoSuchPaddingException {
+
 		try {
 			Cipher.getInstance("DES/CBC/", p2);
 			fail("Case1: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
 		}
 
 		try {
 			Cipher.getInstance("DES//PKCS5Padding", p2);
 			fail("Case2: No expected NoSuchAlgorithmException");
 		} catch (NoSuchAlgorithmException e) {
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
 		}
 
 		try {
 			Cipher.getInstance("DES/CBC/IncorrectPadding", p2);
 			fail("No expected NoSuchProviderException");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
 		} catch (NoSuchPaddingException e) {
 		}
 		
 		try {
 			Cipher.getInstance("DES/CBC/PKCS5Padding", "IncorrectProvider");
 			fail("No expected NoSuchProviderException");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
 		} catch (NoSuchProviderException e) {
 		}		
 	}
@@ -278,102 +210,54 @@ public class CipherTest extends TestCase {
 	/*
 	 * Class under test for Cipher getInstance(String, Provider)
 	 */
-	public void testGetInstanceStringProvider2() {
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES", p2);
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} 
-		if (c.getProvider() != p2) {
-			fail("Case2: getInstance() failed");
-		}
+	public void testGetInstanceStringProvider2()
+            throws NoSuchAlgorithmException, NoSuchPaddingException {
+
+		Cipher c = Cipher.getInstance("DES", p2);
+		assertSame("Case1:", p2, c.getProvider());
 		
-		try {
-			c = Cipher.getInstance("DES/CBC/PKCS5Padding", p2);
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} 
-		if (c.getProvider() != p2) {
-			fail("Case2: getInstance() failed");
-		}	
-		if ("DES".equals(c.getAlgorithm())) {
-			fail("getAlgorithm() failed");
-		}
+		c = Cipher.getInstance("DES/CBC/PKCS5Padding", p2);
+		assertSame("Case2:", p2, c.getProvider());
+		assertFalse("getAlgorithm", "DES".equals(c.getAlgorithm()));
 	}
 
-	public void testGetBlockSize() {
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} 
-		if (c.getBlockSize() != 111) {
-			fail("getBlockSize() failed");
-		}
+	public void testGetBlockSize() throws NoSuchAlgorithmException,
+            NoSuchPaddingException {
+
+		Cipher c = Cipher.getInstance("DES");
+		assertEquals("getBlockSize", 111, c.getBlockSize());
 	}
 
-	public void testGetOutputSize() {
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} 
-		
+	public void testGetOutputSize() throws NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidKeyException {
+
+		Cipher c = Cipher.getInstance("DES");
 		try {
 			c.getOutputSize(111);
 			fail("No expected IllegalStateException");
 		} catch (IllegalStateException e){
 		}
+
 		if (noKey) {
 			return;
 		}
-		try {
-			c.init(Cipher.DECRYPT_MODE, key);
-		} catch (java.security.InvalidKeyException e) {
-			fail(e.toString());
-		}
-		if (c.getOutputSize(111) != 121) {
-			fail("getOutputSize() failed");
-		}
+
+		c.init(Cipher.DECRYPT_MODE, key);
+		assertEquals("getOutputSize", 121, c.getOutputSize(111));
 	}
 
-	public void testGetIV() {
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} 
-		if (c.getIV().length != 3) {
-			fail("incorrect length");
-		}
+	public void testGetIV() throws NoSuchAlgorithmException,
+            NoSuchPaddingException {
+
+		Cipher c = Cipher.getInstance("DES");
+		assertEquals(3, c.getIV().length);
 	}
 
-	public void testGetParameters() {
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		} 
-		if (c.getParameters() != null) {
-			fail("getParameters() failed");
-		}
+	public void testGetParameters() throws NoSuchAlgorithmException,
+            NoSuchPaddingException {
+
+		Cipher c = Cipher.getInstance("DES");
+		assertNull(c.getParameters());
 	}
 
 	public void testGetExemptionMechanism() {
@@ -431,15 +315,11 @@ public class CipherTest extends TestCase {
 	/*
 	 * Class under test for byte[] update(byte[])
 	 */
-	public void testUpdatebyteArray() {
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("DES");
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
-		} catch (NoSuchPaddingException e) {
-			fail(e.toString());
-		}
+	public void testUpdatebyteArray() throws NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidKeyException {
+
+		Cipher c = Cipher.getInstance("DES");
+
 		byte[] b = {1,2,3,4};
 		try {
 			c.update(b);
@@ -449,19 +329,14 @@ public class CipherTest extends TestCase {
 		if (noKey) {
 			return;
 		}
-		try {
-			c.init(Cipher.DECRYPT_MODE, key);
-		} catch (java.security.InvalidKeyException e) {
-			fail(e.toString());
-		}
+
+		c.init(Cipher.DECRYPT_MODE, key);
 		try {
 			c.update(null);
 			fail("No expected IllegalArgumentException");
 		} catch (IllegalArgumentException e){
 		}
-		if (c.update(new byte[0]) != null) {
-			fail("Incorrect result");
-		}
+		assertNull(c.update(new byte[0]));
 	}
 
 	/*
@@ -548,13 +423,11 @@ public class CipherTest extends TestCase {
 	public void testUnwrap() {
 	}
 
-	public void testGetMaxAllowedKeyLength() {
+	public void testGetMaxAllowedKeyLength() throws NoSuchAlgorithmException {
 		try {
 			Cipher.getMaxAllowedKeyLength(null);
 			fail("No expected NullPointerException");
 		} catch (NullPointerException e) {
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
 		}
 		try {
 			Cipher.getMaxAllowedKeyLength("//CBC/PKCS5Paddin");
@@ -568,13 +441,12 @@ public class CipherTest extends TestCase {
 		}
 	}
 
-	public void testGetMaxAllowedParameterSpec() {
+	public void testGetMaxAllowedParameterSpec()
+            throws NoSuchAlgorithmException {
 		try {
 			Cipher.getMaxAllowedParameterSpec(null);
 			fail("No expected NullPointerException");
 		} catch (NullPointerException e) {
-		} catch (NoSuchAlgorithmException e) {
-			fail(e.toString());
 		}
 		try {
 			Cipher.getMaxAllowedParameterSpec("/DES//PKCS5Paddin");
