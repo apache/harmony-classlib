@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<LINK rel="Stylesheet" type="text/css" media="all" href="drl.css">
+<LINK rel="Stylesheet" type="text/css" media="all" href="harmony.css">
 <title>Design of the regex processing framework</title>
 </head>
 <body>
@@ -51,7 +51,7 @@
   <h1><a name="About_this_document"></a>About This Document</h1>
   <h2><a name="Purpose"></a>Purpose</h2>
   <p>This document describes the <code>java.util.regex</code> package delivered as part of 
-    the DRL (Dynamic Run-time Layer) initiative. This document provides an overview 
+    the Harmony classlibrary project. This document provides an overview
     of the overall architecture with focus on the aspects improving performance. 
   </p>
   <h2><a name="Intended_Audience"></a>Intended Audience</h2>
@@ -65,7 +65,7 @@
 href="#*">*</a> programming language [<a href="#JavaSite">5</a>]. </p>
   <h2><a name="Documentation_Conventions"></a>Documentation Conventions</h2>
   <p>This document uses the <a
-href="conventions.htm">unified conventions</a> for the DRL documentation kit.</p>
+href="conventions.htm">unified conventions</a> for the Harmony documentation kit.</p>
 <P class="backtotop"><A href="#Top">Back to Top</A></P>
   
 <h1><a name="Introduction"></a>Introduction to Pattern Matching </h1>
@@ -81,21 +81,21 @@ href="conventions.htm">unified conventions</a> for the DRL documentation kit.</p
   last instance of <i>world</i> in a sentence. The BM string searching algorithm is more 
   appropriate for solving the task than the RE technique, and is more effective 
   from the performance perspective. To optimize using pattern matching techniques 
-  with different tasks, DRL provides a unified interface that applies to any part 
+  with different tasks, Harmony provides a unified interface that applies to any part
   of a regular expression, including the whole expression. </p>
   
 <p>In terms of the Finite Automata theory, which is the basis of regular expression 
-  processing, a part of regular expression is a <i>node</i>. The DRL regex framework 
+  processing, a part of regular expression is a <i>node</i>. The Harmony regex framework
   treats every distinctive part of a regular expression and the whole expression 
   as a node. Each node implements the unified interface adjusted for a specific 
-  technique. For instance, for the regular expression in the example, the DRL 
+  technique. For instance, for the regular expression in the example, the Harmony
   framework includes a special class SequenceSet, which has a unified interface 
   called <code>AbstractSet</code>, and implements the Boyer-Moore algorithm in 
   searching for a word.</p>
 <P class="backtotop"><A href="#Top">Back to Top</A></P>
   <h1><a name="AbstractSetIntro"></a>AbstractSet Interface</h1>
   
-<p>The key feature of the DRL regex framework the single super interface, <code>AbstractSet</code>, 
+<p>The key feature of the Harmony regex framework the single super interface, <code>AbstractSet</code>,
   shared by all types of nodes. Individual nodes are independent, so that every 
   node of the automaton incorporates its own find-match algorithm optimized for 
   a specific type of nodes. You can use methods implemented in the <code>AbstractSet</code> 
@@ -232,7 +232,7 @@ href="conventions.htm">unified conventions</a> for the DRL documentation kit.</p
 <P class="backtotop"><A href="#Top">Back to Top</A></P>
 
 <h1><a name="UsageExamples"></a>Usage Examples</h1>
-<P>This part on the document illustrates usage of the DRL regex framework. </P>
+<P>This part on the document illustrates usage of the Harmony regex framework. </P>
 <h3><a name="Example1"></a>Example 1</h3>
 <p>This example illustrates using the <code>CharSet</code> class, which includes all nodes accepting characters to create a new type of tokens. For that, the class uses the <code>LeafSet</code> class, which is the basic class for tokens. This example shows that the only method you need to override in order to present a new type of tokens is the  <code>accept()</code> method. </p>
 <pre>class CharSet extends LeafSet {
