@@ -31,7 +31,7 @@ public class AppConfigurationEntry {
 
 
     // the login module options
-    private final Map options;
+    private final Map<String, ?> options;
 
     // the control flag
     private final AppConfigurationEntry.LoginModuleControlFlag controlFlag;
@@ -44,7 +44,7 @@ public class AppConfigurationEntry {
      */
     public AppConfigurationEntry(String loginModuleName,
             AppConfigurationEntry.LoginModuleControlFlag controlFlag,
-            Map options) {
+            Map<String, ?> options) {
 
         if (loginModuleName == null || loginModuleName.length() == 0) {
             throw new IllegalArgumentException(
@@ -81,7 +81,7 @@ public class AppConfigurationEntry {
     /** 
      * @com.intel.drl.spec_ref 
      */
-    public Map getOptions() {
+    public Map<java.lang.String, ?> getOptions() {
         return options;
     }
 

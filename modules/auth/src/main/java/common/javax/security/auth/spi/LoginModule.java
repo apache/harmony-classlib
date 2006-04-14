@@ -35,7 +35,7 @@ public interface LoginModule {
      * @com.intel.drl.spec_ref
      */
     void initialize(Subject subject, CallbackHandler callbackHandler,
-            Map sharedState, Map options);
+            Map<String, ?> sharedState, Map<String, ?> options);
 
     /**
      * @com.intel.drl.spec_ref

@@ -29,6 +29,7 @@ import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.DomainCombiner;
 import java.security.Permission;
+import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -102,8 +103,8 @@ public final class Subject implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Subject(boolean readOnly, Set subjPrincipals, Set pubCredentials,
-            Set privCredentials) {
+    public Subject(boolean readOnly, Set<? extends Principal> subjPrincipals,
+            Set<?> pubCredentials, Set<?> privCredentials) {
 
         if (subjPrincipals == null || pubCredentials == null
                 || privCredentials == null) {
@@ -254,42 +255,42 @@ public final class Subject implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set getPrincipals() {
+    public Set<Principal> getPrincipals() {
         return principals;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set getPrincipals(Class c) {
+    public <T extends Principal> Set<T> getPrincipals(Class<T> c) {
         return ((SecureSet) principals).get(c);
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set getPrivateCredentials() {
+    public Set<Object> getPrivateCredentials() {
         return privateCredentials;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set getPrivateCredentials(Class c) {
+    public <T> Set<T> getPrivateCredentials(Class<T> c) {
         return privateCredentials.get(c);
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set getPublicCredentials() {
+    public Set<Object> getPublicCredentials() {
         return publicCredentials;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Set getPublicCredentials(Class c) {
+    public <T> Set<T> getPublicCredentials(Class<T> c) {
         return publicCredentials.get(c);
     }
 
