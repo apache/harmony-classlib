@@ -35,6 +35,7 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
 import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.Util;
 import org.apache.harmony.kernel.vm.VM;
 
 /**
@@ -232,7 +233,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 			jar = (JarFile) entry.get();
 		if (jar == null && fileString != null) {
 			int flags = ZipFile.OPEN_READ + (temp ? ZipFile.OPEN_DELETE : 0);
-			jar = new JarFile(new File(fileString), true, flags);
+			jar = new JarFile(new File(Util.decode(fileString, true)), true, flags);
 			jarCache.put(key, new CacheEntry(jar, key, cacheQueue));
 		} else {
 			SecurityManager security = System.getSecurityManager();
