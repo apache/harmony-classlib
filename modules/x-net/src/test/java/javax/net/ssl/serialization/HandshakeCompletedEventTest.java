@@ -23,7 +23,7 @@ import javax.net.ssl.SSLSocket;
 import org.apache.harmony.security.test.SerializationTest;
 
 /**
- * Test for HandshakeCompletedEvent seialization
+ * Test for HandshakeCompletedEvent serialization
  * 
  */
 

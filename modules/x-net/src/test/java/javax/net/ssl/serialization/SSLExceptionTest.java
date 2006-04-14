@@ -27,7 +27,7 @@ import org.apache.harmony.security.test.SerializationTest;
 
 
 /**
- * Test for SSLException seialization
+ * Test for SSLException serialization
  * 
  */
 
