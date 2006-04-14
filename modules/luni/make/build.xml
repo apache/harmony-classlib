@@ -65,7 +65,7 @@
 	<target name="build" depends="init">
 		<ant dir="make/common" target="compile.java" />
 		<ant dir="make/common" target="build.jar" />
-		<ant dir="make/platform/${hy.platform}" target="compile.native" />
+	<!--	<ant dir="make/platform/${hy.platform}" target="compile.native" />-->
 		<ant dir="make/common" target="copy.resources" />
 	</target>
 
