@@ -391,9 +391,13 @@ public class SecretKeyFactoryTest1 extends TestCase {
                 }
             }
             try {
-                skF[i].getKeySpec(secKeySpec,
-                        (defaultAlgorithm.equals(defaultAlgorithm2)
-                                ? DESedeKeySpec.class : DESKeySpec.class));
+                Class c;
+                if (defaultAlgorithm.equals(defaultAlgorithm2)) {
+                    c = DESedeKeySpec.class;
+                } else {
+                    c = DESKeySpec.class;
+                }
+                skF[i].getKeySpec(secKeySpec, c);
                 fail("getKeySpec(secKey, Class): InvalidKeySpecException must be thrown");
             } catch (InvalidKeySpecException e) {
             }
