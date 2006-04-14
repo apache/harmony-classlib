@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -254,7 +254,7 @@ public interface List<E> extends Collection<E> {
 	 * @exception UnsupportedOperationException
 	 *                when removing from this List is not supported
 	 */
-	public boolean remove(E object);
+	public boolean remove(Object object);
 
 	/**
 	 * Removes all occurrences in this List of each object in the specified
