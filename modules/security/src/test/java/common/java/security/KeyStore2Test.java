@@ -176,8 +176,10 @@ public class KeyStore2Test extends TestCase {
 
         keyS.load(lParam);
 
+        //make it compilable on 1.5
+        Class c = alias.getClass();
         assertFalse("Incorrect result of entryInstanceOf", keyS
-                .entryInstanceOf(alias, alias.getClass()));
+                .entryInstanceOf(alias, (Class<KeyStore.Entry>)c));
     }
 
     private void checkKeyStoreException(KeyStore keyS)
@@ -202,7 +204,9 @@ public class KeyStore2Test extends TestCase {
         } catch (KeyStoreException e) {
         }
         try {
-            keyS.entryInstanceOf(alias, alias.getClass());
+            //make it compilable on 1.5
+            Class c = alias.getClass();
+            keyS.entryInstanceOf(alias, (Class<KeyStore.Entry>)c);
             fail(eMsg);
         } catch (KeyStoreException e) {
         }

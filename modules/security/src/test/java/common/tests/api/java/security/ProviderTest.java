@@ -25,9 +25,24 @@ public class ProviderTest extends junit.framework.TestCase {
 		}
 	}
 
+    class MyEntry implements java.util.Map.Entry {
+         public Object getKey() {
+             return null;  
+         }
+
+         public Object getValue() {
+             return null;  
+         }
+
+         public Object setValue(Object value) {
+             return null;  
+         }
+    }
+    
 	TestProvider provTest = new TestProvider("provTest", 1.2,
 			"contains nothings, purely for testing the class");
 
+    
 	/**
 	 * @tests java.security.Provider#entrySet()
 	 */
@@ -35,7 +50,8 @@ public class ProviderTest extends junit.framework.TestCase {
 		// test method of java.security.provider.entrySet
 		provTest.put("test.prop", "this is a test property");
 		try {
-			provTest.entrySet().add("another property value");
+            //make it compilable on 1.5
+			provTest.entrySet().add(new MyEntry());
 			fail("was able to modify the entrySet");
 		} catch (UnsupportedOperationException e) {
 			// expected

@@ -1085,11 +1085,17 @@ public class KeyStore1Test extends TestCase {
             for (int j = 0; j < aliases.length; j++)  {
                 assertTrue("Incorrect class entry 2", 
                         kss[i].entryInstanceOf(aliases[j], pKey.getClass()));
+
+                //make it compilable on 1.5
+                Class c = privKey.getClass();
                 assertFalse("Incorrect class entry 3", 
-                        kss[i].entryInstanceOf(aliases[j], privKey.getClass()));
+                        kss[i].entryInstanceOf(aliases[j], (Class<KeyStore.Entry>)c ));
             }
+
+            //make it compilable on 1.5
+            Class c = privKey.getClass();
             assertFalse("Incorrect class entry 4", 
-                kss[i].entryInstanceOf(aliasKE, privKey.getClass()));
+                kss[i].entryInstanceOf(aliasKE, (Class<KeyStore.Entry>)c ));
             assertTrue("Incorrect class entry 5", 
                 kss[i].entryInstanceOf(aliasKE, pKey.getClass()));            
         }

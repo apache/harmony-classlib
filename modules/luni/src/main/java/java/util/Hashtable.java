@@ -403,7 +403,7 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * 
 	 * @return a Set of the mappings
 	 */
-	public Set entrySet() {
+	public Set<Map.Entry<K,V>> entrySet() {
 		return new Collections.SynchronizedSet(new AbstractSet<Map.Entry<K,V>>() {
 			public int size() {
 				return elementCount;

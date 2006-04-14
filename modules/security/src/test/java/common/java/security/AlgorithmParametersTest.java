@@ -22,6 +22,7 @@
 package java.security;
 
 import junit.framework.TestCase;
+import java.security.spec.AlgorithmParameterSpec;
 
 /**
  * Tests for <code>AlgorithmParameters</code> class constructors and
@@ -178,7 +179,8 @@ public class AlgorithmParametersTest extends TestCase {
 		}
 		
 		try {
-			ap.getParameterSpec(new Object().getClass());
+		    //make it compilable on 1.5
+			ap.getParameterSpec((Class<AlgorithmParameterSpec>)new Object().getClass());
 			fail("getParameterSpec(): No expected InvalidParameterSpecException");
 		} catch (java.security.spec.InvalidParameterSpecException e) {
 		}
@@ -215,7 +217,8 @@ public class AlgorithmParametersTest extends TestCase {
 		}		
 		
 		try {
-			ap.getParameterSpec(new Object().getClass());
+			//make it compilable on 1.5
+			ap.getParameterSpec((Class<AlgorithmParameterSpec>)new Object().getClass());
 		} catch (java.security.spec.InvalidParameterSpecException e) {
 			fail(e.toString());
 		}
