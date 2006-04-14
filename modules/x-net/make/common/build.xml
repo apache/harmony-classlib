@@ -107,6 +107,11 @@
 				<fileset dir="${hy.x-net.src.test.java}">
 					<include name="**/*Test.java"/>
 
+					<!-- Harmony exclude list -->
+	<!-- FIXME: The following tests require JSSE provider -->
+					<exclude name="javax/net/ssl/serialization/HandshakeCompletedEventTest.java"/>
+					<exclude name="javax/net/ssl/serialization/SSLSessionBindingEventTest.java"/>
+
 	<!-- FIXME: The following tests are excluded because they fail for reasons to be determined -->
                     <exclude name="**/DefaultSSLServerSocketFactoryTest.java"/>
                     <exclude name="**/DefaultSSLSocketFactoryTest.java"/>
