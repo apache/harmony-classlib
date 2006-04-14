@@ -25,8 +25,8 @@
 		<javac sourcepath=""
 			srcdir="${hy.prefs.src.main.java}"
 			destdir="${hy.prefs.bin.main}"
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -53,8 +53,8 @@
 		<javac srcdir="${hy.prefs.src.test.java}"
 			destdir="${hy.prefs.bin.test}"
 			sourcepath=""
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>

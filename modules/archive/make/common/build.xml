@@ -25,8 +25,8 @@
 		<javac sourcepath=""
 			srcdir="${hy.archive.src.main.java}"
 			destdir="${hy.archive.bin.main}"
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -53,8 +53,8 @@
 		<javac srcdir="${hy.archive.src.test.java}"
 			destdir="${hy.archive.bin.test}"
 			sourcepath=""
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>

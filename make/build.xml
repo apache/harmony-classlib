@@ -22,6 +22,9 @@
     	Build contributed source and lay out results in the required format 
     </description>
 
+    <!-- import properties for snapshot targets -->
+    <import file="${basedir}/make/properties.xml" />
+
     <!-- ================================= 
           target: default              
          ================================= -->
@@ -122,40 +125,13 @@ Generating HTML using Doxygen...
     <!-- ================================= 
           target: properties
          ================================= -->
-    <target name="properties"
-            depends="common-properties, unix-properties, windows-properties" />
-
-    <!-- ================================= 
-          target: common-properties
-         ================================= -->
-    <target name="common-properties">
-        <xmlproperty file=".svn/entries" prefix="svn" />
-        <property name="svn.revision"
-                  value="${svn.wc-entries.entry(revision)}" />
+    <target name="properties" depends="svn-prop">
         <property name="deploy.file.prefix"
                   value="harmony-classlib-r${svn.revision}" />
-        <condition property="is.win" value="true">
-            <os family="Windows" />
-        </condition>
-        <condition property="is.unix" value="true">
-            <os name="linux" />
-        </condition>
-    </target>
-
-    <!-- ================================= 
-          target: unix-properties
-         ================================= -->
-    <target name="unix-properties" if="is.unix">
         <property name="deploy.tar"
-                  value="${deploy.file.prefix}-${os.name}-${os.arch}-snapshot.tar.gz" />
-    </target>
-
-    <!-- ================================= 
-          target: windows-properties
-         ================================= -->
-    <target name="windows-properties" if="is.win">
+                  value="${deploy.file.prefix}-${hy.os}-${hy.arch}-snapshot.tar.gz" />
         <property name="deploy.zip"
-                  value="${deploy.file.prefix}-win-${os.arch}-snapshot.zip" />
+                  value="${deploy.file.prefix}-${hy.os}-${hy.arch}-snapshot.zip" />
     </target>
 
     <!-- ================================= 
@@ -187,12 +163,13 @@ Generating snapshot tar
                 includes="README-snapshot.txt"
                 fullpath="Harmony/README"/>
         </tar>
+        <checksum file="${deploy.tar}" fileext=".md5"/>
     </target>
 
     <!-- ================================= 
           target: snapshot-zip
          ================================= -->
-    <target name="snapshot-zip" depends="default, properties" if="is.win">
+    <target name="snapshot-zip" depends="default, properties" if="is.windows">
         <echo>
 ========================================
 Generating snapshot zip
@@ -209,6 +186,7 @@ Generating snapshot zip
                 includes="README-snapshot.txt"
                 fullpath="Harmony/README.txt"/>
         </zip>
+        <checksum file="${deploy.zip}" fileext=".md5"/>
     </target>
 
 </project>

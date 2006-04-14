@@ -23,6 +23,9 @@
 		Compile the Java source and package in component archives.
     </description>
 
+    <!-- import common properties -->
+    <import file="${basedir}/make/properties.xml" />
+
     <!-- Users need to set this property to use a different compiler -->
     <!-- To use the eclipse compiler set the value of the below      -->
     <!-- property to be "org.eclipse.jdt.core.JDTCompilerAdapter"    -->
@@ -244,7 +247,7 @@
             description="Compile the source">
         <mkdir dir="${build.output}" />
 
-        <javac destdir="${build.output}" source="1.5" target="jsr14" debug="on">
+        <javac destdir="${build.output}" source="${hy.javac.source}" target="${hy.javac.target}" debug="on">
             <src path="modules/applet/src/main/java" />
             <src path="modules/auth/src/main/java/common" />
             <src path="modules/auth/src/main/java/windows" />

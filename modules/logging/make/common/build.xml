@@ -25,8 +25,8 @@
 		<javac sourcepath=""
 			srcdir="${hy.logging.src.main.java}"
 			destdir="${hy.logging.bin.main}"
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -54,8 +54,8 @@
 		<javac srcdir="${hy.logging.src.test.injected}"
 			destdir="${hy.logging.bin.injected}"
 			sourcepath=""
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -68,8 +68,8 @@
 		<javac srcdir="${hy.logging.src.test.java}"
 			destdir="${hy.logging.bin.test}"
 			sourcepath=""
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>

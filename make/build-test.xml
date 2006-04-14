@@ -19,6 +19,9 @@
 
     <description> Tests for classlib package</description>
 
+    <!-- import common properties -->
+    <import file="${basedir}/make/properties.xml" />
+
     <!-- set global properties for this build. -->
 
     <property name="build.compiler" value="modern"/>
@@ -185,7 +188,11 @@
     <target name="compile-support" depends="copy-test-resources, check-support-jars"
     	description="Compile the unit test source">
     	<mkdir dir="${tests.build.output}" />
-        <javac destdir="${tests.build.output}" source="1.5" target="jsr14" debug="on">
+    	<javac destdir="${tests.build.output}"
+    		source="${hy.javac.source}"
+    		target="${hy.javac.target}"
+    		debug="on">
+
             <src path="${support.dir}/src/test/java" />
             <src path="modules/archive/src/test/java" />
             <src path="modules/luni/src/test/java" />

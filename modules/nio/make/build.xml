@@ -18,58 +18,11 @@
 <project name="NIO Build" default="build" basedir="..">
 	<description>Build for NIO component</description>
 
+        <!-- import common properties -->
+        <import file="${basedir}/../../make/properties.xml" />
+
 	<!-- set global properties for this build. -->
 	<xmlproperty file="make/common/hyproperties.xml" semanticAttributes="true"/>
-	<property environment="env"/>
-
-	<!-- Determine the (normalized) operating system family -->
-	<condition property="if.win">
-		<os family="Windows" />
-	</condition>
-	<condition property="hy.os_family" value="windows">
-		<isset property="if.win"/>
-	</condition>
-
-	<condition property="if.linux">
-		<and>
-			<os name="linux" />
-			<os family="unix" />
-		</and>
-	</condition>
-	<condition property="hy.os_family" value="linux">
-		<isset property="if.linux"/>
-	</condition>
-
-
-	<!-- Determine the (normalized) processor family -->
-	<condition property="if.x86_64">
-		<contains string="${os.arch}" substring="x86_64"/>
-	</condition>
-	<condition property="hy.cpu_family" value="x86_64">
-		<isset property="if.x86_64"/>
-	</condition>
-	
-	<condition property="if.x86">
-		<and>
-			<contains string="${os.arch}" substring="86"/>
-			<not>
-				<isset property="if.x86_64"/>
-			</not>
-		</and>
-	</condition>
-	<condition property="hy.cpu_family" value="x86">
-		<isset property="if.x86"/>
-	</condition>
-	
-	<condition property="if.ipf">
-		<contains string="${os.arch}" substring="ia64"/>
-	</condition>
-	<condition property="hy.cpu_family" value="ipf">
-		<isset property="if.ipf"/>
-	</condition>
-
-	<!-- Define the platform property dependant upon the OS and platform -->
-	<property name="hy.platform" value="${hy.os_family}.${hy.cpu_family}"/>
 
 	<!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
 	     use the Eclipse Java compiler. But it does not support jsr14 target -->
@@ -89,7 +42,6 @@
 		<property name="java.debug.option" value="on" />
 		<property name="native.debug.option" value="on" />
 
-		<property name="source.ver" value="1.5" />
 	</target>
 	
 	<!-- NIO TARGETS -->
@@ -97,7 +49,6 @@
 	<target name="build" depends="init">
 		<ant dir="make/common" target="compile.java" />
 		<ant dir="make/common" target="build.jar" />
-	<!--	<ant dir="make/platform/${hy.platform}" target="compile.native" /> -->
 		<ant dir="make/common" target="copy.resources" />
 	</target>
 

@@ -19,6 +19,10 @@
 
 <project name="Common Platform definitions" default="echo" basedir="..">
 
+    <!-- Javac properties -->
+    <property name="hy.javac.source" value="1.5" />
+    <property name="hy.javac.target" value="jsr14" />
+
     <!-- Conditions for operating systems -->
     <condition property="is.windows">
         <os family="Windows" />
@@ -90,6 +94,14 @@
     <target name="echo" depends="svn-prop" >
         <echo>
 
+Harmony javac properties:
+
+  hy.javac.target = ${hy.javac.target}
+  hy.javac.source = ${hy.javac.source}
+
+
+Harmony platform properties:
+
   hy.os = ${hy.os}
   hy.arch = ${hy.arch}
   hy.bits = ${hy.bits}
@@ -105,10 +117,18 @@
   is.x86_64 = ${is.x86_64}
   is.ia64 = ${is.ia64}
 
-  svn.revision = ${svn.revision}
-
   exe.suffix = ${exe.suffix}
   shlib.suffix = ${shlib.suffix}
+
+
+The following property is only set if the "svn-prop" target has been
+called:
+
+  svn.revision = ${svn.revision}
+
+
+Ant native properties, for information, but please use Harmony
+properties in preference to these:
 
   os.name = ${os.name}
   os.arch = ${os.arch}

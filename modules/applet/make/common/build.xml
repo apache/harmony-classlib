@@ -25,8 +25,8 @@
 		<javac sourcepath=""
 			srcdir="${hy.applet.src.main.java}"
 			destdir="${hy.applet.bin.main}"
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>
@@ -53,8 +53,8 @@
 		<javac srcdir="${hy.applet.src.test.java}"
 			destdir="${hy.applet.bin.test}"
 			sourcepath=""
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<bootclasspath>

@@ -20,10 +20,10 @@
 	<property file="../../../../make/depends.properties" />
 
 	<property name="hy.auth.src.main.java.platform"
-		value="${hy.auth.src.main.java}/../${hy.os_family}" />
+		value="${hy.auth.src.main.java}/../${hy.os}" />
 
 	<property name="hy.auth.src.test.java.platform"
-		value="${hy.auth.src.test.java}/../${hy.os_family}" />
+		value="${hy.auth.src.test.java}/../${hy.os}" />
 	
 	<target name="compile.java" description="Compile AUTH java code">
 		<echo message="Compiling AUTH classes from ${hy.auth.src.main.java}" />
@@ -32,8 +32,8 @@
 
 		<javac sourcepath=""
 			destdir="${hy.auth.bin.main}"
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<src>
@@ -63,8 +63,8 @@
 		<mkdir dir="${hy.auth.bin.test}" />
 
 		<javac 	destdir="${hy.auth.bin.test}"
-			source="${source.ver}"
-			target="jsr14"
+			source="${hy.javac.source}"
+			target="${hy.javac.target}"
 			debug="${java.debug.option}">
 
 			<!-- FIXME: AUTH tests should not reach into security module code -->
