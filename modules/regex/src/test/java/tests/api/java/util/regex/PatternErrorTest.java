@@ -22,37 +22,24 @@ import junit.framework.TestCase;
  * Test boundary and error conditions in java.util.regex.Pattern
  * 
  */
-public class PatternErrorTests extends TestCase {
-	public void testCompileErrors() {
-		boolean validException = false;
-
+public class PatternErrorTest extends TestCase {
+	public void testCompileErrors() throws Exception {
 		// null regex string - should get NullPointerException
 		try {
 			Pattern.compile(null);
+            fail("NullPointerException expected");
 		} catch (NullPointerException e) {
-			// This is the expected exception
-			validException = true;
-		} catch (Exception e) {
-			fail();
 		}
-		assertTrue(validException);
+
 
 		// empty regex string - no exception should be thrown
-		try {
-			Pattern.compile("");
-		} catch (Exception e) {
-			fail();
-		}
+		Pattern.compile("");
 
-		// note: invalid regex syntax checked in PatternSyntaxExceptionTests
+		// note: invalid regex syntax checked in PatternSyntaxExceptionTest
 
 		// flags = 0 should raise no exception
 		int flags = 0;
-		try {
-			Pattern.compile("foo", flags);
-		} catch (Exception e) {
-			fail();
-		}
+		Pattern.compile("foo", flags);
 
 		// check that all valid flags accepted without exception
 		flags |= Pattern.UNIX_LINES;
@@ -62,11 +49,7 @@ public class PatternErrorTests extends TestCase {
 		flags |= Pattern.COMMENTS;
 		flags |= Pattern.DOTALL;
 		flags |= Pattern.UNICODE_CASE;
-		try {
-			Pattern.compile("foo", flags);
-		} catch (Exception e) {
-			fail();
-		}
+		Pattern.compile("foo", flags);
 
 		// add invalid flags - should get IllegalArgumentException
 		/*
@@ -84,13 +67,10 @@ public class PatternErrorTests extends TestCase {
 		 *   fail();
 		 * }
 		 */
-		/* Workaround test is: */
+
+        /* Workaround test is: */
 		flags |= 0xFFFFFFFF;
-		try {
-			Pattern.compile("foo", flags);
-		} catch (Exception e) {
-			// No exception expected to match incorrect the reference behaviour
-			fail();
-		}
+        // No exception expected to match incorrect the reference behaviour
+		Pattern.compile("foo", flags);
 	}
 }

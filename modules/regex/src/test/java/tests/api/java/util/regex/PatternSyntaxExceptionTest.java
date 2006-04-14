@@ -24,34 +24,34 @@ import java.util.regex.PatternSyntaxException;
  * TODO Type description
  * 
  */
-public class PatternSyntaxExceptionTests extends TestCase {
+public class PatternSyntaxExceptionTest extends TestCase {
 	public void testCase() {
-		String regex;
-		regex = "(";
+		String regex = "(";
 		try {
 			Pattern.compile(regex);
+            fail("PatternSyntaxException expected");
 		} catch (PatternSyntaxException e) {
-			assertTrue(e.getDescription().equals("')' is expected."));
+			assertEquals(e.getDescription(), "')' is expected.");
 			// The reference JDK index:
 			// assertTrue(e.getIndex() == 1);
 			assertTrue(e.getIndex() == 0);
-			assertTrue(e.getMessage().equals(
-					"')' is expected. near index 0\r\n(\r\n^"));
-			assertTrue(e.getPattern().equals(regex));
+			assertEquals(e.getMessage(), "')' is expected. near index 0\r\n(\r\n^");
+			assertEquals(e.getPattern(), regex);
 		}
-
-		regex = "[4-";
+    }
+    
+    public void testCase2() {
+		String regex = "[4-";
 		try {
 			Pattern.compile(regex);
+            fail("PatternSyntaxException expected");
 		} catch (PatternSyntaxException e) {
-			assertTrue(e.getDescription().equals(
-					"Unexpected end of the pattern in a character class."));
+			assertEquals(e.getDescription(), 
+					"Unexpected end of the pattern in a character class.");
 			assertTrue(e.getIndex() == 3);
-			assertTrue(e
-					.getMessage()
-					.equals(
-							"Unexpected end of the pattern in a character class. near index 3\r\n[4-\r\n   ^"));
-			assertTrue(e.getPattern().equals(regex));
+			assertEquals(e.getMessage(),
+							"Unexpected end of the pattern in a character class. near index 3\r\n[4-\r\n   ^");
+            assertEquals(e.getPattern(), regex);
 		}
 	}
 }

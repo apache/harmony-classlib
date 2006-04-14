@@ -22,7 +22,7 @@ import java.util.regex.*;
  * TODO Type description
  * 
  */
-public class SplitTests extends TestCase {
+public class SplitTest extends TestCase {
 	
 	public void testSimple() {
 		Pattern p = Pattern.compile("/");
@@ -34,15 +34,8 @@ public class SplitTests extends TestCase {
 		}
 	}
 
-	public void testSplit1() {
-		Pattern p = null;
-
-		// This set of tests comes from the O'Reilly NIO book, page 160
-		try {
-			p = Pattern.compile(" ");
-		} catch (PatternSyntaxException e) {
-			fail();
-		}
+	public void testSplit1() throws PatternSyntaxException {
+		Pattern p = Pattern.compile(" ");
 
 		String input = "poodle zoo";
 		String tokens[];
@@ -71,12 +64,7 @@ public class SplitTests extends TestCase {
 		assertTrue(tokens[0].equals("poodle"));
 		assertTrue(tokens[1].equals("zoo"));
 
-		try {
-			p = Pattern.compile("d");
-		} catch (PatternSyntaxException e) {
-			fail();
-			return;
-		}
+		p = Pattern.compile("d");
 
 		tokens = p.split(input, 1);
 		assertTrue(tokens.length == 1);
@@ -102,11 +90,7 @@ public class SplitTests extends TestCase {
 		assertTrue(tokens[0].equals("poo"));
 		assertTrue(tokens[1].equals("le zoo"));
 
-		try {
-			p = Pattern.compile("o");
-		} catch (PatternSyntaxException e) {
-			fail();
-		}
+		p = Pattern.compile("o");
 
 		tokens = p.split(input, 1);
 		assertTrue(tokens.length == 1);

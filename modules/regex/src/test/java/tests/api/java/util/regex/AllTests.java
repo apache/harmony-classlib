@@ -27,13 +27,13 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("API test suite for java.util.regex");
 		// $JUnit-BEGIN$
-		suite.addTestSuite(PatternTests.class);
-		suite.addTestSuite(ModeTests.class);
-		suite.addTestSuite(PatternSyntaxExceptionTests.class);
-		suite.addTestSuite(PatternErrorTests.class);
-		suite.addTestSuite(SplitTests.class);
-		suite.addTestSuite(ReplaceTests.class);
-		suite.addTestSuite(MatcherTests.class);
+		suite.addTestSuite(PatternTest.class);
+		suite.addTestSuite(ModeTest.class);
+		suite.addTestSuite(PatternSyntaxExceptionTest.class);
+		suite.addTestSuite(PatternErrorTest.class);
+		suite.addTestSuite(SplitTest.class);
+		suite.addTestSuite(ReplaceTest.class);
+		suite.addTestSuite(MatcherTest.class);
 		// $JUnit-END$
 		return suite;
 	}

@@ -95,6 +95,10 @@
 				<fileset dir="${hy.regex.src.test.java}">
 					<include name="**/*Test.java"/>
 
+
+					<!-- Harmony exclude list -->
+					<exclude name="tests/api/java/util/regex/PatternSyntaxExceptionTest.java"/>
+
 				</fileset>
 			</batchtest>
 		</junit>

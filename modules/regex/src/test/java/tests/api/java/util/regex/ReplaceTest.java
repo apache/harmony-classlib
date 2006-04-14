@@ -20,27 +20,20 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.regex.PatternSyntaxException;
 
-public class ReplaceTests extends TestCase {
+public class ReplaceTest extends TestCase {
 	
-	public void testSimpleReplace() {
-		String target, pattern, repl, s;
-		Pattern p = null;
-		Matcher m;
+	public void testSimpleReplace() throws PatternSyntaxException {
+		String target, pattern, repl;
 
 		target = "foobarfobarfoofo1";
 		pattern = "fo[^o]";
 		repl = "xxx";
-		try {
-			p = Pattern.compile(pattern);
-		} catch (PatternSyntaxException e) {
-			System.out.println(e.getMessage());
-			fail();
-		}
-		m = p.matcher(target);
-		s = m.replaceFirst(repl);
-		assertTrue(s.equals("foobarxxxarfoofo1"));
-		s = m.replaceAll(repl);
-		assertTrue(s.equals("foobarxxxarfooxxx"));
+
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(target);
+
+        assertEquals("foobarxxxarfoofo1", m.replaceFirst(repl));
+        assertEquals("foobarxxxarfooxxx", m.replaceAll(repl));
 	}
 
 	public void testCaptureReplace() {
@@ -51,12 +44,8 @@ public class ReplaceTests extends TestCase {
 		target = "[31]foo;bar[42];[99]xyz";
 		pattern = "\\[([0-9]+)\\]([a-z]+)";
 		repl = "$2[$1]";
-		try {
-			p = Pattern.compile(pattern);
-		} catch (PatternSyntaxException e) {
-			System.out.println(e.getMessage());
-			fail();
-		}
+
+		p = Pattern.compile(pattern);
 		m = p.matcher(target);
 		s = m.replaceFirst(repl);
 		assertTrue(s.equals("foo[31];bar[42];[99]xyz"));
@@ -66,12 +55,7 @@ public class ReplaceTests extends TestCase {
 		target = "[31]foo(42)bar{63}zoo;[12]abc(34)def{56}ghi;{99}xyz[88]xyz(77)xyz;";
 		pattern = "\\[([0-9]+)\\]([a-z]+)\\(([0-9]+)\\)([a-z]+)\\{([0-9]+)\\}([a-z]+)";
 		repl = "[$5]$6($3)$4{$1}$2";
-		try {
-			p = Pattern.compile(pattern);
-		} catch (PatternSyntaxException e) {
-			System.out.println(e.getMessage());
-			fail();
-		}
+		p = Pattern.compile(pattern);
 		m = p.matcher(target);
 		s = m.replaceFirst(repl);
 		// System.out.println(s);
