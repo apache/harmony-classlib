@@ -33,19 +33,32 @@ import java.beans.BeanDescriptor;
  */
 
 public class BeanDescriptorTest extends TestCase {
-    
+
     /**
-     * 
+     * @tests java.beans.BeanDescriptor#BeanDescriptor(
+     *        java.lang.Class)
      */
-    public BeanDescriptorTest() {
-        super();
+    public void test_Ctor1_NullPointerExpection() {
+        try {
+            // Regression for HARMONY-225
+            new BeanDescriptor(null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
     }
-    
+
     /**
-     *
+     * @tests java.beans.BeanDescriptor#BeanDescriptor(
+     *        java.lang.Class,
+     *        java.lang.Class)
      */
-    public BeanDescriptorTest(String name) {
-        super(name);
+    public void test_Ctor2_NullPointerExpection() {
+        try {
+            // Regression for HARMONY-225
+            new BeanDescriptor(null, String.class);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
     }
     
     /**
@@ -55,7 +68,7 @@ public class BeanDescriptorTest extends TestCase {
         BeanDescriptor bd= new BeanDescriptor(String.class);
         assertEquals(bd.getName(), "String");
     }
-    
+
     /**
      * 
      */

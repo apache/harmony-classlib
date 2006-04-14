@@ -27,14 +27,18 @@ package java.beans;
 
 public class BeanDescriptor extends FeatureDescriptor {
 	
-    private Class beanClass = null;
-    private Class customizerClass = null;
+    private Class beanClass;
+    private Class customizerClass;
 
     /**
      * @com.intel.drl.spec_ref
      */
     public BeanDescriptor(Class beanClass, Class customizerClass) {
         super();
+
+        if (beanClass == null) {
+            throw new NullPointerException();
+        }
         setName(getShortClassName(beanClass));
         this.beanClass = beanClass;
         this.customizerClass = customizerClass;
@@ -45,6 +49,10 @@ public class BeanDescriptor extends FeatureDescriptor {
      */
     public BeanDescriptor(Class beanClass) {
         super();
+
+        if (beanClass == null) {
+            throw new NullPointerException();
+        }
         setName(getShortClassName(beanClass));
         this.beanClass = beanClass;
     }
