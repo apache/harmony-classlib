@@ -96,7 +96,7 @@ public final class Permissions extends PermissionCollection implements
     /**
      * @com.intel.drl.spec_ref
      */
-    public Enumeration elements() {
+    public Enumeration<Permission> elements() {
         return new MetaEnumeration(klasses.values().iterator());
     }
 
