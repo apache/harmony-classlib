@@ -106,6 +106,31 @@
                                         <exclude name="**/VetoableChangeSupportTest.java" />
                                         <exclude name="**/XMLDecoderTest.java" />
                                         <exclude name="**/XMLEncoderTest.java" />
+
+                                        <exclude name="tests/api/java/beans/BeanDescriptorTest.java" />
+                                        <exclude name="tests/api/java/beans/CustomizedPersistenceDelegateTest.java" />
+                                        <exclude name="tests/api/java/beans/DefaultPersistenceDelegateTest.java" />
+                                        <exclude name="tests/api/java/beans/EncoderTest.java" />
+                                        <exclude name="tests/api/java/beans/EventSetDescriptorTest.java" />
+                                        <exclude name="tests/api/java/beans/ExpressionTest.java" />
+                                        <exclude name="tests/api/java/beans/FeatureDescriptorTest.java" />
+                                        <exclude name="tests/api/java/beans/IndexedPropertyDescriptorTest.java" />
+                                        <exclude name="tests/api/java/beans/IntrospectionExceptionTest.java" />
+                                        <exclude name="tests/api/java/beans/IntrospectorTest.java" />
+                                        <exclude name="tests/api/java/beans/MethodDescriptorTest.java" />
+                                        <exclude name="tests/api/java/beans/PersistenceDelegateTest.java" />
+                                        <exclude name="tests/api/java/beans/PropertyChangeEventTest.java" />
+                                        <exclude name="tests/api/java/beans/PropertyChangeListenerProxyTest.java" />
+                                        <exclude name="tests/api/java/beans/PropertyDescriptorTest.java" />
+                                        <exclude name="tests/api/java/beans/PropertyEditorManagerTest.java" />
+                                        <exclude name="tests/api/java/beans/PropertyEditorSupportTest.java" />
+                                        <exclude name="tests/api/java/beans/PropertyVetoExceptionTest.java" />
+                                        <exclude name="tests/api/java/beans/StatementTest.java" />
+                                        <exclude name="tests/api/java/beans/VetoableChangeListenerProxyTest.java" />
+                                        <exclude name="tests/api/java/beans/beancontext/BeanContextChildSupportTest.java" />
+                                        <exclude name="tests/api/java/beans/beancontext/BeanContextMembershipEventTest.java" />
+                                        <exclude name="tests/api/java/beans/beancontext/BeanContextServiceAvailableEventTest.java" />
+                                        <exclude name="tests/api/java/beans/beancontext/BeanContextServiceRevokedEventTest.java" />
 				</fileset>
 			</batchtest>
 		</junit>
