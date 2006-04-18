@@ -108,40 +108,41 @@ public class Beans {
             }
         }
         
-        if(result == null) {
-            try {
-                Class c = Class.forName(beanName, true, cls);
-                
-                try {
-                    result = c.newInstance();
-                    
-                    if(result instanceof Applet) {
-                        Applet applet = (Applet) result;
-                        applet.init();
-                    }
-                } catch (IllegalAccessException iae) {
-                    throw new ClassNotFoundException(iae.getClass() + ": "
-                            + iae.getMessage());
-                }
-            } catch (InstantiationException ie) {
-                throw new ClassNotFoundException(ie.getClass() + ": "
-                        + ie.getMessage());
-            }
-        }
+        if (result == null) {
+			try {
+				Class c = Class.forName(beanName, true,
+						cls == null ? ClassLoader.getSystemClassLoader() : cls);
+
+				try {
+					result = c.newInstance();
+
+					if (result instanceof Applet) {
+						Applet applet = (Applet) result;
+						applet.init();
+					}
+				} catch (IllegalAccessException iae) {
+					throw new ClassNotFoundException(iae.getClass() + ": "
+							+ iae.getMessage());
+				}
+			} catch (InstantiationException ie) {
+				throw new ClassNotFoundException(ie.getClass() + ": "
+						+ ie.getMessage());
+			}
+		}
         
         return result;
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     */
+	 * @com.intel.drl.spec_ref
+	 */
     public static Object getInstanceOf(Object bean, Class targetType) {
         return bean;            
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     */
+	 * @com.intel.drl.spec_ref
+	 */
     public static boolean isInstanceOf(Object bean, Class targetType) {
         return bean.getClass().isAssignableFrom(targetType);            
     }

@@ -96,6 +96,16 @@ public class BeansTest extends TestCase {
         }
     }
 
+    //regression test for HARMONY-358
+    public void testInstantiate() throws Exception {
+        try {
+            Class.forName(this.getClass().getName(), true, null);
+            fail("This test is designed to run from classpath rather then from bootclasspath");
+        } catch (ClassNotFoundException ok) {
+        }
+        assertNotNull(Beans.instantiate(null, this.getClass().getName()));
+    } 
+    
     /**
      * 
      */
