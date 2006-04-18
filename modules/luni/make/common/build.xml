@@ -73,13 +73,13 @@
 		<property name="test.jre.home" value="${hy.target}/jre" />
 
 		<junit fork="yes"
-                       forkmode="once"
-                       printsummary="withOutAndErr"
-                       errorproperty="test.errors"
-                       failureproperty="test.failures"
-                       showoutput="on"
-                       dir="${hy.luni.bin.test}"
-                       jvm="${test.jre.home}/bin/java">
+			forkmode="once"
+			printsummary="withOutAndErr"
+			errorproperty="test.errors"
+			failureproperty="test.failures"
+			showoutput="on"
+			dir="${hy.luni.bin.test}"
+			jvm="${test.jre.home}/bin/java">
 
 			<jvmarg value="-showversion" />
 

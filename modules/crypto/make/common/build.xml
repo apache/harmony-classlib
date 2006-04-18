@@ -80,12 +80,12 @@
 
 
 	<target name="run.tests">
-		
-	        <mkdir dir="${hy.tests.reports}" />
+
+		<mkdir dir="${hy.tests.reports}" />
 
 		<property name="test.jre.home" value="${hy.target}/jre" />
 
-	        <junit fork="yes"
+		<junit fork="yes"
 			forkmode="once"
 			printsummary="withOutAndErr"
 			errorproperty="test.errors"
