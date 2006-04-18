@@ -27,7 +27,9 @@ import java.util.Random;
 import java.io.Serializable;
 
 /**
- * @com.intel.drl.spec_ref
+ * BigInteger objects represent arbitrary precision decimal integers. They
+ * contain values that cannot be changed. Thus, most operations on the
+ * BigInteger objects yield new instances of BigInteger.
  */
 public class BigInteger extends Number implements Comparable, Serializable {
     private static final int EQUALS = 0;
@@ -599,14 +601,24 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a new instance of this class whose value is greater
+     * than zero, length is the given number of bits, and whose
+     * likeyhood of being prime is not less than 2 ^ -100.
+     * 
+     * @param length
+     *            the number of bits contained in the returned instance.
+     * @param rand
+     *            a random source of bits for selection of the probable prime.
+     * @return the probable prime number.
      */
     public static BigInteger probablePrime(int length, Random rand) {
         return new BigInteger(length, 100, rand);
     }
-        
+
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a BigInteger with the same value as longValue
+     * 
+     * @return BigInteger (BigInteger) longValue
      */
     public static BigInteger valueOf(long longValue) {
         int valueSign = (longValue > 0 ? 1 : longValue < 0 ? -1 : 0);
@@ -636,7 +648,12 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class given an array
+     * containing bytes representing the bit pattern for the
+     * answer.
+     * 
+     * @param byteValues
+     *            byte[] the bits of the value of the new instance.
      */
     public BigInteger(byte[] byteValues) {
         if (byteValues.length == 0) {
@@ -653,7 +670,14 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class given an array
+     * containing bytes representing the bit pattern for the
+     * answer, and a sign flag.
+     * 
+     * @param signum
+     *            int the sign of the result.
+     * @param byteValues
+     *            byte[] the bits of the value of the new instance.
      */
     public BigInteger(int signum, byte[] byteValues) {
         if (signum < -1 || signum > 1) {
@@ -681,7 +705,14 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class of the specified
+     * length, whose content is produced by acquiring random bits
+     * from the specified random number generator.
+     * 
+     * @param numberBitLength
+     *            int the number of bits to have in the result.
+     * @param rand
+     *            Random the generator to produce the bits.
      */
     public BigInteger(int numberBitLength, Random rand) {
         if (numberBitLength < 0) {
@@ -690,9 +721,19 @@ public class BigInteger extends Number implements Comparable, Serializable {
         boolean stripLeadingZeroes = true;
         constructRandomly(numberBitLength, rand, stripLeadingZeroes);
     }
-        
+
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class of the specified
+     * length, whose content is produced by acquiring random bits
+     * from the specified random number generator. The result is
+     * guaranteed to be prime up to the given degree of certainty.
+     * 
+     * @param numberBitLength
+     *            int the number of bits to have in the result.
+     * @param certainty
+     *            int the degree of certainty required that the result is prime.
+     * @param rand
+     *            Random the generator to produce the bits.
      */
     public BigInteger(int numberBitLength, int certainty, Random rand) {
         if (numberBitLength < 2) {
@@ -707,7 +748,7 @@ public class BigInteger extends Number implements Comparable, Serializable {
             int numberOfBitsInHighInteger = numberBitLength & 0x1f;
             digits[numberLength - 1] |= 1 << (numberOfBitsInHighInteger - 1);
             if (numberBitLength == 2) {
-            	return;
+                return;
             }
             // set the low-order bit to 1 to ensure that the number is odd
             digits[0] |= 1;    
@@ -715,14 +756,24 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class given a string containing a
+     * representation of a decimal number.
+     * 
+     * @param value
+     *            String the decimal digits of the answer.
      */
     public BigInteger(String value) {
         this(value, 10);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class given a string
+     * containing digits in the specified radix.
+     * 
+     * @param stringValue
+     *            String the digits of the answer.
+     * @param radix
+     *            int the radix to use for conversion.
      */
     public BigInteger(String stringValue, int radix) {
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
@@ -783,7 +834,9 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the absolute value of the receiver
+     * 
+     * @return BigInteger absolute value of the receiver
      */
     public BigInteger abs() {
         if (this.sign >= 0) {
@@ -793,7 +846,12 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the sum of the receiver and a BigInteger
+     * 
+     * @param that
+     *            a BigInteger to add
+     * 
+     * @return BigInteger this + that
      */
     public BigInteger add(BigInteger that) {
         int resDigits[];
@@ -832,7 +890,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the bitwise AND of the receiver and the argument.
+     * 
+     * @param that
+     *            BigInteger the value to AND.
+     * @return BigInteger this & that
      */
     public BigInteger and(BigInteger that) {
         if (this.sign == 0 || that.sign == 0) {
@@ -934,14 +996,20 @@ public class BigInteger extends Number implements Comparable, Serializable {
     } 
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the bitwise NAND of the receiver and the argument.
+     * 
+     * @param that
+     *            BigInteger the value to NAND.
+     * @return BigInteger this & NOT(that)
      */
     public BigInteger andNot(BigInteger that) {
         return and(that.not());
     } 
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the number of set bits in the receiver.
+     * 
+     * @return int the receiver's bit count.
      */
     public int bitCount() {
         if (sign == 0) {
@@ -980,7 +1048,9 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the length in bits of the receiver.
+     * 
+     * @return int the receiver's bit length.
      */
     public int bitLength() {
         if (sign == 0) {
@@ -1061,7 +1131,10 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Unsets the specified bit in the receiver.
+     * 
+     * @param bitNumber
+     *            int the bit to clear.
      */
     public BigInteger clearBit(int bitNumber) {
         if (bitNumber < 0) {
@@ -1076,7 +1149,18 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers an integer indicating the relative positions of the receiver and
+     * the argument in the natural order of elements of the receiver's class.
+     * 
+     * @return int which should be <0 if the receiver should sort before the
+     *         argument, 0 if the receiver should sort in the same position as
+     *         the argument, and >0 if the receiver should sort after the
+     *         argument.
+     * @param that
+     *            BigInteger an object to compare the receiver to
+     * @exception ClassCastException
+     *                if the argument can not be converted into something
+     *                comparable with the receiver.
      */
     public int compareTo(BigInteger that) {
         if (this.sign == that.sign) {
@@ -1095,7 +1179,18 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers an integer indicating the relative positions of the receiver and
+     * the argument in the natural order of elements of the receiver's class.
+     * 
+     * @return int which should be <0 if the receiver should sort before the
+     *         argument, 0 if the receiver should sort in the same position as
+     *         the argument, and >0 if the receiver should sort after the
+     *         argument.
+     * @param obj
+     *            Object an object to compare the receiver to
+     * @exception ClassCastException
+     *                if the argument can not be converted into something
+     *                comparable with the receiver.
      */
     public int compareTo(Object obj) {
         if (obj instanceof BigInteger) {
@@ -1143,7 +1238,14 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the quotient of the receiver and a BigInteger.
+     * 
+     * @param that
+     *            BigInteger the value to divide
+     * @return BigInteger this / that
+     * 
+     * @exception ArithmeticException
+     *                if that is zero.
      */
     public BigInteger divide(BigInteger that) {
         if (that.equals(ZERO)) {
@@ -1180,7 +1282,15 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the quotient and remainder of the receiver divided by a
+     * BigInteger.
+     * 
+     * @param that
+     *            BigInteger the value to divide.
+     * @return BigInteger[2] {this / that, this % that )}
+     * 
+     * @exception ArithmeticException
+     *                if val is zero.
      */
     public BigInteger[] divideAndRemainder(BigInteger that) {
         if (that.isZero()) {
@@ -1237,7 +1347,9 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the double value which the receiver represents
+     * 
+     * @return double the value of the receiver.
      */
     public double doubleValue() {
         if (sign == 0) {
@@ -1283,7 +1395,16 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Compares the argument to the receiver, and answers true if they represent
+     * the <em>same</em> object using a class specific comparison. In this
+     * case the argument must also be a BigInteger which represents the same
+     * number
+     * 
+     * @param anotherObj
+     *            Object the object to compare with this object.
+     * @return boolean <code>true</code> if the object is the same as this
+     *         object <code>false</code> if it is different from this object.
+     * @see #hashCode
      */
     public boolean equals(Object anotherObj) {
         if (! (anotherObj instanceof BigInteger)) {
@@ -1293,7 +1414,10 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Toggles the specified bit in the receiver.
+     * 
+     * @param bitNumber
+     *            int the bit to flip.
      */
     public BigInteger flipBit(int bitNumber) {
         if (bitNumber < 0) {
@@ -1305,14 +1429,19 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the float value which the receiver represents
+     * 
+     * @return float the value of the receiver.
      */
     public float floatValue() {
         return (float)doubleValue();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the greatest common divisor of abs(this) and abs(val), zero if
+     * this==val==0
+     * 
+     * @return BigInteger gcd(abs(this), abs(that))
      */
     public BigInteger gcd(BigInteger that) {
         if (this.isZero()) {
@@ -1334,7 +1463,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the index of the lowest set bit in the receiver, or -1 if no bits
+     * are set.
+     * 
+     * @return BigInteger the bit index of the least significant set bit in the
+     *         receiver.
      */
     public int getLowestSetBit() {
         if (this.isZero()) {
@@ -1352,7 +1485,13 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers an integer hash code for the receiver. Any two objects which
+     * answer <code>true</code> when passed to <code>.equals</code> must
+     * answer the same value for this method.
+     * 
+     * @return int the receiver's hash.
+     * 
+     * @see #equals
      */
     public int hashCode() {
         int hashCode = digits[0];
@@ -1366,7 +1505,9 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the int value which the receiver represents
+     * 
+     * @return int the value of the receiver.
      */
     public int intValue() {
         return (sign < 0 ? -digits[0] : digits[0]);
@@ -1383,7 +1524,12 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers true if the receiver is probably prime to the given degree of
+     * certainty.
+     * 
+     * @param security
+     *            int the degree of certainty required.
+     * @return boolean true if the receiver is prime and false otherwise.
      */
     public boolean isProbablePrime(int security) {
         if (security <= 0) {
@@ -1397,9 +1543,9 @@ public class BigInteger extends Number implements Comparable, Serializable {
         }
         // check the divisibility by all small primes that are less than 256
         for (int i = 1; i < primes.length; i++) {
-        	if (numberLength == 1 && digits[0] == primes[i]) {
-        		return true;
-        	}
+            if (numberLength == 1 && digits[0] == primes[i]) {
+                return true;
+            }
             if (divideArrayByInt(null, digits, numberLength, primes[i]) == 0) {
                 return false;
             }
@@ -1477,9 +1623,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
         }
         return false;
     }
-        
+
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the long value which the receiver represents
+     * 
+     * @return long the value of the receiver.
      */
     public long longValue() {
         long value = (long)digits[0] & 0xffffffffL;
@@ -1492,7 +1640,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the most positive of either the receiver or the argument.
+     * 
+     * @param that
+     *            BigInteger the value to compare.
+     * @return BigInteger the larger value.
      */
     public BigInteger max(BigInteger that) {
         if (compareTo(that) > 0) {
@@ -1503,7 +1655,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the most negative of either the receiver or the argument.
+     * 
+     * @param that
+     *            BigInteger the value to compare.
+     * @return BigInteger the smaller value.
      */
     public BigInteger min(BigInteger that) {
         if (compareTo(that) < 0) {
@@ -1514,7 +1670,15 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the remainder of the receiver modulo a BigInteger (a positive
+     * value).
+     * 
+     * @param modulus
+     *            the value to divide
+     * @return BigInteger this (mod modulus)
+     * 
+     * @exception ArithmeticException
+     *                if modulus is zero
      */
     public BigInteger mod(BigInteger modulus) {
         if (modulus.sign <= 0) {
@@ -1528,7 +1692,14 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the inverse of the receiver modulo a BigInteger, if it exists.
+     * 
+     * @param m
+     *            BigInteger a BigInteger to divide
+     * @return BigInteger this^(-1) (mod m)
+     * 
+     * @exception ArithmeticException
+     *                if m is <= 0, or gcd(this,m) != 1
      */
     public BigInteger modInverse(BigInteger m) {
         // implements the extended Euclidean algorithm
@@ -1568,9 +1739,14 @@ public class BigInteger extends Number implements Comparable, Serializable {
         }
         return a;
     }
-        
+
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the receiver to the power of exponent modulo a BigInteger
+     * 
+     * @exception ArithmeticException
+     *                modulus is <= 0
+     * 
+     * @return BigInteger this ^ exp (mod modulus)
      */
     public BigInteger modPow(BigInteger exp, BigInteger modulus) {
         // The square-and-multiply algorithm is used from
@@ -1597,7 +1773,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the product of the receiver and a BigInteger.
+     * 
+     * @param that
+     *            BigInteger the value to multiply
+     * @return BigInteger this * that
      */
     public BigInteger multiply(BigInteger that) {
         if (that.sign == 0 || this.sign == 0) {
@@ -1654,7 +1834,9 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the negative of the receiver
+     * 
+     * @return BigInteger (-1) * this
      */
     public BigInteger negate() {
         return new BigInteger(-sign, numberLength, digits);
@@ -1684,7 +1866,9 @@ public class BigInteger extends Number implements Comparable, Serializable {
     } 
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the bitwise negation of the receiver.
+     * 
+     * @return BigInteger NOT(this)
      */
     public BigInteger not() {
         // one extra element for possible carry returned from setTrueCoded
@@ -1705,7 +1889,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     } 
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the bitwise OR of the receiver and the argument.
+     * 
+     * @param that
+     *            BigInteger the value to OR.
+     * @return BigInteger this | that
      */
     public BigInteger or(BigInteger that) { 
         if (this.sign == 0) {
@@ -1806,7 +1994,12 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the receiver to the power of exponent.
+     * 
+     * @exception ArithmeticException
+     *                if the exp is negative.
+     * 
+     * @return BigInteger this ^ exp
      */
     public BigInteger pow(int exp) {
         if (exp < 0) {
@@ -1850,7 +2043,15 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the remainder of the receiver divided by a BigInteger
+     * 
+     * @param that
+     *            a BigInteger to divide
+     * 
+     * @exception ArithmeticException
+     *                if that is zero
+     * 
+     * @return BigInteger this % that
      */
     public BigInteger remainder(BigInteger that) {
         if (that.equals(ZERO)) {
@@ -1876,7 +2077,10 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Sets the specified bit in the receiver.
+     * 
+     * @param number
+     *            int the bit to set.
      */
     public BigInteger setBit(int number) {
         if (number < 0) {
@@ -1891,14 +2095,22 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the sign of the receiver
+     * 
+     * @return BigInteger -1, 0, or 1 if the receiver is negative, zero, or
+     *         positive
      */
     public int signum() {
         return this.sign;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a BigInteger with the value of the reciever multiplied by
+     * 2^count.
+     * 
+     * @param count
+     *            int the amount to shift the receiver.
+     * @return BigInteger this << count
      */
     public BigInteger shiftLeft(int count) {
         if (count == 0) {
@@ -1927,7 +2139,12 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a BigInteger with the value of the reciever divided by
+     * 2^count.
+     * 
+     * @param count
+     *            int the amount to shift the receiver.
+     * @return BigInteger this >> count
      */
     public BigInteger shiftRight(int count) {
         if (count == 0) {
@@ -1972,7 +2189,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the difference of the receiver and a BigInteger.
+     * 
+     * @param that
+     *            BigInteger the value to subtract
+     * @return BigInteger this - that
      */
     public BigInteger subtract(BigInteger that) {
         int resSign;
@@ -2006,7 +2227,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers true if the specified bit is set in the receiver.
+     * 
+     * @param number
+     *            int the bit to check.
+     * @return boolean if the specified bit is set.
      */
     public boolean testBit(int number) {
         if (number < 0) {
@@ -2027,7 +2252,10 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers an array of bytes containing the value of the receiver in the
+     * same format used by the matching constructor.
+     * 
+     * @return byte[] the bits of the value of the receiver.
      */
     public byte[] toByteArray() {
         int bytesLen;
@@ -2081,14 +2309,20 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a string containing a concise, human-readable description of the
+     * receiver. In this case, a string of decimal digits.
+     * 
+     * @return String a printable representation for the receiver.
      */
     public String toString() {
         return toString(10);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a string containing a concise, human-readable description of the
+     * receiver as a sequence of digits in the specified radix.
+     * 
+     * @return String a printable representation for the receiver.
      */
     public String toString(int radix) {
         if (sign == 0) {
@@ -2154,7 +2388,11 @@ public class BigInteger extends Number implements Comparable, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the bitwise XOR of the receiver and the argument.
+     * 
+     * @param that
+     *            BigInteger the value to XOR.
+     * @return BigInteger this XOR that
      */
     public BigInteger xor(BigInteger that) {
         if (this.sign == 0) {
@@ -2236,5 +2474,4 @@ public class BigInteger extends Number implements Comparable, Serializable {
         magnitude = abs().toByteArray();
         out.defaultWriteObject();
     }
- }
-
+}
