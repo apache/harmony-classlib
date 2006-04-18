@@ -132,4 +132,20 @@ public class BooleanTest extends TestCase {
         assertFalse(Boolean.parseBoolean(""));
         assertFalse(Boolean.parseBoolean("invalid"));
     }
+
+	/**
+	 * @tests java.lang.Boolean#compareTo(Boolean)
+	 */
+	public void test_compareToLjava_lang_Boolean() {
+		assertTrue(Boolean.TRUE.compareTo(Boolean.TRUE) == 0);
+		assertTrue(Boolean.FALSE.compareTo(Boolean.FALSE) == 0);
+		assertTrue(Boolean.TRUE.compareTo(Boolean.FALSE) > 0);
+		assertTrue(Boolean.FALSE.compareTo(Boolean.TRUE) < 0);
+
+		try {
+			Boolean.TRUE.compareTo(null);
+			fail("No NPE");
+		} catch (NullPointerException e) {
+		}
+	}
 }

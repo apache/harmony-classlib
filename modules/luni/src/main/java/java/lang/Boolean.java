@@ -15,12 +15,13 @@
 
 package java.lang;
 
+import java.io.Serializable;
+
 /**
  * <p>Boolean is the wrapper for the primitive type <code>boolean</code>.</p>
  * @since 1.0
  */
-public final class Boolean implements java.io.Serializable {
-    //TODO Add Comparable<Boolean> to implements when generics are supported.
+public final class Boolean implements Serializable, Comparable<Boolean> {
 
 	private static final long serialVersionUID = -3665804199014368530L;
 
@@ -30,10 +31,10 @@ public final class Boolean implements java.io.Serializable {
 	private final boolean value;
 
 	/**
-	 * The java.lang.Class that represents this class.
-	 */
-	public static final Class TYPE = new boolean[0].getClass()
-			.getComponentType();
+     * The java.lang.Class that represents this class.
+     */
+    public static final Class<Boolean> TYPE = new boolean[0].getClass()
+            .getComponentType();
 
 	// Note: This can't be set to "boolean.class", since *that* is
 	// defined to be "java.lang.Boolean.TYPE";
@@ -58,7 +59,7 @@ public final class Boolean implements java.io.Serializable {
 	 *            The name of the desired boolean.
 	 */
 	public Boolean(String string) {
-		this(toBoolean(string));
+		this(parseBoolean(string));
 	}
 
 	/**
@@ -100,20 +101,32 @@ public final class Boolean implements java.io.Serializable {
 		return (o == this)
 				|| ((o instanceof Boolean) && (value == ((Boolean) o).value));
 	}
-
-	/**
-	 * Answers true if the system property described by the argument equal to
-	 * "true" using case insensitive comparison, and false otherwise.
-	 * 
-	 * @param string
-	 *            The name of the desired boolean.
-	 * @return The boolean value.
-	 */
-	public static boolean getBoolean(String string) {
-		if (string == null || string.length() == 0)
-			return false;
-		return (toBoolean(System.getProperty(string)));
-	}
+    
+    /**
+     * <p>
+     * Compares this <code>Boolean</code> to another <code>Boolean</code>.
+     * If this instance has the same value as the instance passed, then
+     * <code>0</code> is returned. If this instance is <code>true</code> and
+     * the instance passed is <code>false</code>, then a positive value is
+     * returned. If this instance is <code>false</code> and the instance
+     * passed is <code>true</code>, then a negative value is returned.
+     * </p>
+     * 
+     * @param that The instance to compare to.
+     * @throws java.lang.NullPointerException if <code>that</code> is
+     *         <code>null</code>.
+     * @since 1.5
+     * @see java.lang.Comparable
+     */
+    public int compareTo(Boolean that) {
+        if (that == null)
+            throw new NullPointerException();
+        
+        if (this.value == that.value)
+            return 0;
+        
+        return this.value ? 1 : -1;
+    }
 
 	/**
 	 * Answers an integer hash code for the receiver. Any two objects which
@@ -127,18 +140,29 @@ public final class Boolean implements java.io.Serializable {
 	public int hashCode() {
 		return value ? 1231 : 1237;
 	}
-
-	/**
-	 * Answers true if the argument is equal to "true" using case insensitive
-	 * comparison, and false otherwise.
-	 * 
-	 * @param string
-	 *            The name of the desired boolean.
-	 * @return the boolean value.
-	 */
-	static boolean toBoolean(String string) {
-		return parseBoolean(string);
-	}
+    
+    /**
+     * Answers a string containing a concise, human-readable description of the
+     * receiver.
+     * 
+     * @return a printable representation for the receiver.
+     */
+    public String toString() {
+        return String.valueOf(value);
+    }
+    
+    /**
+     * Answers true if the system property described by the argument equal to
+     * "true" using case insensitive comparison, and false otherwise.
+     * 
+     * @param string The name of the desired boolean.
+     * @return The boolean value.
+     */
+    public static boolean getBoolean(String string) {
+        if (string == null || string.length() == 0)
+            return false;
+        return (parseBoolean(System.getProperty(string)));
+    }
     
     /**
      * <p>
@@ -154,16 +178,6 @@ public final class Boolean implements java.io.Serializable {
     public static boolean parseBoolean(String s) {
         return "true".equalsIgnoreCase(s);
     }
-
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * receiver.
-	 * 
-	 * @return a printable representation for the receiver.
-	 */
-	public String toString() {
-		return String.valueOf(value);
-	}
 
 	/**
 	 * Converts the specified boolean to its string representation. When the
@@ -188,7 +202,7 @@ public final class Boolean implements java.io.Serializable {
 	 * @return the boolean value.
 	 */
 	public static Boolean valueOf(String string) {
-		return toBoolean(string) ? Boolean.TRUE : Boolean.FALSE;
+		return parseBoolean(string) ? Boolean.TRUE : Boolean.FALSE;
 	}
 
 	/**
