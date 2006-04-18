@@ -22,6 +22,8 @@ package java.lang;
  */
 public class IllegalArgumentException extends RuntimeException {
 
+	private static final long serialVersionUID = -5365630128856068164L;
+
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
