@@ -70,6 +70,8 @@
 
 		<mkdir dir="${hy.tests.reports}" />
 
+		<property name="test.jre.home" value="${hy.target}/jre" />
+
 		<junit fork="yes"
                        forkmode="once"
                        printsummary="withOutAndErr"
@@ -77,7 +79,7 @@
                        failureproperty="test.failures"
                        showoutput="on"
                        dir="${hy.luni.bin.test}"
-                       jvm="${hy.target}/jre/bin/java">
+                       jvm="${test.jre.home}/bin/java">
 
 			<jvmarg value="-showversion" />
 
@@ -87,7 +89,7 @@
 			<!-- Required for running the java.net unit tests -->
 			<jvmarg value="-Dtest.ini.file=../../../../src/test/resources/config/localhosttest.ini" />
 
-			<env key="JAVA_HOME" value="${hy.target}/jre" />
+			<env key="JAVA_HOME" value="${test.jre.home}" />
 
 			<classpath>
 				<pathelement path="${hy.luni.bin.test}" />

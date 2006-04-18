@@ -72,6 +72,8 @@
 		
 	        <mkdir dir="${hy.tests.reports}" />
 
+		<property name="test.jre.home" value="${hy.target}/jre" />
+
 	        <junit fork="yes"
 			forkmode="once"
 			printsummary="withOutAndErr"
@@ -79,7 +81,7 @@
 			failureproperty="test.failures"
 			showoutput="on"
 			dir="${hy.security.bin.test}"
-			jvm="${hy.target}/jre/bin/java">
+			jvm="${test.jre.home}/bin/java">
 
 			<!--jvmarg value="-showversion"/-->
 	        
@@ -92,7 +94,7 @@
 			<!-- to pick up junit.jar -->
 			<jvmarg value="-Xbootclasspath/a:${hy.security.bin.test}${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests"/>
 
-			<env key="JAVA_HOME" value="${hy.target}/jre"/>
+			<env key="JAVA_HOME" value="${test.jre.home}"/>
 
 			<formatter type="xml" />
 

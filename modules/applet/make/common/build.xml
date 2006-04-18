@@ -71,6 +71,8 @@
 		
 	        <mkdir dir="${hy.tests.reports}" />
 
+		<property name="test.jre.home" value="${hy.target}/jre" />
+
 	        <junit fork="yes"
 			forkmode="once"
 			printsummary="withOutAndErr"
@@ -78,11 +80,11 @@
 			failureproperty="test.failures"
 			showoutput="on"
 			dir="${hy.applet.bin.test}"
-			jvm="${hy.target}/jre/bin/java">
+			jvm="${test.jre.home}/bin/java">
 
 			<jvmarg value="-showversion"/>
 
-			<env key="JAVA_HOME" value="${hy.target}/jre"/>
+			<env key="JAVA_HOME" value="${test.jre.home}"/>
 
 			<classpath>
 				<pathelement path="${hy.applet.bin.test}"/>

@@ -83,6 +83,8 @@
 		
 	        <mkdir dir="${hy.tests.reports}" />
 
+		<property name="test.jre.home" value="${hy.target}/jre" />
+
 	        <junit fork="yes"
 			forkmode="once"
 			printsummary="withOutAndErr"
@@ -90,7 +92,7 @@
 			failureproperty="test.failures"
 			showoutput="on"
 			dir="${hy.crypto.bin.test}"
-			jvm="${hy.target}/jre/bin/java">
+			jvm="${test.jre.home}/bin/java">
 
 			<jvmarg value="-showversion"/>
 	        
@@ -100,7 +102,7 @@
 			<!-- files will be placed on the classpath             -->
 			<jvmarg value="-DTEST_SRC_DIR=${hy.crypto.src.test.java}"/>
 
-			<env key="JAVA_HOME" value="${hy.target}/jre"/>
+			<env key="JAVA_HOME" value="${test.jre.home}"/>
 
 			<!-- to pick up junit.jar               -->
 			<!-- FIXME: package access tests and    -->
