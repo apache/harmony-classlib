@@ -343,6 +343,12 @@ public class DoubleTest extends junit.framework.TestCase {
 						.compareTo(D1) == 1);
 			}
 		}
+        
+        try {
+            new Double(0.0D).compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
 	}
 
 	/**

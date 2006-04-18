@@ -585,7 +585,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.shuffle(list, new Random(200));
 
 		for (int counter = 0; counter < size - 1; counter++) {
-			if (((Integer) list.get(counter)).compareTo(list.get(counter + 1)) > 0) {
+			if (((Integer) list.get(counter)).compareTo((Integer)list.get(counter + 1)) > 0) {
 				sorted = false;
 			}
 		}
@@ -668,13 +668,13 @@ public class CollectionsTest extends junit.framework.TestCase {
 		for (int counter = 0; counter < llSize - 1; counter++) {
 			assertTrue(
 					"Sorting shuffled list resulted in unsorted list",
-					((Integer) ll.get(counter)).compareTo(ll.get(counter + 1)) < 0);
+					((Integer) ll.get(counter)).compareTo((Integer)ll.get(counter + 1)) < 0);
 		}
 
 		for (int counter = 0; counter < rllSize - 1; counter++) {
 			assertTrue("Sorting reversed list resulted in unsorted list",
 					((Integer) reversedLinkedList.get(counter))
-							.compareTo(reversedLinkedList.get(counter + 1)) < 0);
+							.compareTo((Integer)reversedLinkedList.get(counter + 1)) < 0);
 		}
 	}
 

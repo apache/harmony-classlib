@@ -30,7 +30,7 @@ package java.lang;
  * @see java.lang.Number
  * @since 1.0
  */
-public final class Long extends Number implements Comparable {
+public final class Long extends Number implements Comparable<Long> {
 
 	private static final long serialVersionUID = 4290774380558885855L;
 
@@ -56,7 +56,7 @@ public final class Long extends Number implements Comparable {
 	/**
 	 * The java.lang.Class that represents this class.
 	 */
-	public static final Class TYPE = new long[0].getClass().getComponentType();
+	public static final Class<Long> TYPE = new long[0].getClass().getComponentType();
 
 	// Note: This can't be set to "long.class", since *that* is
 	// defined to be "java.lang.Long.TYPE";
@@ -110,12 +110,23 @@ public final class Long extends Number implements Comparable {
 		return (byte) value;
 	}
 
+    /**
+     * <p>
+     * Compares this <code>Long</code> to the <code>Long</code>
+     * passed. If this instance's value is equal to the value of the instance
+     * passed, then 0 is returned. If this instance's value is less than the
+     * value of the instance passed, then a negative value is returned. If this
+     * instance's value is greater than the value of the instance passed, then a
+     * positive value is returned.
+     * </p>
+     * 
+     * @param object The instance to compare to.
+     * @throws NullPointerException if <code>object</code> is
+     *         <code>null</code>.
+     * @since 1.2
+     */
 	public int compareTo(Long object) {
 		return value > object.value ? 1 : (value < object.value ? -1 : 0);
-	}
-
-	public int compareTo(Object object) {
-		return compareTo((Long) object);
 	}
 
 	/**

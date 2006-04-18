@@ -182,6 +182,12 @@ public class FloatTest extends junit.framework.TestCase {
 						.compareTo(F1) == 1);
 			}
 		}
+        
+        try {
+            new Float(0.0F).compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
 	}
 
 	/**

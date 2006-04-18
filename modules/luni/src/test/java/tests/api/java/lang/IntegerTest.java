@@ -61,27 +61,12 @@ public class IntegerTest extends junit.framework.TestCase {
 				.compareTo(new Integer(-2)) == 0);
 		assertTrue("3 compared to 2 gave non-positive answer", new Integer(3)
 				.compareTo(new Integer(2)) > 0);
-	}
-
-	/**
-	 * @tests java.lang.Integer#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int java.lang.Integer.compareTo(java.lang.Object)
-		assertTrue("-2 compared to 1 gave non-negative answer", new Integer(-2)
-				.compareTo((Object) new Integer(1)) < 0);
-		assertTrue("-2 compared to -2 gave non-zero answer", new Integer(-2)
-				.compareTo((Object) new Integer(-2)) == 0);
-		assertTrue("3 compared to 2 gave non-positive answer", new Integer(3)
-				.compareTo((Object) new Integer(2)) > 0);
-		try {
-			new Integer(3).compareTo(new Object());
-		} catch (ClassCastException e) {
-			// correct
-			return;
-		}
-		fail(
-				"3 compared to a non-integer object failed to throw an exception");
+        
+        try {
+            new Integer(0).compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
 	}
 
 	/**

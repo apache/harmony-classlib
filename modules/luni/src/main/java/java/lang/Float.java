@@ -24,8 +24,8 @@ package java.lang;
  * @see java.lang.Number
  * @since 1.0
  */
-public final class Float extends Number implements Comparable {
-    //TODO Add Comparable<Float> to implements when generics are supported.
+public final class Float extends Number implements Comparable<Float> {
+
 	private static final long serialVersionUID = -2671257302660747028L;
 
 	/**
@@ -72,7 +72,7 @@ public final class Float extends Number implements Comparable {
 	 * The java.lang.Class that represents this class.
      * @since 1.1
 	 */
-	public static final Class TYPE = new float[0].getClass().getComponentType();
+	public static final Class<Float> TYPE = new float[0].getClass().getComponentType();
 
 	// Note: This can't be set to "float.class", since *that* is
 	// defined to be "java.lang.Float.TYPE";
@@ -132,6 +132,7 @@ public final class Float extends Number implements Comparable {
 	 *         object.floatValue(), zero when this.floatValue() equals
 	 *         object.floatValue(), and less than zero when this.floatValue() is
 	 *         less than object.floatValue()
+     * @throws NullPointerException if <code>object</code> is <code>null</code>.
      * @since 1.2
 	 */
 	public int compareTo(Float object) {
@@ -154,26 +155,6 @@ public final class Float extends Number implements Comparable {
 			return f1 > f2 ? 1 : -1;
 		}
 		return value > object.value ? 1 : -1;
-	}
-
-	/**
-	 * Compares the receiver with a Float parameter.
-	 * 
-	 * @param object
-	 *            the Float to compare to the receiver
-	 * 
-	 * @return Returns greater than zero when this.floatValue() is greater than
-	 *         object.floatValue(), zero when this.floatValue() equals
-	 *         object.floatValue(), and less than zero when this.floatValue() is
-	 *         less than object.floatValue()
-	 * 
-	 * @throws ClassCastException
-	 *             when object is not a Float
-	 * 
-	 * @see #compareTo(Float)
-	 */
-	public int compareTo(Object object) {
-		return compareTo((Float) object);
 	}
 
 	/**

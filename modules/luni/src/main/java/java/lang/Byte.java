@@ -17,10 +17,9 @@ package java.lang;
 
 /**
  * <p>Byte is the wrapper for the primitive type <code>byte</code>.</p>
- * @since 1.0
+ * @since 1.1
  */
-public final class Byte extends Number implements Comparable {
-    //TODO Add Comparable<Byte> to implements when generics are supported.    
+public final class Byte extends Number implements Comparable<Byte> {    
 	private static final long serialVersionUID = -7183698231559129828L;
 
 	/**
@@ -55,7 +54,7 @@ public final class Byte extends Number implements Comparable {
 	/**
 	 * The java.lang.Class that represents this class.
 	 */
-	public static final Class TYPE = new byte[0].getClass().getComponentType();
+	public static final Class<Byte> TYPE = new byte[0].getClass().getComponentType();
 
 	// Note: This can't be set to "byte.class", since *that* is
 	// defined to be "java.lang.Byte.TYPE";
@@ -99,13 +98,24 @@ public final class Byte extends Number implements Comparable {
 		return value;
 	}
 
-	public int compareTo(Byte object) {
-		return value > object.value ? 1 : (value < object.value ? -1 : 0);
-	}
-
-	public int compareTo(Object object) {
-		return compareTo((Byte) object);
-	}
+	/**
+     * <p>
+     * Compares this <code>Byte</code> to the <code>Byte</code> passed. If
+     * this instance's value is equal to the value of the instance passed, then
+     * 0 is returned. If this instance's value is less than the value of the
+     * instance passed, then a negative value is returned. If this instance's
+     * value is greater than the value of the instance passed, then a positive
+     * value is returned.
+     * </p>
+     * 
+     * @param object The instance to compare to.
+     * @throws NullPointerException if <code>object</code> is
+     *         <code>null</code>.
+     * @since 1.2
+     */
+    public int compareTo(Byte object) {
+        return value > object.value ? 1 : (value < object.value ? -1 : 0);
+    }
 
 	/**
 	 * Parses the string argument as if it was a byte value and returns the

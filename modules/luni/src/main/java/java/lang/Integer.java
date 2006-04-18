@@ -30,8 +30,8 @@ package java.lang;
  * @see java.lang.Number
  * @since 1.1
  */
-public final class Integer extends Number implements Comparable {
-    //TODO Add Comparable<Integer> to implements when generics are supported.
+public final class Integer extends Number implements Comparable<Integer> {
+
 	private static final long serialVersionUID = 1360826667806852920L;
 
 	/**
@@ -66,7 +66,7 @@ public final class Integer extends Number implements Comparable {
 	/**
 	 * The java.lang.Class that represents this class.
 	 */
-	public static final Class TYPE = new int[0].getClass().getComponentType();
+	public static final Class<Integer> TYPE = new int[0].getClass().getComponentType();
 
 	// Note: This can't be set to "int.class", since *that* is
 	// defined to be "java.lang.Integer.TYPE";
@@ -110,12 +110,23 @@ public final class Integer extends Number implements Comparable {
 		return (byte) value;
 	}
 
+    /**
+     * <p>
+     * Compares this <code>Integer</code> to the <code>Integer</code>
+     * passed. If this instance's value is equal to the value of the instance
+     * passed, then 0 is returned. If this instance's value is less than the
+     * value of the instance passed, then a negative value is returned. If this
+     * instance's value is greater than the value of the instance passed, then a
+     * positive value is returned.
+     * </p>
+     * 
+     * @param object The instance to compare to.
+     * @throws NullPointerException if <code>object</code> is
+     *         <code>null</code>.
+     * @since 1.2
+     */
 	public int compareTo(Integer object) {
 		return value > object.value ? 1 : (value < object.value ? -1 : 0);
-	}
-
-	public int compareTo(Object object) {
-		return compareTo((Integer) object);
 	}
 
 	/**

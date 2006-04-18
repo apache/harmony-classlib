@@ -54,6 +54,12 @@ public class DoubleTest extends TestCase {
 						D2.compareTo(objDouble) == 1);
 			}
 		}
+        
+        try {
+            new Double(0.0D).compareTo(null);
+            fail("No NPE");
+        } catch(NullPointerException e) {
+        }
 	}
 
 	/**

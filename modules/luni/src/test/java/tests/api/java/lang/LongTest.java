@@ -62,27 +62,12 @@ public class LongTest extends junit.framework.TestCase {
 				.compareTo(new Long(-2L)) == 0);
 		assertTrue("3 compared to 2 gave non-positive answer", new Long(3L)
 				.compareTo(new Long(2L)) > 0);
-	}
-
-	/**
-	 * @tests java.lang.Long#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int java.lang.Long.compareTo(java.lang.Object)
-		assertTrue("-2 compared to 1 gave non-negative answer", new Long(-2L)
-				.compareTo((Object) new Long(1L)) < 0);
-		assertTrue("-2 compared to -2 gave non-zero answer", new Long(-2L)
-				.compareTo((Object) new Long(-2L)) == 0);
-		assertTrue("3 compared to 2 gave non-positive answer", new Long(3L)
-				.compareTo((Object) new Long(2L)) > 0);
-		try {
-			new Long(3).compareTo(new Object());
-		} catch (ClassCastException e) {
-			// correct
-			return;
-		}
-		fail(
-				"3 compared to a non-integer object failed to throw an exception");
+        
+        try {
+            new Long(0).compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
 	}
 
 	/**

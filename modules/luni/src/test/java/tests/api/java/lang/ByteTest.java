@@ -63,26 +63,6 @@ public class ByteTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.lang.Byte#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int java.lang.Byte.compareTo(java.lang.Object)
-		assertTrue("Comparison failed", new Byte((byte) 1)
-				.compareTo((Object) new Byte((byte) 2)) < 0);
-		assertTrue("Comparison failed", new Byte((byte) 1)
-				.compareTo((Object) new Byte((byte) -2)) > 0);
-		assertTrue("Comparison failed", new Byte((byte) 1)
-				.compareTo((Object) new Byte((byte) 1)) == 0);
-		try {
-			new Byte((byte) 1).compareTo(new Object());
-		} catch (ClassCastException e) {
-			// correct
-			return;
-		}
-		fail("Failed to throw ClassCastException");
-	}
-
-	/**
 	 * @tests java.lang.Byte#decode(java.lang.String)
 	 */
 	public void test_decodeLjava_lang_String() {

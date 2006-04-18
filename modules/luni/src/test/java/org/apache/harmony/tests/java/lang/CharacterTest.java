@@ -573,4 +573,32 @@ public class CharacterTest extends TestCase {
         } catch (IndexOutOfBoundsException e) {
         }
     }
+    
+    /**
+     * @tests java.lang.Character#compareTo(Character)
+     */
+    public void test_compareToLjava_lang_Byte() {
+        final Character min = new Character(Character.MIN_VALUE);
+        final Character mid = new Character((char)(Character.MAX_VALUE/2));
+        final Character max = new Character(Character.MAX_VALUE);
+        
+        assertTrue(max.compareTo(max) == 0);
+        assertTrue(min.compareTo(min) == 0);
+        assertTrue(mid.compareTo(mid) == 0);
+        
+        assertTrue(max.compareTo(mid) > 0);
+        assertTrue(max.compareTo(min) > 0);
+        
+        assertTrue(mid.compareTo(max) < 0);
+        assertTrue(mid.compareTo(min) > 0);
+        
+        assertTrue(min.compareTo(mid) < 0);
+        assertTrue(min.compareTo(max) < 0);
+        
+        try {
+            min.compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
+    }
 }

@@ -325,4 +325,32 @@ public class ByteTest extends TestCase {
         assertEquals(0, new Byte((byte)0).shortValue());
         assertEquals(1, new Byte((byte)1).shortValue());
     }
+    
+    /**
+     * @tests java.lang.Byte#compareTo(Byte)
+     */
+    public void test_compareToLjava_lang_Byte() {
+        final Byte min = new Byte(Byte.MIN_VALUE);
+        final Byte zero = new Byte((byte)0);
+        final Byte max = new Byte(Byte.MAX_VALUE);
+        
+        assertTrue(max.compareTo(max) == 0);
+        assertTrue(min.compareTo(min) == 0);
+        assertTrue(zero.compareTo(zero) == 0);
+        
+        assertTrue(max.compareTo(zero) > 0);
+        assertTrue(max.compareTo(min) > 0);
+        
+        assertTrue(zero.compareTo(max) < 0);
+        assertTrue(zero.compareTo(min) > 0);
+        
+        assertTrue(min.compareTo(zero) < 0);
+        assertTrue(min.compareTo(max) < 0);
+        
+        try {
+            min.compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
+    }
 }

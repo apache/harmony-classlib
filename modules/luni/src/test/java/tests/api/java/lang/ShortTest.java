@@ -55,34 +55,6 @@ public class ShortTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.lang.Short#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int java.lang.Short.compareTo(java.lang.Object)
-		Short s = new Short((short) 1);
-		Object x = new Short((short) 3);
-		assertTrue(
-				"Should have returned negative value when compared to greater short",
-				s.compareTo(x) < 0);
-		x = new Short((short) -1);
-		assertTrue(
-				"Should have returned positive value when compared to lesser short",
-				s.compareTo(x) > 0);
-		x = new Short((short) 1);
-		assertTrue("Should have returned zero when compared to equal short", s
-				.compareTo(x) == 0);
-		x = "5";
-		try {
-			s.compareTo(x);
-		} catch (ClassCastException e) {
-			// correct
-			return;
-		}
-		fail(
-				"Should have thrown ClassCastException when compared to non-short");
-	}
-
-	/**
 	 * @tests java.lang.Short#compareTo(java.lang.Short)
 	 */
 	public void test_compareToLjava_lang_Short() {
@@ -99,6 +71,12 @@ public class ShortTest extends junit.framework.TestCase {
 		x = new Short((short) 1);
 		assertTrue("Should have returned zero when compared to equal short", s
 				.compareTo(x) == 0);
+        
+        try {
+            new Short((short)0).compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
 	}
 
 	/**

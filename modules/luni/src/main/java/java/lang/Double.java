@@ -23,7 +23,7 @@ package java.lang;
  * @see java.lang.Number
  * @since 1.0
  */
-public final class Double extends Number implements Comparable {
+public final class Double extends Number implements Comparable<Double> {
 
 	private static final long serialVersionUID = -9172774392245257468L;
 
@@ -73,7 +73,7 @@ public final class Double extends Number implements Comparable {
 	 * The java.lang.Class that represents this class.
      * @since 1.1
 	 */
-	public static final Class TYPE = new double[0].getClass()
+	public static final Class<Double> TYPE = new double[0].getClass()
 			.getComponentType();
 
 	// Note: This can't be set to "double.class", since *that* is
@@ -123,6 +123,9 @@ public final class Double extends Number implements Comparable {
 	 *         object.doubleValue(), zero when this.doubleValue() equals
 	 *         object.doubleValue(), and less than zero when this.doubleValue()
 	 *         is less than object.doubleValue()
+     *         
+     * @throws NullPointerException if <code>object</code> is <code>null</code>.
+     * @since 1.2
 	 */
 	public int compareTo(Double object) {
 		long d1, d2;
@@ -144,26 +147,6 @@ public final class Double extends Number implements Comparable {
 			return d1 > d2 ? 1 : -1;
 		}
 		return value > object.value ? 1 : -1;
-	}
-
-	/**
-	 * Compares the receiver with a Double parameter.
-	 * 
-	 * @param object
-	 *            the Double to compare to the receiver
-	 * 
-	 * @return Returns greater than zero when this.doubleValue() is greater than
-	 *         object.doubleValue(), zero when this.doubleValue() equals
-	 *         object.doubleValue(), and less than zero when this.doubleValue()
-	 *         is less than object.doubleValue()
-	 * 
-	 * @throws ClassCastException
-	 *             when object is not a Double
-	 * 
-	 * @see #compareTo(Double)
-	 */
-	public int compareTo(Object object) {
-		return compareTo((Double) object);
 	}
 
 	/**

@@ -52,8 +52,7 @@ import org.apache.harmony.luni.util.BinarySearch;
  * 
  * @since 1.0
  */
-public final class Character implements Serializable, Comparable {
-    //TODO Add Comparable<Character> when support for generics is available.
+public final class Character implements Serializable, Comparable<Character> {
 	private static final long serialVersionUID = 3786198910865385080L;
 
 	private final char value;
@@ -84,7 +83,7 @@ public final class Character implements Serializable, Comparable {
 	 * The maximum possible radix used for conversions between Characters and
 	 * integers.
 	 */
-	public static final Class TYPE = new char[0].getClass().getComponentType();
+	public static final Class<Character> TYPE = new char[0].getClass().getComponentType();
 
 	// Note: This can't be set to "char.class", since *that* is
 	// defined to be "java.lang.Character.TYPE";
@@ -1114,26 +1113,11 @@ public final class Character implements Serializable, Comparable {
 	 * @return an int < 0 if this Character is less than the specified
 	 *         Character, 0 if they are equal, and > 0 if this Character is
 	 *         greater
+     * @throws NullPointerException if <code>c</code> is <code>null</code>.
+     * @since 1.2
 	 */
 	public int compareTo(Character c) {
 		return value - c.value;
-	}
-
-	/**
-	 * Compare the receiver to the specified Object to determine the relative
-	 * ordering.
-	 * 
-	 * @param object
-	 *            an Object
-	 * @return an int < 0 if this Character is less than the specified
-	 *         Character, 0 if they are equal, and > 0 if this Character is
-	 *         greater
-	 * 
-	 * @throws ClassCastException
-	 *             when object is not a Character
-	 */
-	public int compareTo(Object object) {
-		return value - ((Character) object).value;
 	}
     
 	/*

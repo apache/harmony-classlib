@@ -23,8 +23,8 @@ package java.lang;
  * @see java.lang.Number
  * @since 1.1
  */
-public final class Short extends Number implements Comparable {
-    //TODO Add Comparable<Short> to implements when generics are supported.
+public final class Short extends Number implements Comparable<Short> {
+
 	private static final long serialVersionUID = 7515723908773894738L;
 
 	/**
@@ -59,7 +59,7 @@ public final class Short extends Number implements Comparable {
 	/**
 	 * The java.lang.Class that represents this class.
 	 */
-	public static final Class TYPE = new short[0].getClass().getComponentType();
+	public static final Class<Short> TYPE = new short[0].getClass().getComponentType();
 
 	// Note: This can't be set to "short.class", since *that* is
 	// defined to be "java.lang.Short.TYPE";
@@ -103,10 +103,21 @@ public final class Short extends Number implements Comparable {
 		return (byte) value;
 	}
 
-	public int compareTo(Object object) {
-		return compareTo((Short) object);
-	}
-
+    /**
+     * <p>
+     * Compares this <code>Short</code> to the <code>Short</code>
+     * passed. If this instance's value is equal to the value of the instance
+     * passed, then 0 is returned. If this instance's value is less than the
+     * value of the instance passed, then a negative value is returned. If this
+     * instance's value is greater than the value of the instance passed, then a
+     * positive value is returned.
+     * </p>
+     * 
+     * @param object The instance to compare to.
+     * @throws NullPointerException if <code>object</code> is
+     *         <code>null</code>.
+     * @since 1.2
+     */
 	public int compareTo(Short object) {
 		return value > object.value ? 1 : (value < object.value ? -1 : 0);
 	}

@@ -55,24 +55,6 @@ public class CharacterTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.lang.Character#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int java.lang.Character.compareTo(java.lang.Object)
-		Character c = new Character('c');
-		assertTrue("Returned false for same Character",
-				c.compareTo((Object) c) == 0);
-		try {
-			c.compareTo(new Object());
-		} catch (ClassCastException e) {
-			// Correct
-			return;
-		}
-		fail(
-				"Failed to throw exception when comparing to non-Character");
-	}
-
-	/**
 	 * @tests java.lang.Character#digit(char, int)
 	 */
 	public void test_digitCI() {
