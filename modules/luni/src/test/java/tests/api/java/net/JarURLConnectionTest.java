@@ -16,11 +16,14 @@
 package tests.api.java.net;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import tests.support.resource.Support_Resources;
@@ -144,6 +147,23 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 			fail("Unexpected exception : " + e.getMessage());
 		}
 	}
+
+	/**
+	 * @tests java.net.JarURLConnection.getJarFile()
+         * 
+         * Regression test for HARMONY-29
+	 */
+	public void test_getJarFile29() throws Exception {
+                File jarFile = File.createTempFile("1+2 3", "test.jar");
+                jarFile.deleteOnExit();
+                JarOutputStream out = new JarOutputStream(new FileOutputStream(jarFile));
+                out.putNextEntry(new ZipEntry("test"));
+                out.closeEntry();
+                out.close();
+
+                JarURLConnection conn = (JarURLConnection) new URL("jar:file:/"+jarFile.getAbsolutePath().replaceAll(" ", "%20")+"!/").openConnection();
+                conn.getJarFile().entries();
+        }
 
 	/**
 	 * @tests java.net.JarURLConnection#getJarFileURL()

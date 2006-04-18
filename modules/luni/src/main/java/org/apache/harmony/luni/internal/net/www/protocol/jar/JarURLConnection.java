@@ -233,7 +233,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 			jar = (JarFile) entry.get();
 		if (jar == null && fileString != null) {
 			int flags = ZipFile.OPEN_READ + (temp ? ZipFile.OPEN_DELETE : 0);
-			jar = new JarFile(new File(Util.decode(fileString, true)), true, flags);
+			jar = new JarFile(new File(Util.decode(fileString, false)), true, flags);
 			jarCache.put(key, new CacheEntry(jar, key, cacheQueue));
 		} else {
 			SecurityManager security = System.getSecurityManager();
