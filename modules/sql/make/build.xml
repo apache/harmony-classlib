@@ -18,8 +18,8 @@
 <project name="SQL Build" default="build" basedir="..">
 	<description>Build for SQL component</description>
 
-        <!-- import common properties -->
-        <import file="${basedir}/../../make/properties.xml" />
+	<!-- import common properties -->
+	<import file="${basedir}/../../make/properties.xml" />
 
 	<!-- set global properties for this build. -->
 	<xmlproperty file="make/common/hyproperties.xml" semanticAttributes="true"/>
