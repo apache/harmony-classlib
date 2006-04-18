@@ -66,10 +66,14 @@ public class PropertyEditorManager {
             
             if (editorClass == null) {
                 String editorClassName = targetType.getName() + "Editor";
-                
-                try {
-                    editorClass = Class.forName(
-                        editorClassName, true, targetType.getClassLoader());
+                ClassLoader loader = targetType.getClassLoader();
+
+				if (loader == null) {
+					loader = Thread.currentThread().getContextClassLoader();
+				}
+
+				try {
+					editorClass = Class.forName(editorClassName, true, loader);
                 } catch (ClassNotFoundException cnfe) {
                     String shortEditorClassName = editorClassName.substring(
                         editorClassName.lastIndexOf(".") + 1);
@@ -85,7 +89,7 @@ public class PropertyEditorManager {
                         
                         try {
                             editorClass = Class.forName(editorClassName, true,
-                                targetType.getClassLoader());
+                                    loader);
                         } catch (ClassNotFoundException cnfe2) {
                         } catch (Exception e) {
                             break;
