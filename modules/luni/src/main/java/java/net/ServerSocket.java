@@ -17,6 +17,7 @@ package java.net;
 
 
 import java.io.IOException;
+import java.nio.channels.ServerSocketChannel;
 
 import org.apache.harmony.luni.net.SocketImplProvider;
 
@@ -133,35 +134,6 @@ public class ServerSocket {
 		if (!isBound())
 			throw new SocketException(Msg.getString("K031f"));
 
-		// If a SOCKS proxy is being used, accept does strange things.
-		// Instead of returning a new Socket and allowing this ServerSocket
-		// to be used for another accept, it actually uses the current
-		// ServerSocket
-		// as the accepted Socket. So, closing the returned socket will close
-		// the
-		// ServerSocket as well. The ServerSocket cannot be used for a second
-		// accept.
-        //FIXME: paulex comment this for compile
-//        if (IOUtil.usingSocks()) {
-//            if (impl instanceof PlainSocketImpl) {
-//                try {
-//                    SecurityManager security = System.getSecurityManager();
-//                    if (security != null) {
-//                        security.checkAccept(getInetAddress().getHostAddress(),
-//                                getLocalPort());
-//                    }
-//                } catch (SecurityException e) {
-//                    close();
-//                    throw e;
-//                }
-//
-//                ((PlainSocketImpl) impl).socksAccept();
-//                return new Socket(impl);
-//            }
-//
-//            throw new IOException(Msg.getString("K0041")); //$NON-NLS-1$
-//        }
-
 		Socket aSocket = new Socket();
 		try {
 			synchronized (this) {
@@ -249,7 +221,6 @@ public class ServerSocket {
 	 *                thrown if option cannot be retrieved
 	 */
 	public synchronized int getSoTimeout() throws IOException {
-        // TODO Bug-Reporter:check changed! checkClosedAndCreate(true);
         if (!isCreated) {
             synchronized (this) {
                 if (!isCreated) {
@@ -501,6 +472,16 @@ public class ServerSocket {
 		return ((Integer) impl.getOption(SocketOptions.SO_RCVBUF)).intValue();
 	}
 	
+	/**
+	 * if ServerSocket is created by a ServerSocketChannel, returns the related
+	 * ServerSocketChannel
+	 * 
+	 * @return the related ServerSocketChannel if any
+	 */
+	public ServerSocketChannel getChannel(){
+		return null;
+	}
+
     /**
 	 * sets performance preference for connectionTime,latency and bandwidth
 	 * 

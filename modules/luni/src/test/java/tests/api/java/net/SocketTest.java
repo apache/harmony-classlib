@@ -2163,6 +2163,13 @@ public class SocketTest extends SocketTestCase {
 	}
 
 	/**
+	 * @tests java.net.Socket#getChannel()
+	 */
+	public void test_getChannel() throws Exception {
+		assertNull(new Socket().getChannel());
+	}
+	
+	/**
 	 * @tests java.net.Socket#sendUrgentData(int)
 	 */
 	public void test_sendUrgentDataI() {

@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package java.net;
 
 
 import java.io.IOException;
+import java.nio.channels.DatagramChannel;
 
 import org.apache.harmony.luni.net.SocketImplProvider;
 
@@ -782,5 +783,15 @@ public class DatagramSocket {
 	 */
 	public boolean isClosed() {
 		return isClosed;
+	}
+	
+	/**
+	 * if DatagramSocket is created by a DatagramChannel, returns the related
+	 * DatagramChannel
+	 * 
+	 * @return the related DatagramChannel if any
+	 */
+	public DatagramChannel getChannel() {
+		return null;
 	}
 }

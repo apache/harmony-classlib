@@ -19,6 +19,7 @@ package java.net;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 
 import org.apache.harmony.luni.net.NetUtil;
@@ -1045,6 +1046,17 @@ public class Socket {
 			return true;
 		return false;
 	}
+	
+	/**
+	 * if Socket is created by a SocketChannel, returns the related
+	 * SocketChannel
+	 * 
+	 * @return the related SocketChannel
+	 */
+	public SocketChannel getChannel() {
+		return null;
+	}
+
     
     /**
 	 * sets performance preference for connectionTime,latency and bandwidth

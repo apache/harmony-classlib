@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1850,6 +1850,13 @@ public class DatagramSocketTest extends SocketTestCase {
 		} catch (Exception e) {
 			fail("Got exception during isClosed tests" + e.toString());
 		}
+	}
+	
+	/**
+	 * @tests java.net.DatagramSocket#getChannel()
+	 */
+	public void test_getChannel() throws Exception {
+		assertNull(new DatagramSocket().getChannel());
 	}
 
 	/**

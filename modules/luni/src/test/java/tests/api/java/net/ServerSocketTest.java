@@ -882,6 +882,13 @@ public class ServerSocketTest extends SocketTestCase {
 		}
 	}
 	
+	/**
+	 * @tests java.net.ServerSocket#getChannel()
+	 */
+	public void test_getChannel() throws Exception {
+		assertNull(new ServerSocket().getChannel());
+	}
+	
 	/*
 	* @tests java.net.ServerSocket#setPerformancePreference()
 	*/
