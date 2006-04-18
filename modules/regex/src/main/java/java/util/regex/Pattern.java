@@ -592,7 +592,7 @@ public final class Pattern implements Serializable {
                     if (lexemes.peek() != Lexer.CHAR_RIGHT_PARENTHESIS)
                         throw new PatternSyntaxException(I18n
                                 .getMessage("unmatched ("), lexemes.toString(),
-                                lexemes.getIndex());
+                                lexemes.getIndex()-1);
                     lexemes.next();
                 }
 
