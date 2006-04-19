@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -476,7 +476,8 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
 			new ObjectStreamField("percent", Character.TYPE),
 			new ObjectStreamField("perMill", Character.TYPE),
 			new ObjectStreamField("serialVersionOnStream", Integer.TYPE),
-			new ObjectStreamField("zeroDigit", Character.TYPE), };
+			new ObjectStreamField("zeroDigit", Character.TYPE),
+			new ObjectStreamField("locale", Locale.class),};
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		ObjectOutputStream.PutField fields = stream.putFields();
@@ -495,6 +496,7 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
 		fields.put("perMill", getPerMill());
 		fields.put("serialVersionOnStream", 1);
 		fields.put("zeroDigit", getZeroDigit());
+		fields.put("locale", locale);
 		stream.writeFields();
 	}
 
@@ -514,12 +516,19 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
 		setPercent(fields.get("percent", '%'));
 		setPerMill(fields.get("perMill", '\u2030'));
 		setZeroDigit(fields.get("zeroDigit", '0'));
+		locale = (Locale)fields.get("locale", null);
 		if (fields.get("serialVersionOnStream", 0) == 0) {
 			setMonetaryDecimalSeparator(getDecimalSeparator());
 			setExponential('E');
 		} else {
 			setMonetaryDecimalSeparator(fields.get("monetarySeparator", '.'));
 			setExponential(fields.get("exponential", 'E'));
+			
+		}
+		try {
+			currency = Currency.getInstance(intlCurrencySymbol);
+		} catch (IllegalArgumentException e) {
+			currency = null;
 		}
 	}
 }

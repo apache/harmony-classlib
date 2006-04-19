@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,13 @@
 
 package tests.api.java.text;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -366,5 +373,59 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 * method is called after a test is executed.
 	 */
 	protected void tearDown() {
+	}
+
+	// Test serialization mechanism of DecimalFormatSymbols
+	public void test_serialization() throws Exception {
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.FRANCE);
+		Currency currency = symbols.getCurrency();
+		assertNotNull(currency);
+
+		// serialize
+		ByteArrayOutputStream byteOStream = new ByteArrayOutputStream();
+		ObjectOutputStream objectOStream = new ObjectOutputStream(byteOStream);
+		objectOStream.writeObject(symbols);
+
+		// and deserialize
+		ObjectInputStream objectIStream = new ObjectInputStream(
+				new ByteArrayInputStream(byteOStream.toByteArray()));
+		DecimalFormatSymbols symbolsD = (DecimalFormatSymbols) objectIStream
+				.readObject();
+
+		// The associated currency will not persist
+		currency = symbolsD.getCurrency();
+		assertNotNull(currency);
+	}
+
+	// Use RI to write DecimalFormatSymbols out, use Harmony to read
+	// DecimalFormatSymbols in. The read symbol will be equal with those
+	// instantiated inside Harmony.
+	
+	// This assertion will not come into existence the other way around. This is
+	// probably caused by different serialization mechanism used by RI and
+	// Harmony.
+	public void test_RIHarmony_compatible() throws Exception {
+		ObjectInputStream i = null;
+		try {
+			DecimalFormatSymbols symbols = new DecimalFormatSymbols(
+					Locale.FRANCE);
+			i = new ObjectInputStream(
+					new FileInputStream(
+							new File(URI.create(
+									this.getClass().getResource(
+										"/serialization/java/text/DecimalFormatSymbols.ser")
+											.toString()))));
+			DecimalFormatSymbols symbolsD = (DecimalFormatSymbols) i
+					.readObject();
+			assertEquals(symbols, symbolsD);
+		} finally {
+			try {
+				if (i != null) {
+					i.close();
+				}
+			} catch (Exception e) {
+				// ignore
+			}
+		}
 	}
 }

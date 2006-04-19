@@ -45,7 +45,7 @@
 	</target>
 
 	
-	<target name="compile.tests">
+	<target name="compile.tests" depends="copy.test.resources">
 		<echo message="Compiling TEXT tests from ${hy.text.src.test.java}" />
 
 		<mkdir dir="${hy.text.bin.test}" />
@@ -62,7 +62,7 @@
 					<include name="**/*.jar" />
 				</fileset>
 			</bootclasspath>
-                        <classpath location="../../../../build/tests" />
+            <classpath location="${hy.tests.support.bin}" />
 		</javac>
 	</target>
 
@@ -89,7 +89,7 @@
 			<classpath>
 				<pathelement path="${hy.text.bin.test}"/>
 			</classpath>
-            <classpath location="../../../../build/tests" />	
+            <classpath location="${hy.tests.support.bin}" />	
 
 			<formatter type="xml" />
 
@@ -125,5 +125,15 @@
 	<target name="copy.resources">
 		<!-- Nothing for TEXT -->
 	</target>
+	
+	<target name="copy.test.resources">
+		<mkdir dir="${hy.text.bin.test}" />
+        <copy todir="${hy.text.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.text.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+	</target>	
+	
 </project>
 
