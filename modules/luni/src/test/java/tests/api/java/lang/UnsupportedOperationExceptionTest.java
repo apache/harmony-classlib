@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,13 @@ package tests.api.java.lang;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 
+import tests.util.SerializationTester;
+
 public class UnsupportedOperationExceptionTest extends junit.framework.TestCase {
 
+	private static final String SERIALIZATION_FILE_NAME =
+		"/serialization/java/lang/UnsupportedOperationException.ser"; //$NON-NLS-1$
+	
 	/**
 	 * @tests java.lang.UnsupportedOperationException#UnsupportedOperationException()
 	 */
@@ -61,6 +66,26 @@ public class UnsupportedOperationExceptionTest extends junit.framework.TestCase 
 			fail("Exception during Constructor : " + e.getMessage());
 		}
 		fail("Constructor failed");
+	}
+	
+	
+	/**
+	 * @tests serialization/deserilazation.
+	 */
+	public void test_serialization() throws Exception {
+		UnsupportedOperationException srcUnsupportedOperationException = new UnsupportedOperationException();
+		UnsupportedOperationException destUnsupportedOperationException = (UnsupportedOperationException) SerializationTester
+				.getDeserilizedObject(srcUnsupportedOperationException);
+	}
+
+	/**
+	 * @tests serialization/deserilazation compatibility with RI.
+	 */
+	public void test_serializationCompatibility() throws Exception {
+		UnsupportedOperationException srcUnsupportedOperationException = new UnsupportedOperationException();
+		UnsupportedOperationException destUnsupportedOperationException = (UnsupportedOperationException) SerializationTester
+				.readObject(srcUnsupportedOperationException,
+						SERIALIZATION_FILE_NAME);
 	}
 
 	/**

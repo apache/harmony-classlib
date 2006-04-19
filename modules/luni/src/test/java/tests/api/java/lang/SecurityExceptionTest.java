@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,13 @@
 
 package tests.api.java.lang;
 
-public class SecurityExceptionTest extends junit.framework.TestCase {
+import tests.util.SerializationTester;
 
+public class SecurityExceptionTest extends junit.framework.TestCase {
+	
+	private static final String SERIALIZATION_FILE_NAME =
+		"/serialization/java/lang/SecurityException.ser"; //$NON-NLS-1$
+	
 	/**
 	 * @tests java.lang.SecurityException#SecurityException()
 	 */
@@ -45,6 +50,26 @@ public class SecurityExceptionTest extends junit.framework.TestCase {
 		assertTrue("Failed to generate exception", threwException);
 	}
 
+	/**
+	 * @tests serialization/deserilazation.
+	 */
+	public void test_serialization() throws Exception {
+		SecurityException srcSecurityException = new SecurityException();
+		SecurityException destSecurityException = (SecurityException) SerializationTester
+				.getDeserilizedObject(srcSecurityException);
+	}
+
+	/**
+	 * @tests serialization/deserilazation compatibility with RI.
+	 */
+	public void test_serializationCompatibility() throws Exception {
+		SecurityException srcSecurityException = new SecurityException();
+		SecurityException destSecurityException = (SecurityException) SerializationTester
+				.readObject(srcSecurityException,
+						SERIALIZATION_FILE_NAME);
+	}
+	
+	
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
