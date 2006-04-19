@@ -113,7 +113,6 @@
 					<exclude name="**/OutputStreamWriterTest.java" />
 					<exclude name="**/PipedInputStreamTest.java" />
 					<exclude name="**/PrintWriterTest.java" />
-					<exclude name="**/RandomAccessFileTest.java" />
 					<exclude name="**/StreamTokenizerTest.java" />
 					<exclude name="**/ArrayIndexOutOfBoundsExceptionTest.java" />
 					<exclude name="**/AssertionErrorTest.java" />
