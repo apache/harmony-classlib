@@ -503,6 +503,9 @@ public class BeanContextServicesSupport extends BeanContextSupport
      * @com.intel.drl.spec_ref
      */
     public synchronized boolean hasService(Class serviceClass) {
+        if (serviceClass == null) {
+            throw new NullPointerException("The service class is null");
+        }
         
         synchronized(BeanContext.globalHierarchyLock) {
             synchronized(this.services) {
@@ -595,10 +598,12 @@ public class BeanContextServicesSupport extends BeanContextSupport
     public void removeBeanContextServicesListener(
             BeanContextServicesListener bcsl) {
         
-        if (bcsl != null) {
-            synchronized(this.bcsListeners) {
-                this.bcsListeners.remove(bcsl);
-            }
+        if (bcsl == null) {
+            throw new NullPointerException("The listener is null");
+        }
+
+        synchronized(this.bcsListeners) {
+            this.bcsListeners.remove(bcsl);
         }
     }
 
@@ -649,6 +654,9 @@ public class BeanContextServicesSupport extends BeanContextSupport
      * @com.intel.drl.spec_ref
      */
     public void serviceAvailable(BeanContextServiceAvailableEvent bcssae) {
+        if (bcssae == null) {
+            throw new NullPointerException("The event is null");
+        }
         
         for (Iterator it = this.bcsListeners.iterator(); it.hasNext(); ) {
             BeanContextServicesListener l = 
@@ -662,6 +670,9 @@ public class BeanContextServicesSupport extends BeanContextSupport
      * @com.intel.drl.spec_ref
      */
     public void serviceRevoked(BeanContextServiceRevokedEvent bcssre) {
+        if (bcssre == null) {
+            throw new NullPointerException("The event is null");
+        }
         
         for (Iterator it = this.bcsListeners.iterator(); it.hasNext(); ) {
             BeanContextServicesListener l = 

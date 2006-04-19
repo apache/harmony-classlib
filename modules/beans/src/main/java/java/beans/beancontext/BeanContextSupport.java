@@ -777,7 +777,12 @@ public class BeanContextSupport extends BeanContextChildSupport
         
         // The resource name should not be null
         if(name == null) {
-            throw new IllegalArgumentException("Resource name can not be null");
+            throw new NullPointerException("Resource name can not be null");
+        }
+        
+        // The child should not be null
+        if(bcc == null) {
+            throw new NullPointerException("The child can not be null");
         }
         
         // Load resource using the same ClassLoader as BeanContextChild specified
@@ -802,7 +807,12 @@ public class BeanContextSupport extends BeanContextChildSupport
         
         // The resource name should not be null
         if(name == null) {
-            throw new IllegalArgumentException("Resource name can not be null");
+            throw new NullPointerException("Resource name can not be null");
+        }
+        
+        // The child should not be null
+        if(bcc == null) {
+            throw new NullPointerException("The child can not be null");
         }
         
         // Load resource using the same ClassLoader as BeanContextChild specified
@@ -1290,6 +1300,9 @@ public class BeanContextSupport extends BeanContextChildSupport
     public void vetoableChange(PropertyChangeEvent pce) 
             throws PropertyVetoException {
                 
+        if (pce == null) {
+            throw new NullPointerException("The event is null");
+        }
         
     }
     

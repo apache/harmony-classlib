@@ -23,6 +23,7 @@ package java.beans.beancontext;
 import java.beans.beancontext.BeanContextSupport;
 import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
+import java.beans.PropertyVetoException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -665,6 +666,72 @@ public class BeanContextSupportTest extends TestCase {
         }
         catch(Exception e) {
             fail("Unexpected exception: " + e + " caused by: " + e.getCause());
+        }
+    }
+
+    /**
+     * Test method getResourceAsStream() with String, BeanContextChild=null parameters.<p>
+     */
+    public void test_getResourceAsStreamLlava_lang_StringLjava_beans_beancontext_BeanContextChild() {
+        BeanContextSupport obj = new BeanContextSupport();
+        try {
+            obj.getResourceAsStream(new String(), null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
+
+    /**
+     * Test method getResourceAsStream() with String=null, BeanContextChild=null parameters.<p>
+     */
+    public void test_getResourceAsStreamLlava_lang_StringLjava_beans_beancontext_BeanContextChild2() {
+        BeanContextSupport obj = new BeanContextSupport();
+        try {
+            obj.getResourceAsStream(null, null);
+            fail("NullPointerException expected");
+        } catch (IllegalArgumentException t) {
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
+
+    /**
+     * Test method vetoableChange() with PropertyChangeEvent=null parameter.<p>
+     */
+    public void test_vetoableChangeLjava_beans_PropertyChangeEvent() {
+        BeanContextSupport obj = new BeanContextSupport();
+        try {
+            obj.vetoableChange(null);
+            fail("NullPointerException expected");
+        } catch (PropertyVetoException p) {
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
+
+    /**
+     * Test method getResource() with String!=null, BeanContextChild=null parameters.<p>
+     */
+    public void test_getResourceLjava_lang_StringLjava_beans_beancontext_BeanContextChild() {
+        BeanContextSupport obj = new BeanContextSupport();
+        try {
+            obj.getResource("", null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
+
+    /**
+     * Test method getResource() with String=null, BeanContextChild=null parameters.<p>
+     */
+    public void test_getResourceLjava_lang_StringLjava_beans_beancontext_BeanContextChild2() {
+        BeanContextSupport obj = new BeanContextSupport();
+        try {
+            obj.getResource(null, null);
+            fail("NullPointerException expected");
+        } catch (IllegalArgumentException t) {
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
         }
     }
 

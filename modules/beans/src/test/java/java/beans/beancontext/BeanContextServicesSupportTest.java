@@ -283,6 +283,54 @@ public class BeanContextServicesSupportTest extends TestCase {
         }
     }
 
+    /**
+     * Test method hasService() with Class=null parameter.<p>
+     */
+    public void test_hasServiceLjava_lang_Class() {
+        BeanContextServicesSupport obj = new BeanContextServicesSupport();
+        try {
+            obj.hasService(null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
+
+    /**
+     * Test method removeBeanContextServicesListener() with BeanContextServicesListener=null parameter.<p>
+     */
+    public void test_removeBeanContextServicesListenerLjava_beans_beancontext_BeanContextServicesListener() {
+        BeanContextServicesSupport obj = new BeanContextServicesSupport();
+        try {
+            obj.removeBeanContextServicesListener(null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
+
+    /**
+     * Test method serviceAvailable() with BeanContextServiceAvailableEvent=null parameter.<p>
+     */
+    public void test_serviceAvailableLjava_beans_beancontext_BeanContextServiceAvailableEvent() {
+        BeanContextServicesSupport obj = new BeanContextServicesSupport();
+        try {
+            obj.serviceAvailable(null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
+
+    /**
+     * Test method serviceRevoked() with BeanContextServiceRevokedEvent=null parameter.<p>
+     */
+    public void test_serviceRevokedLjava_beans_beancontext_BeanContextServiceRevokedEvent() {
+        BeanContextServicesSupport obj = new BeanContextServicesSupport();
+        try {
+            obj.serviceRevoked(null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
+
     /** UTILITY METHODS **/
     
     /**
