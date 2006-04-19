@@ -335,6 +335,14 @@ public class DateTest extends junit.framework.TestCase {
 		cal.clear();
 		cal.set(1999, Calendar.NOVEMBER, 22, 12, 52, 06);
 		assertTrue("Wrong parsed date 5", d.equals(cal.getTime()));
+        
+		try {
+			// Regression for HARMONY-259
+			Date.parse(null);
+			fail("Date.parse(null) should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
 	}
 
 	/**

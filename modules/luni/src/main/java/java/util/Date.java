@@ -361,6 +361,11 @@ public class Date implements Serializable, Cloneable, Comparable {
 	 * @deprecated use DateFormat
 	 */
 	public static long parse(String string) {
+
+		if (string == null) {
+			throw new IllegalArgumentException("string is null.");
+		}
+
 		char sign = 0;
 		int commentLevel = 0;
 		int offset = 0, length = string.length(), state = 0;
