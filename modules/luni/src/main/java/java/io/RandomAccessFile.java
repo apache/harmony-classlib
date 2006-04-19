@@ -294,6 +294,11 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 	 * @see #write(int)
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException {
+        //have to have four comparisions to not miss integer overflow cases
+        if (count < 0 || offset < 0 || offset > buffer.length || count > buffer.length - offset ) {
+            throw new IndexOutOfBoundsException();
+        }
+
 		openCheck();
         synchronized (repositionLock) {
             return (int) fileSystem.read(fd.descriptor, buffer, offset, count);
@@ -711,7 +716,12 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 	 * 
 	 */
 	public void write(byte[] buffer, int offset, int count) throws IOException {
-		openCheck();
+        //have to have four comparisions to not miss integer overflow cases
+        if (count < 0 || offset < 0 || offset > buffer.length || count > buffer.length - offset ) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        openCheck();
         synchronized (repositionLock) {
             fileSystem.write(fd.descriptor, buffer, offset, count);
         }
