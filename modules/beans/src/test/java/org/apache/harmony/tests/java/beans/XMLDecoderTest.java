@@ -56,56 +56,56 @@ public class XMLDecoderTest extends TestCase {
      * The test checks the code generation for XML from Test1.xml
      */
     public void testDecodeLinkedList() {
-        decode("/java/beans/xml/Test1.xml");
+        decode("xml/Test1.xml");
     }
 
     /**
      * The test checks the code generation for XML from Test2.xml
      */
     public void testDecodePrimitiveArrayByLength() {
-        decode("/java/beans/xml/Test2.xml");
+        decode("xml/Test2.xml");
     }
     
     /**
      * The test checks the code generation for XML from Test3.xml
      */
     public void testDecodePrimitiveArrayByElements() {
-        decode("/java/beans/xml/Test3.xml");
+        decode("xml/Test3.xml");
     }
     
     /**
      * The test checks the code generation for XML from Test4.xml
      */
     public void testDecodeObjectArrayByLength() {
-        decode("/java/beans/xml/Test4.xml");
+        decode("xml/Test4.xml");
     }
     
     /**
      * The test checks the code generation for XML from Test5.xml
      */
     public void testDecodeObjectArrayByElements() {
-        decode("/java/beans/xml/Test5.xml");
+        decode("xml/Test5.xml");
     }
     
     /**
      * The test checks the code generation for XML from Test6.xml
      */
     public void testDecodeReference() {
-        decode("/java/beans/xml/Test6.xml");
+        decode("xml/Test6.xml");
     }
     
     /**
      * The test checks the code generation for XML from Test7.xml
      */
     public void testDecodeStringArray() {
-        decode("/java/beans/xml/Test7.xml");
+        decode("xml/Test7.xml");
     }
 
     /*
      * The test checks the code generation for XML from MainTest.xml
      * 
     public void testMain() {
-        decode("/java/beans/xml/MainTest.xml");
+        decode("xml/MainTest.xml");
     }
     */
 
@@ -131,7 +131,7 @@ public class XMLDecoderTest extends TestCase {
         try {
             Introspector.setBeanInfoSearchPath(new String[] {});
             d = new XMLDecoder(new BufferedInputStream(
-                FileInputStream.class.getResourceAsStream(resourceName)));
+                                                       ClassLoader.getSystemClassLoader().getResourceAsStream(resourceName)));
             while(true) {
                 Object obj = d.readObject();
             }

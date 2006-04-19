@@ -88,6 +88,7 @@
 
 			<classpath>
 				<pathelement path="${hy.beans.bin.test}"/>
+				<pathelement path="${hy.beans.src.test.resources}"/>
 			</classpath>
                         <classpath location="../../../../build/tests" />
 
@@ -104,8 +105,6 @@
                                         <exclude name="**/PropertyChangeSupportTest.java" />
                                         <exclude name="**/SimpleBeanInfoTest.java" />
                                         <exclude name="**/VetoableChangeSupportTest.java" />
-                                        <exclude name="**/XMLDecoderTest.java" />
-                                        <exclude name="**/XMLEncoderTest.java" />
 
                                         <exclude name="tests/api/java/beans/BeanDescriptorTest.java" />
                                         <exclude name="tests/api/java/beans/CustomizedPersistenceDelegateTest.java" />
@@ -127,6 +126,8 @@
                                         <exclude name="tests/api/java/beans/PropertyVetoExceptionTest.java" />
                                         <exclude name="tests/api/java/beans/StatementTest.java" />
                                         <exclude name="tests/api/java/beans/VetoableChangeListenerProxyTest.java" />
+                                        <exclude name="tests/api/java/beans/XMLDecoderTest.java" />
+                                        <exclude name="tests/api/java/beans/XMLEncoderTest.java" />
                                         <exclude name="tests/api/java/beans/beancontext/BeanContextChildSupportTest.java" />
                                         <exclude name="tests/api/java/beans/beancontext/BeanContextMembershipEventTest.java" />
                                         <exclude name="tests/api/java/beans/beancontext/BeanContextServiceAvailableEventTest.java" />

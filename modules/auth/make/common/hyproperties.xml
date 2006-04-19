@@ -24,7 +24,7 @@
          </main>
          <test>
             <java location="src/test/java/common" />
-            <resources location="src/main/resources" />
+            <resources location="src/test/resources" />
          </test>
          <natives location="src/natives" />
       </src>

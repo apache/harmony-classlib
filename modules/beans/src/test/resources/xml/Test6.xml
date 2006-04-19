@@ -20,11 +20,11 @@ Author:  Maxim V. Berkultsev
 Version: $Revision: 1.1.6.3 $
 -->
 <java version="1.4.2_04" class="java.beans.XMLDecoder">
- <object id="SampleBean0" class="java.beans.auxiliary.SampleBean">
+ <object id="SampleBean0" class="org.apache.harmony.tests.java.beans.auxiliary.SampleBean">
   <void property="object">
-   <object id="SampleBean1" class="java.beans.auxiliary.SampleBean">
+   <object id="SampleBean1" class="org.apache.harmony.tests.java.beans.auxiliary.SampleBean">
     <void property="object">
-     <object id="SampleBean2" class="java.beans.auxiliary.SampleBean">
+     <object id="SampleBean2" class="org.apache.harmony.tests.java.beans.auxiliary.SampleBean">
       <void property="object">
        <object idref="SampleBean0"/>
       </void>
