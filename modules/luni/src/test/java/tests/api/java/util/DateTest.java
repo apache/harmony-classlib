@@ -100,6 +100,15 @@ public class DateTest extends junit.framework.TestCase {
 		Date d1 = new Date("January 1, 1970, 00:00:00 GMT"); // the epoch
 		Date d2 = new Date(0); // the epoch
 		assertTrue("Created incorrect date", d1.equals(d2));
+        
+		try {
+			// Regression for HARMONY-238
+			new Date(null);
+			fail("Constructor Date((String)null) should "
+				+ "throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
 	}
 
 	/**
