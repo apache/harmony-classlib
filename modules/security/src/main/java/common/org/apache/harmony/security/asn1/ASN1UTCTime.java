@@ -36,6 +36,26 @@ import java.util.TimeZone;
  */
 public class ASN1UTCTime extends ASN1Time {
 
+    /**
+     * Length for the pattern: YYMMDDhhmm'Z'
+     */
+    public static final int UTC_HM = 11;
+
+    /**
+     * Length for the pattern: YYMMDDhhmmss'Z'
+     */
+    public static final int UTC_HMS = 13;
+
+    /**
+     * Length for the pattern: YYMMDDhhmm('+'/'-')hhmm
+     */
+    public static final int UTC_LOCAL_HM = 15;
+
+    /**
+     * Length for the pattern: YYMMDDhhmmss('+'/'-')hhmm
+     */
+    public static final int UTC_LOCAL_HMS = 17;
+
     // default implementation
     private static final ASN1UTCTime ASN1 = new ASN1UTCTime();
 
@@ -62,12 +82,6 @@ public class ASN1UTCTime extends ASN1Time {
     public static ASN1UTCTime getInstance() {
         return ASN1;
     }
-
-    //
-    //
-    // Decode
-    //
-    //
 
     //
     //
