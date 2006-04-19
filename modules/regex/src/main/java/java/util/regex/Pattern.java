@@ -75,6 +75,8 @@ public final class Pattern implements Serializable {
      * @com.intel.drl.spec_ref
      */
     public static final int CANON_EQ = 1 << 7;
+    
+    static final int BACK_REF_NUMBER = 10;
 
     /**
      * Current <code>pattern</code> to be compiled;
@@ -87,6 +89,16 @@ public final class Pattern implements Serializable {
     private int flags = 0;
 
     private String pattern = null;
+    
+    /*
+     * All backreferences that may be used in pattern.
+     */
+    transient private FSet backRefs [] = new FSet [BACK_REF_NUMBER];
+    
+    /*
+     * Is true if backreferenced sets replacement is needed
+     */
+    transient private boolean needsBackRefReplacement = false;
 
     transient private int groupIndex = -1;
 
@@ -191,13 +203,13 @@ public final class Pattern implements Serializable {
         this.lexemes = new Lexer(regex, flags);
         this.flags = flags;
 
-        start = processExpression(-1, flags, null);
+        start = processExpression(-1, this.flags, null);
         if (!lexemes.isEmpty()) {
             throw new PatternSyntaxException(I18n
                     .getMessage("Trailing characters"), lexemes.toString(),
                     lexemes.getIndex());
         }
-
+        finalizeCompile();
         return this;
     }
 
@@ -227,106 +239,122 @@ public final class Pattern implements Serializable {
     /**
      * E->AE; E->S|E; E->S; A->(a|)+ E->S(|S)*
      */
-    private AbstractSet processExpression(int ch, int new_flags,
+    private AbstractSet processExpression(int ch, int newFlags,
             AbstractSet last) {
         ArrayList children = new ArrayList();
         AbstractSet child;
-        int safe_flags = flags;
+        int saveFlags = flags;
         FSet fSet;
+        boolean saveChangedFlags = false;
 
-        if (new_flags != flags) {
-            flags = new_flags;
-            lexemes.setFlags(flags);
+        if (newFlags != flags) {
+            flags = newFlags;
         }
 
         switch (ch) {
-        case Lexer.CHAR_NONCAP_GROUP: {
+        case Lexer.CHAR_NONCAP_GROUP:
             fSet = new NonCapFSet(++consCount);
             break;
-        }
-
+        
         case Lexer.CHAR_POS_LOOKAHEAD:
-        case Lexer.CHAR_NEG_LOOKAHEAD: {
+        	/* falls through */
+        	
+        case Lexer.CHAR_NEG_LOOKAHEAD:
             fSet = new AheadFSet();
             break;
-        }
+        
         case Lexer.CHAR_POS_LOOKBEHIND:
-        case Lexer.CHAR_NEG_LOOKBEHIND: {
+        	/* falls through */
+        	
+        case Lexer.CHAR_NEG_LOOKBEHIND: 
             fSet = new BehindFSet(++consCount);
             break;
-        }
-
-        case Lexer.CHAR_ATOMIC_GROUP: {
+        
+        case Lexer.CHAR_ATOMIC_GROUP: 
             fSet = new AtomicFSet(++consCount);
             break;
-        }
-
-        default: {
+        
+        default: 
             globalGroupIndex++;
             if (last == null) {
-                fSet = new FinalSet();
-                // expr = new StartSet();
+                
+            	// expr = new StartSet();
+            	fSet = new FinalSet();
+            	saveChangedFlags = true;
             } else {
-                fSet = new FSet(globalGroupIndex);
-                // expr = new JointSet(globalGroupIndex);
+                
+            	// expr = new JointSet(globalGroupIndex);
+            	fSet = new FSet(globalGroupIndex);         
             }
-        }
+            if (globalGroupIndex > -1 && globalGroupIndex < 10) {
+            	backRefs[globalGroupIndex] = fSet;
+            }
+            break;
         }
 
         do {
             if (lexemes.isLetter()
                     && lexemes.lookAhead() == Lexer.CHAR_VERTICAL_BAR) {
                 child = processAlternations(fSet);
+            } else if (lexemes.peek() == Lexer.CHAR_VERTICAL_BAR){
+                child = new EmptySet(fSet);
+                lexemes.next();
             } else {
                 child = processSubExpression(fSet);
-                if (lexemes.peek() == Lexer.CHAR_VERTICAL_BAR)
+                if (lexemes.peek() == Lexer.CHAR_VERTICAL_BAR) {
                     lexemes.next();
+                }
             }
-            if (child != null)
-                children.add(child);
-            // expr.addChild(child);
-        } while (!(lexemes.isEmpty() || lexemes.peek() == Lexer.CHAR_RIGHT_PARENTHESIS));
-
-        if (flags != safe_flags) {
-            flags = safe_flags;
-            lexemes.setFlags(flags);
+            if (child != null) {
+                
+                //expr.addChild(child);
+            	children.add(child);                
+            }
+        } while (!(lexemes.isEmpty() 
+        		   || (lexemes.peek() == Lexer.CHAR_RIGHT_PARENTHESIS)));
+        
+        if (lexemes.back() == Lexer.CHAR_VERTICAL_BAR) {
+        	children.add(new EmptySet(fSet));
+        }
+        
+        if (flags != saveFlags && !saveChangedFlags) {
+            flags = saveFlags;
+            lexemes.restoreFlags(flags);
         }
 
         switch (ch) {
-        case Lexer.CHAR_NONCAP_GROUP: {
+        case Lexer.CHAR_NONCAP_GROUP:
             return new NonCapJointSet(children, fSet);
-        }
-        case Lexer.CHAR_POS_LOOKAHEAD: {
-            return new PositiveLookAhead(children, fSet);
-        }
+        
+        case Lexer.CHAR_POS_LOOKAHEAD:
+            return new PositiveLookAhead(children, fSet);           
 
-        case Lexer.CHAR_NEG_LOOKAHEAD: {
+        case Lexer.CHAR_NEG_LOOKAHEAD: 
             return new NegativeLookAhead(children, fSet);
-        }
-
-        case Lexer.CHAR_POS_LOOKBEHIND: {
+        
+        case Lexer.CHAR_POS_LOOKBEHIND:
             return new PositiveLookBehind(children, fSet);
-        }
-
-        case Lexer.CHAR_NEG_LOOKBEHIND: {
+        
+        case Lexer.CHAR_NEG_LOOKBEHIND:
             return new NegativeLookBehind(children, fSet);
-        }
-
-        case Lexer.CHAR_ATOMIC_GROUP: {
+        
+        case Lexer.CHAR_ATOMIC_GROUP:
             return new AtomicJointSet(children, fSet);
-        }
-        default: {
+            
+        default: 
             switch (children.size()) {
             case 0:
                 return new EmptySet(fSet);
+                
             case 1:
                 return new SingleSet((AbstractSet) children.get(0), fSet);
+                
             default:
                 return new JointSet(children, fSet);
             }
         }
-        }
     }
+
 
     /**
      * T->a+
@@ -363,13 +391,22 @@ public final class Pattern implements Serializable {
         if (lexemes.isLetter() && !lexemes.isNextSpecial()
                 && Lexer.isLetter(lexemes.lookAhead())) {
             cur = processSequence(last);
+        } else if (lexemes.peek() == Lexer.CHAR_RIGHT_PARENTHESIS) {
+        	if (last instanceof FinalSet) {
+        	    throw new PatternSyntaxException(I18n
+        	      .getMessage("unmatched )"), lexemes.toString(), 
+        	         lexemes.getIndex());
+        	} else {
+        	      cur = new EmptySet(last);
+        	}
         } else {
             cur = processQuantifier(last);
         }
 
         if (!lexemes.isEmpty()
         // && !pattern.isQuantifier()
-                && lexemes.peek() != Lexer.CHAR_RIGHT_PARENTHESIS
+                && (lexemes.peek() != Lexer.CHAR_RIGHT_PARENTHESIS 
+                		|| last instanceof FinalSet)
                 && lexemes.peek() != Lexer.CHAR_VERTICAL_BAR) {
             AbstractSet next = processSubExpression(last);
             if (cur instanceof LeafQuantifierSet
@@ -406,8 +443,6 @@ public final class Pattern implements Serializable {
      */
     private AbstractSet processQuantifier(AbstractSet last) {
         AbstractSet term = processTerminal(last);
-        SpecialToken quantifier = null;
-
         int quant = lexemes.peek();
 
         if (term != null && !(term instanceof LeafSet)) {
@@ -578,24 +613,24 @@ public final class Pattern implements Serializable {
         do {
             ch = lexemes.peek();
             if ((ch & 0x8000ffff) == Lexer.CHAR_LEFT_PARENTHESIS) {
-                lexemes.next();
-                int new_flags = (ch & 0x00ff0000) >> 16;
-                ch = ch & 0xff00ffff;
-
-                if (ch == Lexer.CHAR_FLAGS) {
-                    flags = new_flags;
-                    lexemes.setFlags(new_flags);
-                } else {
-                    new_flags = (ch == Lexer.CHAR_NONCAP_GROUP) ? new_flags
-                            : flags;
-                    term = processExpression(ch, new_flags, last);
-                    if (lexemes.peek() != Lexer.CHAR_RIGHT_PARENTHESIS)
-                        throw new PatternSyntaxException(I18n
-                                .getMessage("unmatched ("), lexemes.toString(),
-                                lexemes.getIndex()-1);
-                    lexemes.next();
-                }
-
+            	 int newFlags;             	
+             	 lexemes.next();
+                 newFlags = (ch & 0x00ff0000) >> 16;
+                 ch = ch & 0xff00ffff;
+                 if (ch == Lexer.CHAR_FLAGS) {
+                     flags = newFlags;
+                 } else {
+                     newFlags = (ch == Lexer.CHAR_NONCAP_GROUP) 
+                                 ? newFlags
+                                 : flags;
+                     term = processExpression(ch, newFlags, last);
+                     if (lexemes.peek() != Lexer.CHAR_RIGHT_PARENTHESIS) {
+                         throw new PatternSyntaxException(I18n
+                                 .getMessage("unmatched ("), lexemes.toString(),
+                                 lexemes.getIndex());
+                     }
+                     lexemes.next();
+                 }
             } else
                 switch (ch) {
                 case Lexer.CHAR_LEFT_SQUARE_BRACKET: {
@@ -718,6 +753,8 @@ public final class Pattern implements Serializable {
                         } else {
                             term = new UCIBackReferenceSet(number, consCount);
                         }
+                        (backRefs [number]).isBackReferenced = true;
+                        needsBackRefReplacement = true;
                         break;
                     } else {
                         throw new PatternSyntaxException(I18n
@@ -733,6 +770,9 @@ public final class Pattern implements Serializable {
                         term = new RangeSet(cc);
                     } else if (!lexemes.isEmpty()) {
                         term = new CharSet((char) ch);
+                    } else {
+                    	term = new EmptySet(last);
+                        break;
                     }
                     lexemes.next();
                     break;
@@ -754,6 +794,16 @@ public final class Pattern implements Serializable {
                             term = new CharSet((char) ch);
                         }
                         lexemes.next();
+                    } else if (ch == Lexer.CHAR_VERTICAL_BAR) {
+                    	term = new EmptySet(last);
+                    } else if (ch == Lexer.CHAR_RIGHT_PARENTHESIS) {
+                        if (last instanceof FinalSet) {
+                        	throw new PatternSyntaxException(I18n
+                    				.getMessage("unmatched )"), lexemes.toString(), 
+                    		    	lexemes.getIndex());
+                        } else {
+                    	    term = new EmptySet(last);
+                        }
                     } else {
                         throw new PatternSyntaxException(I18n
                                 .getMessage("Dangling meta construction")
@@ -785,14 +835,12 @@ public final class Pattern implements Serializable {
         CharClass res = new CharClass(alt, hasFlag(Pattern.CASE_INSENSITIVE),
                 hasFlag(Pattern.UNICODE_CASE));
         int buffer = -1;
-        // TODO remove this one, being used for debug only
-        int ch = 0;
         boolean intersection = false;
         boolean notClosed = false;
         boolean firstInClass = true;
 
         while (!lexemes.isEmpty()
-                && (notClosed = (ch = lexemes.peek()) != Lexer.CHAR_RIGHT_SQUARE_BRACKET
+                && (notClosed = (lexemes.peek()) != Lexer.CHAR_RIGHT_SQUARE_BRACKET
                         || firstInClass)) {
             switch (lexemes.peek()) {
 
@@ -917,6 +965,21 @@ public final class Pattern implements Serializable {
         return compile(pattern, 0);
     }
 
+    /*
+     * This method do traverses of
+     * automata to finish compilation.
+     */
+    private void finalizeCompile() {
+    	
+    	/*
+    	 * Processing second pass
+    	 */    	
+    	if (needsBackRefReplacement) { //|| needsReason1 || needsReason2) {
+    		start.processSecondPass();
+    	}
+    	
+    }
+    
     /**
      * @com.intel.drl.spec_ref
      */

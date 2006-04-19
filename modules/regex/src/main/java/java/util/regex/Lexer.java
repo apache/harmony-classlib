@@ -121,8 +121,6 @@ class Lexer {
     // when in literal mode, this field will save the previous one
     private int saved_mode = 0;
 
-    private int length = 0;
-
     // previous char read
     private int lookBack;
 
@@ -131,6 +129,9 @@ class Lexer {
 
     //next character
     private int lookAhead;
+    
+    //index of last char in pattern plus one
+    private int patternFullLength = 0;
 
     // cur special token
     private SpecialToken curST = null;
@@ -162,10 +163,11 @@ class Lexer {
         }
 
         this.pattern = new char[pattern.length() + 2];
-        System.arraycopy(pattern.toCharArray(), 0, this.pattern, 0, pattern
-                .length());
-        this.pattern[this.pattern.length - 1] = this.pattern[this.pattern.length - 2] = 0;
-
+        System.arraycopy(pattern.toCharArray(), 0, this.pattern, 0, 
+ 		       pattern.length());
+        this.pattern[this.pattern.length - 1] = 0;
+        this.pattern[this.pattern.length - 2] = 0;        
+        patternFullLength = this.pattern.length;
         this.flags = flags;
         // read first two tokens;
         movePointer();
@@ -200,13 +202,20 @@ class Lexer {
         }
     }
 
-    public void setFlags(int flags) {
-        if (((this.flags ^ flags) & Pattern.COMMENTS) != 0) {
-            this.flags = flags;
-            reread();
-        }
-
+    /**
+     * Restores flags for Lexer
+     * 
+     * @param flags
+     */
+    public void restoreFlags(int flags) {
         this.flags = flags;
+    	lookAhead = ch;
+    	lookAheadST = curST;
+    	        
+    	//curToc is an index of closing bracket )
+    	index = curToc + 1;
+        lookAheadToc = curToc;        
+    	movePointer();
     }
 
     public SpecialToken peekSpecial() {
@@ -310,9 +319,10 @@ class Lexer {
 
                     switch (lookAhead) {
                     case 'E': {
-                        mode = saved_mode;
-                        lookAhead = (index < pattern.length - 2) ? pattern[nextIndex()]
-                                : 0;
+                    	mode = saved_mode;
+                        lookAhead = (index <= pattern.length - 2) 
+                                    ? pattern[nextIndex()] 
+                                    : 0;
                         break;
                     }
 
@@ -541,16 +551,26 @@ class Lexer {
                                 }
                                 default: {
                                     lookAhead = readFlags();
-                                    if (lookAhead >= 128) {
-                                        lookAhead = (lookAhead & 0x7f) << 16;
-                                        flags = lookAhead;
+                                    
+                                    /*
+                                     * We return res = res | 1 << 8
+                                     * from readFlags() if we read
+                                     * (?idmsux-idmsux)
+                                     */
+                                    if (lookAhead >= 256) {
+                                    	
+                                    	//Erase auxiliaury bit
+                                    	lookAhead = (lookAhead & 0xff);    
+                                    	flags = lookAhead;
+                                    	lookAhead = lookAhead << 16;
                                         lookAhead = CHAR_FLAGS | lookAhead;
                                     } else {
+                                    	flags = lookAhead;
                                         lookAhead = lookAhead << 16;
                                         lookAhead = CHAR_NONCAP_GROUP
-                                                | lookAhead;
+                                                    | lookAhead;
                                     }
-                                    break;
+                                    break;                                
                                 }
                                 }
                             } else {
@@ -737,7 +757,7 @@ class Lexer {
      * @return true if there are no more characters in the pattern.
      */
     public boolean isEmpty() {
-        return ch == 0 && lookAhead == 0 && !isSpecial();
+    	return ch == 0 && lookAhead == 0 && index == patternFullLength && !isSpecial();
     }
 
     /**
@@ -818,55 +838,72 @@ class Lexer {
         char ch;
         boolean pos = true;
         int res = flags;
-        int neg = 0;
+        
         while (index < pattern.length) {
             ch = pattern[index];
             switch (ch) {
-            case '-': {
-                if (!pos)
+            case '-':
+                if (!pos) {
                     throw new PatternSyntaxException("Illegal "
                             + "inline construct", this.toString(), index);
+                }
                 pos = false;
-            }
-
+                break; 
+                
             case 'i':
-                res = pos ? res | Pattern.CASE_INSENSITIVE : res
-                        ^ Pattern.CASE_INSENSITIVE & res;
+                res = pos 
+                      ? res | Pattern.CASE_INSENSITIVE 
+                      : (res ^ Pattern.CASE_INSENSITIVE) & res;
                 break;
+                
             case 'd':
-                res = pos ? res | Pattern.UNIX_LINES : res ^ Pattern.UNIX_LINES
-                        & res;
+                res = pos
+                      ? res | Pattern.UNIX_LINES 
+                	  : (res ^ Pattern.UNIX_LINES) & res;
                 break;
+                
             case 'm':
-                res = pos ? res | Pattern.MULTILINE : res ^ Pattern.MULTILINE
-                        & res;
+                res = pos 
+                      ? res | Pattern.MULTILINE 
+                      : (res ^ Pattern.MULTILINE) & res;
                 break;
+                
             case 's':
-                res = pos ? res | Pattern.DOTALL : res ^ Pattern.DOTALL & res;
+                res = pos 
+                      ? res | Pattern.DOTALL 
+                      : (res ^ Pattern.DOTALL) & res;
                 break;
+                
             case 'u':
-                res = pos ? res | Pattern.UNICODE_CASE : res
-                        ^ Pattern.UNICODE_CASE & res;
+                res = pos 
+                      ? res | Pattern.UNICODE_CASE 
+                      : (res ^ Pattern.UNICODE_CASE) & res;
                 break;
+                
             case 'x':
-                res = pos ? res | Pattern.COMMENTS : res ^ Pattern.COMMENTS
-                        & res;
+                res = pos 
+                      ? res | Pattern.COMMENTS 
+                      : (res ^ Pattern.COMMENTS) & res;
                 break;
+                
             case ':':
                 nextIndex();
                 return res;
+                
             case ')':
                 nextIndex();
-                return res | (1 << 7);
+                return res | (1 << 8);
+                
             default:
                 throw new PatternSyntaxException("Illegal inline construct",
-                        this.toString(), index);
+                                               this.toString(), index);
             }
             nextIndex();
         }
-        throw new PatternSyntaxException("Illegal inline construct", this
-                .toString(), index);
+        throw new PatternSyntaxException("Illegal inline construct", 
+        		                       this.toString(), index);
     }
+
 
     /**
      * Returns next character index to read and moves pointer to the next one.

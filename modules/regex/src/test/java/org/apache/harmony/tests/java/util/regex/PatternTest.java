@@ -152,17 +152,215 @@ public class PatternTest extends TestCase {
         //bug6544
 	}
 
-
 	public void testPattern() {
 	}
 
 	public void testFlags() {
+		String baseString;
+		String testString;
+		Pattern pat;
+		Matcher mat;
+		
+	    baseString = "((?i)|b)a";
+		testString = "A";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertFalse(mat.matches());
+	    
+	    baseString = "(?i)a|b";
+		testString = "A";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    	    
+	    baseString = "(?i)a|b";
+		testString = "B";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "c|(?i)a|b";
+		testString = "B";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "(?i)a|(?s)b";
+		testString = "B";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "(?i)a|(?-i)b";
+		testString = "B";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertFalse(mat.matches());
+	    
+	    baseString = "(?i)a|(?-i)c|b";
+		testString = "B";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertFalse(mat.matches());
+	    
+	    baseString = "(?i)a|(?-i)c|(?i)b";
+		testString = "B";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "(?i)a|(?-i)b";
+		testString = "A";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "((?i))a";
+		testString = "A";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertFalse(mat.matches());
+	    
+	    baseString = "|(?i)|a";
+		testString = "A";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "(?i)((?s)a.)";
+		testString = "A\n";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "(?i)((?-i)a)";
+		testString = "A";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertFalse(mat.matches());
+	    
+	    baseString = "(?i)(?s:a.)";
+		testString = "A\n";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "(?i)fgh(?s:aa)";
+		testString = "fghAA";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "(?i)((?-i))a";
+		testString = "A";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "abc(?i)d";
+		testString = "ABCD";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertFalse(mat.matches());
+	    
+		testString = "abcD";
+		mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    	    
+	    baseString = "a(?i)a(?-i)a(?i)a(?-i)a";
+		testString = "aAaAa";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    	   
+		testString = "aAAAa";		
+	    mat = pat.matcher(testString);
+	    assertFalse(mat.matches());	   
+}
+	
+	public void testFlagsMethod() {
+		String baseString;
+		Pattern pat;
+		
+		/*
+		 * These tests are for compatibility with RI only.
+		 * Logically we have to return only flags specified
+		 * during the compilation. For example
+		 * pat.flags() == 0 when we compile
+		 * Pattern pat = Pattern.compile("(?i)abc(?-i)");
+		 * but the whole expression is compiled in a case insensitive
+		 * manner. So there is little sense to do
+		 * calls to flags() now.
+		 */
+		baseString ="(?-i)";
+		pat = Pattern.compile(baseString);
+		
+		baseString = "(?idmsux)abc(?-i)vg(?-dmu)";
+		pat = Pattern.compile(baseString);
+		assertEquals(pat.flags(), Pattern.DOTALL | Pattern.COMMENTS);
+		
+		baseString = "(?idmsux)abc|(?-i)vg|(?-dmu)";
+		pat = Pattern.compile(baseString);
+		assertEquals(pat.flags(), Pattern.DOTALL | Pattern.COMMENTS);
+		
+		baseString = "(?is)a((?x)b.)";
+		pat = Pattern.compile(baseString);
+		assertEquals(pat.flags(), Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+		
+		baseString = "(?i)a((?-i))";
+		pat = Pattern.compile(baseString);
+		assertEquals(pat.flags(), Pattern.CASE_INSENSITIVE);
+		
+		baseString = "((?i)a)";
+		pat = Pattern.compile(baseString);
+		assertEquals(pat.flags(), 0);
+		
+		pat = Pattern.compile("(?is)abc");
+        assertEquals(pat.flags(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL); 
 	}
 
 	/*
 	 * Class under test for Pattern compile(String, int)
 	 */
 	public void testCompileStringint() {
+		
+		/* 
+		 * this tests are needed to verify that 
+		 * appropriate exceptions are thrown
+		 */
+		String pattern = "b)a";
+		try {
+		    Pattern pat = Pattern.compile(pattern);		
+		} catch (PatternSyntaxException e) {
+			System.out.println(e);
+		}
+		pattern = "bcde)a";
+		try {
+		    Pattern pat = Pattern.compile(pattern);		
+		} catch (PatternSyntaxException e) {
+			System.out.println(e);
+		}
+		pattern = "bbg())a";
+		try {
+		    Pattern pat = Pattern.compile(pattern);		
+		} catch (PatternSyntaxException e) {
+			System.out.println(e);
+		}
+		
+		pattern = "cdb(?i))a";		
+		try {
+		    Pattern pat = Pattern.compile(pattern);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		/*
+		 * this pattern doesn't match any string,
+		 * but should be compiled anyway
+		 */
+		pattern = "(b\\1)a";
+        Pattern pat = Pattern.compile(pattern);		
+		
 	}
 
 	/*
@@ -496,6 +694,9 @@ public class PatternTest extends TestCase {
         }
         
         assertEquals(3, k);
+        pat = Pattern.compile(".*(.)\\1");
+        mat = pat.matcher("saa");
+        assertTrue(mat.matches());
     }
     
     public void _testBackReferences1() {
@@ -614,7 +815,214 @@ public class PatternTest extends TestCase {
         assertFalse(pat.matcher("cde.log").matches());
         
     }
+      
+    public void _testCorrectReplacementBackreferencedJointSet() {
+        Pattern pat = Pattern.compile("ab(a)*\\1");
+        pat = Pattern.compile("abc(cd)fg");
+        pat = Pattern.compile("aba*cd");
+        pat = Pattern.compile("ab(a)*+cd");
+        pat = Pattern.compile("ab(a)*?cd");
+        pat = Pattern.compile("ab(a)+cd");
+        pat = Pattern.compile(".*(.)\\1");        
+        pat = Pattern.compile("ab((a)|c|d)e");
+        pat = Pattern.compile("abc((a(b))cd)");        
+        pat = Pattern.compile("ab(a)++cd");
+        pat = Pattern.compile("ab(a)?(c)d");
+        pat = Pattern.compile("ab(a)?+cd");
+        pat = Pattern.compile("ab(a)??cd");
+        pat = Pattern.compile("ab(a)??cd");
+        pat = Pattern.compile("ab(a){1,3}?(c)d");        	
+    }
+    
+    public void testCompilePatternWithTerminatorMark() {
+    	Pattern pat = Pattern.compile("a\u0000\u0000cd");
+    	Matcher mat = pat.matcher("a\u0000\u0000cd");
+    	assertTrue(mat.matches());
+    }
+    
+    public void testAlternations() {
+    	String baseString = "|a|bc";
+    	Pattern pat = Pattern.compile(baseString);
+    	Matcher mat = pat.matcher("");
+    	
+    	assertTrue(mat.matches());
+    	    	
+    	baseString = "a||bc";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "a|bc|";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("");
+    	assertTrue(mat.matches());
+    	    	
+      	baseString = "a|b|";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "a(|b|cd)e";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("ae");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "a(b||cd)e";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("ae");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "a(b|cd|)e";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("ae");
+    	assertTrue(mat.matches());
+    	    	
+    	baseString = "a(b|c|)e";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("ae");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "a(|)e";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("ae");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "|";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "a(?:|)e";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("ae");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "a||||bc";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("");
+    	assertTrue(mat.matches());
+    	
+    	baseString = "(?i-is)|a";
+    	pat = Pattern.compile(baseString);
+    	mat = pat.matcher("a");
+    	assertTrue(mat.matches());
+    }
+
+    public void testMatchWithGroups() {
+        String baseString 
+            = "jwkerhjwehrkwjehrkwjhrwkjehrjwkehrjkwhrkwehrkwhrkwrhwkhrwkjehr";        
+        String pattern = ".*(..).*\\1.*";
+        assertTrue(Pattern.compile(pattern).matcher(baseString)
+        		.matches());
         
+        baseString = "saa";
+        pattern = ".*(.)\\1";
+        assertTrue(Pattern.compile(pattern).matcher(baseString)
+        		.matches());
+        assertTrue(Pattern.compile(pattern).matcher(baseString)
+        		.find());        
+    }
+    
+    public void testSplitEmptyCharSequence() {
+	    String s1 = "";
+        String[] arr = s1.split(":");
+        assertEquals(arr.length, 1);
+    }
+      
+    public void testSplitEndsWithPattern() {
+        assertEquals(",,".split(",", 3).length, 3);
+ 		assertEquals(",,".split(",", 4).length, 3);
+ 		
+        assertEquals(Pattern.compile("o").split("boo:and:foo",5).length, 5);
+ 		assertEquals(Pattern.compile("b").split("ab", -1).length, 2);
+ 	}
+    
+    public void testCaseInsensitiveFlag() {
+        assertTrue(Pattern.matches("(?i-:AbC)", "ABC"));    	
+    }
+    
+    public void testEmptyGroups() {
+    	Pattern pat = Pattern.compile("ab(?>)cda"); 
+        Matcher mat = pat.matcher("abcda"); 
+        assertTrue(mat.matches());
+        
+        pat = Pattern.compile("ab()");
+        mat = pat.matcher("ab");
+        assertTrue(mat.matches());
+        
+        pat = Pattern.compile("abc(?:)(..)");
+        mat = pat.matcher("abcgf");
+        assertTrue(mat.matches());
+    }
+    public void testCompileNonCaptGroup() {
+    	boolean isCompiled = false;
+    	
+    	try {
+    	   Pattern pat = Pattern.compile("(?:)", Pattern.CANON_EQ);
+    	   pat = Pattern.compile("(?:)", Pattern.CANON_EQ | Pattern.DOTALL);
+    	   pat = Pattern.compile("(?:)", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE);
+    	   pat = Pattern.compile("(?:)", Pattern.CANON_EQ | Pattern.COMMENTS | Pattern.UNIX_LINES);
+    	   isCompiled = true;
+    	} catch (PatternSyntaxException e) {
+    		System.out.println(e);
+    	}
+    	assertTrue(isCompiled);
+    }
+
+    public void testEmbeddedFlags(){
+    	String baseString = "(?i)((?s)a)";
+        String testString = "A";
+        Pattern pat = Pattern.compile(baseString);
+        Matcher mat = pat.matcher(testString);
+        assertTrue(mat.matches());
+        
+        baseString = "(?x)(?i)(?s)(?d)a";
+		testString = "A";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "(?x)(?i)(?s)(?d)a.";
+		testString = "a\n";
+		pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "abc(?x:(?i)(?s)(?d)a.)";
+	    testString = "abcA\n";
+	    pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+	    
+	    baseString = "abc((?x)d)(?i)(?s)a";
+	    testString = "abcdA";
+	    pat = Pattern.compile(baseString);
+	    mat = pat.matcher(testString);
+	    assertTrue(mat.matches());
+    }
+    
+    public void testAltWithFlags() {
+        boolean isCompiled = false;
+    	
+    	try {
+    	   Pattern pat = Pattern.compile("|(?i-xi)|()");
+    	   isCompiled = true;
+    	} catch (PatternSyntaxException e) {
+    		System.out.println(e);
+    	}
+    	assertTrue(isCompiled);
+    }
+    
+    public void testRestoreFlagsAfterGroup() {
+    	String baseString = "abc((?x)d)   a";
+    	String testString = "abcd   a";
+    	Pattern pat = Pattern.compile(baseString);
+    	Matcher mat = pat.matcher(testString);
+        
+    	assertTrue(mat.matches());
+    }
+
+   
     public static void main(String[] args) {
         junit.textui.TestRunner.run(PatternTest.class);
     }

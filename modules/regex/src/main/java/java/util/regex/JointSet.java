@@ -96,4 +96,56 @@ class JointSet extends AbstractSet {
         return !(matchResult.getEnd(groupIndex) >= 0 && matchResult
                 .getStart(groupIndex) == matchResult.getEnd(groupIndex));
     }
+    
+    /**
+     * This method is used for traversing nodes after the 
+     * first stage of compilation.
+     */
+    public void processSecondPass() {
+    	this.isSecondPassVisited = true;
+    	
+    	if (fSet != null && !fSet.isSecondPassVisited) {
+    		    
+    		/*
+    	     * Add here code to do during the pass
+             */
+    	        
+   	        /*
+    	     * End code to do during the pass
+             */
+    		fSet.processSecondPass();
+    	}
+        
+    	if (children != null) {
+    		int childrenSize = children.size();
+    		
+    		for (int i = 0; i < childrenSize; i++) {
+    			AbstractSet child = (AbstractSet) children.get(i);
+    			
+    			/*
+        	     * Add here code to do during the pass
+                 */
+    			
+    			JointSet set = child.processBackRefReplacement();
+    			
+    			if (set != null) {
+    				child.isSecondPassVisited = true;
+    				children.remove(i);
+    				children.add(i, set);
+    			    child = (AbstractSet) set;
+    			}
+    		
+    			/*
+        	     * End code to do during the pass
+                 */
+    			if (!child.isSecondPassVisited) {
+    				child.processSecondPass();
+    			}
+    		}
+    	}
+    	
+    	if (next != null) {
+    		super.processSecondPass();
+    	}
+    }
 }

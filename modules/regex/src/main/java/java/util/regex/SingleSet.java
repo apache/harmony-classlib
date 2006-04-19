@@ -27,7 +27,7 @@ package java.util.regex;
  */
 class SingleSet extends JointSet {
     
-    private AbstractSet kid;
+    protected AbstractSet kid;
 
     public SingleSet(AbstractSet child, FSet fSet) {
         this.kid = child;
@@ -65,5 +65,63 @@ class SingleSet extends JointSet {
 
     public boolean first(AbstractSet set) {
         return kid.first(set);
+    }
+    
+    /**
+     * This method is used for replacement backreferenced
+     * sets.
+     */
+    public JointSet processBackRefReplacement() {
+        BackReferencedSingleSet set = new BackReferencedSingleSet(this);
+    	
+        /*
+         * We will store a reference to created BackReferencedSingleSet
+         * in next field. This is needed toprocess replacement
+         * of sets correctly since sometimes we cannot renew all references to
+         * detachable set in the current point of traverse. See
+         * QuantifierSet and AbstractSet processSecondPass() methods for
+         * more details.
+         */
+        next = set;
+        return set;
+    }
+    
+    /**
+     * This method is used for traversing nodes after the 
+     * first stage of compilation.
+     */
+    public void processSecondPass() {
+    	this.isSecondPassVisited = true;
+    	    
+        if (fSet != null && !fSet.isSecondPassVisited) {
+    		    
+  		   /*
+   	        * Add here code to do during the pass
+            */
+    	       
+    	   /*
+    	    * End code to do during the pass
+    	    */
+    	   fSet.processSecondPass();
+    	} 
+    	
+        if (kid != null && !kid.isSecondPassVisited) {
+        	
+           /*
+    	    * Add here code to do during the pass
+            */     	   
+           JointSet set = kid.processBackRefReplacement();
+        
+           if (set != null) {
+        	   kid.isSecondPassVisited = true;
+        	   kid = (AbstractSet) set;
+           }
+           
+           /*
+     	    * End code to do during the pass
+     	    */
+     	   
+           kid.processSecondPass();
+        }
     }
 }

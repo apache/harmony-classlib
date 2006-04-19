@@ -46,6 +46,8 @@ abstract class AbstractSet {
      * Counter for debugging purposes, represent unique node index;
      */
     static int counter = 1;
+    
+    protected boolean isSecondPassVisited = false;
 
     protected String index = new Integer(AbstractSet.counter++).toString();
 
@@ -192,5 +194,67 @@ abstract class AbstractSet {
      */
     public boolean first(AbstractSet set) {
         return true;
+    }
+    
+    /**
+     * This method is used for replacement backreferenced
+     * sets.
+     * 
+     * @param prev - node who references to this node 
+     * @return null if current node need not to be replaced
+     *         JointSet which is replacement of 
+     *         current node otherwise
+     */
+    public JointSet processBackRefReplacement() {
+        return null;
+    }
+    
+    /**
+     * This method is used for traversing nodes after the 
+     * first stage of compilation.
+     */
+    public void processSecondPass() {
+    	this.isSecondPassVisited = true;
+    	
+    	if (next != null) {
+    	    
+    		if (!next.isSecondPassVisited) {
+    		    
+    			/*
+    	         * Add here code to do during the pass
+    	         */
+    	        JointSet set = next.processBackRefReplacement();
+    	
+    	        if (set != null) {
+    	        	next.isSecondPassVisited = true;
+    	        	next =(AbstractSet) set;
+    	        }
+    	        
+    	        /*
+    	         * End code to do during the pass
+    	         */
+    		    next.processSecondPass();
+    	    } else {
+    	        
+    	    	/*
+    	    	 * We reach node through next but it is already traversed.
+    	    	 * You can see this situation for AltGroupQuantifierSet.next
+    	    	 * when we reach this node through 
+    	    	 * AltGroupQuantifierSet.innerset. ... .next 
+    	    	 */
+    	    	
+    	    	/*
+    	         * Add here code to do during the pass
+    	         */
+    	    	if (next instanceof SingleSet 
+    	    			&& ((FSet) ((JointSet) next).fSet).isBackReferenced) {
+    				next = next.next;
+    			}
+	
+    	    	/*
+    	         * End code to do during the pass
+    	         */
+    	    }
+    	}
     }
 }

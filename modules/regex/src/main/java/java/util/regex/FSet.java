@@ -29,6 +29,8 @@ class FSet extends AbstractSet {
     
     static PossessiveFSet posFSet = new PossessiveFSet();
 
+    boolean isBackReferenced = false;
+    
     private int groupIndex;
 
     public FSet(int groupIndex) {
