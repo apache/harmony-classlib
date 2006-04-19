@@ -24,6 +24,7 @@ package org.apache.harmony.security.asn1;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 /**
@@ -293,7 +294,75 @@ public class BerInputStream {
      * @throws IOException - if an I/O error occurs or the end of the stream is reached
      */
     public void readUTCTime() throws IOException {
-        throw new ASN1Exception("Not supported");
+
+        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
+            // It is a string type and it can be encoded as primitive or constructed.
+            throw new ASN1Exception("Decoding constructed ASN.1 UTCTime"
+                    + " type is not provided");
+        }
+
+        switch (length) {
+        case ASN1UTCTime.UTC_HM:
+        case ASN1UTCTime.UTC_HMS:
+            break;
+        case ASN1UTCTime.UTC_LOCAL_HM:
+        case ASN1UTCTime.UTC_LOCAL_HMS:
+            // FIXME only coordinated universal time formats are supported
+            throw new ASN1Exception(
+                    "ASN.1 UTCTime: local time format is not supported.");
+        default:
+            throw new ASN1Exception(
+                    "ASN.1 UTCTime: wrong length, identifier at ["
+                            + tagOffset + ']');
+        }
+
+        //FIXME: any other optimizations?
+        readContent();
+
+        // FIXME store string somewhare to allow a custom time type perform additional checks
+
+        // check syntax: the last char MUST be Z
+        if (buffer[offset - 1] != 'Z') {
+            throw new ASN1Exception("ASN.1 UTCTime wrongly encoded at ["
+                    + contentOffset + ']');
+        }
+
+        if (times == null) {
+            times = new int[7];
+        }
+
+        times[0] = strToInt(contentOffset, 2) + 1900; //year
+        if (Calendar.getInstance().get(Calendar.YEAR) - times[0] > 80) {
+            times[0] += 100;
+        }
+
+        times[1] = strToInt(contentOffset + 2, 2); //month
+        times[2] = strToInt(contentOffset + 4, 2); //day
+        times[3] = strToInt(contentOffset + 6, 2); //hour
+        times[4] = strToInt(contentOffset + 8, 2); //minute
+        
+        if (length == ASN1UTCTime.UTC_HMS) {
+            times[5] = strToInt(contentOffset + 10, 2); //second
+        }
+
+        //FIXME check all time values for valid numbers!!!
+    }
+
+    //TODO comment me
+    private int strToInt(int off, int count) throws ASN1Exception {
+
+        //FIXME works only with buffer
+
+        int c;
+        int result = 0;
+        for (int i = off, end = off + count; i < end; i++) {
+            c = buffer[i] - 48;
+            if (c < 0 || c > 9) {
+                throw new ASN1Exception("Time encoding has invalid char");
+            }
+            result = result * 10 + c;
+        }
+        return result;
     }
 
     /**

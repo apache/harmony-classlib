@@ -23,8 +23,6 @@ package org.apache.harmony.security.asn1;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
-
 
 /**
  * Decodes ASN.1 types encoded with DER (X.690)
@@ -148,40 +146,18 @@ public final class DerInputStream extends BerInputStream {
         if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
             // It is a string type and it can be encoded as primitive or constructed.
             throw new ASN1Exception(
-                    "DER: ASN.1 UTCTime type MUST have primitive encoding");
+                    "ASN.1 UTCTime: constructed identifier at [" + tagOffset
+                            + "]. Not valid for DER.");
         }
 
-        //FIXME it should check format and invoke BerInputStream
-        //FIXME: any other optimizations?
-        readContent();
-        String timeStr = new String(buffer, contentOffset, length);
-
-        // FIXME store string somewhare to allow a custom time type perform additional checks
-
-        // check syntax: MUST be YYMMDDHHMMSS'Z'
-        if (timeStr.length() != 13 || // invalid length 
-                timeStr.charAt(12) != 'Z') // the last char MUST be Z 
-        {
-            throw new ASN1Exception("ASN.1 UTCTime wrongly encoded at ["
-                    + contentOffset + "] ");
+        // check format: DER uses YYMMDDHHMMSS'Z' only
+        if (length != ASN1UTCTime.UTC_HMS) {
+            throw new ASN1Exception(
+                    "ASN.1 UTCTime: wrong format for DER, identifier at ["
+                            + tagOffset + ']');
         }
 
-        if (times == null) {
-            times = new int[7];
-        }
-
-        times[0] = ASN1Time.getTimeValue(timeStr, 0, 2) + 1900; //year
-        if (Calendar.getInstance().get(Calendar.YEAR) - times[0] > 80) {
-            times[0] += 100;
-        }
-
-        times[1] = ASN1Time.getTimeValue(timeStr, 2, 2); //month
-        times[2] = ASN1Time.getTimeValue(timeStr, 4, 2); //day
-        times[3] = ASN1Time.getTimeValue(timeStr, 6, 2); //hour
-        times[4] = ASN1Time.getTimeValue(timeStr, 8, 2); //minute
-        times[5] = ASN1Time.getTimeValue(timeStr, 10, 2); //second
-
-        //FIXME check all time values for valid numbers!!!
+        super.readUTCTime();
     }
 
     /**
