@@ -44,7 +44,7 @@
 	</target>
 
 
-	<target name="compile.tests">
+	<target name="compile.tests" depends="copy.test.resources">
 		<echo message="Compiling LUNI tests from ${hy.luni.src.test.java}" />
 
 		<mkdir dir="${hy.luni.bin.test}" />
@@ -61,7 +61,7 @@
 					<include name="**/*.jar" />
 				</fileset>
 			</bootclasspath>
-			<classpath location="../../../../build/tests" />
+			<classpath location="${hy.tests.support.bin}" />
 		</javac>
 	</target>
 
@@ -93,7 +93,7 @@
 
 			<classpath>
 				<pathelement path="${hy.luni.bin.test}" />
-				<pathelement path="../../../../build/tests" />
+				<pathelement path="${hy.tests.support.bin}" />
 			</classpath>
 
 			<formatter type="xml" />
@@ -180,5 +180,15 @@
 	<target name="copy.resources">
 		<!-- Nothing for LUNI -->
 	</target>
+	
+	<target name="copy.test.resources">
+		<mkdir dir="${hy.luni.bin.test}" />
+        <copy todir="${hy.luni.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.luni.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+	</target>	
+	
 </project>
 

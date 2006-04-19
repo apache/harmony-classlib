@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,12 @@
 
 package tests.api.java.lang;
 
+import tests.util.SerializationTester;
+
 public class IllegalArgumentExceptionTest extends junit.framework.TestCase {
 
+	private static final String SERIALIZATION_FILE_NAME = "serialization/java/lang/IllegalArgumentException.ser"; //$NON-NLS-1$
+	
 	class TestThread implements Runnable {
 		public void run() {
 			try {
@@ -59,6 +63,25 @@ public class IllegalArgumentExceptionTest extends junit.framework.TestCase {
 				ill.getMessage().equals("testing illArg exception"));
 	}
 
+	/**
+	 * @tests serialization/deserilazation.
+	 */
+	public void test_serialization() throws Exception {
+		IllegalArgumentException srcIllegalArgumentException = new IllegalArgumentException();
+		IllegalArgumentException destIllegalArgumentException = (IllegalArgumentException) SerializationTester
+				.getDeserilizedObject(srcIllegalArgumentException);
+	}
+
+	/**
+	 * @tests serialization/deserilazation compatibility with RI.
+	 */
+	public void test_serializationCompatibility() throws Exception {
+		IllegalArgumentException srcIllegalArgumentException = new IllegalArgumentException();
+		IllegalArgumentException destIllegalArgumentException = (IllegalArgumentException) SerializationTester
+				.readObject(srcIllegalArgumentException,
+						SERIALIZATION_FILE_NAME);
+	}
+	
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
