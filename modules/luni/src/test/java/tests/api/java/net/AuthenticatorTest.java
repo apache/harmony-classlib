@@ -16,6 +16,10 @@
 package tests.api.java.net;
 
 import java.net.Authenticator;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.net.Authenticator.RequestorType;
 
 import junit.framework.TestCase;
@@ -53,5 +57,56 @@ public class AuthenticatorTest extends TestCase {
         RequestorType[] rt = RequestorType.values();
         assertEquals(RequestorType.PROXY, rt[0]);
         assertEquals(RequestorType.SERVER, rt[1]);
+    }
+    
+    /**
+     * 
+     * @tests java.net.Authenticator#
+     * 		requestPasswordAuthentication_String_InetAddress_int_String_String_String_URL_Authenticator_RequestorType()
+     */
+    public void test_requestPasswordAuthentication_String_InetAddress_int_String_String_String_URL_Authenticator_RequestorType()
+            throws UnknownHostException, MalformedURLException {
+        MockAuthenticator mock = new MockAuthenticator();
+        URL url = new URL("http://127.0.0.1");
+        Authenticator.requestPasswordAuthentication("localhost", InetAddress
+                .getByName("127.0.0.1"), 80, "HTTP", "", "", url,
+                RequestorType.PROXY);
+        assertNull(mock.getRequestingURL());
+        assertNull(mock.getRequestorType());
+    }
+
+    /**
+     * 
+     * @tests java.net.Authenticator#getRequestingURL()
+     */
+    public void test_getRequestingURL() throws Exception {
+        MockAuthenticator mock = new MockAuthenticator();
+        assertNull(mock.getRequestingURL());
+    }
+
+    /**
+     * 
+     * @tests java.net.Authenticator#getRequestorType()
+     */
+    public void test_getRequestorType() throws Exception {
+        MockAuthenticator mock = new MockAuthenticator();
+        assertNull(mock.getRequestorType());
+    }
+
+    /*
+     * Mock Authernticator for test
+     */
+    class MockAuthenticator extends java.net.Authenticator {
+        public MockAuthenticator() {
+            super();
+        }
+
+        public URL getRequestingURL() {
+            return super.getRequestingURL();
+        }
+
+        public Authenticator.RequestorType getRequestorType() {
+            return super.getRequestorType();
+        }
     }
 }
