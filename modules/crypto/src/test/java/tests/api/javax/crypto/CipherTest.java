@@ -52,52 +52,41 @@ public class CipherTest extends junit.framework.TestCase {
 	 *        java.lang.String)
 	 */
 	public void test_getInstanceLjava_lang_StringLjava_lang_String() {
-		try {
-			Provider[] providers = Security.getProviders("Cipher.DES");
-			if (providers != null) {
-				for (int i = 0; i < providers.length; i++) {
-					Cipher cipher = Cipher.getInstance("DES", providers[i]
-							.getName());
-					assertNotNull("Cipher.getInstance() returned a null value",
-							cipher);
+        Provider[] providers = Security.getProviders("Cipher.DES");
+        if (providers != null) {
+            for (int i = 0; i < providers.length; i++) {
+                Cipher cipher = Cipher.getInstance("DES", providers[i]
+                        .getName());
+                assertNotNull("Cipher.getInstance() returned a null value",
+                        cipher);
 
-					// Exception case
-					try {
-						cipher = Cipher.getInstance("DoBeDoBeDo", providers[i]);
-						fail("Should have thrown an NoSuchAlgorithmException");
-					} catch (NoSuchAlgorithmException e) {
-						// Expected
-					} catch (Exception e) {
-						fail("Expected an NoSuchAlgorithmException but got a "
-								+ e);
-					}
-				}// end for
-			} else {
-				fail("No installed providers support Cipher.DES");
-			}
-		} catch (Exception e) {
-			fail("Unexpected exception finding cipher : " + e);
-		}
+                // Exception case
+                try {
+                    cipher = Cipher.getInstance("DoBeDoBeDo", providers[i]);
+                    fail("Should have thrown an NoSuchAlgorithmException");
+                } catch (NoSuchAlgorithmException e) {
+                    // Expected
+                }
+            }// end for
+        } else {
+            fail("No installed providers support Cipher.DES");
+        }
 
-		// Exception case
-		try {
-			Cipher.getInstance("DES", (String) null);
-			fail("Should have thrown an IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			// Expected
-		} catch (Exception e) {
-			fail("Expected an IllegalArgumentException but got a " + e);
-		}
+        // Exception case
+        try {
+            Cipher.getInstance("DES", (String) null);
+            fail("Should have thrown an IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
 
-		// Exception case
-		try {
-			Cipher.getInstance("DES", "IHaveNotBeenConfigured");
-			fail("Should have thrown an NoSuchProviderException");
-		} catch (NoSuchProviderException e) {
-			// Expected
-		} catch (Exception e) {
-			fail("Expected an NoSuchProviderException but got a " + e);
-		}
+        // Exception case
+        try {
+            Cipher.getInstance("DES", "IHaveNotBeenConfigured");
+            fail("Should have thrown an NoSuchProviderException");
+        } catch (NoSuchProviderException e) {
+            // Expected
+        }
 	}
 
 	/**
