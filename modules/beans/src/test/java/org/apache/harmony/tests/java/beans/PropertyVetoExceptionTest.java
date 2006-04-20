@@ -24,8 +24,8 @@ import junit.framework.TestCase;
 
 public class PropertyVetoExceptionTest extends TestCase {
 
-    public void testIntrospectionExceptionMessage() {
-
+    public void testPropertyVetoExceptionMessage() {
+        // Regression for HARMONY-235 (tracking the similar bug)
         PropertyChangeEvent event = new PropertyChangeEvent(new Beans(),
                 "propertyName", "oldValue", "newValue");
 
