@@ -15,7 +15,7 @@
  */
 /**
  * @author Elena Semukhina
- * @version $Revision: 1.6.6.2 $
+ * @version $Revision$
  */
 
 package org.apache.harmony.tests.java.math;
@@ -238,55 +238,6 @@ public class BigIntegerCompareTest extends TestCase {
         BigInteger aNumber = BigInteger.ZERO;
         BigInteger bNumber = BigInteger.ZERO;
         assertTrue(aNumber.compareTo(bNumber) == 0);
-    }
-
-    /**
-     * compareTo(Object obj).
-     * Verify throwing an exception if obj is not a BigInteger
-     */
-    public void testCompareToObjectException() {
-        byte aBytes[] = {12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91};
-        int aSign = 1;
-        BigInteger aNumber = new BigInteger(aSign, aBytes);
-        Object obj = new Object();
-        try {
-            int result = aNumber.compareTo(obj);
-            fail("ClassCastException has not been caught");
-        } catch (ClassCastException e) {
-            assertTrue("Improper exception class", e.getClass().getName().equals("java.lang.ClassCastException"));
-        }
-    }
-    
-    /**
-     * compareTo(Object obj).
-     * if obj is not a BigInteger, the exception should be thrown
-     */
-    public void testCompareToObject() {
-        byte aBytes[] = {10, 20, 30, 40, 50, 60, 70, 10, 20, 30};
-        byte bBytes[] = {12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91};
-        int aSign = 1;
-        int bSign = 1;        
-        BigInteger aNumber = new BigInteger(aSign, aBytes);
-        Object hello = (Object)new String("Hello, World");
-        try {
-            aNumber.compareTo(hello);
-            fail("ClassCastException has not been caught");
-        } catch (ClassCastException e) {
-        }
-    }
-
-    /**
-     * compareTo(Object obj).
-     * obj should be a BigInteger
-     */
-    public void testCompareToObjectBI() {
-        byte aBytes[] = {10, 20, 30, 40, 50, 60, 70, 10, 20, 30};
-        byte bBytes[] = {12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91};
-        int aSign = 1;
-        int bSign = 1;        
-        BigInteger aNumber = new BigInteger(aSign, aBytes);
-        Object bNumber = (Object)new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == -1);
     }
 
     /**

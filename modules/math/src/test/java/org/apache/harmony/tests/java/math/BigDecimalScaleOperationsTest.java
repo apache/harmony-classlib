@@ -15,14 +15,13 @@
  */
 /**
  * @author Elena Semukhina
- * @version $Revision: 1.4.6.2 $
+ * @version $Revision$
  */
 
 package org.apache.harmony.tests.java.math;
 
 import junit.framework.TestCase;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.math.*;
 
 /**
  * Class:  java.math.BigDecimal
@@ -237,6 +236,21 @@ public class BigDecimalScaleOperationsTest extends TestCase {
     }
     
     /**
+     * SetScale(int, RoundingMode)
+     */
+    public void testSetScaleIntRoundingMode() {
+        String a = "1231212478987482988429808779810457634781384756794987";
+        int aScale = 28;
+        int newScale = 18;
+        BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
+        BigDecimal result = aNumber.setScale(newScale, RoundingMode.HALF_EVEN);
+        String res = "123121247898748298842980.877981045763478138";
+        int resScale = 18;
+        assertEquals("incorrect value", res, result.toString());
+        assertEquals("incorrect scale", resScale, result.scale());
+    }
+    
+    /**
      * Move the decimal point to the left; the shift value is positive
      */
     public void testMovePointLeftPos() {
@@ -321,5 +335,16 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         } catch (ArithmeticException e) {
             assertTrue("Improper exception message", e.getMessage().equals("scale outside the range of a 32-bit integer"));
         }
+    }
+
+    /**
+     * precision()
+     */
+    public void testPrecision() {
+        String a = "12312124789874829887348723648726347429808779810457634781384756794987";
+        int aScale = 14;
+        BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
+        int prec = aNumber.precision();
+        assertEquals(68, prec);
     }
 }

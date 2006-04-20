@@ -237,27 +237,6 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.math.BigInteger#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		assertTrue("Smaller number returned >= 0",
-				one.compareTo((Object) two) < 0);
-		assertTrue("Larger number returned >= 0",
-				two.compareTo((Object) one) > 0);
-		assertTrue("Equal numbers did not return 0", one
-				.compareTo((Object) one) == 0);
-		assertTrue("Neg number messed things up", two.negate().compareTo(
-				(Object) one) < 0);
-		try {
-			one.compareTo("babelFish");
-		} catch (ClassCastException e) {
-			// Correct
-			return;
-		}
-		fail("Exception not thrown");
-	}
-
-	/**
 	 * @tests java.math.BigInteger#intValue()
 	 */
 	public void test_intValue() {

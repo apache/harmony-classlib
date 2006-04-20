@@ -15,7 +15,7 @@
  */
 /**
  * @author Elena Semukhina
- * @version $Revision: 1.4.4.2 $
+ * @version $Revision$
  */
 
 package org.apache.harmony.tests.java.math;
@@ -37,7 +37,7 @@ public class BigDecimalConvertTest extends TestCase {
         String a = "-123809648392384754573567356745735.63567890295784902768787678287E+21";
         BigDecimal aNumber = new BigDecimal(a);
         double result = -1.2380964839238476E53;
-        assertTrue("incorrect value", aNumber.doubleValue() == result);
+        assertEquals("incorrect value", result, aNumber.doubleValue(), 0);
     }
 
     /**
@@ -47,7 +47,7 @@ public class BigDecimalConvertTest extends TestCase {
         String a = "123809648392384754573567356745735.63567890295784902768787678287E+21";
         BigDecimal aNumber = new BigDecimal(a);
         double result = 1.2380964839238476E53;
-        assertTrue("incorrect value", aNumber.doubleValue() == result);
+        assertEquals("incorrect value", result, aNumber.doubleValue(), 0);
     }
 
     /**
@@ -57,7 +57,7 @@ public class BigDecimalConvertTest extends TestCase {
         String a = "123809648392384754573567356745735.63567890295784902768787678287E+400";
         BigDecimal aNumber = new BigDecimal(a);
         double result = Double.POSITIVE_INFINITY;
-        assertTrue("incorrect value", aNumber.doubleValue() == result);
+        assertEquals("incorrect value", result, aNumber.doubleValue(), 0);
     }
 
     /**
@@ -67,7 +67,7 @@ public class BigDecimalConvertTest extends TestCase {
         String a = "-123809648392384754573567356745735.63567890295784902768787678287E+400";
         BigDecimal aNumber = new BigDecimal(a);
         double result = Double.NEGATIVE_INFINITY;
-        assertTrue("incorrect value", aNumber.doubleValue() == result);
+        assertEquals("incorrect value", result, aNumber.doubleValue(), 0);
     }
 
     /**
@@ -195,6 +195,34 @@ public class BigDecimalConvertTest extends TestCase {
     }
 
     /**
+     * scaleByPowerOfTen(int n)
+     */
+    public void testScaleByPowerOfTen1() {
+        String a = "1231212478987482988429808779810457634781384756794987";
+        int aScale = 13;
+        BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
+        BigDecimal result = aNumber.scaleByPowerOfTen(10);
+        String res = "1231212478987482988429808779810457634781384756794.987";
+        int resScale = 3;
+        assertEquals("incorrect value", res, result.toString());
+        assertEquals("incorrect scale", resScale, result.scale());
+    }
+
+    /**
+     * scaleByPowerOfTen(int n)
+     */
+    public void testScaleByPowerOfTen2() {
+        String a = "1231212478987482988429808779810457634781384756794987";
+        int aScale = -13;
+        BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
+        BigDecimal result = aNumber.scaleByPowerOfTen(10);
+        String res = "1.231212478987482988429808779810457634781384756794987E+74";
+        int resScale = -23;
+        assertEquals("incorrect value", res, result.toString());
+        assertEquals("incorrect scale", resScale, result.scale());
+    }
+
+    /**
      * Convert a positive BigDecimal to BigInteger
      */
     public void testToBigIntegerPos1() {
@@ -272,9 +300,74 @@ public class BigDecimalConvertTest extends TestCase {
     }
 
     /**
-     * Convert a negative BigDecimal with a negative exponent 
-     * to a plain string representation;
-     * scale == 0.
+     * toBigIntegerExact()
+     */
+    public void testToBigIntegerExact1() {
+        String a = "-123809648392384754573567356745735.63567890295784902768787678287E+45";
+        BigDecimal aNumber = new BigDecimal(a);
+        String res = "-123809648392384754573567356745735635678902957849027687876782870000000000000000";
+        BigInteger result = aNumber.toBigIntegerExact();
+        assertEquals("incorrect value", res, result.toString());
+    }
+
+    /**
+     * toBigIntegerExact()
+     */
+    public void testToBigIntegerExactException() {
+        String a = "-123809648392384754573567356745735.63567890295784902768787678287E-10";
+        BigDecimal aNumber = new BigDecimal(a);
+        String res = "-123809648392384754573567356745735635678902957849027687876782870000000000000000";
+        try {
+            BigInteger result = aNumber.toBigIntegerExact();
+            fail("java.lang.ArithmeticException has not been thrown");
+        } catch (java.lang.ArithmeticException e) {
+            return;
+        }
+    }
+
+    /**
+     * Convert a positive BigDecimal to an engineering string representation
+     */
+    public void testToEngineeringStringPos() {
+        String a = "123809648392384754573567356745735.63567890295784902768787678287E-501";
+        BigDecimal aNumber = new BigDecimal(a);
+        String result = "123.80964839238475457356735674573563567890295784902768787678287E-471";
+        assertEquals("incorrect value", result, aNumber.toEngineeringString());
+    }
+
+    /**
+     * Convert a negative BigDecimal to an engineering string representation
+     */
+    public void testToEngineeringStringNeg() {
+        String a = "-123809648392384754573567356745735.63567890295784902768787678287E-501";
+        BigDecimal aNumber = new BigDecimal(a);
+        String result = "-123.80964839238475457356735674573563567890295784902768787678287E-471";
+        assertEquals("incorrect value", result, aNumber.toEngineeringString());
+    }
+
+    /**
+     * Convert a negative BigDecimal to an engineering string representation
+     */
+    public void testToEngineeringStringZeroPosExponent() {
+        String a = "0.0E+16";
+        BigDecimal aNumber = new BigDecimal(a);
+        String result = "0E+15";
+        assertEquals("incorrect value", result, aNumber.toEngineeringString());
+    }
+
+    /**
+     * Convert a negative BigDecimal to an engineering string representation
+     */
+    public void testToEngineeringStringZeroNegExponent() {
+        String a = "0.0E-16";
+        BigDecimal aNumber = new BigDecimal(a);
+        String result = "0.00E-15";
+        assertEquals("incorrect value", result, aNumber.toEngineeringString());
+    }
+
+    /**
+     * Convert a negative BigDecimal with a negative exponent to a plain string
+     * representation; scale == 0.
      */
      public void testToPlainStringNegNegExp() {
         String a = "-123809648392384754573567356745735.63567890295784902768787678287E-100";
@@ -393,7 +486,7 @@ public class BigDecimalConvertTest extends TestCase {
     }
 
     /**
-     * Create a BigDecimal from a negative long value; scale == 0
+     * Create a BigDecimal from a negative long value; scale is positive
      */
     public void testValueOfPosScalePos() {
         long a = 98374823947823578L;
@@ -404,7 +497,7 @@ public class BigDecimalConvertTest extends TestCase {
     }
 
     /**
-     * Create a BigDecimal from a negative long value; scale == 0
+     * Create a BigDecimal from a negative long value; scale is negative
      */
     public void testValueOfPosScaleNeg() {
         long a = 98374823947823578L;
@@ -412,5 +505,66 @@ public class BigDecimalConvertTest extends TestCase {
         BigDecimal aNumber = BigDecimal.valueOf(a, scale);
         String result = "9.8374823947823578E+28";
         assertTrue("incorrect value", aNumber.toString().equals(result));
+    }
+
+    /**
+     * Create a BigDecimal from a negative double value
+     */
+    public void testValueOfDoubleNeg() {
+        double a = -65678765876567576.98788767;
+        BigDecimal result = BigDecimal.valueOf(a);
+        String res = "-65678765876567576";
+        int resScale = 0;
+        assertEquals("incorrect value", res, result.toString());
+        assertEquals("incorrect scale", resScale, result.scale());
+    }
+
+    /**
+     * Create a BigDecimal from a positive double value
+     */
+    public void testValueOfDoublePos1() {
+        double a = 65678765876567576.98788767;
+        BigDecimal result = BigDecimal.valueOf(a);
+        String res = "65678765876567576";
+        int resScale = 0;
+        assertEquals("incorrect value", res, result.toString());
+        assertEquals("incorrect scale", resScale, result.scale());
+    }
+
+    /**
+     * Create a BigDecimal from a positive double value
+     */
+    public void testValueOfDoublePos2() {
+        double a = 12321237576.98788767;
+        BigDecimal result = BigDecimal.valueOf(a);
+        String res = "12321237576.987888";
+        int resScale = 6;
+        assertEquals("incorrect value", res, result.toString());
+        assertEquals("incorrect scale", resScale, result.scale());
+    }
+
+    /**
+     * Create a BigDecimal from a positive double value
+     */
+    public void testValueOfDoublePos3() {
+        double a = 12321237576.9878838;
+        BigDecimal result = BigDecimal.valueOf(a);
+        String res = "12321237576.987885";
+        int resScale = 6;
+        assertEquals("incorrect value", res, result.toString());
+        assertEquals("incorrect scale", resScale, result.scale());
+    }
+
+    /**
+     * valueOf(Double.NaN)
+     */
+    public void testValueOfDoubleNaN() {
+        double a = Double.NaN;
+        try {
+            BigDecimal result = BigDecimal.valueOf(a);
+            fail("NumberFormatException has not been thrown for Double.NaN");
+        } catch (NumberFormatException e) {
+            return;
+        }
     }
 }

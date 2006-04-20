@@ -15,7 +15,7 @@
  */
 /**
  * @author Elena Semukhina
- * @version $Revision: 1.10.2.2 $
+ * @version $Revision$
  */
 
 package org.apache.harmony.tests.java.math;

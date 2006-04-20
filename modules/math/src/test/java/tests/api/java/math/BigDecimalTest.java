@@ -194,23 +194,6 @@ public class BigDecimalTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.math.BigDecimal#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		BigDecimal comp1 = new BigDecimal("23456");
-		BigDecimal comp2 = new BigDecimal(23456D);
-		assertTrue("23456 and 23456 should be equal",
-				comp1.compareTo(comp2) == 0);
-		int r = 0;
-		try {
-			comp1.compareTo("23456");
-		} catch (ClassCastException e) {
-			r = 1;
-		}
-		assertTrue("ClassCastException is not caught", r == 1);
-	}
-
-	/**
 	 * @tests java.math.BigDecimal#divide(java.math.BigDecimal, int)
 	 */
 	public void test_divideLjava_math_BigDecimalI() {

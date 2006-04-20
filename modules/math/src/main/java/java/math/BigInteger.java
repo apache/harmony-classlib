@@ -15,7 +15,7 @@
  */
 /**
  * @author Elena Semukhina
- * @version $Revision: 1.30.2.4 $
+ * @version $Revision$
  */
 
 package java.math;
@@ -31,11 +31,23 @@ import java.io.Serializable;
  * contain values that cannot be changed. Thus, most operations on the
  * BigInteger objects yield new instances of BigInteger.
  */
-public class BigInteger extends Number implements Comparable, Serializable {
+public class BigInteger extends Number implements Comparable<BigInteger>, Serializable {
     private static final int EQUALS = 0;
     private static final int GREATER = 1;
     private static final int LESS = -1;
     private static final BigInteger NEG_ONE = new BigInteger (-1, 1);
+
+    // bigRadices values are precomputed maximal powers of radices
+    // (integer numbers from 2 to 36) that fit into unsigned int (32 bits).
+    // bigRadices[0] = 2 ^ 31, bigRadices[8] = 10 ^ 9, etc.
+    private static final int bigRadices[] = {
+            -2147483648, 1162261467, 1073741824, 1220703125, -2118184960,
+            1977326743,1073741824, 387420489, 1000000000, 214358881, 429981696,
+            815730721, 1475789056, 170859375, 268435456, 410338673, 612220032,
+            893871739, 1280000000, 1801088541, 113379904, 148035889, 191102976,
+            244140625, 308915776, 387420489, 481890304, 594823321, 729000000,
+            887503681, 1073741824, 1291467969, 1544804416, 1838265625, 60466176
+    };
 
     // the first 54 prime numbers were copied from the published sources,
     // e.g. http://en.wikipedia.org/wiki/List_of_prime_numbers#The_first_500_prime_numbers
@@ -808,23 +820,20 @@ public class BigInteger extends Number implements Comparable, Serializable {
             bigRadixDigitsLength++;
         }
         digits = new int[bigRadixDigitsLength];
-        
-        // calculate "big radix": exp(radix, charsPerInt)
+        // get the maximal power of radix that fits in int
+        int bigRadix = bigRadices[radix - 2];
 
-        int bigRadix = radix;
-        for (int n = 1; n < charsPerInt; n++) {
-            bigRadix *= radix;
-        }
-        
         // parse an input string and accumulate the BigInteger's magnitude
 
         int digitIndex = 0; // index of digits array
-        int substrEnd = startChar + (topChars == 0 ? charsPerInt : topChars);
+        int substrEnd = startChar + ((topChars == 0) ? charsPerInt : topChars);
         int newDigit;
         for (int substrStart = startChar; substrStart < endChar; 
-                substrStart = substrEnd, substrEnd = substrStart + charsPerInt) {
-            int bigRadixDigit = Integer.parseInt(stringValue.substring(
-                    substrStart, substrEnd), radix);
+                substrStart = substrEnd, 
+                substrEnd = substrStart + charsPerInt) {
+            int bigRadixDigit = 
+                Integer.parseInt(stringValue.substring(substrStart, substrEnd),
+                                 radix);
             newDigit = multiplyByInt(digits, digitIndex, bigRadix);
             newDigit += addIntToArray(digits, digitIndex, bigRadixDigit);
             digits[digitIndex++] = newDigit;
@@ -1176,27 +1185,6 @@ public class BigInteger extends Number implements Comparable, Serializable {
             return -that.sign;
         }
         return this.sign;
-    }
-
-    /**
-     * Answers an integer indicating the relative positions of the receiver and
-     * the argument in the natural order of elements of the receiver's class.
-     * 
-     * @return int which should be <0 if the receiver should sort before the
-     *         argument, 0 if the receiver should sort in the same position as
-     *         the argument, and >0 if the receiver should sort after the
-     *         argument.
-     * @param obj
-     *            Object an object to compare the receiver to
-     * @exception ClassCastException
-     *                if the argument can not be converted into something
-     *                comparable with the receiver.
-     */
-    public int compareTo(Object obj) {
-        if (obj instanceof BigInteger) {
-            return (this.compareTo((BigInteger)obj));
-        }
-        throw new ClassCastException();
     }
 
     /**
@@ -2333,42 +2321,36 @@ public class BigInteger extends Number implements Comparable, Serializable {
         }
         double bitsForRadixDigit;
         if (radix == 10) {
-            bitsForRadixDigit = 3.321928094887362; // precomputed
+            bitsForRadixDigit = 3.3219280948873626;
         } else {
             bitsForRadixDigit = Math.log(radix) / Math.log(2);
         }
-        int resLengthInChars = (int)(abs().bitLength() / 
-                bitsForRadixDigit + (sign == -1 ? 1 : 0));
-        StringBuffer result = new StringBuffer(resLengthInChars);
-        int resDigit = -1;
-        if (radix == 16) {
-            for (int i = 0; i < numberLength; i++) {
-                for (int j = 0; j < 8; j++) {
-                    resDigit = digits[i] >> (4 * j) & 0xf;
-                    result.insert(0, Character.forDigit(resDigit, 16));
-                }
-            }
-        } else {
+        int resLengthInChars = (int)(abs().bitLength() / bitsForRadixDigit
+                               + ((sign == -1) ? 1 : 0)) + 1;
+        char result[] = new char[resLengthInChars];
+        int currentChar = resLengthInChars;
+        int resDigit;
+        if (radix != 16) {
             int temp[] = new int[numberLength];
             System.arraycopy(digits, 0, temp, 0, numberLength);
             int tempLen = numberLength;
             int charsPerInt = getCharsPerInt(radix);
-            int bigRadix = 1;
             int i;
-            // compute the maximal power of radix that fits in int
-            for (i = 1; i < charsPerInt; i++) {
-                bigRadix *= radix;
-            }
+            // get the maximal power of radix that fits in int
+            int bigRadix = bigRadices[radix - 2];
             while (true) {
                 // divide the array of digits by bigRadix and convert remainders
-                // to String representation concatenating them in a StringBuffer
+                // to characters collecting them in the char array
                 resDigit = divideArrayByInt(temp, temp, tempLen, bigRadix);
-                String res = Integer.toString(resDigit, radix);
-                result.insert(0, res);
-                int delta = charsPerInt - res.length() - 1;
-                for (i = 0; i < delta; i++) {
-                    result.insert(0, '0');
-                }                
+                int previous = currentChar;
+                do {
+                    result[--currentChar] = 
+                        Character.forDigit(resDigit % radix, radix);
+                } while (((resDigit /= radix) != 0) && (currentChar != 0));
+                int delta = charsPerInt - previous + currentChar;
+                for (i = 0; i < delta && currentChar > 0; i++) {
+                    result[--currentChar] = '0';
+                }
                 for (i = tempLen - 1; i > 0 && temp[i] == 0; i--) {
                     ;
                 }
@@ -2377,14 +2359,22 @@ public class BigInteger extends Number implements Comparable, Serializable {
                     break;
                 }
             }
+        } else {
+            // radix == 16
+            for (int i = 0; i < numberLength; i++) {
+                for (int j = 0; j < 8 && currentChar > 0; j++) {
+                    resDigit = digits[i] >> (4 * j) & 0xf;
+                    result[--currentChar] = Character.forDigit(resDigit, 16);
+                }
+            }
         }
-        while (result.charAt(0) == '0') {
-            result.deleteCharAt(0);
+        while (result[currentChar] == '0') {
+            currentChar++;
         }
         if (sign == -1) {
-            result.insert(0, '-');
+            result[--currentChar] = '-';
         }
-        return result.toString();
+        return new String(result, currentChar, resLengthInChars - currentChar);
     }
 
     /**
