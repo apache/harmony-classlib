@@ -15,12 +15,13 @@
 
 package java.util;
 
-
 /**
  * Comparator is used to compare two objects to determine their ordering in
  * respect to each other.
+ * 
+ * @since 1.2
  */
-public interface Comparator {
+public interface Comparator<T> {
 	/**
 	 * Compare the two objects to determine the relative ordering.
 	 * 
@@ -34,7 +35,7 @@ public interface Comparator {
 	 * @exception ClassCastException
 	 *                when objects are not the correct type
 	 */
-	public int compare(Object object1, Object object2);
+	public int compare(T object1, T object2);
 
 	/**
 	 * Compares the argument to the receiver, and answers true if they represent

@@ -40,7 +40,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * 
  * @see StringBuffer
  */
-public final class String implements Serializable, Comparable, CharSequence {
+public final class String implements Serializable, Comparable<String>, CharSequence {
 	private static final long serialVersionUID = -6849794470754667710L;
 
 	/**
@@ -94,7 +94,7 @@ public final class String implements Serializable, Comparable, CharSequence {
 	 * CaseInsensitiveComparator compares Strings ignoring the case of the
 	 * characters.
 	 */
-	private static final class CaseInsensitiveComparator implements Comparator,
+	private static final class CaseInsensitiveComparator implements Comparator<String>,
 			Serializable {
 		private static final long serialVersionUID = 8575799808933029326L;
 
@@ -111,15 +111,15 @@ public final class String implements Serializable, Comparable, CharSequence {
 		 * @exception ClassCastException
 		 *                when objects are not the correct type
 		 */
-		public int compare(Object o1, Object o2) {
-			return ((String) o1).compareToIgnoreCase((String) o2);
+		public int compare(String o1, String o2) {
+			return o1.compareToIgnoreCase(o2);
 		}
 	}
 
 	/*
 	 * A Comparator which compares Strings ignoring the case of the characters.
 	 */
-	public static final Comparator CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
+	public static final Comparator<String> CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
 
 	private static final char[] ascii;
 
@@ -503,22 +503,6 @@ public final class String implements Serializable, Comparable, CharSequence {
 		if (0 <= index && index < count)
 			return value[offset + index];
 		throw new StringIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Compare the receiver to the specified Object to determine the relative
-	 * ordering.
-	 * 
-	 * @param object
-	 *            an Object
-	 * @return an int < 0 if this String is less than the specified String, 0 if
-	 *         they are equal, and > 0 if this String is greater
-	 * 
-	 * @throws ClassCastException
-	 *             when object is not a String
-	 */
-	public int compareTo(Object object) {
-		return compareTo((String) object);
 	}
 
 	/**

@@ -506,7 +506,7 @@ public class CompositeName implements Name {
             CompositeName he = (CompositeName) o;
             int r;
             for (int i = 0; i < elems.size() && i < he.elems.size(); i++) {
-                r = ((String) elems.get(i)).compareTo(he.elems.get(i));
+                r = ((String) elems.get(i)).compareTo((String)he.elems.get(i));
                 if (r != 0) {
                     return r;
                 }

@@ -181,23 +181,6 @@ public class StringTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.lang.String#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int java.lang.String.compareTo(java.lang.Object)
-		String s = "VV";
-		assertTrue("Comparison failed for same strings", s
-				.compareTo((Object) s) == 0);
-		try {
-			s.compareTo(new Object());
-		} catch (ClassCastException e) {
-			// Correct
-			return;
-		}
-		fail("Failed to throw exception when compared to non String");
-	}
-
-	/**
 	 * @tests java.lang.String#compareTo(java.lang.String)
 	 */
 	public void test_compareToLjava_lang_String() {
@@ -210,6 +193,12 @@ public class StringTest extends junit.framework.TestCase {
 				.compareTo("aaaaab") > 0);
 		assertTrue("Considered case to not be of importance", !("A"
 				.compareTo("a") == 0));
+        
+        try {
+            "fixture".compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
 	}
 
 	/**
@@ -244,6 +233,12 @@ public class StringTest extends junit.framework.TestCase {
 		} finally {
 			Locale.setDefault(defLocale);
 		}
+        
+        try {
+            "fixture".compareToIgnoreCase(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
 	}
 
 	/**
