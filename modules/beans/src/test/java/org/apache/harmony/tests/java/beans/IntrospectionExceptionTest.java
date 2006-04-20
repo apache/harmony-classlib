@@ -22,6 +22,7 @@ import java.beans.IntrospectionException;
 public class IntrospectionExceptionTest extends TestCase {
 
     public void testIntrospectionExceptionMessage() {
+        // Regression for HARMONY-235
         IntrospectionException e = new IntrospectionException("test message");
         assertEquals("test message", e.getMessage());
     }
