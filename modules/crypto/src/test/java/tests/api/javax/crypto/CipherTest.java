@@ -26,6 +26,7 @@ import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -242,7 +243,7 @@ public class CipherTest extends junit.framework.TestCase {
 
 		byte[] cipherIV = cipher.getIV();
 
-		assertTrue("IVs differ", bytesArraysAreEqual(cipherIV, iv));
+		assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
 	}
 
 	/**
@@ -293,7 +294,7 @@ public class CipherTest extends junit.framework.TestCase {
 
 		try {
 			byte[] cipherParmsEnc = cipher.getParameters().getEncoded("ASN.1");
-			assertTrue("Parameters differ", bytesArraysAreEqual(apEncoding,
+			assertTrue("Parameters differ", Arrays.equals(apEncoding,
 					cipherParmsEnc));
 		} catch (IOException e) {
 			fail("Parameter encoding problem");
@@ -411,7 +412,7 @@ public class CipherTest extends junit.framework.TestCase {
 
 		byte[] cipherIV = cipher.getIV();
 
-		assertTrue("IVs differ", bytesArraysAreEqual(cipherIV, iv));
+		assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
 	}
 
 	/**
@@ -457,7 +458,7 @@ public class CipherTest extends junit.framework.TestCase {
 
 		byte[] cipherIV = cipher.getIV();
 
-		assertTrue("IVs differ", bytesArraysAreEqual(cipherIV, iv));
+		assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
 	}
 
 	/**
@@ -504,9 +505,8 @@ public class CipherTest extends junit.framework.TestCase {
 
 			byte[] plaintextBytes = loadBytes("hyts_" + "des-ede3-cbc.test"
 					+ index + ".plaintext");
-			if (bytesArraysAreEqual(plaintextBytes, decipheredCipherText) == false) {
-				fail("Operation produced incorrect results");
-			}
+            assertTrue("Operation produced incorrect results", Arrays.equals(
+                    plaintextBytes, decipheredCipherText));
 		}// end for
 	}
 
@@ -552,9 +552,8 @@ public class CipherTest extends junit.framework.TestCase {
 
 			byte[] cipherText = loadBytes("hyts_" + "des-ede3-cbc.test"
 					+ index + ".cipherText");
-			if (!bytesArraysAreEqual(encryptedPlaintext, cipherText)) {
-				fail("Operation produced incorrect results");
-			}
+            assertTrue("Operation produced incorrect results", Arrays.equals(
+                    encryptedPlaintext, cipherText));
 		}// end for
 	}
 
@@ -583,17 +582,4 @@ public class CipherTest extends junit.framework.TestCase {
         assertNotNull("Failed to load resource: " + name, is);
         return is;
     }
-
-	private boolean bytesArraysAreEqual(byte[] arr1, byte[] arr2) {
-		if (arr1.length != arr2.length) {
-			return false;
-		}
-
-		for (int i = 0; i < arr1.length; i++) {
-			if (arr1[i] != arr2[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
 }
