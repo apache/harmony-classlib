@@ -26,6 +26,8 @@ package java.lang;
  * @author Nathan Beyer (Harmony)
  */
 public class TypeNotPresentException extends RuntimeException {
+	private static final long serialVersionUID = -5101214195716534496L;
+
     private String typeName;
 
     /**
