@@ -22,14 +22,14 @@ CFLAGS += -fpic -I$(SHARED)common -I../zlib -I../zip -I$(SHARED)fdlibm
 
 BUILDFILES = \
 	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \
-	$(SHAREDSUB)oos.o \
-	$(SHAREDSUB)nethelp.o \
+	$(SHAREDSUB)oos.o $(SHAREDSUB)nethelp.o \
 	$(SHAREDSUB)floatbits.o $(SHAREDSUB)ois.o \
-	helpers.o $(SHAREDSUB)math.o $(SHAREDSUB)luniglob.o $(SHAREDSUB)proxy.o \
+	helpers.o $(SHAREDSUB)math.o $(SHAREDSUB)luniglob.o \
+	$(SHAREDSUB)proxy.o \
+	$(SHAREDSUB)cbigint.o $(SHAREDSUB)dblparse.o $(SHAREDSUB)fltparse.o \
 	$(SHAREDSUB)netif.o $(SHAREDSUB)process.o $(SHAREDSUB)bigint.o \
 	$(SHAREDSUB)osc.o $(SHAREDSUB)socket.o $(SHAREDSUB)inetadds.o \
-	$(SHAREDSUB)filedesc.o \
-	$(SHAREDSUB)timezone.o \
+	$(SHAREDSUB)filedesc.o $(SHAREDSUB)timezone.o \
 	$(SHAREDSUB)OSFileSystem.o OSFileSystemLinux32.o \
 	OSMemory.o OSMemoryLinux32.o OSNetworkSystem.o OSNetworkSystemLinux.o
 

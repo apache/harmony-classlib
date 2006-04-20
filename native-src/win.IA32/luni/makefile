@@ -32,6 +32,7 @@ BUILDFILES = \
   $(SHAREDSUB)nethelp.obj $(SHAREDSUB)floatbits.obj \
   $(SHAREDSUB)ois.obj helpers.obj $(SHAREDSUB)math.obj \
   $(SHAREDSUB)luniglob.obj $(SHAREDSUB)proxy.obj $(SHAREDSUB)netif.obj \
+  $(SHAREDSUB)cbigint.obj $(SHAREDSUB)dblparse.obj $(SHAREDSUB)fltparse.obj \
   $(SHAREDSUB)process.obj $(SHAREDSUB)bigint.obj $(SHAREDSUB)osc.obj \
   $(SHAREDSUB)socket.obj $(SHAREDSUB)inetadds.obj \
   $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj \

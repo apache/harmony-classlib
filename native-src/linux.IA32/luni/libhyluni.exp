@@ -132,6 +132,9 @@ HYLUNI_0.1 {
 		Java_java_util_TimeZone_getCustomTimeZone;
 		JNI_OnLoad;
 		JNI_OnUnload;
+		Java_org_apache_harmony_luni_util_FloatingPointParser_parseDblImpl;
+		Java_org_apache_harmony_luni_util_FloatingPointParser_parseFltImpl;
+		Java_org_apache_harmony_luni_util_NumberConverter_bigIntDigitGeneratorInstImpl;
 		Java_org_apache_harmony_luni_platform_OSFileSystem_truncateImpl;
 		Java_org_apache_harmony_luni_platform_OSFileSystem_getPageSize;
 		Java_org_apache_harmony_luni_platform_OSFileSystem_writevImpl;
