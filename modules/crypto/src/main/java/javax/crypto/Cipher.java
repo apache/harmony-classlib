@@ -146,6 +146,11 @@ public class Cipher {
     public static final Cipher getInstance(String transformation,
             String provider) throws NoSuchAlgorithmException,
             NoSuchProviderException, NoSuchPaddingException {
+
+        if (provider == null) {
+            throw new IllegalArgumentException("provider is null");
+        }
+
         Provider p = Security.getProvider(provider);
         if (p == null) {
             throw new NoSuchProviderException("Provider " + provider
