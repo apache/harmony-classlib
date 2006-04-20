@@ -614,6 +614,9 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 	 *             occurs.
 	 */
 	public void seek(long pos) throws IOException {
+        if (pos < 0) {
+            throw new IOException("seek position is negative");
+        }
         openCheck();
         synchronized (repositionLock) {
             fileSystem.seek(fd.descriptor, pos, IFileSystem.SEEK_SET);
