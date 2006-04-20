@@ -475,117 +475,99 @@ public class CipherTest extends junit.framework.TestCase {
 	/**
 	 * @tests javax.crypto.Cipher#update(byte[], int, int)
 	 */
-	public void test_update$BII() {
-		try {
-			for (int index = 1; index < 4; index++) {
-				Cipher c = null;
-				try {
-					c = Cipher.getInstance("DESEDE/CBC/PKCS5Padding");
-				} catch (Exception e) {
-					fail("Caught unexpected exception : " + e);
-				}
+	public void test_update$BII() throws Exception {
+		for (int index = 1; index < 4; index++) {
+			Cipher c = Cipher.getInstance("DESEDE/CBC/PKCS5Padding");
 
-				byte[] keyMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
-						+ index + ".key");
-				DESedeKeySpec keySpec = new DESedeKeySpec(keyMaterial);
-				SecretKeyFactory skf = SecretKeyFactory.getInstance("DESEDE");
-				Key k = skf.generateSecret(keySpec);
+			byte[] keyMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
+					+ index + ".key");
+			DESedeKeySpec keySpec = new DESedeKeySpec(keyMaterial);
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("DESEDE");
+			Key k = skf.generateSecret(keySpec);
 
-				byte[] ivMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
-						+ index + ".iv");
-				IvParameterSpec iv = new IvParameterSpec(ivMaterial);
+			byte[] ivMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
+					+ index + ".iv");
+			IvParameterSpec iv = new IvParameterSpec(ivMaterial);
 
-				c.init(Cipher.DECRYPT_MODE, k, iv);
+			c.init(Cipher.DECRYPT_MODE, k, iv);
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				byte[] input = new byte[256];
-				String resPath = "hyts_" + "des-ede3-cbc.test" + index
-						+ ".ciphertext";
-				InputStream is = Support_Resources.getStream(resPath);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] input = new byte[256];
+			String resPath = "hyts_" + "des-ede3-cbc.test" + index
+					+ ".ciphertext";
+			InputStream is = Support_Resources.getStream(resPath);
 
-				int bytesRead = is.read(input, 0, 256);
-				while (bytesRead > 0) {
-					byte[] output = c.update(input, 0, bytesRead);
-					if (output != null) {
-						baos.write(output);
-					}
-					bytesRead = is.read(input, 0, 256);
-				}
-
-				byte[] output = c.doFinal();
+			int bytesRead = is.read(input, 0, 256);
+			while (bytesRead > 0) {
+				byte[] output = c.update(input, 0, bytesRead);
 				if (output != null) {
 					baos.write(output);
 				}
+				bytesRead = is.read(input, 0, 256);
+			}
 
-				byte[] decipheredCipherText = baos.toByteArray();
-				is.close();
+			byte[] output = c.doFinal();
+			if (output != null) {
+				baos.write(output);
+			}
 
-				byte[] plaintextBytes = loadBytes("hyts_" + "des-ede3-cbc.test"
-						+ index + ".plaintext");
-				if (bytesArraysAreEqual(plaintextBytes, decipheredCipherText) == false) {
-					fail("Operation produced incorrect results");
-				}
-			}// end for
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
-		}
+			byte[] decipheredCipherText = baos.toByteArray();
+			is.close();
+
+			byte[] plaintextBytes = loadBytes("hyts_" + "des-ede3-cbc.test"
+					+ index + ".plaintext");
+			if (bytesArraysAreEqual(plaintextBytes, decipheredCipherText) == false) {
+				fail("Operation produced incorrect results");
+			}
+		}// end for
 	}
 
 	/**
 	 * @tests javax.crypto.Cipher#doFinal()
 	 */
-	public void test_doFinal() {
-		try {
-			for (int index = 1; index < 4; index++) {
-				Cipher c = null;
-				try {
-					c = Cipher.getInstance("DESEDE/CBC/PKCS5Padding");
-				} catch (Exception e) {
-					fail("Caught unexpected exception : " + e);
-				}
+	public void test_doFinal() throws Exception {
+		for (int index = 1; index < 4; index++) {
+			Cipher c = Cipher.getInstance("DESEDE/CBC/PKCS5Padding");
 
-				byte[] keyMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
-						+ index + ".key");
-				DESedeKeySpec keySpec = new DESedeKeySpec(keyMaterial);
-				SecretKeyFactory skf = SecretKeyFactory.getInstance("DESEDE");
-				Key k = skf.generateSecret(keySpec);
+			byte[] keyMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
+					+ index + ".key");
+			DESedeKeySpec keySpec = new DESedeKeySpec(keyMaterial);
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("DESEDE");
+			Key k = skf.generateSecret(keySpec);
 
-				byte[] ivMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
-						+ index + ".iv");
-				IvParameterSpec iv = new IvParameterSpec(ivMaterial);
+			byte[] ivMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
+					+ index + ".iv");
+			IvParameterSpec iv = new IvParameterSpec(ivMaterial);
 
-				c.init(Cipher.ENCRYPT_MODE, k, iv);
+			c.init(Cipher.ENCRYPT_MODE, k, iv);
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				byte[] input = new byte[256];
-				String resPath = "hyts_" + "des-ede3-cbc.test" + index
-						+ ".plaintext";
-				InputStream is = Support_Resources.getStream(resPath);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] input = new byte[256];
+			String resPath = "hyts_" + "des-ede3-cbc.test" + index
+					+ ".plaintext";
+			InputStream is = Support_Resources.getStream(resPath);
 
-				int bytesRead = is.read(input, 0, 256);
-				while (bytesRead > 0) {
-					byte[] output = c.update(input, 0, bytesRead);
-					if (output != null) {
-						baos.write(output);
-					}
-					bytesRead = is.read(input, 0, 256);
-				}
-				byte[] output = c.doFinal();
+			int bytesRead = is.read(input, 0, 256);
+			while (bytesRead > 0) {
+				byte[] output = c.update(input, 0, bytesRead);
 				if (output != null) {
 					baos.write(output);
 				}
-				byte[] encryptedPlaintext = baos.toByteArray();
-				is.close();
+				bytesRead = is.read(input, 0, 256);
+			}
+			byte[] output = c.doFinal();
+			if (output != null) {
+				baos.write(output);
+			}
+			byte[] encryptedPlaintext = baos.toByteArray();
+			is.close();
 
-				byte[] cipherText = loadBytes("hyts_" + "des-ede3-cbc.test"
-						+ index + ".cipherText");
-				if (!bytesArraysAreEqual(encryptedPlaintext, cipherText)) {
-					fail("Operation produced incorrect results");
-				}
-			}// end for
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
-		}
+			byte[] cipherText = loadBytes("hyts_" + "des-ede3-cbc.test"
+					+ index + ".cipherText");
+			if (!bytesArraysAreEqual(encryptedPlaintext, cipherText)) {
+				fail("Operation produced incorrect results");
+			}
+		}// end for
 	}
 
 	private byte[] loadBytes(String resPath) {
