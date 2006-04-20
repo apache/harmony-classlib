@@ -7,6 +7,7 @@
 	<classpathentry output="bin/test" kind="src" path="src/test/java/win"/>
 	<classpathentry output="bin/test" kind="src" path="src/test/java/linux"/>
 	<classpathentry output="bin/test" kind="src" path="src/test/java/common"/>
+	<classpathentry output="bin/test" kind="src" path="src/test/resources"/>
 	<classpathentry kind="src" path="src/main/java/linux"/>
 	<classpathentry kind="src" path="src/main/java/win"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
