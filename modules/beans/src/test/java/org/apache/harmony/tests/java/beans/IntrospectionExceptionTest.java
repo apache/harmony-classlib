@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *  Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,23 +14,16 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
-package java.beans;
+package org.apache.harmony.tests.java.beans;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
+import junit.framework.TestCase;
+import java.beans.IntrospectionException;
 
-public class IntrospectionException extends Exception {
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public IntrospectionException(String message) {
-        super(message);
+public class IntrospectionExceptionTest extends TestCase {
+
+    public void testIntrospectionExceptionMessage() {
+        IntrospectionException e = new IntrospectionException("test message");
+        assertEquals("test message", e.getMessage());
     }
+
 }
