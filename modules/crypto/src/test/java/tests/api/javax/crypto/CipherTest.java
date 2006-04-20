@@ -51,7 +51,8 @@ public class CipherTest extends junit.framework.TestCase {
 	 * @tests javax.crypto.Cipher#getInstance(java.lang.String,
 	 *        java.lang.String)
 	 */
-	public void test_getInstanceLjava_lang_StringLjava_lang_String() {
+	public void test_getInstanceLjava_lang_StringLjava_lang_String()
+            throws Exception {
         Provider[] providers = Security.getProviders("Cipher.DES");
         if (providers != null) {
             for (int i = 0; i < providers.length; i++) {
