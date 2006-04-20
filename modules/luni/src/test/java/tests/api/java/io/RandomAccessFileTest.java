@@ -567,82 +567,97 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.close();
     }
 
-    //regression test for HARMONY-377
-    public void test_readBII() throws IOException {
-        File file = File.createTempFile("xxx", "yyy");
-        file.deleteOnExit();
-        RandomAccessFile rfl = new RandomAccessFile(file, "rw");
+    /**
+     * @tests java.io.RandomAccessFile#seek(long)
+     * 
+     * Regression for HARMONY-374
+     */
+    public void test_seekI() throws IOException {
+        RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "rw");
         try {
-            rfl.read(new byte[1], -1, 1);
-            fail("IndexOutOfBoundsException must be thrown if off <0");
-        } catch (IndexOutOfBoundsException e) {
-            // expected
+            raf.seek(-1);
+            fail("IOException must be thrown if pos < 0");
+        } catch (IOException e) {
         }
-
-        try {
-            rfl.read(new byte[1], 0, -1);
-            fail("IndexOutOfBoundsException must be thrown if len <0");
-        } catch (IndexOutOfBoundsException e) {
-            // expected 
-        }
-
-        try {
-            rfl.read(new byte[1], 0, 5);
-            fail("IndexOutOfBoundsException must be thrown if off+len > b.lengh");
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-
-        try {
-            rfl.read(new byte[10], Integer.MAX_VALUE, 5);
-            fail("IndexOutOfBoundsException expected");
-        } catch (IndexOutOfBoundsException e) {
-        }
-
-        try {
-            rfl.read(new byte[10], 5, Integer.MAX_VALUE);
-            fail("IndexOutOfBoundsException expected");
-        } catch (IndexOutOfBoundsException e) {
-        }
-
-        rfl.close();
     }
 
-    //regression test for HARMONY-377
-    public void test_writeBII() throws IOException {
-        File file = File.createTempFile("xxx", "yyy");
-        file.deleteOnExit();
-        RandomAccessFile rfl = new RandomAccessFile(file, "rw");
+    /**
+     * @tests java.io.RandomAccessFile#read(byte[], int, int)
+     * 
+     * Regression for HARMONY-377
+     */
+    public void test_readBII() throws IOException {
+        RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "rw");
         try {
-            rfl.write(new byte[1], -1, 1);
+            raf.read(new byte[1], -1, 1);
             fail("IndexOutOfBoundsException must be thrown if off <0");
         } catch (IndexOutOfBoundsException e) {
         }
 
         try {
-            rfl.write(new byte[1], 0, -1);
+            raf.read(new byte[1], 0, -1);
             fail("IndexOutOfBoundsException must be thrown if len <0");
         } catch (IndexOutOfBoundsException e) {
         }
 
         try {
-            rfl.write(new byte[1], 0, 5);
+            raf.read(new byte[1], 0, 5);
             fail("IndexOutOfBoundsException must be thrown if off+len > b.lengh");
         } catch (IndexOutOfBoundsException e) {
         }
 
         try {
-            rfl.write(new byte[10], Integer.MAX_VALUE, 5);
+            raf.read(new byte[10], Integer.MAX_VALUE, 5);
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
         }
 
         try {
-            rfl.write(new byte[10], 5, Integer.MAX_VALUE);
+            raf.read(new byte[10], 5, Integer.MAX_VALUE);
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
         }
-        rfl.close();
+
+        raf.close();
+    }
+
+    /**
+     * @tests java.io.RandomAccessFile#write(byte[], int, int)
+     * 
+     * Regression for HARMONY-377
+     */
+    public void test_writeBII() throws IOException {
+        RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "rw");
+        try {
+            raf.write(new byte[1], -1, 1);
+            fail("IndexOutOfBoundsException must be thrown if off <0");
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        try {
+            raf.write(new byte[1], 0, -1);
+            fail("IndexOutOfBoundsException must be thrown if len <0");
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        try {
+            raf.write(new byte[1], 0, 5);
+            fail("IndexOutOfBoundsException must be thrown if off+len > b.lengh");
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        try {
+            raf.write(new byte[10], Integer.MAX_VALUE, 5);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        try {
+            raf.write(new byte[10], 5, Integer.MAX_VALUE);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        raf.close();
     }
 
     /**
