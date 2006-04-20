@@ -17,22 +17,22 @@
 
 <project name="LUNI build script for Windows x86">
 
-	<property name="libpr" value=""/>
-	<property name="libsf" value=".dll"/>
+    <property name="libpr" value="" />
+    <property name="libsf" value=".dll" />
 
-	<property name="cPath" value="${PATH};${env.Path}" />
-	<property name="cINCLUDE" value="${env.INCLUDE}" />
-	<property name="cLIB" value="${LIB};${env.lib};${env.LIB}" />
-	<property name="src.java" value="${src.win.java}" />
-	<property name="compile.native.tail" value="windows" />
+    <property name="cPath" value="${PATH};${env.Path}" />
+    <property name="cINCLUDE" value="${env.INCLUDE}" />
+    <property name="cLIB" value="${LIB};${env.lib};${env.LIB}" />
+    <property name="src.java" value="${src.win.java}" />
+    <property name="compile.native.tail" value="windows" />
 
-	<property name="src.tst.common.ps" value="${src.test.java}/windows" />
+    <property name="src.tst.common.ps" value="${src.test.java}/windows" />
 
-	<property name="jni_md_h.path" location="${env.JAVA_HOME}/include/win32"/>
+    <property name="jni_md_h.path" location="${env.JAVA_HOME}/include/win32" />
 
-	<target name="compile.native">
-		<!-- TBD -->
-		<echo>Compile, compile (windows x86)</echo>
-	</target>
-	
+    <target name="compile.native">
+        <!-- TBD -->
+        <echo>Compile, compile (windows x86)</echo>
+    </target>
+
 </project>

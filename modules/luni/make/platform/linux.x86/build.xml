@@ -17,22 +17,22 @@
 
 <project name="LUNI build script for Linux x86">
 
-	<property name="libpr" value="lib"/>
-	<property name="libsf" value=".so"/>
+    <property name="libpr" value="lib" />
+    <property name="libsf" value=".so" />
 
-	<property name="cPath" value="${env.PATH}" />
-	<property name="cINCLUDE" value="${env.INCLUDE}" />
-	<property name="cLIB" value="${env.LIB}" />
-	<property name="src.java" value="${src.linux.java}" />
-	<property name="compile.native.tail" value="linux" />
+    <property name="cPath" value="${env.PATH}" />
+    <property name="cINCLUDE" value="${env.INCLUDE}" />
+    <property name="cLIB" value="${env.LIB}" />
+    <property name="src.java" value="${src.linux.java}" />
+    <property name="compile.native.tail" value="linux" />
 
-	<property name="src.tst.common.ps" value="${src.test.java}/linux" />
+    <property name="src.tst.common.ps" value="${src.test.java}/linux" />
 
-	<property name="jni_md_h.path" location="${env.JAVA_HOME}/include/linux"/>
+    <property name="jni_md_h.path" location="${env.JAVA_HOME}/include/linux" />
 
-	<target name="compile.native">
-		<!-- TBD -->
-		<echo>Compile, compile (linux x86)</echo>
-	</target>
-	
+    <target name="compile.native">
+        <!-- TBD -->
+        <echo>Compile, compile (linux x86)</echo>
+    </target>
+
 </project>

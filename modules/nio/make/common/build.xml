@@ -16,107 +16,107 @@
 -->
 
 <project name="Common_NIO_Build">
-	
-	<target name="compile.java" description="Compile NIO java code">
-		<echo message="Compiling NIO classes from ${hy.nio.src.main.java}" />
-		
-		<mkdir dir="${hy.nio.bin.main}" />
 
-		<javac sourcepath=""
-			srcdir="${hy.nio.src.main.java}"
-			destdir="${hy.nio.bin.main}"
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
+    <target name="compile.java" description="Compile NIO java code">
+        <echo message="Compiling NIO classes from ${hy.nio.src.main.java}" />
 
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-		</javac>
-	</target>
-	
-	<target name="build.jar">
-		<jar destfile="${hy.target}/jre/lib/boot/nio.jar"
-			manifest="${hy.nio}/META-INF/MANIFEST.MF">
-			<fileset dir="${hy.nio.bin.main}" />
-		</jar>
-	</target>
+        <mkdir dir="${hy.nio.bin.main}" />
 
-	
-	<target name="compile.tests">
-		<echo message="Compiling NIO tests from ${hy.nio.src.test.java}" />
+        <javac sourcepath=""
+            srcdir="${hy.nio.src.main.java}"
+            destdir="${hy.nio.bin.main}"
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<mkdir dir="${hy.nio.bin.test}" />
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
 
-		<javac srcdir="${hy.nio.src.test.java}"
-			destdir="${hy.nio.bin.test}"
-			sourcepath=""
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
-
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-                        <classpath location="../../../../build/tests" />
-		</javac>
-	</target>
+    <target name="build.jar">
+        <jar destfile="${hy.target}/jre/lib/boot/nio.jar"
+            manifest="${hy.nio}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.nio.bin.main}" />
+        </jar>
+    </target>
 
 
-	<target name="run.tests">
+    <target name="compile.tests">
+        <echo message="Compiling NIO tests from ${hy.nio.src.test.java}" />
 
-		<mkdir dir="${hy.tests.reports}" />
+        <mkdir dir="${hy.nio.bin.test}" />
 
-		<property name="test.jre.home" value="${hy.target}/jre" />
+        <javac srcdir="${hy.nio.src.test.java}"
+            destdir="${hy.nio.bin.test}"
+            sourcepath=""
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<junit fork="yes"
-			forkmode="once"
-			printsummary="withOutAndErr"
-			errorproperty="test.errors"
-			failureproperty="test.failures"
-			showoutput="on"
-			dir="${hy.nio.bin.test}"
-			jvm="${test.jre.home}/bin/java">
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../../../build/tests" />
+        </javac>
+    </target>
 
-			<jvmarg value="-showversion"/>
 
-			<env key="JAVA_HOME" value="${test.jre.home}"/>
+    <target name="run.tests">
 
-			<classpath>
-				<pathelement path="${hy.nio.bin.test}"/>
-				<pathelement path="../../../../build/tests" />
-			</classpath>
+        <mkdir dir="${hy.tests.reports}" />
 
-			<formatter type="xml" />
+        <property name="test.jre.home" value="${hy.target}/jre" />
 
-			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
-				<fileset dir="${hy.nio.src.test.java}">
-					<include name="**/*Test.java"/>
-					<exclude name="**/ServerSocketChannelTest.java"/>
-				</fileset>
-			</batchtest>
-		</junit>
-		<antcall target="touch-failures-file" />
-		<antcall target="touch-errors-file" />
-	</target>
-	
-	<target name="touch-failures-file" if="test.failures">
-		<echo file="${hy.tests.reports}/test.failures"
-			append="true" >nio
+        <junit fork="yes"
+            forkmode="once"
+            printsummary="withOutAndErr"
+            errorproperty="test.errors"
+            failureproperty="test.failures"
+            showoutput="on"
+            dir="${hy.nio.bin.test}"
+            jvm="${test.jre.home}/bin/java">
+
+            <jvmarg value="-showversion"/>
+
+            <env key="JAVA_HOME" value="${test.jre.home}"/>
+
+            <classpath>
+                <pathelement path="${hy.nio.bin.test}"/>
+                <pathelement path="../../../../build/tests" />
+            </classpath>
+
+            <formatter type="xml" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
+                <fileset dir="${hy.nio.src.test.java}">
+                    <include name="**/*Test.java"/>
+                    <exclude name="**/ServerSocketChannelTest.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true" >nio
 </echo>
-	</target>
-	<target name="touch-errors-file" if="test.errors">
-		<echo file="${hy.tests.reports}/test.errors"
-			append="true" >nio
+    </target>
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true" >nio
 </echo>
-	</target>
-	
-	<target name="copy.resources">
-		<!-- Nothing for NIO -->
-	</target>
+    </target>
+
+    <target name="copy.resources">
+        <!-- Nothing for NIO -->
+    </target>
 </project>
 

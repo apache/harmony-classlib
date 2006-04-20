@@ -16,103 +16,103 @@
 -->
 
 <project name="Common_RMI_Build">
-	
-	<target name="compile.java" description="Compile RMI java code">
-		<echo message="Compiling RMI classes from ${hy.rmi.src.main.java}" />
-		
-		<mkdir dir="${hy.rmi.bin.main}" />
 
-		<javac sourcepath=""
-			srcdir="${hy.rmi.src.main.java}"
-			destdir="${hy.rmi.bin.main}"
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
+    <target name="compile.java" description="Compile RMI java code">
+        <echo message="Compiling RMI classes from ${hy.rmi.src.main.java}" />
 
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-		</javac>
-	</target>
-	
-	<target name="build.jar">
-		<jar destfile="${hy.target}/jre/lib/boot/rmi.jar"
-			manifest="${hy.rmi}/META-INF/MANIFEST.MF">
-			<fileset dir="${hy.rmi.bin.main}" />
-		</jar>
-	</target>
+        <mkdir dir="${hy.rmi.bin.main}" />
 
-	
-	<target name="compile.tests">
-		<echo message="Compiling RMI tests from ${hy.rmi.src.test.java}" />
+        <javac sourcepath=""
+            srcdir="${hy.rmi.src.main.java}"
+            destdir="${hy.rmi.bin.main}"
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<mkdir dir="${hy.rmi.bin.test}" />
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
 
-		<javac srcdir="${hy.rmi.src.test.java}"
-			destdir="${hy.rmi.bin.test}"
-			sourcepath=""
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
-
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-                        <classpath location="../../../../build/tests" />
-		</javac>
-	</target>
+    <target name="build.jar">
+        <jar destfile="${hy.target}/jre/lib/boot/rmi.jar"
+            manifest="${hy.rmi}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.rmi.bin.main}" />
+        </jar>
+    </target>
 
 
-	<target name="run.tests">
+    <target name="compile.tests">
+        <echo message="Compiling RMI tests from ${hy.rmi.src.test.java}" />
 
-		<mkdir dir="${hy.tests.reports}" />
+        <mkdir dir="${hy.rmi.bin.test}" />
 
-		<property name="test.jre.home" value="${hy.target}/jre" />
+        <javac srcdir="${hy.rmi.src.test.java}"
+            destdir="${hy.rmi.bin.test}"
+            sourcepath=""
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<junit fork="yes"
-			forkmode="once"
-			printsummary="withOutAndErr"
-			errorproperty="test.errors"
-			failureproperty="test.failures"
-			showoutput="on"
-			dir="${hy.rmi.bin.test}"
-			jvm="${test.jre.home}/bin/java">
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../../../build/tests" />
+        </javac>
+    </target>
 
-			<jvmarg value="-showversion"/>
 
-			<env key="JAVA_HOME" value="${test.jre.home}"/>
+    <target name="run.tests">
 
-			<classpath>
-				<pathelement path="${hy.rmi.bin.test}"/>
-			</classpath>
+        <mkdir dir="${hy.tests.reports}" />
 
-			<formatter type="xml" />
+        <property name="test.jre.home" value="${hy.target}/jre" />
 
-			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
-				<fileset dir="${hy.rmi.src.test.java}"/>
-			</batchtest>
-		</junit>
-		<antcall target="touch-failures-file" />
-		<antcall target="touch-errors-file" />
-	</target>
-	
-	<target name="touch-failures-file" if="test.failures">
-		<echo file="${hy.tests.reports}/test.failures"
-			append="true" >rmi
+        <junit fork="yes"
+            forkmode="once"
+            printsummary="withOutAndErr"
+            errorproperty="test.errors"
+            failureproperty="test.failures"
+            showoutput="on"
+            dir="${hy.rmi.bin.test}"
+            jvm="${test.jre.home}/bin/java">
+
+            <jvmarg value="-showversion"/>
+
+            <env key="JAVA_HOME" value="${test.jre.home}"/>
+
+            <classpath>
+                <pathelement path="${hy.rmi.bin.test}"/>
+            </classpath>
+
+            <formatter type="xml" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
+                <fileset dir="${hy.rmi.src.test.java}"/>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true" >rmi
 </echo>
-	</target>
-	<target name="touch-errors-file" if="test.errors">
-		<echo file="${hy.tests.reports}/test.errors"
-			append="true" >rmi
+    </target>
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true" >rmi
 </echo>
-	</target>
-	
-	<target name="copy.resources">
-		<!-- Nothing for RMI -->
-	</target>
+    </target>
+
+    <target name="copy.resources">
+        <!-- Nothing for RMI -->
+    </target>
 </project>
 

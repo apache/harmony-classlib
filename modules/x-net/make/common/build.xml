@@ -16,105 +16,105 @@
 -->
 
 <project name="Common_X-NET_Build">
-	
-	<target name="compile.java" description="Compile X-NET java code">
-		<echo message="Compiling X-NET classes from ${hy.x-net.src.main.java}" />
-		
-		<mkdir dir="${hy.x-net.bin.main}" />
 
-		<javac sourcepath=""
-			srcdir="${hy.x-net.src.main.java}"
-			destdir="${hy.x-net.bin.main}"
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
+    <target name="compile.java" description="Compile X-NET java code">
+        <echo message="Compiling X-NET classes from ${hy.x-net.src.main.java}" />
 
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-		</javac>
-	</target>
-	
-	<target name="build.jar">
-		<jar destfile="${hy.target}/jre/lib/boot/${hy.x-net.packaging.jarname}.jar"
-			manifest="${hy.x-net}/META-INF/MANIFEST.MF">
-			<fileset dir="${hy.x-net.bin.main}" />
-		</jar>
-	</target>
+        <mkdir dir="${hy.x-net.bin.main}" />
 
-	
-	<target name="compile.tests">
-		<echo message="Compiling X-NET tests from ${hy.x-net.src.test.java}" />
+        <javac sourcepath=""
+            srcdir="${hy.x-net.src.main.java}"
+            destdir="${hy.x-net.bin.main}"
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<mkdir dir="${hy.x-net.bin.test}" />
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
 
-		<javac 	destdir="${hy.x-net.bin.test}"
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
-
-                    <!-- FIXME: X-NET tests should not reach into security module code -->
-                    <src>
-                        <pathelement location="${hy.x-net.src.test.java}"/>
-                        <pathelement location="${hy.x-net}/../security/src/test/java/common"/>
-                    </src>
-
-                    <include name="javax/net/**/*Test*.java" />
-                    <include name="org/apache/harmony/security/test/**/*" />
-                    <exclude name="**/SecurityTest.java"/>
-
-                    <bootclasspath>
-                        <fileset dir="${hy.target}/jre/lib/boot">
-                            <include name="**/*.jar" />
-                        </fileset>
-                    </bootclasspath>
-		</javac>
-	</target>
+    <target name="build.jar">
+        <jar destfile="${hy.target}/jre/lib/boot/${hy.x-net.packaging.jarname}.jar"
+            manifest="${hy.x-net}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.x-net.bin.main}" />
+        </jar>
+    </target>
 
 
-	<target name="run.tests">
+    <target name="compile.tests">
+        <echo message="Compiling X-NET tests from ${hy.x-net.src.test.java}" />
 
-		<mkdir dir="${hy.tests.reports}" />
+        <mkdir dir="${hy.x-net.bin.test}" />
 
-		<property name="test.jre.home" value="${hy.target}/jre" />
+        <javac 	destdir="${hy.x-net.bin.test}"
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<junit fork="yes"
-			forkmode="once"
-			printsummary="withOutAndErr"
-			errorproperty="test.errors"
-			failureproperty="test.failures"
-			showoutput="on"
-			dir="${hy.x-net.bin.test}"
-			jvm="${test.jre.home}/bin/java">
+            <!-- FIXME: X-NET tests should not reach into security module code -->
+            <src>
+                <pathelement location="${hy.x-net.src.test.java}"/>
+                <pathelement location="${hy.x-net}/../security/src/test/java/common"/>
+            </src>
 
-			<jvmarg value="-showversion"/>
-	        
-			<!-- Required for running the serialization unit tests -->
-			<!-- Note: will be deleted after improving             -->
-			<!-- SerializationTest support class: all resource     -->
-			<!-- files will be placed on the classpath             -->
-			<jvmarg value="-DTEST_SRC_DIR=${hy.x-net.src.test.java}"/>
+            <include name="javax/net/**/*Test*.java" />
+            <include name="org/apache/harmony/security/test/**/*" />
+            <exclude name="**/SecurityTest.java"/>
 
-			<env key="JAVA_HOME" value="${test.jre.home}"/>
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
 
-			<classpath>
-				<pathelement path="${hy.x-net.bin.test}"/>
-			</classpath>
 
-			<formatter type="xml" />
+    <target name="run.tests">
 
-			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
-				<fileset dir="${hy.x-net.src.test.java}">
-					<include name="**/*Test.java"/>
+        <mkdir dir="${hy.tests.reports}" />
 
-					<!-- Harmony exclude list -->
-	<!-- FIXME: The following tests require JSSE provider -->
-					<exclude name="javax/net/ssl/serialization/HandshakeCompletedEventTest.java"/>
-					<exclude name="javax/net/ssl/serialization/SSLSessionBindingEventTest.java"/>
+        <property name="test.jre.home" value="${hy.target}/jre" />
 
-	<!-- FIXME: The following tests are excluded because they fail for reasons to be determined -->
+        <junit fork="yes"
+            forkmode="once"
+            printsummary="withOutAndErr"
+            errorproperty="test.errors"
+            failureproperty="test.failures"
+            showoutput="on"
+            dir="${hy.x-net.bin.test}"
+            jvm="${test.jre.home}/bin/java">
+
+            <jvmarg value="-showversion"/>
+
+            <!-- Required for running the serialization unit tests -->
+            <!-- Note: will be deleted after improving             -->
+            <!-- SerializationTest support class: all resource     -->
+            <!-- files will be placed on the classpath             -->
+            <jvmarg value="-DTEST_SRC_DIR=${hy.x-net.src.test.java}"/>
+
+            <env key="JAVA_HOME" value="${test.jre.home}"/>
+
+            <classpath>
+                <pathelement path="${hy.x-net.bin.test}"/>
+            </classpath>
+
+            <formatter type="xml" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
+                <fileset dir="${hy.x-net.src.test.java}">
+                    <include name="**/*Test.java"/>
+
+                    <!-- Harmony exclude list -->
+                    <!-- FIXME: The following tests require JSSE provider -->
+                    <exclude name="javax/net/ssl/serialization/HandshakeCompletedEventTest.java"/>
+                    <exclude name="javax/net/ssl/serialization/SSLSessionBindingEventTest.java"/>
+
+                    <!-- FIXME: The following tests are excluded because they fail for reasons to be determined -->
                     <exclude name="**/DefaultSSLServerSocketFactoryTest.java"/>
                     <exclude name="**/DefaultSSLSocketFactoryTest.java"/>
                     <exclude name="**/HttpsURLConnectionTest.java"/>
@@ -122,26 +122,26 @@
                     <exclude name="**/SSLSocketFactoryTest.java"/>
                     <exclude name="**/ServerSocketFactoryTest.java"/>
                     <exclude name="**/SocketFactoryTest.java"/>
-				</fileset>
-			</batchtest>
-		</junit>
-		<antcall target="touch-failures-file" />
-		<antcall target="touch-errors-file" />
-	</target>
-	
-	<target name="touch-failures-file" if="test.failures">
-		<echo file="${hy.tests.reports}/test.failures"
-			append="true" >x-net
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true" >x-net
 </echo>
-	</target>
-	<target name="touch-errors-file" if="test.errors">
-		<echo file="${hy.tests.reports}/test.errors"
-			append="true" >x-net
+    </target>
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true" >x-net
 </echo>
-	</target>
-	
-	<target name="copy.resources">
-		<!-- Nothing for X-NET -->
-	</target>
+    </target>
+
+    <target name="copy.resources">
+        <!-- Nothing for X-NET -->
+    </target>
 </project>
 

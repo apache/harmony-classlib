@@ -16,51 +16,51 @@
 -->
 
 <project name="LOGGING Build" default="build" basedir="..">
-	<description>Build for LOGGING component</description>
+    <description>Build for LOGGING component</description>
 
-	<!-- import common properties -->
-	<import file="${basedir}/../../make/properties.xml" />
+    <!-- import common properties -->
+    <import file="${basedir}/../../make/properties.xml" />
 
-	<!-- set global properties for this build. -->
-	<xmlproperty file="make/common/hyproperties.xml" semanticAttributes="true"/>
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/common/hyproperties.xml" semanticAttributes="true" />
 
-	<!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
+    <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
 	     use the Eclipse Java compiler. But it does not support jsr14 target -->
-	<property name="build.compiler" value="modern" />
+    <property name="build.compiler" value="modern" />
 
-	<target name="init">
-		<tstamp>
-			<format property="build-date" pattern="yyyyMMdd" locale="en" />
-		</tstamp>
-		<tstamp>
-			<format property="build-time" pattern="yyyyMMdd_HHmm" />
-		</tstamp>
-		<echo message="build-date=${build-date}" />
-		<echo message="build-time=${build-time}" />
-		<echo message="on platform=${os.name} version=${os.version} arch=${os.arch}" />
+    <target name="init">
+        <tstamp>
+            <format property="build-date" pattern="yyyyMMdd" locale="en" />
+        </tstamp>
+        <tstamp>
+            <format property="build-time" pattern="yyyyMMdd_HHmm" />
+        </tstamp>
+        <echo message="build-date=${build-date}" />
+        <echo message="build-time=${build-time}" />
+        <echo message="on platform=${os.name} version=${os.version} arch=${os.arch}" />
 
-		<property name="java.debug.option" value="on" />
-		<property name="native.debug.option" value="on" />
+        <property name="java.debug.option" value="on" />
+        <property name="native.debug.option" value="on" />
 
-	</target>
-	
-	<!-- LOGGING TARGETS -->
+    </target>
 
-	<target name="build" depends="init">
-		<ant dir="make/common" target="compile.java" />
-		<ant dir="make/common" target="build.jar" />
-		<ant dir="make/common" target="copy.resources" />
-	</target>
+    <!-- LOGGING TARGETS -->
+
+    <target name="build" depends="init">
+        <ant dir="make/common" target="compile.java" />
+        <ant dir="make/common" target="build.jar" />
+        <ant dir="make/common" target="copy.resources" />
+    </target>
 
 
-	<target name="test" depends="build">
-		<ant dir="make/common" target="compile.tests" />
-		<ant dir="make/common" target="run.tests" />
-	</target>
+    <target name="test" depends="build">
+        <ant dir="make/common" target="compile.tests" />
+        <ant dir="make/common" target="run.tests" />
+    </target>
 
-	<target name="clean">
-		<delete dir="${hy.logging.bin.main}"/>
-		<delete dir="${hy.logging.bin.test}"/>
-	</target>
+    <target name="clean">
+        <delete dir="${hy.logging.bin.main}" />
+        <delete dir="${hy.logging.bin.test}" />
+    </target>
 
 </project>

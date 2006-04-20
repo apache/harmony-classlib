@@ -16,109 +16,109 @@
 -->
 
 <project name="Common_PREFS_Build">
-	
-	<target name="compile.java" description="Compile PREFS java code">
-		<echo message="Compiling PREFS classes from ${hy.prefs.src.main.java}" />
-		
-		<mkdir dir="${hy.prefs.bin.main}" />
 
-		<javac sourcepath=""
-			srcdir="${hy.prefs.src.main.java}"
-			destdir="${hy.prefs.bin.main}"
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
+    <target name="compile.java" description="Compile PREFS java code">
+        <echo message="Compiling PREFS classes from ${hy.prefs.src.main.java}" />
 
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-		</javac>
-	</target>
-	
-	<target name="build.jar">
-		<jar destfile="${hy.target}/jre/lib/boot/prefs.jar"
-			manifest="${hy.prefs}/META-INF/MANIFEST.MF">
-			<fileset dir="${hy.prefs.bin.main}" />
-		</jar>
-	</target>
+        <mkdir dir="${hy.prefs.bin.main}" />
 
-	
-	<target name="compile.tests">
-		<echo message="Compiling PREFS tests from ${hy.prefs.src.test.java}" />
+        <javac sourcepath=""
+            srcdir="${hy.prefs.src.main.java}"
+            destdir="${hy.prefs.bin.main}"
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<mkdir dir="${hy.prefs.bin.test}" />
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
 
-		<javac srcdir="${hy.prefs.src.test.java}"
-			destdir="${hy.prefs.bin.test}"
-			sourcepath=""
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
-
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-                        <classpath location="../../../../build/tests" />
-		</javac>
-	</target>
+    <target name="build.jar">
+        <jar destfile="${hy.target}/jre/lib/boot/prefs.jar"
+            manifest="${hy.prefs}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.prefs.bin.main}" />
+        </jar>
+    </target>
 
 
-	<target name="run.tests">
-		
-		<mkdir dir="${hy.tests.reports}" />
+    <target name="compile.tests">
+        <echo message="Compiling PREFS tests from ${hy.prefs.src.test.java}" />
 
-		<property name="test.jre.home" value="${hy.target}/jre" />
+        <mkdir dir="${hy.prefs.bin.test}" />
 
-		<junit fork="yes"
-			forkmode="once"
-			printsummary="withOutAndErr"
-			errorproperty="test.errors"
-			failureproperty="test.failures"
-			showoutput="on"
-			dir="${hy.prefs.bin.test}"
-			jvm="${test.jre.home}/bin/java">
+        <javac srcdir="${hy.prefs.src.test.java}"
+            destdir="${hy.prefs.bin.test}"
+            sourcepath=""
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-			<jvmarg value="-showversion"/>
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../../../build/tests" />
+        </javac>
+    </target>
 
-			<env key="JAVA_HOME" value="${test.jre.home}"/>
 
-			<classpath>
-				<pathelement path="${hy.prefs.bin.test}"/>
-			</classpath>
-                        <classpath location="../../../../build/tests" />
+    <target name="run.tests">
 
-			<formatter type="xml" />
+        <mkdir dir="${hy.tests.reports}" />
 
-			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
-				<fileset dir="${hy.prefs.src.test.java}">
-					<include name="**/*Test.java"/>
-                                        <exclude name="**/AbstractPreferencesTest.java"/>
-                                        <exclude name="**/FilePreferencesImplTest.java"/>
-                                        <exclude name="**/PreferencesTest.java"/>
-				</fileset>
-			</batchtest>
-		</junit>
-		<antcall target="touch-failures-file" />
-		<antcall target="touch-errors-file" />
-	</target>
-	
-	<target name="touch-failures-file" if="test.failures">
-		<echo file="${hy.tests.reports}/test.failures"
-			append="true" >prefs
+        <property name="test.jre.home" value="${hy.target}/jre" />
+
+        <junit fork="yes"
+            forkmode="once"
+            printsummary="withOutAndErr"
+            errorproperty="test.errors"
+            failureproperty="test.failures"
+            showoutput="on"
+            dir="${hy.prefs.bin.test}"
+            jvm="${test.jre.home}/bin/java">
+
+            <jvmarg value="-showversion"/>
+
+            <env key="JAVA_HOME" value="${test.jre.home}"/>
+
+            <classpath>
+                <pathelement path="${hy.prefs.bin.test}"/>
+            </classpath>
+            <classpath location="../../../../build/tests" />
+
+            <formatter type="xml" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
+                <fileset dir="${hy.prefs.src.test.java}">
+                    <include name="**/*Test.java"/>
+                    <exclude name="**/AbstractPreferencesTest.java"/>
+                    <exclude name="**/FilePreferencesImplTest.java"/>
+                    <exclude name="**/PreferencesTest.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true" >prefs
 </echo>
-	</target>
-	<target name="touch-errors-file" if="test.errors">
-		<echo file="${hy.tests.reports}/test.errors"
-			append="true" >prefs
+    </target>
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true" >prefs
 </echo>
-	</target>
-	
-	<target name="copy.resources">
-		<!-- Nothing for PREFS -->
-	</target>
+    </target>
+
+    <target name="copy.resources">
+        <!-- Nothing for PREFS -->
+    </target>
 </project>
 

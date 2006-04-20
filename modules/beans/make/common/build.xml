@@ -16,142 +16,142 @@
 -->
 
 <project name="Common_BEANS_Build">
-	
-	<target name="compile.java" description="Compile BEANS java code">
-		<echo message="Compiling BEANS classes from ${hy.beans.src.main.java}" />
-		
-		<mkdir dir="${hy.beans.bin.main}" />
 
-		<javac sourcepath=""
-			srcdir="${hy.beans.src.main.java}"
-			destdir="${hy.beans.bin.main}"
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
+    <target name="compile.java" description="Compile BEANS java code">
+        <echo message="Compiling BEANS classes from ${hy.beans.src.main.java}" />
 
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-		</javac>
-	</target>
-	
-	<target name="build.jar">
-		<jar destfile="${hy.target}/jre/lib/boot/beans.jar"
-			manifest="${hy.beans}/META-INF/MANIFEST.MF">
-			<fileset dir="${hy.beans.bin.main}" />
-		</jar>
-	</target>
+        <mkdir dir="${hy.beans.bin.main}" />
 
-	
-	<target name="compile.tests">
-		<echo message="Compiling BEANS tests from ${hy.beans.src.test.java}" />
+        <javac sourcepath=""
+            srcdir="${hy.beans.src.main.java}"
+            destdir="${hy.beans.bin.main}"
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<mkdir dir="${hy.beans.bin.test}" />
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
 
-		<javac srcdir="${hy.beans.src.test.java}"
-			destdir="${hy.beans.bin.test}"
-			sourcepath=""
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${java.debug.option}">
-
-			<bootclasspath>
-				<fileset dir="${hy.target}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-                        <classpath location="../../../../build/tests" />
-		</javac>
-	</target>
+    <target name="build.jar">
+        <jar destfile="${hy.target}/jre/lib/boot/beans.jar"
+            manifest="${hy.beans}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.beans.bin.main}" />
+        </jar>
+    </target>
 
 
-	<target name="run.tests">
+    <target name="compile.tests">
+        <echo message="Compiling BEANS tests from ${hy.beans.src.test.java}" />
 
-		<mkdir dir="${hy.tests.reports}" />
+        <mkdir dir="${hy.beans.bin.test}" />
 
-		<property name="test.jre.home" value="${hy.target}/jre" />
+        <javac srcdir="${hy.beans.src.test.java}"
+            destdir="${hy.beans.bin.test}"
+            sourcepath=""
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${java.debug.option}">
 
-		<junit fork="yes"
-			forkmode="once"
-			printsummary="withOutAndErr"
-			errorproperty="test.errors"
-			failureproperty="test.failures"
-			showoutput="on"
-			dir="${hy.beans.bin.test}"
-			jvm="${test.jre.home}/bin/java">
+            <bootclasspath>
+                <fileset dir="${hy.target}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../../../build/tests" />
+        </javac>
+    </target>
 
-			<jvmarg value="-showversion"/>
 
-			<env key="JAVA_HOME" value="${test.jre.home}"/>
+    <target name="run.tests">
 
-			<classpath>
-				<pathelement path="${hy.beans.bin.test}"/>
-				<pathelement path="${hy.beans.src.test.resources}"/>
-			</classpath>
-                        <classpath location="../../../../build/tests" />
+        <mkdir dir="${hy.tests.reports}" />
 
-			<formatter type="xml" />
+        <property name="test.jre.home" value="${hy.target}/jre" />
 
-			<batchtest todir="${hy.tests.reports}" haltonfailure="no">
-				<fileset dir="${hy.beans.src.test.java}">
-					<include name="**/*Test.java"/>
-                                        <!-- TOFIX: these fail -->
-                                        <exclude name="**/BeansTest.java" />
-                                        <exclude name="**/BeanContextServicesSupportTest.java" />
-                                        <exclude name="**/BeanContextSupportTest.java" />
-                                        <exclude name="**/EventHandlerTest.java" />
-                                        <exclude name="**/PropertyChangeSupportTest.java" />
-                                        <exclude name="**/SimpleBeanInfoTest.java" />
-                                        <exclude name="**/VetoableChangeSupportTest.java" />
+        <junit fork="yes"
+            forkmode="once"
+            printsummary="withOutAndErr"
+            errorproperty="test.errors"
+            failureproperty="test.failures"
+            showoutput="on"
+            dir="${hy.beans.bin.test}"
+            jvm="${test.jre.home}/bin/java">
 
-                                        <exclude name="tests/api/java/beans/BeanDescriptorTest.java" />
-                                        <exclude name="tests/api/java/beans/CustomizedPersistenceDelegateTest.java" />
-                                        <exclude name="tests/api/java/beans/DefaultPersistenceDelegateTest.java" />
-                                        <exclude name="tests/api/java/beans/EncoderTest.java" />
-                                        <exclude name="tests/api/java/beans/EventSetDescriptorTest.java" />
-                                        <exclude name="tests/api/java/beans/ExpressionTest.java" />
-                                        <exclude name="tests/api/java/beans/FeatureDescriptorTest.java" />
-                                        <exclude name="tests/api/java/beans/IndexedPropertyDescriptorTest.java" />
-                                        <exclude name="tests/api/java/beans/IntrospectionExceptionTest.java" />
-                                        <exclude name="tests/api/java/beans/IntrospectorTest.java" />
-                                        <exclude name="tests/api/java/beans/MethodDescriptorTest.java" />
-                                        <exclude name="tests/api/java/beans/PersistenceDelegateTest.java" />
-                                        <exclude name="tests/api/java/beans/PropertyChangeEventTest.java" />
-                                        <exclude name="tests/api/java/beans/PropertyChangeListenerProxyTest.java" />
-                                        <exclude name="tests/api/java/beans/PropertyDescriptorTest.java" />
-                                        <exclude name="tests/api/java/beans/PropertyEditorManagerTest.java" />
-                                        <exclude name="tests/api/java/beans/PropertyEditorSupportTest.java" />
-                                        <exclude name="tests/api/java/beans/PropertyVetoExceptionTest.java" />
-                                        <exclude name="tests/api/java/beans/StatementTest.java" />
-                                        <exclude name="tests/api/java/beans/VetoableChangeListenerProxyTest.java" />
-                                        <exclude name="tests/api/java/beans/XMLDecoderTest.java" />
-                                        <exclude name="tests/api/java/beans/XMLEncoderTest.java" />
-                                        <exclude name="tests/api/java/beans/beancontext/BeanContextChildSupportTest.java" />
-                                        <exclude name="tests/api/java/beans/beancontext/BeanContextMembershipEventTest.java" />
-                                        <exclude name="tests/api/java/beans/beancontext/BeanContextServiceAvailableEventTest.java" />
-                                        <exclude name="tests/api/java/beans/beancontext/BeanContextServiceRevokedEventTest.java" />
-				</fileset>
-			</batchtest>
-		</junit>
-		<antcall target="touch-failures-file" />
-		<antcall target="touch-errors-file" />
-	</target>
-	
-	<target name="touch-failures-file" if="test.failures">
-		<echo file="${hy.tests.reports}/test.failures"
-			append="true" >beans
+            <jvmarg value="-showversion"/>
+
+            <env key="JAVA_HOME" value="${test.jre.home}"/>
+
+            <classpath>
+                <pathelement path="${hy.beans.bin.test}"/>
+                <pathelement path="${hy.beans.src.test.resources}"/>
+            </classpath>
+            <classpath location="../../../../build/tests" />
+
+            <formatter type="xml" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
+                <fileset dir="${hy.beans.src.test.java}">
+                    <include name="**/*Test.java"/>
+                    <!-- TOFIX: these fail -->
+                    <exclude name="**/BeansTest.java" />
+                    <exclude name="**/BeanContextServicesSupportTest.java" />
+                    <exclude name="**/BeanContextSupportTest.java" />
+                    <exclude name="**/EventHandlerTest.java" />
+                    <exclude name="**/PropertyChangeSupportTest.java" />
+                    <exclude name="**/SimpleBeanInfoTest.java" />
+                    <exclude name="**/VetoableChangeSupportTest.java" />
+
+                    <exclude name="tests/api/java/beans/BeanDescriptorTest.java" />
+                    <exclude name="tests/api/java/beans/CustomizedPersistenceDelegateTest.java" />
+                    <exclude name="tests/api/java/beans/DefaultPersistenceDelegateTest.java" />
+                    <exclude name="tests/api/java/beans/EncoderTest.java" />
+                    <exclude name="tests/api/java/beans/EventSetDescriptorTest.java" />
+                    <exclude name="tests/api/java/beans/ExpressionTest.java" />
+                    <exclude name="tests/api/java/beans/FeatureDescriptorTest.java" />
+                    <exclude name="tests/api/java/beans/IndexedPropertyDescriptorTest.java" />
+                    <exclude name="tests/api/java/beans/IntrospectionExceptionTest.java" />
+                    <exclude name="tests/api/java/beans/IntrospectorTest.java" />
+                    <exclude name="tests/api/java/beans/MethodDescriptorTest.java" />
+                    <exclude name="tests/api/java/beans/PersistenceDelegateTest.java" />
+                    <exclude name="tests/api/java/beans/PropertyChangeEventTest.java" />
+                    <exclude name="tests/api/java/beans/PropertyChangeListenerProxyTest.java" />
+                    <exclude name="tests/api/java/beans/PropertyDescriptorTest.java" />
+                    <exclude name="tests/api/java/beans/PropertyEditorManagerTest.java" />
+                    <exclude name="tests/api/java/beans/PropertyEditorSupportTest.java" />
+                    <exclude name="tests/api/java/beans/PropertyVetoExceptionTest.java" />
+                    <exclude name="tests/api/java/beans/StatementTest.java" />
+                    <exclude name="tests/api/java/beans/VetoableChangeListenerProxyTest.java" />
+                    <exclude name="tests/api/java/beans/XMLDecoderTest.java" />
+                    <exclude name="tests/api/java/beans/XMLEncoderTest.java" />
+                    <exclude name="tests/api/java/beans/beancontext/BeanContextChildSupportTest.java" />
+                    <exclude name="tests/api/java/beans/beancontext/BeanContextMembershipEventTest.java" />
+                    <exclude name="tests/api/java/beans/beancontext/BeanContextServiceAvailableEventTest.java" />
+                    <exclude name="tests/api/java/beans/beancontext/BeanContextServiceRevokedEventTest.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true" >beans
 </echo>
-	</target>
-	<target name="touch-errors-file" if="test.errors">
-		<echo file="${hy.tests.reports}/test.errors"
-			append="true" >beans
+    </target>
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true" >beans
 </echo>
-	</target>
-	
-	<target name="copy.resources">
-		<!-- Nothing for BEANS -->
-	</target>
+    </target>
+
+    <target name="copy.resources">
+        <!-- Nothing for BEANS -->
+    </target>
 </project>
 
