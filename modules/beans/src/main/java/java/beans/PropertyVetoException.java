@@ -27,14 +27,13 @@ package java.beans;
 
 public class PropertyVetoException extends Exception {
     
-    private String message;
     private PropertyChangeEvent event;
 
     /**
      * @com.intel.drl.spec_ref
      */
     public PropertyVetoException(String message, PropertyChangeEvent event) {
-        this.message = message;
+        super(message);
         this.event = event;
     }
 
