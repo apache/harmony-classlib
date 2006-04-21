@@ -72,7 +72,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
     public PropertyDescriptor(String propertyName, Method getter, Method setter)
             throws IntrospectionException {
         super();
-        if (propertyName == null) {
+        if (propertyName == null || propertyName.length() == 0) {
             throw new IntrospectionException("bad property name");
         }
 
