@@ -16,7 +16,7 @@
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.23.6.3 $
+ * @version $Revision$
  */
 package java.beans;
 
@@ -33,7 +33,7 @@ import java.lang.reflect.Modifier;
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.23.6.3 $
+ * @version $Revision$
  */
 
 public class Introspector {
@@ -71,15 +71,17 @@ public class Introspector {
     public static BeanInfo getBeanInfo(Class beanClass, int flags)
         throws IntrospectionException 
     {
-        BeanInfo result = null;
-        if (flags == USE_ALL_BEANINFO) {
-            result = getBeanInfo(beanClass, null, false, false);    
-        } else if (flags == IGNORE_IMMEDIATE_BEANINFO) {
-            result = getBeanInfo(beanClass, null, true, false);    
-        } else if (flags == IGNORE_ALL_BEANINFO) {
-            result = getBeanInfo(beanClass, null, true, true);    
+        switch (flags) {
+            case USE_ALL_BEANINFO:
+                return getBeanInfo(beanClass, null, false, false);    
+            case IGNORE_IMMEDIATE_BEANINFO:
+                return getBeanInfo(beanClass, null, true, false);
+            case IGNORE_ALL_BEANINFO:
+                return getBeanInfo(beanClass, null, true, true);
+            default:
+                //TODO: verify that default beahvior complies with RI
+                return getBeanInfo(beanClass, null, false, false);
         }
-        return result;
     }
 
     /**
@@ -139,7 +141,7 @@ public class Introspector {
         boolean ignoreBeanClassBeanInfo, boolean ignoreSuperClassBeanInfo)
     {
         if (beanClass == null) {
-            return null;
+            throw new java.lang.NullPointerException();
         }
 
         BeanInfoWrapper beanInfoWrapper = findBeanInfoClassInCache(beanClass,
@@ -189,8 +191,6 @@ public class Introspector {
     }
 
     private static Class findBeanInfoClass(Class beanClass) {
-        Object result = null;
-
         String beanClassName = beanClass.getName();
         int idx = beanClassName.lastIndexOf(".");
         String shortBeanInfoClassName = beanClassName.substring(idx + 1,
@@ -701,14 +701,6 @@ class BeanInfoImpl implements BeanInfo {
         }
     }
     
-    private void clear() {
-        propertyDescriptors = null; 
-        methodDescriptors = null;
-        eventSetDescriptors = null;
-        defaultPropertyIndex = -1;
-        defaultEventIndex = -1;
-    }
-
     private Class beanClass = null;
     private PropertyDescriptor[] propertyDescriptors = null; 
     private MethodDescriptor[] methodDescriptors = null;
