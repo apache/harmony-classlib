@@ -1,4 +1,4 @@
-/* Copyright 2003, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2003, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public final class Inet6Address extends InetAddress {
 	 * @param address
 	 *            network address
 	 * @param name
-	 *            Name assocaited with the address
+	 *            Name associated with the address
 	 * @param scope_id
 	 *            The scope id for link or site local addresses
 	 */
@@ -71,6 +71,31 @@ public final class Inet6Address extends InetAddress {
 		}
 	}
 
+	/**
+	 * Constructs an IPv6 address according to the given <code>host</code>,
+	 * <code>addr</code> and <code>scope_id</code>.
+	 * 
+	 * @param host
+	 *            hostname associated with the address
+	 * @param addr
+	 *            network address
+	 * @param scope_id
+	 *            the scope id for link or site local addresses
+	 * @return an Inet6Address instance
+	 * @throws UnknownHostException
+	 *             if the address is null or of invalid length
+	 */
+	public static Inet6Address getByAddress(String host, byte[] addr,
+			int scope_id) throws UnknownHostException {
+		if (null == addr || 16 != addr.length) {
+			throw new UnknownHostException("Illegal ipv6 address");
+		}
+		if(scope_id < 0){
+			scope_id = 0;
+		}
+		return new Inet6Address(addr, host, scope_id);
+	}
+	
 	/**
 	 * Constructs an InetAddress, representing the <code>address</code> and
 	 * <code>hostName</code> and <code>scope_id</code>

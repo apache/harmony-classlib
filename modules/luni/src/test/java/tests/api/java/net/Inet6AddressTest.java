@@ -1,4 +1,4 @@
-/* Copyright 2003, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2003, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -825,6 +825,40 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 			}
 			;
 
+		}
+	}
+	
+	/**
+	 * @tests java.net.Inet6Address#getByAddress(String, byte[], int)
+	 */
+	public void test_getByAddressLString$BI(){
+		try {
+			Inet6Address.getByAddress("123", null, 0);
+			fail("should throw UnknownHostException");
+		} catch (UnknownHostException uhe) {
+			// expected 
+		}
+		byte[] addr1 = { (byte) 127, 0, 0, 1 };
+		try {
+			Inet6Address.getByAddress("123", addr1, 0);
+			fail("should throw UnknownHostException");
+		} catch (UnknownHostException uhe) {
+			// expected 
+		}
+
+		byte[] addr2 = { (byte) 0xFE, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0x02,
+				0x11, 0x25, (byte) 0xFF, (byte) 0xFE, (byte) 0xF8, (byte) 0x7C,
+				(byte) 0xB2 };
+		
+		try {
+			Inet6Address.getByAddress("123", addr2, 3);
+		} catch (UnknownHostException e) {
+			fail("no exception should be thrown");
+		}
+		try {
+			Inet6Address.getByAddress("123", addr2, 3);
+		} catch (UnknownHostException e) {
+			fail("no exception should be thrown");
 		}
 	}
 

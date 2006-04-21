@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -813,7 +813,7 @@ public class InetAddress extends Object implements Serializable {
 			throws UnknownHostException {
 		// just call the method by the same name passing in a default scope id
 		// of 0
-		return getByAddress(hostName, ipAddress, 0);
+		return getByAddressInternal(hostName, ipAddress, 0);
 	}
 
 	/**
@@ -837,7 +837,7 @@ public class InetAddress extends Object implements Serializable {
 	 *
 	 * @throws 		UnknownHostException
 	 */
-	static InetAddress getByAddress(String hostName, byte[] ipAddress,
+	static InetAddress getByAddressInternal(String hostName, byte[] ipAddress,
 			int scope_id) throws UnknownHostException {
 		byte[] copy_address;
 		if (ipAddress != null && ipAddress.length == 4) {
