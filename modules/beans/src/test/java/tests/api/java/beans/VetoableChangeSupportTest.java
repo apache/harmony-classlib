@@ -46,18 +46,6 @@ public class VetoableChangeSupportTest extends TestCase {
 	}
 
 	/*
-	 * Constructor a VetoableChangeSupport instance with null source
-	 */
-	public void testVetoableChangeSupport_null() {
-		MockSource source = null;
-		try {
-			VetoableChangeSupport support = new VetoableChangeSupport(source);
-			fail("Should throw NullPointerException.");
-		} catch (NullPointerException e) {
-		}
-	}
-
-	/*
 	 * Class under test for void addVetoableChangeListener(String,
 	 * VetoableChangeListener)
 	 */

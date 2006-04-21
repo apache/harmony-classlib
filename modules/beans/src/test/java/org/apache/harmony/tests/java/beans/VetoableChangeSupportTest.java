@@ -51,6 +51,19 @@ public class VetoableChangeSupportTest extends TestCase {
     public VetoableChangeSupportTest(String name) {
         super(name);
     }
+
+    /**
+     * @tests java.beans.VetoableChangeSupport#VetoableChangeSupport(
+     *        java.lang.Object)
+     */
+    public void testVetoableChangeSupport_null() {
+        try {
+            // Regression for HARMONY-228
+            new VetoableChangeSupport(null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+        }
+    }
     
     /**
      * The test checks the method add() with no property specified
