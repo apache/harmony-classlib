@@ -34,7 +34,7 @@ these implementations, but this forces the writer to use the reference design an
 the writer must then implement the natives, for which minimal documentation
 is provided.</p>
 
-All but two of the kernel classes are defined by the public Java 1.4.2 API.
+All but one of the kernel classes are defined by the public Java 1.4.2 API.
 These classes, described further in the
 doxygen <a href="annotated.html">class list</a>, belong to the
 following packages:<br>
@@ -46,8 +46,8 @@ following packages:<br>
   <li><span style="font-family: monospace;">java.security</span></li>
 </ul>
 
-The other two classes are currently in the <span style="font-family: monospace;">com.ibm.oti</span>
-package, which will be renamed at some future time for Harmony.
+The other class is in the <span style="font-family: monospace;">org.apache.harmony.kernel.vm</span>
+package.
 
 Some of the documented classes must be entirely implemented by the VM writer.
 For other classes the implementation is mostly provided. Some classes are documented
@@ -79,13 +79,14 @@ as documented in the method descriptions.
   <li><span style="font-family: monospace;">java.lang.ref.Reference</span> (PhantomReference, SoftReference, WeakReference)</li>
 </ul>
 
-The implementation of <span style="font-family: monospace;">com.ibm.oti.vm.VM</span> must
+The implementation of <span style="font-family: monospace;">org.apache.harmony.kernel.vm.VM</span> must
 be provided by the VM writer. This class provides class loading and stack walking methods
 that are not available in the public Java API such as a method which enables its caller to
-obtain the caller's class loader.  The package will be renamed in the Harmony project.
+obtain the caller's class loader. This class also provides an intern(String) method, which
+the intern() method of the String implementation in Harmony will call.
 
-The class <span style="font-family: monospace;">com.ibm.oti.lang.SystemProcess</span> is
-implemented, but is documented so the VM writer can use this class to implement
+The class <span style="font-family: monospace;">org.apache.harmony.luni.internal.process.SystemProcess</span> 
+is implemented, but is documented so the VM writer can use this class to implement
 <span style="font-family: monospace;">java.lang.Runtime.exec()</span>.
 
 The class <span style="font-family: monospace;">java.lang.ref.ReferenceQueue</span> is
@@ -106,11 +107,6 @@ writer can provide their own implementations of these classes.
 The class <span style="font-family: monospace;">java.lang.StackTraceElement</span> is
 implemented, but is documented so the VM writer can use the non-public fields and methods
 in the implementation of <span style="font-family: monospace;">java.lang.Throwable</span>.
-
-The implementation of <span style="font-family: monospace;">java.lang.String</span> is
-provided, but the VM writer must implement the
-<span style="font-family: monospace;">java.lang.String.intern()</span> method to complete
-the implementation of this class.
 
 The implementation of <span style="font-family: monospace;">java.lang.ThreadGroup</span>
 is provided. Certain non-public methods are documented as they are used by the VM when

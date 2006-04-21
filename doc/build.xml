@@ -18,6 +18,7 @@
 
     <property name="vm.doc.dir" value="vm_doc" />
     <property name="kernel.doc.dir" value="kernel_doc" />
+	<property name="classlib.doc.dir" value="classlib_doc" />
 
     <!-- import share properties -->
     <import file="${basedir}/../make/properties.xml" />
@@ -27,7 +28,7 @@
          ================================= -->
     <target name="all" 
         description="Target to rebuild the Harmony doc from scratch." 
-        depends="doxygen-kernel, doxygen-natives" />
+        depends="doxygen-kernel, doxygen-classlib, doxygen-natives" />
 
     <!-- ================================= 
           target: properties
@@ -49,7 +50,7 @@
         <!-- FIXME: consistent platform names should be used -->
         <property name="target.platform" value="linux.IA32" />
     </target>
-
+	
     <!-- ================================= 
           target: doxygen-kernel                      
          ================================= -->
@@ -63,6 +64,19 @@
         </exec>
     </target>
 
+	<!-- =================================
+	      target: doxygen-classlib
+	     ================================= -->
+	<target name="doxygen-classlib"
+		depends="properties, clean-classlib" 
+        description="Invoke doxygen on contributed classlib source">
+        <exec executable="doxygen${exe.suffix}" dir="..">
+            <arg line="doc/classlib/classlib.cfg" />
+            <env key="HARMONY_DOC_DIR" value="${basedir}" />
+            <env key="HARMONY_OS" value="${hy.os}" />
+        </exec>
+    </target>
+	
     <!-- ================================= 
           target: doxygen-natives                      
          ================================= -->
@@ -83,6 +97,16 @@
     <target name="clean-kernel" description="Clean away the generated kernel documentation.">
         <echo>Cleaning up kernel documentation directories</echo>
         <delete failonerror="false" dir='${kernel.doc.dir}' />
+    	<delete failonerror="false" file='DoxygenKernelLog.txt' />
+    </target>
+	
+	<!-- ================================= 
+          target: clean-classlib    
+         ================================= -->
+    <target name="clean-classlib" description="Clean away the generated classlib documentation.">
+        <echo>Cleaning up classlib documentation directories</echo>
+        <delete failonerror="false" dir='${classlib.doc.dir}' />
+    	<delete failonerror="false" file='DoxygenClasslibLog.txt' />
     </target>
 
     <!-- ================================= 
@@ -91,6 +115,7 @@
     <target name="clean-natives" description="Clean away the generated natives documentation.">
         <echo>Cleaning up natives documentation directories</echo>
         <delete failonerror="false" dir='${vm.doc.dir}' />
+    	<delete failonerror="false" file='DoxygenNativesLog.txt' />
     </target>
 
 
@@ -98,7 +123,7 @@
           target: clean         
          ================================= -->
     <target name="clean" 
-        depends="clean-kernel, clean-natives" 
+        depends="clean-kernel, clean-classlib, clean-natives" 
         description="Clean away the generated documentation." />
 
 </project>

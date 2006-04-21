@@ -98,7 +98,7 @@ The sequence is shown below:
 	The boot classpath is a list of JAR files which contain the bootstrap Java class library code.
 	The launcher provides a command-line prepend of the kernel (VM-specific) classes to the VM
     by specifying -Xbootclasspath/p to loads the kernel classes from the VM-specific subdirectory
-    of jre\bin.
+    of jre/bin.
 	The boot sequence configures the bootstrap class path in the JNI_OnLoad() function and
     updates the "com.ibm.oti.system.class.path" system property using the
 	\ref VMInterface "VM Interface". Currently this is accomplished by reading the bootstrap
