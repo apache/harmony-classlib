@@ -341,7 +341,7 @@ public class ServerSocketChannelTest extends TestCase {
                      System.err.println("Client connect fail!"); //$NON-NLS-1$
                 } else {
                     ByteBuffer sendBuf = ByteBuffer.wrap(MSG_CLIENT.getBytes());
-
+                    clientChannel.write(sendBuf);
                     Thread.currentThread().sleep(TIME_UNIT);
                     ByteBuffer receiveBuf = ByteBuffer.allocate(capacityNormal);
                     clientChannel.read(receiveBuf);
