@@ -932,6 +932,55 @@ public class PropertyDescriptorTest extends TestCase {
 		PropertyDescriptor pd = new PropertyDescriptor("fox01", FakeFox01.class);
 	}
 
+    //Regression test for HARMONY-237
+    public void testIntrospectionExpections() {
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor(null,null);
+            fail("Constructor PropertyDescriptor(null,null) should "+
+                 "throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            assertEquals("Target Bean class is null", e.getMessage());
+        }
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor(null,String.class);
+            fail("Constructor PropertyDescriptor(null,String.class) should "+
+                 "throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            assertEquals("bad property name", e.getMessage());
+        }
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor(null,null,null,null);
+            fail("Constructor PropertyDescriptor(null,null,null,null) should "+
+                 "throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            assertEquals("Target Bean class is null", e.getMessage());
+        }
+        try {
+            PropertyDescriptor pd =
+                new PropertyDescriptor(null,String.class,null,null);
+            fail("Constructor "+
+                 "PropertyDescriptor(null,String.class,null,null) should "+
+                 "throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            assertEquals("bad property name", e.getMessage());
+        }
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor(null,null,null);
+            fail("Constructor PropertyDescriptor(null,null,null) should "+
+                 "throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            assertEquals("bad property name", e.getMessage());
+        }
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor("",null,null);
+            fail("Constructor PropertyDescriptor(\"\",null,null) should "+
+                 "throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            assertEquals("bad property name", e.getMessage());
+        }
+    }
+
+    
 	static class FakeFox01 {
 		public String getFox01() {
 			return null;

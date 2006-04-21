@@ -45,18 +45,23 @@ public class PropertyDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public PropertyDescriptor(
-            String propertyName,
-            Class beanClass,
-            String getterName,
-            String setterName) throws IntrospectionException {
+    public PropertyDescriptor(String propertyName, Class beanClass,
+            String getterName, String setterName) throws IntrospectionException {
+
         super();
+        if (beanClass == null) {
+            throw new IntrospectionException("Target Bean class is null");
+        }
+        if (propertyName == null || propertyName.length() == 0) {
+            throw new IntrospectionException("bad property name");
+        }
+
         this.beanClass = beanClass;
         this.propertyName = propertyName;
-        
+
         this.setName(propertyName);
         this.setDisplayName(propertyName);
-        
+
         setWriteMethod(beanClass, setterName);
         setReadMethod(beanClass, getterName);
     }
@@ -67,11 +72,15 @@ public class PropertyDescriptor extends FeatureDescriptor {
     public PropertyDescriptor(String propertyName, Method getter, Method setter)
             throws IntrospectionException {
         super();
+        if (propertyName == null) {
+            throw new IntrospectionException("bad property name");
+        }
+
         this.propertyName = propertyName;
-        
+
         this.setName(propertyName);
         this.setDisplayName(propertyName);
-        
+
         setWriteMethod(setter);
         setReadMethod(getter);
     }
@@ -82,6 +91,13 @@ public class PropertyDescriptor extends FeatureDescriptor {
     public PropertyDescriptor(String propertyName, Class beanClass)
             throws IntrospectionException {
         super();
+        if (beanClass == null) {
+            throw new IntrospectionException("Target Bean class is null");
+        }
+        if (propertyName == null || propertyName.length() == 0) {
+            throw new IntrospectionException("bad property name");
+        }
+
         this.propertyName = propertyName;
         
         this.setName(propertyName);
