@@ -285,7 +285,65 @@ public class BerInputStream {
      * @throws IOException - if error occured
      */
     public void readGeneralizedTime() throws IOException {
-        throw new ASN1Exception("Not supported");
+        
+        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
+            throw new ASN1Exception(
+                    "Decoding constructed ASN.1 GeneralizedTime"
+                            + " type is not provided");
+        }
+
+        //FIXME: any other optimizations?
+        readContent();
+        //FIXME store string somewhere to allow a custom time type perform additional checks
+
+        // check syntax: the last char MUST be Z
+        if (buffer[offset - 1] != 'Z') {
+            // FIXME support only format that is acceptable for DER
+            throw new ASN1Exception(
+                    "ASN.1 GeneralizedTime: encoded format is not implemented");
+        }
+
+        // check syntax: MUST be YYYYMMDDHHMMSS[(./,)DDD]'Z'
+        if (length != 15 && (length < 17 || length > 19)) // invalid length
+        {
+            throw new ASN1Exception(
+                    "ASN.1 GeneralizedTime wrongly encoded at ["
+                            + contentOffset + ']');
+        }
+
+        // check content: milliseconds
+        if (length > 16) {
+            byte char14 = buffer[contentOffset + 14];
+            if (char14 != '.' && char14 != ',') {
+                throw new ASN1Exception(
+                        "ASN.1 GeneralizedTime wrongly encoded at ["
+                                + contentOffset + ']');
+            }
+        }
+
+        if (times == null) {
+            times = new int[7];
+        }
+        times[0] = strToInt(contentOffset, 4); //year
+        times[1] = strToInt(contentOffset + 4, 2); //month
+        times[2] = strToInt(contentOffset + 6, 2); //day
+        times[3] = strToInt(contentOffset + 8, 2); //hour
+        times[4] = strToInt(contentOffset + 10, 2); //minute
+        times[5] = strToInt(contentOffset + 12, 2); //second
+
+
+        if (length > 16) {
+            //FIXME optimize me
+            times[6] = strToInt(contentOffset + 15, length - 16);
+
+            if (length == 17) {
+                times[6] = times[6] * 100;
+            } else if (length == 18) {
+                times[6] = times[6] * 10;
+            }
+        }
+
+        //FIXME check all values for valid numbers!!!
     }
 
     /**

@@ -52,26 +52,6 @@ public abstract class ASN1Time extends ASN1StringType {
 
     }
 
-    public static int getTimeValue(String time, int offset, int length)
-            throws IOException {
-
-        int end = offset + length;
-        if (time.length() < end) {
-            throw new ASN1Exception("Wrong param"); //FIXME message & type
-        }
-
-        int c;
-        int result = 0;
-        for (int i = offset; i < end; i++) {
-            c = time.charAt(i) - 48;
-            if (c < 0 || c > 9) {
-                throw new ASN1Exception("Wrong param"); //FIXME message & type
-            }
-            result = result * 10 + c;
-        }
-        return result;
-    }
-
     public static long getMilliseconds(int[] times) {
         // count the number of milliseconds since Jan 1, 1970, 00:00:00 GMT
         long res = times[6]; //milliseconds

@@ -168,65 +168,28 @@ public final class DerInputStream extends BerInputStream {
         if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
             // It is a string type and it can be encoded as primitive or constructed.
             throw new ASN1Exception(
-                    "DER: ASN.1 GeneralizedTime type MUST have primitive encoding");
+                    "ASN.1 GeneralizedTime: constructed identifier at ["
+                            + tagOffset + "]. Not valid for DER.");
         }
 
-        //FIXME it should check format and invoke BerInputStream
-        //FIXME: any other optimizations?
-        readContent();
-        String timeStr = new String(buffer, contentOffset, length);
+        super.readGeneralizedTime();
 
-        //FIXME store string somewhere to allow a custom time type perform additional checks
+        // FIXME makes sense only if we support all GeneralizedTime formats 
+        // late check syntax: the last char MUST be Z
+        //if (buffer[offset - 1] != 'Z') {
+        //    throw new ASN1Exception(
+        //            "ASN.1 GeneralizedTime wrongly encoded at ["
+        //                    + contentOffset + ']');
+        //}
 
-        int len = timeStr.length();
-        // check syntax: MUST be YYYYMMDDHHMMSS[(./,)DDD]'Z'
-        if (timeStr.charAt(len - 1) != 'Z' // the last char MUST be Z
-                || len < 15 || len == 16 || len > 19) // invalid length
-        {
-            throw new IOException("ASN.1 GeneralizedTime wrongly encoded at ["
-                    + contentOffset + "].");
-        }
-
-        // check content: milliseconds
-        if (len > 16) {
-            char char14 = timeStr.charAt(14);
-            if (char14 != '.' && char14 != ',') {
-                throw new IOException(
-                        "ASN.1 GeneralizedTime wrongly encoded at ["
-                                + contentOffset + "].");
-            }
-        }
-
-        if (times == null) {
-            times = new int[7];
-        }
-        times[0] = ASN1Time.getTimeValue(timeStr, 0, 4); //year
-        times[1] = ASN1Time.getTimeValue(timeStr, 4, 2); //month
-        times[2] = ASN1Time.getTimeValue(timeStr, 6, 2); //day
-        times[3] = ASN1Time.getTimeValue(timeStr, 8, 2); //hour
-        times[4] = ASN1Time.getTimeValue(timeStr, 10, 2); //minute
-        times[5] = ASN1Time.getTimeValue(timeStr, 12, 2); //second
-
-        //FIXME check all values for valid numbers!!!
-
-        if (len > 16) {
-            //FIXME optimize me
-            times[6] = ASN1Time.getTimeValue(timeStr, 15, len - 16); //millisecond
-
-            // the fractional-seconds elements, if present MUST
-            // omit all trailing zeros
-            if (times[6] % 10 == 0) {
-                throw new IOException(
-                        "DER ASN.1 GeneralizedTime wrongly encoded at ["
-                                + contentOffset
-                                + "]. Trailing zeros MUST be omitted");
-            }
-
-            if (len == 17) {
-                times[6] = times[6] * 100;
-            } else if (len == 18) {
-                times[6] = times[6] * 10;
-            }
-        }
+        // the fractional-seconds elements, if present MUST
+        // omit all trailing zeros
+        // FIXME implement me
+        //        if () {
+        //            throw new IOException(
+        //                    "DER ASN.1 GeneralizedTime wrongly encoded at ["
+        //                            + contentOffset
+        //                            + "]. Trailing zeros MUST be omitted");
+        //        }
     }
 }
