@@ -45,12 +45,8 @@ import junit.framework.TestSuite;
  */
 public class X509CertificateTest extends TestCase {
 
-    /* The certificate to be tested */
-    private X509Certificate tbt_cert;
-
-    protected void setUp() throws Exception {
-        // will test only non abstract methods
-        tbt_cert = new X509Certificate() {
+    // has stub implementation for abstract methods
+    private static class MyX509Certificate extends X509Certificate {
 
             public void checkValidity()
                     throws CertificateExpiredException,
@@ -165,15 +161,13 @@ public class X509CertificateTest extends TestCase {
             public boolean hasUnsupportedCriticalExtension() {
                 return false;
             }
-        };
     }
 
     /**
-     *  getType() method testing.
+     * @tests java.security.cert.X509Certificate#getType()
      */
     public void testGetType() {
-        assertEquals("The type of certificate should be X.509",
-                                            tbt_cert.getType(), "X.509");
+        assertEquals("X.509", new MyX509Certificate().getType());
     }
 
     /**
@@ -181,7 +175,7 @@ public class X509CertificateTest extends TestCase {
      */
     public void testGetIssuerX500Principal() {
         try {
-            tbt_cert.getIssuerX500Principal();
+            new MyX509Certificate().getIssuerX500Principal();
             fail("Runtime exception should be thrown "
                         + "in default implementation");
         } catch (RuntimeException e) {
@@ -193,7 +187,7 @@ public class X509CertificateTest extends TestCase {
      */
     public void testGetSubjectX500Principal() {
         try {
-            tbt_cert.getSubjectX500Principal();
+            new MyX509Certificate().getSubjectX500Principal();
             fail("Runtime exception should be thrown "
                         + "in default implementation");
         } catch (RuntimeException e) {
@@ -201,48 +195,28 @@ public class X509CertificateTest extends TestCase {
     }
 
     /**
-     * getExtendedKeyUsage() method testing.
+     * @tests java.security.cert.X509Certificate#getExtendedKeyUsage()
      */
-    public void testGetExtendedKeyUsage() {
-        try {
-            if (tbt_cert.getExtendedKeyUsage() != null) {
-                fail("The default implementation should return null value");
-            }
-        } catch (UnsupportedOperationException e) {
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected exception was thrown.");
-        }
+    public void testGetExtendedKeyUsage() throws CertificateParsingException {
+        assertNull(new MyX509Certificate().getExtendedKeyUsage());
     }
 
     /**
-     * getSubjectAlternativeNames() method testing.
+     * @tests java.security.cert.X509Certificate#getSubjectAlternativeNames()
      */
-    public void testGetSubjectAlternativeNames() {
-        try {
-            if (tbt_cert.getSubjectAlternativeNames() != null) {
-                fail("The default implementation should return null value");
-            }
-        } catch (UnsupportedOperationException e) {
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected exception was thrown.");
-        }
+    public void testGetSubjectAlternativeNames()
+            throws CertificateParsingException {
+
+        assertNull(new MyX509Certificate().getSubjectAlternativeNames());
     }
 
     /**
-     * getIssuerAlternativeNames() method testing.
+     * @tests java.security.cert.X509Certificate#getIssuerAlternativeNames()
      */
-    public void testGetIssuerAlternativeNames() {
-        try {
-            if (tbt_cert.getIssuerAlternativeNames() != null) {
-                fail("The default implementation should return null value");
-            }
-        } catch (UnsupportedOperationException e) {
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected exception was thrown.");
-        }
+    public void testGetIssuerAlternativeNames()
+            throws CertificateParsingException {
+
+        assertNull(new MyX509Certificate().getIssuerAlternativeNames());
     }
 
     public static Test suite() {
