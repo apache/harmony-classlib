@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,15 +43,21 @@ public class AllTests {
 		suite.addTestSuite(ConcurrentModificationExceptionTest.class);
 		suite.addTestSuite(CurrencyTest.class);
 		suite.addTestSuite(DateTest.class);
+		suite.addTestSuite(DuplicateFormatFlagsExceptionTest.class);
 		suite.addTestSuite(EmptyStackExceptionTest.class);
 		suite.addTestSuite(EventObjectTest.class);
+		suite.addTestSuite(FormatFlagsConversionMismatchExceptionTest.class);
         suite.addTestSuite(FormattableFlagsTest.class);
+        suite.addTestSuite(FormatterClosedExceptionTest.class);
 		suite.addTestSuite(GregorianCalendarTest.class);
 		suite.addTestSuite(HashMapTest.class);
 		suite.addTestSuite(HashSetTest.class);
 		suite.addTestSuite(HashtableTest.class);
 		suite.addTestSuite(IdentityHashMapTest.class);
 		suite.addTestSuite(IdentityHashMap2Test.class);
+		suite.addTestSuite(IllegalFormatCodePointExceptionTest.class);
+		suite.addTestSuite(IllegalFormatConversionExceptionTest.class);
+		suite.addTestSuite(IllegalFormatFlagsExceptionTest.class);	
 		suite.addTestSuite(LinkedHashMapTest.class);
 		suite.addTestSuite(LinkedHashSetTest.class);
 		suite.addTestSuite(LinkedListTest.class);
