@@ -102,7 +102,6 @@
                     <exclude name="**/BeanContextServicesSupportTest.java" />
                     <exclude name="**/BeanContextSupportTest.java" />
                     <exclude name="**/EventHandlerTest.java" />
-                    <exclude name="**/PropertyChangeSupportTest.java" />
                     <exclude name="**/SimpleBeanInfoTest.java" />
                     <exclude name="**/VetoableChangeSupportTest.java" />
 
@@ -120,6 +119,7 @@
                     <exclude name="tests/api/java/beans/PersistenceDelegateTest.java" />
                     <exclude name="tests/api/java/beans/PropertyChangeEventTest.java" />
                     <exclude name="tests/api/java/beans/PropertyChangeListenerProxyTest.java" />
+                    <exclude name="tests/api/java/beans/PropertyChangeSupportTest.java" />
                     <exclude name="tests/api/java/beans/PropertyDescriptorTest.java" />
                     <exclude name="tests/api/java/beans/PropertyEditorManagerTest.java" />
                     <exclude name="tests/api/java/beans/PropertyEditorSupportTest.java" />

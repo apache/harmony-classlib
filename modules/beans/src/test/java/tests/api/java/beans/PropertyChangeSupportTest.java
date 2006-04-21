@@ -39,18 +39,6 @@ public class PropertyChangeSupportTest extends TestCase {
 	}
 
 	/*
-	 * Test the constructor with a null parameter.
-	 */
-	public void testConstructor_Null() {
-		try {
-			new PropertyChangeSupport(null);
-			fail("Should throw NullPointerException!");
-		} catch (NullPointerException ex) {
-			// expected
-		}
-	}
-
-	/*
 	 * Test the method addPropertyChangeListener(PropertyeChangeListener) with a
 	 * normal listener parameter.
 	 */

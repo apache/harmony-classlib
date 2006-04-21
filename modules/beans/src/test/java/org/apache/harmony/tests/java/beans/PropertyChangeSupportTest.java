@@ -57,7 +57,21 @@ public class PropertyChangeSupportTest extends TestCase {
     public PropertyChangeSupportTest(String name) {
         super(name);
     }
-    
+
+    /**
+     * @tests java.beans.PropertyChangeSupport#PropertyChangeSupport(
+     *        java.lang.Object)
+     */
+    public void testConstructor_Null() {
+        try {
+            // Regression for HARMONY-227
+            new PropertyChangeSupport(null);
+            fail("Should throw NullPointerException!");
+        } catch (NullPointerException ex) {
+            // expected
+        }
+    }
+
     /**
      * The test checks the serialization for listeners supporting serialization
      */

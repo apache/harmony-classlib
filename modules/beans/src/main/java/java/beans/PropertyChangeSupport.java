@@ -52,6 +52,9 @@ public class PropertyChangeSupport implements Serializable {
      * @com.intel.drl.spec_ref
      */
     public PropertyChangeSupport(Object sourceBean) {
+        if (sourceBean == null) {
+            throw new NullPointerException();
+        }
         this.sourceBean = sourceBean;
     }
 
@@ -255,7 +258,7 @@ public class PropertyChangeSupport implements Serializable {
         oos.writeObject(children);
         
         Object source = null;
-        if((sourceBean != null) && (sourceBean instanceof Serializable)) {
+        if(sourceBean instanceof Serializable) {
             source = sourceBean;
         }
         oos.writeObject(source);
