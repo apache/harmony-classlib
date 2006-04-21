@@ -103,7 +103,6 @@
                     <exclude name="tests/api/java/text/DecimalFormatTest.java"/>
                     <exclude name="**/MessageFormatTest.java"/>
                     <exclude name="**/NumberFormatTest.java"/>
-                    <exclude name="**/SimpleDateFormatTest.java"/>
                 </fileset>
             </batchtest>
         </junit>

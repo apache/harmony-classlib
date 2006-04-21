@@ -66,8 +66,8 @@ public class ASCCharsetEncoderTest extends CharsetEncoderTest {
 	}
 
 	public void testSpecificDefaultValue() {
-		assertTrue(encoder.averageBytesPerChar() == 1);
-		assertTrue(encoder.maxBytesPerChar() == 1);
+		assertEquals(1.0, encoder.averageBytesPerChar(), 0.0);
+		assertEquals(1.0, encoder.maxBytesPerChar(), 0.0);
 	}
 
 	CharBuffer getMalformedCharBuffer() {

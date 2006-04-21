@@ -112,9 +112,6 @@ public class JarFileTest extends junit.framework.TestCase {
 			fail("Exception during test: " + e.toString());
 		}
 
-		System.out.println("start");
-		System.out.flush();
-
 		try {
 			Support_Resources.copyFile(resources, null, jarName);
 			JarFile jarFile = new JarFile(new File(resources, jarName));
@@ -141,9 +138,6 @@ public class JarFileTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during entries test: " + e.toString());
 		}
-		System.out.println("finish");
-		System.out.flush();
-
 	}
 
 	/**

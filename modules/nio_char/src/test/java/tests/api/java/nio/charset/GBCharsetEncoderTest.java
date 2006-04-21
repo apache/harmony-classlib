@@ -67,8 +67,8 @@ public class GBCharsetEncoderTest extends CharsetEncoderTest {
 
 	public void testSpecificDefaultValue() {
 		// FIXME: different here!
-		assertTrue(encoder.maxBytesPerChar() == 4);
-		assertTrue(encoder.averageBytesPerChar() == 2.5);
+		assertEquals(4.0, encoder.maxBytesPerChar(), 0.0);
+		assertEquals(2.5, encoder.averageBytesPerChar(), 0.0);
 
 		// assertTrue(encoder.averageBytesPerChar() == 3);
 		// assertTrue(encoder.maxBytesPerChar() == 2);

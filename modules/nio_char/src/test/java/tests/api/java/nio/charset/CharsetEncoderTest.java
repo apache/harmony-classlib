@@ -122,7 +122,7 @@ public class CharsetEncoderTest extends TestCase {
 		// normal case
 		CharsetEncoder ec = new MockCharsetEncoder(cs, 1, MAX_BYTES);
 		assertSame(ec.charset(), cs);
-		assertTrue(ec.averageBytesPerChar() == 1);
+		assertEquals(1.0, ec.averageBytesPerChar(), 0);
 		assertTrue(ec.maxBytesPerChar() == MAX_BYTES);
 
 		/*
@@ -138,10 +138,11 @@ public class CharsetEncoderTest extends TestCase {
 		ec = new MockCharsetEncoder(new MockCharset("mock", new String[0]), 1,
 				MAX_BYTES);
 
-		// OK: average length less than max length
-		ec = new MockCharsetEncoder(cs, MAX_BYTES, 1);
-		assertTrue(ec.averageBytesPerChar() == MAX_BYTES);
-		assertTrue(ec.maxBytesPerChar() == 1);
+                // Commented out since the comment is wrong since MAX_BYTES > 1
+		// // OK: average length less than max length
+		// ec = new MockCharsetEncoder(cs, MAX_BYTES, 1);
+		// assertTrue(ec.averageBytesPerChar() == MAX_BYTES);
+		// assertTrue(ec.maxBytesPerChar() == 1);
 
 		// Illegal Argument: zero length
 		try {
@@ -177,7 +178,7 @@ public class CharsetEncoderTest extends TestCase {
 		// normal case
 		CharsetEncoder ec = new MockCharsetEncoder(cs, 1, MAX_BYTES, ba);
 		assertSame(ec.charset(), cs);
-		assertTrue(ec.averageBytesPerChar() == 1);
+		assertEquals(1.0, ec.averageBytesPerChar(), 0.0);
 		assertTrue(ec.maxBytesPerChar() == MAX_BYTES);
 		assertSame(ba, ec.replacement());
 
@@ -211,10 +212,12 @@ public class CharsetEncoderTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 		}
 
-		// OK: average length less than max length
-		ec = new MockCharsetEncoder(cs, MAX_BYTES, ba.length, ba);
-		assertTrue(ec.averageBytesPerChar() == MAX_BYTES);
-		assertTrue(ec.maxBytesPerChar() == ba.length);
+                // Commented out since the comment is wrong since MAX_BYTES > 1
+                // This test throws IllegalArgumentException on Harmony and RI
+		// // OK: average length less than max length
+		// ec = new MockCharsetEncoder(cs, MAX_BYTES, ba.length, ba);
+		// assertTrue(ec.averageBytesPerChar() == MAX_BYTES);
+		// assertTrue(ec.maxBytesPerChar() == ba.length);
 
 		// Illegal Argument: zero length
 		try {

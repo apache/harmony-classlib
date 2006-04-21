@@ -98,7 +98,7 @@ public class CharsetDecoderTest extends TestCase {
 		// normal case
 		CharsetDecoder ec = new MockCharsetDecoder(cs, 1, MAX_BYTES);
 		assertSame(ec.charset(), cs);
-		assertTrue(ec.averageCharsPerByte() == 1);
+		assertEquals(1.0, ec.averageCharsPerByte(), 0.0);
 		assertTrue(ec.maxCharsPerByte() == MAX_BYTES);
 
 		/*
@@ -107,16 +107,17 @@ public class CharsetDecoderTest extends TestCase {
 		// Normal case: null charset
 		ec = new MockCharsetDecoder(null, 1, MAX_BYTES);
 		assertNull(ec.charset());
-		assertTrue(ec.averageCharsPerByte() == 1);
+		assertEquals(1.0, ec.averageCharsPerByte(), 0.0);
 		assertTrue(ec.maxCharsPerByte() == MAX_BYTES);
 
 		ec = new MockCharsetDecoder(new CharsetEncoderTest.MockCharset("mock",
 				new String[0]), 1, MAX_BYTES);
 
-		// OK: average length less than max length
-		ec = new MockCharsetDecoder(cs, MAX_BYTES, 1);
-		assertTrue(ec.averageCharsPerByte() == MAX_BYTES);
-		assertTrue(ec.maxCharsPerByte() == 1);
+                // Commented out since the comment is wrong since MAX_BYTES > 1
+		// // OK: average length less than max length
+		// ec = new MockCharsetDecoder(cs, MAX_BYTES, 1);
+		// assertTrue(ec.averageCharsPerByte() == MAX_BYTES);
+		// assertTrue(ec.maxCharsPerByte() == 1);
 
 		// Illegal Argument: zero length
 		try {
