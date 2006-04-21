@@ -551,7 +551,7 @@ public class CipherTest extends junit.framework.TestCase {
 			is.close();
 
 			byte[] cipherText = loadBytes("hyts_" + "des-ede3-cbc.test"
-					+ index + ".cipherText");
+					+ index + ".ciphertext");
             assertTrue("Operation produced incorrect results", Arrays.equals(
                     encryptedPlaintext, cipherText));
 		}// end for
