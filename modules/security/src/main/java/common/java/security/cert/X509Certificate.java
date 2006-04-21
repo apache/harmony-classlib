@@ -21,17 +21,13 @@
 
 package java.security.cert;
 
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.security.Principal;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateNotYetValidException;
-import java.security.cert.CertificateParsingException;
-import java.security.cert.X509Extension;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
 import javax.security.auth.x500.X500Principal;
 
 /**
@@ -78,7 +74,21 @@ public abstract class X509Certificate
      * @com.intel.drl.spec_ref
      */
     public X500Principal getIssuerX500Principal() {
-        throw new RuntimeException("Method should be overriden.");
+
+        try {
+            // TODO if there is no X.509 certificate provider installed
+            // should we try to access Harmony X509CertImpl via classForName?
+            CertificateFactory factory = CertificateFactory
+                    .getInstance("X.509");
+
+            X509Certificate cert = (X509Certificate) factory
+                    .generateCertificate(new ByteArrayInputStream(getEncoded()));
+
+            return cert.getIssuerX500Principal();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get X500Principal issuer", e);
+        }
     }
 
     /**
@@ -90,7 +100,21 @@ public abstract class X509Certificate
      * @com.intel.drl.spec_ref
      */
     public X500Principal getSubjectX500Principal() {
-        throw new RuntimeException("Method should be overriden.");
+
+        try {
+            // TODO if there is no X.509 certificate provider installed
+            // should we try to access Harmony X509CertImpl via classForName?
+            CertificateFactory factory = CertificateFactory
+                    .getInstance("X.509");
+
+            X509Certificate cert = (X509Certificate) factory
+                    .generateCertificate(new ByteArrayInputStream(getEncoded()));
+
+            return cert.getSubjectX500Principal();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get X500Principal subject", e);
+        }
     }
 
     /**
