@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,11 +162,46 @@ public class StringWriterTest extends junit.framework.TestCase {
 		sw.write("This is a test string", 2, 2);
 		assertTrue("String not written properly", sw.toString().equals("is"));
 	}
+    
+	/**
+	 * @tests java.io.StringWriter#append(char)
+	 */
+	public void test_appendChar() throws IOException {
+	    char testChar = ' ';
+	    StringWriter stringWriter = new StringWriter(20);
+	    stringWriter.append(testChar);
+	    assertEquals(String.valueOf(testChar), stringWriter.toString());
+	    stringWriter.close();
+	}
 
 	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
+	 * @tests java.io.PrintWriter#append(CharSequence)
 	 */
+	public void test_appendCharSequence() throws IOException {
+
+	    String testString = "My Test String";
+	    StringWriter stringWriter = new StringWriter(20);
+	    stringWriter.append(testString);
+	    assertEquals(String.valueOf(testString), stringWriter.toString());
+	    stringWriter.close();
+	}
+
+	/**
+	 * @tests java.io.PrintWriter#append(CharSequence, int, int)
+	 */
+	public void test_appendCharSequenceIntInt() throws IOException {
+	    String testString = "My Test String";
+	    StringWriter stringWriter = new StringWriter(20);
+	    stringWriter.append(testString, 1, 3);
+	    assertEquals(testString.substring(1, 3), stringWriter.toString());
+	    stringWriter.close();
+
+	}
+    
+	/**
+     * Sets up the fixture, for example, open a network connection. This method
+     * is called before a test is executed.
+     */
 	protected void setUp() {
 
 		sw = new StringWriter();

@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ import org.apache.harmony.luni.util.PriviAction;
  * a problem has been encountered in this Stream.
  * 
  */
-public class PrintStream extends FilterOutputStream {
+public class PrintStream extends FilterOutputStream implements Appendable,
+		Closeable {
 
 	/**
 	 * protect writes to the underlying stream.
@@ -52,6 +53,10 @@ public class PrintStream extends FilterOutputStream {
 
 	private final String lineSeparator = (String) AccessController
 			.doPrivileged(new PriviAction("line.separator")); //$NON-NLS-1$
+
+	static final String TOKEN_NULL = "null"; //$NON-NLS-1$
+
+	// private Formatter formatter;
 
 	/**
 	 * Constructs a new PrintStream on the OutputStream <code>out</code>. All
@@ -113,6 +118,95 @@ public class PrintStream extends FilterOutputStream {
 		if (!Charset.isSupported(enc))
 			throw new UnsupportedEncodingException(enc);
 		encoding = enc;
+	}
+
+	/**
+	 * Constructs a new PrintStream on the file <code>file</code>. All writes
+	 * to the target can now take place through this PrintStream. Its encoding
+	 * character set is the default charset in the VM.
+	 * 
+	 * @param file
+	 *            the file to provide convenience methods on.
+	 * @throws FileNotFoundException
+	 *             if the file does not exist or cannot be opened to write. Or the file cannot be created or any problem when open the file to write.
+	 * @throws SecurityException
+	 *             if the security manager exists and denies the write to the
+	 *             file.
+	 */
+	public PrintStream(File file) throws FileNotFoundException {
+		super(new FileOutputStream(file));
+	}
+
+	/**
+	 * Constructs a new PrintStream on the file <code>file</code>. All writes
+	 * to the target can now take place through this PrintStream. Its encoding
+	 * character set name is <code>csn</code>.
+	 * 
+	 * @param file
+	 *            the file to provide convenience methods on.
+	 * @param csn
+	 *            the character set name
+	 * @throws FileNotFoundException
+	 *             if the file does not exist or cannot be opened to write. Or
+	 *             the file cannot be created or any problem when open the file
+	 *             to write.
+	 * @throws SecurityException
+	 *             if the security manager exists and denies the write to the
+	 *             file.
+	 * @throws UnsupportedEncodingException
+	 *             if the chosen character set is not supported
+	 */
+	public PrintStream(File file, String csn) throws FileNotFoundException,
+			UnsupportedEncodingException {
+		super(new FileOutputStream(file));
+		if (csn == null)
+			throw new NullPointerException();
+		if (!Charset.isSupported(csn))
+			throw new UnsupportedEncodingException();
+		encoding = csn;
+	}
+
+	/**
+	 * Constructs a new PrintStream on the file the name of which is<code>fileName</code>.
+	 * All writes to the target can now take place through this PrintStream. Its
+	 * encoding character set is the default charset in the VM.
+	 * 
+	 * @param file
+	 *            the file to provide convenience methods on.
+	 * @throws FileNotFoundException
+	 *             if the file does not exist or cannot be opened to write. Or
+	 *             the file cannot be created or any problem when open the file
+	 *             to write.
+	 * @throws SecurityException
+	 *             if the security manager exists and denies the write to the
+	 *             file.
+	 */
+	public PrintStream(String fileName) throws FileNotFoundException {
+		this(new File(fileName));
+	}
+
+	/**
+	 * Constructs a new PrintStream on the file the name of which is<code>fileName</code>.
+	 * All writes to the target can now take place through this PrintStream. Its
+	 * encoding character set name is <code>csn</code>.
+	 * 
+	 * @param file
+	 *            the file to provide convenience methods on.
+	 * @param csn
+	 *            the character set name
+	 * @throws FileNotFoundException
+	 *             if the file does not exist or cannot be opened to write. Or
+	 *             the file cannot be created or any problem when open the file
+	 *             to write.
+	 * @throws SecurityException
+	 *             if the security manager exists and denies the write to the
+	 *             file.
+	 * @throws UnsupportedEncodingException
+	 *             if the chosen character set is not supported
+	 */
+	public PrintStream(String fileName, String csn)
+			throws FileNotFoundException, UnsupportedEncodingException {
+		this(new File(fileName), csn);
 	}
 
 	/**
@@ -482,5 +576,70 @@ public class PrintStream extends FilterOutputStream {
 				setError();
 			}
 		}
+	}
+
+	/**
+	 * Append a char <code>c</code> to the PrintStream. The
+	 * PrintStream.append(<code>c</code>) works the same way as
+	 * PrintStream.print(<code>c</code>).
+	 * 
+	 * @param c
+	 *            The character appended to the PrintStream.
+	 * @return The PrintStream.
+	 */
+	public PrintStream append(char c) {
+		print(c);
+		return this;
+	}
+
+	/**
+	 * Append a CharSequence <code>csq</code> to the PrintStream. The
+	 * PrintStream.append(<code>csq</code>) works the same way as
+	 * PrintStream.print(<code>csq</code>.toString()). If <code>csq</code>
+	 * is null, then a CharSequence just contains then "null" will be
+	 * substituted for <code>csq</code>.
+	 * 
+	 * @param csq
+	 *            The CharSequence appended to the PrintStream.
+	 * @return The PrintStream.
+	 */
+	public PrintStream append(CharSequence csq) {
+		if (null == csq) {
+			print(TOKEN_NULL);
+		} else {
+			print(csq.toString());
+		}
+		return this;
+	}
+
+	/**
+	 * Append a subsequence of a CharSequence <code>csq</code> to the
+	 * PrintStream. The first char and the last char of the subsequnce is
+	 * specified by the parameter <code>start</code> and <code>end</code>.
+	 * The PrintStream.append(<code>csq</code>) works the same way as
+	 * PrintStream.print (<code>csq</code>csq.subSequence(<code>start</code>,<code>end</code>).toString).If
+	 * <code>csq</code> is null, then "null" will be substituted for
+	 * <code>csq</code>.
+	 * 
+	 * @param csq
+	 *            The CharSequence appended to the PrintStream.
+	 * @param start
+	 *            The index of the first char in the CharSequence appended to
+	 *            the PrintStream.
+	 * @param end
+	 *            The index of the char after the last one in the CharSequence
+	 *            appended to the PrintStream.
+	 * @return The PrintStream.
+	 * @throws IndexOutOfBoundsException
+	 *             If start is less than end, end is greater than the length of
+	 *             the CharSequence, or start or end is negative.
+	 */
+	public PrintStream append(CharSequence csq, int start, int end) {
+		if (null == csq) {
+			print(TOKEN_NULL.substring(start, end));
+		} else {
+			print(csq.subSequence(start, end).toString());
+		}
+		return this;
 	}
 }

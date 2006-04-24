@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -473,5 +473,72 @@ public class PrintWriter extends Writer {
 	 */
 	public void write(String str, int offset, int count) {
 		write(str.substring(offset, offset + count).toCharArray());
+	}
+
+	/**
+	 * Append a char <code>c</code>to the PrintWriter. The
+	 * PrintWriter.append(<code>c</code>) works the same way as
+	 * PrintWriter.write(<code>c</code>).
+	 * 
+	 * @override Writer.append
+	 * @param c
+	 *            The character appended to the PrintWriter.
+	 * @return The PrintWriter.
+	 */
+	public PrintWriter append(char c) {
+		write(c);
+		return this;
+	}
+
+	/**
+	 * Append a CharSequence <code>csq</code> to the PrintWriter. The
+	 * PrintWriter.append(<code>csq</code>) works the same way as
+	 * PrintWriter.write(<code>csq</code>.toString()). If <code>csq</code>
+	 * is null, then "null" will be subsituted for <code>csq</code>
+	 * 
+	 * @override Writer.append
+	 * @param csq
+	 *            The CharSequence appended to the PrintWriter.
+	 * @return The PrintWriter
+	 */
+	public PrintWriter append(CharSequence csq) {
+		if (null == csq) {
+			append(TOKEN_NULL, 0, TOKEN_NULL.length());
+		} else {
+			append(csq, 0, csq.length());
+		}
+		return this;
+	}
+
+	/**
+	 * Append a subsequence of a CharSequence <code>csq</code> to the
+	 * PrintWriter. The first char and the last char of the subsequnce is
+	 * specified by the parameter <code>start</code> and <code>end</code>.
+	 * The PrintWriter.append(<code>csq</code>) works the same way as
+	 * PrintWriter.write(<code>csq</code>.subSequence(<code>start</code>,<code>end</code>).toString).If
+	 * <code>csq</code> is null, then "null" will be substituted for
+	 * <code>csq</code>.
+	 * 
+	 * @override Writer.append
+	 * @param csq
+	 *            The CharSequence appended to the PrintWriter.
+	 * @param start
+	 *            The index of the first char in the CharSequence appended to
+	 *            the PrintWriter.
+	 * @param end
+	 *            The index of the char after the last one in the CharSequence
+	 *            appended to the PrintWriter.
+	 * @return The PrintWriter.
+	 * @throws IndexOutOfBoundsException
+	 *             If start is less than end, end is greater than the length of
+	 *             the CharSequence, or start or end is negative.
+	 */
+	public PrintWriter append(CharSequence csq, int start, int end) {
+		if (null == csq) {
+			csq = TOKEN_NULL;
+		}
+		String output = csq.subSequence(start, end).toString();
+		write(output, 0, output.length());
+		return this;
 	}
 }

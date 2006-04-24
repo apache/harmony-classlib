@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -582,6 +582,47 @@ public class PrintWriterTest extends junit.framework.TestCase {
 			fail("IOException during test : " + e.getMessage());
 		}
 		assertTrue("Wrote incorrect char[] string: " + s, s.equals("World"));
+	}
+	
+	/**
+	 * @tests java.io.PrintWriter#append(char)
+	 */
+	public void test_appendChar() {
+	char testChar = ' ';
+	ByteArrayOutputStream out = new ByteArrayOutputStream();
+	PrintWriter printWriter = new PrintWriter(out);
+	printWriter.append(testChar);
+	printWriter.flush();
+	assertEquals(String.valueOf(testChar),out.toString());
+	printWriter.close();
+	}
+	/**
+	 * @tests java.io.PrintWriter#append(CharSequence)
+	 */
+	public void test_appendCharSequence() {
+		
+		String testString = "My Test String";
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintWriter printWriter = new PrintWriter(out);
+		printWriter.append(testString);
+		printWriter.flush();
+		assertEquals(testString, out.toString());
+		printWriter.close();	
+
+	}
+
+	/**
+	 *  @tests java.io.PrintWriter#append(CharSequence, int, int)
+	 */
+	public void test_appendCharSequenceIntInt() {
+		String testString = "My Test String";
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintWriter printWriter = new PrintWriter(out);
+		printWriter.append(testString, 1, 3);
+		printWriter.flush();
+		assertEquals(testString.substring(1, 3), out.toString());
+		printWriter.close();
+
 	}
 
 	/**

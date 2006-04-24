@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,10 @@ package java.io;
  * 
  * @see Reader
  */
-public abstract class Writer {
+public abstract class Writer implements Appendable, Closeable, Flushable {
+    
+    static final String TOKEN_NULL = "null";
+    
 	/** The object used to synchronize access to the writer. */
 	protected Object lock;
 
@@ -164,4 +167,74 @@ public abstract class Writer {
 		} else
 			throw new StringIndexOutOfBoundsException();
 	}
+
+	/**
+	 * Append a char <code>c</code>to the Writer. The Writer.append(<code>c</code>)
+	 * works the same as Writer.write(<code>c</code>).
+	 * 
+	 * @param c
+	 *            The character appended to the Writer.
+	 * @return The Writer.
+	 * @throws IOException
+	 *             If any IOException raises during the procedure.
+	 */
+	public Writer append(char c) throws IOException {
+		write(c);
+		return this;
+	}
+
+	/**
+	 * Append a CharSequence <code>csq</code> to the Writer. The
+	 * Writer.append(<code>csq</code>) works the same way as Writer.write(<code>csq</code>.toString()).
+	 * If <code>csq</code> is null, then "null" will be substituted for
+	 * <code>csq</code>.
+	 * 
+	 * @param csq
+	 *            The CharSequence appended to the Writer.
+	 * @return The Writer.
+	 * @throws IOException
+	 *             If any IOException raises during the procedure.
+	 */
+	public Writer append(CharSequence csq) throws IOException {
+		if (null == csq) {
+			write(TOKEN_NULL);
+		} else {
+			write(csq.toString());
+		}
+		return this;
+	}
+
+	/**
+	 * Append a subsequence of a CharSequence <code>csq</code> to the Writer.
+	 * The first char and the last char of the subsequnce is specified by the
+	 * parameter <code>start</code> and <code>end</code>. The
+	 * Writer.append(<code>csq</code>) works the same way as Writer.write (<code>csq</code>csq.subSequence(<code>start</code>,<code>end</code>).toString).
+	 * If <code>csq</code> is null, then "null" will be substituted for
+	 * <code>csq</code>.
+	 * 
+	 * @param csq
+	 *            The CharSequence appended to the Writaer.
+	 * @param start
+	 *            The index of the first char in the CharSequence appended to
+	 *            the Writer.
+	 * @param end
+	 *            The index of the char after the last one in the CharSequence
+	 *            appended to the Writer.
+	 * @return The Writer.
+	 * @throws IndexOutOfBoundsException
+	 *             If start is less than end, end is greater than the length of
+	 *             the CharSequence, or start or end is negative.
+	 * @throws IOException
+	 *             If any IOException raises during the procedure.
+	 */
+	public Writer append(CharSequence csq, int start, int end)
+			throws IOException {
+		if (null == csq) {
+			write(TOKEN_NULL.substring(start, end));
+		} else {
+			write(csq.subSequence(start, end).toString());
+		}
+		return this;
+	}
+
 }

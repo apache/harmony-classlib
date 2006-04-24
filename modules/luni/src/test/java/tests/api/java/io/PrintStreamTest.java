@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
 
 package tests.api.java.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 public class PrintStreamTest extends junit.framework.TestCase {
 
@@ -500,6 +502,47 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		os.write('t');
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		assertTrue("Incorrect char written", bis.read() == 't');
+	}
+	
+	
+	/**
+	 * @tests java.io.PrintStream#append(char)
+	 */
+	public void test_appendChar() throws IOException{
+	char testChar = ' ';
+	ByteArrayOutputStream out = new ByteArrayOutputStream();
+	PrintStream printStream = new PrintStream(out);
+	printStream.append(testChar);
+	printStream.flush();
+	assertEquals(String.valueOf(testChar),out.toString());
+	printStream.close();
+	}
+	/**
+	 * @tests java.io.PrintStream#append(CharSequence)
+	 */
+	public void test_appendCharSequence() {
+		
+		String testString = "My Test String";
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream printStream = new PrintStream(out);
+		printStream.append(testString);
+		printStream.flush();
+		assertEquals(testString, out.toString());
+		printStream.close();
+	}
+
+	/**
+	 *  @tests java.io.PrintStream#append(CharSequence, int, int)
+	 */
+	public void test_appendCharSequenceIntInt() {
+		String testString = "My Test String";
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream printStream = new PrintStream(out);
+		printStream.append(testString, 1, 3);
+		printStream.flush();
+		assertEquals(testString.substring(1, 3), out.toString());
+		printStream.close();
+
 	}
 
 	/**
