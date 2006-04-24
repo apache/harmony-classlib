@@ -42,6 +42,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
 import org.apache.harmony.security.asn1.ASN1BitString;
+import org.apache.harmony.security.cert.TestUtils;
 import org.apache.harmony.security.provider.cert.X509CertImpl;
 import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.*;
@@ -325,11 +326,31 @@ public class X509CertImplTest extends TestCase {
     }
     
     /**
-     * getVersion() method testing.
+     * @tests java.security.cert.X509Certificate#getVersion()
      */
-    public void testGetVersion() {
-        assertEquals("The version of the certificate should be 2", 
-                3, certificate.getVersion());
+    public void testGetVersion() throws IOException {
+
+        byte[] x509CertEnc = TestUtils.getX509Certificate_v1();
+
+        // test initial version that is 1
+        assertEquals("Version 1:", 1, new X509CertImpl(x509CertEnc)
+                .getVersion());
+
+        // as fas as we know offset of version byte in the cert. encoding
+        // it is possible to change it to test other versions
+
+        // offset of version byte in certificate encoding
+        int offset = 8;
+
+        // set version to 2
+        x509CertEnc[offset] = 1;
+        assertEquals("Version 2:", 2, new X509CertImpl(x509CertEnc)
+                .getVersion());
+
+        // set version to 3
+        x509CertEnc[offset] = 2;
+        assertEquals("Version 3:", 3, new X509CertImpl(x509CertEnc)
+                .getVersion());
     }
     
     /**

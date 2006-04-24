@@ -134,7 +134,7 @@ public class X509CertImpl extends X509Certificate {
     }
     
     public int getVersion() {
-        return 3;
+        return tbsCert.getVersion() + 1;
     }
 
     public BigInteger getSerialNumber() {
