@@ -22,12 +22,12 @@ import java.util.Iterator;
  * statement.</p>
  * @since 1.5
  */
-public interface Iterable /*<T>*/ {
-    //TODO Add generic declarations
+public interface Iterable<T> {
+
     /**
      * <p>Returns an {@link Iterator} for the elements in this object.</p>
      * 
      * @return An <code>Iterator</code> instance.
      */
-    Iterator /*<T>*/ iterator();
+    Iterator<T> iterator();
 }
