@@ -15,7 +15,6 @@
 
 package java.lang;
 
-
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -41,8 +40,7 @@ import java.util.Arrays;
  * @see StringBuilder
  * @since 1.0
  */
-public final class StringBuffer implements Serializable, CharSequence {
-    //TODO: Add 'Appendable' to implements when return type covariance is supported.
+public final class StringBuffer implements Appendable, Serializable, CharSequence {
 	
 	private static final long serialVersionUID = 3388685877147921107L;
 

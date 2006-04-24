@@ -44,9 +44,7 @@ import java.io.Serializable;
  * 
  * @author Nathan Beyer (Harmony)
  */
-public final class StringBuilder implements CharSequence, Serializable {
-
-    // TODO add 'implements Appendable' (see HARMONY-103)
+public final class StringBuilder implements Appendable, CharSequence, Serializable {
 
     private static final long serialVersionUID = 4383685877147921099L;
 
