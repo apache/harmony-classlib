@@ -20,6 +20,7 @@ import java.nio.channels.FileChannel;
 
 import org.apache.harmony.luni.platform.IFileSystem;
 import org.apache.harmony.luni.platform.Platform;
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.nio.FileChannelFactory;
 
 /**
@@ -615,7 +616,8 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 	 */
 	public void seek(long pos) throws IOException {
         if (pos < 0) {
-            throw new IOException("seek position is negative");
+            //seek position is negative
+            throw new IOException(Msg.getString("K0347")); //$NON-NLS-1$
         }
         openCheck();
         synchronized (repositionLock) {
