@@ -17,6 +17,7 @@ package org.apache.harmony.luni.net;
 import java.io.FileDescriptor;
 import java.net.DatagramSocketImpl;
 import java.net.InetAddress;
+import java.net.Proxy;
 import java.net.SocketImpl;
 
 
@@ -24,6 +25,12 @@ public class SocketImplProvider {
     
     public static SocketImpl getSocketImpl(){
         return new PlainSocketImpl2();
+    }
+    /*
+     * gets a SocketImpl with specified proxy.
+     */
+    public static SocketImpl getSocketImpl(Proxy proxy){
+        return new PlainSocketImpl2(proxy);
     }
     
     public static SocketImpl getSocketImpl(FileDescriptor fd, int localport, InetAddress addr, int port){

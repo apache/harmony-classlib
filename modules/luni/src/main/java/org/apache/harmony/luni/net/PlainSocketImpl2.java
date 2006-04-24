@@ -18,9 +18,8 @@ package org.apache.harmony.luni.net;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Proxy;
 import java.net.SocketException;
-
-import org.apache.harmony.luni.net.NetUtil;
 
 
 /**
@@ -43,6 +42,14 @@ class PlainSocketImpl2 extends PlainSocketImpl {
     
     public PlainSocketImpl2(){
         super();
+    }
+    
+    /*
+     * creates an instance with specified proxy.
+     */
+    public PlainSocketImpl2(Proxy proxy){
+    	super();
+    	this.proxy = proxy;
     }
 
     /**

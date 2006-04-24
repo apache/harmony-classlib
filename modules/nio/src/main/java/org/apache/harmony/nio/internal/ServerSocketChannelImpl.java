@@ -250,7 +250,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
             // close the
             // ServerSocket as well. The ServerSocket cannot be used for a
             // second accept.
-            if (NetUtil.usingSocks()) {
+            if (NetUtil.usingSocks(null)) {
                 return super.accept();
             }
 

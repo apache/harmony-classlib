@@ -24,11 +24,13 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.security.Permission;
 
 import tests.support.Support_Configuration;
 import tests.support.Support_PortManager;
@@ -2514,8 +2516,87 @@ public class SocketTest extends SocketTestCase {
 	}
 	
 	/**
-	 * 
+	 * @tests java.net.Socket#Socket(Proxy)
 	 */
+	public void test_ConstructorLjava_net_Proxy_Exception() {
+
+	    SocketAddress addr1 = InetSocketAddress.createUnresolved("127.0.0.1",
+	            80);
+	    SocketAddress addr2 = new InetSocketAddress("localhost", 80);
+
+	    Proxy proxy1 = new Proxy(Proxy.Type.HTTP, addr1);
+	    // IllegalArgumentException test
+	    try {
+	        new Socket(proxy1);
+	        fail("should throw IllegalArgumentException");
+	    } catch (IllegalArgumentException e) {
+	        // expected
+	    }
+
+	    Proxy proxy2 = new Proxy(Proxy.Type.SOCKS, addr1);
+	    try {
+	        new Socket(proxy2);
+	    } catch (IllegalArgumentException e) {
+	        fail("should not throw IllegalArgumentException");
+	    }
+
+	    try {
+	        new Socket(Proxy.NO_PROXY);
+	    } catch (IllegalArgumentException e) {
+	        fail("should not throw IllegalArgumentException");
+	    }
+
+	    // SecurityException test
+	    SecurityManager originalSecurityManager = System.getSecurityManager();
+	    try {
+	        System.setSecurityManager(new MockSecurityManager());
+	    } catch (SecurityException e) {
+	        System.err
+	        .println("No permission to setSecurityManager, security related test in test_ConstructorLjava_net_Proxy_Security is ignored");
+	        return;
+	    }
+
+	    Proxy proxy3 = new Proxy(Proxy.Type.SOCKS, addr1);
+	    Proxy proxy4 = new Proxy(Proxy.Type.SOCKS, addr2);
+	    try {
+	        try {
+	            new Socket(proxy3);
+	            fail("should throw SecurityException");
+	        } catch (SecurityException e) {
+	            // expected
+	        }
+	        try {
+	            new Socket(proxy4);
+	            fail("should throw SecurityException");
+	        } catch (SecurityException e) {
+	            // expected
+	        }
+	    } finally {
+	        System.setSecurityManager(originalSecurityManager);
+	    }
+
+	}
+
+	static class MockSecurityManager extends SecurityManager {
+
+	    public void checkConnect(String host, int port) {
+	        if ("127.0.0.1".equals(host)) {
+	            throw new SecurityException("permission is not allowed");
+	        }
+	    }
+
+	    public void checkPermission(Permission permission) {
+	        if ("setSecurityManager".equals(permission.getName())) {
+	            return;
+	        }
+	        super.checkPermission(permission);
+	    }
+
+	}
+    
+	/**
+     * 
+     */
 	protected int startServer(String name) {
 		int portNumber = Support_PortManager.getNextPort();
 		try {

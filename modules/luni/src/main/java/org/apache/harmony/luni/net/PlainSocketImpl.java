@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
@@ -31,14 +32,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.AccessController;
 
-import org.apache.harmony.luni.net.NetUtil;
-import org.apache.harmony.luni.net.PlainSocketImpl;
-import org.apache.harmony.luni.net.SocketInputStream;
-import org.apache.harmony.luni.net.SocketOutputStream;
-import org.apache.harmony.luni.net.Socks4Message;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
-
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
@@ -79,6 +74,8 @@ class PlainSocketImpl extends SocketImpl {
 	public boolean streaming = true;
 
 	public boolean shutdownInput = false;
+	
+	Proxy proxy = null;
 
 	/**
 	 * Accepts a connection on the provided socket, by calling the IP stack.
@@ -89,7 +86,7 @@ class PlainSocketImpl extends SocketImpl {
 	 *                if an error occurs while accepting
 	 */
 	protected void accept(SocketImpl newImpl) throws IOException {
-		if (NetUtil.usingSocks()) {
+		if (NetUtil.usingSocks(proxy)) {
 			((PlainSocketImpl) newImpl).socksBind();
 			((PlainSocketImpl) newImpl).socksAccept();
 			return;
@@ -136,7 +133,7 @@ class PlainSocketImpl extends SocketImpl {
 	 *                if an error occurs while binding
 	 */
 	protected void bind(InetAddress anAddr, int aPort) throws IOException {
-		if (NetUtil.usingSocks()) {
+		if (NetUtil.usingSocks(proxy)) {
 			socksBind();
 			return;
 		}
@@ -224,7 +221,7 @@ class PlainSocketImpl extends SocketImpl {
 
 		try {
 			if (streaming) {
-				if (NetUtil.usingSocks()) {
+				if (NetUtil.usingSocks(proxy)) {
 					socksConnect(anAddr, aPort, 0);
 				} else {
 					if (timeout == 0) {
@@ -343,7 +340,7 @@ class PlainSocketImpl extends SocketImpl {
 	 *                thrown if an error occurs while listening
 	 */
 	protected void listen(int backlog) throws IOException {
-		if (NetUtil.usingSocks()) {
+		if (NetUtil.usingSocks(proxy)) {
 			// Do nothing for a SOCKS connection. The listen occurs on the
 			// server during the bind.
 			return;
@@ -400,7 +397,13 @@ class PlainSocketImpl extends SocketImpl {
 	 */
 	private int socksGetServerPort() {
 		int portValue = -1;
-
+		
+		if(null != proxy && Proxy.Type.SOCKS == proxy.type()){
+			// get from proxy first
+			InetSocketAddress addr = (InetSocketAddress)proxy.address();
+			return addr.getPort();
+		}
+		
 		String proxyPort = (String) AccessController
 				.doPrivileged(new PriviAction("socksProxyPort"));
 
@@ -418,9 +421,19 @@ class PlainSocketImpl extends SocketImpl {
 	 * Get the InetAddress of the SOCKS proxy server.
 	 */
 	private InetAddress socksGetServerAddress() throws UnknownHostException {
-		String proxyName = (String) AccessController
+		String proxyName;
+		if(null != proxy && Proxy.Type.SOCKS == proxy.type()){
+			// get from proxy first
+			InetSocketAddress addr = (InetSocketAddress)proxy.address();
+			proxyName = addr.getHostName();
+			if(null == proxyName){
+				proxyName = addr.getAddress().getHostAddress();
+			}
+		}else{
+			// get from system properties
+			proxyName = (String) AccessController
 				.doPrivileged(new PriviAction("socksProxyHost"));
-
+		}
 		InetAddress anAddr = netImpl.getHostByName(proxyName,
                 NetUtil.preferIPv6Addresses());
 		return anAddr;

@@ -25,7 +25,6 @@ import java.security.AccessController;
 import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.net.SocketImplProvider;
 import org.apache.harmony.luni.platform.Platform;
-
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
@@ -52,6 +51,8 @@ public class Socket {
 	private boolean isOutputShutdown = false;
 
 	private Object connectLock = new Object();
+	
+	private Proxy proxy;
 
 	static final int MULTICAST_IF = 1;
 
@@ -78,6 +79,41 @@ public class Socket {
 	public Socket() {
 		impl = factory != null ? factory.createSocketImpl()
 				: SocketImplProvider.getSocketImpl();
+	}
+	/**
+	 * Constructs a connection-oriented Socket with specified 
+	 * <code>proxy</code>. 
+	 * 
+	 * Method <code>checkConnect</code> is called if a security manager exists,
+	 * and the proxy host address and port number are passed as parameters.  
+	 * 
+	 * @param proxy
+	 *            the specified proxy for this Socket.
+	 * @throws IllegalArgumentException
+	 *             if the proxy is null or of an invalid type.
+	 * @throws SecurityException
+	 *             if a security manager exists and it denies the permission
+	 *             to connect to proxy. 
+	 */
+	public Socket(Proxy proxy){
+		if(null == proxy || Proxy.Type.HTTP == proxy.type()){
+			throw new IllegalArgumentException("proxy is null or invalid type");
+		}
+		InetSocketAddress address = (InetSocketAddress)proxy.address();
+		if(null != address){
+			InetAddress addr = address.getAddress();
+			String host;
+			if(null != addr){
+				host = addr.getHostAddress();
+			}else{
+				host = address.getHostName();
+			}
+			int port = address.getPort();
+			checkConnectPermission(host, port);
+		}
+		impl = factory != null ? factory.createSocketImpl()
+				: SocketImplProvider.getSocketImpl(proxy);
+		this.proxy = proxy;
 	}
 
 	/**
@@ -248,11 +284,25 @@ public class Socket {
 	 *            the port on the destination host
 	 */
 	void checkDestination(InetAddress destAddr, int dstPort) {
-		if (dstPort < 0 || dstPort > 65535)
+		if (dstPort < 0 || dstPort > 65535){
 			throw new IllegalArgumentException(Msg.getString("K0032"));
+		}
+		checkConnectPermission(destAddr.getHostName(), dstPort);
+	}
+	
+	/*
+	 * Checks the connection destination satisfies the security policy.
+	 * 
+	 * @param hostname
+	 *            the destination hostname
+	 * @param dstPort
+	 *            the port on the destination host
+	 */
+	private void checkConnectPermission(String hostname, int dstPort) {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkConnect(destAddr.getHostName(), dstPort);
+		if (security != null){
+			security.checkConnect(hostname, dstPort);
+		}
 	}
 
 	/**
@@ -646,8 +696,9 @@ public class Socket {
 			impl.create(streaming);
 			isCreated = true;
 			try {
-				if (!streaming || !NetUtil.usingSocks())
+				if (!streaming || !NetUtil.usingSocks(proxy)){
 					impl.bind(addr, localPort);
+				}
 				isBound = true;
 				impl.connect(dstAddress, dstPort);
 				isConnected = true;
@@ -820,8 +871,9 @@ public class Socket {
 
 		synchronized (this) {
 			try {
-				if (!NetUtil.usingSocks())
+				if (!NetUtil.usingSocks(proxy)){
 					impl.bind(addr, port);
+				}
 				isBound = true;
 			} catch (IOException e) {
 				impl.close();
@@ -891,8 +943,9 @@ public class Socket {
 					// checkClosedAndCreate
 					// this caused us to lose socket options on create
 					// impl.create(true);
-					if (!NetUtil.usingSocks())
+					if (!NetUtil.usingSocks(proxy)){
 						impl.bind(InetAddress.ANY, 0);
+					}
 					isBound = true;
 				}
 				impl.connect(remoteAddr, timeout);
