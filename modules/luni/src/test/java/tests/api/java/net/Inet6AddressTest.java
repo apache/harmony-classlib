@@ -831,7 +831,7 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.Inet6Address#getByAddress(String, byte[], int)
 	 */
-	public void test_getByAddressLString$BI(){
+	public void test_getByAddressLString$BI() throws UnknownHostException{
 		try {
 			Inet6Address.getByAddress("123", null, 0);
 			fail("should throw UnknownHostException");
@@ -850,16 +850,10 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 				0x11, 0x25, (byte) 0xFF, (byte) 0xFE, (byte) 0xF8, (byte) 0x7C,
 				(byte) 0xB2 };
 		
-		try {
-			Inet6Address.getByAddress("123", addr2, 3);
-		} catch (UnknownHostException e) {
-			fail("no exception should be thrown");
-		}
-		try {
-			Inet6Address.getByAddress("123", addr2, 3);
-		} catch (UnknownHostException e) {
-			fail("no exception should be thrown");
-		}
+		// should not throw any exception
+		Inet6Address.getByAddress("123", addr2, 3);
+		Inet6Address.getByAddress("123", addr2, 0);
+		Inet6Address.getByAddress("123", addr2, -1);
 	}
 
 	protected void setUp() {
