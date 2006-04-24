@@ -15,6 +15,8 @@
 
 package tests.api.java.io;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * Automated Test Suite for class java.io.ByteArrayOutputStream
  * 
@@ -204,6 +206,22 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 				new String(result, 0, result.length).equals(fileString
 						.substring(0, 100)));
 	}
+
+    /**
+     * @tests java.io.ByteArrayOutputStream#write(byte[], int, int)
+     * Regression for HARMONY-387
+     */
+    public void test_write$BII_2() {
+        ByteArrayOutputStream obj = new ByteArrayOutputStream();
+        try {
+            obj.write(new byte [] {(byte)0x00}, -1, 0);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+            assertEquals(
+                    "IndexOutOfBoundsException rather than a subclass expected",
+                    IndexOutOfBoundsException.class, t.getClass());
+        }
+    }
 
 	/**
 	 * @tests java.io.ByteArrayOutputStream#writeTo(java.io.OutputStream)

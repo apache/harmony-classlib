@@ -235,7 +235,55 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
-	/**
+    /**
+     * @tests java.io.PipedInputStream#read(byte[], int, int)
+     * Regression for HARMONY-387
+     */
+    public void test_read$BII_2() throws IOException {
+        PipedInputStream obj = new PipedInputStream();
+        try {
+            obj.read(new byte[0], 0, -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+            assertEquals(
+                    "IndexOutOfBoundsException rather than a subclass expected",
+                    IndexOutOfBoundsException.class, t.getClass());
+        }
+    }
+
+    /**
+     * @tests java.io.PipedInputStream#read(byte[], int, int)
+     */
+    public void test_read$BII_3() {
+        PipedInputStream obj = new PipedInputStream();
+        try {
+            obj.read(new byte[0], -1, 0);
+            fail("IndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException t) {
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+        } catch (IOException t) {
+            fail("Unexpected IOException: " + t.getMessage());
+        }
+    }
+
+    /**
+     * @tests java.io.PipedInputStream#read(byte[], int, int)
+     */
+    public void test_read$BII_4() {
+        PipedInputStream obj = new PipedInputStream();
+        try {
+            obj.read(new byte[0], -1, -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException t) {
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+        } catch (IOException t) {
+            fail("Unexpected IOException: " + t.getMessage());
+        }
+    }
+
+    /**
 	 * @tests java.io.PipedInputStream#receive(int)
 	 */
 	public void test_receive() {

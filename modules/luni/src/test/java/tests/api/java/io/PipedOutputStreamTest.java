@@ -167,6 +167,24 @@ public class PipedOutputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
+    /**
+     * @tests java.io.PipedOutputStream#write(byte[], int, int)
+     * Regression for HARMONY-387
+     */
+    public void test_write$BII_2() throws IOException {
+        PipedInputStream pis = new PipedInputStream();
+        PipedOutputStream pos = null;
+        try{
+            pos = new PipedOutputStream(pis);
+            pos.write(new byte[0], -1, -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+            assertEquals(
+                    "IndexOutOfBoundsException rather than a subclass expected",
+                    IndexOutOfBoundsException.class, t.getClass());
+        }
+    }
+
 	/**
 	 * @tests java.io.PipedOutputStream#write(int)
 	 */

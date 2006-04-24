@@ -250,7 +250,7 @@ public class PipedReader extends Reader {
 				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
 			}
 		}
-		throw new ArrayIndexOutOfBoundsException();
+		throw new IndexOutOfBoundsException();
 	}
 
 	/**

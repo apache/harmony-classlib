@@ -120,7 +120,7 @@ public class StringWriter extends Writer {
 				this.buf.append(cbuf, offset, count);
 			}
 		} else {
-			throw new ArrayIndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException();
 		}
 	}
 

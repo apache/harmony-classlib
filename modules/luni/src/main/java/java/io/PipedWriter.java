@@ -138,6 +138,10 @@ public class PipedWriter extends Writer {
 	 *             If any of the arguments are out of bounds.
 	 */
 	public void write(char buffer[], int offset, int count) throws IOException {
+        if (buffer == null) {
+            throw new NullPointerException(org.apache.harmony.luni.util.Msg
+                    .getString("K0047")); //$NON-NLS-1$
+        }
 		// avoid int overflow
 		if (0 <= offset && offset <= buffer.length && 0 <= count
 				&& count <= buffer.length - offset) {
@@ -152,8 +156,9 @@ public class PipedWriter extends Writer {
 					throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K0078")); //$NON-NLS-1$
 			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+		} else {
+			throw new IndexOutOfBoundsException();
+		}
 	}
 
 	/**

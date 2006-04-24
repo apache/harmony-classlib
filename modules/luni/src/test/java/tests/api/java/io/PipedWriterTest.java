@@ -184,7 +184,97 @@ public class PipedWriterTest extends junit.framework.TestCase {
 				.equals(new String(reader.buf)));
 	}
 
-	/**
+    /**
+     * @tests java.io.PipedWriter#write(char[], int, int)
+     * Regression for HARMONY-387
+     */
+    public void test_write$CII_2() throws IOException {
+        PipedReader pr = new PipedReader();
+        PipedWriter obj = null;
+        try {
+            obj = new java.io.PipedWriter(pr);
+            obj.write(new char[0], (int) 0, (int) -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+            assertEquals(
+                    "IndexOutOfBoundsException rather than a subclass expected",
+                    IndexOutOfBoundsException.class, t.getClass());
+        }
+    }
+
+    /**
+     * @tests java.io.PipedWriter#write(char[], int, int)
+     */
+    public void test_write$CII_3() {
+        PipedReader pr = new PipedReader();
+        PipedWriter obj = null;
+        try {
+            obj = new java.io.PipedWriter(pr);
+            obj.write(new char[0], (int) -1, (int) 0);
+            fail("IndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException t) {
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+        } catch (IOException e) {
+            fail("Unexpected IOException: " + e.getMessage());
+        }
+    }
+
+    /**
+     * @tests java.io.PipedWriter#write(char[], int, int)
+     */
+    public void test_write$CII_4() {
+        PipedReader pr = new PipedReader();
+        PipedWriter obj = null;
+        try {
+            obj = new java.io.PipedWriter(pr);
+            obj.write(new char[0], (int) -1, (int) -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException t) {
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+        } catch (IOException e) {
+            fail("Unexpected IOException: " + e.getMessage());
+        }
+    }
+
+    /**
+     * @tests java.io.PipedWriter#write(char[], int, int)
+     */
+    public void test_write$CII_5() {
+        PipedReader pr = new PipedReader();
+        PipedWriter obj = null;
+        try {
+            obj = new PipedWriter(pr);
+            obj.write((char[]) null, (int) -1, (int) 0);
+            fail("NullPointerException expected");
+        } catch (IndexOutOfBoundsException t) {
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        } catch (IOException e) {
+            fail("Unexpected IOException: " + e.getMessage());
+        }
+    }
+
+    /**
+     * @tests java.io.PipedWriter#write(char[], int, int)
+     */
+    public void test_write$CII_6() {
+        PipedReader pr = new PipedReader();
+        PipedWriter obj = null;
+        try {
+            obj = new PipedWriter(pr);
+            obj.write((char[]) null, (int) -1, (int) -1);
+            fail("NullPointerException expected");
+        } catch (IndexOutOfBoundsException t) {
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        } catch (IOException e) {
+            fail("Unexpected IOException: " + e.getMessage());
+        }
+    }
+
+    /**
 	 * @tests java.io.PipedWriter#write(int)
 	 */
 	public void test_writeI() {

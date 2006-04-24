@@ -87,6 +87,53 @@ public class StringWriterTest extends junit.framework.TestCase {
 				"This is a test string"));
 	}
 
+    /**
+     * @tests java.io.StringWriter#write(char[], int, int)
+     * Regression for HARMONY-387
+     */
+    public void test_write$CII_2() {
+        StringWriter obj = null;
+        try {
+            obj = new StringWriter();
+            obj.write(new char[0], (int) 0, (int) -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+            assertEquals(
+                    "IndexOutOfBoundsException rather than a subclass expected",
+                    IndexOutOfBoundsException.class, t.getClass());
+        }
+    }
+
+    /**
+     * @tests java.io.StringWriter#write(char[], int, int)
+     */
+    public void test_write$CII_3() {
+        StringWriter obj = null;
+        try {
+            obj = new StringWriter();
+            obj.write(new char[0], (int) -1, (int) 0);
+            fail("IndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException t) {
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+        }
+    }
+
+    /**
+     * @tests java.io.StringWriter#write(char[], int, int)
+     */
+    public void test_write$CII_4() {
+        StringWriter obj = null;
+        try {
+            obj = new StringWriter();
+            obj.write(new char[0], (int) -1, (int) -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException t) {
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+        }
+    }
+
 	/**
 	 * @tests java.io.StringWriter#write(int)
 	 */

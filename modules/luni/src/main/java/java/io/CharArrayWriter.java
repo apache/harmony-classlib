@@ -165,7 +165,7 @@ public class CharArrayWriter extends Writer {
 				this.count += len;
 			}
 		} else
-			throw new ArrayIndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException();
 	}
 
 	/**
@@ -196,6 +196,10 @@ public class CharArrayWriter extends Writer {
 	 *            the number of characters to retrieve and write.
 	 */
 	public void write(String str, int offset, int len) {
+        if (str == null) {
+            throw new NullPointerException(org.apache.harmony.luni.util.Msg
+                    .getString("K0347")); //$NON-NLS-1$
+        }
 		// avoid int overflow
 		if (0 <= offset && offset <= str.length() && 0 <= len
 				&& len <= str.length() - offset) {

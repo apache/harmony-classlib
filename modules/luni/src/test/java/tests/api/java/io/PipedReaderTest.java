@@ -15,6 +15,7 @@
 
 package tests.api.java.io;
 
+import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 
@@ -177,7 +178,61 @@ public class PipedReaderTest extends junit.framework.TestCase {
 		fail("Failed to throw exception reading from closed reader");
 	}
 
-	/**
+    /**
+     * @tests java.io.PipedReader#read(char[], int, int)
+     * Regression for HARMONY-387
+     */
+    public void test_read$CII_2() throws IOException{
+        PipedWriter pw = new PipedWriter();
+        PipedReader obj = null;
+        try {
+            obj = new PipedReader(pw);
+            obj.read(new char[0], (int) 0, (int) -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+            assertEquals(
+                    "IndexOutOfBoundsException rather than a subclass expected",
+                    IndexOutOfBoundsException.class, t.getClass());
+        }
+    }
+
+    /**
+     * @tests java.io.PipedReader#read(char[], int, int)
+     */
+    public void test_read$CII_3() {
+        PipedWriter pw = new PipedWriter();
+        PipedReader obj = null;
+        try {
+            obj = new PipedReader(pw);
+            obj.read(new char[0], (int) -1, (int) 0);
+            fail("IndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException t) {
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+        } catch (IOException e) {
+            fail("Unexpected IOException: " + e.getMessage());
+        }
+    }
+
+    /**
+     * @tests java.io.PipedReader#read(char[], int, int)
+     */
+    public void test_read$CII_4() {
+        PipedWriter pw = new PipedWriter();
+        PipedReader obj = null;
+        try {
+            obj = new PipedReader(pw);
+            obj.read(new char[0], (int) -1, (int) -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException t) {
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+        } catch (IOException e) {
+            fail("Unexpected IOException: " + e.getMessage());
+        }
+    }
+
+    /**
 	 * @tests java.io.PipedReader#ready()
 	 */
 	public void test_ready() {

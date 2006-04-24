@@ -135,6 +135,22 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
 		}
 	}
 
+    /**
+     * @tests java.io.CharArrayWriter#write(char[], int, int)
+     * Regression for HARMONY-387
+     */
+    public void test_write$CII_2() {
+        CharArrayWriter obj = new CharArrayWriter();
+        try {
+            obj.write(new char []{'0'}, 0, -1);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException t) {
+            assertEquals(
+                    "IndexOutOfBoundsException rather than a subclass expected",
+                    IndexOutOfBoundsException.class, t.getClass());
+        }
+    }
+
 	/**
 	 * @tests java.io.CharArrayWriter#write(int)
 	 */
@@ -166,6 +182,19 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
 			fail("Exception during write test : " + e.getMessage());
 		}
 	}
+
+    /**
+     * @tests java.io.CharArrayWriter#write(java.lang.String, int, int)
+     * Regression for HARMONY-387
+     */
+    public void test_writeLjava_lang_StringII_2() throws StringIndexOutOfBoundsException {
+        CharArrayWriter obj = new CharArrayWriter();
+        try {
+            obj.write((String) null, -1, 0);
+            fail("NullPointerException expected");
+        } catch (NullPointerException t) {
+        }
+    }
 
 	/**
 	 * @tests java.io.CharArrayWriter#writeTo(java.io.Writer)

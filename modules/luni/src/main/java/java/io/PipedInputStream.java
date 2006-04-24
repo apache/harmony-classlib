@@ -280,7 +280,7 @@ public class PipedInputStream extends InputStream {
 		if (bytes == null) {
 			throw new NullPointerException();
 		}
-		throw new ArrayIndexOutOfBoundsException();
+		throw new IndexOutOfBoundsException();
 	}
 
 	/**

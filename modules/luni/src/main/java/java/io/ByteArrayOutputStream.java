@@ -202,7 +202,7 @@ public class ByteArrayOutputStream extends OutputStream {
 				System.arraycopy(buffer, offset, buf, this.count, len);
 				this.count += len;
 			} else
-				throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
+				throw new IndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
 						.getString("K002f")); //$NON-NLS-1$
 		} else
 			throw new NullPointerException(org.apache.harmony.luni.util.Msg
