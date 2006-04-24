@@ -33,25 +33,25 @@ public class MathContext implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    private static final MathContext DECIMAL128 = 
+    public static final MathContext DECIMAL128 = 
         new MathContext(34, RoundingMode.HALF_EVEN);
 
     /**
      * @com.intel.drl.spec_ref
      */
-    private static final MathContext DECIMAL32 = 
+    public static final MathContext DECIMAL32 = 
         new MathContext(7, RoundingMode.HALF_EVEN);
 
     /**
      * @com.intel.drl.spec_ref
      */
-    private static final MathContext DECIMAL64 = 
+    public static final MathContext DECIMAL64 = 
         new MathContext(16, RoundingMode.HALF_EVEN);
     
     /**
      * @com.intel.drl.spec_ref
      */
-    private static final MathContext UNLIMITED = 
+    public static final MathContext UNLIMITED = 
         new MathContext(0, RoundingMode.HALF_UP);
 
     /**
