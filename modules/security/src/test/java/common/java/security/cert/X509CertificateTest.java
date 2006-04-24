@@ -33,6 +33,8 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.harmony.security.cert.TestUtils;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -41,72 +43,6 @@ import junit.framework.TestSuite;
  * X509CertificateTest
  */
 public class X509CertificateTest extends TestCase {
-
-    // certificate encoding was created by hands
-    // according to X.509 Certificate ASN.1 notation
-    private static final byte[] x509CertEnc = new byte[] {
-    // Certificate: SEQUENCE
-            0x30, 0x6B,
-
-            //
-            // TBSCertificate: SEQUENCE {
-            //
-            0x30, 0x5C,
-
-            // version: [0] EXPLICIT Version DEFAULT v1
-            (byte) 0xA0, 0x03, 0x02, 0x01, 0x00,
-
-            // serialNumber: CertificateSerialNumber
-            0x02, 0x01, 0x05,
-
-            // signature: AlgorithmIdentifier
-            0x30, 0x07, // SEQUENCE
-            0x06, 0x02, 0x03, 0x05,//OID
-            0x01, 0x01, 0x07, //ANY
-
-            //issuer: Name
-            0x30, 0x0C, 0x31, 0x0A, 0x30, 0x08, 0x06, 0x03, 0x55, 0x04, 0x03,
-            0x13, 0x01, 0x5A, // CN=Z
-
-            //validity: Validity
-            0x30, 0x1E, // SEQUENCE
-            // notBefore: UTCTime
-            0x17, 0x0D, 0x39, 0x39, 0x31, 0x32, 0x31, 0x33, 0x31, 0x34, 0x31,
-            0x35, 0x31, 0x36, 0x5A, // 13 Dec 1999 14:15:16
-            // notAfter:  UTCTime
-            0x17, 0x0D, 0x30, 0x30, 0x30, 0x31, 0x30, 0x31, 0x30, 0x30, 0x30,
-            0x30, 0x30, 0x30, 0x5A, // 01 Jan 2000 00:00:00
-
-            //subject: Name
-            0x30, 0x0C, 0x31, 0x0A, 0x30, 0x08, 0x06, 0x03, 0x55, 0x04, 0x03,
-            0x13, 0x01, 0x59, // CN=Y
-
-            //SubjectPublicKeyInfo  ::=  SEQUENCE  {
-            //    algorithm            AlgorithmIdentifier,
-            //    subjectPublicKey     BIT STRING  }
-            0x30, 0x0D, // SEQUENCE
-            0x30, 0x07, // SEQUENCE
-            0x06, 0x02, 0x03, 0x05,//OID
-            0x01, 0x01, 0x07, //ANY
-            0x03, 0x02, 0x00, 0x01, // subjectPublicKey
-
-            // issuerUniqueID - missed
-            // subjectUniqueID - missed
-            // extensions - missed
-
-            // } end TBSCertificate
-
-            //
-            // signatureAlgorithm: AlgorithmIdentifier
-            //
-            0x30, 0x07, // SEQUENCE
-            0x06, 0x02, 0x03, 0x05,//OID
-            0x01, 0x01, 0x07, //ANY
-
-            //
-            // signature: BIT STRING  
-            //
-            0x03, 0x02, 0x00, 0x01 };
 
     // has stub implementation for abstract methods
     private static class MyX509Certificate extends X509Certificate {
@@ -240,7 +176,7 @@ public class X509CertificateTest extends TestCase {
         // return valid encoding
         MyX509Certificate cert = new MyX509Certificate() {
             public byte[] getEncoded() {
-                return x509CertEnc;
+                return TestUtils.getX509Certificate_v1();
             };
         };
 
@@ -254,7 +190,7 @@ public class X509CertificateTest extends TestCase {
         // return valid encoding
         MyX509Certificate cert = new MyX509Certificate() {
             public byte[] getEncoded() {
-                return x509CertEnc;
+                return TestUtils.getX509Certificate_v1();
             };
         };
 

@@ -288,4 +288,84 @@ public class TestUtils {
             }
         };
     }
+    
+    /**
+     * Returns X.509 certificate encoding corresponding to version v1.
+     * 
+     * Certificate encoding was created by hands according to X.509 Certificate
+     * ASN.1 notation. The certificate encoding has the following encoded
+     * field values:<br> 
+     * - version: 1<br>
+     * - serialNumber: 5<br>
+     * - issuer: CN=Z<br>
+     * - notBefore: 13 Dec 1999 14:15:16<br>
+     * - notAfter: 01 Jan 2000 00:00:00<br>
+     * - subject: CN=Y<br>
+     * 
+     * @return X.509 certificate encoding corresponding to version v1.
+     */
+    public static byte[] getX509Certificate_v1() {
+        return new byte[] {
+        // Certificate: SEQUENCE
+            0x30, 0x6B,
+
+            //
+            // TBSCertificate: SEQUENCE {
+            //
+            0x30, 0x5C,
+
+            // version: [0] EXPLICIT Version DEFAULT v1
+            (byte) 0xA0, 0x03, 0x02, 0x01, 0x00,
+
+            // serialNumber: CertificateSerialNumber
+            0x02, 0x01, 0x05,
+
+            // signature: AlgorithmIdentifier
+            0x30, 0x07, // SEQUENCE
+            0x06, 0x02, 0x03, 0x05,//OID
+            0x01, 0x01, 0x07, //ANY
+
+            //issuer: Name
+            0x30, 0x0C, 0x31, 0x0A, 0x30, 0x08, 0x06, 0x03, 0x55, 0x04, 0x03,
+            0x13, 0x01, 0x5A, // CN=Z
+
+            //validity: Validity
+            0x30, 0x1E, // SEQUENCE
+            // notBefore: UTCTime
+            0x17, 0x0D, 0x39, 0x39, 0x31, 0x32, 0x31, 0x33, 0x31, 0x34, 0x31,
+            0x35, 0x31, 0x36, 0x5A, // 13 Dec 1999 14:15:16
+            // notAfter:  UTCTime
+            0x17, 0x0D, 0x30, 0x30, 0x30, 0x31, 0x30, 0x31, 0x30, 0x30, 0x30,
+            0x30, 0x30, 0x30, 0x5A, // 01 Jan 2000 00:00:00
+
+            //subject: Name
+            0x30, 0x0C, 0x31, 0x0A, 0x30, 0x08, 0x06, 0x03, 0x55, 0x04, 0x03,
+            0x13, 0x01, 0x59, // CN=Y
+            //SubjectPublicKeyInfo  ::=  SEQUENCE  {
+            //    algorithm            AlgorithmIdentifier,
+            //    subjectPublicKey     BIT STRING  }
+            0x30, 0x0D, // SEQUENCE
+            0x30, 0x07, // SEQUENCE
+            0x06, 0x02, 0x03, 0x05,//OID
+            0x01, 0x01, 0x07, //ANY
+            0x03, 0x02, 0x00, 0x01, // subjectPublicKey
+
+            // issuerUniqueID - missed
+            // subjectUniqueID - missed
+            // extensions - missed
+
+            // } end TBSCertificate
+
+            //
+            // signatureAlgorithm: AlgorithmIdentifier
+            //
+            0x30, 0x07, // SEQUENCE
+            0x06, 0x02, 0x03, 0x05,//OID
+            0x01, 0x01, 0x07, //ANY
+
+            //
+            // signature: BIT STRING  
+            //
+            0x03, 0x02, 0x00, 0x01 };
+    }
 }
