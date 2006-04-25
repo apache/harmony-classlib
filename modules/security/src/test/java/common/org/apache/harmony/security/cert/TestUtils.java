@@ -368,4 +368,48 @@ public class TestUtils {
             //
             0x03, 0x02, 0x00, 0x01 };
     }
+    
+    /**
+     * Returns X.509 CRL encoding corresponding to version v1.
+     * 
+     * CRL encoding was created by hands according to X.509 CRL ASN.1
+     * notation. The CRL encoding has the following encoded field values:<br> 
+     * - version: 1<br>
+     * - issuer: CN=Z<br>
+     * - thisUpdate: 01 Jan 2001 01:02:03<br>
+     * 
+     * @return X.509 CRL encoding corresponding to version v1.
+     */
+    public static byte[] getX509CRL_v1() {
+        return new byte[] {
+                //CertificateList: SEQUENCE
+                0x30, 0x35, 
+                
+                // TBSCertList: SEQUENCE  
+                0x30, 0x27,
+                // Version: INTEGER OPTIONAL
+                // 0x02, 0x01, 0x01, - missed here cause it is v1
+                // signature: AlgorithmIdentifier
+                0x30, 0x06, // SEQUENCE
+                0x06, 0x01, 0x01, // OID
+                0x01, 0x01, 0x11, // ANY
+                // issuer: Name                   
+                0x30, 0x0C, 0x31, 0x0A, 0x30, 0x08, 0x06, 0x03, 0x55, 0x04,
+                0x03, 0x13, 0x01, 0x5A, // CN=Z 
+                // thisUpdate: ChoiceOfTime
+                // GeneralizedTime: 01 Jan 2001 01:02:03
+                0x18, 0x0F, 0x32, 0x30, 0x30, 0x31, 0x30, 0x31, 0x30, 0x31,
+                0x30, 0x31, 0x30, 0x32, 0x30, 0x33, 0x5A,
+                
+                // nextUpdate - missed
+                // revokedCertificates - missed
+                // crlExtensions - missed
+                
+                // signatureAlgorithm: AlgorithmIdentifier
+                0x30, 0x06, // SEQUENCE
+                0x06, 0x01, 0x01, //OID
+                0x01, 0x01, 0x11, //ANY
+                // signature: BIT STRING  
+                0x03, 0x02, 0x00, 0x01 };
+    }
 }

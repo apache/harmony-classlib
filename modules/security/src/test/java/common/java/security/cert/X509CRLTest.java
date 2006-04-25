@@ -33,6 +33,10 @@ import java.security.cert.X509CRLEntry;
 import java.util.Date;
 import java.util.Set;
 
+import javax.security.auth.x500.X500Principal;
+
+import org.apache.harmony.security.cert.TestUtils;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -217,15 +221,17 @@ public class X509CRLTest extends TestCase {
     }
 
     /**
-     * getIssuerX500Principal() method testing. Check if the default
-     * implementation throws RuntimeException.
+     * @tests java.security.cert.X509CRL#getIssuerX500Principal()
      */
     public void testGetIssuerX500Principal() {
-        try {
-            tbt_crl.getIssuerX500Principal();
-            fail("The default implementation shoult throw RuntimeException.");
-        } catch (RuntimeException e) {
-        }
+        // return valid encoding
+        TBTCRL crl = new TBTCRL() {
+            public byte[] getEncoded() {
+                return TestUtils.getX509CRL_v1();
+            };
+        };
+
+        assertEquals(new X500Principal("CN=Z"), crl.getIssuerX500Principal());
     }
 
     /**

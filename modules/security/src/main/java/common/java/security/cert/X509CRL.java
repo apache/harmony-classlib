@@ -21,6 +21,7 @@
 
 package java.security.cert;
 
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -119,7 +120,20 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * @com.intel.drl.spec_ref
      */
     public X500Principal getIssuerX500Principal() {
-        throw new RuntimeException("Method should be overriden.");
+        try {
+            // TODO if there is no X.509 certificate provider installed
+            // should we try to access Harmony X509CRLImpl via classForName?
+            CertificateFactory factory = CertificateFactory
+                    .getInstance("X.509");
+
+            X509CRL crl = (X509CRL) factory
+                    .generateCRL(new ByteArrayInputStream(getEncoded()));
+
+            return crl.getIssuerX500Principal();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get X500Principal issuer", e);
+        }
     }
 
     /**
