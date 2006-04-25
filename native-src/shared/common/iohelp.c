@@ -123,7 +123,7 @@ ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
 
 /* TODO: ARRAY PINNING */
 #define INTERNAL_MAX 512
-  U_8 internalBuffer[INTERNAL_MAX];
+  jbyte internalBuffer[INTERNAL_MAX];
 
   if (buffer == NULL)
     {
@@ -179,7 +179,7 @@ ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
   if (result < 0)
     errorMessage = ioLookupErrorString (env, result);
 
-  if (buf != (jbyte*)internalBuffer)
+  if (buf != internalBuffer)
     {
       jclmem_free_memory (env, buf);
     }
@@ -257,7 +257,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
 
 /* TODO: ARRAY PINNING */
 #define INTERNAL_MAX 2048
-  U_8 internalBuffer[INTERNAL_MAX];
+  jbyte internalBuffer[INTERNAL_MAX];
 
   PORT_ACCESS_FROM_ENV (env);
 
@@ -316,7 +316,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
   if (result > 0)
     (*env)->SetByteArrayRegion (env, buffer, offset, result, buf);
 
-  if (buf != (jbyte*)internalBuffer)
+  if (buf != internalBuffer)
     {
       jclmem_free_memory (env, buf);
     }
