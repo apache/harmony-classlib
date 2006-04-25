@@ -448,7 +448,7 @@ public class X509CertFactoryPerfTest extends TestCase {
      * getVersion() method testing.
      */
     public void testGetVersion() {
-        assertEquals("The version of the certificate should be 2", 
+        assertEquals("The version of the certificate should be 3", 
                 3, certificate.getVersion());
     }
     
