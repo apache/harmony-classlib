@@ -152,6 +152,23 @@ public class BigIntegerTest extends junit.framework.TestCase {
 		}
 		fail("Failed to throw NumberFormatException");
 	}
+	
+	/**
+	 * @tests java.math.BigInteger#BigInteger(java.lang.String)
+	 */
+	public void test_constructor_String_empty() {
+		boolean gotNFE = false;
+		try {
+			new BigInteger("");			
+		} catch (NumberFormatException e) {
+			gotNFE = true;
+		} catch (Throwable e) {
+			fail("Unexpected exception for new BigInteger(\"\") " + e);
+		}
+		if (!gotNFE) { 
+			fail("Expected NumberFormatException for new BigInteger(\"\")");
+		}
+	}
 
 	/**
 	 * @tests java.math.BigInteger#toByteArray()
