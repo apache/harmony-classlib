@@ -149,8 +149,8 @@ public class JarFileTest extends junit.framework.TestCase {
 		try {
 			Support_Resources.copyFile(resources, null, jarName);
 			JarFile jarFile = new JarFile(new File(resources, jarName));
-			assertTrue("Error in returned entry", jarFile.getEntry(entryName)
-					.getSize() == 311);
+			assertEquals("Error in returned entry", 311, jarFile.getEntry(entryName)
+					.getSize());
 			jarFile.close();
 		} catch (Exception e) {
 			fail("Exception during test: " + e.toString());
@@ -234,8 +234,8 @@ public class JarFileTest extends junit.framework.TestCase {
 		try {
 			Support_Resources.copyFile(resources, null, jarName);
 			JarFile jarFile = new JarFile(new File(resources, jarName));
-			assertTrue("Error--Manifest not returned",
-					jarFile.getManifest() != null);
+			assertNotNull("Error--Manifest not returned",
+					jarFile.getManifest());
 			jarFile.close();
 		} catch (Exception e) {
 			fail("Exception during 1st test: " + e.toString());
@@ -243,8 +243,8 @@ public class JarFileTest extends junit.framework.TestCase {
 		try {
 			Support_Resources.copyFile(resources, null, jarName2);
 			JarFile jarFile = new JarFile(new File(resources, jarName2));
-			assertTrue("Error--should have returned null", jarFile
-					.getManifest() == null);
+			assertNull("Error--should have returned null", jarFile
+					.getManifest());
 			jarFile.close();
 		} catch (Exception e) {
 			fail("Exception during 2nd test: " + e.toString());
@@ -254,8 +254,8 @@ public class JarFileTest extends junit.framework.TestCase {
 			// jarName3 was created using the following test
 			Support_Resources.copyFile(resources, null, jarName3);
 			JarFile jarFile = new JarFile(new File(resources, jarName3));
-			assertTrue("Should find manifest without verifying", jarFile
-					.getManifest() != null);
+			assertNotNull("Should find manifest without verifying", jarFile
+					.getManifest());
 			jarFile.close();
 		} catch (Exception e) {
 			fail("Exception during 3rd test: " + e.toString());
@@ -286,8 +286,8 @@ public class JarFileTest extends junit.framework.TestCase {
 			jarOut.write(65);
 			jarOut.close();
 			JarFile jar = new JarFile(file.getAbsolutePath(), false);
-			assertTrue("Should find manifest without verifying", jar
-					.getManifest() != null);
+			assertNotNull("Should find manifest without verifying", jar
+					.getManifest());
 			jar.close();
 			file.delete();
 		} catch (IOException e) {
@@ -328,7 +328,7 @@ public class JarFileTest extends junit.framework.TestCase {
 		try {
 			JarFile jf = new JarFile(localFile);
 			InputStream in = jf.getInputStream(new JarEntry("invalid"));
-			assertTrue("Got stream for non-existent entry", in == null);
+			assertNull("Got stream for non-existent entry", in);
 		} catch (Exception e) {
 			fail("Exception during test 2: " + e);
 		}
@@ -360,7 +360,7 @@ public class JarFileTest extends junit.framework.TestCase {
 			JarEntry entry = new JarEntry(entryName3);
 			InputStream in = jar.getInputStream(entry);
 			in.read(new byte[1077]);
-			assertTrue("found certificates", entry.getCertificates() == null);
+			assertNull("found certificates", entry.getCertificates());
 		} catch (Exception e) {
 			fail("Exception during test 4: " + e);
 		}

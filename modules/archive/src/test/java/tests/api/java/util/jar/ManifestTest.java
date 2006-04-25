@@ -71,45 +71,40 @@ public class ManifestTest extends junit.framework.TestCase {
 			fail("IOException");
 		}
 		Attributes main = manifest.getMainAttributes();
-		assertTrue("Bundle-Name not correct", main.getValue("Bundle-Name")
-				.equals("ClientSupport"));
-		assertTrue(
-				"Bundle-Description not correct",
-				main
+		assertEquals("Bundle-Name not correct", "ClientSupport", main.getValue("Bundle-Name")
+				);
+		assertEquals("Bundle-Description not correct",
+				
+								"Provides SessionService, AuthenticationService. Extends RegistryService.", main
 						.getValue("Bundle-Description")
-						.equals(
-								"Provides SessionService, AuthenticationService. Extends RegistryService."));
-		assertTrue("Bundle-Activator not correct", main.getValue(
-				"Bundle-Activator").equals(
-				"com.ibm.ive.eccomm.client.support.ClientSupportActivator"));
-		assertTrue(
-				"Import-Package not correct",
-				main
+						);
+		assertEquals("Bundle-Activator not correct", 
+				"com.ibm.ive.eccomm.client.support.ClientSupportActivator", main.getValue(
+				"Bundle-Activator"));
+		assertEquals("Import-Package not correct",
+				
+								"com.ibm.ive.eccomm.client.services.log,com.ibm.ive.eccomm.client.services.registry,com.ibm.ive.eccomm.service.registry; specification-version=1.0.0,com.ibm.ive.eccomm.service.session; specification-version=1.0.0,com.ibm.ive.eccomm.service.framework; specification-version=1.2.0,org.osgi.framework; specification-version=1.0.0,org.osgi.service.log; specification-version=1.0.0,com.ibm.ive.eccomm.flash; specification-version=1.2.0,com.ibm.ive.eccomm.client.xml,com.ibm.ive.eccomm.client.http.common,com.ibm.ive.eccomm.client.http.client", main
 						.getValue("Import-Package")
-						.equals(
-								"com.ibm.ive.eccomm.client.services.log,com.ibm.ive.eccomm.client.services.registry,com.ibm.ive.eccomm.service.registry; specification-version=1.0.0,com.ibm.ive.eccomm.service.session; specification-version=1.0.0,com.ibm.ive.eccomm.service.framework; specification-version=1.2.0,org.osgi.framework; specification-version=1.0.0,org.osgi.service.log; specification-version=1.0.0,com.ibm.ive.eccomm.flash; specification-version=1.2.0,com.ibm.ive.eccomm.client.xml,com.ibm.ive.eccomm.client.http.common,com.ibm.ive.eccomm.client.http.client"));
-		assertTrue(
-				"Import-Service not correct",
-				main
+						);
+		assertEquals("Import-Service not correct",
+				
+								"org.osgi.service.log.LogReaderServiceorg.osgi.service.log.LogService,com.ibm.ive.eccomm.service.registry.RegistryService", main
 						.getValue("Import-Service")
-						.equals(
-								"org.osgi.service.log.LogReaderServiceorg.osgi.service.log.LogService,com.ibm.ive.eccomm.service.registry.RegistryService"));
-		assertTrue(
-				"Export-Package not correct",
-				main
+						);
+		assertEquals("Export-Package not correct",
+				
+								"com.ibm.ive.eccomm.client.services.authentication; specification-version=1.0.0,com.ibm.ive.eccomm.service.authentication; specification-version=1.0.0,com.ibm.ive.eccomm.common; specification-version=1.0.0,com.ibm.ive.eccomm.client.services.registry.store; specification-version=1.0.0", main
 						.getValue("Export-Package")
-						.equals(
-								"com.ibm.ive.eccomm.client.services.authentication; specification-version=1.0.0,com.ibm.ive.eccomm.service.authentication; specification-version=1.0.0,com.ibm.ive.eccomm.common; specification-version=1.0.0,com.ibm.ive.eccomm.client.services.registry.store; specification-version=1.0.0"));
-		assertTrue(
-				"Export-Service not correct",
-				main
+						);
+		assertEquals("Export-Service not correct",
+				
+								"com.ibm.ive.eccomm.service.authentication.AuthenticationService,com.ibm.ive.eccomm.service.session.SessionService", main
 						.getValue("Export-Service")
-						.equals(
-								"com.ibm.ive.eccomm.service.authentication.AuthenticationService,com.ibm.ive.eccomm.service.session.SessionService"));
-		assertTrue("Bundle-Vendor not correct", main.getValue("Bundle-Vendor")
-				.equals("IBM"));
-		assertTrue("Bundle-Version not correct", main
-				.getValue("Bundle-Version").equals("1.2.0"));
+						);
+		assertEquals("Bundle-Vendor not correct", "IBM", main.getValue("Bundle-Vendor")
+				);
+		assertEquals("Bundle-Version not correct", "1.2.0", main
+				.getValue("Bundle-Version"));
 	}
 
 	/**
@@ -129,10 +124,10 @@ public class ManifestTest extends junit.framework.TestCase {
 	public void test_getAttributesLjava_lang_String() {
 		// Test for method java.util.jar.Attributes
 		// java.util.jar.Manifest.getAttributes(java.lang.String)
-		assertTrue("Should not exist",
-				m2.getAttributes("Doesn't Exist") == null);
-		assertTrue("Should exist", m2.getAttributes("HasAttributes.txt").get(
-				new Attributes.Name("MyAttribute")).equals("OK"));
+		assertNull("Should not exist",
+				m2.getAttributes("Doesn't Exist"));
+		assertEquals("Should exist", "OK", m2.getAttributes("HasAttributes.txt").get(
+				new Attributes.Name("MyAttribute")));
 	}
 
 	/**
@@ -141,10 +136,10 @@ public class ManifestTest extends junit.framework.TestCase {
 	public void test_getEntries() {
 		// Test for method java.util.Map java.util.jar.Manifest.getEntries()
 		Map myMap = m2.getEntries();
-		assertTrue("Shouldn't exist", myMap.get("Doesn't exist") == null);
-		assertTrue("Should exist",
-				((Attributes) myMap.get("HasAttributes.txt")).get(
-						new Attributes.Name("MyAttribute")).equals("OK"));
+		assertNull("Shouldn't exist", myMap.get("Doesn't exist"));
+		assertEquals("Should exist",
+				"OK", ((Attributes) myMap.get("HasAttributes.txt")).get(
+						new Attributes.Name("MyAttribute")));
 
 	}
 
@@ -155,8 +150,8 @@ public class ManifestTest extends junit.framework.TestCase {
 		// Test for method java.util.jar.Attributes
 		// java.util.jar.Manifest.getMainAttributes()
 		Attributes a = m.getMainAttributes();
-		assertTrue("Manifest_Version should return 1.0", a.get(
-				Attributes.Name.MANIFEST_VERSION).equals("1.0"));
+		assertEquals("Manifest_Version should return 1.0", "1.0", a.get(
+				Attributes.Name.MANIFEST_VERSION));
 	}
 
 	/**

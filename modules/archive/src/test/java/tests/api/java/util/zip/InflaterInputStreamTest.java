@@ -194,8 +194,8 @@ public class InflaterInputStreamTest extends junit.framework.TestCase {
 		 * InflaterInputStream(infile, inflate);
 		 * 
 		 * inflatIP.read(byteArray, 0, 4);// ony suppose to read in 4 bytes
-		 * inflatIP.close(); assertTrue( "the fifth element of byteArray
-		 * contained a non zero value", byteArray[4] == 0); } catch
+		 * inflatIP.close(); assertEquals("the fifth element of byteArray
+		 * contained a non zero value", 0, byteArray[4]); } catch
 		 * (FileNotFoundException e) { fail( "input file to test
 		 * InflaterInputStream constructor is not found"); } catch
 		 * (ZipException e) { fail( "read() threw an zip exception while
@@ -257,27 +257,27 @@ public class InflaterInputStreamTest extends junit.framework.TestCase {
 				fail("IllegalArgumentException not thrown");
 			} catch (IllegalArgumentException e) {
 			}
-			assertTrue("Incorrect Byte Returned.", iis.read() == 5);
+			assertEquals("Incorrect Byte Returned.", 5, iis.read());
 
 			try {
 				iis.skip(Integer.MIN_VALUE);
 				fail("IllegalArgumentException not thrown");
 			} catch (IllegalArgumentException e) {
 			}
-			assertTrue("Incorrect Byte Returned.", iis.read() == 4);
+			assertEquals("Incorrect Byte Returned.", 4, iis.read());
 
 			// Test to make sure the correct number of bytes were skipped
-			assertTrue("Incorrect Number Of Bytes Skipped.", iis.skip(3) == 3);
+			assertEquals("Incorrect Number Of Bytes Skipped.", 3, iis.skip(3));
 
 			// Test to see if the number of bytes skipped returned is true.
-			assertTrue("Incorrect Byte Returned.", iis.read() == 7);
+			assertEquals("Incorrect Byte Returned.", 7, iis.read());
 
-			assertTrue("Incorrect Number Of Bytes Skipped.", iis.skip(0) == 0);
-			assertTrue("Incorrect Byte Returned.", iis.read() == 0);
+			assertEquals("Incorrect Number Of Bytes Skipped.", 0, iis.skip(0));
+			assertEquals("Incorrect Byte Returned.", 0, iis.read());
 
 			// Test for skipping more bytes than available in the stream
-			assertTrue("Incorrect Number Of Bytes Skipped.", iis.skip(4) == 2);
-			assertTrue("Incorrect Byte Returned.", iis.read() == -1);
+			assertEquals("Incorrect Number Of Bytes Skipped.", 2, iis.skip(4));
+			assertEquals("Incorrect Byte Returned.", -1, iis.read());
 			iis.close();
 		} catch (IOException e) {
 			fail("Unexpected IOException during test");
@@ -317,17 +317,16 @@ public class InflaterInputStreamTest extends junit.framework.TestCase {
 
 			skip = inflatIP2.skip(Integer.MAX_VALUE);
 			// System.out.println(skip);
-			assertTrue("method skip() returned wrong number of bytes skiped",
-					skip == 5);
+			assertEquals("method skip() returned wrong number of bytes skiped",
+					5, skip);
 
 			// test for skiping of 2 bytes
 			InputStream infile3 = Support_Resources
 					.getStream("hyts_constru(OD).txt");
 			InflaterInputStream inflatIP3 = new InflaterInputStream(infile3);
 			skip = inflatIP3.skip(2);
-			assertTrue(
-					"the number of bytes returned by skip did not correspond with its input parameters",
-					skip == 2);
+			assertEquals("the number of bytes returned by skip did not correspond with its input parameters",
+					2, skip);
 			int i = 0;
 			result = 0;
 			while ((result = inflatIP3.read()) != -1) {
@@ -369,11 +368,11 @@ public class InflaterInputStreamTest extends junit.framework.TestCase {
 				read = iis.read();
 				available = iis.available();
 				if (read == -1)
-					assertTrue("Bytes Available Should Return 0 ",
-							available == 0);
+					assertEquals("Bytes Available Should Return 0 ",
+							0, available);
 				else
-					assertTrue("Bytes Available Should Return 1.",
-							available == 1);
+					assertEquals("Bytes Available Should Return 1.",
+							1, available);
 			}
 
 			iis.close();

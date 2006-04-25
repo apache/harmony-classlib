@@ -49,15 +49,15 @@ public class JarEntryTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorLjava_util_zip_ZipEntry() {
 		// Test for method java.util.jar.JarEntry(java.util.zip.ZipEntry)
-		assertTrue("Jar file is null", jarFile != null);
+		assertNotNull("Jar file is null", jarFile);
 		zipEntry = jarFile.getEntry(entryName);
-		assertTrue("Zip entry is null", zipEntry != null);
+		assertNotNull("Zip entry is null", zipEntry);
 		jarEntry = new JarEntry(zipEntry);
-		assertTrue("Jar entry is null", jarEntry != null);
+		assertNotNull("Jar entry is null", jarEntry);
 		assertTrue("Wrong entry constucted--wrong name", jarEntry.getName()
 				.equals(entryName));
-		assertTrue("Wrong entry constucted--wrong size",
-				jarEntry.getSize() == 311);
+		assertEquals("Wrong entry constucted--wrong size",
+				311, jarEntry.getSize());
 	}
 
 	/**
@@ -79,16 +79,16 @@ public class JarEntryTest extends junit.framework.TestCase {
 
 		try {
 			jarEntry = attrJar.getJarEntry(attEntryName);
-			assertTrue("Should have Manifest attributes", jarEntry
-					.getAttributes() != null);
+			assertNotNull("Should have Manifest attributes", jarEntry
+					.getAttributes());
 		} catch (Exception e) {
 			fail("Exception during 2nd test: " + e.toString());
 		}
 
 		try {
 			jarEntry = attrJar.getJarEntry(attEntryName2);
-			assertTrue("Shouldn't have any Manifest attributes", jarEntry
-					.getAttributes() == null);
+			assertNull("Shouldn't have any Manifest attributes", jarEntry
+					.getAttributes());
 			attrJar.close();
 		} catch (Exception e) {
 			fail("Exception during 1st test: " + e.toString());
@@ -103,8 +103,8 @@ public class JarEntryTest extends junit.framework.TestCase {
 		// java.util.jar.JarEntry.getCertificates()
 		zipEntry = jarFile.getEntry(entryName2);
 		jarEntry = new JarEntry(zipEntry);
-		assertTrue("Shouldn't have any Certificates", jarEntry
-				.getCertificates() == null);
+		assertNull("Shouldn't have any Certificates", jarEntry
+				.getCertificates());
 	}
 
 	/**

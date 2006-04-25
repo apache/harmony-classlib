@@ -61,10 +61,10 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 					+ "/GZIPInputStream/hyts_gInput.txt").toURL();
 			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
 					.openConnection().getInputStream());
-			assertTrue("the constructor for GZIPInputStream is null",
-					inGZIP != null);
-			assertTrue("the CRC value of the inputStream is not zero", inGZIP
-					.getChecksum().getValue() == 0);
+			assertNotNull("the constructor for GZIPInputStream is null",
+					inGZIP);
+			assertEquals("the CRC value of the inputStream is not zero", 0, inGZIP
+					.getChecksum().getValue());
 			inGZIP.close();
 		} catch (IOException e) {
 			fail(
@@ -85,10 +85,10 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 					+ "/GZIPInputStream/hyts_gInput.txt").toURL();
 			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
 					.openConnection().getInputStream(), 200);
-			assertTrue("the constructor for GZIPInputStream is null",
-					inGZIP != null);
-			assertTrue("the CRC value of the inputStream is not zero", inGZIP
-					.getChecksum().getValue() == 0);
+			assertNotNull("the constructor for GZIPInputStream is null",
+					inGZIP);
+			assertEquals("the CRC value of the inputStream is not zero", 0, inGZIP
+					.getChecksum().getValue());
 			inGZIP.close();
 		} catch (IOException e) {
 			fail(
@@ -117,9 +117,8 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			while (!(inGZIP.endofInput())) {
 				result += inGZIP.read(outBuf, result, outBuf.length - result);
 			}
-			assertTrue(
-					"the checkSum value of the compressed and decompressed data does not equal",
-					inGZIP.getChecksum().getValue() == 3097700292L);
+			assertEquals("the checkSum value of the compressed and decompressed data does not equal",
+					3097700292L, inGZIP.getChecksum().getValue());
 			for (int i = 0; i < orgBuf.length; i++) {
 				assertTrue(
 						"the decompressed data does not equal the orginal data decompressed",
@@ -133,7 +132,7 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 				r = 1;
 			}
 			inGZIP.close();
-			assertTrue("Boundary Check was not present", r == 1);
+			assertEquals("Boundary Check was not present", 1, r);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("unexpected: " + e);
@@ -158,7 +157,7 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			int result, total = 0;
 			while ((result = gin2.read(test)) != -1)
 				total += result;
-			assertTrue("Should return -1", gin2.read() == -1);
+			assertEquals("Should return -1", -1, gin2.read());
 			gin2.close();
 			assertTrue("Incorrectly decompressed", total == test.length);
 
@@ -167,7 +166,7 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			while ((result = gin2.read(new byte[200])) != -1) {
 				total += result;
 			}
-			assertTrue("Should return -1", gin2.read() == -1);
+			assertEquals("Should return -1", -1, gin2.read());
 			gin2.close();
 			assertTrue("Incorrectly decompressed", total == test.length);
 
@@ -176,7 +175,7 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			while ((result = gin2.read(new byte[200])) != -1) {
 				total += result;
 			}
-			assertTrue("Should return -1", gin2.read() == -1);
+			assertEquals("Should return -1", -1, gin2.read());
 			gin2.close();
 			assertTrue("Incorrectly decompressed", total == test.length);
 
@@ -215,9 +214,8 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			while (!(inGZIP.endofInput())) {
 				result += inGZIP.read(outBuf, result, outBuf.length - result);
 			}
-			assertTrue(
-					"the checkSum value of the compressed and decompressed data does not equal",
-					inGZIP.getChecksum().getValue() == 3097700292L);
+			assertEquals("the checkSum value of the compressed and decompressed data does not equal",
+					3097700292L, inGZIP.getChecksum().getValue());
 			inGZIP.close();
 			int r = 0;
 			try {
@@ -225,9 +223,8 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			} catch (IOException e) {
 				r = 1;
 			}
-			assertTrue(
-					"GZIPInputStream can still be used after close is called",
-					r == 1);
+			assertEquals("GZIPInputStream can still be used after close is called",
+					1, r);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("unexpected: " + e);

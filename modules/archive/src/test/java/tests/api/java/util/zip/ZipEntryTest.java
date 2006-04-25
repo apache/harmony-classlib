@@ -47,7 +47,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.util.zip.ZipEntry(java.lang.String)
 		zentry = zfile.getEntry("File3.txt");
-		assertTrue("Failed to create ZipEntry", zentry != null);
+		assertNotNull("Failed to create ZipEntry", zentry);
 		try {
 			zentry = zfile.getEntry(null);
 			fail("NullPointerException not thrown");
@@ -81,10 +81,10 @@ public class ZipEntryTest extends junit.framework.TestCase {
 	public void test_getComment() {
 		// Test for method java.lang.String java.util.zip.ZipEntry.getComment()
 		ZipEntry zipEntry = new ZipEntry("zippy.zip");
-		assertTrue("Incorrect Comment Returned.", zipEntry.getComment() == null);
+		assertNull("Incorrect Comment Returned.", zipEntry.getComment());
 		zipEntry.setComment("This Is A Comment");
-		assertTrue("Incorrect Comment Returned.", zipEntry.getComment().equals(
-				"This Is A Comment"));
+		assertEquals("Incorrect Comment Returned.", 
+				"This Is A Comment", zipEntry.getComment());
 	}
 
 	/**
@@ -109,8 +109,8 @@ public class ZipEntryTest extends junit.framework.TestCase {
 	 */
 	public void test_getExtra() {
 		// Test for method byte [] java.util.zip.ZipEntry.getExtra()
-		assertTrue("Incorrect extra information returned",
-				zentry.getExtra() == null);
+		assertNull("Incorrect extra information returned",
+				zentry.getExtra());
 		byte[] ba = { 'T', 'E', 'S', 'T' };
 		zentry = new ZipEntry("test.tst");
 		zentry.setExtra(ba);
@@ -130,7 +130,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		assertTrue("Incorrect compression method returned",
 				zentry.getMethod() == java.util.zip.ZipEntry.DEFLATED);
 		zentry = new ZipEntry("test.tst");
-		assertTrue("Incorrect Method Returned.", zentry.getMethod() == -1);
+		assertEquals("Incorrect Method Returned.", -1, zentry.getMethod());
 	}
 
 	/**
@@ -138,9 +138,8 @@ public class ZipEntryTest extends junit.framework.TestCase {
 	 */
 	public void test_getName() {
 		// Test for method java.lang.String java.util.zip.ZipEntry.getName()
-		assertTrue(
-				"Incorrect name returned - Note return result somewhat ambiguous in spec",
-				zentry.getName().equals("File1.txt"));
+		assertEquals("Incorrect name returned - Note return result somewhat ambiguous in spec",
+				"File1.txt", zentry.getName());
 	}
 
 	/**
@@ -179,11 +178,11 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		// java.util.zip.ZipEntry.setComment(java.lang.String)
 		zentry = zfile.getEntry("File1.txt");
 		zentry.setComment("Set comment using api");
-		assertTrue("Comment not correctly set", zentry.getComment().equals(
-				"Set comment using api"));
+		assertEquals("Comment not correctly set", 
+				"Set comment using api", zentry.getComment());
 		String n = null;
 		zentry.setComment(n);
-		assertTrue("Comment not correctly set", zentry.getComment() == null);
+		assertNull("Comment not correctly set", zentry.getComment());
 		StringBuffer s = new StringBuffer();
 		for (int i = 0; i < 0xFFFF; i++)
 			s.append('a');
@@ -209,11 +208,11 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		assertTrue("Set compressed size failed",
 				zentry.getCompressedSize() == (orgCompressedSize + 10));
 		zentry.setCompressedSize(0);
-		assertTrue("Set compressed size failed",
-				zentry.getCompressedSize() == 0);
+		assertEquals("Set compressed size failed",
+				0, zentry.getCompressedSize());
 		zentry.setCompressedSize(-25);
-		assertTrue("Set compressed size failed",
-				zentry.getCompressedSize() == -25);
+		assertEquals("Set compressed size failed",
+				-25, zentry.getCompressedSize());
 		zentry.setCompressedSize(4294967296l);
 		assertTrue("Set compressed size failed",
 				zentry.getCompressedSize() == 4294967296l);
@@ -227,7 +226,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		zentry.setCrc(orgCrc + 100);
 		assertTrue("Failed to set Crc", zentry.getCrc() == (orgCrc + 100));
 		zentry.setCrc(0);
-		assertTrue("Failed to set Crc", zentry.getCrc() == 0);
+		assertEquals("Failed to set Crc", 0, zentry.getCrc());
 		try {
 			zentry.setCrc(-25);
 			fail("IllegalArgumentException not thrown");
@@ -252,9 +251,9 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		// Test for method void java.util.zip.ZipEntry.setExtra(byte [])
 		zentry = zfile.getEntry("File1.txt");
 		zentry.setExtra("Test setting extra information".getBytes());
-		assertTrue("Extra information not written properly", new String(zentry
+		assertEquals("Extra information not written properly", "Test setting extra information", new String(zentry
 				.getExtra(), 0, zentry.getExtra().length)
-				.equals("Test setting extra information"));
+				);
 		zentry = new ZipEntry("test.tst");
 		byte[] ba = new byte[0xFFFF];
 		try {
@@ -314,7 +313,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		zentry.setSize(orgSize + 10);
 		assertTrue("Set size failed", zentry.getSize() == (orgSize + 10));
 		zentry.setSize(0);
-		assertTrue("Set size failed", zentry.getSize() == 0);
+		assertEquals("Set size failed", 0, zentry.getSize());
 		try {
 			zentry.setSize(-25);
 			fail("IllegalArgumentException not thrown");
@@ -386,12 +385,12 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		zentry.setCompressedSize(4);
 		zentry.setComment("Testing");
 		ZipEntry zentry2 = new ZipEntry(zentry);
-		assertTrue("ZipEntry Created With Incorrect Size.",
-				zentry2.getSize() == 2);
-		assertTrue("ZipEntry Created With Incorrect Compressed Size.", zentry2
-				.getCompressedSize() == 4);
-		assertTrue("ZipEntry Created With Incorrect Comment.", zentry2
-				.getComment().equals("Testing"));
+		assertEquals("ZipEntry Created With Incorrect Size.",
+				2, zentry2.getSize());
+		assertEquals("ZipEntry Created With Incorrect Compressed Size.", 4, zentry2
+				.getCompressedSize());
+		assertEquals("ZipEntry Created With Incorrect Comment.", "Testing", zentry2
+				.getComment());
 		assertTrue("ZipEntry Created With Incorrect Crc.",
 				zentry2.getCrc() == orgCrc);
 		assertTrue("ZipEntry Created With Incorrect Time.",

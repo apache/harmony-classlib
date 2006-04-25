@@ -40,8 +40,8 @@ public class CheckedInputStreamTest extends junit.framework.TestCase {
 			checkInput = Support_Resources.getStream("hyts_checkInput.txt");
 			CheckedInputStream checkIn = new CheckedInputStream(checkInput,
 					new CRC32());
-			assertTrue("constructor of checkedInputStream has failed", checkIn
-					.getChecksum().getValue() == 0);
+			assertEquals("constructor of checkedInputStream has failed", 0, checkIn
+					.getChecksum().getValue());
 			checkInput.close();
 		} catch (FileNotFoundException e) {
 			fail("File for checkInputStream is not found");
@@ -65,8 +65,8 @@ public class CheckedInputStreamTest extends junit.framework.TestCase {
 					new CRC32());
 			while (checkEmpty.read() >= 0) {
 			}
-			assertTrue("the checkSum value of an empty file is not zero",
-					checkEmpty.getChecksum().getValue() == 0);
+			assertEquals("the checkSum value of an empty file is not zero",
+					0, checkEmpty.getChecksum().getValue());
 			inEmp.close();
 
 			// testing getChecksum for the file checkInput
@@ -77,8 +77,8 @@ public class CheckedInputStreamTest extends junit.framework.TestCase {
 			}
 			// ran JDK and found that the checkSum value of this is 2036203193
 			// System.out.print(" " + checkIn.getChecksum().getValue());
-			assertTrue("the checksum value is incorrect", checkIn.getChecksum()
-					.getValue() == 2036203193);
+			assertEquals("the checksum value is incorrect", 2036203193, checkIn.getChecksum()
+					.getValue());
 			checkInput.close();
 			// testing getChecksum for file checkInput
 			checkInput = Support_Resources.getStream("hyts_checkInput.txt");
@@ -87,8 +87,8 @@ public class CheckedInputStreamTest extends junit.framework.TestCase {
 			checkIn2.read(outBuf, 0, 10);
 			// ran JDK and found that the checkSum value of this is 2235765342
 			// System.out.print(" " + checkIn2.getChecksum().getValue());
-			assertTrue("the checksum value is incorrect", checkIn2
-					.getChecksum().getValue() == 2235765342L);
+			assertEquals("the checksum value is incorrect", 2235765342L, checkIn2
+					.getChecksum().getValue());
 			checkInput.close();
 		} catch (FileNotFoundException e) {
 			fail("File for checkInputStream is not found");
@@ -114,8 +114,8 @@ public class CheckedInputStreamTest extends junit.framework.TestCase {
 			checkIn.skip(skipValue);
 			// ran JDK and found the checkSum value is 2235765342
 			// System.out.print(checkIn.getChecksum().getValue());
-			assertTrue("checkSum value is not correct", checkIn.getChecksum()
-					.getValue() == 2235765342L);
+			assertEquals("checkSum value is not correct", 2235765342L, checkIn.getChecksum()
+					.getValue());
 			checkInput.close();
 		} catch (FileNotFoundException e) {
 			fail("File for checkInputStream is not found");

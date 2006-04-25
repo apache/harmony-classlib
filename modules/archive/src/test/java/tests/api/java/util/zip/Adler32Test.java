@@ -26,7 +26,7 @@ public class Adler32Test extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// test method of java.util.zip.Adler32()
 		Adler32 adl = new Adler32();
-		assertTrue("Constructor of adl32 failed", adl.getValue() == 1);
+		assertEquals("Constructor of adl32 failed", 1, adl.getValue());
 	}
 
 	/**
@@ -35,28 +35,25 @@ public class Adler32Test extends junit.framework.TestCase {
 	public void test_getValue() {
 		// test methods of java.util.zip.getValue()
 		Adler32 adl = new Adler32();
-		assertTrue(
-				"GetValue should return a zero as a result of construction an object of Adler32",
-				adl.getValue() == 1);
+		assertEquals("GetValue should return a zero as a result of construction an object of Adler32",
+				1, adl.getValue());
 
 		adl.reset();
 		adl.update(1);
 		// System.out.print("value of adl"+adl.getValue());
 		// The value of the adl should be 131074
-		assertTrue(
-				"update(int) failed to update the checksum to the correct value ",
-				adl.getValue() == 131074);
+		assertEquals("update(int) failed to update the checksum to the correct value ",
+				131074, adl.getValue());
 		adl.reset();
-		assertTrue("reset failed to reset the checksum value to zero", adl
-				.getValue() == 1);
+		assertEquals("reset failed to reset the checksum value to zero", 1, adl
+				.getValue());
 
 		adl.reset();
 		adl.update(Integer.MIN_VALUE);
 		// System.out.print("value of adl " + adl.getValue());
 		// The value of the adl should be 65537
-		assertTrue(
-				"update(min) failed to update the checksum to the correct value ",
-				adl.getValue() == 65537L);
+		assertEquals("update(min) failed to update the checksum to the correct value ",
+				65537L, adl.getValue());
 	}
 
 	/**
@@ -68,12 +65,11 @@ public class Adler32Test extends junit.framework.TestCase {
 		adl.update(1);
 		// System.out.print("value of adl"+adl.getValue());
 		// The value of the adl should be 131074
-		assertTrue(
-				"update(int) failed to update the checksum to the correct value ",
-				adl.getValue() == 131074);
+		assertEquals("update(int) failed to update the checksum to the correct value ",
+				131074, adl.getValue());
 		adl.reset();
-		assertTrue("reset failed to reset the checksum value to zero", adl
-				.getValue() == 1);
+		assertEquals("reset failed to reset the checksum value to zero", 1, adl
+				.getValue());
 	}
 
 	/**
@@ -84,25 +80,22 @@ public class Adler32Test extends junit.framework.TestCase {
 		Adler32 adl = new Adler32();
 		adl.update(1);
 		// The value of the adl should be 131074
-		assertTrue(
-				"update(int) failed to update the checksum to the correct value ",
-				adl.getValue() == 131074);
+		assertEquals("update(int) failed to update the checksum to the correct value ",
+				131074, adl.getValue());
 
 		adl.reset();
 		adl.update(Integer.MAX_VALUE);
 		// System.out.print("value of adl " + adl.getValue());
 		// The value of the adl should be 16777472
-		assertTrue(
-				"update(max) failed to update the checksum to the correct value ",
-				adl.getValue() == 16777472L);
+		assertEquals("update(max) failed to update the checksum to the correct value ",
+				16777472L, adl.getValue());
 
 		adl.reset();
 		adl.update(Integer.MIN_VALUE);
 		// System.out.print("value of adl " + adl.getValue());
 		// The value of the adl should be 65537
-		assertTrue(
-				"update(min) failed to update the checksum to the correct value ",
-				adl.getValue() == 65537L);
+		assertEquals("update(min) failed to update the checksum to the correct value ",
+				65537L, adl.getValue());
 
 	}
 
@@ -116,18 +109,16 @@ public class Adler32Test extends junit.framework.TestCase {
 		adl.update(byteArray);
 		// System.out.print("value of adl"+adl.getValue());
 		// The value of the adl should be 393220
-		assertTrue(
-				"update(byte[]) failed to update the checksum to the correct value ",
-				adl.getValue() == 393220);
+		assertEquals("update(byte[]) failed to update the checksum to the correct value ",
+				393220, adl.getValue());
 
 		adl.reset();
 		byte byteEmpty[] = new byte[10000];
 		adl.update(byteEmpty);
 		// System.out.print("value of adl"+adl.getValue());
 		// The value of the adl should be 655360001
-		assertTrue(
-				"update(byte[]) failed to update the checksum to the correct value ",
-				adl.getValue() == 655360001L);
+		assertEquals("update(byte[]) failed to update the checksum to the correct value ",
+				655360001L, adl.getValue());
 
 	}
 
@@ -145,9 +136,8 @@ public class Adler32Test extends junit.framework.TestCase {
 		adl.update(byteArray, off, len);
 		// System.out.print("value of adl"+adl.getValue());
 		// The value of the adl should be 262148
-		assertTrue(
-				"update(byte[],int,int) failed to update the checksum to the correct value ",
-				adl.getValue() == 262148);
+		assertEquals("update(byte[],int,int) failed to update the checksum to the correct value ",
+				262148, adl.getValue());
 		int r = 0;
 
 		try {
@@ -155,17 +145,16 @@ public class Adler32Test extends junit.framework.TestCase {
 		} catch (ArrayIndexOutOfBoundsException e) {
 			r = 1;
 		}
-		assertTrue(
-				"update(byte[],int,int) failed b/c lenError>byte[].length-off",
-				r == 1);
+		assertEquals("update(byte[],int,int) failed b/c lenError>byte[].length-off",
+				1, r);
 
 		try {
 			adl.update(byteArray, offError, len);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			r = 2;
 		}
-		assertTrue("update(byte[],int,int) failed b/c offError>byte[].length",
-				r == 2);
+		assertEquals("update(byte[],int,int) failed b/c offError>byte[].length",
+				2, r);
 
 	}
 

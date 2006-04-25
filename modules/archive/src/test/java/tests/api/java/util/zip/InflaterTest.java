@@ -49,7 +49,7 @@ public class InflaterTest extends junit.framework.TestCase {
 		} catch (NullPointerException e) {
 			r = 1;
 		}
-		assertTrue("inflate can still be used after end is called", r == 1);
+		assertEquals("inflate can still be used after end is called", 1, r);
 
 		Inflater i = new Inflater();
 		i.end();
@@ -84,9 +84,8 @@ public class InflaterTest extends junit.framework.TestCase {
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
 		}
-		assertTrue(
-				"final decompressed data contained more bytes than original - finished()",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("final decompressed data contained more bytes than original - finished()",
+				0, outPutInf[byteArray.length]);
 	}
 
 	/**
@@ -116,9 +115,8 @@ public class InflaterTest extends junit.framework.TestCase {
 		// test method of java.util.zip.inflater.getRemaining()
 		byte byteArray[] = { 1, 3, 5, 6, 7 };
 		Inflater inflate = new Inflater();
-		assertTrue(
-				"upon creating an instance of inflate, getRemaining returned a non zero value",
-				inflate.getRemaining() == 0);
+		assertEquals("upon creating an instance of inflate, getRemaining returned a non zero value",
+				0, inflate.getRemaining());
 		inflate.setInput(byteArray);
 		assertTrue(
 				"getRemaining returned zero when there is input in the input buffer",
@@ -272,9 +270,8 @@ public class InflaterTest extends junit.framework.TestCase {
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
 		}
-		assertTrue(
-				"final decompressed data contained more bytes than original - inflateB",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("final decompressed data contained more bytes than original - inflateB",
+				0, outPutInf[byteArray.length]);
 		// testing for an empty input array
 		byte outPutBuf[] = new byte[500];
 		byte emptyArray[] = new byte[11];
@@ -309,12 +306,11 @@ public class InflaterTest extends junit.framework.TestCase {
 			assertTrue(
 					"Final decompressed data does not equal the original data",
 					emptyArray[i] == outPutInf[i]);
-			assertTrue("Final decompressed data does not equal zero",
-					outPutInf[i] == 0);
+			assertEquals("Final decompressed data does not equal zero",
+					0, outPutInf[i]);
 		}
-		assertTrue(
-				"Final decompressed data contains more element than original data",
-				outPutInf[emptyArray.length] == 0);
+		assertEquals("Final decompressed data contains more element than original data",
+				0, outPutInf[emptyArray.length]);
 	}
 
 	/**
@@ -342,9 +338,8 @@ public class InflaterTest extends junit.framework.TestCase {
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
 		}
-		assertTrue(
-				"final decompressed data contained more bytes than original - inflateB",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("final decompressed data contained more bytes than original - inflateB",
+				0, outPutInf[byteArray.length]);
 
 		// test boundary checks
 		inflate.reset();
@@ -362,7 +357,7 @@ public class InflaterTest extends junit.framework.TestCase {
 		} catch (ArrayIndexOutOfBoundsException e) {
 			r = 1;
 		}
-		assertTrue("out of bounds error did not get caught", r == 1);
+		assertEquals("out of bounds error did not get caught", 1, r);
 	}
 
 	/**
@@ -372,8 +367,8 @@ public class InflaterTest extends junit.framework.TestCase {
 		// test method of java.util.zip.inflater.Inflater()
 		try {
 			Inflater inflate = new Inflater();
-			assertTrue("failed to create the instance of inflater",
-					inflate != null);
+			assertNotNull("failed to create the instance of inflater",
+					inflate);
 
 		} catch (Exception e) {
 
@@ -390,7 +385,7 @@ public class InflaterTest extends junit.framework.TestCase {
 		// doesn't or vice versa.
 		byte byteArray[] = { 1, 3, 4, 7, 8, 'e', 'r', 't', 'y', '5' };
 		Inflater inflate = new Inflater(true);
-		assertTrue("failed to create the instance of inflater", inflate != null);
+		assertNotNull("failed to create the instance of inflater", inflate);
 		byte outPutInf[] = new byte[500];
 		int r = 0;
 		try {
@@ -402,16 +397,14 @@ public class InflaterTest extends junit.framework.TestCase {
 				inflate.inflate(outPutInf);
 			}
 			for (int i = 0; i < byteArray.length; i++) {
-				assertTrue(
-						"the output array from inflate should contain 0 because the header of inflate and deflate did not match, but this faled",
-						outPutBuff1[i] == 0);
+				assertEquals("the output array from inflate should contain 0 because the header of inflate and deflate did not match, but this faled",
+						0, outPutBuff1[i]);
 			}
 		} catch (DataFormatException e) {
 			r = 1;
 		}
-		assertTrue(
-				"Error: exception should be thrown becuase of header inconsistancy",
-				r == 1);
+		assertEquals("Error: exception should be thrown becuase of header inconsistancy",
+				1, r);
 
 	}
 
@@ -429,8 +422,8 @@ public class InflaterTest extends junit.framework.TestCase {
 			inflateDiction.setInput(outPutDiction);
 		}
 		try {
-			assertTrue("should return 0 because needs dictionary",
-					inflateDiction.inflate(outPutInf) == 0);
+			assertEquals("should return 0 because needs dictionary",
+					0, inflateDiction.inflate(outPutInf));
 		} catch (DataFormatException e) {
 			fail("Should not cause exception");
 		}
@@ -501,9 +494,8 @@ public class InflaterTest extends junit.framework.TestCase {
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
 		}
-		assertTrue(
-				"final decompressed data contained more bytes than original - reset",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("final decompressed data contained more bytes than original - reset",
+				0, outPutInf[byteArray.length]);
 
 		// testing that resetting the inflater will also return the correct
 		// decompressed data
@@ -524,9 +516,8 @@ public class InflaterTest extends junit.framework.TestCase {
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
 		}
-		assertTrue(
-				"final decompressed data contained more bytes than original - reset",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("final decompressed data contained more bytes than original - reset",
+				0, outPutInf[byteArray.length]);
 
 	}
 
@@ -556,9 +547,8 @@ public class InflaterTest extends junit.framework.TestCase {
 		} catch (DataFormatException e) {
 			r = 1;
 		}
-		assertTrue(
-				"invalid input to be decompressed due to dictionary not set",
-				r == 1);
+		assertEquals("invalid input to be decompressed due to dictionary not set",
+				1, r);
 		// now setting the dictionary in inflater
 		Inflater inflate = new Inflater();
 		try {
@@ -579,9 +569,8 @@ public class InflaterTest extends junit.framework.TestCase {
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
 		}
-		assertTrue(
-				"final decompressed data contained more bytes than original - deflateB",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("final decompressed data contained more bytes than original - deflateB",
+				0, outPutInf[byteArray.length]);
 	}
 
 	/**
@@ -617,7 +606,7 @@ public class InflaterTest extends junit.framework.TestCase {
 		} catch (ArrayIndexOutOfBoundsException e) {
 			r = 1;
 		}
-		assertTrue("boundary check is not present for setInput", r == 1);
+		assertEquals("boundary check is not present for setInput", 1, r);
 	}
 
 	protected void setUp() {

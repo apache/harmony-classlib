@@ -100,12 +100,12 @@ public class ZipFileTest extends junit.framework.TestCase {
 			out.close();
 			/*
 			 * ZipFile zip = new ZipFile(file); ZipEntry entry1 =
-			 * zip.getEntry("File1.txt"); assertTrue("Did not find entry",
-			 * entry1 != null); entry1 = null; zip = null;
+			 * zip.getEntry("File1.txt"); assertNotNull("Did not find entry",
+			 * entry1); entry1 = null; zip = null;
 			 */
 
-			assertTrue("Did not find entry",
-					test_finalize1(test_finalize2(file)) != null);
+			assertNotNull("Did not find entry",
+					test_finalize1(test_finalize2(file)));
 			System.gc();
 			System.gc();
 			System.runFinalization();
@@ -166,40 +166,40 @@ public class ZipFileTest extends junit.framework.TestCase {
 		// Test for method java.util.zip.ZipEntry
 		// java.util.zip.ZipFile.getEntry(java.lang.String)
 		java.util.zip.ZipEntry zentry = zfile.getEntry("File1.txt");
-		assertTrue("Could not obtain ZipEntry", zentry != null);
+		assertNotNull("Could not obtain ZipEntry", zentry);
 
 		zentry = zfile.getEntry("testdir1/File1.txt");
-		assertTrue("Could not obtain ZipEntry: testdir1/File1.txt",
-				zentry != null);
+		assertNotNull("Could not obtain ZipEntry: testdir1/File1.txt",
+				zentry);
 		try {
 			int r;
 			InputStream in;
 			zentry = zfile.getEntry("testdir1/");
-			assertTrue("Could not obtain ZipEntry: testdir1/", zentry != null);
+			assertNotNull("Could not obtain ZipEntry: testdir1/", zentry);
 			in = zfile.getInputStream(zentry);
-			assertTrue("testdir1/ should not have null input stream",
-					in != null);
+			assertNotNull("testdir1/ should not have null input stream",
+					in);
 			r = in.read();
 			in.close();
-			assertTrue("testdir1/ should not contain data", r == -1);
+			assertEquals("testdir1/ should not contain data", -1, r);
 
 			zentry = zfile.getEntry("testdir1");
-			assertTrue("Could not obtain ZipEntry: testdir1", zentry != null);
+			assertNotNull("Could not obtain ZipEntry: testdir1", zentry);
 			in = zfile.getInputStream(zentry);
-			assertTrue("testdir1 should not have null input stream", in != null);
+			assertNotNull("testdir1 should not have null input stream", in);
 			r = in.read();
 			in.close();
-			assertTrue("testdir1 should not contain data", r == -1);
+			assertEquals("testdir1 should not contain data", -1, r);
 
 			zentry = zfile.getEntry("testdir1/testdir1");
-			assertTrue("Could not obtain ZipEntry: testdir1/testdir1",
-					zentry != null);
+			assertNotNull("Could not obtain ZipEntry: testdir1/testdir1",
+					zentry);
 			in = zfile.getInputStream(zentry);
 			byte[] buf = new byte[256];
 			r = in.read(buf);
 			in.close();
-			assertTrue("incorrect contents", new String(buf, 0, r)
-					.equals("This is also text"));
+			assertEquals("incorrect contents", "This is also text", new String(buf, 0, r)
+					);
 		} catch (IOException e) {
 			fail("Unexpected: " + e);
 		}
@@ -218,8 +218,8 @@ public class ZipFileTest extends junit.framework.TestCase {
 			byte[] rbuf = new byte[1000];
 			int r;
 			is.read(rbuf, 0, r = (int) zentry.getSize());
-			assertTrue("getInputStream read incorrect data", new String(rbuf,
-					0, r).equals("This is text"));
+			assertEquals("getInputStream read incorrect data", "This is text", new String(rbuf,
+					0, r));
 		} catch (java.io.IOException e) {
 			fail("IOException during getInputStream");
 		} finally {

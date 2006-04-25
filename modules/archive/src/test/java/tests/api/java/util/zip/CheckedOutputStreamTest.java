@@ -35,8 +35,8 @@ public class CheckedOutputStreamTest extends junit.framework.TestCase {
 			FileOutputStream outFile = new FileOutputStream("chkOut.txt");
 			CheckedOutputStream chkOut = new CheckedOutputStream(outFile,
 					new CRC32());
-			assertTrue("the checkSum value of the constructor is not 0", chkOut
-					.getChecksum().getValue() == 0);
+			assertEquals("the checkSum value of the constructor is not 0", 0, chkOut
+					.getChecksum().getValue());
 			outFile.close();
 		} catch (IOException e) {
 			fail("Unable to find file");
@@ -60,15 +60,15 @@ public class CheckedOutputStreamTest extends junit.framework.TestCase {
 			// ran JDK and found that checkSum value is 7536755
 			// System.out.print(chkOut.getChecksum().getValue());
 
-			assertTrue("the checkSum value for writeI is incorrect", chkOut
-					.getChecksum().getValue() == 7536755);
+			assertEquals("the checkSum value for writeI is incorrect", 7536755, chkOut
+					.getChecksum().getValue());
 			chkOut.getChecksum().reset();
 			chkOut.write(byteArray, 5, 4);
 			// ran JDK and found that checkSum value is 51708133
 			// System.out.print(" " +chkOut.getChecksum().getValue());
 
-			assertTrue("the checkSum value for writeBII is incorrect ", chkOut
-					.getChecksum().getValue() == 51708133);
+			assertEquals("the checkSum value for writeBII is incorrect ", 51708133, chkOut
+					.getChecksum().getValue());
 			outFile.close();
 		} catch (IOException e) {
 			fail("Unable to find file");
@@ -122,7 +122,7 @@ public class CheckedOutputStreamTest extends junit.framework.TestCase {
 			} catch (IndexOutOfBoundsException e) {
 				r = 1;
 			}
-			assertTrue("boundary check is not performed", r == 1);
+			assertEquals("boundary check is not performed", 1, r);
 			outFile.close();
 		} catch (IOException e) {
 			fail("Unable to find file");

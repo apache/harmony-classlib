@@ -46,10 +46,10 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
 		try {
 			FileOutputStream outFile = new FileOutputStream("GZIPOutCon.txt");
 			TestGZIPOutputStream outGZIP = new TestGZIPOutputStream(outFile);
-			assertTrue("the constructor for GZIPOutputStream is null",
-					outGZIP != null);
-			assertTrue("the CRC value of the outputStream is not zero", outGZIP
-					.getChecksum().getValue() == 0);
+			assertNotNull("the constructor for GZIPOutputStream is null",
+					outGZIP);
+			assertEquals("the CRC value of the outputStream is not zero", 0, outGZIP
+					.getChecksum().getValue());
 			outGZIP.close();
 		} catch (IOException e) {
 			fail(
@@ -66,10 +66,10 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
 			FileOutputStream outFile = new FileOutputStream("GZIPOutCon.txt");
 			TestGZIPOutputStream outGZIP = new TestGZIPOutputStream(outFile,
 					100);
-			assertTrue("the constructor for GZIPOutputStream is null",
-					outGZIP != null);
-			assertTrue("the CRC value of the outputStream is not zero", outGZIP
-					.getChecksum().getValue() == 0);
+			assertNotNull("the constructor for GZIPOutputStream is null",
+					outGZIP);
+			assertEquals("the CRC value of the outputStream is not zero", 0, outGZIP
+					.getChecksum().getValue());
 			outGZIP.close();
 		} catch (IOException e) {
 			fail(
@@ -95,9 +95,8 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
 				r = 1;
 			}
 
-			assertTrue(
-					"GZIP instance can still be used after finish is called",
-					r == 1);
+			assertEquals("GZIP instance can still be used after finish is called",
+					1, r);
 			outGZIP.close();
 		} catch (IOException e) {
 			fail(
@@ -121,8 +120,8 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
 			} catch (IOException e) {
 				r = 1;
 			}
-			assertTrue("GZIP instance can still be used after close is called",
-					r == 1);
+			assertEquals("GZIP instance can still be used after close is called",
+					1, r);
 		} catch (IOException e) {
 			fail(
 					"an IO error occured while trying to find the output file or creating GZIP constructor");
@@ -141,9 +140,8 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
 			outGZIP.write(byteArray, 0, 10);
 			// ran JDK and found this CRC32 value is 3097700292
 			// System.out.print(outGZIP.getChecksum().getValue());
-			assertTrue(
-					"the checksum value was incorrect result of write from GZIP",
-					outGZIP.getChecksum().getValue() == 3097700292L);
+			assertEquals("the checksum value was incorrect result of write from GZIP",
+					3097700292L, outGZIP.getChecksum().getValue());
 
 			// test for boundary check
 			int r = 0;
@@ -152,7 +150,7 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
 			} catch (ArrayIndexOutOfBoundsException e) {
 				r = 1;
 			}
-			assertTrue("out of bounds exception is not present", r == 1);
+			assertEquals("out of bounds exception is not present", 1, r);
 			outGZIP.close();
 		} catch (IOException e) {
 			fail(

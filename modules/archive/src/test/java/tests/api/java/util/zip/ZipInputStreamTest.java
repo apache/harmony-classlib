@@ -76,7 +76,7 @@ public class ZipInputStreamTest extends junit.framework.TestCase {
 		// Test for method java.util.zip.ZipEntry
 		// java.util.zip.ZipInputStream.getNextEntry()
 		try {
-			assertTrue("getNextEntry failed", zis.getNextEntry() != null);
+			assertNotNull("getNextEntry failed", zis.getNextEntry());
 		} catch (java.io.IOException e) {
 			fail("Exception during getNextEntry test");
 		}
@@ -93,7 +93,7 @@ public class ZipInputStreamTest extends junit.framework.TestCase {
 			byte[] rbuf = new byte[(int) zentry.getSize()];
 			int r = zis.read(rbuf, 0, rbuf.length);
 			new String(rbuf, 0, r);
-			assertTrue("Failed to read entry", r == 12);
+			assertEquals("Failed to read entry", 12, r);
 		} catch (java.io.IOException e) {
 			fail("Exception during read test");
 		}
@@ -109,7 +109,7 @@ public class ZipInputStreamTest extends junit.framework.TestCase {
 			byte[] rbuf = new byte[(int) zentry.getSize()];
 			zis.skip(2);
 			int r = zis.read(rbuf, 0, rbuf.length);
-			assertTrue("Failed to skip data", r == 10);
+			assertEquals("Failed to skip data", 10, r);
 		} catch (java.io.IOException e) {
 			fail("Unexpected1: " + e);
 		}

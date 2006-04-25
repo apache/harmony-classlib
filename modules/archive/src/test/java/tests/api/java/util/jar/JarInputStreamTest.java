@@ -54,8 +54,8 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 					.getInputStream();
 			boolean hasCorrectEntry = false;
 			JarInputStream jis = new JarInputStream(is);
-			assertTrue("The jar input stream should have a manifest", jis
-					.getManifest() != null);
+			assertNotNull("The jar input stream should have a manifest", jis
+					.getManifest());
 			JarEntry je = jis.getNextJarEntry();
 			while (je != null) {
 				if (je.getName().equals(entryName))
@@ -84,13 +84,13 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 					.getInputStream();
 			JarInputStream jis = new JarInputStream(is);
 			m = jis.getManifest();
-			assertTrue("The jar input stream should not have a manifest",
-					m == null);
+			assertNull("The jar input stream should not have a manifest",
+					m);
 
 			is = new URL(jarName).openConnection().getInputStream();
 			jis = new JarInputStream(is);
 			m = jis.getManifest();
-			assertTrue("The jar input stream should have a manifest", m != null);
+			assertNotNull("The jar input stream should have a manifest", m);
 		} catch (Exception e) {
 			fail("Exception during test: " + e.toString());
 		}

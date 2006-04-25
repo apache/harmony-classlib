@@ -74,8 +74,8 @@ public class DeflaterTest extends junit.framework.TestCase {
 		defl.finish();
 		while (!defl.finished())
 			x += defl.deflate(outPutBuf);
-		assertTrue("Deflater at end of stream, should return 0", defl
-				.deflate(outPutBuf) == 0);
+		assertEquals("Deflater at end of stream, should return 0", 0, defl
+				.deflate(outPutBuf));
 		int totalOut = defl.getTotalOut();
 		int totalIn = defl.getTotalIn();
 		assertTrue(
@@ -105,9 +105,8 @@ public class DeflaterTest extends junit.framework.TestCase {
 			assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
-		assertTrue(
-				"Final decompressed data contained more bytes than original",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("Final decompressed data contained more bytes than original",
+				0, outPutInf[byteArray.length]);
 		infl.end();
 	}
 
@@ -128,8 +127,8 @@ public class DeflaterTest extends junit.framework.TestCase {
 		defl.finish();
 		while (!defl.finished())
 			x += defl.deflate(outPutBuf, offSet, length);
-		assertTrue("Deflater at end of stream, should return 0", defl.deflate(
-				outPutBuf, offSet, length) == 0);
+		assertEquals("Deflater at end of stream, should return 0", 0, defl.deflate(
+				outPutBuf, offSet, length));
 		int totalOut = defl.getTotalOut();
 		int totalIn = defl.getTotalIn();
 		assertTrue(
@@ -158,9 +157,8 @@ public class DeflaterTest extends junit.framework.TestCase {
 			assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
-		assertTrue(
-				"Final decompressed data contained more bytes than original",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("Final decompressed data contained more bytes than original",
+				0, outPutInf[byteArray.length]);
 		infl.end();
 
 		// Set of tests testing the boundaries of the offSet/length
@@ -264,9 +262,8 @@ public class DeflaterTest extends junit.framework.TestCase {
 			assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
-		assertTrue(
-				"Final decompressed data contained more bytes than original",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("Final decompressed data contained more bytes than original",
+				0, outPutInf[byteArray.length]);
 		infl.end();
 	}
 
@@ -499,9 +496,8 @@ public class DeflaterTest extends junit.framework.TestCase {
 
 		Deflater defl = new Deflater();
 		long deflAdler = defl.getAdler();
-		assertTrue(
-				"No dictionary set, no data deflated, getAdler should return 1",
-				deflAdler == 1);
+		assertEquals("No dictionary set, no data deflated, getAdler should return 1",
+				1, deflAdler);
 		defl.setDictionary(dictionaryArray);
 		deflAdler = defl.getAdler();
 
@@ -545,9 +541,8 @@ public class DeflaterTest extends junit.framework.TestCase {
 
 		Deflater defl = new Deflater();
 		long deflAdler = defl.getAdler();
-		assertTrue(
-				"No dictionary set, no data deflated, getAdler should return 1",
-				deflAdler == 1);
+		assertEquals("No dictionary set, no data deflated, getAdler should return 1",
+				1, deflAdler);
 		defl.setDictionary(dictionaryArray, offSet, length);
 		deflAdler = defl.getAdler();
 
@@ -794,22 +789,19 @@ public class DeflaterTest extends junit.framework.TestCase {
 				// System.out.println(mdefl.getTotalOut());
 				// ran JDK and found that getTotalOut() = 86 for this particular
 				// file
-				assertTrue(
-						"getTotalOut() for the default strategy did not correspond with JDK",
-						mdefl.getTotalOut() == 86);
+				assertEquals("getTotalOut() for the default strategy did not correspond with JDK",
+						86, mdefl.getTotalOut());
 			} else if (i == 1) {
 				// System.out.println(mdefl.getTotalOut());
 				// ran JDK and found that getTotalOut() = 100 for this
 				// particular file
-				assertTrue(
-						"getTotalOut() for the Huffman strategy did not correspond with JDK",
-						mdefl.getTotalOut() == 100);
+				assertEquals("getTotalOut() for the Huffman strategy did not correspond with JDK",
+						100, mdefl.getTotalOut());
 			} else {
 				// System.out.println(mdefl.getTotalOut());
 				// ran JDK and found that totalOut = 93 for this particular file
-				assertTrue(
-						"Total Out for the Filtered strategy did not correspond with JDK",
-						mdefl.getTotalOut() == 93);
+				assertEquals("Total Out for the Filtered strategy did not correspond with JDK",
+						93, mdefl.getTotalOut());
 			}
 			mdefl.end();
 		}
@@ -929,9 +921,8 @@ public class DeflaterTest extends junit.framework.TestCase {
 			assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
-		assertTrue(
-				"final decompressed data contained more bytes than original - construcotrIZ",
-				outPutInf[byteArray.length] == 0);
+		assertEquals("final decompressed data contained more bytes than original - construcotrIZ",
+				0, outPutInf[byteArray.length]);
 		infl.end();
 
 		infl = new Inflater(false);
@@ -946,7 +937,7 @@ public class DeflaterTest extends junit.framework.TestCase {
 		} catch (DataFormatException e) {
 			r = 1;
 		}
-		assertTrue("header option did not correspond", r == 1);
+		assertEquals("header option did not correspond", 1, r);
 
 		// testing boundaries
 		try {

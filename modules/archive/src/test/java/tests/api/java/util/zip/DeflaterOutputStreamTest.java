@@ -76,8 +76,8 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 
 			// Test to see if DflaterOutputStream was created with the correct
 			// buffer.
-			assertTrue("Incorrect Buffer Size",
-					dos.getProtectedBuf().length == 512);
+			assertEquals("Incorrect Buffer Size",
+					512, dos.getProtectedBuf().length);
 
 			dos.write(byteArray);
 			dos.close();
@@ -103,8 +103,8 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 
 			// Test to see if DflaterOutputStream was created with the correct
 			// buffer.
-			assertTrue("Incorrect Buffer Size",
-					dos.getProtectedBuf().length == 512);
+			assertEquals("Incorrect Buffer Size",
+					512, dos.getProtectedBuf().length);
 
 			dos.write(outPutBuf);
 			dos.close();
@@ -160,8 +160,8 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 			// Test to see if DflaterOutputStream was created with the correct
 			// buffer.
 			dos = new MyDeflaterOutputStream(fos, defl, buf);
-			assertTrue("Incorrect Buffer Size",
-					dos.getProtectedBuf().length == 5);
+			assertEquals("Incorrect Buffer Size",
+					5, dos.getProtectedBuf().length);
 
 			dos.write(byteArray);
 			dos.close();
@@ -196,12 +196,12 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 			dos.close();
 
 			// Test to see if the finish method wrote the bytes to the file.
-			assertTrue("Incorrect Byte Returned.", iis.read() == 1);
-			assertTrue("Incorrect Byte Returned.", iis.read() == 3);
-			assertTrue("Incorrect Byte Returned.", iis.read() == 4);
-			assertTrue("Incorrect Byte Returned.", iis.read() == 6);
-			assertTrue("Incorrect Byte Returned.", iis.read() == -1);
-			assertTrue("Incorrect Byte Returned.", iis.read() == -1);
+			assertEquals("Incorrect Byte Returned.", 1, iis.read());
+			assertEquals("Incorrect Byte Returned.", 3, iis.read());
+			assertEquals("Incorrect Byte Returned.", 4, iis.read());
+			assertEquals("Incorrect Byte Returned.", 6, iis.read());
+			assertEquals("Incorrect Byte Returned.", -1, iis.read());
+			assertEquals("Incorrect Byte Returned.", -1, iis.read());
 			iis.close();
 
 			// Not sure if this test will stay.
@@ -330,8 +330,8 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 			InflaterInputStream iis = new InflaterInputStream(fis);
 			for (int i = 0; i < 3; i++)
 				assertTrue("Incorrect Byte Returned.", iis.read() == i);
-			assertTrue("Incorrect Byte Returned (EOF).", iis.read() == -1);
-			assertTrue("Incorrect Byte Returned (EOF).", iis.read() == -1);
+			assertEquals("Incorrect Byte Returned (EOF).", -1, iis.read());
+			assertEquals("Incorrect Byte Returned (EOF).", -1, iis.read());
 			iis.close();
 
 			// Not sure if this test is that important.
@@ -372,11 +372,11 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 			dos1.close();
 			FileInputStream fis = new FileInputStream(f1);
 			InflaterInputStream iis = new InflaterInputStream(fis);
-			assertTrue("Incorrect Byte Returned.", iis.read() == 4);
-			assertTrue("Incorrect Byte Returned.", iis.read() == 7);
-			assertTrue("Incorrect Byte Returned.", iis.read() == 8);
-			assertTrue("Incorrect Byte Returned (EOF).", iis.read() == -1);
-			assertTrue("Incorrect Byte Returned (EOF).", iis.read() == -1);
+			assertEquals("Incorrect Byte Returned.", 4, iis.read());
+			assertEquals("Incorrect Byte Returned.", 7, iis.read());
+			assertEquals("Incorrect Byte Returned.", 8, iis.read());
+			assertEquals("Incorrect Byte Returned (EOF).", -1, iis.read());
+			assertEquals("Incorrect Byte Returned (EOF).", -1, iis.read());
 			iis.close();
 			f1.delete();
 

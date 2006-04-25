@@ -91,7 +91,7 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
 			zos.putNextEntry(ze);
 			zos.write("Hello World".getBytes());
 			zos.finish();
-			assertTrue("Finish failed to closeCurrentEntry", ze.getSize() == 11);
+			assertEquals("Finish failed to closeCurrentEntry", 11, ze.getSize());
 		} catch (IOException e) {
 			fail("Exception during finish test: " + e.toString());
 		}

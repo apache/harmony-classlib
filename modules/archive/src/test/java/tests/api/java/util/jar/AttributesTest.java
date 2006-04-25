@@ -49,14 +49,14 @@ public class AttributesTest extends junit.framework.TestCase {
 	public void test_clear() {
 		// Test for method void java.util.jar.Attributes.clear()
 		a.clear();
-		assertTrue("a) All entries should be null after clear",
-				a.get("1") == null);
-		assertTrue("b) All entries should be null after clear",
-				a.get("2") == null);
-		assertTrue("c) All entries should be null after clear",
-				a.get("3") == null);
-		assertTrue("d) All entries should be null after clear",
-				a.get("4") == null);
+		assertNull("a) All entries should be null after clear",
+				a.get("1"));
+		assertNull("b) All entries should be null after clear",
+				a.get("2"));
+		assertNull("c) All entries should be null after clear",
+				a.get("3"));
+		assertNull("d) All entries should be null after clear",
+				a.get("4"));
 		assertTrue("Should not contain any keys", !a.containsKey("1"));
 	}
 
@@ -124,8 +124,8 @@ public class AttributesTest extends junit.framework.TestCase {
 	public void test_getLjava_lang_Object() {
 		// Test for method java.lang.Object
 		// java.util.jar.Attributes.get(java.lang.Object)
-		assertTrue("a) Incorrect value returned", a.getValue("1").equals("one"));
-		assertTrue("b) Incorrect value returned", a.getValue("0") == null);
+		assertEquals("a) Incorrect value returned", "one", a.getValue("1"));
+		assertNull("b) Incorrect value returned", a.getValue("0"));
 	}
 
 	/**
@@ -177,10 +177,10 @@ public class AttributesTest extends junit.framework.TestCase {
 		b.putValue("5", "go");
 		b.putValue("6", "roku");
 		a.putAll(b);
-		assertTrue("Should not have been replaced", a.getValue("1").equals(
-				"one"));
-		assertTrue("Should have been replaced", a.getValue("3").equals("san"));
-		assertTrue("Should have been added", a.getValue("5").equals("go"));
+		assertEquals("Should not have been replaced", 
+				"one", a.getValue("1"));
+		assertEquals("Should have been replaced", "san", a.getValue("3"));
+		assertEquals("Should have been added", "go", a.getValue("5"));
 
 	}
 
@@ -192,9 +192,9 @@ public class AttributesTest extends junit.framework.TestCase {
 		// java.util.jar.Attributes.remove(java.lang.Object)
 		a.remove(new Attributes.Name("1"));
 		a.remove(new Attributes.Name("3"));
-		assertTrue("Should have been removed", a.getValue("1") == null);
-		assertTrue("Should not have been removed", a.getValue("4").equals(
-				"four"));
+		assertNull("Should have been removed", a.getValue("1"));
+		assertEquals("Should not have been removed", 
+				"four", a.getValue("4"));
 	}
 
 	/**
@@ -202,7 +202,7 @@ public class AttributesTest extends junit.framework.TestCase {
 	 */
 	public void test_size() {
 		// Test for method int java.util.jar.Attributes.size()
-		assertTrue("Incorrect size returned", a.size() == 4);
+		assertEquals("Incorrect size returned", 4, a.size());
 		a.clear();
 		assertTrue("Should have returned 0 size, but got: " + a.size(), a
 				.size() == 0);
