@@ -318,7 +318,7 @@ public class VetoableChangeSupport implements Serializable {
     
     private void doFirePropertyChange(PropertyChangeEvent event)
             throws PropertyVetoException {
-        String propertyName = event.getPropertyName();
+        String propName = event.getPropertyName();
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
         
@@ -326,23 +326,38 @@ public class VetoableChangeSupport implements Serializable {
             return;
         }
 
-        Iterator iterator = allVetoableChangeListeners.iterator();
+        try {
+            notifyAllListeners(event);
+        } catch (PropertyVetoException pve) {
+            PropertyChangeEvent rEvent = createPropertyChangeEvent(propName,
+                    newValue, oldValue);
+            notifyAllListeners(rEvent);
+            throw pve;
+        }
+    }
+
+    private void notifyListeners(Iterator iterator, PropertyChangeEvent event)
+            throws PropertyVetoException {
+
+        VetoableChangeListener listener = null;
         while (iterator.hasNext()) {
-            VetoableChangeListener listener =
-                    (VetoableChangeListener) iterator.next();
+            listener = (VetoableChangeListener) iterator.next();
             listener.vetoableChange(event);
         }
-        
-        ArrayList listeners = (ArrayList) selectedVetoableChangeListeners.get(
-                propertyName);
-        if (listeners != null) {
-            iterator = listeners.iterator();
-            while (iterator.hasNext()) {
-                VetoableChangeListener listener =
-                        (VetoableChangeListener) iterator.next();
-                listener.vetoableChange(event);
-            }
+
+    }
+
+    private void notifyAllListeners(PropertyChangeEvent event)
+            throws PropertyVetoException {
+
+        notifyListeners(allVetoableChangeListeners.iterator(), event);
+        String propertyName = event.getPropertyName();
+        ArrayList listeners = (ArrayList) selectedVetoableChangeListeners
+                .get(propertyName);
+        if (listeners == null) {
+            return;
         }
+        notifyListeners(listeners.iterator(), event);
     }
     
     private static VetoableChangeListener[] getAsVetoableChangeListenerArray(

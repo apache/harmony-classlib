@@ -1510,6 +1510,24 @@ public class VetoableChangeSupportTest extends TestCase {
 		assertEquals(0, support.getVetoableChangeListeners().length);
 	}
 
+    /*
+     * Regression test for HARMONY-321
+     */
+    public void testFireVetoableChange_regression() {
+        VetoableChangeSupport vcs = new VetoableChangeSupport(this);
+        MockVetoListener2 vlistener = new MockVetoListener2();
+
+        vcs.addVetoableChangeListener(vlistener);
+        try {
+            vcs.fireVetoableChange(vlistener.vetoedPropName, 0, 1);
+            fail("PropertyVetoException expected");
+        } catch (PropertyVetoException ok) {}
+
+        assertEquals(1, vlistener.event.getOldValue());
+        assertEquals(0, vlistener.event.getNewValue());
+    } 
+
+    
 	/*
 	 * no this listener
 	 */
@@ -1747,5 +1765,26 @@ public class VetoableChangeSupportTest extends TestCase {
 		}
 
 	}
+
+    public static class MockVetoListener2 implements VetoableChangeListener {
+
+        public PropertyChangeEvent event;
+
+        public final String vetoedPropName = "prop";
+
+        public void vetoableChange(PropertyChangeEvent e)
+                throws PropertyVetoException {
+
+            event = e;
+            String propName = e.getPropertyName();
+
+            if (propName.equals(vetoedPropName)
+                    && e.getNewValue().equals(new Integer(1))) {
+                throw new PropertyVetoException(
+                        propName + " change is vetoed!", e);
+            }
+        }
+
+    }
 
 }
