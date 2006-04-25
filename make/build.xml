@@ -127,7 +127,7 @@ Generating HTML using Doxygen...
          ================================= -->
     <target name="properties" depends="svn-prop">
         <property name="deploy.file.prefix"
-                  value="harmony-classlib-r${svn.revision}" />
+                  value="incubator-harmony-classlib-r${svn.revision}" />
         <property name="deploy.tar"
                   value="${deploy.file.prefix}-${hy.os}-${hy.arch}-snapshot.tar.gz" />
         <property name="deploy.zip"
