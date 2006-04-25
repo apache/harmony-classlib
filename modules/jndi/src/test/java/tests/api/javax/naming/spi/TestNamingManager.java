@@ -1880,7 +1880,6 @@ public class TestNamingManager extends TestCase {
 		} catch (Throwable e) {
 			log.log("Failed in writeProviderResource!!");
 			log.log(e);
-			e.printStackTrace();
 		}
 	}
 
