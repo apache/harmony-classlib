@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmony X-Net
-Bundle-SymbolicName: org.apache.harmony.x-net
+Bundle-SymbolicName: org.apache.harmony.x_net
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
