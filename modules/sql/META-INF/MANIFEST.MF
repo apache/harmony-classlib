@@ -16,8 +16,5 @@ Import-Package: java.lang,
  java.rmi
 Export-Package: java.sql,
  javax.sql,
- javax.sql.rowset,
- javax.sql.rowset.serial,
- javax.sql.rowset.spi,
  javax.transaction,
  javax.transaction.xa
