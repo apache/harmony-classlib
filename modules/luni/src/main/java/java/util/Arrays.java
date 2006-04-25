@@ -1085,6 +1085,9 @@ public class Arrays {
 	 *                <code>end > array.size()</code>
 	 */
 	public static void sort(byte[] array, int start, int end) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array);
@@ -1195,6 +1198,9 @@ public class Arrays {
 	 *                <code>end > array.size()</code>
 	 */
 	public static void sort(char[] array, int start, int end) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array);
@@ -1310,6 +1316,9 @@ public class Arrays {
 	 * @see Double#compareTo(Double)
 	 */
 	public static void sort(double[] array, int start, int end) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array);
@@ -1425,6 +1434,9 @@ public class Arrays {
 	 * @see Float#compareTo(Float)
 	 */
 	public static void sort(float[] array, int start, int end) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array);
@@ -1535,6 +1547,9 @@ public class Arrays {
 	 *                <code>end > array.size()</code>
 	 */
 	public static void sort(int[] array, int start, int end) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array);
@@ -1645,6 +1660,9 @@ public class Arrays {
 	 *                <code>end > array.size()</code>
 	 */
 	public static void sort(long[] array, int start, int end) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array);
@@ -1762,6 +1780,9 @@ public class Arrays {
 	 *                <code>end > array.size()</code>
 	 */
 	public static void sort(Object[] array, int start, int end) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array);
@@ -1822,6 +1843,9 @@ public class Arrays {
 	 */
 	public static void sort(Object[] array, int start, int end,
 			Comparator comparator) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array, comparator);
@@ -1903,6 +1927,9 @@ public class Arrays {
 	 *                <code>end > array.size()</code>
 	 */
 	public static void sort(short[] array, int start, int end) {
+		if (array == null) {
+			throw new NullPointerException();
+		}
 		if (start >= 0 && end <= array.length) {
 			if (start <= end)
 				sort(start, end, array);

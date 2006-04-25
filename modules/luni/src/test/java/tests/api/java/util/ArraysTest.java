@@ -1142,6 +1142,173 @@ public class ArraysTest extends junit.framework.TestCase {
 					reversedArray[counter] == originalReversedArray[counter]);
 	}
 
+    /**
+     * @tests java.util.Arrays#sort(byte[], int, int)
+     */
+    public void test_java_util_Arrays_sort_byte_array_NPE() {
+        byte[] byte_array_null = null;
+        try {
+            java.util.Arrays.sort(byte_array_null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(byte_array_null, (int) -1, (int) 1);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests java.util.Arrays#sort(char[], int, int)
+     */
+    public void test_java_util_Arrays_sort_char_array_NPE() {
+        char[] char_array_null = null;
+        try {
+            java.util.Arrays.sort(char_array_null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(char_array_null, (int) -1, (int) 1);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests java.util.Arrays#sort(double[], int, int)
+     */
+    public void test_java_util_Arrays_sort_double_array_NPE() {
+        double[] double_array_null = null;
+        try {
+            java.util.Arrays.sort(double_array_null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(double_array_null, (int) -1, (int) 1);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests java.util.Arrays#sort(float[], int, int)
+     */
+    public void test_java_util_Arrays_sort_float_array_NPE() {
+        float[] float_array_null = null;
+        try {
+            java.util.Arrays.sort(float_array_null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(float_array_null, (int) -1, (int) 1);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests java.util.Arrays#sort(int[], int, int)
+     */
+    public void test_java_util_Arrays_sort_int_array_NPE() {
+        int[] int_array_null = null;
+        try {
+            java.util.Arrays.sort(int_array_null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(int_array_null, (int) -1, (int) 1);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests java.util.Arrays#sort(Object[], int, int)
+     */
+    public void test_java_util_Arrays_sort_object_array_NPE() {
+        Object[] object_array_null = null;
+        try {
+            java.util.Arrays.sort(object_array_null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(object_array_null, (int) -1, (int) 1);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(object_array_null, (int) -1, (int) 1, null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests java.util.Arrays#sort(long[], int, int)
+     */
+    public void test_java_util_Arrays_sort_long_array_NPE() {
+        long[] long_array_null = null;
+        try {
+            java.util.Arrays.sort(long_array_null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(long_array_null, (int) -1, (int) 1);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests java.util.Arrays#sort(short[], int, int)
+     */
+    public void test_java_util_Arrays_sort_short_array_NPE() {
+        short[] short_array_null = null;
+        try {
+            java.util.Arrays.sort(short_array_null);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            // Regression for HARMONY-378
+            java.util.Arrays.sort(short_array_null, (int) -1, (int) 1);
+            fail("Should throw java.lang.NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
