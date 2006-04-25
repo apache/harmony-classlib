@@ -48,7 +48,7 @@ public abstract class ASN1Type implements ASN1Constants {
      * Constructs a primitive, universal ASN.1 type.
      * 
      * @param tagNumber - ASN.1 tag number
-     * @throws IOException TODO
+     * @throws IllegalArgumentException - if tagNumber is invalid
      */
     public ASN1Type(int tagNumber) {
         this(CLASS_UNIVERSAL, false, tagNumber);
@@ -61,18 +61,18 @@ public abstract class ASN1Type implements ASN1Constants {
      *     CLASS_UNIVERSAL, CLASS_APPLICATION, CLASS_CONTEXTSPECIFIC, CLASS_PRIVATE
      * @param isConstructed - is ASN.1 type is a constructed type.
      * @param tagNumber - ASN.1 tag number.
-     * @throws IOException TODO
+     * @throws IllegalArgumentException - if tagClass or tagNumber is invalid
      */
     public ASN1Type(int tagClass, boolean isConstructed, int tagNumber) {
 
         if (tagNumber < 0) {
-            throw new RuntimeException("Negative tag number");
+            throw new IllegalArgumentException("Negative tag number");
         }
 
         if (tagClass != CLASS_UNIVERSAL && tagClass != CLASS_APPLICATION
                 && tagClass != CLASS_CONTEXTSPECIFIC
                 && tagClass != CLASS_PRIVATE) {
-            throw new RuntimeException("Wrong tag class");
+            throw new IllegalArgumentException("Wrong tag class");
         }
         this.tagClass = tagClass;
         this.isConstructed = isConstructed;
@@ -87,7 +87,8 @@ public abstract class ASN1Type implements ASN1Constants {
             }
         } else {
             // long form
-            throw new RuntimeException("Tag long form is not implemented");
+            throw new IllegalArgumentException(
+                    "Tag long form is not implemented");
         }
     }
 
