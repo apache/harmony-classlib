@@ -192,8 +192,8 @@ public class RC5ParameterSpecTest extends TestCase {
                     + "should not cause the change of internal array.",
                     result[0] == ps.getIV()[0]);
         ps = new RC5ParameterSpec(version, rounds, wordSize);
-        assertTrue("The getIV() method should return null if the parameter "
-                    + "set does not contain IV.", ps.getIV() == null);
+        assertNull("The getIV() method should return null if the parameter "
+                    + "set does not contain IV.", ps.getIV());
     }
 
     /**

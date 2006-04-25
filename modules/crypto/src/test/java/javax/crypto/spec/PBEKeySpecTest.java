@@ -253,8 +253,8 @@ public class PBEKeySpecTest extends TestCase {
                     + "should not cause the change of internal array.",
                     result[0] == pbeks.getSalt()[0]);
         pbeks = new PBEKeySpec(password);
-        assertTrue("The getSalt() method should return null if the salt "
-                    + "is not specified.", pbeks.getSalt() == null);
+        assertNull("The getSalt() method should return null if the salt "
+                    + "is not specified.", pbeks.getSalt());
     }
 
     /**

@@ -131,8 +131,8 @@ public class RC2ParameterSpecTest extends TestCase {
                     + "should not cause the change of internal array.",
                     result[0] == ps.getIV()[0]);
         ps = new RC2ParameterSpec(effectiveKeyBits);
-        assertTrue("The getIV() method should return null if the parameter "
-                    + "set does not contain iv.", ps.getIV() == null);
+        assertNull("The getIV() method should return null if the parameter "
+                    + "set does not contain iv.", ps.getIV());
     }
 
     /**

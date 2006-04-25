@@ -47,8 +47,8 @@ public class PSourceTest extends TestCase {
         } catch (NullPointerException e) {
         }
 
-        assertTrue("The PSource.PSpecified DEFAULT value should be byte[0]",
-                            PSource.PSpecified.DEFAULT.getValue().length == 0);
+        assertEquals("The PSource.PSpecified DEFAULT value should be byte[0]",
+                            0, PSource.PSpecified.DEFAULT.getValue().length);
 
         byte[] p = new byte[] {1, 2, 3, 4, 5};
         PSource.PSpecified ps = new PSource.PSpecified(p);

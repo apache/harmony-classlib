@@ -157,7 +157,7 @@ public class CipherTest extends junit.framework.TestCase {
 		final String algorithm = "DESede/CBC/PKCS5Padding";
 		try {
 			Cipher cipher = Cipher.getInstance(algorithm);
-			assertTrue("Block size does not match", cipher.getBlockSize() == 8);
+			assertEquals("Block size does not match", 8, cipher.getBlockSize());
 		} catch (Exception e) {
 			fail("Unexpected Exception");
 		}
