@@ -100,7 +100,7 @@
                     <exclude name="**/ChoiceFormatTest.java"/>
                     <exclude name="**/CollationKeyTest.java"/>
                     <exclude name="**/CollatorTest.java"/>
-                    <exclude name="tests/api/java/text/DecimalFormatTest.java"/>
+                    <exclude name="**/DecimalFormatTest.java"/>
                     <exclude name="**/MessageFormatTest.java"/>
                     <exclude name="**/NumberFormatTest.java"/>
                 </fileset>

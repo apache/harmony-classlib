@@ -35,7 +35,7 @@ public class AllTests {
 		suite.addTest(tests.archive.AllTests.suite());
 		suite.addTest(tests.luni.AllTests.suite());
 		suite.addTest(tests.nio_char.AllTests.suite());
-		suite.addTest(tests.text.AllTests.suite());
+		suite.addTest(org.apache.harmony.text.tests.AllTests.suite());
 		// $JUnit-END$
 
 		// Wrap all tests in the exclusion decorator
