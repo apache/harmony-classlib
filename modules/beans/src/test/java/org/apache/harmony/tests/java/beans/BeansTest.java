@@ -22,7 +22,10 @@ package org.apache.harmony.tests.java.beans;
 
 import org.apache.harmony.tests.java.beans.auxiliary.SampleBean;
 import java.beans.Beans;
+import java.io.Externalizable;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -105,6 +108,18 @@ public class BeansTest extends TestCase {
         }
         assertNotNull(Beans.instantiate(null, this.getClass().getName()));
     } 
+
+    //regression test for HARMONY-402
+    public void test_isInstanceOf_Object_Class() {
+        ObjectBean bean = new ObjectBean();
+        // correct non-null targetType
+        Class targetType = Externalizable.class;
+        assertTrue(Beans.isInstanceOf(bean, targetType));
+
+        // null targetType
+        targetType = null;
+        assertFalse(Beans.isInstanceOf(bean, targetType));
+    } 
     
     /**
      * 
@@ -132,4 +147,9 @@ public class BeansTest extends TestCase {
     private void checkValues(SampleBean sampleBean) {
         assertEquals(null, sampleBean.getText());
     }
+
+    private class ObjectBean implements Externalizable { 
+        public void writeExternal(ObjectOutput out) {}; 
+        public void readExternal(ObjectInput in){}; 
+    } 
 }

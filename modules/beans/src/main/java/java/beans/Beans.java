@@ -144,7 +144,11 @@ public class Beans {
 	 * @com.intel.drl.spec_ref
 	 */
     public static boolean isInstanceOf(Object bean, Class targetType) {
-        return bean.getClass().isAssignableFrom(targetType);            
+        if (targetType == null) {
+            return false;
+        } else {
+            return targetType.isInstance(bean);
+        }
     }
 
     /**
