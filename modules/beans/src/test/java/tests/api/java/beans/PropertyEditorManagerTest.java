@@ -87,9 +87,10 @@ public class PropertyEditorManagerTest extends TestCase {
 		PropertyEditor editor = PropertyEditorManager.findEditor(Integer.TYPE);
 	}
 
+    //Regression test for HARMONY-258
 	public void testFindEditor_TypeNull() {
 		try {
-			PropertyEditor editor = PropertyEditorManager.findEditor(null);
+			PropertyEditorManager.findEditor(null);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// expected
@@ -141,6 +142,7 @@ public class PropertyEditorManagerTest extends TestCase {
 
 	/*
 	 * registerEditor for type null
+     * Regression test for HARMONY-258
 	 */
 	public void testRegisterEditorType_Null() {
 		try {

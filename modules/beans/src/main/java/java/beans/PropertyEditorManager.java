@@ -41,16 +41,18 @@ public class PropertyEditorManager {
      * @com.intel.drl.spec_ref
      */
     public static void registerEditor(Class targetType, Class editorClass) {
-        if (targetType != null) {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                sm.checkPropertiesAccess();
-            }
-            if (editorClass != null) {
-                registeredEditors.put(targetType, editorClass);
-            } else {
-                registeredEditors.remove(targetType);
-            }
+        if (targetType == null) {
+            throw new NullPointerException();
+        }
+
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPropertiesAccess();
+        }
+        if (editorClass != null) {
+            registeredEditors.put(targetType, editorClass);
+        } else {
+            registeredEditors.remove(targetType);
         }
     }
 
@@ -58,55 +60,54 @@ public class PropertyEditorManager {
      * @com.intel.drl.spec_ref
      */
     public static synchronized PropertyEditor findEditor(Class targetType) {
+        if (targetType == null) {
+            throw new NullPointerException();
+        }
+
         Class editorClass = null;
         PropertyEditor editor = null;
-        
-        if (targetType != null) {
-            editorClass = (Class) registeredEditors.get(targetType);
-            
-            if (editorClass == null) {
-                String editorClassName = targetType.getName() + "Editor";
-                ClassLoader loader = targetType.getClassLoader();
 
-				if (loader == null) {
-					loader = Thread.currentThread().getContextClassLoader();
-				}
+        editorClass = (Class) registeredEditors.get(targetType);
 
-				try {
-					editorClass = Class.forName(editorClassName, true, loader);
-                } catch (ClassNotFoundException cnfe) {
-                    String shortEditorClassName = editorClassName.substring(
-                        editorClassName.lastIndexOf(".") + 1);
-                    
-                    if(targetType.isPrimitive()) {
-                        shortEditorClassName =
-                            shortEditorClassName.substring(0,1).toUpperCase()
+        if (editorClass == null) {
+            String editorClassName = targetType.getName() + "Editor";
+            ClassLoader loader = targetType.getClassLoader();
+
+            if (loader == null) {
+                loader = Thread.currentThread().getContextClassLoader();
+            }
+
+            try {
+                editorClass = Class.forName(editorClassName, true, loader);
+            } catch (ClassNotFoundException cnfe) {
+                String shortEditorClassName = editorClassName
+                        .substring(editorClassName.lastIndexOf(".") + 1);
+
+                if (targetType.isPrimitive()) {
+                    shortEditorClassName = shortEditorClassName.substring(0, 1)
+                            .toUpperCase()
                             + shortEditorClassName.substring(1);
-                    }
-                    
-                    for (int i = 0; i < path.length; ++i) {
-                        editorClassName = path[i] + "." + shortEditorClassName;
-                        
-                        try {
-                            editorClass = Class.forName(editorClassName, true,
-                                    loader);
-                        } catch (ClassNotFoundException cnfe2) {
-                        } catch (Exception e) {
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
                 }
-            }
-                
-            if (editorClass != null) {
-                try {
-                    editor = (PropertyEditor) editorClass.newInstance();
-                } catch (Exception e) {
+
+                for (int i = 0; i < path.length; ++i) {
+                    editorClassName = path[i] + "." + shortEditorClassName;
+
+                    try {
+                        editorClass = Class.forName(editorClassName, true,
+                                loader);
+                    } catch (ClassNotFoundException cnfe2) {} catch (Exception e) {
+                        break;
+                    }
                 }
-            }
-            
+            } catch (Exception e) {}
         }
+
+        if (editorClass != null) {
+            try {
+                editor = (PropertyEditor) editorClass.newInstance();
+            } catch (Exception e) {}
+        }
+
         return editor;
     }
 
