@@ -34,7 +34,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
     #include <unistd.h>
     #include <pwd.h>
     #include <grp.h>
-#endif // ifdef _WINDOWS
+#endif /* ifdef _WINDOWS */
 
 #include <stdlib.h>
 #include <assert.h>
@@ -56,7 +56,12 @@ JNIEXPORT void JNICALL
 Java_org_apache_harmony_auth_module_UnixSystem_load
   (JNIEnv * jenv, jobject thiz)
 {
-	PORT_ACCESS_FROM_ENV(jenv);
+    PORT_ACCESS_FROM_ENV(jenv);
+    uid_t uid;
+    gid_t gid;
+    struct passwd * pp;
+    struct group * pg;
+    int gcount;
 
     if( NULL == jf_uid ) {
         jclass klass = (*jenv)->GetObjectClass (jenv, thiz);
@@ -113,38 +118,42 @@ Java_org_apache_harmony_auth_module_UnixSystem_load
         jclassString = (jclass)(*jenv)->NewGlobalRef (jenv, jclassString);
     }
 
-    //
-    uid_t uid = getuid();
+    uid = getuid();
     (*jenv)->SetLongField (jenv, thiz, jf_uid, (jlong)uid);
-    gid_t gid = getgid();
+    gid = getgid();
     (*jenv)->SetLongField (jenv, thiz, jf_gid, (jlong)gid);
-    //
-    struct passwd * pp = getpwuid(uid);
+
+    pp = getpwuid(uid);
     (*jenv)->SetObjectField (jenv, thiz, jf_username, (*jenv)->NewStringUTF (jenv, pp->pw_name));
-    //
-    struct group * pg = getgrgid(gid);
+
+    pg = getgrgid(gid);
     (*jenv)->SetObjectField (jenv, thiz, jf_groupname, (*jenv)->NewStringUTF (jenv, pg->gr_name));
-    //
-    int gcount = getgroups(0, NULL);
+
+    gcount = getgroups(0, NULL);
     if( 0 != gcount ) {
-        //
-        gid_t * gids = (gid_t*)hymem_allocate_memory(gcount*sizeof(gid_t));
-        //
+
+        gid_t * gids;
+        jlongArray jgs;
+        jlong * jgs_raw;
+        jobjectArray jgsnames;
+        int i;
+
+        gids = (gid_t*)hymem_allocate_memory(gcount*sizeof(gid_t));
+
         getgroups(gcount, gids);
-        jlongArray jgs = (*jenv)->NewLongArray (jenv, gcount);
-        jlong * jgs_raw = (*jenv)->GetLongArrayElements (jenv, jgs, NULL);
-        jobjectArray jgsnames = (*jenv)->NewObjectArray (jenv, gcount, jclassString, NULL);
-        int i; 
+        jgs = (*jenv)->NewLongArray (jenv, gcount);
+        jgs_raw = (*jenv)->GetLongArrayElements (jenv, jgs, NULL);
+        jgsnames = (*jenv)->NewObjectArray (jenv, gcount, jclassString, NULL);
         for(i=0; i<gcount; i++ ) {
             struct group * g = getgrgid(gids[i]);
             jgs_raw[i] = g->gr_gid;
             (*jenv)->SetObjectArrayElement (jenv, jgsnames, i, (*jenv)->NewStringUTF (jenv, g->gr_name));
         }
-        (*jenv)->ReleaseLongArrayElements (jenv, jgs, jgs_raw, 0); // here: 0='update java array with the passed values'
+        (*jenv)->ReleaseLongArrayElements (jenv, jgs, jgs_raw, 0); /* here: 0='update java array with the passed values' */
         (*jenv)->SetObjectField (jenv, thiz, jf_groups, jgs);
         (*jenv)->SetObjectField (jenv, thiz, jf_groupsNames, jgsnames);
-        //
+
         hymem_free_memory(gids);
-        //
+
     };
-};
+}
