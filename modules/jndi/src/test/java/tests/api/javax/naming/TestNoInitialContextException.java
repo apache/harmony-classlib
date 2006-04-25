@@ -78,9 +78,11 @@ public class TestNoInitialContextException extends TestCase {
 	 */
 	public void testSerializable_compatibility() throws InvalidNameException,
 			ClassNotFoundException, IOException {
-		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream(
-						"data/NoInitialContextException.ser"));
+		ObjectInputStream ois = new ObjectInputStream(
+                getClass()
+                        .getClassLoader()
+                        .getResourceAsStream(
+                                "/serialization/javax/naming/NoInitialContextException.ser"));
 		NoInitialContextException exception2 = (NoInitialContextException) ois
 				.readObject();
 		ois.close();

@@ -348,7 +348,8 @@ public class TestBinaryRefAddr extends TestCase {
 			IOException {
 		// TO DO R: need to implement
 		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream("data/BinaryRefAddr.ser"));
+                .getClassLoader().getResourceAsStream(
+                        "/serialization/javax/naming/BinaryRefAddr.ser"));
 		BinaryRefAddr addr = (BinaryRefAddr) ois.readObject();
 		ois.close();
 

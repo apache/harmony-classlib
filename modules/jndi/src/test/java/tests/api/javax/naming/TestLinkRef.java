@@ -187,7 +187,8 @@ public class TestLinkRef extends TestCase {
 	public void testSerializable_compatibility() throws ClassNotFoundException,
 			IOException {
 		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream("data/LinkRef.ser"));
+                .getClassLoader().getResourceAsStream(
+                        "/serialization/javax/naming/LinkRef.ser"));
 		LinkRef linkRef2 = (LinkRef) ois.readObject();
 		ois.close();
 

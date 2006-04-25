@@ -401,7 +401,8 @@ public class TestResolveResult extends TestCase {
 	public void testSerializable_compatibility() throws ClassNotFoundException,
 			IOException {
 		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream("data/ResolveResult.ser"));
+                .getClassLoader().getResourceAsStream(
+                        "/serialization/javax/naming/spi/ResolveResult.ser"));
 		ResolveResult resolveResult2 = (ResolveResult) ois.readObject();
 		ois.close();
 

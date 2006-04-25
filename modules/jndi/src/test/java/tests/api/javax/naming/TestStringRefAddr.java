@@ -194,7 +194,8 @@ public class TestStringRefAddr extends TestCase {
 	public void testSerializable_compatibility() throws ClassNotFoundException,
 			IOException {
 		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream("data/StringRefAddr.ser"));
+                .getClassLoader().getResourceAsStream(
+                        "/serialization/javax/naming/StringRefAddr.ser"));
 		StringRefAddr addr = (StringRefAddr) ois.readObject();
 		ois.close();
 

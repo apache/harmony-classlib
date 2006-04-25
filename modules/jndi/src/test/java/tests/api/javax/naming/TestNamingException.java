@@ -185,7 +185,8 @@ public class TestNamingException extends TestCase {
 
 		try {
 			ObjectInputStream in = new ObjectInputStream(getClass()
-					.getResourceAsStream("/data/NamingException.ser"));
+                    .getResourceAsStream(
+                            "/serialization/javax/naming/NamingException.ser"));
 			NamingException ex = (NamingException) in.readObject();
 			assertEquals("test purpsoe", ex.getMessage());
 			assertEquals(new CompositeName("RemainingName"), ex

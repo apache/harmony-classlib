@@ -77,8 +77,8 @@ public class TestInvalidNameException extends TestCase {
 	public void testSerializable_compatibility() throws InvalidNameException,
 			ClassNotFoundException, IOException {
 		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream(
-						"data/InvalidNameException.ser"));
+                .getClassLoader().getResourceAsStream(
+                        "/serialization/javax/naming/InvalidNameException.ser"));
 		InvalidNameException exception2 = (InvalidNameException) ois
 				.readObject();
 		ois.close();

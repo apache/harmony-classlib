@@ -578,7 +578,8 @@ public class TestReference extends TestCase {
 	public void testSerializable_compatibility() throws ClassNotFoundException,
 			IOException {
 		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream("data/Reference.ser"));
+                .getClassLoader().getResourceAsStream(
+                        "/serialization/javax/naming/Reference.ser"));
 		Reference reference2 = (Reference) ois.readObject();
 		ois.close();
 

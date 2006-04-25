@@ -77,8 +77,8 @@ public class TestNotContextException extends TestCase {
 	public void testSerializable_compatibility() throws InvalidNameException,
 			ClassNotFoundException, IOException {
 		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream(
-						"data/NotContextException.ser"));
+                .getClassLoader().getResourceAsStream(
+                        "/serialization/javax/naming/NotContextException.ser"));
 		NotContextException exception2 = (NotContextException) ois.readObject();
 		ois.close();
 

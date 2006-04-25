@@ -1198,9 +1198,11 @@ public class TestBasicAttribute extends TestCase {
 
 	public void testSerializable_compatibility() throws ClassNotFoundException,
 			IOException {
-		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader()
-				.getResourceAsStream("data/BasicAttribute.ser"));
+		ObjectInputStream ois = new ObjectInputStream(
+                getClass()
+                        .getClassLoader()
+                        .getResourceAsStream(
+                                "/serialization/javax/naming/directory/BasicAttribute.ser"));
 		BasicAttribute attribute2 = (BasicAttribute) ois.readObject();
 
 		BasicAttribute attribute = new BasicAttribute("serializeBasicAttribute");

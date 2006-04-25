@@ -1661,7 +1661,8 @@ public class TestCompoundName extends TestCase {
 
 		try {
 			ObjectInputStream in = new ObjectInputStream(getClass()
-					.getResourceAsStream("/data/CompoundName.ser"));
+                    .getResourceAsStream(
+                            "/serialization/javax/naming/CompoundName.ser"));
 			CompoundName name = (CompoundName) in.readObject();
 			assertEquals(new CompoundName("a/b/c/d", props), name);
 			in.close();
@@ -1676,7 +1677,8 @@ public class TestCompoundName extends TestCase {
 
 		try {
 			ObjectInputStream in = new ObjectInputStream(getClass()
-					.getResourceAsStream("/data/CompoundName_bad.ser"));
+                    .getResourceAsStream(
+                            "/serialization/javax/naming/CompoundName_bad.ser"));
 			CompoundName name = (CompoundName) in.readObject();
 			assertEquals(new CompoundName("a/b/c/d", props), name);
 			in.close();

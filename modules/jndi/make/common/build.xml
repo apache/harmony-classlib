@@ -45,7 +45,7 @@
     </target>
 
 
-    <target name="compile.tests">
+    <target name="compile.tests" depends="copy.test.resources" >
         <echo message="Compiling JNDI tests from ${hy.jndi.src.test.java}" />
 
         <mkdir dir="${hy.jndi.bin.test}" />
@@ -97,23 +97,12 @@
                 <fileset dir="${hy.jndi.src.test.java}">
                     <include name="**/*Test.java"/>
                     <include name="**/Test*.java"/>
-                    <exclude name="**/TestBasicAttribute.java" />
-                    <exclude name="**/TestBasicAttributes.java" />
-                    <exclude name="**/TestBinaryRefAddr.java" />
-                    <exclude name="**/TestCompositeName.java" />
-                    <exclude name="**/TestCompoundName.java" />
-                    <exclude name="**/TestControlFactory.java" />
-                    <exclude name="**/TestInitialContextApp.java" />
-                    <exclude name="**/TestInvalidNameException.java" />
-                    <exclude name="**/TestLinkRef.java" />
-                    <exclude name="**/TestNamingException.java" />
-                    <exclude name="**/TestNamingManagerBuilder.java" />
+                    <!--
+                    To make the following two test cases pass, 
+                    set forkmode="perTest"
+                    -->
+                	<exclude name="**/TestNamingManagerBuilder.java" />
                     <exclude name="**/TestNamingManager.java" />
-                    <exclude name="**/TestNoInitialContextException.java" />
-                    <exclude name="**/TestNotContextException.java" />
-                    <exclude name="**/TestReference.java" />
-                    <exclude name="**/TestResolveResult.java" />
-                    <exclude name="**/TestStringRefAddr.java" />
                 </fileset>
             </batchtest>
         </junit>
@@ -135,5 +124,16 @@
     <target name="copy.resources">
         <!-- Nothing for JNDI -->
     </target>
+	
+    <target name="copy.test.resources">
+        <mkdir dir="${hy.jndi.bin.test}" />
+        <copy todir="${hy.jndi.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.jndi.src.test.resources}">
+                <exclude name="**/*.java" />
+                <exclude name="**/*.zip" />
+            </fileset>
+        </copy>
+    </target>
+	
 </project>
 

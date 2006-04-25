@@ -725,9 +725,11 @@ public class TestBasicAttributes extends TestCase {
 
 	public void testSerializable_compatibility() throws ClassNotFoundException,
 			IOException {
-		ObjectInputStream ois = new ObjectInputStream(getClass()
-				.getClassLoader().getResourceAsStream(
-						"data/BasicAttributes.ser"));
+		ObjectInputStream ois = new ObjectInputStream(
+                getClass()
+                        .getClassLoader()
+                        .getResourceAsStream(
+                                "/serialization/javax/naming/directory/BasicAttributes.ser"));
 		BasicAttributes attributes2 = (BasicAttributes) ois.readObject();
 
 		int count = 10;

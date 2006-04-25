@@ -624,7 +624,8 @@ public class TestCompositeName extends TestCase {
 
 		try {
 			ObjectInputStream in = new ObjectInputStream(getClass()
-					.getResourceAsStream("/data/CompositeName.ser"));
+                    .getResourceAsStream(
+                            "/serialization/javax/naming/CompositeName.ser"));
 			CompositeName name = (CompositeName) in.readObject();
 			assertEquals(new CompositeName("a/b/c/d"), name);
 			in.close();
