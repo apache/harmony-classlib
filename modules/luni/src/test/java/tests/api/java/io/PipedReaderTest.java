@@ -56,127 +56,104 @@ public class PipedReaderTest extends junit.framework.TestCase {
 	Thread t;
 
 	/**
-	 * @tests java.io.PipedReader#PipedReader()
-	 */
-	public void test_Constructor() {
-		// Test for method java.io.PipedReader()
-		// Used in test
-	}
+     * @tests java.io.PipedReader#PipedReader()
+     */
+    public void test_Constructor() {
+    // Test for method java.io.PipedReader()
+    // Used in test
+    }
 
-	/**
-	 * @tests java.io.PipedReader#PipedReader(java.io.PipedWriter)
-	 */
-	public void test_ConstructorLjava_io_PipedWriter() {
-		// Test for method java.io.PipedReader(java.io.PipedWriter)
-		try {
-			preader = new PipedReader(new PipedWriter());
+    /**
+     * @tests java.io.PipedReader#PipedReader(java.io.PipedWriter)
+     */
+    public void test_ConstructorLjava_io_PipedWriter() throws IOException {
+        // Test for method java.io.PipedReader(java.io.PipedWriter)
+        preader = new PipedReader(new PipedWriter());
+    }
 
-		} catch (Exception e) {
-			fail("Exception during constructor test: " + e.toString());
-		}
-	}
+    /**
+     * @tests java.io.PipedReader#close()
+     */
+    public void test_close() throws Exception {
+        // Test for method void java.io.PipedReader.close()
+        char[] c = null;
+        preader = new PipedReader();
+        t = new Thread(new PWriter(preader), "");
+        t.start();
+        Thread.sleep(500); // Allow writer to start
+        c = new char[11];
+        preader.read(c, 0, 11);
+        preader.close();
+        assertEquals("Read incorrect chars", "Hello World", new String(c));
+    }
 
-	/**
-	 * @tests java.io.PipedReader#close()
-	 */
-	public void test_close() {
-		// Test for method void java.io.PipedReader.close()
-		char[] c = null;
-		try {
-			preader = new PipedReader();
-			t = new Thread(new PWriter(preader), "");
-			t.start();
-			Thread.sleep(500); // Allow writer to start
-			c = new char[11];
-			preader.read(c, 0, 11);
-			preader.close();
-		} catch (Exception e) {
-			fail("Exception during close test : " + e.getMessage());
-		}
-		assertTrue("Read incorrect chars", new String(c).equals("Hello World"));
-	}
+    /**
+     * @tests java.io.PipedReader#connect(java.io.PipedWriter)
+     */
+    public void test_connectLjava_io_PipedWriter() throws Exception {
+        // Test for method void java.io.PipedReader.connect(java.io.PipedWriter)
+        char[] c = null;
 
-	/**
-	 * @tests java.io.PipedReader#connect(java.io.PipedWriter)
-	 */
-	public void test_connectLjava_io_PipedWriter() {
-		// Test for method void java.io.PipedReader.connect(java.io.PipedWriter)
-		char[] c = null;
-		try {
-			preader = new PipedReader();
-			t = new Thread(pwriter = new PWriter(), "");
-			preader.connect(pwriter.pw);
-			t.start();
-			Thread.sleep(500); // Allow writer to start
-			c = new char[11];
-			preader.read(c, 0, 11);
-		} catch (Exception e) {
-			fail("Exception during connect test : " + e.getMessage());
-		}
-		assertTrue("Read incorrect chars", new String(c).equals("Hello World"));
-		try {
-			preader.connect(pwriter.pw);
-		} catch (Exception e) {
-			// Correct
-			return;
-		}
-		fail(
-				"Failed to throw exception connecting to pre-connected reader");
-	}
+        preader = new PipedReader();
+        t = new Thread(pwriter = new PWriter(), "");
+        preader.connect(pwriter.pw);
+        t.start();
+        Thread.sleep(500); // Allow writer to start
+        c = new char[11];
+        preader.read(c, 0, 11);
+
+        assertEquals("Read incorrect chars", "Hello World", new String(c));
+        try {
+            preader.connect(pwriter.pw);
+            fail("Failed to throw exception connecting to pre-connected reader");
+        } catch (Exception e) {
+            // Correct
+        }
+    }
 
 	/**
 	 * @tests java.io.PipedReader#read()
 	 */
-	public void test_read() {
-		// Test for method int java.io.PipedReader.read()
-		char[] c = null;
-		try {
-			preader = new PipedReader();
-			t = new Thread(new PWriter(preader), "");
-			t.start();
-			Thread.sleep(500); // Allow writer to start
-			c = new char[11];
-			for (int i = 0; i < c.length; i++)
-				c[i] = (char) preader.read();
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
-		assertTrue("Read incorrect chars: " + new String(c), new String(c)
-				.equals("Hello World"));
-	}
+	public void test_read() throws Exception {
+        // Test for method int java.io.PipedReader.read()
+        char[] c = null;
+        preader = new PipedReader();
+        t = new Thread(new PWriter(preader), "");
+        t.start();
+        Thread.sleep(500); // Allow writer to start
+        c = new char[11];
+        for (int i = 0; i < c.length; i++) {
+            c[i] = (char) preader.read();
+        }
+        assertEquals("Read incorrect chars", "Hello World", new String(c));
+    }
 
 	/**
 	 * @tests java.io.PipedReader#read(char[], int, int)
 	 */
-	public void test_read$CII() {
-		// Test for method int java.io.PipedReader.read(char [], int, int)
-		char[] c = null;
-		try {
-			preader = new PipedReader();
-			t = new Thread(new PWriter(preader), "");
-			t.start();
-			Thread.sleep(500); // Allow writer to start
-			c = new char[11];
-			int n = 0;
-			int x = n;
-			while (x < 11) {
-				n = preader.read(c, x, 11 - x);
-				x = x + n;
-			}
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
-		assertTrue("Read incorrect chars: " + new String(c), new String(c)
-				.equals("Hello World"));
-		try {
-			preader.close();
-			preader.read(c, 8, 7);
-		} catch (Exception e) {
-			// Correct
-			return;
-		}
-		fail("Failed to throw exception reading from closed reader");
-	}
+	public void test_read$CII() throws Exception {
+        // Test for method int java.io.PipedReader.read(char [], int, int)
+        char[] c = null;
+        preader = new PipedReader();
+        t = new Thread(new PWriter(preader), "");
+        t.start();
+        Thread.sleep(500); // Allow writer to start
+        c = new char[11];
+        int n = 0;
+        int x = n;
+        while (x < 11) {
+            n = preader.read(c, x, 11 - x);
+            x = x + n;
+        }
+        assertEquals("Read incorrect chars", "Hello World", new String(c));
+        try {
+            preader.close();
+            preader.read(c, 8, 7);
+            fail("Failed to throw exception reading from closed reader");
+        } catch (Exception e) {
+            // Correct
+        }
+    }
 
     /**
      * @tests java.io.PipedReader#read(char[], int, int)
@@ -199,7 +176,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PipedReader#read(char[], int, int)
      */
-    public void test_read$CII_3() {
+    public void test_read$CII_3() throws IOException {
         PipedWriter pw = new PipedWriter();
         PipedReader obj = null;
         try {
@@ -209,15 +186,13 @@ public class PipedReaderTest extends junit.framework.TestCase {
         } catch (ArrayIndexOutOfBoundsException t) {
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException t) {
-        } catch (IOException e) {
-            fail("Unexpected IOException: " + e.getMessage());
         }
     }
 
     /**
      * @tests java.io.PipedReader#read(char[], int, int)
      */
-    public void test_read$CII_4() {
+    public void test_read$CII_4() throws IOException {
         PipedWriter pw = new PipedWriter();
         PipedReader obj = null;
         try {
@@ -227,46 +202,35 @@ public class PipedReaderTest extends junit.framework.TestCase {
         } catch (ArrayIndexOutOfBoundsException t) {
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException t) {
-        } catch (IOException e) {
-            fail("Unexpected IOException: " + e.getMessage());
         }
     }
 
     /**
 	 * @tests java.io.PipedReader#ready()
 	 */
-	public void test_ready() {
-		// Test for method boolean java.io.PipedReader.ready()
-		char[] c = null;
-		try {
-			preader = new PipedReader();
-			t = new Thread(new PWriter(preader), "");
-			t.start();
-			Thread.sleep(500); // Allow writer to start
-			assertTrue("Reader should be ready", preader.ready());
-			c = new char[11];
-			for (int i = 0; i < c.length; i++)
-				c[i] = (char) preader.read();
-			assertTrue("Reader should not be ready after reading all chars",
-					!preader.ready());
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
+	public void test_ready() throws Exception {
+        // Test for method boolean java.io.PipedReader.ready()
+        char[] c = null;
+        preader = new PipedReader();
+        t = new Thread(new PWriter(preader), "");
+        t.start();
+        Thread.sleep(500); // Allow writer to start
+        assertTrue("Reader should be ready", preader.ready());
+        c = new char[11];
+        for (int i = 0; i < c.length; i++)
+            c[i] = (char) preader.read();
+        assertFalse("Reader should not be ready after reading all chars",
+                preader.ready());
+    }
 
 	/**
 	 * Tears down the fixture, for example, close a network connection. This
 	 * method is called after a test is executed.
 	 */
-	protected void tearDown() {
-		if (t != null)
+	protected void tearDown() throws Exception {
+		if (t != null) {
 			t.interrupt();
+        }
+        super.tearDown();
 	}
 }
