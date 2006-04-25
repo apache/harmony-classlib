@@ -25,6 +25,7 @@ Export-Package: java.security,
  javax.security.cert,
  org.apache.harmony.security;version="1.0.0",
  org.apache.harmony.security.asn1;version="1.0.0",
- org.apache.harmony.security.x509;version="1.0.0",
- org.apache.harmony.security.utils;version="1.0.0";x-friends:="org.apache.harmony.archive,org.apache.harmony.luni",
- org.apache.harmony.security.fortress;version="1.0.0"
+ org.apache.harmony.security.fortress;version="1.0.0",
+ org.apache.harmony.security.utils;version="1.0.0";x-friends:="org.apache.harmony.archive,org.apache.harmony.luni,org.apache.harmony.auth",
+ org.apache.harmony.security.x501;version="1.0.0",
+ org.apache.harmony.security.x509;version="1.0.0"
