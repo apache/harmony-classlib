@@ -38,7 +38,7 @@ public class ISOCharsetDecoderTest extends CharsetDecoderTest {
 
 	// FIXME: give up this tests
 	// public void testDefaultCharsPerByte(){
-	// assertTrue(decoder.averageCharsPerByte() == 1);
+	// assertEquals(1, decoder.averageCharsPerByte());
 	// assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
 	// }
 

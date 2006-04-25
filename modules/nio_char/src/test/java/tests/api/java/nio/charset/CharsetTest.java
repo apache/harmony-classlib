@@ -440,10 +440,10 @@ public class CharsetTest extends TestCase {
 	 */
 	public void testCompareTo_Normal() {
 		MockCharset c1 = new MockCharset("mock", null);
-		assertTrue(c1.compareTo(c1) == 0);
+		assertEquals(0, c1.compareTo(c1));
 
 		MockCharset c2 = new MockCharset("Mock", null);
-		assertTrue(c1.compareTo(c2) == 0);
+		assertEquals(0, c1.compareTo(c2));
 
 		c2 = new MockCharset("mock2", null);
 		assertTrue(c1.compareTo(c2) < 0);

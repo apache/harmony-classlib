@@ -40,8 +40,8 @@ public class UTFCharsetDecoderTest extends CharsetDecoderTest {
 	// public void testDefaultCharsPerByte(){
 	// assertEquals(decoder.averageCharsPerByte(), 0.333, 0.001);
 	// assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
-	// // assertTrue(decoder.averageCharsPerByte() == 1);
-	// // assertTrue(decoder.maxCharsPerByte() == 1);
+	// // assertEquals(1, decoder.averageCharsPerByte());
+	// // assertEquals(1, decoder.maxCharsPerByte());
 	// }
 
 	ByteBuffer getUnmappedByteBuffer() throws UnsupportedEncodingException {

@@ -91,7 +91,7 @@ public class UTF16CharsetEncoderTest extends CharsetEncoderTest {
 
 	public void testSpecificDefaultValue() {
 		assertEquals(encoder.averageBytesPerChar(), 2, 0.001);
-		// assertTrue(encoder.maxBytesPerChar() == 4);
+		// assertEquals(4, encoder.maxBytesPerChar());
 		// FIXME: different here!
 		assertEquals(encoder.maxBytesPerChar(), 2, 0.001);
 	}

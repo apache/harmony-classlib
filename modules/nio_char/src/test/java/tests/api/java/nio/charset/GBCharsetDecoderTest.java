@@ -38,8 +38,8 @@ public class GBCharsetDecoderTest extends CharsetDecoderTest {
 
 	// // FIXME: give up this tests
 	// public void testDefaultCharsPerByte(){
-	// //assertTrue(decoder.averageCharsPerByte() == 1);
-	// //assertTrue(decoder.maxCharsPerByte() == 1);
+	// //assertEquals(1, decoder.averageCharsPerByte());
+	// //assertEquals(1, decoder.maxCharsPerByte());
 	// assertEquals(decoder.averageCharsPerByte(), 0.25, 0.001);
 	// assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
 	// }

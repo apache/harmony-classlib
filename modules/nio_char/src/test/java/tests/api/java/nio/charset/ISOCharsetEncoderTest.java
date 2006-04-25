@@ -68,8 +68,8 @@ public class ISOCharsetEncoderTest extends CharsetEncoderTest {
 	}
 
 	public void testSpecificDefaultValue() {
-		assertTrue(encoder.averageBytesPerChar() == 1);
-		assertTrue(encoder.maxBytesPerChar() == 1);
+		assertEquals(1, encoder.averageBytesPerChar());
+		assertEquals(1, encoder.maxBytesPerChar());
 	}
 
 	CharBuffer getMalformedCharBuffer() {
