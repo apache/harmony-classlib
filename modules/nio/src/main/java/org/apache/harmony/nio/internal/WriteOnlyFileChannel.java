@@ -84,7 +84,7 @@ public final class WriteOnlyFileChannel extends FileChannelImpl {
 		if (shared) {
 			throw new NonReadableChannelException();
 		}
-		return super.basicLock(position, size, shared, true);
+		return super.basicLock(position, size, shared, wait);
 	}
 
 }

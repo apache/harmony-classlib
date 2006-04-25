@@ -27,6 +27,7 @@ public class AllTests {
 		suite.addTestSuite(ServerSocketChannelTest.class);
 		suite.addTestSuite(SocketChannelTest.class);
 		suite.addTestSuite(FileChannelTest.class);
+		suite.addTestSuite(FileChannelLockingTest.class);
 		suite.addTestSuite(DatagramChannelTest.class);
 		//$JUnit-END$
 		return suite;
