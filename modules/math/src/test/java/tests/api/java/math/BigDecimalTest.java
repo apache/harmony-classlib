@@ -78,7 +78,7 @@ public class BigDecimalTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.math.BigDecimal#BigDecimal(java.lang.String)
 	 */
-	public void test_ConstructorLjava_lang_String() {
+	public void test_ConstructorLjava_lang_String() throws NumberFormatException {
 		BigDecimal big = new BigDecimal("345.23499600293850");
 		assertTrue("the BigDecimal value is not initialized properly", big
 				.toString().equals("345.23499600293850")
@@ -91,15 +91,8 @@ public class BigDecimalTest extends junit.framework.TestCase {
 		assertTrue("the BigDecimal value is not initialized properly", big
 				.toString().equals("123")
 				&& big.scale() == 0);
-		int r = 0;
-		try {
-			new BigDecimal("1.234E02");
-		} catch (NumberFormatException e) {
-			r = 1;
-		}
-		assertTrue(
-				"constructor failed to catch invalid character in BigDecimal(string)",
-				r == 0);
+
+		new BigDecimal("1.234E02");
 	}
 
 	/**
@@ -110,18 +103,8 @@ public class BigDecimalTest extends junit.framework.TestCase {
 		 * BigDecimal does not support a + sign in the exponent when converting
 		 * from a String
 		 */
-		try {
-			new BigDecimal(+23e-0);
-		} catch (Throwable e) {
-			fail("Unexpected Exception when constructing BigDecimal  +23e-0 : "
-					+ e);
-		}
-		try {
-			new BigDecimal(-23e+0);
-		} catch (Throwable e) {
-			fail("Unexpected Exception when constructing BigDecimal  -23e+0 : "
-					+ e);
-		}
+		new BigDecimal(+23e-0);
+		new BigDecimal(-23e+0);
 	}
 
 	/**
@@ -131,13 +114,8 @@ public class BigDecimalTest extends junit.framework.TestCase {
 		boolean gotNFE = false;
 		try {
 			new BigDecimal("");			
+            fail("NumberFormatException expected");
 		} catch (NumberFormatException e) {
-			gotNFE = true;
-		} catch (Throwable e) {
-			fail("Unexpected exception for new BigDecimal(\"\") " + e);
-		}
-		if (!gotNFE) { 
-			fail("Expected NumberFormatException for new BigDecimal(\"\")");
 		}
 	}
 	
@@ -145,29 +123,16 @@ public class BigDecimalTest extends junit.framework.TestCase {
 	 * @tests java.math.BigDecimal#BigDecimal(java.lang.String)
 	 */
 	public void test_constructor_String_plus_minus_exp() {
-		boolean gotNFE = false;
 		try {
 			new BigDecimal("+35e+-2");			
+            fail("NumberFormatException expected");
 		} catch (NumberFormatException e) {
-			gotNFE = true;
-		} catch (Throwable e) {
-			fail("Unexpected exception for new BigDecimal(\"+35e+-2\") " + e);
 		}
 		
-		if (!gotNFE) {
-			fail("Expected NumberFormatException for new BigDecimal(\"+35e+-2\")");
-		}
-		gotNFE = false;
-
 		try {
 			new BigDecimal("-35e-+2");			
+            fail("NumberFormatException expected");
 		} catch (NumberFormatException e) {
-			gotNFE = true;
-		} catch (Throwable e) {
-			fail("Unexpected exception for new BigDecimal(\"-35e-+2\") " + e);
-		}
-		if (!gotNFE) {
-			fail("Expected NumberFormatException for new BigDecimal(\"-35e-+2\")");
 		}
 	}
 
@@ -237,13 +202,12 @@ public class BigDecimalTest extends junit.framework.TestCase {
 				"1000.47")
 				&& divd3.scale() == 2);
 		divd2 = new BigDecimal(000D);
-		int r = 0;
+
 		try {
-			divd3 = divd1.divide(divd2, BigDecimal.ROUND_DOWN);
+			divd1.divide(divd2, BigDecimal.ROUND_DOWN);
+            fail("divide by zero is not caught");
 		} catch (ArithmeticException e) {
-			r = 1;
 		}
-		assertTrue("divide by zero is not caught", r == 1);
 	}
 
 	/**
@@ -262,13 +226,12 @@ public class BigDecimalTest extends junit.framework.TestCase {
 				"1233456/13.455 is not correct or does not have the correct scale",
 				divd3.toString().equals("91672") && divd3.scale() == 0);
 		divd2 = new BigDecimal(0000D);
-		int r = 0;
+
 		try {
-			divd3 = divd1.divide(divd2, 4, BigDecimal.ROUND_DOWN);
+			divd1.divide(divd2, 4, BigDecimal.ROUND_DOWN);
+            fail("divide by zero is not caught");
 		} catch (ArithmeticException e) {
-			r = 1;
 		}
-		assertTrue("divide by zero is not caught", r == 1);
 	}
 
 	/**
@@ -590,15 +553,12 @@ public class BigDecimalTest extends junit.framework.TestCase {
 		assertTrue("the number 12345.908 after setting scale is wrong",
 				setScale2.unscaledValue().equals(setresult)
 						&& setScale2.scale() == 5);
-		int r = 0;
+
 		try {
 			setScale2 = setScale1.setScale(2, BigDecimal.ROUND_UNNECESSARY);
+            fail("arithmetic Exception not caught as a result of loosing precision");
 		} catch (ArithmeticException e) {
-			r = 1;
 		}
-		assertTrue(
-				"arithmetic Exception not caught as a result of loosing precision",
-				r == 1);
 	}
 
 	/**
@@ -708,14 +668,11 @@ public class BigDecimalTest extends junit.framework.TestCase {
 				setScale2.toString().equals("-1234") && setScale2.scale() == 0);
 
 		// testing rounding Mode ROUND_UNNECESSARY
-		int r = 0;
 		try {
-			setScale2 = setScale1.setScale(3, BigDecimal.ROUND_UNNECESSARY);
+			setScale1.setScale(3, BigDecimal.ROUND_UNNECESSARY);
+            fail("arithmetic Exception not caught for round unnecessary");
 		} catch (ArithmeticException e) {
-			r = 1;
 		}
-		assertTrue("arithmetic Exception not caught for round unnecessary",
-				r == 1);
 
 		// testing rounding Mode ROUND_UP
 		setScale1 = new BigDecimal("100000.374");
@@ -731,15 +688,11 @@ public class BigDecimalTest extends junit.framework.TestCase {
 				setScale2.doubleValue() == -134.35D && setScale2.scale() == 2);
 
 		// testing invalid rounding modes
-		r = 0;
 		try {
 			setScale2 = setScale1.setScale(0, -123);
+            fail("IllegalArgumentException is not caught for wrong rounding mode");
 		} catch (IllegalArgumentException e) {
-			r = 1;
 		}
-		assertTrue(
-				"IllegalArgumentException is not caught for wrong rounding mode",
-				r == 1);
 	}
 
 	/**
@@ -896,11 +849,5 @@ public class BigDecimalTest extends junit.framework.TestCase {
 				"the toString representation of 9223372036854775806 is wrong",
 				valueOfJI.toString().equals("0.000"));
 
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
 	}
 }

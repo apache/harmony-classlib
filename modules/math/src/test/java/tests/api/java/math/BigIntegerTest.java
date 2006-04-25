@@ -145,28 +145,21 @@ public class BigIntegerTest extends junit.framework.TestCase {
 		assertTrue("Incorrect value for zero", bi.equals(zero));
 		myByteArray = new byte[] { (byte) 1 };
 		try {
-			bi = new BigInteger(0, myByteArray);
+			new BigInteger(0, myByteArray);
+            fail("Failed to throw NumberFormatException");
 		} catch (NumberFormatException e) {
 			// correct
-			return;
 		}
-		fail("Failed to throw NumberFormatException");
 	}
 	
 	/**
 	 * @tests java.math.BigInteger#BigInteger(java.lang.String)
 	 */
 	public void test_constructor_String_empty() {
-		boolean gotNFE = false;
 		try {
 			new BigInteger("");			
+            fail("Expected NumberFormatException for new BigInteger(\"\")");
 		} catch (NumberFormatException e) {
-			gotNFE = true;
-		} catch (Throwable e) {
-			fail("Unexpected exception for new BigInteger(\"\") " + e);
-		}
-		if (!gotNFE) { 
-			fail("Expected NumberFormatException for new BigInteger(\"\")");
 		}
 	}
 
@@ -581,136 +574,117 @@ public class BigIntegerTest extends junit.framework.TestCase {
 		testDivRanges(new BigInteger("62EB40FEF85AA9EB", 16));
 		testAllDivs(BigInteger.valueOf(0xCC0225953CL), BigInteger
 				.valueOf(0x1B937B765L));
-		boolean thr = false;
+
 		try {
 			largePos.divide(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on div by zero", thr);
-		thr = false;
+
 		try {
 			bi1.divide(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on div by zero", thr);
-		thr = false;
+
 		try {
 			bi3.negate().divide(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on div by zero", thr);
-		thr = false;
+
 		try {
 			zero.divide(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on div by zero", thr);
 	}
 
 	/**
 	 * @tests java.math.BigInteger#remainder(java.math.BigInteger)
 	 */
 	public void test_remainderLjava_math_BigInteger() {
-		boolean thr = false;
 		try {
 			largePos.remainder(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on remainder by zero", thr);
-		thr = false;
+
 		try {
 			bi1.remainder(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on remainder by zero", thr);
-		thr = false;
+
 		try {
 			bi3.negate().remainder(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on remainder by zero", thr);
-		thr = false;
+
 		try {
 			zero.remainder(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on remainder by zero", thr);
 	}
 
 	/**
 	 * @tests java.math.BigInteger#mod(java.math.BigInteger)
 	 */
 	public void test_modLjava_math_BigInteger() {
-		boolean thr = false;
 		try {
 			largePos.mod(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on mod by zero", thr);
-		thr = false;
+
 		try {
 			bi1.mod(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on mod by zero", thr);
-		thr = false;
+
 		try {
 			bi3.negate().mod(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on mod by zero", thr);
-		thr = false;
+
 		try {
 			zero.mod(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on mod by zero", thr);
 	}
 
 	/**
 	 * @tests java.math.BigInteger#divideAndRemainder(java.math.BigInteger)
 	 */
 	public void test_divideAndRemainderLjava_math_BigInteger() {
-		boolean thr = false;
 		try {
 			largePos.divideAndRemainder(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on divAndRem by zero", thr);
-		thr = false;
+
 		try {
 			bi1.divideAndRemainder(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on divAndRem by zero", thr);
-		thr = false;
+
 		try {
 			bi3.negate().divideAndRemainder(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on divAndRem by zero", thr);
-		thr = false;
+
 		try {
 			zero.divideAndRemainder(zero);
+            fail("ArithmeticException expected");
 		} catch (ArithmeticException e) {
-			thr = true;
 		}
-		assertTrue("exception on divAndRem by zero", thr);
 	}
 
 	/**
@@ -895,9 +869,6 @@ public class BigIntegerTest extends junit.framework.TestCase {
 		booleanPairs = new BigInteger[][] { { largePos, smallPos },
 				{ largePos, smallNeg }, { largeNeg, smallPos },
 				{ largeNeg, smallNeg } };
-	}
-
-	protected void tearDown() {
 	}
 
 	private void testDiv(BigInteger i1, BigInteger i2) {
