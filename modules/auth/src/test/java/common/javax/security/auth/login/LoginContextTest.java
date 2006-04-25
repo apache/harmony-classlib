@@ -106,8 +106,7 @@ public class LoginContextTest extends SecurityTest {
             new LoginContext(moduleName);
             fail("No expected LoginException");
         } catch (LoginException e) {
-            assertTrue("Default module", MyConfig.getLastAppName().equals(
-                    "other"));
+            assertEquals("Default module", "other", MyConfig.getLastAppName());
         }
     }
 
@@ -210,7 +209,7 @@ public class LoginContextTest extends SecurityTest {
         context.login();
 
         // only one module must be created
-        assertTrue("Number of modules", MyLoginModule.list.size() == 1);
+        assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
         MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
 
@@ -315,8 +314,7 @@ public class LoginContextTest extends SecurityTest {
             new LoginContext(moduleName, handler);
             fail("No expected LoginException");
         } catch (LoginException e) {
-            assertTrue("Default module", MyConfig.getLastAppName().equals(
-                    "other"));
+            assertEquals("Default module", "other", MyConfig.getLastAppName());
         }
     }
 
@@ -371,7 +369,7 @@ public class LoginContextTest extends SecurityTest {
         context.login();
 
         // only one module must be created
-        assertTrue("Number of modules", MyLoginModule.list.size() == 1);
+        assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
         MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
 
@@ -454,8 +452,7 @@ public class LoginContextTest extends SecurityTest {
             new LoginContext(moduleName, subject);
             fail("No expected LoginException");
         } catch (LoginException e) {
-            assertTrue("Default module", MyConfig.getLastAppName().equals(
-                    "other"));
+            assertEquals("Default module", "other", MyConfig.getLastAppName());
         }
     }
 
@@ -535,7 +532,7 @@ public class LoginContextTest extends SecurityTest {
         context.login();
 
         // only one module must be created
-        assertTrue("Number of modules", MyLoginModule.list.size() == 1);
+        assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
         MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
 
@@ -651,8 +648,7 @@ public class LoginContextTest extends SecurityTest {
             new LoginContext(moduleName, subject, handler);
             fail("No expected LoginException");
         } catch (LoginException e) {
-            assertTrue("Default module", MyConfig.getLastAppName().equals(
-                    "other"));
+            assertEquals("Default module", "other", MyConfig.getLastAppName());
         }
     }
 
@@ -682,7 +678,7 @@ public class LoginContextTest extends SecurityTest {
         context.login();
 
         // only one module must be created
-        assertTrue("Number of modules", MyLoginModule.list.size() == 1);
+        assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
         MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
 

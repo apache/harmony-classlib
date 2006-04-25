@@ -210,7 +210,7 @@ public class SecurityTest extends TestCase {
             assertTrue("IteratorTest: suite MUST be initialized", set != null
                     && element != null);
 
-            assertTrue("IteratorTest: set MUST be empty", set.size() == 0);
+            assertEquals("IteratorTest: set MUST be empty", 0, set.size());
         }
 
         /**
@@ -656,7 +656,7 @@ public class SecurityTest extends TestCase {
             assertTrue("SetTest: suite MUST be initialized", set != null
                     && element != null);
 
-            assertTrue("SetTest: set MUST be empty", set.size() == 0);
+            assertEquals("SetTest: set MUST be empty", 0, set.size());
 
             hash.add(element);
         }
@@ -708,13 +708,13 @@ public class SecurityTest extends TestCase {
         //
         public void testClear_EmptySet() {
             set.clear();
-            assertTrue("Set MUST be empty", set.size() == 0);
+            assertEquals("Set MUST be empty", 0, set.size());
         }
 
         public void testClear_NotEmptySet() {
             set.add(element);
             set.clear();
-            assertTrue("Set MUST be empty", set.size() == 0);
+            assertEquals("Set MUST be empty", 0, set.size());
         }
 
         //
@@ -933,8 +933,8 @@ public class SecurityTest extends TestCase {
             assertTrue("UnsupportedNullTest: suite MUST be initialized",
                     set != null && element != null);
 
-            assertTrue("UnsupportedNullTest: set MUST be empty",
-                    set.size() == 0);
+            assertEquals("UnsupportedNullTest: set MUST be empty",
+                    0, set.size());
 
             hash.add(null);
         }
@@ -1010,7 +1010,7 @@ public class SecurityTest extends TestCase {
                 assertTrue("Retaining NULL element", set.retainAll(hash));
             } catch (NullPointerException npe) {
             }
-            assertTrue("Set is empty", set.size() == 0);
+            assertEquals("Set is empty", 0, set.size());
         }
     }
 
@@ -1047,8 +1047,8 @@ public class SecurityTest extends TestCase {
             assertTrue("IneligibleElementTest: suite MUST be initialized",
                     set != null && element != null && iElement != null);
 
-            assertTrue("IneligibleElementTest: set MUST be empty",
-                    set.size() == 0);
+            assertEquals("IneligibleElementTest: set MUST be empty",
+                    0, set.size());
 
             hash.add(null);
 
@@ -1161,7 +1161,7 @@ public class SecurityTest extends TestCase {
             } catch (ClassCastException e) {
             } catch (IllegalArgumentException e) {
             }
-            assertTrue("Now set is empty", set.size() == 0);
+            assertEquals("Now set is empty", 0, set.size());
         }
     }
 

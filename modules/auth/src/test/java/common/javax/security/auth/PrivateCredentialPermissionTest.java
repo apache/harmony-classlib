@@ -708,7 +708,7 @@ public class PrivateCredentialPermissionTest extends TestCase {
         PrivateCredentialPermission p = new PrivateCredentialPermission(
                 "a b \"c c\"", "read");
 
-        assertTrue("Principal name:", "c c".equals(p.getPrincipals()[0][1]));
+        assertEquals("Principal name:", "c c", p.getPrincipals()[0][1]);
     }
 
     public final void testSerialization_Wildcard() throws Exception {
@@ -747,12 +747,12 @@ public class PrivateCredentialPermissionTest extends TestCase {
         PrivateCredentialPermission p = (PrivateCredentialPermission) sIn
                 .readObject();
 
-        assertTrue("CredentialClass ", "a".equals(p.getCredentialClass()));
+        assertEquals("CredentialClass ", "a", p.getCredentialClass());
 
         String[][] principals = p.getPrincipals();
-        assertTrue("Size:", principals.length == 1);
-        assertTrue("PrincipalClass:", "b".equals(principals[0][0]));
-        assertTrue("PrincipalName:", "c".equals(principals[0][1]));
+        assertEquals("Size:", 1, principals.length);
+        assertEquals("PrincipalClass:", "b", principals[0][0]);
+        assertEquals("PrincipalName:", "c", principals[0][1]);
     }
 
     public final void testSerialization_Self() throws Exception {
@@ -763,12 +763,12 @@ public class PrivateCredentialPermissionTest extends TestCase {
         PrivateCredentialPermission p = (PrivateCredentialPermission) sIn
                 .readObject();
 
-        assertTrue("CredentialClass ", "a".equals(p.getCredentialClass()));
+        assertEquals("CredentialClass ", "a", p.getCredentialClass());
 
         String[][] principals = p.getPrincipals();
-        assertTrue("Size:", principals.length == 1);
-        assertTrue("PrincipalClass:", "b".equals(principals[0][0]));
-        assertTrue("PrincipalName:", "c".equals(principals[0][1]));
+        assertEquals("Size:", 1, principals.length);
+        assertEquals("PrincipalClass:", "b", principals[0][0]);
+        assertEquals("PrincipalName:", "c", principals[0][1]);
     }
 
     // Golden: PrivateCredentialPermission("a b \"c\"","read");

@@ -709,7 +709,7 @@ public class LoginContextTest_1 extends TestCase {
         Security.setProperty(DEFAULT_CBHANDLER_PROPERTY, klassName);
         // This also shows that the cbHandler is instantiated at the ctor
         new LoginContext(CONFIG_NAME);
-        assertTrue(TestCallbackHandler.size() == 1);
+        assertEquals(1, TestCallbackHandler.size());
         // ugh... cant set 'null' here... 
         Security.setProperty(DEFAULT_CBHANDLER_PROPERTY, "");
         // additional cleanup to make it PerfTests compatible
@@ -887,7 +887,7 @@ public class LoginContextTest_1 extends TestCase {
         TestConfig.addInstalledSufficient("TestLoginModule_Success");
         LoginContext lc = new LoginContext(CONFIG_NAME);
         lc.login();
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         assertTrue(TestLoginModule.get(0).initCalled);
         assertTrue(TestLoginModule.get(0).loginCalled);
 
@@ -899,7 +899,7 @@ public class LoginContextTest_1 extends TestCase {
 
         lc.login();
 
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertFalse(TestLoginModule.get(0).initCalled);
         // additional cleanup to make it PerfTests compatible
@@ -922,7 +922,7 @@ public class LoginContextTest_1 extends TestCase {
             //ok
         }
 
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         assertTrue(TestLoginModule.get(0).initCalled);
         assertFalse(TestLoginModule.get(0).loginCalled);
         assertFalse(TestLoginModule.get(0).commitCalled);
@@ -940,7 +940,7 @@ public class LoginContextTest_1 extends TestCase {
         TestLoginModule.staticMask = 0;
         lc.login();
 
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         assertFalse(TestLoginModule.get(0).initCalled);
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).commitCalled);
@@ -1096,7 +1096,7 @@ public class LoginContextTest_1 extends TestCase {
      */
     public void testLogin_04() throws Exception {
         TestConfig.addInstalledRequired("TestLoginModule");
-        assertTrue(TestLoginModule.size() == 0);
+        assertEquals(0, TestLoginModule.size());
         LoginContext lc = new LoginContext(CONFIG_NAME);
         TestLoginModule.staticMask = TestLoginModule.FAIL_AT_CTOR;
         try {
@@ -1105,11 +1105,11 @@ public class LoginContextTest_1 extends TestCase {
         } catch (LoginException ex) {
             // ok
         }
-        assertTrue(TestLoginModule.size() == 0);
+        assertEquals(0, TestLoginModule.size());
         // fail nowhere
         TestLoginModule.staticMask = 0;
         lc.login(); // must be successful now
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         assertTrue(TestLoginModule.get(0).initCalled);
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).commitCalled);
@@ -1154,14 +1154,14 @@ public class LoginContextTest_1 extends TestCase {
         } catch (LoginException ex) {
             // ok
         }
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         assertFalse(TestLoginModule.get(0).loginCalled);
         assertFalse(TestLoginModule.get(0).commitCalled); // self check
         // fail nowhere
         TestLoginModule.staticMask = 0;
         lc.login(); // must be successful now
         // no new module must be created
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).commitCalled);
         // additional cleanup to make it PerfTests compatible
@@ -1183,7 +1183,7 @@ public class LoginContextTest_1 extends TestCase {
         } catch (LoginException ex) {
             //ok
         }
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).abortCalled);
         assertFalse(TestLoginModule.get(0).commitCalled);
@@ -1360,7 +1360,7 @@ public class LoginContextTest_1 extends TestCase {
 
         lc.login();
 
-        assertTrue(TestLoginModule.size() == 2);
+        assertEquals(2, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).commitCalled);
@@ -1390,7 +1390,7 @@ public class LoginContextTest_1 extends TestCase {
             assertSame(TestLoginModule.staticLE, le);
         }
 
-        assertTrue(TestLoginModule.size() == 2);
+        assertEquals(2, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).commitCalled);
@@ -1421,7 +1421,7 @@ public class LoginContextTest_1 extends TestCase {
             // gut
         }
 
-        assertTrue(TestLoginModule.size() == 3);
+        assertEquals(3, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).commitCalled);
@@ -1454,7 +1454,7 @@ public class LoginContextTest_1 extends TestCase {
             // gut
         }
 
-        assertTrue(TestLoginModule.size() == 3);
+        assertEquals(3, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).commitCalled);
@@ -1483,7 +1483,7 @@ public class LoginContextTest_1 extends TestCase {
 
         lc.login();
 
-        assertTrue(TestLoginModule.size() == 2);
+        assertEquals(2, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).loginCalled);
         assertTrue(TestLoginModule.get(0).commitCalled);
@@ -1510,7 +1510,7 @@ public class LoginContextTest_1 extends TestCase {
 
         lc.login();
 
-        assertTrue(TestLoginModule.size() == 2);
+        assertEquals(2, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).initCalled);
         assertTrue(TestLoginModule.get(0).loginCalled);
@@ -1539,7 +1539,7 @@ public class LoginContextTest_1 extends TestCase {
 
         lc.login();
 
-        assertTrue(TestLoginModule.size() == 2);
+        assertEquals(2, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).initCalled);
         assertTrue(TestLoginModule.get(0).loginCalled);
@@ -1572,7 +1572,7 @@ public class LoginContextTest_1 extends TestCase {
             // gut
         }
 
-        assertTrue(TestLoginModule.size() == 2);
+        assertEquals(2, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).initCalled);
         assertTrue(TestLoginModule.get(0).loginCalled);
@@ -1609,7 +1609,7 @@ public class LoginContextTest_1 extends TestCase {
             // assertSame( ex, TestLoginModule.staticLE);
         }
 
-        assertTrue(TestLoginModule.size() == 1);
+        assertEquals(1, TestLoginModule.size());
         //
         assertTrue(TestLoginModule.get(0).initCalled);
         assertTrue(TestLoginModule.get(0).loginCalled);
@@ -1676,7 +1676,7 @@ public class LoginContextTest_1 extends TestCase {
         } catch (LoginException _) {
             // gut
         }
-        assertTrue(TestLoginModule.size() == 0);
+        assertEquals(0, TestLoginModule.size());
         // additional cleanup to make it PerfTests compatible
         clear();
     }
@@ -1698,7 +1698,7 @@ public class LoginContextTest_1 extends TestCase {
         } catch (LoginException _) {
             // gut
         }
-        assertTrue(TestLoginModule.size() == 2);
+        assertEquals(2, TestLoginModule.size());
         assertTrue(TestLoginModule.get(0).logoutCalled);
         assertTrue(TestLoginModule.get(1).logoutCalled);
         // additional cleanup to make it PerfTests compatible
@@ -2030,7 +2030,7 @@ public class LoginContextTest_1 extends TestCase {
         lc.login();
         lc.logout();
         //
-        assertTrue(TestCallbackHandler.size() == 1);
+        assertEquals(1, TestCallbackHandler.size());
 
         // now, get abort() called
         TestLoginModule.staticMask = TestLoginModule.FAIL_AT_LOGIN;

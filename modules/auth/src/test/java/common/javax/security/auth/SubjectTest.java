@@ -878,10 +878,10 @@ public class SubjectTest extends SecurityTest {
         Subject ss = (Subject) sIn.readObject();
 
         assertTrue(ss.isReadOnly());
-        assertTrue(ss.getPrincipals().size() == 1);
+        assertEquals(1, ss.getPrincipals().size());
         assertTrue(ss.getPrincipals().iterator().next() instanceof MyClass1);
-        assertTrue(ss.getPublicCredentials().size() == 0);
-        assertTrue(ss.getPrivateCredentials().size() == 0);
+        assertEquals(0, ss.getPublicCredentials().size());
+        assertEquals(0, ss.getPrivateCredentials().size());
 
         try {
             ss.getPrincipals().add(new MyClass1());
