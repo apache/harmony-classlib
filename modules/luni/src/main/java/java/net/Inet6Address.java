@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
+import java.util.Enumeration;
 
 import org.apache.harmony.luni.util.Inet6Util;
 
@@ -39,6 +40,11 @@ public final class Inet6Address extends InetAddress {
 	boolean scope_ifname_set = false;
 
 	String ifname = null;
+	
+	/*
+	 * scoped interface.
+	 */
+	private transient NetworkInterface scopedIf = null;
 
 	Inet6Address(byte address[]) {
 		ipaddress = address;
@@ -94,6 +100,79 @@ public final class Inet6Address extends InetAddress {
 			scope_id = 0;
 		}
 		return new Inet6Address(addr, host, scope_id);
+	}
+	
+	/**
+	 * Constructs an IPv6 address according to the given <code>host</code>,
+	 * <code>addr</code> and <code>nif</code>. <code>scope_id</code> is
+	 * set according to the given <code>nif</code> and the
+	 * <code>addr<code> type(e.g. site local or link local).
+	 * 
+	 * @param host
+	 *            host name associated with the address
+	 * @param addr
+	 *            network address
+	 * @param nif
+	 *            the Network Interface that this address is associated with.
+	 * @return an Inet6Address instance
+	 * @throws UnknownHostException
+	 *             if the address is null or of invalid length, or the
+	 *             interface doesn't have a numeric scope id for the given
+	 *             address type.
+	 */
+	public static Inet6Address getByAddress(String host, byte[] addr,
+			NetworkInterface nif) throws UnknownHostException {
+		Inet6Address address = Inet6Address.getByAddress(host, addr, 0);
+		
+		// if nif is null, nothing needs to be set.
+		if(null == nif){
+			return address;
+		}
+		
+		// find the first address which matches the type addr,
+		// then set the scope_id, ifname and scopedIf.
+		Enumeration addressList = nif.getInetAddresses();
+		while (addressList.hasMoreElements()) {
+			InetAddress ia = (InetAddress) addressList.nextElement();
+			if (ia.getAddress().length == 16) {
+				Inet6Address v6ia = (Inet6Address) ia;
+				boolean isSameType = v6ia.compareLocalType(address);
+				if (isSameType) {
+					address.scope_id_set = true;
+					address.scope_id = v6ia.scope_id;
+					address.scope_ifname_set = true;
+					address.ifname = nif.getName();
+					address.scopedIf = nif;
+					break;
+				}
+			}
+		}
+		// if no address matches the type of addr, throws an UnknownHostException.
+		if (!address.scope_id_set) {
+			throw new UnknownHostException(
+					"Scope id is not found for the given address");
+		}
+		return address;
+	}
+	
+
+	/*
+	 * Returns true if one of following cases is true:
+	 * 1. both addresses are site local;
+	 * 2. both addresses are link local;
+	 * 3. ia is neither site local nor link local;
+	 */
+	private boolean compareLocalType(Inet6Address ia) {
+		if (ia.isSiteLocalAddress() && isSiteLocalAddress()) {
+			return true;
+		}
+		if (ia.isLinkLocalAddress() && isLinkLocalAddress()) {
+			return true;
+		}
+		if( !ia.isSiteLocalAddress() && !ia.isLinkLocalAddress()){
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -277,7 +356,33 @@ public final class Inet6Address extends InetAddress {
 	public String getHostAddress() {
 		return Inet6Util.createIPAddrStringFromByteArray(ipaddress);
 	}
+	
+	/**
+	 * Returns the <code>scope id</code> of this address if it is associated
+	 * with an interface. Otherwise returns zero.
+	 * 
+	 * @return the scope_id.
+	 */
+	public int getScopeId() {
+		if(scope_id_set){
+			return scope_id;
+		}
+		return 0;
+	}
 
+	/**
+	 * Returns the network interface if this address is instanced with a scoped
+	 * network interface. Otherwise returns null.
+	 * 
+	 * @return the scoped network interface.
+	 */
+	public NetworkInterface getScopedInterface() {
+		if(scope_ifname_set){
+			return scopedIf;
+		}
+		return null;
+	}
+	
 	public int hashCode() {
 		/* Returns the low order int as the hash code */
 		return bytesToInt(ipaddress, 12);
@@ -342,6 +447,9 @@ public final class Inet6Address extends InetAddress {
 	 * @return String the description, as host/address
 	 */
 	public String toString() {
+		if (ifname != null) {
+			return super.toString() + "%" + ifname;
+		}
 		if (scope_id != 0) {
 			return super.toString() + "%" + scope_id;
 		}

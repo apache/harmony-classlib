@@ -17,6 +17,7 @@ package tests.api.java.net;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 
 public class Inet6AddressTest extends junit.framework.TestCase {
@@ -856,11 +857,66 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 		Inet6Address.getByAddress("123", addr2, -1);
 	}
 
-	protected void setUp() {
+	/**
+	 * @tests java.net.Inet6Address#getByAddress(String, byte[],
+	 *        NetworkInterface)
+	 */
+	public void test_getByAddressLString$BLNetworkInterface()
+			throws UnknownHostException {
+		NetworkInterface nif = null;
+		try {
+			Inet6Address.getByAddress("123", null, nif);
+			fail("should throw UnknownHostException");
+		} catch (UnknownHostException uhe) {
+			// expected
+		}
+		byte[] addr1 = { (byte) 127, 0, 0, 1 };
+		try {
+			Inet6Address.getByAddress("123", addr1, nif);
+			fail("should throw UnknownHostException");
+		} catch (UnknownHostException uhe) {
+			// expected
+		}
+		byte[] addr2 = { (byte) 0xFE, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0x02,
+				0x11, 0x25, (byte) 0xFF, (byte) 0xFE, (byte) 0xF8, (byte)
+
+				0x7C, (byte) 0xB2 };
+		// should not throw any exception
+		Inet6Address.getByAddress("123", addr2, nif);
 	}
 
-	protected void tearDown() {
+	/**
+	 * @throws UnknownHostException
+	 * @tests java.net.Inet6Address#getScopeID()
+	 */
+	public void test_getScopeID() throws UnknownHostException {
+		Inet6Address v6ia;
+		byte[] addr = { (byte) 0xFE, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0x02, 0x11,
+				0x25, (byte) 0xFF, (byte) 0xFE, (byte) 0xF8, (byte) 0x7C,
+				(byte) 0xB2 };
+
+		v6ia = Inet6Address.getByAddress("123", addr, 3);
+		assertEquals(3, v6ia.getScopeId());
+
+		v6ia = Inet6Address.getByAddress("123", addr, 0);
+		assertEquals(0, v6ia.getScopeId());
+
+		v6ia = Inet6Address.getByAddress("123", addr, -1);
+		assertEquals(0, v6ia.getScopeId());
 	}
+
+	/**
+	 * @tests java.net.Inet6Address#getScopedInterface()
+	 */
+	public void test_getScopedInterface() throws UnknownHostException {
+		byte[] addr = { (byte) 0xFE, (byte) 0x80, (byte) 0x09, (byte) 0xb5,
+				(byte) 0x6b, (byte) 0xa4, 0, 0, 0, 0, 0, 0, (byte) 0x09,
+				(byte) 0xb5, (byte) 0x6b, (byte) 0xa4 };
+		Inet6Address v6Addr;
+		v6Addr = Inet6Address.getByAddress("123", addr, null);
+		assertNull(v6Addr.getScopedInterface());
+	}
+
 	
 	int bytesToInt(byte bytes[], int start) {
 
