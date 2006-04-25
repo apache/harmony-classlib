@@ -51,7 +51,7 @@ public class DefaultSubjectPolicy extends Policy {
             "refreshPolicy");
 
     // System property for dynamically added policy location.
-    private static final String JAAS_SECURITY_POLICY = "java.security.auth.policy";
+    private static final String AUTH_SECURITY_POLICY = "java.security.auth.policy";
 
     // Prefix for numbered Policy locations specified in security.properties.
     private static final String POLICY_URL_PREFIX = "auth.policy.url.";
@@ -119,7 +119,7 @@ public class DefaultSubjectPolicy extends Policy {
                 .doPrivileged(new PolicyUtils.SystemKit()));
         system.setProperty("/", File.separator);
         URL[] policyLocations = PolicyUtils.getPolicyURLs(system,
-                JAAS_SECURITY_POLICY, POLICY_URL_PREFIX);
+                AUTH_SECURITY_POLICY, POLICY_URL_PREFIX);
 
         for (int i = 0; i < policyLocations.length; i++) {
             try {

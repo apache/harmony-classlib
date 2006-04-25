@@ -173,11 +173,11 @@ public class PolicyTest extends TestCase {
 
     static String inputFile1 = outputPath + File.separator + "javax"
             + File.separator + "security" + File.separator + "auth"
-            + File.separator + "jaas_policy1.txt";
+            + File.separator + "auth_policy1.txt";
 
     static String inputFile2 = outputPath + File.separator + "javax"
             + File.separator + "security" + File.separator + "auth"
-            + File.separator + "jaas_policy2.txt";
+            + File.separator + "auth_policy2.txt";
 
     private static final String POLICY_PROP = "java.security.auth.policy";
     

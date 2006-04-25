@@ -32,7 +32,7 @@ import org.apache.harmony.auth.NTSidUserPrincipal;
  */
 public final class NTSystem {
 
-    // Shows whether the jaaswin library was loaded or not
+    // Shows whether the hyauth library was loaded or not
     private static boolean loadLibDone = false;
 
     // User's sid, domain and name
@@ -54,8 +54,8 @@ public final class NTSystem {
     private boolean debugNative;
 
     /**
-     * The default ctor. Loads jaaswin library if necessary.
-     * @throws UnsatisfiedLinkError if library jaaswin not found
+     * The default ctor. Loads hyauth library if necessary.
+     * @throws UnsatisfiedLinkError if library hyauth not found
      */
     public NTSystem() {
         if (!loadLibDone) {

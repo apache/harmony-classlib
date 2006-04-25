@@ -50,7 +50,7 @@ public class DefaultConfigParserTest extends TestCase {
     static String fconf = outputPath + File.separator + "org" + 
         File.separator + "apache" + File.separator + "harmony" + 
         File.separator + "auth" + File.separator + "login" +
-        File.separator + "jaas.conf";
+        File.separator + "auth.conf";
     
 	Properties p;
 
@@ -163,7 +163,7 @@ public class DefaultConfigParserTest extends TestCase {
 				};
 
 		for (int i = 0; i < str.length; i++) {
-			File file = File.createTempFile("jaas_neg_", ".conf");
+			File file = File.createTempFile("auth_neg_", ".conf");
 
 			byte[] b = str[i].getBytes();
 			OutputStream os = new FileOutputStream(file);

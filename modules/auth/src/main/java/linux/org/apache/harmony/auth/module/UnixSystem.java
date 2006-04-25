@@ -25,7 +25,7 @@ package org.apache.harmony.auth.module;
  */
 public class UnixSystem {
     
-    // Shows whether the jassnix library was loaded already
+    // Shows whether the hyauth library was loaded already
     private static boolean loadLibDone;
   
     /** 
@@ -60,7 +60,7 @@ public class UnixSystem {
 
     /** 
      * Sole constructor. 
-     * @throws UnsatisfiedLinkError if jaasnix library could not be loaded
+     * @throws UnsatisfiedLinkError if hyauth library could not be loaded
      */
     public UnixSystem() {
         if (!loadLibDone) {

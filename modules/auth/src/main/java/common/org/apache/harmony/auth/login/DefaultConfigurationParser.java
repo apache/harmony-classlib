@@ -42,7 +42,7 @@ import org.apache.harmony.security.fortress.PolicyUtils;
 
 
 /**
- * jaas configuration parser
+ * Auth configuration parser
  */
 
 public class DefaultConfigurationParser {

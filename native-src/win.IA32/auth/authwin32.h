@@ -15,18 +15,18 @@
  */
 
 // The following ifdef block is the standard way of creating macros which make exporting 
-// from a DLL simpler. All files within this DLL are compiled with the JAASWIN_EXPORTS
+// from a DLL simpler. All files within this DLL are compiled with the AUTHWIN_EXPORTS
 // symbol defined on the command line. this symbol should not be defined on any project
 // that uses this DLL. This way any other project whose source files include this file see 
-// JAASWIN_API functions as being imported from a DLL, whereas this DLL sees symbols
+// AUTHWIN_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef JAASWIN_EXPORTS
-#define JAASWIN_API __declspec(dllexport)
+#ifdef AUTHWIN_EXPORTS
+#define AUTHWIN_API __declspec(dllexport)
 #else
-#define JAASWIN_API __declspec(dllimport)
+#define AUTHWIN_API __declspec(dllimport)
 #endif
 
-//JAASWIN_API void fillitup(LPVOID lpJEnv, LPVOID lpJObj);
-//JAASWIN_API void error(LPVOID lpJEnv, LPCSTR msg, DWORD dwErr );
+//AUTHWIN_API void fillitup(LPVOID lpJEnv, LPVOID lpJObj);
+//AUTHWIN_API void error(LPVOID lpJEnv, LPCSTR msg, DWORD dwErr );
 
 

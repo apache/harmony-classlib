@@ -51,7 +51,7 @@ public class DefaultConfigurationTest extends TestCase {
     static String otherConfFile = outputPath + File.separator + "org" + 
         File.separator + "apache" + File.separator + "harmony" + 
         File.separator + "auth" + File.separator + "login" +
-        File.separator + "jaas.conf";
+        File.separator + "auth.conf";
 
 	private static File defaultConfFile;
 
