@@ -118,7 +118,7 @@ public class DateTest extends TestCase {
 			try {
 				Date theDate = new Date(init1[i], init2[i], init3[i]);
 
-				assertTrue(theDate != null);
+				assertNotNull(theDate);
 				if (theExceptions[i] != null) {
 					fail(i + "Exception expected - none thrown.");
 				} // end if
@@ -151,7 +151,7 @@ public class DateTest extends TestCase {
 			try {
 				Date theDate = new Date(init1[i]);
 
-				assertTrue(theDate != null);
+				assertNotNull(theDate);
 				if (theExceptions[i] != null) {
 					fail(i + "Exception expected - none thrown.");
 				} // end if
@@ -179,7 +179,7 @@ public class DateTest extends TestCase {
 			int theHours = theDate.getHours();
 
 			// If it worked, it should get the Hours setting
-			assertTrue(theHours == 23);
+			assertEquals(23, theHours);
 			assertTrue(false);
 		} catch (IllegalArgumentException ie) {
 			/*
@@ -200,7 +200,7 @@ public class DateTest extends TestCase {
 			int theMinutes = theDate.getMinutes();
 
 			// If it worked, it should get the Hours setting
-			assertTrue(theMinutes == 59);
+			assertEquals(59, theMinutes);
 			assertTrue(false);
 		} catch (IllegalArgumentException ie) {
 			/*
@@ -221,7 +221,7 @@ public class DateTest extends TestCase {
 			int theSeconds = theDate.getSeconds();
 
 			// If it worked, it should get the Hours setting
-			assertTrue(theSeconds == 23);
+			assertEquals(23, theSeconds);
 			assertTrue(false);
 		} catch (IllegalArgumentException ie) {
 			/*

@@ -109,7 +109,7 @@ public class TimestampTest extends TestCase {
 		Timestamp theTimestamp = new Timestamp(TIME_TEST1);
 
 		// The Timestamp should have been created
-		assertTrue(theTimestamp != null);
+		assertNotNull(theTimestamp);
 	} // end method testTimestamplong
 
 	/*
@@ -153,7 +153,7 @@ public class TimestampTest extends TestCase {
 				Timestamp theTimestamp = new Timestamp(initParms[i][0],
 						initParms[i][1], initParms[i][2], initParms[i][3],
 						initParms[i][4], initParms[i][5], initParms[i][6]);
-				assertTrue("Timestamp not generated: ", theTimestamp != null);
+				assertNotNull("Timestamp not generated: ", theTimestamp);
 				if (theExceptions[i] != null)
 					fail(i + ": Did not get exception");
 			} catch (Exception e) {
@@ -556,7 +556,7 @@ public class TimestampTest extends TestCase {
 
 			assertTrue(theTimestamp.compareTo(theTest) > 0);
 			assertTrue(theTimestamp.compareTo(theTest2) < 0);
-			assertTrue(theTimestamp.compareTo(theTimestamp2) == 0);
+			assertEquals(0, theTimestamp.compareTo(theTimestamp2));
 		} // end for
 
 	} // end method testcompareToTimestamp
@@ -574,7 +574,7 @@ public class TimestampTest extends TestCase {
 
 			assertTrue(theTimestamp.compareTo(theTest) > 0);
 			assertTrue(theTimestamp.compareTo(theTest2) < 0);
-			assertTrue(theTimestamp.compareTo(theTimestamp2) == 0);
+			assertEquals(0, theTimestamp.compareTo(theTimestamp2));
 		} // end for
 
 		Object nastyTest = new String("Test ");

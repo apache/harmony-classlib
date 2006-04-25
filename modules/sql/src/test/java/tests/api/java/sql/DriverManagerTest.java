@@ -194,7 +194,7 @@ public class DriverManagerTest extends TestCase {
 		// validConnection - no user & password required
 		try {
 			theConnection = DriverManager.getConnection(validConnectionURL);
-			assertTrue(theConnection != null);
+			assertNotNull(theConnection);
 		} catch (SQLException e) {
 			assertTrue(false);
 		} // end try
@@ -207,7 +207,7 @@ public class DriverManagerTest extends TestCase {
 						.getConnection(invalidConnectionURLs[i]);
 				assertFalse(theConnection != null);
 			} catch (SQLException e) {
-				assertTrue(theConnection == null);
+				assertNull(theConnection);
 				// System.out.println("testGetConnectionString: exception
 				// message: " +
 				// e.getMessage() );
@@ -249,7 +249,7 @@ public class DriverManagerTest extends TestCase {
 		// validConnection - user & password required
 		try {
 			theConnection = DriverManager.getConnection(validURL1, validProps);
-			assertTrue(theConnection != null);
+			assertNotNull(theConnection);
 		} catch (SQLException e) {
 			assertTrue(false);
 		} // end try
@@ -299,7 +299,7 @@ public class DriverManagerTest extends TestCase {
 		try {
 			theConnection = DriverManager.getConnection(validURL1, validuser1,
 					validpassword1);
-			assertTrue(theConnection != null);
+			assertNotNull(theConnection);
 		} catch (SQLException e) {
 			assertTrue(false);
 		} // end try
@@ -389,7 +389,7 @@ public class DriverManagerTest extends TestCase {
 	} // end method testGetLoginTimeout()
 
 	public void testGetLogStream() {
-		assertTrue(DriverManager.getLogStream() == null);
+		assertNull(DriverManager.getLogStream());
 
 		DriverManager.setLogStream(testPrintStream);
 
@@ -399,7 +399,7 @@ public class DriverManagerTest extends TestCase {
 	} // end method testGetLogStream()
 
 	public void testGetLogWriter() {
-		assertTrue(DriverManager.getLogWriter() == null);
+		assertNull(DriverManager.getLogWriter());
 
 		DriverManager.setLogWriter(testPrintWriter);
 
@@ -499,7 +499,7 @@ public class DriverManagerTest extends TestCase {
 
 		DriverManager.setLogStream(null);
 
-		assertTrue(DriverManager.getLogStream() == null);
+		assertNull(DriverManager.getLogStream());
 
 		// Now let's deal with the case where there is a SecurityManager in
 		// place
@@ -549,8 +549,8 @@ public class DriverManagerTest extends TestCase {
 
 		DriverManager.setLogWriter(null);
 
-		assertTrue("testDriverManager: Log writer not null:", DriverManager
-				.getLogWriter() == null);
+		assertNull("testDriverManager: Log writer not null:", DriverManager
+				.getLogWriter());
 
 		// Now let's deal with the case where there is a SecurityManager in
 		// place

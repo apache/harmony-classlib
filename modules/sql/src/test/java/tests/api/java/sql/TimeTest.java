@@ -74,14 +74,14 @@ public class TimeTest extends TestCase {
 		Time theTime = new Time(10, 45, 20);
 
 		// The date should have been created
-		assertTrue(theTime != null);
+		assertNotNull(theTime);
 	} // end method testTimeintintint()
 
 	public void testTime() {
 		Time theTime = new Time(TIME_TEST1);
 
 		// The date should have been created
-		assertTrue(theTime != null);
+		assertNotNull(theTime);
 	} // end method testTime()
 
 	public void testToString() {

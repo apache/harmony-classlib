@@ -41,7 +41,7 @@ public class DriverPropertyInfoTest extends TestCase {
 		DriverPropertyInfo aDriverPropertyInfo = new DriverPropertyInfo(
 				validName, validValue);
 
-		assertTrue(aDriverPropertyInfo != null);
+		assertNotNull(aDriverPropertyInfo);
 
 		aDriverPropertyInfo = new DriverPropertyInfo(null, null);
 
