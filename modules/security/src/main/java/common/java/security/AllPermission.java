@@ -29,7 +29,9 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 /**
- * @com.intel.drl.spec_ref
+ * Subclass of Permission whose instances imply all other permissions. Granting
+ * this permission is equivalent to disabling security.
+ * 
  */
 public final class AllPermission extends Permission {
 
@@ -39,51 +41,87 @@ public final class AllPermission extends Permission {
     // Actions name
     private static final String ALL_ACTIONS = "<all actions>";
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class. The two argument version is
+	 * provided for class <code>Policy</code> so that it has a consistant call
+	 * pattern across all Permissions. The name and action list are both
+	 * ignored.
+	 * 
+	 * @param name
+	 *            java.lang.String ignored.
+	 * @param actions
+	 *            java.lang.String ignored.
+	 */
     public AllPermission(String name, String actions) {
         super(ALL_PERMISSIONS);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class.
+	 */
     public AllPermission() {
         super(ALL_PERMISSIONS);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Compares the argument to the receiver, and answers true if they represent
+	 * the <em>same</em> object using a class specific comparison. All
+	 * AllPermissions are equal to eachother.
+	 * 
+	 * @param obj
+	 *            the object to compare with this object
+	 * @return <code>true</code> if the object is the same as this object
+	 *         <code>false</code> if it is different from this object
+	 * @see #hashCode
+	 */
     public boolean equals(Object obj) {
         return (obj instanceof AllPermission);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers an integer hash code for the receiver. Any two objects which
+	 * answer <code>true</code> when passed to <code>equals</code> must
+	 * answer the same value for this method.
+	 * 
+	 * @return the receiver's hash
+	 * 
+	 * @see #equals
+	 */
     public int hashCode() {
         return 1;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers the actions associated with the receiver. Since AllPermission
+	 * objects allow all actions, answer with the string "<all actions>".
+	 * 
+	 * @return String the actions associated with the receiver.
+	 */
     public String getActions() {
         return ALL_ACTIONS;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Indicates whether the argument permission is implied by the receiver.
+	 * AllPermission objects imply all other permissions.
+	 * 
+	 * @return boolean <code>true</code> if the argument permission is implied
+	 *         by the receiver, and <code>false</code> if it is not.
+	 * @param permission
+	 *            java.security.Permission the permission to check
+	 */
     public boolean implies(Permission permission) {
         return true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers a new PermissionCollection for holding permissions of this class.
+	 * Answer null if any permission collection can be used.
+	 * 
+	 * @return a new PermissionCollection or null
+	 * 
+	 * @see java.security.BasicPermissionCollection
+	 */
     public PermissionCollection newPermissionCollection() {
         return new AllPermissionCollection();
     }
@@ -165,9 +203,15 @@ final class AllPermissionCollection extends PermissionCollection {
         }
     }
 
-    /**
-     * Returns true if this collection is not empty.
-     */
+	/**
+	 * Indicates whether the argument permission is implied by the receiver.
+	 * AllPermission objects imply all other permissions.
+	 * 
+	 * @return boolean <code>true</code> if the argument permission is implied
+	 *         by the receiver, and <code>false</code> if it is not.
+	 * @param permission
+	 *            java.security.Permission the permission to check
+	 */
     public boolean implies(Permission permission) {
         return all != null;
     }

@@ -22,8 +22,12 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * This class is the superclass of all classes which represent problems with
+ * keys.
  * 
+ * 
+ * @see Throwable
+ * @see Error
  */
 public class KeyException extends GeneralSecurityException {
 
@@ -32,16 +36,22 @@ public class KeyException extends GeneralSecurityException {
      */
     private static final long serialVersionUID = -7483676942812432108L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public KeyException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public KeyException() {
     }
 

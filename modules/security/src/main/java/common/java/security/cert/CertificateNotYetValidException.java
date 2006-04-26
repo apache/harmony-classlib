@@ -22,8 +22,7 @@
 package java.security.cert;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This class indicates that a given certificate is not valid yet.
  */
 public class CertificateNotYetValidException extends CertificateException {
     /**
@@ -31,16 +30,20 @@ public class CertificateNotYetValidException extends CertificateException {
      */
     private static final long serialVersionUID = 4355919900041064702L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public CertificateNotYetValidException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 */
     public CertificateNotYetValidException() {
     }
 }

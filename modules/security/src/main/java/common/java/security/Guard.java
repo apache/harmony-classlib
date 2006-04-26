@@ -22,7 +22,8 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * This interface is implemented by objects which wish to control access to
+ * other objects.
  * 
  */
 public interface Guard {

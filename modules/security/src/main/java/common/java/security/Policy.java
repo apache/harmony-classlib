@@ -28,9 +28,9 @@ import org.apache.harmony.security.fortress.PolicyUtils;
 
 
 /**
- * @com.intel.drl.spec_ref
+ * Abstract superclass of classes which represent the system security policy.
+ * 
  */
-
 public abstract class Policy {
     
     // Key to security properties, defining default policy provider.
@@ -47,20 +47,40 @@ public abstract class Policy {
     // The policy currently in effect. 
     private static Policy activePolicy;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers a PermissionCollection describing what permissions are available
+	 * to the given CodeSource based on the current security policy.
+	 * <p>
+	 * Note that this method is <em>not</em> called for classes which are in
+	 * the system domain (i.e. system classes). System classes are
+	 * <em>always</em> given full permissions (i.e. AllPermission). This can
+	 * not be changed by installing a new Policy.
+	 * 
+	 * 
+	 * @param cs
+	 *            CodeSource the code source to compute the permissions for.
+	 * @return PermissionCollection the permissions the code source should have.
+	 */
     public abstract PermissionCollection getPermissions(CodeSource cs);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Reloads the policy configuration, depending on how the type of source
+	 * location for the policy information.
+	 * 
+	 * 
+	 */
     public abstract void refresh();
 
-    /**
-     * @com.intel.drl.spec_ref
-     * The returned collection does not include static permissions of the domain.
-     */
+	/**
+	 * Answers a PermissionCollection describing what permissions are available
+	 * to the given ProtectionDomain (more specifically, its CodeSource) based
+	 * on the current security policy.
+	 * 
+	 * @param domain
+	 *            ProtectionDomain the protection domain to compute the
+	 *            permissions for.
+	 * @return PermissionCollection the permissions the code source should have.
+	 */
     public PermissionCollection getPermissions(ProtectionDomain domain) {
         if (domain != null) {
             return getPermissions(domain.getCodeSource());
@@ -68,9 +88,16 @@ public abstract class Policy {
         return new Permissions();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers whether the Permission is implied by the PermissionCollection of
+	 * the Protection Domain
+	 * 
+	 * @param domain
+	 *            ProtectionDomain for which Permission to be checked
+	 * @param permission
+	 *            Permission for which authorization is to be verified
+	 * @return boolean Permission implied by ProtectionDomain
+	 */
     public boolean implies(ProtectionDomain domain, Permission permission) {
         if (domain != null) {
             PermissionCollection total = getPermissions(domain);
@@ -89,11 +116,13 @@ public abstract class Policy {
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * If policy was set to <code>null</code>, loads default provider, 
-     * so this method never returns <code>null</code>.
-     */
+	/**
+	 * Answers the current system security policy. If no policy has been
+	 * instantiated then this is done using the security property <EM>policy.provider</EM>
+	 * 
+	 * 
+	 * @return Policy the current system security policy.
+	 */
     public static Policy getPolicy() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -166,11 +195,13 @@ public abstract class Policy {
         return current;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * Policy assigment is synchronized with default provider loading, to avoid 
-     * non-deterministic behavior.
-     */
+	/**
+	 * Sets the system-wide policy object if it is permitted by the security
+	 * manager.
+	 * 
+	 * @param policy
+	 *            Policy the policy object that needs to be set.
+	 */
     public static void setPolicy(Policy policy) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {

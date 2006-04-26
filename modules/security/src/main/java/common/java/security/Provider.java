@@ -119,34 +119,46 @@ public abstract class Provider extends Properties {
         putProviderInfo();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Returns the name of this provider.
+	 * 
+	 * 
+	 * 
+	 * @return String name of the provider
+	 */
     public String getName() {
         return name;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Returns the version number for the services being provided
+	 * 
+	 * 
+	 * 
+	 * @return double version number for the services being provided
+	 */
     public double getVersion() {
         return version;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Returns the generic information about the services being provided.
+	 * 
+	 * 
+	 * 
+	 * @return String generic description of the services being provided
+	 */
     public String getInfo() {
         return info;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * 
+	 * @return a printable representation for the receiver.
+	 */
     public String toString() {
         return name + " provider, Ver. " + version + " " + info;
     }
@@ -980,10 +992,13 @@ public abstract class Provider extends Properties {
             return true;
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
+	/**
+	 * Answers a string containing a concise, human-readable
+	 * description of the receiver.
+	 * 
+	 * 
+	 * @return a printable representation for the receiver.
+	 */
         public String toString() {
             String result = "Provider " + provider.getName() + " Service "
                     + type + "." + algorithm + " " + className;

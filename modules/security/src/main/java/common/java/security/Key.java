@@ -24,8 +24,9 @@ package java.security;
 import java.io.Serializable;
 
 /**
- * @com.intel.drl.spec_ref
+ * Defines the basic properties of all key objects.
  * 
+ * @see PublicKey
  */
 public interface Key extends Serializable {
     /**
@@ -34,17 +35,25 @@ public interface Key extends Serializable {
     public static final long serialVersionUID = 6603384152749567654L;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the name of the algorithm that this key will work
+     * with. If the algorithm is unknown, it answers null.
+     * 
+     * @return String the receiver's algorithm
      */
     public String getAlgorithm();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the name of the format used to encode the key, or null
+     * if it can not be encoded.
+     * 
+     * @return String the receiver's encoding format
      */
     public String getFormat();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers the encoded form of the receiver.
+     * 
+     * @return byte[] the encoded form of the receiver
      */
     public byte[] getEncoded();
 }

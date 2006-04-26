@@ -22,7 +22,7 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * This class represents exceptions for message digest computation.
  * 
  */
 public class DigestException extends GeneralSecurityException {
@@ -32,16 +32,22 @@ public class DigestException extends GeneralSecurityException {
      */
     private static final long serialVersionUID = 5821450303093652515L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public DigestException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public DigestException() {
     }
 

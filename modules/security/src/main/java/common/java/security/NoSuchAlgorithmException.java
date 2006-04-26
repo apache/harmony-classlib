@@ -22,8 +22,10 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * Instances of this class are thrown when an attempt is made to access an
+ * algorithm which is not provided by the library.
  * 
+ * @see Throwable
  */
 public class NoSuchAlgorithmException extends GeneralSecurityException {
 
@@ -32,16 +34,22 @@ public class NoSuchAlgorithmException extends GeneralSecurityException {
      */
     private static final long serialVersionUID = -7443947487218346562L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public NoSuchAlgorithmException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public NoSuchAlgorithmException() {
     }
 

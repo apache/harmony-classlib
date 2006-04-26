@@ -42,12 +42,9 @@ import org.apache.harmony.security.fortress.PolicyUtils;
 import org.apache.harmony.security.fortress.SecurityAccess;
 import org.apache.harmony.security.fortress.Services;
 
-
 /**
- * @com.intel.drl.spec_ref
- * 
+ * For access to security providers and properties.
  */
-
 public final class Security {
 
     // Security properties
@@ -133,11 +130,13 @@ public final class Security {
 //                + "No providers registered.");
     }
 
-    /**
-	 * @com.intel.drl.spec_ref
-	 * 
-	 * @deprecated Use {@link KeyFactory} and {@link AlgorithmParameters} to get
-	 *             algorithm property information.
+	/**
+	 * Deprecated method which returns null.
+	 * @param algName 
+	 * @param propName 
+	 * @return <code>null</code>
+	 *
+	 * @deprecated	Use AlgorithmParameters and KeyFactory instead
 	 */
     public static String getAlgorithmProperty(String algName, String propName) {
         if (algName == null || propName == null) {
@@ -179,10 +178,15 @@ public final class Security {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Adds the extra provider to the collection of providers.
+	 * @param provider 
+	 * 
+	 * @return int The priority/position of the provider added.
+	 * @exception SecurityException
+	 *                If there is a SecurityManager installed and it denies
+	 *                adding a new provider.
+	 */
     public static int addProvider(Provider provider) {
         return insertProviderAt(provider, 0);
     }
@@ -231,10 +235,19 @@ public final class Security {
         return Services.getProvider(name);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Returns the collection of providers which meet the user supplied string
+	 * filter.
+	 * 
+	 * @param filter
+	 *            case-insensitive filter
+	 * @return the providers which meet the user supplied string filter
+	 *         <code>filter</code>. A <code>null</code> value signifies
+	 *         that none of the installed providers meets the filter
+	 *         specification
+	 * @exception InvalidParameterException
+	 *                if an unusable filter is supplied
+	 */
     public static Provider[] getProviders(String filter) {
         if (filter == null) {
             throw new NullPointerException("The filter is null");
@@ -317,10 +330,19 @@ public final class Security {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Answers the value of the security property named by the argument.
+	 * 
+	 * 
+	 * @param key
+	 *            String The property name
+	 * @return String The property value
+	 * 
+	 * @exception SecurityException
+	 *                If there is a SecurityManager installed and it will not
+	 *                allow the property to be fetched from the current access
+	 *                control context.
+	 */
     public static String getProperty(String key) {
         if (key == null) {
             throw new NullPointerException("The key is null");
@@ -332,10 +354,19 @@ public final class Security {
         return secprops.getProperty(key);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Sets a given security property.
+	 * 
+	 * 
+	 * @param key
+	 *            String The property name.
+	 * @param datnum
+	 *            String The property value.
+	 * @exception SecurityException
+	 *                If there is a SecurityManager installed and it will not
+	 *                allow the property to be set from the current access
+	 *                control context.
+	 */
     public static void setProperty(String key, String datnum) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {

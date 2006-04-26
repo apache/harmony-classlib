@@ -35,7 +35,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * @com.intel.drl.spec_ref
+ * A heterogeneous collection of permissions.
+ * 
  */
 public final class Permissions extends PermissionCollection implements
     Serializable {
@@ -57,9 +58,14 @@ public final class Permissions extends PermissionCollection implements
      */
     private boolean allEnabled;  // = false;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Adds the argument to the collection.
+	 * 
+	 * 
+	 * @param permission
+	 *            java.security.Permission the permission to add to the
+	 *            collection
+	 */
     public void add(Permission permission) {
         if (isReadOnly()) {
             throw new SecurityException("collection is read-only");
@@ -94,7 +100,10 @@ public final class Permissions extends PermissionCollection implements
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers an enumeration of the permissions in the receiver.
+     * 
+     * 
+     * @return Enumeration the permissions in the receiver.
      */
     public Enumeration<Permission> elements() {
         return new MetaEnumeration(klasses.values().iterator());
@@ -157,14 +166,17 @@ public final class Permissions extends PermissionCollection implements
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     * Before actual implication checking, this method
-     * tries to resolve UnresolvedPermissions (if any)
-     * against the passed instance. Successfully
-     * resolved permissions (if any) are taken into
-     * account during further processing.
-     */
+	/**
+	 * Indicates whether the argument permission is implied by the permissions
+	 * contained in the receiver.
+	 * 
+	 * 
+	 * @return boolean <code>true</code> if the argument permission is implied
+	 *         by the permissions in the receiver, and <code>false</code> if
+	 *         it is not.
+	 * @param permission
+	 *            java.security.Permission the permission to check
+	 */
     public boolean implies(Permission permission) {
         if (allEnabled) {
             return true;
@@ -266,27 +278,39 @@ final class PermissionsHash extends PermissionCollection {
      */
     private final Hashtable perms = new Hashtable();
 
-    /**
-     * Adds passed permission (of any type) to the collection. The read-only
-     * flag is ignored, as this class is used as internal storage only.
-     */
+	/**
+	 * Adds the argument to the collection.
+	 * 
+	 * 
+	 * @param permission
+	 *            java.security.Permission the permission to add to the
+	 *            collection
+	 */
     public void add(Permission permission) {
         perms.put(permission, permission);
     }
 
-    /**
-     * Returns enumeration of contained elements.
-     */
+	/**
+	 * Answers an enumeration of the permissions in the receiver.
+	 * 
+	 * 
+	 * @return Enumeration the permissions in the receiver.
+	 */
     public Enumeration elements() {
         return perms.elements();
     }
 
-    /**
-     * Checks if this collection implies the particular permission.
-     * 
-     * @return true if some of contained permissions implies the passed
-     *         permission, false otherwise
-     */
+	/**
+	 * Indicates whether the argument permission is implied by the permissions
+	 * contained in the receiver.
+	 * 
+	 * 
+	 * @return boolean <code>true</code> if the argument permission is implied
+	 *         by the permissions in the receiver, and <code>false</code> if
+	 *         it is not.
+	 * @param permission
+	 *            java.security.Permission the permission to check
+	 */
     public boolean implies(Permission permission) {
         for (Enumeration elements = elements(); elements.hasMoreElements();) {
             if (((Permission)elements.nextElement()).implies(permission)) {

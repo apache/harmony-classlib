@@ -70,9 +70,15 @@ public class CodeSource implements Serializable {
     // Cached factory used to build CertPath-s in <code>getCodeSigners()</code>.  
     private transient CertificateFactory factory;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Constructs a new instance of this class with its url and certificates
+	 * fields filled in from the arguments.
+	 * 
+	 * @param location
+	 *            URL the URL.
+	 * @param certs
+	 *            Certificate[] the Certificates.
+	 */
     public CodeSource(URL location, Certificate[] certs) {
         this.location = location;
         if (certs != null) {
@@ -92,9 +98,19 @@ public class CodeSource implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Compares the argument to the receiver, and answers true if they represent
+	 * the <em>same</em> object using a class specific comparison. In this
+	 * case, the receiver and the object must have the same URL and the same
+	 * collection of certificates.
+	 * 
+	 * 
+	 * @param obj
+	 *            the object to compare with this object
+	 * @return <code>true</code> if the object is the same as this object
+	 *         <code>false</code> if it is different from this object
+	 * @see #hashCode
+	 */
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -130,9 +146,12 @@ public class CodeSource implements Serializable {
         return true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the certificates held onto by the receiver.
+	 * 
+	 * 
+	 * @return Certificate[] the receiver's certificates
+	 */
     public final Certificate[] getCertificates() {
         getCertificatesNoClone();
         if (certs == null) {
@@ -259,16 +278,26 @@ public class CodeSource implements Serializable {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the receiver's location.
+	 * 
+	 * 
+	 * @return URL the receiver's URL
+	 */
     public final URL getLocation() {
         return location;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers an integer hash code for the receiver. Any two objects which
+	 * answer <code>true</code> when passed to <code>.equals</code> must
+	 * answer the same value for this method.
+	 * 
+	 * 
+	 * @return int the receiver's hash.
+	 * 
+	 * @see #equals
+	 */
     public int hashCode() {
         //
         // hashCode() is undocumented there. Should we also use certs[i] to
@@ -277,9 +306,15 @@ public class CodeSource implements Serializable {
         return location == null ? 0 : location.hashCode();
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Indicates whether the argument code source is implied by the receiver.
+	 * 
+	 * 
+	 * @return boolean <code>true</code> if the argument code source is
+	 *         implied by the receiver, and <code>false</code> if it is not.
+	 * @param cs
+	 *            CodeSource the code source to check
+	 */
     public boolean implies(CodeSource cs) {
         //
         // Here, javadoc:N refers to the appropriate item in the API spec for 
@@ -426,9 +461,13 @@ public class CodeSource implements Serializable {
         return true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * 
+	 * @return a printable representation for the receiver.
+	 */
     public String toString() {
         //FIXME 1.5 StringBuffer => StringBuilder
         StringBuffer buf = new StringBuffer();

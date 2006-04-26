@@ -22,9 +22,10 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref 
+ * This runtime exception is thrown when an access control check indicates that
+ * access should not be granted.
+ * 
  */
-
 public class AccessControlException extends SecurityException {
 
     private static final long serialVersionUID = 5138225684096988535L;
@@ -34,24 +35,39 @@ public class AccessControlException extends SecurityException {
      */
     private Permission perm; // Named as demanded by Serialized Form.
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param message
+	 *            String The detail message for the exception.
+	 */
     public AccessControlException(String message) {
         super(message);
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback, message and
+	 * associated permission all filled in.
+	 * 
+	 * 
+	 * @param message
+	 *            String The detail message for the exception.
+	 * @param perm
+	 *            Permission The failed permission.
+	 */
     public AccessControlException(String message, Permission perm) {
         super(message);
         this.perm = perm;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the receiver's permission.
+	 * 
+	 * 
+	 * @return Permission the receiver's permission
+	 */
     public Permission getPermission() {
         return perm;
     }

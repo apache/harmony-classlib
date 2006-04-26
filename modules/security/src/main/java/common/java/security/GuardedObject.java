@@ -25,7 +25,8 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * @com.intel.drl.spec_ref
+ * GuardedObject controls access to an object, by checking all requests for the
+ * object with a Guard.
  * 
  */
 public class GuardedObject implements Serializable {
@@ -45,17 +46,31 @@ public class GuardedObject implements Serializable {
      */
     private final Guard guard;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Constructs a GuardedObject to protect access to the specified Object
+	 * using the specified Guard.
+	 * 
+	 * @param object
+	 *            the Object to guard
+	 * @param guard
+	 *            the Guard
+	 */
     public GuardedObject(Object object, Guard guard) {
         this.object = object;
         this.guard = guard;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Checks whether access should be granted to the object. If access is
+	 * granted, this method returns the object. If it is not granted, then a
+	 * <code>SecurityException</code> is thrown.
+	 * 
+	 * 
+	 * @return the guarded object
+	 * 
+	 * @exception java.lang.SecurityException
+	 *                If access is not granted to the object
+	 */
     public Object getObject() throws SecurityException {
         if (guard != null) {
             guard.checkGuard(object);

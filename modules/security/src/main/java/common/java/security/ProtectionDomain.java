@@ -22,7 +22,11 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref 
+ * This class represents a domain in which classes from the same source (URL)
+ * and signed by the same keys are stored. All the classes inside are given the
+ * same permissions.
+ * <p>
+ * Note: a class can only belong to one and only one protection domain.
  */
 public class ProtectionDomain {
 
@@ -42,9 +46,13 @@ public class ProtectionDomain {
     // permissions, true otherwise. 
     private boolean dynamicPerms;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Contructs a protection domain from the given code source and the
+	 * permissions that that should be granted to the classes which are
+	 * encapsulated in it.
+	 * @param cs 
+	 * @param permissions 
+	 */
     public ProtectionDomain(CodeSource cs, PermissionCollection permissions) {
         this.codeSource = cs;
         if (permissions != null) {
@@ -56,9 +64,23 @@ public class ProtectionDomain {
         //dynamicPerms = false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Contructs a protection domain from the given code source and the
+	 * permissions that that should be granted to the classes which are
+	 * encapsulated in it. 
+	 * 
+	 * This constructor also allows the association of a ClassLoader and group
+	 * of Principals.
+	 * 
+	 * @param cs
+	 *            the CodeSource associated with this domain
+	 * @param permissions
+	 *            the Permissions associated with this domain
+	 * @param cl
+	 *            the ClassLoader associated with this domain
+	 * @param principals
+	 *            the Principals associated with this domain
+	 */
     public ProtectionDomain(CodeSource cs, PermissionCollection permissions,
             ClassLoader cl, Principal[] principals) {
         this.codeSource = cs;
@@ -75,30 +97,41 @@ public class ProtectionDomain {
         dynamicPerms = true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Returns the ClassLoader associated with the ProtectionDomain
+	 * 
+	 * @return ClassLoader associated ClassLoader
+	 */
     public final ClassLoader getClassLoader() {
         return classLoader;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the code source of this domain.
+	 * 
+	 * @return java.security.CodeSource the code source of this domain
+	 */
     public final CodeSource getCodeSource() {
         return codeSource;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the permissions that should be granted to the classes which are
+	 * encapsulated in this domain.
+	 * 
+	 * @return java.security.PermissionCollection collection of permissions
+	 *         associated with this domain.
+	 */
     public final PermissionCollection getPermissions() {
         return permissions;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Returns the Principals associated with this ProtectionDomain. A change to
+	 * the returned array will not impact the ProtectionDomain.
+	 * 
+	 * @return Principals[] Principals associated with the ProtectionDomain.
+	 */
     public final Principal[] getPrincipals() {
         if( principals == null ) {
             return new Principal[0];
@@ -108,9 +141,16 @@ public class ProtectionDomain {
         return tmp;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Determines whether the permission collection of this domain implies the
+	 * argument permission.
+	 * 
+	 * 
+	 * @return boolean true if this permission collection implies the argument
+	 *         and false otherwise.
+	 * @param permission
+	 *            java.security.Permission the permission to check.
+	 */
     public boolean implies(Permission permission) {
         // First, test with the Policy, as the default Policy.implies() 
         // checks for both dynamic and static collections of the 
@@ -127,9 +167,12 @@ public class ProtectionDomain {
         return permissions == null ? false : permissions.implies(permission);
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * @return String a printable representation for the receiver.
+	 */
     public String toString() {
         //FIXME: 1.5 use StreamBuilder here
         StringBuffer buf = new StringBuffer(200);

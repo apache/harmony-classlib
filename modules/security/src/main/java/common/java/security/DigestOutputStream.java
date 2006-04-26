@@ -47,16 +47,30 @@ public class DigestOutputStream extends FilterOutputStream {
         this.digest = digest;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers the MessageDigest which the receiver uses when computing the
+	 * hash.
+	 * 
+	 * 
+	 * @return MessageDigest the digest the receiver uses when computing the
+	 *         hash.
+	 */
+
     public MessageDigest getMessageDigest() {
         return digest;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Sets the MessageDigest which the receiver will use when computing the
+	 * hash.
+	 * 
+	 * 
+	 * @param digest
+	 *            MessageDigest the digest to use when computing the hash.
+	 * 
+	 * @see MessageDigest
+	 * @see #on
+	 */
     public void setMessageDigest(MessageDigest digest) {
         this.digest = digest;
     }
@@ -85,16 +99,27 @@ public class DigestOutputStream extends FilterOutputStream {
         out.write(b, off, len);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Enables or disables the digest function (default is on).
+	 * 
+	 * 
+	 * @param on
+	 *            boolean true if the digest should be computed, and false
+	 *            otherwise.
+	 * 
+	 * @see MessageDigest
+	 */
     public void on(boolean on) {
         isOn = on;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * 
+	 * @return String a printable representation for the receiver.
+	 */
     public String toString() {
         return super.toString() + ", " + digest.toString() +
             (isOn ? ", is on" : ", is off");

@@ -22,7 +22,7 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * This class represents exceptions if a key cannot be found in the keystore.
  * 
  */
 public class UnrecoverableKeyException extends GeneralSecurityException {
@@ -32,16 +32,22 @@ public class UnrecoverableKeyException extends GeneralSecurityException {
      */
     private static final long serialVersionUID = 7275063078190151277L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public UnrecoverableKeyException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public UnrecoverableKeyException() {
     }
 }

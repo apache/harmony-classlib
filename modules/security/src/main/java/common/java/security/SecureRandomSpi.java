@@ -24,10 +24,10 @@ package java.security;
 import java.io.Serializable;
 
 /**
- * @com.intel.drl.spec_ref
+ * This class is a Service Provider Interface (therefore the Spi suffix) for
+ * secure random number generation algorithms to be supplied by providers.
  * 
  */
-
 public abstract class SecureRandomSpi implements Serializable {
     
     /**

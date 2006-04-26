@@ -22,8 +22,7 @@
 package java.security.cert;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This class indicates that a given certificate has expired.
  */
 public class CertificateExpiredException extends CertificateException {
 
@@ -33,18 +32,20 @@ public class CertificateExpiredException extends CertificateException {
      */
     private static final long serialVersionUID = 9071001339691533771L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public CertificateExpiredException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 */
     public CertificateExpiredException() {
     }
 }

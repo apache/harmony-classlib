@@ -27,7 +27,8 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * @com.intel.drl.spec_ref
+ * Abstract superclass of classes which are collections of Permission objects.
+ * 
  */
 public abstract class PermissionCollection implements Serializable {
 
@@ -42,36 +43,65 @@ public abstract class PermissionCollection implements Serializable {
     private boolean readOnly; // = false;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Adds the argument to the collection.
+     * 
+     * 
+     * @param permission
+     *            java.security.Permission the permission to add to the
+     *            collection.
+     * @exception IllegalStateException
+     *                if the collection is read only.
      */
     public abstract void add(Permission permission);
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers an enumeration of the permissions in the receiver.
+     * 
+     * 
+     * @return Enumeration the permissions in the receiver.
      */
     public abstract Enumeration<Permission> elements();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Indicates whether the argument permission is implied by the permissions
+     * contained in the receiver.
+     * 
+     * 
+     * @return boolean <code>true</code> if the argument permission is implied
+     *         by the permissions in the receiver, and <code>false</code> if
+     *         it is not.
+     * @param permission
+     *            java.security.Permission the permission to check
      */
     public abstract boolean implies(Permission permission);
 
     /**
-     * @com.intel.drl.spec_ref
+     * Indicates whether new permissions can be added to the receiver.
+     * 
+     * 
+     * @return boolean <code>true</code> if the receiver is read only
+     *         <code>false</code> if new elements can still be added to the
+     *         receiver.
      */
     public boolean isReadOnly() {
         return readOnly;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Marks the receiver as read only, so that no new permissions can be added
+     * to it.
+     * 
      */
     public void setReadOnly() {
         readOnly = true;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a string containing a concise, human-readable description of the
+     * receiver.
+     * 
+     * 
+     * @return a printable representation for the receiver.
      */
     public String toString() {
         List elist = new ArrayList(100);

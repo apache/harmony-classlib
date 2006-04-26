@@ -97,8 +97,20 @@ public abstract class MessageDigest extends MessageDigestSpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Answers a new MessageDigest which is capable of running the algorithm
+     * described by the argument. The result will be an instance of a subclass
+     * of MessageDigest which implements that algorithm.
+     * 
+     * 
+     * @param algorithm
+     *            java.lang.String Name of the algorithm desired
+     * @param provider
+     *            Provider Provider which has to implement the algorithm
+     * @return MessageDigest a concrete implementation for the algorithm
+     *         desired.
+     * 
+     * @exception NoSuchAlgorithmException
+     *                If the algorithm cannot be found
      */
     public static MessageDigest getInstance(String algorithm, Provider provider)
             throws NoSuchAlgorithmException {
@@ -125,16 +137,23 @@ public abstract class MessageDigest extends MessageDigestSpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Puts the receiver back in an initial state, such that it is ready to
+     * compute a new hash.
+     * 
+     * @see java.security.MessageDigest.Wrapper#engineReset()
      */
     public void reset() {
         engineReset();
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Includes the argument in the hash value computed
+     * by the receiver.
+     *
+     * @param arg0 byte
+     *             the byte to feed to the hash algorithm
+     *
+     * @see #reset()
      */
     public void update(byte arg0) {
         engineUpdate(arg0);
@@ -165,8 +184,12 @@ public abstract class MessageDigest extends MessageDigestSpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Computes and answers the final hash value that the receiver represents.
+     * After the digest is computed the receiver is reset.
+     * 
+     * @return the hash the receiver computed
+     * 
+     * @see #reset
      */
     public byte[] digest() {
         return engineDigest();
@@ -195,16 +218,25 @@ public abstract class MessageDigest extends MessageDigestSpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Answers a string containing a concise, human-readable description of the
+     * receiver.
+     * 
+     * @return a printable representation for the receiver.
      */
     public String toString() {
         return "MESSAGE DIGEST " + algorithm;
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Does a simply byte-per-byte compare of the two digests.
+     * 
+     * @param digesta
+     *            One of the digests to compare
+     * @param digestb
+     *            The digest to compare to
+     * 
+     * @return <code>true</code> if the two hashes are equal
+     *         <code>false</code> if the two hashes are not equal
      */
     public static boolean isEqual(byte[] digesta, byte[] digestb) {
         if (digesta.length != digestb.length) {
@@ -219,24 +251,29 @@ public abstract class MessageDigest extends MessageDigestSpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Answers the standard Java Security name for the algorithm being used by
+     * the receiver.
+     * 
+     * @return String the name of the algorithm
      */
     public final String getAlgorithm() {
         return algorithm;
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the Provider of the digest represented by the receiver.
+     * 
+     * @return Provider an instance of a subclass of java.security.Provider
      */
     public final Provider getProvider() {
         return provider;
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Return the engine digest length in bytes. Default is 0.
+     * 
+     * @return int the engine digest length in bytes
+     * 
      */
     public final int getDigestLength() {
         int l = engineGetDigestLength();

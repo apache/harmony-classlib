@@ -23,11 +23,16 @@ package java.security;
 
 import java.nio.ByteBuffer;
 
+
 /**
- * @com.intel.drl.spec_ref
+ * This class is a Service Provider Interface (therefore the Spi suffix) for
+ * digest algorithms to be supplied by providers. Examples of digest algorithms
+ * are MD5 and SHA.
+ * 
+ * A digest is a secure hash function for a stream of bytes, like a fingerprint
+ * for the stream of bytes.
  * 
  */
-
 public abstract class MessageDigestSpi {
     
     /**

@@ -21,10 +21,12 @@
 
 package java.security;
 
-/** 
- * @com.intel.drl.spec_ref 
- */
 
+/**
+ * Principals are objects which have identities. These can be individuals,
+ * groups, corporations, unique program executions, etc.
+ * 
+ */
 public interface Principal {
     /** 
      * @com.intel.drl.spec_ref 

@@ -34,16 +34,20 @@ public class CRLException extends GeneralSecurityException {
      */
     private static final long serialVersionUID = -6694728944094197147L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public CRLException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 */
     public CRLException() {
     }
 

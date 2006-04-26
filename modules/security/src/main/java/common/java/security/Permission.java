@@ -24,7 +24,8 @@ package java.security;
 import java.io.Serializable;
 
 /**
- * @com.intel.drl.spec_ref
+ * Abstract superclass of all classes which represent permission to access
+ * system resources.
  * 
  */
 public abstract class Permission implements Guard, Serializable {
@@ -41,31 +42,57 @@ public abstract class Permission implements Guard, Serializable {
      */
     public abstract boolean equals(Object obj);
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers an integer hash code for the receiver. Any two objects which
+	 * answer <code>true</code> when passed to <code>.equals</code> must
+	 * answer the same value for this method.
+	 * 
+	 * 
+	 * @return int the receiver's hash.
+	 * 
+	 * @see #equals
+	 */
     public abstract int hashCode();
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the actions associated with the receiver. Subclasses should
+	 * return their actions in canonical form. If no actions are associated with
+	 * the receiver, the empty string should be returned.
+	 * 
+	 * 
+	 * @return String the receiver's actions.
+	 */
     public abstract String getActions();
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Indicates whether the argument permission is implied by the receiver.
+	 * 
+	 * 
+	 * @return boolean <code>true</code> if the argument permission is implied
+	 *         by the receiver, and <code>false</code> if it is not.
+	 * @param permission
+	 *            Permission the permission to check.
+	 */
     public abstract boolean implies(Permission permission);
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Constructs a new instance of this class with its name set to the
+	 * argument.
+	 * 
+	 * 
+	 * @param name
+	 *            String the name of the permission.
+	 */
     public Permission(String name) {
         this.name = name;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the name of the receiver.
+	 * 
+	 * 
+	 * @return String the receiver's name.
+	 */
     public final String getName() {
         return name;
     }
@@ -80,16 +107,25 @@ public abstract class Permission implements Guard, Serializable {
         }
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers a new PermissionCollection for holding permissions of this class.
+	 * Answer null if any permission collection can be used.
+	 * 
+	 * 
+	 * @return PermissionCollection or null a suitable permission collection for
+	 *         instances of the class of the receiver.
+	 */
     public PermissionCollection newPermissionCollection() {
         return null;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * 
+	 * @return String a printable representation for the receiver.
+	 */
     public String toString() {
         String actions = getActions();
         actions = (actions == null || actions.length() == 0) ? "" : " "

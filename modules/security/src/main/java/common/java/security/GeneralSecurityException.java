@@ -22,7 +22,8 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * This class represents the general security exception. Subclasses will
+ * represents specific security problems.
  * 
  */
 public class GeneralSecurityException extends Exception {
@@ -31,16 +32,22 @@ public class GeneralSecurityException extends Exception {
      */
     private static final long serialVersionUID = 894798122053539237L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public GeneralSecurityException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public GeneralSecurityException() {
     }
 

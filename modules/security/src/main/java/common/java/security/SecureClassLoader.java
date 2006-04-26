@@ -25,7 +25,11 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 /**
- * @com.intel.drl.spec_ref
+ * SecureClassLoaders are used to dynamically load, link and install classes
+ * into a running image. Additionally, they (optionally) associate the classes
+ * they create with a code source and provide mechanisms to allow the relevant
+ * permissions to be retrieved.
+ * 
  */
 
 public class SecureClassLoader extends ClassLoader {

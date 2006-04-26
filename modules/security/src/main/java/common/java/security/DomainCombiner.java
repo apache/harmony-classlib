@@ -22,7 +22,9 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * A DomainCombiner is a way to update the protection domains from an
+ * AccessControlContext
+ * 
  */
 public interface DomainCombiner {
     /**

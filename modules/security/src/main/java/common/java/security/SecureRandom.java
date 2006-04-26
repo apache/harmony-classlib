@@ -87,8 +87,11 @@ public class SecureRandom extends Random {
     private static transient SecureRandom internalSecureRandom;
     
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class. Users are encouraged to use
+     * <code>getInstance()</code> instead.
      * 
+     * An implementation for the highest-priority provider is returned. The
+     * instance returned will not have been seeded.
      */
     public SecureRandom() {
         super(0);
@@ -109,8 +112,14 @@ public class SecureRandom extends Random {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class. Users are encouraged to use
+     * <code>getInstance()</code> instead.
      * 
+     * An implementation for the highest-priority provider is returned. The
+     * instance returned will be seeded with the parameter.
+     * 
+     * @param seed
+     *            bytes forming the seed for this generator.
      */
     public SecureRandom(byte[] seed) {
         this();
@@ -165,8 +174,19 @@ public class SecureRandom extends Random {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a new SecureRandom which is capable of running the algorithm
+     * described by the argument. The result will be an instance of a subclass
+     * of SecureRandomSpi which implements that algorithm.
      * 
+     * @param algorithm
+     *            java.lang.String Name of the algorithm desired
+     * @param provider
+     *            java.security.Provider Provider which has to implement the
+     *            algorithm
+     * @return SecureRandom a concrete implementation for the algorithm desired.
+     * 
+     * @exception NoSuchAlgorithmException
+     *                If the algorithm cannot be found
      */
     public static SecureRandom getInstance(String algorithm, String provider)
                                 throws NoSuchAlgorithmException, NoSuchProviderException {
@@ -200,8 +220,9 @@ public class SecureRandom extends Random {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the Provider of the secure random represented by the receiver.
      * 
+     * @return Provider an instance of a subclass of java.security.Provider
      */
     public final Provider getProvider() {
         return provider;
@@ -224,8 +245,13 @@ public class SecureRandom extends Random {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Reseeds this random object with the eight bytes described by the
+     * representation of the long provided.
      * 
+     * 
+     * @param seed
+     *            long Number whose representation to use to reseed the
+     *            receiver.
      */
     public void setSeed(long seed) {
         if (seed == 0) {    // skip call from Random
@@ -277,8 +303,12 @@ public class SecureRandom extends Random {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the given number of seed bytes, computed using the seed
+     * generation algorithm used by this class.
      * 
+     * @param numBytes
+     *            int the given number of seed bytes
+     * @return byte[] The seed bytes generated
      */
     public static byte[] getSeed(int numBytes) {
         if (internalSecureRandom == null) {
@@ -288,8 +318,12 @@ public class SecureRandom extends Random {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a certain number of seed bytes
      * 
+     * 
+     * @param numBytes
+     *            int Number of seed bytes to generate
+     * @return byte[] The seed bytes generated
      */
     public byte[] generateSeed(int numBytes) {
         return secureRandomSpi.engineGenerateSeed(numBytes);

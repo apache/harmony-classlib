@@ -30,8 +30,17 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @com.intel.drl.spec_ref
+ * An immutable certificate path that can be validated. All certificates in the
+ * path are of the same type (i.e., X509).
  * 
+ * A <code>CertPath</code> can be represented as a byte array in at least one
+ * supported encoding when serialized.
+ * 
+ * When a <code>List</code> of the certificates is obtained it must be
+ * immutable.
+ * 
+ * A <code>CertPath</code> must be thread-safe without requiring coordinated
+ * access.
  */
 public abstract class CertPath implements Serializable {
     /**
@@ -48,16 +57,24 @@ public abstract class CertPath implements Serializable {
         this.type = type;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Returns the type of <code>Certificate</code> in the
+	 * <code>CertPath</code>
+	 * 
+	 * @return <code>Certificate</code> type
+	 */
     public String getType() {
         return type;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Returns true if <code>Certificate</code>s in the list are the same
+	 * type and the lists are equal (and by implication the certificates
+	 * contained within are the same).
+	 * 
+	 * @param other
+	 *            <code>CertPath</code> to be compared for equality
+	 */
     public boolean equals(Object other) {
         if (this == other) {
             return true;
@@ -73,18 +90,27 @@ public abstract class CertPath implements Serializable {
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Overrides Object.hashCode() Defined as: hashCode = 31 *
+	 * path.getType().hashCode() + path.getCertificates().hashCode();
+	 * 
+	 * @return hash code for CertPath object
+	 */
     public int hashCode() {
         int hash = getType().hashCode();
         hash = hash*31 + getCertificates().hashCode();
         return hash;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Returns a <code>String</code> representation of the
+	 * <code>CertPath</code>
+	 * <code>Certificate</code>s. It is the result of
+	 * calling <code>toString</code> on all <code>Certificate</code>s in
+	 * the <code>List</code>. <code>Certificate</code>s
+	 * 
+	 * @return string representation of <code>CertPath</code>
+	 */
     public String toString() {
         StringBuffer sb = new StringBuffer(getType());
         sb.append(" Cert Path, len=");
@@ -103,24 +129,41 @@ public abstract class CertPath implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns an immutable List of the <code>Certificate</code>s contained
+     * in the <code>CertPath</code>.
+     * 
+     * @return list of <code>Certificate</code>s in the <code>CertPath</code>
      */
     public abstract List<? extends Certificate> getCertificates();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns an encoding of the <code>CertPath</code> using the default
+     * encoding
+     * 
+     * @return default encoding of the <code>CertPath</code>
+     * @throws CertificateEncodingException
      */
     public abstract byte[] getEncoded()
         throws CertificateEncodingException;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns an encoding of the <code>CertPath</code> using the specified
+     * encoding
+     * 
+     * @param encoding
+     *            encoding that should be generated
+     * @return default encoding of the <code>CertPath</code>
+     * @throws CertificateEncodingException
      */
     public abstract byte[] getEncoded(String encoding)
         throws CertificateEncodingException;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Return an <code>Iterator</code> over the supported encodings for a
+     * representation of the certificate path.
+     * 
+     * @return <code>Iterator</code> over supported encodings (as
+     *         <code>String</code>s)
      */
     public abstract Iterator<String> getEncodings();
 

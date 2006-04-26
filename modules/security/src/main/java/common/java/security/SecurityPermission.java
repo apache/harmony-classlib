@@ -22,7 +22,8 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * SecurityPermission objects guard access to the mechanisms which implement
+ * security. Security permissions have names, but not actions.
  * 
  */
 public final class SecurityPermission extends BasicPermission {
@@ -32,16 +33,25 @@ public final class SecurityPermission extends BasicPermission {
      */
     private static final long serialVersionUID = 5236109936224050470L;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Creates an instance of this class with the given name.
+	 * 
+	 * @param name
+	 *            String the name of the new permission.
+	 */
     public SecurityPermission(String name) {
         super(name);
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Creates an instance of this class with the given name and action list.
+	 * The action list is ignored.
+	 * 
+	 * @param name
+	 *            String the name of the new permission.
+	 * @param action
+	 *            String ignored.
+	 */
     public SecurityPermission(String name, String action) {
         super(name, action);
     }

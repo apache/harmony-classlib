@@ -22,7 +22,7 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * This exception is thrown when an invalid parameter is passed to a method.
  * 
  */
 public class InvalidParameterException extends IllegalArgumentException {
@@ -32,16 +32,22 @@ public class InvalidParameterException extends IllegalArgumentException {
      */
     private static final long serialVersionUID = -857968536935667808L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public InvalidParameterException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public InvalidParameterException() {
     }
 }

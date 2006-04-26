@@ -47,23 +47,44 @@ public class DigestInputStream extends FilterInputStream {
         this.digest = digest;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers the MessageDigest which the receiver uses when computing the
+	 * hash.
+	 * 
+	 * 
+	 * @return MessageDigest the digest the receiver uses when computing the
+	 *         hash.
+	 * 
+	 */
     public MessageDigest getMessageDigest() {
         return digest;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Sets the MessageDigest which the receiver will use when computing the
+	 * hash.
+	 * 
+	 * 
+	 * @param digest
+	 *            MessageDigest the digest to use when computing the hash.
+	 * 
+	 * @see MessageDigest
+	 * @see #on
+	 */
     public void setMessageDigest(MessageDigest digest) {
         this.digest = digest;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Reads the next byte and answers it as an int. Updates the digest for the
+	 * byte if this fuction is enabled.
+	 * 
+	 * 
+	 * @return int the byte which was read or -1 at end of stream.
+	 * 
+	 * @exception java.io.IOException
+	 *                If reading the source stream causes an IOException.
+	 */
     public int read() throws IOException {
         // read the next byte
         int byteRead = in.read();
@@ -93,16 +114,27 @@ public class DigestInputStream extends FilterInputStream {
         return bytesRead;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Enables or disables the digest function (default is on).
+	 * 
+	 * 
+	 * @param on
+	 *            boolean true if the digest should be computed, and false
+	 *            otherwise.
+	 * 
+	 * @see MessageDigest
+	 */
     public void on(boolean on) {
         isOn = on;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * 
+	 * @return String a printable representation for the receiver.
+	 */
     public String toString() {
         return super.toString() + ", " + digest.toString() +
             (isOn ? ", is on" : ", is off");

@@ -38,14 +38,13 @@ import java.util.List;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
 
-
 /**
- * @com.intel.drl.spec_ref 
- * Technically, the resolution of UnresolvedPermissions
- * and substitution by actual permissions takes place in
- * <code>implies()</code> method of a
- * <code>Permissions</code> collection, right before
- * actual checking.
+ * Holds permissions which are of an unknown type when a policy file is read.
+ *
+ * Technically, the resolution of UnresolvedPermissions and
+ * substitution by actual permissions takes place in the
+ * <code>implies()</code> method of a <code>Permissions</code>
+ * collection, right before actual checking.
  * 
  */
 public final class UnresolvedPermission extends Permission
@@ -73,9 +72,17 @@ public final class UnresolvedPermission extends Permission
     // Cached hash value
     private transient int hash;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Constructs a new instance of this class with its type, name, and
+	 * certificates set to the arguments by definition, actions are ignored
+	 * 
+	 * @param type
+	 *            class of permission object
+	 * @param name
+	 *            identifies the permission that could not be resolved
+	 * @param actions
+	 * @param certs
+	 */
     public UnresolvedPermission(String type, String name, String actions,
                                 Certificate[] certs) {
         super(type);
@@ -108,9 +115,19 @@ public final class UnresolvedPermission extends Permission
         }
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Compares the argument to the receiver, and answers true if they represent
+	 * the <em>same</em> object using a class specific comparison. In this
+	 * case, the receiver and the object must have the same class, permission
+	 * name, actions, and certificates
+	 * 
+	 * @param obj
+	 *            the object to compare with this object
+	 * @return <code>true</code> if the object is the same as this object,
+	 *         <code>false</code> otherwise.
+	 * 
+	 * @see #hashCode
+	 */
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -130,9 +147,15 @@ public final class UnresolvedPermission extends Permission
         return false;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers an integer hash code for the receiver. Any two objects which
+	 * answer <code>true</code> when passed to <code>equals</code> must
+	 * answer the same value for this method.
+	 * 
+	 * @return the receiver's hash
+	 * 
+	 * @see #equals
+	 */
     public int hashCode() {
         if (hash == 0) {
             hash = getName().hashCode();
@@ -146,9 +169,12 @@ public final class UnresolvedPermission extends Permission
         return hash;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the actions associated with the receiver. Since
+	 * UnresolvedPermission objects have no actions, answer the empty string.
+	 * 
+	 * @return the actions associated with the receiver.
+	 */
     public String getActions() {
         return "";
     }
@@ -186,30 +212,43 @@ public final class UnresolvedPermission extends Permission
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     * The enclosed target permission would be resolved
-     * and consulted for implication if this
-     * UnresolvedPermission is an element of a
-     * <code>Permissions</code> collection and the
-     * collection's <code>implies()</code> method is
-     * called.
-     */
+	/**
+	 * Indicates whether the argument permission is implied by the
+	 * receiver.  UnresolvedPermission objects imply nothing
+	 * because nothing is known about them yet.
+	 * 
+         * Before actual implication checking, this method tries to
+         * resolve UnresolvedPermissions (if any) against the passed
+         * instance. Successfully resolved permissions (if any) are
+         * taken into account during further processing.
+         *
+	 * @param permission
+	 *            the permission to check
+	 * @return always replies false
+	 */
     public boolean implies(Permission permission) {
         return false;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * @return a printable representation for the receiver.
+	 */
     public String toString() {
         return "(unresolved " + getName() + " " + targetName + " "
             + targetActions + ")";
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers a new PermissionCollection for holding permissions of this class.
+	 * Answer null if any permission collection can be used.
+	 * 
+	 * @return a new PermissionCollection or null
+	 * 
+	 * @see java.security.BasicPermissionCollection
+	 */
     public PermissionCollection newPermissionCollection() {
         return new UnresolvedPermissionCollection();
     }

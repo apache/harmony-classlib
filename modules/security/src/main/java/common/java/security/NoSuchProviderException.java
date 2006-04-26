@@ -22,8 +22,11 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * Instances of this class are thrown when an attempt is made to access a
+ * provider by name which is not currently available.
  * 
+ * 
+ * @see Throwable
  */
 public class NoSuchProviderException extends GeneralSecurityException {
     /**
@@ -31,16 +34,21 @@ public class NoSuchProviderException extends GeneralSecurityException {
      */
     private static final long serialVersionUID = 8488111756688534474L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public NoSuchProviderException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public NoSuchProviderException() {
     }
 }

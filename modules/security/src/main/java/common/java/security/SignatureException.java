@@ -22,7 +22,7 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * This class represents generic security exceptions.
  * 
  */
 public class SignatureException extends GeneralSecurityException {
@@ -31,16 +31,22 @@ public class SignatureException extends GeneralSecurityException {
      */
     private static final long serialVersionUID = 7509989324975124438L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public SignatureException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public SignatureException() {
     }
 

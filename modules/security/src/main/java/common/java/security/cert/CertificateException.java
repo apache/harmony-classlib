@@ -24,8 +24,7 @@ package java.security.cert;
 import java.security.GeneralSecurityException;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This class represents a general certificate exception.
  */
 public class CertificateException extends GeneralSecurityException {
 
@@ -35,18 +34,20 @@ public class CertificateException extends GeneralSecurityException {
      */
     private static final long serialVersionUID = 3192535253797119798L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public CertificateException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 */
     public CertificateException() {
     }
 

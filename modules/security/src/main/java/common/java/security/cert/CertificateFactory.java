@@ -34,8 +34,7 @@ import org.apache.harmony.security.fortress.Engine;
 
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This class provides the functionality of a certificate factory algorithm.
  */
 
 public class CertificateFactory {
@@ -67,12 +66,18 @@ public class CertificateFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a new CertificateFactory of the given type.
      * 
-     * throws CertificateException using NoSuchAlgorithmException information
+     * @param type
+     *            java.lang.String Type of certificate desired
+     * @return CertificateFactory a concrete implementation for the certificate
+     *         type desired.
      * 
-     * throws NullPointerException if algorithm is null (instead of
-     * CertificateException as in 1.4 release)
+     * @exception CertificateException
+     *                If the type cannot be found
+     *
+     * @exception NullPointerException
+     *                If the type is null
      */
     public static final CertificateFactory getInstance(String type)
             throws CertificateException {
@@ -110,12 +115,21 @@ public class CertificateFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Answers a new CertificateFactory of the given type.
      * 
-     * throws CertificateException using NoSuchAlgorithmException information
+     * @param type
+     *            java.lang.String Type of certificatem desired
+     * @param provider
+     *            java.security.Provider Provider which has to implement the
+     *            algorithm
+     * @return CertificateFactory a concrete implementation for the certificate
+     *         type desired.
      * 
-     * throws NullPointerException if algorithm is null (instead of
-     * CertificateException as in 1.4 release)
+     * @exception CertificateException
+     *                If the type cannot be found
+     *
+     * @exception NullPointerException
+     *                If algorithm is null
      */
     public static final CertificateFactory getInstance(String type,
             Provider provider) throws CertificateException {
@@ -137,21 +151,35 @@ public class CertificateFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the Provider of the certificate factory represented by the
+     * receiver.
+     * 
+     * @return Provider an instance of a subclass of java.security.Provider
      */
     public final Provider getProvider() {
         return provider;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the Certificate type
+     * 
+     * @return String type of certificate being used
      */
     public final String getType() {
         return type;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates and initializes a Certificate from data from the
+     * provided input stream.
+     * 
+     * @param inStream
+     *            InputStream Stream from where data is read to create the
+     *            Certificate
+     * 
+     * @return Certificate an initialized Certificate
+     * @exception CertificateException
+     *                if parsing problems are detected
      */
     public final Certificate generateCertificate(InputStream inStream)
             throws CertificateException {
@@ -159,14 +187,26 @@ public class CertificateFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns an Iterator over the supported CertPath encodings (as Strings).
+     * The first element is the default encoding.
+     * 
+     * @return Iterator Iterator over supported CertPath encodings (as Strings)
      */
     public final Iterator<String> getCertPathEncodings() {
         return spiImpl.engineGetCertPathEncodings();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a <code>CertPath</code> from data from the provided
+     * <code>InputStream</code>. The default encoding is assumed.
+     * 
+     * @param inStream
+     *            InputStream with PKCS7 or PkiPath encoded data
+     * 
+     * @return CertPath a CertPath initialized from the provided data
+     * 
+     * @throws CertificateException
+     *             if parsing problems are detected
      */
     public final CertPath generateCertPath(InputStream inStream)
             throws CertificateException {
@@ -178,7 +218,22 @@ public class CertificateFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a <code>CertPath</code> from data from the provided
+     * <code>InputStream</code>. The encoding is that specified by the
+     * encoding parameter.
+     * 
+     * @param inStream
+     *            InputStream containing certificate path data in specified
+     *            encoding
+     * @param encoding
+     *            encoding of the data in the input stream
+     * 
+     * @return CertPath a CertPath initialized from the provided data
+     * 
+     * @throws CertificateException
+     *             if parsing problems are detected
+     * @throws UnsupportedOperationException
+     *             if the provider does not implement this method
      */
     public final CertPath generateCertPath(InputStream inStream, String encoding)
             throws CertificateException {
@@ -186,7 +241,19 @@ public class CertificateFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a <code>CertPath</code> from the provided List of
+     * Certificates. The encoding is the default encoding.
+     * 
+     * @param certificates
+     *            List containing certificates in a format supported by the
+     *            CertificateFactory
+     * 
+     * @return CertPath a CertPath initialized from the provided data
+     * 
+     * @throws CertificateException
+     *             if parsing problems are detected
+     * @throws UnsupportedOperationException
+     *             if the provider does not implement this method
      */
     public final CertPath generateCertPath(List<? extends Certificate> certificates)
             throws CertificateException {
@@ -194,7 +261,16 @@ public class CertificateFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates and initializes a collection of Certificates from
+     * data from the provided input stream.
+     * 
+     * @param inStream
+     *            InputStream Stream from where data is read to create the
+     *            Certificates
+     * 
+     * @return Collection an initialized collection of Certificates
+     * @exception CertificateException
+     *                if parsing problems are detected
      */
     public final Collection<? extends Certificate> generateCertificates(InputStream inStream)
             throws CertificateException {
@@ -202,14 +278,32 @@ public class CertificateFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates and initializes a Certificate Revocation List from data from
+     * the provided input stream.
+     * 
+     * @param inStream
+     *            InputStream Stream from where data is read to create the CRL
+     * 
+     * @return CRL an initialized Certificate Revocation List
+     * @exception CRLException
+     *                if parsing problems are detected
      */
     public final CRL generateCRL(InputStream inStream) throws CRLException {
         return spiImpl.engineGenerateCRL(inStream);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates and initializes a collection of Certificate Revocation List
+     * from data from the provided input stream.
+     * 
+     * @param inStream
+     *            InputStream Stream from where data is read to create the CRLs
+     * 
+     * @return Collection an initialized collection of Certificate Revocation
+     *         List
+     * @exception CRLException
+     *                if parsing problems are detected
+     * 
      */
     public final Collection<? extends CRL> generateCRLs(InputStream inStream)
             throws CRLException {

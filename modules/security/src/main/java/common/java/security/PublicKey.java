@@ -22,8 +22,11 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * Superinterface for all specific public key interfaces
  * 
+ * 
+ * @see PublicKey
+ * @see PrivateKey
  */
 public interface PublicKey extends Key {
     /**

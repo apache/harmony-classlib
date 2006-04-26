@@ -35,24 +35,35 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @com.intel.drl.spec_ref
+ * Superclass of permissions which have names but no action lists.
+ * 
  */
+
 public abstract class BasicPermission extends Permission implements
     Serializable {
 
     private static final long serialVersionUID = 6279438298436773498L;
 
-    /**
-     * @com.intel.drl.spec_ref.
-     */
+	/**
+	 * Creates an instance of this class with the given name and action list.
+	 * 
+	 * @param name
+	 *            String the name of the new permission.
+	 */
     public BasicPermission(String name) {
         super(name);
         checkName(name);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Creates an instance of this class with the given name and action list.
+	 * The action list is ignored.
+	 * 
+	 * @param name
+	 *            String the name of the new permission.
+	 * @param action
+	 *            String ignored.
+	 */
     public BasicPermission(String name, String action) {
         super(name);
         checkName(name);
@@ -70,9 +81,17 @@ public abstract class BasicPermission extends Permission implements
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Compares the argument to the receiver, and answers true if they represent
+	 * the <em>same</em> object using a class specific comparison. In this
+	 * case, the receiver and the object must have the same class and name.
+	 * 
+	 * @param obj
+	 *            the object to compare with this object
+	 * @return <code>true</code> if the object is the same as this object
+	 *         <code>false</code> if it is different from this object
+	 * @see #hashCode
+	 */
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -84,23 +103,37 @@ public abstract class BasicPermission extends Permission implements
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers an integer hash code for the receiver. Any two objects which
+	 * answer <code>true</code> when passed to <code>equals</code> must
+	 * answer the same value for this method.
+	 * 
+	 * @return int the receiver's hash
+	 * 
+	 * @see #equals
+	 */
     public int hashCode() {
         return getName().hashCode();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers the actions associated with the receiver. BasicPermission objects
+	 * have no actions, so answer the empty string.
+	 * 
+	 * @return String the actions associated with the receiver.
+	 */
     public String getActions() {
         return "";
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Indicates whether the argument permission is implied by the receiver.
+	 * 
+	 * @return boolean <code>true</code> if the argument permission is implied
+	 *         by the receiver, and <code>false</code> if it is not.
+	 * @param permission
+	 *            java.security.Permission the permission to check
+	 */
     public boolean implies(Permission permission) {
         if (permission != null && permission.getClass() == this.getClass()) {
             return nameImplies(getName(), permission.getName());
@@ -137,9 +170,21 @@ public abstract class BasicPermission extends Permission implements
         return true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers a new PermissionCollection for holding permissions of this class.
+	 * Answer null if any permission collection can be used.
+	 * <p>
+	 * Note: For BasicPermission (and subclasses which do not override this
+	 * method), the collection which is returned does <em>not</em> invoke the
+	 * .implies method of the permissions which are stored in it when checking
+	 * if the collection implies a permission. Instead, it assumes that if the
+	 * type of the permission is correct, and the name of the permission is
+	 * correct, there is a match.
+	 * 
+	 * @return a new PermissionCollection or null
+	 * 
+	 * @see java.security.BasicPermissionCollection
+	 */
     public PermissionCollection newPermissionCollection() {
         return new BasicPermissionCollection();
     }
@@ -229,12 +274,14 @@ final class BasicPermissionCollection extends PermissionCollection {
         return Collections.enumeration(items.values());
     }
 
-    /**
-     * Checks if the particular permission is implied by this collection.
-     * 
-     * @see java.security.BasicPermission
-     * @see java.security.PermissionCollection#implies(java.security.Permission)
-     */
+	/**
+	 * Indicates whether the argument permission is implied by the receiver.
+	 * 
+	 * @return boolean <code>true</code> if the argument permission is implied
+	 *         by the receiver, and <code>false</code> if it is not.
+	 * @param permission
+	 *            java.security.Permission the permission to check
+	 */
     public boolean implies(Permission permission) {
         if (permission == null || permission.getClass() != permClass) {
             return false;

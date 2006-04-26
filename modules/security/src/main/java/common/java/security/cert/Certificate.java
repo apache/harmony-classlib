@@ -34,8 +34,9 @@ import java.security.SignatureException;
 import java.util.Arrays;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * Abstract class to represent identity certificates. It represents a way to
+ * verify the binding of a Principal and its public key. Examples are X.509,
+ * PGP, and SDSI.
  */
 public abstract class Certificate implements Serializable {
     /**
@@ -53,16 +54,27 @@ public abstract class Certificate implements Serializable {
         this.type = type;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers the certificate type represented by the receiver.
+	 * 
+	 * @return the certificate type represented by the receiver.
+	 */
     public final String getType() {
         return type;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Compares the argument to the receiver, and answers true if they represent
+	 * the <em>same</em> object using a class specific comparison. The
+	 * implementation in Object answers true only if the argument is the exact
+	 * same object as the receiver (==).
+	 * 
+	 * @param other
+	 *            the object to compare with this object
+	 * @return <code>true</code> if the object is the same as this object
+	 *         <code>false</code> if it is different from this object
+	 * @see #hashCode
+	 */
     public boolean equals(Object other) {
         // obj equal to itself
         if (this == other) {
@@ -80,9 +92,15 @@ public abstract class Certificate implements Serializable {
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers an integer hash code for the receiver. Any two objects which
+	 * answer <code>true</code> when passed to <code>equals</code> must
+	 * answer the same value for this method.
+	 * 
+	 * @return the receiver's hash
+	 * 
+	 * @see #equals
+	 */
     public int hashCode() {
         try {
             byte[] encoded = getEncoded();
@@ -96,14 +114,31 @@ public abstract class Certificate implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers the encoded representation for this certificate.
+	 * 
+	 * @return the encoded representation for this certificate.
+	 */
     public abstract byte[] getEncoded() throws CertificateEncodingException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Verifies that this certificate was signed with the given public key.
+	 * 
+	 * @param key
+	 *            PublicKey public key for which verification should be
+	 *            performed.
+	 * 
+	 * @exception CertificateException
+	 *                if encoding errors are detected
+	 * @exception NoSuchAlgorithmException
+	 *                if an unsupported algorithm is detected
+	 * @exception InvalidKeyException
+	 *                if an invalid key is detected
+	 * @exception NoSuchProviderException
+	 *                if there is no default provider
+	 * @exception SignatureException
+	 *                if signature errors are detected
+	 */
     public abstract void verify(PublicKey key)
         throws CertificateException,
                NoSuchAlgorithmException,
@@ -111,9 +146,27 @@ public abstract class Certificate implements Serializable {
                NoSuchProviderException,
                SignatureException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Verifies that this certificate was signed with the given public key. Uses
+	 * the signature algorithm given by the provider.
+	 * 
+	 * @param key
+	 *            PublicKey public key for which verification should be
+	 *            performed.
+	 * @param sigProvider
+	 *            String the name of the signature provider.
+	 * 
+	 * @exception CertificateException
+	 *                if encoding errors are detected
+	 * @exception NoSuchAlgorithmException
+	 *                if an unsupported algorithm is detected
+	 * @exception InvalidKeyException
+	 *                if an invalid key is detected
+	 * @exception NoSuchProviderException
+	 *                if there is no default provider
+	 * @exception SignatureException
+	 *                if signature errors are detected
+	 */
     public abstract void verify(PublicKey key, String sigProvider)
         throws CertificateException,
                NoSuchAlgorithmException,
@@ -121,14 +174,19 @@ public abstract class Certificate implements Serializable {
                NoSuchProviderException,
                SignatureException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * @return a printable representation for the receiver.
+	 */
     public abstract String toString();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers the public key corresponding to this certificate.
+	 * 
+	 * @return the public key corresponding to this certificate.
+	 */
     public abstract PublicKey getPublicKey();
 
     /**

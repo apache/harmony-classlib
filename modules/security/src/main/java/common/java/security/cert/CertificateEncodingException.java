@@ -22,8 +22,7 @@
 package java.security.cert;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This class represents an encoding exception for a certificate.
  */
 public class CertificateEncodingException extends CertificateException {
     /**
@@ -31,18 +30,20 @@ public class CertificateEncodingException extends CertificateException {
      */
     private static final long serialVersionUID = 6219492851589449162L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public CertificateEncodingException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 */
     public CertificateEncodingException() {
     }
 

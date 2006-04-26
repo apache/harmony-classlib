@@ -22,8 +22,7 @@
 package java.security.cert;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This class indicates that a given certificate could not be parsed.
  */
 public class CertificateParsingException extends CertificateException {
 
@@ -32,16 +31,20 @@ public class CertificateParsingException extends CertificateException {
      */
     private static final long serialVersionUID = -7989222416793322029L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public CertificateParsingException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 */
     public CertificateParsingException() {
     }
 

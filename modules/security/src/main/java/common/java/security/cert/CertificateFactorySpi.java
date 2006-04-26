@@ -27,44 +27,88 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This class is a Service Provider Interface (therefore the Spi suffix) for
+ * certificate factories to be supplied by providers.
  */
 
 public abstract class CertificateFactorySpi {
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this class.
      */
     public CertificateFactorySpi() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates and initializes a Certificate from data from the
+     * provided input stream.
+     * 
+     * @param inStream
+     *            InputStream Stream from where data is read to create the
+     *            Certificate
+     * 
+     * @return Certificate an initialized Certificate
+     * @exception CertificateException
+     *                if parsing problems are detected
      */
     public abstract Certificate engineGenerateCertificate(InputStream inStream)
             throws CertificateException;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates and initializes a collection of Certificates from
+     * data from the provided input stream.
+     * 
+     * @param inStream
+     *            InputStream Stream from where data is read to create the
+     *            Certificates
+     * 
+     * @return Collection an initialized collection of Certificates
+     * @exception CertificateException
+     *                if parsing problems are detected
      */
     public abstract Collection<? extends Certificate> 
         engineGenerateCertificates(InputStream inStream) throws CertificateException;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates and initializes a Certificate Revocation List from data from
+     * the provided input stream.
+     * 
+     * @param inStream
+     *            InputStream Stream from where data is read to create the CRL
+     * 
+     * @return CRL an initialized Certificate Revocation List
+     * @exception CRLException
+     *                if parsing problems are detected
      */
     public abstract CRL engineGenerateCRL(InputStream inStream)
             throws CRLException;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates and initializes a collection of Certificate Revocation List
+     * from data from the provided input stream.
+     * 
+     * @param inStream
+     *            InputStream Stream from where data is read to create the CRLs
+     * 
+     * @return Collection an initialized collection of Certificate Revocation
+     *         List
+     * @exception CRLException
+     *                if parsing problems are detected
      */
     public abstract Collection<? extends CRL> 
         engineGenerateCRLs(InputStream inStream) throws CRLException;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a <code>CertPath</code> from data from the provided
+     * <code>InputStream</code>. The default encoding is assumed.
+     * 
+     * @param inStream
+     *            InputStream with PKCS7 or PkiPath encoded data
+     * 
+     * @return CertPath a CertPath initialized from the provided data
+     * 
+     * @throws CertificateException
+     *             if parsing problems are detected
      */
     public CertPath engineGenerateCertPath(InputStream inStream)
             throws CertificateException {
@@ -73,7 +117,22 @@ public abstract class CertificateFactorySpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a <code>CertPath</code> from data from the provided
+     * <code>InputStream</code>. The encoding is that specified by the
+     * encoding parameter.
+     * 
+     * @param inStream
+     *            InputStream containing certificate path data in specified
+     *            encoding
+     * @param encoding
+     *            encoding of the data in the input stream
+     * 
+     * @return CertPath a CertPath initialized from the provided data
+     * 
+     * @throws CertificateException
+     *             if parsing problems are detected
+     * @throws UnsupportedOperationException
+     *             if the provider does not implement this method
      */
     public CertPath engineGenerateCertPath(InputStream inStream, String encoding)
             throws CertificateException {
@@ -82,7 +141,19 @@ public abstract class CertificateFactorySpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a <code>CertPath</code> from the provided List of
+     * Certificates. The encoding is the default encoding.
+     * 
+     * @param certificates
+     *            List containing certificates in a format supported by the
+     *            CertificateFactory
+     * 
+     * @return CertPath a CertPath initialized from the provided data
+     * 
+     * @throws CertificateException
+     *             if parsing problems are detected
+     * @throws UnsupportedOperationException
+     *             if the provider does not implement this method
      */
     public CertPath engineGenerateCertPath(List<? extends Certificate>  certificates) 
             throws CertificateException {
@@ -91,7 +162,10 @@ public abstract class CertificateFactorySpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns an Iterator over the supported CertPath encodings (as Strings).
+     * The first element is the default encoding.
+     * 
+     * @return Iterator Iterator over supported CertPath encodings (as Strings)
      */
     public Iterator<String> engineGetCertPathEncodings() {
         throw new UnsupportedOperationException(

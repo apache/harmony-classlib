@@ -22,7 +22,9 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * Instances of this class are used to wrap exceptions which occur within
+ * privileged operations.
+ * 
  */
 public class PrivilegedActionException extends Exception {
 
@@ -36,32 +38,41 @@ public class PrivilegedActionException extends Exception {
      */
     private Exception exception;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Constructs a new instance of this class with its exception filled in.
+	 * @param ex 
+	 */
     public PrivilegedActionException(Exception ex) {
         super(ex);
         this.exception = ex;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the exception which caused the receiver to be thrown.
+	 * @return exception
+	 */
     public Exception getException() {
         return exception; // return ( getCause() instanceof Exception ) ?
         // getCause() : null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers the cause of this Throwable, or null if there is no cause.
+	 * 
+	 * 
+	 * @return Throwable The receiver's cause.
+	 */
     public Throwable getCause() {
         return exception;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * 
+	 * @return String a printable representation for the receiver.
+	 */
     public String toString() {
         String s = getClass().getName();
         return exception == null ? s : s + ": " + exception;

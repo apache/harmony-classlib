@@ -22,8 +22,10 @@
 package java.security.cert;
 
 /**
- * @com.intel.drl.spec_ref
+ * This class represents Certificate Revocation Lists (CRLs). They are used to
+ * indicate that a given Certificate has expired already.
  * 
+ * @see CertificateFactory
  */
 public abstract class CRL {
     // The CRL type
@@ -36,20 +38,31 @@ public abstract class CRL {
         this.type = type;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers the type of this CRL.
+	 * 
+	 * @return String the type of this CRL.
+	 */
     public final String getType() {
         return type;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers if a given Certificate has been revoked or not.
+	 * 
+	 * @param cert
+	 *            Certificate The Certificate to test
+	 * 
+	 * @return true if the certificate has been revoked false if the certificate
+	 *         has not been revoked yet
+	 */
     public abstract boolean isRevoked(Certificate cert);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Answers a string containing a concise, human-readable description of the
+	 * receiver.
+	 * 
+	 * @return a printable representation for the receiver.
+	 */
     public abstract String toString();
 }

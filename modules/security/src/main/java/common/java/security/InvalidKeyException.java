@@ -22,8 +22,10 @@
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * Used when invalid cryptography keys are used.
  * 
+ * @see Throwable
+ * @see Error
  */
 public class InvalidKeyException extends KeyException {
 
@@ -32,16 +34,22 @@ public class InvalidKeyException extends KeyException {
      */
     private static final long serialVersionUID = 5698479920593359816L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback and message
+	 * filled in.
+	 * 
+	 * 
+	 * @param msg
+	 *            String The detail message for the exception.
+	 */
     public InvalidKeyException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Constructs a new instance of this class with its walkback filled in.
+	 * 
+	 */
     public InvalidKeyException() {
     }
 
