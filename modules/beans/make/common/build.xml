@@ -117,7 +117,6 @@
                     <exclude name="tests/api/java/beans/MethodDescriptorTest.java" />
                     <exclude name="tests/api/java/beans/PersistenceDelegateTest.java" />
                     <exclude name="tests/api/java/beans/PropertyChangeEventTest.java" />
-                    <exclude name="tests/api/java/beans/PropertyChangeListenerProxyTest.java" />
                     <exclude name="tests/api/java/beans/PropertyChangeSupportTest.java" />
                     <exclude name="tests/api/java/beans/PropertyDescriptorTest.java" />
                     <exclude name="tests/api/java/beans/PropertyEditorManagerTest.java" />

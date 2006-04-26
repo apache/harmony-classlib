@@ -54,8 +54,6 @@ public class PropertyChangeListenerProxy extends EventListenerProxy
     public void propertyChange(PropertyChangeEvent event) {
         PropertyChangeListener listener =
             (PropertyChangeListener) getListener();
-        if (listener != null) {
-            listener.propertyChange(event);
-        }
+        listener.propertyChange(event);
     }
 }

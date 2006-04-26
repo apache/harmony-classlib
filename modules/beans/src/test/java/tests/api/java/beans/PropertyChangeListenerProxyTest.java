@@ -39,10 +39,6 @@ public class PropertyChangeListenerProxyTest extends TestCase {
 		proxy = new PropertyChangeListenerProxy(name, listener);
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void testPropertyChangeListenerProxy() {
 		proxy = new PropertyChangeListenerProxy(null, listener);
 		assertSame(listener, proxy.getListener());
@@ -57,7 +53,7 @@ public class PropertyChangeListenerProxyTest extends TestCase {
 		try {
 			proxy.propertyChange(new PropertyChangeEvent(new Object(), "name",
 					new Object(), new Object()));
-			fail("should null pointer");
+            fail("NullPointerException expected");
 		} catch (NullPointerException e) {
 		}
 
@@ -76,7 +72,19 @@ public class PropertyChangeListenerProxyTest extends TestCase {
 		assertNull(event);
 	}
 
-	public static class MockPropertyChangeListener implements
+    /**
+     * Regression for HARMONY-407
+     */
+    public void testPropertyChange_PropertyChangeEvent() {
+        PropertyChangeListenerProxy proxy = new PropertyChangeListenerProxy(
+                "harmony", null);
+        try {
+            proxy.propertyChange(null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {}
+    }         
+
+    public static class MockPropertyChangeListener implements
 			PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent newevent) {
 			event = newevent;
