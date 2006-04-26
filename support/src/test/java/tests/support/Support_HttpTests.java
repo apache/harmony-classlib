@@ -79,8 +79,8 @@ public class Support_HttpTests {
 			c = is.read();
 			is.close();
 			connector.close();
-			TestCase.assertTrue("Error receiving chunked transfer coded data",
-					c == -1);
+			TestCase.assertEquals("Error receiving chunked transfer coded data",
+					-1, c);
 		} catch (Exception e) {
 			e.printStackTrace();
 			TestCase.fail("Exception during test a: " + e);
@@ -375,9 +375,8 @@ public class Support_HttpTests {
 				connector.close();
 
 				c = is.read();
-				TestCase.assertTrue(
-								"Incorrect data returned on redirection to a different port.",
-								c == 'A');
+				TestCase.assertEquals("Incorrect data returned on redirection to a different port.",
+								'A', c);
 				while (c > 0)
 					c = is.read();
 				c = is.read();
@@ -402,8 +401,8 @@ public class Support_HttpTests {
 			connector.close();
 
 			c = is.read();
-			TestCase.assertTrue("Incorrect data returned on redirect to relative URI.",
-					c == 'A');
+			TestCase.assertEquals("Incorrect data returned on redirect to relative URI.",
+					'A', c);
 			while (c > 0)
 				c = is.read();
 			c = is.read();

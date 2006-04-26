@@ -32,9 +32,9 @@ public class Support_MapTest2 extends junit.framework.TestCase {
 	public void runTest() {
 		try {
 			map.put("one", "1");
-			assertTrue("size should be one", map.size() == 1);
+			assertEquals("size should be one", 1, map.size());
 			map.clear();
-			assertTrue("size should be zero", map.size() == 0);
+			assertEquals("size should be zero", 0, map.size());
 			assertTrue("Should not have entries", !map.entrySet().iterator()
 					.hasNext());
 			assertTrue("Should not have keys", !map.keySet().iterator()
@@ -46,9 +46,9 @@ public class Support_MapTest2 extends junit.framework.TestCase {
 
 		try {
 			map.put("one", "1");
-			assertTrue("size should be one", map.size() == 1);
+			assertEquals("size should be one", 1, map.size());
 			map.remove("one");
-			assertTrue("size should be zero", map.size() == 0);
+			assertEquals("size should be zero", 0, map.size());
 			assertTrue("Should not have entries", !map.entrySet().iterator()
 					.hasNext());
 			assertTrue("Should not have keys", !map.keySet().iterator()

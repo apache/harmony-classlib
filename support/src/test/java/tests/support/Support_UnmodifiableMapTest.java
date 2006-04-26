@@ -63,17 +63,16 @@ public class Support_UnmodifiableMapTest extends junit.framework.TestCase {
 					map.get(me.getKey()).equals(me.getValue()));
 			myCounter++;
 		}
-		assertTrue(
-				"UnmodifiableMapTest - Incorrect number of map entries returned",
-				myCounter == 100);
+		assertEquals("UnmodifiableMapTest - Incorrect number of map entries returned",
+				100, myCounter);
 
 		// get
 		assertTrue("UnmodifiableMapTest - getting \"0\" didn't return 0",
 				((Integer) map.get("0")).intValue() == 0);
 		assertTrue("UnmodifiableMapTest - getting \"50\" didn't return 0",
 				((Integer) map.get("0")).intValue() == 0);
-		assertTrue("UnmodifiableMapTest - getting \"100\" didn't return null",
-				map.get("100") == null);
+		assertNull("UnmodifiableMapTest - getting \"100\" didn't return null",
+				map.get("100"));
 
 		// isEmpty
 		assertTrue(

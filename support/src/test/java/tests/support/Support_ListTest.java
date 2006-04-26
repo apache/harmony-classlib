@@ -92,7 +92,7 @@ public class Support_ListTest extends junit.framework.TestCase {
 				list.get(49).equals(new Integer(49)));
 
 		List mySubList = list.subList(50, 53);
-		assertTrue(mySubList.size() == 3);
+		assertEquals(3, mySubList.size());
 		assertTrue(
 				"ListTest - a) sublist Failed--does not contain correct elements",
 				mySubList.get(0).equals(new Integer(500)));
@@ -106,9 +106,8 @@ public class Support_ListTest extends junit.framework.TestCase {
 		t_listIterator(mySubList);
 
 		mySubList.clear();
-		assertTrue(
-				"ListTest - Clearing the sublist did not remove the appropriate elements from the original list",
-				list.size() == 100);
+		assertEquals("ListTest - Clearing the sublist did not remove the appropriate elements from the original list",
+				100, list.size());
 
 		t_listIterator(list);
 		ListIterator li = list.listIterator();
@@ -182,25 +181,25 @@ public class Support_ListTest extends junit.framework.TestCase {
 		Integer add2 = new Integer(601);
 		li.add(add1);
 		assertTrue("list iterator add(), size()", list.size() == (orgSize + 1));
-		assertTrue("list iterator add(), nextIndex()", li.nextIndex() == 1);
-		assertTrue("list iterator add(), previousIndex()",
-				li.previousIndex() == 0);
+		assertEquals("list iterator add(), nextIndex()", 1, li.nextIndex());
+		assertEquals("list iterator add(), previousIndex()",
+				0, li.previousIndex());
 		Object next = li.next();
 		assertTrue("list iterator add(), next(): " + next, next == list.get(1));
 		li.add(add2);
 		Object previous = li.previous();
 		assertTrue("list iterator add(), previous(): " + previous,
 				previous == add2);
-		assertTrue("list iterator add(), nextIndex()2", li.nextIndex() == 2);
-		assertTrue("list iterator add(), previousIndex()2",
-				li.previousIndex() == 1);
+		assertEquals("list iterator add(), nextIndex()2", 2, li.nextIndex());
+		assertEquals("list iterator add(), previousIndex()2",
+				1, li.previousIndex());
 
 		li.remove();
 		assertTrue("list iterator remove(), size()",
 				list.size() == (orgSize + 1));
-		assertTrue("list iterator remove(), nextIndex()", li.nextIndex() == 2);
-		assertTrue("list iterator remove(), previousIndex()", li
-				.previousIndex() == 1);
+		assertEquals("list iterator remove(), nextIndex()", 2, li.nextIndex());
+		assertEquals("list iterator remove(), previousIndex()", 1, li
+				.previousIndex());
 		assertTrue("list iterator previous()2", li.previous() == list.get(1));
 		assertTrue("list iterator previous()3", li.previous() == list.get(0));
 		assertTrue("list iterator next()2", li.next() == list.get(0));
@@ -208,7 +207,7 @@ public class Support_ListTest extends junit.framework.TestCase {
 		assertTrue("list iterator hasPrevious()3", !li.hasPrevious());
 		assertTrue("list iterator hasNext()3", li.hasNext());
 		assertTrue("list iterator size()", list.size() == orgSize);
-		assertTrue("list iterator nextIndex()3", li.nextIndex() == 0);
-		assertTrue("list iterator previousIndex()3", li.previousIndex() == -1);
+		assertEquals("list iterator nextIndex()3", 0, li.nextIndex());
+		assertEquals("list iterator previousIndex()3", -1, li.previousIndex());
 	}
 }

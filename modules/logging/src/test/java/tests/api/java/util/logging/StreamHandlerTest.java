@@ -381,8 +381,8 @@ public class StreamHandlerTest extends TestCase {
 		assertEquals("flush", CallVerificationStack.getInstance()
 				.getCurrentSourceMethod());
 		CallVerificationStack.getInstance().clear();
-		assertTrue(aos.toString()
-				.equals("MockFormatter_HeadMockFormatter_Tail"));
+		assertEquals("MockFormatter_HeadMockFormatter_Tail", aos.toString()
+				);
 	}
 
 	/*

@@ -140,7 +140,7 @@ public class TestSearchControls extends TestCase {
 		SearchControls ctrl;
 
 		ctrl = new SearchControls();
-		assertTrue(ctrl.toString() != null);
+		assertNotNull(ctrl.toString());
 	}
 
 }
