@@ -67,7 +67,6 @@
             <include name="javax/crypto/**/*.java" />
             <include name="org/apache/harmony/crypto/**/*Test.java" />
             <include name="org/apache/harmony/security/test/**/*" />
-            <exclude name="**/SecurityTest.java"/>
 
             <bootclasspath>
                 <fileset dir="${hy.target}/jre/lib/boot">
