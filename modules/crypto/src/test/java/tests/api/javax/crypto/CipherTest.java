@@ -36,23 +36,23 @@ import javax.crypto.spec.IvParameterSpec;
 
 public class CipherTest extends junit.framework.TestCase {
 
-	/**
-	 * @tests javax.crypto.Cipher#getInstance(java.lang.String)
-	 */
+    /**
+     * @tests javax.crypto.Cipher#getInstance(java.lang.String)
+     */
     public void test_getInstanceLjava_lang_String() throws Exception {
         Cipher cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding");
         assertNotNull("Received a null Cipher instance", cipher);
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#getInstance(java.lang.String,
-	 *        java.lang.String)
-	 */
-	public void test_getInstanceLjava_lang_StringLjava_lang_String()
+    /**
+     * @tests javax.crypto.Cipher#getInstance(java.lang.String,
+     *        java.lang.String)
+     */
+    public void test_getInstanceLjava_lang_StringLjava_lang_String()
             throws Exception {
 
         Provider[] providers = Security.getProviders("Cipher.DES");
-        
+
         assertNotNull("No installed providers support Cipher.DES", providers);
 
         for (int i = 0; i < providers.length; i++) {
@@ -83,12 +83,12 @@ public class CipherTest extends junit.framework.TestCase {
         } catch (NoSuchProviderException e) {
             // Expected
         }
-	}
+    }
 
-	/**
-	 * @tests javax.crypto.Cipher#getInstance(java.lang.String,
-	 *        java.security.Provider)
-	 */
+    /**
+     * @tests javax.crypto.Cipher#getInstance(java.lang.String,
+     *        java.security.Provider)
+     */
     public void test_getInstanceLjava_lang_StringLjava_security_Provider()
             throws Exception {
 
@@ -102,9 +102,9 @@ public class CipherTest extends junit.framework.TestCase {
         }
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#getProvider()
-	 */
+    /**
+     * @tests javax.crypto.Cipher#getProvider()
+     */
     public void test_getProvider() throws Exception {
 
         Provider[] providers = Security.getProviders("Cipher.AES");
@@ -121,9 +121,9 @@ public class CipherTest extends junit.framework.TestCase {
         }
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#getAlgorithm()
-	 */
+    /**
+     * @tests javax.crypto.Cipher#getAlgorithm()
+     */
     public void test_getAlgorithm() throws Exception {
         final String algorithm = "DESede/CBC/PKCS5Padding";
 
@@ -132,9 +132,9 @@ public class CipherTest extends junit.framework.TestCase {
                 .equals(algorithm));
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#getBlockSize()
-	 */
+    /**
+     * @tests javax.crypto.Cipher#getBlockSize()
+     */
     public void test_getBlockSize() throws Exception {
         final String algorithm = "DESede/CBC/PKCS5Padding";
 
@@ -142,9 +142,9 @@ public class CipherTest extends junit.framework.TestCase {
         assertEquals("Block size does not match", 8, cipher.getBlockSize());
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#getOutputSize(int)
-	 */
+    /**
+     * @tests javax.crypto.Cipher#getOutputSize(int)
+     */
     public void test_getOutputSizeI() throws Exception {
         final String algorithm = "DESede";
         final int keyLen = 168;
@@ -169,11 +169,11 @@ public class CipherTest extends junit.framework.TestCase {
         assertTrue("Output size too small", result > 15);
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#getIV()
-	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
-	 *        java.security.AlgorithmParameters)
-	 */
+    /**
+     * @tests javax.crypto.Cipher#getIV()
+     * @tests javax.crypto.Cipher#init(int, java.security.Key,
+     *        java.security.AlgorithmParameters)
+     */
     public void test_getIV() throws Exception {
         /*
          * If this test is changed, implement the following:
@@ -206,11 +206,11 @@ public class CipherTest extends junit.framework.TestCase {
         assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#getParameters()
-	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
-	 *        java.security.AlgorithmParameters, java.security.SecureRandom)
-	 */
+    /**
+     * @tests javax.crypto.Cipher#getParameters()
+     * @tests javax.crypto.Cipher#init(int, java.security.Key,
+     *        java.security.AlgorithmParameters, java.security.SecureRandom)
+     */
     public void test_getParameters() throws Exception {
 
         /*
@@ -247,9 +247,9 @@ public class CipherTest extends junit.framework.TestCase {
                 cipherParmsEnc));
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#init(int, java.security.Key)
-	 */
+    /**
+     * @tests javax.crypto.Cipher#init(int, java.security.Key)
+     */
     public void test_initILjava_security_Key() throws Exception {
         final String algorithm = "DESede";
         final int keyLen = 168;
@@ -266,10 +266,10 @@ public class CipherTest extends junit.framework.TestCase {
         cipher.init(Cipher.ENCRYPT_MODE, cipherKey);
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
-	 *        java.security.SecureRandom)
-	 */
+    /**
+     * @tests javax.crypto.Cipher#init(int, java.security.Key,
+     *        java.security.SecureRandom)
+     */
     public void test_initILjava_security_KeyLjava_security_SecureRandom()
             throws Exception {
 
@@ -289,10 +289,10 @@ public class CipherTest extends junit.framework.TestCase {
         cipher.init(Cipher.ENCRYPT_MODE, cipherKey, sr);
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
-	 *        java.security.spec.AlgorithmParameterSpec)
-	 */
+    /**
+     * @tests javax.crypto.Cipher#init(int, java.security.Key,
+     *        java.security.spec.AlgorithmParameterSpec)
+     */
     public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpec()
             throws Exception {
 
@@ -323,12 +323,12 @@ public class CipherTest extends junit.framework.TestCase {
         assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
-	 *        java.security.spec.AlgorithmParameterSpec,
-	 *        java.security.SecureRandom)
-	 */
-	public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpecLjava_security_SecureRandom()
+    /**
+     * @tests javax.crypto.Cipher#init(int, java.security.Key,
+     *        java.security.spec.AlgorithmParameterSpec,
+     *        java.security.SecureRandom)
+     */
+    public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpecLjava_security_SecureRandom()
             throws Exception {
         final String algorithm = "DESede";
         final int keyLen = 168;
@@ -357,118 +357,118 @@ public class CipherTest extends junit.framework.TestCase {
         assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
     }
 
-	/**
-	 * @tests javax.crypto.Cipher#update(byte[], int, int)
-	 */
-	public void test_update$BII() throws Exception {
-		for (int index = 1; index < 4; index++) {
-			Cipher c = Cipher.getInstance("DESEDE/CBC/PKCS5Padding");
+    /**
+     * @tests javax.crypto.Cipher#update(byte[], int, int)
+     */
+    public void test_update$BII() throws Exception {
+        for (int index = 1; index < 4; index++) {
+            Cipher c = Cipher.getInstance("DESEDE/CBC/PKCS5Padding");
 
-			byte[] keyMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
-					+ index + ".key");
-			DESedeKeySpec keySpec = new DESedeKeySpec(keyMaterial);
-			SecretKeyFactory skf = SecretKeyFactory.getInstance("DESEDE");
-			Key k = skf.generateSecret(keySpec);
+            byte[] keyMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
+                    + index + ".key");
+            DESedeKeySpec keySpec = new DESedeKeySpec(keyMaterial);
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("DESEDE");
+            Key k = skf.generateSecret(keySpec);
 
-			byte[] ivMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
-					+ index + ".iv");
-			IvParameterSpec iv = new IvParameterSpec(ivMaterial);
+            byte[] ivMaterial = loadBytes("hyts_" + "des-ede3-cbc.test" + index
+                    + ".iv");
+            IvParameterSpec iv = new IvParameterSpec(ivMaterial);
 
-			c.init(Cipher.DECRYPT_MODE, k, iv);
+            c.init(Cipher.DECRYPT_MODE, k, iv);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] input = new byte[256];
-			String resPath = "hyts_" + "des-ede3-cbc.test" + index
-					+ ".ciphertext";
-			InputStream is = getStream(resPath);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] input = new byte[256];
+            String resPath = "hyts_" + "des-ede3-cbc.test" + index
+                    + ".ciphertext";
+            InputStream is = getStream(resPath);
 
-			int bytesRead = is.read(input, 0, 256);
-			while (bytesRead > 0) {
-				byte[] output = c.update(input, 0, bytesRead);
-				if (output != null) {
-					baos.write(output);
-				}
-				bytesRead = is.read(input, 0, 256);
-			}
+            int bytesRead = is.read(input, 0, 256);
+            while (bytesRead > 0) {
+                byte[] output = c.update(input, 0, bytesRead);
+                if (output != null) {
+                    baos.write(output);
+                }
+                bytesRead = is.read(input, 0, 256);
+            }
 
-			byte[] output = c.doFinal();
-			if (output != null) {
-				baos.write(output);
-			}
+            byte[] output = c.doFinal();
+            if (output != null) {
+                baos.write(output);
+            }
 
-			byte[] decipheredCipherText = baos.toByteArray();
-			is.close();
+            byte[] decipheredCipherText = baos.toByteArray();
+            is.close();
 
-			byte[] plaintextBytes = loadBytes("hyts_" + "des-ede3-cbc.test"
-					+ index + ".plaintext");
+            byte[] plaintextBytes = loadBytes("hyts_" + "des-ede3-cbc.test"
+                    + index + ".plaintext");
             assertTrue("Operation produced incorrect results", Arrays.equals(
                     plaintextBytes, decipheredCipherText));
-		}// end for
-	}
+        }// end for
+    }
 
-	/**
-	 * @tests javax.crypto.Cipher#doFinal()
-	 */
-	public void test_doFinal() throws Exception {
-		for (int index = 1; index < 4; index++) {
-			Cipher c = Cipher.getInstance("DESEDE/CBC/PKCS5Padding");
+    /**
+     * @tests javax.crypto.Cipher#doFinal()
+     */
+    public void test_doFinal() throws Exception {
+        for (int index = 1; index < 4; index++) {
+            Cipher c = Cipher.getInstance("DESEDE/CBC/PKCS5Padding");
 
-			byte[] keyMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
-					+ index + ".key");
-			DESedeKeySpec keySpec = new DESedeKeySpec(keyMaterial);
-			SecretKeyFactory skf = SecretKeyFactory.getInstance("DESEDE");
-			Key k = skf.generateSecret(keySpec);
+            byte[] keyMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
+                    + index + ".key");
+            DESedeKeySpec keySpec = new DESedeKeySpec(keyMaterial);
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("DESEDE");
+            Key k = skf.generateSecret(keySpec);
 
-			byte[] ivMaterial = loadBytes("hyts_" + "des-ede3-cbc.test"
-					+ index + ".iv");
-			IvParameterSpec iv = new IvParameterSpec(ivMaterial);
+            byte[] ivMaterial = loadBytes("hyts_" + "des-ede3-cbc.test" + index
+                    + ".iv");
+            IvParameterSpec iv = new IvParameterSpec(ivMaterial);
 
-			c.init(Cipher.ENCRYPT_MODE, k, iv);
+            c.init(Cipher.ENCRYPT_MODE, k, iv);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] input = new byte[256];
-			String resPath = "hyts_" + "des-ede3-cbc.test" + index
-					+ ".plaintext";
-			InputStream is = getStream(resPath);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] input = new byte[256];
+            String resPath = "hyts_" + "des-ede3-cbc.test" + index
+                    + ".plaintext";
+            InputStream is = getStream(resPath);
 
-			int bytesRead = is.read(input, 0, 256);
-			while (bytesRead > 0) {
-				byte[] output = c.update(input, 0, bytesRead);
-				if (output != null) {
-					baos.write(output);
-				}
-				bytesRead = is.read(input, 0, 256);
-			}
-			byte[] output = c.doFinal();
-			if (output != null) {
-				baos.write(output);
-			}
-			byte[] encryptedPlaintext = baos.toByteArray();
-			is.close();
+            int bytesRead = is.read(input, 0, 256);
+            while (bytesRead > 0) {
+                byte[] output = c.update(input, 0, bytesRead);
+                if (output != null) {
+                    baos.write(output);
+                }
+                bytesRead = is.read(input, 0, 256);
+            }
+            byte[] output = c.doFinal();
+            if (output != null) {
+                baos.write(output);
+            }
+            byte[] encryptedPlaintext = baos.toByteArray();
+            is.close();
 
-			byte[] cipherText = loadBytes("hyts_" + "des-ede3-cbc.test"
-					+ index + ".ciphertext");
+            byte[] cipherText = loadBytes("hyts_" + "des-ede3-cbc.test" + index
+                    + ".ciphertext");
             assertTrue("Operation produced incorrect results", Arrays.equals(
                     encryptedPlaintext, cipherText));
-		}// end for
-	}
+        }// end for
+    }
 
-	private byte[] loadBytes(String resPath) {
-		try {
-			InputStream is = getStream(resPath);
+    private byte[] loadBytes(String resPath) {
+        try {
+            InputStream is = getStream(resPath);
 
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			byte[] buff = new byte[1024];
-			int readlen;
-			while ((readlen = is.read(buff)) > 0) {
-				out.write(buff, 0, readlen);
-			}
-			is.close();
-			return out.toByteArray();
-		} catch (IOException e) {
-			return null;
-		}
-	}
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buff = new byte[1024];
+            int readlen;
+            while ((readlen = is.read(buff)) > 0) {
+                out.write(buff, 0, readlen);
+            }
+            is.close();
+            return out.toByteArray();
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
     public InputStream getStream(String name) {
 
