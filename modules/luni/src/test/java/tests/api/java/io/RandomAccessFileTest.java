@@ -22,6 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import java.nio.channels.FileChannel;
+import java.nio.channels.NonWritableChannelException;
+
 public class RandomAccessFileTest extends junit.framework.TestCase {
 
     public String fileName;
@@ -657,6 +660,21 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
         }
+        raf.close();
+    }
+
+    /**
+     * Regression for HARMONY-69
+     */
+    public void testRandomAccessFile_String_String() throws IOException {
+        f.createNewFile();
+        RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "r");
+        FileChannel fcr = raf.getChannel();
+
+        try {
+            fcr.lock(0L, Long.MAX_VALUE, false);
+            fail("NonWritableChannelException expected!");
+        } catch (NonWritableChannelException e) {}
         raf.close();
     }
 
