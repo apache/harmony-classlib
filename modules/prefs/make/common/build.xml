@@ -93,7 +93,10 @@
 
             <formatter type="xml" />
 
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
+            <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
+                unless="test.case">
+
                 <fileset dir="${hy.prefs.src.test.java}">
                     <include name="**/*Test.java"/>
                     <exclude name="**/AbstractPreferencesTest.java"/>
