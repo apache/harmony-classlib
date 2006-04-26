@@ -135,6 +135,23 @@ public class BigDecimalTest extends junit.framework.TestCase {
 		} catch (NumberFormatException e) {
 		}
 	}
+    
+    /**
+     * @tests java.math.BigDecimal#BigDecimal(char[])
+     */
+    public void test_constructor_CC_plus_minus_exp() {
+        try {
+            new BigDecimal("+35e+-2".toCharArray());          
+            fail("NumberFormatException expected");
+        } catch (NumberFormatException e) {
+        }
+        
+        try {
+            new BigDecimal("-35e-+2".toCharArray());          
+            fail("NumberFormatException expected");
+        } catch (NumberFormatException e) {
+        }
+    }
 
 	/**
 	 * @tests java.math.BigDecimal#abs()

@@ -266,6 +266,10 @@ public class BigDecimal extends Number
             }
             if (symbol == '+') {
                 count++;
+                symbol = in[count];
+                if(symbol == '-') {
+                    throw new NumberFormatException("exponent is not signed integer");
+                }
             }
             exponent = new String(in, count, endIndex - count + 1);
             int exp = 0;
@@ -408,6 +412,10 @@ public class BigDecimal extends Number
         int strLen = value.length();
         String unscaled;
         String exponent;
+        
+        if(strLen == 0) {
+            throw new NumberFormatException("empty string");
+        }
         char symbol = value.charAt(0);
         int startPoint = symbol == '+' ? 1 : 0;
         
@@ -442,6 +450,10 @@ public class BigDecimal extends Number
             }
             if (symbol == '+') {
                 count++;
+                symbol = value.charAt(count);
+                if(symbol == '-') {
+                    throw new NumberFormatException("exponent is not signed integer");
+                }
             }
             exponent = value.substring(count, strLen);
             int exp = 0;
@@ -1323,11 +1335,11 @@ public class BigDecimal extends Number
         boolean negNumber = intVal.signum() < 0;
         int startPoint = negNumber ? 2 : 1;
         int endPoint = intString.length();
-        int exponent = -scale + intString.length() - (negNumber ? 2 : 1);
+        int exponent = -scale + intString.length() - startPoint;
         StringBuffer result = new StringBuffer(intString);
         if (scale > 0 && exponent >= -6) {
             if (exponent >= 0) {
-                result.insert(exponent + (negNumber ? 2 : 1), '.');
+                result.insert(exponent + startPoint, '.');
             } else {
                 char zeros[] = new char[-exponent + 1];
                 zeros[0] = '0';
@@ -1384,12 +1396,12 @@ public class BigDecimal extends Number
         boolean negNumber = intVal.signum() < 0;
         int startPoint = negNumber ? 2 : 1;
         int endPoint = intString.length();
-        int dotPosition = -scale + intString.length() - (negNumber ? 2 : 1);
+        int dotPosition = -scale + intString.length() - startPoint;
         StringBuffer result = new StringBuffer(intString);
         char zeros[];
         if (scale > 0) {
             if (dotPosition >= 0) {
-                result.insert(dotPosition + (negNumber ? 2 : 1), '.');
+                result.insert(dotPosition + startPoint, '.');
             } else {
                 zeros = new char[-dotPosition + 1];
                 zeros[0] = '0';

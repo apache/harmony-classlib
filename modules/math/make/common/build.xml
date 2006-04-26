@@ -96,10 +96,6 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no">
                 <fileset dir="${hy.math.src.test.java}">
                     <include name="**/*Test.java" />
-                    <!-- This test seems to loop -->
-                    <exclude name="**/api/java/math/BigDecimalTest.java" />
-                    <!-- This test fails -->
-                    <exclude name="**/api/java/math/BigIntegerTest.java" />
                 </fileset>
             </batchtest>
         </junit>

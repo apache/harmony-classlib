@@ -67,26 +67,6 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     /**
      * @com.intel.drl.spec_ref
      */
-    private int bitCount = -1;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private int bitLength = -1;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private int lowestSetBit = -2;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private int firstNonzeroByteNum = -2;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private byte[] magnitude;
     
     /**
@@ -423,18 +403,6 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     }
 
     /**
-     * Counts the bit length of an unsigned int value 
-     */
-    private static int getBitLength(int value) {
-        int bitLen = 32;
-        int topOne = 0x80000000;
-        while (((value & topOne) == 0) && bitLen-- > 0) {
-            topOne >>>= 1;
-        }
-        return bitLen;
-    }
-
-    /**
      * Gets the number of radix-based digits that fits in an integer
      * @param radix the radix of the numerical system
      * @return the number of digits 
@@ -730,7 +698,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
         if (numberBitLength < 0) {
             throw new IllegalArgumentException("negative bit length");
         }
-        boolean stripLeadingZeroes = true;
+        boolean stripLeadingZeroes = numberBitLength > 0;
         constructRandomly(numberBitLength, rand, stripLeadingZeroes);
     }
 
@@ -1173,6 +1141,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      */
     public int compareTo(BigInteger that) {
         if (this.sign == that.sign) {
+           	if(this.sign == 0) {
+           		return 0;
+           	}
             int compareResult = compareMagnitude(this.digits,
                     this.numberLength, that.digits, that.numberLength);
             if (this.sign == 1) {
@@ -1194,7 +1165,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      */
     private void constructRandomly(int numberBitLength, Random rand,
             boolean stripLeadingZeroes) {
-        sign = 1;
+    	sign = numberBitLength == 0 ? 0 : 1;
         int numberOfDigits = numberBitLength >> 5;
         int numberOfTopBits = numberBitLength & 31;
         if (numberOfTopBits > 0) {
@@ -1207,7 +1178,6 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
         }
         if (numberOfTopBits > 0) {
             digits[numberLength - 1] &= ((1 << numberOfTopBits) - 1);
-            int q = numberLength - 1;
         }
         if (stripLeadingZeroes) {
             cutOffLeadingZeroes();
