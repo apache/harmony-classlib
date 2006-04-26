@@ -288,7 +288,7 @@ public class DigestOutputStreamTest extends TestCase {
     public final void testWritebyteArrayintint02()
         throws IOException {
         // check precondition
-        assertTrue(MY_MESSAGE_LEN % CHUNK_SIZE == 0);
+        assertEquals(0, MY_MESSAGE_LEN % CHUNK_SIZE);
         for (int k=0; k<algorithmName.length; k++) {
             try {
                 
@@ -366,7 +366,7 @@ public class DigestOutputStreamTest extends TestCase {
         throws NoSuchAlgorithmException,
                IOException {
         // check precondition
-        assertTrue(MY_MESSAGE_LEN % CHUNK_SIZE == 0);
+        assertEquals(0, MY_MESSAGE_LEN % CHUNK_SIZE);
 
         for (int k=0; k<algorithmName.length; k++) {
             try {

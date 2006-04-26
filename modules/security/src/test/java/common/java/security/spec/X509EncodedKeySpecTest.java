@@ -80,7 +80,7 @@ public class X509EncodedKeySpecTest extends TestCase {
         
         X509EncodedKeySpec meks = new X509EncodedKeySpec(encodedKey);
         
-        assertTrue("X.509".equals(meks.getFormat()));
+        assertEquals("X.509", meks.getFormat());
     }
     
     /**

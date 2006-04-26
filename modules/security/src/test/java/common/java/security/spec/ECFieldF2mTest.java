@@ -557,7 +557,7 @@ public class ECFieldF2mTest extends TestCase {
      * Assertion: returns m value for <code>ECFieldF2m</code>
      */
     public final void testGetFieldSize() {
-        assertTrue(new ECFieldF2m(2000).getFieldSize() == 2000);
+        assertEquals(2000, new ECFieldF2m(2000).getFieldSize());
     }
 
     /**
@@ -566,7 +566,7 @@ public class ECFieldF2mTest extends TestCase {
      * Assertion: returns m value for <code>ECFieldF2m</code>
      */
     public final void testGetM() {
-        assertTrue(new ECFieldF2m(2000).getM() == 2000);
+        assertEquals(2000, new ECFieldF2m(2000).getM());
     }
 
     /**
@@ -589,7 +589,7 @@ public class ECFieldF2mTest extends TestCase {
      * Assertion: returns null for normal basis
      */
     public final void testGetMidTermsOfReductionPolynomial02() {
-        assertTrue(new ECFieldF2m(2000).getMidTermsOfReductionPolynomial() == null);
+        assertNull(new ECFieldF2m(2000).getMidTermsOfReductionPolynomial());
     }
 
     /**
@@ -620,7 +620,7 @@ public class ECFieldF2mTest extends TestCase {
      * Assertion: returns null for normal basis
      */
     public final void testGetReductionPolynomial02() {
-        assertTrue(new ECFieldF2m(2000).getReductionPolynomial() == null);
+        assertNull(new ECFieldF2m(2000).getReductionPolynomial());
     }
 
     /**

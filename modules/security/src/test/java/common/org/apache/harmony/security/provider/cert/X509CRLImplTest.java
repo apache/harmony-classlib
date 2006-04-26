@@ -280,7 +280,7 @@ public class X509CRLImplTest extends TestCase {
      * getVersion() method testing.
      */
     public void testGetVersion() {
-        assertTrue("Incorrect version value", crl.getVersion() == 2);
+        assertEquals("Incorrect version value", 2, crl.getVersion());
     }
     
     /**

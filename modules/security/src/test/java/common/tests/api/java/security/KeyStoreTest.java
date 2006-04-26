@@ -297,8 +297,8 @@ public class KeyStoreTest extends junit.framework.TestCase {
 				&& cert[1].getPublicKey() == certRes[1].getPublicKey());
 		java.security.cert.Certificate[] certResNull = keyTest
 				.getCertificateChain("alias1");
-		assertTrue("the certificate chain returned from "
-				+ "getCertificateChain is NOT null", certResNull == null);
+		assertNull("the certificate chain returned from "
+				+ "getCertificateChain is NOT null", certResNull);
 	}
 
 	/**
@@ -596,7 +596,7 @@ public class KeyStoreTest extends junit.framework.TestCase {
 		// alias 3
 		keyTest.setCertificateEntry("alias3", cert[1]);
 
-		assertTrue("the size of the keyStore is not 3", keyTest.size() == 3);
+		assertEquals("the size of the keyStore is not 3", 3, keyTest.size());
 	}
 
 	/**

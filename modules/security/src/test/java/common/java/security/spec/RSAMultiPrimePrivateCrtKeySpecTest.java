@@ -565,7 +565,7 @@ public class RSAMultiPrimePrivateCrtKeySpecTest extends TestCase {
                     BigInteger.ONE,
                     BigInteger.ONE,
                     null);
-        assertTrue(ks.getOtherPrimeInfo() == null);
+        assertNull(ks.getOtherPrimeInfo());
     }
 
     //

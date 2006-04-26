@@ -471,7 +471,7 @@ public class CodeSourceTest extends TestCase {
 
             // must get exactly 3 CodeSigner-s: one for the chain, and one 
             // for each of single certs
-            assertTrue(signers.length == 3);
+            assertEquals(3, signers.length);
         } finally {
             TestCertUtils.uninstall_test_x509_factory();
         }

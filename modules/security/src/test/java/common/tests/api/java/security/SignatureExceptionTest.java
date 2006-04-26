@@ -25,8 +25,8 @@ public class SignatureExceptionTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.security.SignatureException()
 		SignatureException e = new SignatureException();
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals("java.security.SignatureException"));
+		assertEquals("Failed toString test for constructed instance", "java.security.SignatureException", e
+				.toString());
 	}
 
 	/**
@@ -35,8 +35,8 @@ public class SignatureExceptionTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.security.SignatureException(java.lang.String)
 		SignatureException e = new SignatureException("test message");
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals(
-						"java.security.SignatureException: test message"));
+		assertEquals("Failed toString test for constructed instance", 
+						"java.security.SignatureException: test message", e
+				.toString());
 	}
 }

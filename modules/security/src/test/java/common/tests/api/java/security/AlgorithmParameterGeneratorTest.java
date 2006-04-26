@@ -52,7 +52,7 @@ public class AlgorithmParameterGeneratorTest extends junit.framework.TestCase {
 		// java.security.AlgorithmParameterGenerator.getAlgorithm()
 		String alg = AlgorithmParameterGenerator.getInstance("DSA")
 				.getAlgorithm();
-		assertTrue("getAlgorithm ok", alg.equals("DSA"));
+		assertEquals("getAlgorithm ok", "DSA", alg);
 	}
 
 	/**

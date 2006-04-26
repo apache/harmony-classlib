@@ -61,21 +61,21 @@ public class DerGeneralizedTimeEDTest extends TestCase {
         encoded =
             new DerOutputStream(gTime, myDate).encoded;
         rep = new String(encoded, 2, encoded[1] & 0xff);
-        assertTrue("2 fraction", "20041202093934.18Z".equals(rep));
+        assertEquals("2 fraction", "20041202093934.18Z", rep);
 
         // 1 digit fractional seconds (last 2 0s must be trimmed out)
         myDate = getGmtDate(1101980374100L);
         encoded =
             new DerOutputStream(gTime, myDate).encoded;
         rep = new String(encoded, 2, encoded[1] & 0xff);
-        assertTrue("1 fraction", "20041202093934.1Z".equals(rep));
+        assertEquals("1 fraction", "20041202093934.1Z", rep);
 
         // no fractional seconds (last 3 0s and "." must be trimmed out)
         myDate = getGmtDate(1101980374000L);
         encoded =
             new DerOutputStream(gTime, myDate).encoded;
         rep = new String(encoded, 2, encoded[1] & 0xff);
-        assertTrue("no fraction", "20041202093934Z".equals(rep));
+        assertEquals("no fraction", "20041202093934Z", rep);
 
         // midnight
         SimpleDateFormat sdf =
@@ -85,7 +85,7 @@ public class DerGeneralizedTimeEDTest extends TestCase {
         encoded =
             new DerOutputStream(gTime, myDate).encoded;
         rep = new String(encoded, 2, encoded[1] & 0xff);
-        assertTrue("midnight", "20040606000000Z".equals(rep));
+        assertEquals("midnight", "20040606000000Z", rep);
     }
 
     /**

@@ -26,8 +26,8 @@ public class InvalidKeyExceptionTest extends junit.framework.TestCase {
 		// Test for method java.security.InvalidKeyException()
 		InvalidKeyException e = new InvalidKeyException();
 		assertNotNull("Constructor returned a null", e);
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals("java.security.InvalidKeyException"));
+		assertEquals("Failed toString test for constructed instance", "java.security.InvalidKeyException", e
+				.toString());
 	}
 
 	/**
@@ -37,8 +37,8 @@ public class InvalidKeyExceptionTest extends junit.framework.TestCase {
 		// Test for method java.security.InvalidKeyException(java.lang.String)
 		InvalidKeyException e = new InvalidKeyException("test message");
 		assertNotNull("Constructor returned a null", e);
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals(
-						"java.security.InvalidKeyException: test message"));
+		assertEquals("Failed toString test for constructed instance", 
+						"java.security.InvalidKeyException: test message", e
+				.toString());
 	}
 }

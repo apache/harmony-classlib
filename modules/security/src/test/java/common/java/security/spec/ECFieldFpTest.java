@@ -142,7 +142,7 @@ public class ECFieldFpTest extends TestCase {
      * Assertion: returns field size in bits which is prime size
      */
     public final void testGetFieldSize() {
-        assertTrue(new ECFieldFp(BigInteger.valueOf(23L)).getFieldSize() == 5);
+        assertEquals(5, new ECFieldFp(BigInteger.valueOf(23L)).getFieldSize());
     }
 
     /**

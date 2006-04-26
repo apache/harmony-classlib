@@ -37,10 +37,9 @@ public class SecurityTest extends junit.framework.TestCase {
 		// Test for method java.lang.String
 		// java.security.Security.getProperty(java.lang.String)
 		Security.setProperty("keyTestAlternate", "testing a property set");
-		assertTrue(
-				"the property value returned for keyTestAlternate was incorrect",
-				Security.getProperty("keyTestAlternate").equals(
-						"testing a property set"));
+		assertEquals("the property value returned for keyTestAlternate was incorrect",
+				
+						"testing a property set", Security.getProperty("keyTestAlternate"));
 	}
 
 	/**
@@ -53,9 +52,9 @@ public class SecurityTest extends junit.framework.TestCase {
 		// java.lang.String)
 
 		Security.setProperty("keyTest", "permission to set property");
-		assertTrue("the property value returned for keyTest was not correct",
-				Security.getProperty("keyTest").equals(
-						"permission to set property"));
+		assertEquals("the property value returned for keyTest was not correct",
+				
+						"permission to set property", Security.getProperty("keyTest"));
 
 	}
 
@@ -172,10 +171,10 @@ public class SecurityTest extends junit.framework.TestCase {
 		Provider provTest[] = Security.getProviders();
 		assertEquals("the number of providers is not 2 it was: "
 				+ provTest.length, 2, provTest.length);
-		assertTrue("the first provider should be DRLCertFactory", provTest[0]
-				.getName().equals("DRLCertFactory"));
-		assertTrue("the second provider should be BC", provTest[1].getName()
-				.equals("BC"));
+		assertEquals("the first provider should be DRLCertFactory", "DRLCertFactory", provTest[0]
+				.getName());
+		assertEquals("the second provider should be BC", "BC", provTest[1].getName()
+				);
 	}
 
 	/**
@@ -368,8 +367,8 @@ public class SecurityTest extends junit.framework.TestCase {
 		filter.put("Signature.SHA1withDSA", "");
 		Provider provTest[] = Security.getProviders(filter);
 		if (provTest == null) {
-			assertTrue("Filter : <KeyStore.BKS>,<Signature.SHA1withDSA>",
-					getProvidersCount(filter) == 0);
+			assertEquals("Filter : <KeyStore.BKS>,<Signature.SHA1withDSA>",
+					0, getProvidersCount(filter));
 		} else {
 			assertEquals("Filter : <KeyStore.BKS>,<Signature.SHA1withDSA>",
 					getProvidersCount(filter), provTest.length);
@@ -381,9 +380,8 @@ public class SecurityTest extends junit.framework.TestCase {
 		filter.put("KeyFactory.RSA", "");
 		provTest = Security.getProviders(filter);
 		if (provTest == null) {
-			assertTrue(
-					"Filter : <MessageDigest.MD2>,<CertificateFactory.X.509>,<KeyFactory.RSA>",
-					getProvidersCount(filter) == 0);
+			assertEquals("Filter : <MessageDigest.MD2>,<CertificateFactory.X.509>,<KeyFactory.RSA>",
+					0, getProvidersCount(filter));
 		} else {
 			assertEquals(
 					"Filter : <MessageDigest.MD2>,<CertificateFactory.X.509>,<KeyFactory.RSA>",
@@ -395,9 +393,8 @@ public class SecurityTest extends junit.framework.TestCase {
 		filter.put("CertificateFactory.X.509", "");
 		provTest = Security.getProviders(filter);
 		if (provTest == null) {
-			assertTrue(
-					"Filter : <MessageDigest.SHA><CertificateFactory.X.509>",
-					getProvidersCount(filter) == 0);
+			assertEquals("Filter : <MessageDigest.SHA><CertificateFactory.X.509>",
+					0, getProvidersCount(filter));
 		} else {
 			assertEquals(
 					"Filter : <MessageDigest.SHA><CertificateFactory.X.509>",
@@ -408,8 +405,8 @@ public class SecurityTest extends junit.framework.TestCase {
 		filter.put("CertificateFactory.X509", "");
 		provTest = Security.getProviders(filter);
 		if (provTest == null) {
-			assertTrue("Filter : <CertificateFactory.X509>",
-					getProvidersCount(filter) == 0);
+			assertEquals("Filter : <CertificateFactory.X509>",
+					0, getProvidersCount(filter));
 		} else {
 			assertEquals("Filter : <CertificateFactory.X509>",
 					getProvidersCount(filter), provTest.length);
@@ -419,8 +416,8 @@ public class SecurityTest extends junit.framework.TestCase {
 		filter.put("Provider.id name", "DRLCertFactory");
 		provTest = Security.getProviders(filter);
 		if (provTest == null) {
-			assertTrue("Filter : <Provider.id name, DRLCertFactory >",
-					getProvidersCount(filter) == 0);
+			assertEquals("Filter : <Provider.id name, DRLCertFactory >",
+					0, getProvidersCount(filter));
 		} else {
 			assertEquals("Filter : <Provider.id name, DRLCertFactory>",
 					getProvidersCount(filter), provTest.length);
@@ -507,9 +504,9 @@ public class SecurityTest extends junit.framework.TestCase {
 			assertTrue("Failed to add provider", addResult != -1);
 
 			Security.removeProvider(test.getName());
-			assertTrue(
+			assertNull(
 					"the provider TestProvider is found after it was removed",
-					Security.getProvider(test.getName()) == null);
+					Security.getProvider(test.getName()));
 
 			// Make sure entrust provider not already loaded. Should do nothing
 			// if not already loaded.

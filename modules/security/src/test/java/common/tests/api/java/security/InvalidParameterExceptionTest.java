@@ -25,8 +25,8 @@ public class InvalidParameterExceptionTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.security.InvalidParameterException()
 		InvalidParameterException e = new InvalidParameterException();
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals("java.security.InvalidParameterException"));
+		assertEquals("Failed toString test for constructed instance", "java.security.InvalidParameterException", e
+				.toString());
 	}
 
 	/**
@@ -37,11 +37,10 @@ public class InvalidParameterExceptionTest extends junit.framework.TestCase {
 		// java.security.InvalidParameterException(java.lang.String)
 		InvalidParameterException e = new InvalidParameterException(
 				"test message");
-		assertTrue(
-				"Failed toString test for constructed instance",
-				e
+		assertEquals("Failed toString test for constructed instance",
+				
+								"java.security.InvalidParameterException: test message", e
 						.toString()
-						.equals(
-								"java.security.InvalidParameterException: test message"));
+						);
 	}
 }

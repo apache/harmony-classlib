@@ -84,7 +84,7 @@ public class CertificateTest extends TestCase {
      */
     public final void testGetType() {
         Certificate c1 = new MyCertificate("TEST_TYPE", testEncoding);
-        assertTrue("TEST_TYPE".equals(c1.getType()));
+        assertEquals("TEST_TYPE", c1.getType());
     }
 
     /**

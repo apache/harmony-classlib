@@ -124,7 +124,7 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 
        		DSAParameterSpec spec = (DSAParameterSpec) params
        				.getParameterSpec(dsaps.getClass());
-       		assertTrue("param spec is null", spec != null);
+       		assertNotNull("param spec is null", spec);
        		assertTrue("p is wrong ", spec.getP().equals(BigInteger.ONE));
        		assertTrue("q is wrong ", spec.getQ().equals(BigInteger.ONE));
        		assertTrue("g is wrong ", spec.getG().equals(BigInteger.ONE));
@@ -138,7 +138,7 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 		// java.security.AlgorithmParameters.getProvider()
 		try {
 			Provider p = AlgorithmParameters.getInstance("DSA").getProvider();
-			assertTrue("provider is null", p != null);
+			assertNotNull("provider is null", p);
 		} catch (NoSuchAlgorithmException e) {
 			fail("getInstance did not find algorithm");
 		}
@@ -154,7 +154,7 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 			params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
 					BigInteger.ONE));
 			byte[] encoded = params.getEncoded();
-			assertTrue("encoded spec is null", encoded != null);
+			assertNotNull("encoded spec is null", encoded);
 			AlgorithmParameters params2 = AlgorithmParameters
 					.getInstance("DSA");
 			params2.init(encoded);
@@ -181,7 +181,7 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 			params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
 					BigInteger.ONE));
 			byte[] encoded = params.getEncoded();
-			assertTrue("encoded spec is null", encoded != null);
+			assertNotNull("encoded spec is null", encoded);
 			AlgorithmParameters params2 = AlgorithmParameters
 					.getInstance("DSA");
 			params2.init(encoded, "ASN.1");
@@ -201,7 +201,7 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 			params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
 					BigInteger.ONE));
 			byte[] encoded = params.getEncoded();
-			assertTrue("encoded spec is null", encoded != null);
+			assertNotNull("encoded spec is null", encoded);
 			params.init(encoded, "DOUGLASMAWSON");
 			fail("unsupported format should have raised IOException");
 		} catch (NoSuchAlgorithmException e) {

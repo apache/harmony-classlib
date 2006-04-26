@@ -249,7 +249,7 @@ public class PolicyQualifierInfoTest extends TestCase {
         // pass valid array
         PolicyQualifierInfo i = new PolicyQualifierInfo(encoding);
         // get OID as String and check it
-        assertTrue("1.3.6.1.5.5.7.2.1".equals(i.getPolicyQualifierId()));
+        assertEquals("1.3.6.1.5.5.7.2.1", i.getPolicyQualifierId());
 
         // get valid encoding
         encoding = getDerEncoding();
@@ -260,7 +260,7 @@ public class PolicyQualifierInfoTest extends TestCase {
         encoding[9] = (byte)0x87;
         i = new PolicyQualifierInfo(encoding);
         // get OID as String and check it
-        assertTrue("1.3.98437.82818.1".equals(i.getPolicyQualifierId()));
+        assertEquals("1.3.98437.82818.1", i.getPolicyQualifierId());
     }
 
     /**

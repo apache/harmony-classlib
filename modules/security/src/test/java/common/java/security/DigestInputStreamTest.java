@@ -161,9 +161,9 @@ public class DigestInputStreamTest extends TestCase {
                     dis.read();
                 }
                 // check that subsequent read() calls return -1 (eos)
-                assertTrue("retval1", dis.read() == -1);
-                assertTrue("retval2", dis.read() == -1);
-                assertTrue("retval3", dis.read() == -1);
+                assertEquals("retval1", -1, dis.read());
+                assertEquals("retval2", -1, dis.read());
+                assertEquals("retval3", -1, dis.read());
                 // check that 3 previous read() calls did not update digest
                 assertTrue("update",
                         Arrays.equals(dis.getMessageDigest().digest(),
@@ -331,7 +331,7 @@ public class DigestInputStreamTest extends TestCase {
     public final void testReadbyteArrayintint02()
         throws IOException {
         // check precondition
-        assertTrue(MY_MESSAGE_LEN % CHUNK_SIZE == 0);
+        assertEquals(0, MY_MESSAGE_LEN % CHUNK_SIZE);
         
         for (int ii=0; ii<algorithmName.length; ii++) {
             try {
@@ -426,9 +426,9 @@ public class DigestInputStreamTest extends TestCase {
                 // read all but EOS
                 dis.read(bArray, 0, bArray.length);
                 // check that subsequent read(byte[],int,int) calls return -1 (EOS)
-                assertTrue("retval1", dis.read(bArray, 0, 1) == -1);
-                assertTrue("retval2", dis.read(bArray, 0, bArray.length) == -1);
-                assertTrue("retval3", dis.read(bArray, 0, 1) == -1);
+                assertEquals("retval1", -1, dis.read(bArray, 0, 1));
+                assertEquals("retval2", -1, dis.read(bArray, 0, bArray.length));
+                assertEquals("retval3", -1, dis.read(bArray, 0, 1));
                 // check that 3 previous read() calls did not update digest
                 assertTrue("update",
                         Arrays.equals(dis.getMessageDigest().digest(),
@@ -454,7 +454,7 @@ public class DigestInputStreamTest extends TestCase {
     public final void testReadbyteArrayintint05()
         throws IOException {
         // check precondition
-        assertTrue(MY_MESSAGE_LEN % CHUNK_SIZE == 0);
+        assertEquals(0, MY_MESSAGE_LEN % CHUNK_SIZE);
         
         for (int ii=0; ii<algorithmName.length; ii++) {
             try {

@@ -942,7 +942,7 @@ public class PKIXParametersTest extends TestCase {
         // check that we have two PKIXCertPathCheckers and
         // they are in right order
         List l1 = p.getCertPathCheckers();
-        assertTrue("listSize", l1.size() == 2);
+        assertEquals("listSize", 2, l1.size());
         assertFalse("order1",
                 ((PKIXCertPathChecker)l1.get(0)).isForwardCheckingSupported());
         assertTrue("order2",
@@ -969,7 +969,7 @@ public class PKIXParametersTest extends TestCase {
         p.addCertPathChecker(null);
         // check that we have one PKIXCertPathChecker
         List l1 = p.getCertPathCheckers();
-        assertTrue("listSize", l1.size() == 1);
+        assertEquals("listSize", 1, l1.size());
     }
 
     /**
@@ -997,7 +997,7 @@ public class PKIXParametersTest extends TestCase {
         // above modification
         List l = p.getCertPathCheckers();
         PKIXCertPathChecker cpc1 = (PKIXCertPathChecker)l.get(0);
-        assertTrue("listSize", l.size() == 1);
+        assertEquals("listSize", 1, l.size());
         assertFalse("isCopied", cpc1.isForwardCheckingSupported());
     }
 
@@ -1059,7 +1059,7 @@ public class PKIXParametersTest extends TestCase {
 
         PKIXParameters p = new PKIXParameters(taSet);
         p.setDate(new Date(555L));
-        assertTrue(p.getDate().getTime() == 555L);
+        assertEquals(555L, p.getDate().getTime());
     }
 
     /**
@@ -1096,7 +1096,7 @@ public class PKIXParametersTest extends TestCase {
         toBeSet.setTime(0L);
         // check that internal Date has not been
         // changed by the above modification
-        assertTrue(p.getDate().getTime() == 555L);
+        assertEquals(555L, p.getDate().getTime());
     }
 
     /**
@@ -1154,7 +1154,7 @@ public class PKIXParametersTest extends TestCase {
         s.add("1.2.3.4.5.6.7");
         PKIXParameters p = new PKIXParameters(taSet);
         p.setInitialPolicies(s);
-        assertTrue(p.getInitialPolicies().size() == 1);
+        assertEquals(1, p.getInitialPolicies().size());
     }
 
     /**
@@ -1208,7 +1208,7 @@ public class PKIXParametersTest extends TestCase {
         s.clear();
         // check that set maintained internally has
         // not been changed by the above modification
-        assertTrue(p.getInitialPolicies().size() == 2);
+        assertEquals(2, p.getInitialPolicies().size());
     }
 
     /**

@@ -26,8 +26,8 @@ public class GeneralSecurityExceptionTest extends junit.framework.TestCase {
 		// Test for method java.security.GeneralSecurityException()
 		GeneralSecurityException e = new GeneralSecurityException();
 		assertNotNull("Constructor returned null instance", e);
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals("java.security.GeneralSecurityException"));
+		assertEquals("Failed toString test for constructed instance", "java.security.GeneralSecurityException", e
+				.toString());
 	}
 
 	/**
@@ -39,8 +39,8 @@ public class GeneralSecurityExceptionTest extends junit.framework.TestCase {
 		GeneralSecurityException e = new GeneralSecurityException(
 				"test message");
 		assertNotNull("Constructor returned null instance", e);
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals(
-						"java.security.GeneralSecurityException: test message"));
+		assertEquals("Failed toString test for constructed instance", 
+						"java.security.GeneralSecurityException: test message", e
+				.toString());
 	}
 }

@@ -80,7 +80,7 @@ public class PKCS8EncodedKeySpecTest extends TestCase {
         
         PKCS8EncodedKeySpec meks = new PKCS8EncodedKeySpec(encodedKey);
         
-        assertTrue("PKCS#8".equals(meks.getFormat()));
+        assertEquals("PKCS#8", meks.getFormat());
     }
     
     /**

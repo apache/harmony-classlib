@@ -49,7 +49,7 @@ public class CRLTest extends TestCase {
      */
     public final void testGetType01() {
         CRL crl = new MyCRL("TEST_TYPE");
-        assertTrue("TEST_TYPE".equals(crl.getType()));
+        assertEquals("TEST_TYPE", crl.getType());
     }
 
     /**
@@ -58,7 +58,7 @@ public class CRLTest extends TestCase {
      */
     public final void testGetType02() {
         CRL crl = new MyCRL(null);
-        assertTrue(crl.getType() == null);
+        assertNull(crl.getType());
     }
 
     //

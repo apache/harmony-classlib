@@ -59,9 +59,9 @@ public class AccessControlExceptionTest extends junit.framework.TestCase {
 		// Test for method java.security.Permission
 		// java.security.AccessControlException.getPermission()
 		// make sure getPermission returns null when it's not set
-		assertTrue(
+		assertNull(
 				"getPermission should have returned null if no permission was set",
-				acException.getPermission() == null);
+				acException.getPermission());
 		assertTrue(
 				"getPermission should have returned the permission we assigned to it",
 				acException1.getPermission() == filePermission);

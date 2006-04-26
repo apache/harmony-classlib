@@ -59,7 +59,7 @@ public class RSAPrivateKeySpecTest extends TestCase {
         RSAPrivateKeySpec rpks =
             new RSAPrivateKeySpec(BigInteger.valueOf(1234567890L),
                                   BigInteger.valueOf(3L));
-        assertTrue(rpks.getModulus().longValue() == 1234567890L);
+        assertEquals(1234567890L, rpks.getModulus().longValue());
     }
 
     /**
@@ -70,7 +70,7 @@ public class RSAPrivateKeySpecTest extends TestCase {
         RSAPrivateKeySpec rpks =
             new RSAPrivateKeySpec(BigInteger.valueOf(1234567890L),
                                   BigInteger.valueOf(3L));
-        assertTrue(rpks.getPrivateExponent().longValue() == 3L);
+        assertEquals(3L, rpks.getPrivateExponent().longValue());
     }
 
 }

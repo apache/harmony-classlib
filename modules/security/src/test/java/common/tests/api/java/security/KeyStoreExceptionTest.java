@@ -25,8 +25,8 @@ public class KeyStoreExceptionTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.security.KeyStoreException()
 		KeyStoreException e = new KeyStoreException();
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals("java.security.KeyStoreException"));
+		assertEquals("Failed toString test for constructed instance", "java.security.KeyStoreException", e
+				.toString());
 	}
 
 	/**
@@ -35,8 +35,8 @@ public class KeyStoreExceptionTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.security.KeyStoreException(java.lang.String)
 		KeyStoreException e = new KeyStoreException("test message");
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals(
-						"java.security.KeyStoreException: test message"));
+		assertEquals("Failed toString test for constructed instance", 
+						"java.security.KeyStoreException: test message", e
+				.toString());
 	}
 }

@@ -63,7 +63,7 @@ public class DSAPrivateKeySpecTest extends TestCase {
                 new BigInteger("3"),
                 new BigInteger("4"));
         
-        assertTrue(dpks.getG().intValue() == 4);
+        assertEquals(4, dpks.getG().intValue());
     }
 
     /**
@@ -76,7 +76,7 @@ public class DSAPrivateKeySpecTest extends TestCase {
                 new BigInteger("3"),
                 new BigInteger("4"));
         
-        assertTrue(dpks.getP().intValue() == 2);
+        assertEquals(2, dpks.getP().intValue());
     }
 
     /**
@@ -89,7 +89,7 @@ public class DSAPrivateKeySpecTest extends TestCase {
                 new BigInteger("3"),
                 new BigInteger("4"));
         
-        assertTrue(dpks.getQ().intValue() == 3);
+        assertEquals(3, dpks.getQ().intValue());
     }
 
     /**
@@ -102,7 +102,7 @@ public class DSAPrivateKeySpecTest extends TestCase {
                 new BigInteger("3"),
                 new BigInteger("4"));
         
-        assertTrue(dpks.getX().intValue() == 1);
+        assertEquals(1, dpks.getX().intValue());
     }
 
 }

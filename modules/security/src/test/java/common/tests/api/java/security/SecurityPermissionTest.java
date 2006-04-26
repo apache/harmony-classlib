@@ -24,9 +24,9 @@ public class SecurityPermissionTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.security.SecurityPermission(java.lang.String)
-		assertTrue("create securityPermission constructor(string) failed",
-				new SecurityPermission("SecurityPermission(string)").getName()
-						.equals("SecurityPermission(string)"));
+		assertEquals("create securityPermission constructor(string) failed",
+				"SecurityPermission(string)", new SecurityPermission("SecurityPermission(string)").getName()
+						);
 
 	}
 
@@ -38,9 +38,8 @@ public class SecurityPermissionTest extends junit.framework.TestCase {
 		// Test for method java.security.SecurityPermission(java.lang.String,
 		// java.lang.String)
 		SecurityPermission sp = new SecurityPermission("security.file", "write");
-		assertTrue(
-				"creat securityPermission constructor(string,string) failed",
-				sp.getName().equals("security.file"));
+		assertEquals("creat securityPermission constructor(string,string) failed",
+				"security.file", sp.getName());
 
 	}
 }

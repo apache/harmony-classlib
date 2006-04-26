@@ -118,7 +118,7 @@ public class RSAOtherPrimeInfoTest extends TestCase {
             new RSAOtherPrimeInfo(BigInteger.valueOf(1L),
                                   BigInteger.valueOf(2L),
                                   BigInteger.valueOf(3L));
-        assertTrue(ropi.getCrtCoefficient().longValue() == 3L);
+        assertEquals(3L, ropi.getCrtCoefficient().longValue());
     }
 
     /**
@@ -130,7 +130,7 @@ public class RSAOtherPrimeInfoTest extends TestCase {
             new RSAOtherPrimeInfo(BigInteger.valueOf(1L),
                                   BigInteger.valueOf(2L),
                                   BigInteger.valueOf(3L));
-        assertTrue(ropi.getPrime().longValue() == 1L);
+        assertEquals(1L, ropi.getPrime().longValue());
     }
 
     /**
@@ -142,7 +142,7 @@ public class RSAOtherPrimeInfoTest extends TestCase {
             new RSAOtherPrimeInfo(BigInteger.valueOf(1L),
                                   BigInteger.valueOf(2L),
                                   BigInteger.valueOf(3L));
-        assertTrue(ropi.getExponent().longValue() == 2L);
+        assertEquals(2L, ropi.getExponent().longValue());
     }
 
 }

@@ -62,8 +62,8 @@ public class CodeSourceTest extends junit.framework.TestCase {
 	public void test_getCertificates() throws Exception {
        		CodeSource cs = new CodeSource(new java.net.URL("file:///test"),
        				(Certificate[]) null);
-       		assertTrue("Should have gotten null certificate list.", cs
-       				.getCertificates() == null);
+       		assertNull("Should have gotten null certificate list.", cs
+       				.getCertificates());
 	}
 
 	/**
@@ -73,8 +73,8 @@ public class CodeSourceTest extends junit.framework.TestCase {
 		// Test for method java.net.URL java.security.CodeSource.getLocation()
        		CodeSource cs = new CodeSource(new java.net.URL("file:///test"),
        				(Certificate[]) null);
-       		assertTrue("Did not get expected location!", cs.getLocation()
-       				.toString().equals("file:/test"));
+       		assertEquals("Did not get expected location!", "file:/test", cs.getLocation()
+       				.toString());
 	}
 
 	/**

@@ -2860,8 +2860,8 @@ public class X509CertSelectorTest extends TestCase {
         selector.setMatchAllSubjectAltNames(true);
         selector.setPolicy(new HashSet(Arrays.asList(policies)));
 
-        assertTrue("The result should not be null.", 
-                selector.toString() != null);
+        assertNotNull("The result should not be null.", 
+                selector.toString());
     }
 
     /**

@@ -170,12 +170,12 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
 			StringTokenizer resultTokenizer = new StringTokenizer(result, ",");
 
 			// Check the test result from the new VM process
-			assertTrue("Permission should be granted", resultTokenizer
-					.nextToken().equals("true"));
-			assertTrue("signed Permission should be granted", resultTokenizer
-					.nextToken().equals("true"));
-			assertTrue("Permission should not be granted", resultTokenizer
-					.nextToken().equals("false"));
+			assertEquals("Permission should be granted", "true", resultTokenizer
+					.nextToken());
+			assertEquals("signed Permission should be granted", "true", resultTokenizer
+					.nextToken());
+			assertEquals("Permission should not be granted", "false", resultTokenizer
+					.nextToken());
 		} catch (IOException e) {
 			fail("IOException during test : " + e);
 		} catch (InterruptedException e) {

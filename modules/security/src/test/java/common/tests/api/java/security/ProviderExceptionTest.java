@@ -35,8 +35,8 @@ public class ProviderExceptionTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.security.ProviderException(java.lang.String)
 		ProviderException e = new ProviderException("test message");
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals(
-						"java.security.ProviderException: test message"));
+		assertEquals("Failed toString test for constructed instance", 
+						"java.security.ProviderException: test message", e
+				.toString());
 	}
 }

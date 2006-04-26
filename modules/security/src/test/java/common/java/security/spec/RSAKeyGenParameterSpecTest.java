@@ -58,7 +58,7 @@ public class RSAKeyGenParameterSpecTest extends TestCase {
     public final void testGetKeysize() {
         RSAKeyGenParameterSpec rkgps =
             new RSAKeyGenParameterSpec(512, BigInteger.valueOf(0L));
-        assertTrue(rkgps.getKeysize() == 512);
+        assertEquals(512, rkgps.getKeysize());
     }
 
     /**
@@ -68,7 +68,7 @@ public class RSAKeyGenParameterSpecTest extends TestCase {
     public final void testGetPublicExponent() {
         RSAKeyGenParameterSpec rkgps =
             new RSAKeyGenParameterSpec(512, BigInteger.valueOf(0L));
-        assertTrue(rkgps.getPublicExponent().intValue() == 0);
+        assertEquals(0, rkgps.getPublicExponent().intValue());
     }
     
     /**
@@ -76,7 +76,7 @@ public class RSAKeyGenParameterSpecTest extends TestCase {
      * Assertion: the public exponent value F0 = 3
      */
     public final void testF0Value() {
-        assertTrue(RSAKeyGenParameterSpec.F0.intValue() == 3);        
+        assertEquals(3, RSAKeyGenParameterSpec.F0.intValue());
     }
     
     /**
@@ -84,7 +84,7 @@ public class RSAKeyGenParameterSpecTest extends TestCase {
      * Assertion: the public exponent value F0 = 65537
      */
     public final void testF4Value() {
-        assertTrue(RSAKeyGenParameterSpec.F4.intValue() == 65537);        
+        assertEquals(65537, RSAKeyGenParameterSpec.F4.intValue());
     }
 
 }

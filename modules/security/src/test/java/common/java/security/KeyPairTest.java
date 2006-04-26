@@ -96,7 +96,7 @@ public class KeyPairTest extends TestCase {
      */
     public final void testGetPrivate01() {
         KeyPair kp = new KeyPair(null, null);
-        assertTrue(kp.getPrivate() == null);
+        assertNull(kp.getPrivate());
     }
 
     /**
@@ -116,7 +116,7 @@ public class KeyPairTest extends TestCase {
      */
     public final void testGetPublic01() {
         KeyPair kp = new KeyPair(null, null);
-        assertTrue(kp.getPublic() == null);
+        assertNull(kp.getPublic());
     }
 
     /**

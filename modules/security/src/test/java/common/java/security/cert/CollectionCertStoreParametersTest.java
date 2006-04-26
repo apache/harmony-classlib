@@ -198,7 +198,7 @@ public class CollectionCertStoreParametersTest extends TestCase {
         CollectionCertStoreParameters cp =
             new CollectionCertStoreParameters();
         String s = cp.toString();
-        assertTrue(s != null);
+        assertNotNull(s);
     }
 
     /**
@@ -220,7 +220,7 @@ public class CollectionCertStoreParametersTest extends TestCase {
      */
     public final void testGetCollection01() {
         CollectionCertStoreParameters cp = new CollectionCertStoreParameters();
-        assertTrue(cp.getCollection() != null);
+        assertNotNull(cp.getCollection());
     }
 
     /**
@@ -231,7 +231,7 @@ public class CollectionCertStoreParametersTest extends TestCase {
         Vector certificates = new Vector();
         CollectionCertStoreParameters cp =
             new CollectionCertStoreParameters(certificates);
-        assertTrue(cp.getCollection() != null);
+        assertNotNull(cp.getCollection());
     }
 
 }

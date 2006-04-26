@@ -60,8 +60,8 @@ public class LDAPCertStoreParametersTest extends TestCase {
      */
     public final void testLDAPCertStoreParameters02() {
         LDAPCertStoreParameters cp = new LDAPCertStoreParameters();
-        assertTrue("host", "localhost".equals(cp.getServerName()));
-        assertTrue("port", cp.getPort() == 389);
+        assertEquals("host", "localhost", cp.getServerName());
+        assertEquals("port", 389, cp.getPort());
     }
 
     /**
@@ -84,7 +84,7 @@ public class LDAPCertStoreParametersTest extends TestCase {
         String serverName = "myhost";
         LDAPCertStoreParameters cp = new LDAPCertStoreParameters(serverName);
         assertTrue("host", serverName.equals(cp.getServerName()));
-        assertTrue("port", cp.getPort() == 389);
+        assertEquals("port", 389, cp.getPort());
     }
 
     /**

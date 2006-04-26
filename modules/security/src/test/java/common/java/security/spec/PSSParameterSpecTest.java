@@ -165,7 +165,7 @@ public class PSSParameterSpecTest extends TestCase {
     public final void testGetDigestAlgorithm() {
         PSSParameterSpec pssps = new PSSParameterSpec("SHA-1", "MGF1",
                 MGF1ParameterSpec.SHA1, 20, 1);
-        assertTrue("SHA-1".equals(pssps.getDigestAlgorithm()));
+        assertEquals("SHA-1", pssps.getDigestAlgorithm());
     }
 
     /**
@@ -175,7 +175,7 @@ public class PSSParameterSpecTest extends TestCase {
     public final void testGetMGFAlgorithm() {
         PSSParameterSpec pssps = new PSSParameterSpec("SHA-1", "MGF1",
                 MGF1ParameterSpec.SHA1, 20, 1);
-        assertTrue("MGF1".equals(pssps.getMGFAlgorithm()));
+        assertEquals("MGF1", pssps.getMGFAlgorithm());
     }
 
     /**
@@ -197,7 +197,7 @@ public class PSSParameterSpecTest extends TestCase {
     public final void testGetMGFParameters02() {
         PSSParameterSpec pssps = new PSSParameterSpec("SHA-1", "MGF1",
                 null, 20, 1);
-        assertTrue(pssps.getMGFParameters() == null);
+        assertNull(pssps.getMGFParameters());
     }
 
 
@@ -207,7 +207,7 @@ public class PSSParameterSpecTest extends TestCase {
      */
     public final void testGetSaltLength() {
         PSSParameterSpec pssps = new PSSParameterSpec(20);
-        assertTrue(pssps.getSaltLength() == 20);
+        assertEquals(20, pssps.getSaltLength());
     }
 
     /**
@@ -217,7 +217,7 @@ public class PSSParameterSpecTest extends TestCase {
     public final void testGetTrailerField() {
         PSSParameterSpec pssps = new PSSParameterSpec("SHA-1", "MGF1",
                 MGF1ParameterSpec.SHA1, 20, 1);
-        assertTrue(pssps.getTrailerField() == 1);
+        assertEquals(1, pssps.getTrailerField());
     }
 
     /**
@@ -225,7 +225,7 @@ public class PSSParameterSpecTest extends TestCase {
      * Assertion: default message digest algorithm name is "SHA-1"
      */
     public final void testDEFAULTmdName() {
-        assertTrue("SHA-1".equals(PSSParameterSpec.DEFAULT.getDigestAlgorithm()));        
+        assertEquals("SHA-1", PSSParameterSpec.DEFAULT.getDigestAlgorithm());
     }
 
     /**
@@ -233,7 +233,7 @@ public class PSSParameterSpecTest extends TestCase {
      * Assertion: default mask generation function algorithm name is "MGF1"
      */
     public final void testDEFAULTmgfName() {
-        assertTrue("MGF1".equals(PSSParameterSpec.DEFAULT.getMGFAlgorithm()));        
+        assertEquals("MGF1", PSSParameterSpec.DEFAULT.getMGFAlgorithm());
     }
 
     /**
@@ -250,7 +250,7 @@ public class PSSParameterSpecTest extends TestCase {
      * Assertion: default salt length value is 20
      */
     public final void testDEFAULTsaltLen() {
-        assertTrue(PSSParameterSpec.DEFAULT.getSaltLength() == 20);        
+        assertEquals(20, PSSParameterSpec.DEFAULT.getSaltLength());
     }
 
     /**
@@ -258,6 +258,6 @@ public class PSSParameterSpecTest extends TestCase {
      * Assertion: default trailer field value is 1
      */
     public final void testDEFAULTtrailerField() {
-        assertTrue(PSSParameterSpec.DEFAULT.getTrailerField() == 1);        
+        assertEquals(1, PSSParameterSpec.DEFAULT.getTrailerField());
     }
 }

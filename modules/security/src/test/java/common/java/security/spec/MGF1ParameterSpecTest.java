@@ -83,9 +83,9 @@ public class MGF1ParameterSpecTest extends TestCase {
      * digest used by the mask generation function
      */
     public final void testFieldsGetDigestAlgorithm() {
-        assertTrue("SHA-1".equals(MGF1ParameterSpec.SHA1.getDigestAlgorithm()));
-        assertTrue("SHA-256".equals(MGF1ParameterSpec.SHA256.getDigestAlgorithm()));
-        assertTrue("SHA-384".equals(MGF1ParameterSpec.SHA384.getDigestAlgorithm()));
-        assertTrue("SHA-512".equals(MGF1ParameterSpec.SHA512.getDigestAlgorithm()));
+        assertEquals("SHA-1", MGF1ParameterSpec.SHA1.getDigestAlgorithm());
+        assertEquals("SHA-256", MGF1ParameterSpec.SHA256.getDigestAlgorithm());
+        assertEquals("SHA-384", MGF1ParameterSpec.SHA384.getDigestAlgorithm());
+        assertEquals("SHA-512", MGF1ParameterSpec.SHA512.getDigestAlgorithm());
     }
 }

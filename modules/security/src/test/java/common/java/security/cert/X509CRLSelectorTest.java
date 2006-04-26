@@ -430,8 +430,8 @@ public class X509CRLSelectorTest extends TestCase {
         X500Principal iss1 = new X500Principal("O=First Org.");
         X500Principal iss2 = new X500Principal("O=Second Org.");
         X500Principal iss3 = new X500Principal("O=Third Org.");
-        assertTrue("The collection should be null.",
-                                        selector.getIssuers() == null);
+        assertNull("The collection should be null.",
+                                        selector.getIssuers());
         selector.addIssuer(iss1);
         selector.addIssuer(iss2);
         Collection result = selector.getIssuers();
@@ -459,8 +459,8 @@ public class X509CRLSelectorTest extends TestCase {
             //manually obtained DER encoding of "O=Second Org." issuer name;
             {48, 22, 49, 20, 48, 18, 6, 3, 85, 4, 10, 19, 11,
             83, 101, 99, 111, 110, 100, 32, 79, 114, 103, 46};
-        assertTrue("The collection should be null.",
-                                        selector.getIssuerNames() == null);
+        assertNull("The collection should be null.",
+                                        selector.getIssuerNames());
         try {
             selector.addIssuerName(iss1);
             selector.addIssuerName(iss2);
@@ -469,8 +469,8 @@ public class X509CRLSelectorTest extends TestCase {
             fail("Unexpected IOException was thrown.");
         }
         Collection result = selector.getIssuerNames();
-        assertTrue("The collection should contain all of the specified DNs.",
-                                                result.size() == 2);
+        assertEquals("The collection should contain all of the specified DNs.",
+                                                2, result.size());
     }
 
     /**
@@ -480,8 +480,8 @@ public class X509CRLSelectorTest extends TestCase {
      */
     public void testGetMinCRL() {
         X509CRLSelector selector = new X509CRLSelector();
-        assertTrue("Initially the minCRL should be null.",
-                                        selector.getMinCRL() == null);
+        assertNull("Initially the minCRL should be null.",
+                                        selector.getMinCRL());
         BigInteger minCRL = new BigInteger("10000");
         selector.setMinCRLNumber(minCRL);
         assertTrue("The result should be equal to specified.",
@@ -495,8 +495,8 @@ public class X509CRLSelectorTest extends TestCase {
      */
     public void testGetMaxCRL() {
         X509CRLSelector selector = new X509CRLSelector();
-        assertTrue("Initially the maxCRL should be null.",
-                                        selector.getMaxCRL() == null);
+        assertNull("Initially the maxCRL should be null.",
+                                        selector.getMaxCRL());
         BigInteger maxCRL = new BigInteger("10000");
         selector.setMaxCRLNumber(maxCRL);
         assertTrue("The result should be equal to specified.",
@@ -510,8 +510,8 @@ public class X509CRLSelectorTest extends TestCase {
      */
     public void testGetDateAndTime() {
         X509CRLSelector selector = new X509CRLSelector();
-        assertTrue("Initially the dateAndTime criteria should be null.",
-                                        selector.getDateAndTime() == null);
+        assertNull("Initially the dateAndTime criteria should be null.",
+                                        selector.getDateAndTime());
         Date date = new Date(200);
         selector.setDateAndTime(date);
         assertTrue("The result should be equal to specified.",
@@ -576,8 +576,7 @@ public class X509CRLSelectorTest extends TestCase {
         selector.setMaxCRLNumber(maxCRL);
         selector.setDateAndTime(date);
 
-        assertTrue("The result should not be null.", 
-                selector.toString() != null);
+        assertNotNull("The result should not be null.", selector.toString());
     }
 
     public static Test suite() {

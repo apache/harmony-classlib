@@ -25,8 +25,8 @@ public class UnrecoverableKeyExceptionTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.security.UnrecoverableKeyException()
 		UnrecoverableKeyException e = new UnrecoverableKeyException();
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals("java.security.UnrecoverableKeyException"));
+		assertEquals("Failed toString test for constructed instance", "java.security.UnrecoverableKeyException", e
+				.toString());
 	}
 
 	/**

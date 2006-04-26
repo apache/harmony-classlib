@@ -98,8 +98,8 @@ public class X509CertFactoryImplTest extends TestCase {
             new ByteArrayInputStream(
                     CertFactoryTestData.getCertEncoding());
         try {
-            assertTrue("The size of collection is not correct",
-                    certFactory.engineGenerateCertificates(bais).size() == 2);
+            assertEquals("The size of collection is not correct",
+                    2, certFactory.engineGenerateCertificates(bais).size());
         } catch (CertificateException e) {
             e.printStackTrace();
             fail("Unexpected CertificateException: " + e.getMessage());
@@ -109,8 +109,8 @@ public class X509CertFactoryImplTest extends TestCase {
         bais = new ByteArrayInputStream(
                 CertFactoryTestData.getBase64CertEncoding());
         try {
-            assertTrue("The size of collection is not correct",
-                    certFactory.engineGenerateCertificates(bais).size() == 2);
+            assertEquals("The size of collection is not correct",
+                    2, certFactory.engineGenerateCertificates(bais).size());
         } catch (CertificateException e) {
             e.printStackTrace();
             fail("Unexpected CertificateException: " + e.getMessage());
@@ -157,8 +157,8 @@ public class X509CertFactoryImplTest extends TestCase {
             new ByteArrayInputStream(
                     CertFactoryTestData.getCRLEncoding());
         try {
-            assertTrue("The size of collection is not correct",
-                    certFactory.engineGenerateCRLs(bais).size() == 2);
+            assertEquals("The size of collection is not correct",
+                    2, certFactory.engineGenerateCRLs(bais).size());
         } catch (CRLException e) {
             e.printStackTrace();
             fail("Unexpected CRLException: " + e.getMessage());

@@ -56,7 +56,7 @@ public class DerUTCTimeEDTest extends TestCase {
         byte[] encoded =
             new DerOutputStream(uTime, myDate).encoded;
         String rep = new String(encoded, 2, encoded[1] & 0xff);
-        assertTrue("no fraction", "041202093934Z".equals(rep));
+        assertEquals("no fraction", "041202093934Z", rep);
 
         // midnight
         SimpleDateFormat sdf =
@@ -66,7 +66,7 @@ public class DerUTCTimeEDTest extends TestCase {
         encoded =
             new DerOutputStream(uTime, myDate).encoded;
         rep = new String(encoded, 2, encoded[1] & 0xff);
-        assertTrue("midnight", "040606000000Z".equals(rep));
+        assertEquals("midnight", "040606000000Z", rep);
     }
 
     /**
@@ -102,7 +102,7 @@ public class DerUTCTimeEDTest extends TestCase {
         ? new DerInputStream(new ByteArrayInputStream(encoded))
         : new DerInputStream(encoded);
         // the difference only fractional-seconds
-        assertTrue((myDate.getTime()-((Date)uTime.decode(dis)).getTime()) == 187);
+        assertEquals(187, (myDate.getTime()-((Date)uTime.decode(dis)).getTime()));
 
         // midnight
         myDate = new SimpleDateFormat("MM.dd.yyyy HH:mm").

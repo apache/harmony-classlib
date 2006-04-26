@@ -75,7 +75,7 @@ public class CertPathTest extends TestCase {
      * Assertion: returns cert path type
      */
     public final void testGetType() {
-        assertTrue("MyEncoding".equals(new MyCertPath(testEncoding).getType()));
+        assertEquals("MyEncoding", new MyCertPath(testEncoding).getType());
     }
 
     /**

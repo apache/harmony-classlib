@@ -25,8 +25,8 @@ public class KeyExceptionTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.security.KeyException()
 		KeyException e = new KeyException();
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals("java.security.KeyException"));
+		assertEquals("Failed toString test for constructed instance", "java.security.KeyException", e
+				.toString());
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class KeyExceptionTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.security.KeyException(java.lang.String)
 		KeyException e = new KeyException("test message");
-		assertTrue("Failed toString test for constructed instance", e
-				.toString().equals("java.security.KeyException: test message"));
+		assertEquals("Failed toString test for constructed instance", "java.security.KeyException: test message", e
+				.toString());
 	}
 }

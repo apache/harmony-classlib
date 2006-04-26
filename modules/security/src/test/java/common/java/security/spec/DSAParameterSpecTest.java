@@ -61,7 +61,7 @@ public class DSAParameterSpecTest extends TestCase {
                 new BigInteger("2"),
 				new BigInteger("3"));
         
-        assertTrue(dps.getG().intValue() == 3);        
+        assertEquals(3, dps.getG().intValue());
     }
 
     /**
@@ -73,7 +73,7 @@ public class DSAParameterSpecTest extends TestCase {
                 new BigInteger("2"),
                 new BigInteger("3"));
         
-        assertTrue(dps.getP().intValue() == 1);        
+        assertEquals(1, dps.getP().intValue());
     }
 
     /**
@@ -85,6 +85,6 @@ public class DSAParameterSpecTest extends TestCase {
                 new BigInteger("2"),
                 new BigInteger("3"));
         
-        assertTrue(dps.getQ().intValue() == 2);        
+        assertEquals(2, dps.getQ().intValue());
     }
 }

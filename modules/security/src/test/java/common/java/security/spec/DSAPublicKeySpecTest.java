@@ -63,7 +63,7 @@ public class DSAPublicKeySpecTest extends TestCase {
                 new BigInteger("3"), // q
                 new BigInteger("4"));// g
         
-        assertTrue(dpks.getG().intValue() == 4);
+        assertEquals(4, dpks.getG().intValue());
     }
 
     /**
@@ -76,7 +76,7 @@ public class DSAPublicKeySpecTest extends TestCase {
                 new BigInteger("3"), // q
                 new BigInteger("4"));// g
         
-        assertTrue(dpks.getP().intValue() == 2);
+        assertEquals(2, dpks.getP().intValue());
     }
 
     /**
@@ -89,7 +89,7 @@ public class DSAPublicKeySpecTest extends TestCase {
                 new BigInteger("3"), // q
                 new BigInteger("4"));// g
         
-        assertTrue(dpks.getQ().intValue() == 3);
+        assertEquals(3, dpks.getQ().intValue());
     }
 
     /**
@@ -102,6 +102,6 @@ public class DSAPublicKeySpecTest extends TestCase {
                 new BigInteger("3"), // q
                 new BigInteger("4"));// g
         
-        assertTrue(dpks.getY().intValue() == 1);
+        assertEquals(1, dpks.getY().intValue());
     }
 }
