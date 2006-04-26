@@ -151,6 +151,16 @@ public class InputStreamReaderTest extends TestCase {
 		assertEquals(-1, reader.read());
 	}
 
+    /*
+     * Class under test for int read()
+     * Regression for Harmony-411
+     */
+    public void testRead1() throws IOException {
+        InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(
+                new byte[] { -32, -96 }), "UTF-8");
+        assertEquals("read() return incorrect value", 65533, isr.read());
+    }
+
 	/*
 	 * Class under test for int read(char[], int, int)
 	 */

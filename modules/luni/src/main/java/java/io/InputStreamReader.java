@@ -21,6 +21,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 import java.security.AccessController;
 import java.util.HashMap;
 
@@ -87,7 +88,9 @@ public class InputStreamReader extends Reader {
 		enc.length();
 		this.in = in;
 		try {
-			decoder = Charset.forName(enc).newDecoder();
+			decoder = Charset.forName(enc).newDecoder()
+			          .onMalformedInput(CodingErrorAction.REPLACE)
+			          .onUnmappableCharacter(CodingErrorAction.REPLACE);
 		} catch (IllegalArgumentException e) {
 			throw new UnsupportedEncodingException();
 		}
