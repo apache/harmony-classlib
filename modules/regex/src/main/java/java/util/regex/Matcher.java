@@ -217,16 +217,25 @@ public final class Matcher implements MatchResult {
         return this;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * TODO: appendTail(StringBuffer) javadoc
+	 * 
+	 * @param sb
+	 * @return
+	 */
     public StringBuffer appendTail(StringBuffer sb) {
         return sb.append(string.subSequence(appendPos, string.length()));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * This is very similar to replaceAll except only the first occurrence of a
+	 * sequence matching the pattern is replaced.
+	 * 
+	 * @param replacement
+	 *            A string to replace occurrences of character sequences
+	 *            matching the pattern.
+	 * @return A new string with replacements inserted
+	 */
     public String replaceFirst(String replacement) {
         reset();
         if (find()) {
@@ -239,9 +248,16 @@ public final class Matcher implements MatchResult {
 
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Replace all occurrences of character sequences which match the pattern
+	 * with the given replacement string. The replacement string may refer to
+	 * capturing groups using the syntax "$<group number>".
+	 * 
+	 * @param replacement
+	 *            A string to replace occurrences of character sequences
+	 *            matching the pattern.
+	 * @return A new string with replacements inserted
+	 */
     public String replaceAll(String replacement) {
         StringBuffer sb = new StringBuffer();
         reset();
@@ -252,9 +268,11 @@ public final class Matcher implements MatchResult {
         return appendTail(sb).toString();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Return a reference to the pattern used by this Matcher.
+	 * 
+	 * @return A reference to the pattern used by this Matcher.
+	 */
     public Pattern pattern() {
         return pat;
     }
@@ -299,9 +317,14 @@ public final class Matcher implements MatchResult {
         return start.find(startIndex, string, matchResult);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * The find() method matches the pattern against the character sequence
+	 * beginning at the character after the last match or at the beginning of
+	 * the sequence if called immediately after reset(). The method returns true
+	 * if and only if a match is found.
+	 * 
+	 * @return A boolean indicating if the pattern was matched.
+	 */
     public boolean find() {
         int length = string.length();
         if (!hasTransparentBounds())
@@ -334,9 +357,14 @@ public final class Matcher implements MatchResult {
         return matchResult.end(groupIndex);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * This method is identical in function to the Pattern.matches() method. It
+	 * returns true if and only if the regular expression pattern matches the
+	 * entire input character sequence.
+	 * 
+	 * @return A boolean indicating if the pattern matches the entire input
+	 *         character sequence.
+	 */
     public boolean matches() {
         return lookingAt(leftBound, Matcher.MODE_MATCH);
     }
@@ -387,9 +415,15 @@ public final class Matcher implements MatchResult {
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * This method attempts to match the pattern against the character sequence
+	 * starting at the beginning. If the pattern matches even a prefix of the
+	 * input character sequence, lookingAt() will return true. Otherwise it will
+	 * return false.
+	 * 
+	 * @return A boolean indicating if the pattern matches a prefix of the input
+	 *         character sequence.
+	 */
     public boolean lookingAt() {
         return lookingAt(leftBound, Matcher.MODE_FIND);
     }
@@ -408,9 +442,11 @@ public final class Matcher implements MatchResult {
         return start(0);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Return the number of capturing groups in the pattern.
+	 * 
+	 * @return The number of capturing groups in the pattern.
+	 */
     public int groupCount() {
         return matchResult.groupCount();
     }

@@ -24,11 +24,14 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 
+
 /**
- * @com.intel.drl.spec_ref
+ * Pattern implements a compiler for regular expressions as defined by the J2SE
+ * specification. The regular expression syntax is largely similar to the syntax
+ * defined by Perl 5 but has both omissions and extensions. A formal and
+ * complete definition of the regular expression syntax is not provided by the
+ * J2SE speTBD (TODO)
  * 
- * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.36.2.2 $
  */
 public final class Pattern implements Serializable {
     
@@ -110,16 +113,29 @@ public final class Pattern implements Serializable {
 
     transient AbstractSet start = null;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Create a matcher for this pattern and a given input character sequence
+	 * 
+	 * @param cs
+	 *            The input character sequence
+	 * @return A new matcher
+	 */
     public Matcher matcher(CharSequence cs) {
         return new Matcher(this, cs);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Split an input string using the pattern as a token separator.
+	 * 
+	 * @param input
+	 *            Input sequence to tokenize
+	 * @param limit
+	 *            If positive, the maximum number of tokens to return. If
+	 *            negative, an indefinite number of tokens are returned. If
+	 *            zero, an indefinite number of tokens are returned but trailing
+	 *            empty tokens are excluded.
+	 * @return A sequence of tokens split out of the input string.
+	 */
     public String[] split(CharSequence input, int limit) {
         ArrayList res = new ArrayList();
         Matcher mat = matcher(input);
@@ -157,30 +173,87 @@ public final class Pattern implements Serializable {
         return split(input, 0);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Returns the pattern string passed to the compile method
+	 * 
+	 * @return A string representation of the pattern
+	 */
     public String pattern() {
         return lexemes.toString();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Return a textual representation of the pattern.
+	 * 
+	 * @return The regular expression string
+	 */
     public String toString() {
         return this.pattern();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Return the mask of flags used to compile the pattern
+	 * 
+	 * @return A mask of flags used to compile the pattern.
+	 */
     public int flags() {
         return this.flags;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+	/**
+	 * Return a compiled pattern corresponding to the input regular expression
+	 * string.
+	 * 
+	 * The input <code>flags</code> is a mask of the following flags:
+	 * <dl>
+	 * <dt><code>UNIX_LINES</code> (0x0001)
+	 * <dd>Enables UNIX lines mode where only \n is recognized as a line
+	 * terminator. The default setting of this flag is <em>off</em> indicating
+	 * that all of the following character sequences are recognized as line
+	 * terminators: \n, \r, \r\n, NEL (\u0085), \u2028 and \u2029.
+	 * <dt><code>CASE_INSENSITIVE</code> (0x0002)
+	 * <dd>Directs matching to be done in a way that ignores differences in
+	 * case. If input character sequences are encoded in character sets other
+	 * than ASCII, then the UNICODE_CASE must also be set to enable Unicode case
+	 * detection.
+	 * <dt><code>UNICODE_CASE</code> (0x0040)
+	 * <dd>Enables Unicode case folding if used in conjuntion with the
+	 * <code>CASE_INSENSITIVE</code> flag. If <code>CASE_INSENSITIVE</code>
+	 * is not set, then this flag has no effect.
+	 * <dt><code>COMMENTS</code> (0x0004)
+	 * <dd>Directs the pattern compiler to ignore whitespace and comments in
+	 * the pattern. Whitespace consists of sequences including only these
+	 * characters: SP (\u0020), HT (\t or \u0009), LF (\n or ), VT (\u000b), FF
+	 * (\f or \u000c), and CR (\r or ). A comment is any sequence of characters
+	 * beginning with the "#" (\u0023) character and ending in a LF character.
+	 * <dt><code>MULTILINE</code> (0x0008)
+	 * <dd>Turns on multiple line mode for matching of character sequences. By
+	 * default, this mode is off so that the character "^" (\u005e) matches the
+	 * beginning of the entire input sequence and the character "$" (\u0024)
+	 * matches the end of the input character sequence. In multiple line mode,
+	 * the character "^" matches any character in the input sequence which
+	 * immediately follows a line terminator and the character "$" matches any
+	 * character in the input sequence which immediately precedes a line
+	 * terminator.
+	 * <dt><code>DOTALL</code> (0x0020)
+	 * <dd>Enables the DOT (".") character in regular expressions to match line
+	 * terminators. By default, line terminators are not matched by DOT.
+	 * <dt><code>CANON_EQ</code> (0x0080)
+	 * <dd>Enables matching of character sequences which are cacnonically
+	 * equivalent according to the Unicode standard. Canonical equivalence is
+	 * described here: http://www.unicode.org/reports/tr15/. By default,
+	 * canonical equivalence is not detected while matching.
+	 * </dl>
+	 * 
+	 * @param regex
+	 *            A regular expression string.
+	 * @param flags
+	 *            A set of flags to control the compilation of the pattern.
+	 * @return A compiled pattern
+	 * @throws PatternSyntaxException
+	 *             If the input regular expression does not match the required
+	 *             grammar.
+	 */
     public static Pattern compile(String regex, int flags)
             throws PatternSyntaxException {
         AbstractSet.counter = 1;
