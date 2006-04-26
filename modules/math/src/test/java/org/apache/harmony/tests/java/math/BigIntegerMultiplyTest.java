@@ -45,7 +45,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -66,7 +66,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -88,7 +88,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -110,7 +110,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -133,7 +133,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -156,7 +156,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -176,7 +176,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -194,7 +194,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -212,7 +212,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -230,7 +230,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -250,7 +250,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -270,7 +270,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
     
     /**
@@ -285,7 +285,7 @@ public class BigIntegerMultiplyTest extends TestCase {
             BigInteger result = aNumber.pow(exp);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("exponent is negative"));
+            assertEquals("Improper exception message", "exponent is negative", e.getMessage());
         }
     }
 
@@ -307,7 +307,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -327,7 +327,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -345,7 +345,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -366,7 +366,7 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -384,6 +384,6 @@ public class BigIntegerMultiplyTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 }

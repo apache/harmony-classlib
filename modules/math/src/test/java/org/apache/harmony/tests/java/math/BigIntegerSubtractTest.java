@@ -46,7 +46,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -67,7 +67,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
     }
 
     /**
@@ -89,7 +89,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -111,7 +111,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -132,7 +132,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
     }
 
     /**
@@ -153,7 +153,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -175,7 +175,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
     }
 
     /**
@@ -197,7 +197,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
     }
     
     /**
@@ -218,7 +218,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
     
     /**
@@ -239,7 +239,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
     }
 
     /**
@@ -261,7 +261,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -283,7 +283,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
     
     /**
@@ -305,7 +305,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
     }
 
     /**
@@ -327,7 +327,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
     }
 
     /**
@@ -348,7 +348,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
 }
     
     /**
@@ -369,7 +369,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
     
     /**
@@ -389,7 +389,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 0);
+        assertEquals(0, result.signum());
     }
 
     /**
@@ -410,7 +410,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -431,7 +431,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -451,7 +451,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 0);
+        assertEquals(0, result.signum());
     }
     
     /**
@@ -470,7 +470,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -489,7 +489,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 1);
+        assertEquals(1, result.signum());
     }
 
     /**
@@ -505,7 +505,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 0);
+        assertEquals(0, result.signum());
     }
 
     /**
@@ -521,7 +521,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == 0);
+        assertEquals(0, result.signum());
     }
 
     /**
@@ -541,7 +541,7 @@ public class BigIntegerSubtractTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue(result.signum() == -1);
+        assertEquals(-1, result.signum());
     }
 }
 

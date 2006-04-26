@@ -489,7 +489,7 @@ public class BigDecimalArithmeticTest extends TestCase {
             aNumber.divide(bNumber, BigDecimal.ROUND_UNNECESSARY);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("division by zero"));
+            assertEquals("Improper exception message", "division by zero", e.getMessage());
         }
     }
 
@@ -507,7 +507,7 @@ public class BigDecimalArithmeticTest extends TestCase {
             aNumber.divide(bNumber, BigDecimal.ROUND_UNNECESSARY);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("rounding mode is ROUND_UNNECESSARY but the result is not exact"));
+            assertEquals("Improper exception message", "rounding mode is ROUND_UNNECESSARY but the result is not exact", e.getMessage());
         }
     }
 
@@ -525,7 +525,7 @@ public class BigDecimalArithmeticTest extends TestCase {
             aNumber.divide(bNumber, 100);
             fail("IllegalArgumentException has not been caught");
         } catch (IllegalArgumentException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("invalid rounding mode"));
+            assertEquals("Improper exception message", "invalid rounding mode", e.getMessage());
         }
     }
 

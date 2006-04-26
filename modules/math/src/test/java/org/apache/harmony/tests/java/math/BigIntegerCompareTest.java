@@ -42,7 +42,7 @@ public class BigIntegerCompareTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -59,7 +59,7 @@ public class BigIntegerCompareTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -74,7 +74,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = 1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == 1);
+        assertEquals(1, aNumber.compareTo(bNumber));
     }
     
     /**
@@ -90,7 +90,7 @@ public class BigIntegerCompareTest extends TestCase {
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
         int result = aNumber.compareTo(bNumber);
-        assertTrue(aNumber.compareTo(bNumber) == -1);
+        assertEquals(-1, aNumber.compareTo(bNumber));
     }
 
     /**
@@ -104,7 +104,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = 1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == 0);
+        assertEquals(0, aNumber.compareTo(bNumber));
     }
     
     /**
@@ -119,7 +119,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = -1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == -1);
+        assertEquals(-1, aNumber.compareTo(bNumber));
     }
     
     /**
@@ -134,7 +134,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = -1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == 1);
+        assertEquals(1, aNumber.compareTo(bNumber));
     }
 
     /**
@@ -148,7 +148,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = -1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == 0);
+        assertEquals(0, aNumber.compareTo(bNumber));
     }
     
     /**
@@ -163,7 +163,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = -1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == 1);
+        assertEquals(1, aNumber.compareTo(bNumber));
     }
 
     /**
@@ -178,7 +178,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = 1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == -1);
+        assertEquals(-1, aNumber.compareTo(bNumber));
     }
     
     /**
@@ -191,7 +191,7 @@ public class BigIntegerCompareTest extends TestCase {
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = BigInteger.ZERO;
         int result = aNumber.compareTo(bNumber);
-        assertTrue(aNumber.compareTo(bNumber) == 1);
+        assertEquals(1, aNumber.compareTo(bNumber));
     }
 
     /**
@@ -203,7 +203,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = 1;
         BigInteger aNumber = BigInteger.ZERO;
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == -1);
+        assertEquals(-1, aNumber.compareTo(bNumber));
     }
 
     /**
@@ -215,7 +215,7 @@ public class BigIntegerCompareTest extends TestCase {
         int aSign = -1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = BigInteger.ZERO;
-        assertTrue(aNumber.compareTo(bNumber) == -1);
+        assertEquals(-1, aNumber.compareTo(bNumber));
     }
 
     /**
@@ -227,7 +227,7 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = -1;
         BigInteger aNumber = BigInteger.ZERO;
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        assertTrue(aNumber.compareTo(bNumber) == 1);
+        assertEquals(1, aNumber.compareTo(bNumber));
     }
 
     /**
@@ -237,7 +237,7 @@ public class BigIntegerCompareTest extends TestCase {
     public void testCompareToZeroZero() {
         BigInteger aNumber = BigInteger.ZERO;
         BigInteger bNumber = BigInteger.ZERO;
-        assertTrue(aNumber.compareTo(bNumber) == 0);
+        assertEquals(0, aNumber.compareTo(bNumber));
     }
 
     /**
@@ -352,7 +352,7 @@ public class BigIntegerCompareTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }    
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -392,7 +392,7 @@ public class BigIntegerCompareTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }    
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -413,7 +413,7 @@ public class BigIntegerCompareTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }    
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -502,7 +502,7 @@ public class BigIntegerCompareTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }    
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -512,7 +512,7 @@ public class BigIntegerCompareTest extends TestCase {
         byte aBytes[] = {12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91};
         int aSign = 1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
     
     /**
@@ -522,7 +522,7 @@ public class BigIntegerCompareTest extends TestCase {
         byte aBytes[] = {12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91};
         int aSign = -1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
     
     /**
@@ -530,6 +530,6 @@ public class BigIntegerCompareTest extends TestCase {
      */
     public void testSignumZero() {
         BigInteger aNumber = BigInteger.ZERO;
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 }

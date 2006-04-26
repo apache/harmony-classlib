@@ -40,7 +40,7 @@ public class BigIntegerConstructorsTest extends TestCase {
             BigInteger aNumber = new BigInteger(aBytes);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("zero length array"));
+            assertEquals("Improper exception message", "zero length array", e.getMessage());
         }
     }
     
@@ -57,7 +57,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -73,7 +73,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -89,7 +89,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -105,7 +105,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -121,7 +121,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -137,7 +137,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -153,7 +153,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
     
     /**
@@ -169,7 +169,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -184,7 +184,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 
     /**
@@ -198,7 +198,7 @@ public class BigIntegerConstructorsTest extends TestCase {
             BigInteger aNumber = new BigInteger(aSign, aBytes);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("sign must be -1, 0, or 1"));
+            assertEquals("Improper exception message", "sign must be -1, 0, or 1", e.getMessage());
         }
     }
     
@@ -213,7 +213,7 @@ public class BigIntegerConstructorsTest extends TestCase {
             BigInteger aNumber = new BigInteger(aSign, aBytes);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("zero sign with non-zero magnitude"));
+            assertEquals("Improper exception message", "zero sign with non-zero magnitude", e.getMessage());
         }
     }
 
@@ -232,7 +232,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
     
     /**
@@ -250,7 +250,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -267,7 +267,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -285,7 +285,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -303,7 +303,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
     
     /**
@@ -321,7 +321,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -339,7 +339,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
     
     /**
@@ -357,7 +357,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
     
     /**
@@ -375,7 +375,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -392,7 +392,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -410,7 +410,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -428,7 +428,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
     
     /**
@@ -446,7 +446,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -464,7 +464,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -481,7 +481,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 
     /**
@@ -498,7 +498,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 
     /**
@@ -515,7 +515,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 
     /**
@@ -532,7 +532,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 
     /**
@@ -549,7 +549,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 
     /**
@@ -566,7 +566,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 
     /**
@@ -580,7 +580,7 @@ public class BigIntegerConstructorsTest extends TestCase {
             BigInteger aNumber = new BigInteger(value, radix);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("radix is out of range"));
+            assertEquals("Improper exception message", "radix is out of range", e.getMessage());
         }
     }
     
@@ -639,7 +639,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
     
     /**
@@ -655,7 +655,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -671,7 +671,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -687,7 +687,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -703,7 +703,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -719,7 +719,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -735,7 +735,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 
     /**

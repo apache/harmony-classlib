@@ -92,7 +92,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
         BigDecimal bNumber = aNumber.setScale(newScale);
         assertTrue("incorrect scale", bNumber.scale() == newScale);
-        assertTrue("incorrect value", bNumber.compareTo(aNumber) == 0);
+        assertEquals("incorrect value", 0, bNumber.compareTo(aNumber));
     }
 
     /**
@@ -104,7 +104,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         BigDecimal aNumber = new BigDecimal(a);
         BigDecimal bNumber = aNumber.setScale(newScale);
         assertTrue("incorrect scale", bNumber.scale() == newScale);
-        assertTrue("incorrect value", bNumber.compareTo(aNumber) == 0);
+        assertEquals("incorrect value", 0, bNumber.compareTo(aNumber));
     }
 
     /**
@@ -333,7 +333,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
             BigDecimal bNumber = aNumber.movePointRight(shift);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("scale outside the range of a 32-bit integer"));
+            assertEquals("Improper exception message", "scale outside the range of a 32-bit integer", e.getMessage());
         }
     }
 

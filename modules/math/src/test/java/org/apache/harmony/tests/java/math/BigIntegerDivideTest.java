@@ -42,7 +42,7 @@ public class BigIntegerDivideTest extends TestCase {
             BigInteger result = aNumber.divide(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("division by zero"));
+            assertEquals("Improper exception message", "division by zero", e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class BigIntegerDivideTest extends TestCase {
             BigInteger result = aNumber.divide(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("division by zero"));
+            assertEquals("Improper exception message", "division by zero", e.getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -99,7 +99,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -120,7 +120,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -141,7 +141,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -161,7 +161,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -181,7 +181,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -201,7 +201,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -221,7 +221,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -241,7 +241,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
     
     /**
@@ -259,7 +259,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -277,7 +277,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -293,7 +293,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
     
     /**
@@ -313,7 +313,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -333,7 +333,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -354,7 +354,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -374,7 +374,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -394,7 +394,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -411,7 +411,7 @@ public class BigIntegerDivideTest extends TestCase {
             BigInteger result = aNumber.remainder(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("division by zero"));
+            assertEquals("Improper exception message", "division by zero", e.getMessage());
         }
     }
 
@@ -432,7 +432,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -452,7 +452,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -472,7 +472,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -493,7 +493,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
     
     /**
@@ -514,7 +514,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -534,7 +534,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -554,7 +554,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -574,7 +574,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -600,13 +600,13 @@ public class BigIntegerDivideTest extends TestCase {
                 fail("Incorrect quotation");
             }
         }
-        assertTrue(result[0].signum() == -1);
+        assertEquals(-1, result[0].signum());
         resBytes = result[1].toByteArray();
         for(int i = 0; i < resBytes.length; i++) {
             if (resBytes[i] != rBytes[1][i]) {
                 fail("Incorrect remainder");
             }
-            assertTrue(result[1].signum() == -1);
+            assertEquals(-1, result[1].signum());
         }
     }
     
@@ -624,7 +624,7 @@ public class BigIntegerDivideTest extends TestCase {
             BigInteger result = aNumber.mod(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("modulus is non-positive"));
+            assertEquals("Improper exception message", "modulus is non-positive", e.getMessage());
         }
     }
 
@@ -645,7 +645,7 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -665,6 +665,6 @@ public class BigIntegerDivideTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 }

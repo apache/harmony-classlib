@@ -666,7 +666,7 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -681,7 +681,7 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -696,7 +696,7 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -711,7 +711,7 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -726,7 +726,7 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
 
     /**
@@ -742,7 +742,7 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 1);
+        assertEquals("incorrect sign", 1, aNumber.signum());
     }
     
     /**
@@ -757,7 +757,7 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
 
     /**
@@ -773,7 +773,7 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == -1);
+        assertEquals("incorrect sign", -1, aNumber.signum());
     }
     /**
      * valueOf (long val): convert a zero long value to a BigInteger.
@@ -787,6 +787,6 @@ public class BigIntegerConvertTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", aNumber.signum() == 0);
+        assertEquals("incorrect sign", 0, aNumber.signum());
     }
 }

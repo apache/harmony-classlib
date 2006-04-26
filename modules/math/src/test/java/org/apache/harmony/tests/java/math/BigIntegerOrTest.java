@@ -45,7 +45,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -65,7 +65,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -85,7 +85,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -105,7 +105,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -125,7 +125,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -145,7 +145,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -165,7 +165,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -185,7 +185,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -205,7 +205,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -225,7 +225,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -245,7 +245,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -265,7 +265,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -285,7 +285,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -305,7 +305,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -325,7 +325,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -345,7 +345,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -365,7 +365,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -385,7 +385,7 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -405,6 +405,6 @@ public class BigIntegerOrTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 }

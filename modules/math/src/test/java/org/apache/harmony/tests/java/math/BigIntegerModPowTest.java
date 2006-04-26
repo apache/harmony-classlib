@@ -45,7 +45,7 @@ public class BigIntegerModPowTest extends TestCase {
 			BigInteger result = aNumber.modPow(exp, modulus);
 			fail("ArithmeticException has not been caught");
 		} catch (ArithmeticException e) {
-			assertTrue("Improper exception message", e.getMessage().equals("non-positive modulus"));
+			assertEquals("Improper exception message", "non-positive modulus", e.getMessage());
 		}
 	}
 
@@ -69,7 +69,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class BigIntegerModPowTest extends TestCase {
 			BigInteger result = aNumber.modInverse(modulus);
 			fail("ArithmeticException has not been caught");
 		} catch (ArithmeticException e) {
-			assertTrue("Improper exception message", e.getMessage().equals("non-positive modulus"));
+			assertEquals("Improper exception message", "non-positive modulus", e.getMessage());
 		}
 	}
 	
@@ -127,7 +127,7 @@ public class BigIntegerModPowTest extends TestCase {
 			BigInteger result = aNumber.modInverse(modulus);
 			fail("ArithmeticException has not been caught");
 		} catch (ArithmeticException e) {
-			assertTrue("Improper exception message", e.getMessage().equals("non-invertible BigInteger"));
+			assertEquals("Improper exception message", "non-invertible BigInteger", e.getMessage());
 		}
 	}
 
@@ -148,7 +148,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 
 	/**
@@ -188,7 +188,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 	
 	/**
@@ -226,7 +226,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 	
 	/**
@@ -264,7 +264,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 
 	/**
@@ -279,7 +279,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 0);
+		assertEquals("incorrect sign", 0, result.signum());
 	}
 
 	/**
@@ -299,7 +299,7 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 
 	/**
@@ -319,6 +319,6 @@ public class BigIntegerModPowTest extends TestCase {
 		for(int i = 0; i < resBytes.length; i++) {
 			assertTrue(resBytes[i] == rBytes[i]);
 		}
-		assertTrue("incorrect sign", result.signum() == 1);
+		assertEquals("incorrect sign", 1, result.signum());
 	}
 }

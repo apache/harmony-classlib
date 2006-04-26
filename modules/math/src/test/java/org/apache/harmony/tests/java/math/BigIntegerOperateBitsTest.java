@@ -34,7 +34,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
      */
     public void testBitCountZero() {
         BigInteger aNumber = new BigInteger("0");
-        assertTrue(aNumber.bitCount() == 0);
+        assertEquals(0, aNumber.bitCount());
     }
 
     /**
@@ -42,7 +42,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
      */
     public void testBitCountNeg() {
         BigInteger aNumber = new BigInteger("-12378634756382937873487638746283767238657872368748726875");
-        assertTrue(aNumber.bitCount() == 87);
+        assertEquals(87, aNumber.bitCount());
     }
 
     /**
@@ -50,7 +50,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
      */
     public void testBitCountPos() {
         BigInteger aNumber = new BigInteger("12378634756343564757582937873487638746283767238657872368748726875");
-        assertTrue(aNumber.bitCount() == 107);
+        assertEquals(107, aNumber.bitCount());
     }
 
     /**
@@ -58,7 +58,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
      */
     public void testBitLengthZero() {
         BigInteger aNumber = new BigInteger("0");
-        assertTrue(aNumber.bitLength() == 0);
+        assertEquals(0, aNumber.bitLength());
     }
 
     /**
@@ -68,7 +68,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         byte aBytes[] = {12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91};
         int aSign = 1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        assertTrue(aNumber.bitLength() == 108);
+        assertEquals(108, aNumber.bitLength());
     }
 
     /**
@@ -78,7 +78,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         byte aBytes[] = {-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26};
         int aSign = 1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        assertTrue(aNumber.bitLength() == 96);
+        assertEquals(96, aNumber.bitLength());
     }
 
     /**
@@ -88,7 +88,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         byte aBytes[] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         int aSign = 1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        assertTrue(aNumber.bitLength() == 81);
+        assertEquals(81, aNumber.bitLength());
     }
 
     /**
@@ -98,7 +98,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         byte aBytes[] = {12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91};
         int aSign = -1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        assertTrue(aNumber.bitLength() == 108);
+        assertEquals(108, aNumber.bitLength());
     }
 
     /**
@@ -108,7 +108,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         byte aBytes[] = {-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26};
         int aSign = -1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        assertTrue(aNumber.bitLength() == 96);
+        assertEquals(96, aNumber.bitLength());
     }
     
     /**
@@ -118,7 +118,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         byte aBytes[] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         int aSign = -1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        assertTrue(aNumber.bitLength() == 80);
+        assertEquals(80, aNumber.bitLength());
     }
 
     /**
@@ -133,7 +133,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
             BigInteger result = aNumber.clearBit(number);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("negative bit number"));
+            assertEquals("Improper exception message", "negative bit number", e.getMessage());
         }
     }
 
@@ -152,7 +152,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -170,7 +170,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
 
     /**
@@ -188,7 +188,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -206,7 +206,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -263,7 +263,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -281,7 +281,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -299,7 +299,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -317,7 +317,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -335,7 +335,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -353,7 +353,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -371,7 +371,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -389,7 +389,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -407,7 +407,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -425,7 +425,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -440,7 +440,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
             BigInteger result = aNumber.flipBit(number);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("negative bit number"));
+            assertEquals("Improper exception message", "negative bit number", e.getMessage());
         }
     }
 
@@ -459,7 +459,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -477,7 +477,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue("incorrect value", resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -495,7 +495,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue("incorrect value", resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -513,7 +513,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -531,7 +531,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -549,7 +549,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -567,7 +567,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -625,7 +625,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -643,7 +643,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -661,7 +661,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -679,7 +679,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -697,7 +697,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -715,7 +715,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -730,7 +730,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
             BigInteger result = aNumber.setBit(number);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("negative bit number"));
+            assertEquals("Improper exception message", "negative bit number", e.getMessage());
         }
     }
 
@@ -749,7 +749,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -767,7 +767,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -785,7 +785,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -803,7 +803,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -821,7 +821,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -839,7 +839,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -857,7 +857,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -875,7 +875,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -893,7 +893,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -911,7 +911,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -929,7 +929,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -947,7 +947,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -1003,7 +1003,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -1021,7 +1021,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -1031,8 +1031,8 @@ public class BigIntegerOperateBitsTest extends TestCase {
      */
     public void testSetBitBug1331() {
         BigInteger result = BigInteger.valueOf(0L).setBit(191);
-        assertTrue("incorrect value", result.toString().equals("3138550867693340381917894711603833208051177722232017256448"));
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect value", "3138550867693340381917894711603833208051177722232017256448", result.toString());
+        assertEquals("incorrect sign", 1, result.signum());
     }
     
     /**
@@ -1050,7 +1050,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
     
     /**
@@ -1068,7 +1068,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -1086,7 +1086,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
     
     /**
@@ -1104,7 +1104,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -1122,7 +1122,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
     
     /**
@@ -1140,7 +1140,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
     
     /**
@@ -1158,7 +1158,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -1176,7 +1176,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
     
     /**
@@ -1194,7 +1194,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 1);
+        assertEquals("incorrect sign", 1, result.signum());
     }
 
     /**
@@ -1212,7 +1212,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == 0);
+        assertEquals("incorrect sign", 0, result.signum());
     }
     
     /**
@@ -1232,7 +1232,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -1252,7 +1252,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -1272,7 +1272,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -1292,7 +1292,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         for(int i = 0; i < resBytes.length; i++) {
             assertTrue(resBytes[i] == rBytes[i]);
         }
-        assertTrue("incorrect sign", result.signum() == -1);
+        assertEquals("incorrect sign", -1, result.signum());
     }
 
     /**
@@ -1307,7 +1307,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
             boolean result = aNumber.testBit(number);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().equals("negative bit number"));
+            assertEquals("Improper exception message", "negative bit number", e.getMessage());
         }
     }
 
