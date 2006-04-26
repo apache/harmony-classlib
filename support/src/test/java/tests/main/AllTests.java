@@ -32,7 +32,7 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("All test suites");
 		// $JUnit-BEGIN$
-		suite.addTest(tests.archive.AllTests.suite());
+		suite.addTest(org.apache.harmony.archive.tests.AllTests.suite());
 		suite.addTest(tests.luni.AllTests.suite());
 		suite.addTest(tests.nio_char.AllTests.suite());
 		suite.addTest(org.apache.harmony.text.tests.AllTests.suite());
