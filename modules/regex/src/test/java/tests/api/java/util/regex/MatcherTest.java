@@ -79,12 +79,12 @@ public class MatcherTest extends TestCase {
         Matcher m = p.matcher("foo1barzfoo2baryfoozbar5");
 
 		assertTrue(m.find());
-		assertTrue(m.start() == 0);
-		assertTrue(m.end() == 8);
-		assertTrue(m.start(1) == 0);
-		assertTrue(m.end(1) == 4);
-		assertTrue(m.start(2) == 4);
-		assertTrue(m.end(2) == 8);
+		assertEquals(0, m.start());
+		assertEquals(8, m.end());
+		assertEquals(0, m.start(1));
+		assertEquals(4, m.end(1));
+		assertEquals(4, m.start(2));
+		assertEquals(8, m.end(2));
 
 		try {
 			m.start(3);
@@ -123,12 +123,12 @@ public class MatcherTest extends TestCase {
 		}
 
 		assertTrue(m.find());
-		assertTrue(m.start() == 8);
-		assertTrue(m.end() == 16);
-		assertTrue(m.start(1) == 8);
-		assertTrue(m.end(1) == 12);
-		assertTrue(m.start(2) == 12);
-		assertTrue(m.end(2) == 16);
+		assertEquals(8, m.start());
+		assertEquals(16, m.end());
+		assertEquals(8, m.start(1));
+		assertEquals(12, m.end(1));
+		assertEquals(12, m.start(2));
+		assertEquals(16, m.end(2));
 
 		try {
 			m.start(3);

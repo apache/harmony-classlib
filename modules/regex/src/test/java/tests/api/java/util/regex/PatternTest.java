@@ -56,46 +56,46 @@ public class PatternTest extends TestCase {
 
 			m = p.matcher("foobar");
 			assertTrue(m.find());
-			assertTrue(m.start() == 0);
-			assertTrue(m.end() == 3);
+			assertEquals(0, m.start());
+			assertEquals(3, m.end());
 			assertFalse(m.find());
 
 			// Note: also testing reset here
 			m.reset();
 			assertTrue(m.find());
-			assertTrue(m.start() == 0);
-			assertTrue(m.end() == 3);
+			assertEquals(0, m.start());
+			assertEquals(3, m.end());
 			assertFalse(m.find());
 
 			m.reset("barfoobar");
 			assertTrue(m.find());
-			assertTrue(m.start() == 3);
-			assertTrue(m.end() == 6);
+			assertEquals(3, m.start());
+			assertEquals(6, m.end());
 			assertFalse(m.find());
 
 			m.reset("barfoo");
 			assertTrue(m.find());
-			assertTrue(m.start() == 3);
-			assertTrue(m.end() == 6);
+			assertEquals(3, m.start());
+			assertEquals(6, m.end());
 			assertFalse(m.find());
 
 			m.reset("foobarfoobarfoo");
 			assertTrue(m.find());
-			assertTrue(m.start() == 0);
-			assertTrue(m.end() == 3);
+			assertEquals(0, m.start());
+			assertEquals(3, m.end());
 			assertTrue(m.find());
-			assertTrue(m.start() == 6);
-			assertTrue(m.end() == 9);
+			assertEquals(6, m.start());
+			assertEquals(9, m.end());
 			assertTrue(m.find());
-			assertTrue(m.start() == 12);
-			assertTrue(m.end() == 15);
+			assertEquals(12, m.start());
+			assertEquals(15, m.end());
 			assertFalse(m.find());
 			assertTrue(m.find(0));
-			assertTrue(m.start() == 0);
-			assertTrue(m.end() == 3);
+			assertEquals(0, m.start());
+			assertEquals(3, m.end());
 			assertTrue(m.find(4));
-			assertTrue(m.start() == 6);
-			assertTrue(m.end() == 9);
+			assertEquals(6, m.start());
+			assertEquals(9, m.end());
 		} catch (PatternSyntaxException e) {
 			System.out.println(e.getMessage());
 			fail();
@@ -110,48 +110,48 @@ public class PatternTest extends TestCase {
 
 		m = p.matcher("p1#q3p2q42p5p71p63#q888");
 		assertTrue(m.find());
-		assertTrue(m.start() == 0);
-		assertTrue(m.end() == 5);
-		assertTrue(m.groupCount() == 2);
-		assertTrue(m.start(0) == 0);
-		assertTrue(m.end(0) == 5);
-		assertTrue(m.start(1) == 0);
-		assertTrue(m.end(1) == 2);
-		assertTrue(m.start(2) == 3);
-		assertTrue(m.end(2) == 5);
-		assertTrue(m.group().equals("p1#q3"));
-		assertTrue(m.group(0).equals("p1#q3"));
-		assertTrue(m.group(1).equals("p1"));
-		assertTrue(m.group(2).equals("q3"));
+		assertEquals(0, m.start());
+		assertEquals(5, m.end());
+		assertEquals(2, m.groupCount());
+		assertEquals(0, m.start(0));
+		assertEquals(5, m.end(0));
+		assertEquals(0, m.start(1));
+		assertEquals(2, m.end(1));
+		assertEquals(3, m.start(2));
+		assertEquals(5, m.end(2));
+		assertEquals("p1#q3", m.group());
+		assertEquals("p1#q3", m.group(0));
+		assertEquals("p1", m.group(1));
+		assertEquals("q3", m.group(2));
 
 		assertTrue(m.find());
-		assertTrue(m.start() == 5);
-		assertTrue(m.end() == 10);
-		assertTrue(m.groupCount() == 2);
-		assertTrue(m.end(0) == 10);
-		assertTrue(m.start(1) == 5);
-		assertTrue(m.end(1) == 7);
-		assertTrue(m.start(2) == 7);
-		assertTrue(m.end(2) == 10);
-		assertTrue(m.group().equals("p2q42"));
-		assertTrue(m.group(0).equals("p2q42"));
-		assertTrue(m.group(1).equals("p2"));
-		assertTrue(m.group(2).equals("q42"));
+		assertEquals(5, m.start());
+		assertEquals(10, m.end());
+		assertEquals(2, m.groupCount());
+		assertEquals(10, m.end(0));
+		assertEquals(5, m.start(1));
+		assertEquals(7, m.end(1));
+		assertEquals(7, m.start(2));
+		assertEquals(10, m.end(2));
+		assertEquals("p2q42", m.group());
+		assertEquals("p2q42", m.group(0));
+		assertEquals("p2", m.group(1));
+		assertEquals("q42", m.group(2));
 
 		assertTrue(m.find());
-		assertTrue(m.start() == 15);
-		assertTrue(m.end() == 23);
-		assertTrue(m.groupCount() == 2);
-		assertTrue(m.start(0) == 15);
-		assertTrue(m.end(0) == 23);
-		assertTrue(m.start(1) == 15);
-		assertTrue(m.end(1) == 18);
-		assertTrue(m.start(2) == 19);
-		assertTrue(m.end(2) == 23);
-		assertTrue(m.group().equals("p63#q888"));
-		assertTrue(m.group(0).equals("p63#q888"));
-		assertTrue(m.group(1).equals("p63"));
-		assertTrue(m.group(2).equals("q888"));
+		assertEquals(15, m.start());
+		assertEquals(23, m.end());
+		assertEquals(2, m.groupCount());
+		assertEquals(15, m.start(0));
+		assertEquals(23, m.end(0));
+		assertEquals(15, m.start(1));
+		assertEquals(18, m.end(1));
+		assertEquals(19, m.start(2));
+		assertEquals(23, m.end(2));
+		assertEquals("p63#q888", m.group());
+		assertEquals("p63#q888", m.group(0));
+		assertEquals("p63", m.group(1));
+		assertEquals("q888", m.group(2));
 		assertFalse(m.find());
 	}
 
@@ -210,42 +210,42 @@ public class PatternTest extends TestCase {
 		p = Pattern.compile("([a-z]+)\\\\([a-z]+);");
 		m = p.matcher("fred\\ginger;abbott\\costello;jekell\\hyde;");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("fred"));
-		assertTrue(m.group(2).equals("ginger"));
+		assertEquals("fred", m.group(1));
+		assertEquals("ginger", m.group(2));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("abbott"));
-		assertTrue(m.group(2).equals("costello"));
+		assertEquals("abbott", m.group(1));
+		assertEquals("costello", m.group(2));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("jekell"));
-		assertTrue(m.group(2).equals("hyde"));
+		assertEquals("jekell", m.group(1));
+		assertEquals("hyde", m.group(2));
 		assertFalse(m.find());
 
 		// Test \n, \t, \r, \f, \e, \a sequences
 		p = Pattern.compile("([a-z]+)[\\n\\t\\r\\f\\e\\a]+([a-z]+)");
 		m = p.matcher("aa\nbb;cc\u0009\rdd;ee\u000C\u001Bff;gg\n\u0007hh");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("aa"));
-		assertTrue(m.group(2).equals("bb"));
+		assertEquals("aa", m.group(1));
+		assertEquals("bb", m.group(2));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("cc"));
-		assertTrue(m.group(2).equals("dd"));
+		assertEquals("cc", m.group(1));
+		assertEquals("dd", m.group(2));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("ee"));
-		assertTrue(m.group(2).equals("ff"));
+		assertEquals("ee", m.group(1));
+		assertEquals("ff", m.group(2));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("gg"));
-		assertTrue(m.group(2).equals("hh"));
+		assertEquals("gg", m.group(1));
+		assertEquals("hh", m.group(2));
 		assertFalse(m.find());
 
 		// Test \\u and \\x sequences
 		p = Pattern.compile("([0-9]+)[\\u0020:\\x21];");
 		m = p.matcher("11:;22 ;33-;44!;");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("11"));
+		assertEquals("11", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("22"));
+		assertEquals("22", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("44"));
+		assertEquals("44", m.group(1));
 		assertFalse(m.find());
 
 		// Test invalid unicode sequences
@@ -302,11 +302,11 @@ public class PatternTest extends TestCase {
 		p = Pattern.compile("([0-9]+)[\\07\\040\\0160];");
 		m = p.matcher("11\u0007;22:;33 ;44p;");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("11"));
+		assertEquals("11", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("33"));
+		assertEquals("33", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("44"));
+		assertEquals("44", m.group(1));
 		assertFalse(m.find());
 
 		// Test invalid octal sequences
@@ -341,13 +341,13 @@ public class PatternTest extends TestCase {
 		p = Pattern.compile("([0-9]+)[\\cA\\cB\\cC\\cD];");
 		m = p.matcher("11\u0001;22:;33\u0002;44p;55\u0003;66\u0004;");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("11"));
+		assertEquals("11", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("33"));
+		assertEquals("33", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("55"));
+		assertEquals("55", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("66"));
+		assertEquals("66", m.group(1));
 		assertFalse(m.find());
 
 		// More thorough control escape test
@@ -361,7 +361,7 @@ public class PatternTest extends TestCase {
 			for (j = 0; j < 255; j++) {
 				m = p.matcher(Character.toString((char) j));
 				if (m.matches()) {
-					assertTrue(match_char == -1);
+					assertEquals(-1, match_char);
 					match_char = j;
 				}
 			}
@@ -1012,7 +1012,7 @@ public class PatternTest extends TestCase {
 		p = Pattern.compile("[a-z]+;(foo[0-9]-\\Q(...)\\E);[0-9]+");
 		m = p.matcher("abc;foo5-(...);123");
 		assertTrue(m.matches());
-		assertTrue(m.group(1).equals("foo5-(...)"));
+		assertEquals("foo5-(...)", m.group(1));
 		m = p.matcher("abc;foo9-(xxx);789");
 		assertFalse(m.matches());
 
@@ -1069,14 +1069,14 @@ public class PatternTest extends TestCase {
 		p = Pattern.compile("a$");
 		m = p.matcher("a\n");
 		assertTrue(m.find());
-		assertTrue(m.group().equals("a"));
+		assertEquals("a", m.group());
 		assertFalse(m.find());
 
 		p = Pattern.compile("(a$)");
 		m = p.matcher("a\n");
 		assertTrue(m.find());
-		assertTrue(m.group().equals("a"));
-		assertTrue(m.group(1).equals("a"));
+		assertEquals("a", m.group());
+		assertEquals("a", m.group(1));
 		assertFalse(m.find());
 
 		p = Pattern.compile("^.*$", Pattern.MULTILINE);
@@ -1084,24 +1084,24 @@ public class PatternTest extends TestCase {
 		m = p.matcher("a\n");
 		assertTrue(m.find());
 		// System.out.println("["+m.group()+"]");
-		assertTrue(m.group().equals("a"));
+		assertEquals("a", m.group());
 		assertFalse(m.find());
 
 		m = p.matcher("a\nb\n");
 		assertTrue(m.find());
 		// System.out.println("["+m.group()+"]");
-		assertTrue(m.group().equals("a"));
+		assertEquals("a", m.group());
 		assertTrue(m.find());
 		// System.out.println("["+m.group()+"]");
-		assertTrue(m.group().equals("b"));
+		assertEquals("b", m.group());
 		assertFalse(m.find());
 
 		m = p.matcher("a\nb");
 		assertTrue(m.find());
 		// System.out.println("["+m.group()+"]");
-		assertTrue(m.group().equals("a"));
+		assertEquals("a", m.group());
 		assertTrue(m.find());
-		assertTrue(m.group().equals("b"));
+		assertEquals("b", m.group());
 		assertFalse(m.find());
 
 		m = p.matcher("\naa\r\nbb\rcc\n\n");
@@ -1110,13 +1110,13 @@ public class PatternTest extends TestCase {
 		assertTrue(m.group().equals(""));
 		assertTrue(m.find());
 		// System.out.println("["+m.group()+"]");
-		assertTrue(m.group().equals("aa"));
+		assertEquals("aa", m.group());
 		assertTrue(m.find());
 		// System.out.println("["+m.group()+"]");
-		assertTrue(m.group().equals("bb"));
+		assertEquals("bb", m.group());
 		assertTrue(m.find());
 		// System.out.println("["+m.group()+"]");
-		assertTrue(m.group().equals("cc"));
+		assertEquals("cc", m.group());
 		assertTrue(m.find());
 		// System.out.println("["+m.group()+"]");
 		assertTrue(m.group().equals(""));
@@ -1124,7 +1124,7 @@ public class PatternTest extends TestCase {
 
 		m = p.matcher("a");
 		assertTrue(m.find());
-		assertTrue(m.group().equals("a"));
+		assertEquals("a", m.group());
 		assertFalse(m.find());
 
 		m = p.matcher("");
@@ -1152,7 +1152,7 @@ public class PatternTest extends TestCase {
 
 		boolean found = matcher.find();
 		assertTrue(found);
-		assertTrue(matcher.start() == 4);
+		assertEquals(4, matcher.start());
 		if (found) {
 			// modify text
 			text.delete(0, text.length());

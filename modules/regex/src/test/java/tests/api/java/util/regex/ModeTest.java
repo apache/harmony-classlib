@@ -32,25 +32,25 @@ public class ModeTest extends TestCase {
         p = Pattern.compile("([a-z]+)[0-9]+");
 		m = p.matcher("cAT123#dog345");
         assertTrue(m.find());
-		assertTrue(m.group(1).equals("dog"));
+		assertEquals("dog", m.group(1));
 		assertFalse(m.find());
 
         
 		p = Pattern.compile("([a-z]+)[0-9]+", Pattern.CASE_INSENSITIVE);
 		m = p.matcher("cAt123#doG345");
         assertTrue(m.find());
-		assertTrue(m.group(1).equals("cAt"));
+		assertEquals("cAt", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("doG"));
+		assertEquals("doG", m.group(1));
 		assertFalse(m.find());
 
         
 		p = Pattern.compile("(?i)([a-z]+)[0-9]+");
 		m = p.matcher("cAt123#doG345");
         assertTrue(m.find());
-		assertTrue(m.group(1).equals("cAt"));
+		assertEquals("cAt", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("doG"));
+		assertEquals("doG", m.group(1));
 		assertFalse(m.find());
 	}
 
@@ -81,35 +81,35 @@ public class ModeTest extends TestCase {
 		p = Pattern.compile("^foo([0-9]*)", Pattern.MULTILINE);
 		m = p.matcher("foo1bar\nfoo2foo3\nbarfoo4");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("1"));
+		assertEquals("1", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("2"));
+		assertEquals("2", m.group(1));
 		assertFalse(m.find());
 
 
 		p = Pattern.compile("foo([0-9]*)$", Pattern.MULTILINE);
 		m = p.matcher("foo1bar\nfoo2foo3\nbarfoo4");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("3"));
+		assertEquals("3", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("4"));
+		assertEquals("4", m.group(1));
 		assertFalse(m.find());
 
 
         p = Pattern.compile("(?m)^foo([0-9]*)");
 		m = p.matcher("foo1bar\nfoo2foo3\nbarfoo4");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("1"));
+		assertEquals("1", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("2"));
+		assertEquals("2", m.group(1));
 		assertFalse(m.find());
 
 		p = Pattern.compile("(?m)foo([0-9]*)$");
 		m = p.matcher("foo1bar\nfoo2foo3\nbarfoo4");
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("3"));
+		assertEquals("3", m.group(1));
 		assertTrue(m.find());
-		assertTrue(m.group(1).equals("4"));
+		assertEquals("4", m.group(1));
 		assertFalse(m.find());
 	}
 }

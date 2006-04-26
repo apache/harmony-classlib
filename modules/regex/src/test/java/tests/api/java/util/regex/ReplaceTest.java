@@ -48,9 +48,9 @@ public class ReplaceTest extends TestCase {
 		p = Pattern.compile(pattern);
 		m = p.matcher(target);
 		s = m.replaceFirst(repl);
-		assertTrue(s.equals("foo[31];bar[42];[99]xyz"));
+		assertEquals("foo[31];bar[42];[99]xyz", s);
 		s = m.replaceAll(repl);
-		assertTrue(s.equals("foo[31];bar[42];xyz[99]"));
+		assertEquals("foo[31];bar[42];xyz[99]", s);
 
 		target = "[31]foo(42)bar{63}zoo;[12]abc(34)def{56}ghi;{99}xyz[88]xyz(77)xyz;";
 		pattern = "\\[([0-9]+)\\]([a-z]+)\\(([0-9]+)\\)([a-z]+)\\{([0-9]+)\\}([a-z]+)";
@@ -59,12 +59,12 @@ public class ReplaceTest extends TestCase {
 		m = p.matcher(target);
 		s = m.replaceFirst(repl);
 		// System.out.println(s);
-		assertTrue(s
-				.equals("[63]zoo(42)bar{31}foo;[12]abc(34)def{56}ghi;{99}xyz[88]xyz(77)xyz;"));
+		assertEquals("[63]zoo(42)bar{31}foo;[12]abc(34)def{56}ghi;{99}xyz[88]xyz(77)xyz;", s
+				);
 		s = m.replaceAll(repl);
 		// System.out.println(s);
-		assertTrue(s
-				.equals("[63]zoo(42)bar{31}foo;[56]ghi(34)def{12}abc;{99}xyz[88]xyz(77)xyz;"));
+		assertEquals("[63]zoo(42)bar{31}foo;[56]ghi(34)def{12}abc;{99}xyz[88]xyz(77)xyz;", s
+				);
 	}
 
 	public void testEscapeReplace() {
@@ -74,12 +74,12 @@ public class ReplaceTest extends TestCase {
 		pattern = "'";
 		repl = "\\'";
 		s = target.replaceAll(pattern, repl);
-		assertTrue(s.equals("foo'bar''foo"));
+		assertEquals("foo'bar''foo", s);
 		repl = "\\\\'";
 		s = target.replaceAll(pattern, repl);
-		assertTrue(s.equals("foo\\'bar\\'\\'foo"));
+		assertEquals("foo\\'bar\\'\\'foo", s);
 		repl = "\\$3";
 		s = target.replaceAll(pattern, repl);
-		assertTrue(s.equals("foo$3bar$3$3foo"));
+		assertEquals("foo$3bar$3$3foo", s);
 	}
 }
