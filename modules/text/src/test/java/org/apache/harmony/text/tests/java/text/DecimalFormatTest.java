@@ -730,13 +730,13 @@ public class DecimalFormatTest extends TestCase {
      */
     public void test_applyPatternLjava_lang_String() {
         DecimalFormat format = new DecimalFormat("#.#");
-        assertTrue("Wrong pattern 1", format.toPattern().equals("#0.#"));
+		assertEquals("Wrong pattern 1", "#0.#", format.toPattern());
         format = new DecimalFormat("#.");
-        assertTrue("Wrong pattern 2", format.toPattern().equals("#0."));
+		assertEquals("Wrong pattern 2", "#0.", format.toPattern());
         format = new DecimalFormat("#");
-        assertTrue("Wrong pattern 3", format.toPattern().equals("#"));
+		assertEquals("Wrong pattern 3", "#", format.toPattern());
         format = new DecimalFormat(".#");
-        assertTrue("Wrong pattern 4", format.toPattern().equals("#.0"));
+		assertEquals("Wrong pattern 4", "#.0", format.toPattern());
     }
 
     /**
@@ -1011,64 +1011,64 @@ public class DecimalFormatTest extends TestCase {
         Support_BitSet failures = new Support_BitSet();
 
         DecimalFormat df = new DecimalFormat("00.0#E0");
-        assertTrue("00.0#E0: 0", df.format(0).equals("00.0E0"));
-        assertTrue("00.0#E0: 1", df.format(1).equals("10.0E-1"));
-        assertTrue("00.0#E0: 12", df.format(12).equals("12.0E0"));
-        assertTrue("00.0#E0: 123", df.format(123).equals("12.3E1"));
-        assertTrue("00.0#E0: 1234", df.format(1234).equals("12.34E2"));
-        assertTrue("00.0#E0: 12346", df.format(12346).equals("12.35E3"));
-        assertTrue("00.0#E0: 99999", df.format(99999).equals("10.0E4"));
-        assertTrue("00.0#E0: -1", df.format(-1).equals("-10.0E-1"));
-        assertTrue("00.0#E0: -12", df.format(-12).equals("-12.0E0"));
-        assertTrue("00.0#E0: -123", df.format(-123).equals("-12.3E1"));
-        assertTrue("00.0#E0: -1234", df.format(-1234).equals("-12.34E2"));
-        assertTrue("00.0#E0: -12346", df.format(-12346).equals("-12.35E3"));
-        assertTrue("00.0#E0: -99999", df.format(-99999).equals("-10.0E4"));
+		assertEquals("00.0#E0: 0", "00.0E0", df.format(0));
+		assertEquals("00.0#E0: 1", "10.0E-1", df.format(1));
+		assertEquals("00.0#E0: 12", "12.0E0", df.format(12));
+		assertEquals("00.0#E0: 123", "12.3E1", df.format(123));
+		assertEquals("00.0#E0: 1234", "12.34E2", df.format(1234));
+		assertEquals("00.0#E0: 12346", "12.35E3", df.format(12346));
+		assertEquals("00.0#E0: 99999", "10.0E4", df.format(99999));
+		assertEquals("00.0#E0: -1", "-10.0E-1", df.format(-1));
+		assertEquals("00.0#E0: -12", "-12.0E0", df.format(-12));
+		assertEquals("00.0#E0: -123", "-12.3E1", df.format(-123));
+		assertEquals("00.0#E0: -1234", "-12.34E2", df.format(-1234));
+		assertEquals("00.0#E0: -12346", "-12.35E3", df.format(-12346));
+		assertEquals("00.0#E0: -99999", "-10.0E4", df.format(-99999));
 
         df = new DecimalFormat("##0.0E0");
-        assertTrue("##0.0E0: 0", df.format(0).equals("0.0E0"));
-        assertTrue("##0.0E0: 1", df.format(1).equals("1.0E0"));
-        assertTrue("##0.0E0: 12", df.format(12).equals("12E0"));
-        assertTrue("##0.0E0: 123", df.format(123).equals("123E0"));
-        assertTrue("##0.0E0: 1234", df.format(1234).equals("1.234E3"));
-        assertTrue("##0.0E0: 12346", df.format(12346).equals("12.35E3"));
+		assertEquals("##0.0E0: 0", "0.0E0", df.format(0));
+		assertEquals("##0.0E0: 1", "1.0E0", df.format(1));
+		assertEquals("##0.0E0: 12", "12E0", df.format(12));
+		assertEquals("##0.0E0: 123", "123E0", df.format(123));
+		assertEquals("##0.0E0: 1234", "1.234E3", df.format(1234));
+		assertEquals("##0.0E0: 12346", "12.35E3", df.format(12346));
         // Fails in JDK 1.2.2
         if (!df.format(99999).equals("100E3"))
             failures.set(failCount);
         failCount++;
-        assertTrue("##0.0E0: 999999", df.format(999999).equals("1.0E6"));
+		assertEquals("##0.0E0: 999999", "1.0E6", df.format(999999));
 
         df = new DecimalFormat("#00.0##E0");
         // Fails in JDK 1.2.2
         if (!df.format(0).equals("0.00E0"))
             failures.set(failCount);
         failCount++;
-        assertTrue("#00.0##E0: 1", df.format(1).equals("1.00E0"));
-        assertTrue("#00.0##E0: 12", df.format(12).equals("12.0E0"));
-        assertTrue("#00.0##E0: 123", df.format(123).equals("123E0"));
-        assertTrue("#00.0##E0: 1234", df.format(1234).equals("1.234E3"));
-        assertTrue("#00.0##E0: 12345", df.format(12345).equals("12.345E3"));
-        assertTrue("#00.0##E0: 123456", df.format(123456).equals("123.456E3"));
-        assertTrue("#00.0##E0: 1234567", df.format(1234567).equals("1.23457E6"));
-        assertTrue("#00.0##E0: 12345678", df.format(12345678).equals(
-                "12.3457E6"));
-        assertTrue("#00.0##E0: 99999999", df.format(99999999).equals("100E6"));
+		assertEquals("#00.0##E0: 1", "1.00E0", df.format(1));
+		assertEquals("#00.0##E0: 12", "12.0E0", df.format(12));
+		assertEquals("#00.0##E0: 123", "123E0", df.format(123));
+		assertEquals("#00.0##E0: 1234", "1.234E3", df.format(1234));
+		assertEquals("#00.0##E0: 12345", "12.345E3", df.format(12345));
+		assertEquals("#00.0##E0: 123456", "123.456E3", df.format(123456));
+		assertEquals("#00.0##E0: 1234567", "1.23457E6", df.format(1234567));
+		assertEquals("#00.0##E0: 12345678", 
+				"12.3457E6", df.format(12345678));
+		assertEquals("#00.0##E0: 99999999", "100E6", df.format(99999999));
 
         df = new DecimalFormat("#.0E0");
-        assertTrue("#.0E0: 0", df.format(0).equals(".0E0"));
-        assertTrue("#.0E0: 1", df.format(1).equals(".1E1"));
-        assertTrue("#.0E0: 12", df.format(12).equals(".12E2"));
-        assertTrue("#.0E0: 123", df.format(123).equals(".12E3"));
-        assertTrue("#.0E0: 1234", df.format(1234).equals(".12E4"));
-        assertTrue("#.0E0: 9999", df.format(9999).equals(".1E5"));
+		assertEquals("#.0E0: 0", ".0E0", df.format(0));
+		assertEquals("#.0E0: 1", ".1E1", df.format(1));
+		assertEquals("#.0E0: 12", ".12E2", df.format(12));
+		assertEquals("#.0E0: 123", ".12E3", df.format(123));
+		assertEquals("#.0E0: 1234", ".12E4", df.format(1234));
+		assertEquals("#.0E0: 9999", ".1E5", df.format(9999));
 
         df = new DecimalFormat("0.#E0");
-        assertTrue("0.#E0: 0", df.format(0).equals("0E0"));
-        assertTrue("0.#E0: 1", df.format(1).equals("1E0"));
-        assertTrue("0.#E0: 12", df.format(12).equals("1.2E1"));
-        assertTrue("0.#E0: 123", df.format(123).equals("1.2E2"));
-        assertTrue("0.#E0: 1234", df.format(1234).equals("1.2E3"));
-        assertTrue("0.#E0: 9999", df.format(9999).equals("1E4"));
+		assertEquals("0.#E0: 0", "0E0", df.format(0));
+		assertEquals("0.#E0: 1", "1E0", df.format(1));
+		assertEquals("0.#E0: 12", "1.2E1", df.format(12));
+		assertEquals("0.#E0: 123", "1.2E2", df.format(123));
+		assertEquals("0.#E0: 1234", "1.2E3", df.format(1234));
+		assertEquals("0.#E0: 9999", "1E4", df.format(9999));
 
         assertTrue("Failed " + failures + " of " + failCount,
                 failures.length() == 0);
@@ -1183,11 +1183,11 @@ public class DecimalFormatTest extends TestCase {
      */
     public void test_getGroupingSize() {
         DecimalFormat df = new DecimalFormat("###0.##");
-        assertTrue("Wrong unset size", df.getGroupingSize() == 0);
+		assertEquals("Wrong unset size", 0, df.getGroupingSize());
         df = new DecimalFormat("#,##0.##");
-        assertTrue("Wrong set size", df.getGroupingSize() == 3);
+		assertEquals("Wrong set size", 3, df.getGroupingSize());
         df = new DecimalFormat("#,###,###0.##");
-        assertTrue("Wrong multiple set size", df.getGroupingSize() == 4);
+		assertEquals("Wrong multiple set size", 4, df.getGroupingSize());
     }
 
     /**
@@ -1200,11 +1200,11 @@ public class DecimalFormatTest extends TestCase {
         assertEquals(defaultMultiplier, form.getMultiplier());
         
         DecimalFormat df = new DecimalFormat("###0.##");
-        assertTrue("Wrong unset multiplier", df.getMultiplier() == 1);
+		assertEquals("Wrong unset multiplier", 1, df.getMultiplier());
         df = new DecimalFormat("###0.##%");
-        assertTrue("Wrong percent multiplier", df.getMultiplier() == 100);
+		assertEquals("Wrong percent multiplier", 100, df.getMultiplier());
         df = new DecimalFormat("###0.##\u2030");
-        assertTrue("Wrong mille multiplier", df.getMultiplier() == 1000);
+		assertEquals("Wrong mille multiplier", 1000, df.getMultiplier());
     }
 
     /**
@@ -1322,7 +1322,7 @@ public class DecimalFormatTest extends TestCase {
         dfs.setDecimalSeparator('@');
         df.setDecimalFormatSymbols(dfs);
         assertTrue("Not set", df.getDecimalFormatSymbols().equals(dfs));
-        assertTrue("Symbols not used", df.format(1.2).equals("1@2"));
+        assertEquals("Symbols not used", "1@2", df.format(1.2));
         
         // The returned symbols may be cloned in two spots
         // 1. When set
@@ -1339,10 +1339,10 @@ public class DecimalFormatTest extends TestCase {
      */
     public void test_setDecimalSeparatorAlwaysShownZ() {
         DecimalFormat df = new DecimalFormat("###0.##");
-        assertTrue("Wrong default result", df.format(5).equals("5"));
+		assertEquals("Wrong default result", "5", df.format(5));
         df.setDecimalSeparatorAlwaysShown(true);
         assertTrue("Not set", df.isDecimalSeparatorAlwaysShown());
-        assertTrue("Wrong set result", df.format(7).equals("7."));
+		assertEquals("Wrong set result", "7.", df.format(7));
     }
 
     /**
@@ -1379,7 +1379,7 @@ public class DecimalFormatTest extends TestCase {
                 new DecimalFormatSymbols(Locale.ENGLISH));
         df.setGroupingUsed(true);
         df.setGroupingSize(2);
-        assertTrue("Value not set", df.getGroupingSize() == 2);
+		assertEquals("Value not set", 2, df.getGroupingSize());
         String result = df.format(123);
         assertTrue("Invalid format:" + result, result.equals("1,23"));
     }
@@ -1390,11 +1390,11 @@ public class DecimalFormatTest extends TestCase {
     public void test_setMaximumFractionDigitsI() {
         DecimalFormat df = new DecimalFormat("###0.##");
         df.setMaximumFractionDigits(3);
-        assertTrue("Not set", df.getMaximumFractionDigits() == 3);
-        assertTrue("Wrong maximum", df.format(1.23456).equals("1.235"));
+		assertEquals("Not set", 3, df.getMaximumFractionDigits());
+		assertEquals("Wrong maximum", "1.235", df.format(1.23456));
         df.setMinimumFractionDigits(4);
-        assertTrue("Not changed", df.getMaximumFractionDigits() == 4);
-        assertTrue("Incorrect fraction", df.format(456).equals("456.0000"));
+		assertEquals("Not changed", 4, df.getMaximumFractionDigits());
+		assertEquals("Incorrect fraction", "456.0000", df.format(456));
     }
 
     /**
@@ -1403,11 +1403,11 @@ public class DecimalFormatTest extends TestCase {
     public void test_setMaximumIntegerDigitsI() {
         DecimalFormat df = new DecimalFormat("###0.##");
         df.setMaximumIntegerDigits(2);
-        assertTrue("Not set", df.getMaximumIntegerDigits() == 2);
-        assertTrue("Wrong maximum", df.format(1234).equals("34"));
+		assertEquals("Not set", 2, df.getMaximumIntegerDigits());
+		assertEquals("Wrong maximum", "34", df.format(1234));
         df.setMinimumIntegerDigits(4);
-        assertTrue("Not changed", df.getMaximumIntegerDigits() == 4);
-        assertTrue("Incorrect integer", df.format(26).equals("0026"));
+		assertEquals("Not changed", 4, df.getMaximumIntegerDigits());
+		assertEquals("Incorrect integer", "0026", df.format(26));
     }
 
     /**
@@ -1416,11 +1416,11 @@ public class DecimalFormatTest extends TestCase {
     public void test_setMinimumFractionDigitsI() {
         DecimalFormat df = new DecimalFormat("###0.##");
         df.setMinimumFractionDigits(4);
-        assertTrue("Not set", df.getMinimumFractionDigits() == 4);
-        assertTrue("Wrong minimum", df.format(1.23).equals("1.2300"));
+		assertEquals("Not set", 4, df.getMinimumFractionDigits());
+		assertEquals("Wrong minimum", "1.2300", df.format(1.23));
         df.setMaximumFractionDigits(2);
-        assertTrue("Not changed", df.getMinimumFractionDigits() == 2);
-        assertTrue("Incorrect fraction", df.format(456).equals("456.00"));
+		assertEquals("Not changed", 2, df.getMinimumFractionDigits());
+		assertEquals("Incorrect fraction", "456.00", df.format(456));
     }
 
     /**
@@ -1429,11 +1429,11 @@ public class DecimalFormatTest extends TestCase {
     public void test_setMinimumIntegerDigitsI() {
         DecimalFormat df = new DecimalFormat("###0.##");
         df.setMinimumIntegerDigits(3);
-        assertTrue("Not set", df.getMinimumIntegerDigits() == 3);
-        assertTrue("Wrong minimum", df.format(12).equals("012"));
+		assertEquals("Not set", 3, df.getMinimumIntegerDigits());
+		assertEquals("Wrong minimum", "012", df.format(12));
         df.setMaximumIntegerDigits(2);
-        assertTrue("Not changed", df.getMinimumIntegerDigits() == 2);
-        assertTrue("Incorrect integer", df.format(0.7).equals("00.7"));
+		assertEquals("Not changed", 2, df.getMinimumIntegerDigits());
+		assertEquals("Incorrect integer", "00.7", df.format(0.7));
     }
 
     /**
@@ -1442,9 +1442,9 @@ public class DecimalFormatTest extends TestCase {
     public void test_setMultiplierI() {
         DecimalFormat df = new DecimalFormat("###0.##");
         df.setMultiplier(10);
-        assertTrue("Wrong multiplier", df.getMultiplier() == 10);
-        assertTrue("Wrong format", df.format(5).equals("50"));
-        assertTrue("Wrong parse", df.parse("50", new ParsePosition(0))
-                .intValue() == 5);
+		assertEquals("Wrong multiplier", 10, df.getMultiplier());
+		assertEquals("Wrong format", "50", df.format(5));
+		assertEquals("Wrong parse", 5, df.parse("50", new ParsePosition(0))
+				.intValue());
     }
 }

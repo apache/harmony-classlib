@@ -29,7 +29,7 @@ public class ParsePositionTest extends junit.framework.TestCase {
 			ParsePosition pp1 = new ParsePosition(Integer.MIN_VALUE);
 			assertTrue("Initialization failed.",
 					pp1.getIndex() == Integer.MIN_VALUE);
-			assertTrue("Initialization failed.", pp1.getErrorIndex() == -1);
+			assertEquals("Initialization failed.", -1, pp1.getErrorIndex());
 		} catch (Exception e) {
 			fail("Constructor failed.");
 		}
@@ -56,7 +56,7 @@ public class ParsePositionTest extends junit.framework.TestCase {
 	public void test_getErrorIndex() {
 		// Test for method int java.text.ParsePosition.getErrorIndex()
 		pp.setErrorIndex(56);
-		assertTrue("getErrorIndex failed.", pp.getErrorIndex() == 56);
+		assertEquals("getErrorIndex failed.", 56, pp.getErrorIndex());
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class ParsePositionTest extends junit.framework.TestCase {
 	public void test_setErrorIndexI() {
 		// Test for method void java.text.ParsePosition.setErrorIndex(int)
 		pp.setErrorIndex(4564);
-		assertTrue("setErrorIndex failed.", pp.getErrorIndex() == 4564);
+		assertEquals("setErrorIndex failed.", 4564, pp.getErrorIndex());
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class ParsePositionTest extends junit.framework.TestCase {
 	public void test_setIndexI() {
 		// Test for method void java.text.ParsePosition.setIndex(int)
 		pp.setIndex(4564);
-		assertTrue("setErrorIndex failed.", pp.getIndex() == 4564);
+		assertEquals("setErrorIndex failed.", 4564, pp.getIndex());
 	}
 
 	/**
@@ -99,8 +99,8 @@ public class ParsePositionTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.text.ParsePosition.toString()
-		assertTrue("toString failed.", pp.toString().equals(
-				"java.text.ParsePosition[index=2147483647, errorIndex=-1]"));
+		assertEquals("toString failed.", 
+				"java.text.ParsePosition[index=2147483647, errorIndex=-1]", pp.toString());
 	}
 
 	/**

@@ -165,9 +165,9 @@ public class StringCharacterIteratorTest extends TestCase {
 		fixture.next();
 		assertEquals('i', fixture.current());
         
-        StringCharacterIterator it = new StringCharacterIterator("testing", 2,
-                6, 4);
-        assertTrue("Wrong current char", it.current() == 'i');
+                StringCharacterIterator it =
+                    new StringCharacterIterator("testing", 2, 6, 4);
+                assertEquals("Wrong current char", 'i', it.current());
 	}
 
 	/**
@@ -184,12 +184,12 @@ public class StringCharacterIteratorTest extends TestCase {
 				2);
 		assertEquals('i', fixture.first());
         
-        StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
-                6, 4);
-        assertTrue("Wrong first char", it1.first() == 's');
-        assertTrue("Wrong next char", it1.next() == 't');
-        it1 = new StringCharacterIterator("testing", 2, 2, 2);
-        assertTrue("Not DONE", it1.first() == CharacterIterator.DONE);
+                StringCharacterIterator it1 =
+                    new StringCharacterIterator("testing", 2, 6, 4);
+                assertEquals("Wrong first char", 's', it1.first());
+                assertEquals("Wrong next char", 't', it1.next());
+                it1 = new StringCharacterIterator("testing", 2, 2, 2);
+                assertTrue("Not DONE", it1.first() == CharacterIterator.DONE);
 	}
 
 	/**
@@ -204,9 +204,9 @@ public class StringCharacterIteratorTest extends TestCase {
 				2);
 		assertEquals(1, fixture.getBeginIndex());
         
-        StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
-                6, 4);
-        assertTrue("Wrong begin index 2", it1.getBeginIndex() == 2);
+                StringCharacterIterator it1 =
+                    new StringCharacterIterator("testing", 2, 6, 4);
+                assertEquals("Wrong begin index 2", 2, it1.getBeginIndex());
 	}
 
 	/**
@@ -223,9 +223,9 @@ public class StringCharacterIteratorTest extends TestCase {
 		fixture = new StringCharacterIterator("fixture", 1, 4, 2);
 		assertEquals(4, fixture.getEndIndex());
         
-        StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
-                6, 4);
-        assertTrue("Wrong end index 6", it1.getEndIndex() == 6);
+                StringCharacterIterator it1 =
+                    new StringCharacterIterator("testing", 2, 6, 4);
+                assertEquals("Wrong end index 6", 6, it1.getEndIndex());
 	}
 
 	/**
@@ -288,14 +288,14 @@ public class StringCharacterIteratorTest extends TestCase {
         StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
                 6, 3);
         char result = it1.next();
-        assertTrue("Wrong next char1: " + result, result == 'i');
-        assertTrue("Wrong next char2", it1.next() == 'n');
+        assertEquals("Wrong next char1", 'i', result);
+        assertEquals("Wrong next char2", 'n', it1.next());
         assertTrue("Wrong next char3", it1.next() == CharacterIterator.DONE);
         assertTrue("Wrong next char4", it1.next() == CharacterIterator.DONE);
         int index = it1.getIndex();
-        assertTrue("Wrong index: " + index, index == 6);
+        assertEquals("Wrong index", 6, index);
         assertTrue("Wrong current char",
-                it1.current() == CharacterIterator.DONE);
+                   it1.current() == CharacterIterator.DONE);
 	}
 
 	/**
@@ -331,16 +331,16 @@ public class StringCharacterIteratorTest extends TestCase {
 		assertEquals(CharacterIterator.DONE, fixture.previous());
 		assertEquals(0, fixture.getIndex());
         
-        StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
-                6, 4);
-        assertTrue("Wrong previous char1", it1.previous() == 't');
-        assertTrue("Wrong previous char2", it1.previous() == 's');
-        assertTrue("Wrong previous char3",
-                it1.previous() == CharacterIterator.DONE);
-        assertTrue("Wrong previous char4",
-                it1.previous() == CharacterIterator.DONE);
-        assertTrue("Wrong index", it1.getIndex() == 2);
-        assertTrue("Wrong current char", it1.current() == 's');
+                StringCharacterIterator it1 =
+                    new StringCharacterIterator("testing", 2, 6, 4);
+                assertEquals("Wrong previous char1", 't', it1.previous());
+                assertEquals("Wrong previous char2", 's', it1.previous());
+                assertTrue("Wrong previous char3",
+                           it1.previous() == CharacterIterator.DONE);
+                assertTrue("Wrong previous char4",
+                           it1.previous() == CharacterIterator.DONE);
+                assertEquals("Wrong index", 2, it1.getIndex());
+                assertEquals("Wrong current char", 's', it1.current());
 	}
 
 	/**
@@ -403,11 +403,11 @@ public class StringCharacterIteratorTest extends TestCase {
         }
         
         StringCharacterIterator it = new StringCharacterIterator("testing");
-        assertTrue("Wrong begin index", it.getBeginIndex() == 0);
-        assertTrue("Wrong end index", it.getEndIndex() == 7);
-        assertTrue("Wrong current index", it.getIndex() == 0);
-        assertTrue("Wrong current char", it.current() == 't');
-        assertTrue("Wrong next char", it.next() == 'e');
+		assertEquals("Wrong begin index", 0, it.getBeginIndex());
+		assertEquals("Wrong end index", 7, it.getEndIndex());
+		assertEquals("Wrong current index", 0, it.getIndex());
+		assertEquals("Wrong current char", 't', it.current());
+		assertEquals("Wrong next char", 'e', it.next());
     }
 
     /**
@@ -416,11 +416,11 @@ public class StringCharacterIteratorTest extends TestCase {
      */
     public void test_ConstructorLjava_lang_StringI() {
         StringCharacterIterator it = new StringCharacterIterator("testing", 3);
-        assertTrue("Wrong begin index", it.getBeginIndex() == 0);
-        assertTrue("Wrong end index", it.getEndIndex() == 7);
-        assertTrue("Wrong current index", it.getIndex() == 3);
-        assertTrue("Wrong current char", it.current() == 't');
-        assertTrue("Wrong next char", it.next() == 'i');
+		assertEquals("Wrong begin index", 0, it.getBeginIndex());
+		assertEquals("Wrong end index", 7, it.getEndIndex());
+		assertEquals("Wrong current index", 3, it.getIndex());
+		assertEquals("Wrong current char", 't', it.current());
+		assertEquals("Wrong next char", 'i', it.next());
     }
 
     /**
@@ -430,11 +430,11 @@ public class StringCharacterIteratorTest extends TestCase {
     public void test_ConstructorLjava_lang_StringIII() {
         StringCharacterIterator it = new StringCharacterIterator("testing", 2,
                 6, 4);
-        assertTrue("Wrong begin index", it.getBeginIndex() == 2);
-        assertTrue("Wrong end index", it.getEndIndex() == 6);
-        assertTrue("Wrong current index", it.getIndex() == 4);
-        assertTrue("Wrong current char", it.current() == 'i');
-        assertTrue("Wrong next char", it.next() == 'n');
+		assertEquals("Wrong begin index", 2, it.getBeginIndex());
+		assertEquals("Wrong end index", 6, it.getEndIndex());
+		assertEquals("Wrong current index", 4, it.getIndex());
+		assertEquals("Wrong current char", 'i', it.current());
+		assertEquals("Wrong next char", 'n', it.next());
     }
 
     /**
@@ -443,11 +443,11 @@ public class StringCharacterIteratorTest extends TestCase {
     public void test_getIndex() {
         StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
                 6, 4);
-        assertTrue("Wrong index 4", it1.getIndex() == 4);
+		assertEquals("Wrong index 4", 4, it1.getIndex());
         it1.next();
-        assertTrue("Wrong index 5", it1.getIndex() == 5);
+		assertEquals("Wrong index 5", 5, it1.getIndex());
         it1.last();
-        assertTrue("Wrong index 4/2", it1.getIndex() == 5);
+		assertEquals("Wrong index 4/2", 5, it1.getIndex());
     }
 
     /**
@@ -486,8 +486,8 @@ public class StringCharacterIteratorTest extends TestCase {
     public void test_last() {
         StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
                 6, 3);
-        assertTrue("Wrong last char", it1.last() == 'n');
-        assertTrue("Wrong previous char", it1.previous() == 'i');
+		assertEquals("Wrong last char", 'n', it1.last());
+		assertEquals("Wrong previous char", 'i', it1.previous());
         it1 = new StringCharacterIterator("testing", 2, 2, 2);
         assertTrue("Not DONE", it1.last() == CharacterIterator.DONE);
     }
@@ -498,11 +498,11 @@ public class StringCharacterIteratorTest extends TestCase {
     public void test_setIndexI() {
         StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
                 6, 4);
-        assertTrue("Wrong result1", it1.setIndex(2) == 's');
+		assertEquals("Wrong result1", 's', it1.setIndex(2));
         char result = it1.next();
         assertTrue("Wrong next char: " + result, result == 't');
         assertTrue("Wrong result2", it1.setIndex(6) == CharacterIterator.DONE);
-        assertTrue("Wrong previous char", it1.previous() == 'n');
+		assertEquals("Wrong previous char", 'n', it1.previous());
     }
 
     /**
@@ -512,8 +512,8 @@ public class StringCharacterIteratorTest extends TestCase {
         StringCharacterIterator it1 = new StringCharacterIterator("testing", 2,
                 6, 4);
         it1.setText("frog");
-        assertTrue("Wrong begin index", it1.getBeginIndex() == 0);
-        assertTrue("Wrong end index", it1.getEndIndex() == 4);
-        assertTrue("Wrong current index", it1.getIndex() == 0);
+		assertEquals("Wrong begin index", 0, it1.getBeginIndex());
+		assertEquals("Wrong end index", 4, it1.getEndIndex());
+		assertEquals("Wrong current index", 0, it1.getIndex());
     }
 }

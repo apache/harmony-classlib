@@ -44,9 +44,9 @@ public class AnnotationTest extends TestCase {
 	 */
 	public void testToString() {
         Annotation ant = new Annotation("HelloWorld");
-        assertTrue("toString error.", ant.toString().equals(
-                "java.text.Annotation[value=HelloWorld]"));
-		assertNotNull(new Annotation(null).toString());
-		assertNotNull(new Annotation("value").toString());
+        assertEquals("toString error.",
+                     "java.text.Annotation[value=HelloWorld]",ant.toString());
+        assertNotNull(new Annotation(null).toString());
+        assertNotNull(new Annotation("value").toString());
 	}
 }

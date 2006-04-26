@@ -93,7 +93,7 @@ public class MessageFormatTest extends TestCase {
         assertTrue("Not a MessageFormat",
                 format.getClass() == MessageFormat.class);
         Format[] formats = format.getFormats();
-        assertTrue("null formats", formats != null);
+		assertNotNull("null formats", formats);
         assertTrue("Wrong format count: " + formats.length, formats.length >= 5);
         assertTrue("Wrong time format", formats[0].equals(DateFormat
                 .getTimeInstance()));
@@ -103,7 +103,7 @@ public class MessageFormatTest extends TestCase {
                 .getInstance()));
         assertTrue("Wrong choice format", formats[3].equals(new ChoiceFormat(
                 "0.0#low|1.0#high")));
-        assertTrue("Wrong string format", formats[4] == null);
+		assertNull("Wrong string format", formats[4]);
 
         Date date = new Date();
         FieldPosition pos = new FieldPosition(-1);
@@ -122,8 +122,8 @@ public class MessageFormatTest extends TestCase {
         assertTrue("Wrong answer:\n" + result + "\n" + buffer, result
                 .equals(buffer.toString()));
 
-        assertTrue("Simple string", new MessageFormat("Test message").format(
-                new Object[0]).equals("Test message"));
+		assertEquals("Simple string", "Test message", new MessageFormat("Test message").format(
+				new Object[0]));
 
         try {
             result = new MessageFormat("Don't").format(new Object[0]);
@@ -178,8 +178,8 @@ public class MessageFormatTest extends TestCase {
         // java.text.MessageFormat.applyPattern(java.lang.String)
         MessageFormat format = new MessageFormat("test");
         format.applyPattern("xx {0}");
-        assertTrue("Invalid number", format.format(
-                new Object[] { new Integer(46) }).equals("xx 46"));
+		assertEquals("Invalid number", "xx 46", format.format(
+				new Object[] { new Integer(46) }));
         Date date = new Date();
         String result = format.format(new Object[] { date });
         String expected = "xx " + DateFormat.getInstance().format(date);
@@ -187,110 +187,110 @@ public class MessageFormatTest extends TestCase {
                 .equals(expected));
         format = new MessageFormat("{0,date}{1,time}{2,number,integer}");
         format.applyPattern("nothing");
-        assertTrue("Found formats", format.toPattern().equals("nothing"));
+		assertEquals("Found formats", "nothing", format.toPattern());
 
         format.applyPattern("{0}");
-        assertTrue("Wrong format", format.getFormats()[0] == null);
-        assertTrue("Wrong pattern", format.toPattern().equals("{0}"));
+		assertNull("Wrong format", format.getFormats()[0]);
+		assertEquals("Wrong pattern", "{0}", format.toPattern());
 
         format.applyPattern("{0, \t\u001ftime }");
         assertTrue("Wrong time format", format.getFormats()[0]
                 .equals(DateFormat.getTimeInstance()));
-        assertTrue("Wrong time pattern", format.toPattern().equals("{0,time}"));
+		assertEquals("Wrong time pattern", "{0,time}", format.toPattern());
         format.applyPattern("{0,Time, Short\n}");
         assertTrue("Wrong short time format", format.getFormats()[0]
                 .equals(DateFormat.getTimeInstance(DateFormat.SHORT)));
-        assertTrue("Wrong short time pattern", format.toPattern().equals(
-                "{0,time,short}"));
+		assertEquals("Wrong short time pattern", 
+				"{0,time,short}", format.toPattern());
         format.applyPattern("{0,TIME,\nmedium  }");
         assertTrue("Wrong medium time format", format.getFormats()[0]
                 .equals(DateFormat.getTimeInstance(DateFormat.MEDIUM)));
-        assertTrue("Wrong medium time pattern", format.toPattern().equals(
-                "{0,time}"));
+		assertEquals("Wrong medium time pattern", 
+				"{0,time}", format.toPattern());
         format.applyPattern("{0,time,LONG}");
         assertTrue("Wrong long time format", format.getFormats()[0]
                 .equals(DateFormat.getTimeInstance(DateFormat.LONG)));
-        assertTrue("Wrong long time pattern", format.toPattern().equals(
-                "{0,time,long}"));
+		assertEquals("Wrong long time pattern", 
+				"{0,time,long}", format.toPattern());
         format.setLocale(Locale.FRENCH); // use French since English has the
         // same LONG and FULL time patterns
         format.applyPattern("{0,time, Full}");
         assertTrue("Wrong full time format", format.getFormats()[0]
                 .equals(DateFormat.getTimeInstance(DateFormat.FULL,
                         Locale.FRENCH)));
-        assertTrue("Wrong full time pattern", format.toPattern().equals(
-                "{0,time,full}"));
+		assertEquals("Wrong full time pattern", 
+				"{0,time,full}", format.toPattern());
         format.setLocale(Locale.getDefault());
 
         format.applyPattern("{0, date}");
         assertTrue("Wrong date format", format.getFormats()[0]
                 .equals(DateFormat.getDateInstance()));
-        assertTrue("Wrong date pattern", format.toPattern().equals("{0,date}"));
+		assertEquals("Wrong date pattern", "{0,date}", format.toPattern());
         format.applyPattern("{0, date, short}");
         assertTrue("Wrong short date format", format.getFormats()[0]
                 .equals(DateFormat.getDateInstance(DateFormat.SHORT)));
-        assertTrue("Wrong short date pattern", format.toPattern().equals(
-                "{0,date,short}"));
+		assertEquals("Wrong short date pattern", 
+				"{0,date,short}", format.toPattern());
         format.applyPattern("{0, date, medium}");
         assertTrue("Wrong medium date format", format.getFormats()[0]
                 .equals(DateFormat.getDateInstance(DateFormat.MEDIUM)));
-        assertTrue("Wrong medium date pattern", format.toPattern().equals(
-                "{0,date}"));
+		assertEquals("Wrong medium date pattern", 
+				"{0,date}", format.toPattern());
         format.applyPattern("{0, date, long}");
         assertTrue("Wrong long date format", format.getFormats()[0]
                 .equals(DateFormat.getDateInstance(DateFormat.LONG)));
-        assertTrue("Wrong long date pattern", format.toPattern().equals(
-                "{0,date,long}"));
+		assertEquals("Wrong long date pattern", 
+				"{0,date,long}", format.toPattern());
         format.applyPattern("{0, date, full}");
         assertTrue("Wrong full date format", format.getFormats()[0]
                 .equals(DateFormat.getDateInstance(DateFormat.FULL)));
-        assertTrue("Wrong full date pattern", format.toPattern().equals(
-                "{0,date,full}"));
+		assertEquals("Wrong full date pattern", 
+				"{0,date,full}", format.toPattern());
 
         format.applyPattern("{0, date, MMM d {hh:mm:ss}}");
-        assertTrue("Wrong time/date format", ((SimpleDateFormat) (format
-                .getFormats()[0])).toPattern().equals(" MMM d {hh:mm:ss}"));
-        assertTrue("Wrong time/date pattern", format.toPattern().equals(
-                "{0,date, MMM d {hh:mm:ss}}"));
+		assertEquals("Wrong time/date format", " MMM d {hh:mm:ss}", ((SimpleDateFormat) (format
+				.getFormats()[0])).toPattern());
+		assertEquals("Wrong time/date pattern", 
+				"{0,date, MMM d {hh:mm:ss}}", format.toPattern());
 
         format.applyPattern("{0, number}");
         assertTrue("Wrong number format", format.getFormats()[0]
                 .equals(NumberFormat.getNumberInstance()));
-        assertTrue("Wrong number pattern", format.toPattern().equals(
-                "{0,number}"));
+		assertEquals("Wrong number pattern", 
+				"{0,number}", format.toPattern());
         format.applyPattern("{0, number, currency}");
         assertTrue("Wrong currency number format", format.getFormats()[0]
                 .equals(NumberFormat.getCurrencyInstance()));
-        assertTrue("Wrong currency number pattern", format.toPattern().equals(
-                "{0,number,currency}"));
+		assertEquals("Wrong currency number pattern", 
+				"{0,number,currency}", format.toPattern());
         format.applyPattern("{0, number, percent}");
         assertTrue("Wrong percent number format", format.getFormats()[0]
                 .equals(NumberFormat.getPercentInstance()));
-        assertTrue("Wrong percent number pattern", format.toPattern().equals(
-                "{0,number,percent}"));
+		assertEquals("Wrong percent number pattern", 
+				"{0,number,percent}", format.toPattern());
         format.applyPattern("{0, number, integer}");
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(0);
         nf.setParseIntegerOnly(true);
         assertTrue("Wrong integer number format", format.getFormats()[0]
                 .equals(nf));
-        assertTrue("Wrong integer number pattern", format.toPattern().equals(
-                "{0,number,integer}"));
+		assertEquals("Wrong integer number pattern", 
+				"{0,number,integer}", format.toPattern());
 
         format.applyPattern("{0, number, {'#'}##0.0E0}");
-        assertTrue("Wrong pattern number format", ((DecimalFormat) (format
-                .getFormats()[0])).toPattern().equals("' {#}'##0.0E0"));
-        assertTrue("Wrong pattern number pattern", format.toPattern().equals(
-                "{0,number,' {#}'##0.0E0}"));
+		assertEquals("Wrong pattern number format", "' {#}'##0.0E0", ((DecimalFormat) (format
+				.getFormats()[0])).toPattern());
+		assertEquals("Wrong pattern number pattern", 
+				"{0,number,' {#}'##0.0E0}", format.toPattern());
 
         format.applyPattern("{0, choice,0#no|1#one|2#{1,number}}");
-        assertTrue("Wrong choice format",
-                ((ChoiceFormat) format.getFormats()[0]).toPattern().equals(
-                        "0.0#no|1.0#one|2.0#{1,number}"));
-        assertTrue("Wrong choice pattern", format.toPattern().equals(
-                "{0,choice,0.0#no|1.0#one|2.0#{1,number}}"));
-        assertTrue("Wrong formatted choice", format.format(
-                new Object[] { new Integer(2), new Float(3.6) }).equals("3.6"));
+		assertEquals("Wrong choice format",
+				
+						"0.0#no|1.0#one|2.0#{1,number}", ((ChoiceFormat) format.getFormats()[0]).toPattern());
+		assertEquals("Wrong choice pattern", 
+				"{0,choice,0.0#no|1.0#one|2.0#{1,number}}", format.toPattern());
+		assertEquals("Wrong formatted choice", "3.6", format.format(
+				new Object[] { new Integer(2), new Float(3.6) }));
 
         try {
             format.applyPattern("WRONG MESSAGE FORMAT {0,number,{}");
@@ -317,8 +317,8 @@ public class MessageFormatTest extends TestCase {
         MessageFormat format = new MessageFormat("'{'choice'}'{0}");
         MessageFormat clone = (MessageFormat) format.clone();
         assertTrue("Clone not equal", format.equals(clone));
-        assertTrue("Wrong answer", format.format(new Object[] {}).equals(
-                "{choice}{0}"));
+		assertEquals("Wrong answer", 
+				"{choice}{0}", format.format(new Object[] {}));
         clone.setFormat(0, DateFormat.getInstance());
         assertTrue("Clone shares format data", !format.equals(clone));
         format = (MessageFormat) clone.clone();
@@ -366,7 +366,7 @@ public class MessageFormatTest extends TestCase {
         StringBuffer buffer = new StringBuffer();
         format.format(new Object[] { "0", new Double(53.863) }, buffer,
                 new FieldPosition(0));
-        assertTrue("Wrong result", buffer.toString().equals("54"));
+		assertEquals("Wrong result", "54", buffer.toString());
         format
                 .applyPattern("{0,choice,0#zero|1#one '{1,choice,2#two {2,time}}'}");
         Date date = new Date();
@@ -665,7 +665,7 @@ public class MessageFormatTest extends TestCase {
         mf = new MessageFormat("{0}; {0}; {0}");
         String parse = "a; b; c";
         result = mf.parse(parse, new ParsePosition(0));
-        assertTrue("Wrong variable result", result[0].equals("c"));
+		assertEquals("Wrong variable result", "c", result[0]);
     }
 
     /**

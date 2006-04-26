@@ -124,7 +124,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 		// Test for method java.text.SimpleDateFormat(java.lang.String)
 		SimpleDateFormat f2 = new SimpleDateFormat("yyyy");
 		assertTrue("Wrong class", f2.getClass() == SimpleDateFormat.class);
-		assertTrue("Wrong pattern", f2.toPattern().equals("yyyy"));
+		assertEquals("Wrong pattern", "yyyy", f2.toPattern());
 		assertTrue("Wrong locale", f2.equals(new SimpleDateFormat("yyyy",
 				Locale.getDefault())));
 		assertTrue("Wrong symbols", f2.getDateFormatSymbols().equals(
@@ -168,7 +168,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 		symbols.setEras(new String[] { "Before", "After" });
 		SimpleDateFormat f2 = new SimpleDateFormat("y'y'yy", symbols);
 		assertTrue("Wrong class", f2.getClass() == SimpleDateFormat.class);
-		assertTrue("Wrong pattern", f2.toPattern().equals("y'y'yy"));
+		assertEquals("Wrong pattern", "y'y'yy", f2.toPattern());
 		assertTrue("Wrong symbols", f2.getDateFormatSymbols().equals(symbols));
 		assertTrue("Doesn't work",
 				f2.format(new Date()).getClass() == String.class);
@@ -184,7 +184,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 		SimpleDateFormat f2 = new SimpleDateFormat("'yyyy' MM yy",
 				Locale.GERMAN);
 		assertTrue("Wrong class", f2.getClass() == SimpleDateFormat.class);
-		assertTrue("Wrong pattern", f2.toPattern().equals("'yyyy' MM yy"));
+		assertEquals("Wrong pattern", "'yyyy' MM yy", f2.toPattern());
 		assertTrue("Wrong symbols", f2.getDateFormatSymbols().equals(
 				new DateFormatSymbols(Locale.GERMAN)));
 		assertTrue("Doesn't work",
@@ -243,7 +243,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 		// java.text.SimpleDateFormat.applyPattern(java.lang.String)
 		SimpleDateFormat f2 = new SimpleDateFormat("y", new Locale("de", "CH"));
 		f2.applyPattern("GyMdkHmsSEDFwWahKz");
-		assertTrue("Wrong pattern", f2.toPattern().equals("GyMdkHmsSEDFwWahKz"));
+		assertEquals("Wrong pattern", "GyMdkHmsSEDFwWahKz", f2.toPattern());
 
 		// test invalid patterns
 		try {
@@ -483,7 +483,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 		test.test(" z", cal, " GMT-01:30", DateFormat.TIMEZONE_FIELD);
 
 		format.applyPattern("'Mkz''':.@5");
-		assertTrue("Wrong output", format.format(new Date()).equals("Mkz':.@5"));
+		assertEquals("Wrong output", "Mkz':.@5", format.format(new Date()));
 
 		assertTrue("Tests failed", !test.testsFailed());
 
@@ -785,16 +785,16 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 		Calendar cal = new GregorianCalendar();
 		try {
 			cal.setTime(f1.parse("49"));
-			assertTrue("Incorrect year 2049", cal.get(Calendar.YEAR) == 2049);
+			assertEquals("Incorrect year 2049", 2049, cal.get(Calendar.YEAR));
 			cal.setTime(f1.parse("50"));
 			int year = cal.get(Calendar.YEAR);
 			assertTrue("Incorrect year 1950: " + year, year == 1950);
 			f1.applyPattern("y");
 			cal.setTime(f1.parse("00"));
-			assertTrue("Incorrect year 2000", cal.get(Calendar.YEAR) == 2000);
+			assertEquals("Incorrect year 2000", 2000, cal.get(Calendar.YEAR));
 			f1.applyPattern("yyy");
 			cal.setTime(f1.parse("50"));
-			assertTrue("Incorrect year 50", cal.get(Calendar.YEAR) == 50);
+			assertEquals("Incorrect year 50", 50, cal.get(Calendar.YEAR));
 		} catch (ParseException e) {
 			fail("ParseException");
 		}
@@ -815,7 +815,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 		assertTrue("Not a clone", f1.getDateFormatSymbols() != symbols);
 		String result = f1.format(new GregorianCalendar(1999, Calendar.JUNE,
 				12, 3, 0).getTime());
-		assertTrue("Incorrect symbols used", result.equals("morning"));
+		assertEquals("Incorrect symbols used", "morning", result);
 		symbols.setEras(new String[] { "before", "after" });
 		assertTrue("Identical symbols", !f1.getDateFormatSymbols().equals(
 				symbols));

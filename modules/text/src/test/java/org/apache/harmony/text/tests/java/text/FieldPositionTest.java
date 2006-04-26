@@ -110,8 +110,8 @@ public class FieldPositionTest extends junit.framework.TestCase {
 		FieldPosition fpos = new FieldPosition(1);
 		fpos.setEndIndex(3);
 		fpos.setBeginIndex(2);
-		assertTrue("getBeginIndex should have returned 2",
-				fpos.getBeginIndex() == 2);
+		assertEquals("getBeginIndex should have returned 2",
+				2, fpos.getBeginIndex());
 	}
 
 	/**
@@ -122,8 +122,8 @@ public class FieldPositionTest extends junit.framework.TestCase {
 		FieldPosition fpos = new FieldPosition(1);
 		fpos.setBeginIndex(2);
 		fpos.setEndIndex(3);
-		assertTrue("getEndIndex should have returned 3",
-				fpos.getEndIndex() == 3);
+		assertEquals("getEndIndex should have returned 3",
+				3, fpos.getEndIndex());
 	}
 
 	/**
@@ -132,13 +132,11 @@ public class FieldPositionTest extends junit.framework.TestCase {
 	public void test_getField() {
 		// Test for method int java.text.FieldPosition.getField()
 		FieldPosition fpos = new FieldPosition(65);
-		assertTrue(
-				"FieldPosition(65) should have caused getField to return 65",
-				fpos.getField() == 65);
+		assertEquals("FieldPosition(65) should have caused getField to return 65",
+				65, fpos.getField());
 		FieldPosition fpos2 = new FieldPosition(DateFormat.Field.MINUTE);
-		assertTrue(
-				"FieldPosition(DateFormat.Field.MINUTE) should have caused getField to return -1",
-				fpos2.getField() == -1);
+		assertEquals("FieldPosition(DateFormat.Field.MINUTE) should have caused getField to return -1",
+				-1, fpos2.getField());
 	}
 
 	/**
@@ -152,9 +150,9 @@ public class FieldPositionTest extends junit.framework.TestCase {
 				fpos.getFieldAttribute() == DateFormat.Field.TIME_ZONE);
 
 		FieldPosition fpos2 = new FieldPosition(DateFormat.TIMEZONE_FIELD);
-		assertTrue(
+		assertNull(
 				"FieldPosition(DateFormat.TIMEZONE_FIELD) should have caused getFieldAttribute to return null",
-				fpos2.getFieldAttribute() == null);
+				fpos2.getFieldAttribute());
 	}
 
 	/**
@@ -183,8 +181,8 @@ public class FieldPositionTest extends junit.framework.TestCase {
 		FieldPosition fpos = new FieldPosition(1);
 		fpos.setBeginIndex(2);
 		fpos.setEndIndex(3);
-		assertTrue("beginIndex should have been set to 2",
-				fpos.getBeginIndex() == 2);
+		assertEquals("beginIndex should have been set to 2",
+				2, fpos.getBeginIndex());
 	}
 
 	/**
@@ -195,8 +193,8 @@ public class FieldPositionTest extends junit.framework.TestCase {
 		FieldPosition fpos = new FieldPosition(1);
 		fpos.setEndIndex(3);
 		fpos.setBeginIndex(2);
-		assertTrue("EndIndex should have been set to 3",
-				fpos.getEndIndex() == 3);
+		assertEquals("EndIndex should have been set to 3",
+				3, fpos.getEndIndex());
 	}
 
 	/**

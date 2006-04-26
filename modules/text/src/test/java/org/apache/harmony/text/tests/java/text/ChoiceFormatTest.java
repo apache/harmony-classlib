@@ -205,19 +205,19 @@ public class ChoiceFormatTest extends TestCase {
         FieldPosition field = new FieldPosition(0);
         StringBuffer buf = new StringBuffer();
         String r = f1.format(-1, buf, field).toString();
-        assertTrue("Wrong choice for -1", r.equals("Less than one"));
+		assertEquals("Wrong choice for -1", "Less than one", r);
         buf.setLength(0);
         r = f1.format(0, buf, field).toString();
-        assertTrue("Wrong choice for 0", r.equals("Less than one"));
+		assertEquals("Wrong choice for 0", "Less than one", r);
         buf.setLength(0);
         r = f1.format(1, buf, field).toString();
-        assertTrue("Wrong choice for 1", r.equals("one"));
+		assertEquals("Wrong choice for 1", "one", r);
         buf.setLength(0);
         r = f1.format(2, buf, field).toString();
-        assertTrue("Wrong choice for 2", r.equals("Between one and two"));
+		assertEquals("Wrong choice for 2", "Between one and two", r);
         buf.setLength(0);
         r = f1.format(3, buf, field).toString();
-        assertTrue("Wrong choice for 3", r.equals("Greater than two"));
+		assertEquals("Wrong choice for 3", "Greater than two", r);
     }
 
     /**
@@ -231,13 +231,13 @@ public class ChoiceFormatTest extends TestCase {
         FieldPosition field = new FieldPosition(0);
         StringBuffer buf = new StringBuffer();
         String r = f1.format(0.5, buf, field).toString();
-        assertTrue("Wrong choice for 0.5", r.equals("Less than one"));
+		assertEquals("Wrong choice for 0.5", "Less than one", r);
         buf.setLength(0);
         r = f1.format(1.5, buf, field).toString();
-        assertTrue("Wrong choice for 1.5", r.equals("Between one and two"));
+		assertEquals("Wrong choice for 1.5", "Between one and two", r);
         buf.setLength(0);
         r = f1.format(2.5, buf, field).toString();
-        assertTrue("Wrong choice for 2.5", r.equals("Greater than two"));
+		assertEquals("Wrong choice for 2.5", "Greater than two", r);
     }
 
     /**
@@ -305,24 +305,24 @@ public class ChoiceFormatTest extends TestCase {
         // java.text.ChoiceFormat.parse(java.lang.String,
         // java.text.ParsePosition)
         ChoiceFormat format = new ChoiceFormat("1#one|2#two|3#three");
-        assertTrue("Case insensitive", format
-                .parse("One", new ParsePosition(0)).intValue() == 0);
+		assertEquals("Case insensitive", 0, format
+				.parse("One", new ParsePosition(0)).intValue());
 
         ParsePosition pos = new ParsePosition(0);
         Number result = f1.parse("Greater than two", pos);
         assertTrue("Not a Double1", result instanceof Double);
         assertTrue("Wrong value ~>2", result.doubleValue() == ChoiceFormat
                 .nextDouble(2));
-        assertTrue("Wrong position ~16", pos.getIndex() == 16);
+		assertEquals("Wrong position ~16", 16, pos.getIndex());
         pos = new ParsePosition(0);
         assertTrue("Incorrect result", Double.isNaN(f1.parse("12one", pos)
                 .doubleValue()));
-        assertTrue("Wrong position ~0", pos.getIndex() == 0);
+		assertEquals("Wrong position ~0", 0, pos.getIndex());
         pos = new ParsePosition(2);
         result = f1.parse("12one and two", pos);
         assertTrue("Not a Double2", result instanceof Double);
-        assertTrue("Ignored parse position", result.doubleValue() == 1.0);
-        assertTrue("Wrong position ~5", pos.getIndex() == 5);
+		assertEquals("Ignored parse position", 1.0, result.doubleValue());
+		assertEquals("Wrong position ~5", 5, pos.getIndex());
     }
 
     /**
@@ -379,8 +379,8 @@ public class ChoiceFormatTest extends TestCase {
         
         MessageFormat mf = new MessageFormat("CHOICE {1,choice}");
         String ptrn = mf.toPattern();
-        assertTrue("Unused message format returning incorrect pattern", ptrn
-                .equals("CHOICE {1,choice,}"));
+		assertEquals("Unused message format returning incorrect pattern", "CHOICE {1,choice,}", ptrn
+				);
 
         String pattern = f1.toPattern();
         assertTrue(
@@ -393,8 +393,8 @@ public class ChoiceFormatTest extends TestCase {
         String str = "org.apache.harmony.tests.java.lang.share.MyResources2";
         cf.applyPattern(str);
         ptrn = cf.toPattern();
-        assertTrue("Return value should be empty string for invalid pattern",
-                ptrn.length() == 0);
+		assertEquals("Return value should be empty string for invalid pattern",
+				0, ptrn.length());
 	}
 
 	/**

@@ -200,7 +200,7 @@ public class NumberFormatTest extends junit.framework.TestCase {
 	public void test_getMaximumIntegerDigits() {
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumIntegerDigits(2);
-		assertTrue("Wrong result", format.format(123).equals("23"));
+		assertEquals("Wrong result", "23", format.format(123));
 	}
 
 	/**

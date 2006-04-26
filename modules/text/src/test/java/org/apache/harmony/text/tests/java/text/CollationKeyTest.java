@@ -30,7 +30,7 @@ public class CollationKeyTest extends junit.framework.TestCase {
 		collator.setStrength(Collator.PRIMARY);
 		CollationKey key1 = collator.getCollationKey("abc");
 		CollationKey key2 = collator.getCollationKey("ABC");
-		assertTrue("Should be equal", key1.compareTo(key2) == 0);
+		assertEquals("Should be equal", 0, key1.compareTo(key2));
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class CollationKeyTest extends junit.framework.TestCase {
 		collator.setStrength(Collator.PRIMARY);
 		CollationKey key1 = collator.getCollationKey("abc");
 		CollationKey key2 = collator.getCollationKey("ABC");
-		assertTrue("Should be equal", key1.compareTo(key2) == 0);
+		assertEquals("Should be equal", 0, key1.compareTo(key2));
 	}
 
 	/**

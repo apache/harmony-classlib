@@ -44,7 +44,7 @@ public class ParseExceptionTest extends junit.framework.TestCase {
 			DateFormat df = DateFormat.getInstance();
 			df.parse("1999HelloWorld");
 		} catch (ParseException e) {
-			assertTrue("getErrorOffsetFailed.", e.getErrorOffset() == 4);
+			assertEquals("getErrorOffsetFailed.", 4, e.getErrorOffset());
 		}
 	}
 

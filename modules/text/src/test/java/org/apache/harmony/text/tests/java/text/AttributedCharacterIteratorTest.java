@@ -28,17 +28,17 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		String test = "Test 23ring";
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator();
-		assertTrue("Wrong first", it.current() == 'T');
+		assertEquals("Wrong first", 'T', it.current());
 		it.next();
-		assertTrue("Wrong second", it.current() == 'e');
+		assertEquals("Wrong second", 'e', it.current());
 		for (int i = 0; i < 9; i++)
 			it.next();
-		assertTrue("Wrong last", it.current() == 'g');
+		assertEquals("Wrong last", 'g', it.current());
 		it.next();
 		assertTrue("Wrong final", it.current() == CharacterIterator.DONE);
 
 		it = attrString.getIterator(null, 2, 8);
-		assertTrue("Wrong first2", it.current() == 's');
+		assertEquals("Wrong first2", 's', it.current());
 	}
 
 	/**
@@ -48,11 +48,11 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		String test = "Test 23ring";
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator();
-		assertTrue("Wrong first1", it.first() == 'T');
+		assertEquals("Wrong first1", 'T', it.first());
 		it = attrString.getIterator(null, 0, 3);
-		assertTrue("Wrong first2", it.first() == 'T');
+		assertEquals("Wrong first2", 'T', it.first());
 		it = attrString.getIterator(null, 2, 8);
-		assertTrue("Wrong first3", it.first() == 's');
+		assertEquals("Wrong first3", 's', it.first());
 		it = attrString.getIterator(null, 11, 11);
 		assertTrue("Wrong first4", it.first() == CharacterIterator.DONE);
 	}
@@ -64,7 +64,7 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		String test = "Test 23ring";
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator(null, 2, 6);
-		assertTrue("Wrong begin index", it.getBeginIndex() == 2);
+		assertEquals("Wrong begin index", 2, it.getBeginIndex());
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		String test = "Test 23ring";
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator(null, 2, 6);
-		assertTrue("Wrong begin index", it.getEndIndex() == 6);
+		assertEquals("Wrong begin index", 6, it.getEndIndex());
 	}
 
 	/**
@@ -84,14 +84,14 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		String test = "Test 23ring";
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator();
-		assertTrue("Wrong first", it.getIndex() == 0);
+		assertEquals("Wrong first", 0, it.getIndex());
 		it.next();
-		assertTrue("Wrong second", it.getIndex() == 1);
+		assertEquals("Wrong second", 1, it.getIndex());
 		for (int i = 0; i < 9; i++)
 			it.next();
-		assertTrue("Wrong last", it.getIndex() == 10);
+		assertEquals("Wrong last", 10, it.getIndex());
 		it.next();
-		assertTrue("Wrong final", it.getIndex() == 11);
+		assertEquals("Wrong final", 11, it.getIndex());
 	}
 
 	/**
@@ -101,11 +101,11 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		String test = "Test 23ring";
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator();
-		assertTrue("Wrong last1", it.last() == 'g');
+		assertEquals("Wrong last1", 'g', it.last());
 		it = attrString.getIterator(null, 0, 3);
-		assertTrue("Wrong last2", it.last() == 's');
+		assertEquals("Wrong last2", 's', it.last());
 		it = attrString.getIterator(null, 2, 8);
-		assertTrue("Wrong last3", it.last() == 'r');
+		assertEquals("Wrong last3", 'r', it.last());
 		it = attrString.getIterator(null, 0, 0);
 		assertTrue("Wrong last4", it.last() == CharacterIterator.DONE);
 	}
@@ -117,14 +117,14 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		String test = "Test 23ring";
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator();
-		assertTrue("Wrong first", it.next() == 'e');
+		assertEquals("Wrong first", 'e', it.next());
 		for (int i = 0; i < 8; i++)
 			it.next();
-		assertTrue("Wrong last", it.next() == 'g');
+		assertEquals("Wrong last", 'g', it.next());
 		assertTrue("Wrong final", it.next() == CharacterIterator.DONE);
 
 		it = attrString.getIterator(null, 2, 8);
-		assertTrue("Wrong first2", it.next() == 't');
+		assertEquals("Wrong first2", 't', it.next());
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator();
 		it.setIndex(11);
-		assertTrue("Wrong first", it.previous() == 'g');
+		assertEquals("Wrong first", 'g', it.previous());
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		AttributedString attrString = new AttributedString(test);
 		AttributedCharacterIterator it = attrString.getIterator();
 		it.setIndex(5);
-		assertTrue("Wrong first", it.current() == '2');
+		assertEquals("Wrong first", '2', it.current());
 	}
 
 	/**
@@ -157,17 +157,15 @@ public class AttributedCharacterIteratorTest extends junit.framework.TestCase {
 		as.addAttribute(AttributedCharacterIterator.Attribute.LANGUAGE, "a", 2,
 				3);
 		AttributedCharacterIterator it = as.getIterator();
-		assertTrue(
-				"non-null value limit",
-				it.getRunLimit(AttributedCharacterIterator.Attribute.LANGUAGE) == 2);
+		assertEquals("non-null value limit",
+				2, it.getRunLimit(AttributedCharacterIterator.Attribute.LANGUAGE));
 
 		as = new AttributedString("test");
 		as.addAttribute(AttributedCharacterIterator.Attribute.LANGUAGE, null,
 				2, 3);
 		it = as.getIterator();
-		assertTrue(
-				"null value limit",
-				it.getRunLimit(AttributedCharacterIterator.Attribute.LANGUAGE) == 4);
+		assertEquals("null value limit",
+				4, it.getRunLimit(AttributedCharacterIterator.Attribute.LANGUAGE));
 	}
 
 	protected void setUp() {

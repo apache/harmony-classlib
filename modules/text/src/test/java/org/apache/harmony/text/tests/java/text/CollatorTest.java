@@ -53,7 +53,7 @@ public class CollatorTest extends junit.framework.TestCase {
 		assertTrue("a) Failed on identical", c.compare(o, o2) < 0);
 		o = "e";
 		o2 = "e";
-		assertTrue("a) Failed on equivalence", c.compare(o, o2) == 0);
+		assertEquals("a) Failed on equivalence", 0, c.compare(o, o2));
 		assertTrue("a) Failed on primary expansion",
 				c.compare("\u01db", "v") < 0);
 
@@ -69,10 +69,10 @@ public class CollatorTest extends junit.framework.TestCase {
 		assertTrue("b) Failed on tertiary difference", c.compare(o, o2) < 0);
 		o = "\u0001";
 		o2 = "\u0002";
-		assertTrue("b) Failed on identical", c.compare(o, o2) == 0);
+		assertEquals("b) Failed on identical", 0, c.compare(o, o2));
 		o = "e";
 		o2 = "e";
-		assertTrue("b) Failed on equivalence", c.compare(o, o2) == 0);
+		assertEquals("b) Failed on equivalence", 0, c.compare(o, o2));
 
 		c.setStrength(Collator.SECONDARY);
 		o = "E";
@@ -83,13 +83,13 @@ public class CollatorTest extends junit.framework.TestCase {
 		assertTrue("c) Failed on secondary difference", c.compare(o, o2) < 0);
 		o = "e";
 		o2 = "E";
-		assertTrue("c) Failed on tertiary difference", c.compare(o, o2) == 0);
+		assertEquals("c) Failed on tertiary difference", 0, c.compare(o, o2));
 		o = "\u0001";
 		o2 = "\u0002";
-		assertTrue("c) Failed on identical", c.compare(o, o2) == 0);
+		assertEquals("c) Failed on identical", 0, c.compare(o, o2));
 		o = "e";
 		o2 = "e";
-		assertTrue("c) Failed on equivalence", c.compare(o, o2) == 0);
+		assertEquals("c) Failed on equivalence", 0, c.compare(o, o2));
 
 		c.setStrength(Collator.PRIMARY);
 		o = "E";
@@ -97,16 +97,16 @@ public class CollatorTest extends junit.framework.TestCase {
 		assertTrue("d) Failed on primary difference", c.compare(o, o2) < 0);
 		o = "e";
 		o2 = "\u00e9";
-		assertTrue("d) Failed on secondary difference", c.compare(o, o2) == 0);
+		assertEquals("d) Failed on secondary difference", 0, c.compare(o, o2));
 		o = "e";
 		o2 = "E";
-		assertTrue("d) Failed on tertiary difference", c.compare(o, o2) == 0);
+		assertEquals("d) Failed on tertiary difference", 0, c.compare(o, o2));
 		o = "\u0001";
 		o2 = "\u0002";
-		assertTrue("d) Failed on identical", c.compare(o, o2) == 0);
+		assertEquals("d) Failed on identical", 0, c.compare(o, o2));
 		o = "e";
 		o2 = "e";
-		assertTrue("d) Failed on equivalence", c.compare(o, o2) == 0);
+		assertEquals("d) Failed on equivalence", 0, c.compare(o, o2));
 
 		try {
 			c.compare("e", new StringBuffer("Blah"));

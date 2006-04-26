@@ -48,7 +48,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_util_Locale() {
 		DecimalFormatSymbols dfs = new DecimalFormatSymbols(new Locale("en",
 				"us"));
-		assertTrue("Returned incorrect symbols", dfs.getPercent() == '%');
+		assertEquals("Returned incorrect symbols", '%', dfs.getPercent());
 	}
 
 	/**
@@ -79,34 +79,34 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 				"KR"));
 		assertTrue("Test1: Returned incorrect currency",
 				dfs1.getCurrency() == currK);
-		assertTrue("Test1: Returned incorrect currencySymbol", dfs1
-				.getCurrencySymbol().equals("\uffe6"));
-		assertTrue("Test1: Returned incorrect intlCurrencySymbol", dfs1
-				.getInternationalCurrencySymbol().equals("KRW"));
+		assertEquals("Test1: Returned incorrect currencySymbol", "\uffe6", dfs1
+				.getCurrencySymbol());
+		assertEquals("Test1: Returned incorrect intlCurrencySymbol", "KRW", dfs1
+				.getInternationalCurrencySymbol());
 
 		dfs1 = new DecimalFormatSymbols(new Locale("", "KR"));
 		assertTrue("Test2: Returned incorrect currency",
 				dfs1.getCurrency() == currK);
-		assertTrue("Test2: Returned incorrect currencySymbol", dfs1
-				.getCurrencySymbol().equals("KRW"));
-		assertTrue("Test2: Returned incorrect intlCurrencySymbol", dfs1
-				.getInternationalCurrencySymbol().equals("KRW"));
+		assertEquals("Test2: Returned incorrect currencySymbol", "KRW", dfs1
+				.getCurrencySymbol());
+		assertEquals("Test2: Returned incorrect intlCurrencySymbol", "KRW", dfs1
+				.getInternationalCurrencySymbol());
 
 		dfs1 = new DecimalFormatSymbols(new Locale("ko", ""));
 		assertTrue("Test3: Returned incorrect currency",
 				dfs1.getCurrency() == currX);
-		assertTrue("Test3: Returned incorrect currencySymbol", dfs1
-				.getCurrencySymbol().equals("\u00a4"));
-		assertTrue("Test3: Returned incorrect intlCurrencySymbol", dfs1
-				.getInternationalCurrencySymbol().equals("XXX"));
+		assertEquals("Test3: Returned incorrect currencySymbol", "\u00a4", dfs1
+				.getCurrencySymbol());
+		assertEquals("Test3: Returned incorrect intlCurrencySymbol", "XXX", dfs1
+				.getInternationalCurrencySymbol());
 
 		dfs1 = new DecimalFormatSymbols(new Locale("fr", "FR"));
 		assertTrue("Test4: Returned incorrect currency",
 				dfs1.getCurrency() == currE);
-		assertTrue("Test4: Returned incorrect currencySymbol", dfs1
-				.getCurrencySymbol().equals("\u20ac"));
-		assertTrue("Test4: Returned incorrect intlCurrencySymbol", dfs1
-				.getInternationalCurrencySymbol().equals("EUR"));
+		assertEquals("Test4: Returned incorrect currencySymbol", "\u20ac", dfs1
+				.getCurrencySymbol());
+		assertEquals("Test4: Returned incorrect intlCurrencySymbol", "EUR", dfs1
+				.getInternationalCurrencySymbol());
 
 		// RI fails these tests since it doesn't have the PREEURO variant
 		// dfs1 = new DecimalFormatSymbols(new Locale("fr", "FR","PREEURO"));
@@ -122,8 +122,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 * @tests java.text.DecimalFormatSymbols#getCurrencySymbol()
 	 */
 	public void test_getCurrencySymbol() {
-		assertTrue("Returned incorrect currencySymbol", dfsUS
-				.getCurrencySymbol().equals("$"));
+		assertEquals("Returned incorrect currencySymbol", "$", dfsUS
+				.getCurrencySymbol());
 	}
 
 	/**
@@ -131,8 +131,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getDecimalSeparator() {
 		dfs.setDecimalSeparator('*');
-		assertTrue("Returned incorrect DecimalSeparator symbol", dfs
-				.getDecimalSeparator() == '*');
+		assertEquals("Returned incorrect DecimalSeparator symbol", '*', dfs
+				.getDecimalSeparator());
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getDigit() {
 		dfs.setDigit('*');
-		assertTrue("Returned incorrect Digit symbol", dfs.getDigit() == '*');
+		assertEquals("Returned incorrect Digit symbol", '*', dfs.getDigit());
 	}
 
 	/**
@@ -148,8 +148,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getGroupingSeparator() {
 		dfs.setGroupingSeparator('*');
-		assertTrue("Returned incorrect GroupingSeparator symbol", dfs
-				.getGroupingSeparator() == '*');
+		assertEquals("Returned incorrect GroupingSeparator symbol", '*', dfs
+				.getGroupingSeparator());
 	}
 
 	/**
@@ -165,8 +165,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 * @tests java.text.DecimalFormatSymbols#getInternationalCurrencySymbol()
 	 */
 	public void test_getInternationalCurrencySymbol() {
-		assertTrue("Returned incorrect InternationalCurrencySymbol", dfsUS
-				.getInternationalCurrencySymbol().equals("USD"));
+		assertEquals("Returned incorrect InternationalCurrencySymbol", "USD", dfsUS
+				.getInternationalCurrencySymbol());
 	}
 
 	/**
@@ -174,8 +174,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getMinusSign() {
 		dfs.setMinusSign('&');
-		assertTrue("Returned incorrect MinusSign symbol",
-				dfs.getMinusSign() == '&');
+		assertEquals("Returned incorrect MinusSign symbol",
+				'&', dfs.getMinusSign());
 	}
 
 	/**
@@ -183,8 +183,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getNaN() {
 		dfs.setNaN("NAN!!");
-		assertTrue("Returned incorrect nan symbol", dfs.getNaN()
-				.equals("NAN!!"));
+		assertEquals("Returned incorrect nan symbol", "NAN!!", dfs.getNaN()
+				);
 	}
 
 	/**
@@ -192,8 +192,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getPatternSeparator() {
 		dfs.setPatternSeparator('X');
-		assertTrue("Returned incorrect PatternSeparator symbol", dfs
-				.getPatternSeparator() == 'X');
+		assertEquals("Returned incorrect PatternSeparator symbol", 'X', dfs
+				.getPatternSeparator());
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getPercent() {
 		dfs.setPercent('*');
-		assertTrue("Returned incorrect Percent symbol", dfs.getPercent() == '*');
+		assertEquals("Returned incorrect Percent symbol", '*', dfs.getPercent());
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getPerMill() {
 		dfs.setPerMill('#');
-		assertTrue("Returned incorrect PerMill symbol", dfs.getPerMill() == '#');
+		assertEquals("Returned incorrect PerMill symbol", '#', dfs.getPerMill());
 	}
 
 	/**
@@ -217,8 +217,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_getZeroDigit() {
 		dfs.setZeroDigit('*');
-		assertTrue("Returned incorrect ZeroDigit symbol",
-				dfs.getZeroDigit() == '*');
+		assertEquals("Returned incorrect ZeroDigit symbol",
+				'*', dfs.getZeroDigit());
 	}
 
 	/**
@@ -250,8 +250,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setDecimalSeparatorC() {
 		dfs.setDecimalSeparator('*');
-		assertTrue("Returned incorrect DecimalSeparator symbol", dfs
-				.getDecimalSeparator() == '*');
+		assertEquals("Returned incorrect DecimalSeparator symbol", '*', dfs
+				.getDecimalSeparator());
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setDigitC() {
 		dfs.setDigit('*');
-		assertTrue("Returned incorrect Digit symbol", dfs.getDigit() == '*');
+		assertEquals("Returned incorrect Digit symbol", '*', dfs.getDigit());
 	}
 
 	/**
@@ -267,8 +267,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setGroupingSeparatorC() {
 		dfs.setGroupingSeparator('*');
-		assertTrue("Returned incorrect GroupingSeparator symbol", dfs
-				.getGroupingSeparator() == '*');
+		assertEquals("Returned incorrect GroupingSeparator symbol", '*', dfs
+				.getGroupingSeparator());
 	}
 
 	/**
@@ -300,12 +300,12 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 
 		String symbol = dfs.getCurrencySymbol();
 		dfs.setInternationalCurrencySymbol("bogus");
-		assertTrue("Test2: Returned incorrect currency",
-				dfs.getCurrency() == null);
+		assertNull("Test2: Returned incorrect currency",
+				dfs.getCurrency());
 		assertTrue("Test2: Returned incorrect currency symbol", dfs
 				.getCurrencySymbol().equals(symbol));
-		assertTrue("Test2: Returned incorrect international currency symbol",
-				dfs.getInternationalCurrencySymbol().equals("bogus"));
+		assertEquals("Test2: Returned incorrect international currency symbol",
+				"bogus", dfs.getInternationalCurrencySymbol());
 	}
 
 	/**
@@ -313,8 +313,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setMinusSignC() {
 		dfs.setMinusSign('&');
-		assertTrue("Returned incorrect MinusSign symbol",
-				dfs.getMinusSign() == '&');
+		assertEquals("Returned incorrect MinusSign symbol",
+				'&', dfs.getMinusSign());
 	}
 
 	/**
@@ -322,8 +322,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setNaNLjava_lang_String() {
 		dfs.setNaN("NAN!!");
-		assertTrue("Returned incorrect nan symbol", dfs.getNaN()
-				.equals("NAN!!"));
+		assertEquals("Returned incorrect nan symbol", "NAN!!", dfs.getNaN()
+				);
 	}
 
 	/**
@@ -331,8 +331,8 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setPatternSeparatorC() {
 		dfs.setPatternSeparator('X');
-		assertTrue("Returned incorrect PatternSeparator symbol", dfs
-				.getPatternSeparator() == 'X');
+		assertEquals("Returned incorrect PatternSeparator symbol", 'X', dfs
+				.getPatternSeparator());
 	}
 
 	/**
@@ -340,7 +340,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setPercentC() {
 		dfs.setPercent('*');
-		assertTrue("Returned incorrect Percent symbol", dfs.getPercent() == '*');
+		assertEquals("Returned incorrect Percent symbol", '*', dfs.getPercent());
 	}
 
 	/**
@@ -348,7 +348,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setPerMillC() {
 		dfs.setPerMill('#');
-		assertTrue("Returned incorrect PerMill symbol", dfs.getPerMill() == '#');
+		assertEquals("Returned incorrect PerMill symbol", '#', dfs.getPerMill());
 	}
 
 	/**
@@ -356,7 +356,7 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 	 */
 	public void test_setZeroDigitC() {
 		dfs.setZeroDigit('*');
-		assertTrue("Set incorrect ZeroDigit symbol", dfs.getZeroDigit() == '*');
+		assertEquals("Set incorrect ZeroDigit symbol", '*', dfs.getZeroDigit());
 	}
 
 	/**
