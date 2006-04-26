@@ -58,8 +58,8 @@ public class ByteTest extends junit.framework.TestCase {
 				(byte) 2)) < 0);
 		assertTrue("Comparison failed", new Byte((byte) 1).compareTo(new Byte(
 				(byte) -2)) > 0);
-		assertTrue("Comparison failed", new Byte((byte) 1).compareTo(new Byte(
-				(byte) 1)) == 0);
+		assertEquals("Comparison failed", 0, new Byte((byte) 1).compareTo(new Byte(
+				(byte) 1)));
 	}
 
 	/**
@@ -159,8 +159,8 @@ public class ByteTest extends junit.framework.TestCase {
 	 */
 	public void test_hashCode() {
 		// Test for method int java.lang.Byte.hashCode()
-		assertTrue("Incorrect hash returned",
-				new Byte((byte) 127).hashCode() == 127);
+		assertEquals("Incorrect hash returned",
+				127, new Byte((byte) 127).hashCode());
 	}
 
 	/**
@@ -168,8 +168,8 @@ public class ByteTest extends junit.framework.TestCase {
 	 */
 	public void test_intValue() {
 		// Test for method int java.lang.Byte.intValue()
-		assertTrue("Returned incorrect int value", new Byte((byte) 127)
-				.intValue() == 127);
+		assertEquals("Returned incorrect int value", 127, new Byte((byte) 127)
+				.intValue());
 	}
 
 	/**
@@ -177,8 +177,8 @@ public class ByteTest extends junit.framework.TestCase {
 	 */
 	public void test_longValue() {
 		// Test for method long java.lang.Byte.longValue()
-		assertTrue("Returned incorrect long value", new Byte((byte) 127)
-				.longValue() == 127L);
+		assertEquals("Returned incorrect long value", 127L, new Byte((byte) 127)
+				.longValue());
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class ByteTest extends junit.framework.TestCase {
 		byte bn = Byte.parseByte("-128");
 		assertTrue("Invalid parse of byte", b == (byte) 127
 				&& (bn == (byte) -128));
-		assertTrue("Returned incorrect value for 0", Byte.parseByte("0") == 0);
+		assertEquals("Returned incorrect value for 0", 0, Byte.parseByte("0"));
 		assertTrue("Returned incorrect value for most negative value", Byte
 				.parseByte("-128") == (byte) 0x80);
 		assertTrue("Returned incorrect value for most positive value", Byte
@@ -234,15 +234,15 @@ public class ByteTest extends junit.framework.TestCase {
 		byte bn = Byte.parseByte("-128", 10);
 		assertTrue("Invalid parse of dec byte", b == (byte) 127
 				&& (bn == (byte) -128));
-		assertTrue("Failed to parse hex value", Byte.parseByte("A", 16) == 10);
-		assertTrue("Returned incorrect value for 0 hex", Byte
-				.parseByte("0", 16) == 0);
+		assertEquals("Failed to parse hex value", 10, Byte.parseByte("A", 16));
+		assertEquals("Returned incorrect value for 0 hex", 0, Byte
+				.parseByte("0", 16));
 		assertTrue("Returned incorrect value for most negative value hex", Byte
 				.parseByte("-80", 16) == (byte) 0x80);
 		assertTrue("Returned incorrect value for most positive value hex", Byte
 				.parseByte("7f", 16) == 0x7f);
-		assertTrue("Returned incorrect value for 0 decimal", Byte.parseByte(
-				"0", 10) == 0);
+		assertEquals("Returned incorrect value for 0 decimal", 0, Byte.parseByte(
+				"0", 10));
 		assertTrue("Returned incorrect value for most negative value decimal",
 				Byte.parseByte("-128", 10) == (byte) 0x80);
 		assertTrue("Returned incorrect value for most positive value decimal",
@@ -308,12 +308,12 @@ public class ByteTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.lang.Byte.toString()
-		assertTrue("Returned incorrect String", new Byte((byte) 127).toString()
-				.equals("127"));
-		assertTrue("Returned incorrect String", new Byte((byte) -127)
-				.toString().equals("-127"));
-		assertTrue("Returned incorrect String", new Byte((byte) -128)
-				.toString().equals("-128"));
+		assertEquals("Returned incorrect String", "127", new Byte((byte) 127).toString()
+				);
+		assertEquals("Returned incorrect String", "-127", new Byte((byte) -127)
+				.toString());
+		assertEquals("Returned incorrect String", "-128", new Byte((byte) -128)
+				.toString());
 	}
 
 	/**
@@ -321,12 +321,12 @@ public class ByteTest extends junit.framework.TestCase {
 	 */
 	public void test_toStringB() {
 		// Test for method java.lang.String java.lang.Byte.toString(byte)
-		assertTrue("Returned incorrect String", Byte.toString((byte) 127)
-				.equals("127"));
-		assertTrue("Returned incorrect String", Byte.toString((byte) -127)
-				.equals("-127"));
-		assertTrue("Returned incorrect String", Byte.toString((byte) -128)
-				.equals("-128"));
+		assertEquals("Returned incorrect String", "127", Byte.toString((byte) 127)
+				);
+		assertEquals("Returned incorrect String", "-127", Byte.toString((byte) -127)
+				);
+		assertEquals("Returned incorrect String", "-128", Byte.toString((byte) -128)
+				);
 	}
 
 	/**
@@ -335,14 +335,14 @@ public class ByteTest extends junit.framework.TestCase {
 	public void test_valueOfLjava_lang_String() {
 		// Test for method java.lang.Byte
 		// java.lang.Byte.valueOf(java.lang.String)
-		assertTrue("Returned incorrect byte",
-				Byte.valueOf("0").byteValue() == 0);
-		assertTrue("Returned incorrect byte",
-				Byte.valueOf("127").byteValue() == 127);
-		assertTrue("Returned incorrect byte",
-				Byte.valueOf("-127").byteValue() == -127);
-		assertTrue("Returned incorrect byte",
-				Byte.valueOf("-128").byteValue() == -128);
+		assertEquals("Returned incorrect byte",
+				0, Byte.valueOf("0").byteValue());
+		assertEquals("Returned incorrect byte",
+				127, Byte.valueOf("127").byteValue());
+		assertEquals("Returned incorrect byte",
+				-127, Byte.valueOf("-127").byteValue());
+		assertEquals("Returned incorrect byte",
+				-128, Byte.valueOf("-128").byteValue());
 
 		try {
 			Byte.valueOf("128");
@@ -359,20 +359,20 @@ public class ByteTest extends junit.framework.TestCase {
 	public void test_valueOfLjava_lang_StringI() {
 		// Test for method java.lang.Byte
 		// java.lang.Byte.valueOf(java.lang.String, int)
-		assertTrue("Returned incorrect byte",
-				Byte.valueOf("A", 16).byteValue() == 10);
-		assertTrue("Returned incorrect byte", Byte.valueOf("127", 10)
-				.byteValue() == 127);
-		assertTrue("Returned incorrect byte", Byte.valueOf("-127", 10)
-				.byteValue() == -127);
-		assertTrue("Returned incorrect byte", Byte.valueOf("-128", 10)
-				.byteValue() == -128);
-		assertTrue("Returned incorrect byte", Byte.valueOf("7f", 16)
-				.byteValue() == 127);
-		assertTrue("Returned incorrect byte", Byte.valueOf("-7f", 16)
-				.byteValue() == -127);
-		assertTrue("Returned incorrect byte", Byte.valueOf("-80", 16)
-				.byteValue() == -128);
+		assertEquals("Returned incorrect byte",
+				10, Byte.valueOf("A", 16).byteValue());
+		assertEquals("Returned incorrect byte", 127, Byte.valueOf("127", 10)
+				.byteValue());
+		assertEquals("Returned incorrect byte", -127, Byte.valueOf("-127", 10)
+				.byteValue());
+		assertEquals("Returned incorrect byte", -128, Byte.valueOf("-128", 10)
+				.byteValue());
+		assertEquals("Returned incorrect byte", 127, Byte.valueOf("7f", 16)
+				.byteValue());
+		assertEquals("Returned incorrect byte", -127, Byte.valueOf("-7f", 16)
+				.byteValue());
+		assertEquals("Returned incorrect byte", -128, Byte.valueOf("-80", 16)
+				.byteValue());
 
 		try {
 			Byte.valueOf("128", 10);

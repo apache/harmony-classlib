@@ -52,7 +52,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			openDataInputStream();
 			int c = dis.readInt();
 			dis.close();
-			assertTrue("Failed to flush correctly", c == 9087589);
+			assertEquals("Failed to flush correctly", 9087589, c);
 		} catch (IOException e) {
 			fail("Exception during flush test : " + e.getMessage());
 		}
@@ -71,7 +71,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			byte[] rbuf = new byte[150];
 			dis.read(rbuf, 0, 150);
 			dis.close();
-			assertTrue("Incorrect size returned", os.size() == 150);
+			assertEquals("Incorrect size returned", 150, os.size());
 		} catch (IOException e) {
 			fail("Exception during write test : " + e.getMessage());
 		}
@@ -179,7 +179,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			openDataInputStream();
 			char c = dis.readChar();
 			dis.close();
-			assertTrue("Incorrect char written", c == 'T');
+			assertEquals("Incorrect char written", 'T', c);
 		} catch (IOException e) {
 			fail("Exception during writeChar test : " + e.getMessage());
 		}
@@ -199,8 +199,8 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			int i, a = dis.available() / 2;
 			for (i = 0; i < a; i++)
 				chars[i] = dis.readChar();
-			assertTrue("Incorrect chars written", new String(chars, 0, i)
-					.equals("Test String"));
+			assertEquals("Incorrect chars written", "Test String", new String(chars, 0, i)
+					);
 		} catch (IOException e) {
 			fail("Exception during writeChars test : " + e.getMessage());
 		}
@@ -217,7 +217,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			openDataInputStream();
 			double c = dis.readDouble();
 			dis.close();
-			assertTrue("Incorrect double written", c == 908755555456.98);
+			assertEquals("Incorrect double written", 908755555456.98, c);
 		} catch (IOException e) {
 			fail("Exception during writeDouble test : " + e.getMessage());
 		}
@@ -251,7 +251,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			openDataInputStream();
 			int c = dis.readInt();
 			dis.close();
-			assertTrue("Incorrect int written", c == 9087589);
+			assertEquals("Incorrect int written", 9087589, c);
 		} catch (IOException e) {
 			fail("Exception during writeInt test : " + e.getMessage());
 		}
@@ -268,7 +268,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			openDataInputStream();
 			long c = dis.readLong();
 			dis.close();
-			assertTrue("Incorrect long written", c == 908755555456L);
+			assertEquals("Incorrect long written", 908755555456L, c);
 		} catch (IOException e) {
 			fail("Exception during writeLong test" + e.getMessage());
 		}
@@ -285,7 +285,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			openDataInputStream();
 			short c = dis.readShort();
 			dis.close();
-			assertTrue("Incorrect short written", c == 9087);
+			assertEquals("Incorrect short written", 9087, c);
 		} catch (IOException e) {
 			fail("Exception during writeShort test : " + e.getMessage());
 		}

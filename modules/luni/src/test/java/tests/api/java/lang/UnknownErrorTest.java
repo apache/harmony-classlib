@@ -40,8 +40,8 @@ public class UnknownErrorTest extends junit.framework.TestCase {
 			if (true)
 				throw new UnknownError("Unknown");
 		} catch (UnknownError e) {
-			assertTrue(" Incorrect msg string ", e.getMessage().equals(
-					"Unknown"));
+			assertEquals(" Incorrect msg string ", 
+					"Unknown", e.getMessage());
 			return;
 		}
 		fail("Failed to generate error");

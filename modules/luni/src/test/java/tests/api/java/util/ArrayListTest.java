@@ -53,7 +53,7 @@ public class ArrayListTest extends junit.framework.TestCase {
 	public void test_ConstructorI() {
 		// Test for method java.util.ArrayList(int)
 		ArrayList al = new ArrayList(5);
-		assertTrue("Incorrect arrayList created", al.size() == 0);
+		assertEquals("Incorrect arrayList created", 0, al.size());
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class ArrayListTest extends junit.framework.TestCase {
 						&& (alist.get(52) == objArray[51]));
 		Object oldItem = alist.get(25);
 		alist.add(25, null);
-		assertTrue("Should have returned null", alist.get(25) == null);
+		assertNull("Should have returned null", alist.get(25));
 		assertTrue("Should have returned the old item from slot 25", alist
 				.get(26) == oldItem);
 	}
@@ -98,7 +98,7 @@ public class ArrayListTest extends junit.framework.TestCase {
 		alist.add(o);
 		assertTrue("Failed to add Object", alist.get(alist.size() - 1) == o);
 		alist.add(null);
-		assertTrue("Failed to add null", alist.get(alist.size() - 1) == null);
+		assertNull("Failed to add null", alist.get(alist.size() - 1));
 	}
 
 	/**
@@ -108,8 +108,8 @@ public class ArrayListTest extends junit.framework.TestCase {
 		// Test for method boolean java.util.ArrayList.addAll(int,
 		// java.util.Collection)
 		alist.addAll(50, alist);
-		assertTrue("Returned incorrect size after adding to existing list",
-				alist.size() == 200);
+		assertEquals("Returned incorrect size after adding to existing list",
+				200, alist.size());
 		for (int i = 0; i < 50; i++)
 			assertTrue("Manipulated elements < index",
 					alist.get(i) == objArray[i]);
@@ -127,13 +127,13 @@ public class ArrayListTest extends junit.framework.TestCase {
 		listWithNulls.add(null);
 		alist.addAll(100, listWithNulls);
 		assertTrue("Incorrect size: " + alist.size(), alist.size() == 205);
-		assertTrue("Item at slot 100 should be null", alist.get(100) == null);
-		assertTrue("Item at slot 101 should be null", alist.get(101) == null);
-		assertTrue("Item at slot 102 should be 'yoink'", alist.get(102).equals(
-				"yoink"));
-		assertTrue("Item at slot 103 should be 'kazoo'", alist.get(103).equals(
-				"kazoo"));
-		assertTrue("Item at slot 104 should be null", alist.get(104) == null);
+		assertNull("Item at slot 100 should be null", alist.get(100));
+		assertNull("Item at slot 101 should be null", alist.get(101));
+		assertEquals("Item at slot 102 should be 'yoink'", 
+				"yoink", alist.get(102));
+		assertEquals("Item at slot 103 should be 'kazoo'", 
+				"kazoo", alist.get(103));
+		assertNull("Item at slot 104 should be null", alist.get(104));
 		alist.addAll(205, listWithNulls);
 		assertTrue("Incorrect size2: " + alist.size(), alist.size() == 210);
 	}
@@ -150,8 +150,8 @@ public class ArrayListTest extends junit.framework.TestCase {
 			assertTrue("Failed to add elements properly", l.get(i).equals(
 					alist.get(i)));
 		alist.addAll(alist);
-		assertTrue("Returned incorrect size after adding to existing list",
-				alist.size() == 200);
+		assertEquals("Returned incorrect size after adding to existing list",
+				200, alist.size());
 		for (int i = 0; i < 100; i++) {
 			assertTrue("Added to list in incorrect order", alist.get(i)
 					.equals(l.get(i)));
@@ -181,16 +181,16 @@ public class ArrayListTest extends junit.framework.TestCase {
 	public void test_clear() {
 		// Test for method void java.util.ArrayList.clear()
 		alist.clear();
-		assertTrue("List did not clear", alist.size() == 0);
+		assertEquals("List did not clear", 0, alist.size());
 		alist.add(null);
 		alist.add(null);
 		alist.add(null);
 		alist.add("bam");
 		alist.clear();
-		assertTrue("List with nulls did not clear", alist.size() == 0);
+		assertEquals("List with nulls did not clear", 0, alist.size());
 		/*
-		 * for (int i = 0; i < alist.size(); i++) assertTrue("Failed to clear
-		 * list", alist.get(i) == null);
+		 * for (int i = 0; i < alist.size(); i++) assertNull("Failed to clear
+		 * list", alist.get(i));
 		 */
 
 	}
@@ -289,10 +289,10 @@ public class ArrayListTest extends junit.framework.TestCase {
 	 */
 	public void test_indexOfLjava_lang_Object() {
 		// Test for method int java.util.ArrayList.indexOf(java.lang.Object)
-		assertTrue("Returned incorrect index",
-				alist.indexOf(objArray[87]) == 87);
-		assertTrue("Returned index for invalid Object", alist
-				.indexOf(new Object()) == -1);
+		assertEquals("Returned incorrect index",
+				87, alist.indexOf(objArray[87]));
+		assertEquals("Returned index for invalid Object", -1, alist
+				.indexOf(new Object()));
 		alist.add(25, null);
 		alist.add(50, null);
 		assertTrue("Wrong indexOf for null.  Wanted 25 got: "
@@ -316,10 +316,10 @@ public class ArrayListTest extends junit.framework.TestCase {
 	public void test_lastIndexOfLjava_lang_Object() {
 		// Test for method int java.util.ArrayList.lastIndexOf(java.lang.Object)
 		alist.add(new Integer(99));
-		assertTrue("Returned incorrect index",
-				alist.lastIndexOf(objArray[99]) == 100);
-		assertTrue("Returned index for invalid Object", alist
-				.lastIndexOf(new Object()) == -1);
+		assertEquals("Returned incorrect index",
+				100, alist.lastIndexOf(objArray[99]));
+		assertEquals("Returned index for invalid Object", -1, alist
+				.lastIndexOf(new Object()));
 		alist.add(25, null);
 		alist.add(50, null);
 		assertTrue("Wrong lastIndexOf for null.  Wanted 50 got: "
@@ -332,8 +332,8 @@ public class ArrayListTest extends junit.framework.TestCase {
 	public void test_removeI() {
 		// Test for method java.lang.Object java.util.ArrayList.remove(int)
 		alist.remove(10);
-		assertTrue("Failed to remove element",
-				alist.indexOf(objArray[10]) == -1);
+		assertEquals("Failed to remove element",
+				-1, alist.indexOf(objArray[10]));
 		boolean exception = false;
 		try {
 			alist.remove(999);
@@ -387,7 +387,7 @@ public class ArrayListTest extends junit.framework.TestCase {
 		alist.set(65, obj = new Object());
 		assertTrue("Failed to set object", alist.get(65) == obj);
 		alist.set(50, null);
-		assertTrue("Setting to null did not work", alist.get(50) == null);
+		assertNull("Setting to null did not work", alist.get(50));
 		assertTrue("Setting increased the list's size to: " + alist.size(),
 				alist.size() == 100);
 	}
@@ -397,10 +397,10 @@ public class ArrayListTest extends junit.framework.TestCase {
 	 */
 	public void test_size() {
 		// Test for method int java.util.ArrayList.size()
-		assertTrue("Returned incorrect size for exiting list",
-				alist.size() == 100);
-		assertTrue("Returned incorrect size for new list", new ArrayList()
-				.size() == 0);
+		assertEquals("Returned incorrect size for exiting list",
+				100, alist.size());
+		assertEquals("Returned incorrect size for new list", 0, new ArrayList()
+				.size());
 	}
 
 	/**
@@ -416,8 +416,8 @@ public class ArrayListTest extends junit.framework.TestCase {
 
 		for (int i = 0; i < obj.length; i++) {
 			if ((i == 25) || (i == 75))
-				assertTrue("Should be null at: " + i + " but instead got: "
-						+ obj[i], obj[i] == null);
+				assertNull("Should be null at: " + i + " but instead got: "
+						+ obj[i], obj[i]);
 			else
 				assertTrue("Returned incorrect array: " + i,
 						obj[i] == objArray[i]);
@@ -439,11 +439,11 @@ public class ArrayListTest extends junit.framework.TestCase {
 		assertTrue("Returned different array than passed", retArray == argArray);
 		argArray = new Integer[1000];
 		retArray = alist.toArray(argArray);
-		assertTrue("Failed to set first extra element to null", argArray[alist
-				.size()] == null);
+		assertNull("Failed to set first extra element to null", argArray[alist
+				.size()]);
 		for (int i = 0; i < 100; i++) {
 			if ((i == 25) || (i == 75))
-				assertTrue("Should be null: " + i, retArray[i] == null);
+				assertNull("Should be null: " + i, retArray[i]);
 			else
 				assertTrue("Returned incorrect array: " + i,
 						retArray[i] == objArray[i]);
@@ -458,7 +458,7 @@ public class ArrayListTest extends junit.framework.TestCase {
 		for (int i = 99; i > 24; i--)
 			alist.remove(i);
 		((ArrayList) alist).trimToSize();
-		assertTrue("Returned incorrect size after trim", alist.size() == 25);
+		assertEquals("Returned incorrect size after trim", 25, alist.size());
 		for (int i = 0; i < alist.size(); i++)
 			assertTrue("Trimmed list contained incorrect elements", alist
 					.get(i) == objArray[i]);

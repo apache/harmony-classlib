@@ -27,8 +27,8 @@ public class LinkageErrorTest extends junit.framework.TestCase {
 			}
 			fail("Error not thrown.");
 		} catch (LinkageError e) {
-			assertTrue("Error not initialized.", e.toString().equals(
-					"java.lang.LinkageError"));
+			assertEquals("Error not initialized.", 
+					"java.lang.LinkageError", e.toString());
 		}
 	}
 

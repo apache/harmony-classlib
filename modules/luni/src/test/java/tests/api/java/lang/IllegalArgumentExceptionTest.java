@@ -37,8 +37,8 @@ public class IllegalArgumentExceptionTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.lang.IllegalArgumentException()
 		IllegalArgumentException ill = new IllegalArgumentException();
-		assertTrue("failed to create an instance of illegalArgumentException",
-				ill.getMessage() == null);
+		assertNull("failed to create an instance of illegalArgumentException",
+				ill.getMessage());
 		try {
 			try {
 				new java.io.ByteArrayOutputStream(-12);
@@ -58,9 +58,8 @@ public class IllegalArgumentExceptionTest extends junit.framework.TestCase {
 		// Test for method java.lang.IllegalArgumentException(java.lang.String)
 		IllegalArgumentException ill = new IllegalArgumentException(
 				"testing illArg exception");
-		assertTrue(
-				"failed to create instance of illegalArgumentException(string)",
-				ill.getMessage().equals("testing illArg exception"));
+		assertEquals("failed to create instance of illegalArgumentException(string)",
+				"testing illArg exception", ill.getMessage());
 	}
 
 	/**

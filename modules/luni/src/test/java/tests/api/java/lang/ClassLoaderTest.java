@@ -25,11 +25,11 @@ public class ClassLoaderTest extends junit.framework.TestCase {
 		// java.lang.ClassLoader.getResource(java.lang.String)
 		java.net.URL u = ClassLoader.getSystemClassLoader().getResource(
 				"hyts_Foo.c");
-		assertTrue("Unable to find resource", u != null);
+		assertNotNull("Unable to find resource", u);
 		java.io.InputStream is = null;
 		try {
 			is = u.openStream();
-			assertTrue("Resource returned is invalid", is != null);
+			assertNotNull("Resource returned is invalid", is);
 			is.close();
 		} catch (java.io.IOException e) {
 			fail("IOException getting stream for resource : " + e.getMessage());
@@ -45,9 +45,9 @@ public class ClassLoaderTest extends junit.framework.TestCase {
 		// Need better test...
 
 		java.io.InputStream is = null;
-		assertTrue("Failed to find resource: hyts_Foo.c",
+		assertNotNull("Failed to find resource: hyts_Foo.c",
 				(is = ClassLoader.getSystemClassLoader().getResourceAsStream(
-						"hyts_Foo.c")) != null);
+						"hyts_Foo.c")));
 		try {
 			is.close();
 		} catch (java.io.IOException e) {
@@ -63,7 +63,7 @@ public class ClassLoaderTest extends junit.framework.TestCase {
 		// java.lang.ClassLoader.getSystemClassLoader()
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		java.io.InputStream is = cl.getResourceAsStream("hyts_Foo.c");
-		assertTrue("Failed to find resource from system classpath", is != null);
+		assertNotNull("Failed to find resource from system classpath", is);
 		try {
 			is.close();
 		} catch (java.io.IOException e) {
@@ -78,8 +78,8 @@ public class ClassLoaderTest extends junit.framework.TestCase {
 		// Test for method java.net.URL
 		// java.lang.ClassLoader.getSystemResource(java.lang.String)
 		// Need better test...
-		assertTrue("Failed to find resource: hyts_Foo.c", ClassLoader
-				.getSystemResource("hyts_Foo.c") != null);
+		assertNotNull("Failed to find resource: hyts_Foo.c", ClassLoader
+				.getSystemResource("hyts_Foo.c"));
 	}
 
 	/**

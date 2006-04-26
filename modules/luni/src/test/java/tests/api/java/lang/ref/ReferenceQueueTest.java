@@ -90,12 +90,12 @@ public class ReferenceQueueTest extends junit.framework.TestCase {
 	 */
 	public void test_removeJ() {
 		try {
-			assertTrue("Queue is empty.", rq.poll() == null);
-			assertTrue("Queue is empty.", rq.remove((long) 1) == null);
+			assertNull("Queue is empty.", rq.poll());
+			assertNull("Queue is empty.", rq.remove((long) 1));
 			Thread ct = new Thread(new ChildThread());
 			ct.start();
 			Reference ret = rq.remove(0L);
-			assertTrue("Delayed remove failed.", ret != null);
+			assertNotNull("Delayed remove failed.", ret);
 		} catch (InterruptedException e) {
 			fail("InterruptedExeException during test : " + e.getMessage());
 		}

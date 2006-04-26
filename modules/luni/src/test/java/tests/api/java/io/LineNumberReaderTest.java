@@ -31,7 +31,7 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_io_Reader() {
 		// Test for method java.io.LineNumberReader(java.io.Reader)
 		lnr = new LineNumberReader(new StringReader(text), 4092);
-		assertTrue("Failed to create reader", lnr.getLineNumber() == 0);
+		assertEquals("Failed to create reader", 0, lnr.getLineNumber());
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_io_ReaderI() {
 		// Test for method java.io.LineNumberReader(java.io.Reader, int)
 		lnr = new LineNumberReader(new StringReader(text));
-		assertTrue("Failed to create reader", lnr.getLineNumber() == 0);
+		assertEquals("Failed to create reader", 0, lnr.getLineNumber());
 	}
 
 	/**
@@ -49,8 +49,8 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 	public void test_getLineNumber() {
 		// Test for method int java.io.LineNumberReader.getLineNumber()
 		lnr = new LineNumberReader(new StringReader(text));
-		assertTrue("Returned incorrect line number--expected 0, got ", lnr
-				.getLineNumber() == 0);
+		assertEquals("Returned incorrect line number--expected 0, got ", 0, lnr
+				.getLineNumber());
 		try {
 			lnr.readLine();
 			lnr.readLine();
@@ -91,14 +91,14 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 
 		try {
 			int c = lnr.read();
-			assertTrue("Read returned incorrect character", c == '0');
+			assertEquals("Read returned incorrect character", '0', c);
 		} catch (IOException e) {
 			fail("Exception during read test : " + e.getMessage());
 		}
 		try {
 			lnr.read();
-			assertTrue("Read failed to inc lineNumber",
-					lnr.getLineNumber() == 1);
+			assertEquals("Read failed to inc lineNumber",
+					1, lnr.getLineNumber());
 		} catch (IOException e) {
 			fail("Exception during read test:" + e.getMessage());
 		}
@@ -119,7 +119,7 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Exception during read test : " + e.getMessage());
 		}
-		assertTrue("Read failed to inc lineNumber", lnr.getLineNumber() == 2);
+		assertEquals("Read failed to inc lineNumber", 2, lnr.getLineNumber());
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 	public void test_readLine() {
 		// Test for method java.lang.String java.io.LineNumberReader.readLine()
 		lnr = new LineNumberReader(new StringReader(text));
-		assertTrue("Returned incorrect line number", lnr.getLineNumber() == 0);
+		assertEquals("Returned incorrect line number", 0, lnr.getLineNumber());
 		String line = null;
 		try {
 			lnr.readLine();
@@ -136,7 +136,7 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Exception during getLineNumberTest: " + e.toString());
 		}
-		assertTrue("Returned incorrect string", "1".equals(line));
+		assertEquals("Returned incorrect string", "1", line);
 		assertTrue("Returned incorrect line number :" + lnr.getLineNumber(),
 				lnr.getLineNumber() == 2);
 	}
@@ -147,7 +147,7 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 	public void test_reset() {
 		// Test for method void java.io.LineNumberReader.reset()
 		lnr = new LineNumberReader(new StringReader(text));
-		assertTrue("Returned incorrect line number", lnr.getLineNumber() == 0);
+		assertEquals("Returned incorrect line number", 0, lnr.getLineNumber());
 		String line = null;
 		try {
 			lnr.mark(100);
@@ -157,7 +157,7 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Exception during getLineNumberTest: " + e.toString());
 		}
-		assertTrue("Failed to reset reader", "0".equals(line));
+		assertEquals("Failed to reset reader", "0", line);
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 		// Test for method void java.io.LineNumberReader.setLineNumber(int)
 		lnr = new LineNumberReader(new StringReader(text));
 		lnr.setLineNumber(1001);
-		assertTrue("set incorrect line number", lnr.getLineNumber() == 1001);
+		assertEquals("set incorrect line number", 1001, lnr.getLineNumber());
 	}
 
 	/**

@@ -62,7 +62,7 @@ public class WeakHashMapTest extends junit.framework.TestCase {
 					whm.get(keyArray[i]) == valueArray[i]);
 
 		WeakHashMap empty = new WeakHashMap(0);
-		assertTrue("Empty weakhashmap access", empty.get("nothing") == null);
+		assertNull("Empty weakhashmap access", empty.get("nothing"));
 		empty.put("something", "here");
 		assertTrue("cannot get element", empty.get("something") == "here");
 	}
@@ -80,7 +80,7 @@ public class WeakHashMapTest extends junit.framework.TestCase {
 					whm.get(keyArray[i]) == valueArray[i]);
 
 		WeakHashMap empty = new WeakHashMap(0, 0.75f);
-		assertTrue("Empty hashtable access", empty.get("nothing") == null);
+		assertNull("Empty hashtable access", empty.get("nothing"));
 		empty.put("something", "here");
 		assertTrue("cannot get element", empty.get("something") == "here");
 	}
@@ -96,8 +96,8 @@ public class WeakHashMapTest extends junit.framework.TestCase {
 		whm.clear();
 		assertTrue("Cleared map should be empty", whm.isEmpty());
 		for (int i = 0; i < 100; i++)
-			assertTrue("Cleared map should only return null", whm
-					.get(keyArray[i]) == null);
+			assertNull("Cleared map should only return null", whm
+					.get(keyArray[i]));
 
 	}
 
@@ -203,7 +203,7 @@ public class WeakHashMapTest extends junit.framework.TestCase {
 		System.gc();
 		System.runFinalization();
 		map.remove("nothing"); // Cause objects in queue to be removed
-		assertTrue("null key was removed", map.size() == 1);
+		assertEquals("null key was removed", 1, map.size());
 	}
 
 	/**
@@ -218,9 +218,9 @@ public class WeakHashMapTest extends junit.framework.TestCase {
 
 		assertTrue("Remove returned incorrect value",
 				whm.remove(keyArray[25]) == valueArray[25]);
-		assertTrue("Remove returned incorrect value",
-				whm.remove(keyArray[25]) == null);
-		assertTrue("Size should be 99 after remove", whm.size() == 99);
+		assertNull("Remove returned incorrect value",
+				whm.remove(keyArray[25]));
+		assertEquals("Size should be 99 after remove", 99, whm.size());
 	}
 
 	/**

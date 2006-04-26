@@ -74,8 +74,8 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 		URL[] u = new URL[0];
 		ucl = new URLClassLoader(u, cl);
 		URL res = ucl.getResource("J");
-		assertTrue("Failed to set parent", res == null ? false : res.getFile()
-				.equals("/BogusClassLoader"));
+		assertEquals("Failed to set parent", "/BogusClassLoader", res == null ? false : res.getFile()
+				);
 	}
 
 	/**
@@ -162,10 +162,10 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 
 		try {
 			res = cl.getClassLoader().getResource("XX.class");
-			assertTrue("Failed to load class", cl != null);
-			assertTrue(
+			assertNotNull("Failed to load class", cl);
+			assertNotNull(
 					"Loaded class unable to access resource from same codeSource",
-					res != null);
+					res);
 			cl = null;
 		} catch (Error e) {
 			fail("Test error : " + e.getMessage());
@@ -178,7 +178,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception using explicit jar : " + e.getMessage());
 		}
-		assertTrue("Failed to load class from explicit jar URL", cl != null);
+		assertNotNull("Failed to load class from explicit jar URL", cl);
 	}
 
 	/**
@@ -190,8 +190,8 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 		URL[] u = new URL[0];
 		ucl = URLClassLoader.newInstance(u, cl);
 		URL res = ucl.getResource("J");
-		assertTrue("Failed to set parent", res == null ? false : res.getFile()
-				.equals("/BogusClassLoader"));
+		assertEquals("Failed to set parent", "/BogusClassLoader", res == null ? false : res.getFile()
+				);
 	}
 
 	/**
@@ -208,8 +208,8 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 		URL[] u = new URL[0];
 		ucl = new URLClassLoader(u, cl, new TestFactory());
 		URL res = ucl.getResource("J");
-		assertTrue("Failed to set parent", res == null ? false : res.getFile()
-				.equals("/BogusClassLoader"));
+		assertEquals("Failed to set parent", "/BogusClassLoader", res == null ? false : res.getFile()
+				);
 	}
 
 	/**
@@ -313,8 +313,8 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
 					.copyFile(resources, "JarIndex", "hyts_22-new.jar");
 			urls[0] = new URL("file:/" + resPath + "/JarIndex/hyts_22-new.jar");
 			ucl = URLClassLoader.newInstance(urls, null);
-			assertTrue("Cannot find resource",
-					ucl.findResource("cpack/") != null);
+			assertNotNull("Cannot find resource",
+					ucl.findResource("cpack/"));
 			Support_Resources.copyFile(resources, "JarIndex", "hyts_11.jar");
 			urls[0] = new URL("file:/" + resPath + "/JarIndex/hyts_31.jar");
 			ucl = URLClassLoader.newInstance(urls, null);

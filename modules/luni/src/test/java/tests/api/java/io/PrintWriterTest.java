@@ -98,8 +98,8 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		pw = new PrintWriter(sw = new Support_StringWriter());
 		pw.print("Hello");
 		pw.flush();
-		assertTrue("Failed to construct proper writer", sw.toString().equals(
-				"Hello"));
+		assertEquals("Failed to construct proper writer", 
+				"Hello", sw.toString());
 	}
 
 	/**
@@ -111,8 +111,8 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		pw = new PrintWriter(sw = new Support_StringWriter(), true);
 		pw.print("Hello");
 		// Auto-flush should have happened
-		assertTrue("Failed to construct proper writer", sw.toString().equals(
-				"Hello"));
+		assertEquals("Failed to construct proper writer", 
+				"Hello", sw.toString());
 	}
 
 	/**
@@ -172,9 +172,8 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		} catch (NullPointerException e) {
 			r = 1;
 		}
-		assertTrue(
-				"null pointer exception for printing null char[] is not caught",
-				r == 1);
+		assertEquals("null pointer exception for printing null char[] is not caught",
+				1, r);
 	}
 
 	/**
@@ -184,8 +183,8 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		// Test for method void java.io.PrintWriter.print(char)
 		pw.print('c');
 		pw.flush();
-		assertTrue("Wrote incorrect char string", new String(bao.toByteArray())
-				.equals("c"));
+		assertEquals("Wrote incorrect char string", "c", new String(bao.toByteArray())
+				);
 	}
 
 	/**
@@ -219,8 +218,8 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		// Test for method void java.io.PrintWriter.print(int)
 		pw.print(4908765);
 		pw.flush();
-		assertTrue("Wrote incorrect int string", new String(bao.toByteArray())
-				.equals("4908765"));
+		assertEquals("Wrote incorrect int string", "4908765", new String(bao.toByteArray())
+				);
 	}
 
 	/**
@@ -230,8 +229,8 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		// Test for method void java.io.PrintWriter.print(long)
 		pw.print(49087650000L);
 		pw.flush();
-		assertTrue("Wrote incorrect long string", new String(bao.toByteArray())
-				.equals("49087650000"));
+		assertEquals("Wrote incorrect long string", "49087650000", new String(bao.toByteArray())
+				);
 	}
 
 	/**
@@ -241,14 +240,14 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		// Test for method void java.io.PrintWriter.print(java.lang.Object)
 		pw.print((Object) null);
 		pw.flush();
-		assertTrue("Did not write null", new String(bao.toByteArray())
-				.equals("null"));
+		assertEquals("Did not write null", "null", new String(bao.toByteArray())
+				);
 		bao.reset();
 
 		pw.print(new Bogus());
 		pw.flush();
-		assertTrue("Wrote in incorrect Object string", new String(bao
-				.toByteArray()).equals("Bogus"));
+		assertEquals("Wrote in incorrect Object string", "Bogus", new String(bao
+				.toByteArray()));
 	}
 
 	/**
@@ -258,14 +257,14 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		// Test for method void java.io.PrintWriter.print(java.lang.String)
 		pw.print((String) null);
 		pw.flush();
-		assertTrue("did not write null", new String(bao.toByteArray())
-				.equals("null"));
+		assertEquals("did not write null", "null", new String(bao.toByteArray())
+				);
 		bao.reset();
 
 		pw.print("Hello World");
 		pw.flush();
-		assertTrue("Wrote incorrect  string", new String(bao.toByteArray())
-				.equals("Hello World"));
+		assertEquals("Wrote incorrect  string", "Hello World", new String(bao.toByteArray())
+				);
 	}
 
 	/**
@@ -275,8 +274,8 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		// Test for method void java.io.PrintWriter.print(boolean)
 		pw.print(true);
 		pw.flush();
-		assertTrue("Wrote in incorrect boolean string", new String(bao
-				.toByteArray()).equals("true"));
+		assertEquals("Wrote in incorrect boolean string", "true", new String(bao
+				.toByteArray()));
 	}
 
 	/**

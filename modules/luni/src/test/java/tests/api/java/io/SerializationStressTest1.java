@@ -742,8 +742,8 @@ public class SerializationStressTest1 extends SerializationStressTest {
 			objLoaded = dumpAndReload(objToSave);
 			// non-serializable inst var has to be initialized from top
 			// constructor
-			assertTrue(MSG_TEST_FAILED + objToSave,
-					((SpecTest) objLoaded).instVar == null); 
+			assertNull(MSG_TEST_FAILED + objToSave,
+					((SpecTest) objLoaded).instVar); 
 			// instVar from non-serialized class, cant  be  saved/restored
 			// by serialization but serialized ivar has to be restored as it
 			// was in the object when dumped
@@ -780,8 +780,8 @@ public class SerializationStressTest1 extends SerializationStressTest {
 			objLoaded = dumpAndReload(objToSave);
 			// non-serializable inst var cant be saved, and it is not init'ed
 			// from top constructor in this case
-			assertTrue(MSG_TEST_FAILED + objToSave,
-					((SpecTestSubclass) objLoaded).transientInstVar == null);
+			assertNull(MSG_TEST_FAILED + objToSave,
+					((SpecTestSubclass) objLoaded).transientInstVar);
 			// transient slot, cant be saved/restored by serialization 
 		} catch (IOException e) {
 			fail("Exception serializing " + objToSave + "\t->"

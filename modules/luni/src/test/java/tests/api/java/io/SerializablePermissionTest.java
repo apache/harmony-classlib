@@ -24,9 +24,9 @@ public class SerializablePermissionTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.io.SerializablePermission(java.lang.String)
-		assertTrue("permission ill-formed", new SerializablePermission(
-				"enableSubclassImplementation").getName().equals(
-				"enableSubclassImplementation"));
+		assertEquals("permission ill-formed", 
+				"enableSubclassImplementation", new SerializablePermission(
+				"enableSubclassImplementation").getName());
 	}
 
 	/**
@@ -36,9 +36,9 @@ public class SerializablePermissionTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_StringLjava_lang_String() {
 		// Test for method java.io.SerializablePermission(java.lang.String,
 		// java.lang.String)
-		assertTrue("permission ill-formed", new SerializablePermission(
-				"enableSubclassImplementation", "").getName().equals(
-				"enableSubclassImplementation"));
+		assertEquals("permission ill-formed", 
+				"enableSubclassImplementation", new SerializablePermission(
+				"enableSubclassImplementation", "").getName());
 	}
 
 	/**

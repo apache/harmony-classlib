@@ -195,7 +195,7 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
 			fos = new java.io.FileOutputStream(f.getPath());
 			fos.write('t');
 			fis = new java.io.FileInputStream(f.getPath());
-			assertTrue("Incorrect char written", fis.read() == 't');
+			assertEquals("Incorrect char written", 't', fis.read());
 		} catch (java.io.IOException e) {
 			fail("Exception during write test : " + e.getMessage());
 		}

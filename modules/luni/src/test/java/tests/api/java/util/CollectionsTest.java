@@ -403,13 +403,13 @@ public class CollectionsTest extends junit.framework.TestCase {
 		assertTrue("Fill modified list size", size == ll.size());
 		Iterator i = ll.iterator();
 		while (i.hasNext())
-			assertTrue("Failed to fill elements", i.next().equals("k"));
+			assertEquals("Failed to fill elements", "k", i.next());
 
 		Collections.fill(ll, null);
 		assertTrue("Fill with nulls modified list size", size == ll.size());
 		i = ll.iterator();
 		while (i.hasNext())
-			assertTrue("Failed to fill with nulls", i.next() == null);
+			assertNull("Failed to fill with nulls", i.next());
 	}
 
 	/**
@@ -477,7 +477,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		Iterator i = l.iterator();
 		Object first = i.next();
 		assertTrue("Returned list consists of copies not refs", first == o);
-		assertTrue("Returned list of incorrect size", l.size() == 100);
+		assertEquals("Returned list of incorrect size", 100, l.size());
 		assertTrue("Contains", l.contains(o));
 		assertTrue("Contains null", !l.contains(null));
 		assertTrue("null nCopies contains", !Collections.nCopies(2, null)
@@ -488,7 +488,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		i = l.iterator();
 		for (int counter = 0; i.hasNext(); counter++) {
 			assertTrue("List is too large", counter < 20);
-			assertTrue("Element should be null: " + counter, i.next() == null);
+			assertNull("Element should be null: " + counter, i.next());
 		}
 		try {
 			l.add(o);
@@ -529,8 +529,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 		Collections.reverse(myList);
 		assertTrue("Did not reverse correctly--first element is: "
 				+ myList.get(0), myList.get(0).equals(new Integer(20)));
-		assertTrue("Did not reverse correctly--second element is: "
-				+ myList.get(1), myList.get(1) == null);
+		assertNull("Did not reverse correctly--second element is: "
+				+ myList.get(1), myList.get(1));
 	}
 
 	/**
@@ -633,7 +633,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		// java.util.Collections.singleton(java.lang.Object)
 		Object o = new Object();
 		Set single = Collections.singleton(o);
-		assertTrue("Wrong size", single.size() == 1);
+		assertEquals("Wrong size", 1, single.size());
 		assertTrue("Contains", single.contains(o));
 		assertTrue("Contains null", !single.contains(null));
 		assertTrue("null nCopies contains", !Collections.singleton(null)
@@ -1338,8 +1338,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 			fail(type + " list tests: join() interrupted");
 		}
 		synchList.set(25, null);
-		assertTrue(type + " list tests: Trying to use nulls in list failed",
-				synchList.get(25) == null);
+		assertNull(type + " list tests: Trying to use nulls in list failed",
+				synchList.get(25));
 	}
 
 	/**
@@ -1387,8 +1387,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 		// synchronized map does not have to permit null keys or values
 		synchMap.put(new Long(25), null);
 		synchMap.put(null, new Long(30));
-		assertTrue("Trying to use a null value in map failed", synchMap
-				.get(new Long(25)) == null);
+		assertNull("Trying to use a null value in map failed", synchMap
+				.get(new Long(25)));
 		assertTrue("Trying to use a null key in map failed", synchMap.get(null)
 				.equals(new Long(30)));
 
@@ -1399,12 +1399,12 @@ public class CollectionsTest extends junit.framework.TestCase {
 		synchMap = Collections.synchronizedMap(smallMap);
 		new Support_UnmodifiableMapTest("", synchMap).runTest();
 		synchMap.keySet().remove(objArray[50].toString());
-		assertTrue(
+		assertNull(
 				"Removing a key from the keySet of the synchronized map did not remove it from the synchronized map: ",
-				synchMap.get(objArray[50].toString()) == null);
-		assertTrue(
+				synchMap.get(objArray[50].toString()));
+		assertNull(
 				"Removing a key from the keySet of the synchronized map did not remove it from the original map",
-				smallMap.get(objArray[50].toString()) == null);
+				smallMap.get(objArray[50].toString()));
 	}
 
 	/**
@@ -1510,12 +1510,12 @@ public class CollectionsTest extends junit.framework.TestCase {
 		synchMap = Collections.synchronizedSortedMap(smallMap);
 		new Support_UnmodifiableMapTest("", synchMap).runTest();
 		synchMap.keySet().remove(objArray[50].toString());
-		assertTrue(
+		assertNull(
 				"Removing a key from the keySet of the synchronized map did not remove it from the synchronized map",
-				synchMap.get(objArray[50].toString()) == null);
-		assertTrue(
+				synchMap.get(objArray[50].toString()));
+		assertNull(
 				"Removing a key from the keySet of the synchronized map did not remove it from the original map",
-				smallMap.get(objArray[50].toString()) == null);
+				smallMap.get(objArray[50].toString()));
 	}
 
 	/**
@@ -1656,7 +1656,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		smallList.add(null);
 		smallList.add("yoink");
 		c = Collections.unmodifiableList(smallList);
-		assertTrue("First element should be null", c.get(0) == null);
+		assertNull("First element should be null", c.get(0));
 		assertTrue("List should contain null", c.contains(null));
 		assertTrue(
 				"T1. Returned List should implement Random Access interface",
@@ -1751,8 +1751,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 		smallMap.put(new Long(25), null);
 		Map unmodMap = Collections.unmodifiableMap(smallMap);
 
-		assertTrue("Trying to use a null value in map failed", unmodMap
-				.get(new Long(25)) == null);
+		assertNull("Trying to use a null value in map failed", unmodMap
+				.get(new Long(25)));
 		assertTrue("Trying to use a null key in map failed", unmodMap.get(null)
 				.equals(new Long(30)));
 

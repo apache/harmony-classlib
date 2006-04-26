@@ -253,15 +253,15 @@ public class URITest extends junit.framework.TestCase {
 		URI uri;
 		try {
 			uri = new URI("mailto", "mduerst@ifi.unizh.ch", null);
-			assertTrue("wrong userinfo", uri.getUserInfo() == null);
-			assertTrue("wrong hostname", uri.getHost() == null);
-			assertTrue("wrong authority", uri.getAuthority() == null);
-			assertTrue("wrong port number", uri.getPort() == -1);
-			assertTrue("wrong path", uri.getPath() == null);
-			assertTrue("wrong query", uri.getQuery() == null);
-			assertTrue("wrong fragment", uri.getFragment() == null);
-			assertTrue("wrong SchemeSpecificPart", uri.getSchemeSpecificPart()
-					.equals("mduerst@ifi.unizh.ch"));
+			assertNull("wrong userinfo", uri.getUserInfo());
+			assertNull("wrong hostname", uri.getHost());
+			assertNull("wrong authority", uri.getAuthority());
+			assertEquals("wrong port number", -1, uri.getPort());
+			assertNull("wrong path", uri.getPath());
+			assertNull("wrong query", uri.getQuery());
+			assertNull("wrong fragment", uri.getFragment());
+			assertEquals("wrong SchemeSpecificPart", "mduerst@ifi.unizh.ch", uri.getSchemeSpecificPart()
+					);
 		} catch (URISyntaxException e) {
 			fail("Unexpected Exception: " + e);
 		}
@@ -350,14 +350,14 @@ public class URITest extends junit.framework.TestCase {
 		try {
 			uri = new URI("http", "us:e@r", "hostname", 85, "/file/dir#/qu?e/",
 					"qu?er#y", "frag#me?nt");
-			assertTrue("wrong userinfo", uri.getUserInfo().equals("us:e@r"));
-			assertTrue("wrong hostname", uri.getHost().equals("hostname"));
-			assertTrue("wrong port number", uri.getPort() == 85);
-			assertTrue("wrong path", uri.getPath().equals("/file/dir#/qu?e/"));
-			assertTrue("wrong query", uri.getQuery().equals("qu?er#y"));
-			assertTrue("wrong fragment", uri.getFragment().equals("frag#me?nt"));
-			assertTrue("wrong SchemeSpecificPart", uri.getSchemeSpecificPart()
-					.equals("//us:e@r@hostname:85/file/dir#/qu?e/?qu?er#y"));
+			assertEquals("wrong userinfo", "us:e@r", uri.getUserInfo());
+			assertEquals("wrong hostname", "hostname", uri.getHost());
+			assertEquals("wrong port number", 85, uri.getPort());
+			assertEquals("wrong path", "/file/dir#/qu?e/", uri.getPath());
+			assertEquals("wrong query", "qu?er#y", uri.getQuery());
+			assertEquals("wrong fragment", "frag#me?nt", uri.getFragment());
+			assertEquals("wrong SchemeSpecificPart", "//us:e@r@hostname:85/file/dir#/qu?e/?qu?er#y", uri.getSchemeSpecificPart()
+					);
 		} catch (URISyntaxException e) {
 			fail("Unexpected Exception: " + e);
 		}
@@ -447,29 +447,28 @@ public class URITest extends junit.framework.TestCase {
 			fail("Unexpected URISyntaxException: " + e);
 		}
 
-		assertTrue("wrong scheme", uri.getScheme().equals("ht12-3+tp"));
-		assertTrue("wrong authority", uri.getUserInfo() == null);
-		assertTrue("wrong userinfo", uri.getUserInfo() == null);
-		assertTrue("wrong hostname", uri.getHost() == null);
-		assertTrue("wrong port number", uri.getPort() == -1);
-		assertTrue("wrong path", uri.getPath().equals("/p#a%E2%82%ACth"));
-		assertTrue("wrong query", uri.getQuery().equals("q^u%25ery"));
-		assertTrue("wrong fragment", uri.getFragment().equals("f/r\u00DFag"));
+		assertEquals("wrong scheme", "ht12-3+tp", uri.getScheme());
+		assertNull("wrong authority", uri.getUserInfo());
+		assertNull("wrong userinfo", uri.getUserInfo());
+		assertNull("wrong hostname", uri.getHost());
+		assertEquals("wrong port number", -1, uri.getPort());
+		assertEquals("wrong path", "/p#a%E2%82%ACth", uri.getPath());
+		assertEquals("wrong query", "q^u%25ery", uri.getQuery());
+		assertEquals("wrong fragment", "f/r\u00DFag", uri.getFragment());
 		// equivalent to = assertTrue("wrong fragment",
 		// uri.getFragment().equals("f/r\u00dfag"));
-		assertTrue("wrong SchemeSpecificPart", uri.getSchemeSpecificPart()
-				.equals("///p#a%E2%82%ACth?q^u%25ery"));
-		assertTrue("wrong RawSchemeSpecificPart", uri
-				.getRawSchemeSpecificPart().equals(
-						"///p%23a%25E2%2582%25ACth?q%5Eu%2525ery"));
-		assertTrue("incorrect toString()", uri.toString().equals(
-				"ht12-3+tp:///p%23a%25E2%2582%25ACth?q%5Eu%2525ery#f/r\u00dfag"));
-		assertTrue(
-				"incorrect toASCIIString()",
-				uri
+		assertEquals("wrong SchemeSpecificPart", "///p#a%E2%82%ACth?q^u%25ery", uri.getSchemeSpecificPart()
+				);
+		assertEquals("wrong RawSchemeSpecificPart", 
+						"///p%23a%25E2%2582%25ACth?q%5Eu%2525ery", uri
+				.getRawSchemeSpecificPart());
+		assertEquals("incorrect toString()", 
+				"ht12-3+tp:///p%23a%25E2%2582%25ACth?q%5Eu%2525ery#f/r\u00dfag", uri.toString());
+		assertEquals("incorrect toASCIIString()",
+				
+								"ht12-3+tp:///p%23a%25E2%2582%25ACth?q%5Eu%2525ery#f/r%C3%9Fag", uri
 						.toASCIIString()
-						.equals(
-								"ht12-3+tp:///p%23a%25E2%2582%25ACth?q%5Eu%2525ery#f/r%C3%9Fag"));
+						);
 	}
 
 	/**

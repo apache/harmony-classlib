@@ -40,7 +40,7 @@ public class LinkedHashSetTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.util.LinkedHashSet()
 		LinkedHashSet hs2 = new LinkedHashSet();
-		assertTrue("Created incorrect LinkedHashSet", hs2.size() == 0);
+		assertEquals("Created incorrect LinkedHashSet", 0, hs2.size());
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class LinkedHashSetTest extends junit.framework.TestCase {
 	public void test_ConstructorI() {
 		// Test for method java.util.LinkedHashSet(int)
 		LinkedHashSet hs2 = new LinkedHashSet(5);
-		assertTrue("Created incorrect LinkedHashSet", hs2.size() == 0);
+		assertEquals("Created incorrect LinkedHashSet", 0, hs2.size());
 		try {
 			new LinkedHashSet(-1);
 		} catch (IllegalArgumentException e) {
@@ -65,7 +65,7 @@ public class LinkedHashSetTest extends junit.framework.TestCase {
 	public void test_ConstructorIF() {
 		// Test for method java.util.LinkedHashSet(int, float)
 		LinkedHashSet hs2 = new LinkedHashSet(5, (float) 0.5);
-		assertTrue("Created incorrect LinkedHashSet", hs2.size() == 0);
+		assertEquals("Created incorrect LinkedHashSet", 0, hs2.size());
 		try {
 			new LinkedHashSet(0, 0);
 		} catch (IllegalArgumentException e) {
@@ -110,7 +110,7 @@ public class LinkedHashSetTest extends junit.framework.TestCase {
 		Set orgSet = (Set) hs.clone();
 		hs.clear();
 		Iterator i = orgSet.iterator();
-		assertTrue("Returned non-zero size after clear", hs.size() == 0);
+		assertEquals("Returned non-zero size after clear", 0, hs.size());
 		while (i.hasNext())
 			assertTrue("Failed to clear set", !hs.contains(i.next()));
 	}
@@ -172,7 +172,7 @@ public class LinkedHashSetTest extends junit.framework.TestCase {
 
 		LinkedHashSet s = new LinkedHashSet();
 		s.add(null);
-		assertTrue("Cannot handle null", s.iterator().next() == null);
+		assertNull("Cannot handle null", s.iterator().next());
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class LinkedHashSetTest extends junit.framework.TestCase {
 		// Test for method int java.util.LinkedHashSet.size()
 		assertTrue("Returned incorrect size", hs.size() == (objArray.length + 1));
 		hs.clear();
-		assertTrue("Cleared set returned non-zero size", hs.size() == 0);
+		assertEquals("Cleared set returned non-zero size", 0, hs.size());
 	}
 
 	/**

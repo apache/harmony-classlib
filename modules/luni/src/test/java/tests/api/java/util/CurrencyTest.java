@@ -77,9 +77,9 @@ public class CurrencyTest extends junit.framework.TestCase {
 		Locale loc = new Locale("", "AQ");
 		try {
 			Currency curr = Currency.getInstance(loc);
-			assertTrue(
+			assertNull(
 					"Currency.getInstance(new Locale(\"\", \"AQ\")) did not return null",
-					curr == null);
+					curr);
 		} catch (IllegalArgumentException e) {
 			fail("Unexpected IllegalArgumentException " + e);
 		}

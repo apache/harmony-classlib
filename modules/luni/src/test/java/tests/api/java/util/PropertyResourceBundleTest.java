@@ -44,7 +44,7 @@ public class PropertyResourceBundleTest extends junit.framework.TestCase {
 			keyCount++;
 		}
 
-		assertTrue("Returned the wrong number of keys", keyCount == 2);
+		assertEquals("Returned the wrong number of keys", 2, keyCount);
 		assertTrue("Returned the wrong keys", test.contains("p1")
 				&& test.contains("p2"));
 	}

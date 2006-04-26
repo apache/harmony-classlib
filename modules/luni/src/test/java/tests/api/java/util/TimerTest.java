@@ -103,8 +103,8 @@ public class TimerTest extends junit.framework.TestCase {
 				} catch (InterruptedException e) {
 				}
 			}
-			assertTrue("TimerTask.run() method not called after 200ms",
-					testTask.wasRun() == 1);
+			assertEquals("TimerTask.run() method not called after 200ms",
+					1, testTask.wasRun());
 			t.cancel();
 		} finally {
 			if (t != null)
@@ -129,8 +129,8 @@ public class TimerTest extends junit.framework.TestCase {
 				} catch (InterruptedException e) {
 				}
 			}
-			assertTrue("TimerTask.run() method not called after 200ms",
-					testTask.wasRun() == 1);
+			assertEquals("TimerTask.run() method not called after 200ms",
+					1, testTask.wasRun());
 			t.cancel();
 		} finally {
 			if (t != null)
@@ -169,8 +169,8 @@ public class TimerTest extends junit.framework.TestCase {
 				} catch (InterruptedException e) {
 				}
 			}
-			assertTrue("TimerTask.run() method not called after 200ms",
-					testTask.wasRun() == 1);
+			assertEquals("TimerTask.run() method not called after 200ms",
+					1, testTask.wasRun());
 			t.cancel();
 			synchronized (sync) {
 				try {
@@ -178,9 +178,8 @@ public class TimerTest extends junit.framework.TestCase {
 				} catch (InterruptedException e) {
 				}
 			}
-			assertTrue(
-					"TimerTask.run() method should not have been called after cancel",
-					testTask.wasRun() == 1);
+			assertEquals("TimerTask.run() method should not have been called after cancel",
+					1, testTask.wasRun());
 
 			// Ensure you can call cancel more than once
 			t = new Timer();
@@ -192,8 +191,8 @@ public class TimerTest extends junit.framework.TestCase {
 				} catch (InterruptedException e) {
 				}
 			}
-			assertTrue("TimerTask.run() method not called after 200ms",
-					testTask.wasRun() == 1);
+			assertEquals("TimerTask.run() method not called after 200ms",
+					1, testTask.wasRun());
 			t.cancel();
 			t.cancel();
 			t.cancel();
@@ -203,9 +202,8 @@ public class TimerTest extends junit.framework.TestCase {
 				} catch (InterruptedException e) {
 				}
 			}
-			assertTrue(
-					"TimerTask.run() method should not have been called after cancel",
-					testTask.wasRun() == 1);
+			assertEquals("TimerTask.run() method should not have been called after cancel",
+					1, testTask.wasRun());
 
 			// Ensure that a call to cancel from within a timer ensures no more
 			// run
@@ -345,8 +343,8 @@ public class TimerTest extends junit.framework.TestCase {
 				Thread.sleep(400);
 			} catch (InterruptedException e) {
 			}
-			assertTrue("TimerTask.run() method not called after 200ms",
-					testTask.wasRun() == 1);
+			assertEquals("TimerTask.run() method not called after 200ms",
+					1, testTask.wasRun());
 			t.cancel();
 
 			// Ensure multiple tasks are run
@@ -467,8 +465,8 @@ public class TimerTest extends junit.framework.TestCase {
 				Thread.sleep(400);
 			} catch (InterruptedException e) {
 			}
-			assertTrue("TimerTask.run() method not called after 200ms",
-					testTask.wasRun() == 1);
+			assertEquals("TimerTask.run() method not called after 200ms",
+					1, testTask.wasRun());
 			t.cancel();
 
 			// Ensure multiple tasks are run

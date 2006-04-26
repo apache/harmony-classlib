@@ -349,11 +349,10 @@ public class FloatTest extends junit.framework.TestCase {
 	 * @tests java.lang.Float#parseFloat(java.lang.String)
 	 */
 	public void test_parseFloatLjava_lang_String() {
-		assertTrue("Incorrect float returned, expected zero.", Float
-				.parseFloat("7.0064923216240853546186479164495e-46") == 0.0);
-		assertTrue(
-				"Incorrect float returned, expected minimum float.",
-				Float.parseFloat("7.0064923216240853546186479164496e-46") == Float.MIN_VALUE);
+		assertEquals("Incorrect float returned, expected zero.",
+                             0.0, Float.parseFloat("7.0064923216240853546186479164495e-46"), 0.0);
+		assertEquals("Incorrect float returned, expected minimum float.",
+                             Float.MIN_VALUE, Float.parseFloat("7.0064923216240853546186479164496e-46"), 0.0);
 
 		doTestCompareRawBits(
 				"0.000000000000000000000000000000000000011754942807573642917278829910357665133228589927589904276829631184250030649651730385585324256680905818939208984375",

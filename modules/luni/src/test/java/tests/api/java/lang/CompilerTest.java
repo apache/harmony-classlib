@@ -24,8 +24,8 @@ public class CompilerTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object
 		// java.lang.Compiler.command(java.lang.Object)
 		try {
-			assertTrue("Incorrect behavior.",
-					Compiler.command(new Object()) == null);
+			assertNull("Incorrect behavior.",
+					Compiler.command(new Object()));
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}

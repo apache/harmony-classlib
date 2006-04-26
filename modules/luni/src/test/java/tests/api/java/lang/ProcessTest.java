@@ -54,7 +54,7 @@ public class ProcessTest extends junit.framework.TestCase {
 			proc.waitFor();
 			Support_Exec.checkStderr(execArgs);
 			proc.destroy();
-			assertTrue(msg.toString(), msg.toString().equals("true"));
+			assertEquals("true", msg.toString(), msg.toString());
 		} catch (IOException e) {
 			fail("IOException executing avail test: " + e);
 		} catch (InterruptedException e) {

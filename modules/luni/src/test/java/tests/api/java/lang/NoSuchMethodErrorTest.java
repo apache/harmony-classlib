@@ -25,9 +25,9 @@ public class NoSuchMethodErrorTest extends junit.framework.TestCase {
 			if (true)
 				throw new NoSuchMethodError();
 		} catch (NoSuchMethodError e) {
-			assertTrue("Initializer failed.", e.getMessage() == null);
-			assertTrue("To string failed.", e.toString().equals(
-					"java.lang.NoSuchMethodError"));
+			assertNull("Initializer failed.", e.getMessage());
+			assertEquals("To string failed.", 
+					"java.lang.NoSuchMethodError", e.toString());
 		}
 	}
 

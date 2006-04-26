@@ -159,8 +159,8 @@ public class ThreadTest extends junit.framework.TestCase {
 		// Test for method java.lang.Thread(java.lang.Runnable,
 		// java.lang.String)
 		Thread st1 = new Thread(new SimpleThread(1), "SimpleThread1");
-		assertTrue("Constructed thread with incorrect thread name", st1
-				.getName().equals("SimpleThread1"));
+		assertEquals("Constructed thread with incorrect thread name", "SimpleThread1", st1
+				.getName());
 		st1.start();
 	}
 
@@ -170,8 +170,8 @@ public class ThreadTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.lang.Thread(java.lang.String)
 		Thread t = new Thread("Testing");
-		assertTrue("Created tread with incorrect name", t.getName().equals(
-				"Testing"));
+		assertEquals("Created tread with incorrect name", 
+				"Testing", t.getName());
 		t.start();
 	}
 
@@ -234,8 +234,8 @@ public class ThreadTest extends junit.framework.TestCase {
 		// Test for method java.lang.Thread(java.lang.ThreadGroup,
 		// java.lang.String)
 		st = new Thread(new SimpleThread(1), "SimpleThread4");
-		assertTrue("Returned incorrect thread name", st.getName().equals(
-				"SimpleThread4"));
+		assertEquals("Returned incorrect thread name", 
+				"SimpleThread4", st.getName());
 		st.start();
 	}
 
@@ -281,8 +281,8 @@ public class ThreadTest extends junit.framework.TestCase {
 	public void test_countStackFrames() {
 		// Test for method int java.lang.Thread.countStackFrames()
 		// SM.
-		assertTrue("Test failed.",
-				Thread.currentThread().countStackFrames() == 0);
+		assertEquals("Test failed.",
+				0, Thread.currentThread().countStackFrames());
 	}
 
 	/**
@@ -373,8 +373,8 @@ public class ThreadTest extends junit.framework.TestCase {
 	public void test_getName() {
 		// Test for method java.lang.String java.lang.Thread.getName()
 		st = new Thread(new SimpleThread(1), "SimpleThread6");
-		assertTrue("Returned incorrect thread name", st.getName().equals(
-				"SimpleThread6"));
+		assertEquals("Returned incorrect thread name", 
+				"SimpleThread6", st.getName());
 		st.start();
 	}
 
@@ -404,8 +404,8 @@ public class ThreadTest extends junit.framework.TestCase {
 			st.join();
 		} catch (InterruptedException e) {
 		}
-		assertTrue("group should be null", st.getThreadGroup() == null);
-		assertTrue("toString() should not be null", st.toString() != null);
+		assertNull("group should be null", st.getThreadGroup());
+		assertNotNull("toString() should not be null", st.toString());
 		tg.destroy();
 
 		final Object lock = new Object();
@@ -427,7 +427,7 @@ public class ThreadTest extends junit.framework.TestCase {
 		while (t.isAlive())
 			running++;
 		ThreadGroup group = t.getThreadGroup();
-		assertTrue("ThreadGroup is not null", group == null);
+		assertNull("ThreadGroup is not null", group);
 	}
 
 	/**
@@ -806,8 +806,8 @@ public class ThreadTest extends junit.framework.TestCase {
 		// Test for method void java.lang.Thread.setName(java.lang.String)
 		st = new Thread(new SimpleThread(1), "SimpleThread15");
 		st.setName("Bogus Name");
-		assertTrue("Failed to set thread name", st.getName().equals(
-				"Bogus Name"));
+		assertEquals("Failed to set thread name", 
+				"Bogus Name", st.getName());
 		try {
 			st.setName(null);
 			fail("Null should not be accepted as a valid name");

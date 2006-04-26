@@ -424,8 +424,8 @@ public class InputStreamReaderTest extends TestCase {
 		try {
 			is = new InputStreamReader(fis, "8859_1");
 		} catch (UnsupportedEncodingException e) {
-			assertTrue("Returned incorrect encoding", is.getEncoding().equals(
-					"8859_1"));
+			assertEquals("Returned incorrect encoding", 
+					"8859_1", is.getEncoding());
 		}
 	}
 

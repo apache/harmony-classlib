@@ -84,7 +84,7 @@ public class CharArrayReaderTest extends junit.framework.TestCase {
 			cr.mark(100);
 			cr.read();
 			cr.reset();
-			assertTrue("Failed to mark correct position", cr.read() == 'W');
+			assertEquals("Failed to mark correct position", 'W', cr.read());
 		} catch (IOException e) {
 			fail("Exception during mark test: " + e.getMessage());
 		}
@@ -106,7 +106,7 @@ public class CharArrayReaderTest extends junit.framework.TestCase {
 		// Test for method int java.io.CharArrayReader.read()
 		try {
 			cr = new CharArrayReader(hw);
-			assertTrue("Read returned incorrect char", cr.read() == 'H');
+			assertEquals("Read returned incorrect char", 'H', cr.read());
 			cr = new CharArrayReader(new char[] { '\u8765' });
 			assertTrue("Incorrect double byte char", cr.read() == '\u8765');
 		} catch (IOException e) {
@@ -170,8 +170,8 @@ public class CharArrayReaderTest extends junit.framework.TestCase {
 			cr.mark(100);
 			cr.read();
 			cr.reset();
-			assertTrue("Reset failed to return to marker position",
-					cr.read() == 'W');
+			assertEquals("Reset failed to return to marker position",
+					'W', cr.read());
 		} catch (IOException e) {
 			fail("Exception during reset test : " + e.getMessage());
 		}
@@ -189,9 +189,9 @@ public class CharArrayReaderTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Exception during skip test : " + e.getMessage());
 		}
-		assertTrue("Failed to skip correct number of chars", skipped == 5L);
+		assertEquals("Failed to skip correct number of chars", 5L, skipped);
 		try {
-			assertTrue("Skip skipped wrong chars", cr.read() == 'W');
+			assertEquals("Skip skipped wrong chars", 'W', cr.read());
 		} catch (IOException e) {
 			fail("read exception during skip test : " + e.getMessage());
 		}

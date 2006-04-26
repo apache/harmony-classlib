@@ -36,10 +36,10 @@ public class ArraysTest extends TestCase {
 			assertTrue("Assert 0: " + specials[i] + " invalid: " + result,
 					result == i);
 		}
-		assertTrue("Assert 1: Invalid search index for -1d",
-				Arrays.binarySearch(specials, -1d) == -4);
-		assertTrue("Assert 2: Invalid search index for 1d",
-				Arrays.binarySearch(specials, 1d) == -8);
+		assertEquals("Assert 1: Invalid search index for -1d",
+				-4, Arrays.binarySearch(specials, -1d));
+		assertEquals("Assert 2: Invalid search index for 1d",
+				-8, Arrays.binarySearch(specials, 1d));
 	}
 	
 	/**
@@ -56,10 +56,10 @@ public class ArraysTest extends TestCase {
 			assertTrue("Assert 0: " + specials[i] + " invalid: " + result,
 					result == i);
 		}
-		assertTrue("Assert 1: Invalid search index for -1f",
-				Arrays.binarySearch(specials, -1f) == -4);
-		assertTrue("Assert 2: Invalid search index for 1f",
-				Arrays.binarySearch(specials, 1f) == -8);
+		assertEquals("Assert 1: Invalid search index for -1f",
+				-4, Arrays.binarySearch(specials, -1f));
+		assertEquals("Assert 2: Invalid search index for 1f",
+				-8, Arrays.binarySearch(specials, 1f));
 	}
 	
 	/**

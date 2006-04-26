@@ -40,8 +40,8 @@ public class ExceptionTest extends junit.framework.TestCase {
 			if (true)
 				throw new Exception("Throw an Error");
 		} catch (Exception e) {
-			assertTrue("Incorrect message string generated", e.getMessage()
-					.equals("Throw an Error"));
+			assertEquals("Incorrect message string generated", "Throw an Error", e.getMessage()
+					);
 			return;
 		}
 		fail("Failed to generate Error");

@@ -41,8 +41,8 @@ public class InternalErrorTest extends junit.framework.TestCase {
 			if (true)
 				throw new InternalError("Test");
 		} catch (InternalError e) {
-			assertTrue("Returned incorrect message", e.getMessage().equals(
-					"Test"));
+			assertEquals("Returned incorrect message", 
+					"Test", e.getMessage());
 			return;
 		}
 		fail("Failed to throw Runtime Exception");

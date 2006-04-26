@@ -27,7 +27,7 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_ConstructorI() {
 		// Test for method java.lang.Integer(int)
 		Integer i = new Integer(-89000);
-		assertTrue("Incorrect Integer created", i.intValue() == -89000);
+		assertEquals("Incorrect Integer created", -89000, i.intValue());
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.lang.Integer(java.lang.String)
 		Integer i = new Integer("65000");
-		assertTrue("Created incorrect Integer", i.intValue() == 65000);
+		assertEquals("Created incorrect Integer", 65000, i.intValue());
 	}
 
 	/**
@@ -44,10 +44,10 @@ public class IntegerTest extends junit.framework.TestCase {
 	 */
 	public void test_byteValue() {
 		// Test for method byte java.lang.Integer.byteValue()
-		assertTrue("Returned incorrect byte value", new Integer(65535)
-				.byteValue() == -1);
-		assertTrue("Returned incorrect byte value", new Integer(127)
-				.byteValue() == 127);
+		assertEquals("Returned incorrect byte value", -1, new Integer(65535)
+				.byteValue());
+		assertEquals("Returned incorrect byte value", 127, new Integer(127)
+				.byteValue());
 	}
 
 	/**
@@ -57,8 +57,8 @@ public class IntegerTest extends junit.framework.TestCase {
 		// Test for method int java.lang.Integer.compareTo(java.lang.Integer)
 		assertTrue("-2 compared to 1 gave non-negative answer", new Integer(-2)
 				.compareTo(new Integer(1)) < 0);
-		assertTrue("-2 compared to -2 gave non-zero answer", new Integer(-2)
-				.compareTo(new Integer(-2)) == 0);
+		assertEquals("-2 compared to -2 gave non-zero answer", 0, new Integer(-2)
+				.compareTo(new Integer(-2)));
 		assertTrue("3 compared to 2 gave non-positive answer", new Integer(3)
 				.compareTo(new Integer(2)) > 0);
         
@@ -75,19 +75,19 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_decodeLjava_lang_String() {
 		// Test for method java.lang.Integer
 		// java.lang.Integer.decode(java.lang.String)
-		assertTrue("Failed for 132233",
-				Integer.decode("132233").intValue() == 132233);
-		assertTrue("Failed for 07654321",
-				Integer.decode("07654321").intValue() == 07654321);
+		assertEquals("Failed for 132233",
+				132233, Integer.decode("132233").intValue());
+		assertEquals("Failed for 07654321",
+				07654321, Integer.decode("07654321").intValue());
 		assertTrue("Failed for #1234567",
 				Integer.decode("#1234567").intValue() == 0x1234567);
 		assertTrue("Failed for 0xdAd",
 				Integer.decode("0xdAd").intValue() == 0xdad);
-		assertTrue("Failed for -23", Integer.decode("-23").intValue() == -23);
-		assertTrue("Returned incorrect value for 0 decimal", Integer
-				.decode("0").intValue() == 0);
-		assertTrue("Returned incorrect value for 0 hex", Integer.decode("0x0")
-				.intValue() == 0);
+		assertEquals("Failed for -23", -23, Integer.decode("-23").intValue());
+		assertEquals("Returned incorrect value for 0 decimal", 0, Integer
+				.decode("0").intValue());
+		assertEquals("Returned incorrect value for 0 hex", 0, Integer.decode("0x0")
+				.intValue());
 		assertTrue("Returned incorrect value for most negative value decimal",
 				Integer.decode("-2147483648").intValue() == 0x80000000);
 		assertTrue("Returned incorrect value for most negative value hex",
@@ -158,10 +158,10 @@ public class IntegerTest extends junit.framework.TestCase {
 	 */
 	public void test_doubleValue() {
 		// Test for method double java.lang.Integer.doubleValue()
-		assertTrue("Returned incorrect double value", new Integer(2147483647)
-				.doubleValue() == 2147483647.0);
-		assertTrue("Returned incorrect double value", new Integer(-2147483647)
-				.doubleValue() == -2147483647.0);
+		assertEquals("Returned incorrect double value", 2147483647.0, new Integer(2147483647)
+				.doubleValue());
+		assertEquals("Returned incorrect double value", -2147483647.0, new Integer(-2147483647)
+				.doubleValue());
 	}
 
 	/**
@@ -197,8 +197,8 @@ public class IntegerTest extends junit.framework.TestCase {
 		System.setProperties(tProps);
 		assertTrue("returned incorrect Integer", Integer.getInteger("testInt")
 				.equals(new Integer(99)));
-		assertTrue("returned incorrect default Integer", Integer
-				.getInteger("ff") == null);
+		assertNull("returned incorrect default Integer", Integer
+				.getInteger("ff"));
 	}
 
 	/**
@@ -250,7 +250,7 @@ public class IntegerTest extends junit.framework.TestCase {
 		// Test for method int java.lang.Integer.intValue()
 
 		Integer i = new Integer(8900);
-		assertTrue("Returned incorrect int value", i.intValue() == 8900);
+		assertEquals("Returned incorrect int value", 8900, i.intValue());
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_longValue() {
 		// Test for method long java.lang.Integer.longValue()
 		Integer i = new Integer(8900);
-		assertTrue("Returned incorrect long value", i.longValue() == 8900L);
+		assertEquals("Returned incorrect long value", 8900L, i.longValue());
 	}
 
 	/**
@@ -269,8 +269,8 @@ public class IntegerTest extends junit.framework.TestCase {
 		// Test for method int java.lang.Integer.parseInt(java.lang.String)
 
 		int i = Integer.parseInt("-8900");
-		assertTrue("Returned incorrect int", i == -8900);
-		assertTrue("Returned incorrect value for 0", Integer.parseInt("0") == 0);
+		assertEquals("Returned incorrect int", -8900, i);
+		assertEquals("Returned incorrect value for 0", 0, Integer.parseInt("0"));
 		assertTrue("Returned incorrect value for most negative value", Integer
 				.parseInt("-2147483648") == 0x80000000);
 		assertTrue("Returned incorrect value for most positive value", Integer
@@ -309,20 +309,20 @@ public class IntegerTest extends junit.framework.TestCase {
 	 */
 	public void test_parseIntLjava_lang_StringI() {
 		// Test for method int java.lang.Integer.parseInt(java.lang.String, int)
-		assertTrue("Parsed dec val incorrectly",
-				Integer.parseInt("-8000", 10) == -8000);
-		assertTrue("Parsed hex val incorrectly",
-				Integer.parseInt("FF", 16) == 255);
-		assertTrue("Parsed oct val incorrectly",
-				Integer.parseInt("20", 8) == 16);
-		assertTrue("Returned incorrect value for 0 hex", Integer.parseInt("0",
-				16) == 0);
+		assertEquals("Parsed dec val incorrectly",
+				-8000, Integer.parseInt("-8000", 10));
+		assertEquals("Parsed hex val incorrectly",
+				255, Integer.parseInt("FF", 16));
+		assertEquals("Parsed oct val incorrectly",
+				16, Integer.parseInt("20", 8));
+		assertEquals("Returned incorrect value for 0 hex", 0, Integer.parseInt("0",
+				16));
 		assertTrue("Returned incorrect value for most negative value hex",
 				Integer.parseInt("-80000000", 16) == 0x80000000);
 		assertTrue("Returned incorrect value for most positive value hex",
 				Integer.parseInt("7fffffff", 16) == 0x7fffffff);
-		assertTrue("Returned incorrect value for 0 decimal", Integer.parseInt(
-				"0", 10) == 0);
+		assertEquals("Returned incorrect value for 0 decimal", 0, Integer.parseInt(
+				"0", 10));
 		assertTrue("Returned incorrect value for most negative value decimal",
 				Integer.parseInt("-2147483648", 10) == 0x80000000);
 		assertTrue("Returned incorrect value for most positive value decimal",
@@ -391,7 +391,7 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_shortValue() {
 		// Test for method short java.lang.Integer.shortValue()
 		Integer i = new Integer(2147450880);
-		assertTrue("Returned incorrect long value", i.shortValue() == -32768);
+		assertEquals("Returned incorrect long value", -32768, i.shortValue());
 	}
 
 	/**
@@ -400,10 +400,10 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_toBinaryStringI() {
 		// Test for method java.lang.String
 		// java.lang.Integer.toBinaryString(int)
-		assertTrue("Incorrect string returned", Integer.toBinaryString(
-				Integer.MAX_VALUE).equals("1111111111111111111111111111111"));
-		assertTrue("Incorrect string returned", Integer.toBinaryString(
-				Integer.MIN_VALUE).equals("10000000000000000000000000000000"));
+		assertEquals("Incorrect string returned", "1111111111111111111111111111111", Integer.toBinaryString(
+				Integer.MAX_VALUE));
+		assertEquals("Incorrect string returned", "10000000000000000000000000000000", Integer.toBinaryString(
+				Integer.MIN_VALUE));
 	}
 
 	/**
@@ -433,10 +433,10 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_toOctalStringI() {
 		// Test for method java.lang.String java.lang.Integer.toOctalString(int)
 		// Spec states that the int arg is treated as unsigned
-		assertTrue("Returned incorrect octal string", Integer.toOctalString(
-				Integer.MAX_VALUE).equals("17777777777"));
-		assertTrue("Returned incorrect octal string", Integer.toOctalString(
-				Integer.MIN_VALUE).equals("20000000000"));
+		assertEquals("Returned incorrect octal string", "17777777777", Integer.toOctalString(
+				Integer.MAX_VALUE));
+		assertEquals("Returned incorrect octal string", "20000000000", Integer.toOctalString(
+				Integer.MIN_VALUE));
 	}
 
 	/**
@@ -447,7 +447,7 @@ public class IntegerTest extends junit.framework.TestCase {
 
 		Integer i = new Integer(-80001);
 
-		assertTrue("Returned incorrect String", i.toString().equals("-80001"));
+		assertEquals("Returned incorrect String", "-80001", i.toString());
 	}
 
 	/**
@@ -456,14 +456,14 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_toStringI() {
 		// Test for method java.lang.String java.lang.Integer.toString(int)
 
-		assertTrue("Returned incorrect String", Integer.toString(-80765)
-				.equals("-80765"));
-		assertTrue("Returned incorrect octal string", Integer.toString(
-				Integer.MAX_VALUE).equals("2147483647"));
-		assertTrue("Returned incorrect octal string", Integer.toString(
-				-Integer.MAX_VALUE).equals("-2147483647"));
-		assertTrue("Returned incorrect octal string", Integer.toString(
-				Integer.MIN_VALUE).equals("-2147483648"));
+		assertEquals("Returned incorrect String", "-80765", Integer.toString(-80765)
+				);
+		assertEquals("Returned incorrect octal string", "2147483647", Integer.toString(
+				Integer.MAX_VALUE));
+		assertEquals("Returned incorrect octal string", "-2147483647", Integer.toString(
+				-Integer.MAX_VALUE));
+		assertEquals("Returned incorrect octal string", "-2147483648", Integer.toString(
+				Integer.MIN_VALUE));
 	}
 
 	/**
@@ -471,37 +471,37 @@ public class IntegerTest extends junit.framework.TestCase {
 	 */
 	public void test_toStringII() {
 		// Test for method java.lang.String java.lang.Integer.toString(int, int)
-		assertTrue("Returned incorrect octal string", Integer.toString(
-				2147483647, 8).equals("17777777777"));
+		assertEquals("Returned incorrect octal string", "17777777777", Integer.toString(
+				2147483647, 8));
 		assertTrue("Returned incorrect hex string--wanted 7fffffff but got: "
 				+ Integer.toString(2147483647, 16), Integer.toString(
 				2147483647, 16).equals("7fffffff"));
-		assertTrue("Incorrect string returned", Integer.toString(2147483647, 2)
-				.equals("1111111111111111111111111111111"));
-		assertTrue("Incorrect string returned", Integer
-				.toString(2147483647, 10).equals("2147483647"));
+		assertEquals("Incorrect string returned", "1111111111111111111111111111111", Integer.toString(2147483647, 2)
+				);
+		assertEquals("Incorrect string returned", "2147483647", Integer
+				.toString(2147483647, 10));
 
-		assertTrue("Returned incorrect octal string", Integer.toString(
-				-2147483647, 8).equals("-17777777777"));
+		assertEquals("Returned incorrect octal string", "-17777777777", Integer.toString(
+				-2147483647, 8));
 		assertTrue("Returned incorrect hex string--wanted -7fffffff but got: "
 				+ Integer.toString(-2147483647, 16), Integer.toString(
 				-2147483647, 16).equals("-7fffffff"));
-		assertTrue("Incorrect string returned", Integer
-				.toString(-2147483647, 2).equals(
-						"-1111111111111111111111111111111"));
-		assertTrue("Incorrect string returned", Integer.toString(-2147483647,
-				10).equals("-2147483647"));
+		assertEquals("Incorrect string returned", 
+						"-1111111111111111111111111111111", Integer
+				.toString(-2147483647, 2));
+		assertEquals("Incorrect string returned", "-2147483647", Integer.toString(-2147483647,
+				10));
 
-		assertTrue("Returned incorrect octal string", Integer.toString(
-				-2147483648, 8).equals("-20000000000"));
+		assertEquals("Returned incorrect octal string", "-20000000000", Integer.toString(
+				-2147483648, 8));
 		assertTrue("Returned incorrect hex string--wanted -80000000 but got: "
 				+ Integer.toString(-2147483648, 16), Integer.toString(
 				-2147483648, 16).equals("-80000000"));
-		assertTrue("Incorrect string returned", Integer
-				.toString(-2147483648, 2).equals(
-						"-10000000000000000000000000000000"));
-		assertTrue("Incorrect string returned", Integer.toString(-2147483648,
-				10).equals("-2147483648"));
+		assertEquals("Incorrect string returned", 
+						"-10000000000000000000000000000000", Integer
+				.toString(-2147483648, 2));
+		assertEquals("Incorrect string returned", "-2147483648", Integer.toString(-2147483648,
+				10));
 	}
 
 	/**
@@ -510,8 +510,8 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_valueOfLjava_lang_String() {
 		// Test for method java.lang.Integer
 		// java.lang.Integer.valueOf(java.lang.String)
-		assertTrue("Returned incorrect int", Integer.valueOf("8888888")
-				.intValue() == 8888888);
+		assertEquals("Returned incorrect int", 8888888, Integer.valueOf("8888888")
+				.intValue());
 		assertTrue("Returned incorrect int", Integer.valueOf("2147483647")
 				.intValue() == Integer.MAX_VALUE);
 		assertTrue("Returned incorrect int", Integer.valueOf("-2147483648")
@@ -542,19 +542,19 @@ public class IntegerTest extends junit.framework.TestCase {
 	public void test_valueOfLjava_lang_StringI() {
 		// Test for method java.lang.Integer
 		// java.lang.Integer.valueOf(java.lang.String, int)
-		assertTrue("Returned incorrect int for hex string", Integer.valueOf(
-				"FF", 16).intValue() == 255);
-		assertTrue("Returned incorrect int for oct string", Integer.valueOf(
-				"20", 8).intValue() == 16);
-		assertTrue("Returned incorrect int for bin string", Integer.valueOf(
-				"100", 2).intValue() == 4);
+		assertEquals("Returned incorrect int for hex string", 255, Integer.valueOf(
+				"FF", 16).intValue());
+		assertEquals("Returned incorrect int for oct string", 16, Integer.valueOf(
+				"20", 8).intValue());
+		assertEquals("Returned incorrect int for bin string", 4, Integer.valueOf(
+				"100", 2).intValue());
 
-		assertTrue("Returned incorrect int for - hex string", Integer.valueOf(
-				"-FF", 16).intValue() == -255);
-		assertTrue("Returned incorrect int for - oct string", Integer.valueOf(
-				"-20", 8).intValue() == -16);
-		assertTrue("Returned incorrect int for - bin string", Integer.valueOf(
-				"-100", 2).intValue() == -4);
+		assertEquals("Returned incorrect int for - hex string", -255, Integer.valueOf(
+				"-FF", 16).intValue());
+		assertEquals("Returned incorrect int for - oct string", -16, Integer.valueOf(
+				"-20", 8).intValue());
+		assertEquals("Returned incorrect int for - bin string", -4, Integer.valueOf(
+				"-100", 2).intValue());
 		assertTrue("Returned incorrect int", Integer.valueOf("2147483647", 10)
 				.intValue() == Integer.MAX_VALUE);
 		assertTrue("Returned incorrect int", Integer.valueOf("-2147483648", 10)

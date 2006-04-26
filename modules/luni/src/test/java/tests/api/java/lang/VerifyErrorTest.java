@@ -38,8 +38,8 @@ public class VerifyErrorTest extends junit.framework.TestCase {
 			if (true)
 				throw new VerifyError("HelloWorld");
 		} catch (VerifyError e) {
-			assertTrue("VerifyError(String) failed.", e.getMessage().equals(
-					"HelloWorld"));
+			assertEquals("VerifyError(String) failed.", 
+					"HelloWorld", e.getMessage());
 			return;
 		}
 		fail("Constructor failed");

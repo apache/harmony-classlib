@@ -212,10 +212,10 @@ public class MulticastSocketTest extends SocketTestCase {
 				// set
 				mss = new MulticastSocket(groupPort);
 				NetworkInterface theInterface = mss.getNetworkInterface();
-				assertTrue(
+				assertNotNull(
 						"network interface returned wrong network interface when not set:"
 								+ theInterface,
-						theInterface.getInetAddresses() != null);
+						theInterface.getInetAddresses());
 				InetAddress firstAddress = (InetAddress) theInterface
 						.getInetAddresses().nextElement();
 				// validate we the first address in the network interface is the

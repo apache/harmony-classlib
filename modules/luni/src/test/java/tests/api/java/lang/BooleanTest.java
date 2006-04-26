@@ -104,8 +104,8 @@ public class BooleanTest extends junit.framework.TestCase {
 		// Test for method int java.lang.Boolean.hashCode()
 
 		// Known values. See comments in java.lang.Boolean.hashCode().
-		assertTrue("Incorrect hash for true Boolean.", t.hashCode() == 1231);
-		assertTrue("Incorrect hash for false Boolean.", f.hashCode() == 1237);
+		assertEquals("Incorrect hash for true Boolean.", 1231, t.hashCode());
+		assertEquals("Incorrect hash for false Boolean.", 1237, f.hashCode());
 	}
 
 	/**
@@ -113,10 +113,10 @@ public class BooleanTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.lang.Boolean.toString()
-		assertTrue("Boolean true value printed wrong.", t.toString().equals(
-				"true"));
-		assertTrue("Boolean false value printed wrong.", f.toString().equals(
-				"false"));
+		assertEquals("Boolean true value printed wrong.", 
+				"true", t.toString());
+		assertEquals("Boolean false value printed wrong.", 
+				"false", f.toString());
 	}
 
 	/**

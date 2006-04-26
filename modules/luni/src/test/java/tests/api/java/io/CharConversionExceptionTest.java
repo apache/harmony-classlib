@@ -29,9 +29,9 @@ public class CharConversionExceptionTest extends junit.framework.TestCase {
 				throw new java.io.CharConversionException();
 			fail("Exception not thrown");
 		} catch (java.io.CharConversionException e) {
-			assertTrue(
+			assertNull(
 					"Exception defined with no message answers non-null to getMessage()",
-					e.getMessage() == null);
+					e.getMessage());
 		}
 	}
 
@@ -45,9 +45,8 @@ public class CharConversionExceptionTest extends junit.framework.TestCase {
 				throw new java.io.CharConversionException("Blah");
 			fail("Exception not thrown");
 		} catch (java.io.CharConversionException e) {
-			assertTrue(
-					"Exception defined with no message answers non-null to getMessage()",
-					e.getMessage().equals("Blah"));
+			assertEquals("Exception defined with no message answers non-null to getMessage()",
+					"Blah", e.getMessage());
 		}
 	}
 

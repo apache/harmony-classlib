@@ -29,9 +29,9 @@ public class BitSetTest extends junit.framework.TestCase {
 		BitSet bs = new BitSet();
 		// Default size for a BitSet should be 64 elements;
 
-		assertTrue("Created BitSet of incorrect size", bs.size() == 64);
-		assertTrue("New BitSet had invalid string representation", bs
-				.toString().equals("{}"));
+		assertEquals("Created BitSet of incorrect size", 64, bs.size());
+		assertEquals("New BitSet had invalid string representation", "{}", bs
+				.toString());
 	}
 
 	/**
@@ -42,14 +42,14 @@ public class BitSetTest extends junit.framework.TestCase {
 		BitSet bs = new BitSet(128);
 		// Default size for a BitSet should be 64 elements;
 
-		assertTrue("Created BitSet of incorrect size", bs.size() == 128);
+		assertEquals("Created BitSet of incorrect size", 128, bs.size());
 		assertTrue("New BitSet had invalid string representation: "
 				+ bs.toString(), bs.toString().equals("{}"));
 
 		// All BitSets are created with elements of multiples of 64
 
 		bs = new BitSet(89);
-		assertTrue("Failed to round BitSet element size", bs.size() == 128);
+		assertEquals("Failed to round BitSet element size", 128, bs.size());
 
 		try {
 			bs = new BitSet(-9);
@@ -196,7 +196,7 @@ public class BitSetTest extends junit.framework.TestCase {
 		initialSize = bs.size();
 		bs.set(0, initialSize);
 		bs.clear(7, 64);
-		assertTrue("Failed to grow BitSet", bs.size() == 128);
+		assertEquals("Failed to grow BitSet", 128, bs.size());
 		for (int i = 0; i < 7; i++)
 			assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
 		for (int i = 7; i < 64; i++)
@@ -449,7 +449,7 @@ public class BitSetTest extends junit.framework.TestCase {
 
 		// Try setting a bit on a 64 boundary
 		bs.set(128);
-		assertTrue("Failed to grow BitSet", bs.size() == 192);
+		assertEquals("Failed to grow BitSet", 192, bs.size());
 		assertTrue("Failed to set bit", bs.get(128));
 
 		bs = new BitSet(64);
@@ -510,7 +510,7 @@ public class BitSetTest extends junit.framework.TestCase {
 		// pos1 and pos2 is in the same bitset element, boundary testing
 		bs = new BitSet(16);
 		bs.set(7, 64);
-		assertTrue("Failed to grow BitSet", bs.size() == 128);
+		assertEquals("Failed to grow BitSet", 128, bs.size());
 		for (int i = 0; i < 7; i++)
 			assertTrue("Shouldn't have set bit " + i, !bs.get(i));
 		for (int i = 7; i < 64; i++)
@@ -641,7 +641,7 @@ public class BitSetTest extends junit.framework.TestCase {
 
 		// Try setting a bit on a 64 boundary
 		bs.flip(128);
-		assertTrue("Failed to grow BitSet", bs.size() == 192);
+		assertEquals("Failed to grow BitSet", 192, bs.size());
 		assertTrue("Failed to flip bit", bs.get(128));
 
 		bs = new BitSet(64);
@@ -657,16 +657,16 @@ public class BitSetTest extends junit.framework.TestCase {
 		}
 
 		BitSet bs0 = new BitSet(0);
-		assertTrue("Test1: Wrong size", bs0.size() == 0);
-		assertTrue("Test1: Wrong length", bs0.length() == 0);
+		assertEquals("Test1: Wrong size", 0, bs0.size());
+		assertEquals("Test1: Wrong length", 0, bs0.length());
 
 		bs0.flip(0);
-		assertTrue("Test2: Wrong size", bs0.size() == 64);
-		assertTrue("Test2: Wrong length", bs0.length() == 1);
+		assertEquals("Test2: Wrong size", 64, bs0.size());
+		assertEquals("Test2: Wrong length", 1, bs0.length());
 
 		bs0.flip(63);
-		assertTrue("Test3: Wrong size", bs0.size() == 64);
-		assertTrue("Test3: Wrong length", bs0.length() == 64);
+		assertEquals("Test3: Wrong size", 64, bs0.size());
+		assertEquals("Test3: Wrong length", 64, bs0.length());
 
 		eightbs.flip(7);
 		assertTrue("Failed to flip bit 7", !eightbs.get(7));
@@ -706,7 +706,7 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs.set(7);
 		bs.set(10);
 		bs.flip(7, 64);
-		assertTrue("Failed to grow BitSet", bs.size() == 128);
+		assertEquals("Failed to grow BitSet", 128, bs.size());
 		for (int i = 0; i < 7; i++)
 			assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
 		assertTrue("Failed to flip bit 7", !bs.get(7));
@@ -825,8 +825,8 @@ public class BitSetTest extends junit.framework.TestCase {
 			assertTrue("Bit got flipped incorrectly ", eightbs.get(0));
 
 			BitSet bsnew = eightbs.get(2, 2);
-			assertTrue("BitSet retrieved incorrectly ",
-					bsnew.cardinality() == 0);
+			assertEquals("BitSet retrieved incorrectly ",
+					0, bsnew.cardinality());
 
 			eightbs.set(10, 10);
 			assertTrue("Bit got set incorrectly ", !eightbs.get(10));
@@ -946,12 +946,12 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs2.set(2);
 		bs2.set(3);
 		bs.andNot(bs2);
-		assertTrue("Incorrect bitset after andNot", bs.toString().equals(
-				"{0, 1, 4, 6, 7}"));
+		assertEquals("Incorrect bitset after andNot", 
+				"{0, 1, 4, 6, 7}", bs.toString());
 
 		bs = new BitSet(0);
 		bs.andNot(bs2);
-		assertTrue("Incorrect size", bs.size() == 0);
+		assertEquals("Incorrect size", 0, bs.size());
 	}
 
 	/**
@@ -997,7 +997,7 @@ public class BitSetTest extends junit.framework.TestCase {
 
 		bs = new BitSet();
 		bs.set(63);
-		assertTrue("Test highest bit", bs.toString().equals("{63}"));
+		assertEquals("Test highest bit", "{63}", bs.toString());
 	}
 
 	/**
@@ -1005,7 +1005,7 @@ public class BitSetTest extends junit.framework.TestCase {
 	 */
 	public void test_size() {
 		// Test for method int java.util.BitSet.size()
-		assertTrue("Returned incorrect size", eightbs.size() == 64);
+		assertEquals("Returned incorrect size", 64, eightbs.size());
 		eightbs.set(129);
 		assertTrue("Returned incorrect size", eightbs.size() >= 129);
 
@@ -1016,11 +1016,11 @@ public class BitSetTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.util.BitSet.toString()
-		assertTrue("Returned incorrect string representation", eightbs
-				.toString().equals("{0, 1, 2, 3, 4, 5, 6, 7}"));
+		assertEquals("Returned incorrect string representation", "{0, 1, 2, 3, 4, 5, 6, 7}", eightbs
+				.toString());
 		eightbs.clear(2);
-		assertTrue("Returned incorrect string representation", eightbs
-				.toString().equals("{0, 1, 3, 4, 5, 6, 7}"));
+		assertEquals("Returned incorrect string representation", "{0, 1, 3, 4, 5, 6, 7}", eightbs
+				.toString());
 	}
 
 	/**

@@ -47,13 +47,13 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 		// Test for method java.net.SocketPermission(java.lang.String,
 		// java.lang.String)
 		assertTrue("Incorrect name", star_Resolve.getName().equals(starName));
-		assertTrue("Incorrect actions", star_Resolve.getActions().equals(
-				"resolve"));
+		assertEquals("Incorrect actions", 
+				"resolve", star_Resolve.getActions());
 
 		SocketPermission sp1 = new SocketPermission("", "connect");
-		assertTrue("Wrong name1", sp1.getName().equals("localhost"));
+		assertEquals("Wrong name1", "localhost", sp1.getName());
 		SocketPermission sp2 = new SocketPermission(":80", "connect");
-		assertTrue("Wrong name2", sp2.getName().equals(":80"));
+		assertEquals("Wrong name2", ":80", sp2.getName());
 	}
 
 	/**
@@ -95,10 +95,10 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 	public void test_getActions() {
 		// Test for method java.lang.String
 		// java.net.SocketPermission.getActions()
-		assertTrue("Incorrect actions", star_Resolve.getActions().equals(
-				"resolve"));
-		assertTrue("Incorrect actions/not in canonical form", star_All
-				.getActions().equals("connect,listen,accept,resolve"));
+		assertEquals("Incorrect actions", 
+				"resolve", star_Resolve.getActions());
+		assertEquals("Incorrect actions/not in canonical form", "connect,listen,accept,resolve", star_All
+				.getActions());
 	}
 
 	/**

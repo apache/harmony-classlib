@@ -53,7 +53,7 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 	public void test_ConstructorI() {
 		// Test for method java.io.ByteArrayOutputStream(int)
 		bos = new java.io.ByteArrayOutputStream(100);
-		assertTrue("Failed to create stream", bos.size() == 0);
+		assertEquals("Failed to create stream", 0, bos.size());
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.io.ByteArrayOutputStream()
 		bos = new java.io.ByteArrayOutputStream();
-		assertTrue("Failed to create stream", bos.size() == 0);
+		assertEquals("Failed to create stream", 0, bos.size());
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 		bos = new java.io.ByteArrayOutputStream();
 		bos.write(fileString.getBytes(), 0, 100);
 		bos.reset();
-		assertTrue("reset failed", bos.size() == 0);
+		assertEquals("reset failed", 0, bos.size());
 	}
 
 	/**
@@ -109,9 +109,9 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 		// Test for method int java.io.ByteArrayOutputStream.size()
 		bos = new java.io.ByteArrayOutputStream();
 		bos.write(fileString.getBytes(), 0, 100);
-		assertTrue("size test failed", bos.size() == 100);
+		assertEquals("size test failed", 100, bos.size());
 		bos.reset();
-		assertTrue("size test failed", bos.size() == 0);
+		assertEquals("size test failed", 0, bos.size());
 	}
 
 	/**
@@ -189,8 +189,8 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 		bos = new java.io.ByteArrayOutputStream();
 		bos.write('t');
 		byte[] result = bos.toByteArray();
-		assertTrue("Wrote incorrect bytes",
-				new String(result, 0, result.length).equals("t"));
+		assertEquals("Wrote incorrect bytes",
+				"t", new String(result, 0, result.length));
 	}
 
 	/**

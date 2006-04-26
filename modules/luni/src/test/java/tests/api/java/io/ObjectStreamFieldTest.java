@@ -65,8 +65,8 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 		// java.io.ObjectStreamField.compareTo(java.lang.Object)
 		assertTrue("Object compared to int did not return > 0", holaField
 				.compareTo(hamField) > 0);
-		assertTrue("Int compared to itself did not return 0", hamField
-				.compareTo(hamField) == 0);
+		assertEquals("Int compared to itself did not return 0", 0, hamField
+				.compareTo(hamField));
 		assertTrue("(Int)ham compared to (Int)sam did not return < 0", hamField
 				.compareTo(samField) < 0);
 	}
@@ -76,8 +76,8 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 	 */
 	public void test_getName() {
 		// Test for method java.lang.String java.io.ObjectStreamField.getName()
-		assertTrue("Field did not return correct name", holaField.getName()
-				.equals("hola"));
+		assertEquals("Field did not return correct name", "hola", holaField.getName()
+				);
 	}
 
 	/**
@@ -89,12 +89,12 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 		osfArray = osc.getFields();
 		assertTrue("getOffset did not return reasonable values", osfArray[0]
 				.getOffset() != osfArray[1].getOffset());
-		assertTrue("getOffset for osfArray[0].getOffset() did not return 0",
-				osfArray[0].getOffset() == 0);
-		assertTrue("osfArray[1].getOffset() did not return	8", osfArray[1]
-				.getOffset() == 8);
-		assertTrue("osfArray[2].getOffset() did not return 12", osfArray[2]
-				.getOffset() == 12);
+		assertEquals("getOffset for osfArray[0].getOffset() did not return 0",
+				0, osfArray[0].getOffset());
+		assertEquals("osfArray[1].getOffset() did not return	8", 8, osfArray[1]
+				.getOffset());
+		assertEquals("osfArray[2].getOffset() did not return 12", 12, osfArray[2]
+				.getOffset());
 	}
 
 	/**
@@ -111,10 +111,10 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 	 */
 	public void test_getTypeCode() {
 		// Test for method char java.io.ObjectStreamField.getTypeCode()
-		assertTrue("getTypeCode on an Object field did not answer 'L'",
-				holaField.getTypeCode() == 'L');
-		assertTrue("getTypeCode on a long field did not answer 'J'", bamField
-				.getTypeCode() == 'J');
+		assertEquals("getTypeCode on an Object field did not answer 'L'",
+				'L', holaField.getTypeCode());
+		assertEquals("getTypeCode on a long field did not answer 'J'", 'J', bamField
+				.getTypeCode());
 	}
 
 	/**

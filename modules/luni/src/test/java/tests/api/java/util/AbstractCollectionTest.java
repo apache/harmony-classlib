@@ -145,7 +145,7 @@ public class AbstractCollectionTest extends junit.framework.TestCase {
 					.contains(intArray[i]));
 			duplicates.add(intArray[i]);
 		}
-		assertTrue("End of list should be null", intArray[100] == null);
+		assertNull("End of list should be null", intArray[100]);
 
 		intArray = new Integer[1];
 		intArray = (Integer[]) org.toArray(intArray);

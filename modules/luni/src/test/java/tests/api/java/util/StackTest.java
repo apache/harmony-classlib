@@ -27,7 +27,7 @@ public class StackTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// Test for method java.util.Stack()
-		assertTrue("Stack creation failed", s.size() == 0);
+		assertEquals("Stack creation failed", 0, s.size());
 	}
 
 	/**
@@ -63,8 +63,8 @@ public class StackTest extends junit.framework.TestCase {
 		s.pop();
 		assertTrue("Peek did not return top item after a pop", s.pop() == item2);
 		s.push(null);
-		assertTrue("Peek did not return top item (wanted: null)",
-				s.peek() == null);
+		assertNull("Peek did not return top item (wanted: null)",
+				s.peek());
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class StackTest extends junit.framework.TestCase {
 		s.push(null);
 		try {
 			lastPopped = s.pop();
-			assertTrue("c) Pop did not return top item", lastPopped == null);
+			assertNull("c) Pop did not return top item", lastPopped);
 		} catch (EmptyStackException e) {
 			fail(
 					"c) Pop threw EmptyStackException when stack should not have been empty");
@@ -133,29 +133,25 @@ public class StackTest extends junit.framework.TestCase {
 		s.push(item1);
 		s.push(item2);
 		s.push(item3);
-		assertTrue("Search returned incorrect value for equivalent object", s
-				.search(item1) == 3);
-		assertTrue("Search returned incorrect value for equal object", s
-				.search("Ichi") == 3);
+		assertEquals("Search returned incorrect value for equivalent object", 3, s
+				.search(item1));
+		assertEquals("Search returned incorrect value for equal object", 3, s
+				.search("Ichi"));
 		s.pop();
-		assertTrue(
-				"Search returned incorrect value for equivalent object at top of stack",
-				s.search(item2) == 1);
-		assertTrue(
-				"Search returned incorrect value for equal object at top of stack",
-				s.search("Ni") == 1);
+		assertEquals("Search returned incorrect value for equivalent object at top of stack",
+				1, s.search(item2));
+		assertEquals("Search returned incorrect value for equal object at top of stack",
+				1, s.search("Ni"));
 		s.push(null);
-		assertTrue(
-				"Search returned incorrect value for search for null at top of stack",
-				s.search(null) == 1);
+		assertEquals("Search returned incorrect value for search for null at top of stack",
+				1, s.search(null));
 		s.push("Shi");
-		assertTrue("Search returned incorrect value for search for null", s
-				.search(null) == 2);
+		assertEquals("Search returned incorrect value for search for null", 2, s
+				.search(null));
 		s.pop();
 		s.pop();
-		assertTrue(
-				"Search returned incorrect value for search for null--wanted -1",
-				s.search(null) == -1);
+		assertEquals("Search returned incorrect value for search for null--wanted -1",
+				-1, s.search(null));
 	}
 
 	/**

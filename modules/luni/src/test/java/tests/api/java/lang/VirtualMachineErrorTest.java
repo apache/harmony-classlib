@@ -51,8 +51,8 @@ public class VirtualMachineErrorTest extends junit.framework.TestCase {
 			if (true)
 				throw new TestVirtualMachineError("HelloWorld");
 		} catch (VirtualMachineError e) {
-			assertTrue("VerifyError(String) failed.", e.getMessage().equals(
-					"HelloWorld"));
+			assertEquals("VerifyError(String) failed.", 
+					"HelloWorld", e.getMessage());
 			return;
 		}
 		fail("Constructor failed");

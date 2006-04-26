@@ -54,28 +54,22 @@ public class PackageTest extends junit.framework.TestCase {
 			urls[0] = resourceURL;
 			ucl = new java.net.URLClassLoader(urls, null);
 			c = Class.forName("p.C", true, ucl);
-			assertTrue(
-					"Package getImplementationTitle returns a wrong string (1)",
-					c.getPackage().getImplementationTitle().equals(
-							"p Implementation-Title"));
-			assertTrue(
-					"Package getImplementationVendor returns a wrong string (1)",
-					c.getPackage().getImplementationVendor().equals(
-							"p Implementation-Vendor"));
-			assertTrue(
-					"Package getImplementationVersion returns a wrong string (1)",
-					c.getPackage().getImplementationVersion().equals("2.2.2"));
-			assertTrue(
-					"Package getSpecificationTitle returns a wrong string (1)",
-					c.getPackage().getSpecificationTitle().equals(
-							"p Specification-Title"));
-			assertTrue(
-					"Package getSpecificationVendor returns a wrong string (1)",
-					c.getPackage().getSpecificationVendor().equals(
-							"p Specification-Vendor"));
-			assertTrue(
-					"Package getSpecificationVersion returns a wrong string (1)",
-					c.getPackage().getSpecificationVersion().equals("2.2.2"));
+			assertEquals("Package getImplementationTitle returns a wrong string (1)",
+					
+							"p Implementation-Title", c.getPackage().getImplementationTitle());
+			assertEquals("Package getImplementationVendor returns a wrong string (1)",
+					
+							"p Implementation-Vendor", c.getPackage().getImplementationVendor());
+			assertEquals("Package getImplementationVersion returns a wrong string (1)",
+					"2.2.2", c.getPackage().getImplementationVersion());
+			assertEquals("Package getSpecificationTitle returns a wrong string (1)",
+					
+							"p Specification-Title", c.getPackage().getSpecificationTitle());
+			assertEquals("Package getSpecificationVendor returns a wrong string (1)",
+					
+							"p Specification-Vendor", c.getPackage().getSpecificationVendor());
+			assertEquals("Package getSpecificationVersion returns a wrong string (1)",
+					"2.2.2", c.getPackage().getSpecificationVersion());
 		} catch (Exception e) {
 			fail("Exception during helperAttributes test : " + e.getMessage());
 		}
@@ -88,28 +82,22 @@ public class PackageTest extends junit.framework.TestCase {
 			urls[0] = resourceURL;
 			ucl = new java.net.URLClassLoader(urls, null);
 			c = Class.forName("p.C", true, ucl);
-			assertTrue(
-					"Package getImplementationTitle returns a wrong string (2)",
-					c.getPackage().getImplementationTitle().equals(
-							"MF Implementation-Title"));
-			assertTrue(
-					"Package getImplementationVendor returns a wrong string (2)",
-					c.getPackage().getImplementationVendor().equals(
-							"MF Implementation-Vendor"));
-			assertTrue(
-					"Package getImplementationVersion returns a wrong string (2)",
-					c.getPackage().getImplementationVersion().equals("5.3.b1"));
-			assertTrue(
-					"Package getSpecificationTitle returns a wrong string (2)",
-					c.getPackage().getSpecificationTitle().equals(
-							"MF Specification-Title"));
-			assertTrue(
-					"Package getSpecificationVendor returns a wrong string (2)",
-					c.getPackage().getSpecificationVendor().equals(
-							"MF Specification-Vendor"));
-			assertTrue(
-					"Package getSpecificationVersion returns a wrong string (2)",
-					c.getPackage().getSpecificationVersion().equals("1.2.3"));
+			assertEquals("Package getImplementationTitle returns a wrong string (2)",
+					
+							"MF Implementation-Title", c.getPackage().getImplementationTitle());
+			assertEquals("Package getImplementationVendor returns a wrong string (2)",
+					
+							"MF Implementation-Vendor", c.getPackage().getImplementationVendor());
+			assertEquals("Package getImplementationVersion returns a wrong string (2)",
+					"5.3.b1", c.getPackage().getImplementationVersion());
+			assertEquals("Package getSpecificationTitle returns a wrong string (2)",
+					
+							"MF Specification-Title", c.getPackage().getSpecificationTitle());
+			assertEquals("Package getSpecificationVendor returns a wrong string (2)",
+					
+							"MF Specification-Vendor", c.getPackage().getSpecificationVendor());
+			assertEquals("Package getSpecificationVersion returns a wrong string (2)",
+					"1.2.3", c.getPackage().getSpecificationVersion());
 		} catch (Exception e) {
 			fail("Exception in helperAttributes test : " + e.getMessage());
 		}
@@ -123,28 +111,22 @@ public class PackageTest extends junit.framework.TestCase {
 			urls[0] = resourceURL;
 			ucl = new java.net.URLClassLoader(urls, null);
 			c = Class.forName("p.C", true, ucl);
-			assertTrue(
-					"Package getImplementationTitle returns a wrong string (3)",
-					c.getPackage().getImplementationTitle().equals(
-							"MF Implementation-Title"));
-			assertTrue(
-					"Package getImplementationVendor returns a wrong string (3)",
-					c.getPackage().getImplementationVendor().equals(
-							"MF Implementation-Vendor"));
-			assertTrue(
-					"Package getImplementationVersion returns a wrong string (3)",
-					c.getPackage().getImplementationVersion().equals("5.3.b1"));
-			assertTrue(
-					"Package getSpecificationTitle returns a wrong string (3)",
-					c.getPackage().getSpecificationTitle().equals(
-							"MF Specification-Title"));
-			assertTrue(
-					"Package getSpecificationVendor returns a wrong string (3)",
-					c.getPackage().getSpecificationVendor().equals(
-							"MF Specification-Vendor"));
-			assertTrue(
-					"Package getSpecificationVersion returns a wrong string (3)",
-					c.getPackage().getSpecificationVersion().equals("1.2.3"));
+			assertEquals("Package getImplementationTitle returns a wrong string (3)",
+					
+							"MF Implementation-Title", c.getPackage().getImplementationTitle());
+			assertEquals("Package getImplementationVendor returns a wrong string (3)",
+					
+							"MF Implementation-Vendor", c.getPackage().getImplementationVendor());
+			assertEquals("Package getImplementationVersion returns a wrong string (3)",
+					"5.3.b1", c.getPackage().getImplementationVersion());
+			assertEquals("Package getSpecificationTitle returns a wrong string (3)",
+					
+							"MF Specification-Title", c.getPackage().getSpecificationTitle());
+			assertEquals("Package getSpecificationVendor returns a wrong string (3)",
+					
+							"MF Specification-Vendor", c.getPackage().getSpecificationVendor());
+			assertEquals("Package getSpecificationVersion returns a wrong string (3)",
+					"1.2.3", c.getPackage().getSpecificationVersion());
 		} catch (Exception e) {
 			fail("Exception during helperAttributes test : " + e.getMessage());
 		}
@@ -158,28 +140,22 @@ public class PackageTest extends junit.framework.TestCase {
 			urls[0] = resourceURL;
 			ucl = new java.net.URLClassLoader(urls, null);
 			c = Class.forName("p.C", true, ucl);
-			assertTrue(
-					"Package getImplementationTitle returns a wrong string (4)",
-					c.getPackage().getImplementationTitle().equals(
-							"p Implementation-Title"));
-			assertTrue(
-					"Package getImplementationVendor returns a wrong string (4)",
-					c.getPackage().getImplementationVendor().equals(
-							"MF Implementation-Vendor"));
-			assertTrue(
-					"Package getImplementationVersion returns a wrong string (4)",
-					c.getPackage().getImplementationVersion().equals("2.2.2"));
-			assertTrue(
-					"Package getSpecificationTitle returns a wrong string (4)",
-					c.getPackage().getSpecificationTitle().equals(
-							"MF Specification-Title"));
-			assertTrue(
-					"Package getSpecificationVendor returns a wrong string (4)",
-					c.getPackage().getSpecificationVendor().equals(
-							"p Specification-Vendor"));
-			assertTrue(
-					"Package getSpecificationVersion returns a wrong string (4)",
-					c.getPackage().getSpecificationVersion().equals("2.2.2"));
+			assertEquals("Package getImplementationTitle returns a wrong string (4)",
+					
+							"p Implementation-Title", c.getPackage().getImplementationTitle());
+			assertEquals("Package getImplementationVendor returns a wrong string (4)",
+					
+							"MF Implementation-Vendor", c.getPackage().getImplementationVendor());
+			assertEquals("Package getImplementationVersion returns a wrong string (4)",
+					"2.2.2", c.getPackage().getImplementationVersion());
+			assertEquals("Package getSpecificationTitle returns a wrong string (4)",
+					
+							"MF Specification-Title", c.getPackage().getSpecificationTitle());
+			assertEquals("Package getSpecificationVendor returns a wrong string (4)",
+					
+							"p Specification-Vendor", c.getPackage().getSpecificationVendor());
+			assertEquals("Package getSpecificationVersion returns a wrong string (4)",
+					"2.2.2", c.getPackage().getSpecificationVersion());
 		} catch (Exception e) {
 			fail("Exception during helperAttributes test : " + e.getMessage());
 		}
@@ -192,29 +168,23 @@ public class PackageTest extends junit.framework.TestCase {
 			urls[0] = resourceURL;
 			ucl = new java.net.URLClassLoader(urls, null);
 			c = Class.forName("p.q.C", true, ucl);
-			assertTrue(
-					"Package getImplementationTitle returns a wrong string (5)",
-					c.getPackage().getImplementationTitle().equals(
-							"p Implementation-Title"));
-			assertTrue(
-					"Package getImplementationVendor returns a wrong string (5)",
-					c.getPackage().getImplementationVendor().equals(
-							"p Implementation-Vendor"));
-			assertTrue(
-					"Package getImplementationVersion returns a wrong string (5)",
-					c.getPackage().getImplementationVersion().equals("1.1.3"));
-			assertTrue(
-					"Package getSpecificationTitle returns a wrong string (5)",
-					c.getPackage().getSpecificationTitle().equals(
-							"p Specification-Title"));
-			assertTrue(
-					"Package getSpecificationVendor returns a wrong string (5)",
-					c.getPackage().getSpecificationVendor().equals(
-							"p Specification-Vendor"));
-			assertTrue(
-					"Package getSpecificationVersion returns a wrong string (5)",
-					c.getPackage().getSpecificationVersion().equals(
-							"2.2.0.0.0.0.0.0.0.0.0"));
+			assertEquals("Package getImplementationTitle returns a wrong string (5)",
+					
+							"p Implementation-Title", c.getPackage().getImplementationTitle());
+			assertEquals("Package getImplementationVendor returns a wrong string (5)",
+					
+							"p Implementation-Vendor", c.getPackage().getImplementationVendor());
+			assertEquals("Package getImplementationVersion returns a wrong string (5)",
+					"1.1.3", c.getPackage().getImplementationVersion());
+			assertEquals("Package getSpecificationTitle returns a wrong string (5)",
+					
+							"p Specification-Title", c.getPackage().getSpecificationTitle());
+			assertEquals("Package getSpecificationVendor returns a wrong string (5)",
+					
+							"p Specification-Vendor", c.getPackage().getSpecificationVendor());
+			assertEquals("Package getSpecificationVersion returns a wrong string (5)",
+					
+							"2.2.0.0.0.0.0.0.0.0.0", c.getPackage().getSpecificationVersion());
 
 		} catch (Exception e) {
 			fail("Exception during helperAttributes test : " + e.getMessage());
@@ -261,8 +231,8 @@ public class PackageTest extends junit.framework.TestCase {
 			urls[0] = resourceURL;
 			ucl = new java.net.URLClassLoader(urls, null);
 			c = Class.forName("p.q.C", true, ucl);
-			assertTrue("Package getName returns a wrong string", c.getPackage()
-					.getName().equals("p.q"));
+			assertEquals("Package getName returns a wrong string", "p.q", c.getPackage()
+					.getName());
 
 		} catch (Exception e) {
 			fail("Exception during getName test : " + e.getMessage());

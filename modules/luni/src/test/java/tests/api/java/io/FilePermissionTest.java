@@ -43,9 +43,8 @@ public class FilePermissionTest extends junit.framework.TestCase {
 		assertTrue("Used to test", true);
 		FilePermission constructFile = new FilePermission("test constructor",
 				"write");
-		assertTrue(
-				"action given to the constructor did not correspond - constructor failed",
-				constructFile.getActions().equals("write"));
+		assertEquals("action given to the constructor did not correspond - constructor failed",
+				"write", constructFile.getActions());
 		assertTrue(
 				"name given to the construcotr did not correspond - construcotr failed",
 				constructFile.getName() == "test constructor");
@@ -57,10 +56,10 @@ public class FilePermissionTest extends junit.framework.TestCase {
 	 */
 	public void test_getActions() {
 		// Test for method java.lang.String java.io.FilePermission.getActions()
-		assertTrue("getActions should have returned only read", readAllFiles
-				.getActions().equals("read"));
-		assertTrue("getActions should have returned all actions", allInCurrent
-				.getActions().equals("read,write,execute,delete"));
+		assertEquals("getActions should have returned only read", "read", readAllFiles
+				.getActions());
+		assertEquals("getActions should have returned all actions", "read,write,execute,delete", allInCurrent
+				.getActions());
 	}
 
 	/**

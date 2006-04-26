@@ -49,7 +49,7 @@ public class StringWriterTest extends junit.framework.TestCase {
 		// Test for method void java.io.StringWriter.flush()
 		sw.flush();
 		sw.write('c');
-		assertTrue("Failed to flush char", sw.toString().equals("c"));
+		assertEquals("Failed to flush char", "c", sw.toString());
 	}
 
 	/**
@@ -61,8 +61,8 @@ public class StringWriterTest extends junit.framework.TestCase {
 
 		sw.write("This is a test string");
 		StringBuffer sb = sw.getBuffer();
-		assertTrue("Incorrect buffer returned", sb.toString().equals(
-				"This is a test string"));
+		assertEquals("Incorrect buffer returned", 
+				"This is a test string", sb.toString());
 	}
 
 	/**
@@ -71,8 +71,8 @@ public class StringWriterTest extends junit.framework.TestCase {
 	public void test_toString() {
 		// Test for method java.lang.String java.io.StringWriter.toString()
 		sw.write("This is a test string");
-		assertTrue("Incorrect string returned", sw.toString().equals(
-				"This is a test string"));
+		assertEquals("Incorrect string returned", 
+				"This is a test string", sw.toString());
 	}
 
 	/**

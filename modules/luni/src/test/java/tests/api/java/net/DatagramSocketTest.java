@@ -557,8 +557,8 @@ public class DatagramSocketTest extends SocketTestCase {
 			int portNumber = Support_PortManager.getNextPort();
 			ds.connect(inetAddress, portNumber);
 			ds.disconnect();
-			assertTrue("Incorrect InetAddress", ds.getInetAddress() == null);
-			assertTrue("Incorrect Port", ds.getPort() == -1);
+			assertNull("Incorrect InetAddress", ds.getInetAddress());
+			assertEquals("Incorrect Port", -1, ds.getPort());
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
@@ -574,8 +574,8 @@ public class DatagramSocketTest extends SocketTestCase {
 				int portNumber = Support_PortManager.getNextPort();
 				ds.connect(inetAddress, portNumber);
 				ds.disconnect();
-				assertTrue("Incorrect InetAddress", ds.getInetAddress() == null);
-				assertTrue("Incorrect Port", ds.getPort() == -1);
+				assertNull("Incorrect InetAddress", ds.getInetAddress());
+				assertEquals("Incorrect Port", -1, ds.getPort());
 			} catch (Exception e) {
 				fail("Exception during test : " + e.getMessage());
 			}
@@ -658,8 +658,8 @@ public class DatagramSocketTest extends SocketTestCase {
 		try {
 			int portNumber = Support_PortManager.getNextPort();
 			DatagramSocket theSocket = new DatagramSocket(portNumber);
-			assertTrue("Expected -1 for remote port as not connected",
-					theSocket.getPort() == -1);
+			assertEquals("Expected -1 for remote port as not connected",
+					-1, theSocket.getPort());
 
 			// now connect the socket and validate that we get the right port
 			theSocket.connect(InetAddress.getLocalHost(), portNumber);
@@ -711,7 +711,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			int portNumber = Support_PortManager.getNextPort();
 			ds = new java.net.DatagramSocket(portNumber);
 			ds.setSoTimeout(100);
-			assertTrue("Returned incorrect timeout", ds.getSoTimeout() == 100);
+			assertEquals("Returned incorrect timeout", 100, ds.getSoTimeout());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_TIMEOUT);
 		} catch (Exception e) {
 			handleException(e, SO_TIMEOUT);
@@ -1073,8 +1073,8 @@ public class DatagramSocketTest extends SocketTestCase {
 			// all is ok
 			theSocket = new DatagramSocket(null);
 			theSocket.bind(null);
-			assertTrue("Bind with null did not work", theSocket
-					.getLocalSocketAddress() != null);
+			assertNotNull("Bind with null did not work", theSocket
+					.getLocalSocketAddress());
 			theSocket.close();
 
 			// now check the error conditions
@@ -1527,10 +1527,10 @@ public class DatagramSocketTest extends SocketTestCase {
 			portNumber = Support_PortManager.getNextPort();
 			theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
 					portNumber));
-			assertTrue(
+			assertNull(
 					"Returned incorrect InetSocketAddress -unconnected socket:"
 							+ "Expected: NULL", theSocket
-							.getRemoteSocketAddress() == null);
+							.getRemoteSocketAddress());
 
 			// now connect and validate we get the right answer
 			theSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
@@ -1572,9 +1572,9 @@ public class DatagramSocketTest extends SocketTestCase {
 			// now create a socket that is not bound and validate we get the
 			// right answer
 			DatagramSocket theSocket = new DatagramSocket(null);
-			assertTrue(
+			assertNull(
 					"Returned incorrect InetSocketAddress -unbound socket- Expected null",
-					theSocket.getLocalSocketAddress() == null);
+					theSocket.getLocalSocketAddress());
 
 			// now bind the socket and make sure we get the right answer
 			portNumber = Support_PortManager.getNextPort();

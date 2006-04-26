@@ -32,7 +32,7 @@ public class ArrayIndexOutOfBoundsExceptionTest extends
 		} catch (ArrayIndexOutOfBoundsException e) {
 			r = 1;
 		}
-		assertTrue("failed to generate ArrayIndexOutOfBoundsException", r == 1);
+		assertEquals("failed to generate ArrayIndexOutOfBoundsException", 1, r);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class ArrayIndexOutOfBoundsExceptionTest extends
 		} catch (ArrayIndexOutOfBoundsException e) {
 			r = 1;
 		}
-		assertTrue("failed to generate ArrayIndexOutOfBoundsException", r == 1);
+		assertEquals("failed to generate ArrayIndexOutOfBoundsException", 1, r);
 
 	}
 

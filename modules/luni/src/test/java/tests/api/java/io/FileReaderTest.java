@@ -44,8 +44,8 @@ public class FileReaderTest extends junit.framework.TestCase {
 			char[] buf = new char[100];
 			int r = br.read(buf);
 			br.close();
-			assertTrue("Failed to read correct chars", new String(buf, 0, r)
-					.equals(" After test string"));
+			assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r)
+					);
 		} catch (Exception e) {
 			fail("Exception during Constructor test " + e.toString());
 		}
@@ -66,8 +66,8 @@ public class FileReaderTest extends junit.framework.TestCase {
 			int r = br.read(buf);
 			br.close();
 			fis.close();
-			assertTrue("Failed to read correct chars", new String(buf, 0, r)
-					.equals(" After test string"));
+			assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r)
+					);
 		} catch (Exception e) {
 			fail("Exception during Constructor test " + e.toString());
 		}
@@ -86,8 +86,8 @@ public class FileReaderTest extends junit.framework.TestCase {
 			char[] buf = new char[100];
 			int r = br.read(buf);
 			br.close();
-			assertTrue("Failed to read correct chars", new String(buf, 0, r)
-					.equals(" After test string"));
+			assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r)
+					);
 		} catch (Exception e) {
 			fail("Exception during Constructor test " + e.toString());
 		}

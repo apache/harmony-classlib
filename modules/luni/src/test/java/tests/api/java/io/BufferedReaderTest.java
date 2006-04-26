@@ -151,13 +151,13 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 		Reader in = new BufferedReader(new Support_StringReader(new String(
 				chars)), 12);
 		try {
-			assertTrue("Wrong initial char", in.read() == 0); // Fill the
+			assertEquals("Wrong initial char", 0, in.read()); // Fill the
 			// buffer
 			char[] buf = new char[14];
 			in.read(buf, 0, 14); // Read greater than the buffer
 			assertTrue("Wrong block read data", new String(buf)
 					.equals(new String(chars, 1, 14)));
-			assertTrue("Wrong chars", in.read() == 15); // Check next byte
+			assertEquals("Wrong chars", 15, in.read()); // Check next byte
 		} catch (IOException e) {
 			fail("Exception during read test 2:" + e);
 		}
@@ -268,8 +268,8 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 		try {
 			br = new BufferedReader(new Support_StringReader(testString));
 			String r = br.readLine();
-			assertTrue("readLine returned incorrect string", r
-					.equals("Test_All_Tests"));
+			assertEquals("readLine returned incorrect string", "Test_All_Tests", r
+					);
 		} catch (java.io.IOException e) {
 			fail("Exception during readLine test");
 		}

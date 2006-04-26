@@ -35,7 +35,7 @@ public class ObjectTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// Test for method java.lang.Object()
-		assertTrue("Constructor failed !!!", new Object() != null);
+		assertNotNull("Constructor failed !!!", new Object());
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class ObjectTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.lang.Object.toString()
-		assertTrue("Object toString returned null.", obj1.toString() != null);
+		assertNotNull("Object toString returned null.", obj1.toString());
 	}
 
 	/**

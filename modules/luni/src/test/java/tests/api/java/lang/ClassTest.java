@@ -180,8 +180,8 @@ public class ClassTest extends junit.framework.TestCase {
 	 */
 	public void test_getClasses() {
 		// Test for method java.lang.Class [] java.lang.Class.getClasses()
-		assertTrue("Incorrect class array returned", ClassTest.class
-				.getClasses().length == 2);
+		assertEquals("Incorrect class array returned", 2, ClassTest.class
+				.getClasses().length);
 	}
 
 	/**
@@ -391,8 +391,8 @@ public class ClassTest extends junit.framework.TestCase {
 				.getComponentType() == int.class);
 		assertTrue("Object array does not have Object component type",
 				Object[].class.getComponentType() == Object.class);
-		assertTrue("Object has non-null component type", Object.class
-				.getComponentType() == null);
+		assertNull("Object has non-null component type", Object.class
+				.getComponentType());
 	}
 
 	/**
@@ -424,8 +424,8 @@ public class ClassTest extends junit.framework.TestCase {
 		try {
 			java.lang.reflect.Constructor[] c = TestClass.class
 					.getConstructors();
-			assertTrue("Incorrect number of constructors returned",
-					c.length == 1);
+			assertEquals("Incorrect number of constructors returned",
+					1, c.length);
 		} catch (Exception e) {
 			fail("Exception during getDeclaredConstructor test:"
 					+ e.toString());
@@ -438,8 +438,8 @@ public class ClassTest extends junit.framework.TestCase {
 	public void test_getDeclaredClasses() {
 		// Test for method java.lang.Class []
 		// java.lang.Class.getDeclaredClasses()
-		assertTrue("Incorrect class array returned", ClassTest.class
-				.getClasses().length == 2);
+		assertEquals("Incorrect class array returned", 2, ClassTest.class
+				.getClasses().length);
 	}
 
 	/**
@@ -451,8 +451,8 @@ public class ClassTest extends junit.framework.TestCase {
 		try {
 			java.lang.reflect.Constructor c = TestClass.class
 					.getDeclaredConstructor(new Class[0]);
-			assertTrue("Incorrect constructor returned", ((TestClass) (c
-					.newInstance(new Object[0]))).cValue() == null);
+			assertNull("Incorrect constructor returned", ((TestClass) (c
+					.newInstance(new Object[0]))).cValue());
 			c = TestClass.class
 					.getDeclaredConstructor(new Class[] { Object.class });
 		} catch (NoSuchMethodException e) {
@@ -473,8 +473,8 @@ public class ClassTest extends junit.framework.TestCase {
 		try {
 			java.lang.reflect.Constructor[] c = TestClass.class
 					.getDeclaredConstructors();
-			assertTrue("Incorrect number of constructors returned",
-					c.length == 2);
+			assertEquals("Incorrect number of constructors returned",
+					2, c.length);
 		} catch (Exception e) {
 			fail("Exception during getDeclaredConstructor test:"
 					+ e.toString());
@@ -490,8 +490,8 @@ public class ClassTest extends junit.framework.TestCase {
 		try {
 			java.lang.reflect.Field f = TestClass.class
 					.getDeclaredField("pubField");
-			assertTrue("Returned incorrect field",
-					f.getInt(new TestClass()) == 2);
+			assertEquals("Returned incorrect field",
+					2, f.getInt(new TestClass()));
 		} catch (Exception e) {
 			fail("Exception getting fields : " + e.getMessage());
 		}
@@ -505,10 +505,10 @@ public class ClassTest extends junit.framework.TestCase {
 		// java.lang.Class.getDeclaredFields()
 		try {
 			java.lang.reflect.Field[] f = TestClass.class.getDeclaredFields();
-			assertTrue("Returned incorrect number of fields", f.length == 4);
+			assertEquals("Returned incorrect number of fields", 4, f.length);
 			f = SubTestClass.class.getDeclaredFields();
 			// Declared fields do not include inherited
-			assertTrue("Returned incorrect number of fields", f.length == 0);
+			assertEquals("Returned incorrect number of fields", 0, f.length);
 		} catch (Exception e) {
 			fail("Exception getting fields : " + e.getMessage());
 		}
@@ -525,8 +525,8 @@ public class ClassTest extends junit.framework.TestCase {
 		try {
 			java.lang.reflect.Method m = TestClass.class.getDeclaredMethod(
 					"pubMethod", new Class[0]);
-			assertTrue("Returned incorrect method", ((Integer) (m.invoke(
-					new TestClass(), new Class[0]))).intValue() == 2);
+			assertEquals("Returned incorrect method", 2, ((Integer) (m.invoke(
+					new TestClass(), new Class[0]))).intValue());
 			m = TestClass.class.getDeclaredMethod("privMethod", new Class[0]);
 			try {
 				// Invoking private non-sub, non-package
@@ -548,9 +548,9 @@ public class ClassTest extends junit.framework.TestCase {
 		// java.lang.Class.getDeclaredMethods()
 		try {
 			java.lang.reflect.Method[] m = TestClass.class.getDeclaredMethods();
-			assertTrue("Returned incorrect number of methods", m.length == 3);
+			assertEquals("Returned incorrect number of methods", 3, m.length);
 			m = SubTestClass.class.getDeclaredMethods();
-			assertTrue("Returned incorrect number of methods", m.length == 0);
+			assertEquals("Returned incorrect number of methods", 0, m.length);
 		} catch (Exception e) {
 			fail("Exception getting methods : " + e.getMessage());
 		}
@@ -572,8 +572,8 @@ public class ClassTest extends junit.framework.TestCase {
 		// java.lang.Class.getField(java.lang.String)
 		try {
 			java.lang.reflect.Field f = TestClass.class.getField("pubField");
-			assertTrue("Returned incorrect field",
-					f.getInt(new TestClass()) == 2);
+			assertEquals("Returned incorrect field",
+					2, f.getInt(new TestClass()));
 			try {
 				f = TestClass.class.getField("privField");
 			} catch (NoSuchFieldException e) {
@@ -612,8 +612,8 @@ public class ClassTest extends junit.framework.TestCase {
 		Class[] interfaces;
 		List interfaceList;
 		interfaces = java.lang.Object.class.getInterfaces();
-		assertTrue("Incorrect interface list for Object",
-				interfaces.length == 0);
+		assertEquals("Incorrect interface list for Object",
+				0, interfaces.length);
 		interfaceList = Arrays.asList(java.util.Vector.class.getInterfaces());
 		assertTrue("Incorrect interface list for Vector", interfaceList
 				.contains(java.lang.Cloneable.class)
@@ -630,8 +630,8 @@ public class ClassTest extends junit.framework.TestCase {
 		try {
 			java.lang.reflect.Method m = TestClass.class.getMethod("pubMethod",
 					new Class[0]);
-			assertTrue("Returned incorrect method", ((Integer) (m.invoke(
-					new TestClass(), new Class[0]))).intValue() == 2);
+			assertEquals("Returned incorrect method", 2, ((Integer) (m.invoke(
+					new TestClass(), new Class[0]))).intValue());
 			try {
 				m = TestClass.class.getMethod("privMethod", new Class[0]);
 			} catch (NoSuchMethodException e) {
@@ -737,11 +737,11 @@ public class ClassTest extends junit.framework.TestCase {
 		System.setSecurityManager(new SecurityManager());
 		try {
 			java.net.URL res = Object.class.getResource("Object.class");
-			assertTrue("Object.class should not be found", res == null);
+			assertNull("Object.class should not be found", res);
 
-			assertTrue("Security: the file " + name
+			assertNotNull("Security: the file " + name
 					+ " can not be found in this directory", ClassTest.class
-					.getResource(name) != null);
+					.getResource(name));
 		} finally {
 			System.setSecurityManager(null);
 		}
@@ -762,27 +762,27 @@ public class ClassTest extends junit.framework.TestCase {
 			fail(
 					"Should be able to find the class tests.api.java.lang.ClassTest");
 		}
-		assertTrue("the file " + name + " can not be found in this directory",
-				clazz.getResourceAsStream(name) != null);
+		assertNotNull("the file " + name + " can not be found in this directory",
+				clazz.getResourceAsStream(name));
 
 		System.setSecurityManager(new SecurityManager());
 		try {
 			InputStream res = Object.class.getResourceAsStream("Object.class");
-			assertTrue("Object.class should not be found", res == null);
+			assertNull("Object.class should not be found", res);
 			InputStream is = ClassTest.class.getResourceAsStream(name);
-			assertTrue("Security: the file " + name
-					+ " can not be found in this directory", is != null);
+			assertNotNull("Security: the file " + name
+					+ " can not be found in this directory", is);
 		} finally {
 			System.setSecurityManager(null);
 		}
 
 		name = "hyts_Foo.c";
-		assertTrue("the file " + name
+		assertNull("the file " + name
 				+ " should not be found in this directory", clazz
-				.getResourceAsStream(name) == null);
-		assertTrue("the file " + name
+				.getResourceAsStream(name));
+		assertNotNull("the file " + name
 				+ " can not be found in the root directory", clazz
-				.getResourceAsStream("/" + name) != null);
+				.getResourceAsStream("/" + name));
 
 		try {
 			clazz = Class.forName("java.lang.Object");
@@ -790,12 +790,12 @@ public class ClassTest extends junit.framework.TestCase {
 			fail("Should be able to find the class java.lang.Object");
 		}
 		InputStream str = clazz.getResourceAsStream("Class.class");
-		assertTrue(
+		assertNotNull(
 				"java.lang.Object couldn't find its class with getResource...",
-				str != null);
+				str);
 		try {
 			assertTrue("Cannot read single byte", str.read() != -1);
-			assertTrue("Cannot read multiple bytes", str.read(new byte[5]) == 5);
+			assertEquals("Cannot read multiple bytes", 5, str.read(new byte[5]));
 			str.close();
 		} catch (IOException e) {
 			fail("Exception while closing resource stream 1.");
@@ -803,11 +803,11 @@ public class ClassTest extends junit.framework.TestCase {
 
 		InputStream str2 = getClass().getResourceAsStream(
 				Support_Resources.RESOURCE_PACKAGE + "hyts_compressD.txt");
-		assertTrue("Can't find resource", str2 != null);
+		assertNotNull("Can't find resource", str2);
 		try {
 			assertTrue("Cannot read single byte", str2.read() != -1);
-			assertTrue("Cannot read multiple bytes",
-					str2.read(new byte[5]) == 5);
+			assertEquals("Cannot read multiple bytes",
+					5, str2.read(new byte[5]));
 			str2.close();
 		} catch (IOException e) {
 			fail("IOException while closing resource stream 2 : "
@@ -822,17 +822,17 @@ public class ClassTest extends junit.framework.TestCase {
 	public void test_getSuperclass() {
 		// Test for method java.lang.Class java.lang.Class.getSuperclass()
 
-		assertTrue("Object has a superclass???",
-				Object.class.getSuperclass() == null);
+		assertNull("Object has a superclass???",
+				Object.class.getSuperclass());
 		assertTrue(
 				"Normal class has bogus superclass",
 				java.io.FileInputStream.class.getSuperclass() == java.io.InputStream.class);
 		assertTrue("Array class has bogus superclass",
 				java.io.FileInputStream[].class.getSuperclass() == Object.class);
-		assertTrue("Base class has a superclass",
-				int.class.getSuperclass() == null);
-		assertTrue("Interface class has a superclass", Cloneable.class
-				.getSuperclass() == null);
+		assertNull("Base class has a superclass",
+				int.class.getSuperclass());
+		assertNull("Interface class has a superclass", Cloneable.class
+				.getSuperclass());
 	}
 
 	/**
@@ -980,8 +980,8 @@ public class ClassTest extends junit.framework.TestCase {
 			} catch (ClassNotFoundException e) {
 				fail("Should be able to find the class java.lang.Object");
 			}
-			assertTrue("new object instance was null",
-					clazz.newInstance() != null);
+			assertNotNull("new object instance was null",
+					clazz.newInstance());
 		} catch (Exception e) {
 			fail("Unexpected exception " + e + " in newInstance()");
 		}
@@ -1011,9 +1011,8 @@ public class ClassTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			r = 1;
 		}
-		assertTrue(
-				"Exception for instantiating a newInstance with no default constructor is not thrown",
-				r == 1);
+		assertEquals("Exception for instantiating a newInstance with no default constructor is not thrown",
+				1, r);
 		// There needs to be considerably more testing here.
 	}
 

@@ -100,8 +100,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			newGroup = new ThreadGroup(null, null);
 		} catch (NullPointerException e) {
 		}
-		assertTrue("Can't create a ThreadGroup with a null parent",
-				newGroup == null);
+		assertNull("Can't create a ThreadGroup with a null parent",
+				newGroup);
 
 		newGroup = new ThreadGroup(getInitialThreadGroup(), null);
 		assertTrue("Has to be possible to create a subgroup of current group",
@@ -123,8 +123,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			newGroup = null;
 		}
 		;
-		assertTrue("Can't create a subgroup of a destroyed group",
-				newGroup == null);
+		assertNull("Can't create a subgroup of a destroyed group",
+				newGroup);
 	}
 
 	/**
@@ -195,8 +195,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		for (int i = 0; i < subgroups.size(); i++) {
 			ThreadGroup child = (ThreadGroup) subgroups.elementAt(i);
-			assertTrue("Destroyed child can't have children", child
-					.activeCount() == 0);
+			assertEquals("Destroyed child can't have children", 0, child
+					.activeCount());
 			boolean passed = false;
 			try {
 				child.destroy();
@@ -597,8 +597,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 					+ " was not running when it was killed", isResumed[i]);
 		}
 
-		assertTrue("Method destroy must have problems",
-				testRoot.activeCount() == 0);
+		assertEquals("Method destroy must have problems",
+				0, testRoot.activeCount());
 
 	}
 
@@ -674,7 +674,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			parentMaxPrio = current.getParent().getMaxPriority();
 
 			ThreadGroup[] children = groups(current);
-			assertTrue("Can only have 1 subgroup", children.length == 1);
+			assertEquals("Can only have 1 subgroup", 1, children.length);
 			current = children[0];
 			assertTrue(
 					"Had to be 1 unit smaller than parent's priority in iteration="
@@ -795,8 +795,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		assertTrue("Thread should be dead by now", passed);
 
-		assertTrue("Method destroy (or wipeAllThreads) must have problems",
-				testRoot.activeCount() == 0);
+		assertEquals("Method destroy (or wipeAllThreads) must have problems",
+				0, testRoot.activeCount());
 
 	}
 
@@ -848,8 +848,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		}
 		assertTrue("All threads should be suspended", passed);
 
-		assertTrue("Method destroy (or wipeAllThreads) must have problems",
-				testRoot.activeCount() == 0);
+		assertEquals("Method destroy (or wipeAllThreads) must have problems",
+				0, testRoot.activeCount());
 
 	}
 

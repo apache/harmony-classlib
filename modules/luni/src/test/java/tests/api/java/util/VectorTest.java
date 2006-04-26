@@ -51,8 +51,8 @@ public class VectorTest extends junit.framework.TestCase {
 		new Support_ListTest("", tv.subList(50, 150)).runTest();
 
 		Vector v = new Vector();
-		assertTrue("Vector creation failed", v.size() == 0);
-		assertTrue("Wrong capacity", v.capacity() == 10);
+		assertEquals("Vector creation failed", 0, v.size());
+		assertEquals("Wrong capacity", 10, v.capacity());
 	}
 
 	/**
@@ -62,8 +62,8 @@ public class VectorTest extends junit.framework.TestCase {
 		// Test for method java.util.Vector(int)
 
 		Vector v = new Vector(100);
-		assertTrue("Vector creation failed", v.size() == 0);
-		assertTrue("Wrong capacity", v.capacity() == 100);
+		assertEquals("Vector creation failed", 0, v.size());
+		assertEquals("Wrong capacity", 100, v.capacity());
 	}
 
 	/**
@@ -77,16 +77,16 @@ public class VectorTest extends junit.framework.TestCase {
 		v.addElement(new Object());
 		v.addElement(new Object());
 
-		assertTrue("Failed to inc capacity by proper amount",
-				v.capacity() == 12);
+		assertEquals("Failed to inc capacity by proper amount",
+				12, v.capacity());
 
 		Vector grow = new Vector(3, -1);
 		grow.addElement("one");
 		grow.addElement("two");
 		grow.addElement("three");
 		grow.addElement("four");
-		assertTrue("Wrong size", grow.size() == 4);
-		assertTrue("Wrong capacity", grow.capacity() == 6);
+		assertEquals("Wrong size", 4, grow.size());
+		assertEquals("Wrong capacity", 6, grow.capacity());
 	}
 
 	/**
@@ -115,14 +115,14 @@ public class VectorTest extends junit.framework.TestCase {
 		tVector.add(45, o);
 		assertTrue("Failed to add Object", tVector.get(45) == o);
 		assertTrue("Failed to fix-up existing indices", tVector.get(46) == prev);
-		assertTrue("Wrong size after add", tVector.size() == 101);
+		assertEquals("Wrong size after add", 101, tVector.size());
 
 		prev = tVector.get(50);
 		tVector.add(50, null);
-		assertTrue("Failed to add null", tVector.get(50) == null);
+		assertNull("Failed to add null", tVector.get(50));
 		assertTrue("Failed to fix-up existing indices after adding null",
 				tVector.get(51) == prev);
-		assertTrue("Wrong size after add", tVector.size() == 102);
+		assertEquals("Wrong size after add", 102, tVector.size());
 	}
 
 	/**
@@ -133,11 +133,11 @@ public class VectorTest extends junit.framework.TestCase {
 		Object o = new Object();
 		tVector.add(o);
 		assertTrue("Failed to add Object", tVector.lastElement() == o);
-		assertTrue("Wrong size after add", tVector.size() == 101);
+		assertEquals("Wrong size after add", 101, tVector.size());
 
 		tVector.add(null);
-		assertTrue("Failed to add null", tVector.lastElement() == null);
-		assertTrue("Wrong size after add", tVector.size() == 102);
+		assertNull("Failed to add null", tVector.lastElement());
+		assertEquals("Wrong size after add", 102, tVector.size());
 	}
 
 	/**
@@ -170,12 +170,12 @@ public class VectorTest extends junit.framework.TestCase {
 		l.add("gah");
 		l.add(null);
 		tVector.addAll(50, l);
-		assertTrue("Wrong element at position 50--wanted null",
-				tVector.get(50) == null);
-		assertTrue("Wrong element at position 51--wanted 'gah'", tVector
-				.get(51).equals("gah"));
-		assertTrue("Wrong element at position 52--wanted null",
-				tVector.get(52) == null);
+		assertNull("Wrong element at position 50--wanted null",
+				tVector.get(50));
+		assertEquals("Wrong element at position 51--wanted 'gah'", "gah", tVector
+				.get(51));
+		assertNull("Wrong element at position 52--wanted null",
+				tVector.get(52));
 	}
 
 	/**
@@ -201,12 +201,12 @@ public class VectorTest extends junit.framework.TestCase {
 		l.add("gah");
 		l.add(null);
 		tVector.addAll(l);
-		assertTrue("Wrong element at 3rd last position--wanted null", tVector
-				.get(vSize) == null);
-		assertTrue("Wrong element at 2nd last position--wanted 'gah'", tVector
-				.get(vSize + 1).equals("gah"));
-		assertTrue("Wrong element at last position--wanted null", tVector
-				.get(vSize + 2) == null);
+		assertNull("Wrong element at 3rd last position--wanted null", tVector
+				.get(vSize));
+		assertEquals("Wrong element at 2nd last position--wanted 'gah'", "gah", tVector
+				.get(vSize + 1));
+		assertNull("Wrong element at last position--wanted null", tVector
+				.get(vSize + 2));
 	}
 
 	/**
@@ -217,11 +217,11 @@ public class VectorTest extends junit.framework.TestCase {
 		Vector v = vectorClone(tVector);
 		v.addElement("Added Element");
 		assertTrue("Failed to add element", v.contains("Added Element"));
-		assertTrue("Added Element to wrong slot", ((String) v.elementAt(100))
-				.equals("Added Element"));
+		assertEquals("Added Element to wrong slot", "Added Element", ((String) v.elementAt(100))
+				);
 		v.addElement(null);
 		assertTrue("Failed to add null", v.contains(null));
-		assertTrue("Added null to wrong slot", v.elementAt(101) == null);
+		assertNull("Added null to wrong slot", v.elementAt(101));
 	}
 
 	/**
@@ -232,11 +232,11 @@ public class VectorTest extends junit.framework.TestCase {
 		Vector v = vectorClone(tVector);
 		v.addElement("Added Element");
 		assertTrue("Failed to add element", v.contains("Added Element"));
-		assertTrue("Added Element to wrong slot", ((String) v.elementAt(100))
-				.equals("Added Element"));
+		assertEquals("Added Element to wrong slot", "Added Element", ((String) v.elementAt(100))
+				);
 		v.addElement(null);
 		assertTrue("Failed to add null", v.contains(null));
-		assertTrue("Added null to wrong slot", v.elementAt(101) == null);
+		assertNull("Added null to wrong slot", v.elementAt(101));
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class VectorTest extends junit.framework.TestCase {
 		// Test for method int java.util.Vector.capacity()
 
 		Vector v = new Vector(9);
-		assertTrue("Incorrect capacity returned", v.capacity() == 9);
+		assertEquals("Incorrect capacity returned", 9, v.capacity());
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class VectorTest extends junit.framework.TestCase {
 		// Test for method void java.util.Vector.clear()
 		Vector orgVector = vectorClone(tVector);
 		tVector.clear();
-		assertTrue("a) Cleared Vector has non-zero size", tVector.size() == 0);
+		assertEquals("a) Cleared Vector has non-zero size", 0, tVector.size());
 		Enumeration e = orgVector.elements();
 		while (e.hasMoreElements())
 			assertTrue("a) Cleared vector contained elements", !tVector
@@ -264,7 +264,7 @@ public class VectorTest extends junit.framework.TestCase {
 
 		tVector.add(null);
 		tVector.clear();
-		assertTrue("b) Cleared Vector has non-zero size", tVector.size() == 0);
+		assertEquals("b) Cleared Vector has non-zero size", 0, tVector.size());
 		e = orgVector.elements();
 		while (e.hasMoreElements())
 			assertTrue("b) Cleared vector contained elements", !tVector
@@ -350,11 +350,11 @@ public class VectorTest extends junit.framework.TestCase {
 	 */
 	public void test_elementAtI() {
 		// Test for method java.lang.Object java.util.Vector.elementAt(int)
-		assertTrue("Incorrect element returned", ((String) tVector
-				.elementAt(18)).equals("Test 18"));
+		assertEquals("Incorrect element returned", "Test 18", ((String) tVector
+				.elementAt(18)));
 		tVector.setElementAt(null, 20);
-		assertTrue("Incorrect element returned--wanted null", tVector
-				.elementAt(20) == null);
+		assertNull("Incorrect element returned--wanted null", tVector
+				.elementAt(20));
 
 	}
 
@@ -413,10 +413,10 @@ public class VectorTest extends junit.framework.TestCase {
 
 		Vector v = new Vector(9);
 		v.ensureCapacity(20);
-		assertTrue("ensureCapacity failed to set correct capacity", v
-				.capacity() == 20);
+		assertEquals("ensureCapacity failed to set correct capacity", 20, v
+				.capacity());
 		v = new Vector(100);
-		assertTrue("ensureCapacity reduced capacity", v.capacity() == 100);
+		assertEquals("ensureCapacity reduced capacity", 100, v.capacity());
 	}
 
 	/**
@@ -441,11 +441,11 @@ public class VectorTest extends junit.framework.TestCase {
 	 */
 	public void test_firstElement() {
 		// Test for method java.lang.Object java.util.Vector.firstElement()
-		assertTrue("Returned incorrect firstElement", tVector.firstElement()
-				.equals("Test 0"));
+		assertEquals("Returned incorrect firstElement", "Test 0", tVector.firstElement()
+				);
 		tVector.insertElementAt(null, 0);
-		assertTrue("Returned incorrect firstElement--wanted null", tVector
-				.firstElement() == null);
+		assertNull("Returned incorrect firstElement--wanted null", tVector
+				.firstElement());
 	}
 
 	/**
@@ -453,11 +453,11 @@ public class VectorTest extends junit.framework.TestCase {
 	 */
 	public void test_getI() {
 		// Test for method java.lang.Object java.util.Vector.get(int)
-		assertTrue("Get returned incorrect object", tVector.get(80).equals(
-				"Test 80"));
+		assertEquals("Get returned incorrect object", 
+				"Test 80", tVector.get(80));
 		tVector.add(25, null);
-		assertTrue("Returned incorrect element--wanted null",
-				tVector.get(25) == null);
+		assertNull("Returned incorrect element--wanted null",
+				tVector.get(25));
 	}
 
 	/**
@@ -480,9 +480,9 @@ public class VectorTest extends junit.framework.TestCase {
 	 */
 	public void test_indexOfLjava_lang_Object() {
 		// Test for method int java.util.Vector.indexOf(java.lang.Object)
-		assertTrue("Incorrect index returned", tVector.indexOf("Test 10") == 10);
-		assertTrue("Index returned for invalid Object", tVector
-				.indexOf("XXXXXXXXXXX") == -1);
+		assertEquals("Incorrect index returned", 10, tVector.indexOf("Test 10"));
+		assertEquals("Index returned for invalid Object", -1, tVector
+				.indexOf("XXXXXXXXXXX"));
 		tVector.setElementAt(null, 20);
 		tVector.setElementAt(null, 40);
 		assertTrue("Incorrect indexOf returned for null: "
@@ -516,12 +516,12 @@ public class VectorTest extends junit.framework.TestCase {
 		Vector v = vectorClone(tVector);
 		String prevElement = (String) v.elementAt(99);
 		v.insertElementAt("Inserted Element", 99);
-		assertTrue("Element not inserted", ((String) v.elementAt(99))
-				.equals("Inserted Element"));
+		assertEquals("Element not inserted", "Inserted Element", ((String) v.elementAt(99))
+				);
 		assertTrue("Elements shifted incorrectly", ((String) v.elementAt(100))
 				.equals(prevElement));
 		v.insertElementAt(null, 20);
-		assertTrue("null not inserted", v.elementAt(20) == null);
+		assertNull("null not inserted", v.elementAt(20));
 	}
 
 	/**
@@ -571,11 +571,11 @@ public class VectorTest extends junit.framework.TestCase {
 	 */
 	public void test_lastElement() {
 		// Test for method java.lang.Object java.util.Vector.lastElement()
-		assertTrue("Incorrect last element returned", tVector.lastElement()
-				.equals("Test 99"));
+		assertEquals("Incorrect last element returned", "Test 99", tVector.lastElement()
+				);
 		tVector.addElement(null);
-		assertTrue("Incorrect last element returned--wanted null", tVector
-				.lastElement() == null);
+		assertNull("Incorrect last element returned--wanted null", tVector
+				.lastElement());
 	}
 
 	/**
@@ -587,7 +587,7 @@ public class VectorTest extends junit.framework.TestCase {
 		for (int i = 0; i < 9; i++)
 			v.addElement("Test");
 		v.addElement("z");
-		assertTrue("Failed to return correct index", v.lastIndexOf("Test") == 8);
+		assertEquals("Failed to return correct index", 8, v.lastIndexOf("Test"));
 		tVector.setElementAt(null, 20);
 		tVector.setElementAt(null, 40);
 		assertTrue("Incorrect lastIndexOf returned for null: "
@@ -600,8 +600,8 @@ public class VectorTest extends junit.framework.TestCase {
 	public void test_lastIndexOfLjava_lang_ObjectI() {
 		// Test for method int java.util.Vector.lastIndexOf(java.lang.Object,
 		// int)
-		assertTrue("Failed to find object",
-				tVector.lastIndexOf("Test 0", 0) == 0);
+		assertEquals("Failed to find object",
+				0, tVector.lastIndexOf("Test 0", 0));
 		assertTrue("Found Object outside of index", (tVector.lastIndexOf(
 				"Test 0", 10) > -1));
 		tVector.setElementAt(null, 20);
@@ -623,15 +623,15 @@ public class VectorTest extends junit.framework.TestCase {
 		tVector.remove(36);
 		assertTrue("Contained element after remove", !tVector
 				.contains("Test 36"));
-		assertTrue("Failed to decrement size after remove",
-				tVector.size() == 99);
+		assertEquals("Failed to decrement size after remove",
+				99, tVector.size());
 		tVector.add(20, null);
 		tVector.remove(19);
-		assertTrue("Didn't move null element over", tVector.get(19) == null);
+		assertNull("Didn't move null element over", tVector.get(19));
 		tVector.remove(19);
-		assertTrue("Didn't remove null element", tVector.get(19) != null);
-		assertTrue("Failed to decrement size after removing null", tVector
-				.size() == 98);
+		assertNotNull("Didn't remove null element", tVector.get(19));
+		assertEquals("Failed to decrement size after removing null", 98, tVector
+				.size());
 	}
 
 	/**
@@ -642,13 +642,13 @@ public class VectorTest extends junit.framework.TestCase {
 		tVector.remove("Test 0");
 		assertTrue("Contained element after remove", !tVector
 				.contains("Test 0"));
-		assertTrue("Failed to decrement size after remove",
-				tVector.size() == 99);
+		assertEquals("Failed to decrement size after remove",
+				99, tVector.size());
 		tVector.add(null);
 		tVector.remove(null);
 		assertTrue("Contained null after remove", !tVector.contains(null));
-		assertTrue("Failed to decrement size after removing null", tVector
-				.size() == 99);
+		assertEquals("Failed to decrement size after removing null", 99, tVector
+				.size());
 	}
 
 	/**
@@ -675,12 +675,12 @@ public class VectorTest extends junit.framework.TestCase {
 		v.add(null);
 		v.add("Boom");
 		v.removeAll(s);
-		assertTrue("Should not have removed any elements", v.size() == 3);
+		assertEquals("Should not have removed any elements", 3, v.size());
 		l = new LinkedList();
 		l.add(null);
 		v.removeAll(l);
-		assertTrue("Should only have one element", v.size() == 1);
-		assertTrue("Element should be 'Boom'", v.firstElement().equals("Boom"));
+		assertEquals("Should only have one element", 1, v.size());
+		assertEquals("Element should be 'Boom'", "Boom", v.firstElement());
 	}
 
 	/**
@@ -690,7 +690,7 @@ public class VectorTest extends junit.framework.TestCase {
 		// Test for method void java.util.Vector.removeAllElements()
 		Vector v = vectorClone(tVector);
 		v.removeAllElements();
-		assertTrue("Failed to remove all elements", v.size() == 0);
+		assertEquals("Failed to remove all elements", 0, v.size());
 	}
 
 	/**
@@ -701,8 +701,8 @@ public class VectorTest extends junit.framework.TestCase {
 		// java.util.Vector.removeElement(java.lang.Object)
 		Vector v = vectorClone(tVector);
 		v.removeElement("Test 98");
-		assertTrue("Element not removed", ((String) v.elementAt(98))
-				.equals("Test 99"));
+		assertEquals("Element not removed", "Test 99", ((String) v.elementAt(98))
+				);
 		assertTrue("Vector is wrong size after removal: " + v.size(),
 				v.size() == 99);
 		tVector.addElement(null);
@@ -718,11 +718,11 @@ public class VectorTest extends junit.framework.TestCase {
 		// Test for method void java.util.Vector.removeElementAt(int)
 		Vector v = vectorClone(tVector);
 		v.removeElementAt(50);
-		assertTrue("Failed to remove element", v.indexOf("Test 50", 0) == -1);
+		assertEquals("Failed to remove element", -1, v.indexOf("Test 50", 0));
 		tVector.insertElementAt(null, 60);
 		tVector.removeElementAt(60);
-		assertTrue("Element at 60 should not be null after removal", tVector
-				.elementAt(60) != null);
+		assertNotNull("Element at 60 should not be null after removal", tVector
+				.elementAt(60));
 	}
 
 	/**
@@ -760,8 +760,8 @@ public class VectorTest extends junit.framework.TestCase {
 		// int)
 		Vector v = vectorClone(tVector);
 		v.setElementAt("Inserted Element", 99);
-		assertTrue("Element not set", ((String) v.elementAt(99))
-				.equals("Inserted Element"));
+		assertEquals("Element not set", "Inserted Element", ((String) v.elementAt(99))
+				);
 	}
 
 	/**
@@ -771,7 +771,7 @@ public class VectorTest extends junit.framework.TestCase {
 		// Test for method void java.util.Vector.setSize(int)
 		Vector v = vectorClone(tVector);
 		v.setSize(10);
-		assertTrue("Failed to set size", v.size() == 10);
+		assertEquals("Failed to set size", 10, v.size());
 	}
 
 	/**
@@ -779,7 +779,7 @@ public class VectorTest extends junit.framework.TestCase {
 	 */
 	public void test_size() {
 		// Test for method int java.util.Vector.size()
-		assertTrue("Returned incorrect size", tVector.size() == 100);
+		assertEquals("Returned incorrect size", 100, tVector.size());
 
 		final Vector v = new Vector();
 		v.addElement("initial");
@@ -814,13 +814,13 @@ public class VectorTest extends junit.framework.TestCase {
 	public void test_subListII() {
 		// Test for method java.util.List java.util.Vector.subList(int, int)
 		List sl = tVector.subList(10, 25);
-		assertTrue("Returned sublist of incorrect size", sl.size() == 15);
+		assertEquals("Returned sublist of incorrect size", 15, sl.size());
 		for (int i = 10; i < 25; i++)
 			assertTrue("Returned incorrect sublist", sl
 					.contains(tVector.get(i)));
 
-		assertTrue("Not synchronized random access", sl.getClass().getName()
-				.equals("java.util.Collections$SynchronizedRandomAccessList"));
+		assertEquals("Not synchronized random access", "java.util.Collections$SynchronizedRandomAccessList", sl.getClass().getName()
+				);
 
 	}
 
@@ -844,7 +844,7 @@ public class VectorTest extends junit.framework.TestCase {
 		for (int i = 0; i < o.length; i++)
 			o[i] = f;
 		tVector.toArray(o);
-		assertTrue("Failed to set slot to null", o[100] == null);
+		assertNull("Failed to set slot to null", o[100]);
 		for (int i = 0; i < tVector.size(); i++)
 			assertTrue("Returned incorrect array", tVector.elementAt(i) == o[i]);
 	}
@@ -875,7 +875,7 @@ public class VectorTest extends junit.framework.TestCase {
 		Vector v = new Vector(10);
 		v.addElement(new Object());
 		v.trimToSize();
-		assertTrue("Failed to trim capacity", v.capacity() == 1);
+		assertEquals("Failed to trim capacity", 1, v.capacity());
 	}
 
 	protected Vector vectorClone(Vector s) {

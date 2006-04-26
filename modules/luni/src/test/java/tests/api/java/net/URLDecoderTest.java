@@ -28,7 +28,7 @@ public class URLDecoderTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		try {
 			URLDecoder ud = new URLDecoder();
-			assertTrue("Constructor failed.", ud != null);
+			assertNotNull("Constructor failed.", ud);
 		} catch (Exception e) {
 			fail("Constructor failed : " + e.getMessage());
 		}

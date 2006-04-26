@@ -188,14 +188,14 @@ public class MethodTest extends junit.framework.TestCase {
 		try {
 			Method mth = TestMethod.class.getMethod("voidMethod", new Class[0]);
 			Class[] ex = mth.getExceptionTypes();
-			assertTrue("Returned incorrect number of exceptions",
-					ex.length == 1);
+			assertEquals("Returned incorrect number of exceptions",
+					1, ex.length);
 			assertTrue("Returned incorrect exception type", ex[0]
 					.equals(IllegalArgumentException.class));
 			mth = TestMethod.class.getMethod("intMethod", new Class[0]);
 			ex = mth.getExceptionTypes();
-			assertTrue("Returned incorrect number of exceptions",
-					ex.length == 0);
+			assertEquals("Returned incorrect number of exceptions",
+					0, ex.length);
 		} catch (Exception e) {
 			fail("Exception during getExceptionTypes: " + e.toString());
 		}
@@ -267,8 +267,8 @@ public class MethodTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during getMethodName(): " + e.toString());
 		}
-		assertTrue("Returned incorrect method name", mth.getName().equals(
-				"voidMethod"));
+		assertEquals("Returned incorrect method name", 
+				"voidMethod", mth.getName());
 	}
 
 	/**
@@ -291,7 +291,7 @@ public class MethodTest extends junit.framework.TestCase {
 			fail("Exception during getParameterTypes test: "
 					+ e.toString());
 		}
-		assertTrue("Returned incorrect parameterTypes", parms.length == 0);
+		assertEquals("Returned incorrect parameterTypes", 0, parms.length);
 		try {
 			mth = cl.getMethod("parmTest", plist);
 			parms = mth.getParameterTypes();
@@ -425,8 +425,8 @@ public class MethodTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during invoke test : " + e.getMessage());
 		}
-		assertTrue("Invoke returned incorrect value", ((Integer) ret)
-				.intValue() == 1);
+		assertEquals("Invoke returned incorrect value", 1, ((Integer) ret)
+				.intValue());
 
 		// Get and invoke an instance method
 		try {
@@ -440,8 +440,8 @@ public class MethodTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during invoke test : " + e.getMessage());
 		}
-		assertTrue("Invoke returned incorrect value", ((Integer) ret)
-				.intValue() == 1);
+		assertEquals("Invoke returned incorrect value", 1, ((Integer) ret)
+				.intValue());
 
 		// Get and attempt to invoke a private method
 		try {

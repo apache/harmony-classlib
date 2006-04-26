@@ -84,8 +84,8 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	 */
 	public void test_getContentEncoding() {
 		// should not be known for a file
-		assertTrue("getContentEncoding failed: " + uc.getContentEncoding(), uc
-				.getContentEncoding() == null);
+		assertNull("getContentEncoding failed: " + uc.getContentEncoding(), uc
+				.getContentEncoding());
 	}
 
 	/**
@@ -109,8 +109,8 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			Support_Resources.copyFile(resources, null, "Harmony.GIF");
 			URL url = new URL("file:/" + resources.toString() + "/Harmony.GIF");
 			URLConnection conn = url.openConnection();
-			assertTrue("type not GIF", conn.getContentType()
-					.equals("image/gif"));
+			assertEquals("type not GIF", "image/gif", conn.getContentType()
+					);
 		} catch (MalformedURLException e) {
 			fail("MalformedURLException for .gif");
 		} catch (IOException e) {
@@ -152,19 +152,19 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	public void test_getDefaultRequestPropertyLjava_lang_String() {
 		try {
 			URLConnection.setDefaultRequestProperty("Shmoo", "Blah");
-			assertTrue(
+			assertNull(
 					"setDefaultRequestProperty should have returned: null, but returned: "
 							+ URLConnection.getDefaultRequestProperty("Shmoo"),
-					URLConnection.getDefaultRequestProperty("Shmoo") == null);
+					URLConnection.getDefaultRequestProperty("Shmoo"));
 			URLConnection.setDefaultRequestProperty("Shmoo", "Boom");
-			assertTrue(
+			assertNull(
 					"setDefaultRequestProperty should have returned: null, but returned: "
 							+ URLConnection.getDefaultRequestProperty("Shmoo"),
-					URLConnection.getDefaultRequestProperty("Shmoo") == null);
-			assertTrue(
+					URLConnection.getDefaultRequestProperty("Shmoo"));
+			assertNull(
 					"setDefaultRequestProperty should have returned: null, but returned: "
 							+ URLConnection.getDefaultRequestProperty("Kapow"),
-					URLConnection.getDefaultRequestProperty("Kapow") == null);
+					URLConnection.getDefaultRequestProperty("Kapow"));
 			URLConnection.setDefaultRequestProperty("Shmoo", null);
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
@@ -227,8 +227,8 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			}
 		});
 		try {
-			assertTrue("Incorrect FileNameMap returned", URLConnection.getFileNameMap()
-					.getContentTypeFor(null).equals("Spam!"));
+			assertEquals("Incorrect FileNameMap returned", "Spam!", URLConnection.getFileNameMap()
+					.getContentTypeFor(null));
 		} finally {
 			// unset the map so other tests don't fail
 			URLConnection.setFileNameMap(null);
@@ -270,7 +270,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		assertEquals("yo2", uc.getRequestProperty("prop"));
 		Map map = uc.getRequestProperties();
 		List props = (List) uc.getRequestProperties().get("prop");
-		assertTrue(props.size() == 1);
+		assertEquals(1, props.size());
 
 		try {
 			// the map should be unmodifiable
@@ -293,7 +293,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			JarURLConnection con1 = (JarURLConnection) fUrl1.openConnection();
 			map = con1.getRequestProperties();
 			assertNotNull(map);
-			assertTrue(map.size() == 0);
+			assertEquals(0, map.size());
 			try {
 				// the map should be unmodifiable
 				map.put("hi", "bye");
@@ -337,7 +337,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			JarURLConnection con1 = (JarURLConnection) fUrl1.openConnection();
 			headers = con1.getHeaderFields();
 			assertNotNull(headers);
-			assertTrue(headers.size() == 0);
+			assertEquals(0, headers.size());
 			try {
 				// the map should be unmodifiable
 				headers.put("hi", "bye");
@@ -387,9 +387,9 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		String hf;
 		hf = uc.getHeaderField("Content-Encoding");
 		if (hf != null) {
-			assertTrue(
+			assertNull(
 					"Wrong value returned for header field 'Content-Encoding': "
-							+ hf, hf == null);
+							+ hf, hf);
 		}
 		hf = uc.getHeaderField("Content-Length");
 		if (hf != null) {
@@ -415,9 +415,9 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		}
 		hf = uc.getHeaderField("Expires");
 		if (hf != null) {
-			assertTrue(
+			assertNull(
 					"Wrong value returned for header field 'Expires': " + hf,
-					hf == null);
+					hf);
 		}
 		hf = uc.getHeaderField("SERVER");
 		if (hf != null) {
@@ -441,8 +441,8 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		}
 		hf = uc.getHeaderField("DoesNotExist");
 		if (hf != null) {
-			assertTrue("Wrong value returned for header field 'DoesNotExist': "
-					+ hf, hf == null);
+			assertNull("Wrong value returned for header field 'DoesNotExist': "
+					+ hf, hf);
 		}
 	}
 
@@ -494,8 +494,8 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	 */
 	public void test_getIfModifiedSince() {
 		uc.setIfModifiedSince(200);
-		assertTrue("Returned wrong ifModifiedSince value", uc
-				.getIfModifiedSince() == 200);
+		assertEquals("Returned wrong ifModifiedSince value", 200, uc
+				.getIfModifiedSince());
 	}
 
 	/**
@@ -833,8 +833,8 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		uc.setRequestProperty("Yo", "yo");
 		assertTrue("Wrong property returned: " + uc.getRequestProperty("Yo"),
 				uc.getRequestProperty("Yo").equals("yo"));
-		assertTrue("Wrong property returned: " + uc.getRequestProperty("No"),
-				uc.getRequestProperty("No") == null);
+		assertNull("Wrong property returned: " + uc.getRequestProperty("No"),
+				uc.getRequestProperty("No"));
 	}
 
 	/**
@@ -864,10 +864,10 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			byte[] bytes = new byte[in.available()];
 			in.read(bytes, 0, bytes.length);
 			in.close();
-			assertTrue("Should have returned text/html",
-					URLConnection.guessContentTypeFromStream(
+			assertEquals("Should have returned text/html",
+					"text/html", URLConnection.guessContentTypeFromStream(
 							new ByteArrayInputStream(bytes))
-							.equals("text/html"));
+							);
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
@@ -934,9 +934,9 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			cal.clear();
 			cal.set(2000, Calendar.MARCH, 5);
 			connection.setIfModifiedSince(cal.getTime().getTime());
-			assertTrue("Wrong date set", connection.getRequestProperty(
+			assertEquals("Wrong date set", "Sun, 05 Mar 2000 00:00:00 GMT", connection.getRequestProperty(
 					"If-Modified-Since")
-					.equals("Sun, 05 Mar 2000 00:00:00 GMT"));
+					);
 		} catch (MalformedURLException e) {
 			fail("MalformedURLException : " + e.getMessage());
 		} catch (IOException e) {

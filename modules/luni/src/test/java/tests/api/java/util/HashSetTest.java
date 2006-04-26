@@ -37,7 +37,7 @@ public class HashSetTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.util.HashSet()
 		HashSet hs2 = new HashSet();
-		assertTrue("Created incorrect HashSet", hs2.size() == 0);
+		assertEquals("Created incorrect HashSet", 0, hs2.size());
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class HashSetTest extends junit.framework.TestCase {
 	public void test_ConstructorI() {
 		// Test for method java.util.HashSet(int)
 		HashSet hs2 = new HashSet(5);
-		assertTrue("Created incorrect HashSet", hs2.size() == 0);
+		assertEquals("Created incorrect HashSet", 0, hs2.size());
 		try {
 			new HashSet(-1);
 		} catch (IllegalArgumentException e) {
@@ -62,7 +62,7 @@ public class HashSetTest extends junit.framework.TestCase {
 	public void test_ConstructorIF() {
 		// Test for method java.util.HashSet(int, float)
 		HashSet hs2 = new HashSet(5, (float) 0.5);
-		assertTrue("Created incorrect HashSet", hs2.size() == 0);
+		assertEquals("Created incorrect HashSet", 0, hs2.size());
 		try {
 			new HashSet(0, 0);
 		} catch (IllegalArgumentException e) {
@@ -107,7 +107,7 @@ public class HashSetTest extends junit.framework.TestCase {
 		Set orgSet = (Set) hs.clone();
 		hs.clear();
 		Iterator i = orgSet.iterator();
-		assertTrue("Returned non-zero size after clear", hs.size() == 0);
+		assertEquals("Returned non-zero size after clear", 0, hs.size());
 		while (i.hasNext())
 			assertTrue("Failed to clear set", !hs.contains(i.next()));
 	}
@@ -161,7 +161,7 @@ public class HashSetTest extends junit.framework.TestCase {
 
 		HashSet s = new HashSet();
 		s.add(null);
-		assertTrue("Cannot handle null", s.iterator().next() == null);
+		assertNull("Cannot handle null", s.iterator().next());
 	}
 
 	/**
@@ -186,7 +186,7 @@ public class HashSetTest extends junit.framework.TestCase {
 		// Test for method int java.util.HashSet.size()
 		assertTrue("Returned incorrect size", hs.size() == (objArray.length + 1));
 		hs.clear();
-		assertTrue("Cleared set returned non-zero size", hs.size() == 0);
+		assertEquals("Cleared set returned non-zero size", 0, hs.size());
 	}
 
 	/**

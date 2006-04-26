@@ -34,7 +34,7 @@ public class ThreadLocalTest extends junit.framework.TestCase {
 	public void test_get() {
 		// Test for method java.lang.Object java.lang.ThreadLocal.get()
 		ThreadLocal l = new ThreadLocal();
-		assertTrue("ThreadLocal's initial value is null", l.get() == null);
+		assertNull("ThreadLocal's initial value is null", l.get());
 
 		// The ThreadLocal has to run once for each thread that touches the
 		// ThreadLocal
@@ -112,8 +112,8 @@ public class ThreadLocalTest extends junit.framework.TestCase {
 
 		// ThreadLocal is not inherited, so the other Thread should see it as
 		// null
-		assertTrue("ThreadLocal's value in other Thread should be null",
-				THREADVALUE.result == null);
+		assertNull("ThreadLocal's value in other Thread should be null",
+				THREADVALUE.result);
 
 	}
 

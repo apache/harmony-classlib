@@ -290,8 +290,8 @@ public class DoubleTest extends junit.framework.TestCase {
 	public void test_ConstructorD() {
 		// Test for method java.lang.Double(double)
 		Double d = new Double(39089.88888888888888888888888888888888);
-		assertTrue("Created incorrect double",
-				d.doubleValue() == 39089.88888888888888888888888888888888);
+		assertEquals("Created incorrect double",
+				39089.88888888888888888888888888888888, d.doubleValue());
 	}
 
 	/**
@@ -301,8 +301,8 @@ public class DoubleTest extends junit.framework.TestCase {
 		// Test for method java.lang.Double(java.lang.String)
 
 		Double d = new Double("39089.88888888888888888888888888888888");
-		assertTrue("Created incorrect double",
-				d.doubleValue() == 39089.88888888888888888888888888888888);
+		assertEquals("Created incorrect double",
+				39089.88888888888888888888888888888888, d.doubleValue());
 	}
 
 	/**
@@ -377,9 +377,8 @@ public class DoubleTest extends junit.framework.TestCase {
 	 */
 	public void test_doubleValue() {
 		// Test for method double java.lang.Double.doubleValue()
-		assertTrue(
-				"Incorrect double value returned",
-				new Double(999999999999999.9999999999999).doubleValue() == 999999999999999.9999999999999);
+		assertEquals("Incorrect double value returned",
+				999999999999999.9999999999999, new Double(999999999999999.9999999999999).doubleValue());
 	}
 
 	/**
@@ -428,8 +427,8 @@ public class DoubleTest extends junit.framework.TestCase {
 			assertTrue("Invalid hash for equal but not identical doubles ", d
 					.hashCode() == dd.hashCode());
 		}
-		assertTrue("Magic assumption hasCode (0.0) = 0 failed", new Double(0.0)
-				.hashCode() == 0);
+		assertEquals("Magic assumption hasCode (0.0) = 0 failed", 0, new Double(0.0)
+				.hashCode());
 	}
 
 	/**
@@ -438,7 +437,7 @@ public class DoubleTest extends junit.framework.TestCase {
 	public void test_intValue() {
 		// Test for method int java.lang.Double.intValue()
 		Double d = new Double(1923311.47712);
-		assertTrue("Returned incorrect int value", d.intValue() == 1923311);
+		assertEquals("Returned incorrect int value", 1923311, d.intValue());
 	}
 
 	/**
@@ -505,15 +504,15 @@ public class DoubleTest extends junit.framework.TestCase {
 	public void test_longValue() {
 		// Test for method long java.lang.Double.longValue()
 		Double d = new Double(1923311.47712);
-		assertTrue("Returned incorrect long value", d.longValue() == 1923311);
+		assertEquals("Returned incorrect long value", 1923311, d.longValue());
 	}
 
 	/**
 	 * @tests java.lang.Double#parseDouble(java.lang.String)
 	 */
 	public void test_parseDoubleLjava_lang_String() {
-		assertTrue("Incorrect double returned, expected zero.", Double
-				.parseDouble("2.4703282292062327208828439643411e-324") == 0.0);
+		assertEquals("Incorrect double returned, expected zero.", 0.0, Double
+				.parseDouble("2.4703282292062327208828439643411e-324"));
 		assertTrue(
 				"Incorrect double returned, expected minimum double.",
 				Double.parseDouble("2.4703282292062327208828439643412e-324") == Double.MIN_VALUE);
@@ -669,7 +668,7 @@ public class DoubleTest extends junit.framework.TestCase {
 	public void test_shortValue() {
 		// Test for method short java.lang.Double.shortValue()
 		Double d = new Double(1923311.47712);
-		assertTrue("Returned incorrect short value", d.shortValue() == 22767);
+		assertEquals("Returned incorrect short value", 22767, d.shortValue());
 	}
 
 	/**

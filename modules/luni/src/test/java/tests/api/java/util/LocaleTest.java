@@ -99,7 +99,7 @@ public class LocaleTest extends junit.framework.TestCase {
 		Locale.setDefault(l);
 		Locale x = Locale.getDefault();
 		Locale.setDefault(org);
-		assertTrue("Failed to get locale", x.toString().equals("fr_CA_WIN32"));
+		assertEquals("Failed to get locale", "fr_CA_WIN32", x.toString());
 	}
 
 	/**
@@ -118,8 +118,8 @@ public class LocaleTest extends junit.framework.TestCase {
 	public void test_getDisplayCountryLjava_util_Locale() {
 		// Test for method java.lang.String
 		// java.util.Locale.getDisplayCountry(java.util.Locale)
-		assertTrue("Returned incorrect country", Locale.ITALY
-				.getDisplayCountry(l).equals("Italie"));
+		assertEquals("Returned incorrect country", "Italie", Locale.ITALY
+				.getDisplayCountry(l));
 	}
 
 	/**
@@ -272,14 +272,14 @@ public class LocaleTest extends junit.framework.TestCase {
 		Locale.setDefault(l);
 		Locale x = Locale.getDefault();
 		Locale.setDefault(org);
-		assertTrue("Failed to set locale", x.toString().equals("fr_CA_WIN32"));
+		assertEquals("Failed to set locale", "fr_CA_WIN32", x.toString());
 
 		Locale.setDefault(new Locale("tr", ""));
 		String res1 = "\u0069".toUpperCase();
 		String res2 = "\u0049".toLowerCase();
 		Locale.setDefault(org);
-		assertTrue("Wrong toUppercase conversion", res1.equals("\u0130"));
-		assertTrue("Wrong toLowercase conversion", res2.equals("\u0131"));
+		assertEquals("Wrong toUppercase conversion", "\u0130", res1);
+		assertEquals("Wrong toLowercase conversion", "\u0131", res2);
 	}
 
 	/**
@@ -287,21 +287,21 @@ public class LocaleTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.util.Locale.toString()
-		assertTrue("Returned incorrect string representation", testLocale
-				.toString().equals("en_CA_WIN32"));
+		assertEquals("Returned incorrect string representation", "en_CA_WIN32", testLocale
+				.toString());
 
 		Locale l = new Locale("en", "");
-		assertTrue("Wrong representation 1", l.toString().equals("en"));
+		assertEquals("Wrong representation 1", "en", l.toString());
 		l = new Locale("", "CA");
-		assertTrue("Wrong representation 2", l.toString().equals("_CA"));
+		assertEquals("Wrong representation 2", "_CA", l.toString());
 		l = new Locale("", "CA", "var");
-		assertTrue("Wrong representation 2.5", l.toString().equals("_CA_var"));
+		assertEquals("Wrong representation 2.5", "_CA_var", l.toString());
 		l = new Locale("en", "", "WIN");
-		assertTrue("Wrong representation 4", l.toString().equals("en__WIN"));
+		assertEquals("Wrong representation 4", "en__WIN", l.toString());
 		l = new Locale("en", "CA");
-		assertTrue("Wrong representation 6", l.toString().equals("en_CA"));
+		assertEquals("Wrong representation 6", "en_CA", l.toString());
 		l = new Locale("en", "CA", "VAR");
-		assertTrue("Wrong representation 7", l.toString().equals("en_CA_VAR"));
+		assertEquals("Wrong representation 7", "en_CA_VAR", l.toString());
 	}
 
 	/**

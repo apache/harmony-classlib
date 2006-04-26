@@ -34,8 +34,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 	public void test_ConstructorI() {
 		// Test for method java.lang.StringBuffer(int)
 		StringBuffer sb = new StringBuffer(8);
-		assertTrue("Newly constructed buffer is of incorrect length", sb
-				.length() == 0);
+		assertEquals("Newly constructed buffer is of incorrect length", 0, sb
+				.length());
 	}
 
 	/**
@@ -67,8 +67,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 		char buf[] = new char[4];
 		"char".getChars(0, 4, buf, 0);
 		testBuffer.append(buf);
-		assertTrue("Append of char[] failed", testBuffer.toString().equals(
-				"This is a test bufferchar"));
+		assertEquals("Append of char[] failed", 
+				"This is a test bufferchar", testBuffer.toString());
 	}
 
 	/**
@@ -81,9 +81,9 @@ public class StringBufferTest extends junit.framework.TestCase {
 		char[] buf1 = { 'H', 'e', 'l', 'l', 'o' };
 		char[] buf2 = { 'W', 'o', 'r', 'l', 'd' };
 		sb.append(buf1, 0, buf1.length);
-		assertTrue("Buffer is invalid length after append", sb.length() == 5);
+		assertEquals("Buffer is invalid length after append", 5, sb.length());
 		sb.append(buf2, 0, buf2.length);
-		assertTrue("Buffer is invalid length after append", sb.length() == 10);
+		assertEquals("Buffer is invalid length after append", 10, sb.length());
 		assertTrue("Buffer contains invalid chars", (sb.toString()
 				.equals("HelloWorld")));
 	}
@@ -98,9 +98,9 @@ public class StringBufferTest extends junit.framework.TestCase {
 		char buf1 = 'H';
 		char buf2 = 'W';
 		sb.append(buf1);
-		assertTrue("Buffer is invalid length after append", sb.length() == 1);
+		assertEquals("Buffer is invalid length after append", 1, sb.length());
 		sb.append(buf2);
-		assertTrue("Buffer is invalid length after append", sb.length() == 2);
+		assertEquals("Buffer is invalid length after append", 2, sb.length());
 		assertTrue("Buffer contains invalid chars",
 				(sb.toString().equals("HW")));
 	}
@@ -113,9 +113,9 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// java.lang.StringBuffer.append(double)
 		StringBuffer sb = new StringBuffer();
 		sb.append(Double.MAX_VALUE);
-		assertTrue("Buffer is invalid length after append", sb.length() == 22);
-		assertTrue("Buffer contains invalid characters", sb.toString().equals(
-				"1.7976931348623157E308"));
+		assertEquals("Buffer is invalid length after append", 22, sb.length());
+		assertEquals("Buffer contains invalid characters", 
+				"1.7976931348623157E308", sb.toString());
 	}
 
 	/**
@@ -141,11 +141,11 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// java.lang.StringBuffer.append(int)
 		StringBuffer sb = new StringBuffer();
 		sb.append(9000);
-		assertTrue("Buffer is invalid length after append", sb.length() == 4);
+		assertEquals("Buffer is invalid length after append", 4, sb.length());
 		sb.append(1000);
-		assertTrue("Buffer is invalid length after append", sb.length() == 8);
-		assertTrue("Buffer contains invalid characters", sb.toString().equals(
-				"90001000"));
+		assertEquals("Buffer is invalid length after append", 8, sb.length());
+		assertEquals("Buffer contains invalid characters", 
+				"90001000", sb.toString());
 	}
 
 	/**
@@ -158,9 +158,9 @@ public class StringBufferTest extends junit.framework.TestCase {
 		StringBuffer sb = new StringBuffer();
 		long t = 927654321098L;
 		sb.append(t);
-		assertTrue("Buffer is of invlaid length", sb.length() == 12);
-		assertTrue("Buffer contains invalid characters", sb.toString().equals(
-				"927654321098"));
+		assertEquals("Buffer is of invlaid length", 12, sb.length());
+		assertEquals("Buffer contains invalid characters", 
+				"927654321098", sb.toString());
 	}
 
 	/**
@@ -188,9 +188,9 @@ public class StringBufferTest extends junit.framework.TestCase {
 		String buf1 = "Hello";
 		String buf2 = "World";
 		sb.append(buf1);
-		assertTrue("Buffer is invalid length after append", sb.length() == 5);
+		assertEquals("Buffer is invalid length after append", 5, sb.length());
 		sb.append(buf2);
-		assertTrue("Buffer is invalid length after append", sb.length() == 10);
+		assertEquals("Buffer is invalid length after append", 10, sb.length());
 		assertTrue("Buffer contains invalid chars", (sb.toString()
 				.equals("HelloWorld")));
 	}
@@ -203,9 +203,9 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// java.lang.StringBuffer.append(boolean)
 		StringBuffer sb = new StringBuffer();
 		sb.append(false);
-		assertTrue("Buffer is invalid length after append", sb.length() == 5);
+		assertEquals("Buffer is invalid length after append", 5, sb.length());
 		sb.append(true);
-		assertTrue("Buffer is invalid length after append", sb.length() == 9);
+		assertEquals("Buffer is invalid length after append", 9, sb.length());
 		assertTrue("Buffer is invalid length after append", (sb.toString()
 				.equals("falsetrue")));
 	}
@@ -216,7 +216,7 @@ public class StringBufferTest extends junit.framework.TestCase {
 	public void test_capacity() {
 		// Test for method int java.lang.StringBuffer.capacity()
 		StringBuffer sb = new StringBuffer(10);
-		assertTrue("Returned incorrect capacity", sb.capacity() == 10);
+		assertEquals("Returned incorrect capacity", 10, sb.capacity());
 		sb.ensureCapacity(100);
 		assertTrue("Returned incorrect capacity", sb.capacity() >= 100);
 	}
@@ -226,7 +226,7 @@ public class StringBufferTest extends junit.framework.TestCase {
 	 */
 	public void test_charAtI() {
 		// Test for method char java.lang.StringBuffer.charAt(int)
-		assertTrue("Returned incorrect char", testBuffer.charAt(3) == 's');
+		assertEquals("Returned incorrect char", 's', testBuffer.charAt(3));
 
 		// Test for StringIndexOutOfBoundsException
 		boolean exception = false;
@@ -246,28 +246,28 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// Test for method java.lang.StringBuffer
 		// java.lang.StringBuffer.delete(int, int)
 		testBuffer.delete(7, 7);
-		assertTrue("Deleted chars when start == end", testBuffer.toString()
-				.equals("This is a test buffer"));
+		assertEquals("Deleted chars when start == end", "This is a test buffer", testBuffer.toString()
+				);
 		testBuffer.delete(4, 14);
-		assertTrue("Deleted incorrect chars", testBuffer.toString().equals(
-				"This buffer"));
+		assertEquals("Deleted incorrect chars", 
+				"This buffer", testBuffer.toString());
 
 		testBuffer = new StringBuffer("This is a test buffer");
 		String sharedStr = testBuffer.toString();
 		testBuffer.delete(0, testBuffer.length());
-		assertTrue("Didn't clone shared buffer", sharedStr
-				.equals("This is a test buffer"));
+		assertEquals("Didn't clone shared buffer", "This is a test buffer", sharedStr
+				);
 		assertTrue("Deleted incorrect chars", testBuffer.toString().equals(""));
 		testBuffer.append("more stuff");
-		assertTrue("Didn't clone shared buffer 2", sharedStr
-				.equals("This is a test buffer"));
-		assertTrue("Wrong contents", testBuffer.toString().equals("more stuff"));
+		assertEquals("Didn't clone shared buffer 2", "This is a test buffer", sharedStr
+				);
+		assertEquals("Wrong contents", "more stuff", testBuffer.toString());
 		try {
 			testBuffer.delete(-5, 2);
 		} catch (IndexOutOfBoundsException e) {
 		}
-		assertTrue("Wrong contents 2", testBuffer.toString().equals(
-				"more stuff"));
+		assertEquals("Wrong contents 2", 
+				"more stuff", testBuffer.toString());
 	}
 
 	/**
@@ -277,8 +277,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// Test for method java.lang.StringBuffer
 		// java.lang.StringBuffer.deleteCharAt(int)
 		testBuffer.deleteCharAt(3);
-		assertTrue("Deleted incorrect char", testBuffer.toString().equals(
-				"Thi is a test buffer"));
+		assertEquals("Deleted incorrect char", 
+				"Thi is a test buffer", testBuffer.toString());
 	}
 
 	/**
@@ -323,8 +323,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 		char buf[] = new char[4];
 		"char".getChars(0, 4, buf, 0);
 		testBuffer.insert(15, buf);
-		assertTrue("Insert test failed", testBuffer.toString().equals(
-				"This is a test charbuffer"));
+		assertEquals("Insert test failed", 
+				"This is a test charbuffer", testBuffer.toString());
 
 		boolean exception = false;
 		StringBuffer buf1 = new StringBuffer("abcd");
@@ -366,8 +366,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// Test for method java.lang.StringBuffer
 		// java.lang.StringBuffer.insert(int, char)
 		testBuffer.insert(15, 'T');
-		assertTrue("Insert test failed", testBuffer.toString().equals(
-				"This is a test Tbuffer"));
+		assertEquals("Insert test failed", 
+				"This is a test Tbuffer", testBuffer.toString());
 	}
 
 	/**
@@ -403,8 +403,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// Test for method java.lang.StringBuffer
 		// java.lang.StringBuffer.insert(int, int)
 		testBuffer.insert(15, 100);
-		assertTrue("Insert test failed", testBuffer.toString().equals(
-				"This is a test 100buffer"));
+		assertEquals("Insert test failed", 
+				"This is a test 100buffer", testBuffer.toString());
 	}
 
 	/**
@@ -414,8 +414,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// Test for method java.lang.StringBuffer
 		// java.lang.StringBuffer.insert(int, long)
 		testBuffer.insert(15, 88888888888888888L);
-		assertTrue("Insert test failed", testBuffer.toString().equals(
-				"This is a test 88888888888888888buffer"));
+		assertEquals("Insert test failed", 
+				"This is a test 88888888888888888buffer", testBuffer.toString());
 	}
 
 	/**
@@ -438,8 +438,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// java.lang.StringBuffer.insert(int, java.lang.String)
 
 		testBuffer.insert(15, "STRING ");
-		assertTrue("Insert test failed", testBuffer.toString().equals(
-				"This is a test STRING buffer"));
+		assertEquals("Insert test failed", 
+				"This is a test STRING buffer", testBuffer.toString());
 	}
 
 	/**
@@ -449,8 +449,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// Test for method java.lang.StringBuffer
 		// java.lang.StringBuffer.insert(int, boolean)
 		testBuffer.insert(15, true);
-		assertTrue("Insert test failed", testBuffer.toString().equals(
-				"This is a test truebuffer"));
+		assertEquals("Insert test failed", 
+				"This is a test truebuffer", testBuffer.toString());
 	}
 
 	/**
@@ -458,7 +458,7 @@ public class StringBufferTest extends junit.framework.TestCase {
 	 */
 	public void test_length() {
 		// Test for method int java.lang.StringBuffer.length()
-		assertTrue("Incorrect length returned", testBuffer.length() == 21);
+		assertEquals("Incorrect length returned", 21, testBuffer.length());
 	}
 
 	/**
@@ -472,12 +472,12 @@ public class StringBufferTest extends junit.framework.TestCase {
 				+ "This is a replaced test buffer" + "\'" + " but got: " + "\'"
 				+ testBuffer.toString() + "\'", testBuffer.toString().equals(
 				"This is a replaced test buffer"));
-		assertTrue("insert1", new StringBuffer().replace(0, 0, "text")
-				.toString().equals("text"));
-		assertTrue("insert2", new StringBuffer("123").replace(3, 3, "text")
-				.toString().equals("123text"));
-		assertTrue("insert2", new StringBuffer("123").replace(1, 1, "text")
-				.toString().equals("1text23"));
+		assertEquals("insert1", "text", new StringBuffer().replace(0, 0, "text")
+				.toString());
+		assertEquals("insert2", "123text", new StringBuffer("123").replace(3, 3, "text")
+				.toString());
+		assertEquals("insert2", "1text23", new StringBuffer("123").replace(1, 1, "text")
+				.toString());
 	}
 
 	private String writeString(String in) {
@@ -550,7 +550,7 @@ public class StringBufferTest extends junit.framework.TestCase {
 		// Test for method void java.lang.StringBuffer.setCharAt(int, char)
 		StringBuffer s = new StringBuffer("HelloWorld");
 		s.setCharAt(4, 'Z');
-		assertTrue("Returned incorrect char", s.charAt(4) == 'Z');
+		assertEquals("Returned incorrect char", 'Z', s.charAt(4));
 	}
 
 	/**
@@ -559,13 +559,13 @@ public class StringBufferTest extends junit.framework.TestCase {
 	public void test_setLengthI() {
 		// Test for method void java.lang.StringBuffer.setLength(int)
 		testBuffer.setLength(1000);
-		assertTrue("Failed to increase length", testBuffer.length() == 1000);
+		assertEquals("Failed to increase length", 1000, testBuffer.length());
 		assertTrue("Increase in length trashed buffer", testBuffer.toString()
 				.startsWith("This is a test buffer"));
 		testBuffer.setLength(2);
-		assertTrue("Failed to decrease length", testBuffer.length() == 2);
-		assertTrue("Decrease in length failed", testBuffer.toString().equals(
-				"Th"));
+		assertEquals("Failed to decrease length", 2, testBuffer.length());
+		assertEquals("Decrease in length failed", 
+				"Th", testBuffer.toString());
 	}
 
 	/**
@@ -574,8 +574,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 	public void test_substringI() {
 		// Test for method java.lang.String
 		// java.lang.StringBuffer.substring(int)
-		assertTrue("Returned incorrect substring", testBuffer.substring(5)
-				.equals("is a test buffer"));
+		assertEquals("Returned incorrect substring", "is a test buffer", testBuffer.substring(5)
+				);
 	}
 
 	/**
@@ -584,8 +584,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 	public void test_substringII() {
 		// Test for method java.lang.String
 		// java.lang.StringBuffer.substring(int, int)
-		assertTrue("Returned incorrect substring", testBuffer.substring(5, 7)
-				.equals("is"));
+		assertEquals("Returned incorrect substring", "is", testBuffer.substring(5, 7)
+				);
 	}
 
 	/**
@@ -593,8 +593,8 @@ public class StringBufferTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.lang.StringBuffer.toString()
-		assertTrue("Incorrect string value returned", testBuffer.toString()
-				.equals("This is a test buffer"));
+		assertEquals("Incorrect string value returned", "This is a test buffer", testBuffer.toString()
+				);
 	}
 
 	/**

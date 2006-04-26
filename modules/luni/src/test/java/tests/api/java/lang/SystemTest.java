@@ -140,7 +140,7 @@ public class SystemTest extends junit.framework.TestCase {
 				"os.version", "file.separator", "path.separator",
 				"line.separator", "user.name", "user.home", "user.dir", };
 		for (int i = 0; i < props.length; i++) {
-			assertTrue(props[i], System.getProperty(props[i]) != null);
+			assertNotNull(props[i], System.getProperty(props[i]));
 		}
 	}
 
@@ -193,8 +193,8 @@ public class SystemTest extends junit.framework.TestCase {
 		assertTrue("Failed to return correct property value: "
 				+ System.getProperty("java.version", "99999"), System
 				.getProperty("java.version", "99999").indexOf("1.", 0) >= 0);
-		assertTrue("Failed to return correct property value", System
-				.getProperty("bogus.prop", "bogus").equals("bogus"));
+		assertEquals("Failed to return correct property value", "bogus", System
+				.getProperty("bogus.prop", "bogus"));
 	}
 
 	/**
@@ -204,8 +204,8 @@ public class SystemTest extends junit.framework.TestCase {
 		// Test for method java.lang.String
 		// java.lang.System.setProperty(java.lang.String, java.lang.String)
 
-		assertTrue("Failed to return null", System.setProperty("testing",
-				"value1") == null);
+		assertNull("Failed to return null", System.setProperty("testing",
+				"value1"));
 		assertTrue("Failed to return old value", System.setProperty("testing",
 				"value2") == "value1");
 		assertTrue("Failed to find value",
@@ -226,8 +226,8 @@ public class SystemTest extends junit.framework.TestCase {
 	public void test_getSecurityManager() {
 		// Test for method java.lang.SecurityManager
 		// java.lang.System.getSecurityManager()
-		assertTrue("Returned incorrect SecurityManager", System
-				.getSecurityManager() == null);
+		assertNull("Returned incorrect SecurityManager", System
+				.getSecurityManager());
 	}
 
 	/**
@@ -238,8 +238,8 @@ public class SystemTest extends junit.framework.TestCase {
 		// java.lang.System.identityHashCode(java.lang.Object)
 		Object o = new Object();
 		String s = "Gabba";
-		assertTrue("Nonzero returned for null",
-				System.identityHashCode(null) == 0);
+		assertEquals("Nonzero returned for null",
+				0, System.identityHashCode(null));
 		assertTrue("Nonequal has returned for Object", System
 				.identityHashCode(o) == o.hashCode());
 		assertTrue("Same as usual hash returned for String", System
@@ -291,8 +291,8 @@ public class SystemTest extends junit.framework.TestCase {
 		tProps.put("bogus.prop", "bogus");
 		System.setProperties(tProps);
 		try {
-			assertTrue("Failed to set properties", System.getProperties()
-					.getProperty("test.prop").equals("this is a test property"));
+			assertEquals("Failed to set properties", "this is a test property", System.getProperties()
+					.getProperty("test.prop"));
 		} finally {
 			// restore the original properties
 			System.setProperties(orgProps);

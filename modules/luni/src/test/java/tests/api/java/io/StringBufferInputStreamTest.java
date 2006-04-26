@@ -33,8 +33,8 @@ public class StringBufferInputStreamTest extends junit.framework.TestCase {
 	 */
 	public void test_available() {
 		// Test for method int java.io.StringBufferInputStream.available()
-		assertTrue("Returned incorrect number of available bytes", sbis
-				.available() == 11);
+		assertEquals("Returned incorrect number of available bytes", 11, sbis
+				.available());
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class StringBufferInputStreamTest extends junit.framework.TestCase {
 		byte[] buf = new byte[5];
 		sbis.skip(6);
 		sbis.read(buf, 0, 5);
-		assertTrue("Returned incorrect chars", new String(buf).equals("World"));
+		assertEquals("Returned incorrect chars", "World", new String(buf));
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class StringBufferInputStreamTest extends junit.framework.TestCase {
 	public void test_read$BII() {
 		// Test for method int java.io.StringBufferInputStream.read(byte [],
 		// int, int)
-		assertTrue("Read returned incorrect char", sbis.read() == 'H');
+		assertEquals("Read returned incorrect char", 'H', sbis.read());
 	}
 
 	/**
@@ -63,9 +63,9 @@ public class StringBufferInputStreamTest extends junit.framework.TestCase {
 	public void test_reset() {
 		// Test for method void java.io.StringBufferInputStream.reset()
 		long s = sbis.skip(6);
-		assertTrue("Unable to skip correct umber of chars", s == 6);
+		assertEquals("Unable to skip correct umber of chars", 6, s);
 		sbis.reset();
-		assertTrue("Failed to reset", sbis.read() == 'H');
+		assertEquals("Failed to reset", 'H', sbis.read());
 	}
 
 	/**
@@ -74,8 +74,8 @@ public class StringBufferInputStreamTest extends junit.framework.TestCase {
 	public void test_skipJ() {
 		// Test for method long java.io.StringBufferInputStream.skip(long)
 		long s = sbis.skip(6);
-		assertTrue("Unable to skip correct umber of chars", s == 6);
-		assertTrue("Skip positioned at incorrect char", sbis.read() == 'W');
+		assertEquals("Unable to skip correct umber of chars", 6, s);
+		assertEquals("Skip positioned at incorrect char", 'W', sbis.read());
 	}
 
 	/**

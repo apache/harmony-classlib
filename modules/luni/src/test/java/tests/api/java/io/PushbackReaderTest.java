@@ -203,8 +203,8 @@ public class PushbackReaderTest extends junit.framework.TestCase {
 				numSkipped += pReader2.skip(10);
 				numSkipped += pReader2.skip(10);
 				numSkipped += pReader2.skip(10);
-				assertTrue("Did not skip correct number of characters",
-						numSkipped == 7);
+				assertEquals("Did not skip correct number of characters",
+						7, numSkipped);
 				numSkipped = 0;
 				numSkipped += pReader.skip(2);
 				pReader.unread('i');
@@ -223,9 +223,9 @@ public class PushbackReaderTest extends junit.framework.TestCase {
 				numSkipped += pReader.skip(1);
 				numSkipped += pReader.skip(1);
 				numSkipped += pReader.skip(1);
-				assertTrue("Failed to skip all characters", numSkipped == 6);
+				assertEquals("Failed to skip all characters", 6, numSkipped);
 				long nextSkipped = pReader.skip(1);
-				assertTrue("skipped empty reader", nextSkipped == 0);
+				assertEquals("skipped empty reader", 0, nextSkipped);
 			} catch (IOException e) {
 				fail("Failed to skip more characters" + e);
 			}

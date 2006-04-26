@@ -44,8 +44,8 @@ public class RuntimeExceptionTest extends junit.framework.TestCase {
 			if (true)
 				throw new RuntimeException("Runtime message");
 		} catch (RuntimeException e) {
-			assertTrue("Incorrect message", e.getMessage().equals(
-					"Runtime message"));
+			assertEquals("Incorrect message", 
+					"Runtime message", e.getMessage());
 			return;
 		}
 		fail("Failed to throw Runtime Exception");

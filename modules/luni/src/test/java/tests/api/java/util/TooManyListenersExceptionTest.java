@@ -27,9 +27,9 @@ public class TooManyListenersExceptionTest extends junit.framework.TestCase {
 		try {
 			throw new TooManyListenersException();
 		} catch (TooManyListenersException e) {
-			assertTrue(
+			assertNull(
 					"Message thrown with exception constructed with no message",
-					e.getMessage() == null);
+					e.getMessage());
 		}
 	}
 
@@ -41,8 +41,8 @@ public class TooManyListenersExceptionTest extends junit.framework.TestCase {
 		try {
 			throw new TooManyListenersException("Gah");
 		} catch (TooManyListenersException e) {
-			assertTrue("Incorrect message thrown with exception", e
-					.getMessage().equals("Gah"));
+			assertEquals("Incorrect message thrown with exception", "Gah", e
+					.getMessage());
 		}
 	}
 

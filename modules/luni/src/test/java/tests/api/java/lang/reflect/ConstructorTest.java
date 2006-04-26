@@ -97,8 +97,8 @@ public class ConstructorTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
-		assertTrue("Returned exception list of incorrect length",
-				exceptions.length == 1);
+		assertEquals("Returned exception list of incorrect length",
+				1, exceptions.length);
 		assertTrue("Returned incorrect exception", exceptions[0].equals(ex));
 	}
 
@@ -177,7 +177,7 @@ public class ConstructorTest extends junit.framework.TestCase {
 			fail("Exception during getParameterTypes test:"
 					+ e.toString());
 		}
-		assertTrue("Incorrect parameter returned", types.length == 0);
+		assertEquals("Incorrect parameter returned", 0, types.length);
 
 		Class[] parms = null;
 		try {
@@ -208,7 +208,7 @@ public class ConstructorTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Failed to create instance : " + e.getMessage());
 		}
-		assertTrue("improper instance created", test.check() == 99);
+		assertEquals("improper instance created", 99, test.check());
 	}
 
 	/**

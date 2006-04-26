@@ -25,9 +25,9 @@ public class NoSuchFieldErrorTest extends junit.framework.TestCase {
 			if (true)
 				throw new NoSuchFieldError();
 		} catch (NoSuchFieldError e) {
-			assertTrue("Initializer failed.", e.getMessage() == null);
-			assertTrue("To string failed.", e.toString().equals(
-					"java.lang.NoSuchFieldError"));
+			assertNull("Initializer failed.", e.getMessage());
+			assertEquals("To string failed.", 
+					"java.lang.NoSuchFieldError", e.toString());
 		}
 	}
 

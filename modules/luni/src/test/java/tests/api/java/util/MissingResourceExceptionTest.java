@@ -44,8 +44,8 @@ public class MissingResourceExceptionTest extends junit.framework.TestCase {
 		try {
 			ResourceBundle.getBundle("Non-ExistentBundle");
 		} catch (MissingResourceException e) {
-			assertTrue("Returned incorrect class name", e.getClassName()
-					.equals("Non-ExistentBundle"));
+			assertEquals("Returned incorrect class name", "Non-ExistentBundle", e.getClassName()
+					);
 		}
 	}
 

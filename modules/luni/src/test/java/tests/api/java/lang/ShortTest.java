@@ -48,10 +48,10 @@ public class ShortTest extends junit.framework.TestCase {
 	 */
 	public void test_byteValue() {
 		// Test for method byte java.lang.Short.byteValue()
-		assertTrue("Returned incorrect byte value", new Short(Short.MIN_VALUE)
-				.byteValue() == 0);
-		assertTrue("Returned incorrect byte value", new Short(Short.MAX_VALUE)
-				.byteValue() == -1);
+		assertEquals("Returned incorrect byte value", 0, new Short(Short.MIN_VALUE)
+				.byteValue());
+		assertEquals("Returned incorrect byte value", -1, new Short(Short.MAX_VALUE)
+				.byteValue());
 	}
 
 	/**
@@ -69,8 +69,8 @@ public class ShortTest extends junit.framework.TestCase {
 				"Should have returned positive value when compared to lesser short",
 				s.compareTo(x) > 0);
 		x = new Short((short) 1);
-		assertTrue("Should have returned zero when compared to equal short", s
-				.compareTo(x) == 0);
+		assertEquals("Should have returned zero when compared to equal short",
+                             0, s.compareTo(x));
         
         try {
             new Short((short)0).compareTo(null);
@@ -152,10 +152,10 @@ public class ShortTest extends junit.framework.TestCase {
 	 */
 	public void test_doubleValue() {
 		// Test for method double java.lang.Short.doubleValue()
-		assertTrue("Returned incorrect double value",
-				new Short(Short.MIN_VALUE).doubleValue() == -32768.0);
-		assertTrue("Returned incorrect double value",
-				new Short(Short.MAX_VALUE).doubleValue() == 32767.0);
+		assertEquals("Returned incorrect double value",
+				-32768.0, new Short(Short.MIN_VALUE).doubleValue());
+		assertEquals("Returned incorrect double value",
+				32767.0, new Short(Short.MAX_VALUE).doubleValue());
 	}
 
 	/**
@@ -196,10 +196,10 @@ public class ShortTest extends junit.framework.TestCase {
 	 */
 	public void test_intValue() {
 		// Test for method int java.lang.Short.intValue()
-		assertTrue("Returned incorrect int value", new Short(Short.MIN_VALUE)
-				.intValue() == -32768);
-		assertTrue("Returned incorrect int value", new Short(Short.MAX_VALUE)
-				.intValue() == 32767);
+		assertEquals("Returned incorrect int value", -32768, new Short(Short.MIN_VALUE)
+				.intValue());
+		assertEquals("Returned incorrect int value", 32767, new Short(Short.MAX_VALUE)
+				.intValue());
 	}
 
 	/**
@@ -207,10 +207,10 @@ public class ShortTest extends junit.framework.TestCase {
 	 */
 	public void test_longValue() {
 		// Test for method long java.lang.Short.longValue()
-		assertTrue("Returned incorrect long value", new Short(Short.MIN_VALUE)
-				.longValue() == -32768);
-		assertTrue("Returned incorrect long value", new Short(Short.MAX_VALUE)
-				.longValue() == 32767);
+		assertEquals("Returned incorrect long value", -32768, new Short(Short.MIN_VALUE)
+				.longValue());
+		assertEquals("Returned incorrect long value", 32767, new Short(Short.MAX_VALUE)
+				.longValue());
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class ShortTest extends junit.framework.TestCase {
 
 		assertTrue("Incorrect parse of short", sp == (short) 32746
 				&& (sn == (short) -32746));
-		assertTrue("Returned incorrect value for 0", Short.parseShort("0") == 0);
+		assertEquals("Returned incorrect value for 0", 0, Short.parseShort("0"));
 		assertTrue("Returned incorrect value for most negative value", Short
 				.parseShort("-32768") == (short) 0x8000);
 		assertTrue("Returned incorrect value for most positive value", Short
@@ -255,28 +255,28 @@ public class ShortTest extends junit.framework.TestCase {
 		// Test for method short java.lang.Short.parseShort(java.lang.String,
 		// int)
 		boolean aThrow = true;
-		assertTrue("Incorrectly parsed hex string",
-				Short.parseShort("FF", 16) == 255);
-		assertTrue("Incorrectly parsed oct string",
-				Short.parseShort("20", 8) == 16);
-		assertTrue("Incorrectly parsed dec string",
-				Short.parseShort("20", 10) == 20);
-		assertTrue("Incorrectly parsed bin string",
-				Short.parseShort("100", 2) == 4);
-		assertTrue("Incorrectly parsed -hex string", Short
-				.parseShort("-FF", 16) == -255);
-		assertTrue("Incorrectly parsed -oct string",
-				Short.parseShort("-20", 8) == -16);
-		assertTrue("Incorrectly parsed -bin string", Short
-				.parseShort("-100", 2) == -4);
-		assertTrue("Returned incorrect value for 0 hex", Short.parseShort("0",
-				16) == 0);
+		assertEquals("Incorrectly parsed hex string",
+				255, Short.parseShort("FF", 16));
+		assertEquals("Incorrectly parsed oct string",
+				16, Short.parseShort("20", 8));
+		assertEquals("Incorrectly parsed dec string",
+				20, Short.parseShort("20", 10));
+		assertEquals("Incorrectly parsed bin string",
+				4, Short.parseShort("100", 2));
+		assertEquals("Incorrectly parsed -hex string", -255, Short
+				.parseShort("-FF", 16));
+		assertEquals("Incorrectly parsed -oct string",
+				-16, Short.parseShort("-20", 8));
+		assertEquals("Incorrectly parsed -bin string", -4, Short
+				.parseShort("-100", 2));
+		assertEquals("Returned incorrect value for 0 hex", 0, Short.parseShort("0",
+				16));
 		assertTrue("Returned incorrect value for most negative value hex",
 				Short.parseShort("-8000", 16) == (short) 0x8000);
 		assertTrue("Returned incorrect value for most positive value hex",
 				Short.parseShort("7fff", 16) == 0x7fff);
-		assertTrue("Returned incorrect value for 0 decimal", Short.parseShort(
-				"0", 10) == 0);
+		assertEquals("Returned incorrect value for 0 decimal", 0, Short.parseShort(
+				"0", 10));
 		assertTrue("Returned incorrect value for most negative value decimal",
 				Short.parseShort("-32768", 10) == (short) 0x8000);
 		assertTrue("Returned incorrect value for most positive value decimal",
@@ -357,12 +357,12 @@ public class ShortTest extends junit.framework.TestCase {
 		// Test for method java.lang.String java.lang.Short.toString()
 		assertTrue("Invalid string returned", sp.toString().equals("18000")
 				&& (sn.toString().equals("-19000")));
-		assertTrue("Returned incorrect string", new Short((short) 32767)
-				.toString().equals("32767"));
-		assertTrue("Returned incorrect string", new Short((short) -32767)
-				.toString().equals("-32767"));
-		assertTrue("Returned incorrect string", new Short((short) -32768)
-				.toString().equals("-32768"));
+		assertEquals("Returned incorrect string", "32767", new Short((short) 32767)
+				.toString());
+		assertEquals("Returned incorrect string", "-32767", new Short((short) -32767)
+				.toString());
+		assertEquals("Returned incorrect string", "-32768", new Short((short) -32768)
+				.toString());
 	}
 
 	/**
@@ -370,12 +370,12 @@ public class ShortTest extends junit.framework.TestCase {
 	 */
 	public void test_toStringS() {
 		// Test for method java.lang.String java.lang.Short.toString(short)
-		assertTrue("Returned incorrect string", Short.toString((short) 32767)
-				.equals("32767"));
-		assertTrue("Returned incorrect string", Short.toString((short) -32767)
-				.equals("-32767"));
-		assertTrue("Returned incorrect string", Short.toString((short) -32768)
-				.equals("-32768"));
+		assertEquals("Returned incorrect string", "32767", Short.toString((short) 32767)
+				);
+		assertEquals("Returned incorrect string", "-32767", Short.toString((short) -32767)
+				);
+		assertEquals("Returned incorrect string", "-32768", Short.toString((short) -32768)
+				);
 	}
 
 	/**
@@ -384,10 +384,10 @@ public class ShortTest extends junit.framework.TestCase {
 	public void test_valueOfLjava_lang_String() {
 		// Test for method java.lang.Short
 		// java.lang.Short.valueOf(java.lang.String)
-		assertTrue("Returned incorrect short", Short.valueOf("-32768")
-				.shortValue() == -32768);
-		assertTrue("Returned incorrect short", Short.valueOf("32767")
-				.shortValue() == 32767);
+		assertEquals("Returned incorrect short", -32768, Short.valueOf("-32768")
+				.shortValue());
+		assertEquals("Returned incorrect short", 32767, Short.valueOf("32767")
+				.shortValue());
 	}
 
 	/**
@@ -397,20 +397,20 @@ public class ShortTest extends junit.framework.TestCase {
 		// Test for method java.lang.Short
 		// java.lang.Short.valueOf(java.lang.String, int)
 		boolean aThrow = true;
-		assertTrue("Incorrectly parsed hex string", Short.valueOf("FF", 16)
-				.shortValue() == 255);
-		assertTrue("Incorrectly parsed oct string", Short.valueOf("20", 8)
-				.shortValue() == 16);
-		assertTrue("Incorrectly parsed dec string", Short.valueOf("20", 10)
-				.shortValue() == 20);
-		assertTrue("Incorrectly parsed bin string", Short.valueOf("100", 2)
-				.shortValue() == 4);
-		assertTrue("Incorrectly parsed -hex string", Short.valueOf("-FF", 16)
-				.shortValue() == -255);
-		assertTrue("Incorrectly parsed -oct string", Short.valueOf("-20", 8)
-				.shortValue() == -16);
-		assertTrue("Incorrectly parsed -bin string", Short.valueOf("-100", 2)
-				.shortValue() == -4);
+		assertEquals("Incorrectly parsed hex string", 255, Short.valueOf("FF", 16)
+				.shortValue());
+		assertEquals("Incorrectly parsed oct string", 16, Short.valueOf("20", 8)
+				.shortValue());
+		assertEquals("Incorrectly parsed dec string", 20, Short.valueOf("20", 10)
+				.shortValue());
+		assertEquals("Incorrectly parsed bin string", 4, Short.valueOf("100", 2)
+				.shortValue());
+		assertEquals("Incorrectly parsed -hex string", -255, Short.valueOf("-FF", 16)
+				.shortValue());
+		assertEquals("Incorrectly parsed -oct string", -16, Short.valueOf("-20", 8)
+				.shortValue());
+		assertEquals("Incorrectly parsed -bin string", -4, Short.valueOf("-100", 2)
+				.shortValue());
 		assertTrue("Did not decode 32767 correctly", Short.valueOf("32767", 10)
 				.shortValue() == (short) 32767);
 		assertTrue("Did not decode -32767 correctly", Short.valueOf("-32767",

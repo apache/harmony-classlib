@@ -39,8 +39,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 	 */
 	public void test_getName() {
 		if (atLeastOneInterface) {
-			assertTrue("validate that non null name is returned",
-					networkInterface1.getName() != null);
+			assertNotNull("validate that non null name is returned",
+					networkInterface1.getName());
 			assertFalse("validate that non-zero length name is generated",
 					networkInterface1.getName().equals(""));
 		}
@@ -214,11 +214,11 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			// This is to be compatible
 			for (int i = 0; i < notOkAddresses.size(); i++) {
 				try {
-					assertTrue(
+					assertNotNull(
 							"validate we cannot get the NetworkInterface with an address for which we have no privs",
 							NetworkInterface
 									.getByInetAddress((InetAddress) notOkAddresses
-											.get(i)) != null);
+											.get(i)));
 				} catch (Exception e) {
 					fail("get NetworkInterface for address with no perm - exception");
 				}
@@ -228,11 +228,11 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			// addresses
 			try {
 				for (int i = 0; i < okAddresses.size(); i++) {
-					assertTrue(
+					assertNotNull(
 							"validate we cannot get the NetworkInterface with an address fro which we have no privs",
 							NetworkInterface
 									.getByInetAddress((InetAddress) okAddresses
-											.get(i)) != null);
+											.get(i)));
 				}
 			} catch (Exception e) {
 				fail("get NetworkInterface for address with perm - exception");
@@ -247,8 +247,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 	 */
 	public void test_getDisplayName() {
 		if (atLeastOneInterface) {
-			assertTrue("validate that non null display name is returned",
-					networkInterface1.getDisplayName() != null);
+			assertNotNull("validate that non null display name is returned",
+					networkInterface1.getDisplayName());
 			assertFalse(
 					"validate that non-zero lengtj display name is generated",
 					networkInterface1.getDisplayName().equals(""));
@@ -446,8 +446,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		if (atLeastOneInterface) {
-			assertTrue("validate that non null string is generated",
-					networkInterface1.toString() != null);
+			assertNotNull("validate that non null string is generated",
+					networkInterface1.toString());
 			assertFalse("validate that non-zero length string is generated",
 					networkInterface1.toString().equals(""));
 		}

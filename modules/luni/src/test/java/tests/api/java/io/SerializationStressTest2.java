@@ -1297,8 +1297,8 @@ public class SerializationStressTest2 extends SerializationStressTest {
 				System.out.println("Obj = " + objToSave);
 			objLoaded = dumpAndReload(objToSave);
 			// Has to have worked
-			assertTrue(MSG_TEST_FAILED + objToSave,
-					((NestedPutField) objLoaded).field1 != null);
+			assertNotNull(MSG_TEST_FAILED + objToSave,
+					((NestedPutField) objLoaded).field1);
 
 		} catch (IOException e) {
 			fail("IOException serializing " + objToSave + " : "

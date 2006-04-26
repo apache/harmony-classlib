@@ -45,8 +45,8 @@ public class NoRouteToHostExceptionTest extends junit.framework.TestCase {
 			if (true)
 				throw new NoRouteToHostException("test");
 		} catch (NoRouteToHostException e) {
-			assertTrue("Threw exception with incorrect message", e.getMessage()
-					.equals("test"));
+			assertEquals("Threw exception with incorrect message", "test", e.getMessage()
+					);
 			return;
 		}
 		fail("Failed to generate expected exception");

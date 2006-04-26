@@ -34,7 +34,7 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 		// Test for method java.util.SimpleTimeZone(int, java.lang.String)
 
 		SimpleTimeZone st = new SimpleTimeZone(1000, "TEST");
-		assertTrue("Incorrect TZ constructed", st.getID().equals("TEST"));
+		assertEquals("Incorrect TZ constructed", "TEST", st.getID());
 		assertTrue("Incorrect TZ constructed: " + "returned wrong offset", st
 				.getRawOffset() == 1000);
 		assertTrue("Incorrect TZ constructed" + "using daylight savings", !st
@@ -57,8 +57,8 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 		assertTrue("Incorrect TZ constructed", !(st
 				.inDaylightTime(new GregorianCalendar(1998, Calendar.OCTOBER,
 						13).getTime())));
-		assertTrue("Incorrect TZ constructed", st.getID().equals("TEST"));
-		assertTrue("Incorrect TZ constructed", st.getRawOffset() == 1000);
+		assertEquals("Incorrect TZ constructed", "TEST", st.getID());
+		assertEquals("Incorrect TZ constructed", 1000, st.getRawOffset());
 		assertTrue("Incorrect TZ constructed", st.useDaylightTime());
 	}
 
@@ -78,8 +78,8 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 		assertTrue("Incorrect TZ constructed", !(st
 				.inDaylightTime(new GregorianCalendar(1998, Calendar.OCTOBER,
 						13).getTime())));
-		assertTrue("Incorrect TZ constructed", st.getID().equals("TEST"));
-		assertTrue("Incorrect TZ constructed", st.getRawOffset() == 1000);
+		assertEquals("Incorrect TZ constructed", "TEST", st.getID());
+		assertEquals("Incorrect TZ constructed", 1000, st.getRawOffset());
 		assertTrue("Incorrect TZ constructed", st.useDaylightTime());
 		assertTrue("Incorrect TZ constructed",
 				st.getDSTSavings() == 1000 * 60 * 60);
@@ -135,18 +135,18 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 		// Test for method int java.util.SimpleTimeZone.getDSTSavings()
 		st1 = new SimpleTimeZone(0, "TEST");
 
-		assertTrue("Non-zero default daylight savings",
-				st1.getDSTSavings() == 0);
+		assertEquals("Non-zero default daylight savings",
+				0, st1.getDSTSavings());
 		st1.setStartRule(0, 1, 1, 1);
 		st1.setEndRule(11, 1, 1, 1);
 
-		assertTrue("Incorrect default daylight savings",
-				st1.getDSTSavings() == 3600000);
+		assertEquals("Incorrect default daylight savings",
+				3600000, st1.getDSTSavings());
 		st1 = new SimpleTimeZone(-5 * 3600000, "EST", Calendar.APRIL, 1,
 				-Calendar.SUNDAY, 2 * 3600000, Calendar.OCTOBER, -1,
 				Calendar.SUNDAY, 2 * 3600000, 7200000);
-		assertTrue("Incorrect daylight savings from constructor", st1
-				.getDSTSavings() == 7200000);
+		assertEquals("Incorrect daylight savings from constructor", 7200000, st1
+				.getDSTSavings());
 
 	}
 
@@ -258,7 +258,7 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 		st.setStartRule(0, 1, 1, 1);
 		st.setEndRule(11, 1, 1, 1);
 		st.setDSTSavings(1);
-		assertTrue("Daylight savings amount not set", st.getDSTSavings() == 1);
+		assertEquals("Daylight savings amount not set", 1, st.getDSTSavings());
 	}
 
 	/**
@@ -423,7 +423,7 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 	public void test_toString() {
 		// Test for method java.lang.String java.util.SimpleTimeZone.toString()
 		String string = TimeZone.getTimeZone("EST").toString();
-		assertTrue("toString() returned null", string != null);
+		assertNotNull("toString() returned null", string);
 		assertTrue("toString() is empty", string.length() != 0);
 	}
 

@@ -113,8 +113,8 @@ public class ReferenceTest extends junit.framework.TestCase {
 			System.runFinalization();
 			ref = rq.remove();
 			assertTrue("Unexpected ref1", ref == wr);
-			assertTrue("Object not garbage collected1.", ref != null);
-			assertTrue("Object could not be reclaimed1.", wr.get() == null);
+			assertNotNull("Object not garbage collected1.", ref);
+			assertNull("Object could not be reclaimed1.", wr.get());
 		} catch (InterruptedException e) {
 			fail("InterruptedException : " + e.getMessage());
 		}
@@ -127,10 +127,10 @@ public class ReferenceTest extends junit.framework.TestCase {
 			System.runFinalization();
 			ref = rq.poll();
 			assertTrue("Unexpected ref2", ref == wr);
-			assertTrue("Object not garbage collected.", ref != null);
-			assertTrue("Object could not be reclaimed.", ref.get() == null);
+			assertNotNull("Object not garbage collected.", ref);
+			assertNull("Object could not be reclaimed.", ref.get());
 			// Reference wr so it does not get collected
-			assertTrue("Object could not be reclaimed.", wr.get() == null);
+			assertNull("Object could not be reclaimed.", wr.get());
 		} catch (Exception e) {
 			fail("Exception : " + e.getMessage());
 		}

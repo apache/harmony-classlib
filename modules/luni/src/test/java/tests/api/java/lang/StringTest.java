@@ -129,7 +129,7 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor$C() {
 		// Test for method java.lang.String(char [])
-		assertTrue("Failed Constructor test", new String(buf).equals("World"));
+		assertEquals("Failed Constructor test", "World", new String(buf));
 	}
 
 	/**
@@ -156,8 +156,8 @@ public class StringTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.lang.String(java.lang.String)
 		String s = new String("Hello World");
-		assertTrue("Failed to construct correct string", s
-				.equals("Hello World"));
+		assertEquals("Failed to construct correct string", "Hello World", s
+				);
 	}
 
 	/**
@@ -167,8 +167,8 @@ public class StringTest extends junit.framework.TestCase {
 		// Test for method java.lang.String(java.lang.StringBuffer)
 		StringBuffer sb = new StringBuffer();
 		sb.append("HelloWorld");
-		assertTrue("Created incorrect string", new String(sb)
-				.equals("HelloWorld"));
+		assertEquals("Created incorrect string", "HelloWorld", new String(sb)
+				);
 	}
 
 	/**
@@ -187,8 +187,8 @@ public class StringTest extends junit.framework.TestCase {
 		// Test for method int java.lang.String.compareTo(java.lang.String)
 		assertTrue("Returned incorrect value for first < second", "aaaaab"
 				.compareTo("aaaaac") < 0);
-		assertTrue("Returned incorrect value for first = second", "aaaaac"
-				.compareTo("aaaaac") == 0);
+		assertEquals("Returned incorrect value for first = second", 0, "aaaaac"
+				.compareTo("aaaaac"));
 		assertTrue("Returned incorrect value for first > second", "aaaaac"
 				.compareTo("aaaaab") > 0);
 		assertTrue("Considered case to not be of importance", !("A"
@@ -209,27 +209,27 @@ public class StringTest extends junit.framework.TestCase {
 		// java.lang.String.compareToIgnoreCase(java.lang.String)
 		assertTrue("Returned incorrect value for first < second", "aaaaab"
 				.compareToIgnoreCase("aaaaac") < 0);
-		assertTrue("Returned incorrect value for first = second", "aaaaac"
-				.compareToIgnoreCase("aaaaac") == 0);
+		assertEquals("Returned incorrect value for first = second", 0, "aaaaac"
+				.compareToIgnoreCase("aaaaac"));
 		assertTrue("Returned incorrect value for first > second", "aaaaac"
 				.compareToIgnoreCase("aaaaab") > 0);
-		assertTrue("Considered case to not be of importance", "A"
-				.compareToIgnoreCase("a") == 0);
+		assertEquals("Considered case to not be of importance", 0, "A"
+				.compareToIgnoreCase("a"));
 
 		assertTrue("0xbf should not compare = to 'ss'", "\u00df"
 				.compareToIgnoreCase("ss") != 0);
-		assertTrue("0x130 should compare = to 'i'", "\u0130"
-				.compareToIgnoreCase("i") == 0);
-		assertTrue("0x131 should compare = to 'i'", "\u0131"
-				.compareToIgnoreCase("i") == 0);
+		assertEquals("0x130 should compare = to 'i'", 0, "\u0130"
+				.compareToIgnoreCase("i"));
+		assertEquals("0x131 should compare = to 'i'", 0, "\u0131"
+				.compareToIgnoreCase("i"));
 
 		Locale defLocale = Locale.getDefault();
 		try {
 			Locale.setDefault(new Locale("tr", ""));
-			assertTrue("Locale tr: 0x130 should compare = to 'i'", "\u0130"
-					.compareToIgnoreCase("i") == 0);
-			assertTrue("Locale tr: 0x131 should compare = to 'i'", "\u0131"
-					.compareToIgnoreCase("i") == 0);
+			assertEquals("Locale tr: 0x130 should compare = to 'i'", 0, "\u0130"
+					.compareToIgnoreCase("i"));
+			assertEquals("Locale tr: 0x131 should compare = to 'i'", 0, "\u0131"
+					.compareToIgnoreCase("i"));
 		} finally {
 			Locale.setDefault(defLocale);
 		}
@@ -281,8 +281,8 @@ public class StringTest extends junit.framework.TestCase {
 		// Test for method java.lang.String java.lang.String.copyValueOf(char
 		// [])
 		char[] t = { 'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd' };
-		assertTrue("copyValueOf returned incorrect String", String.copyValueOf(
-				t).equals("HelloWorld"));
+		assertEquals("copyValueOf returned incorrect String", "HelloWorld", String.copyValueOf(
+				t));
 	}
 
 	/**
@@ -292,8 +292,8 @@ public class StringTest extends junit.framework.TestCase {
 		// Test for method java.lang.String java.lang.String.copyValueOf(char
 		// [], int, int)
 		char[] t = { 'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd' };
-		assertTrue("copyValueOf returned incorrect String", String.copyValueOf(
-				t, 5, 5).equals("World"));
+		assertEquals("copyValueOf returned incorrect String", "World", String.copyValueOf(
+				t, 5, 5));
 	}
 
 	/**
@@ -389,7 +389,7 @@ public class StringTest extends junit.framework.TestCase {
 			String result = null;
 			try {
 				result = new String(bytes, "8859_1");
-				assertTrue("Wrong char length", result.length() == 1);
+				assertEquals("Wrong char length", 1, result.length());
 				assertTrue("Wrong char value", result.charAt(0) == (char) i);
 			} catch (java.io.UnsupportedEncodingException e) {
 			}
@@ -427,7 +427,7 @@ public class StringTest extends junit.framework.TestCase {
 		// int)
 		byte[] buf = new byte[5];
 		"Hello World".getBytes(6, 11, buf, 0);
-		assertTrue("Returned incorrect bytes", new String(buf).equals("World"));
+		assertEquals("Returned incorrect bytes", "World", new String(buf));
 
 		Exception exception = null;
 		try {
@@ -445,8 +445,8 @@ public class StringTest extends junit.framework.TestCase {
 	public void test_getBytesLjava_lang_String() {
 		// Test for method byte [] java.lang.String.getBytes(java.lang.String)
 		byte[] buf = "Hello World".getBytes();
-		assertTrue("Returned incorrect bytes", new String(buf)
-				.equals("Hello World"));
+		assertEquals("Returned incorrect bytes", "Hello World", new String(buf)
+				);
 
 		boolean exception = false;
 		try {
@@ -503,7 +503,7 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_indexOfI() {
 		// Test for method int java.lang.String.indexOf(int)
-		assertTrue("Invalid index returned", 1 == hw1.indexOf('e'));
+		assertEquals("Invalid index returned", 1, hw1.indexOf('e'));
 
 	}
 
@@ -512,7 +512,7 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_indexOfII() {
 		// Test for method int java.lang.String.indexOf(int, int)
-		assertTrue("Invalid character index returned", 5 == hw1.indexOf('W', 2));
+		assertEquals("Invalid character index returned", 5, hw1.indexOf('W', 2));
 
 	}
 
@@ -532,10 +532,10 @@ public class StringTest extends junit.framework.TestCase {
 		// Test for method int java.lang.String.indexOf(java.lang.String, int)
 		assertTrue("Failed to find string", hw1.indexOf("World", 0) > 0);
 		assertTrue("Found string outside index", !(hw1.indexOf("Hello", 6) > 0));
-		assertTrue("Did not accept valid negative starting position", hello1
-				.indexOf("", -5) == 0);
-		assertTrue("Reported wrong error code", hello1.indexOf("", 5) == 5);
-		assertTrue("Wrong for empty in empty", "".indexOf("", 0) == 0);
+		assertEquals("Did not accept valid negative starting position", 0, hello1
+				.indexOf("", -5));
+		assertEquals("Reported wrong error code", 5, hello1.indexOf("", 5));
+		assertEquals("Wrong for empty in empty", 0, "".indexOf("", 0));
 	}
 
 	/**
@@ -552,9 +552,9 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_lastIndexOfI() {
 		// Test for method int java.lang.String.lastIndexOf(int)
-		assertTrue("Failed to return correct index", hw1.lastIndexOf('W') == 5);
-		assertTrue("Returned index for non-existent char",
-				hw1.lastIndexOf('Z') == -1);
+		assertEquals("Failed to return correct index", 5, hw1.lastIndexOf('W'));
+		assertEquals("Returned index for non-existent char",
+				-1, hw1.lastIndexOf('Z'));
 
 	}
 
@@ -563,12 +563,12 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_lastIndexOfII() {
 		// Test for method int java.lang.String.lastIndexOf(int, int)
-		assertTrue("Failed to return correct index",
-				hw1.lastIndexOf('W', 6) == 5);
-		assertTrue("Returned index for char out of specified range", hw1
-				.lastIndexOf('W', 4) == -1);
-		assertTrue("Returned index for non-existent char", hw1.lastIndexOf('Z',
-				9) == -1);
+		assertEquals("Failed to return correct index",
+				5, hw1.lastIndexOf('W', 6));
+		assertEquals("Returned index for char out of specified range", -1, hw1
+				.lastIndexOf('W', 4));
+		assertEquals("Returned index for non-existent char", -1, hw1.lastIndexOf('Z',
+				9));
 
 	}
 
@@ -577,9 +577,9 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_lastIndexOfLjava_lang_String() {
 		// Test for method int java.lang.String.lastIndexOf(java.lang.String)
-		assertTrue("Returned incorrect index", hw1.lastIndexOf("World") == 5);
-		assertTrue("Found String outside of index", hw1
-				.lastIndexOf("HeKKKKKKKK") == -1);
+		assertEquals("Returned incorrect index", 5, hw1.lastIndexOf("World"));
+		assertEquals("Found String outside of index", -1, hw1
+				.lastIndexOf("HeKKKKKKKK"));
 	}
 
 	/**
@@ -588,13 +588,13 @@ public class StringTest extends junit.framework.TestCase {
 	public void test_lastIndexOfLjava_lang_StringI() {
 		// Test for method int java.lang.String.lastIndexOf(java.lang.String,
 		// int)
-		assertTrue("Returned incorrect index", hw1.lastIndexOf("World", 9) == 5);
+		assertEquals("Returned incorrect index", 5, hw1.lastIndexOf("World", 9));
 		int result = hw1.lastIndexOf("Hello", 2);
 		assertTrue("Found String outside of index: " + result, result == 0);
-		assertTrue("Reported wrong error code",
-				hello1.lastIndexOf("", -5) == -1);
-		assertTrue("Did not accept valid large starting position", hello1
-				.lastIndexOf("", 5) == 5);
+		assertEquals("Reported wrong error code",
+				-1, hello1.lastIndexOf("", -5));
+		assertEquals("Did not accept valid large starting position", 5, hello1
+				.lastIndexOf("", 5));
 	}
 
 	/**
@@ -602,7 +602,7 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_length() {
 		// Test for method int java.lang.String.length()
-		assertTrue("Invalid length returned", comp11.length() == 11);
+		assertEquals("Invalid length returned", 11, comp11.length());
 	}
 
 	/**
@@ -644,7 +644,7 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_replaceCC() {
 		// Test for method java.lang.String java.lang.String.replace(char, char)
-		assertTrue("Failed replace", hw1.replace('l', 'z').equals("HezzoWorzd"));
+		assertEquals("Failed replace", "HezzoWorzd", hw1.replace('l', 'z'));
 	}
 
 	/**
@@ -671,8 +671,8 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_substringI() {
 		// Test for method java.lang.String java.lang.String.substring(int)
-		assertTrue("Incorrect substring returned", hw1.substring(5).equals(
-				"World"));
+		assertEquals("Incorrect substring returned", 
+				"World", hw1.substring(5));
 		assertTrue("not identical", hw1.substring(0) == hw1);
 	}
 
@@ -707,12 +707,10 @@ public class StringTest extends junit.framework.TestCase {
 		assertTrue("toLowerCase case conversion did not succeed", hwuc
 				.toLowerCase().equals(hwlc));
 
-		assertTrue(
-				"a) Sigma has same lower case value at end of word with Unicode 3.0",
-				"\u03a3\u03a3".toLowerCase().equals("\u03c3\u03c3"));
-		assertTrue(
-				"b) Sigma has same lower case value at end of word with Unicode 3.0",
-				"a\u03a3".toLowerCase().equals("a\u03c3"));
+		assertEquals("a) Sigma has same lower case value at end of word with Unicode 3.0",
+				"\u03c3\u03c3", "\u03a3\u03a3".toLowerCase());
+		assertEquals("b) Sigma has same lower case value at end of word with Unicode 3.0",
+				"a\u03c3", "a\u03a3".toLowerCase());
 	}
 
 	/**
@@ -723,10 +721,10 @@ public class StringTest extends junit.framework.TestCase {
 		// java.lang.String.toLowerCase(java.util.Locale)
 		assertTrue("toLowerCase case conversion did not succeed", hwuc
 				.toLowerCase(java.util.Locale.getDefault()).equals(hwlc));
-		assertTrue("Invalid \\u0049 for English", "\u0049".toLowerCase(
-				Locale.ENGLISH).equals("\u0069"));
-		assertTrue("Invalid \\u0049 for Turkish", "\u0049".toLowerCase(
-				new Locale("tr", "")).equals("\u0131"));
+		assertEquals("Invalid \\u0049 for English", "\u0069", "\u0049".toLowerCase(
+				Locale.ENGLISH));
+		assertEquals("Invalid \\u0049 for Turkish", "\u0131", "\u0049".toLowerCase(
+				new Locale("tr", "")));
 	}
 
 	private static String writeString(String in) {
@@ -763,7 +761,7 @@ public class StringTest extends junit.framework.TestCase {
 		assertTrue("Returned string is not UpperCase", hwlc.toUpperCase()
 				.equals(hwuc));
 
-		assertTrue("Wrong conversion", "\u00df".toUpperCase().equals("SS"));
+		assertEquals("Wrong conversion", "SS", "\u00df".toUpperCase());
 
 		String s = "a\u00df\u1f56";
 		assertTrue("Invalid conversion", !s.toUpperCase().equals(s));
@@ -778,10 +776,10 @@ public class StringTest extends junit.framework.TestCase {
 		// java.lang.String.toUpperCase(java.util.Locale)
 		assertTrue("Returned string is not UpperCase", hwlc.toUpperCase()
 				.equals(hwuc));
-		assertTrue("Invalid \\u0069 for English", "\u0069".toUpperCase(
-				Locale.ENGLISH).equals("\u0049"));
-		assertTrue("Invalid \\u0069 for Turkish", "\u0069".toUpperCase(
-				new Locale("tr", "")).equals("\u0130"));
+		assertEquals("Invalid \\u0069 for English", "\u0049", "\u0069".toUpperCase(
+				Locale.ENGLISH));
+		assertEquals("Invalid \\u0069 for Turkish", "\u0130", "\u0069".toUpperCase(
+				new Locale("tr", "")));
 	}
 
 	/**
@@ -806,8 +804,8 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_valueOf$C() {
 		// Test for method java.lang.String java.lang.String.valueOf(char [])
-		assertTrue("Returned incorrect String", String.valueOf(buf).equals(
-				"World"));
+		assertEquals("Returned incorrect String", 
+				"World", String.valueOf(buf));
 	}
 
 	/**
@@ -817,8 +815,8 @@ public class StringTest extends junit.framework.TestCase {
 		// Test for method java.lang.String java.lang.String.valueOf(char [],
 		// int, int)
 		char[] t = { 'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd' };
-		assertTrue("copyValueOf returned incorrect String", String.valueOf(t,
-				5, 5).equals("World"));
+		assertEquals("copyValueOf returned incorrect String", "World", String.valueOf(t,
+				5, 5));
 	}
 
 	/**
@@ -836,8 +834,8 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_valueOfD() {
 		// Test for method java.lang.String java.lang.String.valueOf(double)
-		assertTrue("Incorrect double string returned", String.valueOf(
-				Double.MAX_VALUE).equals("1.7976931348623157E308"));
+		assertEquals("Incorrect double string returned", "1.7976931348623157E308", String.valueOf(
+				Double.MAX_VALUE));
 	}
 
 	/**
@@ -861,7 +859,7 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_valueOfI() {
 		// Test for method java.lang.String java.lang.String.valueOf(int)
-		assertTrue("returned invalid int string", String.valueOf(1).equals("1"));
+		assertEquals("returned invalid int string", "1", String.valueOf(1));
 	}
 
 	/**
@@ -869,8 +867,8 @@ public class StringTest extends junit.framework.TestCase {
 	 */
 	public void test_valueOfJ() {
 		// Test for method java.lang.String java.lang.String.valueOf(long)
-		assertTrue("returned incorrect long string", String.valueOf(
-				927654321098L).equals("927654321098"));
+		assertEquals("returned incorrect long string", "927654321098", String.valueOf(
+				927654321098L));
 	}
 
 	/**

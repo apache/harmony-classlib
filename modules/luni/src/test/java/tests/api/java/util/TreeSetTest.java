@@ -131,7 +131,7 @@ public class TreeSetTest extends junit.framework.TestCase {
 	public void test_clear() {
 		// Test for method void java.util.TreeSet.clear()
 		ts.clear();
-		assertTrue("Returned non-zero size after clear", ts.size() == 0);
+		assertEquals("Returned non-zero size after clear", 0, ts.size());
 		assertTrue("Found element in cleared set", !ts.contains(objArray[0]));
 	}
 
@@ -193,7 +193,7 @@ public class TreeSetTest extends junit.framework.TestCase {
 		// Test for method java.util.SortedSet
 		// java.util.TreeSet.headSet(java.lang.Object)
 		Set s = ts.headSet(new Integer(100));
-		assertTrue("Returned set of incorrect size", s.size() == 100);
+		assertEquals("Returned set of incorrect size", 100, s.size());
 		for (int i = 0; i < 100; i++)
 			assertTrue("Returned incorrect set", s.contains(objArray[i]));
 	}
@@ -218,7 +218,7 @@ public class TreeSetTest extends junit.framework.TestCase {
 		Set as = new HashSet(Arrays.asList(objArray));
 		while (i.hasNext())
 			as.remove(i.next());
-		assertTrue("Returned incorrect iterator", as.size() == 0);
+		assertEquals("Returned incorrect iterator", 0, as.size());
 
 	}
 
@@ -279,7 +279,7 @@ public class TreeSetTest extends junit.framework.TestCase {
 		} catch (IllegalArgumentException e) {
 			result = 1;
 		}
-		assertTrue("end less than start should throw", result == 1);
+		assertEquals("end less than start should throw", 1, result);
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class TreeSetTest extends junit.framework.TestCase {
 		// Test for method java.util.SortedSet
 		// java.util.TreeSet.tailSet(java.lang.Object)
 		Set s = ts.tailSet(new Integer(900));
-		assertTrue("Returned set of incorrect size", s.size() == 100);
+		assertEquals("Returned set of incorrect size", 100, s.size());
 		for (int i = 900; i < objArray.length; i++)
 			assertTrue("Returned incorrect set", s.contains(objArray[i]));
 	}

@@ -52,10 +52,10 @@ public class ObjectStreamClassTest extends junit.framework.TestCase {
 		// Test for method java.io.ObjectStreamField
 		// java.io.ObjectStreamClass.getField(java.lang.String)
 		ObjectStreamClass osc = ObjectStreamClass.lookup(DummyClass.class);
-		assertTrue("getField did not return correct field", osc.getField("bam")
-				.getTypeCode() == 'J');
-		assertTrue("getField did not null for non-existent field", osc
-				.getField("wham") == null);
+		assertEquals("getField did not return correct field", 'J', osc.getField("bam")
+				.getTypeCode());
+		assertNull("getField did not null for non-existent field", osc
+				.getField("wham"));
 	}
 
 	/**

@@ -27,7 +27,7 @@ public class LongTest extends junit.framework.TestCase {
 		// Test for method java.lang.Long(long)
 
 		Long l = new Long(-8900000006L);
-		assertTrue("Created incorrect Long", l.longValue() == -8900000006L);
+		assertEquals("Created incorrect Long", -8900000006L, l.longValue());
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class LongTest extends junit.framework.TestCase {
 		// Test for method java.lang.Long(java.lang.String)
 
 		Long l = new Long("-8900000006");
-		assertTrue("Created incorrect Long", l.longValue() == -8900000006L);
+		assertEquals("Created incorrect Long", -8900000006L, l.longValue());
 	}
 
 	/**
@@ -46,9 +46,9 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_byteValue() {
 		// Test for method byte java.lang.Long.byteValue()
 		Long l = new Long(127);
-		assertTrue("Returned incorrect byte value", l.byteValue() == 127);
-		assertTrue("Returned incorrect byte value", new Long(Long.MAX_VALUE)
-				.byteValue() == -1);
+		assertEquals("Returned incorrect byte value", 127, l.byteValue());
+		assertEquals("Returned incorrect byte value", -1, new Long(Long.MAX_VALUE)
+				.byteValue());
 	}
 
 	/**
@@ -58,8 +58,8 @@ public class LongTest extends junit.framework.TestCase {
 		// Test for method int java.lang.Long.compareTo(java.lang.Long)
 		assertTrue("-2 compared to 1 gave non-negative answer", new Long(-2L)
 				.compareTo(new Long(1L)) < 0);
-		assertTrue("-2 compared to -2 gave non-zero answer", new Long(-2L)
-				.compareTo(new Long(-2L)) == 0);
+		assertEquals("-2 compared to -2 gave non-zero answer", 0, new Long(-2L)
+				.compareTo(new Long(-2L)));
 		assertTrue("3 compared to 2 gave non-positive answer", new Long(3L)
 				.compareTo(new Long(2L)) > 0);
         
@@ -76,14 +76,14 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_decodeLjava_lang_String() {
 		// Test for method java.lang.Long
 		// java.lang.Long.decode(java.lang.String)
-		assertTrue("Returned incorrect value for hex string", Long.decode(
-				"0xFF").longValue() == 255L);
-		assertTrue("Returned incorrect value for dec string", Long.decode(
-				"-89000").longValue() == -89000L);
-		assertTrue("Returned incorrect value for 0 decimal", Long.decode("0")
-				.longValue() == 0);
-		assertTrue("Returned incorrect value for 0 hex", Long.decode("0x0")
-				.longValue() == 0);
+		assertEquals("Returned incorrect value for hex string", 255L, Long.decode(
+				"0xFF").longValue());
+		assertEquals("Returned incorrect value for dec string", -89000L, Long.decode(
+				"-89000").longValue());
+		assertEquals("Returned incorrect value for 0 decimal", 0, Long.decode("0")
+				.longValue());
+		assertEquals("Returned incorrect value for 0 hex", 0, Long.decode("0x0")
+				.longValue());
 		assertTrue(
 				"Returned incorrect value for most negative value decimal",
 				Long.decode("-9223372036854775808").longValue() == 0x8000000000000000L);
@@ -162,8 +162,8 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_doubleValue() {
 		// Test for method double java.lang.Long.doubleValue()
 		Long l = new Long(10000000);
-		assertTrue("Returned incorrect double value",
-				l.doubleValue() == 10000000.0);
+		assertEquals("Returned incorrect double value",
+				10000000.0, l.doubleValue());
 
 	}
 
@@ -200,8 +200,8 @@ public class LongTest extends junit.framework.TestCase {
 		System.setProperties(tProps);
 		assertTrue("returned incorrect Long", Long.getLong("testLong").equals(
 				new Long(99)));
-		assertTrue("returned incorrect default Long",
-				Long.getLong("ff") == null);
+		assertNull("returned incorrect default Long",
+				Long.getLong("ff"));
 	}
 
 	/**
@@ -255,9 +255,9 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_intValue() {
 		// Test for method int java.lang.Long.intValue()
 		Long l = new Long(100000);
-		assertTrue("Returned incorrect int value", l.intValue() == 100000);
-		assertTrue("Returned incorrect int value", new Long(Long.MAX_VALUE)
-				.intValue() == -1);
+		assertEquals("Returned incorrect int value", 100000, l.intValue());
+		assertEquals("Returned incorrect int value", -1, new Long(Long.MAX_VALUE)
+				.intValue());
 	}
 
 	/**
@@ -266,8 +266,8 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_longValue() {
 		// Test for method long java.lang.Long.longValue()
 		Long l = new Long(89000000005L);
-		assertTrue("Returned incorrect long value",
-				l.longValue() == 89000000005L);
+		assertEquals("Returned incorrect long value",
+				89000000005L, l.longValue());
 	}
 
 	/**
@@ -277,8 +277,8 @@ public class LongTest extends junit.framework.TestCase {
 		// Test for method long java.lang.Long.parseLong(java.lang.String)
 
 		long l = Long.parseLong("89000000005");
-		assertTrue("Parsed to incorrect long value", l == 89000000005L);
-		assertTrue("Returned incorrect value for 0", Long.parseLong("0") == 0);
+		assertEquals("Parsed to incorrect long value", 89000000005L, l);
+		assertEquals("Returned incorrect value for 0", 0, Long.parseLong("0"));
 		assertTrue("Returned incorrect value for most negative value", Long
 				.parseLong("-9223372036854775808") == 0x8000000000000000L);
 		assertTrue("Returned incorrect value for most positive value", Long
@@ -308,21 +308,21 @@ public class LongTest extends junit.framework.TestCase {
 	 */
 	public void test_parseLongLjava_lang_StringI() {
 		// Test for method long java.lang.Long.parseLong(java.lang.String, int)
-		assertTrue("Returned incorrect value",
-				Long.parseLong("100000000", 10) == 100000000L);
-		assertTrue("Returned incorrect value from hex string", Long.parseLong(
-				"FFFFFFFFF", 16) == 68719476735L);
+		assertEquals("Returned incorrect value",
+				100000000L, Long.parseLong("100000000", 10));
+		assertEquals("Returned incorrect value from hex string", 68719476735L, Long.parseLong(
+				"FFFFFFFFF", 16));
 		assertTrue("Returned incorrect value from octal string: "
 				+ Long.parseLong("77777777777"), Long.parseLong("77777777777",
 				8) == 8589934591L);
-		assertTrue("Returned incorrect value for 0 hex", Long
-				.parseLong("0", 16) == 0);
+		assertEquals("Returned incorrect value for 0 hex", 0, Long
+				.parseLong("0", 16));
 		assertTrue("Returned incorrect value for most negative value hex", Long
 				.parseLong("-8000000000000000", 16) == 0x8000000000000000L);
 		assertTrue("Returned incorrect value for most positive value hex", Long
 				.parseLong("7fffffffffffffff", 16) == 0x7fffffffffffffffL);
-		assertTrue("Returned incorrect value for 0 decimal", Long.parseLong(
-				"0", 10) == 0);
+		assertEquals("Returned incorrect value for 0 decimal", 0, Long.parseLong(
+				"0", 10));
 		assertTrue(
 				"Returned incorrect value for most negative value decimal",
 				Long.parseLong("-9223372036854775808", 10) == 0x8000000000000000L);
@@ -393,9 +393,9 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_shortValue() {
 		// Test for method short java.lang.Long.shortValue()
 		Long l = new Long(10000);
-		assertTrue("Returned incorrect short value", l.shortValue() == 10000);
-		assertTrue("Returned incorrect short value", new Long(Long.MAX_VALUE)
-				.shortValue() == -1);
+		assertEquals("Returned incorrect short value", 10000, l.shortValue());
+		assertEquals("Returned incorrect short value", -1, new Long(Long.MAX_VALUE)
+				.shortValue());
 	}
 
 	/**
@@ -403,20 +403,18 @@ public class LongTest extends junit.framework.TestCase {
 	 */
 	public void test_toBinaryStringJ() {
 		// Test for method java.lang.String java.lang.Long.toBinaryString(long)
-		assertTrue("Incorrect binary string returned", Long.toBinaryString(
-				890000L).equals("11011001010010010000"));
-		assertTrue(
-				"Incorrect binary string returned",
-				Long
+		assertEquals("Incorrect binary string returned", "11011001010010010000", Long.toBinaryString(
+				890000L));
+		assertEquals("Incorrect binary string returned",
+				
+								"1000000000000000000000000000000000000000000000000000000000000000", Long
 						.toBinaryString(Long.MIN_VALUE)
-						.equals(
-								"1000000000000000000000000000000000000000000000000000000000000000"));
-		assertTrue(
-				"Incorrect binary string returned",
-				Long
+						);
+		assertEquals("Incorrect binary string returned",
+				
+								"111111111111111111111111111111111111111111111111111111111111111", Long
 						.toBinaryString(Long.MAX_VALUE)
-						.equals(
-								"111111111111111111111111111111111111111111111111111111111111111"));
+						);
 	}
 
 	/**
@@ -424,12 +422,12 @@ public class LongTest extends junit.framework.TestCase {
 	 */
 	public void test_toHexStringJ() {
 		// Test for method java.lang.String java.lang.Long.toHexString(long)
-		assertTrue("Incorrect hex string returned", Long.toHexString(89000005L)
-				.equals("54e0845"));
-		assertTrue("Incorrect hex string returned", Long.toHexString(
-				Long.MIN_VALUE).equals("8000000000000000"));
-		assertTrue("Incorrect hex string returned", Long.toHexString(
-				Long.MAX_VALUE).equals("7fffffffffffffff"));
+		assertEquals("Incorrect hex string returned", "54e0845", Long.toHexString(89000005L)
+				);
+		assertEquals("Incorrect hex string returned", "8000000000000000", Long.toHexString(
+				Long.MIN_VALUE));
+		assertEquals("Incorrect hex string returned", "7fffffffffffffff", Long.toHexString(
+				Long.MAX_VALUE));
 	}
 
 	/**
@@ -437,12 +435,12 @@ public class LongTest extends junit.framework.TestCase {
 	 */
 	public void test_toOctalStringJ() {
 		// Test for method java.lang.String java.lang.Long.toOctalString(long)
-		assertTrue("Returned incorrect oct string", Long.toOctalString(
-				8589934591L).equals("77777777777"));
-		assertTrue("Returned incorrect oct string", Long.toOctalString(
-				Long.MIN_VALUE).equals("1000000000000000000000"));
-		assertTrue("Returned incorrect oct string", Long.toOctalString(
-				Long.MAX_VALUE).equals("777777777777777777777"));
+		assertEquals("Returned incorrect oct string", "77777777777", Long.toOctalString(
+				8589934591L));
+		assertEquals("Returned incorrect oct string", "1000000000000000000000", Long.toOctalString(
+				Long.MIN_VALUE));
+		assertEquals("Returned incorrect oct string", "777777777777777777777", Long.toOctalString(
+				Long.MAX_VALUE));
 	}
 
 	/**
@@ -451,12 +449,12 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_toString() {
 		// Test for method java.lang.String java.lang.Long.toString()
 		Long l = new Long(89000000005L);
-		assertTrue("Returned incorrect String", l.toString().equals(
-				"89000000005"));
-		assertTrue("Returned incorrect String", new Long(Long.MIN_VALUE)
-				.toString().equals("-9223372036854775808"));
-		assertTrue("Returned incorrect String", new Long(Long.MAX_VALUE)
-				.toString().equals("9223372036854775807"));
+		assertEquals("Returned incorrect String", 
+				"89000000005", l.toString());
+		assertEquals("Returned incorrect String", "-9223372036854775808", new Long(Long.MIN_VALUE)
+				.toString());
+		assertEquals("Returned incorrect String", "9223372036854775807", new Long(Long.MAX_VALUE)
+				.toString());
 	}
 
 	/**
@@ -465,12 +463,12 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_toStringJ() {
 		// Test for method java.lang.String java.lang.Long.toString(long)
 
-		assertTrue("Returned incorrect String", Long.toString(89000000005L)
-				.equals("89000000005"));
-		assertTrue("Returned incorrect String", Long.toString(Long.MIN_VALUE)
-				.equals("-9223372036854775808"));
-		assertTrue("Returned incorrect String", Long.toString(Long.MAX_VALUE)
-				.equals("9223372036854775807"));
+		assertEquals("Returned incorrect String", "89000000005", Long.toString(89000000005L)
+				);
+		assertEquals("Returned incorrect String", "-9223372036854775808", Long.toString(Long.MIN_VALUE)
+				);
+		assertEquals("Returned incorrect String", "9223372036854775807", Long.toString(Long.MAX_VALUE)
+				);
 	}
 
 	/**
@@ -478,23 +476,23 @@ public class LongTest extends junit.framework.TestCase {
 	 */
 	public void test_toStringJI() {
 		// Test for method java.lang.String java.lang.Long.toString(long, int)
-		assertTrue("Returned incorrect dec string", Long.toString(100000000L,
-				10).equals("100000000"));
-		assertTrue("Returned incorrect hex string", Long.toString(68719476735L,
-				16).equals("fffffffff"));
-		assertTrue("Returned incorrect oct string", Long.toString(8589934591L,
-				8).equals("77777777777"));
-		assertTrue("Returned incorrect bin string", Long.toString(
-				8796093022207L, 2).equals(
-				"1111111111111111111111111111111111111111111"));
-		assertTrue("Returned incorrect min string", Long.toString(
-				0x8000000000000000L, 10).equals("-9223372036854775808"));
-		assertTrue("Returned incorrect max string", Long.toString(
-				0x7fffffffffffffffL, 10).equals("9223372036854775807"));
-		assertTrue("Returned incorrect min string", Long.toString(
-				0x8000000000000000L, 16).equals("-8000000000000000"));
-		assertTrue("Returned incorrect max string", Long.toString(
-				0x7fffffffffffffffL, 16).equals("7fffffffffffffff"));
+		assertEquals("Returned incorrect dec string", "100000000", Long.toString(100000000L,
+				10));
+		assertEquals("Returned incorrect hex string", "fffffffff", Long.toString(68719476735L,
+				16));
+		assertEquals("Returned incorrect oct string", "77777777777", Long.toString(8589934591L,
+				8));
+		assertEquals("Returned incorrect bin string", 
+				"1111111111111111111111111111111111111111111", Long.toString(
+				8796093022207L, 2));
+		assertEquals("Returned incorrect min string", "-9223372036854775808", Long.toString(
+				0x8000000000000000L, 10));
+		assertEquals("Returned incorrect max string", "9223372036854775807", Long.toString(
+				0x7fffffffffffffffL, 10));
+		assertEquals("Returned incorrect min string", "-8000000000000000", Long.toString(
+				0x8000000000000000L, 16));
+		assertEquals("Returned incorrect max string", "7fffffffffffffff", Long.toString(
+				0x7fffffffffffffffL, 16));
 	}
 
 	/**
@@ -503,8 +501,8 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_valueOfLjava_lang_String() {
 		// Test for method java.lang.Long
 		// java.lang.Long.valueOf(java.lang.String)
-		assertTrue("Returned incorrect value", Long.valueOf("100000000")
-				.longValue() == 100000000L);
+		assertEquals("Returned incorrect value", 100000000L, Long.valueOf("100000000")
+				.longValue());
 		assertTrue("Returned incorrect value", Long.valueOf(
 				"9223372036854775807").longValue() == Long.MAX_VALUE);
 		assertTrue("Returned incorrect value", Long.valueOf(
@@ -548,10 +546,10 @@ public class LongTest extends junit.framework.TestCase {
 	public void test_valueOfLjava_lang_StringI() {
 		// Test for method java.lang.Long
 		// java.lang.Long.valueOf(java.lang.String, int)
-		assertTrue("Returned incorrect value", Long.valueOf("100000000", 10)
-				.longValue() == 100000000L);
-		assertTrue("Returned incorrect value from hex string", Long.valueOf(
-				"FFFFFFFFF", 16).longValue() == 68719476735L);
+		assertEquals("Returned incorrect value", 100000000L, Long.valueOf("100000000", 10)
+				.longValue());
+		assertEquals("Returned incorrect value from hex string", 68719476735L, Long.valueOf(
+				"FFFFFFFFF", 16).longValue());
 		assertTrue("Returned incorrect value from octal string: "
 				+ Long.valueOf("77777777777", 8).toString(), Long.valueOf(
 				"77777777777", 8).longValue() == 8589934591L);

@@ -40,7 +40,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
 	 */
 	public void test_getResponseCode() {
 		try {
-			assertTrue("Wrong response", uc.getResponseCode() == 200);
+			assertEquals("Wrong response", 200, uc.getResponseCode());
 		} catch (IOException e) {
 			fail("Unexpected exception : " + e.getMessage());
 		}

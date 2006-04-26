@@ -39,9 +39,9 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 		// Test for method java.net.DatagramPacket(byte [], int)
 		try {
 			dp = new DatagramPacket("Hello".getBytes(), 5);
-			assertTrue("Created incorrect packet", new String(dp.getData(), 0,
-					dp.getData().length).equals("Hello"));
-			assertTrue("Wrong length", dp.getLength() == 5);
+			assertEquals("Created incorrect packet", "Hello", new String(dp.getData(), 0,
+					dp.getData().length));
+			assertEquals("Wrong length", 5, dp.getLength());
 		} catch (Exception e) {
 			fail("Exception during Constructor test: " + e.toString());
 		}
@@ -53,10 +53,10 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 	public void test_Constructor$BII() {
 		try {
 			dp = new DatagramPacket("Hello".getBytes(), 2, 3);
-			assertTrue("Created incorrect packet", new String(dp.getData(), 0,
-					dp.getData().length).equals("Hello"));
-			assertTrue("Wrong length", dp.getLength() == 3);
-			assertTrue("Wrong offset", dp.getOffset() == 2);
+			assertEquals("Created incorrect packet", "Hello", new String(dp.getData(), 0,
+					dp.getData().length));
+			assertEquals("Wrong length", 3, dp.getLength());
+			assertEquals("Wrong offset", 2, dp.getOffset());
 		} catch (Exception e) {
 			fail("Exception during Constructor test: " + e.toString());
 		}
@@ -73,8 +73,8 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			assertTrue("Created incorrect packet", dp.getAddress().equals(
 					InetAddress.getLocalHost())
 					&& dp.getPort() == 0);
-			assertTrue("Wrong length", dp.getLength() == 3);
-			assertTrue("Wrong offset", dp.getOffset() == 2);
+			assertEquals("Wrong length", 3, dp.getLength());
+			assertEquals("Wrong offset", 2, dp.getOffset());
 		} catch (Exception e) {
 			fail("Exception during Constructor test: " + e.toString());
 		}
@@ -93,7 +93,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			assertTrue("Created incorrect packet", dp.getAddress().equals(
 					InetAddress.getLocalHost())
 					&& dp.getPort() == 0);
-			assertTrue("Wrong length", dp.getLength() == 5);
+			assertEquals("Wrong length", 5, dp.getLength());
 		} catch (Exception e) {
 			fail("Exception during Constructor test: " + e.toString());
 		}
@@ -122,8 +122,8 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 		// Test for method byte [] java.net.DatagramPacket.getData()
 
 		dp = new DatagramPacket("Hello".getBytes(), 5);
-		assertTrue("Incorrect length returned", new String(dp.getData(), 0, dp
-				.getData().length).equals("Hello"));
+		assertEquals("Incorrect length returned", "Hello", new String(dp.getData(), 0, dp
+				.getData().length));
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 		// Test for method int java.net.DatagramPacket.getLength()
 
 		dp = new DatagramPacket("Hello".getBytes(), 5);
-		assertTrue("Incorrect length returned", dp.getLength() == 5);
+		assertEquals("Incorrect length returned", 5, dp.getLength());
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 	 */
 	public void test_getOffset() {
 		dp = new DatagramPacket("Hello".getBytes(), 3, 2);
-		assertTrue("Incorrect length returned", dp.getOffset() == 3);
+		assertEquals("Incorrect length returned", 3, dp.getOffset());
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 		try {
 			dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
 					.getLocalHost(), 1000);
-			assertTrue("Incorrect port returned", dp.getPort() == 1000);
+			assertEquals("Incorrect port returned", 1000, dp.getPort());
 		} catch (Exception e) {
 			fail("Exception during getPort test : " + e.getMessage());
 		}
@@ -243,8 +243,8 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 	public void test_setData$BII() {
 		dp = new DatagramPacket("Hello".getBytes(), 5);
 		dp.setData("Wagga Wagga".getBytes(), 2, 3);
-		assertTrue("Incorrect data set", new String(dp.getData())
-				.equals("Wagga Wagga"));
+		assertEquals("Incorrect data set", "Wagga Wagga", new String(dp.getData())
+				);
 	}
 
 	/**
@@ -254,8 +254,8 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 		// Test for method void java.net.DatagramPacket.setData(byte [])
 		dp = new DatagramPacket("Hello".getBytes(), 5);
 		dp.setData("Ralph".getBytes());
-		assertTrue("Incorrect data set", new String(dp.getData(), 0, dp
-				.getData().length).equals("Ralph"));
+		assertEquals("Incorrect data set", "Ralph", new String(dp.getData(), 0, dp
+				.getData().length));
 	}
 
 	/**
@@ -265,7 +265,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 		// Test for method void java.net.DatagramPacket.setLength(int)
 		dp = new DatagramPacket("Hello".getBytes(), 5);
 		dp.setLength(1);
-		assertTrue("Failed to set packet length", dp.getLength() == 1);
+		assertEquals("Failed to set packet length", 1, dp.getLength());
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
 					.getLocalHost(), 1000);
 			dp.setPort(2000);
-			assertTrue("Port not set", dp.getPort() == 2000);
+			assertEquals("Port not set", 2000, dp.getPort());
 		} catch (Exception e) {
 			fail("Exception during setPort test : " + e.getMessage());
 		}
@@ -374,7 +374,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			assertTrue("Socket address not set correctly (2)", theAddress
 					.equals(new InetSocketAddress(thePacket.getAddress(),
 							thePacket.getPort())));
-			assertTrue("Offset not set correctly", thePacket.getOffset() == 1);
+			assertEquals("Offset not set correctly", 1, thePacket.getOffset());
 		} catch (Exception e) {
 			fail("Exception during constructor test(2):" + e.toString());
 		}

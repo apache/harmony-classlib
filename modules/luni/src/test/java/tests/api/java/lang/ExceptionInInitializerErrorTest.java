@@ -27,8 +27,8 @@ public class ExceptionInInitializerErrorTest extends junit.framework.TestCase {
 		} catch (ExceptionInInitializerError e) {
 			assertTrue("Initializer failed." + e.toString(), e.toString()
 					.equals("java.lang.ExceptionInInitializerError"));
-			assertTrue("Initializer failed.", e.getException() == null);
-			assertTrue("Initializer failed.", e.getMessage() == null);
+			assertNull("Initializer failed.", e.getException());
+			assertNull("Initializer failed.", e.getMessage());
 			return;
 		}
 		fail("Constructor failed.");
@@ -60,8 +60,8 @@ public class ExceptionInInitializerErrorTest extends junit.framework.TestCase {
 			}
 			fail("Constructor failed.");
 		} catch (ExceptionInInitializerError e) {
-			assertTrue("Initializer failed." + e.getMessage(),
-					e.getMessage() == null);
+			assertNull("Initializer failed." + e.getMessage(),
+					e.getMessage());
 			assertTrue("Initializer failed." + e.toString(),
 					e.getException() != null
 							&& e.getException().getMessage().equals(

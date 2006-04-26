@@ -370,7 +370,7 @@ public class CalendarTest extends junit.framework.TestCase {
 		Calendar cal = Calendar.getInstance();
 		// Use millisecond time for testing in Core
 		cal.setTime(new Date(884581200000L)); // (98, Calendar.JANUARY, 12)
-		assertTrue("incorrect millis", cal.getTime().getTime() == 884581200000L);
+		assertEquals("incorrect millis", 884581200000L, cal.getTime().getTime());
 		cal.setTimeZone(TimeZone.getTimeZone("EST"));
 		cal.setTime(new Date(943506000000L)); // (99, Calendar.NOVEMBER, 25)
 		assertTrue("incorrect fields", cal.get(Calendar.YEAR) == 1999

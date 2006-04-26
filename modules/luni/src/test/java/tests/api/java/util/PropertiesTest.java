@@ -51,8 +51,8 @@ public class PropertiesTest extends junit.framework.TestCase {
 		if (System.getProperty("java.vendor") != null) {
 			try {
 				Properties p = new Properties(System.getProperties());
-				assertTrue("failed to construct correct properties", p
-						.getProperty("java.vendor") != null);
+				assertNotNull("failed to construct correct properties", p
+						.getProperty("java.vendor"));
 			} catch (Exception e) {
 				fail("exception occured while creating construcotr" + e);
 			}
@@ -66,8 +66,8 @@ public class PropertiesTest extends junit.framework.TestCase {
 	public void test_getPropertyLjava_lang_String() {
 		// Test for method java.lang.String
 		// java.util.Properties.getProperty(java.lang.String)
-		assertTrue("Did not retrieve property", ((String) tProps
-				.getProperty("test.prop")).equals("this is a test property"));
+		assertEquals("Did not retrieve property", "this is a test property", ((String) tProps
+				.getProperty("test.prop")));
 	}
 
 	/**
@@ -77,10 +77,10 @@ public class PropertiesTest extends junit.framework.TestCase {
 	public void test_getPropertyLjava_lang_StringLjava_lang_String() {
 		// Test for method java.lang.String
 		// java.util.Properties.getProperty(java.lang.String, java.lang.String)
-		assertTrue("Did not retrieve property", ((String) tProps.getProperty(
-				"test.prop", "Blarg")).equals("this is a test property"));
-		assertTrue("Did not return default value", ((String) tProps
-				.getProperty("notInThere.prop", "Gabba")).equals("Gabba"));
+		assertEquals("Did not retrieve property", "this is a test property", ((String) tProps.getProperty(
+				"test.prop", "Blarg")));
+		assertEquals("Did not return default value", "Gabba", ((String) tProps
+				.getProperty("notInThere.prop", "Gabba")));
 	}
 
 	/**
@@ -135,10 +135,10 @@ public class PropertiesTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during load test : " + e.getMessage());
 		}
-		assertTrue("Failed to load correct properties", prop.getProperty(
-				"test.pkg").equals("harmony.tests"));
-		assertTrue("Load failed to parse incorrectly", prop
-				.getProperty("commented.entry") == null);
+		assertEquals("Failed to load correct properties", "harmony.tests", prop.getProperty(
+				"test.pkg"));
+		assertNull("Load failed to parse incorrectly", prop
+				.getProperty("commented.entry"));
 
 		prop = new Properties();
 		try {
@@ -159,15 +159,15 @@ public class PropertiesTest extends junit.framework.TestCase {
 			prop.load(new ByteArrayInputStream(" a= b".getBytes()));
 		} catch (IOException e) {
 		}
-		assertTrue("Failed to ignore whitespace", prop.get("a").equals("b"));
+		assertEquals("Failed to ignore whitespace", "b", prop.get("a"));
 
 		prop = new Properties();
 		try {
 			prop.load(new ByteArrayInputStream(" a b".getBytes()));
 		} catch (IOException e) {
 		}
-		assertTrue("Failed to interpret whitespace as =", prop.get("a").equals(
-				"b"));
+		assertEquals("Failed to interpret whitespace as =", 
+				"b", prop.get("a"));
 
 		prop = new Properties();
 		try {
@@ -175,8 +175,8 @@ public class PropertiesTest extends junit.framework.TestCase {
 					.getBytes("ISO8859_1")));
 		} catch (IOException e) {
 		}
-		assertTrue("Failed to parse chars >= 0x80", prop.get("a").equals(
-				"\u008d\u00d3"));
+		assertEquals("Failed to parse chars >= 0x80", 
+				"\u008d\u00d3", prop.get("a"));
 
 		prop = new Properties();
 		try {
@@ -187,8 +187,8 @@ public class PropertiesTest extends junit.framework.TestCase {
 		} catch (IndexOutOfBoundsException e) {
 			fail("IndexOutOfBoundsException when last line is a comment with no line terminator");
 		}
-		assertTrue("Failed to load when last line contains a comment", prop
-				.get("fred").equals("1"));
+		assertEquals("Failed to load when last line contains a comment", "1", prop
+				.get("fred"));
 	}
 
 	/**
@@ -282,11 +282,11 @@ public class PropertiesTest extends junit.framework.TestCase {
 		// java.util.Properties.setProperty(java.lang.String, java.lang.String)
 		Properties myProps = new Properties();
 		myProps.setProperty("Yoink", "Yabba");
-		assertTrue("Failed to set property", myProps.getProperty("Yoink")
-				.equals("Yabba"));
+		assertEquals("Failed to set property", "Yabba", myProps.getProperty("Yoink")
+				);
 		myProps.setProperty("Yoink", "Gab");
-		assertTrue("Failed to reset property", myProps.getProperty("Yoink")
-				.equals("Gab"));
+		assertEquals("Failed to reset property", "Gab", myProps.getProperty("Yoink")
+				);
 	}
 
 	/**

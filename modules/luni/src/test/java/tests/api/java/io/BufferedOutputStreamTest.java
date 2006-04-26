@@ -70,8 +70,8 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 			os = new java.io.BufferedOutputStream(baos, 600);
 			os.write(fileString.getBytes(), 0, 500);
 			os.flush();
-			assertTrue("Bytes not written after flush",
-					((ByteArrayOutputStream) baos).size() == 500);
+			assertEquals("Bytes not written after flush",
+					500, ((ByteArrayOutputStream) baos).size());
 		} catch (java.io.IOException e) {
 			fail("Flush test failed");
 		}
@@ -88,10 +88,10 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 					baos = new java.io.ByteArrayOutputStream());
 			os.write(fileString.getBytes(), 0, 500);
 			bais = new java.io.ByteArrayInputStream(baos.toByteArray());
-			assertTrue("Bytes written, not buffered", bais.available() == 0);
+			assertEquals("Bytes written, not buffered", 0, bais.available());
 			os.flush();
 			bais = new java.io.ByteArrayInputStream(baos.toByteArray());
-			assertTrue("Bytes not written after flush", bais.available() == 500);
+			assertEquals("Bytes not written after flush", 500, bais.available());
 			os.write(fileString.getBytes(), 500, 513);
 			bais = new java.io.ByteArrayInputStream(baos.toByteArray());
 			assertTrue("Bytes not written when buffer full",
@@ -117,13 +117,13 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 			os = new java.io.BufferedOutputStream(baos);
 			os.write('t');
 			bais = new java.io.ByteArrayInputStream(baos.toByteArray());
-			assertTrue("Byte written, not buffered", bais.available() == 0);
+			assertEquals("Byte written, not buffered", 0, bais.available());
 			os.flush();
 			bais = new java.io.ByteArrayInputStream(baos.toByteArray());
-			assertTrue("Byte not written after flush", bais.available() == 1);
+			assertEquals("Byte not written after flush", 1, bais.available());
 			byte[] wbytes = new byte[1];
 			bais.read(wbytes, 0, 1);
-			assertTrue("Incorrect byte written", wbytes[0] == 't');
+			assertEquals("Incorrect byte written", 't', wbytes[0]);
 		} catch (java.io.IOException e) {
 			fail("Write test failed");
 		}

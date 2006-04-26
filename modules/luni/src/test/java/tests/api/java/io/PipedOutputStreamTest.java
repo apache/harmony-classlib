@@ -141,8 +141,8 @@ public class PipedOutputStreamTest extends junit.framework.TestCase {
 			out.write("HelloWorld".getBytes(), 0, 10);
 			assertTrue("Bytes written before flush", reader.available() != 0);
 			out.flush();
-			assertTrue("Wrote incorrect bytes", reader.read(10).equals(
-					"HelloWorld"));
+			assertEquals("Wrote incorrect bytes", 
+					"HelloWorld", reader.read(10));
 		} catch (IOException e) {
 			fail("IOException during write test : " + e.getMessage());
 		}
@@ -160,8 +160,8 @@ public class PipedOutputStreamTest extends junit.framework.TestCase {
 			rt.start();
 			out.write("HelloWorld".getBytes(), 0, 10);
 			out.flush();
-			assertTrue("Wrote incorrect bytes", reader.read(10).equals(
-					"HelloWorld"));
+			assertEquals("Wrote incorrect bytes", 
+					"HelloWorld", reader.read(10));
 		} catch (IOException e) {
 			fail("IOException during write test : " + e.getMessage());
 		}

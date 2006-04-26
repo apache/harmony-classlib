@@ -59,7 +59,7 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		new Support_MapTest2(new IdentityHashMap()).runTest();
 
 		IdentityHashMap hm2 = new IdentityHashMap();
-		assertTrue("Created incorrect IdentityHashMap", hm2.size() == 0);
+		assertEquals("Created incorrect IdentityHashMap", 0, hm2.size());
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 	public void test_ConstructorI() {
 		// Test for method java.util.IdentityHashMap(int)
 		IdentityHashMap hm2 = new IdentityHashMap(5);
-		assertTrue("Created incorrect IdentityHashMap", hm2.size() == 0);
+		assertEquals("Created incorrect IdentityHashMap", 0, hm2.size());
 		try {
 			new IdentityHashMap(-1);
 		} catch (IllegalArgumentException e) {
@@ -78,7 +78,7 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 				"Failed to throw IllegalArgumentException for initial capacity < 0");
 
 		IdentityHashMap empty = new IdentityHashMap(0);
-		assertTrue("Empty IdentityHashMap access", empty.get("nothing") == null);
+		assertNull("Empty IdentityHashMap access", empty.get("nothing"));
 		empty.put("something", "here");
 		assertTrue("cannot get element", empty.get("something") == "here");
 	}
@@ -103,10 +103,10 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 	public void test_clear() {
 		// Test for method void java.util.IdentityHashMap.clear()
 		hm.clear();
-		assertTrue("Clear failed to reset size", hm.size() == 0);
+		assertEquals("Clear failed to reset size", 0, hm.size());
 		for (int i = 0; i < hmSize; i++)
-			assertTrue("Failed to clear all elements",
-					hm.get(objArray2[i]) == null);
+			assertNull("Failed to clear all elements",
+					hm.get(objArray2[i]));
 
 	}
 
@@ -126,23 +126,23 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		// get the keySet() and values() on the original Map
 		Set keys = map.keySet();
 		Collection values = map.values();
-		assertTrue("values() does not work", values.iterator().next().equals(
-				"value"));
-		assertTrue("keySet() does not work", keys.iterator().next().equals(
-				"key"));
+		assertEquals("values() does not work", 
+				"value", values.iterator().next());
+		assertEquals("keySet() does not work", 
+				"key", keys.iterator().next());
 		AbstractMap map2 = (AbstractMap) map.clone();
 		map2.put("key", "value2");
 		Collection values2 = map2.values();
 		assertTrue("values() is identical", values2 != values);
 		// values() and keySet() on the cloned() map should be different
-		assertTrue("values() was not cloned", values2.iterator().next().equals(
-				"value2"));
+		assertEquals("values() was not cloned", 
+				"value2", values2.iterator().next());
 		map2.clear();
 		map2.put("key2", "value3");
 		Set key2 = map2.keySet();
 		assertTrue("keySet() is identical", key2 != keys);
-		assertTrue("keySet() was not cloned", key2.iterator().next().equals(
-				"key2"));
+		assertEquals("keySet() was not cloned", 
+				"key2", key2.iterator().next());
 	}
 
 	/**
@@ -198,17 +198,17 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 	public void test_getLjava_lang_Object() {
 		// Test for method java.lang.Object
 		// java.util.IdentityHashMap.get(java.lang.Object)
-		assertTrue("Get returned non-null for non existent key",
-				hm.get("T") == null);
+		assertNull("Get returned non-null for non existent key",
+				hm.get("T"));
 		hm.put("T", "HELLO");
-		assertTrue("Get returned incorecct value for existing key", hm.get("T")
-				.equals("HELLO"));
+		assertEquals("Get returned incorecct value for existing key", "HELLO", hm.get("T")
+				);
 
 		IdentityHashMap m = new IdentityHashMap();
 		m.put(null, "test");
-		assertTrue("Failed with null key", m.get(null).equals("test"));
-		assertTrue("Failed with missing key matching null hash", m
-				.get(new Integer(0)) == null);
+		assertEquals("Failed with null key", "test", m.get(null));
+		assertNull("Failed with missing key matching null hash", m
+				.get(new Integer(0)));
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		IdentityHashMap m = new IdentityHashMap();
 		m.put(null, "test");
 		assertTrue("Failed with null key", m.keySet().contains(null));
-		assertTrue("Failed with null key", m.keySet().iterator().next() == null);
+		assertNull("Failed with null key", m.keySet().iterator().next());
 
 		Map map = new IdentityHashMap(101);
 		map.put(new Integer(1), "1");
@@ -253,7 +253,7 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		list.remove(remove1);
 		list.remove(remove2);
 		assertTrue("Wrong result", it.next().equals(list.get(0)));
-		assertTrue("Wrong size", map.size() == 1);
+		assertEquals("Wrong size", 1, map.size());
 		assertTrue("Wrong contents", map.keySet().iterator().next().equals(
 				list.get(0)));
 
@@ -270,7 +270,7 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		it2.hasNext();
 		it2.remove();
 		assertTrue("Wrong result 2", it2.next().equals(next));
-		assertTrue("Wrong size 2", map2.size() == 1);
+		assertEquals("Wrong size 2", 1, map2.size());
 		assertTrue("Wrong contents 2", map2.keySet().iterator().next().equals(
 				next));
 	}
@@ -282,8 +282,8 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object
 		// java.util.IdentityHashMap.put(java.lang.Object, java.lang.Object)
 		hm.put("KEY", "VALUE");
-		assertTrue("Failed to install key/value pair", hm.get("KEY").equals(
-				"VALUE"));
+		assertEquals("Failed to install key/value pair", 
+				"VALUE", hm.get("KEY"));
 
 		IdentityHashMap m = new IdentityHashMap();
 		Short s0 = new Short((short) 0);
@@ -291,10 +291,10 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		m.put(null, "test");
 		Integer i0 = new Integer(0);
 		m.put(i0, "int");
-		assertTrue("Failed adding to bucket containing null", m.get(s0).equals(
-				"short"));
-		assertTrue("Failed adding to bucket containing null2", m.get(i0)
-				.equals("int"));
+		assertEquals("Failed adding to bucket containing null", 
+				"short", m.get(s0));
+		assertEquals("Failed adding to bucket containing null2", "int", m.get(i0)
+				);
 	}
 
 	/**
@@ -318,16 +318,16 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		int size = hm.size();
 		Integer x = ((Integer) hm.remove(objArray2[9]));
 		assertTrue("Remove returned incorrect value", x.equals(new Integer(9)));
-		assertTrue("Failed to remove given key", hm.get(objArray2[9]) == null);
+		assertNull("Failed to remove given key", hm.get(objArray2[9]));
 		assertTrue("Failed to decrement size", hm.size() == (size - 1));
-		assertTrue("Remove of non-existent key returned non-null", hm
-				.remove("LCLCLC") == null);
+		assertNull("Remove of non-existent key returned non-null", hm
+				.remove("LCLCLC"));
 
 		IdentityHashMap m = new IdentityHashMap();
 		m.put(null, "test");
-		assertTrue("Failed with same hash as null",
-				m.remove(objArray[0]) == null);
-		assertTrue("Failed with null key", m.remove(null).equals("test"));
+		assertNull("Failed with same hash as null",
+				m.remove(objArray[0]));
+		assertEquals("Failed with null key", "test", m.remove(null));
 	}
 
 	/**

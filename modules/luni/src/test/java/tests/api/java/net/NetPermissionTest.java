@@ -25,8 +25,8 @@ public class NetPermissionTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.net.NetPermission(java.lang.String)
 		NetPermission n = new NetPermission("requestPasswordAuthentication");
-		assertTrue("Returned incorrect name", n.getName().equals(
-				"requestPasswordAuthentication"));
+		assertEquals("Returned incorrect name", 
+				"requestPasswordAuthentication", n.getName());
 	}
 
 	/**
@@ -38,8 +38,8 @@ public class NetPermissionTest extends junit.framework.TestCase {
 		// java.lang.String)
 		NetPermission n = new NetPermission("requestPasswordAuthentication",
 				null);
-		assertTrue("Returned incorrect name", n.getName().equals(
-				"requestPasswordAuthentication"));
+		assertEquals("Returned incorrect name", 
+				"requestPasswordAuthentication", n.getName());
 	}
 
 	/**

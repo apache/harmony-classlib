@@ -398,7 +398,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			oos.write('T');
 			oos.close();
 			ois = new ObjectInputStream(loadStream());
-			assertTrue("Read incorrect byte", ois.read() == 'T');
+			assertEquals("Read incorrect byte", 'T', ois.read());
 			ois.close();
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());
@@ -414,8 +414,8 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			ois = new ObjectInputStream(loadStream());
 			ois.read(buf, 0, 10);
 			ois.close();
-			assertTrue("Read incorrect bytes", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());
 		}
@@ -439,7 +439,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			oos.writeByte(127);
 			oos.close();
 			ois = new ObjectInputStream(loadStream());
-			assertTrue("Wrote incorrect byte value", ois.readByte() == 127);
+			assertEquals("Wrote incorrect byte value", 127, ois.readByte());
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());
 		}
@@ -455,8 +455,8 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			ois = new ObjectInputStream(loadStream());
 			ois.readFully(buf);
 			ois.close();
-			assertTrue("Wrote incorrect bytes value", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Wrote incorrect bytes value", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());
 		}
@@ -468,7 +468,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			oos.writeChar('T');
 			oos.close();
 			ois = new ObjectInputStream(loadStream());
-			assertTrue("Wrote incorrect char value", ois.readChar() == 'T');
+			assertEquals("Wrote incorrect char value", 'T', ois.readChar());
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());
 		}
@@ -488,8 +488,8 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			for (int i = 0; i < avail; ++i)
 				buf[i] = ois.readChar();
 			ois.close();
-			assertTrue("Wrote incorrect chars", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Wrote incorrect chars", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());
 		}
@@ -556,7 +556,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			oos.writeShort(127);
 			oos.close();
 			ois = new ObjectInputStream(loadStream());
-			assertTrue("Wrote incorrect short value", ois.readShort() == 127);
+			assertEquals("Wrote incorrect short value", 127, ois.readShort());
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());
 		}
@@ -569,8 +569,8 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			oos.writeUTF("HelloWorld");
 			oos.close();
 			ois = new ObjectInputStream(loadStream());
-			assertTrue("Wrote incorrect UTF value", ois.readUTF().equals(
-					"HelloWorld"));
+			assertEquals("Wrote incorrect UTF value", 
+					"HelloWorld", ois.readUTF());
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());
 		}
@@ -591,8 +591,8 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			available2 = ois.available();
 			obj2 = ois.readObject();
 
-			assertTrue("available returned incorrect value", available1 == 0);
-			assertTrue("available returned incorrect value", available2 == 0);
+			assertEquals("available returned incorrect value", 0, available1);
+			assertEquals("available returned incorrect value", 0, available2);
 
 			assertTrue("available caused incorrect reading", FOO.equals(obj1));
 			assertTrue("available returned incorrect value", FOO.equals(obj2));
@@ -656,7 +656,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 
 		Class[] resolvedClasses = ((ObjectInputStreamSubclass) ois)
 				.resolvedClasses();
-		assertTrue("missing resolved", resolvedClasses.length == 3);
+		assertEquals("missing resolved", 3, resolvedClasses.length);
 		assertTrue("resolved class 1", resolvedClasses[0] == Object[].class);
 		assertTrue("resolved class 2", resolvedClasses[1] == Integer.class);
 		assertTrue("resolved class 3", resolvedClasses[2] == Number.class);
@@ -679,9 +679,9 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			assertTrue("incorrect output", Arrays.equals(input, result));
 
 			ois = new ObjectInputStreamSubclass(loadStream());
-			assertTrue("Wrong result from readObject()", ois.readObject()
-					.equals("R"));
-			assertTrue("Wrong result from readByte()", ois.readByte() == 24);
+			assertEquals("Wrong result from readObject()", "R", ois.readObject()
+					);
+			assertEquals("Wrong result from readByte()", 24, ois.readByte());
 			ois.close();
 		} catch (IOException e1) {
 			fail("IOException : " + e1.getMessage());
@@ -770,7 +770,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			} catch (ClassNotFoundException e) {
 				fail(e.toString());
 			}
-			assertTrue("String not resolved", "ABC".equals(result.field1));
+			assertEquals("String not resolved", "ABC", result.field1);
 			assertTrue("Second reference not resolved",
 					result.field1 == result.field2);
 		} catch (IOException e) {

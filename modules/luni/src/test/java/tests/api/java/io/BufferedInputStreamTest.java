@@ -199,13 +199,13 @@ public class BufferedInputStreamTest extends junit.framework.TestCase {
 		InputStream in = new BufferedInputStream(
 				new ByteArrayInputStream(bytes), 12);
 		try {
-			assertTrue("Wrong initial byte", in.read() == 0); // Fill the
+			assertEquals("Wrong initial byte", 0, in.read()); // Fill the
 			// buffer
 			byte[] buf = new byte[14];
 			in.read(buf, 0, 14); // Read greater than the buffer
 			assertTrue("Wrong block read data", new String(buf, 0, 14)
 					.equals(new String(bytes, 1, 14)));
-			assertTrue("Wrong bytes", in.read() == 15); // Check next byte
+			assertEquals("Wrong bytes", 15, in.read()); // Check next byte
 		} catch (IOException e) {
 			fail("Exception during read test 2");
 		}

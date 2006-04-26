@@ -109,7 +109,7 @@ public class TreeMapTest extends junit.framework.TestCase {
 	public void test_clear() {
 		// Test for method void java.util.TreeMap.clear()
 		tm.clear();
-		assertTrue("Cleared map returned non-zero size", tm.size() == 0);
+		assertEquals("Cleared map returned non-zero size", 0, tm.size());
 	}
 
 	/**
@@ -132,23 +132,23 @@ public class TreeMapTest extends junit.framework.TestCase {
 		// get the keySet() and values() on the original Map
 		Set keys = map.keySet();
 		Collection values = map.values();
-		assertTrue("values() does not work", values.iterator().next().equals(
-				"value"));
-		assertTrue("keySet() does not work", keys.iterator().next().equals(
-				"key"));
+		assertEquals("values() does not work", 
+				"value", values.iterator().next());
+		assertEquals("keySet() does not work", 
+				"key", keys.iterator().next());
 		AbstractMap map2 = (AbstractMap) map.clone();
 		map2.put("key", "value2");
 		Collection values2 = map2.values();
 		assertTrue("values() is identical", values2 != values);
 		// values() and keySet() on the cloned() map should be different
-		assertTrue("values() was not cloned", values2.iterator().next().equals(
-				"value2"));
+		assertEquals("values() was not cloned", 
+				"value2", values2.iterator().next());
 		map2.clear();
 		map2.put("key2", "value3");
 		Set key2 = map2.keySet();
 		assertTrue("keySet() is identical", key2 != keys);
-		assertTrue("keySet() was not cloned", key2.iterator().next().equals(
-				"key2"));
+		assertEquals("keySet() was not cloned", 
+				"key2", key2.iterator().next());
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class TreeMapTest extends junit.framework.TestCase {
 	 */
 	public void test_firstKey() {
 		// Test for method java.lang.Object java.util.TreeMap.firstKey()
-		assertTrue("Returned incorrect first key", tm.firstKey().equals("0"));
+		assertEquals("Returned incorrect first key", "0", tm.firstKey());
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class TreeMapTest extends junit.framework.TestCase {
 		// Test for method java.util.SortedMap
 		// java.util.TreeMap.headMap(java.lang.Object)
 		Map head = tm.headMap("100");
-		assertTrue("Returned map of incorrect size", head.size() == 3);
+		assertEquals("Returned map of incorrect size", 3, head.size());
 		assertTrue("Returned incorrect elements", head.containsKey("0")
 				&& head.containsValue(new Integer("1"))
 				&& head.containsKey("10"));
@@ -303,7 +303,7 @@ public class TreeMapTest extends junit.framework.TestCase {
 	 */
 	public void test_size() {
 		// Test for method int java.util.TreeMap.size()
-		assertTrue("Returned incorrect size", tm.size() == 1000);
+		assertEquals("Returned incorrect size", 1000, tm.size());
 	}
 
 	/**
@@ -314,7 +314,7 @@ public class TreeMapTest extends junit.framework.TestCase {
 		// java.util.TreeMap.subMap(java.lang.Object, java.lang.Object)
 		SortedMap subMap = tm.subMap(objArray[100].toString(), objArray[109]
 				.toString());
-		assertTrue("subMap is of incorrect size", subMap.size() == 9);
+		assertEquals("subMap is of incorrect size", 9, subMap.size());
 		for (int counter = 100; counter < 109; counter++)
 			assertTrue("SubMap contains incorrect elements", subMap.get(
 					objArray[counter].toString()).equals(objArray[counter]));
@@ -326,9 +326,8 @@ public class TreeMapTest extends junit.framework.TestCase {
 		} catch (IllegalArgumentException e) {
 			result = 1;
 		}
-		assertTrue(
-				"end key less than start key should throw IllegalArgumentException",
-				result == 1);
+		assertEquals("end key less than start key should throw IllegalArgumentException",
+				1, result);
 	}
 
 	/**

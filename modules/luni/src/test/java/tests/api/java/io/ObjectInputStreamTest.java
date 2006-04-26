@@ -227,7 +227,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Read incorrect bytes", ois.available() == 10);
+			assertEquals("Read incorrect bytes", 10, ois.available());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -285,7 +285,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Read incorrect byte value", ois.read() == 'T');
+			assertEquals("Read incorrect byte value", 'T', ois.read());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -305,8 +305,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 					.toByteArray()));
 			ois.read(buf, 0, 10);
 			ois.close();
-			assertTrue("Read incorrect bytes", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -339,7 +339,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Read incorrect byte value", ois.readByte() == 127);
+			assertEquals("Read incorrect byte value", 127, ois.readByte());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -356,7 +356,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Read incorrect char value", ois.readChar() == 'T');
+			assertEquals("Read incorrect char value", 'T', ois.readChar());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -403,11 +403,11 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
 			sth = (SerializableTestHelper) (ois.readObject());
-			assertTrue("readFields / writeFields failed--first field not set",
-					sth.getText1().equals("Gabba"));
-			assertTrue(
+			assertEquals("readFields / writeFields failed--first field not set",
+					"Gabba", sth.getText1());
+			assertNull(
 					"readFields / writeFields failed--second field should not have been set",
-					sth.getText2() == null);
+					sth.getText2());
 		} catch (Exception e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -444,8 +444,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 					.toByteArray()));
 			ois.readFully(buf);
 			ois.close();
-			assertTrue("Read incorrect bytes", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -465,8 +465,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 					.toByteArray()));
 			ois.readFully(buf, 0, 10);
 			ois.close();
-			assertTrue("Read incorrect bytes", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -501,8 +501,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
 			ois.readLine();
-			assertTrue("Read incorrect string value", ois.readLine().equals(
-					"SecondLine"));
+			assertEquals("Read incorrect string value", 
+					"SecondLine", ois.readLine());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -599,8 +599,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Read incorrect unsignedByte value", ois
-					.readUnsignedByte() == 255);
+			assertEquals("Read incorrect unsignedByte value", 255, ois
+					.readUnsignedByte());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -617,8 +617,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Read incorrect unsignedShort value", ois
-					.readUnsignedShort() == 65535);
+			assertEquals("Read incorrect unsignedShort value", 65535, ois
+					.readUnsignedShort());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -635,8 +635,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Read incorrect utf value", ois.readUTF().equals(
-					"HelloWorld"));
+			assertEquals("Read incorrect utf value", 
+					"HelloWorld", ois.readUTF());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -657,8 +657,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 			ois.skipBytes(5);
 			ois.read(buf, 0, 5);
 			ois.close();
-			assertTrue("Skipped incorrect bytes", new String(buf, 0, 5)
-					.equals("World"));
+			assertEquals("Skipped incorrect bytes", "World", new String(buf, 0, 5)
+					);
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}

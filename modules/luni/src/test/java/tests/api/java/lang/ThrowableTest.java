@@ -43,8 +43,8 @@ public class ThrowableTest extends junit.framework.TestCase {
 			if (true)
 				throw new Throwable("Throw");
 		} catch (Throwable e) {
-			assertTrue("Threw Throwable with incorrect message", e.getMessage()
-					.equals("Throw"));
+			assertEquals("Threw Throwable with incorrect message", "Throw", e.getMessage()
+					);
 			return;
 		}
 		fail("Failed to throw Throwable");
@@ -135,8 +135,8 @@ public class ThrowableTest extends junit.framework.TestCase {
 		// Test for method java.lang.String java.lang.Throwable.getMessage()
 
 		Throwable x = new ClassNotFoundException("A Message");
-		assertTrue("Returned incorrect messasge string", x.getMessage().equals(
-				"A Message"));
+		assertEquals("Returned incorrect messasge string", 
+				"A Message", x.getMessage());
 	}
 
 	/**
@@ -199,8 +199,8 @@ public class ThrowableTest extends junit.framework.TestCase {
 			if (true)
 				throw new Throwable("Throw");
 		} catch (Throwable e) {
-			assertTrue("Threw Throwable with incorrect string", e.toString()
-					.equals("java.lang.Throwable: Throw"));
+			assertEquals("Threw Throwable with incorrect string", "java.lang.Throwable: Throw", e.toString()
+					);
 			return;
 		}
 		fail("Failed to throw Throwable");

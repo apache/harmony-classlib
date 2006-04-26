@@ -21,8 +21,8 @@ public class AssertionErrorTest extends junit.framework.TestCase {
 	 */
 	public void test_ObjectConstructor() {
 		AssertionError error = new AssertionError(new String("hi"));
-		assertTrue("non-null cause", error.getCause() == null);
-		assertTrue(error.getMessage().equals("hi"));
+		assertNull("non-null cause", error.getCause());
+		assertEquals("hi", error.getMessage());
 		Exception exc = new NullPointerException();
 		error = new AssertionError(exc);
 		assertTrue("non-null cause", error.getCause() == exc);

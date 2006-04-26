@@ -525,8 +525,8 @@ public class OutputStreamWriterTest extends TestCase {
 			writer.write(new char[] { '\u3048' });
 			writer.close();
 			// there should not be a mode switch between writes
-			assertTrue("invalid conversion 4", new String(bout.toByteArray(),
-					"ISO8859_1").equals("\u001b$B$($(\u001b(B"));
+			assertEquals("invalid conversion 4", "\u001b$B$($(\u001b(B", new String(bout.toByteArray(),
+					"ISO8859_1"));
 		} catch (UnsupportedEncodingException e) {
 			// Can't test missing converter
 			System.out.println(e);
@@ -562,8 +562,8 @@ public class OutputStreamWriterTest extends TestCase {
 		try {
 			osw = new OutputStreamWriter(fos, "8859_1");
 		} catch (UnsupportedEncodingException e) {
-			assertTrue("Returned incorrect encoding", osw.getEncoding().equals(
-					"8859_1"));
+			assertEquals("Returned incorrect encoding", 
+					"8859_1", osw.getEncoding());
 		}
 	}
 
@@ -596,7 +596,7 @@ public class OutputStreamWriterTest extends TestCase {
 			osw.close();
 			openInputStream();
 			int c = isr.read();
-			assertTrue("Incorrect char returned", (char) c == 'T');
+			assertEquals("Incorrect char returned", 'T', (char) c);
 		} catch (Exception e) {
 			fail("Exception during write test : " + e.getMessage());
 		}

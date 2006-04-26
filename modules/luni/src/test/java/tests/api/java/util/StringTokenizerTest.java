@@ -61,7 +61,7 @@ public class StringTokenizerTest extends junit.framework.TestCase {
 		// Test for method int java.util.StringTokenizer.countTokens()
 		StringTokenizer st = new StringTokenizer("This is a test String");
 
-		assertTrue("Incorrect token count returned", st.countTokens() == 5);
+		assertEquals("Incorrect token count returned", 5, st.countTokens());
 	}
 
 	/**
@@ -105,16 +105,16 @@ public class StringTokenizerTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object
 		// java.util.StringTokenizer.nextElement()
 		StringTokenizer st = new StringTokenizer("This is a test String");
-		assertTrue("nextElement returned incorrect value", ((String) st
-				.nextElement()).equals("This"));
-		assertTrue("nextElement returned incorrect value", ((String) st
-				.nextElement()).equals("is"));
-		assertTrue("nextElement returned incorrect value", ((String) st
-				.nextElement()).equals("a"));
-		assertTrue("nextElement returned incorrect value", ((String) st
-				.nextElement()).equals("test"));
-		assertTrue("nextElement returned incorrect value", ((String) st
-				.nextElement()).equals("String"));
+		assertEquals("nextElement returned incorrect value", "This", ((String) st
+				.nextElement()));
+		assertEquals("nextElement returned incorrect value", "is", ((String) st
+				.nextElement()));
+		assertEquals("nextElement returned incorrect value", "a", ((String) st
+				.nextElement()));
+		assertEquals("nextElement returned incorrect value", "test", ((String) st
+				.nextElement()));
+		assertEquals("nextElement returned incorrect value", "String", ((String) st
+				.nextElement()));
 		try {
 			st.nextElement();
 			fail(
@@ -131,16 +131,16 @@ public class StringTokenizerTest extends junit.framework.TestCase {
 		// Test for method java.lang.String
 		// java.util.StringTokenizer.nextToken()
 		StringTokenizer st = new StringTokenizer("This is a test String");
-		assertTrue("nextToken returned incorrect value", st.nextToken().equals(
-				"This"));
-		assertTrue("nextToken returned incorrect value", st.nextToken().equals(
-				"is"));
-		assertTrue("nextToken returned incorrect value", st.nextToken().equals(
-				"a"));
-		assertTrue("nextToken returned incorrect value", st.nextToken().equals(
-				"test"));
-		assertTrue("nextToken returned incorrect value", st.nextToken().equals(
-				"String"));
+		assertEquals("nextToken returned incorrect value", 
+				"This", st.nextToken());
+		assertEquals("nextToken returned incorrect value", 
+				"is", st.nextToken());
+		assertEquals("nextToken returned incorrect value", 
+				"a", st.nextToken());
+		assertEquals("nextToken returned incorrect value", 
+				"test", st.nextToken());
+		assertEquals("nextToken returned incorrect value", 
+				"String", st.nextToken());
 		try {
 			st.nextToken();
 			fail(
@@ -157,15 +157,12 @@ public class StringTokenizerTest extends junit.framework.TestCase {
 		// Test for method java.lang.String
 		// java.util.StringTokenizer.nextToken(java.lang.String)
 		StringTokenizer st = new StringTokenizer("This is a test String");
-		assertTrue(
-				"nextToken(String) returned incorrect value with normal token String",
-				st.nextToken(" ").equals("This"));
-		assertTrue(
-				"nextToken(String) returned incorrect value with custom token String",
-				st.nextToken("tr").equals(" is a "));
-		assertTrue(
-				"calling nextToken() did not use the new default delimiter list",
-				st.nextToken().equals("es"));
+		assertEquals("nextToken(String) returned incorrect value with normal token String",
+				"This", st.nextToken(" "));
+		assertEquals("nextToken(String) returned incorrect value with custom token String",
+				" is a ", st.nextToken("tr"));
+		assertEquals("calling nextToken() did not use the new default delimiter list",
+				"es", st.nextToken());
 	}
 
 	/**

@@ -59,8 +59,8 @@ public class UnsupportedOperationExceptionTest extends junit.framework.TestCase 
 		try {
 			throw new UnsupportedOperationException("HelloWorld");
 		} catch (UnsupportedOperationException e) {
-			assertTrue("Wrong message given.", e.getMessage().equals(
-					"HelloWorld"));
+			assertEquals("Wrong message given.", 
+					"HelloWorld", e.getMessage());
 			return;
 		} catch (Exception e) {
 			fail("Exception during Constructor : " + e.getMessage());

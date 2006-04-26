@@ -118,8 +118,10 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_ceilD() {
 		// Test for method double java.lang.Math.ceil(double)
-		assertTrue("Incorrect ceiling for double", Math.ceil(78.89) == 79);
-		assertTrue("Incorrect ceiling for double", Math.ceil(-78.89) == -78);
+                assertEquals("Incorrect ceiling for double",
+                             79, Math.ceil(78.89), 0);
+		assertEquals("Incorrect ceiling for double",
+                             -78, Math.ceil(-78.89), 0);
 	}
 
 	/**
@@ -127,8 +129,8 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_cosD() {
 		// Test for method double java.lang.Math.cos(double)
-		assertTrue("Incorrect answer", Math.cos(0) == 1.0);
-		assertTrue("Incorrect answer", Math.cos(1) == 0.5403023058681398);
+		assertEquals("Incorrect answer", 1.0, Math.cos(0));
+		assertEquals("Incorrect answer", 0.5403023058681398, Math.cos(1));
 	}
 
 	/**
@@ -148,8 +150,10 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_floorD() {
 		// Test for method double java.lang.Math.floor(double)
-		assertTrue("Incorrect floor for double", Math.floor(78.89) == 78);
-		assertTrue("Incorrect floor for double", Math.floor(-78.89) == -79);
+                assertEquals("Incorrect floor for double",
+                             78, Math.floor(78.89), 0);
+		assertEquals("Incorrect floor for double",
+                             -79, Math.floor(-78.89), 0);
 	}
 
 	/**
@@ -157,8 +161,8 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_IEEEremainderDD() {
 		// Test for method double java.lang.Math.IEEEremainder(double, double)
-		assertTrue("Incorrect remainder returned",
-				Math.IEEEremainder(1.0, 1.0) == 0.0);
+		assertEquals("Incorrect remainder returned",
+				0.0, Math.IEEEremainder(1.0, 1.0));
 		assertTrue("Incorrect remainder returned", Math.IEEEremainder(1.32,
 				89.765) >= 1.4705063220631647E-2
 				|| Math.IEEEremainder(1.32, 89.765) >= 1.4705063220631649E-2);
@@ -182,12 +186,12 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_maxDD() {
 		// Test for method double java.lang.Math.max(double, double)
-		assertTrue("Incorrect double max value", Math.max(-1908897.6000089,
-				1908897.6000089) == 1908897.6000089);
-		assertTrue("Incorrect double max value",
-				Math.max(2.0, 1908897.6000089) == 1908897.6000089);
-		assertTrue("Incorrect double max value", Math.max(-2.0,
-				-1908897.6000089) == -2.0);
+		assertEquals("Incorrect double max value", 1908897.6000089, Math.max(-1908897.6000089,
+				1908897.6000089));
+		assertEquals("Incorrect double max value",
+				1908897.6000089, Math.max(2.0, 1908897.6000089));
+		assertEquals("Incorrect double max value", -2.0, Math.max(-2.0,
+				-1908897.6000089));
 
 	}
 
@@ -209,11 +213,11 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_maxII() {
 		// Test for method int java.lang.Math.max(int, int)
-		assertTrue("Incorrect int max value",
-				Math.max(-19088976, 19088976) == 19088976);
-		assertTrue("Incorrect int max value",
-				Math.max(20, 19088976) == 19088976);
-		assertTrue("Incorrect int max value", Math.max(-20, -19088976) == -20);
+		assertEquals("Incorrect int max value",
+				19088976, Math.max(-19088976, 19088976));
+		assertEquals("Incorrect int max value",
+				19088976, Math.max(20, 19088976));
+		assertEquals("Incorrect int max value", -20, Math.max(-20, -19088976));
 	}
 
 	/**
@@ -221,12 +225,12 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_maxJJ() {
 		// Test for method long java.lang.Math.max(long, long)
-		assertTrue("Incorrect long max value", Math.max(-19088976000089L,
-				19088976000089L) == 19088976000089L);
-		assertTrue("Incorrect long max value",
-				Math.max(20, 19088976000089L) == 19088976000089L);
-		assertTrue("Incorrect long max value",
-				Math.max(-20, -19088976000089L) == -20);
+		assertEquals("Incorrect long max value", 19088976000089L, Math.max(-19088976000089L,
+				19088976000089L));
+		assertEquals("Incorrect long max value",
+				19088976000089L, Math.max(20, 19088976000089L));
+		assertEquals("Incorrect long max value",
+				-20, Math.max(-20, -19088976000089L));
 	}
 
 	/**
@@ -234,12 +238,12 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_minDD() {
 		// Test for method double java.lang.Math.min(double, double)
-		assertTrue("Incorrect double min value", Math.min(-1908897.6000089,
-				1908897.6000089) == -1908897.6000089);
-		assertTrue("Incorrect double min value",
-				Math.min(2.0, 1908897.6000089) == 2.0);
-		assertTrue("Incorrect double min value", Math.min(-2.0,
-				-1908897.6000089) == -1908897.6000089);
+		assertEquals("Incorrect double min value", -1908897.6000089, Math.min(-1908897.6000089,
+				1908897.6000089));
+		assertEquals("Incorrect double min value",
+				2.0, Math.min(2.0, 1908897.6000089));
+		assertEquals("Incorrect double min value", -1908897.6000089, Math.min(-2.0,
+				-1908897.6000089));
 	}
 
 	/**
@@ -260,11 +264,11 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_minII() {
 		// Test for method int java.lang.Math.min(int, int)
-		assertTrue("Incorrect int min value",
-				Math.min(-19088976, 19088976) == -19088976);
-		assertTrue("Incorrect int min value", Math.min(20, 19088976) == 20);
-		assertTrue("Incorrect int min value",
-				Math.min(-20, -19088976) == -19088976);
+		assertEquals("Incorrect int min value",
+				-19088976, Math.min(-19088976, 19088976));
+		assertEquals("Incorrect int min value", 20, Math.min(20, 19088976));
+		assertEquals("Incorrect int min value",
+				-19088976, Math.min(-20, -19088976));
 
 	}
 
@@ -273,12 +277,12 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_minJJ() {
 		// Test for method long java.lang.Math.min(long, long)
-		assertTrue("Incorrect long min value", Math.min(-19088976000089L,
-				19088976000089L) == -19088976000089L);
-		assertTrue("Incorrect long min value",
-				Math.min(20, 19088976000089L) == 20);
-		assertTrue("Incorrect long min value",
-				Math.min(-20, -19088976000089L) == -19088976000089L);
+		assertEquals("Incorrect long min value", -19088976000089L, Math.min(-19088976000089L,
+				19088976000089L));
+		assertEquals("Incorrect long min value",
+				20, Math.min(20, 19088976000089L));
+		assertEquals("Incorrect long min value",
+				-19088976000089L, Math.min(-20, -19088976000089L));
 	}
 
 	/**
@@ -290,8 +294,8 @@ public class MathTest extends junit.framework.TestCase {
 				(long) Math.pow(2, 8) == 256l);
 		assertTrue("pow returned incorrect value",
 				Math.pow(2, -8) == 0.00390625d);
-		assertTrue("Incorrect root returned1", Math.sqrt(Math.pow(Math.sqrt(2),
-				4)) == 2);
+		assertEquals("Incorrect root returned1",
+                             2, Math.sqrt(Math.pow(Math.sqrt(2), 4)), 0);
 	}
 
 	/**
@@ -299,12 +303,12 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_rintD() {
 		// Test for method double java.lang.Math.rint(double)
-		assertTrue("Failed to round properly - up to odd",
-				Math.rint(2.9) == 3.0);
+		assertEquals("Failed to round properly - up to odd",
+				3.0, Math.rint(2.9));
 		assertTrue("Failed to round properly - NaN", Double.isNaN(Math
 				.rint(Double.NaN)));
-		assertTrue("Failed to round properly down  to even",
-				Math.rint(2.1) == 2.0);
+		assertEquals("Failed to round properly down  to even",
+				2.0, Math.rint(2.1));
 		assertTrue("Failed to round properly " + 2.5 + " to even", Math
 				.rint(2.5) == 2.0);
 	}
@@ -314,7 +318,7 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_roundD() {
 		// Test for method long java.lang.Math.round(double)
-		assertTrue("Incorrect rounding of a float", Math.round(-90.89d) == -91);
+		assertEquals("Incorrect rounding of a float", -91, Math.round(-90.89d));
 	}
 
 	/**
@@ -322,7 +326,7 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_roundF() {
 		// Test for method int java.lang.Math.round(float)
-		assertTrue("Incorrect rounding of a float", Math.round(-90.89f) == -91);
+		assertEquals("Incorrect rounding of a float", -91, Math.round(-90.89f));
 	}
 
 	/**
@@ -330,8 +334,8 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_sinD() {
 		// Test for method double java.lang.Math.sin(double)
-		assertTrue("Incorrect answer", Math.sin(0) == 0.0);
-		assertTrue("Incorrect answer", Math.sin(1) == 0.8414709848078965);
+		assertEquals("Incorrect answer", 0.0, Math.sin(0));
+		assertEquals("Incorrect answer", 0.8414709848078965, Math.sin(1));
 	}
 
 	/**
@@ -339,7 +343,7 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_sqrtD() {
 		// Test for method double java.lang.Math.sqrt(double)
-		assertTrue("Incorrect root returned2", Math.sqrt(49) == 7);
+                assertEquals("Incorrect root returned2", 7, Math.sqrt(49), 0);
 	}
 
 	/**
@@ -347,8 +351,8 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_tanD() {
 		// Test for method double java.lang.Math.tan(double)
-		assertTrue("Incorrect answer", Math.tan(0) == 0.0);
-		assertTrue("Incorrect answer", Math.tan(1) == 1.5574077246549023);
+		assertEquals("Incorrect answer", 0.0, Math.tan(0));
+		assertEquals("Incorrect answer", 1.5574077246549023, Math.tan(1));
 
 	}
 
@@ -357,10 +361,10 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_random() {
 		// There isn't a place for these tests so just stick them here
-		assertTrue("Wrong value E",
-				Double.doubleToLongBits(Math.E) == 4613303445314885481L);
-		assertTrue("Wrong value PI",
-				Double.doubleToLongBits(Math.PI) == 4614256656552045848L);
+		assertEquals("Wrong value E",
+				4613303445314885481L, Double.doubleToLongBits(Math.E));
+		assertEquals("Wrong value PI",
+				4614256656552045848L, Double.doubleToLongBits(Math.PI));
 
 		for (int i = 500; i >= 0; i--) {
 			double d = Math.random();

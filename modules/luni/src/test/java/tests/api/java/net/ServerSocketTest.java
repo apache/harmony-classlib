@@ -292,7 +292,7 @@ public class ServerSocketTest extends SocketTestCase {
 			int portNumber = Support_PortManager.getNextPort();
 			s = new ServerSocket(portNumber);
 			s.setSoTimeout(100);
-			assertTrue("Returned incorrect sotimeout", s.getSoTimeout() == 100);
+			assertEquals("Returned incorrect sotimeout", 100, s.getSoTimeout());
 		} catch (Exception e) {
 			fail("Exception during getSoTimeout test : " + e.getMessage());
 		}
@@ -321,7 +321,7 @@ public class ServerSocketTest extends SocketTestCase {
 			s.accept();
 		} catch (java.io.InterruptedIOException e) {
 			try {
-				assertTrue("Set incorrect sotimeout", s.getSoTimeout() == 100);
+				assertEquals("Set incorrect sotimeout", 100, s.getSoTimeout());
 				return;
 			} catch (Exception x) {
 				fail("Exception during setSOTimeout: " + e.toString());
@@ -599,9 +599,9 @@ public class ServerSocketTest extends SocketTestCase {
 			// now create a socket that is not bound and validate we get the
 			// right answer
 			theSocket = new ServerSocket();
-			assertTrue(
+			assertNull(
 					"Returned incorrect InetSocketAddress -unbound socket- Expected null",
-					theSocket.getLocalSocketAddress() == null);
+					theSocket.getLocalSocketAddress());
 
 			// now bind the socket and make sure we get the right answer
 			portNumber = Support_PortManager.getNextPort();

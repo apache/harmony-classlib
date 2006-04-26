@@ -49,8 +49,8 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 		java.io.InputStream bis = new java.io.ByteArrayInputStream(zz, 0, 100);
 
 		try {
-			assertTrue("Unable to create ByteArrayInputStream",
-					bis.available() == 100);
+			assertEquals("Unable to create ByteArrayInputStream",
+					100, bis.available());
 		} catch (Exception e) {
 			fail("Exception during Constructor test");
 		}

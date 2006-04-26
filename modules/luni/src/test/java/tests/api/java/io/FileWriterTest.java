@@ -53,8 +53,8 @@ public class FileWriterTest extends junit.framework.TestCase {
 			char[] buf = new char[100];
 			int r = br.read(buf);
 			br.close();
-			assertTrue("Failed to write correct chars", new String(buf, 0, r)
-					.equals(" After test string"));
+			assertEquals("Failed to write correct chars", " After test string", new String(buf, 0, r)
+					);
 		} catch (Exception e) {
 			fail("Exception during Constructor test " + e.toString());
 		}
@@ -99,8 +99,8 @@ public class FileWriterTest extends junit.framework.TestCase {
 			char[] buf = new char[100];
 			int r = br.read(buf);
 			br.close();
-			assertTrue("Failed to write correct chars", new String(buf, 0, r)
-					.equals(" After test string"));
+			assertEquals("Failed to write correct chars", " After test string", new String(buf, 0, r)
+					);
 		} catch (Exception e) {
 			fail("Exception during Constructor test " + e.toString());
 		}
@@ -123,8 +123,8 @@ public class FileWriterTest extends junit.framework.TestCase {
 			char[] buf = new char[100];
 			int r = br.read(buf);
 			br.close();
-			assertTrue("Failed to append to file", new String(buf, 0, r)
-					.equals("Test String After test string"));
+			assertEquals("Failed to append to file", "Test String After test string", new String(buf, 0, r)
+					);
 
 			fos = new FileOutputStream(f.getPath());
 			fos.write("Test String".getBytes());
@@ -136,8 +136,8 @@ public class FileWriterTest extends junit.framework.TestCase {
 			buf = new char[100];
 			r = br.read(buf);
 			br.close();
-			assertTrue("Failed to overwrite file", new String(buf, 0, r)
-					.equals(" After test string"));
+			assertEquals("Failed to overwrite file", " After test string", new String(buf, 0, r)
+					);
 		} catch (Exception e) {
 			fail("Exception during Constructor test " + e.toString());
 		}

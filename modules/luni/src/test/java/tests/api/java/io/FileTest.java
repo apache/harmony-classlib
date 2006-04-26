@@ -303,8 +303,8 @@ public class FileTest extends junit.framework.TestCase {
 		File f3 = new File("thatFile.tst");
 
 		String notAFile = "notAFile.tst";
-		assertTrue("Equal files did not answer zero for compareTo", f1
-				.compareTo(f2) == 0);
+		assertEquals("Equal files did not answer zero for compareTo", 0, f1
+				.compareTo(f2));
 		assertTrue("f3.compareTo(f1) did not result in value < 0", f3
 				.compareTo(f1) < 0);
 		assertTrue("f1.compareTo(f3) did not result in vale > 0", f1
@@ -320,7 +320,7 @@ public class FileTest extends junit.framework.TestCase {
 		boolean onWindows = File.separatorChar == '\\';
 		boolean onUnix = File.separatorChar == '/';
 		if (onWindows) {
-			assertTrue("Files Should Return Equal.", f1.compareTo(f3) == 0);
+			assertEquals("Files Should Return Equal.", 0, f1.compareTo(f3));
 		} else if (onUnix) {
 			assertTrue("Files Should NOT Return Equal.", f1.compareTo(f3) != 0);
 		}
@@ -335,8 +335,8 @@ public class FileTest extends junit.framework.TestCase {
 		File f2 = new File("thisFile.file");
 		File f3 = new File("thatFile.file");
 		String notAFile = "notAFile.file";
-		assertTrue("Equal files did not answer zero for compareTo", f1
-				.compareTo((Object) f2) == 0);
+		assertEquals("Equal files did not answer zero for compareTo", 0, f1
+				.compareTo((Object) f2));
 		assertTrue("f3.compareTo(f1) did not result in value < 0", f3
 				.compareTo((Object) f1) < 0);
 		assertTrue("f1.compareTo(f3) did not result in vale > 0", f1
@@ -397,8 +397,8 @@ public class FileTest extends junit.framework.TestCase {
 				assertTrue("File Saved To Wrong Directory.", dirName.equals(dir
 						.getPath()
 						+ slash));
-				assertTrue("File Saved With Incorrect Name.", f1.getName()
-						.equals("tempfile.tst"));
+				assertEquals("File Saved With Incorrect Name.", "tempfile.tst", f1.getName()
+						);
 
 				// Test for creating a file that already exists.
 				assertTrue(
@@ -724,16 +724,16 @@ public class FileTest extends junit.framework.TestCase {
 			base += slash;
 		File f = new File(base, "temp.tst");
 		File f2 = f.getAbsoluteFile();
-		assertTrue("Test 1: Incorrect File Returned.", f2.compareTo(f
-				.getAbsoluteFile()) == 0);
+		assertEquals("Test 1: Incorrect File Returned.", 0, f2.compareTo(f
+				.getAbsoluteFile()));
 		f = new File(base + "Temp" + slash + slash + "temp.tst");
 		f2 = f.getAbsoluteFile();
-		assertTrue("Test 2: Incorrect File Returned.", f2.compareTo(f
-				.getAbsoluteFile()) == 0);
+		assertEquals("Test 2: Incorrect File Returned.", 0, f2.compareTo(f
+				.getAbsoluteFile()));
 		f = new File(base + slash + ".." + slash + "temp.tst");
 		f2 = f.getAbsoluteFile();
-		assertTrue("Test 3: Incorrect File Returned.", f2.compareTo(f
-				.getAbsoluteFile()) == 0);
+		assertEquals("Test 3: Incorrect File Returned.", 0, f2.compareTo(f
+				.getAbsoluteFile()));
 		f.delete();
 		f2.delete();
 	}
@@ -771,17 +771,17 @@ public class FileTest extends junit.framework.TestCase {
 				base += slash;
 			File f = new File(base, "temp.tst");
 			File f2 = f.getCanonicalFile();
-			assertTrue("Test 1: Incorrect File Returned.", f2
-					.getCanonicalFile().compareTo(f.getCanonicalFile()) == 0);
+			assertEquals("Test 1: Incorrect File Returned.", 0, f2
+					.getCanonicalFile().compareTo(f.getCanonicalFile()));
 			f = new File(base + "Temp" + slash + slash + "temp.tst");
 			f2 = f.getCanonicalFile();
-			assertTrue("Test 2: Incorrect File Returned.", f2
-					.getCanonicalFile().compareTo(f.getCanonicalFile()) == 0);
+			assertEquals("Test 2: Incorrect File Returned.", 0, f2
+					.getCanonicalFile().compareTo(f.getCanonicalFile()));
 			f = new File(base + "Temp" + slash + slash + ".." + slash
 					+ "temp.tst");
 			f2 = f.getCanonicalFile();
-			assertTrue("Test 3: Incorrect File Returned.", f2
-					.getCanonicalFile().compareTo(f.getCanonicalFile()) == 0);
+			assertEquals("Test 3: Incorrect File Returned.", 0, f2
+					.getCanonicalFile().compareTo(f.getCanonicalFile()));
 
 			// Test for when long directory/file names in Windows
 			String osName = System.getProperty("os.name", "unknown");
@@ -796,9 +796,9 @@ public class FileTest extends junit.framework.TestCase {
 					dir.mkdir();
 					f = new File(dir, "longfilename.tst");
 					f2 = f.getCanonicalFile();
-					assertTrue("Test 4: Incorrect File Returned.",
-							f2.getCanonicalFile().compareTo(
-									f.getCanonicalFile()) == 0);
+					assertEquals("Test 4: Incorrect File Returned.",
+							0, f2.getCanonicalFile().compareTo(
+									f.getCanonicalFile()));
 					FileOutputStream fos = new FileOutputStream(f);
 					fos.close();
 					f2 = new File(testdir + slash + "longdi~1" + slash
@@ -932,8 +932,8 @@ public class FileTest extends junit.framework.TestCase {
 	public void test_getName() {
 		// Test for method java.lang.String java.io.File.getName()
 		File f = new File("name.tst");
-		assertTrue("Test 1: Returned incorrect name", f.getName().equals(
-				"name.tst"));
+		assertEquals("Test 1: Returned incorrect name", 
+				"name.tst", f.getName());
 
 		f = new File("");
 		assertTrue("Test 2: Returned incorrect name", f.getName().equals(""));
@@ -947,7 +947,7 @@ public class FileTest extends junit.framework.TestCase {
 	public void test_getParent() {
 		// Test for method java.lang.String java.io.File.getParent()
 		File f = new File("p.tst");
-		assertTrue("Incorrect path returned", f.getParent() == null);
+		assertNull("Incorrect path returned", f.getParent());
 		f = new File(System.getProperty("user.home"), "p.tst");
 		assertTrue("Incorrect path returned", f.getParent().equals(
 				System.getProperty("user.home")));
@@ -963,11 +963,11 @@ public class FileTest extends junit.framework.TestCase {
 		assertTrue("Wrong parent test 2", f1.getParent().equals(
 				slash + "directory"));
 		f1 = new File("directory/file");
-		assertTrue("Wrong parent test 3", f1.getParent().equals("directory"));
+		assertEquals("Wrong parent test 3", "directory", f1.getParent());
 		f1 = new File("/");
-		assertTrue("Wrong parent test 4", f1.getParent() == null);
+		assertNull("Wrong parent test 4", f1.getParent());
 		f1 = new File("directory");
-		assertTrue("Wrong parent test 5", f1.getParent() == null);
+		assertNull("Wrong parent test 5", f1.getParent());
 
 		if (File.separatorChar == '\\' && new File("d:/").isAbsolute()) {
 			f1 = new File("d:/directory");
@@ -977,12 +977,12 @@ public class FileTest extends junit.framework.TestCase {
 			assertTrue("Wrong parent test 2a", f1.getParent().equals(
 					"d:" + slash + "directory"));
 			f1 = new File("d:directory/file");
-			assertTrue("Wrong parent test 3a", f1.getParent().equals(
-					"d:directory"));
+			assertEquals("Wrong parent test 3a", 
+					"d:directory", f1.getParent());
 			f1 = new File("d:/");
-			assertTrue("Wrong parent test 4a", f1.getParent() == null);
+			assertNull("Wrong parent test 4a", f1.getParent());
 			f1 = new File("d:directory");
-			assertTrue("Wrong parent test 5a", f1.getParent().equals("d:"));
+			assertEquals("Wrong parent test 5a", "d:", f1.getParent());
 		}
 	}
 
@@ -992,12 +992,12 @@ public class FileTest extends junit.framework.TestCase {
 	public void test_getParentFile() {
 		// Test for method java.io.File.getParentFile()
 		File f = new File("tempfile.tst");
-		assertTrue("Incorrect path returned", f.getParentFile() == null);
+		assertNull("Incorrect path returned", f.getParentFile());
 		f = new File(System.getProperty("user.dir"), "tempfile1.tmp");
 		File f2 = new File(System.getProperty("user.dir"), "tempfile2.tmp");
 		File f3 = new File(System.getProperty("user.dir"), "/a/tempfile.tmp");
-		assertTrue("Incorrect File Returned", f.getParentFile().compareTo(
-				f2.getParentFile()) == 0);
+		assertEquals("Incorrect File Returned", 0, f.getParentFile().compareTo(
+				f2.getParentFile()));
 		assertTrue("Incorrect File Returned", f.getParentFile().compareTo(
 				f3.getParentFile()) != 0);
 		f.delete();
@@ -1148,8 +1148,8 @@ public class FileTest extends junit.framework.TestCase {
 					+ "lModTest.tst");
 			f.delete();
 			long lastModifiedTime = f.lastModified();
-			assertTrue("LastModified Time Should Have Returned 0.",
-					lastModifiedTime == 0);
+			assertEquals("LastModified Time Should Have Returned 0.",
+					0, lastModifiedTime);
 			FileOutputStream fos = new FileOutputStream(f);
 			fos.close();
 			f.setLastModified(315550800000L);
@@ -1170,7 +1170,7 @@ public class FileTest extends junit.framework.TestCase {
 		try {
 			File f = new File(System.getProperty("user.dir"), platformId
 					+ "input.tst");
-			assertTrue("File Length Should Have Returned 0.", f.length() == 0);
+			assertEquals("File Length Should Have Returned 0.", 0, f.length());
 			FileOutputStream fos = new FileOutputStream(f);
 			fos.write(fileString.getBytes());
 			fos.close();
@@ -1207,24 +1207,23 @@ public class FileTest extends junit.framework.TestCase {
 
 		String[] flist = dir.list();
 
-		assertTrue("Method list() Should Have Returned null.", flist == null);
+		assertNull("Method list() Should Have Returned null.", flist);
 
 		assertTrue("Could not create parent directory for list test", dir
 				.mkdir());
 
 		String[] files = { "mtzz1.xx", "mtzz2.xx", "mtzz3.yy", "mtzz4.yy" };
 		try {
-			assertTrue(
-					"Method list() Should Have Returned An Array Of Length 0.",
-					dir.list().length == 0);
+			assertEquals("Method list() Should Have Returned An Array Of Length 0.",
+					0, dir.list().length);
 
 			File file = new File(dir, "notADir.tst");
 			try {
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.close();
-				assertTrue(
+				assertNull(
 						"listFiles Should Have Returned Null When Used On A File Instead Of A Directory.",
-						file.list() == null);
+						file.list());
 			} catch (IOException e) {
 				fail("Unexpected IOException during test : " + e.getMessage());
 			} finally {
@@ -1264,7 +1263,7 @@ public class FileTest extends junit.framework.TestCase {
 				if (check[i] == false)
 					checkCount++;
 			}
-			assertTrue("Invalid file returned in listing", checkCount == 0);
+			assertEquals("Invalid file returned in listing", 0, checkCount);
 
 			for (int i = 0; i < files.length; i++) {
 				File f = new File(dir, files[i]);
@@ -1308,22 +1307,22 @@ public class FileTest extends junit.framework.TestCase {
 				}
 			}
 			// Test for attempting to cal listFiles on a non-existent directory.
-			assertTrue("listFiles Should Return Null.", dir.listFiles() == null);
+			assertNull("listFiles Should Return Null.", dir.listFiles());
 
 			assertTrue("Failed To Create Parent Directory.", dir.mkdir());
 
 			String[] files = { "1.tst", "2.tst", "3.tst", "" };
 			try {
-				assertTrue("listFiles Should Return An Array Of Length 0.", dir
-						.listFiles().length == 0);
+				assertEquals("listFiles Should Return An Array Of Length 0.", 0, dir
+						.listFiles().length);
 
 				File file = new File(dir, "notADir.tst");
 				try {
 					FileOutputStream fos = new FileOutputStream(file);
 					fos.close();
-					assertTrue(
+					assertNull(
 							"listFiles Should Have Returned Null When Used On A File Instead Of A Directory.",
-							file.listFiles() == null);
+							file.listFiles());
 				} catch (IOException e) {
 					fail("Unexpected IOException during test : " + e.getMessage());
 				} finally {
@@ -1341,8 +1340,8 @@ public class FileTest extends junit.framework.TestCase {
 
 				// Test to make sure that only the 3 files that were created are
 				// listed.
-				assertTrue("Incorrect Number Of Files Returned.",
-						flist.length == 3);
+				assertEquals("Incorrect Number Of Files Returned.",
+						3, flist.length);
 
 				// Test to make sure that listFiles can read hidden files.
 				boolean onUnix = File.separatorChar == '/';
@@ -1363,8 +1362,8 @@ public class FileTest extends junit.framework.TestCase {
 					fos.close();
 				}
 				flist = dir.listFiles();
-				assertTrue("Incorrect Number Of Files Returned.",
-						flist.length == 4);
+				assertEquals("Incorrect Number Of Files Returned.",
+						4, flist.length);
 
 				// Checking to make sure the correct files were are listed in
 				// the array.
@@ -1384,7 +1383,7 @@ public class FileTest extends junit.framework.TestCase {
 					if (check[i] == false)
 						checkCount++;
 				}
-				assertTrue("Invalid file returned in listing", checkCount == 0);
+				assertEquals("Invalid file returned in listing", 0, checkCount);
 
 				if (onWindows) {
 					Runtime r = Runtime.getRuntime();
@@ -1445,24 +1444,24 @@ public class FileTest extends junit.framework.TestCase {
 			}
 		};
 
-		assertTrue("listFiles Should Return Null.", baseDir
-				.listFiles(dirFilter) == null);
+		assertNull("listFiles Should Return Null.", baseDir
+				.listFiles(dirFilter));
 
 		assertTrue("Failed To Create Parent Directory.", baseDir.mkdir());
 
 		File dir1 = null;
 		String[] files = { "1.tst", "2.tst", "3.tst" };
 		try {
-			assertTrue("listFiles Should Return An Array Of Length 0.", baseDir
-					.listFiles(dirFilter).length == 0);
+			assertEquals("listFiles Should Return An Array Of Length 0.", 0, baseDir
+					.listFiles(dirFilter).length);
 
 			File file = new File(baseDir, "notADir.tst");
 			try {
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.close();
-				assertTrue(
+				assertNull(
 						"listFiles Should Have Returned Null When Used On A File Instead Of A Directory.",
-						file.listFiles(dirFilter) == null);
+						file.listFiles(dirFilter));
 			} catch (IOException e) {
 				fail("Unexpected IOException During Test.");
 			} finally {
@@ -1493,12 +1492,12 @@ public class FileTest extends junit.framework.TestCase {
 
 			// Test to see if the correct number of directories are returned.
 			File[] directories = baseDir.listFiles(dirFilter);
-			assertTrue("Incorrect Number Of Directories Returned.",
-					directories.length == 1);
+			assertEquals("Incorrect Number Of Directories Returned.",
+					1, directories.length);
 
 			// Test to see if the directory was saved with the correct name.
-			assertTrue("Incorrect Directory Returned.", directories[0]
-					.compareTo(dir1) == 0);
+			assertEquals("Incorrect Directory Returned.", 0, directories[0]
+					.compareTo(dir1));
 
 			// Test to see if the correct number of files are returned.
 			File[] flist = baseDir.listFiles(fileFilter);
@@ -1523,7 +1522,7 @@ public class FileTest extends junit.framework.TestCase {
 				if (check[i] == false)
 					checkCount++;
 			}
-			assertTrue("Invalid file returned in listing", checkCount == 0);
+			assertEquals("Invalid file returned in listing", 0, checkCount);
 
 			for (int i = 0; i < files.length; i++) {
 				File f = new File(baseDir, files[i]);
@@ -1576,23 +1575,23 @@ public class FileTest extends junit.framework.TestCase {
 			}
 		};
 
-		assertTrue("listFiles Should Return Null.",
-				dir.listFiles(tstFilter) == null);
+		assertNull("listFiles Should Return Null.",
+				dir.listFiles(tstFilter));
 
 		assertTrue("Failed To Create Parent Directory.", dir.mkdir());
 
 		String[] files = { "1.tst", "2.tst", "3.tmp" };
 		try {
-			assertTrue("listFiles Should Return An Array Of Length 0.", dir
-					.listFiles(tstFilter).length == 0);
+			assertEquals("listFiles Should Return An Array Of Length 0.", 0, dir
+					.listFiles(tstFilter).length);
 
 			File file = new File(dir, "notADir.tst");
 			try {
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.close();
-				assertTrue(
+				assertNull(
 						"listFiles Should Have Returned Null When Used On A File Instead Of A Directory.",
-						file.listFiles(tstFilter) == null);
+						file.listFiles(tstFilter));
 			} catch (IOException e) {
 				fail("Unexpected IOException during test : " + e.getMessage());
 			} finally {
@@ -1622,15 +1621,15 @@ public class FileTest extends junit.framework.TestCase {
 
 			// Tests to see if the correct number of files were returned.
 			File[] flist = dir.listFiles(tstFilter);
-			assertTrue("Incorrect Number Of Files Passed Through tstFilter.",
-					flist.length == 2);
+			assertEquals("Incorrect Number Of Files Passed Through tstFilter.",
+					2, flist.length);
 			for (int i = 0; i < flist.length; i++)
 				assertTrue("File Should Not Have Passed The tstFilter.",
 						flist[i].getPath().endsWith(".tst"));
 
 			flist = dir.listFiles(tmpFilter);
-			assertTrue("Incorrect Number Of Files Passed Through tmpFilter.",
-					flist.length == 1);
+			assertEquals("Incorrect Number Of Files Passed Through tmpFilter.",
+					1, flist.length);
 			assertTrue("File Should Not Have Passed The tmpFilter.", flist[0]
 					.getPath().endsWith(".tmp"));
 
@@ -1678,8 +1677,8 @@ public class FileTest extends junit.framework.TestCase {
 		};
 
 		String[] flist = dir.list(filter);
-		assertTrue("Method list(FilenameFilter) Should Have Returned Null.",
-				flist == null);
+		assertNull("Method list(FilenameFilter) Should Have Returned Null.",
+				flist);
 
 		assertTrue("Could not create parent directory for test", dir.mkdir());
 
@@ -1694,14 +1693,14 @@ public class FileTest extends junit.framework.TestCase {
 			 * File file = new File(dir, "notADir.tst"); try { FileOutputStream
 			 * fos = new FileOutputStream(file); fos.close(); } catch
 			 * (IOException e) { fail("Unexpected IOException During
-			 * Test."); } flist = dir.list(filter); assertTrue("listFiles
+			 * Test."); } flist = dir.list(filter); assertNull("listFiles
 			 * Should Have Returned Null When Used On A File Instead Of A
-			 * Directory.", flist == null); file.delete();
+			 * Directory.", flist); file.delete();
 			 */
 
 			flist = dir.list(filter);
-			assertTrue("Array Of Length 0 Should Have Returned.",
-					flist.length == 0);
+			assertEquals("Array Of Length 0 Should Have Returned.",
+					0, flist.length);
 
 			try {
 				for (int i = 0; i < files.length; i++) {
@@ -1738,7 +1737,7 @@ public class FileTest extends junit.framework.TestCase {
 				if (check[i] == false)
 					checkCount++;
 			}
-			assertTrue("Invalid file returned in listing", checkCount == 0);
+			assertEquals("Invalid file returned in listing", 0, checkCount);
 
 			for (int i = 0; i < files.length; i++) {
 				File f = new File(dir, files[i]);
@@ -1765,8 +1764,8 @@ public class FileTest extends junit.framework.TestCase {
 		boolean onUnix = File.separatorChar == '/';
 		boolean onWindows = File.separatorChar == '\\';
 		if (onUnix) {
-			assertTrue("Incorrect Number Of Root Directories.",
-					roots.length == 1);
+			assertEquals("Incorrect Number Of Root Directories.",
+					1, roots.length);
 			String fileLoc = roots[0].getPath();
 			assertTrue("Incorrect Root Directory Returned.", fileLoc
 					.startsWith(slash));

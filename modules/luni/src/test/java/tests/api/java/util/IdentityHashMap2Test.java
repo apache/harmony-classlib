@@ -40,9 +40,9 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		result = map.put(null, null);
 		assertTrue("testA can not find null key", map.containsKey(null));
 		assertTrue("testA can not find null value", map.containsValue(null));
-		assertTrue("testA can not get null value for null key",
-				map.get(null) == null);
-		assertTrue("testA put returned wrong value", result == null);
+		assertNull("testA can not get null value for null key",
+				map.get(null));
+		assertNull("testA put returned wrong value", result);
 
 		// null value
 		String value = "a value";
@@ -52,7 +52,7 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 				.containsValue(value));
 		assertTrue("testB can not get value for null key",
 				map.get(null) == value);
-		assertTrue("testB put returned wrong value", result == null);
+		assertNull("testB put returned wrong value", result);
 
 		// a null key
 		String key = "a key";
@@ -60,8 +60,8 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		assertTrue("testC can not find a key with null value", map
 				.containsKey(key));
 		assertTrue("testC can not find null value", map.containsValue(null));
-		assertTrue("testC can not get null value for key", map.get(key) == null);
-		assertTrue("testC put returned wrong value", result == null);
+		assertNull("testC can not get null value for key", map.get(key));
+		assertNull("testC put returned wrong value", result);
 
 		// another null key
 		String anothervalue = "another value";
@@ -79,8 +79,8 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		assertTrue("testE should not find null key", !map.containsKey(null));
 		assertTrue("testE should not find a value with null key", !map
 				.containsValue(anothervalue));
-		assertTrue("testE should not get value for null key",
-				map.get(null) == null);
+		assertNull("testE should not get value for null key",
+				map.get(null));
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 
 		assertTrue("Modified key2", map.get("key2") != null
 				&& map.get("key2") == "value2");
-		assertTrue("Modified null entry", map.get(null) == null);
+		assertNull("Modified null entry", map.get(null));
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		Set set = map.entrySet();
 
 		set.removeAll(set);
-		assertTrue("did not remove all elements in the map", map.size() == 0);
+		assertEquals("did not remove all elements in the map", 0, map.size());
 		assertTrue("did not remove all elements in the entryset", set.isEmpty());
 
 		Iterator it = set.iterator();
@@ -170,7 +170,7 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		Set set = map.keySet();
 		set.clear();
 
-		assertTrue("did not remove all elements in the map", map.size() == 0);
+		assertEquals("did not remove all elements in the map", 0, map.size());
 		assertTrue("did not remove all elements in the keyset", set.isEmpty());
 
 		Iterator it = set.iterator();
@@ -224,7 +224,7 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 				.containsValue(value));
 
 		vals.clear();
-		assertTrue("Did not remove all entries as expected", map.size() == 0);
+		assertEquals("Did not remove all entries as expected", 0, map.size());
 	}
 
 	/**
@@ -239,7 +239,7 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		Set set = map.keySet();
 		set.removeAll(set);
 
-		assertTrue("did not remove all elements in the map", map.size() == 0);
+		assertEquals("did not remove all elements in the map", 0, map.size());
 		assertTrue("did not remove all elements in the keyset", set.isEmpty());
 
 		Iterator it = set.iterator();
@@ -259,12 +259,12 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		// retain all the elements
 		boolean result = set.retainAll(set);
 		assertTrue("retain all should return false", !result);
-		assertTrue("did not retain all", set.size() == 1000);
+		assertEquals("did not retain all", 1000, set.size());
 
 		// send empty set to retainAll
 		result = set.retainAll(new TreeSet());
 		assertTrue("retain all should return true", result);
-		assertTrue("did not remove all elements in the map", map.size() == 0);
+		assertEquals("did not remove all elements in the map", 0, map.size());
 		assertTrue("did not remove all elements in the keyset", set.isEmpty());
 
 		Iterator it = set.iterator();

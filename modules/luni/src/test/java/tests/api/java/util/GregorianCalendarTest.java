@@ -40,12 +40,12 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 	public void test_ConstructorIII() {
 		// Test for method java.util.GregorianCalendar(int, int, int)
 		GregorianCalendar gc = new GregorianCalendar(1972, Calendar.OCTOBER, 13);
-		assertTrue("Incorrect calendar constructed 1",
-				gc.get(Calendar.YEAR) == 1972);
+		assertEquals("Incorrect calendar constructed 1",
+				1972, gc.get(Calendar.YEAR));
 		assertTrue("Incorrect calendar constructed 2",
 				gc.get(Calendar.MONTH) == Calendar.OCTOBER);
-		assertTrue("Incorrect calendar constructed 3", gc
-				.get(Calendar.DAY_OF_MONTH) == 13);
+		assertEquals("Incorrect calendar constructed 3", 13, gc
+				.get(Calendar.DAY_OF_MONTH));
 		assertTrue("Incorrect calendar constructed 4", gc.getTimeZone().equals(
 				TimeZone.getDefault()));
 	}
@@ -58,17 +58,17 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		// Test for method java.util.GregorianCalendar(int, int, int, int, int)
 		GregorianCalendar gc = new GregorianCalendar(1972, Calendar.OCTOBER,
 				13, 19, 9);
-		assertTrue("Incorrect calendar constructed",
-				gc.get(Calendar.YEAR) == 1972);
+		assertEquals("Incorrect calendar constructed",
+				1972, gc.get(Calendar.YEAR));
 		assertTrue("Incorrect calendar constructed",
 				gc.get(Calendar.MONTH) == Calendar.OCTOBER);
-		assertTrue("Incorrect calendar constructed", gc
-				.get(Calendar.DAY_OF_MONTH) == 13);
-		assertTrue("Incorrect calendar constructed", gc.get(Calendar.HOUR) == 7);
-		assertTrue("Incorrect calendar constructed",
-				gc.get(Calendar.AM_PM) == 1);
-		assertTrue("Incorrect calendar constructed",
-				gc.get(Calendar.MINUTE) == 9);
+		assertEquals("Incorrect calendar constructed", 13, gc
+				.get(Calendar.DAY_OF_MONTH));
+		assertEquals("Incorrect calendar constructed", 7, gc.get(Calendar.HOUR));
+		assertEquals("Incorrect calendar constructed",
+				1, gc.get(Calendar.AM_PM));
+		assertEquals("Incorrect calendar constructed",
+				9, gc.get(Calendar.MINUTE));
 		assertTrue("Incorrect calendar constructed", gc.getTimeZone().equals(
 				TimeZone.getDefault()));
 	}
@@ -82,19 +82,19 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		// int)
 		GregorianCalendar gc = new GregorianCalendar(1972, Calendar.OCTOBER,
 				13, 19, 9, 59);
-		assertTrue("Incorrect calendar constructed",
-				gc.get(Calendar.YEAR) == 1972);
+		assertEquals("Incorrect calendar constructed",
+				1972, gc.get(Calendar.YEAR));
 		assertTrue("Incorrect calendar constructed",
 				gc.get(Calendar.MONTH) == Calendar.OCTOBER);
-		assertTrue("Incorrect calendar constructed", gc
-				.get(Calendar.DAY_OF_MONTH) == 13);
-		assertTrue("Incorrect calendar constructed", gc.get(Calendar.HOUR) == 7);
-		assertTrue("Incorrect calendar constructed",
-				gc.get(Calendar.AM_PM) == 1);
-		assertTrue("Incorrect calendar constructed",
-				gc.get(Calendar.MINUTE) == 9);
-		assertTrue("Incorrect calendar constructed",
-				gc.get(Calendar.SECOND) == 59);
+		assertEquals("Incorrect calendar constructed", 13, gc
+				.get(Calendar.DAY_OF_MONTH));
+		assertEquals("Incorrect calendar constructed", 7, gc.get(Calendar.HOUR));
+		assertEquals("Incorrect calendar constructed",
+				1, gc.get(Calendar.AM_PM));
+		assertEquals("Incorrect calendar constructed",
+				9, gc.get(Calendar.MINUTE));
+		assertEquals("Incorrect calendar constructed",
+				59, gc.get(Calendar.SECOND));
 		assertTrue("Incorrect calendar constructed", gc.getTimeZone().equals(
 				TimeZone.getDefault()));
 	}
@@ -167,72 +167,72 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		// Test for method void java.util.GregorianCalendar.add(int, int)
 		GregorianCalendar gc1 = new GregorianCalendar(1998, 11, 6);
 		gc1.add(GregorianCalendar.YEAR, 1);
-		assertTrue("Add failed to Increment",
-				gc1.get(GregorianCalendar.YEAR) == 1999);
+		assertEquals("Add failed to Increment",
+				1999, gc1.get(GregorianCalendar.YEAR));
 
 		gc1 = new GregorianCalendar(1999, Calendar.JULY, 31);
 		gc1.add(Calendar.MONTH, 7);
-		assertTrue("Wrong result year 1", gc1.get(Calendar.YEAR) == 2000);
+		assertEquals("Wrong result year 1", 2000, gc1.get(Calendar.YEAR));
 		assertTrue("Wrong result month 1",
 				gc1.get(Calendar.MONTH) == Calendar.FEBRUARY);
-		assertTrue("Wrong result date 1", gc1.get(Calendar.DATE) == 29);
+		assertEquals("Wrong result date 1", 29, gc1.get(Calendar.DATE));
 
 		gc1.add(Calendar.YEAR, -1);
-		assertTrue("Wrong result year 2", gc1.get(Calendar.YEAR) == 1999);
+		assertEquals("Wrong result year 2", 1999, gc1.get(Calendar.YEAR));
 		assertTrue("Wrong result month 2",
 				gc1.get(Calendar.MONTH) == Calendar.FEBRUARY);
-		assertTrue("Wrong result date 2", gc1.get(Calendar.DATE) == 28);
+		assertEquals("Wrong result date 2", 28, gc1.get(Calendar.DATE));
 
 		gc1 = new GregorianCalendar(TimeZone.getTimeZone("EST"));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.MILLISECOND, 24 * 60 * 60 * 1000);
-		assertTrue("Wrong time after MILLISECOND change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 17);
+		assertEquals("Wrong time after MILLISECOND change", 17, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.SECOND, 24 * 60 * 60);
-		assertTrue("Wrong time after SECOND change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 17);
+		assertEquals("Wrong time after SECOND change", 17, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.MINUTE, 24 * 60);
-		assertTrue("Wrong time after MINUTE change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 17);
+		assertEquals("Wrong time after MINUTE change", 17, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.HOUR, 24);
-		assertTrue("Wrong time after HOUR change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 17);
+		assertEquals("Wrong time after HOUR change", 17, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.HOUR_OF_DAY, 24);
-		assertTrue("Wrong time after HOUR_OF_DAY change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 17);
+		assertEquals("Wrong time after HOUR_OF_DAY change", 17, gc1
+				.get(Calendar.HOUR_OF_DAY));
 
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.AM_PM, 2);
-		assertTrue("Wrong time after AM_PM change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 16);
+		assertEquals("Wrong time after AM_PM change", 16, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.DATE, 1);
-		assertTrue("Wrong time after DATE change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 16);
+		assertEquals("Wrong time after DATE change", 16, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.DAY_OF_YEAR, 1);
-		assertTrue("Wrong time after DAY_OF_YEAR change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 16);
+		assertEquals("Wrong time after DAY_OF_YEAR change", 16, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.DAY_OF_WEEK, 1);
-		assertTrue("Wrong time after DAY_OF_WEEK change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 16);
+		assertEquals("Wrong time after DAY_OF_WEEK change", 16, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.WEEK_OF_YEAR, 1);
-		assertTrue("Wrong time after WEEK_OF_YEAR change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 16);
+		assertEquals("Wrong time after WEEK_OF_YEAR change", 16, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.WEEK_OF_MONTH, 1);
-		assertTrue("Wrong time after WEEK_OF_MONTH change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 16);
+		assertEquals("Wrong time after WEEK_OF_MONTH change", 16, gc1
+				.get(Calendar.HOUR_OF_DAY));
 		gc1.set(1999, Calendar.APRIL, 3, 16, 0); // day before DST change
 		gc1.add(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
-		assertTrue("Wrong time after DAY_OF_WEEK_IN_MONTH change", gc1
-				.get(Calendar.HOUR_OF_DAY) == 16);
+		assertEquals("Wrong time after DAY_OF_WEEK_IN_MONTH change", 16, gc1
+				.get(Calendar.HOUR_OF_DAY));
 
 		gc1.clear();
 		gc1.set(2000, Calendar.APRIL, 1, 23, 0);
@@ -269,26 +269,26 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		GregorianCalendar gc4 = new GregorianCalendar(2000, 1, 1);
 		GregorianCalendar gc5 = new GregorianCalendar(2000, 9, 9);
 		GregorianCalendar gc6 = new GregorianCalendar(2000, 3, 3);
-		assertTrue("Wrong actual maximum value for DAY_OF_MONTH for Feb 1900",
-				gc1.getActualMaximum(Calendar.DAY_OF_MONTH) == 28);
-		assertTrue("Wrong actual maximum value for DAY_OF_MONTH for Feb 1996",
-				gc2.getActualMaximum(Calendar.DAY_OF_MONTH) == 29);
-		assertTrue("Wrong actual maximum value for DAY_OF_MONTH for Feb 1998",
-				gc3.getActualMaximum(Calendar.DAY_OF_MONTH) == 28);
-		assertTrue("Wrong actual maximum value for DAY_OF_MONTH for Feb 2000",
-				gc4.getActualMaximum(Calendar.DAY_OF_MONTH) == 29);
-		assertTrue("Wrong actual maximum value for DAY_OF_MONTH for Oct 2000",
-				gc5.getActualMaximum(Calendar.DAY_OF_MONTH) == 31);
-		assertTrue("Wrong actual maximum value for DAY_OF_MONTH for Apr 2000",
-				gc6.getActualMaximum(Calendar.DAY_OF_MONTH) == 30);
+		assertEquals("Wrong actual maximum value for DAY_OF_MONTH for Feb 1900",
+				28, gc1.getActualMaximum(Calendar.DAY_OF_MONTH));
+		assertEquals("Wrong actual maximum value for DAY_OF_MONTH for Feb 1996",
+				29, gc2.getActualMaximum(Calendar.DAY_OF_MONTH));
+		assertEquals("Wrong actual maximum value for DAY_OF_MONTH for Feb 1998",
+				28, gc3.getActualMaximum(Calendar.DAY_OF_MONTH));
+		assertEquals("Wrong actual maximum value for DAY_OF_MONTH for Feb 2000",
+				29, gc4.getActualMaximum(Calendar.DAY_OF_MONTH));
+		assertEquals("Wrong actual maximum value for DAY_OF_MONTH for Oct 2000",
+				31, gc5.getActualMaximum(Calendar.DAY_OF_MONTH));
+		assertEquals("Wrong actual maximum value for DAY_OF_MONTH for Apr 2000",
+				30, gc6.getActualMaximum(Calendar.DAY_OF_MONTH));
 		assertTrue("Wrong actual maximum value for MONTH", gc1
 				.getActualMaximum(Calendar.MONTH) == Calendar.DECEMBER);
-		assertTrue("Wrong actual maximum value for HOUR_OF_DAY", gc1
-				.getActualMaximum(Calendar.HOUR_OF_DAY) == 23);
-		assertTrue("Wrong actual maximum value for HOUR", gc1
-				.getActualMaximum(Calendar.HOUR) == 11);
-		assertTrue("Wrong actual maximum value for DAY_OF_WEEK_IN_MONTH", gc6
-				.getActualMaximum(Calendar.DAY_OF_WEEK_IN_MONTH) == 4);
+		assertEquals("Wrong actual maximum value for HOUR_OF_DAY", 23, gc1
+				.getActualMaximum(Calendar.HOUR_OF_DAY));
+		assertEquals("Wrong actual maximum value for HOUR", 11, gc1
+				.getActualMaximum(Calendar.HOUR));
+		assertEquals("Wrong actual maximum value for DAY_OF_WEEK_IN_MONTH", 4, gc6
+				.getActualMaximum(Calendar.DAY_OF_WEEK_IN_MONTH));
 	}
 
 	/**
@@ -302,16 +302,16 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		new GregorianCalendar(2000, 1, 1);
 		new GregorianCalendar(2000, 9, 9);
 		GregorianCalendar gc6 = new GregorianCalendar(2000, 3, 3);
-		assertTrue("Wrong actual minimum value for DAY_OF_MONTH for Feb 1900",
-				gc1.getActualMinimum(Calendar.DAY_OF_MONTH) == 1);
+		assertEquals("Wrong actual minimum value for DAY_OF_MONTH for Feb 1900",
+				1, gc1.getActualMinimum(Calendar.DAY_OF_MONTH));
 		assertTrue("Wrong actual minimum value for MONTH", gc1
 				.getActualMinimum(Calendar.MONTH) == Calendar.JANUARY);
-		assertTrue("Wrong actual minimum value for HOUR_OF_DAY", gc1
-				.getActualMinimum(Calendar.HOUR_OF_DAY) == 0);
-		assertTrue("Wrong actual minimum value for HOUR", gc1
-				.getActualMinimum(Calendar.HOUR) == 0);
-		assertTrue("Wrong actual minimum value for DAY_OF_WEEK_IN_MONTH", gc6
-				.getActualMinimum(Calendar.DAY_OF_WEEK_IN_MONTH) == -1);
+		assertEquals("Wrong actual minimum value for HOUR_OF_DAY", 0, gc1
+				.getActualMinimum(Calendar.HOUR_OF_DAY));
+		assertEquals("Wrong actual minimum value for HOUR", 0, gc1
+				.getActualMinimum(Calendar.HOUR));
+		assertEquals("Wrong actual minimum value for DAY_OF_WEEK_IN_MONTH", -1, gc6
+				.getActualMinimum(Calendar.DAY_OF_WEEK_IN_MONTH));
 	}
 
 	/**
@@ -321,14 +321,14 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		// Test for method int
 		// java.util.GregorianCalendar.getGreatestMinimum(int)
 		GregorianCalendar gc = new GregorianCalendar();
-		assertTrue("Wrong greatest minimum value for DAY_OF_MONTH", gc
-				.getGreatestMinimum(Calendar.DAY_OF_MONTH) == 1);
+		assertEquals("Wrong greatest minimum value for DAY_OF_MONTH", 1, gc
+				.getGreatestMinimum(Calendar.DAY_OF_MONTH));
 		assertTrue("Wrong greatest minimum value for MONTH", gc
 				.getGreatestMinimum(Calendar.MONTH) == Calendar.JANUARY);
-		assertTrue("Wrong greatest minimum value for HOUR_OF_DAY", gc
-				.getGreatestMinimum(Calendar.HOUR_OF_DAY) == 0);
-		assertTrue("Wrong greatest minimum value for HOUR", gc
-				.getGreatestMinimum(Calendar.HOUR) == 0);
+		assertEquals("Wrong greatest minimum value for HOUR_OF_DAY", 0, gc
+				.getGreatestMinimum(Calendar.HOUR_OF_DAY));
+		assertEquals("Wrong greatest minimum value for HOUR", 0, gc
+				.getGreatestMinimum(Calendar.HOUR));
 
 		BitSet result = new BitSet();
 		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, -43200000,
@@ -350,12 +350,12 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		GregorianCalendar returnedChange = new GregorianCalendar(TimeZone
 				.getTimeZone("EST"));
 		returnedChange.setTime(gc.getGregorianChange());
-		assertTrue("Returned incorrect year",
-				returnedChange.get(Calendar.YEAR) == 1582);
+		assertEquals("Returned incorrect year",
+				1582, returnedChange.get(Calendar.YEAR));
 		assertTrue("Returned incorrect month", returnedChange
 				.get(Calendar.MONTH) == Calendar.OCTOBER);
-		assertTrue("Returned incorrect day of month", returnedChange
-				.get(Calendar.DAY_OF_MONTH) == 4);
+		assertEquals("Returned incorrect day of month", 4, returnedChange
+				.get(Calendar.DAY_OF_MONTH));
 	}
 
 	/**
@@ -364,14 +364,14 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 	public void test_getLeastMaximumI() {
 		// Test for method int java.util.GregorianCalendar.getLeastMaximum(int)
 		GregorianCalendar gc = new GregorianCalendar();
-		assertTrue("Wrong least maximum value for DAY_OF_MONTH", gc
-				.getLeastMaximum(Calendar.DAY_OF_MONTH) == 28);
+		assertEquals("Wrong least maximum value for DAY_OF_MONTH", 28, gc
+				.getLeastMaximum(Calendar.DAY_OF_MONTH));
 		assertTrue("Wrong least maximum value for MONTH", gc
 				.getLeastMaximum(Calendar.MONTH) == Calendar.DECEMBER);
-		assertTrue("Wrong least maximum value for HOUR_OF_DAY", gc
-				.getLeastMaximum(Calendar.HOUR_OF_DAY) == 23);
-		assertTrue("Wrong least maximum value for HOUR", gc
-				.getLeastMaximum(Calendar.HOUR) == 11);
+		assertEquals("Wrong least maximum value for HOUR_OF_DAY", 23, gc
+				.getLeastMaximum(Calendar.HOUR_OF_DAY));
+		assertEquals("Wrong least maximum value for HOUR", 11, gc
+				.getLeastMaximum(Calendar.HOUR));
 
 		BitSet result = new BitSet();
 		Vector values = new Vector();
@@ -393,14 +393,14 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 	public void test_getMaximumI() {
 		// Test for method int java.util.GregorianCalendar.getMaximum(int)
 		GregorianCalendar gc = new GregorianCalendar();
-		assertTrue("Wrong maximum value for DAY_OF_MONTH", gc
-				.getMaximum(Calendar.DAY_OF_MONTH) == 31);
+		assertEquals("Wrong maximum value for DAY_OF_MONTH", 31, gc
+				.getMaximum(Calendar.DAY_OF_MONTH));
 		assertTrue("Wrong maximum value for MONTH", gc
 				.getMaximum(Calendar.MONTH) == Calendar.DECEMBER);
-		assertTrue("Wrong maximum value for HOUR_OF_DAY", gc
-				.getMaximum(Calendar.HOUR_OF_DAY) == 23);
-		assertTrue("Wrong maximum value for HOUR",
-				gc.getMaximum(Calendar.HOUR) == 11);
+		assertEquals("Wrong maximum value for HOUR_OF_DAY", 23, gc
+				.getMaximum(Calendar.HOUR_OF_DAY));
+		assertEquals("Wrong maximum value for HOUR",
+				11, gc.getMaximum(Calendar.HOUR));
 
 		BitSet result = new BitSet();
 		Vector values = new Vector();
@@ -422,14 +422,14 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 	public void test_getMinimumI() {
 		// Test for method int java.util.GregorianCalendar.getMinimum(int)
 		GregorianCalendar gc = new GregorianCalendar();
-		assertTrue("Wrong minimum value for DAY_OF_MONTH", gc
-				.getMinimum(Calendar.DAY_OF_MONTH) == 1);
+		assertEquals("Wrong minimum value for DAY_OF_MONTH", 1, gc
+				.getMinimum(Calendar.DAY_OF_MONTH));
 		assertTrue("Wrong minimum value for MONTH", gc
 				.getMinimum(Calendar.MONTH) == Calendar.JANUARY);
-		assertTrue("Wrong minimum value for HOUR_OF_DAY", gc
-				.getMinimum(Calendar.HOUR_OF_DAY) == 0);
-		assertTrue("Wrong minimum value for HOUR",
-				gc.getMinimum(Calendar.HOUR) == 0);
+		assertEquals("Wrong minimum value for HOUR_OF_DAY", 0, gc
+				.getMinimum(Calendar.HOUR_OF_DAY));
+		assertEquals("Wrong minimum value for HOUR",
+				0, gc.getMinimum(Calendar.HOUR));
 
 		BitSet result = new BitSet();
 		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, -43200000,
@@ -507,14 +507,14 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		} catch (IllegalArgumentException e) {
 			result = 1;
 		}
-		assertTrue("ZONE_OFFSET roll", result == 1);
+		assertEquals("ZONE_OFFSET roll", 1, result);
 		try {
 			cal.roll(Calendar.DST_OFFSET, true);
 			result = 0;
 		} catch (IllegalArgumentException e) {
 			result = 1;
 		}
-		assertTrue("ZONE_OFFSET roll", result == 1);
+		assertEquals("ZONE_OFFSET roll", 1, result);
 
 		cal.set(2004, Calendar.DECEMBER, 31, 5, 0, 0);
 		cal.roll(Calendar.WEEK_OF_YEAR, true);

@@ -27,8 +27,8 @@ public class NoClassDefFoundErrorTest extends junit.framework.TestCase {
 			}
 			fail("Error not thrown.");
 		} catch (NoClassDefFoundError e) {
-			assertTrue("Error not intitialized.", e.toString().equals(
-					"java.lang.NoClassDefFoundError"));
+			assertEquals("Error not intitialized.", 
+					"java.lang.NoClassDefFoundError", e.toString());
 		}
 	}
 

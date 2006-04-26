@@ -78,7 +78,7 @@ public class ObservableTest extends junit.framework.TestCase {
 		try {
 			Observable ov = new Observable();
 			assertTrue("Wrong initial values.", !ov.hasChanged());
-			assertTrue("Wrong initial values.", ov.countObservers() == 0);
+			assertEquals("Wrong initial values.", 0, ov.countObservers());
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
@@ -92,9 +92,9 @@ public class ObservableTest extends junit.framework.TestCase {
 		// java.util.Observable.addObserver(java.util.Observer)
 		TestObserver test = new TestObserver();
 		observable.addObserver(test);
-		assertTrue("Failed to add observer", observable.countObservers() == 1);
+		assertEquals("Failed to add observer", 1, observable.countObservers());
 		observable.addObserver(test);
-		assertTrue("Duplicate observer", observable.countObservers() == 1);
+		assertEquals("Duplicate observer", 1, observable.countObservers());
 
 		Observable o = new Observable();
 		try {
@@ -113,11 +113,11 @@ public class ObservableTest extends junit.framework.TestCase {
 	 */
 	public void test_countObservers() {
 		// Test for method int java.util.Observable.countObservers()
-		assertTrue("New observable had > 0 observers", observable
-				.countObservers() == 0);
+		assertEquals("New observable had > 0 observers", 0, observable
+				.countObservers());
 		observable.addObserver(new TestObserver());
-		assertTrue("Observable with observer returned other than 1", observable
-				.countObservers() == 1);
+		assertEquals("Observable with observer returned other than 1", 1, observable
+				.countObservers());
 	}
 
 	/**
@@ -128,8 +128,8 @@ public class ObservableTest extends junit.framework.TestCase {
 		// java.util.Observable.deleteObserver(java.util.Observer)
 		observable.addObserver(observer = new TestObserver());
 		observable.deleteObserver(observer);
-		assertTrue("Failed to delete observer",
-				observable.countObservers() == 0);
+		assertEquals("Failed to delete observer",
+				0, observable.countObservers());
 
 	}
 
@@ -147,8 +147,8 @@ public class ObservableTest extends junit.framework.TestCase {
 		observable.addObserver(new TestObserver());
 		observable.addObserver(new TestObserver());
 		observable.deleteObservers();
-		assertTrue("Failed to delete observers",
-				observable.countObservers() == 0);
+		assertEquals("Failed to delete observers",
+				0, observable.countObservers());
 	}
 
 	/**
@@ -165,12 +165,12 @@ public class ObservableTest extends junit.framework.TestCase {
 		// Test for method void java.util.Observable.notifyObservers()
 		observable.addObserver(observer = new TestObserver());
 		observable.notifyObservers();
-		assertTrue("Notified when unchnaged", ((TestObserver) observer)
-				.updateCount() == 0);
+		assertEquals("Notified when unchnaged", 0, ((TestObserver) observer)
+				.updateCount());
 		((TestObservable) observable).doChange();
 		observable.notifyObservers();
-		assertTrue("Failed to notify",
-				((TestObserver) observer).updateCount() == 1);
+		assertEquals("Failed to notify",
+				1, ((TestObserver) observer).updateCount());
 
 		DeleteTestObserver observer1, observer2;
 		observable.deleteObservers();
@@ -180,7 +180,7 @@ public class ObservableTest extends junit.framework.TestCase {
 		observable.notifyObservers();
 		assertTrue("Failed to notify all", observer1.updateCount() == 1
 				&& observer2.updateCount() == 1);
-		assertTrue("Failed to delete all", observable.countObservers() == 0);
+		assertEquals("Failed to delete all", 0, observable.countObservers());
 
 		observable.addObserver(observer1 = new DeleteTestObserver(false));
 		observable.addObserver(observer2 = new DeleteTestObserver(false));
@@ -188,7 +188,7 @@ public class ObservableTest extends junit.framework.TestCase {
 		observable.notifyObservers();
 		assertTrue("Failed to notify all 2", observer1.updateCount() == 1
 				&& observer2.updateCount() == 1);
-		assertTrue("Failed to delete all 2", observable.countObservers() == 0);
+		assertEquals("Failed to delete all 2", 0, observable.countObservers());
 	}
 
 	/**
@@ -200,12 +200,12 @@ public class ObservableTest extends junit.framework.TestCase {
 		Object obj;
 		observable.addObserver(observer = new TestObserver());
 		observable.notifyObservers();
-		assertTrue("Notified when unchanged", ((TestObserver) observer)
-				.updateCount() == 0);
+		assertEquals("Notified when unchanged", 0, ((TestObserver) observer)
+				.updateCount());
 		((TestObservable) observable).doChange();
 		observable.notifyObservers(obj = new Object());
-		assertTrue("Failed to notify",
-				((TestObserver) observer).updateCount() == 1);
+		assertEquals("Failed to notify",
+				1, ((TestObserver) observer).updateCount());
 		assertTrue("Failed to pass Object arg", ((TestObserver) observer).objv
 				.elementAt(0).equals(obj));
 	}

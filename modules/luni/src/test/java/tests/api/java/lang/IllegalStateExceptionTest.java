@@ -28,8 +28,8 @@ public class IllegalStateExceptionTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.lang.IllegalStateException()
 		IllegalStateException ill = new IllegalStateException();
-		assertTrue("failed to create an instance of illegalStateException", ill
-				.getMessage() == null);	
+		assertNull("failed to create an instance of illegalStateException",
+                           ill.getMessage());	
 	}
 
 	/**
@@ -39,9 +39,8 @@ public class IllegalStateExceptionTest extends junit.framework.TestCase {
 		// Test for method java.lang.IllegalStateException(java.lang.String)
 		IllegalStateException ill = new IllegalStateException(
 				"testing illState exception");
-		assertTrue(
-				"failed to create instance of illegalStateException(string)",
-				ill.getMessage().equals("testing illState exception"));
+		assertEquals("failed to create instance of illegalStateException(string)",
+				"testing illState exception", ill.getMessage());
 	}
 
 	/**

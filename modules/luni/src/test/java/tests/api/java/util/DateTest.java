@@ -157,16 +157,14 @@ public class DateTest extends junit.framework.TestCase {
 		Date d3 = new Date(someNumber + 1);
 		Date d4 = new Date(someNumber - 1);
 		Integer i = new Integer(0);
-		assertTrue("Comparing a date to itself did not answer zero", d1
-				.compareTo((Object) d1) == 0);
-		assertTrue("Comparing equal dates did not answer zero", d1
-				.compareTo((Object) d2) == 0);
-		assertTrue(
-				"date1.compareTo(date2), where date1 > date2, did not result in 1",
-				d1.compareTo((Object) d4) == 1);
-		assertTrue(
-				"date1.compareTo(date2), where date1 < date2, did not result in -1",
-				d1.compareTo((Object) d3) == -1);
+		assertEquals("Comparing a date to itself did not answer zero", 0, d1
+				.compareTo((Object) d1));
+		assertEquals("Comparing equal dates did not answer zero", 0, d1
+				.compareTo((Object) d2));
+		assertEquals("date1.compareTo(date2), where date1 > date2, did not result in 1",
+				1, d1.compareTo((Object) d4));
+		assertEquals("date1.compareTo(date2), where date1 < date2, did not result in -1",
+				-1, d1.compareTo((Object) d3));
 		try {
 			d1.compareTo(i);
 		} catch (ClassCastException e) {
@@ -186,16 +184,14 @@ public class DateTest extends junit.framework.TestCase {
 		Date d2 = new Date(someNumber);
 		Date d3 = new Date(someNumber + 1);
 		Date d4 = new Date(someNumber - 1);
-		assertTrue("Comparing a date to itself did not answer zero", d1
-				.compareTo(d1) == 0);
-		assertTrue("Comparing equal dates did not answer zero", d1
-				.compareTo(d2) == 0);
-		assertTrue(
-				"date1.compareTo(date2), where date1 > date2, did not result in 1",
-				d1.compareTo(d4) == 1);
-		assertTrue(
-				"date1.compareTo(date2), where date1 < date2, did not result in -1",
-				d1.compareTo(d3) == -1);
+		assertEquals("Comparing a date to itself did not answer zero", 0, d1
+				.compareTo(d1));
+		assertEquals("Comparing equal dates did not answer zero", 0, d1
+				.compareTo(d2));
+		assertEquals("date1.compareTo(date2), where date1 > date2, did not result in 1",
+				1, d1.compareTo(d4));
+		assertEquals("date1.compareTo(date2), where date1 < date2, did not result in -1",
+				-1, d1.compareTo(d3));
 
 	}
 
@@ -218,7 +214,7 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method int java.util.Date.getDate()
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
-		assertTrue("Returned incorrect date", d.getDate() == 13);
+		assertEquals("Returned incorrect date", 13, d.getDate());
 	}
 
 	/**
@@ -228,7 +224,7 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method int java.util.Date.getDay()
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
-		assertTrue("Returned incorrect day", d.getDay() == 2);
+		assertEquals("Returned incorrect day", 2, d.getDay());
 	}
 
 	/**
@@ -238,7 +234,7 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method int java.util.Date.getHours()
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
-		assertTrue("Returned incorrect hours", d.getHours() == 19);
+		assertEquals("Returned incorrect hours", 19, d.getHours());
 	}
 
 	/**
@@ -248,7 +244,7 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method int java.util.Date.getMinutes()
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
-		assertTrue("Returned incorrect minutes", d.getMinutes() == 9);
+		assertEquals("Returned incorrect minutes", 9, d.getMinutes());
 	}
 
 	/**
@@ -258,7 +254,7 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method int java.util.Date.getMonth()
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
-		assertTrue("Returned incorrect month", d.getMonth() == 9);
+		assertEquals("Returned incorrect month", 9, d.getMonth());
 	}
 
 	/**
@@ -268,7 +264,7 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method int java.util.Date.getSeconds()
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
-		assertTrue("Returned incorrect seconds", d.getSeconds() == 0);
+		assertEquals("Returned incorrect seconds", 0, d.getSeconds());
 	}
 
 	/**
@@ -278,8 +274,8 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method long java.util.Date.getTime()
 		Date d1 = new Date(0);
 		Date d2 = new Date(1900000);
-		assertTrue("Returned incorrect time", d2.getTime() == 1900000);
-		assertTrue("Returned incorrect time", d1.getTime() == 0);
+		assertEquals("Returned incorrect time", 1900000, d2.getTime());
+		assertEquals("Returned incorrect time", 0, d1.getTime());
 	}
 
 	/**
@@ -297,7 +293,7 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method int java.util.Date.getYear()
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
-		assertTrue("Returned incorrect year", d.getYear() == 98);
+		assertEquals("Returned incorrect year", 98, d.getYear());
 	}
 
 	/**
@@ -307,8 +303,8 @@ public class DateTest extends junit.framework.TestCase {
 		// Test for method int java.util.Date.hashCode()
 		Date d1 = new Date(0);
 		Date d2 = new Date(1900000);
-		assertTrue("Returned incorrect hash", d2.hashCode() == 1900000);
-		assertTrue("Returned incorrect hash", d1.hashCode() == 0);
+		assertEquals("Returned incorrect hash", 1900000, d2.hashCode());
+		assertEquals("Returned incorrect hash", 0, d1.hashCode());
 	}
 
 	/**
@@ -319,9 +315,9 @@ public class DateTest extends junit.framework.TestCase {
 		Date d = new Date(Date.parse("13 October 1998"));
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(d);
-		assertTrue("Parsed incorrect month", cal.get(Calendar.MONTH) == 9);
-		assertTrue("Parsed incorrect year", cal.get(Calendar.YEAR) == 1998);
-		assertTrue("Parsed incorrect date", cal.get(Calendar.DATE) == 13);
+		assertEquals("Parsed incorrect month", 9, cal.get(Calendar.MONTH));
+		assertEquals("Parsed incorrect year", 1998, cal.get(Calendar.YEAR));
+		assertEquals("Parsed incorrect date", 13, cal.get(Calendar.DATE));
 
 		d = new Date(Date.parse("Jan-12 1999"));
 		assertTrue("Wrong parsed date 1", d.equals(new GregorianCalendar(1999,
@@ -362,7 +358,7 @@ public class DateTest extends junit.framework.TestCase {
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
 		d.setDate(23);
-		assertTrue("Set incorrect date", d.getDate() == 23);
+		assertEquals("Set incorrect date", 23, d.getDate());
 	}
 
 	/**
@@ -373,7 +369,7 @@ public class DateTest extends junit.framework.TestCase {
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
 		d.setHours(23);
-		assertTrue("Set incorrect hours", d.getHours() == 23);
+		assertEquals("Set incorrect hours", 23, d.getHours());
 	}
 
 	/**
@@ -384,7 +380,7 @@ public class DateTest extends junit.framework.TestCase {
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
 		d.setMinutes(45);
-		assertTrue("Set incorrect mins", d.getMinutes() == 45);
+		assertEquals("Set incorrect mins", 45, d.getMinutes());
 	}
 
 	/**
@@ -395,7 +391,7 @@ public class DateTest extends junit.framework.TestCase {
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
 		d.setMonth(0);
-		assertTrue("Set incorrect month", d.getMonth() == 0);
+		assertEquals("Set incorrect month", 0, d.getMonth());
 	}
 
 	/**
@@ -406,7 +402,7 @@ public class DateTest extends junit.framework.TestCase {
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
 		d.setSeconds(13);
-		assertTrue("Set incorrect seconds", d.getSeconds() == 13);
+		assertEquals("Set incorrect seconds", 13, d.getSeconds());
 	}
 
 	/**
@@ -418,8 +414,8 @@ public class DateTest extends junit.framework.TestCase {
 		Date d2 = new Date(1900000);
 		d1.setTime(900);
 		d2.setTime(890000);
-		assertTrue("Returned incorrect time", d2.getTime() == 890000);
-		assertTrue("Returned incorrect time", d1.getTime() == 900);
+		assertEquals("Returned incorrect time", 890000, d2.getTime());
+		assertEquals("Returned incorrect time", 900, d1.getTime());
 	}
 
 	/**
@@ -430,7 +426,7 @@ public class DateTest extends junit.framework.TestCase {
 		Date d = new GregorianCalendar(1998, Calendar.OCTOBER, 13, 19, 9)
 				.getTime();
 		d.setYear(8);
-		assertTrue("Set incorrect year", d.getYear() == 8);
+		assertEquals("Set incorrect year", 8, d.getYear());
 	}
 
 	/**
@@ -438,11 +434,11 @@ public class DateTest extends junit.framework.TestCase {
 	 */
 	public void test_toGMTString() {
 		// Test for method java.lang.String java.util.Date.toGMTString()
-		assertTrue("Did not convert epoch to GMT string correctly", new Date(0)
-				.toGMTString().equals("1 Jan 1970 00:00:00 GMT"));
-		assertTrue("Did not convert epoch + 1yr to GMT string correctly",
-				new Date((long) 365 * 24 * 60 * 60 * 1000).toGMTString()
-						.equals("1 Jan 1971 00:00:00 GMT"));
+		assertEquals("Did not convert epoch to GMT string correctly", "1 Jan 1970 00:00:00 GMT", new Date(0)
+				.toGMTString());
+		assertEquals("Did not convert epoch + 1yr to GMT string correctly",
+				"1 Jan 1971 00:00:00 GMT", new Date((long) 365 * 24 * 60 * 60 * 1000).toGMTString()
+						);
 	}
 
 	/**

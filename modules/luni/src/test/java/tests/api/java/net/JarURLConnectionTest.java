@@ -43,9 +43,9 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 					+ Support_Resources.getResourceURL("/JUC/lf.jar!/swt.dll"));
 			juc = (JarURLConnection) u.openConnection();
 			java.util.jar.Attributes a = juc.getJarEntry().getAttributes();
-			assertTrue("Returned incorrect Attributes", a.get(
+			assertEquals("Returned incorrect Attributes", "SHA MD5", a.get(
 					new java.util.jar.Attributes.Name("Digest-Algorithms"))
-					.equals("SHA MD5"));
+					);
 		} catch (java.io.IOException e) {
 			fail("Exception during test : " + e.getMessage());
 		}
@@ -59,13 +59,13 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 			URL u = new URL("jar:"
 					+ Support_Resources.getResourceURL("/JUC/lf.jar!/plus.bmp"));
 			juc = (JarURLConnection) u.openConnection();
-			assertTrue("Returned incorrect entryName", juc.getEntryName()
-					.equals("plus.bmp"));
+			assertEquals("Returned incorrect entryName", "plus.bmp", juc.getEntryName()
+					);
 			u = new URL("jar:"
 					+ Support_Resources.getResourceURL("/JUC/lf.jar!/"));
 			juc = (JarURLConnection) u.openConnection();
-			assertTrue("Returned incorrect entryName",
-					juc.getEntryName() == null);
+			assertNull("Returned incorrect entryName",
+					juc.getEntryName());
 		} catch (java.io.IOException e) {
 			fail("IOException during test : " + e.getMessage());
 		}
@@ -79,12 +79,12 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 			URL u = new URL("jar:"
 					+ Support_Resources.getResourceURL("/JUC/lf.jar!/plus.bmp"));
 			juc = (JarURLConnection) u.openConnection();
-			assertTrue("Returned incorrect JarEntry", juc.getJarEntry()
-					.getName().equals("plus.bmp"));
+			assertEquals("Returned incorrect JarEntry", "plus.bmp", juc.getJarEntry()
+					.getName());
 			u = new URL("jar:"
 					+ Support_Resources.getResourceURL("/JUC/lf.jar!/"));
 			juc = (JarURLConnection) u.openConnection();
-			assertTrue("Returned incorrect JarEntry", juc.getJarEntry() == null);
+			assertNull("Returned incorrect JarEntry", juc.getJarEntry());
 		} catch (java.io.IOException e) {
 			fail("IOException during test : " + e.getMessage());
 		}
@@ -115,14 +115,14 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			exception = 1;
 		}
-		assertTrue("Did not throw exception on connect", exception == 1);
+		assertEquals("Did not throw exception on connect", 1, exception);
 		exception = 0;
 		try {
 			connection.getJarFile();
 		} catch (IOException e) {
 			exception = 1;
 		}
-		assertTrue("Did not throw exception after connect", exception == 1);
+		assertEquals("Did not throw exception after connect", 1, exception);
 		File resources = Support_Resources.createTempFolder();
 		try {
 			Support_Resources.copyFile(resources, null, "hyts_att.jar");
@@ -191,9 +191,9 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 					+ Support_Resources.getResourceURL("/JUC/lf.jar!/swt.dll"));
 			juc = (JarURLConnection) u.openConnection();
 			java.util.jar.Attributes a = juc.getMainAttributes();
-			assertTrue("Returned incorrect Attributes", a.get(
-					java.util.jar.Attributes.Name.MANIFEST_VERSION).equals(
-					"1.0"));
+			assertEquals("Returned incorrect Attributes", 
+					"1.0", a.get(
+					java.util.jar.Attributes.Name.MANIFEST_VERSION));
 		} catch (java.io.IOException e) {
 			fail("IOException during test : " + e.getMessage());
 		}

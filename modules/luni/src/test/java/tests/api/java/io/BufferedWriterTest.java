@@ -37,7 +37,7 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 		sw = new Support_StringWriter();
 		bw = new BufferedWriter(sw);
 		sw.write("Hi");
-		assertTrue("Constructor failed", sw.toString().equals("Hi"));
+		assertEquals("Constructor failed", "Hi", sw.toString());
 
 	}
 
@@ -71,8 +71,8 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 			bw.write("This should not cause a flush");
 			assertTrue("Bytes written without flush", sw.toString().equals(""));
 			bw.flush();
-			assertTrue("Bytes not flushed", sw.toString().equals(
-					"This should not cause a flush"));
+			assertEquals("Bytes not flushed", 
+					"This should not cause a flush", sw.toString());
 		} catch (Exception e) {
 			fail("Exception during flush test");
 		}
@@ -120,7 +120,7 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 			bw.write('T');
 			assertTrue("Char written without flush", sw.toString().equals(""));
 			bw.flush();
-			assertTrue("Incorrect char written", sw.toString().equals("T"));
+			assertEquals("Incorrect char written", "T", sw.toString());
 		} catch (Exception e) {
 			fail("Exception during write test");
 		}

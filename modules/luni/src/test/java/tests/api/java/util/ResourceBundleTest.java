@@ -39,27 +39,27 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 
 		Locale.setDefault(new Locale("en", "US"));
 		bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR", "VAR"));
-		assertTrue("Wrong bundle fr_FR_VAR", bundle.getString("parent4")
-				.equals("frFRVARValue4"));
+		assertEquals("Wrong bundle fr_FR_VAR", "frFRVARValue4", bundle.getString("parent4")
+				);
 		bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR", "v1"));
-		assertTrue("Wrong bundle fr_FR_v1", bundle.getString("parent4").equals(
-				"frFRValue4"));
+		assertEquals("Wrong bundle fr_FR_v1", 
+				"frFRValue4", bundle.getString("parent4"));
 		bundle = ResourceBundle.getBundle(name, new Locale("fr", "US", "VAR"));
-		assertTrue("Wrong bundle fr_US_var", bundle.getString("parent4")
-				.equals("frValue4"));
+		assertEquals("Wrong bundle fr_US_var", "frValue4", bundle.getString("parent4")
+				);
 		bundle = ResourceBundle.getBundle(name, new Locale("de", "FR", "VAR"));
-		assertTrue("Wrong bundle de_FR_var", bundle.getString("parent4")
-				.equals("enUSValue4"));
+		assertEquals("Wrong bundle de_FR_var", "enUSValue4", bundle.getString("parent4")
+				);
 
 		Locale.setDefault(new Locale("fr", "FR", "VAR"));
 		bundle = ResourceBundle.getBundle(name, new Locale("de", "FR", "v1"));
-		assertTrue("Wrong bundle de_FR_var 2", bundle.getString("parent4")
-				.equals("frFRVARValue4"));
+		assertEquals("Wrong bundle de_FR_var 2", "frFRVARValue4", bundle.getString("parent4")
+				);
 
 		Locale.setDefault(new Locale("de", "US"));
 		bundle = ResourceBundle.getBundle(name, new Locale("de", "FR", "var"));
-		assertTrue("Wrong bundle de_FR_var 2", bundle.getString("parent4")
-				.equals("parentValue4"));
+		assertEquals("Wrong bundle de_FR_var 2", "parentValue4", bundle.getString("parent4")
+				);
 
 		// Test with a security manager
 		Locale.setDefault(new Locale("en", "US"));
@@ -67,16 +67,16 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 		try {
 			bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR",
 					"VAR"));
-			assertTrue("Security: Wrong bundle fr_FR_VAR", bundle.getString(
-					"parent4").equals("frFRVARValue4"));
+			assertEquals("Security: Wrong bundle fr_FR_VAR", "frFRVARValue4", bundle.getString(
+					"parent4"));
 			bundle = ResourceBundle.getBundle(name,
 					new Locale("fr", "FR", "v1"));
-			assertTrue("Security: Wrong bundle fr_FR_v1", bundle.getString(
-					"parent4").equals("frFRValue4"));
+			assertEquals("Security: Wrong bundle fr_FR_v1", "frFRValue4", bundle.getString(
+					"parent4"));
 			bundle = ResourceBundle.getBundle(name, new Locale("fr", "US",
 					"VAR"));
-			assertTrue("Security: Wrong bundle fr_US_var", bundle.getString(
-					"parent4").equals("frValue4"));
+			assertEquals("Security: Wrong bundle fr_US_var", "frValue4", bundle.getString(
+					"parent4"));
 			bundle = ResourceBundle.getBundle(name, new Locale("de", "FR",
 					"VAR"));
 			assertTrue("Security: Wrong bundle de_FR_var: "
@@ -120,8 +120,8 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 		ResourceBundle bundle = ResourceBundle.getBundle(name, Locale
 				.getDefault());
 		bundle = ResourceBundle.getBundle(name, Locale.getDefault(), loader);
-		assertTrue("Wrong cached value", bundle.getString("property").equals(
-				"resource"));
+		assertEquals("Wrong cached value", 
+				"resource", bundle.getString("property"));
 	}
 
 	/**
@@ -132,20 +132,20 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 		String name = "tests.support.Support_TestResource";
 		Locale.setDefault(new Locale("en", "US"));
 		bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR", "VAR"));
-		assertTrue("Wrong value parent4", bundle.getString("parent4").equals(
-				"frFRVARValue4"));
-		assertTrue("Wrong value parent3", bundle.getString("parent3").equals(
-				"frFRValue3"));
-		assertTrue("Wrong value parent2", bundle.getString("parent2").equals(
-				"frValue2"));
-		assertTrue("Wrong value parent1", bundle.getString("parent1").equals(
-				"parentValue1"));
-		assertTrue("Wrong value child3", bundle.getString("child3").equals(
-				"frFRVARChildValue3"));
-		assertTrue("Wrong value child2", bundle.getString("child2").equals(
-				"frFRVARChildValue2"));
-		assertTrue("Wrong value child1", bundle.getString("child1").equals(
-				"frFRVARChildValue1"));
+		assertEquals("Wrong value parent4", 
+				"frFRVARValue4", bundle.getString("parent4"));
+		assertEquals("Wrong value parent3", 
+				"frFRValue3", bundle.getString("parent3"));
+		assertEquals("Wrong value parent2", 
+				"frValue2", bundle.getString("parent2"));
+		assertEquals("Wrong value parent1", 
+				"parentValue1", bundle.getString("parent1"));
+		assertEquals("Wrong value child3", 
+				"frFRVARChildValue3", bundle.getString("child3"));
+		assertEquals("Wrong value child2", 
+				"frFRVARChildValue2", bundle.getString("child2"));
+		assertEquals("Wrong value child1", 
+				"frFRVARChildValue1", bundle.getString("child1"));
 	}
 
 	protected void setUp() {

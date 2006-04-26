@@ -112,7 +112,7 @@ public class ProxyTest extends junit.framework.TestCase {
 		assertTrue("Failed identity test ", proxy.equals(proxy));
 		assertTrue("Failed not equals test ", !proxy.equals(""));
 		int[] result = (int[]) proxy.array(new long[] { 100L, -200L });
-		assertTrue("Failed base type conversion test ", result[0] == -200);
+		assertEquals("Failed base type conversion test ", -200, result[0]);
 
 		boolean worked = false;
 		try {

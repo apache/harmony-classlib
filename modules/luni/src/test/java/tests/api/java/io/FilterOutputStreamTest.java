@@ -51,7 +51,7 @@ public class FilterOutputStreamTest extends junit.framework.TestCase {
 			os = new java.io.FilterOutputStream(bos);
 			os.write(fileString.getBytes(), 0, 500);
 			os.flush();
-			assertTrue("Bytes not written after flush", bos.size() == 500);
+			assertEquals("Bytes not written after flush", 500, bos.size());
 			os.close();
 		} catch (java.io.IOException e) {
 			fail("Close test failed : " + e.getMessage());
@@ -68,7 +68,7 @@ public class FilterOutputStreamTest extends junit.framework.TestCase {
 			os = new java.io.FilterOutputStream(bos);
 			os.write(fileString.getBytes(), 0, 500);
 			os.flush();
-			assertTrue("Bytes not written after flush", bos.size() == 500);
+			assertEquals("Bytes not written after flush", 500, bos.size());
 			os.close();
 		} catch (java.io.IOException e) {
 			fail("Flush test failed : " + e.getMessage());
@@ -131,10 +131,10 @@ public class FilterOutputStreamTest extends junit.framework.TestCase {
 			os.write('t');
 			bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 			os.flush();
-			assertTrue("Byte not written after flush", bis.available() == 1);
+			assertEquals("Byte not written after flush", 1, bis.available());
 			byte[] wbytes = new byte[1];
 			bis.read(wbytes, 0, 1);
-			assertTrue("Incorrect byte written", wbytes[0] == 't');
+			assertEquals("Incorrect byte written", 't', wbytes[0]);
 		} catch (java.io.IOException e) {
 			fail("Write test failed : " + e.getMessage());
 		}

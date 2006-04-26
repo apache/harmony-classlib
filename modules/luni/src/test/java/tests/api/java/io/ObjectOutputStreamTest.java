@@ -628,11 +628,11 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
 			sth = (SerializableTestHelper) (ois.readObject());
-			assertTrue("readFields / writeFields failed--first field not set",
-					sth.getText1().equals("Gabba"));
-			assertTrue(
+			assertEquals("readFields / writeFields failed--first field not set",
+					"Gabba", sth.getText1());
+			assertNull(
 					"readFields / writeFields failed--second field should not have been set",
-					sth.getText2() == null);
+					sth.getText2());
 		} catch (Exception e) {
 			fail("Exception thrown : " + e.getMessage());
 		}
@@ -728,8 +728,8 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 					.toByteArray()));
 			ois.read(buf, 0, 10);
 			ois.close();
-			assertTrue("Read incorrect bytes", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -749,8 +749,8 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 					.toByteArray()));
 			ois.read(buf, 0, 10);
 			ois.close();
-			assertTrue("Read incorrect bytes", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -766,7 +766,7 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Read incorrect byte", ois.read() == 'T');
+			assertEquals("Read incorrect byte", 'T', ois.read());
 			ois.close();
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
@@ -799,7 +799,7 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Wrote incorrect byte value", ois.readByte() == 127);
+			assertEquals("Wrote incorrect byte value", 127, ois.readByte());
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -819,8 +819,8 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 					.toByteArray()));
 			ois.readFully(buf);
 			ois.close();
-			assertTrue("Wrote incorrect bytes value", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Wrote incorrect bytes value", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -836,7 +836,7 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Wrote incorrect char value", ois.readChar() == 'T');
+			assertEquals("Wrote incorrect char value", 'T', ois.readChar());
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -860,8 +860,8 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			for (int i = 0; i < avail; ++i)
 				buf[i] = ois.readChar();
 			ois.close();
-			assertTrue("Wrote incorrect chars", new String(buf, 0, 10)
-					.equals("HelloWorld"));
+			assertEquals("Wrote incorrect chars", "HelloWorld", new String(buf, 0, 10)
+					);
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -1010,7 +1010,7 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Wrote incorrect short value", ois.readShort() == 127);
+			assertEquals("Wrote incorrect short value", 127, ois.readShort());
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
@@ -1027,8 +1027,8 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			oos.close();
 			ois = new ObjectInputStream(new ByteArrayInputStream(bao
 					.toByteArray()));
-			assertTrue("Wrote incorrect UTF value", ois.readUTF().equals(
-					"HelloWorld"));
+			assertEquals("Wrote incorrect UTF value", 
+					"HelloWorld", ois.readUTF());
 		} catch (IOException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}

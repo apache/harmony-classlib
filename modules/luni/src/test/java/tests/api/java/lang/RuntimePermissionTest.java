@@ -23,8 +23,8 @@ public class RuntimePermissionTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.lang.RuntimePermission(java.lang.String)
 		RuntimePermission r = new RuntimePermission("createClassLoader");
-		assertTrue("Returned incorrect name", r.getName().equals(
-				"createClassLoader"));
+		assertEquals("Returned incorrect name", 
+				"createClassLoader", r.getName());
 
 	}
 
@@ -36,8 +36,8 @@ public class RuntimePermissionTest extends junit.framework.TestCase {
 		// Test for method java.lang.RuntimePermission(java.lang.String,
 		// java.lang.String)
 		RuntimePermission r = new RuntimePermission("createClassLoader", null);
-		assertTrue("Returned incorrect name", r.getName().equals(
-				"createClassLoader"));
+		assertEquals("Returned incorrect name", 
+				"createClassLoader", r.getName());
 	}
 
 	/**

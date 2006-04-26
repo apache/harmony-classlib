@@ -81,9 +81,8 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 		st.ordinaryChar('/');
 		st.commentChar('*');
 		try {
-			assertTrue(
-					"nextTokent() did not return the character / skiping the comments starting with *",
-					st.nextToken() == 47);
+			assertEquals("nextTokent() did not return the character / skiping the comments starting with *",
+					47, st.nextToken());
 			assertTrue("the next token returned should be the digit 8", st
 					.nextToken() == StreamTokenizer.TT_NUMBER
 					&& st.nval == 8.0);
@@ -135,12 +134,12 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 	public void test_lineno() {
 		setTest("d\n 8\n");
 		try {
-			assertTrue("the lineno should be 1", st.lineno() == 1);
+			assertEquals("the lineno should be 1", 1, st.lineno());
 			st.nextToken();
 			st.nextToken();
-			assertTrue("the lineno should be 2", st.lineno() == 2);
+			assertEquals("the lineno should be 2", 2, st.lineno());
 			st.nextToken();
-			assertTrue("the next line no should be 3", st.lineno() == 3);
+			assertEquals("the next line no should be 3", 3, st.lineno());
 		} catch (IOException e) {
 			fail(
 					"IOException occured while trying to read an input stream - constructor");
@@ -156,8 +155,8 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 		st.lowerCaseMode(true);
 		try {
 			st.nextToken();
-			assertTrue("sval not converted to lowercase.", st.sval
-					.equals("helloworld"));
+			assertEquals("sval not converted to lowercase.", "helloworld", st.sval
+					);
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
@@ -225,7 +224,7 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 			tokenizer.eolIsSignificant(true);
 			assertTrue("Wrong token 2,1", tokenizer.nextToken() == '\n');
 			assertTrue("Wrong token 2,2", tokenizer.nextToken() == '\n');
-			assertTrue("Wrong token 2,3", tokenizer.nextToken() == '#');
+			assertEquals("Wrong token 2,3", '#', tokenizer.nextToken());
 		} catch (IOException e) {
 			fail("IOException during test 2 : " + e.getMessage());
 		}
@@ -255,8 +254,8 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 		setTest("azbc iof z 893");
 		st.ordinaryChars('a', 'z');
 		try {
-			assertTrue("OrdinaryChars failed.", st.nextToken() == 'a');
-			assertTrue("OrdinaryChars failed.", st.nextToken() == 'z');
+			assertEquals("OrdinaryChars failed.", 'a', st.nextToken());
+			assertEquals("OrdinaryChars failed.", 'z', st.nextToken());
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
@@ -272,7 +271,7 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 			assertTrue("Base behavior failed.",
 					st.nextToken() == StreamTokenizer.TT_NUMBER);
 			st.ordinaryChars('0', '9');
-			assertTrue("setOrdinary failed.", st.nextToken() == '6');
+			assertEquals("setOrdinary failed.", '6', st.nextToken());
 			st.parseNumbers();
 			assertTrue("parseNumbers failed.",
 					st.nextToken() == StreamTokenizer.TT_NUMBER);
@@ -305,12 +304,12 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 		setTest("<Hello World<    HelloWorldH");
 		st.quoteChar('<');
 		try {
-			assertTrue("QuoteChar failed.", st.nextToken() == '<');
-			assertTrue("QuoteChar failed.", st.sval.equals("Hello World"));
+			assertEquals("QuoteChar failed.", '<', st.nextToken());
+			assertEquals("QuoteChar failed.", "Hello World", st.sval);
 			st.quoteChar('H');
 			st.nextToken();
-			assertTrue("QuoteChar failed for word.", st.sval
-					.equals("elloWorld"));
+			assertEquals("QuoteChar failed for word.", "elloWorld", st.sval
+					);
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
@@ -346,7 +345,7 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 		st.ordinaryChar('/');
 		st.slashSlashComments(true);
 		try {
-			assertTrue("Test failed.", st.nextToken() == '/');
+			assertEquals("Test failed.", '/', st.nextToken());
 			assertTrue("Test failed.",
 					st.nextToken() == StreamTokenizer.TT_WORD);
 		} catch (Exception e) {
@@ -405,17 +404,17 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 		try {
 			assertTrue("WordChar failed1.",
 					st.nextToken() == StreamTokenizer.TT_WORD);
-			assertTrue("WordChar failed2.", st.sval.equals("A893"));
+			assertEquals("WordChar failed2.", "A893", st.sval);
 			assertTrue("WordChar failed3.",
 					st.nextToken() == StreamTokenizer.TT_NUMBER);
 			st.nextToken();
-			assertTrue("WordChar failed4.", st.sval.equals("B87"));
+			assertEquals("WordChar failed4.", "B87", st.sval);
 
 			setTest("    Hello World");
 			st.wordChars(' ', ' ');
 			st.nextToken();
-			assertTrue("WordChars failed for whitespace.", st.sval
-					.equals("Hello World"));
+			assertEquals("WordChars failed for whitespace.", "Hello World", st.sval
+					);
 
 			setTest("    Hello World\r\n  \'Hello World\' Hello\' World");
 			st.wordChars(' ', ' ');

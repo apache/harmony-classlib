@@ -56,7 +56,7 @@ public class HashtableTest extends junit.framework.TestCase {
 
 		Hashtable h = new Hashtable();
 
-		assertTrue("Created incorrect hashtable", h.size() == 0);
+		assertEquals("Created incorrect hashtable", 0, h.size());
 	}
 
 	/**
@@ -66,10 +66,10 @@ public class HashtableTest extends junit.framework.TestCase {
 		// Test for method java.util.Hashtable(int)
 		Hashtable h = new Hashtable(9);
 
-		assertTrue("Created incorrect hashtable", h.size() == 0);
+		assertEquals("Created incorrect hashtable", 0, h.size());
 
 		Hashtable empty = new Hashtable(0);
-		assertTrue("Empty hashtable access", empty.get("nothing") == null);
+		assertNull("Empty hashtable access", empty.get("nothing"));
 		empty.put("something", "here");
 		assertTrue("cannot get element", empty.get("something") == "here");
 	}
@@ -80,10 +80,10 @@ public class HashtableTest extends junit.framework.TestCase {
 	public void test_ConstructorIF() {
 		// Test for method java.util.Hashtable(int, float)
 		Hashtable h = new java.util.Hashtable(10, 0.5f);
-		assertTrue("Created incorrect hashtable", h.size() == 0);
+		assertEquals("Created incorrect hashtable", 0, h.size());
 
 		Hashtable empty = new Hashtable(0, 0.75f);
-		assertTrue("Empty hashtable access", empty.get("nothing") == null);
+		assertNull("Empty hashtable access", empty.get("nothing"));
 		empty.put("something", "here");
 		assertTrue("cannot get element", empty.get("something") == "here");
 	}
@@ -112,7 +112,7 @@ public class HashtableTest extends junit.framework.TestCase {
 		// Test for method void java.util.Hashtable.clear()
 		Hashtable h = hashtableClone(htfull);
 		h.clear();
-		assertTrue("Hashtable was not cleared", h.size() == 0);
+		assertEquals("Hashtable was not cleared", 0, h.size());
 		Enumeration el = h.elements();
 		Enumeration keys = h.keys();
 		assertTrue("Hashtable improperly cleared", !el.hasMoreElements()
@@ -190,7 +190,7 @@ public class HashtableTest extends junit.framework.TestCase {
 			++i;
 		}
 
-		assertTrue("All keys not retrieved", ht10.size() == 10);
+		assertEquals("All keys not retrieved", 10, ht10.size());
 	}
 
 	/**
@@ -216,10 +216,10 @@ public class HashtableTest extends junit.framework.TestCase {
 		try {
 			// cached "12"
 			Object result = en.nextElement();
-			assertTrue("unexpected: " + result, result == null);
+			assertNull("unexpected: " + result, result);
 			// next is removed "9"
 			result = en.nextElement();
-			assertTrue("unexpected: " + result, result == null);
+			assertNull("unexpected: " + result, result);
 			result = en.nextElement();
 			assertTrue("unexpected: " + result, "b".equals(result));
 		} catch (NoSuchElementException e) {
@@ -243,8 +243,8 @@ public class HashtableTest extends junit.framework.TestCase {
 			assertTrue("Returned incorrect entry set", s2.contains(e
 					.nextElement()));
 
-		assertTrue("Not synchronized", s.getClass().getName().equals(
-				"java.util.Collections$SynchronizedSet"));
+		assertEquals("Not synchronized", 
+				"java.util.Collections$SynchronizedSet", s.getClass().getName());
 
 		boolean exception = false;
 		try {
@@ -274,8 +274,8 @@ public class HashtableTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object
 		// java.util.Hashtable.get(java.lang.Object)
 		Hashtable h = hashtableClone(htfull);
-		assertTrue("Could not retrieve element", ((String) h.get("FKey 2"))
-				.equals("FVal 2"));
+		assertEquals("Could not retrieve element", "FVal 2", ((String) h.get("FKey 2"))
+				);
 		
 		
 		// Regression for HARMONY-262
@@ -357,7 +357,7 @@ public class HashtableTest extends junit.framework.TestCase {
 			++i;
 		}
 
-		assertTrue("All keys not retrieved", ht10.size() == 10);
+		assertEquals("All keys not retrieved", 10, ht10.size());
 	}
 
 	/**
@@ -391,8 +391,8 @@ public class HashtableTest extends junit.framework.TestCase {
 			assertTrue("Returned incorrect key set", s
 					.contains(e.nextElement()));
 
-		assertTrue("Not synchronized", s.getClass().getName().equals(
-				"java.util.Collections$SynchronizedSet"));
+		assertEquals("Not synchronized", 
+				"java.util.Collections$SynchronizedSet", s.getClass().getName());
 
 		Map map = new Hashtable(101);
 		map.put(new Integer(1), "1");
@@ -408,7 +408,7 @@ public class HashtableTest extends junit.framework.TestCase {
 		list.remove(remove1);
 		list.remove(remove2);
 		assertTrue("Wrong result", it.next().equals(list.get(0)));
-		assertTrue("Wrong size", map.size() == 1);
+		assertEquals("Wrong size", 1, map.size());
 		assertTrue("Wrong contents", map.keySet().iterator().next().equals(
 				list.get(0)));
 
@@ -425,7 +425,7 @@ public class HashtableTest extends junit.framework.TestCase {
 		it2.hasNext();
 		it2.remove();
 		assertTrue("Wrong result 2", it2.next().equals(next));
-		assertTrue("Wrong size 2", map2.size() == 1);
+		assertEquals("Wrong size 2", 1, map2.size());
 		assertTrue("Wrong contents 2", map2.keySet().iterator().next().equals(
 				next));
 	}
@@ -595,8 +595,8 @@ public class HashtableTest extends junit.framework.TestCase {
 	public void test_toString() {
 		// Test for method java.lang.String java.util.Hashtable.toString()
 		Hashtable h = new Hashtable();
-		assertTrue("Incorrect toString for Empty table", h.toString().equals(
-				"{}"));
+		assertEquals("Incorrect toString for Empty table", 
+				"{}", h.toString());
 
 		h.put("one", "1");
 		h.put("two", h);
@@ -616,8 +616,8 @@ public class HashtableTest extends junit.framework.TestCase {
 		while (e.hasMoreElements())
 			assertTrue("Returned incorrect values", c.contains(e.nextElement()));
 
-		assertTrue("Not synchronized", c.getClass().getName().equals(
-				"java.util.Collections$SynchronizedCollection"));
+		assertEquals("Not synchronized", 
+				"java.util.Collections$SynchronizedCollection", c.getClass().getName());
 
 		Hashtable myHashtable = new Hashtable();
 		for (int i = 0; i < 100; i++)

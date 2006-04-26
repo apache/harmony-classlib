@@ -22,7 +22,7 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorC() {
 		// Test for method java.lang.Character(char)
-		assertTrue("Constructor failed", new Character('T').charValue() == 'T');
+		assertEquals("Constructor failed", 'T', new Character('T').charValue());
 	}
 
 	/**
@@ -30,8 +30,8 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_charValue() {
 		// Test for method char java.lang.Character.charValue()
-		assertTrue("Incorrect char value returned", new Character('T')
-				.charValue() == 'T');
+		assertEquals("Incorrect char value returned", 'T', new Character('T')
+				.charValue());
 	}
 
 	/**
@@ -45,9 +45,9 @@ public class CharacterTest extends junit.framework.TestCase {
 		Character y = new Character('b');
 		Character z = new Character('d');
 
-		assertTrue("Returned false for same Character", c.compareTo(c) == 0);
-		assertTrue("Returned false for identical Character",
-				c.compareTo(x) == 0);
+		assertEquals("Returned false for same Character", 0, c.compareTo(c));
+		assertEquals("Returned false for identical Character",
+				0, c.compareTo(x));
 		assertTrue("Returned other than less than for lesser char", c
 				.compareTo(y) > 0);
 		assertTrue("Returned other than greater than for greater char", c
@@ -59,8 +59,8 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_digitCI() {
 		// Test for method int java.lang.Character.digit(char, int)
-		assertTrue("Returned incorrect digit", Character.digit('1', 10) == 1);
-		assertTrue("Returned incorrect digit", Character.digit('F', 16) == 15);
+		assertEquals("Returned incorrect digit", 1, Character.digit('1', 10));
+		assertEquals("Returned incorrect digit", 15, Character.digit('F', 16));
 	}
 
 	/**
@@ -102,18 +102,18 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_getNumericValueC() {
 		// Test for method int java.lang.Character.getNumericValue(char)
-		assertTrue("Returned incorrect numeric value 1", Character
-				.getNumericValue('1') == 1);
-		assertTrue("Returned incorrect numeric value 2", Character
-				.getNumericValue('F') == 15);
-		assertTrue("Returned incorrect numeric value 3", Character
-				.getNumericValue('\u221e') == -1);
-		assertTrue("Returned incorrect numeric value 4", Character
-				.getNumericValue('\u00be') == -2);
-		assertTrue("Returned incorrect numeric value 5", Character
-				.getNumericValue('\u2182') == 10000);
-		assertTrue("Returned incorrect numeric value 6", Character
-				.getNumericValue('\uff12') == 2);
+		assertEquals("Returned incorrect numeric value 1", 1, Character
+				.getNumericValue('1'));
+		assertEquals("Returned incorrect numeric value 2", 15, Character
+				.getNumericValue('F'));
+		assertEquals("Returned incorrect numeric value 3", -1, Character
+				.getNumericValue('\u221e'));
+		assertEquals("Returned incorrect numeric value 4", -2, Character
+				.getNumericValue('\u00be'));
+		assertEquals("Returned incorrect numeric value 5", 10000, Character
+				.getNumericValue('\u2182'));
+		assertEquals("Returned incorrect numeric value 6", 2, Character
+				.getNumericValue('\uff12'));
 	}
 
 	/**
@@ -142,9 +142,9 @@ public class CharacterTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect type for: \u2029", Character
 				.getType('\u2029') == Character.PARAGRAPH_SEPARATOR);
 
-		assertTrue("Wrong constant for FORMAT", Character.FORMAT == 16);
-		assertTrue("Wrong constant for PRIVATE_USE",
-				Character.PRIVATE_USE == 18);
+		assertEquals("Wrong constant for FORMAT", 16, Character.FORMAT);
+		assertEquals("Wrong constant for PRIVATE_USE",
+				18, Character.PRIVATE_USE);
 	}
 
 	/**
@@ -152,8 +152,8 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_hashCode() {
 		// Test for method int java.lang.Character.hashCode()
-		assertTrue("Incorrect hash returned",
-				new Character('Y').hashCode() == 89);
+		assertEquals("Incorrect hash returned",
+				89, new Character('Y').hashCode());
 	}
 
 	/**
@@ -405,7 +405,7 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_toLowerCaseC() {
 		// Test for method char java.lang.Character.toLowerCase(char)
-		assertTrue("Failed to change case", Character.toLowerCase('T') == 't');
+		assertEquals("Failed to change case", 't', Character.toLowerCase('T'));
 	}
 
 	/**
@@ -413,8 +413,8 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_toString() {
 		// Test for method java.lang.String java.lang.Character.toString()
-		assertTrue("Incorrect String returned", new Character('T').toString()
-				.equals("T"));
+		assertEquals("Incorrect String returned", "T", new Character('T').toString()
+				);
 	}
 
 	/**
@@ -422,12 +422,12 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_toTitleCaseC() {
 		// Test for method char java.lang.Character.toTitleCase(char)
-		assertTrue("Incorrect title case for a",
-				Character.toTitleCase('a') == 'A');
-		assertTrue("Incorrect title case for A",
-				Character.toTitleCase('A') == 'A');
-		assertTrue("Incorrect title case for 1",
-				Character.toTitleCase('1') == '1');
+		assertEquals("Incorrect title case for a",
+				'A', Character.toTitleCase('a'));
+		assertEquals("Incorrect title case for A",
+				'A', Character.toTitleCase('A'));
+		assertEquals("Incorrect title case for 1",
+				'1', Character.toTitleCase('1'));
 	}
 
 	/**
@@ -435,12 +435,12 @@ public class CharacterTest extends junit.framework.TestCase {
 	 */
 	public void test_toUpperCaseC() {
 		// Test for method char java.lang.Character.toUpperCase(char)
-		assertTrue("Incorrect upper case for a",
-				Character.toUpperCase('a') == 'A');
-		assertTrue("Incorrect upper case for A",
-				Character.toUpperCase('A') == 'A');
-		assertTrue("Incorrect upper case for 1",
-				Character.toUpperCase('1') == '1');
+		assertEquals("Incorrect upper case for a",
+				'A', Character.toUpperCase('a'));
+		assertEquals("Incorrect upper case for A",
+				'A', Character.toUpperCase('A'));
+		assertEquals("Incorrect upper case for 1",
+				'1', Character.toUpperCase('1'));
 	}
 
 	/**

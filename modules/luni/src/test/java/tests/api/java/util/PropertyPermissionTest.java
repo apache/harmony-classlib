@@ -63,11 +63,10 @@ public class PropertyPermissionTest extends junit.framework.TestCase {
 	public void test_getActions() {
 		// Test for method java.lang.String
 		// java.util.PropertyPermission.getActions()
-		assertTrue("getActions did not return proper action", javaPP
-				.getActions().equals("read"));
-		assertTrue(
-				"getActions did not return proper canonical representation of actions",
-				userPP.getActions().equals("read,write"));
+		assertEquals("getActions did not return proper action", "read", javaPP
+				.getActions());
+		assertEquals("getActions did not return proper canonical representation of actions",
+				"read,write", userPP.getActions());
 	}
 
 	/**

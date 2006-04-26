@@ -128,7 +128,7 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 			os.writeChar('t');
 			os.close();
 			openDataInputStream();
-			assertTrue("Incorrect char read", dis.readChar() == 't');
+			assertEquals("Incorrect char read", 't', dis.readChar());
 		} catch (IOException e) {
 			fail("IOException during readChar test : " + e.getMessage());
 		}
@@ -143,8 +143,8 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 			os.writeDouble(2345.76834720202);
 			os.close();
 			openDataInputStream();
-			assertTrue("Incorrect double read",
-					dis.readDouble() == 2345.76834720202);
+			assertEquals("Incorrect double read",
+					2345.76834720202, dis.readDouble());
 		} catch (IOException e) {
 			fail("IOException during readDouble test" + e.toString());
 		}
@@ -211,7 +211,7 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 			os.writeInt(768347202);
 			os.close();
 			openDataInputStream();
-			assertTrue("Incorrect int read", dis.readInt() == 768347202);
+			assertEquals("Incorrect int read", 768347202, dis.readInt());
 		} catch (IOException e) {
 			fail("IOException during readInt test : " + e.getMessage());
 		}
@@ -242,7 +242,7 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 			os.writeLong(9875645283333L);
 			os.close();
 			openDataInputStream();
-			assertTrue("Incorrect long read", dis.readLong() == 9875645283333L);
+			assertEquals("Incorrect long read", 9875645283333L, dis.readLong());
 		} catch (IOException e) {
 			fail("read long test failed : " + e.getMessage());
 		}
@@ -272,7 +272,7 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 			os.writeByte((byte) -127);
 			os.close();
 			openDataInputStream();
-			assertTrue("Incorrect byte read", dis.readUnsignedByte() == 129);
+			assertEquals("Incorrect byte read", 129, dis.readUnsignedByte());
 		} catch (IOException e) {
 			fail("IOException during readUnsignedByte test : " + e.getMessage());
 		}
@@ -287,7 +287,7 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 			os.writeShort(9875);
 			os.close();
 			openDataInputStream();
-			assertTrue("Incorrect short read", dis.readUnsignedShort() == 9875);
+			assertEquals("Incorrect short read", 9875, dis.readUnsignedShort());
 		} catch (IOException e) {
 			fail("Exception during readShort test : " + e.getMessage());
 		}

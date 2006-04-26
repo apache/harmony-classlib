@@ -86,7 +86,7 @@ public class StringReaderTest extends junit.framework.TestCase {
 		try {
 			sr = new StringReader(testString);
 			int r = sr.read();
-			assertTrue("Failed to read char", r == 'T');
+			assertEquals("Failed to read char", 'T', r);
 			sr = new StringReader(new String(new char[] { '\u8765' }));
 			assertTrue("Wrong double byte char", sr.read() == '\u8765');
 		} catch (Exception e) {
@@ -126,7 +126,7 @@ public class StringReaderTest extends junit.framework.TestCase {
 			} catch (IOException e) {
 				r = 1;
 			}
-			assertTrue("Expected IOException not thrown in read()", r == 1);
+			assertEquals("Expected IOException not thrown in read()", 1, r);
 		} catch (IOException e) {
 			fail("IOException during ready test : " + e.getMessage());
 		}

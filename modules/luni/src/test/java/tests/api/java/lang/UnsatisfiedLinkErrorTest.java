@@ -26,9 +26,9 @@ public class UnsatisfiedLinkErrorTest extends junit.framework.TestCase {
 			if (true)
 				throw new UnsatisfiedLinkError();
 		} catch (UnsatisfiedLinkError e) {
-			assertTrue("Initializer failed.", e.getMessage() == null);
-			assertTrue("To string failed.", e.toString().equals(
-					"java.lang.UnsatisfiedLinkError"));
+			assertNull("Initializer failed.", e.getMessage());
+			assertEquals("To string failed.", 
+					"java.lang.UnsatisfiedLinkError", e.toString());
 		}
 	}
 
@@ -41,13 +41,13 @@ public class UnsatisfiedLinkErrorTest extends junit.framework.TestCase {
 		try {
 			Runtime.getRuntime().loadLibrary("Hello World89797");
 		} catch (UnsatisfiedLinkError e) {
-			assertTrue("Does not set message", e.getMessage() != null);
+			assertNotNull("Does not set message", e.getMessage());
 			exception = true;
 		}
 		assertTrue("Does not throw UnsatisfiedLinkError", exception);
 
 		UnsatisfiedLinkError err = new UnsatisfiedLinkError("my message");
-		assertTrue("Incorrect message", "my message".equals(err.getMessage()));
+		assertEquals("Incorrect message", "my message", err.getMessage());
 	}
 
 	protected void setUp() {

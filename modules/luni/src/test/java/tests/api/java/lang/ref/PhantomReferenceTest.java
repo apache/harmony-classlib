@@ -32,7 +32,7 @@ public class PhantomReferenceTest extends junit.framework.TestCase {
 		ReferenceQueue rq = new ReferenceQueue();
 		bool = new Boolean(false);
 		PhantomReference pr = new PhantomReference(bool, rq);
-		assertTrue("Same object returned.", pr.get() == null);
+		assertNull("Same object returned.", pr.get());
 	}
 
 	/**

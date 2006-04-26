@@ -114,9 +114,10 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_ceilD() {
 		// Test for method double java.lang.StrictMath.ceil(double)
-		assertTrue("Incorrect ceiling for double", StrictMath.ceil(78.89) == 79);
-		assertTrue("Incorrect ceiling for double",
-				StrictMath.ceil(-78.89) == -78);
+                assertEquals("Incorrect ceiling for double",
+                             79, StrictMath.ceil(78.89), 0.0);
+		assertEquals("Incorrect ceiling for double",
+                             -78, StrictMath.ceil(-78.89), 0.0);
 	}
 
 	/**
@@ -146,9 +147,10 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_floorD() {
 		// Test for method double java.lang.StrictMath.floor(double)
-		assertTrue("Incorrect floor for double", StrictMath.floor(78.89) == 78);
-		assertTrue("Incorrect floor for double",
-				StrictMath.floor(-78.89) == -79);
+                assertEquals("Incorrect floor for double",
+                             78, StrictMath.floor(78.89), 0.0);
+		assertEquals("Incorrect floor for double",
+                             -79, StrictMath.floor(-78.89), 0.0);
 	}
 
 	/**
@@ -157,8 +159,8 @@ public class StrictMathTest extends junit.framework.TestCase {
 	public void test_IEEEremainderDD() {
 		// Test for method double java.lang.StrictMath.IEEEremainder(double,
 		// double)
-		assertTrue("Incorrect remainder returned", StrictMath.IEEEremainder(
-				1.0, 1.0) == 0.0);
+		assertEquals("Incorrect remainder returned", 0.0, StrictMath.IEEEremainder(
+				1.0, 1.0));
 		assertTrue(
 				"Incorrect remainder returned",
 				StrictMath.IEEEremainder(1.32, 89.765) >= 1.4705063220631647E-2
@@ -184,12 +186,12 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_maxDD() {
 		// Test for method double java.lang.StrictMath.max(double, double)
-		assertTrue("Incorrect double max value", StrictMath.max(
-				-1908897.6000089, 1908897.6000089) == 1908897.6000089);
-		assertTrue("Incorrect double max value", StrictMath.max(2.0,
-				1908897.6000089) == 1908897.6000089);
-		assertTrue("Incorrect double max value", StrictMath.max(-2.0,
-				-1908897.6000089) == -2.0);
+		assertEquals("Incorrect double max value", 1908897.6000089, StrictMath.max(
+				-1908897.6000089, 1908897.6000089));
+		assertEquals("Incorrect double max value", 1908897.6000089, StrictMath.max(2.0,
+				1908897.6000089));
+		assertEquals("Incorrect double max value", -2.0, StrictMath.max(-2.0,
+				-1908897.6000089));
 
 	}
 
@@ -211,12 +213,12 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_maxII() {
 		// Test for method int java.lang.StrictMath.max(int, int)
-		assertTrue("Incorrect int max value", StrictMath.max(-19088976,
-				19088976) == 19088976);
-		assertTrue("Incorrect int max value",
-				StrictMath.max(20, 19088976) == 19088976);
-		assertTrue("Incorrect int max value",
-				StrictMath.max(-20, -19088976) == -20);
+		assertEquals("Incorrect int max value", 19088976, StrictMath.max(-19088976,
+				19088976));
+		assertEquals("Incorrect int max value",
+				19088976, StrictMath.max(20, 19088976));
+		assertEquals("Incorrect int max value",
+				-20, StrictMath.max(-20, -19088976));
 	}
 
 	/**
@@ -224,12 +226,12 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_maxJJ() {
 		// Test for method long java.lang.StrictMath.max(long, long)
-		assertTrue("Incorrect long max value", StrictMath.max(-19088976000089L,
-				19088976000089L) == 19088976000089L);
-		assertTrue("Incorrect long max value", StrictMath.max(20,
-				19088976000089L) == 19088976000089L);
-		assertTrue("Incorrect long max value", StrictMath.max(-20,
-				-19088976000089L) == -20);
+		assertEquals("Incorrect long max value", 19088976000089L, StrictMath.max(-19088976000089L,
+				19088976000089L));
+		assertEquals("Incorrect long max value", 19088976000089L, StrictMath.max(20,
+				19088976000089L));
+		assertEquals("Incorrect long max value", -20, StrictMath.max(-20,
+				-19088976000089L));
 	}
 
 	/**
@@ -237,12 +239,12 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_minDD() {
 		// Test for method double java.lang.StrictMath.min(double, double)
-		assertTrue("Incorrect double min value", StrictMath.min(
-				-1908897.6000089, 1908897.6000089) == -1908897.6000089);
-		assertTrue("Incorrect double min value", StrictMath.min(2.0,
-				1908897.6000089) == 2.0);
-		assertTrue("Incorrect double min value", StrictMath.min(-2.0,
-				-1908897.6000089) == -1908897.6000089);
+		assertEquals("Incorrect double min value", -1908897.6000089, StrictMath.min(
+				-1908897.6000089, 1908897.6000089));
+		assertEquals("Incorrect double min value", 2.0, StrictMath.min(2.0,
+				1908897.6000089));
+		assertEquals("Incorrect double min value", -1908897.6000089, StrictMath.min(-2.0,
+				-1908897.6000089));
 	}
 
 	/**
@@ -263,12 +265,12 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_minII() {
 		// Test for method int java.lang.StrictMath.min(int, int)
-		assertTrue("Incorrect int min value", StrictMath.min(-19088976,
-				19088976) == -19088976);
-		assertTrue("Incorrect int min value",
-				StrictMath.min(20, 19088976) == 20);
-		assertTrue("Incorrect int min value",
-				StrictMath.min(-20, -19088976) == -19088976);
+		assertEquals("Incorrect int min value", -19088976, StrictMath.min(-19088976,
+				19088976));
+		assertEquals("Incorrect int min value",
+				20, StrictMath.min(20, 19088976));
+		assertEquals("Incorrect int min value",
+				-19088976, StrictMath.min(-20, -19088976));
 
 	}
 
@@ -277,12 +279,12 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_minJJ() {
 		// Test for method long java.lang.StrictMath.min(long, long)
-		assertTrue("Incorrect long min value", StrictMath.min(-19088976000089L,
-				19088976000089L) == -19088976000089L);
-		assertTrue("Incorrect long min value", StrictMath.min(20,
-				19088976000089L) == 20);
-		assertTrue("Incorrect long min value", StrictMath.min(-20,
-				-19088976000089L) == -19088976000089L);
+		assertEquals("Incorrect long min value", -19088976000089L, StrictMath.min(-19088976000089L,
+				19088976000089L));
+		assertEquals("Incorrect long min value", 20, StrictMath.min(20,
+				19088976000089L));
+		assertEquals("Incorrect long min value", -19088976000089L, StrictMath.min(-20,
+				-19088976000089L));
 	}
 
 	/**
@@ -301,12 +303,12 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_rintD() {
 		// Test for method double java.lang.StrictMath.rint(double)
-		assertTrue("Failed to round properly - up to odd",
-				StrictMath.rint(2.9) == 3.0);
+		assertEquals("Failed to round properly - up to odd",
+				3.0, StrictMath.rint(2.9));
 		assertTrue("Failed to round properly - NaN", Double.isNaN(StrictMath
 				.rint(Double.NaN)));
-		assertTrue("Failed to round properly down  to even", StrictMath
-				.rint(2.1) == 2.0);
+		assertEquals("Failed to round properly down  to even", 2.0, StrictMath
+				.rint(2.1));
 		assertTrue("Failed to round properly " + 2.5 + " to even", StrictMath
 				.rint(2.5) == 2.0);
 	}
@@ -316,8 +318,8 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_roundD() {
 		// Test for method long java.lang.StrictMath.round(double)
-		assertTrue("Incorrect rounding of a float",
-				StrictMath.round(-90.89d) == -91);
+		assertEquals("Incorrect rounding of a float",
+				-91, StrictMath.round(-90.89d));
 	}
 
 	/**
@@ -325,8 +327,8 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_roundF() {
 		// Test for method int java.lang.StrictMath.round(float)
-		assertTrue("Incorrect rounding of a float",
-				StrictMath.round(-90.89f) == -91);
+		assertEquals("Incorrect rounding of a float",
+				-91, StrictMath.round(-90.89f));
 	}
 
 	/**
@@ -343,9 +345,9 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_sqrtD() {
 		// Test for method double java.lang.StrictMath.sqrt(double)
-		assertTrue("Incorrect root returned1", StrictMath.sqrt(StrictMath.pow(
-				StrictMath.sqrt(2), 4)) == 2);
-		assertTrue("Incorrect root returned2", StrictMath.sqrt(49) == 7);
+		assertEquals("Incorrect root returned1",
+                             2, StrictMath.sqrt(StrictMath.pow(StrictMath.sqrt(2), 4)), 0.0);
+		assertEquals("Incorrect root returned2", 7, StrictMath.sqrt(49), 0.0);
 	}
 
 	/**
@@ -364,10 +366,10 @@ public class StrictMathTest extends junit.framework.TestCase {
 	 */
 	public void test_random() {
 		// There isn't a place for these tests so just stick them here
-		assertTrue("Wrong value E",
-				Double.doubleToLongBits(StrictMath.E) == 4613303445314885481L);
-		assertTrue("Wrong value PI",
-				Double.doubleToLongBits(StrictMath.PI) == 4614256656552045848L);
+		assertEquals("Wrong value E",
+				4613303445314885481L, Double.doubleToLongBits(StrictMath.E));
+		assertEquals("Wrong value PI",
+				4614256656552045848L, Double.doubleToLongBits(StrictMath.PI));
 
 		for (int i = 500; i >= 0; i--) {
 			double d = StrictMath.random();

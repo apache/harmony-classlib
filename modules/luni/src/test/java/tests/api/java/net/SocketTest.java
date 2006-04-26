@@ -350,7 +350,7 @@ public class SocketTest extends SocketTestCase {
 			s = new Socket(InetAddress.getLocalHost(), sport, null, portNumber);
 			(t = new SServer()).start();
 			java.io.InputStream is = s.getInputStream();
-			assertTrue("Failed to get stream", is != null);
+			assertNotNull("Failed to get stream", is);
 			s.setSoTimeout(6000);
 			is.read();
 			s.close();
@@ -502,7 +502,7 @@ public class SocketTest extends SocketTestCase {
 			int portNumber = Support_PortManager.getNextPort();
 			s = new Socket(InetAddress.getLocalHost(), sport, null, portNumber);
 			java.io.OutputStream os = s.getOutputStream();
-			assertTrue("Failed to get stream", os != null);
+			assertNotNull("Failed to get stream", os);
 			tearDown();
 		} catch (Exception e) {
 			fail("Exception during getOutputStream test" + e.toString());
@@ -591,7 +591,7 @@ public class SocketTest extends SocketTestCase {
 			int portNumber = Support_PortManager.getNextPort();
 			s = new Socket(InetAddress.getLocalHost(), sport, null, portNumber);
 			s.setSoLinger(true, 200);
-			assertTrue("Returned incorrect linger", s.getSoLinger() == 200);
+			assertEquals("Returned incorrect linger", 200, s.getSoLinger());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_LINGER);
 			s.setSoLinger(false, 0);
 		} catch (Exception e) {
@@ -642,7 +642,7 @@ public class SocketTest extends SocketTestCase {
 			int sport = startServer("SServer getSoTimeout");
 			s = new Socket(InetAddress.getLocalHost(), sport);
 			s.setSoTimeout(100);
-			assertTrue("Returned incorrect sotimeout", s.getSoTimeout() == 100);
+			assertEquals("Returned incorrect sotimeout", 100, s.getSoTimeout());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_TIMEOUT);
 		} catch (Exception e) {
 			handleException(e, SO_TIMEOUT);
@@ -740,7 +740,7 @@ public class SocketTest extends SocketTestCase {
 			int portNumber = Support_PortManager.getNextPort();
 			s = new Socket(InetAddress.getLocalHost(), sport, null, portNumber);
 			s.setSoLinger(true, 500);
-			assertTrue("Set incorrect linger", s.getSoLinger() == 500);
+			assertEquals("Set incorrect linger", 500, s.getSoLinger());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_LINGER);
 			s.setSoLinger(false, 0); 
 		} catch (Exception e) {
@@ -758,7 +758,7 @@ public class SocketTest extends SocketTestCase {
 			int portNumber = Support_PortManager.getNextPort();
 			s = new Socket(InetAddress.getLocalHost(), sport, null, portNumber);
 			s.setSoTimeout(100);
-			assertTrue("Set incorrect sotimeout", s.getSoTimeout() == 100);
+			assertEquals("Set incorrect sotimeout", 100, s.getSoTimeout());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_TIMEOUT);
 		} catch (Exception e) {
 			handleException(e, SO_TIMEOUT);
@@ -908,9 +908,9 @@ public class SocketTest extends SocketTestCase {
 			// now create a socket that is not bound and validate we get the
 			// right answer
 			Socket theSocket = new Socket();
-			assertTrue(
+			assertNull(
 					"Returned incorrect InetSocketAddress -unbound socket- Expected null",
-					theSocket.getLocalSocketAddress() == null);
+					theSocket.getLocalSocketAddress());
 
 			// now bind the socket and make sure we get the right answer
 			portNumber = Support_PortManager.getNextPort();
@@ -1001,10 +1001,10 @@ public class SocketTest extends SocketTestCase {
 			theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
 					portNumber));
 
-			assertTrue(
+			assertNull(
 					"Returned incorrect InetSocketAddress -unconnected socket:"
 							+ "Expected: NULL", theSocket
-							.getRemoteSocketAddress() == null);
+							.getRemoteSocketAddress());
 
 			// now connect and validate we get the right answer
 			theSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
@@ -1210,8 +1210,8 @@ public class SocketTest extends SocketTestCase {
 			// all is ok
 			theSocket = new Socket();
 			theSocket.bind(null);
-			assertTrue("Bind with null did not work", theSocket
-					.getLocalSocketAddress() != null);
+			assertNotNull("Bind with null did not work", theSocket
+					.getLocalSocketAddress());
 			theSocket.close();
 
 			// now check the error conditions
@@ -1810,12 +1810,12 @@ public class SocketTest extends SocketTestCase {
 			connector.start();
 			theSocket.setSoTimeout(100);
 			Thread.sleep(10);
-			assertTrue("Socket option not set during connect: 10 ", theSocket
-					.getSoTimeout() == 100);
+			assertEquals("Socket option not set during connect: 10 ", 100, theSocket
+					.getSoTimeout());
 			Thread.sleep(50);
 			theSocket.setSoTimeout(200);
-			assertTrue("Socket option not set during connect: 50 ", theSocket
-					.getSoTimeout() == 200);
+			assertEquals("Socket option not set during connect: 50 ", 200, theSocket
+					.getSoTimeout());
 			Thread.sleep(5000);
 			theSocket.close();
 		} catch (Exception e) {

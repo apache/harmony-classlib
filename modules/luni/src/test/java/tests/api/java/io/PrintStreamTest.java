@@ -123,7 +123,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 			os = new java.io.PrintStream(bos);
 			os.print(fileString.substring(0, 501));
 			os.flush();
-			assertTrue("Bytes not written after flush.", bos.size() == 501);
+			assertEquals("Bytes not written after flush.", 501, bos.size());
 			bos.close();
 		} catch (java.io.IOException e) {
 			fail("Flush test failed with IOException: " + e.toString());
@@ -149,9 +149,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		} catch (NullPointerException ex) {
 			r = 1;
 		}
-		assertTrue(
-				"expected null Pointer Exception for print(char[]) not thrown",
-				r == 1);
+		assertEquals("expected null Pointer Exception for print(char[]) not thrown",
+				1, r);
 
 		os = new java.io.PrintStream(bos, true);
 		char[] sc = new char[4000];
@@ -173,7 +172,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		os = new java.io.PrintStream(bos, true);
 		os.print('t');
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
-		assertTrue("Incorrect char written", bis.read() == 't');
+		assertEquals("Incorrect char written", 't', bis.read());
 	}
 
 	/**
@@ -186,8 +185,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		os.print(2345.76834720202);
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		bis.read(rbuf, 0, 16);
-		assertTrue("Incorrect double written", new String(rbuf, 0, 16)
-				.equals("2345.76834720202"));
+		assertEquals("Incorrect double written", "2345.76834720202", new String(rbuf, 0, 16)
+				);
 	}
 
 	/**
@@ -201,8 +200,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		os.flush();
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		bis.read(rbuf, 0, 8);
-		assertTrue("Incorrect float written", new String(rbuf, 0, 8)
-				.equals("29.08764"));
+		assertEquals("Incorrect float written", "29.08764", new String(rbuf, 0, 8)
+				);
 
 	}
 
@@ -216,8 +215,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		byte[] rbuf = new byte[18];
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		bis.read(rbuf, 0, 9);
-		assertTrue("Incorrect int written", new String(rbuf, 0, 9)
-				.equals("768347202"));
+		assertEquals("Incorrect int written", "768347202", new String(rbuf, 0, 9)
+				);
 	}
 
 	/**
@@ -231,8 +230,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		os.close();
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		bis.read(rbuf, 0, 13);
-		assertTrue("Incorrect long written", new String(rbuf, 0, 13)
-				.equals("9875645283333"));
+		assertEquals("Incorrect long written", "9875645283333", new String(rbuf, 0, 13)
+				);
 	}
 
 	/**
@@ -246,8 +245,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		byte[] nullbytes = new byte[4];
 		bis.read(nullbytes, 0, 4);
-		assertTrue("null should be written", new String(nullbytes, 0, 4)
-				.equals("null"));
+		assertEquals("null should be written", "null", new String(nullbytes, 0, 4)
+				);
 		try {
 			bis.close();
 			bos.close();
@@ -261,8 +260,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos1.toByteArray());
 		byte[] rbytes = new byte[2];
 		bis.read(rbytes, 0, 2);
-		assertTrue("Incorrect Object written", new String(rbytes, 0, 2)
-				.equals("[]"));
+		assertEquals("Incorrect Object written", "[]", new String(rbytes, 0, 2)
+				);
 	}
 
 	/**
@@ -275,8 +274,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		byte[] nullbytes = new byte[4];
 		bis.read(nullbytes, 0, 4);
-		assertTrue("null should be written", new String(nullbytes, 0, 4)
-				.equals("null"));
+		assertEquals("null should be written", "null", new String(nullbytes, 0, 4)
+				);
 		try {
 			bis.close();
 			bos.close();
@@ -290,8 +289,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos1.toByteArray());
 		byte rbytes[] = new byte[100];
 		bis.read(rbytes, 0, 11);
-		assertTrue("Incorrect string written", new String(rbytes, 0, 11)
-				.equals("Hello World"));
+		assertEquals("Incorrect string written", "Hello World", new String(rbytes, 0, 11)
+				);
 	}
 
 	/**
@@ -361,7 +360,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		os = new java.io.PrintStream(bos, true);
 		os.println('t');
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
-		assertTrue("Incorrect char written", bis.read() == 't');
+		assertEquals("Incorrect char written", 't', bis.read());
 		assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
 	}
 
@@ -376,8 +375,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		byte[] rbuf = new byte[100];
 		bis.read(rbuf, 0, 16);
-		assertTrue("Incorrect double written", new String(rbuf, 0, 16)
-				.equals("2345.76834720202"));
+		assertEquals("Incorrect double written", "2345.76834720202", new String(rbuf, 0, 16)
+				);
 		assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
 	}
 
@@ -392,8 +391,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		os.println(29.08764f);
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		bis.read(rbuf, 0, 8);
-		assertTrue("Incorrect float written", new String(rbuf, 0, 8)
-				.equals("29.08764"));
+		assertEquals("Incorrect float written", "29.08764", new String(rbuf, 0, 8)
+				);
 		assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
 	}
 
@@ -408,8 +407,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		byte[] rbuf = new byte[100];
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		bis.read(rbuf, 0, 9);
-		assertTrue("Incorrect int written", new String(rbuf, 0, 9)
-				.equals("768347202"));
+		assertEquals("Incorrect int written", "768347202", new String(rbuf, 0, 9)
+				);
 		assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
 	}
 
@@ -424,8 +423,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		byte[] rbuf = new byte[100];
 		bis.read(rbuf, 0, 13);
-		assertTrue("Incorrect long written", new String(rbuf, 0, 13)
-				.equals("9875645283333"));
+		assertEquals("Incorrect long written", "9875645283333", new String(rbuf, 0, 13)
+				);
 		assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
 	}
 
@@ -440,8 +439,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		byte[] rbytes = new byte[2];
 		bis.read(rbytes, 0, 2);
-		assertTrue("Incorrect Vector written", new String(rbytes, 0, 2)
-				.equals("[]"));
+		assertEquals("Incorrect Vector written", "[]", new String(rbytes, 0, 2)
+				);
 		assertTrue("Newline not written", (c = (char) bis.read()) == '\r'
 				|| c == '\n');
 	}
@@ -457,8 +456,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		byte rbytes[] = new byte[100];
 		bis.read(rbytes, 0, 11);
-		assertTrue("Incorrect string written", new String(rbytes, 0, 11)
-				.equals("Hello World"));
+		assertEquals("Incorrect string written", "Hello World", new String(rbytes, 0, 11)
+				);
 		assertTrue("Newline not written", (c = (char) bis.read()) == '\r'
 				|| c == '\n');
 	}
@@ -474,8 +473,8 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
 		byte[] rbuf = new byte[100];
 		bis.read(rbuf, 0, 4);
-		assertTrue("Incorrect boolean written", new String(rbuf, 0, 4)
-				.equals("true"));
+		assertEquals("Incorrect boolean written", "true", new String(rbuf, 0, 4)
+				);
 		assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
 	}
 

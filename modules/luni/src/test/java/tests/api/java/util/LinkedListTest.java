@@ -70,7 +70,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		assertTrue("Failed to fix up list after insert",
 				ll.get(51) == objArray[50] && (ll.get(52) == objArray[51]));
 		ll.add(50, null);
-		assertTrue("Did not add null correctly", ll.get(50) == null);
+		assertNull("Did not add null correctly", ll.get(50));
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		ll.add(o = new Object());
 		assertTrue("Failed to add Object", ll.getLast() == o);
 		ll.add(null);
-		assertTrue("Did not add null correctly", ll.get(ll.size() - 1) == null);
+		assertNull("Did not add null correctly", ll.get(ll.size() - 1));
 	}
 
 	/**
@@ -92,8 +92,8 @@ public class LinkedListTest extends junit.framework.TestCase {
 		// Test for method boolean java.util.LinkedList.addAll(int,
 		// java.util.Collection)
 		ll.addAll(50, (Collection) ll.clone());
-		assertTrue("Returned incorrect size after adding to existing list", ll
-				.size() == 200);
+		assertEquals("Returned incorrect size after adding to existing list", 200, ll
+				.size());
 		for (int i = 0; i < 50; i++)
 			assertTrue("Manipulated elements < index", ll.get(i) == objArray[i]);
 		for (int i = 0; i >= 50 && (i < 150); i++)
@@ -109,13 +109,13 @@ public class LinkedListTest extends junit.framework.TestCase {
 		myList.add("Booga");
 		myList.add(null);
 		ll.addAll(50, myList);
-		assertTrue("a) List w/nulls not added correctly", ll.get(50) == null);
-		assertTrue("b) List w/nulls not added correctly", ll.get(51).equals(
-				"Blah"));
-		assertTrue("c) List w/nulls not added correctly", ll.get(52) == null);
-		assertTrue("d) List w/nulls not added correctly", ll.get(53).equals(
-				"Booga"));
-		assertTrue("e) List w/nulls not added correctly", ll.get(54) == null);
+		assertNull("a) List w/nulls not added correctly", ll.get(50));
+		assertEquals("b) List w/nulls not added correctly", 
+				"Blah", ll.get(51));
+		assertNull("c) List w/nulls not added correctly", ll.get(52));
+		assertEquals("d) List w/nulls not added correctly", 
+				"Booga", ll.get(53));
+		assertNull("e) List w/nulls not added correctly", ll.get(54));
 	}
 
 	/**
@@ -130,8 +130,8 @@ public class LinkedListTest extends junit.framework.TestCase {
 			assertTrue("Failed to add elements properly", l.get(i).equals(
 					ll.get(i)));
 		ll.addAll((Collection) ll.clone());
-		assertTrue("Returned incorrect siZe after adding to existing list", ll
-				.size() == 200);
+		assertEquals("Returned incorrect siZe after adding to existing list", 200, ll
+				.size());
 		for (int i = 0; i < 100; i++) {
 			assertTrue("Added to list in incorrect order", ll.get(i).equals(
 					l.get(i)));
@@ -145,13 +145,13 @@ public class LinkedListTest extends junit.framework.TestCase {
 		myList.add("Booga");
 		myList.add(null);
 		ll.addAll(myList);
-		assertTrue("a) List w/nulls not added correctly", ll.get(200) == null);
-		assertTrue("b) List w/nulls not added correctly", ll.get(201).equals(
-				"Blah"));
-		assertTrue("c) List w/nulls not added correctly", ll.get(202) == null);
-		assertTrue("d) List w/nulls not added correctly", ll.get(203).equals(
-				"Booga"));
-		assertTrue("e) List w/nulls not added correctly", ll.get(204) == null);
+		assertNull("a) List w/nulls not added correctly", ll.get(200));
+		assertEquals("b) List w/nulls not added correctly", 
+				"Blah", ll.get(201));
+		assertNull("c) List w/nulls not added correctly", ll.get(202));
+		assertEquals("d) List w/nulls not added correctly", 
+				"Booga", ll.get(203));
+		assertNull("e) List w/nulls not added correctly", ll.get(204));
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		ll.addFirst(o = new Object());
 		assertTrue("Failed to add Object", ll.getFirst() == o);
 		ll.addFirst(null);
-		assertTrue("Failed to add null", ll.getFirst() == null);
+		assertNull("Failed to add null", ll.getFirst());
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		ll.addLast(o = new Object());
 		assertTrue("Failed to add Object", ll.getLast() == o);
 		ll.addLast(null);
-		assertTrue("Failed to add null", ll.getLast() == null);
+		assertNull("Failed to add null", ll.getLast());
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		// Test for method void java.util.LinkedList.clear()
 		ll.clear();
 		for (int i = 0; i < ll.size(); i++)
-			assertTrue("Failed to clear list", ll.get(i) == null);
+			assertNull("Failed to clear list", ll.get(i));
 	}
 
 	/**
@@ -258,9 +258,9 @@ public class LinkedListTest extends junit.framework.TestCase {
 	 */
 	public void test_indexOfLjava_lang_Object() {
 		// Test for method int java.util.LinkedList.indexOf(java.lang.Object)
-		assertTrue("Returned incorrect index", ll.indexOf(objArray[87]) == 87);
-		assertTrue("Returned index for invalid Object", ll
-				.indexOf(new Object()) == -1);
+		assertEquals("Returned incorrect index", 87, ll.indexOf(objArray[87]));
+		assertEquals("Returned index for invalid Object", -1, ll
+				.indexOf(new Object()));
 		ll.add(20, null);
 		ll.add(24, null);
 		assertTrue("Index of null should be 20, but got: " + ll.indexOf(null),
@@ -274,10 +274,10 @@ public class LinkedListTest extends junit.framework.TestCase {
 		// Test for method int
 		// java.util.LinkedList.lastIndexOf(java.lang.Object)
 		ll.add(new Integer(99));
-		assertTrue("Returned incorrect index",
-				ll.lastIndexOf(objArray[99]) == 100);
-		assertTrue("Returned index for invalid Object", ll
-				.lastIndexOf(new Object()) == -1);
+		assertEquals("Returned incorrect index",
+				100, ll.lastIndexOf(objArray[99]));
+		assertEquals("Returned index for invalid Object", -1, ll
+				.lastIndexOf(new Object()));
 		ll.add(20, null);
 		ll.add(24, null);
 		assertTrue("Last index of null should be 20, but got: "
@@ -322,15 +322,15 @@ public class LinkedListTest extends junit.framework.TestCase {
 		myList.add(null);
 		ListIterator li = myList.listIterator();
 		assertTrue("li.hasPrevious() should be false", !li.hasPrevious());
-		assertTrue("li.next() should be null", li.next() == null);
+		assertNull("li.next() should be null", li.next());
 		assertTrue("li.hasPrevious() should be true", li.hasPrevious());
-		assertTrue("li.prev() should be null", li.previous() == null);
-		assertTrue("li.next() should be null", li.next() == null);
-		assertTrue("li.next() should be Blah", li.next().equals("Blah"));
-		assertTrue("li.next() should be null", li.next() == null);
-		assertTrue("li.next() should be Booga", li.next().equals("Booga"));
+		assertNull("li.prev() should be null", li.previous());
+		assertNull("li.next() should be null", li.next());
+		assertEquals("li.next() should be Blah", "Blah", li.next());
+		assertNull("li.next() should be null", li.next());
+		assertEquals("li.next() should be Booga", "Booga", li.next());
 		assertTrue("li.hasNext() should be true", li.hasNext());
-		assertTrue("li.next() should be null", li.next() == null);
+		assertNull("li.next() should be null", li.next());
 		assertTrue("li.hasNext() should be false", !li.hasNext());
 	}
 
@@ -340,7 +340,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 	public void test_removeI() {
 		// Test for method java.lang.Object java.util.LinkedList.remove(int)
 		ll.remove(10);
-		assertTrue("Failed to remove element", ll.indexOf(objArray[10]) == -1);
+		assertEquals("Failed to remove element", -1, ll.indexOf(objArray[10]));
 		try {
 			ll.remove(999);
 		} catch (IndexOutOfBoundsException e) {
@@ -350,7 +350,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		fail("Failed to throw expected exception when index out of range");
 		ll.add(20, null);
 		ll.remove(20);
-		assertTrue("Should have removed null", ll.get(20) != null);
+		assertNotNull("Should have removed null", ll.get(20));
 	}
 
 	/**
@@ -360,7 +360,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		// Test for method boolean java.util.LinkedList.remove(java.lang.Object)
 		assertTrue("Failed to remove valid Object", ll.remove(objArray[87]));
 		assertTrue("Removed invalid object", !ll.remove(new Object()));
-		assertTrue("Found Object after removal", ll.indexOf(objArray[87]) == -1);
+		assertEquals("Found Object after removal", -1, ll.indexOf(objArray[87]));
 		ll.add(null);
 		ll.remove(null);
 		assertTrue("Should not contain null afrer removal", !ll.contains(null));
@@ -418,8 +418,8 @@ public class LinkedListTest extends junit.framework.TestCase {
 		
 		for (int i = 0; i < obj.length - 1; i++)
 			assertTrue("Returned incorrect array: " + i, obj[i] == objArray[i]);
-		assertTrue("Returned incorrect array--end isn't null",
-				obj[obj.length - 1] == null);
+		assertNull("Returned incorrect array--end isn't null",
+				obj[obj.length - 1]);
 	}
 
 	/**
@@ -439,8 +439,8 @@ public class LinkedListTest extends junit.framework.TestCase {
 			assertTrue("Lists are not equal", li.next() == ri.next());
 		argArray = new Integer[1000];
 		retArray = ll.toArray(argArray);
-		assertTrue("Failed to set first extra element to null", argArray[ll
-				.size()] == null);
+		assertNull("Failed to set first extra element to null", argArray[ll
+				.size()]);
 		for (int i = 0; i < ll.size(); i++)
 			assertTrue("Returned incorrect array: " + i,
 					retArray[i] == objArray[i]);
