@@ -28,7 +28,6 @@ extern "C"
     UDATA remaining;
     U_8 data[4];
   } HyStringBuffer;
-#define HYSIZEOF_HyStringBuffer 8
   struct haCmdlineOptions
   {
     int argc;

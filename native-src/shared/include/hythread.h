@@ -96,7 +96,6 @@ extern "C"
     UDATA yield_count;
   } HyThreadMonitorTracing;
 
-#define HYSIZEOF_HyThreadMonitorTracing 24
   extern HY_CFUNC void VMCALL hythread_detach PROTOTYPE ((hythread_t thread));
   extern HY_CFUNC UDATA VMCALL
     hythread_lib_set_flags PROTOTYPE ((UDATA flags));

@@ -52,7 +52,6 @@ typedef struct HyPool
 #define POOL_ALWAYS_KEEP_SORTED  4
 #define POOL_NEVER_FREE_PUDDLES  2
 #define POOL_SORTED              1
-#define HYSIZEOF_HyPool          44
 
 typedef struct HyPoolState
   {
@@ -62,7 +61,6 @@ typedef struct HyPoolState
     UDATA **nextFree;
   } HyPoolState;
 
-#define HYSIZEOF_HyPoolState 16
 #define pool_state HyPoolState
 
 /* HySourcePool*/

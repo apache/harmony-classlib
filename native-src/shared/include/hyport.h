@@ -234,7 +234,6 @@ typedef struct HyPortLibraryVersion
   U_32 padding;
   U_64 capabilities;
 } HyPortLibraryVersion;
-#define HYSIZEOF_HyPortLibraryVersion 16
 typedef struct HyPortVmemIdentifier
 {
   void *address;
@@ -243,7 +242,6 @@ typedef struct HyPortVmemIdentifier
   UDATA pageSize;
   UDATA mode;
 } HyPortVmemIdentifier;
-#define HYSIZEOF_HyPortVmemIdentifier 20
 typedef struct HyPortShmemStatistic
 {
   UDATA shmid;
@@ -256,7 +254,6 @@ typedef struct HyPortShmemStatistic
   I_64 dtime;
   I_64 chtime;
 } HyPortShmemStatistic;
-#define HYSIZEOF_HyPortShmemStatistic 48
 /** 
  * @struct HyPortLibrary 
  * The port library function table
@@ -1113,7 +1110,6 @@ typedef struct HyPortLibrary
 #define HYPORT_SIG_VALUE_FLOAT_64  6
 #define HYPORT_SIG_OPTIONS_JSIG_NO_CHAIN  1
 #define HYPORT_SIG_OPTIONS_REDUCED_SIGNALS  2
-#define HYSIZEOF_HyPortLibrary 928
 #define HYPORT_CAPABILITY_MASK ((U_64)(HYPORT_CAPABILITY_STANDARD | HYPORT_CAPABILITY_FILESYSTEM | HYPORT_CAPABILITY_SOCKETS | HYPORT_CAPABILITY_LARGE_PAGE_SUPPORT))
 #define HYPORT_SET_VERSION(portLibraryVersion, capabilityMask) \
   (portLibraryVersion)->majorVersionNumber = HYPORT_MAJOR_VERSION_NUMBER; \

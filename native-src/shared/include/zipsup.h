@@ -66,7 +66,6 @@ extern "C"
     void *cachePoolEntry;
   } HyZipCache;
 
-#define HYSIZEOF_HyZipCache 32
 
   typedef struct HyZipCentralEnd
   {
@@ -81,7 +80,6 @@ extern "C"
     U_8 *comment;
   } HyZipCentralEnd;
 
-#define HYSIZEOF_HyZipCentralEnd 24
 
   typedef struct HyZipDataDescriptor
   {
@@ -90,7 +88,6 @@ extern "C"
     U_32 uncompressedSize;
   } HyZipDataDescriptor;
 
-#define HYSIZEOF_HyZipDataDescriptor 12
 
   typedef struct HyZipEntry
   {
@@ -118,7 +115,6 @@ extern "C"
     U_8 internalFilename[80];
   } HyZipEntry;
 
-#define HYSIZEOF_HyZipEntry 144
 
   typedef struct HyZipFile
   {
@@ -132,7 +128,6 @@ extern "C"
     char _hypadding0065[3];  /* 3 bytes of automatic padding */
   } HyZipFile;
 
-#define HYSIZEOF_HyZipFile 104
 /* HySourceZipSupport*/
   extern HY_CFUNC I_32 zip_getZipEntryData
     PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,

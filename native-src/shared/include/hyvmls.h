@@ -44,7 +44,6 @@ typedef struct HyVMLSFunctionTable
     void *(JNICALL * HyVMLSSet) (JNIEnv * env, void **pKey, void *value);
   } HyVMLSFunctionTable;
 
-#define HYSIZEOF_HyVMLSFunctionTable 16
 
 #if defined(USING_VMI)
 #define HY_VMLS_FNTBL(env) (*VMI_GetVMIFromJNIEnv(env))->GetVMLSFunctions(VMI_GetVMIFromJNIEnv(env))

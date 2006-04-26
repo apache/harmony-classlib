@@ -42,7 +42,6 @@ extern "C"
     UDATA *tos;
   } HyThread;
 
-#define HYSIZEOF_HyThread 572
 
   typedef struct HyThreadMonitor
   {
@@ -65,7 +64,6 @@ extern "C"
     MUTEX mutex;
   } HyThreadMonitor;
 
-#define HYSIZEOF_HyThreadMonitor sizeof(HyThreadMonitor)
 
   typedef struct HyThreadMonitorPool
   {
@@ -76,7 +74,6 @@ extern "C"
 
 #define MONITOR_POOL_SIZE  64
 
-#define HYSIZEOF_HyThreadMonitorPool 4360
 
   typedef struct HyThreadGlobal
   {
@@ -85,7 +82,6 @@ extern "C"
     UDATA data;
   } HyThreadGlobal;
 
-#define HYSIZEOF_HyThreadGlobal 12
 
   typedef struct HyThreadLibrary
   {
@@ -114,14 +110,12 @@ extern "C"
 #define HYTHREAD_LIB_FLAG_JLM_ENABLED_ALL  0x1C000
 #define HYTHREAD_LIB_FLAG_JLM_HAS_BEEN_ENABLED  0x20000
 #define HYTHREAD_LIB_FLAG_JLMTS_ENABLED  0x8000
-#define HYSIZEOF_HyThreadLibrary 580
 
   typedef struct HySemaphore
   {
     OSSEMAPHORE sem;
   } HySemaphore;
 
-#define HYSIZEOF_HySemaphore 4
 #define STACK_DEFAULT_SIZE  0x8000
 #define FREE_TAG ((UDATA)-1)
 

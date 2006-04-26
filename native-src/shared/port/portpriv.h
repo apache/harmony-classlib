@@ -54,7 +54,6 @@ typedef struct HyPortControlData
   UDATA sig_flags;
   UDATA shmem_group_perm;
 } HyPortControlData;
-#define HYSIZEOF_HyPortControlData 8
 typedef struct HyNLSDataCache
 {
   char *baseCatalogPaths[4];
@@ -70,7 +69,6 @@ typedef struct HyNLSDataCache
   struct HyNLSHashEntry *old_hashEntries;
 } HyNLSDataCache;
 #define HYNLS_NUM_HASH_BUCKETS  0x100
-#define HYSIZEOF_HyNLSDataCache 1104
 typedef struct HyNLSHashEntry
 {
   U_32 module_name;
@@ -78,7 +76,6 @@ typedef struct HyNLSHashEntry
   struct HyNLSHashEntry *next;
   char message[8];
 } HyNLSHashEntry;
-#define HYSIZEOF_HyNLSHashEntry 20
 typedef struct HyPortLibraryGlobalData
 {
   struct HyPortControlData control;
@@ -88,7 +85,6 @@ typedef struct HyPortLibraryGlobalData
   void *buffer_list;
   struct HyPortPlatformGlobals platformGlobals;
 } HyPortLibraryGlobalData;
-#define HYSIZEOF_HyPortLibraryGlobalData sizeof(HyPortLibraryGlobalData)
 /* HySourceHyCPUControl*/
 struct HyPortLibrary;
 extern HY_CFUNC void VMCALL
