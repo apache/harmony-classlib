@@ -39,14 +39,10 @@ public class CipherTest extends junit.framework.TestCase {
 	/**
 	 * @tests javax.crypto.Cipher#getInstance(java.lang.String)
 	 */
-	public void test_getInstanceLjava_lang_String() {
-		try {
-			Cipher cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding");
-			assertNotNull("Received a null Cipher instance", cipher);
-		} catch (Exception e) {
-			fail("Could not find cipher");
-		}
-	}
+    public void test_getInstanceLjava_lang_String() throws Exception {
+        Cipher cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding");
+        assertNotNull("Received a null Cipher instance", cipher);
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#getInstance(java.lang.String,
@@ -54,24 +50,22 @@ public class CipherTest extends junit.framework.TestCase {
 	 */
 	public void test_getInstanceLjava_lang_StringLjava_lang_String()
             throws Exception {
-        Provider[] providers = Security.getProviders("Cipher.DES");
-        if (providers != null) {
-            for (int i = 0; i < providers.length; i++) {
-                Cipher cipher = Cipher.getInstance("DES", providers[i]
-                        .getName());
-                assertNotNull("Cipher.getInstance() returned a null value",
-                        cipher);
 
-                // Exception case
-                try {
-                    cipher = Cipher.getInstance("DoBeDoBeDo", providers[i]);
-                    fail("Should have thrown an NoSuchAlgorithmException");
-                } catch (NoSuchAlgorithmException e) {
-                    // Expected
-                }
-            }// end for
-        } else {
-            fail("No installed providers support Cipher.DES");
+        Provider[] providers = Security.getProviders("Cipher.DES");
+        
+        assertNotNull("No installed providers support Cipher.DES", providers);
+
+        for (int i = 0; i < providers.length; i++) {
+            Cipher cipher = Cipher.getInstance("DES", providers[i].getName());
+            assertNotNull("Cipher.getInstance() returned a null value", cipher);
+
+            // Exception case
+            try {
+                cipher = Cipher.getInstance("DoBeDoBeDo", providers[i]);
+                fail("Should have thrown an NoSuchAlgorithmException");
+            } catch (NoSuchAlgorithmException e) {
+                // Expected
+            }
         }
 
         // Exception case
@@ -95,371 +89,273 @@ public class CipherTest extends junit.framework.TestCase {
 	 * @tests javax.crypto.Cipher#getInstance(java.lang.String,
 	 *        java.security.Provider)
 	 */
-	public void test_getInstanceLjava_lang_StringLjava_security_Provider() {
-		try {
-			Provider[] providers = Security.getProviders("Cipher.DES");
-			if (providers != null) {
-				for (int i = 0; i < providers.length; i++) {
-					Cipher cipher = Cipher.getInstance("DES", providers[i]);
-					assertNotNull("Cipher.getInstance() returned a null value",
-							cipher);
-				}// end for
-			} else {
-				fail("No installed providers support Cipher.DES");
-			}
-		} catch (Exception e) {
-			fail("Unexpected exception finding cipher : " + e);
-		}
-	}
+    public void test_getInstanceLjava_lang_StringLjava_security_Provider()
+            throws Exception {
+
+        Provider[] providers = Security.getProviders("Cipher.DES");
+
+        assertNotNull("No installed providers support Cipher.DES", providers);
+
+        for (int i = 0; i < providers.length; i++) {
+            Cipher cipher = Cipher.getInstance("DES", providers[i]);
+            assertNotNull("Cipher.getInstance() returned a null value", cipher);
+        }
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#getProvider()
 	 */
-	public void test_getProvider() {
-		try {
-			Provider[] providers = Security.getProviders("Cipher.AES");
-			if (providers != null) {
-				for (int i = 0; i < providers.length; i++) {
-					Provider provider = providers[i];
-					Cipher cipher = Cipher.getInstance("AES", provider
-							.getName());
-					Provider cipherProvider = cipher.getProvider();
-					assertTrue("Cipher provider is not the same as that "
-							+ "provided as parameter to getInstance()",
-							cipherProvider.equals(provider));
-				}// end for
-			} else {
-				fail("No providers support Cipher.AES");
-			}
-		} catch (Exception e) {
-			fail("Unexpected exception " + e);
-		}
-	}
+    public void test_getProvider() throws Exception {
+
+        Provider[] providers = Security.getProviders("Cipher.AES");
+
+        assertNotNull("No providers support Cipher.AES", providers);
+
+        for (int i = 0; i < providers.length; i++) {
+            Provider provider = providers[i];
+            Cipher cipher = Cipher.getInstance("AES", provider.getName());
+            Provider cipherProvider = cipher.getProvider();
+            assertTrue("Cipher provider is not the same as that "
+                    + "provided as parameter to getInstance()", cipherProvider
+                    .equals(provider));
+        }
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#getAlgorithm()
 	 */
-	public void test_getAlgorithm() {
-		final String algorithm = "DESede/CBC/PKCS5Padding";
-		try {
-			Cipher cipher = Cipher.getInstance(algorithm);
-			assertTrue("Cipher algorithm does not match", cipher.getAlgorithm()
-					.equals(algorithm));
-		} catch (Exception e) {
-			fail("Unexpected Exception");
-		}
-	}
+    public void test_getAlgorithm() throws Exception {
+        final String algorithm = "DESede/CBC/PKCS5Padding";
+
+        Cipher cipher = Cipher.getInstance(algorithm);
+        assertTrue("Cipher algorithm does not match", cipher.getAlgorithm()
+                .equals(algorithm));
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#getBlockSize()
 	 */
-	public void test_getBlockSize() {
-		final String algorithm = "DESede/CBC/PKCS5Padding";
-		try {
-			Cipher cipher = Cipher.getInstance(algorithm);
-			assertEquals("Block size does not match", 8, cipher.getBlockSize());
-		} catch (Exception e) {
-			fail("Unexpected Exception");
-		}
-	}
+    public void test_getBlockSize() throws Exception {
+        final String algorithm = "DESede/CBC/PKCS5Padding";
+
+        Cipher cipher = Cipher.getInstance(algorithm);
+        assertEquals("Block size does not match", 8, cipher.getBlockSize());
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#getOutputSize(int)
 	 */
-	public void test_getOutputSizeI() {
-		final String algorithm = "DESede";
-		final int keyLen = 168;
+    public void test_getOutputSizeI() throws Exception {
+        final String algorithm = "DESede";
+        final int keyLen = 168;
 
-		Key cipherKey = null;
-		SecureRandom sr = new SecureRandom();
-		Cipher cipher = null;
+        Key cipherKey = null;
+        SecureRandom sr = new SecureRandom();
+        Cipher cipher = null;
 
-		try {
-			KeyGenerator kg = null;
-			try {
-				kg = KeyGenerator.getInstance(algorithm);
-				kg.init(keyLen, new SecureRandom());
-			} catch (NoSuchAlgorithmException e) {
-				fail("Caught a NoSuchAlgorithmException : " + e);
-			}
-			cipherKey = kg.generateKey();
+        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        kg.init(keyLen, new SecureRandom());
+        cipherKey = kg.generateKey();
 
-			cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, cipherKey, sr);
-		} catch (Exception e) {
-			fail("Setup failed");
-		}
+        cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, cipherKey, sr);
 
-		// A 25-byte input could result in at least 4 8-byte blocks
-		int result = cipher.getOutputSize(25);
-		assertTrue("Output size too small", result > 31);
+        // A 25-byte input could result in at least 4 8-byte blocks
+        int result = cipher.getOutputSize(25);
+        assertTrue("Output size too small", result > 31);
 
-		// A 8-byte input should result in 2 8-byte blocks
-		result = cipher.getOutputSize(8);
-		assertTrue("Output size too small", result > 15);
-	}
+        // A 8-byte input should result in 2 8-byte blocks
+        result = cipher.getOutputSize(8);
+        assertTrue("Output size too small", result > 15);
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#getIV()
 	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
 	 *        java.security.AlgorithmParameters)
 	 */
-	public void test_getIV() {
-		/*
-		 * If this test is changed, implement the following:
-		 * test_initILjava_security_KeyLjava_security_AlgorithmParameters()
-		 */
-		final String algorithm = "DESede";
-		final int keyLen = 168;
+    public void test_getIV() throws Exception {
+        /*
+         * If this test is changed, implement the following:
+         * test_initILjava_security_KeyLjava_security_AlgorithmParameters()
+         */
+        final String algorithm = "DESede";
+        final int keyLen = 168;
 
-		Key cipherKey = null;
-		SecureRandom sr = new SecureRandom();
-		Cipher cipher = null;
+        Key cipherKey = null;
+        SecureRandom sr = new SecureRandom();
+        Cipher cipher = null;
 
-		byte[] iv = null;
+        byte[] iv = null;
 
-		try {
-			KeyGenerator kg = null;
-			try {
-				kg = KeyGenerator.getInstance(algorithm);
-				kg.init(keyLen, new SecureRandom());
-			} catch (NoSuchAlgorithmException e) {
-				fail("Unexpected NoSuchAlgorithmException : " + e);
-			}
+        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        kg.init(keyLen, new SecureRandom());
 
-			cipherKey = kg.generateKey();
+        cipherKey = kg.generateKey();
 
-			iv = new byte[8];
-			sr.nextBytes(iv);
-			AlgorithmParameters ap = AlgorithmParameters.getInstance(algorithm);
-			ap.init(iv, "RAW");
+        iv = new byte[8];
+        sr.nextBytes(iv);
+        AlgorithmParameters ap = AlgorithmParameters.getInstance(algorithm);
+        ap.init(iv, "RAW");
 
-			cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ap);
+        cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ap);
 
-		} catch (Exception e) {
-			fail("Setup error");
-		}
+        byte[] cipherIV = cipher.getIV();
 
-		byte[] cipherIV = cipher.getIV();
-
-		assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
-	}
+        assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#getParameters()
 	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
 	 *        java.security.AlgorithmParameters, java.security.SecureRandom)
 	 */
-	public void test_getParameters() {
+    public void test_getParameters() throws Exception {
 
-		/*
-		 * If this test is changed, implement the following:
-		 * test_initILjava_security_KeyLjava_security_AlgorithmParametersLjava_security_SecureRandom()
-		 */
-		final String algorithm = "DESede";
-		final int keyLen = 168;
+        /*
+         * If this test is changed, implement the following:
+         * test_initILjava_security_KeyLjava_security_AlgorithmParametersLjava_security_SecureRandom()
+         */
+        final String algorithm = "DESede";
+        final int keyLen = 168;
 
-		Key cipherKey = null;
-		SecureRandom sr = new SecureRandom();
-		Cipher cipher = null;
+        Key cipherKey = null;
+        SecureRandom sr = new SecureRandom();
+        Cipher cipher = null;
 
-		byte[] apEncoding = null;
+        byte[] apEncoding = null;
 
-		byte[] iv = null;
+        byte[] iv = null;
 
-		try {
-			KeyGenerator kg = null;
-			try {
-				kg = KeyGenerator.getInstance(algorithm);
-				kg.init(keyLen, new SecureRandom());
-			} catch (NoSuchAlgorithmException e) {
-				fail("Caught a NoSuchAlgorithmException : " + e);
-			}
-			cipherKey = kg.generateKey();
+        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        kg.init(keyLen, new SecureRandom());
+        cipherKey = kg.generateKey();
 
-			iv = new byte[8];
-			sr.nextBytes(iv);
+        iv = new byte[8];
+        sr.nextBytes(iv);
 
-			AlgorithmParameters ap = AlgorithmParameters.getInstance("DESede");
-			ap.init(iv, "RAW");
-			apEncoding = ap.getEncoded("ASN.1");
+        AlgorithmParameters ap = AlgorithmParameters.getInstance("DESede");
+        ap.init(iv, "RAW");
+        apEncoding = ap.getEncoded("ASN.1");
 
-			cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ap, sr);
+        cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ap, sr);
 
-		} catch (Exception e) {
-			fail("Setup error");
-		}
-
-		try {
-			byte[] cipherParmsEnc = cipher.getParameters().getEncoded("ASN.1");
-			assertTrue("Parameters differ", Arrays.equals(apEncoding,
-					cipherParmsEnc));
-		} catch (IOException e) {
-			fail("Parameter encoding problem");
-		}
-
-	}
+        byte[] cipherParmsEnc = cipher.getParameters().getEncoded("ASN.1");
+        assertTrue("Parameters differ", Arrays.equals(apEncoding,
+                cipherParmsEnc));
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#init(int, java.security.Key)
 	 */
-	public void test_initILjava_security_Key() {
-		final String algorithm = "DESede";
-		final int keyLen = 168;
+    public void test_initILjava_security_Key() throws Exception {
+        final String algorithm = "DESede";
+        final int keyLen = 168;
 
-		Key cipherKey = null;
-		Cipher cipher = null;
+        Key cipherKey = null;
+        Cipher cipher = null;
 
-		try {
-			KeyGenerator kg = null;
-			try {
-				kg = KeyGenerator.getInstance(algorithm);
-				kg.init(keyLen, new SecureRandom());
-			} catch (NoSuchAlgorithmException e) {
-				fail("Caught a NoSuchAlgorithmException : " + e);
-			}
-			cipherKey = kg.generateKey();
+        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        kg.init(keyLen, new SecureRandom());
+        cipherKey = kg.generateKey();
 
-			cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
+        cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
 
-		} catch (Exception e) {
-			fail("Setup error");
-		}
-
-		try {
-			cipher.init(Cipher.ENCRYPT_MODE, cipherKey);
-		} catch (Exception e) {
-			fail("Unexpected exception");
-		}
-	}
+        cipher.init(Cipher.ENCRYPT_MODE, cipherKey);
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
 	 *        java.security.SecureRandom)
 	 */
-	public void test_initILjava_security_KeyLjava_security_SecureRandom() {
-		final String algorithm = "DESede";
-		final int keyLen = 168;
+    public void test_initILjava_security_KeyLjava_security_SecureRandom()
+            throws Exception {
 
-		Key cipherKey = null;
-		SecureRandom sr = new SecureRandom();
-		Cipher cipher = null;
+        final String algorithm = "DESede";
+        final int keyLen = 168;
 
-		try {
-			KeyGenerator kg = null;
-			try {
-				kg = KeyGenerator.getInstance(algorithm);
-				kg.init(keyLen, new SecureRandom());
-			} catch (NoSuchAlgorithmException e) {
-				fail("Caught a NoSuchAlgorithmException : " + e);
-			}
-			cipherKey = kg.generateKey();
+        Key cipherKey = null;
+        SecureRandom sr = new SecureRandom();
+        Cipher cipher = null;
 
-			cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
+        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        kg.init(keyLen, new SecureRandom());
+        cipherKey = kg.generateKey();
 
-		} catch (Exception e) {
-			fail("Setup error");
-		}
+        cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
 
-		try {
-			cipher.init(Cipher.ENCRYPT_MODE, cipherKey, sr);
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
-		}
-	}
+        cipher.init(Cipher.ENCRYPT_MODE, cipherKey, sr);
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
 	 *        java.security.spec.AlgorithmParameterSpec)
 	 */
-	public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpec() {
-		final String algorithm = "DESede";
-		final int keyLen = 168;
+    public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpec()
+            throws Exception {
 
-		Key cipherKey = null;
-		SecureRandom sr = new SecureRandom();
-		Cipher cipher = null;
+        final String algorithm = "DESede";
+        final int keyLen = 168;
 
-		byte[] iv = null;
-		AlgorithmParameterSpec ivAVP = null;
+        Key cipherKey = null;
+        SecureRandom sr = new SecureRandom();
+        Cipher cipher = null;
 
-		try {
-			KeyGenerator kg = null;
-			try {
-				kg = KeyGenerator.getInstance(algorithm);
-				kg.init(keyLen, new SecureRandom());
-			} catch (NoSuchAlgorithmException e) {
-				fail("Caught a NoSuchAlgorithmException : " + e);
-			}
-			cipherKey = kg.generateKey();
+        byte[] iv = null;
+        AlgorithmParameterSpec ivAVP = null;
 
-			iv = new byte[8];
-			sr.nextBytes(iv);
-			ivAVP = new IvParameterSpec(iv);
+        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        kg.init(keyLen, new SecureRandom());
+        cipherKey = kg.generateKey();
 
-			cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
-		} catch (Exception e) {
-			fail("Setup error");
-		}
+        iv = new byte[8];
+        sr.nextBytes(iv);
+        ivAVP = new IvParameterSpec(iv);
 
-		try {
-			cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ivAVP);
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
-		}
+        cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
 
-		byte[] cipherIV = cipher.getIV();
+        cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ivAVP);
 
-		assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
-	}
+        byte[] cipherIV = cipher.getIV();
+
+        assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#init(int, java.security.Key,
 	 *        java.security.spec.AlgorithmParameterSpec,
 	 *        java.security.SecureRandom)
 	 */
-	public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpecLjava_security_SecureRandom() {
-		final String algorithm = "DESede";
-		final int keyLen = 168;
+	public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpecLjava_security_SecureRandom()
+            throws Exception {
+        final String algorithm = "DESede";
+        final int keyLen = 168;
 
-		Key cipherKey = null;
-		SecureRandom sr = new SecureRandom();
-		Cipher cipher = null;
+        Key cipherKey = null;
+        SecureRandom sr = new SecureRandom();
+        Cipher cipher = null;
 
-		byte[] iv = null;
-		AlgorithmParameterSpec ivAVP = null;
+        byte[] iv = null;
+        AlgorithmParameterSpec ivAVP = null;
 
-		try {
-			KeyGenerator kg = null;
-			try {
-				kg = KeyGenerator.getInstance(algorithm);
-				kg.init(keyLen, new SecureRandom());
-			} catch (NoSuchAlgorithmException e) {
-				fail("Caught a NoSuchAlgorithmException : " + e);
-			}
-			cipherKey = kg.generateKey();
+        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        kg.init(keyLen, new SecureRandom());
+        cipherKey = kg.generateKey();
 
-			iv = new byte[8];
-			sr.nextBytes(iv);
-			ivAVP = new IvParameterSpec(iv);
+        iv = new byte[8];
+        sr.nextBytes(iv);
+        ivAVP = new IvParameterSpec(iv);
 
-			cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
-		} catch (Exception e) {
-			fail("Setup error");
-		}
+        cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
 
-		try {
-			cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ivAVP, sr);
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
-		}
+        cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ivAVP, sr);
 
-		byte[] cipherIV = cipher.getIV();
+        byte[] cipherIV = cipher.getIV();
 
-		assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
-	}
+        assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
+    }
 
 	/**
 	 * @tests javax.crypto.Cipher#update(byte[], int, int)
