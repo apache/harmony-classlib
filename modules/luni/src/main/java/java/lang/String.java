@@ -33,14 +33,20 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
- * The implementation of this class is provided, but the documented native must
- * be provided by the vm vendor.
- * 
- * Strings are objects which represent immutable arrays of characters.
+ * <p>
+ * An immutable sequence of characters/code units (<code>char</code>s). A
+ * <code>String</code> is represented by array of UTF-16 values, such that
+ * Unicode supplementary characters (code points) are stored/encoded as
+ * surrogate pairs via Unicode code units (<code>char</code>)
+ * </p>
  * 
  * @see StringBuffer
+ * @see StringBuilder
+ * @see Charset
+ * @since 1.0
  */
 public final class String implements Serializable, Comparable<String>, CharSequence {
+    
 	private static final long serialVersionUID = -6849794470754667710L;
 
 	/**
@@ -472,10 +478,62 @@ public final class String implements Serializable, Comparable<String>, CharSeque
 			count = stringbuffer.length();
 		}
 	}
+    
+    /**
+     * <p>
+     * Constructs a <code>String</code> from the sub-array of Unicode code
+     * points.
+     * </p>
+     * 
+     * @param codePoints The array of Unicode code points to convert.
+     * @param offset The inclusive index into <code>codePoints</code> to begin
+     *        converting from.
+     * @param count The number of element in <code>codePoints</code> to copy.
+     * @throws NullPointerException if <code>codePoints</code> is null.
+     * @throws IllegalArgumentException if any of the elements of
+     *         <code>codePoints</code> are not valid Unicode code points.
+     * @throws IndexOutOfBoundsException if <code>offset</code> or
+     *         <code>count</code> are not within the bounds of
+     *         <code>codePoints</code>.
+     * @since 1.5
+     */
+    public String(int[] codePoints, int offset, int count) {
+        super();
+        if (codePoints == null)
+            throw new NullPointerException();
+        if (offset < 0 || count < 0 || (offset + count) > codePoints.length)
+            throw new IndexOutOfBoundsException();
+        this.offset = 0;
+        this.value = new char[count * 2];
+        int end = offset + count;
+        int c = 0;
+        for (int i = offset; i < end; i++) {
+            c += Character.toChars(codePoints[i], this.value, c);
+        }
+        this.count = c;
+    }
+    
+    /**
+     * <p>
+     * Constructs a <code>String</code> from a <code>StringBuilder</code>.
+     * </p>
+     * 
+     * @param sb The StringBuilder to copy from.
+     * @throws NullPointerException if <code>sb</code> is <code>null</code>.
+     * @since 1.5
+     */
+    public String(StringBuilder sb) {
+        if (sb == null)
+            throw new NullPointerException();
+        this.offset = 0;
+        this.count = sb.length();
+        this.value = new char[this.count];
+        sb.getChars(0, this.count, this.value, 0);
+    }
 
 	/*
-	 * Creates a string that is s1 + v1.
-	 */
+     * Creates a string that is s1 + v1.
+     */
 	private String(String s1, int v1) {
 		if (s1 == null)
 			s1 = "null";
@@ -716,7 +774,7 @@ public final class String implements Serializable, Comparable<String>, CharSeque
 
 	/**
 	 * Converts this String to a byte encoding using the default encoding as
-	 * specified by the file.encoding sytem property. If the system property is
+	 * specified by the file.encoding system property. If the system property is
 	 * not defined, the default encoding is ISO8859_1 (ISO-Latin-1). If 8859-1
 	 * is not available, an ASCII encoding is used.
 	 * 
@@ -1657,6 +1715,26 @@ public final class String implements Serializable, Comparable<String>, CharSeque
 					size);
 		}
 	}
+    
+    /**
+     * <p>
+     * Compares a <code>CharSequence</code> to this <code>String</code> to
+     * determine if their contents are equal.
+     * </p>
+     * 
+     * @param cs The character sequence to compare to.
+     * @return <code>true</code> if equal, otherwise <code>false</code>
+     * @since 1.5
+     */
+    public boolean contentEquals(CharSequence cs) {
+        if (cs == null)
+            throw new NullPointerException();
+        if (cs instanceof StringBuffer)
+            return contentEquals((StringBuffer)cs);
+        else {
+            return regionMatches(0, cs.toString(), 0, cs.length());
+        }
+    }
 
 	/**
 	 * Determines whether a this String matches a given regular expression.
@@ -1773,6 +1851,110 @@ public final class String implements Serializable, Comparable<String>, CharSeque
 	public CharSequence subSequence(int start, int end) {
 		return substring(start, end);
 	}
+    
+    /**
+     * <p>
+     * Retrieves the Unicode code point value at the <code>index</code>.
+     * </p>
+     * 
+     * @param index The index to the <code>char</code> code unit within this
+     *        object.
+     * @return The Unicode code point value.
+     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
+     *         greater than or equal to {@link #length()}.
+     * @see Character
+     * @see Character#codePointAt(char[], int, int)
+     * @since 1.5
+     */
+    public int codePointAt(int index) {
+        if (index < 0 || index >= count)
+            throw new IndexOutOfBoundsException();
+        int s = index + offset;
+        return Character.codePointAt(value, s, offset + count);
+    }
+    
+    /**
+     * <p>
+     * Retrieves the Unicode code point value that precedes the
+     * <code>index</code>.
+     * </p>
+     * 
+     * @param index The index to the <code>char</code> code unit within this
+     *        object.
+     * @return The Unicode code point value.
+     * @throws IndexOutOfBoundsException if <code>index</code> is less than 1
+     *         or greater than {@link #length()}.
+     * @see Character
+     * @see Character#codePointBefore(char[], int, int)
+     * @since 1.5
+     */
+    public int codePointBefore(int index) {
+        if (index < 1 || index > count)
+            throw new IndexOutOfBoundsException();
+        int s = index + offset;
+        return Character.codePointBefore(value, s);
+    }
+    
+    /**
+     * <p>
+     * Calculates the number of Unicode code points between
+     * <code>beginIndex</code> and <code>endIndex</code>.
+     * </p>
+     * 
+     * @param beginIndex The inclusive beginning index of the subsequence.
+     * @param endIndex The exclusive end index of the subsequence.
+     * @return The number of Unicode code points in the subsequence.
+     * @throws IndexOutOfBoundsException if <code>beginIndex</code> is
+     *         negative or greater than <code>endIndex</code> or
+     *         <code>endIndex</code> is greater than {@link #length()}.
+     * @since 1.5
+     */
+    public int codePointCount(int beginIndex, int endIndex) {
+        if (beginIndex < 0 || endIndex > count
+                || beginIndex > endIndex)
+            throw new IndexOutOfBoundsException();
+        int s = beginIndex + offset;
+        return Character.codePointCount(value, s, endIndex - beginIndex);
+    }
+    
+    /**
+     * <p>
+     * Determines if this <code>String</code> contains the sequence of
+     * characters in the <code>CharSequence</code> passed.
+     * </p>
+     * 
+     * @param cs The character sequence to search for.
+     * @return <code>true</code> if the sequence of characters are contained
+     *         in this object; otherwise <code>false</code>
+     * @since 1.5
+     */
+    public boolean contains(CharSequence cs) {
+        if (cs == null)
+            throw new NullPointerException();
+        return indexOf(cs.toString()) >= 0;
+    }
+    
+    /**
+     * <p>
+     * Returns the index within this object that is offset from
+     * <code>index</code> by <code>codePointOffset</code> code points.
+     * </p>
+     * 
+     * @param index The index within this object to calculate the offset from.
+     * @param codePointOffset The number of code points to count.
+     * @return The index within this object that is the offset.
+     * @throws IndexOutOfBoundsException if <code>index</code> is negative or
+     *         greater than {@link #length()} or if there aren't enough code
+     *         points before or after <code>index</code> to match
+     *         <code>codePointOffset</code>.
+     * @since 1.5
+     */
+    public int offsetByCodePoints(int index, int codePointOffset) {
+        int s = index + offset;
+        int r = Character.offsetByCodePoints(value, offset, count, s,
+                codePointOffset);
+        return r - offset;
+    }
 
 	/*
 	 * An implementation of a String.indexOf that is supposed to perform
@@ -1782,7 +1964,7 @@ public final class String implements Serializable, Comparable<String>, CharSeque
 	 * In the jit, if we encounter a call to String.indexOf(String), where the
 	 * needle is a constant string, we compute the values cache, md2 and
 	 * lastChar, and change the call to the following method. This code can be
-	 * enabled by setting TR_FastIndexOf=1. It searches for the availablility of
+	 * enabled by setting TR_FastIndexOf=1. It searches for the availability of
 	 * the following signature before doing the optimization.
 	 */
 	private static int indexOf(String haystackString, String needleString,

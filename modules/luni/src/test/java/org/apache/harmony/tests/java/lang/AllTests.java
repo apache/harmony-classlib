@@ -40,6 +40,7 @@ public class AllTests {
 		suite.addTestSuite(ShortTest.class);
 		suite.addTestSuite(LongTest.class);
 		suite.addTestSuite(TypeNotPresentExceptionTest.class);
+		suite.addTestSuite(StringTest.class);
 		//$JUnit-END$
 		return suite;
 	}
