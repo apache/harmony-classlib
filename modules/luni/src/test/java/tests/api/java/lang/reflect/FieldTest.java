@@ -1027,7 +1027,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during setFloat test : " + e.getMessage());
 		}
-		assertTrue("Returned incorrect float field value", val == 1);
+		assertEquals("Returned incorrect float field value", 1.0, val, 0.0);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
