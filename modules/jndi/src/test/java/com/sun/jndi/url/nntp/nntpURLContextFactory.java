@@ -21,7 +21,7 @@ import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.spi.ObjectFactory;
 
-import tests.api.javax.naming.spi.TestNamingManager;
+import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest;
 
 public class nntpURLContextFactory implements ObjectFactory {
 
@@ -34,8 +34,8 @@ public class nntpURLContextFactory implements ObjectFactory {
 	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h)
 			throws Exception {
 
-		TestNamingManager.issueIndicatedExceptions(h);
-		if (TestNamingManager.returnNullIndicated(h)) {
+		NamingManagerTest.issueIndicatedExceptions(h);
+		if (NamingManagerTest.returnNullIndicated(h)) {
 			return null;
 		}
 

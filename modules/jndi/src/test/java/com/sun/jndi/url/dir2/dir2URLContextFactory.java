@@ -21,8 +21,8 @@ import javax.naming.Name;
 import javax.naming.directory.Attributes;
 import javax.naming.spi.DirObjectFactory;
 
-import tests.api.javax.naming.spi.TestNamingManager;
-import tests.api.javax.naming.util.Log;
+import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest;
+import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class dir2URLContextFactory implements DirObjectFactory {
 
@@ -117,8 +117,8 @@ public class dir2URLContextFactory implements DirObjectFactory {
 	 */
 	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h,
 			Attributes a) throws Exception {
-		TestNamingManager.issueIndicatedExceptions(h);
-		if (TestNamingManager.returnNullIndicated(h)) {
+		NamingManagerTest.issueIndicatedExceptions(h);
+		if (NamingManagerTest.returnNullIndicated(h)) {
 			return null;
 		}
 

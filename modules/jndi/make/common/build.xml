@@ -99,13 +99,16 @@
 
                 <fileset dir="${hy.jndi.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <include name="**/Test*.java"/>
+                	
+                	<!-- Requires further investigation -->
+                	<exclude name="**/DirectoryManagerTest.java" />
+                	
                     <!--
                     To make the following two test cases pass, 
                     set forkmode="perTest"
                     -->
-                	<exclude name="**/TestNamingManagerBuilder.java" />
-                    <exclude name="**/TestNamingManager.java" />
+                	<exclude name="**/NamingManagerBuilderTest.java" />
+                    <exclude name="**/NamingManagerTest.java" />
                 </fileset>
             </batchtest>
         </junit>
