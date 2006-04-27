@@ -17,7 +17,8 @@
 
 <project name="Common_LOGGING_Build">
 
-    <target name="compile.java" description="Compile LOGGING java code">
+    <target name="compile.java" description="Compile LOGGING java code"
+    	depends="copy.resources">
         <echo message="Compiling LOGGING classes from ${hy.logging.src.main.java}" />
 
         <mkdir dir="${hy.logging.bin.main}" />
@@ -45,14 +46,14 @@
     </target>
 
 
-    <target name="compile.tests">
+    <target name="compile.tests" depends="copy.test.resources" >
         <echo message="Compiling LOGGING tests from ${hy.logging.src.test.java}" />
 
-        <mkdir dir="${hy.logging.bin.injected}" />
+        <mkdir dir="${hy.logging.bin.internal}" />
         <mkdir dir="${hy.logging.bin.test}" />
 
-        <javac srcdir="${hy.logging.src.test.injected}"
-            destdir="${hy.logging.bin.injected}"
+        <javac srcdir="${hy.logging.src.test.internal}"
+            destdir="${hy.logging.bin.internal}"
             sourcepath=""
             source="${hy.javac.source}"
             target="${hy.javac.target}"
@@ -76,7 +77,7 @@
                 <fileset dir="${hy.target}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
-                <pathelement path="${hy.logging.bin.injected}"/>
+                <pathelement path="${hy.logging.bin.internal}"/>
             </bootclasspath>
             <classpath location="../../../../build/tests" />
         </javac>
@@ -106,7 +107,7 @@
                 <fileset dir="${hy.target}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
-                <pathelement path="${hy.logging.bin.injected}"/>
+                <pathelement path="${hy.logging.bin.internal}"/>
             </bootclasspath>
             <classpath>
                 <pathelement path="${hy.logging.bin.test}"/>
@@ -120,17 +121,11 @@
                 unless="test.case">
 
                 <fileset dir="${hy.logging.src.test.java}">
-                    <include name="tests/api/java/util/logging/*Test.java"/>
-                    <exclude name="tests/api/java/util/logging/FileHandlerTest.java" />
-                    <exclude name="tests/api/java/util/logging/FormatterTest.java" />
-                    <exclude name="tests/api/java/util/logging/LevelTest.java" />
-                    <exclude name="tests/api/java/util/logging/LogManagerTest.java" />
-                    <exclude name="tests/api/java/util/logging/LogRecordTest.java" />
-                    <exclude name="tests/api/java/util/logging/LoggerTest.java" />
-                    <exclude name="tests/api/java/util/logging/LoggingPermissionTest.java" />
-                    <exclude name="tests/api/java/util/logging/SimpleFormatterTest.java" />
-                    <exclude name="tests/api/java/util/logging/SocketHandlerTest.java" />
-                    <exclude name="tests/api/java/util/logging/XMLFormatterTest.java" />
+                    <include name="org/apache/harmony/logging/tests/java/util/logging/*Test.java"/>
+                    <exclude name="org/apache/harmony/logging/tests/java/util/logging/FileHandlerTest.java" />
+                	<exclude name="org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java" />
+                    <exclude name="org/apache/harmony/logging/tests/java/util/logging/LoggingPermissionTest.java" />
+                    <exclude name="org/apache/harmony/logging/tests/java/util/logging/SocketHandlerTest.java" />
                 </fileset>
             </batchtest>
         </junit>
@@ -156,5 +151,15 @@
             </fileset>
         </copy>
     </target>
+	
+    <target name="copy.test.resources">
+        <mkdir dir="${hy.logging.bin.test}" />
+        <copy todir="${hy.logging.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.logging.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+	
 </project>
 
