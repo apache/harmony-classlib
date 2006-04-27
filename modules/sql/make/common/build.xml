@@ -101,7 +101,7 @@
                     <include name="**/*Test.java"/>
 
                     <!-- This test is empty -->
-                    <exclude name="**/ArrayTest.java" />
+                    <exclude name="tests/api/java/sql/ArrayTest.java" />
                 </fileset>
             </batchtest>
         </junit>

@@ -99,13 +99,13 @@
 
                 <fileset dir="${hy.text.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="**/AttributedCharacterIteratorTest.java"/>
-                    <exclude name="**/ChoiceFormatTest.java"/>
-                    <exclude name="**/CollationKeyTest.java"/>
-                    <exclude name="**/CollatorTest.java"/>
-                    <exclude name="**/DecimalFormatTest.java"/>
-                    <exclude name="**/MessageFormatTest.java"/>
-                    <exclude name="**/NumberFormatTest.java"/>
+                    <exclude name="tests/api/java/text/AttributedCharacterIteratorTest.java"/>
+                    <exclude name="tests/api/java/text/ChoiceFormatTest.java"/>
+                    <exclude name="tests/api/java/text/CollationKeyTest.java"/>
+                    <exclude name="tests/api/java/text/CollatorTest.java"/>
+                    <exclude name="tests/api/java/text/DecimalFormatTest.java"/>
+                    <exclude name="tests/api/java/text/MessageFormatTest.java"/>
+                    <exclude name="tests/api/java/text/NumberFormatTest.java"/>
                 </fileset>
             </batchtest>
         </junit>

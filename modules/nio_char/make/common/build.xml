@@ -99,21 +99,21 @@
 
                 <fileset dir="${hy.nio_char.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="**/ASCCharsetEncoderTest.java"/>
-                    <exclude name="**/CharsetEncoderTest.java"/>
-                    <exclude name="**/CharsetProviderTest.java"/>
-                    <exclude name="**/CharsetTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/ASCCharsetEncoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/CharsetEncoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/CharsetProviderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/CharsetTest.java"/>
                     <!-- No public constructor? -->
-                    <exclude name="**/ConcreteCharsetTest.java"/>
-                    <exclude name="**/GBCharsetEncoderTest.java"/>
-                    <exclude name="**/ISOCharsetEncoderTest.java"/>
-                    <exclude name="**/IllegalCharsetNameExceptionTest.java"/>
-                    <exclude name="**/UTF16BECharsetEncoderTest.java"/>
-                    <exclude name="**/UTF16CharsetDecoderTest.java"/>
-                    <exclude name="**/UTF16CharsetEncoderTest.java"/>
-                    <exclude name="**/UTF16LECharsetEncoderTest.java"/>
-                    <exclude name="**/UTFCharsetEncoderTest.java"/>
-                    <exclude name="**/UnsupportedCharsetExceptionTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/ConcreteCharsetTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/GBCharsetEncoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/ISOCharsetEncoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/IllegalCharsetNameExceptionTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/UTF16BECharsetEncoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/UTF16CharsetDecoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/UTF16CharsetEncoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/UTF16LECharsetEncoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/UTFCharsetEncoderTest.java"/>
+                    <exclude name="tests/api/java/nio/charset/UnsupportedCharsetExceptionTest.java"/>
                 </fileset>
             </batchtest>
         </junit>

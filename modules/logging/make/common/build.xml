@@ -120,17 +120,17 @@
                 unless="test.case">
 
                 <fileset dir="${hy.logging.src.test.java}">
-                    <include name="**/*Test.java"/>
-                    <exclude name="**/FileHandlerTest.java" />
-                    <exclude name="**/FormatterTest.java" />
-                    <exclude name="**/LevelTest.java" />
-                    <exclude name="**/LogManagerTest.java" />
-                    <exclude name="**/LogRecordTest.java" />
-                    <exclude name="**/LoggerTest.java" />
-                    <exclude name="**/LoggingPermissionTest.java" />
-                    <exclude name="**/SimpleFormatterTest.java" />
-                    <exclude name="**/SocketHandlerTest.java" />
-                    <exclude name="**/XMLFormatterTest.java" />
+                    <include name="tests/api/java/util/logging/*Test.java"/>
+                    <exclude name="tests/api/java/util/logging/FileHandlerTest.java" />
+                    <exclude name="tests/api/java/util/logging/FormatterTest.java" />
+                    <exclude name="tests/api/java/util/logging/LevelTest.java" />
+                    <exclude name="tests/api/java/util/logging/LogManagerTest.java" />
+                    <exclude name="tests/api/java/util/logging/LogRecordTest.java" />
+                    <exclude name="tests/api/java/util/logging/LoggerTest.java" />
+                    <exclude name="tests/api/java/util/logging/LoggingPermissionTest.java" />
+                    <exclude name="tests/api/java/util/logging/SimpleFormatterTest.java" />
+                    <exclude name="tests/api/java/util/logging/SocketHandlerTest.java" />
+                    <exclude name="tests/api/java/util/logging/XMLFormatterTest.java" />
                 </fileset>
             </batchtest>
         </junit>

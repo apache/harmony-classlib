@@ -63,7 +63,6 @@
 
             <include name="javax/net/**/*Test*.java" />
             <include name="org/apache/harmony/security/test/**/*" />
-            <exclude name="**/SecurityTest.java"/>
 
             <bootclasspath>
                 <fileset dir="${hy.target}/jre/lib/boot">
@@ -118,13 +117,13 @@
                     <exclude name="javax/net/ssl/serialization/SSLSessionBindingEventTest.java"/>
 
                     <!-- FIXME: The following tests are excluded because they fail for reasons to be determined -->
-                    <exclude name="**/DefaultSSLServerSocketFactoryTest.java"/>
-                    <exclude name="**/DefaultSSLSocketFactoryTest.java"/>
-                    <exclude name="**/HttpsURLConnectionTest.java"/>
-                    <exclude name="**/SSLServerSocketFactoryTest.java"/>
-                    <exclude name="**/SSLSocketFactoryTest.java"/>
-                    <exclude name="**/ServerSocketFactoryTest.java"/>
-                    <exclude name="**/SocketFactoryTest.java"/>
+                    <exclude name="javax/net/ServerSocketFactoryTest.java" />
+                    <exclude name="javax/net/SocketFactoryTest.java" />
+                    <exclude name="javax/net/ssl/DefaultSSLServerSocketFactoryTest.java" />
+                    <exclude name="javax/net/ssl/DefaultSSLSocketFactoryTest.java" />
+                    <exclude name="javax/net/ssl/HttpsURLConnectionTest.java" />
+                    <exclude name="javax/net/ssl/SSLServerSocketFactoryTest.java" />
+                    <exclude name="javax/net/ssl/SSLSocketFactoryTest.java" />
                 </fileset>
             </batchtest>
         </junit>

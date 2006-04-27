@@ -99,9 +99,9 @@
 
                 <fileset dir="${hy.prefs.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="**/AbstractPreferencesTest.java"/>
-                    <exclude name="**/FilePreferencesImplTest.java"/>
-                    <exclude name="**/PreferencesTest.java"/>
+                    <exclude name="tests/api/java/util/prefs/AbstractPreferencesTest.java"/>
+                    <exclude name="tests/api/java/util/prefs/FilePreferencesImplTest.java"/>
+                    <exclude name="tests/api/java/util/prefs/PreferencesTest.java"/>
                 </fileset>
             </batchtest>
         </junit>

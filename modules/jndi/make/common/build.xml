@@ -101,14 +101,14 @@
                     <include name="**/*Test.java"/>
                 	
                 	<!-- Requires further investigation -->
-                	<exclude name="**/DirectoryManagerTest.java" />
+                	<exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/DirectoryManagerTest.java" />
                 	
                     <!--
                     To make the following two test cases pass, 
                     set forkmode="perTest"
                     -->
-                	<exclude name="**/NamingManagerBuilderTest.java" />
-                    <exclude name="**/NamingManagerTest.java" />
+                	<exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerBuilderTest.java" />
+                    <exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerTest.java" />
                 </fileset>
             </batchtest>
         </junit>

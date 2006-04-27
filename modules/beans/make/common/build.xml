@@ -101,16 +101,16 @@
                 <fileset dir="${hy.beans.src.test.java}">
                     <include name="**/*Test.java"/>
                     <!-- TOFIX: these fail -->
-                    <exclude name="**/BeansTest.java" />
-                    <exclude name="**/BeanContextServicesSupportTest.java" />
-                    <exclude name="**/BeanContextSupportTest.java" />
-                    <exclude name="**/EventHandlerTest.java" />
-                    <exclude name="**/SimpleBeanInfoTest.java" />
-
+                    <exclude name="java/beans/beancontext/BeanContextServicesSupportTest.java" />
+                    <exclude name="java/beans/beancontext/BeanContextSupportTest.java" />
+                    <exclude name="org/apache/harmony/tests/java/beans/EventHandlerTest.java" />
+                    <exclude name="org/apache/harmony/tests/java/beans/SimpleBeanInfoTest.java" />
                     <exclude name="tests/api/java/beans/BeanDescriptorTest.java" />
+                    <exclude name="tests/api/java/beans/BeansTest.java" />
                     <exclude name="tests/api/java/beans/CustomizedPersistenceDelegateTest.java" />
                     <exclude name="tests/api/java/beans/DefaultPersistenceDelegateTest.java" />
                     <exclude name="tests/api/java/beans/EncoderTest.java" />
+                    <exclude name="tests/api/java/beans/EventHandlerTest.java" />
                     <exclude name="tests/api/java/beans/EventSetDescriptorTest.java" />
                     <exclude name="tests/api/java/beans/ExpressionTest.java" />
                     <exclude name="tests/api/java/beans/FeatureDescriptorTest.java" />
@@ -134,6 +134,8 @@
                     <exclude name="tests/api/java/beans/beancontext/BeanContextMembershipEventTest.java" />
                     <exclude name="tests/api/java/beans/beancontext/BeanContextServiceAvailableEventTest.java" />
                     <exclude name="tests/api/java/beans/beancontext/BeanContextServiceRevokedEventTest.java" />
+                    <exclude name="tests/api/java/beans/beancontext/BeanContextServicesSupportTest.java" />
+                    <exclude name="tests/api/java/beans/beancontext/BeanContextSupportTest.java" />
                 </fileset>
             </batchtest>
         </junit>

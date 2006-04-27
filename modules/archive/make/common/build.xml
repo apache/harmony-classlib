@@ -99,10 +99,9 @@
 
                 <fileset dir="${hy.archive.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="**/JarOutputStreamTest.java"/>
-                    <exclude name="**/GZIPInputStreamTest.java"/>
-                    <exclude name="**/InflaterInputStreamTest.java"/>
-                    <exclude name="**/InflaterTest.java"/>
+                    <exclude name="org/apache/harmony/archive/tests/java/util/zip/GZIPInputStreamTest.java"/>
+                    <exclude name="org/apache/harmony/archive/tests/java/util/zip/InflaterInputStreamTest.java"/>
+                    <exclude name="org/apache/harmony/archive/tests/java/util/zip/InflaterTest.java"/>
 
                 </fileset>
             </batchtest>

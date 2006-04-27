@@ -59,7 +59,7 @@ public class BeansTest extends TestCase {
      * using specific classloader for class loading
      */
     public void testLoadBySpecificClassLoader() {
-        String beanName = "org.apache.harmony.tests.beans.auxiliary.SampleBean";
+        String beanName = "org.apache.harmony.tests.java.beans.auxiliary.SampleBean";
         
         try {
             ClassLoader cls = createSpecificClassLoader();
@@ -82,7 +82,7 @@ public class BeansTest extends TestCase {
      * using default classloader for class loading
      */
     public void testLoadByDefaultClassLoader() {
-        String beanName = "org.apache.harmony.tests.beans.auxiliary.SampleBean";
+        String beanName = "org.apache.harmony.tests.java.beans.auxiliary.SampleBean";
         
         try {
             Object bean = Beans.instantiate(null, beanName);
