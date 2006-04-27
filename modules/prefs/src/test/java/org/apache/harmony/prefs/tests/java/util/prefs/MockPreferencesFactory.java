@@ -13,26 +13,29 @@
  * limitations under the License.
  */
 
-package tests.prefs;
+package org.apache.harmony.prefs.tests.java.util.prefs;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.prefs.Preferences;
+import java.util.prefs.PreferencesFactory;
 
 /**
- * Test suite that includes all tests for the Prefs project.
  * 
  */
-public class AllTests {
+public class MockPreferencesFactory implements PreferencesFactory {
+	static MockAbstractPreferences userRoot = new MockAbstractPreferences(null,
+			"");
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+	static MockAbstractPreferences systemRoot = new MockAbstractPreferences(
+			null, "");
+
+	public MockPreferencesFactory() {
 	}
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("All Prefs test suites");
-		// $JUnit-BEGIN$
-		suite.addTest(tests.api.java.util.prefs.AllTests.suite());
-		// $JUnit-END$
-		return suite;
+	public Preferences userRoot() {
+		return userRoot;
+	}
+
+	public Preferences systemRoot() {
+		return systemRoot;
 	}
 }

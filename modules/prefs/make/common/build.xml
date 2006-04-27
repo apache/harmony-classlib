@@ -45,7 +45,7 @@
     </target>
 
 
-    <target name="compile.tests">
+    <target name="compile.tests" depends="copy.test.resources">
         <echo message="Compiling PREFS tests from ${hy.prefs.src.test.java}" />
 
         <mkdir dir="${hy.prefs.bin.test}" />
@@ -99,9 +99,9 @@
 
                 <fileset dir="${hy.prefs.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="tests/api/java/util/prefs/AbstractPreferencesTest.java"/>
-                    <exclude name="tests/api/java/util/prefs/FilePreferencesImplTest.java"/>
-                    <exclude name="tests/api/java/util/prefs/PreferencesTest.java"/>
+                    <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/AbstractPreferencesTest.java"/>
+                    <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/FilePreferencesImplTest.java"/>
+                    <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/PreferencesTest.java"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -122,6 +122,15 @@
 
     <target name="copy.resources">
         <!-- Nothing for PREFS -->
+    </target>
+	
+    <target name="copy.test.resources">
+        <mkdir dir="${hy.prefs.bin.test}" />
+        <copy todir="${hy.prefs.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.prefs.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 </project>
 

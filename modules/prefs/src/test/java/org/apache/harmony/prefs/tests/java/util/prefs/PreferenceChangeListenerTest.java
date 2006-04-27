@@ -13,29 +13,39 @@
  * limitations under the License.
  */
 
-package tests.api.java.util.prefs;
+package org.apache.harmony.prefs.tests.java.util.prefs;
 
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
-import java.util.prefs.PreferencesFactory;
+
+import junit.framework.TestCase;
 
 /**
  * 
  */
-public class MockPreferencesFactory implements PreferencesFactory {
-	static MockAbstractPreferences userRoot = new MockAbstractPreferences(null,
-			"");
+public class PreferenceChangeListenerTest extends TestCase {
 
-	static MockAbstractPreferences systemRoot = new MockAbstractPreferences(
-			null, "");
+	PreferenceChangeListener l;
 
-	public MockPreferencesFactory() {
+	/*
+	 * @see TestCase#setUp()
+	 */
+	protected void setUp() throws Exception {
+		super.setUp();
+		l = new PreferenceChangeListenerImpl();
 	}
 
-	public Preferences userRoot() {
-		return userRoot;
+	public void testPreferenceChange() {
+		l.preferenceChange(new PreferenceChangeEvent(Preferences.userRoot(),
+				"", ""));
 	}
 
-	public Preferences systemRoot() {
-		return systemRoot;
+	public static class PreferenceChangeListenerImpl implements
+			PreferenceChangeListener {
+		public void preferenceChange(PreferenceChangeEvent pce) {
+		}
+
 	}
+
 }

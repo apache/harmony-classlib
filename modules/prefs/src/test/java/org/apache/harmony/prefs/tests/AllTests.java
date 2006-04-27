@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-package tests.api.java.util.prefs;
+package org.apache.harmony.prefs.tests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * TODO Type description
+ * Test suite that includes all tests for the Prefs project.
  * 
  */
 public class AllTests {
@@ -29,17 +29,9 @@ public class AllTests {
 	}
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for tests.api.java.util.prefs");
+		TestSuite suite = new TestSuite("All Prefs test suites");
 		// $JUnit-BEGIN$
-		suite.addTestSuite(NodeChangeListenerTest.class);
-		suite.addTestSuite(PreferenceChangeListenerTest.class);
-		suite.addTestSuite(PreferencesFactoryTest.class);
-		suite.addTestSuite(BackingStoreExceptionTest.class);
-		suite.addTestSuite(InvalidPreferencesFormatExceptionTest.class);
-		suite.addTestSuite(PreferenceChangeEventTest.class);
-		suite.addTestSuite(NodeChangeEventTest.class);
-		suite.addTestSuite(PreferencesTest.class);
-		suite.addTestSuite(AbstractPreferencesTest.class);
+		suite.addTest(org.apache.harmony.prefs.tests.java.util.prefs.AllTests.suite());
 		// $JUnit-END$
 		return suite;
 	}

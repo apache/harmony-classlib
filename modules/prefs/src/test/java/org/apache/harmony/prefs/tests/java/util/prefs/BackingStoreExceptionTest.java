@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package tests.api.java.util.prefs;
+package org.apache.harmony.prefs.tests.java.util.prefs;
 
 import java.io.NotSerializableException;
 import java.util.prefs.BackingStoreException;

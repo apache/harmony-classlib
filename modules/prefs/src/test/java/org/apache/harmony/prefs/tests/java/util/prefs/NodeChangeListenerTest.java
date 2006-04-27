@@ -13,44 +13,52 @@
  * limitations under the License.
  */
 
-package tests.api.java.util.prefs;
+package org.apache.harmony.prefs.tests.java.util.prefs;
 
+import java.util.prefs.NodeChangeEvent;
+import java.util.prefs.NodeChangeListener;
 import java.util.prefs.Preferences;
-import java.util.prefs.PreferencesFactory;
 
 import junit.framework.TestCase;
 
 /**
  * 
  */
-public class PreferencesFactoryTest extends TestCase {
+public class NodeChangeListenerTest extends TestCase {
 
-	PreferencesFactory f;
+	NodeChangeListener l;
 
 	/*
 	 * @see TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		f = new PreferencesFactoryImpl();
+		l = new NodeChangeListenerImpl();
 	}
 
-	public void testUserRoot() {
-		f.userRoot();
+	/*
+	 * @see TestCase#tearDown()
+	 */
+	protected void tearDown() throws Exception {
+		super.tearDown();
 	}
 
-	public void testSystemRoot() {
-		f.systemRoot();
+	public void testChildAdded() {
+		l.childAdded(new NodeChangeEvent(Preferences.userRoot(), Preferences
+				.userRoot()));
 	}
 
-	public static class PreferencesFactoryImpl implements PreferencesFactory {
+	public void testChildRemoved() {
+		l.childRemoved(new NodeChangeEvent(Preferences.userRoot(), Preferences
+				.userRoot()));
+	}
 
-		public Preferences userRoot() {
-			return null;
+	public static class NodeChangeListenerImpl implements NodeChangeListener {
+
+		public void childAdded(NodeChangeEvent e) {
 		}
 
-		public Preferences systemRoot() {
-			return null;
+		public void childRemoved(NodeChangeEvent e) {
 		}
 
 	}

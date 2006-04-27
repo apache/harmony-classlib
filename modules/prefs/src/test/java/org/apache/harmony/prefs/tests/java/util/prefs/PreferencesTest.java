@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package tests.api.java.util.prefs;
+package org.apache.harmony.prefs.tests.java.util.prefs;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -140,7 +140,7 @@ public class PreferencesTest extends TestCase {
 
 			prefs.put("prefskey", "oldvalue");
 			prefs.put("prefskey2", "oldvalue2");
-			in = PreferencesTest.class.getResourceAsStream("userprefs.xml");
+			in = PreferencesTest.class.getResourceAsStream("/prefs/java/util/prefs/userprefs.xml");
 			Preferences.importPreferences(in);
 
 			prefs = Preferences.userNodeForPackage(PreferencesTest.class);
@@ -151,7 +151,7 @@ public class PreferencesTest extends TestCase {
 			assertEquals("newvalue3", prefs.get("prefskey3", null));
 
 			in = PreferencesTest.class
-					.getResourceAsStream("userprefs-badform.xml");
+					.getResourceAsStream("/prefs/java/util/prefs/userprefs-badform.xml");
 			try {
 				Preferences.importPreferences(in);
 				fail();
@@ -159,7 +159,7 @@ public class PreferencesTest extends TestCase {
 			}
 
 			in = PreferencesTest.class
-					.getResourceAsStream("userprefs-badtype.xml");
+					.getResourceAsStream("/prefs/java/util/prefs/userprefs-badtype.xml");
 			try {
 				Preferences.importPreferences(in);
 				fail();
@@ -167,7 +167,7 @@ public class PreferencesTest extends TestCase {
 			}
 
 			in = PreferencesTest.class
-					.getResourceAsStream("userprefs-badencoding.xml");
+					.getResourceAsStream("/prefs/java/util/prefs/userprefs-badencoding.xml");
 			try {
 				Preferences.importPreferences(in);
 				fail();
@@ -175,7 +175,7 @@ public class PreferencesTest extends TestCase {
 			}
 
 			in = PreferencesTest.class
-					.getResourceAsStream("userprefs-higherversion.xml");
+					.getResourceAsStream("/prefs/java/util/prefs/userprefs-higherversion.xml");
 			try {
 				Preferences.importPreferences(in);
 				fail();
@@ -183,7 +183,7 @@ public class PreferencesTest extends TestCase {
 			}
 
 			in = PreferencesTest.class
-					.getResourceAsStream("userprefs-ascii.xml");
+					.getResourceAsStream("/prefs/java/util/prefs/userprefs-ascii.xml");
 			Preferences.importPreferences(in);
 			prefs = Preferences.userNodeForPackage(PreferencesTest.class);
 		} finally {
