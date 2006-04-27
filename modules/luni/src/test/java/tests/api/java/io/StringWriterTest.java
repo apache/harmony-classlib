@@ -83,8 +83,8 @@ public class StringWriterTest extends junit.framework.TestCase {
 		char[] c = new char[1000];
 		"This is a test string".getChars(0, 21, c, 0);
 		sw.write(c, 0, 21);
-		assertTrue("Chars not written properly", sw.toString().equals(
-				"This is a test string"));
+		assertEquals("Chars not written properly", 
+				"This is a test string", sw.toString());
 	}
 
     /**
@@ -140,7 +140,7 @@ public class StringWriterTest extends junit.framework.TestCase {
 	public void test_writeI() {
 		// Test for method void java.io.StringWriter.write(int)
 		sw.write('c');
-		assertTrue("Char not written properly", sw.toString().equals("c"));
+		assertEquals("Char not written properly", "c", sw.toString());
 	}
 
 	/**
@@ -149,8 +149,8 @@ public class StringWriterTest extends junit.framework.TestCase {
 	public void test_writeLjava_lang_String() {
 		// Test for method void java.io.StringWriter.write(java.lang.String)
 		sw.write("This is a test string");
-		assertTrue("String not written properly", sw.toString().equals(
-				"This is a test string"));
+		assertEquals("String not written properly", 
+				"This is a test string", sw.toString());
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class StringWriterTest extends junit.framework.TestCase {
 		// Test for method void java.io.StringWriter.write(java.lang.String,
 		// int, int)
 		sw.write("This is a test string", 2, 2);
-		assertTrue("String not written properly", sw.toString().equals("is"));
+		assertEquals("String not written properly", "is", sw.toString());
 	}
     
 	/**

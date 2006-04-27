@@ -500,7 +500,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		os = new java.io.PrintStream(bos, true);
 		os.write('t');
 		bis = new java.io.ByteArrayInputStream(bos.toByteArray());
-		assertTrue("Incorrect char written", bis.read() == 't');
+		assertEquals("Incorrect char written", 't', bis.read());
 	}
 	
 	

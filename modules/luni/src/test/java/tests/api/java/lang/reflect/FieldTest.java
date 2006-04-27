@@ -125,8 +125,8 @@ public class FieldTest extends junit.framework.TestCase {
 			f = x.getClass().getDeclaredField("doubleSField");
 			f.set(x, new Double(1.0));
 			val = (Double) f.get(x);
-			assertTrue("Returned incorrect double field value", val
-					.doubleValue() == 1.0);
+			assertEquals("Returned incorrect double field value", 1.0, val
+					.doubleValue());
 
 			// Try a get on a private field
 			try {
@@ -552,7 +552,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during getCharacter test: " + e.toString());
 		}
-		assertTrue("Returned incorrect char field value", val == 'T');
+		assertEquals("Returned incorrect char field value", 'T', val);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
@@ -749,8 +749,8 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during getType test : " + e.getMessage());
 		}
-		assertTrue("Returned incorrect field name", f.getName().equals(
-				"shortField"));
+		assertEquals("Returned incorrect field name", 
+				"shortField", f.getName());
 	}
 
 	/**
@@ -818,7 +818,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during set test : " + e.getMessage());
 		}
-		assertTrue("Returned incorrect double field value", val == 1.0);
+		assertEquals("Returned incorrect double field value", 1.0, val);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
@@ -840,7 +840,7 @@ public class FieldTest extends junit.framework.TestCase {
 			f = x.getClass().getDeclaredField("doubleSField");
 			f.set(x, new Double(1.0));
 			val = f.getDouble(x);
-			assertTrue("Returned incorrect double field value", val == 1.0);
+			assertEquals("Returned incorrect double field value", 1.0, val);
 		} catch (Exception e) {
 			fail("Exception during setDouble test: " + e.toString());
 		}
@@ -904,7 +904,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during setByte test : " + e.getMessage());
 		}
-		assertTrue("Returned incorrect float field value", val == 1);
+		assertEquals("Returned incorrect float field value", 1, val);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
@@ -945,7 +945,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during setChar test : " + e.getMessage());
 		}
-		assertTrue("Returned incorrect float field value", val == 1);
+		assertEquals("Returned incorrect float field value", 1, val);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
@@ -986,7 +986,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during setDouble test: " + e.toString());
 		}
-		assertTrue("Returned incorrect double field value", val == 1.0);
+		assertEquals("Returned incorrect double field value", 1.0, val);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
@@ -1067,7 +1067,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during setInteger test: " + e.toString());
 		}
-		assertTrue("Returned incorrect int field value", val == 1);
+		assertEquals("Returned incorrect int field value", 1, val);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
@@ -1107,7 +1107,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during setLong test : " + e.getMessage());
 		}
-		assertTrue("Returned incorrect long field value", val == 1);
+		assertEquals("Returned incorrect long field value", 1, val);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
@@ -1147,7 +1147,7 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during setShort test : " + e.getMessage());
 		}
-		assertTrue("Returned incorrect short field value", val == 1);
+		assertEquals("Returned incorrect short field value", 1, val);
 		try {
 			try {
 				f = x.getClass().getDeclaredField("booleanField");
@@ -1183,12 +1183,9 @@ public class FieldTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception getting field : " + e.getMessage());
 		}
-		assertTrue(
-				"Field returned incorrect string",
-				f
-						.toString()
-						.equals(
-								"private static final int tests.api.java.lang.reflect.FieldTest$TestField.x"));
+		assertEquals("Field returned incorrect string",
+				"private static final int tests.api.java.lang.reflect.FieldTest$TestField.x",
+						f.toString());
 	}
 
 	/**

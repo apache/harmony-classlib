@@ -196,7 +196,7 @@ public class PipedOutputStreamTest extends junit.framework.TestCase {
 			rt.start();
 			out.write('c');
 			out.flush();
-			assertTrue("Wrote incorrect byte", reader.read(1).equals("c"));
+			assertEquals("Wrote incorrect byte", "c", reader.read(1));
 		} catch (IOException e) {
 			fail("IOException during write test : " + e.getMessage());
 		}

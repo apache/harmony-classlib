@@ -34,7 +34,7 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
     public void test_Constructor() {
         // Test for method java.io.CharArrayWriter()
         cw = new CharArrayWriter(90);
-        assertTrue("Created incorrect writer", cw.size() == 0);
+        assertEquals("Created incorrect writer", 0, cw.size());
     }
 
     /**
@@ -43,7 +43,7 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
     public void test_ConstructorI() {
         // Test for method java.io.CharArrayWriter(int)
         cw = new CharArrayWriter();
-        assertTrue("Created incorrect writer", cw.size() == 0);
+        assertEquals("Created incorrect writer", 0, cw.size());
     }
 
     /**
@@ -74,8 +74,8 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
         try {
             char[] c = new char[100];
             cr.read(c, 0, 5);
-            assertTrue("Reset failed to reset buffer", "Hello"
-                    .equals(new String(c, 0, 5)));
+            assertEquals("Reset failed to reset buffer",
+                         "Hello", new String(c, 0, 5));
         } catch (IOException e) {
             fail("Exception during reset test : " + e.getMessage());
         }
@@ -86,9 +86,9 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
      */
     public void test_size() {
         // Test for method int java.io.CharArrayWriter.size()
-        assertTrue("Returned incorrect size", cw.size() == 0);
+        assertEquals("Returned incorrect size", 0, cw.size());
         cw.write(hw, 5, 5);
-        assertTrue("Returned incorrect size", cw.size() == 5);
+        assertEquals("Returned incorrect size", 5, cw.size());
     }
 
     /**
@@ -101,8 +101,8 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
         try {
             char[] c = new char[100];
             cr.read(c, 0, 10);
-            assertTrue("toCharArray failed to return correct array",
-                    "HelloWorld".equals(new String(c, 0, 10)));
+            assertEquals("toCharArray failed to return correct array",
+                         "HelloWorld", new String(c, 0, 10));
         } catch (IOException e) {
             fail("Exception during toCharArray test : " + e.getMessage());
         }
@@ -115,7 +115,8 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
         // Test for method java.lang.String java.io.CharArrayWriter.toString()
         cw.write("HelloWorld", 5, 5);
         cr = new CharArrayReader(cw.toCharArray());
-        assertTrue("Returned incorrect string", "World".equals(cw.toString()));
+        assertEquals("Returned incorrect string",
+                     "World", cw.toString());
     }
 
     /**
@@ -128,8 +129,8 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
         try {
             char[] c = new char[100];
             cr.read(c, 0, 5);
-            assertTrue("Writer failed to write correct chars", "World"
-                    .equals(new String(c, 0, 5)));
+            assertEquals("Writer failed to write correct chars",
+                         "World", new String(c, 0, 5));
         } catch (IOException e) {
             fail("Exception during write test : " + e.getMessage());
         }
@@ -159,7 +160,7 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
         cw.write('T');
         cr = new CharArrayReader(cw.toCharArray());
         try {
-            assertTrue("Writer failed to write char", cr.read() == 'T');
+            assertEquals("Writer failed to write char", 'T', cr.read());
         } catch (IOException e) {
             fail("Exception during write test : " + e.getMessage());
         }
@@ -176,8 +177,8 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
         try {
             char[] c = new char[100];
             cr.read(c, 0, 5);
-            assertTrue("Writer failed to write correct chars", "World"
-                    .equals(new String(c, 0, 5)));
+            assertEquals("Writer failed to write correct chars",
+                         "World", new String(c, 0, 5));
         } catch (IOException e) {
             fail("Exception during write test : " + e.getMessage());
         }
@@ -205,8 +206,8 @@ public class CharArrayWriterTest extends junit.framework.TestCase {
         StringWriter sw = new StringWriter();
         try {
             cw.writeTo(sw);
-            assertTrue("Writer failed to write correct chars", "HelloWorld"
-                    .equals(sw.toString()));
+            assertEquals("Writer failed to write correct chars",
+                         "HelloWorld", sw.toString());
         } catch (IOException e) {
             fail("Exception during writeTo test : " + e.getMessage());
         }
