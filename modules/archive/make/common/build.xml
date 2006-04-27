@@ -102,6 +102,7 @@
                     <exclude name="org/apache/harmony/archive/tests/java/util/zip/GZIPInputStreamTest.java"/>
                     <exclude name="org/apache/harmony/archive/tests/java/util/zip/InflaterInputStreamTest.java"/>
                     <exclude name="org/apache/harmony/archive/tests/java/util/zip/InflaterTest.java"/>
+                	<exclude name="org/apache/harmony/archive/tests/java/util/jar/JarOutputStreamTest.java"/>
 
                 </fileset>
             </batchtest>
