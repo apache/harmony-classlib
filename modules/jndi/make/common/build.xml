@@ -74,7 +74,7 @@
         <property name="test.jre.home" value="${hy.target}/jre" />
 
         <junit fork="yes"
-            forkmode="once"
+        	forkmode="perBatch"
             printsummary="withOutAndErr"
             errorproperty="test.errors"
             failureproperty="test.failures"
@@ -94,23 +94,44 @@
             <formatter type="xml" />
 
             <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
+        	
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
 
                 <fileset dir="${hy.jndi.src.test.java}">
                     <include name="**/*Test.java"/>
                 	
-                	<!-- Requires further investigation -->
-                	<exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/DirectoryManagerTest.java" />
-                	
-                    <!--
-                    To make the following two test cases pass, 
-                    set forkmode="perTest"
-                    -->
+                	<!--  These tests run in a separate jvm below -->
                 	<exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerBuilderTest.java" />
                     <exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerTest.java" />
+                	<exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/DirectoryManagerTest.java" />
                 </fileset>
             </batchtest>
+        	
+        	<batchtest todir="${hy.tests.reports}" haltonfailure="no"
+        	    unless="test.case">
+        	
+        	    <fileset dir="${hy.jndi.src.test.java}">
+        	        <include name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerTest.java" />
+        	    </fileset>
+        	</batchtest>
+        	
+        	<batchtest todir="${hy.tests.reports}" haltonfailure="no"
+        	   unless="test.case">
+        	
+        	    <fileset dir="${hy.jndi.src.test.java}">
+        	        <include name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerBuilderTest.java" />
+        	    </fileset>
+            </batchtest>        	
+        	
+        	<batchtest todir="${hy.tests.reports}" haltonfailure="no"
+        	   unless="test.case">
+        	
+        	    <fileset dir="${hy.jndi.src.test.java}">
+        	        <include name="org/apache/harmony/jndi/tests/javax/naming/spi/DirectoryManagerTest.java" />
+        	    </fileset>
+            </batchtest>        	
+        	
         </junit>
         <antcall target="touch-failures-file" />
         <antcall target="touch-errors-file" />
