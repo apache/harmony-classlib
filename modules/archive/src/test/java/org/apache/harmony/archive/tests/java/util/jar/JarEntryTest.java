@@ -15,6 +15,10 @@
 package org.apache.harmony.archive.tests.java.util.jar;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.CodeSigner;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -105,6 +109,36 @@ public class JarEntryTest extends junit.framework.TestCase {
 				.getCertificates());
 	}
 
+    
+	/**
+	 * @tests java.util.jar.JarEntry#getCodeSigners()
+	 */
+	public void test_getCodeSigners() throws IOException {
+	    String jarFileName = "TestCodeSigners.jar";
+	    Support_Resources.copyFile(resources, null, jarFileName);
+	    File file = new File(resources, jarFileName);
+	    JarFile jarFile = new JarFile(file);
+	    JarEntry jarEntry = jarFile.getJarEntry("Test.class");
+	    InputStream in = jarFile.getInputStream(jarEntry);
+	    byte[] buffer = new byte[1024];
+	    while(in.available()>0)
+	    {
+	        in.read(buffer);
+	    }
+	    CodeSigner[] codeSigners = jarEntry.getCodeSigners();
+	    assertEquals(2, codeSigners.length);
+	    List certs_bob = codeSigners[0].getSignerCertPath().getCertificates();
+	    List certs_alice = codeSigners[1].getSignerCertPath().getCertificates();
+	    if(1 == certs_bob.size())
+	    {
+	        List temp = certs_bob;
+	        certs_bob = certs_alice;
+	        certs_alice = temp;
+	    }
+	    assertEquals(2,certs_bob.size());
+	    assertEquals(1,certs_alice.size());
+	}    
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

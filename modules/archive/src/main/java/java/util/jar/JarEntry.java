@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,18 @@
 
 package java.util.jar;
 
-
 import java.io.IOException;
+import java.security.CodeSigner;
+import java.security.cert.CertPath;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
+
+import javax.security.auth.x500.X500Principal;
 
 public class JarEntry extends ZipEntry {
 	private Attributes attributes;
@@ -26,6 +34,13 @@ public class JarEntry extends ZipEntry {
 	JarFile parentJar;
 
 	Certificate certificates[];
+
+	CodeSigner signers[];
+
+	// Cached factory used to build CertPath-s in <code>getCodeSigners()</code>.
+	private CertificateFactory factory;
+
+	private boolean isFactoryChecked = false;
 
 	/**
 	 * Create a new JarEntry named name
@@ -89,5 +104,95 @@ public class JarEntry extends ZipEntry {
 		parentJar = je.parentJar;
 		attributes = je.attributes;
 		certificates = je.certificates;
+		signers = je.signers;
+
+	}
+
+	/**
+	 * Returns the code signers for the jar entry. If there is no such code
+	 * signers, returns null. Only when the jar entry has been completely
+	 * verified by reading till the end of the jar entry, can the method be
+	 * called. Or else the method will return null.
+	 * 
+	 * @return the code signers for the jar entry.
+	 */
+	public CodeSigner[] getCodeSigners() {
+		if (null == signers) {
+			signers = getCodeSigners(certificates);
+
+		}
+		if (null == signers) {
+			return null;
+		}
+
+		CodeSigner[] tmp = new CodeSigner[signers.length];
+		System.arraycopy(signers, 0, tmp, 0, tmp.length);
+		return tmp;
+
+	}
+
+	private CodeSigner[] getCodeSigners(Certificate[] certs) {
+
+		X500Principal prevIssuer = null;
+		ArrayList<Certificate> list = new ArrayList<Certificate>(certs.length);
+		ArrayList<CodeSigner> asigners = new ArrayList<CodeSigner>();
+
+		for (int i = 0; i < certs.length; i++) {
+			if (!(certs[i] instanceof X509Certificate)) {
+				// Only X509CErtificate-s are taken into account - see API spec.
+				continue;
+			}
+			X509Certificate x509 = (X509Certificate) certs[i];
+			if (null != prevIssuer) {
+				X500Principal subj = x509.getSubjectX500Principal();
+				if (!prevIssuer.equals(subj)) {
+					// Ok, this ends the previous chain,
+					// so transform this one into CertPath ...
+					addCodeSigner(asigners, list);
+					// ... and start a new one
+					list.clear();
+				}// else { it's still the same chain }
+
+			}
+			prevIssuer = x509.getIssuerX500Principal();
+			list.add(x509);
+		}
+		if (!list.isEmpty()) {
+			addCodeSigner(asigners, list);
+		}
+		if (asigners.isEmpty()) {
+			// 'signers' is 'null' already
+			return null;
+		}
+
+		CodeSigner[] tmp = new CodeSigner[asigners.size()];
+		asigners.toArray(tmp);
+		return tmp;
+
+	}
+
+	private void addCodeSigner(ArrayList<CodeSigner> asigners,
+			List<Certificate> list) {
+		CertPath certPath = null;
+		if (!isFactoryChecked) {
+			try {
+				factory = CertificateFactory.getInstance("X.509");
+			} catch (CertificateException ex) {
+				// do nothing
+			} finally {
+				isFactoryChecked = true;
+			}
+		}
+		if (null == factory) {
+			return;
+		}
+		try {
+			certPath = factory.generateCertPath(list);
+		} catch (CertificateException ex) {
+			// do nothing
+		}
+		if (null != certPath) {
+			asigners.add(new CodeSigner(certPath, null));
+		}
 	}
 }
