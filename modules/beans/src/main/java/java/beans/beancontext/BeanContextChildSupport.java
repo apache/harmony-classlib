@@ -200,20 +200,20 @@ public class BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
-        
-        BeanContextServicesListener l = 
-            (BeanContextServicesListener) beanContextChildPeer;
-        l.serviceAvailable(bcsae);
+        if (isDelegated()) {
+            ((BeanContextServicesListener) beanContextChildPeer)
+                    .serviceAvailable(bcsae);
+        }
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
-        
-        BeanContextServicesListener l = 
-            (BeanContextServicesListener) beanContextChildPeer;
-        l.serviceRevoked(bcsre);
+        if (isDelegated()) {
+            ((BeanContextServicesListener) beanContextChildPeer)
+                    .serviceRevoked(bcsre);
+        }
     }
     
     /**

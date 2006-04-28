@@ -21,6 +21,8 @@
 package org.apache.harmony.tests.java.beans.beancontext;
 
 import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextServiceAvailableEvent;
+import java.beans.beancontext.BeanContextServiceRevokedEvent;
 import java.beans.beancontext.BeanContextSupport;
 
 import junit.framework.Test;
@@ -131,6 +133,16 @@ public class BeanContextChildSupportTest extends TestCase {
         catch(Exception e) {
             fail("Unexpected exception: " + e + " caused by: " + e.getCause());
         }
+    }
+
+    /**
+     * @test java.beans.beancontext.BeanContextChildSupport#serviceAvailable(java.beans.beancontext.BeanContextServiceAvailableEvent)
+     * @test java.beans.beancontext.BeanContextChildSupport#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
+     */
+    public void testServiceAvailable() {
+        //Regression for HARMONY-372
+        (new java.beans.beancontext.BeanContextChildSupport()).serviceAvailable(null);
+        (new java.beans.beancontext.BeanContextChildSupport()).serviceRevoked(null); 
     }
 
     /** UTILITY METHODS **/
