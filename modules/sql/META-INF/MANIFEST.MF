@@ -5,15 +5,16 @@ Bundle-SymbolicName: org.apache.harmony.sql
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.lang,
- java.util,
- java.io,
- org.apache.harmony.kernel.vm,
- java.security,
+Import-Package: java.io,
+ java.lang,
+ java.lang.reflect,
  java.math,
  java.net,
+ java.rmi,
+ java.security,
  java.text,
- java.rmi
+ java.util,
+ org.apache.harmony.kernel.vm
 Export-Package: java.sql,
  javax.sql,
  javax.transaction,
