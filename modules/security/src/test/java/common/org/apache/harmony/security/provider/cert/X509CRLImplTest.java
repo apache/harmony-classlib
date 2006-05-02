@@ -30,6 +30,7 @@ import java.security.PublicKey;
 import java.security.Signature;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509CRLEntry;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -547,9 +548,10 @@ public class X509CRLImplTest extends TestCase {
     /**
      * getExtensionValue(String oid) method testing.
      */
-    public void testGetExtensionValue() {
-        System.out.println("getExtensionValue: "
-                + crl.getExtensionValue("2.5.29.20"));
+    public void testGetExtensionValue() throws Exception {
+        assertNotNull(crl.getExtensionValue("2.5.29.20"));
+        assertNull("Null value should be returned in the case of "
+                + "nonexisting extension", crl.getExtensionValue("1.1.1.1"));
     }
     
     /**

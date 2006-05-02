@@ -647,9 +647,12 @@ public class X509CertImplTest extends TestCase {
                 } else {
                     printAsHex(20, "", " ", certExtnValue);
                 }
-                //fail("The values for extension "+id+" differ.");
+                fail("The values for extension "+id+" differ.");
             }
         }
+        assertNull("Null value should be returned in the case of "
+                + "nonexisting extension", 
+                certificate.getExtensionValue("1.1.1.1"));
     }
     
     /**

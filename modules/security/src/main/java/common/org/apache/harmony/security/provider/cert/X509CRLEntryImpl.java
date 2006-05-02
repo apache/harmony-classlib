@@ -29,6 +29,7 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.TBSCertList;
 
@@ -119,7 +120,8 @@ public class X509CRLEntryImpl extends X509CRLEntry {
         if (extensions == null) {
             return null;
         }
-        return extensions.getExtensionByOID(oid).getRawExtnValue();
+        Extension ext = extensions.getExtensionByOID(oid);
+        return (ext == null) ? null : ext.getRawExtnValue();
     }
 
     public boolean hasUnsupportedCriticalExtension() {
@@ -136,4 +138,3 @@ public class X509CRLEntryImpl extends X509CRLEntry {
     public static void main(String[] args) {
     }
 }
-

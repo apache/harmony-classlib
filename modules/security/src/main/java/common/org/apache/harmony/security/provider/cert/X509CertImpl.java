@@ -46,6 +46,7 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.TBSCertificate;
 
@@ -417,7 +418,8 @@ public class X509CertImpl extends X509Certificate {
         if (extensions == null) {
             return null;
         }
-        return extensions.getExtensionByOID(oid).getRawExtnValue();
+        Extension ext = extensions.getExtensionByOID(oid);
+        return (ext == null) ? null : ext.getRawExtnValue();
     }
 
     public boolean hasUnsupportedCriticalExtension() {
