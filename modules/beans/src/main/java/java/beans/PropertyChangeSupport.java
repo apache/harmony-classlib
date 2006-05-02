@@ -179,7 +179,16 @@ public class PropertyChangeSupport implements Serializable {
     public synchronized void addPropertyChangeListener(
             PropertyChangeListener listener) {
         if (listener != null) {
-            allPropertiesChangeListeners.add(listener);
+            if (listener instanceof PropertyChangeListenerProxy) {
+                String name = ((PropertyChangeListenerProxy) listener)
+                        .getPropertyName();
+                PropertyChangeListener lst = (PropertyChangeListener) ((PropertyChangeListenerProxy) listener)
+                        .getListener();
+                addPropertyChangeListener(name, lst);
+            } else {
+                allPropertiesChangeListeners.add(listener);
+            }
+
         }
     }
 

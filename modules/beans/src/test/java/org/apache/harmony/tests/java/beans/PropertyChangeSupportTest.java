@@ -20,7 +20,9 @@
  */
 package org.apache.harmony.tests.java.beans;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -72,6 +74,31 @@ public class PropertyChangeSupportTest extends TestCase {
         }
     }
 
+    /**
+     * @tests java.beans.PropertyChangeSupport#removePropertyChangeListener(
+     *        java.lang.String, java.beans.PropertyChangeListener)
+     */
+    public void testRemovePropertyChangeListener() {
+        // Regerssion for HARMONY-386
+        PropertyChangeSupport prop = new PropertyChangeSupport(new Object());
+
+        PropertyChangeListener lis1 = new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent event) {}
+        };
+
+        PropertyChangeListener lis2 = new PropertyChangeListenerProxy("name",
+                lis1);
+
+        assertEquals(0, prop.getPropertyChangeListeners().length);
+
+        prop.addPropertyChangeListener(lis2);
+        assertEquals(1, prop.getPropertyChangeListeners().length);
+
+        prop.removePropertyChangeListener("name", lis1);
+        assertEquals(0, prop.getPropertyChangeListeners().length);
+    } 
+    
+    
     /**
      * The test checks the serialization for listeners supporting serialization
      */
