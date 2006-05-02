@@ -422,23 +422,23 @@ public class InputStreamReader extends Reader {
 	private void fillBuf() throws IOException {
 		chars.clear();
 		int read = 0;
-		try {
-			read = in.read(bytes.array());
-		} catch (IOException e) {
-			chars.limit(0);
-			throw e;
-		}
-		if (read == -1) {
-			chars.limit(0);
-			return;
-		}
-		bytes.limit(read);
-		boolean endOfInput = read < BUFFER_SIZE;
-		CoderResult result = decoder.decode(bytes, chars, endOfInput);
-		if (result.isError()) {
-			throw new IOException(result.toString());
-		}
-		bytes.clear();
+		do {
+			try {
+				read = in.read(bytes.array());
+			} catch (IOException e) {
+				chars.limit(0);
+				throw e;
+			}
+			boolean endOfInput = false;
+			if (read == -1) {
+				bytes.limit(0);
+				endOfInput = true;
+			} else {
+				bytes.limit(read);
+			}
+			decoder.decode(bytes, chars, endOfInput);
+			bytes.clear();
+		} while (read > 0 && chars.position() == 0);
 		chars.flip();
 	}
 
