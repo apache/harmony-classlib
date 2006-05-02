@@ -60,7 +60,8 @@ public interface Struct {
 	 * @throws SQLException
 	 *             if a database error occurs
 	 */
-	public Object[] getAttributes(Map theMap) throws SQLException;
+	public Object[] getAttributes(Map<String, Class<?>> theMap)
+			throws SQLException;
 
 } // end interface Struct
 

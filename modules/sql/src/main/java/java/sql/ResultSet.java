@@ -736,7 +736,8 @@ public interface ResultSet {
 	 * @throws SQLException
 	 *             if a database error happens
 	 */
-	public Object getObject(int columnIndex, Map map) throws SQLException;
+	public Object getObject(int columnIndex, Map<String, Class<?>> map)
+			throws SQLException;
 
 	/**
 	 * Gets the value of a specified column as a Java Object. The type of the
@@ -772,7 +773,8 @@ public interface ResultSet {
 	 * @throws SQLException
 	 *             if a database error happens
 	 */
-	public Object getObject(String columnName, Map map) throws SQLException;
+	public Object getObject(String columnName, Map<String, Class<?>> map)
+			throws SQLException;
 
 	/**
 	 * Gets the value of a column specified as a column index as a Java

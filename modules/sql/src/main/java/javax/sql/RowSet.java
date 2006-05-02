@@ -163,7 +163,7 @@ public interface RowSet extends ResultSet {
 	 * By default, the Map is empty.
 	 * @throws SQLException if an error occurs accessing the database.
 	 */
-	public Map getTypeMap() throws SQLException;
+	public Map<String, Class<?>> getTypeMap() throws SQLException;
 	
 	/**
 	 * Gets the URL property value for this RowSet.  If there is no DataSource object specified, the
@@ -569,7 +569,8 @@ public interface RowSet extends ResultSet {
 	 * which they are mapped.
 	 * @throws SQLException if an error occurs accessing the database.
 	 */
-	public void setTypeMap( Map theTypeMap ) throws SQLException;
+	public void setTypeMap(Map<String, Class<?>> theTypeMap )
+			throws SQLException;
 	
 	/**
 	 * Sets the URL used by this RowSet to access the database via a <code>DriverManager</code>.

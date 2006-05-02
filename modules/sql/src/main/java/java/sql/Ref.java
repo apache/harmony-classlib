@@ -62,7 +62,7 @@ public interface Ref {
 	 * @throws SQLException
 	 *             if there is a database error
 	 */
-	public Object getObject(Map map) throws SQLException;
+	public Object getObject(Map<String, Class<?>> map) throws SQLException;
 
 	/**
 	 * Sets the value of the structured typethat this Ref references to a

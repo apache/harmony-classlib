@@ -54,7 +54,8 @@ public interface Array {
 	 * @return A Java array containing the subportion of elements of this Array
 	 * @throws SQLException
 	 */
-	public Object getArray(long index, int count, Map map) throws SQLException;
+	public Object getArray(long index, int count, Map<String, Class<?>> map)
+			throws SQLException;
 
 	/**
 	 * Returns the SQL ARRAY associated with this Array.
@@ -63,7 +64,7 @@ public interface Array {
 	 * @return A Java array containing the elements of this Array
 	 * @throws SQLException
 	 */
-	public Object getArray(Map map) throws SQLException;
+	public Object getArray(Map<String, Class<?>> map) throws SQLException;
 
 	/**
 	 * Returns the JDBC type of the entries in this Array's associated array.
@@ -114,7 +115,7 @@ public interface Array {
 	 * @return the ResultSet
 	 * @throws SQLException
 	 */
-	public ResultSet getResultSet(long index, int count, Map map)
+	public ResultSet getResultSet(long index, int count, Map<String, Class<?>> map)
 			throws SQLException;
 
 	/**
@@ -125,7 +126,8 @@ public interface Array {
 	 * @return the ResultSet
 	 * @throws SQLException
 	 */
-	public ResultSet getResultSet(Map map) throws SQLException;
+	public ResultSet getResultSet(Map<String, Class<?>> map)
+			throws SQLException;
 
 } // end interface Array
 

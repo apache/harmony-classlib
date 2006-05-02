@@ -384,7 +384,8 @@ public interface CallableStatement extends PreparedStatement {
 	 * @return an Object holding the value of the parameter.
 	 * @throws SQLException if a database error happens
 	 */
-	public Object 	getObject(int parameterIndex, Map map) throws SQLException;
+	public Object getObject(int parameterIndex, Map<String, Class<?>> map)
+			throws SQLException;
 	
 	/**
 	 * Gets the value of a specified parameter as an Object.
@@ -415,7 +416,8 @@ public interface CallableStatement extends PreparedStatement {
 	 * @throws SQLException
 	 *             if there is a problem accessing the database
 	 */
-	public Object getObject(String parameterName, Map map) throws SQLException;
+	public Object getObject(String parameterName, Map<String, Class<?>> map)
+			throws SQLException;
 	
 	/**
 	 * Gets the value of a specified JDBC REF(<structured type>) parameter as a java.sql.Ref

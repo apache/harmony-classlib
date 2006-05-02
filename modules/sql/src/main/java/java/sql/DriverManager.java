@@ -251,7 +251,7 @@ public class DriverManager {
 	 * 
 	 * @return An Enumeration containing all the currently loaded JDBC Drivers
 	 */
-	public static Enumeration getDrivers() {
+	public static Enumeration<Driver> getDrivers() {
 		Enumeration theEnumeration;
 
 		ClassLoader callerClassLoader = VM.callerClassLoader();

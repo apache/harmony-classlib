@@ -249,7 +249,7 @@ public interface Connection {
 	 * @throws SQLException
 	 *             if there is a problem accessing the database
 	 */
-	public Map getTypeMap() throws SQLException;
+	public Map<String, Class<?>> getTypeMap() throws SQLException;
     
 	/**
 	 * Gets the first instance of any <code>SQLWarning</code> objects that may
@@ -747,7 +747,7 @@ public interface Connection {
 	 *             if there is a problem accessing the database or if
 	 *             <code>map</code> is not an instance of {@link Map}.
 	 */
-	public void setTypeMap(Map map) throws SQLException;
+	public void setTypeMap(Map<String, Class<?>> map) throws SQLException;
     
 } // end interface Connection
 
