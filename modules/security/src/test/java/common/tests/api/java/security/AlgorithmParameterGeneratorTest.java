@@ -18,6 +18,7 @@ package tests.api.java.security;
 import java.math.BigInteger;
 import java.security.AlgorithmParameterGenerator;
 import java.security.AlgorithmParameters;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
@@ -151,14 +152,19 @@ public class AlgorithmParameterGeneratorTest extends junit.framework.TestCase {
 	 * @tests java.security.AlgorithmParameterGenerator#init(java.security.spec.AlgorithmParameterSpec)
 	 */
 	public void test_initLjava_security_spec_AlgorithmParameterSpec() throws Exception {
-        	// Test for method void
-        	// java.security.AlgorithmParameterGenerator.init(java.security.spec.AlgorithmParameterSpec)
-        	// checks that no exception is thrown
-       		DSAParameterSpec spec = new DSAParameterSpec(BigInteger.ONE,
-       				BigInteger.ONE, BigInteger.ONE);
-       		AlgorithmParameterGenerator gen = AlgorithmParameterGenerator
-       				.getInstance("DSA");
-       		gen.init(spec);
+        // Test for method void
+        // java.security.AlgorithmParameterGenerator.init(java.security.spec.AlgorithmParameterSpec)
+        // checks that InvalidAlgorithmParameterException is thrown
+        DSAParameterSpec spec = new DSAParameterSpec(BigInteger.ONE,
+                BigInteger.ONE, BigInteger.ONE);
+        AlgorithmParameterGenerator gen = AlgorithmParameterGenerator
+                .getInstance("DSA");
+        try {
+            gen.init(spec);
+            fail("No expected InvalidAlgorithmParameterException");
+        } catch (InvalidAlgorithmParameterException e) {
+            //expected
+        }
 	}
 
 	/**
@@ -166,14 +172,19 @@ public class AlgorithmParameterGeneratorTest extends junit.framework.TestCase {
 	 *        java.security.SecureRandom)
 	 */
 	public void test_initLjava_security_spec_AlgorithmParameterSpecLjava_security_SecureRandom() throws Exception {
-		// Test for method void
-		// java.security.AlgorithmParameterGenerator.init(java.security.spec.AlgorithmParameterSpec,
-		// java.security.SecureRandom)
-        	// checks that no exception is thrown
-		DSAParameterSpec spec = new DSAParameterSpec(BigInteger.ONE,
-				BigInteger.ONE, BigInteger.ONE);
-		AlgorithmParameterGenerator gen = AlgorithmParameterGenerator
-				.getInstance("DSA");
-		gen.init(spec, new SecureRandom());
+        // Test for method void
+        // java.security.AlgorithmParameterGenerator.init(java.security.spec.AlgorithmParameterSpec,
+        // java.security.SecureRandom)
+        // checks that InvalidAlgorithmParameterException  is thrown
+        DSAParameterSpec spec = new DSAParameterSpec(BigInteger.ONE,
+                BigInteger.ONE, BigInteger.ONE);
+        AlgorithmParameterGenerator gen = AlgorithmParameterGenerator
+                .getInstance("DSA");
+        try {
+            gen.init(spec, new SecureRandom());
+            fail("No expected InvalidAlgorithmParameterException");
+        } catch (InvalidAlgorithmParameterException e) {
+            //expected
+        }
 	}
 }

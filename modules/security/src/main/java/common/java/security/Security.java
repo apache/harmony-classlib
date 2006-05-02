@@ -306,10 +306,18 @@ public final class Security {
                             "The fillter is not in the required format");
                 }
                 attribute = key.substring(i + 1);
+                if (attribute.trim().length() == 0) {
+                    throw new InvalidParameterException(
+                            "The fillter is not in the required format");
+                }
                 key = key.substring(0, i);
             }
             String serv = key.substring(0, j);
             String alg = key.substring(j + 1);
+            if (serv.length() == 0 || alg.length() == 0) {
+                throw new InvalidParameterException(
+                        "The fillter is not in the required format");
+            }
             Provider p;
             for (int k = 0; k < result.size(); k++) {
                 try {

@@ -62,24 +62,24 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.security.AlgorithmParameters#getEncoded(java.lang.String)
 	 */
-	public void test_getEncodedLjava_lang_String() throws Exception {
-		// Test for method byte []
-		// java.security.AlgorithmParameters.getEncoded(java.lang.String)
-		AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
+    public void test_getEncodedLjava_lang_String() throws Exception {
+        // Test for method byte []
+        // java.security.AlgorithmParameters.getEncoded(java.lang.String)
+        AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
 
-		byte[] enc = null;
-		try {
-			params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
-					BigInteger.ONE));
-			enc = params.getEncoded("JUNK");
-			fail("bogus format should have resulted in IOException");
-		} catch (IOException e) {
-			// expected
-		}
+        params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
+                BigInteger.ONE));
+        
+        // getEncoded behavior is not specified for unknown 'format'
+        // different providers work in different manner:
+        // 1.5 RI provider uses primary encoding format,
+        // but BC provider returns null.
+        // As it is provider specific behavior - it is not tested.
+        //byte[] enc = params.getEncoded("JUNK");
 
-		enc = params.getEncoded("ASN.1");
-		assertNotNull("ANS.1 should be supported", enc);
-	}
+        byte[] enc = params.getEncoded("ASN.1");
+        assertNotNull("ANS.1 should be supported", enc);
+    }
 
 	/**
 	 * @tests java.security.AlgorithmParameters#getInstance(java.lang.String)
@@ -133,83 +133,58 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.security.AlgorithmParameters#getProvider()
 	 */
-	public void test_getProvider() {
+	public void test_getProvider() throws Exception {
 		// Test for method java.security.Provider
 		// java.security.AlgorithmParameters.getProvider()
-		try {
-			Provider p = AlgorithmParameters.getInstance("DSA").getProvider();
-			assertNotNull("provider is null", p);
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm");
-		}
+        Provider p = AlgorithmParameters.getInstance("DSA").getProvider();
+        assertNotNull("provider is null", p);
+
 	}
 
 	/**
 	 * @tests java.security.AlgorithmParameters#init(byte[])
 	 */
-	public void test_init$B() {
+	public void test_init$B() throws Exception {
 		// Test for method void java.security.AlgorithmParameters.init(byte [])
-		try {
-			AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
-			params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
-					BigInteger.ONE));
-			byte[] encoded = params.getEncoded();
-			assertNotNull("encoded spec is null", encoded);
-			AlgorithmParameters params2 = AlgorithmParameters
-					.getInstance("DSA");
-			params2.init(encoded);
-			byte[] encodedAfter = params2.getEncoded();
-			assertTrue("param encoded is different", Arrays.equals(encoded,
-					encodedAfter));
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm");
-		} catch (IOException e) {
-			fail("IOException getting encoded");
-		} catch (InvalidParameterSpecException e) {
-			fail("cant pass DSAParameterSpec");
-		}
+        AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
+        params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
+                BigInteger.ONE));
+        byte[] encoded = params.getEncoded();
+        assertNotNull("encoded spec is null", encoded);
+        AlgorithmParameters params2 = AlgorithmParameters.getInstance("DSA");
+        params2.init(encoded);
+        byte[] encodedAfter = params2.getEncoded();
+        assertTrue("param encoded is different", Arrays.equals(encoded,
+                encodedAfter));
 	}
 
 	/**
 	 * @tests java.security.AlgorithmParameters#init(byte[], java.lang.String)
 	 */
-	public void test_init$BLjava_lang_String() {
+	public void test_init$BLjava_lang_String() throws Exception {
 		// Test for method void java.security.AlgorithmParameters.init(byte [],
 		// java.lang.String)
-		try {
-			AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
-			params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
-					BigInteger.ONE));
-			byte[] encoded = params.getEncoded();
-			assertNotNull("encoded spec is null", encoded);
-			AlgorithmParameters params2 = AlgorithmParameters
-					.getInstance("DSA");
-			params2.init(encoded, "ASN.1");
-			byte[] encodedAfter = params2.getEncoded();
-			assertTrue("param encoded is different", Arrays.equals(encoded,
-					encodedAfter));
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm");
-		} catch (IOException e) {
-			fail("IOException getting encoded");
-		} catch (InvalidParameterSpecException e) {
-			fail("cant pass DSAParameterSpec");
-		}
+        AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
+        params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
+                BigInteger.ONE));
+        byte[] encoded = params.getEncoded();
+        assertNotNull("encoded spec is null", encoded);
+        AlgorithmParameters params2 = AlgorithmParameters.getInstance("DSA");
+        params2.init(encoded, "ASN.1");
+        byte[] encodedAfter = params2.getEncoded();
+        assertTrue("param encoded is different", Arrays.equals(encoded,
+                encodedAfter));
 
 		try {
-			AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
+			params = AlgorithmParameters.getInstance("DSA");
 			params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
 					BigInteger.ONE));
-			byte[] encoded = params.getEncoded();
+			encoded = params.getEncoded();
 			assertNotNull("encoded spec is null", encoded);
 			params.init(encoded, "DOUGLASMAWSON");
 			fail("unsupported format should have raised IOException");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm");
 		} catch (IOException e) {
 			// expected
-		} catch (InvalidParameterSpecException e) {
-			fail("cant pass DSAParameterSpec");
 		}
 
 	}
@@ -217,36 +192,23 @@ public class AlgorithmParametersTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.security.AlgorithmParameters#init(java.security.spec.AlgorithmParameterSpec)
 	 */
-	public void test_initLjava_security_spec_AlgorithmParameterSpec() {
+	public void test_initLjava_security_spec_AlgorithmParameterSpec() throws Exception {
 		// Test for method void
 		// java.security.AlgorithmParameters.init(java.security.spec.AlgorithmParameterSpec)
 		AlgorithmParameters params = null;
-		try {
-			params = AlgorithmParameters.getInstance("DSA");
-		} catch (NoSuchAlgorithmException e) {
-			fail("getInstance did not find algorithm");
-		}
-
-		try {
-			params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
-					BigInteger.ONE));
-		} catch (InvalidParameterSpecException e) {
-			fail("cant pass DSAParameterSpec");
-		}
+        params = AlgorithmParameters.getInstance("DSA");
+        params.init(new DSAParameterSpec(BigInteger.ONE, BigInteger.ONE,
+                BigInteger.ONE));
 	}
 
 	/**
 	 * @tests java.security.AlgorithmParameters#toString()
 	 */
-	public void test_toString() {
+	public void test_toString() throws Exception {
 		// Test for method java.lang.String
 		// java.security.AlgorithmParameters.toString()
-		try {
-			String str = AlgorithmParameters.getInstance("DSA").toString();
-			assertNull("toString should be null", str);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			assertTrue("getInstance did not find algorithm", false);
-		}
+        String str = AlgorithmParameters.getInstance("DSA").toString();
+        assertNull("toString should be null", str);
+
 	}
 }

@@ -38,7 +38,6 @@ public class SecurityTest extends junit.framework.TestCase {
 		// java.security.Security.getProperty(java.lang.String)
 		Security.setProperty("keyTestAlternate", "testing a property set");
 		assertEquals("the property value returned for keyTestAlternate was incorrect",
-				
 						"testing a property set", Security.getProperty("keyTestAlternate"));
 	}
 
@@ -53,7 +52,6 @@ public class SecurityTest extends junit.framework.TestCase {
 
 		Security.setProperty("keyTest", "permission to set property");
 		assertEquals("the property value returned for keyTest was not correct",
-				
 						"permission to set property", Security.getProperty("keyTest"));
 
 	}
@@ -80,8 +78,6 @@ public class SecurityTest extends junit.framework.TestCase {
 			// providers.
 			assertTrue("provider is not found at the expected position",
 					provTest[prefPos - 1].getName().equals(rsaName));
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
 		} finally {
 			// Now remove it - does nothing if provider not actually installed
 			Security.removeProvider(rsaName);
@@ -98,8 +94,6 @@ public class SecurityTest extends junit.framework.TestCase {
 					result2.getName().equals(test.getName())
 							&& result2.getInfo().equals(test.getInfo())
 							&& result2.getVersion() == test.getVersion());
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
 		} finally {
 			// Now remove it - does nothing if provider not actually installed
 			Security.removeProvider(test.getName());
@@ -126,8 +120,6 @@ public class SecurityTest extends junit.framework.TestCase {
 			Security.getProviders();
 			assertEquals("addProvider method did not return a -1 for "
 					+ "a provider already added", -1, prefPosEntAdded);
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
 		} finally {
 			// Now remove it - does nothing if provider not actually installed
 			Security.removeProvider(entrust.getName());
@@ -251,9 +243,6 @@ public class SecurityTest extends junit.framework.TestCase {
 			fail("InvalidParameterException should be thrown <Signature.SHA1withDSA :512>");
 		} catch (InvalidParameterException e) {
 			// Expected
-		} catch (Exception e) {
-			fail("<Signature.SHA1withDSA :512> - Expected InvalidParameterException but got a "
-					+ e);
 		}
 	}
 
@@ -415,13 +404,8 @@ public class SecurityTest extends junit.framework.TestCase {
 		filter = new Hashtable();
 		filter.put("Provider.id name", "DRLCertFactory");
 		provTest = Security.getProviders(filter);
-		if (provTest == null) {
-			assertEquals("Filter : <Provider.id name, DRLCertFactory >",
-					0, getProvidersCount(filter));
-		} else {
-			assertEquals("Filter : <Provider.id name, DRLCertFactory>",
-					getProvidersCount(filter), provTest.length);
-		}
+        assertEquals("Filter : <Provider.id name, DRLCertFactory >",
+                null, provTest);
 
 		// exception - no attribute name after the service.algorithm yet we
 		// still supply an expected value. This is not valid.
@@ -432,9 +416,6 @@ public class SecurityTest extends junit.framework.TestCase {
 			fail("InvalidParameterException should be thrown <Signature.SHA1withDSA><512>");
 		} catch (InvalidParameterException e) {
 			// Expected
-		} catch (Exception e) {
-			fail("InvalidParameterException was expected for"
-					+ " <Signature.SHA1withDSA><512> " + " but we got a " + e);
 		}
 
 		// exception - space character in the service.algorithm pair. Not valid.
@@ -445,9 +426,6 @@ public class SecurityTest extends junit.framework.TestCase {
 			fail("InvalidParameterException should be thrown <Signature. KeySize><512>");
 		} catch (InvalidParameterException e) {
 			// Expected
-		} catch (Exception e) {
-			fail("InvalidParameterException was expected for"
-					+ " <Signature. KeySize><512> " + " but we got a " + e);
 		}
 	}
 
@@ -478,8 +456,6 @@ public class SecurityTest extends junit.framework.TestCase {
 			int referAdded = Security.insertProviderAt(jceProvider, 3);
 			assertEquals("the method insertProviderAt did not "
 					+ "return a -1 for providers already added", -1, referAdded);
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
 		} finally {
 			// Tidy up before we leave
 			Security.removeProvider(jceProvider.getName());
@@ -523,8 +499,6 @@ public class SecurityTest extends junit.framework.TestCase {
 						"the provider entrust is found after it was removed",
 						provTest[i].getName() != entrust.getName());
 			}
-		} catch (Exception e) {
-			fail("Unexpected exception : " + e);
 		} finally {
 			// Tidy up - the following calls do nothing if the providers were
 			// already removed above.

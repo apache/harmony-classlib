@@ -114,16 +114,15 @@
 
                     <!-- Harmony exclude list -->
                     <exclude name="java/security/serialization/KeyPairTest.java"/>
-                    <exclude name="java/security/serialization/AccessControlExceptionTest.java"/>
-                    <exclude name="java/security/serialization/InvalidParameterExceptionTest.java"/>
-
+                    <!-- Designed to run via classpath -->
                     <exclude name="tests/api/java/security/AccessControllerTest.java"/>
-                    <exclude name="tests/api/java/security/AlgorithmParameterGeneratorTest.java"/>
-                    <exclude name="tests/api/java/security/AlgorithmParametersTest.java"/>
+                    <!-- test excluded due BC bug -->
                     <exclude name="tests/api/java/security/KeyStoreTest.java"/>
-                    <exclude name="tests/api/java/security/PermissionCollectionTest.java"/>
+                    <!-- Designed to run via classpath -->
+                    <exclude name="tests/api/java/security/PermissionCollectionTest.java"/>                    
+                    <!-- No SHA1PRNG implementation yet -->
                     <exclude name="tests/api/java/security/SecureRandomTest.java"/>
-                    <exclude name="tests/api/java/security/SecurityTest.java"/>
+
                     <exclude name="tests/api/java/security/cert/CertificateFactoryTest.java"/>
                     <exclude name="tests/api/java/security/cert/X509CertificateTest.java"/>
                     <exclude name="tests/api/java/security/cert/X509CRLEntryTest.java"/>
