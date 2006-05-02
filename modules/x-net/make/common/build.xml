@@ -96,11 +96,14 @@
             <!-- files will be placed on the classpath             -->
             <jvmarg value="-DTEST_SRC_DIR=${hy.x-net.src.test.java}"/>
 
-            <env key="JAVA_HOME" value="${test.jre.home}"/>
+            <!--  run tests via bootclasspath  --> 
+            <jvmarg value="-Xbootclasspath/a:${hy.x-net.bin.test}${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests" /> 
 
-            <classpath>
-                <pathelement path="${hy.x-net.bin.test}"/>
-            </classpath>
+    		<env key="JAVA_HOME" value="${test.jre.home}"/>
+
+            <!--classpath-->
+                <!--pathelement path="${hy.x-net.bin.test}"/-->
+            <!--/classpath-->
 
             <formatter type="xml" />
 
@@ -116,14 +119,6 @@
                     <exclude name="javax/net/ssl/serialization/HandshakeCompletedEventTest.java"/>
                     <exclude name="javax/net/ssl/serialization/SSLSessionBindingEventTest.java"/>
 
-                    <!-- FIXME: The following tests are excluded because they fail for reasons to be determined -->
-                    <exclude name="javax/net/ServerSocketFactoryTest.java" />
-                    <exclude name="javax/net/SocketFactoryTest.java" />
-                    <exclude name="javax/net/ssl/DefaultSSLServerSocketFactoryTest.java" />
-                    <exclude name="javax/net/ssl/DefaultSSLSocketFactoryTest.java" />
-                    <exclude name="javax/net/ssl/HttpsURLConnectionTest.java" />
-                    <exclude name="javax/net/ssl/SSLServerSocketFactoryTest.java" />
-                    <exclude name="javax/net/ssl/SSLSocketFactoryTest.java" />
                 </fileset>
             </batchtest>
         </junit>
