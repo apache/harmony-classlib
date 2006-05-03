@@ -34,8 +34,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.util.Date;
 
-import org.apache.harmony.security.TestCertUtils;
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
+import org.apache.harmony.security.support.TestCertUtils;
 
 
 /**

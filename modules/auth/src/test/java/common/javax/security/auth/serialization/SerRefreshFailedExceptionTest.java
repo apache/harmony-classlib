@@ -24,7 +24,7 @@ package javax.security.auth.serialization;
 
 import javax.security.auth.RefreshFailedException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

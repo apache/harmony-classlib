@@ -23,7 +23,7 @@ package javax.security.auth.login.serialization;
 
 import javax.security.auth.login.AccountExpiredException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 /**
  * Serialization test for AccountExpiredException class

@@ -53,7 +53,7 @@ public class CertificateTest extends TestCase {
      * Input file name used for <code>Certificate</code> instance generation
      */
     private static final String certFileName =
-        org.apache.harmony.security.test.TestUtils.TEST_ROOT +
+        org.apache.harmony.security.support.TestUtils.TEST_ROOT +
         "java/security/cert/serialization/Certificate." +
         certType;
     /**

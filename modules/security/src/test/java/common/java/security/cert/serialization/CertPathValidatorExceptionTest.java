@@ -24,7 +24,7 @@ package java.security.cert.serialization;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathValidatorException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

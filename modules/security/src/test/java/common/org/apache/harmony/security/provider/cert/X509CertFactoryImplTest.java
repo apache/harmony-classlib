@@ -30,6 +30,8 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.harmony.security.support.provider.cert.CertFactoryTestData;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

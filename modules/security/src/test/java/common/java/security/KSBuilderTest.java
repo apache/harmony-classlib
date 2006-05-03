@@ -33,9 +33,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Enumeration;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.TestKeyPair;
 import junit.framework.TestCase;
-import org.apache.harmony.security.test.TestUtils;
+
+import org.apache.harmony.security.support.TestKeyPair;
+import org.apache.harmony.security.support.TestUtils;
 
 /**
  * Tests for <code>KeyStore.Builder</code> class

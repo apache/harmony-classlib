@@ -23,7 +23,7 @@ package javax.security.sasl.serialization;
 
 import javax.security.sasl.RealmCallback;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 /**
  * Test for RealmCallback seialization

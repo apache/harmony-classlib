@@ -29,7 +29,7 @@ import java.util.HashSet;
 
 import javax.security.auth.kerberos.ServicePermission;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 /**
  * Serialization test for KrbServicePermissionCollection class

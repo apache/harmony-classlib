@@ -44,7 +44,6 @@ import java.util.Iterator;
 import java.util.Collection;
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.harmony.security.TestKeyPair;
 import org.apache.harmony.security.asn1.ASN1Boolean;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
@@ -52,6 +51,7 @@ import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 
+import org.apache.harmony.security.support.TestKeyPair;
 import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.CertificatePolicies;

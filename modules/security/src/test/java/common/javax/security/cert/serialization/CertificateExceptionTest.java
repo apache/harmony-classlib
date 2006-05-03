@@ -23,7 +23,7 @@ package javax.security.cert.serialization;
 
 import javax.security.cert.CertificateException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security;
+package org.apache.harmony.security.support;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -28,7 +28,8 @@ import java.security.KeyStoreException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.support.cert.TestUtils;
+
 import junit.framework.TestCase;
 
 

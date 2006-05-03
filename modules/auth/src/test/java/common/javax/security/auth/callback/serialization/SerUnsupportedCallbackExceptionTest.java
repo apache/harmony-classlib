@@ -24,7 +24,7 @@ package javax.security.auth.callback.serialization;
 import javax.security.auth.callback.LanguageCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

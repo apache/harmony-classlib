@@ -32,7 +32,8 @@ import javax.crypto.SecretKey;
 import javax.security.auth.DestroyFailedException;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.support.TestKeyPair;
+
 import junit.framework.TestCase;
 
 /**

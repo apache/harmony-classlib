@@ -23,7 +23,7 @@ package java.security.spec.serialization;
 
 import java.security.spec.InvalidParameterSpecException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

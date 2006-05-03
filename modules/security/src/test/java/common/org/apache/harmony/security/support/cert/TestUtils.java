@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.cert;
+package org.apache.harmony.security.support.cert;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -54,13 +54,13 @@ public class TestUtils {
     private static final String certType = "X.509";
     // The file name to read certificate from
     private static final String certFileName =
-        org.apache.harmony.security.test.TestUtils.TEST_ROOT +
+        org.apache.harmony.security.support.TestUtils.TEST_ROOT +
         "java/security/cert/serialization/Certificate." + certType;
     // Key store type used during testing
     private static final String keyStoreType = "BKS";
     // The file name prefix to load keystore from
     private static final String keyStoreFileName =
-        org.apache.harmony.security.test.TestUtils.TEST_ROOT +
+        org.apache.harmony.security.support.TestUtils.TEST_ROOT +
         "java/security/cert/serialization/test." + keyStoreType + ".ks";
     //
     // The file name suffixes to load keystore from

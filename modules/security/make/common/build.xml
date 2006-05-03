@@ -106,11 +106,7 @@
                     <include name="**/*Test.java"/>
 
                     <!-- Not a test -->
-                    <exclude name="org/apache/harmony/security/TestCertUtils.java"/>
-                    <exclude name="org/apache/harmony/security/TestKeyPair.java"/>
-                    <exclude name="org/apache/harmony/security/cert/TestUtils.java"/>
-                    <exclude name="org/apache/harmony/security/provider/cert/CertFactoryTestData.java"/>
-                    <exclude name="org/apache/harmony/security/test/**"/>
+                    <exclude name="org/apache/harmony/security/support/**"/>
 
                     <!-- Harmony exclude list -->
                     <exclude name="java/security/serialization/KeyPairTest.java"/>

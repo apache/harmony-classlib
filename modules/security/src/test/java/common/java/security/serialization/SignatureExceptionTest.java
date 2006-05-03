@@ -23,7 +23,7 @@ package java.security.serialization;
 
 import java.security.SignatureException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

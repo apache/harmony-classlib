@@ -23,7 +23,7 @@ package java.security.serialization;
 
 import java.security.KeyStoreException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

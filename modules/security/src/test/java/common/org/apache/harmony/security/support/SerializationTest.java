@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.test;
+package org.apache.harmony.security.support;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

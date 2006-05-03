@@ -32,7 +32,8 @@ import java.util.Map.Entry;
 
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
-import org.apache.harmony.security.test.TestUtils;
+
+import org.apache.harmony.security.support.TestUtils;
 
 
 /**

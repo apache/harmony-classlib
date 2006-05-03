@@ -34,7 +34,8 @@ import java.util.Vector;
 
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
-import org.apache.harmony.security.test.TestUtils;
+
+import org.apache.harmony.security.support.TestUtils;
 
 
 /**

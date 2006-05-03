@@ -23,7 +23,7 @@ package java.security.cert.serialization;
 
 import java.security.cert.CertificateExpiredException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

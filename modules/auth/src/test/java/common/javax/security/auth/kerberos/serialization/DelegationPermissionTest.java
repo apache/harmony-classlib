@@ -23,7 +23,7 @@ package javax.security.auth.kerberos.serialization;
 
 import javax.security.auth.kerberos.DelegationPermission;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 

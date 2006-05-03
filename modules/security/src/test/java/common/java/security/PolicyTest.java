@@ -26,7 +26,8 @@ import java.util.Enumeration;
 import java.util.HashSet;
 
 import junit.framework.TestCase;
-import org.apache.harmony.security.test.SecurityChecker;
+
+import org.apache.harmony.security.support.SecurityChecker;
 
 
 /**

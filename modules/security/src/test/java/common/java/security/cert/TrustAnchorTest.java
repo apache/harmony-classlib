@@ -30,8 +30,9 @@ import java.util.Arrays;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.harmony.security.TestKeyPair;
-import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.support.TestKeyPair;
+import org.apache.harmony.security.support.cert.TestUtils;
+
 import junit.framework.TestCase;
 
 

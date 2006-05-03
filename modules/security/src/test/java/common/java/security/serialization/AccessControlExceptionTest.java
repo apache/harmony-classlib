@@ -25,7 +25,7 @@ import java.security.AllPermission;
 import java.security.Permission;
 import java.security.AccessControlException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**

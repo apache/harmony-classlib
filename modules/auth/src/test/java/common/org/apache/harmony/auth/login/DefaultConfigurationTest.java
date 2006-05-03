@@ -34,7 +34,8 @@ import javax.security.auth.AuthPermission;
 import javax.security.auth.login.AppConfigurationEntry;
 
 import junit.framework.TestCase;
-import org.apache.harmony.security.test.TestUtils;
+
+import org.apache.harmony.security.support.TestUtils;
 import org.apache.harmony.auth.login.DefaultConfiguration;
 
 

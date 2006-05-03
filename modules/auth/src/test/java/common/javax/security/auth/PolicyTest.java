@@ -34,8 +34,9 @@ import java.security.cert.Certificate;
 import java.util.Enumeration;
 
 import junit.framework.TestCase;
-import org.apache.harmony.security.test.SecurityChecker;
-import org.apache.harmony.security.test.TestUtils;
+
+import org.apache.harmony.security.support.SecurityChecker;
+import org.apache.harmony.security.support.TestUtils;
 
 
 /**

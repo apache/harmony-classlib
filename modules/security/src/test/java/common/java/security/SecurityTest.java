@@ -25,7 +25,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.support.TestKeyPair;
+
 import junit.framework.TestCase;
 
 

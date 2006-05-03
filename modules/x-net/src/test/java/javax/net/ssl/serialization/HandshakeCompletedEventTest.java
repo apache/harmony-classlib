@@ -20,7 +20,7 @@ import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 /**
  * Test for HandshakeCompletedEvent serialization

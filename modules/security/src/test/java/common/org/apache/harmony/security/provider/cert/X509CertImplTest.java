@@ -42,8 +42,8 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
 import org.apache.harmony.security.asn1.ASN1BitString;
-import org.apache.harmony.security.cert.TestUtils;
 import org.apache.harmony.security.provider.cert.X509CertImpl;
+import org.apache.harmony.security.support.cert.TestUtils;
 import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.*;
 

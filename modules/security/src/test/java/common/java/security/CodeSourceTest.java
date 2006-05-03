@@ -35,7 +35,8 @@ import java.util.ArrayList;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.harmony.security.TestCertUtils;
+import org.apache.harmony.security.support.TestCertUtils;
+
 import junit.framework.TestCase;
 
 

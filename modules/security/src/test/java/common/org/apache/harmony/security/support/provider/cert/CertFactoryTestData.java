@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.provider.cert;
+package org.apache.harmony.security.support.provider.cert;
 
 import org.apache.harmony.misc.Base64;
 

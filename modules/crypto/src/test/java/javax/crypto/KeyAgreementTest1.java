@@ -37,7 +37,8 @@ import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
 
 import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.support.TestKeyPair;
+
 import junit.framework.TestCase;
 
 

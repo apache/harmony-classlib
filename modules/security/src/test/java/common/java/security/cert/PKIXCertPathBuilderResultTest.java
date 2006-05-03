@@ -26,7 +26,8 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 import org.apache.harmony.security.cert.MyCertPath;
-import org.apache.harmony.security.cert.TestUtils;
+import org.apache.harmony.security.support.cert.TestUtils;
+
 import junit.framework.TestCase;
 
 

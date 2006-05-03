@@ -58,7 +58,7 @@ public class CertPathTest extends TestCase {
      * Input file name used for <code>CertPath</code> instance generation
      */
     private static final String certPathFileName =
-        org.apache.harmony.security.test.TestUtils.TEST_ROOT +
+        org.apache.harmony.security.support.TestUtils.TEST_ROOT +
         "java/security/cert/serialization/CertPath." +
         certPathEncoding;
     /**

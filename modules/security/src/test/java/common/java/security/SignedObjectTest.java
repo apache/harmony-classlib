@@ -25,7 +25,8 @@ import java.io.IOException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
 
-import org.apache.harmony.security.TestKeyPair;
+import org.apache.harmony.security.support.TestKeyPair;
+
 import junit.framework.TestCase;
 
 

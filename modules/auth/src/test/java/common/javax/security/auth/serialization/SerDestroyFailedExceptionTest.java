@@ -23,7 +23,7 @@ package javax.security.auth.serialization;
 
 import javax.security.auth.DestroyFailedException;
 
-import org.apache.harmony.security.test.SerializationTest;
+import org.apache.harmony.security.support.SerializationTest;
 
 
 /**
