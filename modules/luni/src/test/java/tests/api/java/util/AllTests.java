@@ -49,6 +49,7 @@ public class AllTests {
 		suite.addTestSuite(FormatFlagsConversionMismatchExceptionTest.class);
         suite.addTestSuite(FormattableFlagsTest.class);
         suite.addTestSuite(FormatterClosedExceptionTest.class);
+		suite.addTestSuite(FormatterTest.class);
 		suite.addTestSuite(GregorianCalendarTest.class);
 		suite.addTestSuite(HashMapTest.class);
 		suite.addTestSuite(HashSetTest.class);
