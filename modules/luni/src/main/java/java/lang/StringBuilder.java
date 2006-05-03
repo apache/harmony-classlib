@@ -1030,13 +1030,18 @@ public final class StringBuilder implements Appendable, CharSequence, Serializab
         if (start == length) {
             return append(str);
         }
-
+        if(end > length) {
+            end = length;
+        }
         int sbLen = end - start;
         int strLen = str.length();
         if (strLen > sbLen) {
             // shift chars with an insert of the difference
             // this will handle capacity and length management
             insert(start, new char[strLen - sbLen]);
+        }
+        if(strLen < sbLen) {
+            delete(start, start + sbLen-strLen);
         }
         // copy in new chars
         for (int i = 0, j = start; i < strLen; i++, j++)

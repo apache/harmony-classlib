@@ -1526,6 +1526,11 @@ public class StringBuilderTest extends TestCase {
 		} catch (StringIndexOutOfBoundsException e) {
 			// Expected
 		}
+
+		// Regression for HARMONY-348
+		StringBuilder buffer = new StringBuilder("1234567");
+		buffer.replace(2, 6, "XXX");
+		assertEquals("12XXX7",buffer.toString());
 	}
 
 	/**
