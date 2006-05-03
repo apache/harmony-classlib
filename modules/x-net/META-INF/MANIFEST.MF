@@ -5,14 +5,16 @@ Bundle-SymbolicName: org.apache.harmony.x_net
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: org.apache.harmony.security.fortress,
- java.io,
+Import-Package: java.io,
  java.lang,
  java.net,
  java.nio,
  java.security,
  java.security.cert,
  java.util,
- javax.security.cert
+ javax.security.auth.x500,
+ javax.security.cert,
+ org.apache.harmony.security.fortress,
+ org.apache.harmony.security.support;resolution:=optional;hy_usage=test
 Export-Package: javax.net,
  javax.net.ssl
