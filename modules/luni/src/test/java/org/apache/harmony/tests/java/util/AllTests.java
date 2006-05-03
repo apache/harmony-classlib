@@ -36,6 +36,7 @@ public class AllTests {
 		suite.addTestSuite(DateTest.class);
 		suite.addTestSuite(VectorTest.class);
 		suite.addTestSuite(LocaleTest.class);
+		suite.addTestSuite(UUIDTest.class);
 		//$JUnit-END$
 		return suite;
 	}
