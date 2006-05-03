@@ -20,3 +20,7 @@ javax/security/auth/spi/*
 javax/security/auth/x500/*
 javax/security/sasl/*
 org/ietf/jgss/*
+
+org/apache/harmony/auth/*
+org/apache/harmony/auth/login/*
+org/apache/harmony/auth/module/*
