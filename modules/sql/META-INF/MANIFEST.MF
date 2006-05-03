@@ -14,6 +14,8 @@ Import-Package: java.io,
  java.security,
  java.text,
  java.util,
+ java.util.jar;resolution:=optional,
+ java.util.zip;resolution:=optional,
  org.apache.harmony.kernel.vm
 Export-Package: java.sql,
  javax.sql,
