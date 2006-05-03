@@ -5,17 +5,19 @@ Bundle-SymbolicName: org.apache.harmony.crypto
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: org.apache.harmony.security.asn1,
- org.apache.harmony.security.fortress,
- org.apache.harmony.security.x509,
- java.io,
+Import-Package: java.io,
  java.lang,
  java.math,
  java.nio,
  java.security,
  java.security.cert,
  java.security.spec,
- java.util
+ java.util,
+ org.apache.harmony.security;resolution:=optional,
+ org.apache.harmony.security.asn1,
+ org.apache.harmony.security.fortress,
+ org.apache.harmony.security.support;resolution:=optional;hy_usage=test,
+ org.apache.harmony.security.x509
 Export-Package: javax.crypto,
  javax.crypto.interfaces,
  javax.crypto.spec,
