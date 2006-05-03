@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * Tests for <code>Signature</code> constructor and methods
  * 
  */
-public class SignatureTest1 extends TestCase {
+public class Signature1Test extends TestCase {
 
 	/*
 	 * Class under test for Object clone()

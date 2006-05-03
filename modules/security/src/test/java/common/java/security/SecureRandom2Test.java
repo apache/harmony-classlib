@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  * Tests for internal Secure Random implementation based on Random
  * 
  */
-public class SecureRandomTest2 extends TestCase {
+public class SecureRandom2Test extends TestCase {
 	
 	/**
 	 * Registered providers

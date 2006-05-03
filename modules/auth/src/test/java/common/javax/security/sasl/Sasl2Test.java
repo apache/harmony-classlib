@@ -37,10 +37,10 @@ import java.util.Map;
  * 
  */
 
-public class SaslTest2 extends TestCase {
+public class Sasl2Test extends TestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(SaslTest2.class);
+        junit.textui.TestRunner.run(Sasl2Test.class);
     }
 
     Provider[] mProv;
@@ -64,11 +64,11 @@ public class SaslTest2 extends TestCase {
     }
 
     /**
-     * Constructor for SaslTest2.
+     * Constructor for Sasl2Test.
      * 
      * @param arg0
      */
-    public SaslTest2(String arg0) {
+    public Sasl2Test(String arg0) {
         super(arg0);
     }
 

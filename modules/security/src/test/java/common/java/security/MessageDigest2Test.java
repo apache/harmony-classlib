@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * Tests for <code>MessageDigest</code> constructor and methods
  * 
  */
-public class MessageDigestTest2 extends TestCase {
+public class MessageDigest2Test extends TestCase {
 
 	/**
 	 * Provider

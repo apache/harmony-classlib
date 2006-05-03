@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * Tests for <code>SecureRandom</code> constructor and methods
  * 
  */
-public class SecureRandomTest1 extends TestCase {
+public class SecureRandom1Test extends TestCase {
 
 	/**
 	 * SRProvider

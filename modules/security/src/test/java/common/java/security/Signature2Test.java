@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * Tests for <code>Signature</code> constructor and methods
  * 
  */
-public class SignatureTest2 extends TestCase {
+public class Signature2Test extends TestCase {
 
 	/**
 	 * Provider

@@ -42,7 +42,7 @@ import junit.framework.TestSuite;
  * 
  */
 
-public class MacTest1 extends TestCase {
+public class Mac1Test extends TestCase {
 
     public static final String srvMac = "Mac";
 
@@ -101,7 +101,7 @@ public class MacTest1 extends TestCase {
      * Constructor for MacTest.
      * @param arg0
      */
-    public MacTest1(String arg0) {
+    public Mac1Test(String arg0) {
         super(arg0);
     }
     /**
@@ -786,7 +786,7 @@ public class MacTest1 extends TestCase {
     }
     
     public static Test suite() {
-        return new TestSuite(MacTest1.class);
+        return new TestSuite(Mac1Test.class);
     }
 
     public static void main(String args[]) {        

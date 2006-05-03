@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyAgreementTest2 extends TestCase {
+public class KeyAgreement2Test extends TestCase {
     
     private static final String defaultAlg = "MyKeyAgr";
     
@@ -64,7 +64,7 @@ public class KeyAgreementTest2 extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         mProv = (new SpiEngUtils()).new MyProvider("MyKAProvider", "Testing provider", 
-                KeyAgreementTest1.srvKeyAgreement.concat(".").concat(defaultAlg), 
+                KeyAgreement1Test.srvKeyAgreement.concat(".").concat(defaultAlg), 
                 KeyAgreementProviderClass);
         Security.insertProviderAt(mProv, 1);
     }
@@ -82,7 +82,7 @@ public class KeyAgreementTest2 extends TestCase {
      * 
      * @param arg0
      */
-    public KeyAgreementTest2(String arg0) {
+    public KeyAgreement2Test(String arg0) {
         super(arg0);
     }
     

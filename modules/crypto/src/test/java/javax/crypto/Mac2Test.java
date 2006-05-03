@@ -23,49 +23,51 @@ package javax.crypto;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.InvalidKeySpecException;
+
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
 
 
 /**
- * Tests for <code>KeyGenerator</code> class constructors and methods
+ * Tests for Mac class constructors and methods
  * 
  */
 
-public class KeyGeneratorTest2 extends TestCase {
+public class Mac2Test extends TestCase {
     
-    private static final String defaultAlg = "MyKeyGen";
+    private static final String defaultAlg = "MyMacProv";
     
-    private static final String KeyGeneratorProviderClass = "javax.crypto.MyKeyGeneratorSpi";
+    private static final String MacProviderClass = "javax.crypto.MyMacSpi";
 
     private static final String[] invalidValues = SpiEngUtils.invalidValues;
 
     private static final String[] validValues;
 
     static {
-        validValues = new String[4];
+        validValues = new String[5];
         validValues[0] = defaultAlg;
-        validValues[1] = defaultAlg.toLowerCase();
-        validValues[2] = "myKeyGen";
-        validValues[3] = "mYkeYgeN";
+        validValues[1] = defaultAlg.toUpperCase();
+        validValues[2] = defaultAlg.toLowerCase();
+        validValues[3] = "myMACprov";
+        validValues[4] = "MyMaCpRoV";
     }
 
     Provider mProv;
 
     protected void setUp() throws Exception {
         super.setUp();
-        mProv = (new SpiEngUtils()).new MyProvider("MyKGProvider", "Testing provider", 
-                KeyGeneratorTest1.srvKeyGenerator.concat(".").concat(defaultAlg), 
-                KeyGeneratorProviderClass);
-        Security.insertProviderAt(mProv, 1);
+        mProv = (new SpiEngUtils()).new MyProvider("MyMacProvider", "Testing provider", 
+                Mac1Test.srvMac.concat(".").concat(defaultAlg), 
+                MacProviderClass);
+        Security.insertProviderAt(mProv, 2);
     }
     
     /*
@@ -81,107 +83,105 @@ public class KeyGeneratorTest2 extends TestCase {
      * 
      * @param arg0
      */
-    public KeyGeneratorTest2(String arg0) {
+    public Mac2Test(String arg0) {
         super(arg0);
     }
-
-    private void checkResult(KeyGenerator keyGen) {
-        AlgorithmParameterSpec paramsNull = null;
-        AlgorithmParameterSpec params = new APSpec();
+    
+    protected void checkResult(Mac mac) throws InvalidKeyException,
+            InvalidAlgorithmParameterException {
+        assertEquals("Incorrect MacLength", mac.getMacLength(), 0);
+        byte [] b = {(byte)0, (byte)0, (byte)0, (byte)0, (byte)0};
+        SecretKeySpec scs = new SecretKeySpec(b, "SHA1");
+        AlgParSpec parms = new AlgParSpec();
+        tmpKey tKey = new tmpKey();
+        mac.init(scs);        
+        byte[] bb = mac.doFinal();
+        assertEquals(bb.length, 0);
+        mac.reset();
+        bb = mac.doFinal();
+        assertEquals(bb.length, 1);
         try {
-            keyGen.init(0, new SecureRandom());
-            fail("IllegalArgumentException must be thrown");
-        } catch (IllegalArgumentException e) {
+            mac.init(null);
+            fail("InvalidKeyException should be thrown");
+        } catch (InvalidKeyException e) {
         }
         try {
-            keyGen.init(77, new SecureRandom());
-            fail("IllegalArgumentException must be thrown");
-        } catch (IllegalArgumentException e) {
+            mac.init(null, null);
+            fail("InvalidKeyException should be thrown");
+        } catch (InvalidKeyException e) {
         }
-        keyGen.init(78, new SecureRandom());
+        mac.init(scs, null);
+        mac.init(scs, parms);
         try {
-            keyGen.init(new SecureRandom());
-            fail("IllegalArgumentException must be thrown");                
+            mac.init(tKey, null);
+            fail("InvalidAlgorithmParameterException or IllegalArgumentException "
+                    + "should be thrown for incorrect parameter");
         } catch (IllegalArgumentException e) {
-        }
-        assertNull("generateKey must return null", keyGen.generateKey());
-        try {
-            keyGen.init(paramsNull, new SecureRandom());
-            fail("InvalidAlgorithmParameterException must be thrown");
         } catch (InvalidAlgorithmParameterException e) {
         }
         try {
-            keyGen.init(params, new SecureRandom());                
-        } catch (Exception e) {
-            fail("Unexpected: " + e.toString() + " was thrown");
-        }
-        try {
-            keyGen.init(paramsNull);
-            fail("InvalidAlgorithmParameterException must be thrown");
-        } catch (InvalidAlgorithmParameterException e) {
-        }
-        try {
-            keyGen.init(params);                
-        } catch (Exception e) {
-            fail("Unexpected: " + e.toString() + " was thrown");
+            mac.clone();
+            fail("No expected CloneNotSupportedException"); 
+        } catch (CloneNotSupportedException e) {           
         }
     }
-    
+
     /**
      * Test for <code>getInstance(String algorithm)</code> method
      * Assertions:
      * throws NullPointerException when algorithm is null;
-     * throws NoSuchAlgorithmException when algorithm is incorrect;
-     * returns KeyGenerator object
+     * throws NoSuchAlgorithmException when algorithm is not correct;
+     * returns Mac object
      */
     public void testGetInstance01() throws NoSuchAlgorithmException,
-            InvalidKeySpecException, InvalidKeyException {
+            InvalidKeyException,
+            InvalidAlgorithmParameterException {
         try {
-            KeyGenerator.getInstance(null);
-            fail("NullPointerException or NoSuchAlgorithmException should be thrown if algorithm is null");
+            Mac.getInstance(null);
+            fail("NullPointerException or NoSuchAlgorithmException should be thrown when algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                KeyGenerator.getInstance(invalidValues[i]);
+                Mac.getInstance(invalidValues[i]);
                 fail("NoSuchAlgorithmException must be thrown (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (NoSuchAlgorithmException e) {
             }
         }
-        KeyGenerator keyGen;
+        Mac keyAgr;
         for (int i = 0; i < validValues.length; i++) {
-            keyGen = KeyGenerator.getInstance(validValues[i]);
-            assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
+            keyAgr = Mac.getInstance(validValues[i]);
+            assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
-            assertEquals("Incorrect provider", keyGen.getProvider(), mProv);
-            checkResult(keyGen);
+            assertEquals("Incorrect provider", keyAgr.getProvider(), mProv);
+            checkResult(keyAgr);
         }
     }
-
     /**
      * Test for <code>getInstance(String algorithm, String provider)</code>
      * method
      * Assertions: 
      * throws NullPointerException when algorithm is null;
-     * throws NoSuchAlgorithmException when algorithm is null or incorrect;
-     * throws IllegalArgumentException when provider is null or empty;
+     * throws NoSuchAlgorithmException when algorithm is not correct;
+     * throws IllegalArgumentException when provider is null;
      * throws NoSuchProviderException when provider is available;
-     * returns KeyGenerator object
+     * returns Mac object
      */
     public void testGetInstance02() throws NoSuchAlgorithmException,
             NoSuchProviderException, IllegalArgumentException,
-            InvalidKeySpecException, InvalidKeyException {            
+            InvalidKeyException,
+            InvalidAlgorithmParameterException {            
         try {
-            KeyGenerator.getInstance(null, mProv.getName());
-            fail("NullPointerException or NoSuchAlgorithmException should be thrown if algorithm is null");
+            Mac.getInstance(null, mProv.getName());
+            fail("NullPointerException or NoSuchAlgorithmException should be thrown when algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                KeyGenerator.getInstance(invalidValues[i], mProv
+                Mac.getInstance(invalidValues[i], mProv
                         .getName());
                 fail("NoSuchAlgorithmException must be thrown (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
@@ -191,20 +191,16 @@ public class KeyGeneratorTest2 extends TestCase {
         String prov = null;
         for (int i = 0; i < validValues.length; i++) {
             try {
-                KeyGenerator.getInstance(validValues[i], prov);
+                Mac.getInstance(validValues[i], prov);
                 fail("IllegalArgumentException must be thrown when provider is null (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (IllegalArgumentException e) {
             }
-            try {
-                KeyGenerator.getInstance(validValues[i], "");
-                fail("IllegalArgumentException must be thrown when provider is empty (algorithm: "
-                        .concat(invalidValues[i]).concat(")"));
-            } catch (IllegalArgumentException e) {
-            }
+        }
+        for (int i = 0; i < validValues.length; i++) {
             for (int j = 1; j < invalidValues.length; j++) {
                 try {
-                    KeyGenerator.getInstance(validValues[i],
+                    Mac.getInstance(validValues[i],
                             invalidValues[j]);
                     fail("NoSuchProviderException must be thrown (algorithm: "
                             .concat(invalidValues[i]).concat(" provider: ")
@@ -213,15 +209,15 @@ public class KeyGeneratorTest2 extends TestCase {
                 }
             }
         }
-        KeyGenerator keyGen;
+        Mac keyAgr;
         for (int i = 0; i < validValues.length; i++) {
-            keyGen = KeyGenerator.getInstance(validValues[i], mProv
+            keyAgr = Mac.getInstance(validValues[i], mProv
                     .getName());
-            assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
+            assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
-            assertEquals("Incorrect provider", keyGen.getProvider().getName(),
+            assertEquals("Incorrect provider", keyAgr.getProvider().getName(),
                     mProv.getName());
-            checkResult(keyGen);
+            checkResult(keyAgr);
         }
     }
 
@@ -230,22 +226,23 @@ public class KeyGeneratorTest2 extends TestCase {
      * method
      * Assertions:
      * throws NullPointerException when algorithm is null;
-     * throws NoSuchAlgorithmException when algorithm is null or incorrect;
+     * throws NoSuchAlgorithmException when algorithm is not correct;
      * throws IllegalArgumentException when provider is null;
-     * returns KeyGenerator object
+     * returns Mac object
      */
     public void testGetInstance03() throws NoSuchAlgorithmException,
             IllegalArgumentException,
-            InvalidKeySpecException, InvalidKeyException {
+            InvalidKeyException,
+            InvalidAlgorithmParameterException {
         try {
-            KeyGenerator.getInstance(null, mProv);
-            fail("NullPointerException or NoSuchAlgorithmException should be thrown if algorithm is null");
+            Mac.getInstance(null, mProv);
+            fail("NullPointerException or NoSuchAlgorithmException should be thrown when algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                KeyGenerator.getInstance(invalidValues[i], mProv);
+                Mac.getInstance(invalidValues[i], mProv);
                 fail("NoSuchAlgorithmException must be thrown (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (NoSuchAlgorithmException e) {
@@ -254,23 +251,36 @@ public class KeyGeneratorTest2 extends TestCase {
         Provider prov = null;
         for (int i = 0; i < validValues.length; i++) {
             try {
-                KeyGenerator.getInstance(validValues[i], prov);
+                Mac.getInstance(validValues[i], prov);
                 fail("IllegalArgumentException must be thrown when provider is null (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (IllegalArgumentException e) {
             }
         }
-        KeyGenerator keyGen;
+        Mac keyAgr;
         for (int i = 0; i < validValues.length; i++) {
-            keyGen = KeyGenerator.getInstance(validValues[i], mProv);
-            assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
+            keyAgr = Mac.getInstance(validValues[i], mProv);
+            assertEquals("Incorrect algorithm", keyAgr.getAlgorithm(),
                     validValues[i]);
-            assertEquals("Incorrect provider", keyGen.getProvider(), mProv);
-            checkResult(keyGen);
+            assertEquals("Incorrect provider", keyAgr.getProvider(), mProv);
+            checkResult(keyAgr);
+       }
+    }
+    public static class AlgParSpec implements AlgorithmParameterSpec {
+        
+    }
+    public static class tmpKey implements Key {
+        public tmpKey() {
+            
+        }
+        public String getAlgorithm() {
+            return "Test";
+        }
+        public String getFormat() {
+            return "Format";
+        }
+        public byte[] getEncoded() {
+            return null;
         }
     }
-}
-
-class APSpec implements AlgorithmParameterSpec {
-    
 }

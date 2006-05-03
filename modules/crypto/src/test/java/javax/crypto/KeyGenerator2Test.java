@@ -21,27 +21,30 @@
 
 package javax.crypto;
 
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
+import java.security.SecureRandom;
 import java.security.Security;
+import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
 
 
 /**
- * Tests for <code>SecretKeyFactory</code> class constructors and methods
+ * Tests for <code>KeyGenerator</code> class constructors and methods
  * 
  */
 
-public class SecretKeyFactoryTest2 extends TestCase {
+public class KeyGenerator2Test extends TestCase {
     
-    private static final String defaultAlg = "MySecretKey";
-    private static final String SecretKeyFactoryProviderClass = "javax.crypto.MySecretKeyFactorySpi";
+    private static final String defaultAlg = "MyKeyGen";
+    
+    private static final String KeyGeneratorProviderClass = "javax.crypto.MyKeyGeneratorSpi";
 
     private static final String[] invalidValues = SpiEngUtils.invalidValues;
 
@@ -51,18 +54,18 @@ public class SecretKeyFactoryTest2 extends TestCase {
         validValues = new String[4];
         validValues[0] = defaultAlg;
         validValues[1] = defaultAlg.toLowerCase();
-        validValues[2] = "mySECRETkey";
-        validValues[3] = "MYSECretkey";
+        validValues[2] = "myKeyGen";
+        validValues[3] = "mYkeYgeN";
     }
 
     Provider mProv;
 
     protected void setUp() throws Exception {
         super.setUp();
-        mProv = (new SpiEngUtils()).new MyProvider("MySKFProvider", "Testing provider", 
-                SecretKeyFactoryTest1.srvSecretKeyFactory.concat(".").concat(defaultAlg), 
-                SecretKeyFactoryProviderClass);
-        Security.insertProviderAt(mProv, 2);
+        mProv = (new SpiEngUtils()).new MyProvider("MyKGProvider", "Testing provider", 
+                KeyGenerator1Test.srvKeyGenerator.concat(".").concat(defaultAlg), 
+                KeyGeneratorProviderClass);
+        Security.insertProviderAt(mProv, 1);
     }
     
     /*
@@ -78,51 +81,82 @@ public class SecretKeyFactoryTest2 extends TestCase {
      * 
      * @param arg0
      */
-    public SecretKeyFactoryTest2(String arg0) {
+    public KeyGenerator2Test(String arg0) {
         super(arg0);
     }
 
-    private void checkResult(SecretKeyFactory skf) throws InvalidKeyException,
-            InvalidKeySpecException {
-        SecretKey sk;
-        KeySpec keySpec;        
-        sk = skf.generateSecret(null);
-        assertNull("generateSecret method must return null", sk);
-        sk = skf.translateKey(null);
-        assertNull("translateKey method must return null", sk);
-        keySpec = skf.getKeySpec(null, null);
-        assertNull("getKeySpec method must return null", keySpec);
+    private void checkResult(KeyGenerator keyGen) {
+        AlgorithmParameterSpec paramsNull = null;
+        AlgorithmParameterSpec params = new APSpec();
+        try {
+            keyGen.init(0, new SecureRandom());
+            fail("IllegalArgumentException must be thrown");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            keyGen.init(77, new SecureRandom());
+            fail("IllegalArgumentException must be thrown");
+        } catch (IllegalArgumentException e) {
+        }
+        keyGen.init(78, new SecureRandom());
+        try {
+            keyGen.init(new SecureRandom());
+            fail("IllegalArgumentException must be thrown");                
+        } catch (IllegalArgumentException e) {
+        }
+        assertNull("generateKey must return null", keyGen.generateKey());
+        try {
+            keyGen.init(paramsNull, new SecureRandom());
+            fail("InvalidAlgorithmParameterException must be thrown");
+        } catch (InvalidAlgorithmParameterException e) {
+        }
+        try {
+            keyGen.init(params, new SecureRandom());                
+        } catch (Exception e) {
+            fail("Unexpected: " + e.toString() + " was thrown");
+        }
+        try {
+            keyGen.init(paramsNull);
+            fail("InvalidAlgorithmParameterException must be thrown");
+        } catch (InvalidAlgorithmParameterException e) {
+        }
+        try {
+            keyGen.init(params);                
+        } catch (Exception e) {
+            fail("Unexpected: " + e.toString() + " was thrown");
+        }
     }
+    
     /**
      * Test for <code>getInstance(String algorithm)</code> method
      * Assertions:
      * throws NullPointerException when algorithm is null;
      * throws NoSuchAlgorithmException when algorithm is incorrect;
-     * returns SecretKeyFactory object
+     * returns KeyGenerator object
      */
     public void testGetInstance01() throws NoSuchAlgorithmException,
             InvalidKeySpecException, InvalidKeyException {
         try {
-            SecretKeyFactory.getInstance(null);
+            KeyGenerator.getInstance(null);
             fail("NullPointerException or NoSuchAlgorithmException should be thrown if algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                SecretKeyFactory.getInstance(invalidValues[i]);
+                KeyGenerator.getInstance(invalidValues[i]);
                 fail("NoSuchAlgorithmException must be thrown (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (NoSuchAlgorithmException e) {
             }
         }
-        SecretKeyFactory skf;
+        KeyGenerator keyGen;
         for (int i = 0; i < validValues.length; i++) {
-            skf = SecretKeyFactory.getInstance(validValues[i]);
-            assertEquals("Incorrect algorithm", skf.getAlgorithm(),
+            keyGen = KeyGenerator.getInstance(validValues[i]);
+            assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
                     validValues[i]);
-            assertEquals("Incorrect provider", skf.getProvider(), mProv);
-            checkResult(skf);
+            assertEquals("Incorrect provider", keyGen.getProvider(), mProv);
+            checkResult(keyGen);
         }
     }
 
@@ -134,20 +168,20 @@ public class SecretKeyFactoryTest2 extends TestCase {
      * throws NoSuchAlgorithmException when algorithm is null or incorrect;
      * throws IllegalArgumentException when provider is null or empty;
      * throws NoSuchProviderException when provider is available;
-     * returns SecretKeyFactory object
+     * returns KeyGenerator object
      */
     public void testGetInstance02() throws NoSuchAlgorithmException,
             NoSuchProviderException, IllegalArgumentException,
             InvalidKeySpecException, InvalidKeyException {            
         try {
-            SecretKeyFactory.getInstance(null, mProv.getName());
+            KeyGenerator.getInstance(null, mProv.getName());
             fail("NullPointerException or NoSuchAlgorithmException should be thrown if algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                SecretKeyFactory.getInstance(invalidValues[i], mProv
+                KeyGenerator.getInstance(invalidValues[i], mProv
                         .getName());
                 fail("NoSuchAlgorithmException must be thrown (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
@@ -157,20 +191,20 @@ public class SecretKeyFactoryTest2 extends TestCase {
         String prov = null;
         for (int i = 0; i < validValues.length; i++) {
             try {
-                SecretKeyFactory.getInstance(validValues[i], prov);
+                KeyGenerator.getInstance(validValues[i], prov);
                 fail("IllegalArgumentException must be thrown when provider is null (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (IllegalArgumentException e) {
             }
             try {
-                SecretKeyFactory.getInstance(validValues[i], "");
+                KeyGenerator.getInstance(validValues[i], "");
                 fail("IllegalArgumentException must be thrown when provider is empty (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (IllegalArgumentException e) {
             }
             for (int j = 1; j < invalidValues.length; j++) {
                 try {
-                    SecretKeyFactory.getInstance(validValues[i],
+                    KeyGenerator.getInstance(validValues[i],
                             invalidValues[j]);
                     fail("NoSuchProviderException must be thrown (algorithm: "
                             .concat(invalidValues[i]).concat(" provider: ")
@@ -179,15 +213,15 @@ public class SecretKeyFactoryTest2 extends TestCase {
                 }
             }
         }
-        SecretKeyFactory skf;
+        KeyGenerator keyGen;
         for (int i = 0; i < validValues.length; i++) {
-            skf = SecretKeyFactory.getInstance(validValues[i], mProv
+            keyGen = KeyGenerator.getInstance(validValues[i], mProv
                     .getName());
-            assertEquals("Incorrect algorithm", skf.getAlgorithm(),
+            assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
                     validValues[i]);
-            assertEquals("Incorrect provider", skf.getProvider().getName(),
+            assertEquals("Incorrect provider", keyGen.getProvider().getName(),
                     mProv.getName());
-            checkResult(skf);
+            checkResult(keyGen);
         }
     }
 
@@ -198,20 +232,20 @@ public class SecretKeyFactoryTest2 extends TestCase {
      * throws NullPointerException when algorithm is null;
      * throws NoSuchAlgorithmException when algorithm is null or incorrect;
      * throws IllegalArgumentException when provider is null;
-     * returns SecretKeyFactory object
+     * returns KeyGenerator object
      */
     public void testGetInstance03() throws NoSuchAlgorithmException,
             IllegalArgumentException,
             InvalidKeySpecException, InvalidKeyException {
         try {
-            SecretKeyFactory.getInstance(null, mProv);
+            KeyGenerator.getInstance(null, mProv);
             fail("NullPointerException or NoSuchAlgorithmException should be thrown if algorithm is null");
         } catch (NullPointerException e) {
         } catch (NoSuchAlgorithmException e) {
         }
         for (int i = 0; i < invalidValues.length; i++) {
             try {
-                SecretKeyFactory.getInstance(invalidValues[i], mProv);
+                KeyGenerator.getInstance(invalidValues[i], mProv);
                 fail("NoSuchAlgorithmException must be thrown (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (NoSuchAlgorithmException e) {
@@ -220,19 +254,23 @@ public class SecretKeyFactoryTest2 extends TestCase {
         Provider prov = null;
         for (int i = 0; i < validValues.length; i++) {
             try {
-                SecretKeyFactory.getInstance(validValues[i], prov);
+                KeyGenerator.getInstance(validValues[i], prov);
                 fail("IllegalArgumentException must be thrown when provider is null (algorithm: "
                         .concat(invalidValues[i]).concat(")"));
             } catch (IllegalArgumentException e) {
             }
         }
-        SecretKeyFactory skf;
+        KeyGenerator keyGen;
         for (int i = 0; i < validValues.length; i++) {
-            skf = SecretKeyFactory.getInstance(validValues[i], mProv);
-            assertEquals("Incorrect algorithm", skf.getAlgorithm(),
+            keyGen = KeyGenerator.getInstance(validValues[i], mProv);
+            assertEquals("Incorrect algorithm", keyGen.getAlgorithm(),
                     validValues[i]);
-            assertEquals("Incorrect provider", skf.getProvider(), mProv);
-            checkResult(skf);
+            assertEquals("Incorrect provider", keyGen.getProvider(), mProv);
+            checkResult(keyGen);
         }
     }
+}
+
+class APSpec implements AlgorithmParameterSpec {
+    
 }

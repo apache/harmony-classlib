@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class ExemptionMechanismTest1 extends TestCase {
+public class ExemptionMechanismTest extends TestCase {
     
     public static final String srvExemptionMechanism = "ExemptionMechanism";
     
@@ -85,7 +85,7 @@ public class ExemptionMechanismTest1 extends TestCase {
      * 
      * @param arg0
      */
-    public ExemptionMechanismTest1(String arg0) {
+    public ExemptionMechanismTest(String arg0) {
         super(arg0);
     }
 

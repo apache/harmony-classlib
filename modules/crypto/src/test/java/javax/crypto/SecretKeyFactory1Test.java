@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class SecretKeyFactoryTest1 extends TestCase {
+public class SecretKeyFactory1Test extends TestCase {
     
     public static final String srvSecretKeyFactory = "SecretKeyFactory";
         
@@ -111,7 +111,7 @@ public class SecretKeyFactoryTest1 extends TestCase {
      * 
      * @param arg0
      */
-    public SecretKeyFactoryTest1(String arg0) {
+    public SecretKeyFactory1Test(String arg0) {
         super(arg0);
     }
 
@@ -437,14 +437,11 @@ public class SecretKeyFactoryTest1 extends TestCase {
         for (int i = 0; i < skF.length; i++) {
             try { 
                 skF[i].translateKey(null);
-                fail("InvalidKeyException must be thrown");
+                fail("InvalidKeyException must be thrown: " + i);
             } catch (InvalidKeyException e) {
             }
-            try { 
-                skF[i].translateKey(secKeySpec);
-                fail("InvalidKeyException must be thrown");
-            } catch (InvalidKeyException e) {
-            }            
+
+            skF[i].translateKey(secKeySpec);
         }
     }
 }

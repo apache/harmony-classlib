@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * Tests for <code>MessageDigest</code> constructor and methods
  * 
  */
-public class MessageDigestTest1 extends TestCase {
+public class MessageDigest1Test extends TestCase {
 
 	public void testReset() {	
 		MyMessageDigest1 md = new MyMessageDigest1("ABC");

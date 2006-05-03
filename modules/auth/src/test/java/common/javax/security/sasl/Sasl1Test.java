@@ -33,20 +33,20 @@ import junit.framework.TestCase;
  * 
  */
 
-public class SaslTest1 extends TestCase {
+public class Sasl1Test extends TestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(SaslTest1.class);
+        junit.textui.TestRunner.run(Sasl1Test.class);
     }
 
     private Provider [] provs;
     private boolean initProvs = false;
     /**
-     * Constructor for SaslTest2.
+     * Constructor for Sasl2Test.
      * 
      * @param arg0
      */
-    public SaslTest1(String arg0) {
+    public Sasl1Test(String arg0) {
         super(arg0);
     }
 

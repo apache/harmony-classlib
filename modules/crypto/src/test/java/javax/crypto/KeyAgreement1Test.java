@@ -47,14 +47,14 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyAgreementTest1 extends TestCase {
+public class KeyAgreement1Test extends TestCase {
 
     /**
-     * Constructor for KeyAgreementTest1.
+     * Constructor for KeyAgreement1Test.
      * 
      * @param arg0
      */
-    public KeyAgreementTest1(String arg0) {
+    public KeyAgreement1Test(String arg0) {
         super(arg0);
     }
 
@@ -582,7 +582,7 @@ public class KeyAgreementTest1 extends TestCase {
     }
 
     public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyAgreementTest1.class);
+        junit.textui.TestRunner.run(KeyAgreement1Test.class);
     }
 }
 

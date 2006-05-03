@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class SaslTest4 extends TestCase {
+public class Sasl4Test extends TestCase {
     private static final String SRVSSRV = "SaslServerFactory.";
 
     private static final String fServerClass = "javax.security.sasl.mySaslServerFactory";
@@ -49,15 +49,15 @@ public class SaslTest4 extends TestCase {
 
     
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(SaslTest4.class);
+        junit.textui.TestRunner.run(Sasl4Test.class);
     }
 
     /**
-     * Constructor for SaslTest2.
+     * Constructor for Sasl4Test.
      * 
      * @param arg0
      */
-    public SaslTest4(String arg0) {
+    public Sasl4Test(String arg0) {
         super(arg0);
     }
 
