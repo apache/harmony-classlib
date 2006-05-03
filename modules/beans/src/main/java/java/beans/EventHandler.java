@@ -121,7 +121,7 @@ public class EventHandler implements InvocationHandler {
             String action,
             String eventPropertyName,
             String listenerMethodName) {
-        return Proxy.newProxyInstance(null, new Class[] { listenerInterface },
+        return Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
                new EventHandler(target, action, eventPropertyName,
                        listenerMethodName));
     }
@@ -134,7 +134,7 @@ public class EventHandler implements InvocationHandler {
             Object target,
             String action,
             String eventPropertyName) {
-        return Proxy.newProxyInstance(null, new Class[] { listenerInterface },
+        return Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
             new EventHandler(target, action, eventPropertyName, null));
     }
 
@@ -145,7 +145,7 @@ public class EventHandler implements InvocationHandler {
             Class listenerInterface,
             Object target,
             String action) {
-        return Proxy.newProxyInstance(null, new Class[] { listenerInterface },
+        return Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
             new EventHandler(target, action, null, null));
     }
     

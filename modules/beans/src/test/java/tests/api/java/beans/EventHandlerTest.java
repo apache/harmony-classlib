@@ -788,13 +788,18 @@ public class EventHandlerTest extends TestCase {
 		assertEquals("double:3.3", target.getActionRecord());
 	}
 
+    /**
+     * @tests java.beans.EventHandler#create(Class<T> listenerInterface, Object
+     *        target, String action))
+     */
 	public void testEventHandlerCreate() {
+        //Regression for HARMONY-429
 		((FredListener) EventHandler.create(FredListener.class,
 				new Untitled1(), "i", "i"))
 				.fireFredEvent(new FredEvent("bean2"));
 	}
 
-	public interface FredListener extends EventListener {
+    public interface FredListener extends EventListener {
 		public void fireFredEvent(FredEvent event);
 	}
 
