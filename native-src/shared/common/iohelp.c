@@ -119,7 +119,7 @@ ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
   jbyte *buf;
   PORT_ACCESS_FROM_ENV (env);
   jsize len;
-  char *errorMessage;
+  char *errorMessage = NULL;
 
 /* TODO: ARRAY PINNING */
 #define INTERNAL_MAX 512

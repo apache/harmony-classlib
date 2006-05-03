@@ -62,7 +62,7 @@ pool_new (U_32 structSize, U_32 minNumberElements, U_32 elementAlignment,
 {
   U_64 roundedStructSize, tempAllocSize, finalAllocSize;
   U_32 finalNumberOfElements, tempNumElems;
-  UDATA freeLocation, *oldFreeLocation;
+  UDATA freeLocation, *oldFreeLocation = NULL;
   HyPool *newHandle;
 
   if (minNumberElements == 0)
@@ -566,7 +566,7 @@ pool_clear (HyPool * aPool)
 {
   while (aPool)
     {
-      UDATA freeLocation, *oldFreeLocation;
+      UDATA freeLocation, *oldFreeLocation = NULL;
       U_32 tempNumElems;
 
       aPool->usedElements = 0;

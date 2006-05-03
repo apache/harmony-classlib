@@ -270,7 +270,7 @@ hysig_protect (struct HyPortLibrary * portLibrary, hysig_protected_fn fn,
 
   struct HySignalHandlerRecord thisRecord;
   hythread_t thisThread;
-  U_32 rc;
+  U_32 rc = 0;
   U_32 allowHandlers;
 
   hythread_monitor_enter (masterHandlerMonitor);

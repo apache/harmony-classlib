@@ -563,7 +563,7 @@ parse_catalog (struct HyPortLibrary *portLibrary, UDATA flags,
   U_8 dataBuf[BUF_SIZE];
   U_8 *charPointer = NULL;
   U_8 *endPointer = NULL;
-  int mode = MSG_NONE, count, digit;
+  int mode = MSG_NONE, count = 0, digit;
   U_32 unicode = 0;
   char nextChar;
   U_32 offset = 0, bufSize = BUF_SIZE, maxOffset = 0;
