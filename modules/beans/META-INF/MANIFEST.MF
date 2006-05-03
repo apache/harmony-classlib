@@ -7,12 +7,17 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.applet,
  java.awt,
+ java.awt.event;resolution:=optional,
  java.io,
  java.lang,
  java.lang.reflect,
  java.net,
+ java.nio.charset;resolution:=optional,
  java.security,
  java.util,
+ java.util.regex;resolution:=optional,
  org.xml.sax,
- org.xml.sax.helpers
-Export-Package: java.beans, java.beans.beancontext
+ org.xml.sax.helpers,
+ tests.util;resolution:=optional;hy_usage=test
+Export-Package: java.beans,
+ java.beans.beancontext
