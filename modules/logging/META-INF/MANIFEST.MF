@@ -5,13 +5,15 @@ Bundle-SymbolicName: org.apache.harmony.logging
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.lang,
- java.beans,
+Import-Package: java.beans,
  java.io,
- java.security,
- java.util,
+ java.lang,
+ java.net,
+ java.nio;resolution:=optional,
  java.nio.channels,
- java.text,
  java.nio.charset,
- java.net
+ java.security,
+ java.text,
+ java.util,
+ tests.util;resolution:=optional;hy_usage=test
 Export-Package: java.util.logging
