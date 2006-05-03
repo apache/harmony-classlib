@@ -53,6 +53,7 @@
         <property name="target.output" location="../deploy" />
         <property name="depends.oss" location="../depends/oss" />
         <property name="depends.libs" location="../depends/libs/${target.platform}" />
+    	<property name="depends.files" location="../depends/files" />
         <property name="build.output" location="../native-bin/${target.platform}" />
         <property name="native.src.root" location="${basedir}/${target.platform}" />
         <property name="native.shared.src.root" location="${basedir}/shared" />
@@ -150,6 +151,13 @@
                 <patternset includes="javaw${exe.suffix}" />
             </fileset>
         </copy>
+    	
+    	<!-- NLS catalog files -->
+        <copy todir="${target.output}/jre/bin" overwrite="yes">
+            <fileset dir="${depends.files}">
+                <include name="harmony*.properties" />
+            </fileset>
+        </copy>
 
         <!-- Make sure the Linux launcher has execute permission -->
         <chmod file="${target.output}/jre/bin/java${exe.suffix}" perm="ugo+x" />
@@ -180,6 +188,7 @@
                 <include name="**/bin/java${exe.suffix}" />
                 <include name="**/bin/javaw${exe.suffix}" />
                 <include name="**/bin/*${shlib.suffix}*" />
+            	<include name="**/bin/harmony*.properties" />
             </fileset>
         </delete>
     </target>
