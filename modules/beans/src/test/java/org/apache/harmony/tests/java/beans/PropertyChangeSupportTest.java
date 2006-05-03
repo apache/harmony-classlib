@@ -100,6 +100,28 @@ public class PropertyChangeSupportTest extends TestCase {
     
     
     /**
+     * @tests java.beans.PropertyChangeSupport#removePropertyChangeListener(
+     *        java.lang.String, java.beans.PropertyChangeListener)
+     */
+    public void testRemovePropertyChangeListener2() {
+        // Regerssion for HARMONY-320
+        PropertyChangeListener listener = new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent arg0) {}
+        };
+
+        PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+        pcs.addPropertyChangeListener("property", listener);
+        PropertyChangeListener[] listeners = pcs.getPropertyChangeListeners();
+        assertEquals(1, listeners.length);
+
+        pcs.removePropertyChangeListener(listeners[0]);
+        listeners = pcs.getPropertyChangeListeners();
+        assertEquals(0, listeners.length);
+    } 
+    
+    
+    /**
      * The test checks the serialization for listeners supporting serialization
      */
     public void testSerializableListener() {

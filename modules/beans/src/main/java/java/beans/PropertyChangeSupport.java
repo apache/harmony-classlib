@@ -161,14 +161,15 @@ public class PropertyChangeSupport implements Serializable {
     public synchronized void removePropertyChangeListener(
             PropertyChangeListener listener) {
         if (listener != null) {
-            Iterator iterator = allPropertiesChangeListeners.iterator();
-            while (iterator.hasNext()) {
-                PropertyChangeListener pcl =
-                    (PropertyChangeListener) iterator.next();
-                if (pcl == listener) {
-                    iterator.remove();
-                    break;
-                }
+            if (listener instanceof PropertyChangeListenerProxy) {
+                String name = ((PropertyChangeListenerProxy) listener)
+                        .getPropertyName();
+                PropertyChangeListener lst = (PropertyChangeListener) ((PropertyChangeListenerProxy) listener)
+                        .getListener();
+
+                removePropertyChangeListener(name, lst);
+            } else {
+                allPropertiesChangeListeners.remove(listener);
             }
         }
     }
