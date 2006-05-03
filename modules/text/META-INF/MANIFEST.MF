@@ -11,5 +11,6 @@ Import-Package: java.io,
  java.net,
  java.security,
  java.util,
- org.apache.harmony.luni.util
+ org.apache.harmony.luni.util,
+ tests.support;resolution:=optional;hy_usage=test
 Export-Package: java.text
