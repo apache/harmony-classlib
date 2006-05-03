@@ -38,7 +38,7 @@ BUILDFILES = \
   $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj \
   OSFileSystemWin32.obj \
   $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj OSMemory.obj \
-  OSNetworkSystem.obj OSNetworkSystemWin32.obj
+  $(SHAREDSUB)OSNetworkSystem.obj OSNetworkSystemWin32.obj
 
 VIRTFILES = hyluni.res
 

@@ -31,7 +31,8 @@ BUILDFILES = \
 	$(SHAREDSUB)osc.o $(SHAREDSUB)socket.o $(SHAREDSUB)inetadds.o \
 	$(SHAREDSUB)filedesc.o $(SHAREDSUB)timezone.o \
 	$(SHAREDSUB)OSFileSystem.o OSFileSystemLinux32.o \
-	OSMemory.o OSMemoryLinux32.o OSNetworkSystem.o OSNetworkSystemLinux.o
+	OSMemory.o OSMemoryLinux32.o $(SHAREDSUB)OSNetworkSystem.o \
+	OSNetworkSystemLinux.o
 
 MDLLIBFILES = \
 	../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so \
