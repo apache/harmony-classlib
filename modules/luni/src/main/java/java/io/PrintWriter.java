@@ -91,7 +91,7 @@ public class PrintWriter extends Writer {
 	}
 
 	/**
-	 * Constructs a new PrintWriter on the Writer <code>wr</code>. All writes
+	 * Constructs a new PrintWriter on the given writer. All writes
 	 * to the target can now take place through this PrintWriter. By default,
 	 * the PrintWriter is set to not autoflush when println() is called.
 	 * 
@@ -396,9 +396,7 @@ public class PrintWriter extends Writer {
 	}
 
 	/**
-	 * Writes the entire character buffer
-	 * 
-	 * @buf to this Writer.
+	 * Writes the entire character buffer buf to this Writer.
 	 * 
 	 * @param buf
 	 *            the non-null array containing characters to write.

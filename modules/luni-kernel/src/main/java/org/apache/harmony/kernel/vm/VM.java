@@ -212,8 +212,6 @@ public final class VM {
 	 * This method must be provided by the vm vendor. Called to signal that the
 	 * org.apache.harmony.luni.internal.net.www.protocol.jar.JarURLConnection class has been loaded
 	 * and JarURLConnection.closeCachedFiles() should be called on VM shutdown.
-	 * 
-	 * @see #shutdown()
 	 */
 	public static void closeJars() {
 		return;
@@ -223,13 +221,12 @@ public final class VM {
 	 * This method must be provided by the vm vendor. Called to signal that the
 	 * org.apache.harmony.luni.util.DeleteOnExit class has been loaded and
 	 * DeleteOnExit.deleteOnExit() should be called on VM shutdown.
-	 * 
-	 * @see #shutdown()
 	 */
 	public static void deleteOnExit() {
 		return;
 	}
 
+	//Constants used by getClassPathEntryType to indicate the class path entry type
 	static final int CPE_TYPE_UNKNOWN = 0;
 
 	static final int CPE_TYPE_DIRECTORY = 1;

@@ -66,7 +66,7 @@ public class Runtime {
 	}
 
 	/**
-	 * Execute progArray[0] in a seperate platform process The new process uses
+	 * Execute progArray[0] in a seperate platform process. The new process uses
 	 * the environment provided in envp
 	 * 
 	 * @param progArray
@@ -75,6 +75,9 @@ public class Runtime {
 	 * @param envp
 	 *            the array containing the environment to start the new process
 	 *            in.
+	 * @param directory
+	 *            the directory in which to execute progArray[0]. If null, execute
+	 *            in same directory as parent process.
 	 * @exception java.io.IOException
 	 *                if the program cannot be executed
 	 * @exception SecurityException
@@ -246,10 +249,20 @@ public class Runtime {
 		return 0L;
 	};
 
+	/**
+	 * Turns the output of debug information for instructions on or off.
+	 * 
+	 * @param enable if true, turn trace on. false turns trace off.
+	 */
 	public void traceInstructions(boolean enable) {
 		return;
 	}
-
+	
+	/**
+	 * Turns the ouput of debug information for methods on or off.
+	 * 
+	 * @param enable if true, turn trace on. false turns trace off.
+	 */
 	public void traceMethodCalls(boolean enable) {
 		return;
 	}

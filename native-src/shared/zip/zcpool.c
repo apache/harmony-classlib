@@ -98,7 +98,7 @@ zipCachePool_addCache (HyZipCachePool * zcp, HyZipCache * zipCache)
  * @note Result is undefined if the cache is not actually in the pool!
  *
  * @param[in] zcp the zip cache pool that is being added to.
- * @param[in] the zip cache being added.
+ * @param[in] zipCache the zip cache being added.
  *
  * @return TRUE if successful, FALSE otherwise.
 */

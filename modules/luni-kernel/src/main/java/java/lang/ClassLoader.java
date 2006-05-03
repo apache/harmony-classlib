@@ -446,6 +446,9 @@ public abstract class ClassLoader {
 	 *            The implementation version of the Package
 	 * @param implVendor
 	 *            The specification vendor of the Package
+	 * @param sealBase 
+	 *            If sealBase is null, the package is left unsealed.
+	 *            Otherwise, the the package is sealed using this URL. 
 	 * @return The Package created
 	 * @exception IllegalArgumentException
 	 *                if the Package already exists
@@ -483,12 +486,15 @@ public abstract class ClassLoader {
 	/**
 	 * This must be provided by the vm vendor. It is used by
 	 * SecurityManager.checkMemberAccess() with depth = 3. Note that
-	 * checkMemberAccess() assumes the following stack when called. <code>
-	 *		<user code>								<- want this class <br>
+	 * checkMemberAccess() assumes the following stack when called:<br> 
+	 * <code>
+	 *		&lt user code &gt								<- want this class <br>
 	 *		Class.getDeclared*(); <br>
 	 *		Class.checkMemberAccess(); <br>
 	 *		SecurityManager.checkMemberAccess();	<- current frame <br>
-	 * </code> Returns the ClassLoader of the method (including natives) at the
+	 * </code> 
+	 * 
+	 * Returns the ClassLoader of the method (including natives) at the
 	 * specified depth on the stack of the calling thread. Frames representing
 	 * the VM implementation of java.lang.reflect are not included in the list.
 	 * Notes:

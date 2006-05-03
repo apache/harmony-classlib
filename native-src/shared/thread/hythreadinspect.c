@@ -123,7 +123,7 @@ hythread_monitor_walk (hythread_monitor_t monitor)
 /** 
  * Get a thread's thread local storage (TLS) value.
  *
- * @param[in] a thread
+ * @param[in] thread a thread
  * @param[in] key key to have TLS value returned (value returned by hythread_tls_alloc)
  * @return pointer to location of TLS or NULL on failure.
  *  

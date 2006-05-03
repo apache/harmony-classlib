@@ -68,10 +68,10 @@ public final class StackTraceElement implements java.io.Serializable {
 		// Empty
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Compare this object with the object passed in
 	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @param obj Object to compare with
 	 */
 	public boolean equals(Object obj) {
 		if (!(obj instanceof StackTraceElement))
@@ -148,10 +148,10 @@ public final class StackTraceElement implements java.io.Serializable {
 		return (methodName == null) ? "<unknown method>" : methodName;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Return this StackTraceElement objects hash code
 	 * 
-	 * @see java.lang.Object#hashCode()
+	 * @return This objects hash code
 	 */
 	public int hashCode() {
 		// either both methodName and declaringClass are null, or neither are
@@ -173,10 +173,10 @@ public final class StackTraceElement implements java.io.Serializable {
 		return lineNumber == -2;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Return a String representating this StackTraceElement object
 	 * 
-	 * @see java.lang.Object#toString()
+	 * @return String representing this object
 	 */
 	public String toString() {
 		StringBuilder buf = new StringBuilder(80);

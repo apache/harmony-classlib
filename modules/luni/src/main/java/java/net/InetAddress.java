@@ -713,7 +713,7 @@ public class InetAddress extends Object implements Serializable {
 	 * 
 	 * The IP address is not validated by a name service.
 	 * 
-	 * The high order byte is <code>ipAddress[0]<\code>.
+	 * The high order byte is <code>ipAddress[0]</code>.
 	 *
 	 * @param 		ipAddress	either a 4 (IPv4) or 16 (IPv6) byte array
 	 * @return 		the InetAddress
@@ -734,7 +734,7 @@ public class InetAddress extends Object implements Serializable {
 	 * 
 	 * The IP address is not validated by a name service.
 	 * 
-	 * The high order byte is <code>ipAddress[0]<\code>.
+	 * The high order byte is <code>ipAddress[0]</code>.
 	 *
 	 * @param 		ipAddress	either a 4 (IPv4) or 16 (IPv6) byte array
 	 * @param 		scope_id	the scope id for an IPV6 scoped address. If not a scoped
@@ -801,7 +801,7 @@ public class InetAddress extends Object implements Serializable {
 	 * The hostname either be a machine alias or a valid IPv6 or IPv4 address
 	 * format.
 	 * 
-	 * The high order byte is <code>ipAddress[0]<\code>.
+	 * The high order byte is <code>ipAddress[0]</code>.
 	 *
 	 * @param 		hostName	string representation of hostname or ip address
 	 * @param 		ipAddress	either a 4 (IPv4) or 16 (IPv6) byte array
@@ -827,7 +827,7 @@ public class InetAddress extends Object implements Serializable {
 	 * The hostname either be a machine alias or a valid IPv6 or IPv4 address
 	 * format.
 	 * 
-	 * The high order byte is <code>ipAddress[0]<\code>.
+	 * The high order byte is <code>ipAddress[0]</code>.
 	 *
 	 * @param 		hostName	string representation of hostname or ip address
 	 * @param 		ipAddress	either a 4 (IPv4) or 16 (IPv6) byte array

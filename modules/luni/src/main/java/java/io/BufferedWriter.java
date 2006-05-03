@@ -200,7 +200,7 @@ public class BufferedWriter extends Writer {
 
 	/**
 	 * Writes the character
-	 * <code>oneChar<code> BufferedWriter.  If the buffer is filled by
+	 * <code>oneChar</code> BufferedWriter.  If the buffer is filled by
 	 * writing this character, flush this Writer.  Only the lower 2 bytes are written.
 	 *
 	 * @param 		oneChar	The Character to write out.

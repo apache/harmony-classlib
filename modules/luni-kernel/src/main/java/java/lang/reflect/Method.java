@@ -149,6 +149,8 @@ public final class Method extends AccessibleObject implements Member {
 	 * </li>
 	 * </ul>
 	 * 
+	 * @param receiver
+	 * 	          The object on which to call the modelled method
 	 * @param args
 	 *            the arguments to the constructor
 	 * @return the new, initialized, object

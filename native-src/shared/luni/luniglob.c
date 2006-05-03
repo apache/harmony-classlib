@@ -37,8 +37,8 @@ void *JCL_ID_CACHE = NULL;
   */
 typedef struct props_file_entry
 {
-  char *key;                            /**< The key as it appears in the properties file */
-  char *value;                          /**< The value as it appears in the properties file */
+  char *key;                            /** The key as it appears in the properties file */
+  char *value;                          /** The value as it appears in the properties file */
 } props_file_entry;
 
 static jint readClassPathFromPropertiesFile (JavaVM * vm);

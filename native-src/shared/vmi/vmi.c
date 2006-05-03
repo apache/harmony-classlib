@@ -37,7 +37,7 @@ VMI_GetVMIFromJavaVM(JavaVM* vm)
 /**
  * Extract the VM Interface from a JNIEnv
  *
- * @param[in] vm  The JNIEnv to query
+ * @param[in] env  The JNIEnv to query
  *
  * @return a VMInterface pointer
  */

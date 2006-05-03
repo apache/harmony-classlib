@@ -1030,7 +1030,6 @@ hysock_freeaddrinfo (struct HyPortLibrary * portLibrary, hyaddrinfo_t handle)
 
 #define CDEV_CURRENT_FUNCTION hysock_getaddrinfo
 /**
- * \section hysock_getaddrinfo()
  * Answers a list of addresses as an opaque pointer in "result".
  * 
  * Use the following functions to extract the details:

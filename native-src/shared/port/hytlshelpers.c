@@ -25,7 +25,7 @@
  * This file contains the functions supported by the port library for creating, accessing and
  * destroying per thread buffers.@see hyportptb.h for details on the per thread buffer structure.
  *
- * Only the function @hyport_tls_free is available via the port library function table.  The rest of
+ * Only the function @ref hyport_tls_free is available via the port library function table.  The rest of
  * the functions are helpers for the port library only.
  */
 #include <string.h>

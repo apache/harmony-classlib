@@ -36,21 +36,21 @@ public interface CharSequence {
 	 *            of the character to return
 	 * @return character indicated by index
 	 * @throws IndexOutOfBoundsException
-	 *             when <code>index < 0</code> or
-	 *             <code>index<\code> >= the length of the <code>CharSequence</code>
+	 *             when <code>index &lt 0</code> or
+	 *             <code>index</code> &gt= the length of the <code>CharSequence</code>
 	 */
 	public char charAt(int index);
 
 	/**
-	 * Answers a CharSequence from the <code>start<\code> index to the
-	 * <code>end<\code> index of this sequence.
+	 * Answers a CharSequence from the <code>start</code> index to the
+	 * <code>end</code> index of this sequence.
 	 *
 	 * @param		start -- index of the start of the sub-sequence to return
 	 * @param		end -- index of the end of the sub-sequence to return
 	 * @return		the sub sequence from start to end
 	 * @throws		IndexOutOfBoundsException when 1. either index is below 0
-	 * 				2. either index >= <code>this.length()<\code>
-	 * 				3. <code>start > end <\code>
+	 * 				2. either index >= <code>this.length()</code>
+	 * 				3. <code>start > end </code>
 	 */
 	public CharSequence subSequence(int start, int end);
 

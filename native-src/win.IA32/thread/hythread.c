@@ -2356,7 +2356,6 @@ unblock_spinlock_threads (hythread_t self, hythread_monitor_t monitor)
  * @param[in] monitor a monitor to be waited on
  * @param[in] millis >=0
  * @param[in] nanos >=0
- * @param[in] interruptable non-zero if the wait is to be interruptable
  *
  * @return   0 the monitor has been waited on, notified, and reobtained<br>
  * HYTHREAD_INVALID_ARGUMENT if millis or nanos is out of range (millis or nanos < 0, or nanos >= 1E6)<br>
@@ -3539,7 +3538,7 @@ hythread_unpark (hythread_t thread)
  * allocated yet.
  * 
  * @param[out] handle pointer to a key to be initialized with a key value
- * @param[in] a finalizer function which will be invoked when a thread is
+ * @param[in] finalizer a finalizer function which will be invoked when a thread is
  * detached or terminates if the thread's TLS entry for this key is non-NULL
  * @return 0 on success or negative value if a key could not be allocated (i.e. all TLS has been allocated)
  * 

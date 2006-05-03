@@ -191,7 +191,7 @@ zipCache_new (HyPortLibrary * portLib, char *zipName, IDATA zipNameLength)
  *
  * @param[in] zipCache the zip cache being added to
  * @param[in] elementName the name of the file or directory element
- * @param[in] offset the corresponding offset of the element
+ * @param[in] elementOffset the corresponding offset of the element
  *
  * @return TRUE if the association was made, FALSE otherwise
  *

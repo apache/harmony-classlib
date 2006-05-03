@@ -258,7 +258,7 @@ public class PipedReader extends Reader {
 	 * read. Answers true if the buffer contains characters to be read.
 	 * 
 	 * @return boolean <code>true</code> if there are characters ready,
-	 *         <code>false<code> otherwise.
+	 *         <code>false</code> otherwise.
 	 *
 	 * @throws 		IOException If the reader is already closed or another IOException occurs.
 	 */

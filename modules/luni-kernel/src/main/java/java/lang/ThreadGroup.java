@@ -104,9 +104,9 @@ public class ThreadGroup {
 	 *            Name for the ThreadGroup being created
 	 * 
 	 * @throws NullPointerException
-	 *             if <code>parent<code> is <code>null<code>
+	 *             if <code>parent</code> is <code>null</code>
 	 * @throws		SecurityException 				if <code>checkAccess()</code> for the parent group fails with a SecurityException
-	 * @throws		IllegalThreadStateException 	if <code>parent<code> has been destroyed already
+	 * @throws		IllegalThreadStateException 	if <code>parent</code> has been destroyed already
 	 */
 	public ThreadGroup(ThreadGroup parent, String name) {
 		super();
@@ -381,8 +381,8 @@ public class ThreadGroup {
 
 	/**
 	 * Copies into <param>enumeration</param> starting at
-	 * </param>enumerationIndex</param> all Threads or ThreadGroups in the
-	 * receiver. If </param>recurse</param> is true, recursively enumerate the
+	 * <param>enumerationIndex</param> all Threads or ThreadGroups in the
+	 * receiver. If <param>recurse</param> is true, recursively enumerate the
 	 * elements in subgroups.
 	 * 
 	 * If the array passed as parameter is too small no exception is thrown -
@@ -391,7 +391,7 @@ public class ThreadGroup {
 	 * @param enumeration
 	 *            array into which the elements will be copied
 	 * @param recurse
-	 *            Indicates whether </param>recurseCollection</param> should be
+	 *            Indicates whether subgroups should be
 	 *            enumerated or not
 	 * @param enumerationIndex
 	 *            Indicates in which position of the enumeration array we are
@@ -667,7 +667,7 @@ public class ThreadGroup {
 		checkAccess();
 		this.isDaemon = isDaemon;
 	}
-
+	
 	/**
 	 * Configures the maximum allowed priority for a Thread in the receiver and
 	 * recursively in all its subgroups.
