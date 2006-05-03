@@ -245,7 +245,12 @@ public class FileInputStream extends InputStream implements Closeable{
 	 *             occurs.
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException {
-		openCheck();
+        if (count < 0 || offset < 0 || offset > buffer.length
+                || count > buffer.length - offset) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        openCheck();
         synchronized (repositioningLock) {
             return (int) fileSystem.read(fd.descriptor, buffer, offset, count);
         }

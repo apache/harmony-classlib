@@ -210,10 +210,44 @@ public class FileInputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
+    /**
+     * @tests java.io.FileInputStream#read(byte[], int, int))
+     */
+    public void test_regressionNNN() throws IOException {
+        // Regression for HARMONY-434
+        FileInputStream fis = new java.io.FileInputStream(fileName);
+
+        try {
+            fis.read(new byte[1], -1, 1);
+            fail("IndexOutOfBoundsException must be thrown if off <0");
+        } catch (IndexOutOfBoundsException e) {}
+
+        try {
+            fis.read(new byte[1], 0, -1);
+            fail("IndexOutOfBoundsException must be thrown if len <0");
+        } catch (IndexOutOfBoundsException e) {}
+
+        try {
+            fis.read(new byte[1], 0, 5);
+            fail("IndexOutOfBoundsException must be thrown if off+len > b.lengh");
+        } catch (IndexOutOfBoundsException e) {}
+
+        try {
+            fis.read(new byte[10], Integer.MAX_VALUE, 5);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException e) {}
+
+        try {
+            fis.read(new byte[10], 5, Integer.MAX_VALUE);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException e) {}
+        fis.close();
+    }
+
+    /**
+     * Sets up the fixture, for example, open a network connection. This method
+     * is called before a test is executed.
+     */
 	protected void setUp() {
 		try {
 			fileName = System.getProperty("user.dir");

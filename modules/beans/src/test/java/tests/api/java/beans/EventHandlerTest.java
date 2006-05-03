@@ -789,15 +789,15 @@ public class EventHandlerTest extends TestCase {
 	}
 
     /**
-     * @tests java.beans.EventHandler#create(Class<T> listenerInterface, Object
-     *        target, String action))
+     * @tests java.beans.EventHandler#create(java.lang.Class<T>,
+     *        java.lang.Object, java.lang.String))
      */
-	public void testEventHandlerCreate() {
-        //Regression for HARMONY-429
-		((FredListener) EventHandler.create(FredListener.class,
-				new Untitled1(), "i", "i"))
-				.fireFredEvent(new FredEvent("bean2"));
-	}
+    public void testEventHandlerCreate() {
+        // Regression for HARMONY-429
+        ((FredListener) EventHandler.create(FredListener.class,
+                new Untitled1(), "i", "i"))
+                .fireFredEvent(new FredEvent("bean2"));
+    }
 
     public interface FredListener extends EventListener {
 		public void fireFredEvent(FredEvent event);
