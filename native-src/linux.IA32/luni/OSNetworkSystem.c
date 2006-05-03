@@ -1,4 +1,5 @@
-/* Copyright 1998, 2005	The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its
+ * licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this	file except in compliance with the License.
@@ -14,14 +15,13 @@
  */
 
 #include "OSNetworkSystem.h"
-#include "helpers.h"
 #include "jcl.h"
 #include "nethelp.h"
+#include "helpers.h"
 #include "jclprots.h"
 #include "portsock.h"
 #include "socket.h"
 #include "jclglob.h"
-
 
 void setSocketImplPort (JNIEnv * env, jobject socketImpl, U_16 hPort);
 void setSocketImplAddress (JNIEnv * env, jobject socketImpl,
@@ -275,7 +275,6 @@ updateSocket (JNIEnv * env,
   setSocketImplPort (env, socketImpl, hysock_ntohs (nPort));
 }
 
-
 /*----------------------former cache get/set ------------------------------------
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -414,17 +413,17 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
   if (localCount > INTERNAL_RECEIVE_BUFFER_MAX)	
     {
       message =	hymem_allocate_memory (localCount);
+      if (message == NULL)
+        {
+          throwNewOutOfMemoryError (env, "");
+          return 0;	
+        }
     }
   else
     {
       message =	internalBuffer;	
     }
 
-  if (message == NULL)
-    {
-      throwNewOutOfMemoryError (env, "");
-      return 0;	
-    }
 
   result = hysock_read (hysocketP, (U_8 *) message, localCount, HYSOCK_NOFLAGS);
 
@@ -475,17 +474,18 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
   if (count > INTERNAL_SEND_BUFFER_MAX)	
     {
       message =	hymem_allocate_memory (count);
+      if (message == NULL)
+        {
+          throwNewOutOfMemoryError (env, "");
+          return 0;	
+        }
     }
   else
     {
       message =	internalBuffer;	
     }
 
-  if (message == NULL)
-    {
-      throwNewOutOfMemoryError (env, "");
-      return 0;	
-    }
+
   (*env)->GetByteArrayRegion (env, data, offset, count,	message);
   while	(sent <	count)
     {
@@ -515,7 +515,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
     {
       hymem_free_memory	(message);
     }
-#undef INTERNAL_MAX
+#undef INTERNAL_SEND_BUFFER_MAX
 
   /**
    * We	should always throw an exception if all	the data cannot	be sent	because	Java methods
@@ -547,7 +547,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_set
 	socketP	=getJavaIoFileDescriptorContentsAsAPointer (env, afd);
 	if (!hysock_socketIsValid (socketP))
     	{
-      		//throwJavaNetSocketException (env,	HYPORT_ERROR_SOCKET_BADSOCKET);	
+                // return silently, leave validation in real I/O operation
       		return ;
     	}
 	result = hysock_set_nonblocking(socketP,nonblocking);
@@ -675,6 +675,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
       
       /* set connext for	next call*/
       setConnectContext(env,passContext,context);
+
       if (0 == result)
 	{
 	  /* connected , so stop here */
@@ -691,6 +692,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
 	    (HYPORT_ERROR_SOCKET_ENETUNREACH ==	result)	||
 	    (HYPORT_ERROR_SOCKET_EACCES	== result))
 	    {
+              // This wasn't commented out on win.IA32 but I don't
+              // see why it shouldn't be the same on both platforms
 	      //hysock_connect_with_timeout (socketP, &sockaddrP,	
 	      //0,HY_PORT_SOCKET_STEP_DONE,
 	      //&context);
@@ -1063,38 +1066,43 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem
   hysockaddr_struct sockaddrP;
   U_32 scope_id = 0;
 
+  /* This method still needs work for IPv6 support */
+
   socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (socketP))
     {
       throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_BADSOCKET);
-      return;
+      return 0;
+    }
+
+  netGetJavaNetInetAddressValue (env, inetAddress, nlocalAddrBytes,
+                                 &length);
+
+  nPort = hysock_htons ((U_16) localPort);
+  if (length == HYSOCK_INADDR6_LEN)
+    {
+      netGetJavaNetInetAddressScopeId (env, inetAddress, &scope_id);
+      hysock_sockaddr_init6 (&sockaddrP, nlocalAddrBytes, length,
+                             HYADDR_FAMILY_AFINET6, nPort, 0, scope_id,
+                             socketP);
     }
   else
     {
-      netGetJavaNetInetAddressValue (env, inetAddress, nlocalAddrBytes,
-                                     &length);
-
-      nPort = hysock_htons ((U_16) localPort);
-      if (length == HYSOCK_INADDR6_LEN)
-        {
-          netGetJavaNetInetAddressScopeId (env, inetAddress, &scope_id);
-          hysock_sockaddr_init6 (&sockaddrP, nlocalAddrBytes, length,
-                                 HYADDR_FAMILY_AFINET6, nPort, 0, scope_id,
-                                 socketP);
-        }
-      else
-        {
-          hysock_sockaddr_init6 (&sockaddrP, nlocalAddrBytes, length,
-                                 HYADDR_FAMILY_AFINET4, nPort, 0, scope_id,
-                                 socketP);
-        }
-      result = hysock_bind (socketP, &sockaddrP);
-      if (0 != result)
-        {
-          throwJavaNetBindException (env, result);
-          return;
-        }
+      hysock_sockaddr_init6 (&sockaddrP, nlocalAddrBytes, length,
+                             HYADDR_FAMILY_AFINET4, nPort, 0, scope_id,
+                             socketP);
     }
+  result = hysock_bind (socketP, &sockaddrP);
+  if (0 != result)
+    {
+      throwJavaNetBindException (env, result);
+      return 0;
+    }
+
+  /* TOFIX: This matches the windows behaviour but it doesn't look right
+     result must be zero so the return code is zero from all paths.
+   */
+  return result;
 }
 
 
@@ -1870,17 +1878,17 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
   if (localCount > INTERNAL_RECEIVE_BUFFER_MAX)	
     {
       message =	hymem_allocate_memory (	localCount);
+      if (message == NULL)
+        {
+          throwNewOutOfMemoryError (env, "");
+          return 0;	
+        }
     }
   else
     {
       message =	internalBuffer;	
     }
 
-  if (message == NULL)
-    {
-      throwNewOutOfMemoryError (env, "");
-      return 0;	
-    }
   result =
     hysock_read	(hysocketP, (U_8 *) message, localCount, HYSOCK_NOFLAGS);
   if (result > 0)
@@ -1890,7 +1898,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
     {
       hymem_free_memory	( message);
     }
-#undef INTERNAL_MAX
+#undef INTERNAL_RECEIVE_BUFFER_MAX
 
   /* If	no bytes are read, return -1 to	signal 'endOfFile' to the Java input stream */
   if (0	< result)
@@ -1925,17 +1933,18 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
   if (count > INTERNAL_SEND_BUFFER_MAX)	
     {
       message =	hymem_allocate_memory (	count);	
+      if (message == NULL)
+        {
+          throwNewOutOfMemoryError (env, "");
+          return 0;	
+        }
     }
   else
     {
       message =	internalBuffer;	
     }
 
-  if (message == NULL)
-    {
-      throwNewOutOfMemoryError (env, "");
-      return 0;	
-    }
+
   (*env)->GetByteArrayRegion (env, data, offset, count,	message);
   while	(sent <	count)
     {
@@ -2099,97 +2108,6 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_cre
     (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env, thisObjFD);
   setPlatformBindOptions (env, socketP);
 }
-
-
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    selectImpl
- * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
- */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
-  (JNIEnv * env, jclass	thisClz, jobjectArray readFDArray, jobjectArray	writeFDArray,
-   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout){
-  PORT_ACCESS_FROM_ENV (env);
-  hytimeval_struct timeP;	
-  I_32 result =	0;		
-  I_32 size = 0;		
-  jobject gotFD;		
-  hyfdset_t fdset_read,fdset_write;
-  hysocket_t hysocketP;		
-  jboolean isCopy ;
-  jint *flagArray;
-  int val;
-
-  fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
-  fdset_write =	hymem_allocate_memory(sizeof (struct hyfdset_struct));
-  
-  FD_ZERO (&fdset_read->handle);
-  FD_ZERO (&fdset_write->handle);
-  for (val = 0; val<countReadC; val++){
-	  gotFD	= (*env)->GetObjectArrayElement(env,readFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
-	  /*No difference between ipv4 and ipv6 as in windows*/
-		FD_SET (hysocketP->sock, &fdset_read->handle);
-		if (0 >	(size -	hysocketP->sock))
-			size = hysocketP->sock;		
-	}
-  for (val = 0; val<countWriteC; val++){
-	  gotFD	= (*env)->GetObjectArrayElement(env,writeFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
-	  /*No difference between ipv4 and ipv6 as in windows*/
-	  FD_SET (hysocketP->sock, &fdset_write->handle);	
-		if (0 >	(size -	hysocketP->sock))
-			size = hysocketP->sock;	
-	}
-  /* the size is the max_fd + 1	*/
-  size =size + 1;
-
-  if (0	> size)	
-    {
-      result = HYPORT_ERROR_SOCKET_FDSET_SIZEBAD;
-    }
-  else
-    {
-      /* only set when timeout >= 0 (non-block)*/
-      if (0 <= timeout){
-	hysock_timeval_init ( 0, (I_32)timeout,	&timeP);
-	result = hysock_select (size, fdset_read, fdset_write, NULL,&timeP);
-      }	
-      else{
-	result = hysock_select (size, fdset_read, fdset_write, NULL,NULL);
-      }	
-    }
-    
-  if (0	< result){
-	  /*output the reslut to a int array*/
-	  flagArray = (*env)->GetIntArrayElements(env,outFlags,	&isCopy);
-	  for (val=0;val<countReadC;val++){
-		gotFD =	(*env)->GetObjectArrayElement(env,readFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
-		if (FD_ISSET(hysocketP->sock,&fdset_read->handle))
-			flagArray[val] = SOCKET_OP_READ;
-		else
-			flagArray[val] = SOCKET_OP_NONE;
-
-	 }
-		
-	  for (val=0;val<countWriteC;val++){
-		gotFD =	(*env)->GetObjectArrayElement(env,writeFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
-		if (FD_ISSET(hysocketP->sock,&fdset_write->handle))
-			flagArray[val+countReadC] = SOCKET_OP_WRITE;
-		else
-			flagArray[val+countReadC] = SOCKET_OP_NONE;
-
-		}
-	(*env)->ReleaseIntArrayElements(env,outFlags, flagArray, 0); 
-  }
-  hymem_free_memory(fdset_write);
-  hymem_free_memory(fdset_read);
-  /* return both correct and error result, let java code handle	the exception*/
-  return result;
-};
 
 
 /*
