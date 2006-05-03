@@ -15,15 +15,17 @@
 
 package java.lang;
 
-
 /**
  * This class is a placeholder class for the Java keyword <code>void</code>
+ * @since 1.1
  */
 public final class Void extends Object {
+    
 	/**
-	 * The java.lang.Class that represents this class.
-	 */
-	public static final Class TYPE;
+     * The {@link Class} instance that represents primitive type
+     * <code>void</code>.
+     */
+    public static final Class<Void> TYPE;
 	// Note: This can't be set to "void.class", since *that* is
 	// defined to be "java.lang.Void.TYPE";
 
