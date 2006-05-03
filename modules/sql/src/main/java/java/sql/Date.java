@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 00:00:00.000 GMT.  Time values passed to the java.sql.Date class are "normalised" to the time 
  * 00:00:00.000 GMT on the date implied by the time value.
  */
-public class Date extends java.util.Date implements Serializable, Cloneable, Comparable {
+public class Date extends java.util.Date {
 
 	private static final long serialVersionUID = 1511598038487230103L;
 	

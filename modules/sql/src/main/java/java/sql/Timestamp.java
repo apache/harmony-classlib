@@ -37,7 +37,7 @@ import java.text.ParsePosition;
  * java.util.Date objects when used outside the confines of the java.sql package.  
  * 
  */
-public class Timestamp extends Date implements Serializable, Cloneable, Comparable {
+public class Timestamp extends Date {
 	
 	private static final long serialVersionUID = 2745179027874758501L;
 	
@@ -132,7 +132,7 @@ public class Timestamp extends Date implements Serializable, Cloneable, Comparab
 	 * Timestamp
 	 * @throws ClassCastException if the supplied object is not a Timestamp object
 	 */
-	public int	compareTo( Object theObject ) throws ClassCastException {
+	public int compareTo( Date theObject ) throws ClassCastException {
 		return this.compareTo( (Timestamp) theObject );
 	} // end method compareTo( Object )
     

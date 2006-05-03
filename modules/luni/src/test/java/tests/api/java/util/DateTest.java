@@ -147,34 +147,6 @@ public class DateTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.util.Date#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int java.util.Date.compareTo(java.lang.Object)
-		final int someNumber = 10000;
-		Date d1 = new Date(someNumber);
-		Date d2 = new Date(someNumber);
-		Date d3 = new Date(someNumber + 1);
-		Date d4 = new Date(someNumber - 1);
-		Integer i = new Integer(0);
-		assertEquals("Comparing a date to itself did not answer zero", 0, d1
-				.compareTo((Object) d1));
-		assertEquals("Comparing equal dates did not answer zero", 0, d1
-				.compareTo((Object) d2));
-		assertEquals("date1.compareTo(date2), where date1 > date2, did not result in 1",
-				1, d1.compareTo((Object) d4));
-		assertEquals("date1.compareTo(date2), where date1 < date2, did not result in -1",
-				-1, d1.compareTo((Object) d3));
-		try {
-			d1.compareTo(i);
-		} catch (ClassCastException e) {
-			return;
-		}
-		fail(
-				"Comparing a date to a non-date did not throw ClassCastException");
-	}
-
-	/**
 	 * @tests java.util.Date#compareTo(java.util.Date)
 	 */
 	public void test_compareToLjava_util_Date() {

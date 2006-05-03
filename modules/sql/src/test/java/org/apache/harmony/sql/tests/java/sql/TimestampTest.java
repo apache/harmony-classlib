@@ -16,6 +16,7 @@
 package org.apache.harmony.sql.tests.java.sql;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.TimeZone;
 
 import junit.framework.TestCase;
@@ -561,23 +562,23 @@ public class TimestampTest extends TestCase {
 
 	} // end method testcompareToTimestamp
 
-	/*
-	 * Method test for compareTo
+	/**
+	 * @tests java.sql.Timestamp#compareTo(java.util.Date)
 	 */
-	public void testCompareToObject() {
-		Object theTest = new Timestamp(TIME_EARLY);
-		Object theTest2 = new Timestamp(TIME_LATE);
+	public void testCompareToDate() {
+		Date theTest = new Timestamp(TIME_EARLY);
+		Date theTest2 = new Timestamp(TIME_LATE);
 
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			Object theTimestamp2 = new Timestamp(TIME_ARRAY[i]);
+			Date theTimestamp2 = new Timestamp(TIME_ARRAY[i]);
 
 			assertTrue(theTimestamp.compareTo(theTest) > 0);
 			assertTrue(theTimestamp.compareTo(theTest2) < 0);
 			assertEquals(0, theTimestamp.compareTo(theTimestamp2));
 		} // end for
 
-		Object nastyTest = new String("Test ");
+		Date nastyTest = new Date();
 		Timestamp theTimestamp = new Timestamp(TIME_ARRAY[1]);
 		try {
 			theTimestamp.compareTo(nastyTest);

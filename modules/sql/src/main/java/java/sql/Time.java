@@ -26,7 +26,7 @@ import java.util.Date;
  * interpretation of JDBC escape format for time values.
  * 
  */
-public class Time extends Date implements Serializable, Cloneable, Comparable {
+public class Time extends Date {
 	
 	private static final long serialVersionUID = 8397324403548013681L;
 

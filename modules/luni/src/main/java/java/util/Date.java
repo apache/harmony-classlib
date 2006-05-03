@@ -33,7 +33,7 @@ import java.text.SimpleDateFormat;
  * @see SimpleTimeZone
  * @see TimeZone
  */
-public class Date implements Serializable, Cloneable, Comparable {
+public class Date implements Serializable, Cloneable, Comparable<Date> {
 	
 	private static final long serialVersionUID = 7523967970034938905L;
 
@@ -178,22 +178,6 @@ public class Date implements Serializable, Cloneable, Comparable {
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
-	}
-
-	/**
-	 * Compare the receiver to the specified Object to determine the relative
-	 * ordering.
-	 * 
-	 * @param object
-	 *            an Object
-	 * @return an int < 0 if this Date is less than the specified Date, 0 if
-	 *         they are equal, and > 0 if this Date is greater
-	 * 
-	 * @exception ClassCastException
-	 *                when object is not a Date
-	 */
-	public int compareTo(Object object) {
-		return compareTo((Date) object);
 	}
 
 	/**
