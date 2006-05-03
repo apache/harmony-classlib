@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony Test Support
+Bundle-SymbolicName: org.apache.harmony.support
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Require-Bundle: org.apache.harmony.luni,
+ org.apache.harmony.archive,
+ org.apache.harmony.nio_char,
+ org.apache.harmony.text,
+ org.apache.harmony.nio,
+ org.apache.harmony.security,
+ org.apache.harmony.xml.xerces,
+ org.apache.harmony.xml.xalan
+Export-Package: tests.support;hy_usage="test";mandatory="hy_usage",
+ tests.support.resource;hy_usage="test";mandatory="hy_usage",
+ tests.util;hy_usage="test";mandatory="hy_usage"
