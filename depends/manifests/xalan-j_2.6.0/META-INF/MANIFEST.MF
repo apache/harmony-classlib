@@ -5,4 +5,5 @@ Bundle-SymbolicName: org.apache.harmony.xml.xalan
 Bundle-Version: 2.6.0
 Bundle-ClassPath: xalan.jar
 Eclipse-JREBundle: true
-Export-Package: org.apache.xpath
+Export-Package: org.apache.xpath,
+ org.apache.xpath.objects
