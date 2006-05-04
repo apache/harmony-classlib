@@ -65,13 +65,23 @@ public class PropertyChangeSupportTest extends TestCase {
      *        java.lang.Object)
      */
     public void testConstructor_Null() {
+        // Regression for HARMONY-227
         try {
-            // Regression for HARMONY-227
             new PropertyChangeSupport(null);
             fail("Should throw NullPointerException!");
         } catch (NullPointerException ex) {
             // expected
         }
+    }
+
+    /**
+     * @tests java.beans.PropertyChangeSupport#addPropertyChangeSupport
+     * 
+     */
+    public void test_addPropertyChangeListenerNullNull() throws Exception {
+        // Regression for HARMONY-441
+        new PropertyChangeSupport("bean1")
+                .addPropertyChangeListener(null, null);
     }
 
     /**

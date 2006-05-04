@@ -86,19 +86,17 @@ public class PropertyChangeSupport implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public synchronized void addPropertyChangeListener(
-            String propertyName, PropertyChangeListener listener) {
-        if(propertyName == null) {
-            throw new NullPointerException("propertyName is null");
-        } else if(listener != null) {
-            ArrayList listeners =
-                (ArrayList) selectedPropertiesChangeListeners.get(propertyName);
-            
+    public synchronized void addPropertyChangeListener(String propertyName,
+            PropertyChangeListener listener) {
+        if (listener != null && propertyName != null) {
+            ArrayList listeners = (ArrayList) selectedPropertiesChangeListeners
+                    .get(propertyName);
+
             if (listeners == null) {
                 listeners = new ArrayList();
                 selectedPropertiesChangeListeners.put(propertyName, listeners);
             }
-            
+
             listeners.add(listener);
         }
     }
