@@ -34,7 +34,7 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.harmony.misc.Base64;
+import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.security.support.cert.TestUtils;
 
 import junit.framework.Test;

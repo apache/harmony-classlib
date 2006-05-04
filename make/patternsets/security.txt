@@ -19,4 +19,4 @@ java/security/interfaces/*
 java/security/spec/*
 javax/security/cert/*
 org/apache/harmony/security/**/*
-org/apache/harmony/misc/*
+

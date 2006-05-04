@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.misc;
+package org.apache.harmony.luni.util;
 
 import java.io.UnsupportedEncodingException;
 

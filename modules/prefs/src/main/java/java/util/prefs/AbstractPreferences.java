@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import org.apache.harmony.misc.Base64;
+import org.apache.harmony.luni.util.Base64;
 
 /**
  * This class is partly implementation of <code>Preferences</code>, which can be 

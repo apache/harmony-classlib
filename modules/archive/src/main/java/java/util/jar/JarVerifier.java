@@ -32,10 +32,10 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
-import org.apache.harmony.misc.Base64;
 
 import org.apache.harmony.security.utils.JarUtils;
 
+import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.luni.util.Msg;
 
 /**

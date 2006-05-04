@@ -36,7 +36,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.harmony.misc.Base64;
+import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.security.asn1.BerInputStream;
 
 /**

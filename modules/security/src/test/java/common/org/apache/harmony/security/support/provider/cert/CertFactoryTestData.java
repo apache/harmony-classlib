@@ -21,7 +21,7 @@
 
 package org.apache.harmony.security.support.provider.cert;
 
-import org.apache.harmony.misc.Base64;
+import org.apache.harmony.luni.util.Base64;
 
 /**
  * Class contains the base 64 encodings of X.509 certificates,

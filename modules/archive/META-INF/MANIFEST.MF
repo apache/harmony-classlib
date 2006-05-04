@@ -18,7 +18,6 @@ Import-Package: java.beans,
  java.util,
  javax.security.auth.x500,
  org.apache.harmony.luni.util,
- org.apache.harmony.misc,
  org.apache.harmony.security.utils,
  tests.support;hy_usage=test;resolution:=optional,
  tests.support.resource;hy_usage=test;resolution:=optional
