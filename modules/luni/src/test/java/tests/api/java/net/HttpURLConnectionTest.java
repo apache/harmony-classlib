@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,9 +145,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
 						+ Support_Configuration.InetTestAddress);
 				URLConnection conn = u.openConnection();
 				conn.getInputStream();
-			} catch (ConnectException e) {
-				exception = true;
-			} catch (UnknownHostException e) {
+			} catch (IOException e) {
 				exception = true;
 			} catch (Exception e) {
 				exception = false;

@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,38 @@
 package org.apache.harmony.luni.internal.net.www.protocol.http;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
-import java.net.*;
-import java.util.*;
+import java.net.Authenticator;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.ProtocolException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketPermission;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.net.UnknownServiceException;
 import java.security.AccessController;
-import org.apache.harmony.luni.util.PriviAction;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.apache.harmony.luni.net.NetUtil;
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * This subclass extends <code>HttpURLConnection</code> which in turns extends <code>URLConnection</code>
@@ -47,7 +68,19 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 	private String proxyName;
 	private int hostPort = -1;
 	private int readTimeout = -1;
-
+	
+	// proxy which is used to make the connection.
+	private Proxy proxy = null;
+	
+	// the proxy list which is used to make the connection.
+	private List proxyList = null;
+	
+	// the current proxy which is used to make the connection.
+	private Proxy currentProxy;
+	
+	// the destination uri
+	private URI uri = null;
+	
 	// default request header
 	private static Header defaultReqHeader = new Header();
 
@@ -247,7 +280,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 	}
 
 /**
- * Creates a instance of the <code>HttpURLConnection</code>
+ * Creates an instance of the <code>HttpURLConnection</code>
  * using default port 80.
  * @param url URL	The URL this connection is connecting
  */
@@ -256,7 +289,7 @@ protected HttpURLConnection(URL url) {
 }
 
 /**
- * Creates a instance of the <code>HttpURLConnection</code>
+ * Creates an instance of the <code>HttpURLConnection</code>
  * @param url URL	The URL this connection is connecting
  * @param port int	The default connection port
  */
@@ -265,8 +298,28 @@ protected HttpURLConnection(URL url, int port) {
 	defaultPort = port;
 
 	reqHeader = (Header)defaultReqHeader.clone();
-
+	try {
+		uri = url.toURI();
+	} catch (URISyntaxException e) {
+		// do nothing.
+	}
 }
+
+	/**
+	 * Creates an instance of the <code>HttpURLConnection</code>
+	 * 
+	 * @param url
+	 *            URL The URL this connection is connecting
+	 * @param port
+	 *            int The default connection port
+	 * @param proxy
+	 *            Proxy The proxy which is used to make the connection
+	 */
+	protected HttpURLConnection(URL url, int port, Proxy proxy) {
+		this(url, port);
+		this.proxy = proxy;
+	}
+
 /**
  * Establishes the connection to the remote HTTP server
  *
@@ -280,7 +333,18 @@ protected HttpURLConnection(URL url, int port) {
  */
 public void connect() throws java.io.IOException {
 	if (connected) return;
-	Socket socket = new Socket(getHostAddress(), getHostPort());
+	Socket socket;
+	
+	InetAddress host = getHostAddress();
+	int port = getHostPort();
+	if(null == currentProxy || Proxy.Type.HTTP == currentProxy.type()){
+		socket = new Socket(host, port);
+	}else{
+		socket = new Socket(currentProxy);
+		SocketAddress sa = new InetSocketAddress(host, port);
+		socket.connect(sa);
+	}
+	
 	if (readTimeout >= 0) socket.setSoTimeout(readTimeout);
 	connected = true;
 	socketOut = socket.getOutputStream();
@@ -824,15 +888,24 @@ public void addRequestProperty(String field, String value) {
  * proxy port if a proxy port has been set.
  */
 private int getHostPort() {
-	if (hostPort != -1) return hostPort;
-	String portString = getSystemPropertyOrAlternative("http.proxyPort", "proxyPort");
-	if (portString != null && usingProxy()) {
-		hostPort = Integer.parseInt(portString);
-	} else {
+	if(usingProxy()){
+		if(null == currentProxy){
+			// get from system property
+			String portString = getSystemPropertyOrAlternative("http.proxyPort", "proxyPort");
+			if (portString != null) {
+				hostPort = Integer.parseInt(portString);
+			}
+		}else{
+			// get from proxy
+			InetSocketAddress addr = (InetSocketAddress) currentProxy.address();
+			hostPort = addr.getPort();
+		}
+	}else{
 		hostPort = url.getPort();
 	}
-
-	if (hostPort < 0) hostPort = defaultPort;
+	if (hostPort < 0){ 
+		hostPort = defaultPort;
+	}
 	return hostPort;
 }
 
@@ -855,7 +928,12 @@ private String getHostName() {
 		return proxyName;
 	}
 	if (usingProxy()) {
-	    proxyName = getSystemPropertyOrAlternative("http.proxyHost", "proxyHost");
+		if(null == currentProxy){
+			proxyName = getSystemPropertyOrAlternative("http.proxyHost", "proxyHost");
+		}else{
+			InetSocketAddress addr = (InetSocketAddress)currentProxy.address();
+			proxyName = addr.getHostName();
+		}
 		return proxyName;
 	}
 	return url.getHost();
@@ -879,6 +957,13 @@ private String getSystemProperty(final String property) {
  * Need to check both proxy* and http.proxy* because of change between JDK 1.0 and JDK 1.1
  */
 public boolean usingProxy() {
+	if(Proxy.NO_PROXY == currentProxy){
+		return false;
+	}
+	// using proxy if http proxy is set by caller.
+	if(null != currentProxy && Proxy.Type.HTTP == currentProxy.type()){
+		return true;
+	}
 	// First check whether the user explicitly set whether to use a proxy.
     String proxySet = getSystemProperty("http.proxySet");
 	if (proxySet != null) return proxySet.toLowerCase().equals("true");
@@ -890,6 +975,7 @@ public boolean usingProxy() {
 	if (getSystemProperty("http.proxyHost") != null) return true;
 	return getSystemProperty("proxyHost") != null;
 }
+
 
 /**
  * Handles an HTTP request along with its redirects and authentication
@@ -908,7 +994,43 @@ void doRequest() throws java.io.IOException {
 		}
 		return;
 	}
+	// Use system-wide ProxySelect to select proxy list,
+	// then try to connect via elements in the proxy list.
+	if(null != proxy){
+		proxyList = new ArrayList(1);
+		proxyList.add(proxy);
+	}else{
+		proxyList = NetUtil.getProxyList(uri);
+	}
+	if(null == proxyList){
+		currentProxy = null;
+		doRequestInternal();
+	}else{
+		// try the proxy list until one of them establish
+		// the connection successfully.
+		ProxySelector selector = ProxySelector.getDefault();
+		Iterator iter = proxyList.iterator();
+		boolean doRequestOK = false;
+		while(iter.hasNext() && !doRequestOK){
+			currentProxy = (Proxy)iter.next();
+			try{
+				doRequestInternal();
+				doRequestOK = true;
+			}catch(IOException ioe){
+				// if connect failed, callback method "connectFailed" 
+				// should be invoked.
+				if(null != selector && Proxy.NO_PROXY != currentProxy){
+					selector.connectFailed(uri, currentProxy.address(), ioe);
+				}
+			}
+		}
+		if(!doRequestOK){
+			throw new IOException(Msg.getString("K0097"));
+		}
+	}
+}
 
+void doRequestInternal() throws java.io.IOException {
 	int redirect = 0;
 	while(true) {
 		// send the request and process the results

@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketPermission;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.security.Permission;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.harmony.luni.internal.net.www.MimeTable;
-
+import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.util.Msg;
 
 public class FtpURLConnection extends URLConnection {
@@ -77,6 +86,12 @@ public class FtpURLConnection extends URLConnection {
 	//private static final int FTP_ERROR = 500;
 
 	private static final int FTP_NOTFOUND = 550;
+	
+	private Proxy proxy = null;
+	
+	private Proxy currentProxy = null;
+	
+	private URI uri = null;
 
 	/**
 	 * FtpURLConnection constructor comment.
@@ -96,8 +111,27 @@ public class FtpURLConnection extends URLConnection {
 			} else
 				USERNAME = parse;
 		}
+		uri = null;
+		try {
+			uri = url.toURI();
+		} catch (URISyntaxException e) {
+			// do nothing.
+		}
 	}
 
+	/**
+	 * FtpURLConnection constructor.
+	 * 
+	 * @param url
+	 *            java.net.URL
+	 * @param proxy
+	 *            java.net.Proxy
+	 */
+	protected FtpURLConnection(URL url, Proxy proxy) {
+		this(url);
+		this.proxy = proxy;
+	}
+	
 	/* Change the server directory to that specfied in the URL */
 	private void cd() throws IOException {
 		int idx = url.getFile().lastIndexOf('/');
@@ -124,10 +158,52 @@ public class FtpURLConnection extends URLConnection {
 	 * @see URLStreamHandler
 	 */
 	public void connect() throws IOException {
+		// Use system-wide ProxySelect to select proxy list,
+		// then try to connect via elements in the proxy list.
+		List proxyList = null;
+		if(null != proxy){
+			proxyList = new ArrayList(1);
+			proxyList.add(proxy);
+		}else{
+			proxyList = NetUtil.getProxyList(uri);
+		}
+		if(null == proxyList){
+			currentProxy = null;
+			connectInternal();
+		}else{
+			ProxySelector selector = ProxySelector.getDefault();
+			Iterator iter = proxyList.iterator();
+			boolean connectOK = false;
+			while(iter.hasNext() && !connectOK){
+				currentProxy = (Proxy)iter.next();
+				try{
+					connectInternal();
+					connectOK = true;
+				}catch(IOException ioe){
+					// If connect failed, callback "connectFailed" 
+					// should be invoked.
+					if(null != selector && Proxy.NO_PROXY != currentProxy){
+						selector.connectFailed(uri, currentProxy.address(), ioe);
+					}
+				}
+			}
+			if(!connectOK){
+				throw new IOException(Msg.getString("K0097"));
+			}
+		}
+	}
+	private void connectInternal() throws IOException {
 		int port = url.getPort();
 		if (port <= 0)
 			port = FTP_PORT;
-		controlSocket = new Socket(hostName, port);
+		if(null == currentProxy || Proxy.Type.HTTP == currentProxy.type()){
+			controlSocket = new Socket(hostName,port);
+		}else{
+			controlSocket = new Socket(currentProxy);
+			InetSocketAddress addr = new InetSocketAddress(hostName,port);
+			controlSocket.connect(addr);
+		}
+		
 		connected = true;
 		ctrlOutput = controlSocket.getOutputStream();
 		ctrlInput = controlSocket.getInputStream();

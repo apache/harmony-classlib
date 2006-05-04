@@ -19,12 +19,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
+import java.security.Permission;
+import java.util.ArrayList;
+import java.util.List;
 
 import tests.support.Support_Configuration;
 import tests.support.resource.Support_Resources;
@@ -53,6 +61,8 @@ public class URLTest extends junit.framework.TestCase {
 	URL u6;
 
 	boolean caught = false;
+	
+	static boolean isSelectCalled;
 
 	/**
 	 * @tests java.net.URL#setURLStreamHandlerFactory(java.net.URLStreamHandlerFactory)
@@ -1057,6 +1067,99 @@ public class URLTest extends junit.framework.TestCase {
         URI uri = u.toURI();
         assertTrue(u.equals(uri.toURL()));
     }
+    
+    /**
+     * @tests java.net.URL#openConnection(Proxy)
+     */
+    public void test_openConnectionLjava_net_Proxy() throws IOException {
+		SocketAddress addr1 = new InetSocketAddress(
+				Support_Configuration.ProxyServerTestHost, 808);
+		SocketAddress addr2 = new InetSocketAddress(
+				Support_Configuration.ProxyServerTestHost, 1080);
+		Proxy proxy1 = new Proxy(Proxy.Type.HTTP, addr1);
+		Proxy proxy2 = new Proxy(Proxy.Type.SOCKS, addr2);
+		Proxy proxyList[] = { proxy1, proxy2 };
+		for (int i = 0; i < proxyList.length; ++i) {
+			try {
+				String posted = "just a test";
+				URL u = new URL("http://"
+						+ Support_Configuration.ProxyServerTestHost
+						+ "/cgi-bin/test.pl");
+				java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
+						.openConnection(proxyList[i]);
+				conn.setDoOutput(true);
+				conn.setRequestMethod("POST");
+				conn.setRequestProperty("Content-length", String.valueOf(posted
+						.length()));
+				OutputStream out = conn.getOutputStream();
+				out.write(posted.getBytes());
+				out.close();
+				conn.getResponseCode();
+				InputStream is = conn.getInputStream();
+				String response = "";
+				byte[] b = new byte[1024];
+				int count = 0;
+				while ((count = is.read(b)) > 0){
+					response += new String(b, 0, count);
+				}
+				assertTrue("Response to POST method invalid", response
+						.equals(posted));
+			}  catch (Exception e) {
+				fail("Unexpected exception connecting to proxy : "
+						+ proxyList[i] + e.getMessage());
+			}
+		}
+		
+		URL httpUrl = new URL("http://abc.com");
+		URL jarUrl = new URL("jar:"
+				+ Support_Resources.getResourceURL("/JUC/lf.jar!/plus.bmp"));
+		URL ftpUrl = new URL("ftp://" + Support_Configuration.FTPTestAddress
+				+ "/nettest.txt");
+		URL fileUrl = new URL("file://abc");
+		URL[] urlList = { httpUrl, jarUrl, ftpUrl, fileUrl };
+		for (int i = 0; i < urlList.length; ++i) {
+			try {
+				urlList[i].openConnection(null);
+			} catch (IllegalArgumentException iae) {
+				// expected
+			}
+		}
+		// should not throw exception
+		fileUrl.openConnection(Proxy.NO_PROXY);
+	}
+    
+ 
+    /**
+     * @tests java.net.URL#openConnection()
+     */
+	public void test_openConnection_SelectorCalled()
+			throws MalformedURLException {
+		URL httpUrl = new URL("http://"
+				+ Support_Configuration.ProxyServerTestHost
+				+ "/cgi-bin/test.pl");
+		URL ftpUrl = new URL("ftp://" + Support_Configuration.FTPTestAddress
+				+ "/nettest.txt");
+		URL[] urlList = { httpUrl, ftpUrl };
+		ProxySelector orignalSelector = ProxySelector.getDefault();
+		ProxySelector.setDefault(new MockProxySelector());
+		try {
+			for (int i = 0; i < urlList.length; ++i) {
+				try {
+					isSelectCalled = false;
+					URLConnection conn = urlList[i].openConnection();
+					conn.getInputStream();
+				} catch (Exception e) {
+					// ignore
+				}
+				assertTrue(
+						"openConnection should call ProxySelector.select(), url = "
+								+ urlList[i], isSelectCalled);
+			}
+		} finally {
+			ProxySelector.setDefault(orignalSelector);
+
+		}
+	}
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
@@ -1070,5 +1173,36 @@ public class URLTest extends junit.framework.TestCase {
 	 * method is called after a test is executed.
 	 */
 	protected void tearDown() {
+	}
+	
+	static class MockProxySelector extends ProxySelector {
+
+		public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+			System.out.println("connection failed");
+		}
+
+		public List select(URI uri) {
+			isSelectCalled = true;
+			ArrayList proxyList = new ArrayList(1);
+			proxyList.add(Proxy.NO_PROXY);
+			return proxyList;
+		}
+	}
+
+	static class MockSecurityManager extends SecurityManager {
+
+		public void checkConnect(String host, int port) {
+			if ("127.0.0.1".equals(host)) {
+				throw new SecurityException("permission is not allowed");
+			}
+		}
+
+		public void checkPermission(Permission permission) {
+			if ("setSecurityManager".equals(permission.getName())) {
+				return;
+			}
+			super.checkPermission(permission);
+		}
+
 	}
 }

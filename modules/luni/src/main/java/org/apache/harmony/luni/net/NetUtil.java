@@ -15,7 +15,10 @@
 package org.apache.harmony.luni.net;
 
 import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.URI;
 import java.security.AccessController;
+import java.util.List;
 
 import org.apache.harmony.luni.util.PriviAction;
 
@@ -71,6 +74,22 @@ public class NetUtil {
     	String result = (String) AccessController.doPrivileged(new PriviAction(
     			"java.net.preferIPv4Stack"));
         return "true".equals(result);
+    }
+
+    /**
+     * Gets proxy list according to the uri by system ProxySelector.
+     * @param uri
+     * @return a list of proxy for the uri. Returns null if no proxy 
+     * 		   is available.
+     */
+    public static List getProxyList(URI uri){
+		// use system default selector to get proxy list
+		ProxySelector selector = ProxySelector.getDefault();
+		if(null == selector){
+			return null;
+		}
+		List proxyList = selector.select(uri);
+    	return proxyList;
     }
 
 }

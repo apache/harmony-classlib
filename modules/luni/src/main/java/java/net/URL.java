@@ -22,6 +22,7 @@ import java.security.AccessController;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -637,6 +638,33 @@ public final class URL implements java.io.Serializable {
 		return new URI(toExternalForm());
 	}
 
+	/**
+	 * The method is the same as <code>openConnection()</code> except that it 
+	 * uses the <code>proxy</code> to establish a connection to this URL using
+	 * appropriate ProtocolHandler. 
+	 * 
+	 * @return The connection to this URL.
+	 * @param proxy
+	 *            the proxy which is used to make the connection
+	 * 
+	 * @exception IOException
+	 *                thrown if an IO error occurs during connection
+	 *                establishment
+	 * @exception SecurityException
+	 * 			      thrown if a security manager is installed and it denies 
+	 *                the permission to connect to the proxy. 	
+	 * @exception IllegalArgumentException
+	 *                thrown if the proxy is null or of an invalid type.
+	 * @exception UnsupportedOperationException
+	 *                thrown if the protocol handler doesn't support this method.
+	 */
+	public URLConnection openConnection(Proxy proxy) throws IOException {
+		if(null == proxy){
+			throw new IllegalArgumentException(Msg.getString("K034c"));
+		}
+		return strmHandler.openConnection(this, proxy);
+	}
+	
 	/**
 	 * Answers a string containing a concise, human-readable description of the
 	 * receiver.

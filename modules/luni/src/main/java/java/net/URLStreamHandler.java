@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package java.net;
 
 import java.io.IOException;
 
+import org.apache.harmony.luni.util.Msg;
+
 /**
  * The abstract superclass of all classes that implement Protocol Handler.
  */
@@ -36,6 +38,30 @@ public abstract class URLStreamHandler {
 	 *                establishment
 	 */
 	protected abstract URLConnection openConnection(URL u) throws IOException;
+	
+	/**
+	 * The method is the same as <code>openConnection(URL u)</code> except 
+	 * that it uses the <code>proxy</code> to establish a connection to the 
+	 * <code>URL</code>. Since different protocols may have different ways of
+	 * connecting, it must be overwritten by the subclass.
+	 * 
+	 * @return java.net.URLConnection
+	 * @param u
+	 *            java.net.URL
+	 * @param proxy
+	 *            the proxy which is used to make the connection
+	 * 
+	 * @throws IOException
+	 *                thrown if an IO error occurs during connection
+	 *                establishment
+	 * @throws IllegalArgumentException
+	 *             if any argument is null or the type of proxy is wrong.
+	 * @throws UnsupportedOperationException
+	 *             if the protocol handler doesn't support this method.
+	 */
+	protected URLConnection openConnection(URL u, Proxy proxy) throws IOException{
+		throw new UnsupportedOperationException(Msg.getString("K034d"));
+	}
 
 	/**
 	 * Parse the <code>string</code>str into <code>URL</code> using u's

@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,12 @@
 package org.apache.harmony.luni.internal.net.www.protocol.file;
 
 
+import java.io.IOException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This is the handler that is responsible for reading files from the file
@@ -37,6 +41,32 @@ public class Handler extends java.net.URLStreamHandler {
 	 * 
 	 */
 	public URLConnection openConnection(URL url) {
+		return new FileURLConnection(url);
+	}
+	
+	/**
+	 * The behaviour of this method is the same as openConnection(URL).
+	 * <code>proxy</code> is not used in FileURLConnection.
+	 * 
+	 * @param u
+	 *            the URL which the connection is pointing to
+	 * @param proxy
+	 *            java.net.Proxy
+	 * @return a connection to the resource pointed by this url.
+	 * 
+	 * @throws IOException
+	 *             if this handler fails to establish a connection.
+	 * @throws IllegalArgumentException
+	 *             if any argument is null or of an invalid type.
+	 * @throws UnsupportedOperationException
+	 *             if the protocol handler doesn't support this method.
+	 */
+
+	public URLConnection openConnection(URL url, Proxy proxy)
+			throws IOException {
+		if (null == url || null == proxy) {
+			throw new IllegalArgumentException(Msg.getString("K034b"));
+		}
 		return new FileURLConnection(url);
 	}
 
