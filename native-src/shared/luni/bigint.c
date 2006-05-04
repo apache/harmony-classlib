@@ -14,6 +14,7 @@
  */
 
 #include "jcl.h"
+#include <string.h>
 
 /* macros for Endian portability
 		at() mangles array indices to count 1,0,3,2,5,4,... on BigEndian platforms

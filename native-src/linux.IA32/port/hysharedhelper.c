@@ -17,6 +17,8 @@
 #include "hyport.h"
 #include "portpriv.h"
 #include "ut_hyprt.h"
+#include <sys/stat.h>
+#include <string.h>
 
 #define SUCCESS 0
 #define FAILED -1

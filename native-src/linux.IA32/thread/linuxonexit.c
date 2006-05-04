@@ -17,6 +17,8 @@
 #include "linuxonexit.h"
 
 #include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 #define __USE_GNU
 #include <dlfcn.h>

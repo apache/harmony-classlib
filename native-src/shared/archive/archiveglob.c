@@ -23,6 +23,7 @@
 #include "jcl.h"
 #include "jclglob.h"
 #include "zip.h"
+#include <string.h>
 
 static UDATA keyInitCount = 0;
 

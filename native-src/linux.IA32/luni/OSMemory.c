@@ -18,6 +18,7 @@
  */
 
 #include <sys/mman.h>
+#include <string.h>
 #include <harmony.h>
 #include "OSMemory.h"
 #include "IMemorySystem.h"

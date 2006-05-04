@@ -20,6 +20,8 @@
 #include <unistd.h>
 #include <setjmp.h>
 #include <semaphore.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include <jsig.h>
 
