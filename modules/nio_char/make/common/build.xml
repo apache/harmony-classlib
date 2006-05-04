@@ -107,13 +107,11 @@
                     <exclude name="tests/api/java/nio/charset/ConcreteCharsetTest.java"/>
                     <exclude name="tests/api/java/nio/charset/GBCharsetEncoderTest.java"/>
                     <exclude name="tests/api/java/nio/charset/ISOCharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/IllegalCharsetNameExceptionTest.java"/>
                     <exclude name="tests/api/java/nio/charset/UTF16BECharsetEncoderTest.java"/>
                     <exclude name="tests/api/java/nio/charset/UTF16CharsetDecoderTest.java"/>
                     <exclude name="tests/api/java/nio/charset/UTF16CharsetEncoderTest.java"/>
                     <exclude name="tests/api/java/nio/charset/UTF16LECharsetEncoderTest.java"/>
                     <exclude name="tests/api/java/nio/charset/UTFCharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/UnsupportedCharsetExceptionTest.java"/>
                 </fileset>
             </batchtest>
         </junit>

@@ -124,7 +124,6 @@
                     <include name="org/apache/harmony/logging/tests/java/util/logging/*Test.java"/>
                     <exclude name="org/apache/harmony/logging/tests/java/util/logging/FileHandlerTest.java" />
                 	<exclude name="org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java" />
-                    <exclude name="org/apache/harmony/logging/tests/java/util/logging/LoggingPermissionTest.java" />
                     <exclude name="org/apache/harmony/logging/tests/java/util/logging/SocketHandlerTest.java" />
                 </fileset>
             </batchtest>

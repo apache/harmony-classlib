@@ -40,9 +40,9 @@ public class AllTests {
 		suite.addTestSuite(ConsoleHandlerTest.class);
 
 		suite.addTestSuite(MemoryHandlerTest.class);
-		// suite.addTestSuite(FileHandlerTest.class);
+		suite.addTestSuite(FileHandlerTest.class);
 		suite.addTestSuite(XMLFormatterTest.class);
-		// suite.addTestSuite(SocketHandlerTest.class);
+		suite.addTestSuite(SocketHandlerTest.class);
 
 		// $JUnit-END$
 		return suite;

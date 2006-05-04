@@ -110,12 +110,10 @@
                     <exclude name="tests/api/java/io/ObjectOutputStreamTest.java" />
                     <exclude name="tests/api/java/io/OutputStreamWriterTest.java" />
                     <exclude name="tests/api/java/io/PipedInputStreamTest.java" />
-                    <exclude name="tests/api/java/lang/ArrayIndexOutOfBoundsExceptionTest.java" />
                     <exclude name="tests/api/java/lang/AssertionErrorTest.java" />
                     <exclude name="tests/api/java/lang/ClassTest.java" />
                     <exclude name="tests/api/java/lang/ProcessTest.java" />
                     <exclude name="tests/api/java/lang/StringTest.java" />
-                    <exclude name="tests/api/java/lang/ThreadTest.java" />
                     <exclude name="tests/api/java/net/DatagramSocketTest.java" />
                     <exclude name="tests/api/java/net/HttpURLConnectionTest.java" />
                     <exclude name="tests/api/java/net/InetAddressTest.java" />
@@ -125,13 +123,11 @@
                     <exclude name="tests/api/java/net/SocketImplTest.java" />
                     <exclude name="tests/api/java/net/SocketPermissionTest.java" />
                     <exclude name="tests/api/java/net/SocketTest.java" />
-                    <exclude name="tests/api/java/net/URISyntaxExceptionTest.java" />
                     <exclude name="tests/api/java/net/URLClassLoaderTest.java" />
                     <exclude name="tests/api/java/net/URLConnectionTest.java" />
                     <exclude name="tests/api/java/net/URLTest.java" />
                     <exclude name="tests/api/java/util/CalendarTest.java" />
                     <exclude name="tests/api/java/util/LocaleTest.java" />
-                    <exclude name="tests/impl/com/ibm/misc/util/NYITest.java" />
                 </fileset>
             </batchtest>
         </junit>

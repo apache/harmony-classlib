@@ -133,10 +133,6 @@
                     <exclude name="org/apache/harmony/auth/internal/SecurityTest.java"/>
 
                     <!-- Harmony exclude list -->
-
-                    <exclude name="javax/security/auth/SubjectDomainCombinerTest.java"/>
-                    <exclude name="javax/security/auth/SubjectTest.java"/>
-                    <exclude name="javax/security/auth/login/LoginContextTest.java"/>
                     <exclude name="javax/security/auth/login/serialization/SerAccountExpiredExceptionTest.java"/>
                     <exclude name="javax/security/auth/login/serialization/SerCredentialExpiredExceptionTest.java"/>
                     <exclude name="javax/security/auth/x500/X500PrincipalTest.java" />
