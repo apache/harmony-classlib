@@ -107,24 +107,7 @@ public class SSLEngineResult {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
-     * FIXME: this is class which was introduced in 1.5 specification
-     */
-    /*
-     * public static enum HandshakeStatus { 
-     *     FINISHED, 
-     *     NEED_TASK, 
-     *     NEED_UNWRAP,
-     *     NEED_WRAP, 
-     *     NOT_HANDSHAKING;
-     * }
-     */
-    
-    /**
-     * 
      * @com.intel.drl.spec_ref 
-     *  
      */
     public enum HandshakeStatus {
         NOT_HANDSHAKING,
