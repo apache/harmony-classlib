@@ -20,7 +20,6 @@ Import-Package: java.io,
  org.apache.harmony.security.asn1,
  org.apache.harmony.security.fortress,
  org.apache.harmony.security.support;resolution:=optional;hy_usage=test,
- org.apache.harmony.security.test;resolution:=optional;hy_usage=test,
  org.apache.harmony.security.utils,
  org.apache.harmony.security.x501
 Export-Package: javax.security.auth,
