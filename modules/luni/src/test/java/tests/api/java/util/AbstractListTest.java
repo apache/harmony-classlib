@@ -161,13 +161,38 @@ public class AbstractListTest extends junit.framework.TestCase {
 				"Sublist returned should not have implemented Random Access interface",
 				!(ll.subList(3, 7) instanceof RandomAccess));
 
-	}
+        }
 
-	protected void setUp() {
-	}
+	/**
+     * @tests java.util.AbstractList#subList(int, int)
+     */
+    public void test_subList_empty() {
+        // Regression for HARMONY-389
+        List al = new ArrayList();
+        al.add("one");
+        List emptySubList = al.subList(0, 0);
 
-	protected void tearDown() {
-	}
+        try {
+            emptySubList.get(0);
+            fail("emptySubList.get(0) should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            emptySubList.set(0, "one");
+            fail("emptySubList.set(0,Object) should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            emptySubList.remove(0);
+            fail("emptySubList.remove(0) should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+    }
 
 	protected void doneSuite() {
 	}

@@ -256,7 +256,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 
 		public Object get(int location) {
 			if (modCount == fullList.modCount) {
-				if (0 <= location && location <= size)
+				if (0 <= location && location < size)
 					return fullList.get(location + offset);
 				throw new IndexOutOfBoundsException();
 			}
@@ -280,7 +280,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 
 		public Object remove(int location) {
 			if (modCount == fullList.modCount) {
-				if (0 <= location && location <= size) {
+				if (0 <= location && location < size) {
 					Object result = fullList.remove(location + offset);
 					size--;
 					modCount = fullList.modCount;
@@ -304,7 +304,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 
 		public Object set(int location, Object object) {
 			if (modCount == fullList.modCount) {
-				if (0 <= location && location <= size)
+				if (0 <= location && location < size)
 					return fullList.set(location + offset, object);
 				throw new IndexOutOfBoundsException();
 			}
