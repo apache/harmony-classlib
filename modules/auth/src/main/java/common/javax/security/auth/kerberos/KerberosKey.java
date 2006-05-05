@@ -95,7 +95,6 @@ public class KerberosKey implements SecretKey, Destroyable {
      * @com.intel.drl.spec_ref
      */
     public final String getAlgorithm() {
-        checkState();
         return key.getAlgorithm();
     }
 
@@ -103,7 +102,6 @@ public class KerberosKey implements SecretKey, Destroyable {
      * @com.intel.drl.spec_ref
      */
     public final String getFormat() {
-        checkState();
         return key.getFormat();
     }
 
@@ -111,14 +109,12 @@ public class KerberosKey implements SecretKey, Destroyable {
      * @com.intel.drl.spec_ref
      */
     public final int getKeyType() {
-        checkState();
         return key.getKeyType();
     }  
     /**
      * @com.intel.drl.spec_ref
      */
     public final byte[] getEncoded() {
-        checkState();
         return key.getEncoded();
     }
     
