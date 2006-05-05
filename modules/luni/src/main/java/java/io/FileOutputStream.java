@@ -252,22 +252,27 @@ public class FileOutputStream extends OutputStream implements Closeable{
 	 *             If buffer is <code>null</code>.
 	 */
 	public void write(byte[] buffer, int offset, int count) throws IOException {
-		openCheck();
+        if (buffer == null) {
+            throw new NullPointerException();
+        }
+        if (count < 0 || offset < 0 || offset > buffer.length
+                || count > buffer.length - offset) {
+            throw new IndexOutOfBoundsException();
+        }
+        openCheck();
         fileSystem.write(fd.descriptor, buffer, offset, count);
-	}
+    }
 
 	/**
-	 * Writes the specified byte <code>oneByte</code> to this
-	 * FileOutputStream. Only the low order byte of <code>oneByte</code> is
-	 * written.
-	 * 
-	 * @param oneByte
-	 *            the byte to be written
-	 * 
-	 * @throws IOException
-	 *             If an error occurs attempting to write to this
-	 *             FileOutputStream.
-	 */
+     * Writes the specified byte <code>oneByte</code> to this
+     * FileOutputStream. Only the low order byte of <code>oneByte</code> is
+     * written.
+     * 
+     * @param oneByte the byte to be written
+     * 
+     * @throws IOException If an error occurs attempting to write to this
+     *         FileOutputStream.
+     */
 	public void write(int oneByte) throws IOException {
 		openCheck();
         byte[] byteArray = new byte[1];
