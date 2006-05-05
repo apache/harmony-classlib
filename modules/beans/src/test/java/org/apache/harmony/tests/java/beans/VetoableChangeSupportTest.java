@@ -20,15 +20,20 @@
  */
 package org.apache.harmony.tests.java.beans;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeListenerProxy;
 import java.beans.VetoableChangeSupport;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
 
 /**
  * The test checks the class java.beans.VetoableChangeSupport
@@ -74,6 +79,24 @@ public class VetoableChangeSupportTest extends TestCase {
         new VetoableChangeSupport("bean1")
                 .addVetoableChangeListener(null, null);
     }
+
+    
+    public void test_readObject() throws Exception {
+        // Regression for HARMONY-421
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(new BeanContextChildSupport());
+        oos.flush();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        ois.readObject();
+
+        ois.close();
+        oos.close();
+    }
+
 
     /**
      * The test checks the method add() with no property specified

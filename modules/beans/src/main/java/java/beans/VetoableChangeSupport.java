@@ -270,20 +270,18 @@ public class VetoableChangeSupport implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    private void readObject(ObjectInputStream ois)
-            throws IOException, ClassNotFoundException {
-        allVetoableChangeListeners = (ArrayList) ois.readObject();
-        selectedVetoableChangeListeners = (HashMap) ois.readObject();
-        
+    private void readObject(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException {
+
         children = (Hashtable) ois.readObject();
-        
+
         selectedVetoableChangeListeners = new HashMap(children);
-        allVetoableChangeListeners =
-                (ArrayList) selectedVetoableChangeListeners.remove("");
-        if(allVetoableChangeListeners == null) {
+        allVetoableChangeListeners = (ArrayList) selectedVetoableChangeListeners
+                .remove("");
+        if (allVetoableChangeListeners == null) {
             allVetoableChangeListeners = new ArrayList();
         }
-        
+
         sourceBean = ois.readObject();
         vetoableChangeSupportSerializedDataVersion = ois.readInt();
     }
