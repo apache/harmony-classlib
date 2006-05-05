@@ -530,7 +530,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 	/**
 	 * @tests java.io.ObjectInputStream#readObject()
 	 */
-	public void test_readObject() {
+	public void test_readObject() throws Exception {
 		// Test for method java.lang.Object
 		// java.io.ObjectInputStream.readObject()
 		try {
@@ -547,7 +547,93 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 		} catch (ClassNotFoundException e) {
 			fail("Exception serializing data : " + e.getMessage());
 		}
+        
+        // Regression for HARMONY-91
+        // dynamically create serialization byte array for the next hierarchy:
+        // - class A implements Serializable
+        // - class C extends A
+
+        byte[] cName = C.class.getName().getBytes();
+        byte[] aName = A.class.getName().getBytes();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        byte[] begStream = new byte[] { (byte) 0xac, (byte) 0xed, // STREAM_MAGIC
+                (byte) 0x00, (byte) 0x05, // STREAM_VERSION
+                (byte) 0x73, // TC_OBJECT
+                (byte) 0x72, // TC_CLASSDESC
+                (byte) 0x00, // only first byte for C class name length
+        };
+
+        out.write(begStream, 0, begStream.length);
+        out.write(cName.length); // second byte for C class name length
+        out.write(cName, 0, cName.length); // C class name
+
+        byte[] midStream = new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                (byte) 0x21, // serialVersionUID = 33L
+                (byte) 0x02, // flags
+                (byte) 0x00, (byte) 0x00, // fields : none
+                (byte) 0x78, // TC_ENDBLOCKDATA
+                (byte) 0x72, // Super class for C: TC_CLASSDESC for A class
+                (byte) 0x00, // only first byte for A class name length
+        };
+
+        out.write(midStream, 0, midStream.length);
+        out.write(aName.length); // second byte for A class name length
+        out.write(aName, 0, aName.length); // A class name
+
+        byte[] endStream = new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                (byte) 0x0b, // serialVersionUID = 11L
+                (byte) 0x02, // flags
+                (byte) 0x00, (byte) 0x01, // fields
+
+                (byte) 0x4c, // field description: type L (object)
+                (byte) 0x00, (byte) 0x04, // length
+                // field = 'name'
+                (byte) 0x6e, (byte) 0x61, (byte) 0x6d, (byte) 0x65,
+
+                (byte) 0x74, // className1: TC_STRING
+                (byte) 0x00, (byte) 0x12, // length
+                //
+                (byte) 0x4c, (byte) 0x6a, (byte) 0x61, (byte) 0x76,
+                (byte) 0x61, (byte) 0x2f, (byte) 0x6c, (byte) 0x61,
+                (byte) 0x6e, (byte) 0x67, (byte) 0x2f, (byte) 0x53,
+                (byte) 0x74, (byte) 0x72, (byte) 0x69, (byte) 0x6e,
+                (byte) 0x67, (byte) 0x3b,
+
+                (byte) 0x78, // TC_ENDBLOCKDATA
+                (byte) 0x70, // NULL super class for A class
+
+                // classdata
+                (byte) 0x74, // TC_STRING
+                (byte) 0x00, (byte) 0x04, // length
+                (byte) 0x6e, (byte) 0x61, (byte) 0x6d, (byte) 0x65, // value
+        };
+
+        out.write(endStream, 0, endStream.length);
+        out.flush();
+
+        // read created serial. form
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                out.toByteArray()));
+        Object o = ois.readObject();
+        assertEquals(C.class, o.getClass());
 	}
+
+    public static class A implements Serializable {
+        private static final long serialVersionUID = 11L;
+
+        public String name = "name";
+    }
+
+    public static class B extends A {
+    }
+
+    public static class C extends B {
+        private static final long serialVersionUID = 33L;
+    }
 
 	/**
 	 * @tests java.io.ObjectInputStream#readObject()

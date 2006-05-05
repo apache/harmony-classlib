@@ -1265,8 +1265,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 						readObjectForClass(object,
 								(ObjectStreamClass) streamClassList.get(j));
 					}
+					lastIndex = index + 1;
 				}
-				lastIndex = index + 1;
 			}
 		}
 	}
