@@ -531,23 +531,15 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
 	 * @tests java.io.ObjectInputStream#readObject()
 	 */
 	public void test_readObject() throws Exception {
-		// Test for method java.lang.Object
-		// java.io.ObjectInputStream.readObject()
-		try {
-			String s = "HelloWorld";
-			oos.writeObject(s);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertTrue("Read incorrect Object value", ((String) ois
-					.readObject()).equals(s));
-			ois.close();
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		} catch (ClassNotFoundException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-        
+        // Test for method java.lang.Object
+        // java.io.ObjectInputStream.readObject()
+        String s = "HelloWorld";
+        oos.writeObject(s);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertEquals("Read incorrect Object value", s, ois.readObject());
+        ois.close();
+
         // Regression for HARMONY-91
         // dynamically create serialization byte array for the next hierarchy:
         // - class A implements Serializable
