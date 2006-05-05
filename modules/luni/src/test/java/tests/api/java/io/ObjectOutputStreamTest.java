@@ -495,23 +495,18 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 
 	/**
 	 * @tests java.io.ObjectOutputStream#ObjectOutputStream(java.io.OutputStream)
-	 */
-	public void test_ConstructorLjava_io_OutputStream() {
-		// Test for method java.io.ObjectOutputStream(java.io.OutputStream)
-
-		try {
-			oos.close();
-			oos = new ObjectOutputStream(new ByteArrayOutputStream());
-			oos.close();
-		} catch (Exception e) {
-			fail("Failed to create ObjectOutputStream : " + e.getMessage());
-		}
-	}
+     */
+    public void test_ConstructorLjava_io_OutputStream() throws IOException {
+        // Test for method java.io.ObjectOutputStream(java.io.OutputStream)
+        oos.close();
+        oos = new ObjectOutputStream(new ByteArrayOutputStream());
+        oos.close();
+    }
 
 	/**
 	 * @tests java.io.ObjectOutputStream#ObjectOutputStream(java.io.OutputStream)
 	 */
-	public void test_ConstructorLjava_io_OutputStream_subtest0() {
+	public void test_ConstructorLjava_io_OutputStream_subtest0() throws IOException {
 		System.setSecurityManager(new SecurityManager());
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -523,7 +518,7 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 					super(out);
 				}
 			}
-			;
+
 			// should not cause SecurityException
 			new SubTest1(out);
 			class SubTest2 extends ObjectOutputStream {
@@ -534,8 +529,8 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 				public void writeUnshared(Object obj) throws IOException {
 				}
 			}
-			;
-			try {
+
+            try {
 				new SubTest2(out);
 				fail("should throw SecurityException 1");
 			} catch (SecurityException e) {
@@ -549,14 +544,12 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 					return null;
 				}
 			}
-			;
+
 			try {
 				new SubTest3(out);
 				fail("should throw SecurityException 2");
 			} catch (SecurityException e) {
 			}
-		} catch (IOException e) {
-			fail("Unexpeced: " + e);
 		} finally {
 			System.setSecurityManager(null);
 		}
@@ -572,44 +565,36 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 	/**
 	 * @tests java.io.ObjectOutputStream#defaultWriteObject()
 	 */
-	public void test_defaultWriteObject() {
+	public void test_defaultWriteObject() throws IOException {
 		// Test for method void java.io.ObjectOutputStream.defaultWriteObject()
-
 		try {
 			oos.defaultWriteObject();
+            fail("Failed to throw NotActiveException");
 		} catch (NotActiveException e) {
 			// Correct
-			return;
-		} catch (IOException e) {
 		}
-		fail(
-				"Failed to throw NotActiveException when invoked outside readObject");
 	}
 
 	/**
 	 * @tests java.io.ObjectOutputStream#flush()
 	 */
-	public void test_flush() {
-		// Test for method void java.io.ObjectOutputStream.flush()
-		try {
-			int size = bao.size();
-			oos.writeByte(127);
-			assertTrue("Data flushed already", bao.size() == size);
-			oos.flush();
-			assertTrue("Failed to flush data", bao.size() > size);
-			// we don't know how many bytes are actually written for 1
-			// byte, so we test > <before>
-			oos.close();
-			oos = null;
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+	public void test_flush() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.flush()
+        int size = bao.size();
+        oos.writeByte(127);
+        assertTrue("Data flushed already", bao.size() == size);
+        oos.flush();
+        assertTrue("Failed to flush data", bao.size() > size);
+        // we don't know how many bytes are actually written for 1
+        // byte, so we test > <before>
+        oos.close();
+        oos = null;
+    }
 
 	/**
 	 * @tests java.io.ObjectOutputStream#putFields()
 	 */
-	public void test_putFields() {
+	public void test_putFields() throws Exception {
 		// Test for method java.io.ObjectOutputStream$PutField
 		// java.io.ObjectOutputStream.putFields()
 
@@ -622,40 +607,30 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 		 * second
 		 */
 
-		try {
-			oos.writeObject(new SerializableTestHelper("Gabba", "Jabba"));
-			oos.flush();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			sth = (SerializableTestHelper) (ois.readObject());
-			assertEquals("readFields / writeFields failed--first field not set",
-					"Gabba", sth.getText1());
-			assertNull(
-					"readFields / writeFields failed--second field should not have been set",
-					sth.getText2());
-		} catch (Exception e) {
-			fail("Exception thrown : " + e.getMessage());
-		}
-	}
+        oos.writeObject(new SerializableTestHelper("Gabba", "Jabba"));
+        oos.flush();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        sth = (SerializableTestHelper) (ois.readObject());
+        assertEquals("readFields / writeFields failed--first field not set",
+                "Gabba", sth.getText1());
+        assertNull(
+                "readFields / writeFields failed--second field should not have been set",
+                sth.getText2());
+    }
 
 	/**
 	 * @tests java.io.ObjectOutputStream#reset()
 	 */
-	public void test_reset() {
-		// Test for method void java.io.ObjectOutputStream.reset()
-		try {
-			String o = "HelloWorld";
-			oos.writeObject(o);
-			oos.writeObject(o);
-			oos.reset();
-			oos.writeObject(o);
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			ois.close();
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+	public void test_reset() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.reset()
+        String o = "HelloWorld";
+        oos.writeObject(o);
+        oos.writeObject(o);
+        oos.reset();
+        oos.writeObject(o);
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        ois.close();
+    }
 
 	private static class ExternalTest implements Externalizable {
 		public String value;
@@ -691,466 +666,423 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 	/**
 	 * @tests java.io.ObjectOutputStream#useProtocolVersion(int)
 	 */
-	public void test_useProtocolVersionI() {
-		// Test for method void
-		// java.io.ObjectOutputStream.useProtocolVersion(int)
-		try {
-			oos.useProtocolVersion(ObjectOutputStream.PROTOCOL_VERSION_1);
-			ExternalTest t1 = new ExternalTest();
-			t1.setValue("hello1");
-			oos.writeObject(t1);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			ExternalTest t2 = (ExternalTest) ois.readObject();
-			ois.close();
-			assertTrue(
-					"Cannot read/write PROTOCAL_VERSION_1 Externalizable objects: "
-							+ t2.getValue(), t1.getValue()
-							.equals(t2.getValue()));
-		} catch (IOException e) {
-			fail("Unexpected: " + e);
-		} catch (ClassNotFoundException e) {
-			fail("Unexpected: " + e);
-		}
-	}
+	public void test_useProtocolVersionI() throws Exception {
+        // Test for method void
+        // java.io.ObjectOutputStream.useProtocolVersion(int)
+        oos.useProtocolVersion(ObjectOutputStream.PROTOCOL_VERSION_1);
+        ExternalTest t1 = new ExternalTest();
+        t1.setValue("hello1");
+        oos.writeObject(t1);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        ExternalTest t2 = (ExternalTest) ois.readObject();
+        ois.close();
+        assertTrue(
+                "Cannot read/write PROTOCAL_VERSION_1 Externalizable objects: "
+                        + t2.getValue(), t1.getValue().equals(t2.getValue()));
+    }
 
 	/**
 	 * @tests java.io.ObjectOutputStream#write(byte[])
 	 */
-	public void test_write$B() {
-		// Test for method void java.io.ObjectOutputStream.write(byte [])
-		try {
-			byte[] buf = new byte[10];
-			oos.write("HelloWorld".getBytes());
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			ois.read(buf, 0, 10);
-			ois.close();
-			assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0, 10)
-					);
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+	public void test_write$B() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.write(byte [])
+        byte[] buf = new byte[10];
+        oos.write("HelloWorld".getBytes());
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        ois.read(buf, 0, 10);
+        ois.close();
+        assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0,
+                10));
+    }
 
 	/**
-	 * @tests java.io.ObjectOutputStream#write(byte[], int, int)
-	 */
-	public void test_write$BII() {
-		// Test for method void java.io.ObjectOutputStream.write(byte [], int,
-		// int)
-		try {
-			byte[] buf = new byte[10];
-			oos.write("HelloWorld".getBytes(), 0, 10);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			ois.read(buf, 0, 10);
-			ois.close();
-			assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0, 10)
-					);
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+     * @tests java.io.ObjectOutputStream#write(byte[], int, int)
+     */
+    public void test_write$BII() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.write(byte [], int,
+        // int)
+        byte[] buf = new byte[10];
+        oos.write("HelloWorld".getBytes(), 0, 10);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        ois.read(buf, 0, 10);
+        ois.close();
+        assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0,
+                10));
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#write(int)
-	 */
-	public void test_writeI() {
-		// Test for method void java.io.ObjectOutputStream.write(int)
-		try {
-			oos.write('T');
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertEquals("Read incorrect byte", 'T', ois.read());
-			ois.close();
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#write(int)
+     */
+    public void test_writeI() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.write(int)
+        oos.write('T');
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertEquals("Read incorrect byte", 'T', ois.read());
+        ois.close();
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeBoolean(boolean)
-	 */
-	public void test_writeBooleanZ() {
-		// Test for method void java.io.ObjectOutputStream.writeBoolean(boolean)
-		try {
-			oos.writeBoolean(true);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertTrue("Wrote incorrect byte value", ois.readBoolean());
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeBoolean(boolean)
+     */
+    public void test_writeBooleanZ() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.writeBoolean(boolean)
+        oos.writeBoolean(true);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertTrue("Wrote incorrect byte value", ois.readBoolean());
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeByte(int)
-	 */
-	public void test_writeByteI() {
-		// Test for method void java.io.ObjectOutputStream.writeByte(int)
-		try {
-			oos.writeByte(127);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertEquals("Wrote incorrect byte value", 127, ois.readByte());
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeByte(int)
+     */
+    public void test_writeByteI() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.writeByte(int)
+        oos.writeByte(127);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertEquals("Wrote incorrect byte value", 127, ois.readByte());
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeBytes(java.lang.String)
-	 */
-	public void test_writeBytesLjava_lang_String() {
-		// Test for method void
-		// java.io.ObjectOutputStream.writeBytes(java.lang.String)
-		try {
-			byte[] buf = new byte[10];
-			oos.writeBytes("HelloWorld");
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			ois.readFully(buf);
-			ois.close();
-			assertEquals("Wrote incorrect bytes value", "HelloWorld", new String(buf, 0, 10)
-					);
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeBytes(java.lang.String)
+     */
+    public void test_writeBytesLjava_lang_String() throws Exception {
+        // Test for method void
+        // java.io.ObjectOutputStream.writeBytes(java.lang.String)
+        byte[] buf = new byte[10];
+        oos.writeBytes("HelloWorld");
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        ois.readFully(buf);
+        ois.close();
+        assertEquals("Wrote incorrect bytes value", "HelloWorld", new String(
+                buf, 0, 10));
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeChar(int)
-	 */
-	public void test_writeCharI() {
-		// Test for method void java.io.ObjectOutputStream.writeChar(int)
-		try {
-			oos.writeChar('T');
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertEquals("Wrote incorrect char value", 'T', ois.readChar());
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeChar(int)
+     */
+    public void test_writeCharI() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.writeChar(int)
+        oos.writeChar('T');
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertEquals("Wrote incorrect char value", 'T', ois.readChar());
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeChars(java.lang.String)
-	 */
-	public void test_writeCharsLjava_lang_String() {
-		// Test for method void
-		// java.io.ObjectOutputStream.writeChars(java.lang.String)
-		try {
-			int avail = 0;
-			char[] buf = new char[10];
-			oos.writeChars("HelloWorld");
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			// Number of prim data bytes in stream / 2 to give char index
-			avail = ois.available() / 2;
-			for (int i = 0; i < avail; ++i)
-				buf[i] = ois.readChar();
-			ois.close();
-			assertEquals("Wrote incorrect chars", "HelloWorld", new String(buf, 0, 10)
-					);
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeChars(java.lang.String)
+     */
+    public void test_writeCharsLjava_lang_String() throws Exception {
+        // Test for method void
+        // java.io.ObjectOutputStream.writeChars(java.lang.String)
+        int avail = 0;
+        char[] buf = new char[10];
+        oos.writeChars("HelloWorld");
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        // Number of prim data bytes in stream / 2 to give char index
+        avail = ois.available() / 2;
+        for (int i = 0; i < avail; ++i)
+            buf[i] = ois.readChar();
+        ois.close();
+        assertEquals("Wrote incorrect chars", "HelloWorld", new String(buf, 0,
+                10));
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeDouble(double)
-	 */
-	public void test_writeDoubleD() {
-		// Test for method void java.io.ObjectOutputStream.writeDouble(double)
-		try {
-			oos.writeDouble(Double.MAX_VALUE);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertTrue("Wrote incorrect double value",
-					ois.readDouble() == Double.MAX_VALUE);
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeDouble(double)
+     */
+    public void test_writeDoubleD() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.writeDouble(double)
+        oos.writeDouble(Double.MAX_VALUE);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertTrue("Wrote incorrect double value",
+                ois.readDouble() == Double.MAX_VALUE);
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeFields()
-	 */
-	public void test_writeFields() {
-		// Test for method void java.io.ObjectOutputStream.writeFields()
-		assertTrue("Used to test", true);
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeFields()
+     */
+    public void test_writeFields() {
+        // Test for method void java.io.ObjectOutputStream.writeFields()
+        assertTrue("Used to test", true);
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeFloat(float)
-	 */
-	public void test_writeFloatF() {
-		// Test for method void java.io.ObjectOutputStream.writeFloat(float)
-		try {
-			oos.writeFloat(Float.MAX_VALUE);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertTrue("Wrote incorrect double value",
-					ois.readFloat() == Float.MAX_VALUE);
-			ois.close();
-			ois = null;
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeFloat(float)
+     */
+    public void test_writeFloatF() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.writeFloat(float)
+        oos.writeFloat(Float.MAX_VALUE);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertTrue("Wrote incorrect double value",
+                ois.readFloat() == Float.MAX_VALUE);
+        ois.close();
+        ois = null;
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeInt(int)
-	 */
-	public void test_writeIntI() {
-		// Test for method void java.io.ObjectOutputStream.writeInt(int)
-		try {
-			oos.writeInt(Integer.MAX_VALUE);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertTrue("Wrote incorrect double value",
-					ois.readInt() == Integer.MAX_VALUE);
-			ois.close();
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeInt(int)
+     */
+    public void test_writeIntI() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.writeInt(int)
+        oos.writeInt(Integer.MAX_VALUE);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertTrue("Wrote incorrect double value",
+                ois.readInt() == Integer.MAX_VALUE);
+        ois.close();
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeLong(long)
-	 */
-	public void test_writeLongJ() {
-		// Test for method void java.io.ObjectOutputStream.writeLong(long)
-		try {
-			oos.writeLong(Long.MAX_VALUE);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertTrue("Wrote incorrect double value",
-					ois.readLong() == Long.MAX_VALUE);
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeLong(long)
+     */
+    public void test_writeLongJ() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.writeLong(long)
+        oos.writeLong(Long.MAX_VALUE);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertTrue("Wrote incorrect double value",
+                ois.readLong() == Long.MAX_VALUE);
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeObject(java.lang.Object)
-	 */
-	public void test_writeObjectLjava_lang_Object() {
-		// Test for method void
-		// java.io.ObjectOutputStream.writeObject(java.lang.Object)
+    /**
+     * @tests java.io.ObjectOutputStream#writeObject(java.lang.Object)
+     */
+    public void test_writeObjectLjava_lang_Object() throws Exception {
+        // Test for method void
+        // java.io.ObjectOutputStream.writeObject(java.lang.Object)
 
-		Object objToSave = null;
-		Object objLoaded;
+        Object objToSave = null;
+        Object objLoaded;
 
-		try {
-			SerialPersistentFieldsWithoutField spf = new SerialPersistentFieldsWithoutField();
-			final int CONST = -500;
-			spf.anInstanceVar = CONST;
-			objToSave = spf;
-			if (DEBUG)
-				System.out.println("Obj = " + objToSave);
-			objLoaded = dumpAndReload(objToSave);
-			assertTrue(
-					"serialPersistentFields do not work properly in this implementation",
-					((SerialPersistentFieldsWithoutField) objLoaded).anInstanceVar != CONST);
+        SerialPersistentFieldsWithoutField spf = new SerialPersistentFieldsWithoutField();
+        final int CONST = -500;
+        spf.anInstanceVar = CONST;
+        objToSave = spf;
+        if (DEBUG)
+            System.out.println("Obj = " + objToSave);
+        objLoaded = dumpAndReload(objToSave);
+        assertTrue(
+                "serialPersistentFields do not work properly in this implementation",
+                ((SerialPersistentFieldsWithoutField) objLoaded).anInstanceVar != CONST);
 
-		} catch (IOException e) {
-			fail("Exception serializing " + objToSave + "\t->"
-					+ e.getMessage());
-		} catch (ClassNotFoundException e) {
-			fail("Unable to read Object type : " + e.getMessage());
-		} catch (Error err) {
-			System.out.println("Error when obj = " + objToSave);
-			err.printStackTrace();
-			throw err;
-		}
-	}
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeObject(java.lang.Object)
-	 */
-	public void test_writeObject_NotSerializable() {
-		ObjectOutput out = null;
-		try {
-			out = new ObjectOutputStream(new ByteArrayOutputStream());
-			out.writeObject(new NotSerializable());
-			fail("Expected NotSerializableException");
-		} catch (NotSerializableException e) {
-		} catch (IOException e) {
-			fail("Unexpected1: " + e);
-		}
-		try {
-			out.writeObject(new ExternalizableWithReplace());
-		} catch (IOException e) {
-			fail("Unexpected2: " + e);
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeObject(java.lang.Object)
+     */
+    public void test_writeObject_NotSerializable() throws Exception {
+        ObjectOutput out = null;
+        try {
+            out = new ObjectOutputStream(new ByteArrayOutputStream());
+            out.writeObject(new NotSerializable());
+            fail("Expected NotSerializableException");
+        } catch (NotSerializableException e) {}
+        out.writeObject(new ExternalizableWithReplace());
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeShort(int)
-	 */
-	public void test_writeShortI() {
-		// Test for method void java.io.ObjectOutputStream.writeShort(int)
-		try {
-			oos.writeShort(127);
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertEquals("Wrote incorrect short value", 127, ois.readShort());
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeShort(int)
+     */
+    public void test_writeShortI() throws Exception {
+        // Test for method void java.io.ObjectOutputStream.writeShort(int)
+        oos.writeShort(127);
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertEquals("Wrote incorrect short value", 127, ois.readShort());
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeUTF(java.lang.String)
-	 */
-	public void test_writeUTFLjava_lang_String() {
-		// Test for method void
-		// java.io.ObjectOutputStream.writeUTF(java.lang.String)
-		try {
-			oos.writeUTF("HelloWorld");
-			oos.close();
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-			assertEquals("Wrote incorrect UTF value", 
-					"HelloWorld", ois.readUTF());
-		} catch (IOException e) {
-			fail("Exception serializing data : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeUTF(java.lang.String)
+     */
+    public void test_writeUTFLjava_lang_String() throws Exception {
+        // Test for method void
+        // java.io.ObjectOutputStream.writeUTF(java.lang.String)
+        oos.writeUTF("HelloWorld");
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        assertEquals("Wrote incorrect UTF value", "HelloWorld", ois.readUTF());
+    }
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-		try {
-			oos = new ObjectOutputStream(bao = new ByteArrayOutputStream());
-		} catch (Exception e) {
-			fail("Setup failed : " + e.getMessage());
-		}
-	}
+    /**
+     * Sets up the fixture, for example, open a network connection. This method
+     * is called before a test is executed.
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        oos = new ObjectOutputStream(bao = new ByteArrayOutputStream());
+    }
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-		if (oos != null)
-			try {
-				oos.close();
-			} catch (Exception e) {
-			}
-		if (f != null && f.exists())
-			if (!f.delete()) {
-				fail("Error cleaning up files during teardown");
-			}
-	}
+    /**
+     * Tears down the fixture, for example, close a network connection. This
+     * method is called after a test is executed.
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        if (oos != null) {
+            try {
+                oos.close();
+            } catch (Exception e) {}
+        }
+        if (f != null && f.exists()) {
+            if (!f.delete()) {
+                fail("Error cleaning up files during teardown");
+            }
+        }
+    }
 
-	protected Object reload() throws IOException, ClassNotFoundException {
+    protected Object reload() throws IOException, ClassNotFoundException {
 
-		// Choose the load stream
-		if (xload || xdump) {
-			// Load from pre-existing file
-			ois = new ObjectInputStream(new FileInputStream(xFileName + "-"
-					+ getName() + ".ser"));
-		} else {
-			// Just load from memory, we dumped to memory
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
-		}
+        // Choose the load stream
+        if (xload || xdump) {
+            // Load from pre-existing file
+            ois = new ObjectInputStream(new FileInputStream(xFileName + "-"
+                    + getName() + ".ser"));
+        } else {
+            // Just load from memory, we dumped to memory
+            ois = new ObjectInputStream(new ByteArrayInputStream(bao
+                    .toByteArray()));
+        }
 
-		try {
-			return ois.readObject();
-		} finally {
-			ois.close();
-		}
-	}
+        try {
+            return ois.readObject();
+        } finally {
+            ois.close();
+        }
+    }
 
-	protected void dump(Object o) throws IOException, ClassNotFoundException {
+    protected void dump(Object o) throws IOException, ClassNotFoundException {
 
-		// Choose the dump stream
-		if (xdump) {
-			oos = new ObjectOutputStream(new FileOutputStream(
-					f = new java.io.File(xFileName + "-" + getName() + ".ser")));
-		} else {
-			oos = new ObjectOutputStream(bao = new ByteArrayOutputStream());
-		}
+        // Choose the dump stream
+        if (xdump) {
+            oos = new ObjectOutputStream(new FileOutputStream(
+                    f = new java.io.File(xFileName + "-" + getName() + ".ser")));
+        } else {
+            oos = new ObjectOutputStream(bao = new ByteArrayOutputStream());
+        }
 
-		// Dump the object
-		try {
-			oos.writeObject(o);
-		} finally {
-			oos.close();
-		}
-	}
+        // Dump the object
+        try {
+            oos.writeObject(o);
+        } finally {
+            oos.close();
+        }
+    }
 
-	/**
-	 * @tests java.io.ObjectOutputStream#writeInt(int)
-	 * @tests java.io.ObjectOutputStream#writeObject(java.lang.Object)
-	 * @tests java.io.ObjectOutputStream#writeUTF(java.lang.String)
-	 */
+    /**
+     * @tests java.io.ObjectOutputStream#writeInt(int)
+     * @tests java.io.ObjectOutputStream#writeObject(java.lang.Object)
+     * @tests java.io.ObjectOutputStream#writeUTF(java.lang.String)
+     */
 
-	public void testMixPrimitivesAndObjects() {
-		int i = 7;
-		String s1 = "string 1";
-		String s2 = "string 2";
-		byte[] bytes = { 1, 2, 3 };
-		try {
-			oos = new ObjectOutputStream(bao = new ByteArrayOutputStream());
-			oos.writeInt(i);
-			oos.writeObject(s1);
-			oos.writeUTF(s2);
-			oos.writeObject(bytes);
-			oos.close();
+    public void testMixPrimitivesAndObjects() throws Exception {
+        int i = 7;
+        String s1 = "string 1";
+        String s2 = "string 2";
+        byte[] bytes = { 1, 2, 3 };
+        try {
+            oos = new ObjectOutputStream(bao = new ByteArrayOutputStream());
+            oos.writeInt(i);
+            oos.writeObject(s1);
+            oos.writeUTF(s2);
+            oos.writeObject(bytes);
+            oos.close();
 
-			ois = new ObjectInputStream(new ByteArrayInputStream(bao
-					.toByteArray()));
+            ois = new ObjectInputStream(new ByteArrayInputStream(bao
+                    .toByteArray()));
 
-			int j = ois.readInt();
-			assertTrue("Wrong int :" + j, i == j);
+            int j = ois.readInt();
+            assertTrue("Wrong int :" + j, i == j);
 
-			String l1 = (String) ois.readObject();
-			assertTrue("Wrong obj String :" + l1, s1.equals(l1));
+            String l1 = (String) ois.readObject();
+            assertTrue("Wrong obj String :" + l1, s1.equals(l1));
 
-			String l2 = (String) ois.readUTF();
-			assertTrue("Wrong UTF String :" + l2, s2.equals(l2));
+            String l2 = ois.readUTF();
+            assertTrue("Wrong UTF String :" + l2, s2.equals(l2));
 
-			byte[] bytes2 = (byte[]) ois.readObject();
-			assertTrue("Wrong byte[]", Arrays.equals(bytes, bytes2));
-		} catch (IOException e) {
-			fail("Unexpected IOException: " + e.toString());
-		} catch (ClassNotFoundException e) {
-			fail("Unexpected ClassNotFoundException: " + e.toString());
-		} finally {
-			try {
-				if (oos != null)
-					oos.close();
-				if (ois != null)
-					ois.close();
-			} catch (IOException e) {
-			}
-		}
-	}
+            byte[] bytes2 = (byte[]) ois.readObject();
+            assertTrue("Wrong byte[]", Arrays.equals(bytes, bytes2));
+        } finally {
+            try {
+                if (oos != null)
+                    oos.close();
+                if (ois != null)
+                    ois.close();
+            } catch (IOException e) {}
+        }
+    }
 
-	protected Object dumpAndReload(Object o) throws IOException,
-			ClassNotFoundException {
-		dump(o);
-		return reload();
-	}
+    /**
+     * @tests java.io.ObjectOutputStream#writeUnshared(java.lang.Object)
+     */
+    public void test_writeUnshared() throws Exception {
+        //Regression for HARMONY-187
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+        Object o = "foobar";
+        oos.writeObject(o);
+        oos.writeUnshared(o);
+        oos.writeObject(o);
+        oos.flush();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream (baos.toByteArray()));
+
+        Object[] oa = new Object[3];
+        for (int i = 0; i < oa.length; i++) {
+            oa[i] = ois.readObject();
+        }
+
+        oos.close();
+        ois.close();
+
+        // All three conditions must be met
+        assertNotSame("oa[0] != oa[1]", oa[0], oa[1]);
+        assertNotSame("oa[1] != oa[2]", oa[1], oa[2]);
+        assertSame("oa[0] == oa[2]", oa[0], oa[2]);
+    }
+
+    /**
+     * @tests java.io.ObjectOutputStream#writeUnshared(java.lang.Object)
+     */
+    public void test_writeUnshared2() throws Exception {
+        //Regression for HARMONY-187
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+        Object o = new Object[1];
+        oos.writeObject(o);
+        oos.writeUnshared(o);
+        oos.writeObject(o);
+        oos.flush();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream (baos.toByteArray()));
+
+        Object[] oa = new Object[3];
+        for (int i = 0; i < oa.length; i++) {
+            oa[i] = ois.readObject();
+        }
+
+        oos.close();
+        ois.close();
+
+        // All three conditions must be met
+        assertNotSame("oa[0] != oa[1]", oa[0], oa[1]);
+        assertNotSame("oa[1] != oa[2]", oa[1], oa[2]);
+        assertSame("oa[0] == oa[2]", oa[0], oa[2]);
+    }
+
+    protected Object dumpAndReload(Object o) throws IOException,
+            ClassNotFoundException {
+        dump(o);
+        return reload();
+    }
 }

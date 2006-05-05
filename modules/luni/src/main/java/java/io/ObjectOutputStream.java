@@ -986,7 +986,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			annotateClass(classToWrite);
 			drain(); // flush primitive types in the annotation
 			output.writeByte(TC_ENDBLOCKDATA);
-			writeClassDesc(classDesc.getSuperclass(), false);
+			writeClassDesc(classDesc.getSuperclass(), unshared);
 			if (unshared) {
 				// remove reference to unshared object
 				removeUnsharedReference(classDesc, previousHandle);
@@ -1393,11 +1393,16 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 *             If an IO exception happened when writing the array.
 	 */
 	private Integer writeNewArray(Object array, Class arrayClass,
-			Class componentType) throws IOException {
+			Class componentType, boolean unshared) throws IOException {
 		output.writeByte(TC_ARRAY);
 		writeClassDescForClass(arrayClass);
 
+		Integer previousHandle = (Integer) objectsWritten.get(array);
 		Integer handle = registerObjectWritten(array);
+		if (unshared) {
+			// remove reference to unshared object
+			removeUnsharedReference(array, previousHandle);
+		}
 
 		// Now we have code duplication just because Java is typed. We have to
 		// write N elements
@@ -1473,7 +1478,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws IOException
 	 *             If an IO exception happened when writing the class.
 	 */
-	private Integer writeNewClass(Class object) throws IOException {
+	private Integer writeNewClass(Class object, boolean unshared) throws IOException {
 		output.writeByte(TC_CLASS);
 
 		// Instances of java.lang.Class
@@ -1486,8 +1491,16 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		// The handle for the classDesc is NOT the handle for the
 		// class object being dumped. We must allocate a new handle and return
 		// it.
-		writeClassDesc(ObjectStreamClass.lookupStreamClass(object), false);
-		return registerObjectWritten(object);
+		writeClassDesc(ObjectStreamClass.lookupStreamClass(object), unshared);
+		
+		Integer previousHandle = (Integer) objectsWritten.get(object);
+		Integer handle = registerObjectWritten(object);
+		if (unshared) {
+			// remove reference to unshared object
+			removeUnsharedReference(object, previousHandle);
+		}
+
+		return handle;
 	}
 
 	/**
@@ -1667,7 +1680,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws IOException
 	 *             If an IO exception happened when writing the String.
 	 */
-	private Integer writeNewString(String object) throws IOException {
+	private Integer writeNewString(String object, boolean unshared) throws IOException {
 		long count = output.countUTFBytes(object);
 		if (count <= 0xffff) {
 			output.writeByte(TC_STRING);
@@ -1677,7 +1690,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			output.writeLong(count);
 		}
 		output.writeUTFBytes(object, count);
-		return registerObjectWritten(object);
+		
+		Integer previousHandle = (Integer) objectsWritten.get(object);
+		Integer handle = registerObjectWritten(object);
+		if (unshared) {
+			// remove reference to unshared object
+			removeUnsharedReference(object, previousHandle);
+		}
+		return handle;
 	}
 
 	/**
@@ -1801,7 +1821,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
 			// Is it a Class ?
 			if (objClass == ObjectStreamClass.CLASSCLASS) {
-				return writeNewClass((Class) object);
+				return writeNewClass((Class) object, unshared);
 			}
 
 			// Is it an ObjectStreamClass ?
@@ -1892,12 +1912,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			if (objClass == ObjectStreamClass.STRINGCLASS) // we could also use
 				// instanceof, but
 				// == is faster
-				return writeNewString((String) object);
+				return writeNewString((String) object, unshared);
 
 			// Is it an Array ?
 			if (objClass.isArray()) // We are dumping an array
 				return writeNewArray(object, objClass, objClass
-						.getComponentType());
+						.getComponentType(), unshared);
 
 			// Not a String or Class or Array. Default procedure.
 			return writeNewObject(object, objClass, unshared);
