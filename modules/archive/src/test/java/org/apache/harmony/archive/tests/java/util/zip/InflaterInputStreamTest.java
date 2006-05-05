@@ -101,9 +101,31 @@ public class InflaterInputStreamTest extends TestCase {
 		inflatIP.close();
 	}
 
+    /**
+     * @tests java.util.zip.InflaterInputStream#mark(int)
+     */
+    public void test_markI() {
+        InputStream is = new ByteArrayInputStream(new byte[10]);
+        InflaterInputStream iis = new InflaterInputStream(is);
+        // mark do nothing, do no check
+        iis.mark(0);
+        iis.mark(-1);
+        iis.mark(10000000);
+    }
+
+    /**
+     * @tests java.util.zip.InflaterInputStream#markSupported()
+     */
+    public void test_markSupported() {
+        InputStream is = new ByteArrayInputStream(new byte[10]);
+        InflaterInputStream iis = new InflaterInputStream(is);
+        assertFalse(iis.markSupported());
+        assertTrue(is.markSupported());
+    }
+
 	/**
-	 * @tests java.util.zip.InflaterInputStream#read()
-	 */
+     * @tests java.util.zip.InflaterInputStream#read()
+     */
 	public void test_read() throws IOException {
 		int result = 0;
 		int buffer[] = new int[500];
@@ -135,6 +157,20 @@ public class InflaterInputStreamTest extends TestCase {
 		// TODO
 	}
 
+    /**
+     * @tests java.util.zip.InflaterInputStream#reset()
+     */
+    public void test_reset() {
+        InputStream is = new ByteArrayInputStream(new byte[10]);
+        InflaterInputStream iis = new InflaterInputStream(is);
+        try {
+            iis.reset();
+            fail("Should throw IOException");
+        } catch (IOException e) {
+            // correct
+        }
+    }
+        
 	/**
 	 * @tests java.util.zip.InflaterInputStream#skip(long)
 	 */
