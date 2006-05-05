@@ -210,8 +210,9 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
         }
 
         keyType = 3; // DES algorithm
-
-        //FIXME: implement grenerating key from password 
+        keyBytes = new byte[8];
+        
+        //FIXME: implement key generation from password 
     }
     
     /**
@@ -305,6 +306,10 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
 
    // TODO: write a object to a stream
    private void writeObject(ObjectOutputStream s) throws IOException {
+       
+       if(destroyed){
+           throw new IOException("Key was destroyed");
+       }
        s.defaultWriteObject();
    }
 

@@ -16,6 +16,9 @@
 
 package javax.security.auth.kerberos;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -116,6 +119,74 @@ public class KerberosKeyTest extends TestCase {
         // bytes are copied each time we invoke the method
         assertNotSame("keyBytes immutability 1 ", keyBytes, keyBytes1);
         assertNotSame("keyBytes immutability 2 ", keyBytes1, key.getEncoded());
+    }
+
+    /**
+     * @tests javax.security.auth.kerberos.KerberosKey#destroy()
+     */
+    public void test_destroy() throws Exception {
+
+        KerberosKey key = new KerberosKey(principal, new char[10], "DES");
+
+        assertFalse("not destroyed", key.isDestroyed());
+        
+        key.destroy();
+        assertTrue("destroyed", key.isDestroyed());
+
+        // no exceptions for second destroy() call
+        key.destroy();
+
+        // check that IllegalStateException is thrown for certain methods
+        try {
+            key.getAlgorithm();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        try {
+            key.getEncoded();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        try {
+            key.getFormat();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        try {
+            key.getKeyType();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        try {
+            key.getPrincipal();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        try {
+            key.getVersionNumber();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
+
+        try {
+            // but for serialization IOException is expected
+            ObjectOutputStream out = new ObjectOutputStream(
+                    new ByteArrayOutputStream());
+            out.writeObject(key);
+            fail("No expected IOException");
+        } catch (IOException e) {
+        }
+
+        try {
+            key.toString();
+            fail("No expected IllegalStateException");
+        } catch (IllegalStateException e) {
+        }
     }
 
     public static void main(String[] args) {
