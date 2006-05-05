@@ -59,7 +59,7 @@ public class RuleBasedCollator extends Collator {
             throw new NullPointerException();
         }
         if (rules.length() == 0) {
-            throw new ParseException(Msg.getString("K034b"), 0);
+            throw new ParseException(Msg.getString("K034e"), 0);
         }
 
         try {
