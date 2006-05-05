@@ -194,6 +194,34 @@ public class AbstractListTest extends junit.framework.TestCase {
         }
     }
 
-	protected void doneSuite() {
-	}
+    /**
+     * @tests java.util.AbstractList#subList(int, int)
+     */
+    public void test_subList_addAll() {
+        // Regression for HARMONY-390
+        List mainList = new ArrayList();
+        Object[] mainObjects = { "a", "b", "c" };
+        mainList.addAll(Arrays.asList(mainObjects));
+        List subList = mainList.subList(1, 2);
+        assertFalse("subList should not contain \"a\"", subList.contains("a"));
+        assertFalse("subList should not contain \"c\"", subList.contains("c"));
+        assertTrue("subList should contain \"b\"", subList.contains("b"));
+
+        Object[] subObjects = { "one", "two", "three" };
+        subList.addAll(Arrays.asList(subObjects));
+        assertFalse("subList should not contain \"a\"", subList.contains("a"));
+        assertFalse("subList should not contain \"c\"", subList.contains("c"));
+
+        Object[] expected = { "b", "one", "two", "three" };
+        ListIterator iter = subList.listIterator();
+        for (int i = 0; i < expected.length; i++) {
+            assertTrue("subList should contain " + expected[i], subList
+                    .contains(expected[i]));
+            assertTrue("should be more elements", iter.hasNext());
+            assertEquals("element in incorrect position", expected[i], iter
+                    .next());
+        }
+    }
+
+    protected void doneSuite() {}
 }

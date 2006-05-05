@@ -243,16 +243,16 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 		}
 
 		public boolean addAll(Collection collection) {
-			if (modCount == fullList.modCount) {
-				boolean result = fullList.addAll(size, collection);
-				if (result) {
-					size += collection.size();
-					modCount = fullList.modCount;
-				}
-				return result;
-			}
-			throw new ConcurrentModificationException();
-		}
+            if (modCount == fullList.modCount) {
+                boolean result = fullList.addAll(offset + size, collection);
+                if (result) {
+                    size += collection.size();
+                    modCount = fullList.modCount;
+                }
+                return result;
+            }
+            throw new ConcurrentModificationException();
+        }
 
 		public Object get(int location) {
 			if (modCount == fullList.modCount) {
