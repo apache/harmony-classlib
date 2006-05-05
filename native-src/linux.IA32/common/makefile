@@ -18,7 +18,6 @@
 
 include ../makefile.include
 
-CFLAGS += -I../zlib -I../zip -I../fdlibm 
 BUILDFILES = $(SHAREDSUB)libglob.o $(SHAREDSUB)iohelp.o \
 	$(SHAREDSUB)utf8encode.o $(SHAREDSUB)utf8decode.o
 LIBNAME = $(LIBPATH)libhycommon.a

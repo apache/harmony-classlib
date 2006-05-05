@@ -22,7 +22,7 @@ SHAREDSUB=$(SHARED)prefs\# comment to avoid \ being treated as continuation
 LIBBASE=hyprefs
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\zlib\dist /I..\zip /I..\fdlibm
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = prefs_copyright.obj PreferencesImpl.obj

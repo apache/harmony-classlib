@@ -18,7 +18,7 @@
 
 include ../makefile.include
 
-CFLAGS += -fpic -I$(SHARED)common -I../zlib -I../zip -I$(SHARED)fdlibm
+CFLAGS += -fpic -I$(SHARED)common -I$(SHARED)fdlibm
 
 BUILDFILES = \
 	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \

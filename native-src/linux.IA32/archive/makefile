@@ -18,7 +18,7 @@
 
 include ../makefile.include
 
-CFLAGS += -fpic -I$(SHARED)common -I../zlib/dist -I../zip -I../fdlibm
+CFLAGS += -fpic -I$(SHARED)common -I../zlib/dist
 
 BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
 	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \

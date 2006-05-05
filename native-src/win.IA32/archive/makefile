@@ -22,8 +22,7 @@ SHAREDSUB=$(SHARED)archive\# comment to avoid \ being treated as continuation
 LIBBASE=hyarchive
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\zlib\dist \
-	   /I..\zip /I..\fdlibm
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\zlib\dist
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \

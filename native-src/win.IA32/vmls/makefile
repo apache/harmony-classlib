@@ -24,6 +24,6 @@ LIBNAME=$(LIBPATH)hyvmls.lib
 BUILDFILES = \
 	$(SHAREDSUB)vmls.obj
 
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\vmls
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 !include <..\rules.mak>

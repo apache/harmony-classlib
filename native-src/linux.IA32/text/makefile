@@ -18,7 +18,7 @@
 
 include ../makefile.include
 
-CFLAGS += -fpic -I../zlib -I../zip -I../fdlibm 
+CFLAGS += -fpic
 BUILDFILES = text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
 MDLLIBFILES = \

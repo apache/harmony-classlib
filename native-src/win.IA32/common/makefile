@@ -26,6 +26,6 @@ BUILDFILES = \
 	locklbl.obj lock386.obj \
 	$(SHAREDSUB)utf8decode.obj $(SHAREDSUB)utf8encode.obj
 
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\zip /I..\fdlibm
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 !include <..\rules.mak>

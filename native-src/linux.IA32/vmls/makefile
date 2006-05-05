@@ -18,7 +18,6 @@
 
 include ../makefile.include
 
-CFLAGS += -I../vmls 
 BUILDFILES = $(SHAREDSUB)vmls.o
 LIBNAME = $(LIBPATH)libhyvmls.a
 
