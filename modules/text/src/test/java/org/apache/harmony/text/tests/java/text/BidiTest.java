@@ -15,10 +15,8 @@
 
 package org.apache.harmony.text.tests.java.text;
 
-import java.text.AttributedString;
 import java.text.Bidi;
 import java.util.Arrays;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -59,6 +57,13 @@ public class BidiTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			// expected
 		}
+
+		try {
+            bd = new Bidi(null);
+            fail("should throw IAE");
+        } catch (IllegalArgumentException e) {
+            assertEquals("paragraph is null", e.getMessage());
+        }
 
 		bd = new Bidi("a".toCharArray(), 0, null, 0, 1,
 				Bidi.DIRECTION_RIGHT_TO_LEFT);

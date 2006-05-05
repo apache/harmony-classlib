@@ -89,11 +89,13 @@ public final class Bidi {
 	 * @see TextAttribute.RUN_DIRECTION
 	 */
 	public Bidi(AttributedCharacterIterator paragraph) {
-		/*
-		 * TODO: dependency on java.awt.font.TextAttribute and
-		 * java.awt.font.NumericShaper which is not implemented yet.
-		 */
-	}
+        if (paragraph == null)
+            throw new IllegalArgumentException("paragraph is null");
+        /*
+         * TODO: dependency on java.awt.font.TextAttribute and
+         * java.awt.font.NumericShaper which is not implemented yet.
+         */
+    }
 
 	/**
 	 * Create a Bidi object.

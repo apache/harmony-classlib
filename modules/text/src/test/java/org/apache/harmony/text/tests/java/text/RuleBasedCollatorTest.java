@@ -228,7 +228,7 @@ public class RuleBasedCollatorTest extends TestCase {
         Object obj2 = "b";
         assertEquals(-1, coll.compare(obj1, obj2));
 
-        Collator coll2 = Collator.getInstance();
+        Collator.getInstance();
         assertFalse(coll.equals("A", "\uFF21"));
     }
 
@@ -244,7 +244,7 @@ public class RuleBasedCollatorTest extends TestCase {
         Collator coll = Collator.getInstance(Locale.US);
         String text = "abc";
         CollationKey key = coll.getCollationKey(text);
-        int hashCode = key.hashCode();
+        key.hashCode();
 
         CollationKey key2 = coll.getCollationKey("abc");
 
@@ -253,6 +253,34 @@ public class RuleBasedCollatorTest extends TestCase {
         assertEquals(0, key.compareTo(key3));
         assertTrue(key.equals(key2));
 
-        byte[] bytes = key.toByteArray();
+        key.toByteArray();
     }
+
+    /**
+     * @tests java.text.RuleBasedCollator.RuleBasedCollator(java.lang.String)
+     */
+    public void testNullPointerException() throws Exception {
+        //Regression for HARMONY-241
+        try {
+            new RuleBasedCollator(null);
+            fail("Constructor RuleBasedCollator(null) "
+                    + "should throw NullPointerException");
+        } catch (NullPointerException e) {}
+    }
+
+    /**
+     * @tests java.text.RuleBasedCollator.RuleBasedCollator(java.lang.String)
+     */
+    public void testEmptyStringException() {
+        //Regression for HARMONY-241
+        try {
+            new RuleBasedCollator("");
+            fail("Constructor RuleBasedCollator(\"\") "
+                    + "should throw ParseException");
+        } catch (ParseException e) {
+            assertEquals("java.text.ParseException", e.getClass().getName());
+            assertEquals(0, e.getErrorOffset());
+        }
+    }
+
 }

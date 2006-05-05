@@ -15,6 +15,8 @@
 
 package java.text;
 
+import org.apache.harmony.luni.util.Msg;
+
 
 /**
  * <code>RuleBasedCollator</code> is a concrete subclass of
@@ -53,9 +55,16 @@ public class RuleBasedCollator extends Collator {
 	 *             when the rules contains an invalid collation rule syntax.
 	 */
 	public RuleBasedCollator(String rules) throws ParseException {
-		try {
-			this.icuColl = new com.ibm.icu.text.RuleBasedCollator(rules);
-		} catch (Exception e) {
+        if (rules == null) {
+            throw new NullPointerException();
+        }
+        if (rules.length() == 0) {
+            throw new ParseException(Msg.getString("K034b"), 0);
+        }
+
+        try {
+            this.icuColl = new com.ibm.icu.text.RuleBasedCollator(rules);
+        } catch (Exception e) {
 			if (e instanceof ParseException) {
 				throw (ParseException) e;
 			}
