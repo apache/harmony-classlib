@@ -33,7 +33,7 @@ import java.beans.VetoableChangeSupport;
 /**
  * The test checks the class java.beans.VetoableChangeSupport
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
+ * @version $Revision$
  */
 
 public class VetoableChangeSupportTest extends TestCase {
@@ -57,14 +57,24 @@ public class VetoableChangeSupportTest extends TestCase {
      *        java.lang.Object)
      */
     public void testVetoableChangeSupport_null() {
+        // Regression for HARMONY-228
         try {
-            // Regression for HARMONY-228
             new VetoableChangeSupport(null);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
         }
     }
-    
+
+    /**
+     * @tests java.beans.VetoableChangeSupport#addVetoableChangeListener(java.lang.String,
+     *        java.beans.VetoableChangeListener)
+     */
+    public void test_addPropertyChangeListenerNullNull() throws Exception {
+        // Regression for HARMONY-441
+        new VetoableChangeSupport("bean1")
+                .addVetoableChangeListener(null, null);
+    }
+
     /**
      * The test checks the method add() with no property specified
      */
@@ -76,13 +86,10 @@ public class VetoableChangeSupportTest extends TestCase {
         };
         vcs.addVetoableChangeListener(vcl);
         VetoableChangeListener[] vcls = vcs.getVetoableChangeListeners();
-        if(vcls == null) {
-            fail("Returned listeners is null.");
-        } else if(vcls.length != 1) {
-            fail("Number of listeners is not equal to 1.");
-        } else {
-            assertEquals(vcl, vcls[0]);
-        }
+
+        assertNotNull("Returned listeners is null.", vcls);
+        assertEquals(1, vcls.length);
+        assertEquals(vcl, vcls[0]);
     }
     
     /**
@@ -97,13 +104,10 @@ public class VetoableChangeSupportTest extends TestCase {
         vcs.addVetoableChangeListener("property1", vcl);
         VetoableChangeListener[] vcls = vcs.getVetoableChangeListeners(
                 "property1");
-        if(vcls == null) {
-            fail("Returned listeners is null.");
-        } else if(vcls.length != 1) {
-            fail("Number of listeners is not equal to 1.");
-        } else {
-            assertEquals(vcl, vcls[0]);
-        }
+
+        assertNotNull("Returned listeners is null.", vcls);
+        assertEquals(1, vcls.length);
+        assertEquals(vcl, vcls[0]);
     }
     
     /**
@@ -112,23 +116,19 @@ public class VetoableChangeSupportTest extends TestCase {
     public void testAddVetoableChangeListenerProxy() {
         VetoableChangeSupport vcs = new VetoableChangeSupport("bean1");
         VetoableChangeListener vcl = new VetoableChangeListener() {
-            public void vetoableChange(PropertyChangeEvent pce) {
-            }
+            public void vetoableChange(PropertyChangeEvent pce) {}
         };
         vcs.addVetoableChangeListener("property1", vcl);
         VetoableChangeListener[] vcls = vcs.getVetoableChangeListeners();
-        if(vcls == null) {
-            fail("Returned listeners is null.");
-        } else if(vcls.length != 1) {
-            fail("Number of listeners is not equal to 1.");
-        } else if(!(vcls[0] instanceof VetoableChangeListenerProxy)) {
-            fail("Listener is not of VetoableChangeListenerProxy type");
-        } else {
-            assertEquals(vcl,
-                    ((VetoableChangeListenerProxy) vcls[0]).getListener());
-            assertEquals("property1",
-                    ((VetoableChangeListenerProxy) vcls[0]).getPropertyName());
-        }
+
+        assertNotNull("Returned listeners is null.", vcls);
+        assertEquals(1, vcls.length);
+
+        assertTrue("Listener is not of VetoableChangeListenerProxy type",
+                vcls[0] instanceof VetoableChangeListenerProxy);
+        assertEquals(vcl, ((VetoableChangeListenerProxy) vcls[0]).getListener());
+        assertEquals("property1", ((VetoableChangeListenerProxy) vcls[0])
+                .getPropertyName());
     }
     
     /**

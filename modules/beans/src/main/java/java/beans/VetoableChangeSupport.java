@@ -85,19 +85,17 @@ public class VetoableChangeSupport implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public synchronized void addVetoableChangeListener(
-            String propertyName, VetoableChangeListener listener) {
-        if(propertyName == null) {
-            throw new NullPointerException("propertyName is null");
-        } else if(listener != null) {
-            ArrayList listeners =
-                (ArrayList) selectedVetoableChangeListeners.get(propertyName);
-            
+    public synchronized void addVetoableChangeListener(String propertyName,
+            VetoableChangeListener listener) {
+        if (propertyName != null && listener != null) {
+            ArrayList listeners = (ArrayList) selectedVetoableChangeListeners
+                    .get(propertyName);
+
             if (listeners == null) {
                 listeners = new ArrayList();
                 selectedVetoableChangeListeners.put(propertyName, listeners);
             }
-            
+
             listeners.add(listener);
         }
     }
