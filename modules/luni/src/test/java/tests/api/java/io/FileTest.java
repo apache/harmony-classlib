@@ -26,7 +26,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import tests.support.Support_Exec;
 import tests.support.Support_PlatformFile;
 
 public class FileTest extends junit.framework.TestCase {
@@ -99,6 +98,13 @@ public class FileTest extends junit.framework.TestCase {
 		f = new File(d, "input.tst");
 		assertTrue("Test 2: Created Incorrect File " + f.getPath(), f
 				.getAbsolutePath().equals(dirName));
+
+		// Regression test for Harmony-382
+        File s = null;
+        f = new File("/abc");
+        d = new File(s, "/abc");
+        assertEquals("Test3: Created Incorrect File " + d.getAbsolutePath(), f
+                .getAbsolutePath(), d.getAbsolutePath());
 	}
 
 	/**
@@ -150,6 +156,13 @@ public class FileTest extends junit.framework.TestCase {
 		f = new File(dirName, fileName);
 		assertTrue("Test 2: Created Incorrect File", f.getPath()
 				.equals(userDir));
+
+		// Regression test for Harmony-382
+        String s = null;
+        f = new File("/abc");
+        File d = new File(s, "/abc");
+        assertEquals("Test3: Created Incorrect File", d.getAbsolutePath(), f
+                .getAbsolutePath());
 	}
 
 	/**

@@ -97,7 +97,7 @@ public class File implements Serializable, Comparable {
 	public File(File dir, String name) {
 		if (name != null) {
 			if (dir == null) {
-				this.path = name;
+				this.path = fixSlashes(name);
 			} else {
 				this.path = calculatePath(dir.getPath(),name);
 			}
@@ -128,7 +128,7 @@ public class File implements Serializable, Comparable {
 	public File(String dirPath, String name) {
 		if (name != null) {
 			if (dirPath == null) {
-				this.path = name;
+				this.path = fixSlashes(name);
 			} else {
 				this.path = calculatePath(dirPath, name);
 			}
