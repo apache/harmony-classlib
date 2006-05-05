@@ -51,9 +51,7 @@ public class DelegationPermissionTest extends TestCase {
         DelegationPermission dp;
         dp = new DelegationPermission(name1);
         assertEquals(name1, dp.getName());
-        System.out.println(dp.getActions());
         assertEquals("",dp.getActions());
-        System.out.println(dp.getActions());
         dp = new DelegationPermission(name1, "action");
         assertEquals("",dp.getActions());
         dp = new DelegationPermission(name1, null);
