@@ -60,13 +60,13 @@ public class KerberosKey implements SecretKey, Destroyable {
      */
     public KerberosKey(KerberosPrincipal principal, byte[] keyBytes,
                        int keyType, int versionNumber) {
-        //TODO: is a principal mutable ? 
+
+        if (keyBytes == null) {
+            throw new NullPointerException("key is null");
+        }
+
         this.principal = principal;
         this.versionNum = versionNumber;
-        
-        if (keyBytes == null) {
-            throw new IllegalArgumentException("key is null");
-        }
         
         this.key = new KeyImpl(keyBytes, keyType);
         
@@ -77,6 +77,9 @@ public class KerberosKey implements SecretKey, Destroyable {
      */
     public KerberosKey(KerberosPrincipal principal, char[] password,
                        String algorithm) {
+        
+        this.principal = principal;
+
         this.key = new KeyImpl(principal, password, algorithm);
     }
     
@@ -198,15 +201,17 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
      */
     public KeyImpl(KerberosPrincipal principal, char[] password, String algorithm) {
 
-        //TODO: need to read a key from a Kerberos "keytab". 
-        throw new UnsupportedOperationException ();
-/*        if (principal == null || password == null || algorithm == null) {
+        if (principal == null || password == null) {
             throw new NullPointerException();
         }
-        this.principal = principal;
-        this.password = (char[])password.clone();
-        this.algorithm = algorithm;
-*/        
+
+        if (algorithm != null && "DES".compareTo(algorithm) != 0) {
+            throw new IllegalArgumentException("Unsupported algorithm");
+        }
+
+        keyType = 3; // DES algorithm
+
+        //FIXME: implement grenerating key from password 
     }
     
     /**
@@ -215,8 +220,9 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
      */
     public final String getAlgorithm() {
         checkState();
-        //TODO: if algoritm is null then return "DES"
-        // else return another algoritm
+        if (keyType == 0) {
+            return "NULL";
+        }
         return "DES";
     }
     
