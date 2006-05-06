@@ -21,6 +21,8 @@ import java.lang.reflect.Array;
 
 /**
  * Arrays contains static methods which operate on arrays.
+ * 
+ * @since 1.2
  */
 public class Arrays {
 
@@ -312,7 +314,7 @@ public class Arrays {
 	 *         is the -index - 1 where the element would be inserted
 	 * 
 	 * @exception ClassCastException
-	 *                when an element in the array or the seach element does not
+	 *                when an element in the array or the search element does not
 	 *                implement Comparable, or cannot be compared to each other
 	 */
 	public static int binarySearch(Object[] array, Object object) {
@@ -344,7 +346,7 @@ public class Arrays {
 	 *         is the -index - 1 where the element would be inserted
 	 * 
 	 * @exception ClassCastException
-	 *                when an element in the array and the seach element cannot
+	 *                when an element in the array and the search element cannot
 	 *                be compared to each other using the Comparator
 	 */
 	public static int binarySearch(Object[] array, Object object,
@@ -2012,4 +2014,418 @@ public class Arrays {
 		if ((length = d - c) > 0)
 			sort(end - length, end, array);
 	}
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>boolean[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(boolean)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>boolean</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(boolean[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 5);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>byte[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(byte)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>byte</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(byte[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 3);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>char[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(char)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>char</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(char[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 2);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>double[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(double)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>double</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(double[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 5);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>float[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(float)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>float</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(float[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 5);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>int[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(int)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>int</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(int[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 4);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>long[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(long)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>long</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(long[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 4);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>short[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(short)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>short</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(short[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 4);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <code>String</code> representation of the
+     * <code>Object[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * each element is converted to a <code>String</code> via the
+     * {@link String#valueOf(Object)} and separated by
+     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
+     * then <code>&quot;null&quot;</code> is returned.
+     * </p>
+     * 
+     * @param array The <code>Object</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String toString(Object[] array) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+        StringBuilder sb = new StringBuilder(2 + array.length * 5);
+        sb.append('[');
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(array[i]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    /**
+     * <p>
+     * Creates a <i>"deep"</i> <code>String</code> representation of the
+     * <code>Object[]</code> passed, such that if the array contains other
+     * arrays, the <code>String</code> representation of those arrays is
+     * generated as well.
+     * </p>
+     * <p>
+     * If any of the elements are primitive arrays, the generation is delegated
+     * to the other <code>toString</code> methods in this class. If any
+     * element contains a reference to the original array, then it will be
+     * represented as <code>"[...]"</code>. If an element is an
+     * <code>Object[]</code>, then its representation is generated by a
+     * recursive call to this method. All other elements are converted via the
+     * {@link String#valueOf(Object)} method.
+     * </p>
+     * 
+     * @param array The <code>Object</code> array to convert.
+     * @return The <code>String</code> representation of <code>array</code>.
+     * @since 1.5
+     */
+    public static String deepToString(Object[] array) {
+        // delegate this to the recursive method
+        return deepToStringImpl(array, new Object[] { array }, null);
+    }
+
+    /**
+     * <p>
+     * Implementation method used by {@link #deepToString(Object[])}.
+     * </p>
+     * 
+     * @param array The <code>Object[]</code> to dive into.
+     * @param original The original <code>Object[]</code>; used to test for
+     *        self references.
+     * @param sb The <code>StringBuilder</code> instance to append to or
+     *        <code>null</code> one hasn't been created yet.
+     * @return The result.
+     * @see #deepToString(Object[])
+     */
+    private static String deepToStringImpl(Object[] array, Object[] origArrays,
+            StringBuilder sb) {
+        if (array == null)
+            return "null";
+        if (array.length == 0)
+            return "[]";
+
+        if (sb == null)
+            sb = new StringBuilder(2 + array.length * 5);
+        sb.append('[');
+
+        for (int i = 0; i < array.length; i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            // establish current element
+            Object elem = array[i];
+            if (elem == null) {
+                // element is null
+                sb.append("null");
+            } else {
+                // get the Class of the current element
+                Class elemClass = elem.getClass();
+                if (elemClass.isArray()) {
+                    // element is an array type
+
+                    // get the declared Class of the array (element)
+                    Class elemElemClass = elemClass.getComponentType();
+                    if (elemElemClass.isPrimitive()) {
+                        // element is a primitive array
+                        if (boolean.class.equals(elemElemClass)) {
+                            sb.append(toString((boolean[]) elem));
+                        } else if (byte.class.equals(elemElemClass)) {
+                            sb.append(toString((byte[]) elem));
+                        } else if (char.class.equals(elemElemClass)) {
+                            sb.append(toString((char[]) elem));
+                        } else if (double.class.equals(elemElemClass)) {
+                            sb.append(toString((double[]) elem));
+                        } else if (float.class.equals(elemElemClass)) {
+                            sb.append(toString((float[]) elem));
+                        } else if (int.class.equals(elemElemClass)) {
+                            sb.append(toString((int[]) elem));
+                        } else if (long.class.equals(elemElemClass)) {
+                            sb.append(toString((long[]) elem));
+                        } else if (short.class.equals(elemElemClass)) {
+                            sb.append(toString((short[]) elem));
+                        } else {
+                            // no other possible primitives, so we assert that
+                            throw new AssertionError();
+                        }
+                    } else {
+                        // element is an Object[], so we assert that
+                        assert elem instanceof Object[];
+                        if (deepToStringImplContains(origArrays, elem)) {
+                            sb.append("[...]");
+                        } else {
+                            Object[] newArray = (Object[]) elem;
+                            Object[] newOrigArrays = new Object[origArrays.length + 1];
+                            System.arraycopy(origArrays, 0, newOrigArrays, 0,
+                                    origArrays.length);
+                            newOrigArrays[origArrays.length] = newArray;
+                            // make the recursive call to this method
+                            deepToStringImpl(newArray, newOrigArrays, sb);
+                        }
+                    }
+                } else { // element is NOT an array, just an Object
+                    sb.append(array[i]);
+                }
+            }
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+
+    /**
+     * <p>
+     * Utility method used to assist the implementation of
+     * {@link #deepToString(Object[])}.
+     * </p>
+     * 
+     * @param origArrays An array of Object[] references.
+     * @param array An Object[] reference to look for in <code>origArrays</code>.
+     * @return A value of <code>true</code> if <code>array</code> is an
+     *         element in <code>origArrays</code>.
+     */
+    private static boolean deepToStringImplContains(Object[] origArrays,
+            Object array) {
+        if (origArrays == null || origArrays.length == 0)
+            return false;
+        for (int i = 0; i < origArrays.length; i++) {
+            if (origArrays[i] == array)
+                return true;
+        }
+        return false;
+    }
 }
