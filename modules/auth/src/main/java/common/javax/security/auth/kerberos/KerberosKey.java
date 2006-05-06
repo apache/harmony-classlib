@@ -170,6 +170,8 @@ public class KerberosKey implements SecretKey, Destroyable {
  */
 class KeyImpl implements SecretKey, Destroyable, Serializable {
 
+    private static final long serialVersionUID = -7889313790214321193L;
+    
     private transient byte[] keyBytes;
 
     private transient int keyType;
