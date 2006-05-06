@@ -25,6 +25,8 @@ import junit.framework.TestCase;
 
 /**
  * Tests KerberosKey class implementation.
+ * 
+ * @see http://www.ietf.org/rfc/rfc3961.txt
  */
 public class KerberosKeyTest extends TestCase {
 
@@ -115,10 +117,41 @@ public class KerberosKeyTest extends TestCase {
 
         byte[] keyBytes1 = key.getEncoded();
         assertTrue("encoded", Arrays.equals(keyBytes, keyBytes1));
-        
+
         // bytes are copied each time we invoke the method
         assertNotSame("keyBytes immutability 1 ", keyBytes, keyBytes1);
         assertNotSame("keyBytes immutability 2 ", keyBytes1, key.getEncoded());
+
+        // Test generation of DES key from password
+        // test data from RFC 3961 (http://www.ietf.org/rfc/rfc3961.txt)
+        // see A.2 test vectors
+        // test data format: principal/password/DES key
+        Object[][] testcases = {
+                {
+                        "raeburn@ATHENA.MIT.EDU",
+                        "password",
+                        new byte[] { (byte) 0xcb, (byte) 0xc2, (byte) 0x2f,
+                                (byte) 0xae, (byte) 0x23, (byte) 0x52,
+                                (byte) 0x98, (byte) 0xe3 } },
+                {
+                        "danny@WHITEHOUSE.GOV",
+                        "potatoe",
+                        new byte[] { (byte) 0xdf, (byte) 0x3d, (byte) 0x32,
+                                (byte) 0xa7, (byte) 0x4f, (byte) 0xd9,
+                                (byte) 0x2a, (byte) 0x01 } },
+        // TODO add "pianist@EXAMPLE.COM" and "Juri ... @ATHENA.MIT.EDU"
+        };
+
+        for (int i = 0; i < testcases.length; i++) {
+            KerberosPrincipal kp = new KerberosPrincipal(
+                    (String) testcases[i][0], 1);
+
+            key = new KerberosKey(kp, ((String) testcases[i][1]).toCharArray(),
+                    "DES");
+
+            assertTrue("Testcase: " + (String) testcases[i][0], Arrays.equals(
+                    (byte[]) testcases[i][2], key.getEncoded()));
+        }
     }
 
     /**
@@ -129,7 +162,7 @@ public class KerberosKeyTest extends TestCase {
         KerberosKey key = new KerberosKey(principal, new char[10], "DES");
 
         assertFalse("not destroyed", key.isDestroyed());
-        
+
         key.destroy();
         assertTrue("destroyed", key.isDestroyed());
 
