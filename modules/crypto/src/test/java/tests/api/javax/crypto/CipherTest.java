@@ -34,6 +34,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
+import tests.support.resource.Support_Resources;
+
 public class CipherTest extends junit.framework.TestCase {
 
     /**
@@ -380,7 +382,7 @@ public class CipherTest extends junit.framework.TestCase {
             byte[] input = new byte[256];
             String resPath = "hyts_" + "des-ede3-cbc.test" + index
                     + ".ciphertext";
-            InputStream is = getStream(resPath);
+            InputStream is = Support_Resources.getResourceStream(resPath);
 
             int bytesRead = is.read(input, 0, 256);
             while (bytesRead > 0) {
@@ -429,7 +431,7 @@ public class CipherTest extends junit.framework.TestCase {
             byte[] input = new byte[256];
             String resPath = "hyts_" + "des-ede3-cbc.test" + index
                     + ".plaintext";
-            InputStream is = getStream(resPath);
+            InputStream is = Support_Resources.getResourceStream(resPath);
 
             int bytesRead = is.read(input, 0, 256);
             while (bytesRead > 0) {
@@ -455,7 +457,7 @@ public class CipherTest extends junit.framework.TestCase {
 
     private byte[] loadBytes(String resPath) {
         try {
-            InputStream is = getStream(resPath);
+            InputStream is = Support_Resources.getResourceStream(resPath);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buff = new byte[1024];
@@ -468,14 +470,5 @@ public class CipherTest extends junit.framework.TestCase {
         } catch (IOException e) {
             return null;
         }
-    }
-
-    public InputStream getStream(String name) {
-
-        InputStream is = ClassLoader.getSystemClassLoader()
-                .getResourceAsStream(name);
-
-        assertNotNull("Failed to load resource: " + name, is);
-        return is;
     }
 }
