@@ -27,21 +27,14 @@ import tests.support.resource.Support_Resources;
 public class X509CertificateTest extends junit.framework.TestCase {
 	private X509Certificate pemCert = null;
 
-	protected void setUp() {
-		try {
-			InputStream is = Support_Resources
-					.getStream("hyts_certificate_PEM.txt");
-			if (is != null) {
-				CertificateFactory certFact = CertificateFactory
-						.getInstance("X509");
-				pemCert = (X509Certificate) certFact.generateCertificate(is);
-			} else {
-				fail("Problem occurred opening hyts_certificate_PEM.txt");
-			}
-		} catch (CertificateException e) {
-			fail("Unexpected CertificateException : " + e);
-		}
-	}
+	protected void setUp() throws Exception {
+
+        InputStream is = Support_Resources
+                .getResourceStream("hyts_certificate_PEM.txt");
+
+        CertificateFactory certFact = CertificateFactory.getInstance("X509");
+        pemCert = (X509Certificate) certFact.generateCertificate(is);
+    }
 
 	/**
 	 * @tests java.security.cert.X509Certificate#getExtensionValue(java.lang.String)

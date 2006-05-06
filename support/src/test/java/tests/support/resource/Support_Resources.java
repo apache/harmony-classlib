@@ -131,4 +131,21 @@ public class Support_Resources {
 		return "http://" + Support_Configuration.TestResources + resource;
 	}
 
+    /**
+     * Util method to load resource files
+     * 
+     * @param name - name of resource file
+     * @return - resource input stream
+     */
+    public static InputStream getResourceStream(String name) {
+
+        InputStream is = ClassLoader.getSystemClassLoader()
+                .getResourceAsStream(name);
+
+        if (is == null) {
+            throw new RuntimeException("Failed to load resource: " + name);
+        }
+        
+        return is;
+    }
 }

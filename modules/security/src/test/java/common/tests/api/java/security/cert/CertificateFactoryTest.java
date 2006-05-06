@@ -72,7 +72,7 @@ public class CertificateFactoryTest extends junit.framework.TestCase {
 		}
 
 		// Test 2
-		InputStream is = Support_Resources.getStream("hyts_badpem.cer");
+		InputStream is = Support_Resources.getResourceStream("hyts_badpem.cer");
 		boolean caughtException = false;
 		try {
 			CertificateFactory fact = CertificateFactory.getInstance("X.509");
