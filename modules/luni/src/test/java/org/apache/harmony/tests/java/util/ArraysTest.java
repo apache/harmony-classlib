@@ -16,7 +16,13 @@
 
 package org.apache.harmony.tests.java.util;
 
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.RandomAccess;
+
+import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
@@ -323,5 +329,133 @@ public class ArraysTest extends TestCase {
         String expected = "[[true, false], [0, 1], [a, b], [0.0, 1.0], [0.0, 1.0], [0, 1], [0, 1], [0, 1], [true, false], [[...], [0, 1], [a, b], [0.0, 1.0], [0.0, 1.0], [0, 1], [0, 1], [0, 1], [innerFixture0, [...], [...], innerFixture3]]]";
         
         assertEquals(expected, Arrays.deepToString(fixture));
+    }
+    
+    public void test_asListTvararg() throws Exception {
+        List<String> stringsList = Arrays.asList("0", "1");
+        assertEquals(2, stringsList.size());
+        assertEquals("0", stringsList.get(0));
+        assertEquals("1", stringsList.get(1));
+        assertTrue(stringsList instanceof RandomAccess);
+        assertTrue(stringsList instanceof Serializable);
+        SerializationTester.assertEquals(stringsList);
+        
+        //test from javadoc
+        List<String> stooges = Arrays.asList("Larry", "Moe", "Curly");
+        assertEquals(3, stooges.size());
+        assertEquals("Larry", stooges.get(0));
+        assertEquals("Moe", stooges.get(1));
+        assertEquals("Curly", stooges.get(2));
+        
+        stringsList = Arrays.asList((String)null);
+        assertEquals(1, stringsList.size());
+        assertEquals((String)null, stringsList.get(0));
+        
+        try {
+            Arrays.asList((Object[])null);
+            fail("No NPE");
+        } catch (NullPointerException e) {}
+    }
+    
+    public void test_binarySearch$TTLjava_util_ComparatorsuperT() {
+        String[] strings = new String[] { "a", "B", "c", "D" };
+        Arrays.sort(strings, String.CASE_INSENSITIVE_ORDER);
+        assertEquals(0, Arrays.binarySearch(strings, "a",
+                String.CASE_INSENSITIVE_ORDER));
+        assertEquals(0, Arrays.binarySearch(strings, "A",
+                String.CASE_INSENSITIVE_ORDER));
+        assertEquals(1, Arrays.binarySearch(strings, "b",
+                String.CASE_INSENSITIVE_ORDER));
+        assertEquals(1, Arrays.binarySearch(strings, "B",
+                String.CASE_INSENSITIVE_ORDER));
+        assertEquals(2, Arrays.binarySearch(strings, "c",
+                String.CASE_INSENSITIVE_ORDER));
+        assertEquals(2, Arrays.binarySearch(strings, "C",
+                String.CASE_INSENSITIVE_ORDER));
+        assertEquals(3, Arrays.binarySearch(strings, "d",
+                String.CASE_INSENSITIVE_ORDER));
+        assertEquals(3, Arrays.binarySearch(strings, "D",
+                String.CASE_INSENSITIVE_ORDER));
+
+
+        assertTrue(Arrays.binarySearch(strings, "e",
+                String.CASE_INSENSITIVE_ORDER) < 0);
+        assertTrue(Arrays.binarySearch(strings, "" + ('A' - 1),
+                String.CASE_INSENSITIVE_ORDER) < 0);
+
+        //test with null comparator, which switches back to Comparable
+        Arrays.sort(strings, null);
+        //B, D, a, c
+        assertEquals(2, Arrays.binarySearch(strings, "a", (Comparator<String>)null));
+        assertEquals(-1, Arrays.binarySearch(strings, "A", (Comparator<String>)null));
+        assertEquals(-4, Arrays.binarySearch(strings, "b", (Comparator<String>)null));
+        assertEquals(0, Arrays.binarySearch(strings, "B", (Comparator<String>)null));
+        assertEquals(3, Arrays.binarySearch(strings, "c", (Comparator<String>)null));
+        assertEquals(-2, Arrays.binarySearch(strings, "C", (Comparator<String>)null));
+        assertEquals(-5, Arrays.binarySearch(strings, "d", (Comparator<String>)null));
+        assertEquals(1, Arrays.binarySearch(strings, "D", (Comparator<String>)null));       
+
+        assertTrue(Arrays.binarySearch(strings, "e", null) < 0);
+        assertTrue(Arrays.binarySearch(strings, "" + ('A' - 1), null) < 0);
+        
+        try {
+            Arrays.binarySearch((String[])null, "A", String.CASE_INSENSITIVE_ORDER);
+            fail("No NPE");
+        } catch (NullPointerException e) {}
+        
+        try {
+            Arrays.binarySearch(strings, (String)null, String.CASE_INSENSITIVE_ORDER);
+            fail("No NPE");
+        } catch (NullPointerException e) {}
+        
+        try {
+            Arrays.binarySearch(strings, (String)null, (Comparator<String>)null);
+            fail("No NPE");
+        } catch (NullPointerException e) {}
+        
+    }
+    
+    public void test_sort$TLjava_lang_ComparatorsuperT() {
+        String[] strings = new String[] { "a", "B", "c", "D" };
+        Arrays.sort(strings, String.CASE_INSENSITIVE_ORDER);
+        assertEquals("a", strings[0]);
+        assertEquals("B", strings[1]);
+        assertEquals("c", strings[2]);
+        assertEquals("D", strings[3]);
+        
+        //test with null comparator, which switches back to Comparable
+        Arrays.sort(strings, null);
+        //B, D, a, c
+        assertEquals("B", strings[0]);
+        assertEquals("D", strings[1]);
+        assertEquals("a", strings[2]);
+        assertEquals("c", strings[3]);
+        
+        try {
+            Arrays.sort((String[])null, String.CASE_INSENSITIVE_ORDER);
+            fail("No NPE");
+        } catch (NullPointerException e) {}
+    }
+    
+    public void test_sort$TIILjava_lang_ComparatorsuperT() {
+        String[] strings = new String[] { "a", "B", "c", "D" };
+        Arrays.sort(strings, 0, strings.length, String.CASE_INSENSITIVE_ORDER);
+        assertEquals("a", strings[0]);
+        assertEquals("B", strings[1]);
+        assertEquals("c", strings[2]);
+        assertEquals("D", strings[3]);
+        
+        //test with null comparator, which switches back to Comparable
+        Arrays.sort(strings, 0, strings.length, null);
+        //B, D, a, c
+        assertEquals("B", strings[0]);
+        assertEquals("D", strings[1]);
+        assertEquals("a", strings[2]);
+        assertEquals("c", strings[3]);
+        
+        try {
+            Arrays.sort((String[])null, String.CASE_INSENSITIVE_ORDER);
+            fail("No NPE");
+        } catch (NullPointerException e) {}
     }
 }

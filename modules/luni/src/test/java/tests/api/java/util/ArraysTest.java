@@ -88,11 +88,11 @@ public class ArraysTest extends junit.framework.TestCase {
 		}
 
 		try {
-			Arrays.asList(null);
+			Arrays.asList((Object[])null);
+			fail("asList with null arg didn't throw NPE");
 		} catch (NullPointerException e) {
-			return;
+			// Expected
 		}
-		fail("asList with null arg didn't throw NPE");
 	}
 
 	/**

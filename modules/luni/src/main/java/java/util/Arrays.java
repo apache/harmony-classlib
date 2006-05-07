@@ -26,14 +26,14 @@ import java.lang.reflect.Array;
  */
 public class Arrays {
 
-	private static class ArrayList extends AbstractList implements List,
+	private static class ArrayList<E> extends AbstractList<E> implements List<E>,
 			Serializable, RandomAccess {
 
 		private static final long serialVersionUID = -2764017481108945198L;
 
-		private final Object[] a;
+		private final E[] a;
 
-		ArrayList(Object[] storage) {
+		ArrayList(E[] storage) {
 			if (storage == null) {
 				throw new NullPointerException();
 			}
@@ -53,7 +53,7 @@ public class Arrays {
 			return false;
 		}
 
-		public Object get(int location) {
+		public E get(int location) {
 			try {
 				return a[location];
 			} catch (ArrayIndexOutOfBoundsException e) {
@@ -87,9 +87,9 @@ public class Arrays {
 			return -1;
 		}
 
-		public Object set(int location, Object object) {
+		public E set(int location, E object) {
 			try {
-				Object result = a[location];
+				E result = a[location];
 				a[location] = object;
 				return result;
 			} catch (ArrayIndexOutOfBoundsException e) {
@@ -107,10 +107,10 @@ public class Arrays {
 			return (Object[]) a.clone();
 		}
 
-		public Object[] toArray(Object[] contents) {
+		public <T> T[] toArray(T[] contents) {
 			int size = size();
 			if (size > contents.length)
-				contents = (Object[]) Array.newInstance(contents.getClass()
+				contents = (T[]) Array.newInstance(contents.getClass()
 						.getComponentType(), size);
 			System.arraycopy(a, 0, contents, 0, size);
 			if (size < contents.length)
@@ -133,8 +133,8 @@ public class Arrays {
 	 *            the array
 	 * @return a List on the specified array
 	 */
-	public static List asList(Object[] array) {
-		return new ArrayList(array);
+	public static <T> List<T> asList(T... array) {
+		return new ArrayList<T>(array);
 	}
 
 	/**
@@ -349,8 +349,12 @@ public class Arrays {
 	 *                when an element in the array and the search element cannot
 	 *                be compared to each other using the Comparator
 	 */
-	public static int binarySearch(Object[] array, Object object,
-			Comparator comparator) {
+	public static <T> int binarySearch(T[] array, T object,
+			Comparator<? super T> comparator) {
+        if (comparator == null) {
+            return binarySearch(array, object);
+        }
+        
 		int low = 0, mid = 0, high = array.length - 1, result = 0;
 		while (low <= high) {
 			mid = (low + high) >> 1;
@@ -1843,8 +1847,8 @@ public class Arrays {
 	 *                when <code>start < 0</code> or
 	 *                <code>end > array.size()</code>
 	 */
-	public static void sort(Object[] array, int start, int end,
-			Comparator comparator) {
+	public static <T> void sort(T[] array, int start, int end,
+			Comparator<T> comparator) {
 		if (array == null) {
 			throw new NullPointerException();
 		}
@@ -1857,8 +1861,13 @@ public class Arrays {
 			throw new ArrayIndexOutOfBoundsException();
 	}
 
-	private static void sort(int start, int end, Object[] array,
-			Comparator comparator) {
+	private static <T> void sort(int start, int end, T[] array,
+			Comparator<T> comparator) {
+        if (comparator == null) {
+            sort(start, end, array);
+            return;
+        }
+        
 		int middle = (start + end) / 2;
 		if (start + 1 < middle)
 			sort(start, middle, array, comparator);
@@ -1870,7 +1879,7 @@ public class Arrays {
 		if (comparator.compare(array[middle - 1], array[middle]) <= 0)
 			return;
 		if (start + 2 == end) {
-			Object temp = array[start];
+			T temp = array[start];
 			array[start] = array[middle];
 			array[middle] = temp;
 			return;
@@ -1898,8 +1907,8 @@ public class Arrays {
 	 *                when elements in the array cannot be compared to each
 	 *                other using the Comparator
 	 */
-	public static void sort(Object[] array, Comparator comparator) {
-		sort(0, array.length, array, comparator);
+	public static <T> void sort(T[] array, Comparator<? super T> comparator) {
+            sort(0, array.length, array, comparator);
 	}
 
 	/**
