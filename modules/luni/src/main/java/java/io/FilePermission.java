@@ -78,9 +78,9 @@ public final class FilePermission extends Permission implements Serializable {
 				if (path.equals("<<ALL FILES>>")) { //$NON-NLS-1$
 					includeAll = true;
 				} else {
-					canonPath = (String) AccessController
-							.doPrivileged(new PrivilegedAction() {
-								public Object run() {
+					canonPath = AccessController
+							.doPrivileged(new PrivilegedAction<String>() {
+								public String run() {
 									try {
 										return new File(path)
 												.getCanonicalPath();

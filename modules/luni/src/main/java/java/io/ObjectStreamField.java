@@ -30,7 +30,7 @@ import org.apache.harmony.luni.util.Sorter;
  * @see ObjectInputStream#readFields()
  * 
  */
-public class ObjectStreamField extends Object implements Comparable {
+public class ObjectStreamField extends Object implements Comparable<Object> {
 	private String name; // Declared name of the field
 
 	private Object type; // Declared type of the field
@@ -49,7 +49,7 @@ public class ObjectStreamField extends Object implements Comparable {
 	 * @param cl
 	 *            A Class object representing the type of the field
 	 */
-	public ObjectStreamField(String name, Class cl) {
+	public ObjectStreamField(String name, Class<?> cl) {
 		if (name != null && cl != null) {
 			this.name = name;
 			this.type = new WeakReference(cl);
@@ -67,7 +67,7 @@ public class ObjectStreamField extends Object implements Comparable {
 	 * @param unshared
 	 *            write and read the field unshared
 	 */
-	public ObjectStreamField(String name, Class cl, boolean unshared) {
+	public ObjectStreamField(String name, Class<?> cl, boolean unshared) {
 		if (name != null && cl != null) {
 			this.name = name;
 			if (cl.getClassLoader() == null) {
@@ -146,7 +146,7 @@ public class ObjectStreamField extends Object implements Comparable {
 	 * 
 	 * @return A Class object representing the type of the field
 	 */
-	public Class getType() {
+	public Class<?> getType() {
 		if (type instanceof WeakReference) {
 			return (Class) ((WeakReference) type).get();
 		}

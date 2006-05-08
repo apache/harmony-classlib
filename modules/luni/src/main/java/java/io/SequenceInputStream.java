@@ -15,6 +15,8 @@
 
 package java.io;
 
+import java.util.Enumeration;
+
 
 /**
  * SequenceInputStream is used for streaming over a sequence of streams
@@ -61,7 +63,7 @@ public class SequenceInputStream extends InputStream {
 	 * @param e
 	 *            the Enumeration of InputStreams to get bytes from
 	 */
-	public SequenceInputStream(java.util.Enumeration e) {
+	public SequenceInputStream(Enumeration<? extends InputStream> e) {
 		this.e = e;
 		if (e.hasMoreElements()) {
 			in = (InputStream) e.nextElement();

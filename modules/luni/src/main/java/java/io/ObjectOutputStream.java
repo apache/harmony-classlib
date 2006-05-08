@@ -253,7 +253,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * 
 	 * @see ObjectInputStream#resolveClass
 	 */
-	protected void annotateClass(Class aClass) throws IOException {
+	protected void annotateClass(Class<?> aClass) throws IOException {
 		// By default no extra info is saved. Subclasses can override
 	}
 
@@ -270,7 +270,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * 
 	 * @see ObjectInputStream#resolveProxyClass
 	 */
-	protected void annotateProxyClass(Class aClass) throws IOException {
+	protected void annotateProxyClass(Class<?> aClass) throws IOException {
 		// By default no extra info is saved. Subclasses can override
 	}
 

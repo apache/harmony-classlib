@@ -263,9 +263,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 		final Class thisClass = ObjectInputStream.class;
 		SecurityManager sm = System.getSecurityManager();
 		if (sm != null && implementationClass != thisClass) {
-			boolean mustCheck = ((Boolean) AccessController
-					.doPrivileged(new PrivilegedAction() {
-						public Object run() {
+			boolean mustCheck = (AccessController
+					.doPrivileged(new PrivilegedAction<Boolean>() {
+						public Boolean run() {
 							try {
 								Method method = implementationClass
 										.getMethod(
@@ -1636,7 +1636,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 	 * @throws ClassNotFoundException
 	 *             If the proxy class cannot be created
 	 */
-	protected Class resolveProxyClass(String[] interfaceNames)
+	protected Class<?> resolveProxyClass(String[] interfaceNames)
 			throws IOException, ClassNotFoundException {
 		ClassLoader loader = org.apache.harmony.kernel.vm.VM.getNonBootstrapClassLoader();
 		Class[] interfaces = new Class[interfaceNames.length];
@@ -2223,7 +2223,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 	 * @throws ClassNotFoundException
 	 *             If the corresponding class cannot be found.
 	 */
-	protected Class resolveClass(ObjectStreamClass osClass) throws IOException,
+	protected Class<?> resolveClass(ObjectStreamClass osClass) throws IOException,
 			ClassNotFoundException {
 		// Use the first non-null ClassLoader on the stack. If null, use the
 		// system class loader

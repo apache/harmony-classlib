@@ -559,7 +559,7 @@ public class ObjectStreamClass implements Serializable {
 	 *         receiver <code>Class</code> The loaded class corresponding to
 	 *         the receiver
 	 */
-	public Class forClass() {
+	public Class<?> forClass() {
 		if (resolvedClass != null) {
 			return (Class) resolvedClass.get();
 		}
@@ -858,7 +858,7 @@ public class ObjectStreamClass implements Serializable {
 	 *         <code>ObjectStreamClass</code> The corresponding descriptor if
 	 *         the class <code>cl</code> is Serializable or Externalizable
 	 */
-	public static ObjectStreamClass lookup(Class cl) {
+	public static ObjectStreamClass lookup(Class<?> cl) {
 		boolean serializable = isSerializable(cl);
 		boolean externalizable = isExternalizable(cl);
 
