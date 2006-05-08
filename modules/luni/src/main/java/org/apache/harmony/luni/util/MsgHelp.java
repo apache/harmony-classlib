@@ -48,7 +48,7 @@ public final class MsgHelp {
 	 * @return String the formatted message.
 	 */
 	public static String format(String format, Object[] args) {
-		StringBuffer answer = new StringBuffer(format.length()
+		StringBuilder answer = new StringBuilder(format.length()
 				+ (args.length * 20));
 		String[] argStrings = new String[args.length];
 		for (int i = 0; i < args.length; ++i) {
