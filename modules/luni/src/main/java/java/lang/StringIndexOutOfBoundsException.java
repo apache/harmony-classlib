@@ -22,10 +22,11 @@ import org.apache.harmony.luni.util.Msg;
  * This runtime exception is thrown when the a String is indexed with a value
  * less than zero, or greater than or equal to the size of the array.
  */
-
 public class StringIndexOutOfBoundsException extends IndexOutOfBoundsException {
 
-	/**
+    private static final long serialVersionUID = -6762910422159637258L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public StringIndexOutOfBoundsException() {

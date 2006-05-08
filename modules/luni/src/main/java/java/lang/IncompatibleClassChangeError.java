@@ -22,9 +22,11 @@ package java.lang;
  * 
  * @see Error
  */
-public class IncompatibleClassChangeError extends java.lang.LinkageError {
+public class IncompatibleClassChangeError extends LinkageError {
 
-	/**
+    private static final long serialVersionUID = -4914975503642802119L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public IncompatibleClassChangeError() {

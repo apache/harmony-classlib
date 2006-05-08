@@ -25,7 +25,9 @@ package java.lang;
  */
 public class AbstractMethodError extends IncompatibleClassChangeError {
 
-	/**
+    private static final long serialVersionUID = -1654391082989018462L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public AbstractMethodError() {

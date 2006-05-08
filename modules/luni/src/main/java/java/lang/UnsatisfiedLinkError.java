@@ -22,7 +22,9 @@ package java.lang;
  */
 public class UnsatisfiedLinkError extends LinkageError {
 
-	/**
+    private static final long serialVersionUID = -4019343241616879428L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public UnsatisfiedLinkError() {

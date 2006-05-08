@@ -22,7 +22,9 @@ package java.lang;
  */
 public class NoSuchMethodException extends java.lang.Exception {
 
-	/**
+    private static final long serialVersionUID = 5034388446362600923L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public NoSuchMethodException() {

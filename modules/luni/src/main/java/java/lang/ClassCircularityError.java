@@ -26,7 +26,9 @@ package java.lang;
  */
 public class ClassCircularityError extends LinkageError {
 
-	/**
+    private static final long serialVersionUID = 1054362542914539689L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public ClassCircularityError() {

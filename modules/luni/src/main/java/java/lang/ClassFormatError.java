@@ -22,7 +22,9 @@ package java.lang;
  */
 public class ClassFormatError extends LinkageError {
 
-	/**
+    private static final long serialVersionUID = -8420114879011949195L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public ClassFormatError() {

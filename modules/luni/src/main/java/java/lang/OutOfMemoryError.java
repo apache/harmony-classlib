@@ -24,7 +24,9 @@ package java.lang;
  */
 public class OutOfMemoryError extends java.lang.VirtualMachineError {
 
-	/**
+    private static final long serialVersionUID = 8228564086184010517L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public OutOfMemoryError() {

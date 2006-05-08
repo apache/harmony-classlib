@@ -24,7 +24,9 @@ package java.lang;
  */
 public class IllegalAccessError extends IncompatibleClassChangeError {
 
-	/**
+    private static final long serialVersionUID = -8988904074992417891L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public IllegalAccessError() {

@@ -24,7 +24,9 @@ package java.lang;
  */
 public class CloneNotSupportedException extends Exception {
 
-	/**
+    private static final long serialVersionUID = 5195511250079656443L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public CloneNotSupportedException() {

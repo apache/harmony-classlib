@@ -22,7 +22,9 @@ package java.lang;
  */
 public class NegativeArraySizeException extends RuntimeException {
 
-	/**
+    private static final long serialVersionUID = -8960118058596991861L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public NegativeArraySizeException() {

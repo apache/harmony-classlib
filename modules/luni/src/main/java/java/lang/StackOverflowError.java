@@ -24,7 +24,9 @@ package java.lang;
  */
 public class StackOverflowError extends java.lang.VirtualMachineError {
 
-	/**
+    private static final long serialVersionUID = 8609175038441759607L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public StackOverflowError() {

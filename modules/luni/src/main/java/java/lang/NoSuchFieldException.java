@@ -22,7 +22,9 @@ package java.lang;
  */
 public class NoSuchFieldException extends java.lang.Exception {
 
-	/**
+    private static final long serialVersionUID = -6143714805279938260L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public NoSuchFieldException() {

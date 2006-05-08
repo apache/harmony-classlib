@@ -22,7 +22,9 @@ package java.lang;
  */
 public class NumberFormatException extends java.lang.IllegalArgumentException {
 
-	/**
+    private static final long serialVersionUID = -2848938806368998894L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public NumberFormatException() {

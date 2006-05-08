@@ -20,10 +20,11 @@ package java.lang;
  * This error is thrown when an attempt is made to load a class with a format
  * version that is not supported by the VM.
  */
-
 public class UnsupportedClassVersionError extends ClassFormatError {
 
-	/**
+    private static final long serialVersionUID = -7123279212883497373L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public UnsupportedClassVersionError() {

@@ -23,7 +23,9 @@ package java.lang;
  */
 public class NullPointerException extends RuntimeException {
 
-	/**
+    private static final long serialVersionUID = 5162710183389028792L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public NullPointerException() {

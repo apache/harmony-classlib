@@ -24,6 +24,8 @@ package java.lang;
  */
 public abstract class VirtualMachineError extends Error {
 
+    private static final long serialVersionUID = 4161983926571568670L;
+
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */

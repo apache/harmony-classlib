@@ -23,7 +23,9 @@ package java.lang;
  */
 public class IllegalAccessException extends Exception {
 
-	/**
+    private static final long serialVersionUID = 6616958222490762034L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public IllegalAccessException() {

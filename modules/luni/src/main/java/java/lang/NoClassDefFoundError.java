@@ -21,7 +21,10 @@ package java.lang;
  * been asked to load.
  */
 public class NoClassDefFoundError extends LinkageError {
-	/**
+
+    private static final long serialVersionUID = 9095859863287012458L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public NoClassDefFoundError() {

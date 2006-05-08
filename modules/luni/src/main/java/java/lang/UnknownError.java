@@ -22,7 +22,9 @@ package java.lang;
  */
 public class UnknownError extends VirtualMachineError {
 
-	/**
+    private static final long serialVersionUID = 2524784860676771849L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public UnknownError() {

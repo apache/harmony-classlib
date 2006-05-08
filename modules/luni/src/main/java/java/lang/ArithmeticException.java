@@ -22,7 +22,9 @@ package java.lang;
  */
 public class ArithmeticException extends RuntimeException {
 
-	/**
+    private static final long serialVersionUID = 2256477558314496007L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public ArithmeticException() {

@@ -24,7 +24,9 @@ import org.apache.harmony.luni.util.Msg;
  */
 public class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
 
-	/**
+    private static final long serialVersionUID = -5116101128118950844L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public ArrayIndexOutOfBoundsException() {

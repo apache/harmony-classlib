@@ -22,7 +22,9 @@ package java.lang;
  */
 public class InternalError extends VirtualMachineError {
 
-	/**
+    private static final long serialVersionUID = -9062593416125562365L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public InternalError() {

@@ -20,10 +20,11 @@ package java.lang;
  * This runtime exception is thrown when an operation is attempted which is not
  * possible given the state that the executing thread is in.
  */
-public class IllegalThreadStateException extends
-		java.lang.IllegalArgumentException {
+public class IllegalThreadStateException extends IllegalArgumentException {
 
-	/**
+    private static final long serialVersionUID = -7626246362397460174L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public IllegalThreadStateException() {

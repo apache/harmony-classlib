@@ -23,7 +23,9 @@ package java.lang;
  */
 public class IndexOutOfBoundsException extends RuntimeException {
 
-	/**
+    private static final long serialVersionUID = 234122996006267687L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public IndexOutOfBoundsException() {
