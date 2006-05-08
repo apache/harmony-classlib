@@ -24,7 +24,9 @@ import java.security.BasicPermission;
  */
 public final class ReflectPermission extends BasicPermission {
 
-	/**
+    private static final long serialVersionUID = 7412737110241507485L;
+
+    /**
 	 * Creates an instance of this class with given name.
 	 * 
 	 * @param permissionName
