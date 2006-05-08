@@ -87,7 +87,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     private Proxy proxy = null;
 
     // the proxy list which is used to make the connection.
-    private List proxyList = null;
+    private List<Proxy> proxyList = null;
 
     // the current proxy which is used to make the connection.
     private Proxy currentProxy;
@@ -1142,7 +1142,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         // Use system-wide ProxySelect to select proxy list,
         // then try to connect via elements in the proxy list.
         if (null != proxy) {
-            proxyList = new ArrayList(1);
+            proxyList = new ArrayList<Proxy>(1);
             proxyList.add(proxy);
         } else {
             proxyList = NetUtil.getProxyList(uri);

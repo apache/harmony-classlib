@@ -106,7 +106,7 @@ public abstract class ProxySelector {
 	 * @throws IllegalArgumentException
 	 *             If any argument is null.
 	 */
-	public abstract List select(URI uri);
+	public abstract List<Proxy> select(URI uri);
 
 	/**
 	 * If the connection can not be established to the proxy server, this method

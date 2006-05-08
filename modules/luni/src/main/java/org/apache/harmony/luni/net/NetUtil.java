@@ -88,7 +88,6 @@ public class NetUtil {
 		if(null == selector){
 			return null;
 		}
-		List proxyList = selector.select(uri);
-    	return proxyList;
+		return selector.select(uri);
     }
 }
