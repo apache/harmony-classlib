@@ -19,6 +19,8 @@ package org.apache.harmony.tests.java.lang;
 
 import java.util.Arrays;
 
+import tests.util.SerializationTester;
+
 import junit.framework.TestCase;
 
 public class StringBuilderTest extends TestCase {
@@ -1756,6 +1758,19 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(fixture.length(), sb.length());
 		assertEquals(fixture, sb.toString());
 	}
+    
+    public void test_serialization() throws Exception {
+        final String fixture = "0123456789";
+        StringBuilder sb = new StringBuilder(fixture);
+        SerializationTester.assertEquals(sb);
+    }
+
+    public void test_serializationCompatability() throws Exception {
+        final String fixture = "0123456789";
+        StringBuilder sb = new StringBuilder(fixture);
+        SerializationTester.assertCompabilityEquals(sb,
+                "serialization/java/lang/StringBuilder.ser");
+    }
 
 	private static final class Fixture {
 		static final Fixture INSTANCE = new Fixture();

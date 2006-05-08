@@ -15,6 +15,7 @@
 
 package org.apache.harmony.tests.java.lang;
 
+import tests.util.SerializationTester;
 import junit.framework.TestCase;
 
 public class StringBufferTest extends TestCase {
@@ -396,5 +397,18 @@ public class StringBufferTest extends TestCase {
         } catch (IndexOutOfBoundsException e) {
             
         }
+    }
+    
+    public void test_serialization() throws Exception {
+        final String fixture = "0123456789";
+        StringBuffer sb = new StringBuffer(fixture);
+        SerializationTester.assertEquals(sb);
+    }
+
+    public void test_serializationCompatability() throws Exception {
+        final String fixture = "0123456789";
+        StringBuffer sb = new StringBuffer(fixture);
+        SerializationTester.assertCompabilityEquals(sb,
+                "serialization/java/lang/StringBuffer.ser");
     }
 }
