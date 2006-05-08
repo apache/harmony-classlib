@@ -16,14 +16,16 @@
 package java.text;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Currency;
 import java.util.Locale;
-
-import org.apache.harmony.luni.util.NotYetImplementedException;
 
 /**
  * DecimalFormat is used to format and parse numbers, both integers and
@@ -32,24 +34,26 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
  */
 public class DecimalFormat extends NumberFormat {
 
-    static final long serialVersionUID = 864413376551465018L;
+    private static final long serialVersionUID = 864413376551465018L;
 
-    private boolean parseBigDecimal = false;
+    private transient boolean parseBigDecimal = false;
 
-    private DecimalFormatSymbols symbols;
+    private transient DecimalFormatSymbols symbols;
 
     private transient com.ibm.icu.text.DecimalFormat dform;
 
     private transient com.ibm.icu.text.DecimalFormatSymbols icuSymbols;
 
-    static final int currentSerialVersion = 3;
+    private static final int CURRENT_SERIAL_VERTION = 3;
+
+    private transient int serialVersionOnStream = 3;
 
     /**
      * Constructs a new DecimalFormat for formatting and parsing numbers for the
      * default Locale.
      */
     public DecimalFormat() {
-        this(getPattern(Locale.getDefault(), "Number"));
+        this(getPattern(Locale.getDefault(), "Number")); //$NON-NLS-1$
     }
 
     /**
@@ -80,38 +84,15 @@ public class DecimalFormat extends NumberFormat {
      */
     public DecimalFormat(String pattern, DecimalFormatSymbols value) {
         symbols = value;
-        icuSymbols = adapt2ICU(symbols);
+        Locale locale = (Locale) this.getInternalField("locale", symbols); //$NON-NLS-1$
+        icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
+
         dform = new com.ibm.icu.text.DecimalFormat(pattern, icuSymbols);
-        setMaximumFractionDigits(dform.getMaximumFractionDigits());
-        setMinimumFractionDigits(dform.getMinimumFractionDigits());
-        setMaximumIntegerDigits(dform.getMaximumIntegerDigits());
-        setMinimumIntegerDigits(dform.getMinimumIntegerDigits());
 
-    }
-
-    private com.ibm.icu.text.DecimalFormatSymbols adapt2ICU(
-            DecimalFormatSymbols symbols) {
-        com.ibm.icu.text.DecimalFormatSymbols icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols();
-        String currencyCode = symbols.getCurrency().getCurrencyCode();
-        icuSymbols.setCurrency(com.ibm.icu.util.Currency
-                .getInstance(currencyCode));
-        icuSymbols.setCurrencySymbol(symbols.getCurrencySymbol());
-        icuSymbols.setDecimalSeparator(symbols.getDecimalSeparator());
-        icuSymbols.setDigit(symbols.getDigit());
-        icuSymbols.setGroupingSeparator(symbols.getGroupingSeparator());
-        icuSymbols.setInfinity(symbols.getInfinity());
-        icuSymbols.setInternationalCurrencySymbol(symbols
-                .getInternationalCurrencySymbol());
-        icuSymbols.setMinusSign(symbols.getMinusSign());
-        icuSymbols.setMonetaryDecimalSeparator(symbols
-                .getMonetaryDecimalSeparator());
-        icuSymbols.setNaN(symbols.getNaN());
-        icuSymbols.setPatternSeparator(symbols.getPatternSeparator());
-        icuSymbols.setPercent(symbols.getPercent());
-        icuSymbols.setPerMill(symbols.getPerMill());
-        icuSymbols.setZeroDigit(symbols.getZeroDigit());
-
-        return icuSymbols;
+        super.setMaximumFractionDigits(dform.getMaximumFractionDigits());
+        super.setMaximumIntegerDigits(dform.getMaximumIntegerDigits());
+        super.setMinimumFractionDigits(dform.getMinimumFractionDigits());
+        super.setMinimumIntegerDigits(dform.getMinimumIntegerDigits());
     }
 
     /**
@@ -237,6 +218,22 @@ public class DecimalFormat extends NumberFormat {
         return dform.format(value, buffer, position);
     }
 
+    /**
+     * Formats the number into the specified StringBuffer using the pattern of
+     * this DecimalFormat. If the field specified by the FieldPosition is
+     * formatted, set the begin and end index of the formatted field in the
+     * FieldPosition.
+     * 
+     * @param number
+     *            the object to format
+     * @param toAppandTo
+     *            the StringBuffer
+     * @param pos
+     *            the FieldPosition
+     * @return the StringBuffer parameter <code>buffer</code>
+     * @throws IllegalArgumentException
+     *             if the given number is not instance of <code>Number</code>
+     */
     public final StringBuffer format(Object number, StringBuffer toAppendTo,
             FieldPosition pos) {
         if (!(number instanceof Number)) {
@@ -268,6 +265,9 @@ public class DecimalFormat extends NumberFormat {
      * @see DecimalFormatSymbols#getCurrency()
      */
     public Currency getCurrency() {
+        if (dform.getCurrency() == null) {
+            return null;
+        }
         return Currency.getInstance(dform.getCurrency().getCurrencyCode());
     }
 
@@ -360,10 +360,31 @@ public class DecimalFormat extends NumberFormat {
         return this.parseBigDecimal;
     }
 
+    /**
+     * When DecimalFormat is used to parsing, and this value is set to true,
+     * then all the resulting number will be of type
+     * <code>java.lang.Integer</code>. Except that, NaN, positive and
+     * negative infinity are still returned as <code>java.lang.Double</code>
+     * 
+     * In this implementation, com.ibm.icu.text.DecimalFormat is wrapped to
+     * fulfill most of the format and parse feature. And this method is
+     * delegated to the wrapped instance of com.ibm.icu.text.DecimalFormat.
+     * 
+     * @param value
+     *            If set to true, all the resulting number will be of type
+     *            java.lang.Integer except some special cases.
+     */
     public void setParseIntegerOnly(boolean value) {
         dform.setParseIntegerOnly(value);
     }
 
+    /**
+     * Returns true if this <code>DecimalFormat</code>'s all resulting number
+     * will be of type <code>java.lang.Integer</code>
+     * 
+     * @return true if this <code>DecimalFormat</code>'s all resulting number
+     *         will be of type <code>java.lang.Integer</code>
+     */
     public boolean isParseIntegerOnly() {
         return dform.isParseIntegerOnly();
     }
@@ -431,7 +452,8 @@ public class DecimalFormat extends NumberFormat {
      */
     public void setDecimalFormatSymbols(DecimalFormatSymbols value) {
         symbols = (DecimalFormatSymbols) value.clone();
-        icuSymbols = adapt2ICU(symbols);
+        Locale locale = (Locale) this.getInternalField("locale", symbols); //$NON-NLS-1$
+        icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
         dform.setDecimalFormatSymbols(icuSymbols);
     }
 
@@ -469,18 +491,23 @@ public class DecimalFormat extends NumberFormat {
     public void setGroupingSize(int value) {
         dform.setGroupingSize(value);
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see java.text.NumberFormat#setGroupingUsed(boolean)
+
+    /**
+     * Sets whether or not grouping will be used in this format. Grouping
+     * affects both parsing and formatting.
+     * 
+     * @param value
+     *            true if uses grouping,false otherwise.
+     * 
      */
     public void setGroupingUsed(boolean value) {
         dform.setGroupingUsed(value);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.text.NumberFormat#setGroupingUsed(boolean)
+    /**
+     * This value indicates whether grouping will be used in this format.
+     * 
+     * @return true if grouping is used,false otherwise.
      */
     public boolean isGroupingUsed() {
         return dform.isGroupingUsed();
@@ -592,6 +619,9 @@ public class DecimalFormat extends NumberFormat {
     /**
      * Let users change the behavior of a DecimalFormat, If set to true all the
      * returned objects will be of type BigDecimal
+     * 
+     * @param newValue
+     *            true if all the returned objects should be type of BigDecimal
      */
     public void setParseBigDecimal(boolean newValue) {
         this.parseBigDecimal = newValue;
@@ -617,14 +647,212 @@ public class DecimalFormat extends NumberFormat {
         return dform.toPattern();
     }
 
+    // the fields list to be serialized
+    private static final ObjectStreamField[] serialPersistentFields = {
+            new ObjectStreamField("positivePrefix", String.class), //$NON-NLS-1$
+            new ObjectStreamField("positiveSuffix", String.class), //$NON-NLS-1$
+            new ObjectStreamField("negativePrefix", String.class), //$NON-NLS-1$
+            new ObjectStreamField("negativeSuffix", String.class), //$NON-NLS-1$
+            new ObjectStreamField("posPrefixPattern", String.class), //$NON-NLS-1$
+            new ObjectStreamField("posSuffixPattern", String.class), //$NON-NLS-1$
+            new ObjectStreamField("negPrefixPattern", String.class), //$NON-NLS-1$
+            new ObjectStreamField("negSuffixPattern", String.class), //$NON-NLS-1$
+            new ObjectStreamField("multiplier", int.class), //$NON-NLS-1$
+            new ObjectStreamField("groupingSize", byte.class), //$NON-NLS-1$
+            new ObjectStreamField("decimalSeparatorAlwaysShown", boolean.class), //$NON-NLS-1$
+            new ObjectStreamField("parseBigDecimal", boolean.class), //$NON-NLS-1$
+            new ObjectStreamField("symbols", DecimalFormatSymbols.class), //$NON-NLS-1$
+            new ObjectStreamField("useExponentialNotation", boolean.class), //$NON-NLS-1$
+            new ObjectStreamField("minExponentDigits", byte.class), //$NON-NLS-1$
+            new ObjectStreamField("maximumIntegerDigits", int.class), //$NON-NLS-1$
+            new ObjectStreamField("minimumIntegerDigits", int.class), //$NON-NLS-1$
+            new ObjectStreamField("maximumFractionDigits", int.class), //$NON-NLS-1$
+            new ObjectStreamField("minimumFractionDigits", int.class), //$NON-NLS-1$
+            new ObjectStreamField("serialVersionOnStream", int.class), }; //$NON-NLS-1$
+
+    /**
+     * Writes serialized fields following serialized forms specified by Java specification. 
+     * 
+     * @param stream
+     *              the output stream to write serialized bytes
+     * @throws IOException
+     *              if some I/O error occurs
+     * @throws ClassNotFoundException
+     */
     private void writeObject(ObjectOutputStream stream) throws IOException,
             ClassNotFoundException {
-        throw new NotYetImplementedException();
+        ObjectOutputStream.PutField fields = stream.putFields();
+        fields.put("positivePrefix", dform.getPositivePrefix()); //$NON-NLS-1$
+        fields.put("positiveSuffix", dform.getPositiveSuffix()); //$NON-NLS-1$
+        fields.put("negativePrefix", dform.getNegativePrefix()); //$NON-NLS-1$
+        fields.put("negativeSuffix", dform.getNegativeSuffix()); //$NON-NLS-1$
+        String posPrefixPattern = (String) this.getInternalField(
+                "posPrefixPattern", dform); //$NON-NLS-1$
+        fields.put("posPrefixPattern", posPrefixPattern); //$NON-NLS-1$
+        String posSuffixPattern = (String) this.getInternalField(
+                "posSuffixPattern", dform); //$NON-NLS-1$
+        fields.put("posSuffixPattern", posSuffixPattern); //$NON-NLS-1$
+        String negPrefixPattern = (String) this.getInternalField(
+                "negPrefixPattern", dform); //$NON-NLS-1$
+        fields.put("negPrefixPattern", negPrefixPattern); //$NON-NLS-1$
+        String negSuffixPattern = (String) this.getInternalField(
+                "negSuffixPattern", dform); //$NON-NLS-1$
+        fields.put("negSuffixPattern", negSuffixPattern); //$NON-NLS-1$
+        fields.put("multiplier", dform.getMultiplier()); //$NON-NLS-1$
+        fields.put("groupingSize", (byte) dform.getGroupingSize()); //$NON-NLS-1$
+        fields.put("decimalSeparatorAlwaysShown", dform //$NON-NLS-1$
+                .isDecimalSeparatorAlwaysShown());
+        fields.put("parseBigDecimal", parseBigDecimal); //$NON-NLS-1$
+        fields.put("symbols", symbols); //$NON-NLS-1$
+        boolean useExponentialNotation = ((Boolean) this.getInternalField(
+                "useExponentialNotation", dform)).booleanValue(); //$NON-NLS-1$
+        fields.put("useExponentialNotation", useExponentialNotation); //$NON-NLS-1$
+        byte minExponentDigits = ((Byte) this.getInternalField(
+                "minExponentDigits", dform)).byteValue(); //$NON-NLS-1$
+        fields.put("minExponentDigits", minExponentDigits); //$NON-NLS-1$
+        fields.put("maximumIntegerDigits", dform.getMaximumIntegerDigits()); //$NON-NLS-1$
+        fields.put("minimumIntegerDigits", dform.getMinimumIntegerDigits()); //$NON-NLS-1$
+        fields.put("maximumFractionDigits", dform.getMaximumFractionDigits()); //$NON-NLS-1$
+        fields.put("minimumFractionDigits", dform.getMinimumFractionDigits()); //$NON-NLS-1$
+        fields.put("serialVersionOnStream", CURRENT_SERIAL_VERTION); //$NON-NLS-1$
+        stream.writeFields();
+
     }
 
+    /**
+     * Reads serialized fields following serialized forms specified by Java specification.
+     * 
+     * @param stream
+     *              the input stream to read serialized bytes
+     * @throws IOException
+     *              if some I/O error occurs
+     * @throws ClassNotFoundException
+     *              if some class of serilized objects or fields cannot be found
+     */
     private void readObject(ObjectInputStream stream) throws IOException,
             ClassNotFoundException {
-        throw new NotYetImplementedException();
+
+        ObjectInputStream.GetField fields = stream.readFields();
+        String positivePrefix = (String) fields.get("positivePrefix", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String positiveSuffix = (String) fields.get("positiveSuffix", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String negativePrefix = (String) fields.get("negativePrefix", "-"); //$NON-NLS-1$ //$NON-NLS-2$
+        String negativeSuffix = (String) fields.get("negativeSuffix", ""); //$NON-NLS-1$ //$NON-NLS-2$
+
+        String posPrefixPattern = (String) fields.get("posPrefixPattern", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String posSuffixPattern = (String) fields.get("posSuffixPattern", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String negPrefixPattern = (String) fields.get("negPrefixPattern", "-"); //$NON-NLS-1$ //$NON-NLS-2$
+        String negSuffixPattern = (String) fields.get("negSuffixPattern", ""); //$NON-NLS-1$ //$NON-NLS-2$
+
+        int multiplier = fields.get("multiplier", 1); //$NON-NLS-1$
+        byte groupingSize = fields.get("groupingSize", (byte) 3); //$NON-NLS-1$
+        boolean decimalSeparatorAlwaysShown = fields.get(
+                "decimalSeparatorAlwaysShown", false); //$NON-NLS-1$
+        boolean parseBigDecimal = fields.get("parseBigDecimal", false); //$NON-NLS-1$
+        symbols = (DecimalFormatSymbols) fields.get("symbols", null); //$NON-NLS-1$
+
+        boolean useExponentialNotation = fields.get("useExponentialNotation", //$NON-NLS-1$
+                false);
+        byte minExponentDigits = fields.get("minExponentDigits", (byte) 0); //$NON-NLS-1$
+
+        int maximumIntegerDigits = fields.get("maximumIntegerDigits", 309); //$NON-NLS-1$
+        int minimumIntegerDigits = fields.get("minimumIntegerDigits", 309); //$NON-NLS-1$
+        int maximumFractionDigits = fields.get("maximumFractionDigits", 340); //$NON-NLS-1$
+        int minimumFractionDigits = fields.get("minimumFractionDigits", 340); //$NON-NLS-1$
+        this.serialVersionOnStream = fields.get("serialVersionOnStream", 0); //$NON-NLS-1$
+
+        Locale locale = (Locale) getInternalField("locale", symbols); //$NON-NLS-1$
+        dform = new com.ibm.icu.text.DecimalFormat("", // pattern,
+                // //$NON-NLS-1$
+                new com.ibm.icu.text.DecimalFormatSymbols(locale));
+        setInternalField("useExponentialNotation", dform, new Boolean( //$NON-NLS-1$
+                useExponentialNotation));
+        setInternalField("minExponentDigits", dform, //$NON-NLS-1$
+                new Byte(minExponentDigits));
+        dform.setPositivePrefix(positivePrefix);
+        dform.setPositiveSuffix(positiveSuffix);
+        dform.setNegativePrefix(negativePrefix);
+        dform.setNegativeSuffix(negativeSuffix);
+        setInternalField("posPrefixPattern", dform, posPrefixPattern); //$NON-NLS-1$
+        setInternalField("posSuffixPattern", dform, posSuffixPattern); //$NON-NLS-1$
+        setInternalField("negPrefixPattern", dform, negPrefixPattern); //$NON-NLS-1$
+        setInternalField("negSuffixPattern", dform, negSuffixPattern); //$NON-NLS-1$
+        dform.setMultiplier(multiplier);
+        dform.setGroupingSize(groupingSize);
+        dform.setDecimalSeparatorAlwaysShown(decimalSeparatorAlwaysShown);
+        dform.setMinimumIntegerDigits(minimumIntegerDigits);
+        dform.setMaximumIntegerDigits(maximumIntegerDigits);
+        dform.setMinimumFractionDigits(minimumFractionDigits);
+        dform.setMaximumFractionDigits(maximumFractionDigits);
+        this.setParseBigDecimal(parseBigDecimal);
+
+        if (super.getMaximumIntegerDigits() > Integer.MAX_VALUE
+                || super.getMinimumIntegerDigits() > Integer.MAX_VALUE
+                || super.getMaximumFractionDigits() > Integer.MAX_VALUE
+                || super.getMinimumIntegerDigits() > Integer.MAX_VALUE) {
+            throw new InvalidObjectException("The deserialized date is invalid"); //$NON-NLS-1$
+        }
+        if (serialVersionOnStream < 3) {
+            setMaximumIntegerDigits(super.getMinimumIntegerDigits());
+            setMinimumIntegerDigits(super.getMinimumIntegerDigits());
+            setMaximumFractionDigits(super.getMaximumFractionDigits());
+            setMinimumFractionDigits(super.getMinimumFractionDigits());
+        }
+        if (serialVersionOnStream < 1) {
+            this.setInternalField("useExponentialNotation", dform, //$NON-NLS-1$
+                    Boolean.FALSE);
+        }
+        serialVersionOnStream = 3;
+    }
+
+    /*
+     * Sets private field value by reflection.
+     * 
+     * @param fieldName the field name to be set @param target the object which
+     * field to be set @param value the value to be set
+     */
+    private void setInternalField(final String fieldName, final Object target,
+            final Object value) {
+        AccessController
+                .doPrivileged(new PrivilegedAction<java.lang.reflect.Field>() {
+                    public java.lang.reflect.Field run() {
+                        java.lang.reflect.Field field = null;
+                        try {
+                            field = target.getClass().getDeclaredField(
+                                    fieldName);
+                            field.setAccessible(true);
+                            field.set(target, value);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                        return field;
+                    }
+                });
+    }
+
+    /*
+     * Gets private field value by reflection.
+     * 
+     * @param fieldName the field name to be set @param target the object which
+     * field to be gotten
+     */
+    private Object getInternalField(final String fieldName, final Object target) {
+        Object value = AccessController
+                .doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        Object result = null;
+                        java.lang.reflect.Field field = null;
+                        try {
+                            field = target.getClass().getDeclaredField(
+                                    fieldName);
+                            field.setAccessible(true);
+                            result = field.get(target);
+                        } catch (Exception e1) {
+                            return null;
+                        }
+                        return result;
+                    }
+                });
+        return value;
     }
 
 }
