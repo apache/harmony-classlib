@@ -409,14 +409,13 @@ public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
 		try {
 			DecimalFormatSymbols symbols = new DecimalFormatSymbols(
 					Locale.FRANCE);
-			i = new ObjectInputStream(
-					new FileInputStream(
-							new File(URI.create(
-									this.getClass().getResource(
-										"/serialization/java/text/DecimalFormatSymbols.ser")
-											.toString()))));
-			DecimalFormatSymbols symbolsD = (DecimalFormatSymbols) i
-					.readObject();
+            i = new ObjectInputStream(
+                    getClass()
+                            .getClassLoader()
+                            .getResourceAsStream(
+                                    "/serialization/java/text/DecimalFormatSymbols.ser"));
+            DecimalFormatSymbols symbolsD = (DecimalFormatSymbols) i
+                    .readObject();
 			assertEquals(symbols, symbolsD);
 		} finally {
 			try {
