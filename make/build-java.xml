@@ -38,8 +38,6 @@
     <property name="depends.jars" location="depends/jars" />
     <property name="depends.manifests" location="depends/manifests" />
     <property name="depends.files" location="depends/files" />
-    <property name="components.patternsets" location="make/patternsets" />
-    <property name="components.output" location="build/components" />
     <property name="target.output" location="deploy" />
     <property file="make/depends.properties" />
 
@@ -54,12 +52,12 @@
     <!-- ================================= 
           target: build
          ================================= -->
-    <target name="build" depends="compile, package, layout" />
+    <target name="build" depends="compile, layout" />
 
     <!-- ================================= 
           target: clean            
          ================================= -->
-    <target name="clean" depends="clean-bin, clean-layout, clean-package" />
+    <target name="clean" depends="clean-bin, clean-layout" />
 
 
     <!-- ================================= 
@@ -71,174 +69,10 @@
                 <include name="**/**" />
             </fileset>
         </delete>
-    </target>
-
-    <!-- ================================= 
-          target: clean-package
-         ================================= -->
-    <target name="clean-package" description="Delete all built component jars">
-        <delete includeemptydirs="true" failonerror="false">
-            <fileset dir="${components.output}">
-                <include name="**/**" />
-            </fileset>
-        </delete>
-    </target>
-
-    <!-- ================================= 
-          target: package
-         ================================= -->
-    <target name="package" depends="compile" description="Create component jars">
-        <mkdir dir="${components.output}" />
-
-        <!-- Create applet jar -->
-        <jar destfile="${components.output}/applet.jar"
-        	manifest="modules/applet/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/applet.txt" />
-        </jar>
-
-        <!-- Create archive jar -->
-        <jar destfile="${components.output}/archive.jar"
-        	manifest="modules/archive/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/archive.txt" />
-        </jar>
-
-		<!-- Create auth jar -->
-		<jar destfile="${components.output}/auth.jar"
-			manifest="modules/auth/META-INF/MANIFEST.MF">
-			<fileset dir="${build.output}" 
-				includesfile="${components.patternsets}/auth.txt" />
-		</jar>
-
-        <!-- Create awt jar -->
-        <jar destfile="${components.output}/awt.jar"
-        	manifest="modules/awt/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/awt.txt" />
-        </jar>
-
-        <!-- Create beans jar -->
-        <jar destfile="${components.output}/beans.jar"
-        	manifest="modules/beans/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/beans.txt" />
-        </jar>
-
-        <!-- Create (non-functional) kernel jars (to compile against) -->
-        <jar destfile="${components.output}/luni-kernel-stubs.jar"
-        	manifest="modules/luni-kernel/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/luni-kernel.txt" />
-        </jar>
-        <jar destfile="${components.output}/security-kernel-stubs.jar"
-        	manifest="modules/security-kernel/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/security-kernel.txt" />
-        </jar>
-
-        <!-- Create luni jar -->
-        <jar destfile="${components.output}/luni.jar"
-        	manifest="modules/luni/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/luni.txt" 
-                excludesfile="${components.patternsets}/luni-kernel.txt" />
-        </jar>
-
-        <!-- Create nio jar -->
-        <jar destfile="${components.output}/nio.jar"
-        	manifest="modules/nio/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/nio.txt" />
-        </jar>
-
-        <!-- Create nio_char jar -->
-        <jar destfile="${components.output}/nio_char.jar"
-        	manifest="modules/nio_char/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/nio_char.txt" />
-        </jar>
-
-        <!-- Create security jar -->
-        <jar destfile="${components.output}/security.jar"
-        	manifest="modules/security/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/security.txt" 
-                excludesfile="${components.patternsets}/security-kernel.txt" />
-        </jar>
-
-        <!-- Create x-net jar -->
-        <jar destfile="${components.output}/x-net.jar"
-        	manifest="modules/x-net/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/x-net.txt"/>
-        </jar>
-
-        <!-- Create crypto jar -->
-        <jar destfile="${components.output}/crypto.jar"
-        	manifest="modules/crypto/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/crypto.txt"/>
-        </jar>
-
-        <!-- Create text jar -->
-        <jar destfile="${components.output}/text.jar"
-        	manifest="modules/text/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/text.txt"/>
-        </jar>
-
-        <!-- Create math jar -->
-        <jar destfile="${components.output}/math.jar"
-        	manifest="modules/math/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/math.txt"/>
-        </jar>
-
-        <!-- Create regex jar -->
-        <jar destfile="${components.output}/regex.jar"
-        	manifest="modules/regex/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/regex.txt" />
-        </jar>
-
-        <!-- Create rmi jar -->
-        <jar destfile="${components.output}/rmi.jar"
-        	manifest="modules/rmi/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}" 
-                includesfile="${components.patternsets}/rmi.txt" />
-        </jar>
-
-        <!-- Create sql jar -->
-        <jar destfile="${components.output}/sql.jar"
-        	manifest="modules/sql/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/sql.txt" />
-        </jar>
-
-        <!-- Create jndi jar -->
-        <jar destfile="${components.output}/jndi.jar"
-        	manifest="modules/jndi/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/jndi.txt" />
-        </jar>
-
-        <!-- Create logging jar -->
-        <jar destfile="${components.output}/logging.jar"
-        	manifest="modules/logging/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/logging.txt" />
-        </jar>
-
-        <!-- Create prefs jar -->
-        <jar destfile="${components.output}/prefs.jar"
-        	manifest="modules/prefs/META-INF/MANIFEST.MF">
-            <fileset dir="${build.output}"
-                includesfile="${components.patternsets}/prefs.txt" />
-        </jar>
+        
+        <call-modules target="clean" />
 
     </target>
-
 
     <!-- =================================
           target: compile
@@ -249,28 +83,27 @@
 
         <javac destdir="${build.output}" source="${hy.javac.source}" target="${hy.javac.target}" debug="on">
             <src path="modules/applet/src/main/java" />
+            <src path="modules/archive/src/main/java" />
+            <src path="modules/auth/src/main/java/${hy.os}" />
             <src path="modules/auth/src/main/java/common" />
-            <src path="modules/auth/src/main/java/windows" />
-            <src path="modules/auth/src/main/java/linux" />
             <src path="modules/awt/src/main/java" />
             <src path="modules/beans/src/main/java" />
             <src path="modules/crypto/src/main/java" />
-            <src path="modules/regex/src/main/java" />
-            <src path="modules/math/src/main/java" />
-            <src path="modules/archive/src/main/java" />
-            <src path="modules/luni/src/main/java" />
-            <src path="modules/luni-kernel/src/main/java" />
-            <src path="modules/nio/src/main/java" />
-            <src path="modules/nio_char/src/main/java" />
-            <src path="modules/security/src/main/java/common" />
-            <src path="modules/security-kernel/src/main/java" />
-            <src path="modules/x-net/src/main/java/" />
-            <src path="modules/rmi/src/main/java" />
-            <src path="modules/sql/src/main/java" />
-            <src path="modules/text/src/main/java" />
             <src path="modules/jndi/src/main/java" />
             <src path="modules/logging/src/main/java" />
+            <src path="modules/luni-kernel/src/main/java" />
+            <src path="modules/luni/src/main/java" />
+            <src path="modules/math/src/main/java" />
+            <src path="modules/nio/src/main/java" />
+            <src path="modules/nio_char/src/main/java" />
             <src path="modules/prefs/src/main/java" />
+            <src path="modules/regex/src/main/java" />
+            <src path="modules/rmi/src/main/java" />
+            <src path="modules/security-kernel/src/main/java" />
+            <src path="modules/security/src/main/java/common" />
+            <src path="modules/sql/src/main/java" />
+            <src path="modules/text/src/main/java" />
+            <src path="modules/x-net/src/main/java/" />
 
             <classpath location="${build.output}" />
             <classpath>
@@ -279,6 +112,11 @@
                 </fileset>
             </classpath>
         </javac>
+
+        <mkdir dir="${target.output}/jre/lib/boot" />
+
+        <call-modules target="build" />
+
     </target>
 
 
@@ -333,7 +171,7 @@
           target: layout              
          ================================= -->
     <target name="layout" 
-        depends="package" 
+        depends="compile" 
         description="Construct the correct directory structure for the class libs">
         <!-- Create the structure -->
         <mkdir dir="${target.output}/jre/bin" />
@@ -357,13 +195,6 @@
         <copy todir="${target.output}/jre/lib/ext" overwrite="yes"
               verbose="yes" flatten="yes">
             <fileset file="${bcprov.jar}" />
-        </copy>
-
-        <!-- Copy across the component jars -->
-        <copy todir="${target.output}/jre/lib/boot" overwrite="yes">
-            <fileset dir="${components.output}">
-                <patternset includes="*.jar" />
-            </fileset>
         </copy>
 
         <!-- Copy across the support files -->

@@ -20,11 +20,11 @@
     <target name="compile.java" description="Compile AWT java code">
         <echo message="Compiling AWT classes from ${hy.awt.src.main.java}" />
 
-        <mkdir dir="${hy.awt.bin.main}" />
+        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
             srcdir="${hy.awt.src.main.java}"
-            destdir="${hy.awt.bin.main}"
+            destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
@@ -39,8 +39,9 @@
 
     <target name="build.jar">
         <jar destfile="${hy.target}/jre/lib/boot/awt.jar"
-            manifest="${hy.awt}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.awt.bin.main}" />
+             manifest="${hy.awt}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.awt}/make/patternset.txt" />
         </jar>
     </target>
 

@@ -80,46 +80,6 @@ Generating HTML using Doxygen...
              repository.
              <ant antfile="doc/build.xml" inheritall="false" target="clean" />
          -->
-
-        <ant antfile="modules/applet/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/archive/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/auth/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/awt/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/beans/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/crypto/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/jndi/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/logging/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/luni/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/math/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/nio_char/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/nio/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/prefs/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/regex/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/rmi/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/security/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/sql/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/text/make/build.xml" inheritall="false"
-             target="clean" />
-        <ant antfile="modules/x-net/make/build.xml" inheritall="false"
-             target="clean" />
-
     </target>
 
     <!-- ================================= 

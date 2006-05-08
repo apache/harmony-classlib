@@ -20,11 +20,11 @@
     <target name="compile.java" description="Compile ARCHIVE java code">
         <echo message="Compiling ARCHIVE classes from ${hy.archive.src.main.java}" />
 
-        <mkdir dir="${hy.archive.bin.main}" />
+        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
             srcdir="${hy.archive.src.main.java}"
-            destdir="${hy.archive.bin.main}"
+            destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
@@ -39,8 +39,9 @@
 
     <target name="build.jar">
         <jar destfile="${hy.target}/jre/lib/boot/archive.jar"
-            manifest="${hy.archive}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.archive.bin.main}" />
+             manifest="${hy.archive}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.archive}/make/patternset.txt" />
         </jar>
     </target>
 

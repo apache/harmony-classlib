@@ -20,11 +20,11 @@
     <target name="compile.java" description="Compile RMI java code">
         <echo message="Compiling RMI classes from ${hy.rmi.src.main.java}" />
 
-        <mkdir dir="${hy.rmi.bin.main}" />
+        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
             srcdir="${hy.rmi.src.main.java}"
-            destdir="${hy.rmi.bin.main}"
+            destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
@@ -39,8 +39,9 @@
 
     <target name="build.jar">
         <jar destfile="${hy.target}/jre/lib/boot/rmi.jar"
-            manifest="${hy.rmi}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.rmi.bin.main}" />
+             manifest="${hy.rmi}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.rmi}/make/patternset.txt" />
         </jar>
     </target>
 

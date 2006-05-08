@@ -20,11 +20,11 @@
     <target name="compile.java" description="Compile BEANS java code">
         <echo message="Compiling BEANS classes from ${hy.beans.src.main.java}" />
 
-        <mkdir dir="${hy.beans.bin.main}" />
+        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
             srcdir="${hy.beans.src.main.java}"
-            destdir="${hy.beans.bin.main}"
+            destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
@@ -39,8 +39,9 @@
 
     <target name="build.jar">
         <jar destfile="${hy.target}/jre/lib/boot/beans.jar"
-            manifest="${hy.beans}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.beans.bin.main}" />
+             manifest="${hy.beans}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.beans}/make/patternset.txt" />
         </jar>
     </target>
 

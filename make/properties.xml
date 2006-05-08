@@ -153,4 +153,13 @@ properties in preference to these:
         </exec>
     </target>
 
+    <macrodef name="call-modules">
+        <attribute name="target" />
+        <sequential>
+            <subant target="@{target}">
+                <fileset dir="modules" includes="*/make/build.xml" />
+            </subant>
+        </sequential>
+    </macrodef>
+
 </project>

@@ -20,11 +20,11 @@
     <target name="compile.java" description="Compile MATH java code">
         <echo message="Compiling MATH classes from ${hy.math.src.main.java}" />
 
-        <mkdir dir="${hy.math.bin.main}" />
+        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
             srcdir="${hy.math.src.main.java}"
-            destdir="${hy.math.bin.main}"
+            destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
@@ -39,8 +39,9 @@
 
     <target name="build.jar">
         <jar destfile="${hy.target}/jre/lib/boot/math.jar"
-            manifest="${hy.math}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.math.bin.main}" />
+             manifest="${hy.math}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.math}/make/patternset.txt" />
         </jar>
     </target>
 

@@ -20,11 +20,11 @@
     <target name="compile.java" description="Compile PREFS java code">
         <echo message="Compiling PREFS classes from ${hy.prefs.src.main.java}" />
 
-        <mkdir dir="${hy.prefs.bin.main}" />
+        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
             srcdir="${hy.prefs.src.main.java}"
-            destdir="${hy.prefs.bin.main}"
+            destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
@@ -39,8 +39,9 @@
 
     <target name="build.jar">
         <jar destfile="${hy.target}/jre/lib/boot/prefs.jar"
-            manifest="${hy.prefs}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.prefs.bin.main}" />
+             manifest="${hy.prefs}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.prefs}/make/patternset.txt" />
         </jar>
     </target>
 

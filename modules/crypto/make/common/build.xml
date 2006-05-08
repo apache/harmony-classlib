@@ -22,11 +22,11 @@
     <target name="compile.java" description="Compile CRYPTO java code">
         <echo message="Compiling CRYPTO classes from ${hy.crypto.src.main.java}" />
 
-        <mkdir dir="${hy.crypto.bin.main}" />
+        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
             srcdir="${hy.crypto.src.main.java}"
-            destdir="${hy.crypto.bin.main}"
+            destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
@@ -41,8 +41,9 @@
 
     <target name="build.jar">
         <jar destfile="${hy.target}/jre/lib/boot/${hy.crypto.packaging.jarname}.jar"
-            manifest="${hy.crypto}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.crypto.bin.main}" />
+             manifest="${hy.crypto}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.crypto}/make/patternset.txt" />
         </jar>
     </target>
 

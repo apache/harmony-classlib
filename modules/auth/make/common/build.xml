@@ -28,10 +28,10 @@
     <target name="compile.java" description="Compile AUTH java code">
         <echo message="Compiling AUTH classes from ${hy.auth.src.main.java}" />
 
-        <mkdir dir="${hy.auth.bin.main}" />
+        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-            destdir="${hy.auth.bin.main}"
+            destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
@@ -51,8 +51,9 @@
 
     <target name="build.jar">
         <jar destfile="${hy.target}/jre/lib/boot/${hy.auth.packaging.jarname}.jar"
-            manifest="${hy.auth}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.auth.bin.main}" />
+             manifest="${hy.auth}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.auth}/make/patternset.txt" />
         </jar>
     </target>
 

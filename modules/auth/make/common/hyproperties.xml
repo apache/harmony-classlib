@@ -38,6 +38,7 @@
    </auth>
 
    <target location="../../deploy" />
+   <build location="../../build" />
 
    <tests>
       <reports location="../../build/test_report" />
