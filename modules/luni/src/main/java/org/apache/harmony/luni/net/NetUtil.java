@@ -47,11 +47,11 @@ public class NetUtil {
     		return true;
     	}
         String proxySet = (String) AccessController
-                .doPrivileged(new PriviAction("socksProxySet"));
+                .doPrivileged(new PriviAction("socksProxySet")); //$NON-NLS-1$
         if (proxySet != null) {
-            return proxySet.toLowerCase().equals("true");
+            return proxySet.toLowerCase().equals("true"); //$NON-NLS-1$
         }
-        return AccessController.doPrivileged(new PriviAction("socksProxyHost")) != null;
+        return AccessController.doPrivileged(new PriviAction("socksProxyHost")) != null; //$NON-NLS-1$
     }
 
     /**
@@ -61,8 +61,8 @@ public class NetUtil {
      */
     public static boolean preferIPv6Addresses() {
     	String result = (String) AccessController.doPrivileged(new PriviAction(
-    			"java.net.preferIPv6Addresses"));
-    	return "true".equals(result);
+    			"java.net.preferIPv6Addresses")); //$NON-NLS-1$
+    	return "true".equals(result); //$NON-NLS-1$
     }
 
     /**
@@ -72,8 +72,8 @@ public class NetUtil {
      */
     public static boolean preferIPv4Stack() {
     	String result = (String) AccessController.doPrivileged(new PriviAction(
-    			"java.net.preferIPv4Stack"));
-        return "true".equals(result);
+    			"java.net.preferIPv4Stack")); //$NON-NLS-1$
+        return "true".equals(result); //$NON-NLS-1$
     }
 
     /**
@@ -82,7 +82,7 @@ public class NetUtil {
      * @return a list of proxy for the uri. Returns null if no proxy 
      * 		   is available.
      */
-    public static List getProxyList(URI uri){
+    public static List<Proxy> getProxyList(URI uri){
 		// use system default selector to get proxy list
 		ProxySelector selector = ProxySelector.getDefault();
 		if(null == selector){
@@ -91,5 +91,4 @@ public class NetUtil {
 		List proxyList = selector.select(uri);
     	return proxyList;
     }
-
 }

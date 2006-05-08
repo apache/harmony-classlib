@@ -937,8 +937,8 @@ public class InetAddress extends Object implements Serializable {
 
 			StringTokenizer tokenizer = new StringTokenizer(ipAddressString,
 					":.%", true);
-			ArrayList hexStrings = new ArrayList();
-			ArrayList decStrings = new ArrayList();
+			ArrayList<String> hexStrings = new ArrayList<String>();
+			ArrayList<String> decStrings = new ArrayList<String>();
 			String scopeString = null;
 			String token = "";
 			String prevToken = "";

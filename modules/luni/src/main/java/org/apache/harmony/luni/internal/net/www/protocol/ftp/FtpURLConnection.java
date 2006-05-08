@@ -160,9 +160,9 @@ public class FtpURLConnection extends URLConnection {
 	public void connect() throws IOException {
 		// Use system-wide ProxySelect to select proxy list,
 		// then try to connect via elements in the proxy list.
-		List proxyList = null;
+		List<Proxy> proxyList = null;
 		if(null != proxy){
-			proxyList = new ArrayList(1);
+			proxyList = new ArrayList<Proxy>(1);
 			proxyList.add(proxy);
 		}else{
 			proxyList = NetUtil.getProxyList(uri);

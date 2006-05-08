@@ -19,6 +19,7 @@ import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
 /*
@@ -49,7 +50,8 @@ class ProxySelectorImpl extends ProxySelector {
 	 */
 	public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
 		if (null == uri || null == sa || null == ioe) {
-			throw new IllegalArgumentException("null argument is not allowed");
+            // "KA001=Argument must not be null"
+			throw new IllegalArgumentException(Msg.getString("KA001")); //$NON-NLS-1$
 		}
 	}
 
@@ -61,7 +63,8 @@ class ProxySelectorImpl extends ProxySelector {
 	public List select(URI uri) {
 		// argument check
 		if (null == uri) {
-			throw new IllegalArgumentException("null argument is not allowed");
+            // "KA001=Argument must not be null"
+            throw new IllegalArgumentException(Msg.getString("KA001")); //$NON-NLS-1$
 		}
 		// check scheme
 		String scheme = uri.getScheme();
@@ -85,7 +88,7 @@ class ProxySelectorImpl extends ProxySelector {
 		} else if ("socket".equals(scheme)) { //$NON-NLS-1$
 			proxy = selectSocksProxy();
 		}
-		List proxyList = new ArrayList(1);
+		List<Proxy> proxyList = new ArrayList<Proxy>(1);
 		proxyList.add(proxy);
 		return proxyList;
 	}
