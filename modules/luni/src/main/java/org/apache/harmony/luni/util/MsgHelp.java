@@ -107,7 +107,7 @@ public final class MsgHelp {
 		try {
 			final ClassLoader loader = VM.bootCallerClassLoader();
 			return (ResourceBundle) AccessController
-					.doPrivileged(new PrivilegedAction() {
+					.doPrivileged(new PrivilegedAction<Object>() {
 						public Object run() {
 							return ResourceBundle.getBundle(resource, locale,
 									loader);

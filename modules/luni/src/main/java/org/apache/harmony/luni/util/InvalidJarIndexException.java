@@ -22,7 +22,9 @@ package org.apache.harmony.luni.util;
  */
 public class InvalidJarIndexException extends RuntimeException {
 
-	/**
+    private static final long serialVersionUID = 1L;
+
+    /**
 	 * Constructs a new instance of this class.
 	 */
 	public InvalidJarIndexException() {

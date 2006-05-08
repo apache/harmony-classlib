@@ -71,7 +71,7 @@ public abstract class URLConnection {
 	/**
 	 * Cache for storing Content handler
 	 */
-	static Hashtable contentHandlers = new Hashtable();
+	static Hashtable<String,Object> contentHandlers = new Hashtable<String,Object>();
 
 	/**
 	 * A hashtable that maps the filename extension (key) to a MIME-type
@@ -226,7 +226,7 @@ public abstract class URLConnection {
 		}
 
 		if (cHandler == null) {
-			cHandler = AccessController.doPrivileged(new PrivilegedAction() {
+			cHandler = AccessController.doPrivileged(new PrivilegedAction<Object>() {
 				public Object run() {
 					try {
 						String className = "org.apache.harmony.luni.internal.net.www.content."

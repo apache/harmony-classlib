@@ -27,7 +27,9 @@ import org.apache.harmony.luni.util.PriviAction;
  */
 class NegativeCache extends LinkedHashMap {
 
-	static NegativeCache negCache = null;
+    private static final long serialVersionUID = 1L;
+
+    static NegativeCache negCache = null;
 
 	// maximum number of entries in the cache
 	static final int MAX_NEGATIVE_ENTRIES = 5;

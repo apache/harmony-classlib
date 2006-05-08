@@ -22,7 +22,9 @@ package java.net;
  */
 public class ConnectException extends SocketException {
 
-	/**
+    private static final long serialVersionUID = 3831404271622369215L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public ConnectException() {

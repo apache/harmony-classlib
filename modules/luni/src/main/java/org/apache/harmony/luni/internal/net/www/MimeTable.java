@@ -33,7 +33,7 @@ import java.util.Properties;
 
 public class MimeTable implements FileNameMap {
 
-	public static final String UNKNOWN = "content/unknown";
+	public static final String UNKNOWN = "content/unknown"; //$NON-NLS-1$
 
 	/**
 	 * A hash table containing the mapping between extensions and mime types.
@@ -42,10 +42,10 @@ public class MimeTable implements FileNameMap {
 
 	// Default mapping.
 	static {
-		types.put("text", "text/plain");
-		types.put("txt", "text/plain");
-		types.put("htm", "text/html");
-		types.put("html", "text/html");
+		types.put("text", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
+		types.put("txt", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
+		types.put("htm", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
+		types.put("html", "text/html"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -56,11 +56,10 @@ public class MimeTable implements FileNameMap {
 	 * standard java.util.Properties.load(...) format.
 	 */
 	public MimeTable() {
-		InputStream str = (InputStream) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
+		InputStream str = AccessController.doPrivileged(new PrivilegedAction<InputStream>() {
+					public InputStream run() {
 						return MimeTable.this.getClass().getResourceAsStream(
-								"types.properties");
+								"types.properties"); //$NON-NLS-1$
 					}
 				});
 
@@ -80,14 +79,14 @@ public class MimeTable implements FileNameMap {
 	 *            java.lang.String The file whose extension will be mapped.
 	 */
 	public String getContentTypeFor(String filename) {
-		if (filename.endsWith("/"))
+		if (filename.endsWith("/")) //$NON-NLS-1$
 			// a directory, return html
-			return (String) types.get("html");
+			return (String) types.get("html"); //$NON-NLS-1$
 		int lastCharInExtension = filename.lastIndexOf('#');
 		if (lastCharInExtension < 0)
 			lastCharInExtension = filename.length();
 		int firstCharInExtension = filename.lastIndexOf('.') + 1;
-		String ext = "";
+		String ext = ""; //$NON-NLS-1$
 		if (firstCharInExtension > filename.lastIndexOf('/'))
 			ext = filename.substring(firstCharInExtension, lastCharInExtension);
 		return (String) types.get(ext.toLowerCase());

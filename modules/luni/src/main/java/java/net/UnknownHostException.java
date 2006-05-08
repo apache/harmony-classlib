@@ -24,7 +24,9 @@ import java.io.IOException;
  */
 public class UnknownHostException extends IOException {
 
-	/**
+    private static final long serialVersionUID = -4639126076052875403L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public UnknownHostException() {

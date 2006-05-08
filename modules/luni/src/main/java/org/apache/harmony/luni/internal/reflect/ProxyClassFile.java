@@ -256,7 +256,7 @@ public final class ProxyClassFile implements ProxyConstants {
 			}
 		}
 
-		ArrayList allMethods = new ArrayList(25);
+		ArrayList<ProxyMethod> allMethods = new ArrayList<ProxyMethod>(25);
 		allMethods.add(new ProxyMethod(ObjectEqualsMethod));
 		allMethods.add(new ProxyMethod(ObjectHashCodeMethod));
 		allMethods.add(new ProxyMethod(ObjectToStringMethod));
@@ -269,7 +269,7 @@ public final class ProxyClassFile implements ProxyConstants {
 		allMethods.toArray(proxyMethods);
 	}
 
-	private void findMethods(Class nextInterface, ArrayList allMethods,
+	private void findMethods(Class nextInterface, ArrayList<ProxyMethod> allMethods,
 			HashSet interfacesSeen) {
 		// add the nextInterface's methods to allMethods
 		// if an equivalent method already exists then return types must be
@@ -291,10 +291,8 @@ public final class ProxyClassFile implements ProxyConstants {
 
 		Class[] superInterfaces = nextInterface.getInterfaces();
 		for (int i = 0, length = superInterfaces.length; i < length; i++)
-			findMethods(superInterfaces[i], allMethods, interfacesSeen); // recursion
-																			// should
-																			// be
-																			// minimal
+            // recursion should be minimal
+			findMethods(superInterfaces[i], allMethods, interfacesSeen); 
 	}
 
 	private void generateCodeAttribute(ProxyMethod pMethod) {

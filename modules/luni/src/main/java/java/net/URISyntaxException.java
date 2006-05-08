@@ -23,7 +23,9 @@ import org.apache.harmony.luni.util.Msg;
  */
 public class URISyntaxException extends Exception {
 
-	private String input;
+    private static final long serialVersionUID = 2137979680897488891L;
+
+    private String input;
 
 	private int index;
 

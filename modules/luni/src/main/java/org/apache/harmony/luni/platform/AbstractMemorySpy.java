@@ -29,9 +29,9 @@ import java.util.Map;
 abstract class AbstractMemorySpy implements IMemorySpy {
 
 	// TODO: figure out how to prevent this being a synchronization bottleneck
-	protected Map memoryInUse = new HashMap(); // Shadow to Wrapper
+	protected Map<PlatformAddress,AddressWrapper> memoryInUse = new HashMap(); // Shadow to Wrapper
 
-	protected Map refToShadow = new HashMap(); // Reference to Shadow
+	protected Map<Reference,PlatformAddress> refToShadow = new HashMap(); // Reference to Shadow
 
 	protected ReferenceQueue notifyQueue = new ReferenceQueue();
 
@@ -102,7 +102,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 	protected void orphanedMemory(Reference ref) {
 		AddressWrapper wrapper;
 		synchronized (lock) {
-			Object shadow = refToShadow.remove(ref);
+			PlatformAddress shadow = refToShadow.remove(ref);
 			wrapper = (AddressWrapper) memoryInUse.remove(shadow);
 		}
         ref.clear();

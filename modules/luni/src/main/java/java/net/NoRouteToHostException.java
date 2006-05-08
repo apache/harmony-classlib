@@ -23,7 +23,9 @@ package java.net;
  */
 public class NoRouteToHostException extends SocketException {
 
-	/**
+    private static final long serialVersionUID = -1897550894873493790L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public NoRouteToHostException() {

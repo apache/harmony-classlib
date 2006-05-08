@@ -26,9 +26,9 @@ public class OIDDatabase {
 
 	private static OIDDatabase instance = new OIDDatabase();
 
-	private Set oids = new HashSet();
+	private Set<DBEntry> oids = new HashSet<DBEntry>();
 
-	private Set algorithms = new HashSet();
+	private Set<DBEntry> algorithms = new HashSet<DBEntry>();
 
 	/**
 	 * Private constructor to enforce singleton pattern
@@ -141,12 +141,12 @@ public class OIDDatabase {
 	}
 
 	private Set getAllEquivalents(String value, Iterator it) {
-		Set result = null;
+		Set<String> result = null;
 		while (it.hasNext()) {
 			DBEntry element = (DBEntry) it.next();
 			if (element.getValue().equals(value)) {
 				Set allMatchingDBEntries = element.getAllEquivalents();
-				result = new HashSet();
+				result = new HashSet<String>();
 				Iterator dbIt = allMatchingDBEntries.iterator();
 				while (dbIt.hasNext()) {
 					DBEntry matchingEntry = (DBEntry) dbIt.next();
@@ -158,7 +158,7 @@ public class OIDDatabase {
 	}
 
 	static class DBEntry {
-		private List equivalents = new LinkedList();
+		private List<DBEntry> equivalents = new LinkedList();
 
 		private String value;
 

@@ -224,11 +224,11 @@ abstract public class ResourceBundle {
 		ResourceBundle bundle = null;
 		String bundleName = base + locale;
 		Object cacheKey = loader != null ? (Object) loader : (Object) "null"; //$NON-NLS-1$
-		Hashtable loaderCache;
+		Hashtable<String,ResourceBundle> loaderCache;
 		synchronized (cache) {
-			loaderCache = (Hashtable) cache.get(cacheKey);
+			loaderCache = (Hashtable<String,ResourceBundle>) cache.get(cacheKey);
 			if (loaderCache == null) {
-				loaderCache = new Hashtable(13);
+				loaderCache = new Hashtable<String,ResourceBundle>(13);
 				cache.put(cacheKey, loaderCache);
 			}
 		}
@@ -257,10 +257,8 @@ abstract public class ResourceBundle {
 
 		if (bundle == null) {
 			final String fileName = bundleName.replace('.', '/');
-			InputStream stream = null;
-			stream = (InputStream) AccessController
-					.doPrivileged(new PrivilegedAction() {
-						public Object run() {
+			InputStream stream = AccessController.doPrivileged(new PrivilegedAction<InputStream>() {
+						public InputStream run() {
 							return loader == null ? ClassLoader
 									.getSystemResourceAsStream(fileName
 											+ ".properties") : loader //$NON-NLS-1$

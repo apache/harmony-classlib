@@ -28,6 +28,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.TreeSet;
 import java.util.jar.JarEntry;
@@ -47,7 +48,7 @@ import org.apache.harmony.kernel.vm.VM;
  * 
  */
 public class JarURLConnection extends java.net.JarURLConnection {
-	static Hashtable jarCache = new Hashtable();
+	static Hashtable<Object,CacheEntry> jarCache = new Hashtable<Object,CacheEntry>();
 
 	InputStream jarInput;
 
@@ -61,12 +62,11 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
 	static int Limit;
 	static {
-		Limit = ((Integer) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
+		Limit = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+					public Integer run() {
 						return Integer.getInteger("jar.cacheSize", 500);
 					}
-				})).intValue();
+				});
 		VM.closeJars();
 	}
 
@@ -179,9 +179,8 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
 		final String externalForm = jarFileURLConnection.getURL()
 				.toExternalForm();
-		jarFile = (JarFile) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
+		jarFile = AccessController.doPrivileged(new PrivilegedAction<JarFile>() {
+					public JarFile run() {
 						try {
 							return openJarFile(null, externalForm, false);
 						} catch (IOException e) {
@@ -195,9 +194,8 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		// Build a temp jar file
 		final InputStream is = jarFileURLConnection.getInputStream();
 		try {
-			jarFile = (JarFile) AccessController
-					.doPrivileged(new PrivilegedAction() {
-						public Object run() {
+			jarFile = AccessController.doPrivileged(new PrivilegedAction<JarFile>() {
+						public JarFile run() {
 							try {
 								File tempJar = File.createTempFile("hyjar_",
 										".tmp", null);
@@ -347,7 +345,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 	 * @see java.io.IOException
 	 * @see #setContentHandlerFactory(ContentHandlerFactory)
 	 */
-	public Object getContent() throws java.io.IOException {
+	public Object getContent() throws IOException {
 		if (!connected)
 			connect();
 		// if there is no Jar Entry, return a JarFile
@@ -377,7 +375,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 	 * Closes the cached files.
 	 */
 	public static void closeCachedFiles() {
-		java.util.Enumeration elemEnum = jarCache.elements();
+		Enumeration<CacheEntry> elemEnum = jarCache.elements();
 		while (elemEnum.hasMoreElements()) {
 			try {
 				ZipFile zip = (ZipFile) ((CacheEntry) elemEnum.nextElement())

@@ -18,6 +18,7 @@ package java.net;
 
 import java.security.Permission;
 import java.security.PermissionCollection;
+import java.util.Enumeration;
 import java.util.Vector;
 
 /**
@@ -46,7 +47,7 @@ final class SocketPermissionCollection extends PermissionCollection {
 	}
 
 	// Answers an enumeration of the permissions
-	public java.util.Enumeration elements() {
+	public Enumeration<Permission> elements() {
 		return permissions.elements();
 	}
 

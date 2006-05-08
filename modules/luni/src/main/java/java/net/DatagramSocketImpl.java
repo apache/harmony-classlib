@@ -20,7 +20,6 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 
 import org.apache.harmony.luni.net.NetUtil;
-import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 
 /**

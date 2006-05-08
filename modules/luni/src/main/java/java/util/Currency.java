@@ -26,7 +26,7 @@ public final class Currency implements Serializable {
 
 	private static final long serialVersionUID = -158308464356906721L;
 
-	private static Hashtable codesToCurrencies = new Hashtable();
+	private static Hashtable<String,Currency> codesToCurrencies = new Hashtable<String,Currency>();
 
 	private String currencyCode;
 

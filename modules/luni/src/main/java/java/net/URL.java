@@ -35,7 +35,7 @@ public final class URL implements java.io.Serializable {
 	private static final long serialVersionUID = -7627629688361524110L;
 
 	private static final NetPermission specifyStreamHandlerPermission = new NetPermission(
-			"specifyStreamHandler");
+			"specifyStreamHandler"); //$NON-NLS-1$
 
 	private int hashCode;
 
@@ -105,7 +105,8 @@ public final class URL implements java.io.Serializable {
 	/**
 	 * Cache for storing protocol handler
 	 */
-	private static Hashtable streamHandlers = new Hashtable();
+	private static Hashtable<String,URLStreamHandler> streamHandlers =
+        new Hashtable<String,URLStreamHandler>();
 
 	/**
 	 * The URL Stream (protocol) Handler
@@ -131,7 +132,7 @@ public final class URL implements java.io.Serializable {
 	public static synchronized void setURLStreamHandlerFactory(
 			URLStreamHandlerFactory streamFactory) {
 		if (streamHandlerFactory != null)
-			throw new Error(org.apache.harmony.luni.util.Msg.getString("K004b"));
+			throw new Error(Msg.getString("K004b")); //$NON-NLS-1$
 		SecurityManager sm = System.getSecurityManager();
 		if (sm != null)
 			sm.checkSetFactory();
@@ -268,7 +269,7 @@ public final class URL implements java.io.Serializable {
 			// by the values in the spec.
 			if (context != null && protocol.equals(context.getProtocol())) {
 				String cPath = context.getPath();
-				if (cPath != null && cPath.startsWith("/")) {
+				if (cPath != null && cPath.startsWith("/")) { //$NON-NLS-1$
 					set(protocol, context.getHost(), context.getPort(), context
 							.getAuthority(), context.getUserInfo(), cPath,
 							context.getQuery(), null);
@@ -283,7 +284,7 @@ public final class URL implements java.io.Serializable {
 			// by the values in the ("relative") spec.
 			if (context == null)
 				throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
-						"K00d8", spec));
+						"K00d8", spec)); //$NON-NLS-1$
 			set(context.getProtocol(), context.getHost(), context.getPort(),
 					context.getAuthority(), context.getUserInfo(), context
 							.getPath(), context.getQuery(), null);
@@ -297,7 +298,7 @@ public final class URL implements java.io.Serializable {
 			setupStreamHandler();
 			if (strmHandler == null)
 				throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
-						"K00b3", protocol));
+						"K00b3", protocol)); //$NON-NLS-1$
 		}
 
 		// Let the handler parse the URL. If the handler throws
@@ -383,8 +384,8 @@ public final class URL implements java.io.Serializable {
 			throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
 					"K0325", port)); //$NON-NLS-1$
 
-		if (host != null && host.indexOf(":") != -1 && host.charAt(0) != '[') {
-			host = "[" + host + "]";
+		if (host != null && host.indexOf(":") != -1 && host.charAt(0) != '[') { //$NON-NLS-1$
+			host = "[" + host + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		this.protocol = protocol;
@@ -394,7 +395,7 @@ public final class URL implements java.io.Serializable {
 		// Set the fields from the arguments. Handle the case where the
 		// passed in "file" includes both a file and a ref part.
 		int index = -1;
-		index = file.indexOf("#", file.lastIndexOf("/"));
+		index = file.indexOf("#", file.lastIndexOf("/")); //$NON-NLS-1$ //$NON-NLS-2$
 		if (index >= 0) {
 			this.file = file.substring(0, index);
 			ref = file.substring(index + 1);
@@ -410,7 +411,7 @@ public final class URL implements java.io.Serializable {
 			setupStreamHandler();
 			if (strmHandler == null)
 				throw new MalformedURLException(org.apache.harmony.luni.util.Msg.getString(
-						"K00b3", protocol));
+						"K00b3", protocol)); //$NON-NLS-1$
 		} else {
 			SecurityManager sm = System.getSecurityManager();
 			if (sm != null)
@@ -424,7 +425,7 @@ public final class URL implements java.io.Serializable {
 		if (host != null && host.length() > 0) {
 			authority = host;
 			if (port != -1)
-				authority = authority + ":" + port;
+				authority = authority + ":" + port; //$NON-NLS-1$
 		}
 		if (fixHost) {
 			if (host != null && (index = host.lastIndexOf('@')) > -1) {
@@ -549,11 +550,11 @@ public final class URL implements java.io.Serializable {
 		// Check if there is a list of packages which can provide handlers.
 		// If so, then walk this list looking for an applicable one.
 		String packageList = (String) AccessController
-				.doPrivileged(new PriviAction("java.protocol.handler.pkgs"));
+				.doPrivileged(new PriviAction("java.protocol.handler.pkgs")); //$NON-NLS-1$
 		if (packageList != null) {
-			StringTokenizer st = new StringTokenizer(packageList, "|");
+			StringTokenizer st = new StringTokenizer(packageList, "|"); //$NON-NLS-1$
 			while (st.hasMoreTokens()) {
-				String className = st.nextToken() + "." + protocol + ".Handler";
+				String className = st.nextToken() + "." + protocol + ".Handler"; //$NON-NLS-1$ //$NON-NLS-2$
 				try {
 					strmHandler = (URLStreamHandler) Class.forName(className,
 							true, ClassLoader.getSystemClassLoader())
@@ -567,8 +568,8 @@ public final class URL implements java.io.Serializable {
 
 		// No one else has provided a handler, so try our internal one.
 		try {
-			String className = "org.apache.harmony.luni.internal.net.www.protocol." + protocol
-					+ ".Handler";
+			String className = "org.apache.harmony.luni.internal.net.www.protocol." + protocol //$NON-NLS-1$
+					+ ".Handler"; //$NON-NLS-1$
 			strmHandler = (URLStreamHandler) Class.forName(className)
 					.newInstance();
 			streamHandlers.put(protocol, strmHandler);
@@ -660,7 +661,7 @@ public final class URL implements java.io.Serializable {
 	 */
 	public URLConnection openConnection(Proxy proxy) throws IOException {
 		if(null == proxy){
-			throw new IllegalArgumentException(Msg.getString("K034c"));
+			throw new IllegalArgumentException(Msg.getString("K034c")); //$NON-NLS-1$
 		}
 		return strmHandler.openConnection(this, proxy);
 	}
@@ -720,7 +721,7 @@ public final class URL implements java.io.Serializable {
 			}
 			setupStreamHandler();
 			if (strmHandler == null)
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K00b3",
+				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K00b3", //$NON-NLS-1$
 						protocol));
 		} catch (ClassNotFoundException e) {
 			throw new java.io.IOException(e.toString());
@@ -857,11 +858,11 @@ public final class URL implements java.io.Serializable {
 			String authority, String userInfo, String path, String query,
 			String ref) {
 		String file = path;
-		if (query != null && !query.equals("")) {
+		if (query != null && !query.equals("")) { //$NON-NLS-1$
 			if (file != null)
-				file = file + "?" + query;
+				file = file + "?" + query; //$NON-NLS-1$
 			else
-				file = "?" + query;
+				file = "?" + query; //$NON-NLS-1$
 		}
 		set(protocol, host, port, file, ref);
 		this.authority = authority;

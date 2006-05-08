@@ -200,12 +200,12 @@ public class URLClassLoader extends SecureClassLoader {
 	public Enumeration findResources(final String name) throws IOException {
 		if (name == null)
 			return null;
-		Vector result = (Vector) AccessController.doPrivileged(
-				new PrivilegedAction() {
-					public Object run() {
-						return findResources(urls, name, new Vector());
-					}
-				}, currentContext);
+		Vector result = AccessController.doPrivileged(
+                new PrivilegedAction<Vector>() {
+                    public Vector run() {
+                        return findResources(urls, name, new Vector());
+                    }
+                }, currentContext);
 		SecurityManager sm;
 		int length = result.size();
 		if (length > 0 && (sm = System.getSecurityManager()) != null) {
@@ -494,9 +494,9 @@ public class URLClassLoader extends SecureClassLoader {
 	 *            URLClassloader
 	 */
 	public static URLClassLoader newInstance(final URL[] urls) {
-		URLClassLoader sub = (URLClassLoader) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
+		URLClassLoader sub = AccessController.doPrivileged(
+                new PrivilegedAction<URLClassLoader>() {
+					public URLClassLoader run() {
 						return new SubURLClassLoader(urls);
 					}
 				});
@@ -520,9 +520,9 @@ public class URLClassLoader extends SecureClassLoader {
 	 */
 	public static URLClassLoader newInstance(final URL[] urls,
 			final ClassLoader parentCl) {
-		URLClassLoader sub = (URLClassLoader) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
+		URLClassLoader sub = AccessController.doPrivileged(
+                new PrivilegedAction<URLClassLoader>() {
+					public URLClassLoader run() {
 						return new SubURLClassLoader(urls, parentCl);
 					}
 				});
@@ -592,9 +592,9 @@ public class URLClassLoader extends SecureClassLoader {
 	 */
 	protected Class findClass(final String clsName)
 			throws ClassNotFoundException {
-		Class cls = (Class) AccessController.doPrivileged(
-				new PrivilegedAction() {
-					public Object run() {
+		Class cls = AccessController.doPrivileged(
+				new PrivilegedAction<Class>() {
+					public Class run() {
 						return findClassImpl(urls, clsName);
 					}
 				}, currentContext);
@@ -639,9 +639,9 @@ public class URLClassLoader extends SecureClassLoader {
 	public URL findResource(final String name) {
 		if (name == null)
 			return null;
-		URL result = (URL) AccessController.doPrivileged(
-				new PrivilegedAction() {
-					public Object run() {
+		URL result = AccessController.doPrivileged(
+                new PrivilegedAction<URL>() {
+					public URL run() {
 						return findResourceImpl(urls, name);
 					}
 				}, currentContext);
@@ -908,7 +908,7 @@ public class URLClassLoader extends SecureClassLoader {
 	 */
 	private ArrayList readLines(InputStream in) throws IOException {
 		byte[] buff = new byte[144];
-		ArrayList lines = new ArrayList();
+		ArrayList<String> lines = new ArrayList<String>();
 		int pos = 0;
 		int next;
 		while ((next = in.read()) != -1) {
@@ -1139,7 +1139,7 @@ public class URLClassLoader extends SecureClassLoader {
 		if (ze != null) {
 			if (url.equals(urls[indexNumber])) {
 				try {
-					Hashtable index = new Hashtable(15);
+					Hashtable<String,URL[]> index = new Hashtable<String,URL[]>(15);
 					InputStream indexIS = jf.getInputStream(ze);
 					List lines = readLines(indexIS);
 					indexIS.close();

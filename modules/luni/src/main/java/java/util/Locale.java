@@ -345,13 +345,13 @@ public final class Locale implements Cloneable, Serializable {
 	 */
 	public static Locale[] getAvailableLocales() {
 		if (availableLocales == null) {
-			availableLocales = (Locale[]) AccessController
-					.doPrivileged(new PrivilegedAction() {
-						public Object run() {
-							return find("org/apache/harmony/luni/internal/locale/Locale_"); //$NON-NLS-1$
-						}
-					});
-		}
+            availableLocales = AccessController
+                    .doPrivileged(new PrivilegedAction<Locale[]>() {
+                        public Locale[] run() {
+                            return find("org/apache/harmony/luni/internal/locale/Locale_"); //$NON-NLS-1$
+                        }
+                    });
+        }
 		return (Locale[]) availableLocales.clone();
 	}
 
@@ -691,9 +691,8 @@ public final class Locale implements Cloneable, Serializable {
 	}
 
 	static ResourceBundle getBundle(final String clName, final Locale locale) {
-		return (ResourceBundle) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
+		return AccessController.doPrivileged(new PrivilegedAction<ResourceBundle>() {
+					public ResourceBundle run() {
 						return ResourceBundle.getBundle("org.apache.harmony.luni.internal.locale." //$NON-NLS-1$
 								+ clName, locale);
 					}

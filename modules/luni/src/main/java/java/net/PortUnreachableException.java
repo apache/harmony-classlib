@@ -18,7 +18,9 @@ package java.net;
 
 public class PortUnreachableException extends SocketException {
 
-	/**
+    private static final long serialVersionUID = 8462541992376507323L;
+
+    /**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public PortUnreachableException() {
