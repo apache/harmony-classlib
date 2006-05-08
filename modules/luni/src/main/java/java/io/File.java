@@ -38,7 +38,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * @see java.lang.Comparable
  */
 
-public class File implements Serializable, Comparable {
+public class File implements Serializable, Comparable<File> {
 	private static final long serialVersionUID = 301077366599181567L;
 
 	private String path;
@@ -322,35 +322,21 @@ public class File implements Serializable, Comparable {
 	}
 
 	/**
-	 * Compare this abstract File with another returning the relative position.
-	 * 
-	 * @param another
-	 *            an object to compare the receiver to
-	 * @return an int determined by comparing the two paths.
-	 * 
-	 * @throws ClassCastException
-	 *             if the argument is not a File
-	 */
-	public int compareTo(Object another) {
-		if (this.getClass() == another.getClass())
-			return this.getPath().compareTo(((File) another).getPath());
-		throw new ClassCastException(org.apache.harmony.luni.util.Msg.getString("K0069")); //$NON-NLS-1$
-	}
-
-	/**
-	 * Compare this abstract File with another returning the relative position.
-	 * 
-	 * @param another
-	 *            a File to compare the receiver to
-	 * @return an int determined by comparing the two paths.
-	 */
-	public int compareTo(File another) {
-		if (caseSensitive) {
-			return this.getPath().compareTo(another.getPath());
-		}
-		return this.getPath().compareToIgnoreCase(another.getPath());
-
-	}
+     * Answers the relative sort ordering of paths for the receiver and given
+     * argument. The ordering is platform dependent.
+     * 
+     * @param another
+     *            a File to compare the receiver to
+     * @return an int determined by comparing the two paths. The meanning is
+     *         described in the Comparable interface.
+     * @see Comparable
+     */
+    public int compareTo(File another) {
+        if (caseSensitive) {
+            return this.getPath().compareTo(another.getPath());
+        }
+        return this.getPath().compareToIgnoreCase(another.getPath());
+    }
 
 	/**
 	 * Deletes the file specified by this File. Directories must be empty before

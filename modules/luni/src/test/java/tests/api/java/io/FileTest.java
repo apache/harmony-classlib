@@ -309,58 +309,17 @@ public class FileTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.File#compareTo(java.io.File)
 	 */
-	public void test_compareToLjava_io_File() {
-		// Test for method int java.io.File.compareTo(java.lang.Object)
-		File f1 = new File("thisFile.tst");
-		File f2 = new File("thisFile.tst");
-		File f3 = new File("thatFile.tst");
-
-		String notAFile = "notAFile.tst";
-		assertEquals("Equal files did not answer zero for compareTo", 0, f1
-				.compareTo(f2));
-		assertTrue("f3.compareTo(f1) did not result in value < 0", f3
-				.compareTo(f1) < 0);
-		assertTrue("f1.compareTo(f3) did not result in vale > 0", f1
-				.compareTo(f3) > 0);
-		try {
-			f1.compareTo(notAFile);
-			fail(
-					"ClassCastException not thrown when comparing a file to a string");
-		} catch (ClassCastException e) {
-		}
-
-		f3 = new File("ThisFile.tst");
-		boolean onWindows = File.separatorChar == '\\';
-		boolean onUnix = File.separatorChar == '/';
-		if (onWindows) {
-			assertEquals("Files Should Return Equal.", 0, f1.compareTo(f3));
-		} else if (onUnix) {
-			assertTrue("Files Should NOT Return Equal.", f1.compareTo(f3) != 0);
-		}
-	}
-
-	/**
-	 * @tests java.io.File#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int java.io.File.compareTo(java.lang.Object)
-		File f1 = new File("thisFile.file");
-		File f2 = new File("thisFile.file");
-		File f3 = new File("thatFile.file");
-		String notAFile = "notAFile.file";
-		assertEquals("Equal files did not answer zero for compareTo", 0, f1
-				.compareTo((Object) f2));
-		assertTrue("f3.compareTo(f1) did not result in value < 0", f3
-				.compareTo((Object) f1) < 0);
-		assertTrue("f1.compareTo(f3) did not result in vale > 0", f1
-				.compareTo((Object) f3) > 0);
-		try {
-			f1.compareTo(notAFile);
-			fail(
-					"ClassCastException not thown when comparing a file to a string");
-		} catch (ClassCastException e) {
-		}
-	}
+    public void test_compareToLjava_lang_Object() {
+        File f1 = new File("thisFile.file");
+        File f2 = new File("thisFile.file");
+        File f3 = new File("thatFile.file");
+        assertEquals("Equal files did not answer zero for compareTo", 0, f1
+                .compareTo(f2));
+        assertTrue("f3.compareTo(f1) did not result in value < 0", f3
+                .compareTo(f1) < 0);
+        assertTrue("f1.compareTo(f3) did not result in vale > 0", f1
+                .compareTo(f3) > 0);
+    }
 
 	/**
 	 * @tests java.io.File#createNewFile()
