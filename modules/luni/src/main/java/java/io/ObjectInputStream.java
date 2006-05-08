@@ -70,7 +70,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 	private boolean enableResolve; // Resolve object is a mechanism for
 									// replacement
 
-	private Hashtable objectsRead; // Table mapping Integer (handle) -> Object
+	private Hashtable<Integer,Object> objectsRead; // Table mapping Integer (handle) -> Object
 
 	private Object currentObject; // Used by defaultReadObject
 
@@ -1230,7 +1230,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 		if (object == null && mustResolve)
 			throw new NotActiveException();
 
-		ArrayList streamClassList = new ArrayList(32);
+		ArrayList<ObjectStreamClass> streamClassList = new ArrayList<ObjectStreamClass>(32);
 		ObjectStreamClass nextStreamClass = classDesc;
 		while (nextStreamClass != null) {
 			streamClassList.add(0, nextStreamClass);
@@ -1244,7 +1244,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 				readObjectForClass(object, streamClass);
 			}
 		} else {
-			ArrayList classList = new ArrayList(32);
+			ArrayList<Class> classList = new ArrayList<Class>(32);
 			Class nextClass = object.getClass();
 			while (nextClass != null) {
 				Class testClass = nextClass.getSuperclass();
@@ -2188,11 +2188,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
 	/**
 	 * Reset the collection of objects already loaded by the receiver.
-	 * 
-	 * 
 	 */
 	private void resetSeenObjects() {
-		objectsRead = new Hashtable();
+		objectsRead = new Hashtable<Integer,Object>();
 		currentHandle = baseWireHandle;
 		primitiveData = emptyStream;
 	}
@@ -2201,7 +2199,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 	 * Reset the receiver. The collection of objects already read by the
 	 * receiver is reset, and internal structures are also reset so that the
 	 * receiver knows it is in a fresh clean state.
-	 * 
 	 */
 	private void resetState() {
 		resetSeenObjects();
@@ -2234,7 +2231,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 	 * If <code>enableResolveObject()</code> was activated, computes the
 	 * replacement object for the original object <code>object</code> and
 	 * returns the replacement. Otherwise returns <code>object</code>.
-	 * 
 	 * 
 	 * @param object
 	 *            Original object for which a replacement may be defined
