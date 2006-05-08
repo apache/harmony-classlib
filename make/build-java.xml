@@ -212,13 +212,7 @@
                  <include name="java.security" />
              </fileset>
          </copy>
-   	
-        <copy todir="${target.output}/jre/lib" overwrite="yes" flatten="yes">
-             <fileset dir="modules/logging/src/main/java">
-                 <include name="**/logging.properties" />
-             </fileset>
-        </copy>
-    	
+
     </target>
 
 
