@@ -38,7 +38,7 @@ public abstract class Selector {
 
 	public abstract boolean isOpen();
 
-	public abstract Set keys();
+	public abstract Set<SelectionKey> keys();
 
 	public abstract SelectorProvider provider();
 
@@ -46,7 +46,7 @@ public abstract class Selector {
 
 	public abstract int select(long timeout) throws IOException;
 
-	public abstract Set selectedKeys();
+	public abstract Set<SelectionKey> selectedKeys();
 
 	public abstract int selectNow() throws IOException;
 
