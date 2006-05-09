@@ -413,24 +413,22 @@ public final class Formatter implements Closeable, Flushable {
 	}
 
 	/**
-	 * Flushes the formatter. If the output destination is flushable, then the
-	 * method flush() will be called on that destinaiton.
-	 * 
-	 * @throws FormatterClosedException
-	 *             If the formatter has been closed.
-	 */
-	public void flush() throws IOException {
-		checkClosed();
-		if (out instanceof Flushable) {
-			try {
-				((Flushable) out).flush();
-			} catch (IOException e) {
-				lastIOException = e;
-			}
-			;
-		}
-
-	}
+     * Flushes the formatter. If the output destination is flushable, then the
+     * method flush() will be called on that destination.
+     * 
+     * @throws FormatterClosedException
+     *             If the formatter has been closed.
+     */
+    public void flush() {
+        checkClosed();
+        if (out instanceof Flushable) {
+            try {
+                ((Flushable) out).flush();
+            } catch (IOException e) {
+                lastIOException = e;
+            }
+        }
+    }
 
 	/**
 	 * Closes the formatter. If the output destination is Closeable, then the
