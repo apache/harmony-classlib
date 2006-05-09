@@ -919,7 +919,7 @@ public class ObjectStreamClass implements Serializable {
 		Class search = cl;
 		while (search != null) {
 			try {
-				Method method = search.getDeclaredMethod("readResolve", null); //$NON-NLS-1$
+				Method method = search.getDeclaredMethod("readResolve", (Class[])null); //$NON-NLS-1$
 				if (search == cl
 						|| (method.getModifiers() & Modifier.PRIVATE) == 0)
 					return method;
@@ -945,7 +945,7 @@ public class ObjectStreamClass implements Serializable {
 		Class search = cl;
 		while (search != null) {
 			try {
-				Method method = search.getDeclaredMethod("writeReplace", null); //$NON-NLS-1$
+				Method method = search.getDeclaredMethod("writeReplace", (Class[])null); //$NON-NLS-1$
 				if (search == cl
 						|| (method.getModifiers() & Modifier.PRIVATE) == 0)
 					return method;

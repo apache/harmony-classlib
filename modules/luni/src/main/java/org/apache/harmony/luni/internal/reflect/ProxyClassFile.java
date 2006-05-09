@@ -715,21 +715,21 @@ public final class ProxyClassFile implements ProxyConstants {
 	private Method typeAccessMethod(Class baseType) {
 		try {
 			if (baseType == int.class)
-				return Integer.class.getMethod("intValue", null);
+				return Integer.class.getMethod("intValue", (Class[])null);
 			if (baseType == short.class)
-				return Short.class.getMethod("shortValue", null);
+				return Short.class.getMethod("shortValue", (Class[])null);
 			if (baseType == byte.class)
-				return Byte.class.getMethod("byteValue", null);
+				return Byte.class.getMethod("byteValue", (Class[])null);
 			if (baseType == boolean.class)
-				return Boolean.class.getMethod("booleanValue", null);
+				return Boolean.class.getMethod("booleanValue", (Class[])null);
 			if (baseType == char.class)
-				return Character.class.getMethod("charValue", null);
+				return Character.class.getMethod("charValue", (Class[])null);
 			if (baseType == long.class)
-				return Long.class.getMethod("longValue", null);
+				return Long.class.getMethod("longValue", (Class[])null);
 			if (baseType == float.class)
-				return Float.class.getMethod("floatValue", null);
+				return Float.class.getMethod("floatValue", (Class[])null);
 			if (baseType == double.class)
-				return Double.class.getMethod("doubleValue", null);
+				return Double.class.getMethod("doubleValue", (Class[])null);
 		} catch (NoSuchMethodException e) {
 			throw new InternalError();
 		}
