@@ -557,6 +557,8 @@ public class DatagramChannelTest extends TestCase {
     public void testConnect_UnsupportedType() throws IOException {
         assertFalse(this.channel1.isConnected());
         class SubSocketAddress extends SocketAddress {
+            private static final long serialVersionUID = 1L;
+
             public SubSocketAddress() {
                 super();
             }
@@ -1572,6 +1574,7 @@ public class DatagramChannelTest extends TestCase {
     // -------------------------------------------------------------------
 
     private class mockAddress extends SocketAddress {
+        private static final long serialVersionUID = 1L;
     }
 
     public void testSend_MockSocketAddress() throws Exception {

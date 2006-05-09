@@ -1220,6 +1220,8 @@ public class SocketChannelTest extends TestCase {
 
     public void testCFII_UnsupportedType() throws Exception {
         class SubSocketAddress extends SocketAddress {
+            private static final long serialVersionUID = 1L;
+
             //empty
             public SubSocketAddress() {
                 super();

@@ -41,7 +41,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     /*
      * The collection of key.
      */
-    private List keyList = new ArrayList();
+    private List<SelectionKey> keyList = new ArrayList<SelectionKey>();
 
     private final Object blockingLock = new Object();
 

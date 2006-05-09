@@ -52,8 +52,6 @@ public abstract class SelectorProvider extends Object {
 
     private static SelectorProvider provider = null;
 
-    private static Channel inheritedChannel = null;
-
     /**
      * Constructor for this class.
      * 
@@ -107,9 +105,9 @@ public abstract class SelectorProvider extends Object {
         Enumeration enumeration = null;
         SelectorProvider tempProvider = null;
 
-        ClassLoader classLoader = (ClassLoader) AccessController
-                .doPrivileged(new PrivilegedAction() {
-                    public Object run() {
+        ClassLoader classLoader = AccessController.doPrivileged(
+                new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
                         return ClassLoader.getSystemClassLoader();
                     }
                 });
@@ -158,18 +156,18 @@ public abstract class SelectorProvider extends Object {
      * load by system property.
      */
     static SelectorProvider loadProviderByProperty() {
-        return (SelectorProvider) AccessController
-                .doPrivileged(new PrivilegedAction() {
-                    public Object run() {
+        return AccessController.doPrivileged(
+                new PrivilegedAction<SelectorProvider>() {
+                    public SelectorProvider run() {
                         // FIXME check if use this ClassLoader or system
                         // ClassLoader
                         try {
-                            final String className = System
-                                    .getProperty(PROVIDER_IN_SYSTEM_PROPERTY);
+                            final String className =
+                                System.getProperty(PROVIDER_IN_SYSTEM_PROPERTY);
                             if (null != className) {
-                                return Thread.currentThread()
-                                        .getContextClassLoader().loadClass(
-                                                className);
+                                Class spClass = Thread.currentThread()
+                                        .getContextClassLoader().loadClass(className);
+                                return (SelectorProvider)spClass.newInstance();
                             }
                             return null;
                         } catch (Exception e) {
@@ -177,7 +175,6 @@ public abstract class SelectorProvider extends Object {
                         }
                     }
                 });
-
     }
 
     /**

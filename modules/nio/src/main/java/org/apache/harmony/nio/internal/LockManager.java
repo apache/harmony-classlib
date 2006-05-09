@@ -38,7 +38,7 @@ final class LockManager {
 		}
 	};
 
-	private final SortedSet locks = new TreeSet(lockComparator);
+	private final SortedSet<FileLock> locks = new TreeSet(lockComparator);
 
 	/*
 	 * Default Constructor.

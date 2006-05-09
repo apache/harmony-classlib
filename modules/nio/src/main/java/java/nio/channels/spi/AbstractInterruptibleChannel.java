@@ -36,7 +36,7 @@ import java.util.List;
 public abstract class AbstractInterruptibleChannel implements Channel,
 		InterruptibleChannel {
 
-	private static List blockingThreads = new LinkedList();
+	private static List<Thread> blockingThreads = new LinkedList();
 
 	private volatile boolean closed = false;
 
