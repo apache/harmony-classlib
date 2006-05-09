@@ -73,7 +73,7 @@ import com.ibm.icu4jni.charset.CharsetProviderICU;
  * @see java.nio.charset.spi.CharsetProvider
  * 
  */
-public abstract class Charset implements Comparable {
+public abstract class Charset implements Comparable<Charset> {
 
 	/*
 	 * --------------------------------------------------------------------
@@ -135,17 +135,17 @@ public abstract class Charset implements Comparable {
 	 * -------------------------------------------------------------------
 	 */
 	static {
-		/*
-		 * create built-in charset provider even if no privilege to access
-		 * charset provider.
-		 */
-		_builtInProvider = (CharsetProviderICU) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
-						return new CharsetProviderICU();
-					}
-				});
-	}
+        /*
+         * create built-in charset provider even if no privilege to access
+         * charset provider.
+         */
+        _builtInProvider = AccessController.doPrivileged(
+                new PrivilegedAction<CharsetProviderICU>() {
+                    public CharsetProviderICU run() {
+                        return new CharsetProviderICU();
+                    }
+                });
+    }
 
 	/*
 	 * -------------------------------------------------------------------
@@ -242,17 +242,17 @@ public abstract class Charset implements Comparable {
 	}
 
 	/*
-	 * Use privileged code to get the context class loader.
-	 */
-	private static ClassLoader getContextClassLoader() {
-		final Thread t = Thread.currentThread();
-		return (ClassLoader) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
-						return t.getContextClassLoader();
-					}
-				});
-	}
+     * Use privileged code to get the context class loader.
+     */
+    private static ClassLoader getContextClassLoader() {
+        final Thread t = Thread.currentThread();
+        return AccessController.doPrivileged(
+                new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
+                        return t.getContextClassLoader();
+                    }
+                });
+    }
 
 	/*
 	 * Add the charsets supported by the given provider to the map.
@@ -567,7 +567,7 @@ public abstract class Charset implements Comparable {
 	 * 
 	 * @return an unmodifiable set of this charset's aliases
 	 */
-	public final Set aliases() {
+	public final Set<String> aliases() {
 		return Collections.unmodifiableSet(this.aliasesSet);
 	}
 
@@ -714,19 +714,6 @@ public abstract class Charset implements Comparable {
 	 */
 
 	/**
-	 * Compares this charset with the given charset, regardless of case.
-	 * 
-	 * @param charset
-	 *            the given charset to be compared with
-	 * @return a negative integer if less than the given charset, a positive
-	 *         integer if larger than it, or 0 if equal to it
-	 */
-	public final int compareTo(Object obj) {
-		Charset that = (Charset) obj;
-		return compareTo(that);
-	}
-
-	/**
 	 * Compares this charset with the given charset.
 	 * 
 	 * @param charset
@@ -780,25 +767,25 @@ public abstract class Charset implements Comparable {
 	}
 	
     /**
-	 * Gets the system default charset from jvm.
-	 * 
-	 * @return the default charset
-	 */
-	public static Charset defaultCharset() {
-		Charset defaultCharset = null;
-		String encoding = (String) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
-						return System.getProperty("file.encoding"); //$NON-NLS-1$
-					}
-				});
-		try {
-			defaultCharset = Charset.forName(encoding);
-		} catch (UnsupportedCharsetException e) {
-			defaultCharset = Charset.forName("UTF-8"); //$NON-NLS-1$
-		}
-		return defaultCharset;
-	}
+     * Gets the system default charset from jvm.
+     * 
+     * @return the default charset
+     */
+    public static Charset defaultCharset() {
+        Charset defaultCharset = null;
+        String encoding = AccessController.doPrivileged(
+                new PrivilegedAction<String>() {
+                    public String run() {
+                        return System.getProperty("file.encoding"); //$NON-NLS-1$
+                    }
+                });
+        try {
+            defaultCharset = Charset.forName(encoding);
+        } catch (UnsupportedCharsetException e) {
+            defaultCharset = Charset.forName("UTF-8"); //$NON-NLS-1$
+        }
+        return defaultCharset;
+    }
    
 	/**
 	 * A comparator that ignores case.
