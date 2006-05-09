@@ -484,19 +484,6 @@ public class CharsetTest extends TestCase {
 	}
 
 	/*
-	 * Test the method compareTo(Object) with non-charset param.
-	 */
-	public void testCompareTo_NonCharsetObject() {
-		MockCharset c1 = new MockCharset("mock", null);
-		try {
-			c1.compareTo("test");
-			fail("Should throw ClassCastException!");
-		} catch (ClassCastException e) {
-			// expected
-		}
-	}
-
-	/*
 	 * Test the method compareTo(Object) with another kind of charset object.
 	 */
 	public void testCompareTo_DiffCharsetClass() {
