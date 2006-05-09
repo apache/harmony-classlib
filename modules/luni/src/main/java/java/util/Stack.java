@@ -21,7 +21,7 @@ package java.util;
  * represents a stack of objects. It enables users to pop and push onto the
  * stack, including null objects. There is no limit to the size of the stack
  */
-public class Stack extends Vector {
+public class Stack<E> extends Vector<E> {
 	
 	private static final long serialVersionUID = 1224463164541339165L;
 
@@ -49,7 +49,7 @@ public class Stack extends Vector {
 	 *                when empty() is true
 	 * @see #pop
 	 */
-	public synchronized Object peek() {
+	public synchronized E peek() {
 		try {
 			return elementData[elementCount - 1];
 		} catch (IndexOutOfBoundsException e) {
@@ -66,10 +66,10 @@ public class Stack extends Vector {
 	 * @see #peek
 	 * @see #push
 	 */
-	public synchronized Object pop() {
+	public synchronized E pop() {
 		try {
 			int index = elementCount - 1;
-			Object obj = elementData[index];
+			E obj = elementData[index];
 			removeElementAt(index);
 			return obj;
 		} catch (IndexOutOfBoundsException e) {
@@ -88,7 +88,7 @@ public class Stack extends Vector {
 	 * @see #peek
 	 * @see #pop
 	 */
-	public synchronized Object push(Object object) {
+	public synchronized E push(E object) {
 		addElement(object);
 		return object;
 	}
