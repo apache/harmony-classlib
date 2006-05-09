@@ -88,7 +88,7 @@ public class Object {
 	 * 
 	 * @return Class the receiver's Class
 	 */
-	public final Class getClass() {
+	public final Class<? extends Object> getClass() {
 		return null;
 	};
 
