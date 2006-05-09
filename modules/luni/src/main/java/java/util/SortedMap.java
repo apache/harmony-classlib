@@ -19,14 +19,14 @@ package java.util;
 /**
  * SortedMap is a Map where the iterators sequence in order of the sorted keys.
  */
-public interface SortedMap extends Map {
+public interface SortedMap<K,V> extends Map<K,V> {
 	
 	/**
 	 * Answers the Comparator used to compare elements in this SortedMap.
 	 * 
 	 * @return a Comparator or null if the natural order is used
 	 */
-	public Comparator comparator();
+	public Comparator<? super K> comparator();
 
 	/**
 	 * Answer the first sorted key in this SortedMap.
@@ -36,7 +36,7 @@ public interface SortedMap extends Map {
 	 * @exception NoSuchElementException
 	 *                when this SortedMap is empty
 	 */
-	public Object firstKey();
+	public K firstKey();
 
 	/**
 	 * Answers a <code>SortedMap</code> of the specified portion of this
@@ -56,7 +56,7 @@ public interface SortedMap extends Map {
 	 *                when the end key is null and this SortedMap does not
 	 *                support null keys
 	 */
-	public SortedMap headMap(Object endKey);
+	public SortedMap<K,V> headMap(K endKey);
 
 	/**
 	 * Answers the last sorted key in this SortedMap.
@@ -66,7 +66,7 @@ public interface SortedMap extends Map {
 	 * @exception NoSuchElementException
 	 *                when this SortedMap is empty
 	 */
-	public Object lastKey();
+	public K lastKey();
 
 	/**
 	 * Answers a SortedMap of the specified portion of this SortedMap which
@@ -91,7 +91,7 @@ public interface SortedMap extends Map {
 	 * @exception IllegalArgumentException
 	 *                when the start key is greater than the end key
 	 */
-	public SortedMap subMap(Object startKey, Object endKey);
+	public SortedMap<K,V> subMap(K startKey, K endKey);
 
 	/**
 	 * Answers a SortedMap of the specified portion of this SortedMap which
@@ -110,5 +110,5 @@ public interface SortedMap extends Map {
 	 *                when the start key is null and this SortedMap does not
 	 *                support null keys
 	 */
-	public SortedMap tailMap(Object startKey);
+	public SortedMap<K,V> tailMap(K startKey);
 }

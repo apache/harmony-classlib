@@ -19,14 +19,14 @@ package java.util;
 /**
  * SortedSet is a Set which iterates its elements in sorted order.
  */
-public interface SortedSet extends Set {
+public interface SortedSet<E> extends Set<E> {
 	
 	/**
 	 * Answers the Comparator used to compare elements in this SortedSet.
 	 * 
 	 * @return a Comparator or null if the natural order is used
 	 */
-	public Comparator comparator();
+	public Comparator<? super E> comparator();
 
 	/**
 	 * Answer the first sorted element in this SortedSet.
@@ -36,7 +36,7 @@ public interface SortedSet extends Set {
 	 * @exception NoSuchElementException
 	 *                when this SortedSet is empty
 	 */
-	public Object first();
+	public E first();
 
 	/**
 	 * Answers a SortedSet of the specified portion of this SortedSet which
@@ -54,7 +54,7 @@ public interface SortedSet extends Set {
 	 *                when the end element is null and this SortedSet does not
 	 *                support null elements
 	 */
-	public SortedSet headSet(Object end);
+	public SortedSet<E> headSet(E end);
 
 	/**
 	 * Answer the last sorted element in this SortedSet.
@@ -64,7 +64,7 @@ public interface SortedSet extends Set {
 	 * @exception NoSuchElementException
 	 *                when this SortedSet is empty
 	 */
-	public Object last();
+	public E last();
 
 	/**
 	 * Answers a SortedSet of the specified portion of this SortedSet which
@@ -88,7 +88,7 @@ public interface SortedSet extends Set {
 	 * @exception IllegalArgumentException
 	 *                when the start element is greater than the end element
 	 */
-	public SortedSet subSet(Object start, Object end);
+	public SortedSet<E> subSet(E start, E end);
 
 	/**
 	 * Answers a SortedSet of the specified portion of this SortedSet which
@@ -108,5 +108,5 @@ public interface SortedSet extends Set {
 	 *                when the start element is null and this SortedSet does not
 	 *                support null elements
 	 */
-	public SortedSet tailSet(Object start);
+	public SortedSet<E> tailSet(E start);
 }
