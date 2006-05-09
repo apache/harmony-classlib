@@ -16,6 +16,7 @@
 package java.nio.channels;
 
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -33,7 +34,7 @@ import java.io.IOException;
  * </p>
  * 
  */
-public interface Channel {
+public interface Channel extends Closeable {
 
 	/**
 	 * Answers whether this channel is open or not.
