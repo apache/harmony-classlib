@@ -22,6 +22,7 @@ package java.util;
  * @see Hashtable
  * @see Properties
  * @see Vector
+ * @version 1.0
  */
 public interface Enumeration<E> {
 	/**
@@ -43,5 +44,5 @@ public interface Enumeration<E> {
 	 * 
 	 * @see #hasMoreElements
 	 */
-	public Object nextElement();
+	public E nextElement();
 }
