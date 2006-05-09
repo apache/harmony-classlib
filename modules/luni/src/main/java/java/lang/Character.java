@@ -920,8 +920,9 @@ public final class Character implements Serializable, Comparable<Character> {
 		public static final UnicodeBlock SUPERSCRIPTS_AND_SUBSCRIPTS = new UnicodeBlock(
 				"SUPERSCRIPTS_AND_SUBSCRIPTS");
 
-		/*
+		/**
 		 * Unicode block constant as defined by the Unicode 2.0 standard.
+         * @deprecated Use HIGH_SURROGATES, HIGH_PRIVATE_USE_SURROGATES, LOW_SURROGATES.
 		 */
 		public static final UnicodeBlock SURROGATES_AREA = new UnicodeBlock(
 				"SURROGATES_AREA");
