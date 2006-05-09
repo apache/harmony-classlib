@@ -45,7 +45,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -74,7 +74,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("getPropertyFive", null);
+		Method readMethod = beanClass.getMethod("getPropertyFive", (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -123,7 +123,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("setPropertyFive",
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -149,7 +149,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = null;
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
 				new Class[] { Integer.TYPE });
@@ -174,7 +174,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("getPropertyFive",
@@ -200,7 +200,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = null;
@@ -225,7 +225,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -251,7 +251,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -276,7 +276,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -307,7 +307,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 
 		String capitalName = propertyName.substring(0, 1).toUpperCase()
 				+ propertyName.substring(1);
-		Method readMethod = beanClass.getMethod("get" + capitalName, null);
+		Method readMethod = beanClass.getMethod("get" + capitalName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + capitalName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + capitalName,
@@ -424,7 +424,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 						+ propertyName, "get" + propertyName, "set"
 						+ propertyName);
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -701,7 +701,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -745,7 +745,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -770,7 +770,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -794,7 +794,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String invalidName = "An Invalid Property name";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -815,7 +815,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -837,7 +837,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -859,7 +859,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -880,7 +880,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -902,7 +902,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -924,7 +924,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -950,7 +950,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String anotherProp = "PropertyFive";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + anotherProp,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -977,7 +977,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String anotherProp = "PropertyFive";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + anotherProp,
@@ -999,7 +999,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1042,7 +1042,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1067,7 +1067,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1095,7 +1095,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1123,7 +1123,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1149,7 +1149,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1170,7 +1170,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1194,7 +1194,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1221,7 +1221,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1247,7 +1247,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
@@ -1273,7 +1273,7 @@ public class IndexedPropertyDescriptorTest extends TestCase {
 		String propertyName = "PropertyFour";
 		Class beanClass = MockJavaBean.class;
 
-		Method readMethod = beanClass.getMethod("get" + propertyName, null);
+		Method readMethod = beanClass.getMethod("get" + propertyName, (Class[])null);
 		Method writeMethod = beanClass.getMethod("set" + propertyName,
 				new Class[] { String[].class });
 		Method indexedReadMethod = beanClass.getMethod("get" + propertyName,

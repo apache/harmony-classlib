@@ -34,8 +34,8 @@ public class SampleBeanBeanInfo extends SimpleBeanInfo {
     public MethodDescriptor[] getMethodDescriptors() {
         try {
             return new MethodDescriptor[] {
-                new MethodDescriptor(SampleBean.class.getDeclaredMethod("getX",
-                        null))
+                new MethodDescriptor(
+                        SampleBean.class.getDeclaredMethod("getX", (Class[])null))
             };
         } catch (Exception e) {
             return null;

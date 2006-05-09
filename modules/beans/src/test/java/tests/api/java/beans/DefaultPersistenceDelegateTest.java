@@ -782,7 +782,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 		public PropertyDescriptor[] getPropertyDescriptors() {
 			try {
 				PropertyDescriptor pd = new PropertyDescriptor("name",
-						MockNoSetterBean.class.getMethod("getName", null), null);
+						MockNoSetterBean.class.getMethod("getName", (Class[])null), null);
 				return new PropertyDescriptor[] { pd };
 			} catch (Exception e) {
 				throw new Error(e);

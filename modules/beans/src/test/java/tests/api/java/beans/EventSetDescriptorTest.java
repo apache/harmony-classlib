@@ -836,7 +836,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Method[] listenerMethods = new Method[] {
 				listenerType.getMethod("mockPropertyChange",
 						new Class[] { MockPropertyChangeEvent.class }),
-				listenerType.getMethod("mockPropertyChange_Invalid", null), };
+				listenerType.getMethod("mockPropertyChange_Invalid", (Class[])null), };
 		Class sourceClass = MockSourceClass.class;
 		Method addMethod = sourceClass.getMethod(
 				"addMockPropertyChangeListener", new Class[] { listenerType });
@@ -886,7 +886,7 @@ public class EventSetDescriptorTest extends TestCase {
 						new Class[] { MockPropertyChangeEvent.class }), };
 		Class sourceClass = MockSourceClass.class;
 		Method addMethod = sourceClass.getMethod(
-				"addMockPropertyChangeListener_Invalid", null);
+				"addMockPropertyChangeListener_Invalid", (Class[])null);
 		Method removeMethod = sourceClass.getMethod(
 				"removeMockPropertyChangeListener",
 				new Class[] { listenerType });
@@ -934,7 +934,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Method addMethod = sourceClass.getMethod(
 				"addMockPropertyChangeListener", new Class[] { listenerType });
 		Method removeMethod = sourceClass.getMethod(
-				"addMockPropertyChangeListener_Invalid", null);
+				"addMockPropertyChangeListener_Invalid", (Class[])null);
 		EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
 				listenerType, listenerMethods, addMethod, removeMethod);
 		assertEquals(removeMethod, esd.getRemoveListenerMethod());
@@ -1015,7 +1015,7 @@ public class EventSetDescriptorTest extends TestCase {
 				"removeMockPropertyChangeListener",
 				new Class[] { listenerType });
 		Method getMethod = sourceClass.getMethod(
-				"addMockPropertyChangeListener_Invalid", null);
+				"addMockPropertyChangeListener_Invalid", (Class[])null);
 
 		EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
 				listenerType, listenerMethods, addMethod, removeMethod,
@@ -1109,7 +1109,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Method[] listenerMethods = {
 				listenerType.getMethod("mockPropertyChange",
 						new Class[] { MockPropertyChangeEvent.class }),
-				listenerType.getMethod("mockPropertyChange_Invalid", null), };
+				listenerType.getMethod("mockPropertyChange_Invalid", (Class[])null), };
 		MethodDescriptor[] listenerMethodDescriptors = {
 				new MethodDescriptor(listenerMethods[0]),
 				new MethodDescriptor(listenerMethods[1]), };

@@ -110,7 +110,7 @@ public class BeansTest extends TestCase {
 		Object bean = Beans.instantiate(loader,
 				"tests.api.java.beans.mock.MockJavaBean2");
 		assertEquals("as_class", (String) bean.getClass().getMethod(
-				"getPropertyOne", null).invoke(bean, null));
+				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 	}
 
@@ -132,7 +132,7 @@ public class BeansTest extends TestCase {
 		Object bean = Beans.instantiate(loader,
 				"tests.api.java.beans.mock.MockJavaBean2");
 		assertEquals("as_object", (String) bean.getClass().getMethod(
-				"getPropertyOne", null).invoke(bean, null));
+				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 	}
 
@@ -171,7 +171,7 @@ public class BeansTest extends TestCase {
 		Object bean = Beans.instantiate(loader,
 				"tests.api.java.beans.mock.MockJavaBean2", context);
 		assertEquals("as_class", (String) bean.getClass().getMethod(
-				"getPropertyOne", null).invoke(bean, null));
+				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 		assertTrue(context.contains(bean));
 	}
@@ -195,7 +195,7 @@ public class BeansTest extends TestCase {
 		Object bean = Beans.instantiate(loader,
 				"tests.api.java.beans.mock.MockJavaBean2", context);
 		assertEquals("as_object", (String) bean.getClass().getMethod(
-				"getPropertyOne", null).invoke(bean, null));
+				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 		assertTrue(context.contains(bean));
 	}
@@ -251,7 +251,7 @@ public class BeansTest extends TestCase {
 		Object bean = Beans.instantiate(loader, beanName, context, appInit);
 
 		assertEquals("as_class", (String) bean.getClass().getMethod(
-				"getPropertyOne", null).invoke(bean, null));
+				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 		assertTrue(context.contains(bean));
 	}
@@ -278,7 +278,7 @@ public class BeansTest extends TestCase {
 		Object bean = Beans.instantiate(loader, beanName, context, appInit);
 
 		assertEquals("as_object", (String) bean.getClass().getMethod(
-				"getPropertyOne", null).invoke(bean, null));
+				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 		assertTrue(context.contains(bean));
 	}

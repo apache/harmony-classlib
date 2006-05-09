@@ -48,7 +48,7 @@ public class MockFooChildBeanInfo extends SimpleBeanInfo {
 	public MethodDescriptor[] getMethodDescriptors() {
 		MethodDescriptor[] mds = new MethodDescriptor[2];
 		try {
-			Method getMethod = clazz.getMethod("getChildName", null);
+			Method getMethod = clazz.getMethod("getChildName", (Class[])null);
 			Method setMethod = clazz.getMethod("setChildName",
 					new Class[] { String.class });
 			mds[0] = new MethodDescriptor(getMethod);

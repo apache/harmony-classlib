@@ -47,7 +47,7 @@ public class MethodDescriptorTest extends TestCase {
             NoSuchMethodException {
         String beanName = "MethodDescriptorTest.bean";
         MockJavaBean bean = new MockJavaBean(beanName);
-        Method method = bean.getClass().getMethod("getBeanName", null);
+        Method method = bean.getClass().getMethod("getBeanName", (Class[])null);
         MethodDescriptor md = new MethodDescriptor(method);
 
         assertSame(method, md.getMethod());

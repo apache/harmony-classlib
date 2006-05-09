@@ -160,7 +160,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 	}
 
 	public void testMethodPD() throws Exception {
-		Method m = Object.class.getMethod("getClass", null);
+		Method m = Object.class.getMethod("getClass", (Class[])null);
 		enc.writeObject(m);
 		assertEquals(m, enc.get(m));
 	}

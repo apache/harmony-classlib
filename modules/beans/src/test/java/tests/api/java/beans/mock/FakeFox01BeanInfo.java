@@ -42,7 +42,7 @@ public class FakeFox01BeanInfo extends SimpleBeanInfo {
 		Method get = null;
 		Method set = null;
 		try {
-			get = clazz.getMethod("getFox01", null);
+			get = clazz.getMethod("getFox01", (Class[])null);
 			set = clazz.getMethod("setFox01", new Class[] { String.class });
 		} catch (SecurityException e) {
 			e.printStackTrace();
