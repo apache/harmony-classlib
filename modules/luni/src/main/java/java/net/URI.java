@@ -28,7 +28,7 @@ import org.apache.harmony.luni.util.Msg;
 /**
  * This class represents an instance of a URI as defined by RFC 2396.
  */
-public final class URI implements Comparable, Serializable {
+public final class URI implements Comparable<URI>, Serializable {
 
 	private static final long serialVersionUID = -6052424284110960213l;
 
@@ -695,11 +695,7 @@ public final class URI implements Comparable, Serializable {
 		}
 	}
 
-	public int compareTo(Object o) {
-		if (!(o instanceof URI))
-			throw new ClassCastException();
-
-		URI uri = (URI) o;
+	public int compareTo(URI uri) {
 		int ret = 0;
 
 		// compare schemes
