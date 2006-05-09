@@ -559,33 +559,35 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @return a Set of the keys
 	 */
 	public Set keySet() {
-		return new Collections.SynchronizedSet(new AbstractSet<K>() {
-			public boolean contains(Object object) {
-				return containsKey(object);
-			}
-
-			public int size() {
-				return elementCount;
-			}
-
-			public void clear() {
-				Hashtable.this.clear();
-			}
-
-			public boolean remove(Object key) {
-				if (containsKey(key)) {
-					Hashtable.this.remove(key);
-					return true;
-				}
-				return false;
-			}
-
-			public Iterator<MapEntry.Type> iterator() {
-				return new HashIterator(new MapEntry.Type() {
-					public Object get(MapEntry entry) {
-						return entry.key;
-					}
-				});
+		return new Collections.SynchronizedSet(
+            new AbstractSet<K>() {
+    			public boolean contains(Object object) {
+    				return containsKey(object);
+    			}
+    
+    			public int size() {
+    				return elementCount;
+    			}
+    
+    			public void clear() {
+    				Hashtable.this.clear();
+    			}
+    
+    			public boolean remove(Object key) {
+    				if (containsKey(key)) {
+    					Hashtable.this.remove(key);
+    					return true;
+    				}
+    				return false;
+    			}
+    
+    			public Iterator<K> iterator() {
+    				return new HashIterator(
+                        new MapEntry.Type() {
+        					public K get(MapEntry entry) {
+        						return (K)entry.key;
+        					}
+    				});
 			}
 		}, this);
 	}

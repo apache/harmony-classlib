@@ -19,7 +19,7 @@ package java.util;
 /**
  * Collection is the root of the collection hierarchy.
  */
-public interface Collection<E> {
+public interface Collection<E> extends Iterable<E> {
 
 	/**
 	 * Attempts to add <code>object</code> to the contents of this
@@ -125,7 +125,7 @@ public interface Collection<E> {
 	 * 
 	 * @return an iterator for accessing the collection contents
 	 */
-	public Iterator iterator();
+	public Iterator<E> iterator();
 
 	/**
 	 * Removes the first occurrence of the specified object from this

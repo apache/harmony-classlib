@@ -400,7 +400,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 	 *                when <code>location < 0 || >= size()</code>
 	 */
 	public boolean addAll(int location, Collection<? extends E> collection) {
-		Iterator<E> it = collection.iterator();
+		Iterator<? extends E> it = collection.iterator();
 		while (it.hasNext())
 			add(location++, it.next());
 		return !collection.isEmpty();
