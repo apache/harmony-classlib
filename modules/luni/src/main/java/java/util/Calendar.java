@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,9 @@ import java.io.Serializable;
  * @see GregorianCalendar
  * @see TimeZone
  */
-public abstract class Calendar implements Serializable, Cloneable {
-	
+public abstract class Calendar implements Serializable, Cloneable,
+		Comparable<Calendar> {
+
 	private static final long serialVersionUID = -1807547505821590642L;
 
 	/**
@@ -746,6 +747,36 @@ public abstract class Calendar implements Serializable, Cloneable {
 		}
 		result.append(']');
 		return result.toString();
+	}
+
+	/**
+	 * Compares the times of the two Calendars, which represent the milliseconds
+	 * from the January 1, 1970 00:00:00.000 GMT (Gregorian).
+	 * 
+	 * @param anotherCalendar
+	 *            another calendar that is compared with.
+	 * @return 0 if the times of the two calendar are equal, -1 if the time of
+	 *         this calendar is before the other one, 1 if the time of this
+	 *         calendar is after the other one.
+	 * @throws NullPointerException
+	 *             if the argument of calendar is null.
+	 * @throws IllegalArgumentException
+	 *             if the argument of the calendar does not include a valid time
+	 *             value.
+	 */
+	public int compareTo(Calendar anotherCalendar) {
+		if (null == anotherCalendar) {
+			throw new NullPointerException();
+		}
+		long timeInMillis = getTimeInMillis();
+		long anotherTimeInMillis = anotherCalendar.getTimeInMillis();
+		if (timeInMillis > anotherTimeInMillis) {
+			return 1;
+		}
+		if (timeInMillis == anotherTimeInMillis) {
+			return 0;
+		}
+		return -1;
 	}
 
 	private static final ObjectStreamField[] serialPersistentFields = {

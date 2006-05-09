@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -376,6 +376,39 @@ public class CalendarTest extends junit.framework.TestCase {
 		assertTrue("incorrect fields", cal.get(Calendar.YEAR) == 1999
 				&& cal.get(Calendar.MONTH) == Calendar.NOVEMBER
 				&& cal.get(Calendar.DATE) == 25);
+	}
+
+	/**
+	 * @tests java.util.Calendar#compareTo(Calendar)
+	 */
+	public void test_compareToLjava_util_Calendar_null() {
+		Calendar cal = Calendar.getInstance();
+		try {
+			cal.compareTo(null);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+	}
+
+	/**
+	 * @tests java.util.Calendar#compareTo(Calendar)
+	 */
+	public void test_compareToLjava_util_Calendar() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(1997, 12, 13, 23, 57);
+		
+		Calendar anotherCal = Calendar.getInstance();
+		anotherCal.set(1997, 12, 13, 23, 57);
+		assertEquals(0, cal.compareTo(anotherCal));
+				
+		anotherCal = Calendar.getInstance();
+		anotherCal.set(1997, 11, 13, 24, 57);
+		assertEquals(1, cal.compareTo(anotherCal));
+
+		anotherCal = Calendar.getInstance();
+		anotherCal.set(1997, 12, 13, 23, 58);
+		assertEquals(-1, cal.compareTo(anotherCal));
 	}
 
 	protected void setUp() {
