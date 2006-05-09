@@ -21,7 +21,7 @@ package java.lang.reflect;
  * constructor can be invoked dynamically.
  * 
  */
-public final class Constructor extends AccessibleObject implements Member {
+public final class Constructor<T> extends AccessibleObject implements Member {
 
 	/**
 	 * Compares the specified object to this Constructor and answer if they are

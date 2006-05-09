@@ -83,7 +83,8 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * The maximum possible radix used for conversions between Characters and
 	 * integers.
 	 */
-	public static final Class<Character> TYPE = new char[0].getClass().getComponentType();
+	public static final Class<Character> TYPE = (Class<Character>) new char[0]
+            .getClass().getComponentType();
 
 	// Note: This can't be set to "char.class", since *that* is
 	// defined to be "java.lang.Character.TYPE";

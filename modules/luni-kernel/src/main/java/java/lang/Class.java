@@ -16,9 +16,13 @@
 package java.lang;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.net.URL;
 import java.security.ProtectionDomain;
 
@@ -65,7 +69,8 @@ import java.security.ProtectionDomain;
  * </dl>
  * 
  */
-public final class Class<T> implements java.io.Serializable {
+public final class Class<T> implements Serializable, GenericDeclaration, Type {
+
 	private static final long serialVersionUID = 3206093459760846163L;
 
 	/**
@@ -81,7 +86,7 @@ public final class Class<T> implements java.io.Serializable {
 	 *             If the class could not be found
 	 * @see java.lang.Class
 	 */
-	public static Class forName(String className) throws ClassNotFoundException {
+	public static Class<?> forName(String className) throws ClassNotFoundException {
 		return null;
 	}
 
@@ -102,7 +107,7 @@ public final class Class<T> implements java.io.Serializable {
 	 *             If the class could not be found
 	 * @see java.lang.Class
 	 */
-	public static Class forName(String className, boolean initializeBoolean,
+	public static Class<?> forName(String className, boolean initializeBoolean,
 			ClassLoader classLoader) throws ClassNotFoundException {
 		return null;
 	}
@@ -128,6 +133,41 @@ public final class Class<T> implements java.io.Serializable {
 	void verify() {
 		return;
 	}
+
+    /**
+     * Answers the annotation of the given type.
+     * If there is no annotation the method returns <code>null</code>.
+     * 
+     * @param annotationClass the annotation type.
+     * @return the annotation of the given type, or <code>null</code>
+     * if none.
+     */
+    // TODO: awaiting Annotation defn.
+//    public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+//        return null;
+//    }
+
+    /**
+     * Answers all the annotations of the receiver.
+     * If there are no annotations then answers an empty array.
+     * 
+     * @return a copy of the array containing the receiver's annotations. 
+     */
+    // TODO: awaiting Annotation defn.
+//    public Annotation[] getAnnotations() {
+//        return null;
+//    }
+
+    /**
+     * Answers the canonical name of the receiver.
+     * If the receiver does not have a canonical name, as defined in
+     * the Java Language Spec, then the method returns <code>null</code>.
+     * 
+     * @return the receiver cannonical name, or <code>null</code>.
+     */
+    public String getCanonicalName() {
+        return null;
+    }
 
 	/**
 	 * Answers the classloader which was used to load the class represented by
@@ -165,7 +205,7 @@ public final class Class<T> implements java.io.Serializable {
 	 * @return the component type of the receiver.
 	 * @see java.lang.Class
 	 */
-	public Class getComponentType() {
+	public Class<?> getComponentType() {
 		return null;
 	};
 
@@ -182,8 +222,8 @@ public final class Class<T> implements java.io.Serializable {
 	 *             if member access is not allowed
 	 * @see #getConstructors
 	 */
-	public Constructor getConstructor(Class parameterTypes[])
-			throws NoSuchMethodException, SecurityException {
+    public Constructor<T> getConstructor(Class... parameterTypes)
+        throws NoSuchMethodException, SecurityException {
 		return null;
 	}
 
@@ -199,6 +239,18 @@ public final class Class<T> implements java.io.Serializable {
 	public Constructor[] getConstructors() throws SecurityException {
 		return null;
 	}
+
+    /**
+     * Answers the annotations that are directly defined on this type.
+     * Annoations that are inherited are not included in the result.
+     * If there are no annotations, returns an empty array.
+     * 
+     * @return a copy of the array containing the receiver's defined annotaions.
+     */
+    // TODO Awaiting defn of Annotation
+//    public Annotation[] getDeclaredAnnotations() {
+//        return null;
+//    }
 
 	/**
 	 * Answers an array containing all class members of the class which the
@@ -227,10 +279,10 @@ public final class Class<T> implements java.io.Serializable {
 	 *             if member access is not allowed
 	 * @see #getConstructors
 	 */
-	public Constructor getDeclaredConstructor(Class parameterTypes[])
-			throws NoSuchMethodException, SecurityException {
-		return null;
-	}
+    public Constructor<T> getDeclaredConstructor(Class... parameterTypes)
+            throws NoSuchMethodException, SecurityException {
+        return null;
+    }
 
 	/**
 	 * Answers an array containing Constructor objects describing all
@@ -294,23 +346,24 @@ public final class Class<T> implements java.io.Serializable {
 	 *             if the method could not be found.
 	 * @throws SecurityException
 	 *             If member access is not allowed
+     * @throws NullPointerException if the name parameter is <code>null</code>.
 	 * @see #getMethods
 	 */
-	public Method getDeclaredMethod(String name, Class parameterTypes[])
-			throws NoSuchMethodException, SecurityException {
-		return null;
-	}
+    public Method getDeclaredMethod(String name, Class... parameterTypes)
+            throws NoSuchMethodException, SecurityException {
+        return null;
+    }
 
 	/**
-	 * Answers an array containing Method objects describing all methods which
-	 * are defined by the receiver. Note that some of the methods which are
-	 * returned may not be visible in the current execution context.
-	 * 
-	 * @throws SecurityException
-	 *             if member access is not allowed
-	 * @return the receiver's methods.
-	 * @see #getMethods
-	 */
+     * Answers an array containing Method objects describing all methods which
+     * are defined by the receiver. Note that some of the methods which are
+     * returned may not be visible in the current execution context.
+     * 
+     * @throws SecurityException
+     *             if member access is not allowed
+     * @return the receiver's methods.
+     * @see #getMethods
+     */
 	public Method[] getDeclaredMethods() throws SecurityException {
 		return null;
 	}
@@ -321,9 +374,44 @@ public final class Class<T> implements java.io.Serializable {
 	 * 
 	 * @return the declaring class of the receiver.
 	 */
-	public Class getDeclaringClass() {
+	public Class<?> getDeclaringClass() {
 		return null;
 	}
+    
+    /**
+     * Answers the class that directly encloses the receiver.  If there is no
+     * enclosing class the method returns <code>null</code>.
+     * 
+     * @return the enclosing class or <code>null</code>.
+     */
+    public Class<?> getEnclosingClass() {
+        return null;
+    }
+
+    /**
+     * TODO javadoc
+     * 
+     * @return
+     */
+    public Constructor<?> getEnclosingConstructor() {
+        return null;
+    }
+
+    /**
+     * TODO javadoc
+     * 
+     * @return
+     */
+    public Method getEnclosingMethod() {
+        return null;
+    }
+    
+    /**
+     * TODO javadoc
+     */
+    public T[] getEnumConstants() {
+        return null;
+    }
 
 	/**
 	 * Answers a Field object describing the field in the receiver named by the
@@ -356,6 +444,22 @@ public final class Class<T> implements java.io.Serializable {
 		return null;
 	}
 
+    /**
+     * TODO javadoc
+     * 
+     * @return
+     */
+    public Type[] getGenericInterfaces() {
+        return null;
+    }
+
+    /**
+     * TODO javadoc
+     */
+    public Type getGenericSuperclass() {
+        return null;
+    }
+    
 	/**
 	 * Answers an array of Class objects which match the interfaces specified in
 	 * the receiver classes <code>implements</code> declaration
@@ -381,20 +485,20 @@ public final class Class<T> implements java.io.Serializable {
 	 *             if member access is not allowed
 	 * @see #getMethods
 	 */
-	public Method getMethod(String name, Class parameterTypes[])
-			throws NoSuchMethodException, SecurityException {
-		return null;
-	}
+    public Method getMethod(String name, Class... parameterTypes)
+            throws NoSuchMethodException, SecurityException {
+        return null;
+    }
 
 	/**
-	 * Answers an array containing Method objects describing all methods which
-	 * are visible from the current execution context.
-	 * 
-	 * @return Method[] all visible methods starting from the receiver.
-	 * @throws SecurityException
-	 *             if member access is not allowed
-	 * @see #getDeclaredMethods
-	 */
+     * Answers an array containing Method objects describing all methods which
+     * are visible from the current execution context.
+     * 
+     * @return Method[] all visible methods starting from the receiver.
+     * @throws SecurityException
+     *             if member access is not allowed
+     * @see #getDeclaredMethods
+     */
 	public Method[] getMethods() throws SecurityException {
 		return null;
 	}
@@ -422,6 +526,18 @@ public final class Class<T> implements java.io.Serializable {
 	public String getName() {
 		return null;
 	};
+
+    /**
+     * Answers the simple name of the receiver as defined in the source code.
+     * If there is no name (the class is anonymous) returns an empty string, and
+     * if the receiver is an array returns the name of the underlying type with
+     * square braces appended (e.g. <code>&quot;Integer[]&quot;</code>).
+     * 
+     * @return the simple name of the receiver.
+     */
+    public String getSimpleName() {
+        return null;
+    }
 
 	/**
 	 * Answers the ProtectionDomain of the receiver.
@@ -497,10 +613,44 @@ public final class Class<T> implements java.io.Serializable {
 	 * 
 	 * @return the receiver's superclass.
 	 */
-	public Class getSuperclass() {
+    public Class<? super T> getSuperclass() {
 		return null;
 	};
 
+    /**
+     * TODO javadoc
+     */
+    public TypeVariable<Class<T>>[] getTypeParameters() {
+        return null;
+    }
+
+    /**
+     * TODO javadoc
+     * 
+     * @return
+     */
+    public boolean isAnnotation() {
+        return false;
+    }
+
+    /**
+     * TODO javadoc
+     * 
+     * @param annotationClass
+     * @return
+     */
+    // TODO awaiting defn of annotation
+//    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
+//        return false;
+//    }
+
+    /**
+     * TODO javadoc
+     */
+    public boolean isAnonymousClass() {
+        return false;
+    }
+    
 	/**
 	 * Answers true if the receiver represents an array class.
 	 * 
@@ -525,9 +675,16 @@ public final class Class<T> implements java.io.Serializable {
 	 * @throws NullPointerException
 	 *             if the parameter is null
 	 */
-	public boolean isAssignableFrom(Class cls) {
+	public boolean isAssignableFrom(Class<?> cls) {
 		return false;
 	};
+
+    /**
+     * TODO javadoc
+     */
+    public boolean isEnum() {
+        return false;
+    }
 
 	/**
 	 * Answers true if the argument is non-null and can be cast to the type of
@@ -554,6 +711,26 @@ public final class Class<T> implements java.io.Serializable {
 		return false;
 	}
 
+    /**
+     * Answers whether the receiver is defined locally.
+     * 
+     * @return <code>true</code> if the class is local,
+     * otherwise <code>false</code>.
+     */
+    public boolean isLocalClass() {
+        return false;
+    }
+    
+    /**
+     * Answers whether the receiver is a member class.
+     * 
+     * @return <code>true</code> if the class is a member class,
+     * otherwise <code>false</code>.
+     */
+    public boolean isMemberClass() {
+        return false;
+    }
+    
 	/**
 	 * Answers true if the receiver represents a base type.
 	 * 
@@ -564,6 +741,16 @@ public final class Class<T> implements java.io.Serializable {
 		return false;
 	};
 
+    /**
+     * Answers whether the receiver is a synthetic type.
+     * 
+     * @return <code>true</code> if the receiver is a synthetic type
+     *         and <code>false</code> otherwise.
+     */
+    public boolean isSynthetic() {
+        return false;
+    }
+    
 	/**
 	 * Answers a new instance of the class represented by the receiver, created
 	 * by invoking the default (i.e. zero-argument) constructor. If there is no
@@ -579,7 +766,7 @@ public final class Class<T> implements java.io.Serializable {
 	 * @throws InstantiationException
 	 *             if the instance could not be created.
 	 */
-	public Object newInstance() throws IllegalAccessException,
+	public T newInstance() throws IllegalAccessException,
 			InstantiationException {
 		return null;
 	}
@@ -614,6 +801,32 @@ public final class Class<T> implements java.io.Serializable {
 	public boolean desiredAssertionStatus() {
 		return false;
 	}
+
+    /**
+     * Casts the receiver to a subclass of the given class.  If successful
+     * answers the receiver, otherwise if the cast cannot be made throws a
+     * <code>ClassCastException</code>.
+     * 
+     * @param clazz the required type.
+     * @return this class cast as a subclass of the given type.
+     * @throws ClassCastException if the class cannot be cast to the given type.
+     */
+    public <U> Class<? extends U> asSubclass(Class<U> clazz) {
+        return null;
+    }
+
+    /**
+     * Cast the given object to the type <code>T</code>.
+     * If the object is <code>null</code> the result is also
+     * <code>null</code>.
+     * 
+     * @param obj the object to cast
+     * @return The object that has been cast.
+     * @throws ClassCastException if the object cannot be cast to the given type.
+     */
+    public T cast(Object obj) {
+        return null;
+    }
 
 	/**
 	 * This must be provided by the vm vendor, as it is used by other provided
