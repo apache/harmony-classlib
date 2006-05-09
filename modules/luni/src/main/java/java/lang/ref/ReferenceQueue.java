@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,9 @@ package java.lang.ref;
  * 
  * @since JDK1.2
  */
-public class ReferenceQueue extends Object {
-	private Reference[] references;
+public class ReferenceQueue<T> extends Object {
+
+	private Reference<? extends T>[] references;
 
 	private int head, tail;
 
@@ -40,8 +41,8 @@ public class ReferenceQueue extends Object {
 	 * 
 	 * @return Reference next available Reference or NULL.
 	 */
-	public Reference poll() {
-		Reference ref;
+	public Reference<? extends T> poll() {
+		Reference<? extends T> ref;
 
 		synchronized (this) {
 			if (empty) {
@@ -67,7 +68,7 @@ public class ReferenceQueue extends Object {
 	 * @exception InterruptedException
 	 *                to interrupt the wait.
 	 */
-	public Reference remove() throws InterruptedException {
+	public Reference<? extends T> remove() throws InterruptedException {
 		return remove(0L);
 	}
 
@@ -84,13 +85,13 @@ public class ReferenceQueue extends Object {
 	 *                if the wait period is negative. InterruptedException to
 	 *                interrupt the wait.
 	 */
-	public Reference remove(long timeout) throws IllegalArgumentException,
+	public Reference<? extends T> remove(long timeout) throws IllegalArgumentException,
 			InterruptedException {
 		if (timeout < 0) {
 			throw new IllegalArgumentException();
 		}
 
-		Reference ref;
+		Reference<? extends T> ref;
 		synchronized (this) {
 			if (empty) {
 				wait(timeout);
@@ -120,12 +121,13 @@ public class ReferenceQueue extends Object {
 	 * @return boolean true if reference is enqueued. false if reference failed
 	 *         to enqueue.
 	 */
-	boolean enqueue(Reference reference) {
+	boolean enqueue(Reference<? extends T> reference) {
 		synchronized (this) {
 			if (!empty && head == tail) {
 				/* Queue is full - grow */
 				int newQueueSize = (int) (references.length * 1.10);
-				Reference newQueue[] = new Reference[newQueueSize];
+				Reference<? extends T> newQueue[] =
+                    (Reference<? extends T>[])new Reference[newQueueSize];
 				System.arraycopy(references, head, newQueue, 0,
 						references.length - head);
 				if (tail > 0) {
@@ -150,7 +152,7 @@ public class ReferenceQueue extends Object {
 	 * Constructs a new instance of this class.
 	 */
 	public ReferenceQueue() {
-		references = new Reference[DEFAULT_QUEUE_SIZE];
+		references = (Reference<? extends T>[])new Reference[DEFAULT_QUEUE_SIZE];
 		head = 0;
 		tail = 0;
 		empty = true;
