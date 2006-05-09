@@ -736,14 +736,14 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
     /**
      * @see Appendable#append(char)
      */
-    public Appendable append(char c){
+    public CharBuffer append(char c){
         return put(c);
     }
 
     /**
      * @see Appendable#append(CharSequence)
      */
-    public Appendable append(CharSequence csq){
+    public CharBuffer append(CharSequence csq){
         if (csq != null) {
             return put(csq.toString());
         }
@@ -753,7 +753,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
     /**
      * @see Appendable#append(CharSequence, int, int)
      */
-    public Appendable append(CharSequence csq, int start, int end){
+    public CharBuffer append(CharSequence csq, int start, int end){
         if (csq == null) {
             csq = "null"; //$NON-NLS-1$
         }
