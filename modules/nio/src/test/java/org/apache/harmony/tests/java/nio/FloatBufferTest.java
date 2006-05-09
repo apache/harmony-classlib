@@ -226,14 +226,6 @@ public class FloatBufferTest extends TestCase {
     }
 
     public static void testCompareTo(FloatBuffer buf) {
-        // compare to bad type
-        try {
-            buf.compareTo(ByteBuffer.allocate(10));
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (ClassCastException e) {
-            // expected
-        }
-
         // compare to self
         assertEquals(0, buf.compareTo(buf));
 
@@ -743,15 +735,6 @@ public class FloatBufferTest extends TestCase {
         float value = startValue;
         for (int i = 0; i < length; i++) {
             assertEquals(buf.get(startIndex + i), value, 0.01);
-            value = value + 1.0f;
-        }
-    }
-
-    private static void assertContentLikeTestData1(float array[],
-            int startIndex, float startValue, int length) {
-        float value = startValue;
-        for (int i = 0; i < length; i++) {
-            assertEquals(array[startIndex + i], value, 0.01);
             value = value + 1.0f;
         }
     }

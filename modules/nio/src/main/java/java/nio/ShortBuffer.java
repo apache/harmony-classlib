@@ -30,9 +30,8 @@ package java.nio;
  * to create a short buffer based on a byte buffer.</li>
  * </ul>
  * </p>
- * 
  */
-public abstract class ShortBuffer extends Buffer implements Comparable {
+public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuffer> {
 
 	/**
 	 * Creates a short buffer based on a new allocated short array.
@@ -174,7 +173,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable {
 	 * Compare the remaining <code>short</code>s of this buffer to another
 	 * short buffer's remaining <code>short</code>s.
 	 * 
-	 * @param other
+	 * @param otherBuffer
 	 *            Another short buffer
 	 * @return a negative value if this is less than <code>other</code>; 0 if
 	 *         this equals to <code>other</code>; a positive value if this is
@@ -182,8 +181,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable {
 	 * @exception ClassCastException
 	 *                If <code>other</code> is not a short buffer
 	 */
-	public int compareTo(Object other) {
-		ShortBuffer otherBuffer = (ShortBuffer) other;
+	public int compareTo(ShortBuffer otherBuffer) {
 		int compareRemaining = (remaining() < otherBuffer.remaining()) ? remaining()
 				: otherBuffer.remaining();
 		int thisPos = position;

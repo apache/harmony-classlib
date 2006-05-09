@@ -36,7 +36,7 @@ import java.io.IOException;
  * </p>
  * 
  */
-public abstract class CharBuffer extends Buffer implements Comparable,
+public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer>,
 		CharSequence, Appendable, Readable {
 
 	/**
@@ -246,7 +246,7 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 * Compare the remaining <code>char</code>s of this buffer to another
 	 * char buffer's remaining <code>char</code>s.
 	 * 
-	 * @param other
+	 * @param otherBuffer
 	 *            Another char buffer
 	 * @return a negative value if this is less than <code>other</code>; 0 if
 	 *         this equals to <code>other</code>; a positive value if this is
@@ -254,8 +254,7 @@ public abstract class CharBuffer extends Buffer implements Comparable,
 	 * @exception ClassCastException
 	 *                If <code>other</code> is not a char buffer
 	 */
-	public int compareTo(Object other) {
-		CharBuffer otherBuffer = (CharBuffer) other;
+	public int compareTo(CharBuffer otherBuffer) {
 		int compareRemaining = (remaining() < otherBuffer.remaining()) ? remaining()
 				: otherBuffer.remaining();
 		int thisPos = position;

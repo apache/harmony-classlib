@@ -32,7 +32,7 @@ package java.nio;
  * </p>
  * 
  */
-public abstract class FloatBuffer extends Buffer implements Comparable {
+public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuffer> {
 
 	/**
 	 * Creates a float buffer based on a new allocated float array.
@@ -167,7 +167,7 @@ public abstract class FloatBuffer extends Buffer implements Comparable {
 	 * Compare the remaining <code>float</code>s of this buffer to another
 	 * float buffer's remaining <code>float</code>s.
 	 * 
-	 * @param other
+	 * @param otherBuffer
 	 *            Another float buffer
 	 * @return a negative value if this is less than <code>other</code>; 0 if
 	 *         this equals to <code>other</code>; a positive value if this is
@@ -175,8 +175,7 @@ public abstract class FloatBuffer extends Buffer implements Comparable {
 	 * @exception ClassCastException
 	 *                If <code>other</code> is not a float buffer
 	 */
-	public int compareTo(Object other) {
-		FloatBuffer otherBuffer = (FloatBuffer) other;
+	public int compareTo(FloatBuffer otherBuffer) {
 		int compareRemaining = (remaining() < otherBuffer.remaining()) ? remaining()
 				: otherBuffer.remaining();
 		int thisPos = position;

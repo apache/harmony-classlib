@@ -29,9 +29,8 @@ package java.nio;
  * create a int buffer based on a byte buffer.</li>
  * </ul>
  * </p>
- * 
  */
-public abstract class IntBuffer extends Buffer implements Comparable {
+public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> {
 
 	/**
 	 * Creates a int buffer based on a new allocated int array.
@@ -173,7 +172,7 @@ public abstract class IntBuffer extends Buffer implements Comparable {
 	 * Compare the remaining <code>int</code>s of this buffer to another int
 	 * buffer's remaining <code>int</code>s.
 	 * 
-	 * @param other
+	 * @param otherBuffer
 	 *            Another int buffer
 	 * @return a negative value if this is less than <code>other</code>; 0 if
 	 *         this equals to <code>other</code>; a positive value if this is
@@ -181,8 +180,7 @@ public abstract class IntBuffer extends Buffer implements Comparable {
 	 * @exception ClassCastException
 	 *                If <code>other</code> is not a int buffer
 	 */
-	public int compareTo(Object other) {
-		IntBuffer otherBuffer = (IntBuffer) other;
+	public int compareTo(IntBuffer otherBuffer) {
 		int compareRemaining = (remaining() < otherBuffer.remaining()) ? remaining()
 				: otherBuffer.remaining();
 		int thisPos = position;

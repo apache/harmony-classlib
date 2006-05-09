@@ -264,14 +264,6 @@ public class ByteBufferTest extends TestCase {
     }
 
     public static void testCompareTo(ByteBuffer buf) {
-        // compare to bad type
-        try {
-            buf.compareTo(CharBuffer.allocate(10));
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (ClassCastException e) {
-            // expected
-        }
-
         // compare to self
         assertEquals(0, buf.compareTo(buf));
 
@@ -1981,15 +1973,6 @@ public class ByteBufferTest extends TestCase {
         byte value = startValue;
         for (int i = 0; i < length; i++) {
             assertEquals(buf.get(startIndex + i), value);
-            value = (byte) (value + 1);
-        }
-    }
-
-    private static void assertContentLikeTestData1(byte array[],
-            int startIndex, byte startValue, int length) {
-        byte value = startValue;
-        for (int i = 0; i < length; i++) {
-            assertEquals(array[startIndex + i], value);
             value = (byte) (value + 1);
         }
     }

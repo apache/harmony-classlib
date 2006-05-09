@@ -33,7 +33,7 @@ import org.apache.harmony.luni.platform.Endianness;
  * </p>
  * 
  */
-public abstract class ByteBuffer extends Buffer implements Comparable {
+public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer> {
 
 	/**
 	 * Creates a byte buffer based on a new allocated byte array.
@@ -299,7 +299,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	 * Compare the remaining <code>byte</code>s of this buffer to another
 	 * byte buffer's remaining <code>byte</code>s.
 	 * 
-	 * @param other
+	 * @param otherBuffer
 	 *            Another byte buffer
 	 * @return a negative value if this is less than <code>other</code>; 0 if
 	 *         this equals to <code>other</code>; a positive value if this is
@@ -307,8 +307,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable {
 	 * @exception ClassCastException
 	 *                If <code>other</code> is not a byte buffer
 	 */
-	public int compareTo(Object other) {
-		ByteBuffer otherBuffer = (ByteBuffer) other;
+	public int compareTo(ByteBuffer otherBuffer) {
 		int compareRemaining = (remaining() < otherBuffer.remaining()) ? remaining()
 				: otherBuffer.remaining();
 		int thisPos = position;

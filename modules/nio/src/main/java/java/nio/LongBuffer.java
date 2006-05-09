@@ -30,9 +30,8 @@ package java.nio;
  * to create a long buffer based on a byte buffer.</li>
  * </ul>
  * </p>
- * 
  */
-public abstract class LongBuffer extends Buffer implements Comparable {
+public abstract class LongBuffer extends Buffer implements Comparable<LongBuffer> {
 
 	/**
 	 * Creates a long buffer based on a new allocated long array.
@@ -174,7 +173,7 @@ public abstract class LongBuffer extends Buffer implements Comparable {
 	 * Compare the remaining <code>long</code>s of this buffer to another
 	 * long buffer's remaining <code>long</code>s.
 	 * 
-	 * @param other
+	 * @param otherBuffer
 	 *            Another long buffer
 	 * @return a negative value if this is less than <code>other</code>; 0 if
 	 *         this equals to <code>other</code>; a positive value if this is
@@ -182,8 +181,7 @@ public abstract class LongBuffer extends Buffer implements Comparable {
 	 * @exception ClassCastException
 	 *                If <code>other</code> is not a long buffer
 	 */
-	public int compareTo(Object other) {
-		LongBuffer otherBuffer = (LongBuffer) other;
+	public int compareTo(LongBuffer otherBuffer) {
 		int compareRemaining = (remaining() < otherBuffer.remaining()) ? remaining()
 				: otherBuffer.remaining();
 		int thisPos = position;
