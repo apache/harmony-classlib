@@ -25,7 +25,7 @@ package java.lang.ref;
  * 
  * @since JDK1.2
  */
-public abstract class Reference extends Object {
+public abstract class Reference<T> extends Object {
 
 	/**
 	 * Make the referent null. This does not force the reference object to be
@@ -49,10 +49,10 @@ public abstract class Reference extends Object {
 	/**
 	 * Return the referent of the reference object.
 	 * 
-	 * @return Object Referent to which reference refers, or null if object has
+	 * @return Referent to which reference refers, or null if object has
 	 *         been cleared.
 	 */
-	public Object get() {
+	public T get() {
 		return null;
 	}
 
