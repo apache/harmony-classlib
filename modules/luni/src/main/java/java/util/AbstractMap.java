@@ -16,15 +16,16 @@
 package java.util;
 
 
+
 /**
  * AbstractMap is an abstract implementation of the Map iterface. This
  * implemenation does not support adding. A subclass must implement the abstract
  * method entrySet().
  */
-public abstract class AbstractMap implements Map {
+public abstract class AbstractMap<K, V> implements Map<K, V> {
 
 	// Lazily initialized key set.
-	Set keySet = null;
+	Set<K> keySet = null;
 
 	Collection valuesCollection = null;
 
@@ -96,7 +97,7 @@ public abstract class AbstractMap implements Map {
 	 * 
 	 * @see java.util.Map#entrySet()
 	 */
-	abstract public Set entrySet();
+	abstract public Set<Map.Entry<K,V>> entrySet();
 
 	/**
 	 * Compares the specified object to this Map and answer if they are equal.
@@ -135,17 +136,17 @@ public abstract class AbstractMap implements Map {
 	 *            the key
 	 * @return the value of the mapping with the specified key
 	 */
-	public Object get(Object key) {
-		Iterator it = entrySet().iterator();
+	public V get(Object key) {
+		Iterator<Map.Entry<K,V>> it = entrySet().iterator();
 		if (key != null) {
 			while (it.hasNext()) {
-				Map.Entry entry = (Map.Entry) it.next();
+				Map.Entry<K,V> entry = it.next();
 				if (key.equals(entry.getKey()))
 					return entry.getValue();
 			}
 		} else {
 			while (it.hasNext()) {
-				Map.Entry entry = (Map.Entry) it.next();
+				Map.Entry<K,V> entry = it.next();
 				if (entry.getKey() == null)
 					return entry.getValue();
 			}
@@ -187,9 +188,9 @@ public abstract class AbstractMap implements Map {
 	 * 
 	 * @return a Set of the keys
 	 */
-	public Set keySet() {
+	public Set<K> keySet() {
 		if (keySet == null) {
-			keySet = new AbstractSet() {
+			keySet = new AbstractSet<K>() {
 				public boolean contains(Object object) {
 					return containsKey(object);
 				}
@@ -198,16 +199,16 @@ public abstract class AbstractMap implements Map {
 					return AbstractMap.this.size();
 				}
 
-				public Iterator iterator() {
-					return new Iterator() {
-						Iterator setIterator = entrySet().iterator();
+				public Iterator<K> iterator() {
+					return new Iterator<K>() {
+						Iterator<Map.Entry<K,V>> setIterator = entrySet().iterator();
 
 						public boolean hasNext() {
 							return setIterator.hasNext();
 						}
 
-						public Object next() {
-							return ((Map.Entry) setIterator.next()).getKey();
+						public K next() {
+							return setIterator.next().getKey();
 						}
 
 						public void remove() {
@@ -241,34 +242,32 @@ public abstract class AbstractMap implements Map {
 	 *                when the key or value is null and this Map does not
 	 *                support null keys or values
 	 */
-	public Object put(Object key, Object value) {
+	public V put(K key, V value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * Copies every mapping in the specified Map to this Map.
-	 * 
-	 * @param map
-	 *            the Map to copy mappings from
-	 * 
-	 * @exception UnsupportedOperationException
-	 *                when adding to this Map is not supported
-	 * @exception ClassCastException
-	 *                when the class of a key or value is inappropriate for this
-	 *                Map
-	 * @exception IllegalArgumentException
-	 *                when a key or value cannot be added to this Map
-	 * @exception NullPointerException
-	 *                when a key or value is null and this Map does not support
-	 *                null keys or values
-	 */
-	public void putAll(Map map) {
-		Iterator it = map.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			put(entry.getKey(), entry.getValue());
-		}
-	}
+     * Copies every mapping in the specified Map to this Map.
+     * 
+     * @param map
+     *            the Map to copy mappings from
+     * 
+     * @exception UnsupportedOperationException
+     *                when adding to this Map is not supported
+     * @exception ClassCastException
+     *                when the class of a key or value is inappropriate for this
+     *                Map
+     * @exception IllegalArgumentException
+     *                when a key or value cannot be added to this Map
+     * @exception NullPointerException
+     *                when a key or value is null and this Map does not support
+     *                null keys or values
+     */
+    public void putAll(Map<? extends K, ? extends V> map) {
+        for (Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
+    }
 
 	/**
 	 * Removes a mapping with the specified key from this Map.
@@ -281,11 +280,11 @@ public abstract class AbstractMap implements Map {
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Map is not supported
 	 */
-	public Object remove(Object key) {
-		Iterator it = entrySet().iterator();
+	public V remove(Object key) {
+		Iterator<Map.Entry<K,V>> it = entrySet().iterator();
 		if (key != null) {
 			while (it.hasNext()) {
-				Map.Entry entry = (Map.Entry) it.next();
+				Map.Entry<K,V> entry = it.next();
 				if (key.equals(entry.getKey())) {
 					it.remove();
 					return entry.getValue();
@@ -293,7 +292,7 @@ public abstract class AbstractMap implements Map {
 			}
 		} else {
 			while (it.hasNext()) {
-				Map.Entry entry = (Map.Entry) it.next();
+				Map.Entry<K,V> entry = it.next();
 				if (entry.getKey() == null) {
 					it.remove();
 					return entry.getValue();
@@ -353,7 +352,7 @@ public abstract class AbstractMap implements Map {
 	 * 
 	 * @see java.util.Map#values()
 	 */
-	public Collection values() {
+	public Collection<V> values() {
 		if (valuesCollection == null) {
 			valuesCollection = new AbstractCollection() {
 				public int size() {
@@ -396,7 +395,7 @@ public abstract class AbstractMap implements Map {
 	 *                Cloneable.
 	 */
 	protected Object clone() throws CloneNotSupportedException {
-		AbstractMap result = (AbstractMap) super.clone();
+		AbstractMap<K,V> result = (AbstractMap<K,V>) super.clone();
 		result.keySet = null;
 		result.valuesCollection = null;
 		return result;
