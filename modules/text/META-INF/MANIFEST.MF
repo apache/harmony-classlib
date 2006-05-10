@@ -7,10 +7,12 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang,
+ java.lang.reflect,
  java.math,
  java.net,
  java.security,
  java.util,
  org.apache.harmony.luni.util,
- tests.support;resolution:=optional;hy_usage=test
+ tests.support;resolution:=optional;hy_usage=test,
+ tests.util;resolution:=optional;hy_usage=test
 Export-Package: java.text
