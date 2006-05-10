@@ -85,21 +85,6 @@ public class SecureRandom2Test extends TestCase {
 	}
 
 	/*
-	 * Class under test for void SecureRandom()
-	 */
-	public final void testSecureRandom() {
-        SecureRandom sr = new SecureRandom();
-        Random r = new Random();
-        byte[] b1 = new byte[8];
-        byte[] b2 = new byte[8];
-        sr.nextBytes(b1);
-        r.nextBytes(b2);
-        if (!Arrays.equals(b1, b2)) {
-            fail("incorrect random bytes");
-        }
-	}
-
-	/*
 	 * Class under test for void SecureRandom(byte[])
 	 */
 	public final void testSecureRandombyteArray() {
