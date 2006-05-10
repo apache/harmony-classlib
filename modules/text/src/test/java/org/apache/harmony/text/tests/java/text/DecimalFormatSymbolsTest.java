@@ -17,18 +17,17 @@ package org.apache.harmony.text.tests.java.text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 
-public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class DecimalFormatSymbolsTest extends TestCase {
 
 	DecimalFormatSymbols dfs;
 
