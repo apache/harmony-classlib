@@ -23,6 +23,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -416,7 +417,7 @@ public abstract class URLConnection {
 	 * 
 	 * @since 1.4
 	 */
-	public Map getHeaderFields() {
+	public Map<String, List<String>> getHeaderFields() {
 		return Collections.EMPTY_MAP;
 	}
 
@@ -429,7 +430,7 @@ public abstract class URLConnection {
 	 * 
 	 * @since 1.4
 	 */
-	public Map getRequestProperties() {
+	public Map<String, List<String>> getRequestProperties() {
 		return Collections.EMPTY_MAP;
 	}
 
