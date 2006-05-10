@@ -81,4 +81,19 @@ public class FileTest extends TestCase {
 			assertFalse("Assert 1: wrong hashcode", mfile.hashCode() == lfile.hashCode());
 		}
 	}
+
+    /**
+     * @tests java.io.File#getPath()
+     */
+    public void test_getPath() {
+        // Regression for HARMONY-444
+        File file;
+        String separator = File.separator;
+
+        file = new File((File) null, "x/y/z");
+        assertEquals("x" + separator + "y" + separator + "z", file.getPath());
+
+        file = new File((String) null, "x/y/z");
+        assertEquals("x" + separator + "y" + separator + "z", file.getPath());
+    }
 }
