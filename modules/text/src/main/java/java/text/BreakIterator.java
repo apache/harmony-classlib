@@ -17,8 +17,6 @@ package java.text;
 
 import java.util.Locale;
 
-import org.apache.harmony.luni.util.NotYetImplementedException;
-
 /**
  * This class is used to locate the boundaries of text. Instance of this class
  * can be got by some factory methods:
