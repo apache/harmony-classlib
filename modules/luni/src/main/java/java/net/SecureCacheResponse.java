@@ -15,6 +15,7 @@
 package java.net;
 
 import java.security.Principal;
+import java.security.cert.Certificate;
 import java.util.List;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -49,7 +50,7 @@ public abstract class SecureCacheResponse extends CacheResponse {
 	 * as a <code>List</code> of <code>Certificate</code>. If no certificate chain was sent, 
 	 * the method returns null.
 	 */
-	public abstract List getLocalCertificateChain();
+	public abstract List<Certificate> getLocalCertificateChain();
 
 	/**
 	 * <p>
@@ -62,7 +63,7 @@ public abstract class SecureCacheResponse extends CacheResponse {
 	 * @throws SSLPeerUnverifiedException
 	 *             If the peer is unverified.
 	 */
-	public abstract List getServerCertificateChain()
+	public abstract List<Certificate> getServerCertificateChain()
 			throws SSLPeerUnverifiedException;
 
 	/**

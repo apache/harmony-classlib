@@ -15,6 +15,7 @@
 package java.net;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -120,7 +121,7 @@ public abstract class ResponseCache {
 	 *             If any one of the parameters is null
 	 */
 	public abstract CacheResponse get(URI uri, String rqstMethod,
-			Map rqstHeaders) throws IOException;
+            Map<String,List<String>> rqstHeaders) throws IOException;
 
 	/**
 	 * Protocol handler calls this method after retrieving resources.

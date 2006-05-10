@@ -17,6 +17,7 @@ package java.net;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,5 +55,5 @@ public abstract class CacheResponse {
 	 * @throws IOException
 	 *             if an I/O error is encounted while retrieving the response headers.
 	 */
-	public abstract Map getHeaders() throws IOException;
+	public abstract Map<String,List<String>> getHeaders() throws IOException;
 }
