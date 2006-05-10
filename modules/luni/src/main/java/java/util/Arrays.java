@@ -2045,10 +2045,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 5);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
@@ -2076,10 +2075,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 3);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
@@ -2107,10 +2105,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 2);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
@@ -2138,10 +2135,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 5);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
@@ -2169,10 +2165,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 5);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
@@ -2200,10 +2195,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 4);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
@@ -2231,10 +2225,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 4);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
@@ -2262,10 +2255,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 4);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
@@ -2293,10 +2285,9 @@ public class Arrays {
             return "[]";
         StringBuilder sb = new StringBuilder(2 + array.length * 5);
         sb.append('[');
-        for (int i = 0; i < array.length; i++) {
-            if (i != 0) {
-                sb.append(", ");
-            }
+        sb.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            sb.append(", ");
             sb.append(array[i]);
         }
         sb.append(']');
