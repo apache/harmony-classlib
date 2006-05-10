@@ -22,7 +22,7 @@ package java.text;
  * ordering of their source Strings. This is useful when the Strings must be
  * compared multiple times, as in sorting.
  */
-public final class CollationKey implements Comparable {
+public final class CollationKey implements Comparable<CollationKey> {
 
 	private String source;
 
@@ -45,23 +45,6 @@ public final class CollationKey implements Comparable {
 	 */
 	public int compareTo(CollationKey value) {
 		return icuKey.compareTo(value.icuKey);
-	}
-
-	/**
-	 * Compare this CollationKey to the specified Object to determine the
-	 * relative ordering.
-	 * 
-	 * @param object
-	 *            an Object
-	 * @return an int < 0 if this CollationKey is less than the specified
-	 *         CollationKey, 0 if they are equal, and > 0 if this CollationKey
-	 *         is greater
-	 * 
-	 * @exception ClassCastException
-	 *                when object is not a CollationKey
-	 */
-	public int compareTo(Object object) {
-		return icuKey.compareTo(((CollationKey) object).icuKey);
 	}
 
 	/**

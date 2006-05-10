@@ -249,11 +249,6 @@ public class RuleBasedCollatorTest extends TestCase {
         CollationKey key2 = coll.getCollationKey("abc");
 
         assertEquals(0, key.compareTo(key2));
-        Object key3 = key2;
-        assertEquals(0, key.compareTo(key3));
-        assertTrue(key.equals(key2));
-
-        key.toByteArray();
     }
 
     /**
