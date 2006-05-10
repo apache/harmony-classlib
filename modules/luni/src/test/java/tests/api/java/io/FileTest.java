@@ -309,7 +309,7 @@ public class FileTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.File#compareTo(java.io.File)
 	 */
-    public void test_compareToLjava_lang_Object() {
+    public void test_compareToLjava_io_File() {
         File f1 = new File("thisFile.file");
         File f2 = new File("thisFile.file");
         File f3 = new File("thatFile.file");
