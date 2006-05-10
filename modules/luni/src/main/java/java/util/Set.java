@@ -18,6 +18,7 @@ package java.util;
 
 /**
  * Set is a collection which does not allow duplicate elements.
+ * @since 1.2
  */
 public interface Set<E> extends Collection<E> {
 	
@@ -123,7 +124,7 @@ public interface Set<E> extends Collection<E> {
 	 * 
 	 * @see Iterator
 	 */
-	public Iterator iterator();
+	public Iterator<E> iterator();
 
 	/**
 	 * Removes any occurrence of the specified object from this Set.

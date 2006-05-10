@@ -645,9 +645,7 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 *            the Map to copy mappings from
 	 */
 	public synchronized void putAll(Map<? extends K,? extends V> map) {
-		Iterator<Map.Entry<K,V>> it = map.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<K,V> entry = it.next();
+		for (Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
 			put(entry.getKey(), entry.getValue());
 		}
 	}
