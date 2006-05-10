@@ -16,6 +16,7 @@
 package java.net;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,28 +61,30 @@ public abstract class CookieHandler {
 	}
 
 	/**
-	 * searchs and gets all cookies in the cache by the specified uri in the
-	 * request header.
-	 * 
-	 * @param uri
-	 *            the specified uri to search for
-	 * @param requestHeaders
-	 *            a list of request headers
-	 * @return a map that record all such cookies, the map is unchangeable
-	 * @throws IOException
-	 *             if some error of I/O operation occurs
-	 */
-	public abstract Map get(URI uri, Map requestHeaders) throws IOException;
+     * Searchs and gets all cookies in the cache by the specified uri in the
+     * request header.
+     * 
+     * @param uri
+     *            the specified uri to search for
+     * @param requestHeaders
+     *            a list of request headers
+     * @return a map that record all such cookies, the map is unchangeable
+     * @throws IOException
+     *             if some error of I/O operation occurs
+     */
+    public abstract Map<String, List<String>> get(URI uri,
+            Map<String, List<String>> requestHeaders) throws IOException;
 
 	/**
-	 * sets cookies according to uri and responseHeaders
-	 * 
-	 * @param uri
-	 *            the specified uri
-	 * @param responseHeaders
-	 *            a list of request headers
-	 * @throws IOException
-	 *             if some error of I/O operation occurs
-	 */
-	public abstract void put(URI uri, Map responseHeaders) throws IOException;
+     * Sets cookies according to uri and responseHeaders
+     * 
+     * @param uri
+     *            the specified uri
+     * @param responseHeaders
+     *            a list of request headers
+     * @throws IOException
+     *             if some error of I/O operation occurs
+     */
+    public abstract void put(URI uri, Map<String, List<String>> responseHeaders)
+            throws IOException;
 }
