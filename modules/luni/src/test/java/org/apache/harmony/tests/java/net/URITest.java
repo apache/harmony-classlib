@@ -98,9 +98,9 @@ public class URITest extends TestCase {
 	}
 	
 	/**
-	 * @tests java.net.URI#compareTo(java.lang.Object)
+	 * @tests java.net.URI#compareTo(java.net.URI)
 	 */
-	public void test_compareToLjava_lang_Object() throws URISyntaxException{
+	public void test_compareToLjava_net_URI() throws URISyntaxException{
 		URI uri1, uri2;
 
 		// URIs whose host names have different casing
