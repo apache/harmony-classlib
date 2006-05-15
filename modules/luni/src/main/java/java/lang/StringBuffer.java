@@ -145,13 +145,16 @@ public final class StringBuffer implements Appendable, Serializable, CharSequenc
 	 *            the number of characters
 	 * @return this StringBuffer
 	 * 
-	 * @exception IndexOutOfBoundsException
+	 * @exception ArrayIndexOutOfBoundsException
 	 *                when <code>length < 0, start < 0</code> or
 	 *                <code>start + length > chars.length</code>
 	 * @exception NullPointerException
 	 *                when chars is null
 	 */
 	public synchronized StringBuffer append(char chars[], int start, int length) {
+        if (chars == null) {
+            throw new NullPointerException();
+        }
 		// start + length could overflow, start/length maybe MaxInt
 		if (start >= 0 && 0 <= length && length <= chars.length - start) {
 			int newSize = count + length;
@@ -165,7 +168,7 @@ public final class StringBuffer implements Appendable, Serializable, CharSequenc
 			count = newSize;
 			return this;
 		}
-		throw new StringIndexOutOfBoundsException();
+		throw new ArrayIndexOutOfBoundsException();
 	}
 
 	/**
@@ -448,7 +451,7 @@ public final class StringBuffer implements Appendable, Serializable, CharSequenc
 			}
 		} catch (IndexOutOfBoundsException e) {
 		}
-		throw new StringIndexOutOfBoundsException();
+		throw new ArrayIndexOutOfBoundsException();
 	}
 
 	/**
@@ -521,7 +524,7 @@ public final class StringBuffer implements Appendable, Serializable, CharSequenc
 	 *            the character to insert
 	 * @return this StringBuffer
 	 * 
-	 * @exception IndexOutOfBoundsException
+	 * @exception ArrayIndexOutOfBoundsException
 	 *                when <code>index < 0</code> or
 	 *                <code>index > length()</code>
 	 */
@@ -532,7 +535,7 @@ public final class StringBuffer implements Appendable, Serializable, CharSequenc
 			count++;
 			return this;
 		}
-		throw new StringIndexOutOfBoundsException(index);
+		throw new ArrayIndexOutOfBoundsException(index);
 	}
 
 	/**

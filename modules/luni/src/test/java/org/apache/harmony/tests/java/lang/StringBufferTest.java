@@ -94,6 +94,36 @@ public class StringBufferTest extends TestCase {
     }
     
     /**
+     * @tests java.lang.StringBuffer.append(char[], int, int)
+     */
+    public void test_append$CII_2() {
+        StringBuffer obj = new StringBuffer();
+        try {
+            obj.append(new char[0], (int) -1, (int) -1);
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.lang.StringBuffer.append(char[], int, int)
+     */
+    public void test_append$CII_3() throws Exception {
+        StringBuffer obj = new StringBuffer();
+        try {
+            obj.append((char[]) null, (int) -1, (int) -1);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            // expected
+        } catch (Exception e) {
+            assertEquals(
+                    "NullPointerException expected",
+                    NullPointerException.class, e.getClass());
+        }
+    }
+
+    /**
      * @tests java.lang.StringBuffer.insert(int, CharSequence)
      */
     public void test_insertILjava_lang_CharSequence() {
@@ -217,6 +247,19 @@ public class StringBufferTest extends TestCase {
     }
     
     /**
+     * @tests java.lang.StringBuffer.insert(int, char)
+     */
+    public void test_insertIC() {
+        StringBuffer obj = new StringBuffer();
+        try {
+            obj.insert((int) -1, ' ');
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
+    /**
      * @tests java.lang.StringBuffer.appendCodePoint(int)'
      */
     public void test_appendCodePointI() {
@@ -334,6 +377,19 @@ public class StringBufferTest extends TestCase {
         }
     }
     
+    /**
+     * @tests java.lang.StringBuffer.getChars(int, int, char[], int)
+     */
+    public void test_getCharsII$CI() {
+        StringBuffer obj = new StringBuffer();
+        try {
+            obj.getChars((int) 0, (int) 0,  new char[0], (int) -1);
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
     /**
      * @tests java.lang.StringBuffer.offsetByCodePoints(int, int)'
      */

@@ -642,14 +642,14 @@ public final class StringBuilder implements Appendable, CharSequence, Serializab
      * @param c The <code>char</code> value to insert into this object.
      * @return A reference to this object.
      * 
-     * @throws StringIndexOutOfBoundsException if <code>offset</code> is
+     * @throws ArrayIndexOutOfBoundsException if <code>offset</code> is
      *         negative or greater than the current {@link #length()}.
      * 
      * @see String#valueOf(char)
      */
     public StringBuilder insert(int offset, char c) {
         if (offset < 0 || offset > length)
-            throw new StringIndexOutOfBoundsException();
+            throw new ArrayIndexOutOfBoundsException();
 
         return insert(offset, String.valueOf(c));
     }

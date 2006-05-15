@@ -832,7 +832,20 @@ public class StringBuilderTest extends TestCase {
 //		}
 	}
 
-	/**
+    /**
+     * @tests java.lang.StringBuilder.insert(int, char)
+     */
+    public void test_insertIC_2() {
+        StringBuilder obj = new StringBuilder();
+        try {
+            obj.insert((int) -1, '?');
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
+    /**
 	 * @tests java.lang.StringBuilder.insert(int, char[])'
 	 */
 	public void test_insertI$C() {
