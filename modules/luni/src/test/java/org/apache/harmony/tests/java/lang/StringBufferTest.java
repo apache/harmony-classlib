@@ -116,10 +116,6 @@ public class StringBufferTest extends TestCase {
             fail("NullPointerException expected");
         } catch (NullPointerException e) {
             // expected
-        } catch (Exception e) {
-            assertEquals(
-                    "NullPointerException expected",
-                    NullPointerException.class, e.getClass());
         }
     }
 
