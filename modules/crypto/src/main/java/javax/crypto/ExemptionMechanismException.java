@@ -30,8 +30,13 @@ import java.security.GeneralSecurityException;
 public class ExemptionMechanismException extends GeneralSecurityException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = 1572699429277957109L;
+
+    /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public ExemptionMechanismException(String msg) {
         super(msg);
@@ -39,7 +44,7 @@ public class ExemptionMechanismException extends GeneralSecurityException {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public ExemptionMechanismException() {
     }

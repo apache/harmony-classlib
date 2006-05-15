@@ -30,8 +30,13 @@ import java.security.GeneralSecurityException;
 public class NoSuchPaddingException extends GeneralSecurityException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = -4572885201200175466L;
+
+    /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public NoSuchPaddingException(String msg) {
         super(msg);
@@ -39,7 +44,7 @@ public class NoSuchPaddingException extends GeneralSecurityException {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public NoSuchPaddingException() {
     }

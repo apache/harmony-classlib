@@ -30,8 +30,13 @@ import java.security.GeneralSecurityException;
 public class ShortBufferException extends GeneralSecurityException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = 8427718640832943747L;
+
+    /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public ShortBufferException(String msg) {
         super(msg);
@@ -39,7 +44,7 @@ public class ShortBufferException extends GeneralSecurityException {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public ShortBufferException() {
     }

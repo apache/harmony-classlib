@@ -30,8 +30,13 @@ import java.security.GeneralSecurityException;
 public class IllegalBlockSizeException extends GeneralSecurityException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = -1965144811953540392L;
+
+    /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public IllegalBlockSizeException(String msg) {
         super(msg);
@@ -39,7 +44,7 @@ public class IllegalBlockSizeException extends GeneralSecurityException {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public IllegalBlockSizeException() {
     }

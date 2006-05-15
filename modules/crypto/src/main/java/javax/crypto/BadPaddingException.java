@@ -30,8 +30,13 @@ import java.security.GeneralSecurityException;
 public class BadPaddingException extends GeneralSecurityException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = -5315033893984728443L;
+
+    /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public BadPaddingException(String msg) {
         super(msg);
@@ -39,7 +44,7 @@ public class BadPaddingException extends GeneralSecurityException {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public BadPaddingException() {
     }
