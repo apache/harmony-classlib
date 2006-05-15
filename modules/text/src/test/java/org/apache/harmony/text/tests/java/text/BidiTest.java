@@ -62,7 +62,6 @@ public class BidiTest extends TestCase {
             bd = new Bidi(null);
             fail("should throw IAE");
         } catch (IllegalArgumentException e) {
-            assertEquals("paragraph is null", e.getMessage());
         }
 
 		bd = new Bidi("a".toCharArray(), 0, null, 0, 1,
