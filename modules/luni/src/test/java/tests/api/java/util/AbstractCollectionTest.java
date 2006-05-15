@@ -115,6 +115,21 @@ public class AbstractCollectionTest extends junit.framework.TestCase {
      * @tests java.util.AbstractCollection#toArray(java.lang.Object[])
      */
     public void test_toArray$Ljava_lang_Object() {
+
+        try {
+            org.toArray(null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            org.toArray(new String[org.size()]);
+            fail("No expected ArrayStoreException");
+        } catch (ArrayStoreException e) {
+            // expected
+        }
+
         Object[] objArray = new Object[100];
         org.toArray(objArray);
         assertEquals("a) Length", 100, objArray.length);
