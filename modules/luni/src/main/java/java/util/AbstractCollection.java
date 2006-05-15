@@ -20,10 +20,10 @@ import java.lang.reflect.Array;
 
 /**
  * AbstractCollection is an abstract implementation of the Collection interface.
- * This implemetation does not support adding. A subclass must implement the
+ * This implementation does not support adding. A subclass must implement the
  * abstract methods iterator() and size().
+ * @since 1.2
  */
-
 public abstract class AbstractCollection<E> implements Collection<E> {
 
 	/**
@@ -134,7 +134,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 * 
 	 * @see Iterator
 	 */
-	public abstract Iterator iterator();
+	public abstract Iterator<E> iterator();
 
 	/**
 	 * Removes the first occurrence of the specified object from this
@@ -251,12 +251,11 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 */
 	public <T> T[] toArray(T[] contents) {
 		int size = size(), index = 0;
-		Iterator<T> it = iterator();
 		if (size > contents.length)
 			contents = (T[]) Array.newInstance(contents.getClass()
 					.getComponentType(), size);
-		while (index < size)
-			contents[index++] = it.next();
+		for (E entry: this)
+			contents[index++] = (T)entry;
 		if (index < contents.length)
 			contents[index] = null;
 		return contents;
@@ -271,7 +270,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 		if (isEmpty())
 			return "[]"; //$NON-NLS-1$
 
-		StringBuffer buffer = new StringBuffer(size() * 16);
+		StringBuilder buffer = new StringBuilder(size() * 16);
 		buffer.append('[');
 		Iterator it = iterator();
 		while (it.hasNext()) {
@@ -281,11 +280,10 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 			} else {
 				buffer.append("(this Collection)");
 			}
-			buffer.append(", ");
+            if(it.hasNext()) {
+                buffer.append(", ");
+            }
 		}
-		// Remove the trailing ", "
-		if (buffer.length() > 1)
-			buffer.setLength(buffer.length() - 2);
 		buffer.append(']');
 		return buffer.toString();
 	}

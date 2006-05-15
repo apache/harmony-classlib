@@ -17,9 +17,10 @@ package java.util;
 
 
 /**
- * AbstractSet is an abstract implementation of the Set iterface. This
- * implemenation does not support adding. A subclass must implement the abstract
+ * AbstractSet is an abstract implementation of the Set interface. This
+ * Implementation does not support adding. A subclass must implement the abstract
  * methods iterator() and size().
+ * @since 1.2
  */
 public abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E> {
 	

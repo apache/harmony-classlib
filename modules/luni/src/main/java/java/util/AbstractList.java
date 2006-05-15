@@ -21,6 +21,7 @@ package java.util;
  * for a backing store which supports random access. This implementation does
  * not support adding or replacing. A subclass must implement the abstract
  * methods get() and size().
+ * @since 1.2
  */
 public abstract class AbstractList<E> extends AbstractCollection<E> implements List<E> {
 
@@ -131,27 +132,27 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 		}
 	}
 
-	private static final class SubAbstractListRandomAccess extends
-			SubAbstractList implements RandomAccess {
-		SubAbstractListRandomAccess(AbstractList list, int start, int end) {
+	private static final class SubAbstractListRandomAccess<E> extends
+			SubAbstractList<E> implements RandomAccess {
+		SubAbstractListRandomAccess(AbstractList<E> list, int start, int end) {
 			super(list, start, end);
 		}
 	}
 
-	private static class SubAbstractList extends AbstractList {
-		private final AbstractList fullList;
+	private static class SubAbstractList<E> extends AbstractList<E> {
+		private final AbstractList<E> fullList;
 
 		private int offset, size;
 
-		private static final class SubAbstractListIterator implements
-				ListIterator {
-			private final SubAbstractList subList;
+		private static final class SubAbstractListIterator<E> implements
+				ListIterator<E> {
+			private final SubAbstractList<E> subList;
 
-			private final ListIterator iterator;
+			private final ListIterator<E> iterator;
 
 			private int start, end;
 
-			SubAbstractListIterator(ListIterator it, SubAbstractList list,
+			SubAbstractListIterator(ListIterator<E> it, SubAbstractList<E> list,
 					int offset, int length) {
 				iterator = it;
 				subList = list;
@@ -159,7 +160,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 				end = start + length;
 			}
 
-			public void add(Object object) {
+			public void add(E object) {
 				iterator.add(object);
 				subList.sizeChanged(true);
 				end++;
@@ -173,7 +174,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 				return iterator.previousIndex() >= start;
 			}
 
-			public Object next() {
+			public E next() {
 				if (iterator.nextIndex() < end)
 					return iterator.next();
 				throw new NoSuchElementException();
@@ -183,7 +184,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 				return iterator.nextIndex() - start;
 			}
 
-			public Object previous() {
+			public E previous() {
 				if (iterator.previousIndex() >= start)
 					return iterator.previous();
 				throw new NoSuchElementException();
@@ -202,19 +203,19 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 				end--;
 			}
 
-			public void set(Object object) {
+			public void set(E object) {
 				iterator.set(object);
 			}
 		}
 
-		SubAbstractList(AbstractList list, int start, int end) {
+		SubAbstractList(AbstractList<E> list, int start, int end) {
 			fullList = list;
 			modCount = fullList.modCount;
 			offset = start;
 			size = end - start;
 		}
 
-		public void add(int location, Object object) {
+		public void add(int location, E object) {
 			if (modCount == fullList.modCount) {
 				if (0 <= location && location <= size) {
 					fullList.add(location + offset, object);
@@ -226,7 +227,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 				throw new ConcurrentModificationException();
 		}
 
-		public boolean addAll(int location, Collection collection) {
+		public boolean addAll(int location, Collection<? extends E> collection) {
 			if (modCount == fullList.modCount) {
 				if (0 <= location && location <= size) {
 					boolean result = fullList.addAll(location + offset,
@@ -242,7 +243,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 			throw new ConcurrentModificationException();
 		}
 
-		public boolean addAll(Collection collection) {
+		public boolean addAll(Collection<? extends E> collection) {
             if (modCount == fullList.modCount) {
                 boolean result = fullList.addAll(offset + size, collection);
                 if (result) {
@@ -254,7 +255,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
             throw new ConcurrentModificationException();
         }
 
-		public Object get(int location) {
+		public E get(int location) {
 			if (modCount == fullList.modCount) {
 				if (0 <= location && location < size)
 					return fullList.get(location + offset);
@@ -263,14 +264,14 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 			throw new ConcurrentModificationException();
 		}
 
-		public Iterator iterator() {
+		public Iterator<E> iterator() {
 			return listIterator(0);
 		}
 
-		public ListIterator listIterator(int location) {
+		public ListIterator<E> listIterator(int location) {
 			if (modCount == fullList.modCount) {
 				if (0 <= location && location <= size)
-					return new SubAbstractListIterator(fullList
+					return new SubAbstractListIterator<E>(fullList
 							.listIterator(location + offset), this, offset,
 							size);
 				throw new IndexOutOfBoundsException();
@@ -278,10 +279,10 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 			throw new ConcurrentModificationException();
 		}
 
-		public Object remove(int location) {
+		public E remove(int location) {
 			if (modCount == fullList.modCount) {
 				if (0 <= location && location < size) {
-					Object result = fullList.remove(location + offset);
+					E result = fullList.remove(location + offset);
 					size--;
 					modCount = fullList.modCount;
 					return result;
@@ -302,7 +303,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 			}
 		}
 
-		public Object set(int location, Object object) {
+		public E set(int location, E object) {
 			if (modCount == fullList.modCount) {
 				if (0 <= location && location < size)
 					return fullList.set(location + offset, object);
@@ -648,8 +649,8 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 		if (0 <= start && end <= size()) {
 			if (start <= end) {
 				if (this instanceof RandomAccess)
-					return new SubAbstractListRandomAccess(this, start, end);
-				return new SubAbstractList(this, start, end);
+					return new SubAbstractListRandomAccess<E>(this, start, end);
+				return new SubAbstractList<E>(this, start, end);
 			}
 			throw new IllegalArgumentException();
 		}

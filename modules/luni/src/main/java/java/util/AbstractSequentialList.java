@@ -20,8 +20,9 @@ package java.util;
  * AbstractSequentialList is an abstract implementation of the List interface.
  * This implementation does not support adding. A subclass must implement the
  * abstract method listIterator().
+ * @since 1.2
  */
-public abstract class AbstractSequentialList extends AbstractList {
+public abstract class AbstractSequentialList<E> extends AbstractList<E> {
 
 	/**
 	 * Constructs a new instance of this AbstractSequentialList.
@@ -54,7 +55,7 @@ public abstract class AbstractSequentialList extends AbstractList {
 	 *                when the object is null and this List does not support
 	 *                null elements
 	 */
-	public void add(int location, Object object) {
+	public void add(int location, E object) {
 		listIterator(location).add(object);
 	}
 
@@ -78,9 +79,9 @@ public abstract class AbstractSequentialList extends AbstractList {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public boolean addAll(int location, Collection collection) {
-		ListIterator it = listIterator(location);
-		Iterator colIt = collection.iterator();
+	public boolean addAll(int location, Collection<? extends E> collection) {
+		ListIterator<E> it = listIterator(location);
+		Iterator<? extends E> colIt = collection.iterator();
 		int next = it.nextIndex();
 		while (colIt.hasNext()) {
 			it.add(colIt.next());
@@ -99,7 +100,7 @@ public abstract class AbstractSequentialList extends AbstractList {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public Object get(int location) {
+	public E get(int location) {
 		try {
 			return listIterator(location).next();
 		} catch (NoSuchElementException e) {
@@ -115,7 +116,7 @@ public abstract class AbstractSequentialList extends AbstractList {
 	 * 
 	 * @see Iterator
 	 */
-	public Iterator iterator() {
+	public Iterator<E> iterator() {
 		return listIterator(0);
 	}
 
@@ -133,7 +134,7 @@ public abstract class AbstractSequentialList extends AbstractList {
 	 * 
 	 * @see ListIterator
 	 */
-	public abstract ListIterator listIterator(int location);
+	public abstract ListIterator<E> listIterator(int location);
 
 	/**
 	 * Removes the object at the specified location from this List.
@@ -147,10 +148,10 @@ public abstract class AbstractSequentialList extends AbstractList {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public Object remove(int location) {
+	public E remove(int location) {
 		try {
-			ListIterator it = listIterator(location);
-			Object result = it.next();
+			ListIterator<E> it = listIterator(location);
+			E result = it.next();
 			it.remove();
 			return result;
 		} catch (NoSuchElementException e) {
@@ -177,9 +178,9 @@ public abstract class AbstractSequentialList extends AbstractList {
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public Object set(int location, Object object) {
-		ListIterator it = listIterator(location);
-		Object result = it.next();
+	public E set(int location, E object) {
+		ListIterator<E> it = listIterator(location);
+		E result = it.next();
 		it.set(object);
 		return result;
 	}

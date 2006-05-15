@@ -16,17 +16,18 @@
 package java.util;
 
 /**
- * AbstractMap is an abstract implementation of the Map iterface. This
- * implemenation does not support adding. A subclass must implement the abstract
+ * AbstractMap is an abstract implementation of the Map interface. This
+ * Implementation does not support adding. A subclass must implement the abstract
  * method entrySet().
+ * @since 1.2
  */
 public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     // Lazily initialized key set.
-    Set<K> keySet = null;
+    Set<K> keySet;
 
-    Collection valuesCollection = null;
-
+    Collection<V> valuesCollection;
+    
     /**
      * Constructs a new instance of this AbstractMap.
      */
@@ -196,7 +197,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     /**
      * Answers a Set of the keys contained in this Map. The set is backed by
-     * this Map so changes to one are relected by the other. The set does not
+     * this Map so changes to one are reflected by the other. The set does not
      * support adding.
      * 
      * @return a Set of the keys
@@ -335,7 +336,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
             return "{}"; //$NON-NLS-1$
         }
 
-        StringBuffer buffer = new StringBuffer(size() * 28);
+        StringBuilder buffer = new StringBuilder(size() * 28);
         buffer.append('{');
         Iterator it = entrySet().iterator();
         while (it.hasNext()) {
@@ -353,11 +354,9 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
             } else {
                 buffer.append("(this Map)");
             }
-            buffer.append(", ");
-        }
-        // Remove the trailing ", "
-        if (buffer.length() > 1) {
-            buffer.setLength(buffer.length() - 2);
+            if(it.hasNext()) {
+                buffer.append(", ");
+            }
         }
         buffer.append('}');
         return buffer.toString();
@@ -370,7 +369,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      */
     public Collection<V> values() {
         if (valuesCollection == null) {
-            valuesCollection = new AbstractCollection() {
+            valuesCollection = new AbstractCollection<V>() {
                 public int size() {
                     return AbstractMap.this.size();
                 }
@@ -379,16 +378,16 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
                     return containsValue(object);
                 }
 
-                public Iterator iterator() {
-                    return new Iterator() {
-                        Iterator setIterator = entrySet().iterator();
+                public Iterator<V> iterator() {
+                    return new Iterator<V>() {
+                        Iterator<Map.Entry<K, V>> setIterator = entrySet().iterator();
 
                         public boolean hasNext() {
                             return setIterator.hasNext();
                         }
 
-                        public Object next() {
-                            return ((Map.Entry) setIterator.next()).getValue();
+                        public V next() {
+                            return setIterator.next().getValue();
                         }
 
                         public void remove() {

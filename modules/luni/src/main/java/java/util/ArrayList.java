@@ -24,9 +24,10 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 
 /**
- * ArrayList is an implemenation of List, backed by an array. All optional
+ * ArrayList is an implementation of List, backed by an array. All optional
  * operations are supported, adding, removing, and replacing. The elements can
  * be any objects.
+ * @since 1.2
  */
 public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		Serializable, RandomAccess {
@@ -38,7 +39,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	transient private Object[] array;
 
 	/**
-	 * Contructs a new instance of ArrayList with zero capacity.
+	 * Constructs a new instance of ArrayList with zero capacity.
 	 */
 	public ArrayList() {
 		this(0);
@@ -61,7 +62,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 
 	/**
 	 * Constructs a new instance of ArrayList containing the elements in the
-	 * specified collection. The ArrayList will have an initial cacacity which
+	 * specified collection. The ArrayList will have an initial capacity which
 	 * is 110% of the size of the collection. The order of the elements in this
 	 * ArrayList is the order they are returned by the collection iterator.
 	 * 
@@ -241,7 +242,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 */
 	public Object clone() {
 		try {
-			ArrayList newList = (ArrayList) super.clone();
+			ArrayList<E> newList = (ArrayList<E>) super.clone();
 			newList.array = (Object[]) array.clone();
 			return newList;
 		} catch (CloneNotSupportedException e) {
