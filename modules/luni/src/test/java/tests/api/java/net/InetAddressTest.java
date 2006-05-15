@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,13 @@
 package tests.api.java.net;
 
 import java.net.DatagramSocket;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
+import java.security.Permission;
+
+import junit.framework.AssertionFailedError;
 
 import tests.support.Support_Configuration;
 
@@ -440,6 +445,63 @@ public class InetAddressTest extends junit.framework.TestCase {
 		}
 
 	}
+	
+	/**
+     * @tests java.net.InetAddress#isReachableI
+     */
+    public void test_isReachableI() throws Exception {
+        InetAddress ia = Inet4Address.getByName("127.0.0.1");
+        assertTrue(ia.isReachable(10000));
+        ia = Inet4Address.getByName("127.0.0.1");
+        try {
+            ia.isReachable(-1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // correct
+        }
+    }
+
+    /**
+     * @tests java.net.InetAddress#isReachableLjava_net_NetworkInterfaceII
+     */
+    public void test_isReachableLjava_net_NetworkInterfaceII() throws Exception {
+        // tests local address
+        InetAddress ia = Inet4Address.getByName("127.0.0.1");
+        assertTrue(ia.isReachable(null, 0, 10000));
+        ia = Inet4Address.getByName("127.0.0.1");
+        try {
+            ia.isReachable(null, -1, 10000);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // correct
+        }
+        try {
+            ia.isReachable(null, 0, -1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // correct
+        }
+        try {
+            ia.isReachable(null, -1, -1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // correct
+        }
+        // tests nowhere
+        ia = Inet4Address.getByName("1.1.1.1");
+        assertFalse(ia.isReachable(1000));
+        assertFalse(ia.isReachable(null, 0, 1000));
+        // tests www.apache.org
+        try {
+            ia = InetAddress.getByName("www.apache.org");//$NON-NLS-1$
+            assertTrue(ia.isReachable(10000));
+            assertTrue(ia.isReachable(NetworkInterface.getByName("eth0"), 0,
+                    10000));
+        } catch (AssertionFailedError e) {
+            System.err
+                    .println("isReachableLjava_net_NetworkInterfaceII test may fail for network issue, please check.");
+        } 
+    } 
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

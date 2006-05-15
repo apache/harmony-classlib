@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,37 @@
 #define SOCKET_OP_WRITE 2
 #define SOCKET_READ_WRITE 3
 
+// const of ICMP value
+#define ICMP_ECHO_REPLY 0  
+#define ICMP_DEST_UNREACH 3
+#define ICMP_TTL_EXPIRE 11
+#define ICMP_ECHO_REQUEST 8
+#define ICMP_SIZE 8
+#define PACKET_SIZE 1024
+
+// IP header
+struct IPHeader {
+    unsigned char h_len:4;           // default 4
+    unsigned char version:4;         // that is IP v4
+    unsigned char tos;               // Type of service
+    unsigned short total_len;       // Length of the packet in dwords
+    unsigned short ident;           // unique identifier
+    unsigned short flags;           
+    unsigned char ttl;               // Time to live
+    unsigned char proto;             // Protocol number (TCP, UDP etc)
+    unsigned short checksum;        // IP checksum
+    unsigned long source_ip;
+    unsigned long dest_ip;
+};
+
+// ICMP header
+struct ICMPHeader {
+    unsigned char type;          // ICMP packet type
+    unsigned char code;          // Type sub code
+    unsigned short checksum;
+    unsigned short id;
+    unsigned short seq;
+};
 
 #ifndef _Included_org_apache_harmony_luni_platform_OSNetworkSystem
 #define _Included_org_apache_harmony_luni_platform_OSNetworkSystem
@@ -358,6 +389,14 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getHostByNameImpl
   (JNIEnv *, jclass,jstring,jboolean);
+  
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    isReachableByICMPImpl
+ * Signature: ([BII)I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
+  (JNIEnv *, jobject, jobject, jobject, jint, jint);
 
 #ifdef __cplusplus
 }

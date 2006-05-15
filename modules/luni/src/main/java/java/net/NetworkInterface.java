@@ -1,4 +1,4 @@
-/* Copyright 2005, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public final class NetworkInterface extends Object {
 
 	private String displayName = null;
 
-	private InetAddress addresses[] = null;
+	InetAddress addresses[] = null;
 
 	// The interface index is a positive integer which is non-negative. Where
 	// value is zero then we do not have an index for the interface (which

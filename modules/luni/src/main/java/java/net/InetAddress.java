@@ -16,6 +16,7 @@
 package java.net;
 
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -24,8 +25,12 @@ import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.security.AccessController;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
 
+import org.apache.harmony.luni.net.NetUtil;
+import org.apache.harmony.luni.platform.INetworkSystem;
+import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.Inet6Util;
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
@@ -42,13 +47,23 @@ public class InetAddress extends Object implements Serializable {
 	final static byte[] localhost_bytes = { 127, 0, 0, 1 };
 
 	static InetAddress ANY = new Inet4Address(any_bytes);
+    
+    private final static INetworkSystem NETIMPL = Platform.getNetworkSystem(); 
 
 	final static InetAddress LOOPBACK = new Inet4Address(localhost_bytes,
 			"localhost");
+    
+    private static final String ERRMSG_CONNECTION_REFUSED = "Connection refused"; //$NON-NLS-1$
 
 	private static final long serialVersionUID = 3286316764910316507L;
 
 	String hostName;
+	
+    private Object waitReachable = new Object();
+    
+    private boolean reached = false;
+    
+    private int addrCount;
 
 	int family = 2;
 
@@ -705,6 +720,152 @@ public class InetAddress extends Object implements Serializable {
 	public boolean isAnyLocalAddress() {
 		return false;
 	}
+	
+	   
+    /**
+     * Tries to see if the InetAddress is reachable. This method first tries to
+     * use ICMP(ICMP ECHO REQUEST). When first step fails, the TCP connection on
+     * port 7 (Echo) shall be lauched.
+     * 
+     * @param timeout
+     *            timeout in milliseconds
+     * @return true if address is reachable
+     * @throws IOException
+     *             if I/O operation meets error
+     * @throws IllegalArgumentException
+     *             if timeout is less than zero
+     */
+    public boolean isReachable(int timeout) throws IOException {
+        return isReachable(null, 0, timeout);
+    }
+
+    /**
+     * Tries to see if the InetAddress is reachable. This method first tries to
+     * use ICMP(ICMP ECHO REQUEST). When first step fails, the TCP connection on
+     * port 7 (Echo) shall be lauched.
+     * 
+     * @param netif
+     *            the network interface through which to connect
+     * @param ttl
+     *            max hops to live
+     * @param timeout
+     *            timeout in milliseconds
+     * @return true if address is reachable
+     * @throws IOException
+     *             if I/O operation meets error
+     * @throws IllegalArgumentException
+     *             if ttl or timeout is less than zero
+     */
+    public boolean isReachable(NetworkInterface netif, final int ttl,
+            final int timeout) throws IOException {
+        if (0 > ttl || 0 > timeout) {
+            throw new IllegalArgumentException(Msg.getString("K0051"));
+        }
+        boolean reachable = false;
+        if (null == netif) {
+            // network interface is null, binds to no address
+            reachable = NETIMPL.isReachableByICMP(this, null, ttl, timeout);
+            if (!reachable) {
+                reachable = isReachableByTCP(this, null, timeout);
+            }
+        } else {
+            // binds to all address on this NetworkInterface, tries ICMP ping
+            // first
+            reachable = isReachableByICMPUseMultiThread(netif, ttl, timeout);
+            if (!reachable) {
+                // tries TCP echo if ICMP ping fails
+                reachable = isReachableByTCPUseMultiThread(netif, ttl, timeout);
+            }
+        }
+        return reachable;
+    }
+
+    /*
+     * uses multi-Thread to try if isReachable, returns true if any of threads
+     * returns in time
+     */
+    private boolean isReachableByMultiThread(NetworkInterface netif,
+            final int ttl, final int timeout, final boolean isICMP)
+            throws IOException {
+        Enumeration addresses = netif.getInetAddresses();
+        reached = false;
+        addrCount = netif.addresses.length;
+        while (addresses.hasMoreElements()) {
+            final InetAddress addr = (InetAddress) addresses.nextElement();
+            new Thread() {
+                public void run() {
+                    boolean threadReached = false;
+                    // if isICMP, tries ICMP ping, else TCP echo
+                    if (isICMP) {
+                        threadReached = NETIMPL.isReachableByICMP(addr,
+                                InetAddress.this, ttl, timeout);
+                    } else {
+                        try {
+                            threadReached = isReachableByTCP(addr,
+                                    InetAddress.this, timeout);
+                        } catch (IOException e) {
+                            // do nothing
+                        }
+                    }
+
+                    synchronized (waitReachable) {
+                        if (threadReached) {
+                            // if thread reached this address, sets reached to
+                            // true and notifies main thread
+                            reached = true;
+                            waitReachable.notifyAll();
+                        } else {
+                            addrCount--;
+                            if (0 == addrCount) {
+                                // if count equals zero, all thread
+                                // expired,notifies main thread
+                                waitReachable.notifyAll();
+                            }
+                        }
+                    }
+                }
+            }.start();
+        }
+        synchronized (waitReachable) {
+            try {
+                // wait for notification
+                waitReachable.wait();
+            } catch (InterruptedException e) {
+                // do nothing
+            }
+            return reached;
+        }
+    }    
+
+    private boolean isReachableByICMPUseMultiThread(NetworkInterface netif, int ttl, int timeout) throws IOException{
+        return isReachableByMultiThread(netif, ttl, timeout, true);
+    }
+    
+    private boolean isReachableByTCPUseMultiThread(NetworkInterface netif, int ttl, int timeout) throws IOException{
+        return isReachableByMultiThread(netif, ttl, timeout, false);
+    }    
+    
+    private boolean isReachableByTCP(InetAddress dest, InetAddress source,
+            int timeout) throws IOException {
+        FileDescriptor fd = new FileDescriptor();
+        // define traffic only for parameter
+        int traffic = 0;
+        boolean reached = false;
+        NETIMPL.createSocket(fd, NetUtil.preferIPv4Stack());
+        try {
+            if (null != source) {
+                NETIMPL.bind(fd, 0, source);
+            }
+            NETIMPL.connectStreamWithTimeoutSocket(fd, 7, timeout, traffic, dest);
+            reached = true;
+        } catch (IOException e) {
+            if (ERRMSG_CONNECTION_REFUSED.equals(e.getMessage())) {
+                // Connection refused means the IP is reachable
+                reached = true;
+            }
+        }
+        return reached;
+    }
 
 	/**
 	 * Answers the InetAddress corresponding to the array of bytes. In the case

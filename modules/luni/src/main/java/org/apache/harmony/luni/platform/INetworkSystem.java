@@ -197,5 +197,6 @@ public interface INetworkSystem {
 			throws UnknownHostException;
 
 	public void setInetAddress(InetAddress sender, byte[] address);
-
+	
+	public boolean isReachableByICMP(InetAddress dest,InetAddress source,int ttl,int timeout);    
 }

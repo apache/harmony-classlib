@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,22 @@
  * limitations under the License.
  */
 
+#include<netinet/ip.h>
+#include<netinet/ip_icmp.h>
+#include<netinet/in_systm.h>
 #include "nethelp.h"
 #include "jclglob.h"
 #include "portsock.h"
 #include "hyport.h"
 #include "OSNetworkSystem.h"
+#define NOPRIVILEGE -1
+#define UNREACHABLE -2
+#define REACHABLE 0
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+
+unsigned short ip_checksum(unsigned short * buffer, int size);
+void set_icmp_packet(struct icmp * icmp_hdr, int packet_size);
 
 //Alternative Select function
 int
@@ -43,6 +54,124 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   return result;
 }
 
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
+  (JNIEnv * env, jobject clz, jobject address, jobject localaddr,  jint ttl, jint timeout){
+  struct sockaddr_in dest,source,local;
+  struct icmp * send_buf = 0;
+  struct ip * recv_buf = 0;
+  int size = sizeof(struct icmp);
+  int result,ret=UNREACHABLE;
+  struct timeval timeP;
+  fd_set * fdset_read;
+  int sockadd_size = sizeof (source);
+  jbyte host[HYSOCK_INADDR6_LEN];
+  U_32 length =  (*env)->GetArrayLength (env,address);
+
+  int sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+  if (INVALID_SOCKET == sock){
+	return NOPRIVILEGE;
+  }
+  setuid(getuid());
+  if (0 < ttl){
+	  if (0 > setsockopt(sock, IPPROTO_ICMP, IP_TTL, (char*)&ttl,
+	          sizeof(ttl))) {
+	        return NOPRIVILEGE;
+	  }
+  }
+  
+  memset(&dest, 0, sizeof(dest));
+
+  // set address
+  netGetJavaNetInetAddressValue (env, address,(U_8 *)host, &length);
+  memset(&dest, 0, sizeof(dest));	  
+  memcpy (&dest.sin_addr.s_addr,(U_8 *)host, length);
+  dest.sin_family = AF_INET;
+
+  if(NULL != localaddr){
+    memset(&local, 0, sizeof(local));
+    netGetJavaNetInetAddressValue (env, localaddr,(U_8 *)host, &length);
+    memcpy (&local.sin_addr.s_addr,(U_8 *)host, length);
+    bind(sock, (struct sockaddr *)& local, sizeof(local));
+  }
+
+  send_buf = (struct icmp*)malloc(sizeof(char)*ICMP_SIZE);
+  recv_buf = (struct ip*)malloc(sizeof(char)*PACKET_SIZE);
+  if (NULL == send_buf || NULL == recv_buf){
+	  return NOPRIVILEGE;
+  }
+  set_icmp_packet(send_buf, ICMP_SIZE);
+
+  if(SOCKET_ERROR == sendto(sock, (char*)send_buf, ICMP_SIZE, 0,
+            (struct sockaddr*)&dest, sizeof(dest))){
+            goto cleanup;
+  }
+  //set select timeout, change millisecond to usec
+  memset (&timeP, 0, sizeof (struct timeval));    
+  timeP.tv_sec = timeout/1000;
+  timeP.tv_usec = timeout%1000*1000;
+  result = select (sock+1, fdset_read, NULL, NULL,&timeP);
+  fdset_read = (fd_set *)malloc(sizeof (fd_set));
+  FD_ZERO (fdset_read);
+  FD_SET (sock, fdset_read);
+  result = select (sock+1, fdset_read, NULL, NULL,&timeP);
+  if (SOCKET_ERROR == result || 0 == result){
+  	goto cleanup;
+  }  
+  result = recvfrom(sock, (char*)recv_buf,
+            PACKET_SIZE, 0,
+            (struct sockaddr*)&source, &sockadd_size);
+
+  if (SOCKET_ERROR == result){
+  	goto cleanup;
+  }  
+			    
+  unsigned short header_len = recv_buf->ip_hl << 2;
+  struct icmp* icmphdr = (struct icmp*)((char*)recv_buf + header_len);
+  if ((result < header_len + ICMP_SIZE)||
+	(icmphdr->icmp_type != ICMP_ECHO_REPLY)||
+	(icmphdr->icmp_id != getpid())) {	
+	if (!(icmphdr->icmp_type == ICMP_ECHO_REQUEST && icmphdr->icmp_seq == 0))
+		goto cleanup;
+  }
+  ret = REACHABLE;
+cleanup:
+  free(fdset_read);
+  free(send_buf);
+  free(recv_buf);
+  return ret;
+}
+
+// typical ip checksum
+unsigned short ip_checksum(unsigned short* buffer, int size)
+{
+	register unsigned short * buf = buffer;
+    register int bufleft = size;
+    register unsigned long sum = 0;
+    
+    while (bufleft > 1) {
+        sum = sum + (*buf++);
+        bufleft = bufleft - sizeof(unsigned short );
+    }
+    if (bufleft) {
+        sum = sum + (*(unsigned char*)buf);
+    }
+    sum = (sum >> 16) + (sum & 0xffff);
+    sum += (sum >> 16);
+   
+    return (unsigned short )(~sum);
+}
+
+void set_icmp_packet(struct icmp* icmp_hdr, int packet_size)
+{
+    icmp_hdr->icmp_type = ICMP_ECHO_REQUEST;
+    icmp_hdr->icmp_code = 0;
+    icmp_hdr->icmp_cksum = 0;
+    icmp_hdr->icmp_id = getpid();
+    icmp_hdr->icmp_seq = 0;
+
+    // Calculate a checksum on the result
+    icmp_hdr->icmp_cksum = ip_checksum((unsigned short*)icmp_hdr, packet_size);
+}
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -132,3 +261,4 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   /* return both correct and error result, let java code handle	the exception*/
   return result;
 };
+

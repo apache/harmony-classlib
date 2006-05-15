@@ -39,6 +39,8 @@ final class OSNetworkSystem implements INetworkSystem {
 	private static final int ERRORCODE_SOCKET_TIMEOUT = -209;
 
 	private static OSNetworkSystem ref = new OSNetworkSystem();
+    
+    private static final int INETADDR_REACHABLE = 0;
 
 	// ----------------------------------------------------
 	// Class Constructor
@@ -226,6 +228,12 @@ final class OSNetworkSystem implements INetworkSystem {
 			throws SocketException {
 		listenStreamSocketImpl(aFD, backlog);
 	}
+    
+    public boolean isReachableByICMP(final InetAddress dest,
+            InetAddress source, final int ttl, final int timeout) {
+        return INETADDR_REACHABLE == isReachableByICMPImpl(dest, source, ttl,
+                timeout);
+    }
 
 	/*
 	 * 
@@ -659,5 +667,8 @@ final class OSNetworkSystem implements INetworkSystem {
 			boolean preferIPv6Addresses) throws UnknownHostException;
 
 	native void setInetAddressImpl(InetAddress sender, byte[] address);
+
+    native int isReachableByICMPImpl(InetAddress addr, InetAddress local,
+            int ttl, int timeout);
 
 }
