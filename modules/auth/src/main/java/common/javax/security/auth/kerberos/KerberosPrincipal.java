@@ -112,7 +112,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
         // should be throw
         init(name);
         //TODO: it is gag
-        if (type > KRB_NT_UID) {
+        if (type < 0 || type > KRB_NT_UID) {
             throw new IllegalArgumentException("Invalid name type");
         }
         this.type = type;
