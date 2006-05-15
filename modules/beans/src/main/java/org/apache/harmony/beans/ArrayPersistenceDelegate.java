@@ -99,4 +99,10 @@ public class ArrayPersistenceDelegate extends PersistenceDelegate {
         }
         return result;
     }
+    
+    // Added for testing purposes
+    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+        return super.mutatesTo(oldInstance, newInstance);
+    }
+    
 }

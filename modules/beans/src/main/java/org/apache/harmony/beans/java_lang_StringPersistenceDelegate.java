@@ -40,4 +40,9 @@ public class java_lang_StringPersistenceDelegate extends PersistenceDelegate {
     protected void initialize(
             Class type, Object oldInstance, Object newInstance, Encoder out) {
     }
+    
+    // Added for testing purposes
+    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+        return super.mutatesTo(oldInstance, newInstance);
+    }
 }
