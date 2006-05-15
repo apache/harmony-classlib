@@ -123,7 +123,7 @@ public class X509CertFactoryImplTest extends TestCase {
     /**
      * engineGenerateCRL(InputStream inStream) method testing.
      */
-    public void testEngineGenerateCRL() {
+    public void testEngineGenerateCRL() throws Exception {
         X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
         CRL crl;
         
@@ -133,13 +133,28 @@ public class X509CertFactoryImplTest extends TestCase {
                     CertFactoryTestData.getCRLEncoding());
         try {
             crl = certFactory.engineGenerateCRL(bais);
-            assertNotNull("First generated certificate is null", crl);
+            assertNotNull("First generated CRL is null", crl);
             crl = certFactory.engineGenerateCRL(bais);
-            assertNotNull("Second generated certificate is null", crl);
+            assertNotNull("Second generated CRL is null", crl);
         } catch (CRLException e) {
             e.printStackTrace();
             fail("Unexpected CRLException: " + e.getMessage());
         }
+        
+        try {
+            certFactory.engineGenerateCRL(bais);
+            fail("Expected CRLException was not thrown.");
+        } catch (CRLException e) {
+        }
+
+        // Base64 testing
+        bais = new ByteArrayInputStream(CertFactoryTestData
+                .getBase64CRLEncoding());
+
+        crl = certFactory.engineGenerateCRL(bais);
+        assertNotNull("First generated CRL is null", crl);
+        crl = certFactory.engineGenerateCRL(bais);
+        assertNotNull("Second generated CRL is null", crl);
         
         try {
             certFactory.engineGenerateCRL(bais);
@@ -151,7 +166,7 @@ public class X509CertFactoryImplTest extends TestCase {
     /**
      * engineGenerateCRLs(InputStream inStream) method testing.
      */
-    public void testEngineGenerateCRLs() {
+    public void testEngineGenerateCRLs() throws Exception {
         X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
         
         // DER encoded crt generation testing
@@ -165,6 +180,12 @@ public class X509CertFactoryImplTest extends TestCase {
             e.printStackTrace();
             fail("Unexpected CRLException: " + e.getMessage());
         }
+
+        // Base64 testing
+        bais = new ByteArrayInputStream(CertFactoryTestData
+                .getBase64CRLEncoding());
+        assertEquals("The size of collection is not correct", 2, certFactory
+                .engineGenerateCRLs(bais).size());
     }
     
     /**

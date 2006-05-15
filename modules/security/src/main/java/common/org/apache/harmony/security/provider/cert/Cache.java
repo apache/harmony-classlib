@@ -49,7 +49,7 @@ public class Cache {
     //private long[] demanded = new long[cache_size];
 
     // the number of bytes which will be used for array hash generation.
-    private final int prefix_size = 28;
+    private int prefix_size;
     
     private int last_cached = 0;
     private boolean cache_is_full = false;
@@ -65,16 +65,21 @@ public class Cache {
      * @param   pref_size:  the number of bytes which will be used
      * for array hash generation.
      */
-    public Cache(int size) {
+    public Cache(int pref_size, int size) {
         cache_size = size;
+        prefix_size = pref_size;
         hashes = new long[cache_size];
         hashes_idx = new long[cache_size];
         encodings = new byte[cache_size][];
         cache = new Object[cache_size];
     }
 
+    public Cache(int pref_size) {
+        this(pref_size, 900);
+    }
+    
     public Cache() {
-        this(900);
+        this(28, 900);
     }
 
     // Returns the hash value of the array (which length should be

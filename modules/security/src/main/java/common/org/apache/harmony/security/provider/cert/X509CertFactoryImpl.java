@@ -45,7 +45,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 public class X509CertFactoryImpl extends CertificateFactorySpi {
 
     private static Cache CERT_CASHE = new Cache();
-    private static Cache CRL_CASHE = new Cache();
+    private static Cache CRL_CASHE = new Cache(24);
     
     public X509CertFactoryImpl() {}
 
@@ -172,29 +172,75 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 inStream = new RestoringInputStream(inStream);
             }
             inStream.mark(32);
-            byte[] buff = new byte[28];
-            if (inStream.read(buff) < 28) {
+            byte[] buff = new byte[25]; // take one byte for new line 
+            if (inStream.read(buff) < 25) {
                 throw new CRLException(
                         "Input Stream contains not enought data.");
             }
-
-            inStream.reset();
-            long hash = CRL_CASHE.getHash(buff);
-            if (CRL_CASHE.contains(hash)) {
-                byte[] encoding = new byte[BerInputStream.getLength(buff)];
-                inStream.read(encoding);
-                CRL res = 
-                    (CRL) CRL_CASHE.get(hash, encoding);
-                if (res != null) {
-                    return res;
+            if ("-----BEGIN X509 CRL-----".equals(new String(buff, 0, 24))) {
+                int size = inStream.available();
+                if (size == 0) {
+                    size = 1024;
                 }
-                res = new X509CRLImpl(encoding);
-                CRL_CASHE.put(hash, encoding, res);
+                buff = new byte[size];
+                int index=0, ch;
+                while ((ch = inStream.read()) != '-') {
+                    if (ch == -1) {
+                        throw new CRLException(
+                                "Incorrect Base64 encoding: unexpected EOF.");
+                    }
+                    buff[index++] = (byte) ch;
+                    if (index == size) {
+                        byte[] newbuff = new byte[size+1024];
+                        System.arraycopy(buff, 0, newbuff, 0, size);
+                        buff = newbuff;
+                    }
+                }
+                byte[] tmp = new byte[21];
+                inStream.read(tmp);
+                if (!new String(tmp).startsWith("----END X509 CRL-----")) {
+                    throw new CRLException(
+                    "Incorrect Base64 encoding: 'END X509 CRL' expected.");
+                }
+                // skip new line: set the position to the next certificate:
+                inStream.mark(1);
+                while (((ch = inStream.read()) != -1) && (ch == '\n' || ch == '\r')) {
+                    inStream.mark(1);
+                }
+                inStream.reset();
+                buff = Base64.decode(buff, index);
+                if (buff == null) {
+                    throw new CRLException("Incorrect Base64 encoding.");
+                }
+                long hash = CRL_CASHE.getHash(buff);
+                if (CRL_CASHE.contains(hash)) {
+                    X509CRL res = (X509CRL) CRL_CASHE.get(hash, buff);
+                    if (res != null) {
+                        return res;
+                    }
+                }
+                X509CRL res = new X509CRLImpl(buff);
+                CRL_CASHE.put(hash, buff, res);
                 return res;
             } else {
-                X509CRL res = new X509CRLImpl(inStream);
-                CRL_CASHE.put(hash, res.getEncoded(), res);
-                return res;
+                inStream.reset();
+                long hash = CRL_CASHE.getHash(buff);
+                if (CRL_CASHE.contains(hash)) {
+                    byte[] encoding = new byte[BerInputStream.getLength(buff)];
+                    inStream.read(encoding);
+                    CRL res = 
+                        (CRL) CRL_CASHE.get(hash, encoding);
+                    if (res != null) {
+                        return res;
+                    }
+                    res = new X509CRLImpl(encoding);
+                    CRL_CASHE.put(hash, encoding, res);
+                    return res;
+                } else {
+                    X509CRL res = new X509CRLImpl(inStream);
+                    CRL_CASHE.put(hash, res.getEncoded(), res);
+                    return res;
+                }
             }
         } catch (IOException e) {
             throw new CRLException(e);

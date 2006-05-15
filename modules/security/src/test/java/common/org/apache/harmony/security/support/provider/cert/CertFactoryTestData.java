@@ -267,6 +267,31 @@ public class CertFactoryTestData {
         "wGByqGSM44BAMBAQADLwAwLAIUYp/1MGXvQ1a/wF+WvmRGnQHJ" +
         "+nQCFBJ4JFNfcCN7wNUpSOnUYHEC8uIn"; 
     
+    private static String crlEncodingPEM = 
+        "-----BEGIN X509 CRL-----\n" +
+        "MIIBNDCB8gIBATAMBgcqhkjOOAQDAQEAMBUxEzARBgNVBAoTCk" +
+        "NSTCBJc3N1ZXIXDTA1MDcxMzA5NDkzMFoXDTA1MDcxMzA5NTEx" +
+        "MFowgZgwEwICAisXDTA1MDcxMzA5NDkzMVowbAICAjcXDTA1MD" +
+        "cxMzA5NDkzMVowVzAKBgNVHRUEAwoBATAcBgNVHRgEFRgTMjAw" +
+        "NTA3MTMwOTQ5MzAuNTYyWjArBgNVHR0BAf8EITAfpB0xGzAZBg" +
+        "NVBAoTEkNlcnRpZmljYXRlIElzc3VlcjATAgIDCRcNMDUwNzEz" +
+        "MDk0OTMxWqAPMA0wCwYDVR0UBAQCAhFcMAwGByqGSM44BAMBAQ" +
+        "ADLwAwLAIUYp/1MGXvQ1a/wF+WvmRGnQHJ+nQCFBJ4JFNfcCN7" +
+        "wNUpSOnUYHEC8uIm\n" +
+        "-----END X509 CRL-----\n" +
+        "-----BEGIN X509 CRL-----\n" +
+        "MIIBNDCB8gIBATAMBgcqhkjOOAQDAQEAMB" +
+        "UxEzARBgNVBAoTCkNSTCBJc3N1ZXIXDTA1MDcxMzA5NDkzMFoX" +
+        "DTA1MDcxMzA5NTExMFowgZgwEwICAisXDTA1MDcxMzA5NDkzMV" +
+        "owbAICAjcXDTA1MDcxMzA5NDkzMVowVzAKBgNVHRUEAwoBATAc" +
+        "BgNVHRgEFRgTMjAwNTA3MTMwOTQ5MzAuNTYyWjArBgNVHR0BAf" +
+        "8EITAfpB0xGzAZBgNVBAoTEkNlcnRpZmljYXRlIElzc3VlcjAT" +
+        "AgIDCRcNMDUwNzEzMDk0OTMxWqAPMA0wCwYDVR0UBAQCAhFcMA" +
+        "wGByqGSM44BAMBAQADLwAwLAIUYp/1MGXvQ1a/wF+WvmRGnQHJ" +
+        "+nQCFBJ4JFNfcCN7wNUpSOnUYHEC8uIo\n" +
+        "-----END X509 CRL-----\n";
+
+    
     public static byte[] getCertPathPKCS7Encoding() {
         return Base64.decode(certPathPKCS7Base64.getBytes());
     }
@@ -281,6 +306,10 @@ public class CertFactoryTestData {
 
     public static byte[] getBase64CertEncoding() {
         return base64certEncoding.getBytes();
+    }
+
+    public static byte[] getBase64CRLEncoding() {
+        return crlEncodingPEM.getBytes();
     }
 
     public static byte[] getCRLEncoding() {
