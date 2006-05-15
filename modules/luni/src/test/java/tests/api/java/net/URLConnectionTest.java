@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -958,6 +958,62 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	public void test_setUseCachesZ() {
 		assertTrue("Used to test", true);
 	}
+  
+    /**
+     * @tests java.net.URLConnection#setConnectTimeout(int)
+     */
+    public void test_setConnectTimeoutI() throws Exception {
+        URLConnection uc = new URL("http://localhost").openConnection();
+        assertEquals(0, uc.getConnectTimeout());
+        uc.setConnectTimeout(0);
+        assertEquals(uc.getConnectTimeout(),0);
+        try{
+            uc.setConnectTimeout(-100);
+            fail("should throw IllegalArgumentException");
+        }
+        catch(IllegalArgumentException e){
+            // correct
+        }
+        assertEquals(0, uc.getConnectTimeout());
+        uc.setConnectTimeout(100);
+        assertEquals(100, uc.getConnectTimeout());
+        try{
+            uc.setConnectTimeout(-1);
+            fail("should throw IllegalArgumentException");
+        }
+        catch(IllegalArgumentException e){
+            // correct
+        }
+        assertEquals(100, uc.getConnectTimeout());
+    }
+    
+    /**
+     * @tests java.net.URLConnection#setReadTimeout(int)
+     */
+    public void test_setReadTimeoutI() throws Exception {
+        URLConnection uc = new URL("http://localhost").openConnection();
+        assertEquals(0, uc.getReadTimeout());
+        uc.setReadTimeout(0);
+        assertEquals(0, uc.getReadTimeout());
+        try{
+            uc.setReadTimeout(-100);
+            fail("should throw IllegalArgumentException");
+        }
+        catch(IllegalArgumentException e){
+            // correct
+        }
+        assertEquals(0, uc.getReadTimeout());
+        uc.setReadTimeout(100);
+        assertEquals(100, uc.getReadTimeout());
+        try{
+            uc.setReadTimeout(-1);
+            fail("should throw IllegalArgumentException");
+        }
+        catch(IllegalArgumentException e){
+            // correct
+        }
+        assertEquals(100,uc.getReadTimeout());
+    }
 
 	/**
 	 * @tests java.net.URLConnection#toString()

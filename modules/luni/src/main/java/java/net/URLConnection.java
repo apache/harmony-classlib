@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,11 @@ public abstract class URLConnection {
 	protected boolean allowUserInteraction = defaultAllowUserInteraction;
 
 	private static ContentHandlerFactory contentHandlerFactory;
+    
+    private int readTimeout = 0;
 
+    private int connectTimeout = 0;
+    
 	/**
 	 * Cache for storing Content handler
 	 */
@@ -924,6 +928,54 @@ public abstract class URLConnection {
 		}
 		this.useCaches = newValue;
 	}
+    
+    /**
+     * Sets a timeout for connection to perform non-block. Default is zero.
+     * Timeout of zero means infinite.
+     * @param timeout
+     *            timeout for connection in milliseconds.
+     * @throws IllegalArgumentException
+     *             if timeout is less than zero.
+     */
+    public void setConnectTimeout(int timeout){
+        if (0 > timeout){
+            throw new IllegalArgumentException(Msg.getString("K0036"));            
+        }
+        this.connectTimeout = timeout;
+    }
+    
+    /**
+     * Returns a timeout of connection by milliseconds
+     * 
+     * @return timeout of connection by milliseconds
+     */
+    public int getConnectTimeout(){
+        return connectTimeout;
+    }
+    
+    /**
+     * Sets a timeout for reading to perform non-block. Default is zero.
+     * Timeout of zero means infinite.
+     * @param timeout
+     *            timeout for reading in milliseconds.
+     * @throws IllegalArgumentException
+     *             if timeout is less than zero.
+     */
+    public void setReadTimeout(int timeout){
+        if (0 > timeout){
+            throw new IllegalArgumentException(Msg.getString("K0036"));            
+        }
+        this.readTimeout = timeout;
+    }
+    
+    /**
+     * Returns a timeout of reading by milliseconds
+     * 
+     * @return timeout of reading by milliseconds
+     */
+    public int getReadTimeout() {
+        return readTimeout;
+    }
 
 	/**
 	 * Answers the name of the class of the <code>URLConnection </code>

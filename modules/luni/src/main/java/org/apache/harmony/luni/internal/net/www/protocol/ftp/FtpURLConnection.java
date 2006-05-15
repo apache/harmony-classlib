@@ -194,16 +194,16 @@ public class FtpURLConnection extends URLConnection {
 	}
 	private void connectInternal() throws IOException {
 		int port = url.getPort();
+        int connectTimeout = getConnectTimeout();
 		if (port <= 0)
 			port = FTP_PORT;
-		if(null == currentProxy || Proxy.Type.HTTP == currentProxy.type()){
-			controlSocket = new Socket(hostName,port);
-		}else{
-			controlSocket = new Socket(currentProxy);
-			InetSocketAddress addr = new InetSocketAddress(hostName,port);
-			controlSocket.connect(addr);
-		}
-		
+		if (null == currentProxy || Proxy.Type.HTTP == currentProxy.type()) {
+            controlSocket = new Socket();
+        } else {
+            controlSocket = new Socket(currentProxy);
+        }		
+        InetSocketAddress addr = new InetSocketAddress(hostName, port);
+        controlSocket.connect(addr, connectTimeout);
 		connected = true;
 		ctrlOutput = controlSocket.getOutputStream();
 		ctrlInput = controlSocket.getInputStream();
@@ -217,12 +217,17 @@ public class FtpURLConnection extends URLConnection {
 			dataPort = acceptSocket.getLocalPort();
 			/* Cannot set REUSEADDR so we need to send a PORT comannd */
 			port();
-			acceptSocket.setSoTimeout(3000);
+            if (connectTimeout == 0) {
+                // set timeout rather than zero as before
+                connectTimeout = 3000;
+            }
+            acceptSocket.setSoTimeout(getConnectTimeout());
 			if (getDoInput())
 				getFile();
 			else
 				sendFile();
 			dataSocket = acceptSocket.accept();
+            dataSocket.setSoTimeout(getReadTimeout());
 			acceptSocket.close();
 		} catch (InterruptedIOException e) {
 			throw new IOException(Msg.getString("K0095"));

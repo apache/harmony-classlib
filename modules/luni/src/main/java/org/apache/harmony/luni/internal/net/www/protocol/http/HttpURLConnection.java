@@ -81,8 +81,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     private int hostPort = -1;
 
-    private int readTimeout = -1;
-
     // proxy which is used to make the connection.
     private Proxy proxy = null;
 
@@ -424,37 +422,20 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         if (connected)
             return;
         Socket socket;
-
+        int connectTimeout = getConnectTimeout();
         InetAddress host = getHostAddress();
         int port = getHostPort();
+        SocketAddress sa = new InetSocketAddress(host, port);
         if (null == currentProxy || Proxy.Type.HTTP == currentProxy.type()) {
-            socket = new Socket(host, port);
+            socket = new Socket();
         } else {
             socket = new Socket(currentProxy);
-            SocketAddress sa = new InetSocketAddress(host, port);
-            socket.connect(sa);
         }
-
-        if (readTimeout >= 0)
-            socket.setSoTimeout(readTimeout);
+        socket.connect(sa, connectTimeout);
+        socket.setSoTimeout(getReadTimeout());
         connected = true;
         socketOut = socket.getOutputStream();
         is = new BufferedInputStream(socket.getInputStream());
-    }
-
-    /**
-     * Sets the read timeout for the http connection.
-     * 
-     * 
-     * @param value
-     *            the read timeout value. Must be >= 0
-     * 
-     * @see java.net.Socket#setSoTimeout
-     */
-    public void setReadTimeout(int value) {
-        if (value < 0)
-            throw new IllegalArgumentException(Msg.getString("K0036"));
-        readTimeout = value;
     }
 
     /**
