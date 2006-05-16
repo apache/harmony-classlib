@@ -22,6 +22,8 @@ public class LocaleTest extends junit.framework.TestCase {
 	Locale testLocale;
 
 	Locale l;
+	
+	Locale defaultLocale;
 
 	/**
 	 * @tests java.util.Locale#Locale(java.lang.String, java.lang.String)
@@ -128,10 +130,9 @@ public class LocaleTest extends junit.framework.TestCase {
 	public void test_getDisplayLanguage() {
 		// Test for method java.lang.String
 		// java.util.Locale.getDisplayLanguage()
-		Locale l = new Locale("fr", "CA", "WIN32");
 		assertTrue("Returned incorrect language: "
-				+ testLocale.getDisplayLanguage(l), testLocale
-				.getDisplayLanguage(l).equals("anglais"));
+				+ testLocale.getDisplayLanguage(), testLocale
+				.getDisplayLanguage().equals("English"));
 	}
 
 	/**
@@ -141,8 +142,8 @@ public class LocaleTest extends junit.framework.TestCase {
 		// Test for method java.lang.String
 		// java.util.Locale.getDisplayLanguage(java.util.Locale)
 		assertTrue("Returned incorrect language: "
-				+ testLocale.getDisplayLanguage(), testLocale
-				.getDisplayLanguage().equals("English"));
+				+ testLocale.getDisplayLanguage(l), testLocale
+				.getDisplayLanguage(l).equals("anglais"));
 	}
 
 	/**
@@ -309,7 +310,8 @@ public class LocaleTest extends junit.framework.TestCase {
 	 * is called before a test is executed.
 	 */
 	protected void setUp() {
-
+		defaultLocale = Locale.getDefault();
+		Locale.setDefault(Locale.US);
 		testLocale = new Locale("en", "CA", "WIN32");
 		l = new Locale("fr", "CA", "WIN32");
 	}
@@ -319,5 +321,6 @@ public class LocaleTest extends junit.framework.TestCase {
 	 * method is called after a test is executed.
 	 */
 	protected void tearDown() {
+		Locale.setDefault(defaultLocale);
 	}
 }

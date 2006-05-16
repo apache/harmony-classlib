@@ -220,7 +220,7 @@ public final class Locale implements Cloneable, Serializable {
 		else if (languageCode.equals("yi")) //$NON-NLS-1$
 			languageCode = "ji"; //$NON-NLS-1$
 		countryCode = country.toUpperCase();
-		variantCode = variant.toUpperCase();
+		variantCode = variant;
 	}
 
 	/**
