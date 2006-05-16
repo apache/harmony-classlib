@@ -42,17 +42,6 @@ public class SSLPeerUnverifiedExceptionTest extends SerializationTest {
                 new SSLPeerUnverifiedException(msgs[0]), new SSLPeerUnverifiedException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        SSLPeerUnverifiedException ref = (SSLPeerUnverifiedException) oref;
-        SSLPeerUnverifiedException test = (SSLPeerUnverifiedException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SSLPeerUnverifiedExceptionTest.class);
     }

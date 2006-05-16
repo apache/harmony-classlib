@@ -42,17 +42,6 @@ public class SSLKeyExceptionTest extends SerializationTest {
                 new SSLKeyException(msgs[0]), new SSLKeyException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        SSLKeyException ref = (SSLKeyException) oref;
-        SSLKeyException test = (SSLKeyException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SSLKeyExceptionTest.class);
     }

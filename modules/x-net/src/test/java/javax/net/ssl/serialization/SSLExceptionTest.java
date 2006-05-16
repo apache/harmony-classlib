@@ -45,29 +45,4 @@ public class SSLExceptionTest extends SerializationTest {
                 new SSLException(excSSL), new SSLException(cause),
                 new SSLException(msgs[1], cause) };
     }
-
-    protected void assertDeserialized(Object oref, Object otest) {
-        SSLException ref = (SSLException) oref;
-        SSLException test = (SSLException) otest;
-        Throwable th = ref.getCause();
-        String s = ref.getMessage();
-        String rS = test.getMessage();
-        if (s == null) {
-            assertNull("Not null result message", rS);
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-        if (th == null) {
-            assertNull(test.getCause());
-        } else {
-            Throwable th1 = test.getCause();
-            assertEquals(th1.getClass(), th.getClass());
-            String s1 = th.getMessage();
-            if (s1 == null) {
-                assertNull(th1.getMessage());
-            } else {
-                assertEquals(th1.getMessage(), s1);
-            }
-        }
-    }
 }

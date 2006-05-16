@@ -42,17 +42,6 @@ public class SSLHandshakeExceptionTest extends SerializationTest {
                 new SSLHandshakeException(msgs[0]), new SSLHandshakeException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        SSLHandshakeException ref = (SSLHandshakeException) oref;
-        SSLHandshakeException test = (SSLHandshakeException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SSLHandshakeExceptionTest.class);
     }
