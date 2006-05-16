@@ -434,11 +434,8 @@ public final class String implements Serializable, Comparable<String>, CharSeque
 			offset = 0;
 			value = new char[length];
 			count = length;
-			try {
-				System.arraycopy(data, start, value, 0, count);
-			} catch (IndexOutOfBoundsException e) {
-				throw new StringIndexOutOfBoundsException();
-			}
+
+			System.arraycopy(data, start, value, 0, count);
 		} else
 			throw new StringIndexOutOfBoundsException();
 	}
