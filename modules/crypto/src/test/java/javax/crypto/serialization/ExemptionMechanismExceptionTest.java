@@ -42,17 +42,6 @@ public class ExemptionMechanismExceptionTest extends SerializationTest {
                 new ExemptionMechanismException(null), new ExemptionMechanismException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        ExemptionMechanismException ref = (ExemptionMechanismException) oref;
-        ExemptionMechanismException test = (ExemptionMechanismException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ExemptionMechanismExceptionTest.class);
     }

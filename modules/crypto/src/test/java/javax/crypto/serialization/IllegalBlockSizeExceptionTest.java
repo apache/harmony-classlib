@@ -42,17 +42,6 @@ public class IllegalBlockSizeExceptionTest extends SerializationTest {
                 new IllegalBlockSizeException(null), new IllegalBlockSizeException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        IllegalBlockSizeException ref = (IllegalBlockSizeException) oref;
-        IllegalBlockSizeException test = (IllegalBlockSizeException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(IllegalBlockSizeExceptionTest.class);
     }
