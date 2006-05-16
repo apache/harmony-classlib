@@ -39,12 +39,4 @@ public class SerDestroyFailedExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new DestroyFailedException("message")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((DestroyFailedException) golden).getMessage(),
-                (((DestroyFailedException) test).getMessage()));
-        assertEquals(((DestroyFailedException) golden).getCause(),
-                (((DestroyFailedException) test).getCause()));
-    }
 }

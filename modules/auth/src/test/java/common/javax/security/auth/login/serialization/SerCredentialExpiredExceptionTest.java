@@ -39,12 +39,4 @@ public class SerCredentialExpiredExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new CredentialExpiredException("message")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((CredentialExpiredException) golden).getMessage(),
-                (((CredentialExpiredException) test).getMessage()));
-        assertEquals(((CredentialExpiredException) golden).getCause(),
-                (((CredentialExpiredException) test).getCause()));
-    }
 }

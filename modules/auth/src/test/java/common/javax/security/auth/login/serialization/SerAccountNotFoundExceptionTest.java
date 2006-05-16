@@ -39,12 +39,4 @@ public class SerAccountNotFoundExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new AccountNotFoundException("message")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((AccountNotFoundException) golden).getMessage(),
-                (((AccountNotFoundException) test).getMessage()));
-        assertEquals(((AccountNotFoundException) golden).getCause(),
-                (((AccountNotFoundException) test).getCause()));
-    }
 }

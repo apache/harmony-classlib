@@ -40,12 +40,4 @@ public class SerCredentialExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new CredentialException("message")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((CredentialException) golden).getMessage(),
-                (((CredentialException) test).getMessage()));
-        assertEquals(((CredentialException) golden).getCause(),
-                (((CredentialException) test).getCause()));
-    }
 }

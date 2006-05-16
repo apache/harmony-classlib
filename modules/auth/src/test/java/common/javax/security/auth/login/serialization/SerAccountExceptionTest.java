@@ -40,12 +40,4 @@ public class SerAccountExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new AccountException("message")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((AccountException) golden).getMessage(),
-                (((AccountException) test).getMessage()));
-        assertEquals(((AccountException) golden).getCause(),
-                (((AccountException) test).getCause()));
-    }
 }

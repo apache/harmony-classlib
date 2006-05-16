@@ -39,12 +39,4 @@ public class SerCredentialNotFoundExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new CredentialNotFoundException("message")};
     }
-
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((CredentialNotFoundException) golden).getMessage(),
-                (((CredentialNotFoundException) test).getMessage()));
-        assertEquals(((CredentialNotFoundException) golden).getCause(),
-                (((CredentialNotFoundException) test).getCause()));
-    }
 }

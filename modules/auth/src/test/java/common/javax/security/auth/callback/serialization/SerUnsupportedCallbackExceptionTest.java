@@ -42,12 +42,4 @@ public class SerUnsupportedCallbackExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new UnsupportedCallbackException(nc)};
     }
-    
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((UnsupportedCallbackException) golden).getMessage(),
-                (((UnsupportedCallbackException) test).getMessage()));
-        assertEquals(((UnsupportedCallbackException) golden).getCause(),
-                (((UnsupportedCallbackException) test).getCause()));
-    }
 }

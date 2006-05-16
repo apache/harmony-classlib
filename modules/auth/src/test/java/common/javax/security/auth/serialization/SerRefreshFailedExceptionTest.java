@@ -40,12 +40,4 @@ public class SerRefreshFailedExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new RefreshFailedException("message")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((RefreshFailedException) golden).getMessage(),
-                (((RefreshFailedException) test).getMessage()));
-        assertEquals(((RefreshFailedException) golden).getCause(),
-                (((RefreshFailedException) test).getCause()));
-    }
 }

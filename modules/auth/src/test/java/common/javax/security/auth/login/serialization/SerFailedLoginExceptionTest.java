@@ -39,12 +39,4 @@ public class SerFailedLoginExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new FailedLoginException("message")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((FailedLoginException) golden).getMessage(),
-                (((FailedLoginException) test).getMessage()));
-        assertEquals(((FailedLoginException) golden).getCause(),
-                (((FailedLoginException) test).getCause()));
-    }
 }

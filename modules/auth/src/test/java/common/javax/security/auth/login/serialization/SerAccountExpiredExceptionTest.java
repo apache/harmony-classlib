@@ -38,12 +38,4 @@ public class SerAccountExpiredExceptionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new AccountExpiredException("message")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((AccountExpiredException) golden).getMessage(),
-                (((AccountExpiredException) test).getMessage()));
-        assertEquals(((AccountExpiredException) golden).getCause(),
-                (((AccountExpiredException) test).getCause()));
-    }
 }
