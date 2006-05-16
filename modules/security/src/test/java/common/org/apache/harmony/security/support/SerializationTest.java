@@ -247,6 +247,9 @@ public abstract class SerializationTest extends TestCase {
             Throwable refThr = (Throwable) reference;
             Throwable tstThr = (Throwable) test;
 
+            // verify class
+            TestCase.assertEquals(refThr.getClass(), tstThr.getClass());
+
             // verify message
             TestCase.assertEquals(refThr.getMessage(), tstThr.getMessage());
 
