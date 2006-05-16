@@ -43,17 +43,6 @@ public class NoSuchProviderExceptionTest extends SerializationTest {
                 new NoSuchProviderException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        NoSuchProviderException ref = (NoSuchProviderException) oref;
-        NoSuchProviderException test = (NoSuchProviderException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(NoSuchProviderExceptionTest.class);
     }

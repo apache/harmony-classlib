@@ -43,17 +43,6 @@ public class UnrecoverableEntryExceptionTest extends SerializationTest {
                 new UnrecoverableEntryException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        UnrecoverableEntryException ref = (UnrecoverableEntryException) oref;
-        UnrecoverableEntryException test = (UnrecoverableEntryException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(UnrecoverableEntryExceptionTest.class);
     }

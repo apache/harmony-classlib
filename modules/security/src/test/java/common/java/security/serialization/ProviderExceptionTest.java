@@ -48,30 +48,6 @@ public class ProviderExceptionTest extends SerializationTest {
                 new ProviderException(msgs[1], dExc) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        ProviderException ref = (ProviderException) oref;
-        ProviderException test = (ProviderException) otest;
-        String s = ref.getMessage();
-        Throwable th = ref.getCause();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-        if (th == null) {
-            assertNull(test.getCause());
-        } else {
-            Throwable th1 = test.getCause();
-            assertEquals(th1.getClass(), th.getClass());
-            String s1 = th.getMessage();
-            if (s1 == null) {
-                assertNull(th1.getMessage());
-            } else {
-                assertEquals(th1.getMessage(), s1);
-            }
-        }
-    }
-    
     public static void main(String[] args) {
        junit.textui.TestRunner.run(ProviderExceptionTest.class);
     }

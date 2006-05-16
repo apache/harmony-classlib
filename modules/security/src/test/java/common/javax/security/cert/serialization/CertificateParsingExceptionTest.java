@@ -44,17 +44,6 @@ public class CertificateParsingExceptionTest extends SerializationTest {
                 new CertificateParsingException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        CertificateParsingException ref = (CertificateParsingException) oref;
-        CertificateParsingException test = (CertificateParsingException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(CertificateParsingExceptionTest.class);
     }

@@ -47,30 +47,6 @@ public class CertificateEncodingExceptionTest extends SerializationTest {
                 new CertificateEncodingException(new Throwable()), new CertificateEncodingException(th),
                 new CertificateEncodingException(msgs[1], dExc) };
     }
-
-    protected void assertDeserialized(Object oref, Object otest) {
-        CertificateEncodingException ref = (CertificateEncodingException) oref;
-        CertificateEncodingException test = (CertificateEncodingException) otest;
-        String s = ref.getMessage();
-        Throwable th = ref.getCause();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-        if (th == null) {
-            assertNull(test.getCause());
-        } else {
-            Throwable th1 = test.getCause();
-            assertEquals(th1.getClass(), th.getClass());
-            String s1 = th.getMessage();
-            if (s1 == null) {
-                assertNull(th1.getMessage());
-            } else {
-                assertEquals(th1.getMessage(), s1);
-            }
-        }
-    }
     
     public static void main(String[] args) {
         junit.textui.TestRunner.run(CertificateEncodingExceptionTest.class);

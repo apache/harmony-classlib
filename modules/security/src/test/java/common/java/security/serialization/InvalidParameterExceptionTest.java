@@ -45,17 +45,6 @@ public class InvalidParameterExceptionTest extends SerializationTest {
                 };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        InvalidParameterException ref = (InvalidParameterException) oref;
-        InvalidParameterException test = (InvalidParameterException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-    
     public static void main(String[] args) {
         junit.textui.TestRunner.run(InvalidParameterExceptionTest.class);
     }

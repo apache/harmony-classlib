@@ -43,17 +43,6 @@ public class UnrecoverableKeyExceptionTest extends SerializationTest {
                 new UnrecoverableKeyException(msgs[1]) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
-        UnrecoverableKeyException ref = (UnrecoverableKeyException) oref;
-        UnrecoverableKeyException test = (UnrecoverableKeyException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-    }
-
     public static void main(String[] args) {
         junit.textui.TestRunner.run(UnrecoverableKeyExceptionTest.class);
     }
