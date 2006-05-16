@@ -17,9 +17,12 @@ package tests.api.java.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class CalendarTest extends junit.framework.TestCase {
+	
+	Locale defaultLocale;
 
 	/**
 	 * @tests java.util.Calendar#set(int, int)
@@ -343,24 +346,25 @@ public class CalendarTest extends junit.framework.TestCase {
 		cal.set(Calendar.DAY_OF_YEAR, 111);
 		cal.get(Calendar.YEAR);
 		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.AM_PM, Calendar.AM);
 		assertTrue("Incorrect result 14: " + cal.getTime(), cal.getTime()
 				.getTime() == 1016686800000L);
 
 		int hour = cal.get(Calendar.HOUR);
-		int ampm = cal.get(Calendar.AM_PM);
-		int setAMPMValue = ampm == 0 ? 1 : 0;
 		cal.set(Calendar.HOUR, hour);
-		cal.set(Calendar.AM_PM, setAMPMValue);
-		assertTrue("AM_PM not changed", cal.get(Calendar.AM_PM) == setAMPMValue);
+		cal.set(Calendar.AM_PM, Calendar.PM);
+		assertEquals("AM_PM not changed", Calendar.PM, cal.get(Calendar.AM_PM));
 		// setting AM_PM without HOUR should not have any affect
-		cal.set(Calendar.AM_PM, ampm);
-		assertTrue("AM_PM was changed 1",
-				cal.get(Calendar.AM_PM) == setAMPMValue);
+		cal.set(Calendar.AM_PM, Calendar.AM);
+		assertEquals("AM_PM was changed 1",
+				Calendar.AM, cal.get(Calendar.AM_PM));
 		int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
-		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
-		cal.set(Calendar.AM_PM, ampm);
-		assertTrue("AM_PM was changed 2",
-				cal.get(Calendar.AM_PM) == setAMPMValue);
+		hour = cal.get(Calendar.HOUR);
+		cal.set(Calendar.AM_PM, Calendar.PM);
+		assertEquals("AM_PM was changed 2",
+				Calendar.PM, cal.get(Calendar.AM_PM));
+		assertEquals(hour, cal.get(Calendar.HOUR));
+		assertEquals(hourOfDay + 12, cal.get(Calendar.HOUR_OF_DAY));
 	}
 
 	/**
@@ -412,8 +416,11 @@ public class CalendarTest extends junit.framework.TestCase {
 	}
 
 	protected void setUp() {
+		defaultLocale = Locale.getDefault();
+		Locale.setDefault(Locale.US);
 	}
 
 	protected void tearDown() {
+		Locale.setDefault(defaultLocale);
 	}
 }
