@@ -45,18 +45,6 @@ public class TimestampTest extends SerializationTest {
      */
     protected Object[] getData() {
         CertPath cpath = TestCertUtils.getCertPath();
-        return new Object[] { new Timestamp(new Date(), cpath) };
+        return new Object[] { new Timestamp(new Date(1146633251341L), cpath) };
     }
-
-    protected void assertDeserialized(Object oref, Object otest) {
-        Timestamp ref = (Timestamp) oref;
-        Timestamp test = (Timestamp) otest;
-        assertEquals(ref.getSignerCertPath(), test.getSignerCertPath());
-        /*
-         * this does not work - assertEquals( ref.getTimestamp(),
-         * test.getTimestamp()); as the ref always have the current date/time,
-         * and the test was stored some time ago, so the dates never match.
-         */
-    }
-
 }
