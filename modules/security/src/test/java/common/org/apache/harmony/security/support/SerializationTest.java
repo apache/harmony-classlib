@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
@@ -136,13 +138,18 @@ public abstract class SerializationTest extends TestCase {
      * objects.
      */
     public void testSelf() throws Throwable {
+
+        SerializableAssert comparator = defineComparator();
+
         Object[] data = getData();
         for (int i = 0; i < data.length; i++) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             putObjectToStream(data[i], bos);
             ByteArrayInputStream bis = new ByteArrayInputStream(bos
                 .toByteArray());
-            assertDeserialized(data[i], getObjectFromStream(bis));
+
+            comparator.assertDeserialized((Serializable) data[i],
+                    (Serializable) getObjectFromStream(bis));
         }
     }
 
@@ -151,11 +158,14 @@ public abstract class SerializationTest extends TestCase {
      * compartibility with Reference Implementation.
      */
     public void testGolden() throws Throwable {
+        
+        SerializableAssert comparator = defineComparator();
+        
         Object[] data = getData();
         for (int i = 0; i < data.length; i++) {
-            assertDeserialized(data[i],
-                               getObjectFromStream(new FileInputStream(
-                                   getDataFile(i))));
+            comparator.assertDeserialized((Serializable) data[i],
+                    (Serializable) getObjectFromStream(new FileInputStream(
+                            getDataFile(i))));
         }
     }
 
@@ -214,5 +224,82 @@ public abstract class SerializationTest extends TestCase {
         Object result = ois.readObject();
         ois.close();
         return result;
+    }
+    
+    /**
+     * Interface to compare (de)serialized objects
+     */
+    public interface SerializableAssert {
+        void assertDeserialized(Serializable reference, Serializable test);
+    }
+
+    // default comparator for a class that has equals(Object) method
+    private final static SerializableAssert DEFAULT_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable reference, Serializable test) {
+            TestCase.assertEquals(reference, test);
+        }
+    };
+
+    // for comparing java.lang.Throwable objects
+    private final static SerializableAssert THROWABLE_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable reference, Serializable test) {
+
+            Throwable refThr = (Throwable) reference;
+            Throwable tstThr = (Throwable) test;
+
+            // verify message
+            TestCase.assertEquals(refThr.getMessage(), tstThr.getMessage());
+
+            // verify cause
+            if (refThr.getCause() == null) {
+                TestCase.assertNull(tstThr.getCause());
+            } else {
+                TestCase.assertNotNull(tstThr.getCause());
+
+                refThr = refThr.getCause();
+                tstThr = tstThr.getCause();
+
+                TestCase.assertEquals(refThr.getClass(), tstThr.getClass());
+                TestCase.assertEquals(refThr.getMessage(), tstThr.getMessage());
+            }
+        }
+    };
+
+    private SerializableAssert defineComparator() throws Exception {
+
+        if (this instanceof SerializableAssert) {
+            return (SerializableAssert) this;
+        }
+
+        Object s[] = getData();
+        if (s == null || s.length == 0) {
+            // nothing to compare - OK with default comparator
+            return DEFAULT_COMPARATOR;
+
+        }
+
+        Method m = s[0].getClass().getMethod("equals", Object.class);
+
+        if (m.getDeclaringClass() != Object.class) {
+            // one of classes overrides Object.equals(Object) method
+            // use default comparator
+            return DEFAULT_COMPARATOR;
+        }
+
+        // TODO use generics to detect comparator
+        // instead of 'instanceof' for the first element
+        if(s[0] instanceof java.lang.Throwable){
+            return THROWABLE_COMPARATOR;
+        }
+
+        // TODO - throw new RuntimeException() if failed to detect comparator
+        // return stub comparator for a while
+        final SerializationTest thisTest = this;
+        return new SerializableAssert() {
+            public void assertDeserialized(Serializable reference,
+                    Serializable test) {
+                thisTest.assertDeserialized(reference, test);
+            }
+        };
     }
 }

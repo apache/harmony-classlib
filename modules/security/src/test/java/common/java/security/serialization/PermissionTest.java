@@ -21,6 +21,7 @@
 
 package java.security.serialization;
 
+import java.io.Serializable;
 import java.security.Permission;
 
 import org.apache.harmony.security.support.SerializationTest;
@@ -31,7 +32,8 @@ import org.apache.harmony.security.support.SerializationTest;
  * 
  */
 
-public class PermissionTest extends SerializationTest {
+public class PermissionTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     /**
      * @see com.intel.drl.test.SerializationTest#getData()
@@ -41,7 +43,7 @@ public class PermissionTest extends SerializationTest {
                 new RealPermission("IYF&*%^sd 43") };
     }
 
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertSame(golden.getClass(), test.getClass());
         assertEquals(((Permission) golden).getName(), ((Permission) test)
                 .getName());
