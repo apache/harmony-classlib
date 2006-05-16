@@ -21,6 +21,7 @@
 
 package java.security.cert.serialization;
 
+import java.io.Serializable;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathValidatorException;
 
@@ -32,7 +33,8 @@ import org.apache.harmony.security.support.SerializationTest;
  * 
  */
 
-public class CertPathValidatorExceptionTest extends SerializationTest {
+public class CertPathValidatorExceptionTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static String[] msgs = {
             "New message",
@@ -53,7 +55,7 @@ public class CertPathValidatorExceptionTest extends SerializationTest {
                 new CertPathValidatorException(msgs[1], dExc, null, -1) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
+    public void assertDeserialized(Serializable oref, Serializable otest) {
         CertPathValidatorException ref = (CertPathValidatorException) oref;
         CertPathValidatorException test = (CertPathValidatorException) otest;
         String s = ref.getMessage();

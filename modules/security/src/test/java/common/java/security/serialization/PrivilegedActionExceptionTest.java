@@ -21,6 +21,7 @@
 
 package java.security.serialization;
 
+import java.io.Serializable;
 import java.security.PrivilegedActionException;
 
 import org.apache.harmony.security.support.SerializationTest;
@@ -30,7 +31,8 @@ import org.apache.harmony.security.support.SerializationTest;
  * Serialization testing for PrivilegedActionException.
  */
 
-public class PrivilegedActionExceptionTest extends SerializationTest {
+public class PrivilegedActionExceptionTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
     
     public static void main(String[] args) {
         junit.textui.TestRunner.run(PrivilegedActionExceptionTest.class);
@@ -46,7 +48,7 @@ public class PrivilegedActionExceptionTest extends SerializationTest {
         };
     }
     
-    protected void assertDeserialized(Object reference, Object otest) {
+    public void assertDeserialized(Serializable reference, Serializable otest) {
         PrivilegedActionException ref = (PrivilegedActionException)reference;
         PrivilegedActionException test = (PrivilegedActionException)otest;
         if( ref.getException() == null ) {

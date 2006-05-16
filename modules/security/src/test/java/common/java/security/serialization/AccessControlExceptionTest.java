@@ -21,9 +21,10 @@
 
 package java.security.serialization;
 
+import java.io.Serializable;
+import java.security.AccessControlException;
 import java.security.AllPermission;
 import java.security.Permission;
-import java.security.AccessControlException;
 
 import org.apache.harmony.security.support.SerializationTest;
 
@@ -33,7 +34,8 @@ import org.apache.harmony.security.support.SerializationTest;
  * 
  */
 
-public class AccessControlExceptionTest extends SerializationTest {
+public class AccessControlExceptionTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AccessControlExceptionTest.class);
@@ -47,7 +49,7 @@ public class AccessControlExceptionTest extends SerializationTest {
                 new AccessControlException("string2", allperms) };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
+    public void assertDeserialized(Serializable oref, Serializable otest) {
         AccessControlException ref = (AccessControlException) oref;
         AccessControlException test = (AccessControlException) otest;
         String s = ref.getMessage();
