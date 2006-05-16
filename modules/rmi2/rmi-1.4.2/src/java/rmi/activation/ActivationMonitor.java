@@ -1,0 +1,48 @@
+/* 
+*  Copyright 2005 The Apache Software Foundation or its licensors, as applicable. 
+* 
+*  Licensed under the Apache License, Version 2.0 (the "License"); 
+*  you may not use this file except in compliance with the License. 
+*  You may obtain a copy of the License at 
+* 
+*    http://www.apache.org/licenses/LICENSE-2.0 
+* 
+*  Unless required by applicable law or agreed to in writing, software 
+*  distributed under the License is distributed on an "AS IS" BASIS, 
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+*  See the License for the specific language governing permissions and 
+*  limitations under the License. 
+*/
+package java.rmi.activation;
+
+import java.rmi.MarshalledObject;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+/**
+ * @ar.org.fitc.spec_ref
+ * 
+ */
+public interface ActivationMonitor extends Remote {
+
+    /**
+     * @ar.org.fitc.spec_ref
+     * 
+     */
+    void activeObject(ActivationID id, MarshalledObject obj)
+            throws UnknownObjectException, RemoteException;
+
+    /**
+     * @ar.org.fitc.spec_ref
+     * 
+     */
+    void inactiveGroup(ActivationGroupID id, long incarnation)
+            throws UnknownGroupException, RemoteException;
+
+    /**
+     * @ar.org.fitc.spec_ref
+     * 
+     */
+    void inactiveObject(ActivationID id) throws UnknownObjectException,
+            RemoteException;
+}
