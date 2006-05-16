@@ -45,7 +45,7 @@ public class X509CertFactoryImplTest extends TestCase {
     /**
      * engineGenerateCertificate(InputStream inStream) method testing.
      */
-    public void testEngineGenerateCertificate() {
+    public void testEngineGenerateCertificate() throws Exception {
         X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
         Certificate cert;
         
@@ -53,15 +53,10 @@ public class X509CertFactoryImplTest extends TestCase {
         ByteArrayInputStream bais = 
             new ByteArrayInputStream(
                     CertFactoryTestData.getCertEncoding());
-        try {
-            cert = certFactory.engineGenerateCertificate(bais);
-            assertNotNull("First generated certificate is null", cert);
-            cert = certFactory.engineGenerateCertificate(bais);
-            assertNotNull("Second generated certificate is null", cert);
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException: " + e.getMessage());
-        }
+        cert = certFactory.engineGenerateCertificate(bais);
+        assertNotNull("First generated certificate is null", cert);
+        cert = certFactory.engineGenerateCertificate(bais);
+        assertNotNull("Second generated certificate is null", cert);
         
         try {
             certFactory.engineGenerateCertificate(bais);
@@ -72,15 +67,10 @@ public class X509CertFactoryImplTest extends TestCase {
         // Base64 testing
         bais = new ByteArrayInputStream(
                 CertFactoryTestData.getBase64CertEncoding());
-        try {
-            cert = certFactory.engineGenerateCertificate(bais);
-            assertNotNull("First generated certificate is null", cert);
-            cert = certFactory.engineGenerateCertificate(bais);
-            assertNotNull("Second generated certificate is null", cert);
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException: " + e.getMessage());
-        }
+        cert = certFactory.engineGenerateCertificate(bais);
+        assertNotNull("First generated certificate is null", cert);
+        cert = certFactory.engineGenerateCertificate(bais);
+        assertNotNull("Second generated certificate is null", cert);
         
         try {
             certFactory.engineGenerateCertificate(bais);
@@ -92,32 +82,21 @@ public class X509CertFactoryImplTest extends TestCase {
     /**
      * engineGenerateCertificates(InputStream inStream) method testing.
      */
-    public void testEngineGenerateCertificates() {
+    public void testEngineGenerateCertificates() throws Exception {
         X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
         
         // DER encoded certificate generation testing
         ByteArrayInputStream bais = 
             new ByteArrayInputStream(
                     CertFactoryTestData.getCertEncoding());
-        try {
-            assertEquals("The size of collection is not correct",
-                    2, certFactory.engineGenerateCertificates(bais).size());
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException: " + e.getMessage());
-        }
+        assertEquals("The size of collection is not correct", 2, certFactory
+                .engineGenerateCertificates(bais).size());
         
         // Base64 testing
         bais = new ByteArrayInputStream(
                 CertFactoryTestData.getBase64CertEncoding());
-        try {
-            assertEquals("The size of collection is not correct",
-                    2, certFactory.engineGenerateCertificates(bais).size());
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException: " + e.getMessage());
-        }
-        
+        assertEquals("The size of collection is not correct", 2, certFactory
+                .engineGenerateCertificates(bais).size());
     }
     
     /**
@@ -131,15 +110,10 @@ public class X509CertFactoryImplTest extends TestCase {
         ByteArrayInputStream bais = 
             new ByteArrayInputStream(
                     CertFactoryTestData.getCRLEncoding());
-        try {
-            crl = certFactory.engineGenerateCRL(bais);
-            assertNotNull("First generated CRL is null", crl);
-            crl = certFactory.engineGenerateCRL(bais);
-            assertNotNull("Second generated CRL is null", crl);
-        } catch (CRLException e) {
-            e.printStackTrace();
-            fail("Unexpected CRLException: " + e.getMessage());
-        }
+        crl = certFactory.engineGenerateCRL(bais);
+        assertNotNull("First generated CRL is null", crl);
+        crl = certFactory.engineGenerateCRL(bais);
+        assertNotNull("Second generated CRL is null", crl);
         
         try {
             certFactory.engineGenerateCRL(bais);
@@ -173,13 +147,8 @@ public class X509CertFactoryImplTest extends TestCase {
         ByteArrayInputStream bais = 
             new ByteArrayInputStream(
                     CertFactoryTestData.getCRLEncoding());
-        try {
-            assertEquals("The size of collection is not correct",
-                    2, certFactory.engineGenerateCRLs(bais).size());
-        } catch (CRLException e) {
-            e.printStackTrace();
-            fail("Unexpected CRLException: " + e.getMessage());
-        }
+        assertEquals("The size of collection is not correct", 2, certFactory
+                .engineGenerateCRLs(bais).size());
 
         // Base64 testing
         bais = new ByteArrayInputStream(CertFactoryTestData
@@ -191,17 +160,12 @@ public class X509CertFactoryImplTest extends TestCase {
     /**
      * engineGenerateCertPath(InputStream inStream) method testing.
      */
-    public void testEngineGenerateCertPath() {
+    public void testEngineGenerateCertPath() throws Exception {
         X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
         ByteArrayInputStream bais = 
                 new ByteArrayInputStream(
                         CertFactoryTestData.getCertPathPkiPathEncoding());
-        try {
-            certFactory.engineGenerateCertPath(bais);
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException was thrown");
-        }
+        certFactory.engineGenerateCertPath(bais);
 
         try {
             certFactory.engineGenerateCertPath(bais);
@@ -214,17 +178,12 @@ public class X509CertFactoryImplTest extends TestCase {
      * engineGenerateCertPath(InputStream inStream, String encoding) method
      * testing.
      */
-    public void testEngineGenerateCertPath1() {
+    public void testEngineGenerateCertPath1() throws Exception {
         X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
         ByteArrayInputStream bais = 
                 new ByteArrayInputStream(
                         CertFactoryTestData.getCertPathPKCS7Encoding());
-        try {
-            certFactory.engineGenerateCertPath(bais, "PKCS7");
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException was thrown");
-        }
+        certFactory.engineGenerateCertPath(bais, "PKCS7");
 
         try {
             certFactory.engineGenerateCertPath(bais, "PKCS7");
@@ -236,28 +195,20 @@ public class X509CertFactoryImplTest extends TestCase {
     /**
      * engineGenerateCertPath(List certificates) method testing.
      */
-    public void testEngineGenerateCertPath2() {
-        X509Certificate certificate = null;
-        try {
-            X509CertImplTest test = new X509CertImplTest();
-            test.setUp();
-            certificate = test.certificate;
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: "+e.getMessage());
-        }
+    public void testEngineGenerateCertPath2() throws Exception {
+
+        X509CertImplTest test = new X509CertImplTest();
+        test.setUp();
+        X509Certificate certificate = test.certificate;
+
         ArrayList certList = new ArrayList();
         for (int i=0; i<2; i++) {
             certList.add(certificate);
         }
-        X509CertFactoryImpl certFactory = null;
-        try {
-            certFactory = new X509CertFactoryImpl();
-            certFactory.engineGenerateCertPath(certList);
-        } catch (CertificateException e) {
-            e.printStackTrace();
-            fail("Unexpected CertificateException was thrown: "+e.getMessage());
-        }
+
+        X509CertFactoryImpl certFactory = new X509CertFactoryImpl();
+        certFactory.engineGenerateCertPath(certList);
+
         certList.add(new Integer(5));
         try {
             certFactory.engineGenerateCertPath(certList);
