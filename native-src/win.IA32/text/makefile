@@ -30,7 +30,7 @@ SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = \
   ..\lib\hysig.lib ..\lib\hycommon.lib ..\lib\hypool.lib ..\lib\hyfdlibm.lib \
-  ..\lib\hythr.lib ..\lib\vmi.lib icuuc.lib
+  ..\lib\hythr.lib ..\lib\vmi.lib unicode\icuuc.lib
 
 DLLBASE=0x13300000
 COMMENT=/comment:"Text component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."

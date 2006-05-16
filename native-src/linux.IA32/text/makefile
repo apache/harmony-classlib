@@ -22,7 +22,7 @@ CFLAGS += -fpic
 BUILDFILES = text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
 MDLLIBFILES = \
-	libicuuc.so.34 \
+	unicode/libicuuc.so.34 \
 	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
 	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
 

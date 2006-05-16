@@ -60,7 +60,7 @@
 
         <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
         <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
-        <property name="iculib.zip" location="${depends.oss}/${target.platform}/icu4c-3.4-harmony.zip" />
+        <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
     </target>
 
 
@@ -72,6 +72,7 @@
         <property name="make.command" value="nmake.exe" />
         <property name="exe.suffix" value=".exe" />
         <property name="shlib.suffix" value=".dll" />
+    	<property name="linklib.suffix" value=".lib" />
     </target>
 
 
@@ -83,6 +84,7 @@
         <property name="make.command" value="make" />
         <property name="exe.suffix" value="" />
         <property name="shlib.suffix" value=".so" />
+    	<property name="linklib.suffix" value=".so" />
     </target>
 
 
@@ -204,9 +206,9 @@
         <unzip src="${zlib.zip}" dest="${native.src.root}/zlib/dist" />
         <chmod dir="${native.src.root}/zlib/dist" perm="ugo+r" />
 
-        <unzip src="${iculib.zip}" dest="${native.src.root}" />
-        <chmod dir="${native.src.root}/include/unicode" perm="ugo+r" />
-        <chmod dir="${native.src.root}/text" perm="ugo+r" />
+		<mkdir dir="${native.src.root}/text/unicode" />
+    	<unzip src="${iculib.zip}" dest="${native.src.root}/text/unicode" />
+        <chmod dir="${native.src.root}/text/unicode" perm="ugo+r" />
     </target>
 
     <!-- ================================= 
@@ -215,10 +217,7 @@
     <target name="clean-overlay-oss" depends="properties">
         <delete dir="${native.src.root}/fdlibm/dist" quiet="true" />
         <delete dir="${native.src.root}/zlib/dist" quiet="true" />
-        <delete dir="${native.src.root}/include/unicode" quiet="true" />
-        <!-- should really only delete one of these per platform ... -->
-        <delete file="${native.src.root}/text/icuuc.lib" quiet="true" />
-        <delete file="${native.src.root}/text/libicuuc.so.34" quiet="true" />
+        <delete dir="${native.src.root}/text/unicode" quiet="true" />
     </target>
 
 </project>

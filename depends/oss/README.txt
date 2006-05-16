@@ -26,10 +26,10 @@ C and C++ applications. The file icu4c-3.4-harmony.zip contains a set of C
 header files (with .h extension) that come straight from the ICU download
 available on the ICU home page. These have been grouped into a directory 
 called "unicode" which is expanded under the
-<EXTRACT_DIR>/Harmony/native-src/<target platform>/include directory as part
+<EXTRACT_DIR>/Harmony/native-src/<target platform>/text/unicode directory as part
 of this contribution's native build. The icu4c-3.4-harmony.zip file also
 contains an ICUUC library which is expanded to the 
-<EXTRACT_DIR>/Harmony/native-src/<target platform>/text directory during the
+<EXTRACT_DIR>/Harmony/native-src/<target platform>/text/unicode directory during the
 build where it used as part of the hytext shared library.
 
 The official ICU page is located at
