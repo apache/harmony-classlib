@@ -222,6 +222,185 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
 		}
 	}
 
+    /**
+     * @tests java.net.HttpURLConnection#setFixedLengthStreamingMode_I()
+     */
+    public void test_setFixedLengthStreamingModeI() throws Exception {
+        url = new URL("http://"
+                + Support_Configuration.InetTestAddress);
+        uc = (HttpURLConnection) url.openConnection();
+        try {
+            uc.setFixedLengthStreamingMode(-1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // correct
+        }
+        uc.setFixedLengthStreamingMode(0);
+        uc.setFixedLengthStreamingMode(1);
+        try {
+            uc.setChunkedStreamingMode(1);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // correct
+        }
+        uc.connect();
+        try {
+            uc.setFixedLengthStreamingMode(-1);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // correct
+        }
+        try {
+            uc.setChunkedStreamingMode(-1);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // correct
+        }
+        MockHttpConnection mock = new MockHttpConnection(url);
+        assertEquals(-1, mock.getFixedLength());
+        mock.setFixedLengthStreamingMode(0);
+        assertEquals(0, mock.getFixedLength());
+        mock.setFixedLengthStreamingMode(1);
+        assertEquals(1, mock.getFixedLength());
+        mock.setFixedLengthStreamingMode(0);
+        assertEquals(0, mock.getFixedLength());
+    }
+
+    /**
+     * @tests java.net.HttpURLConnection#setChunkedStreamingMode_I()
+     */
+    public void test_setChunkedStreamingModeI() throws Exception {
+        url = new URL("http://"
+                + Support_Configuration.InetTestAddress);
+        uc = (HttpURLConnection) url.openConnection();
+        uc.setChunkedStreamingMode(0);
+        uc.setChunkedStreamingMode(-1);
+        uc.setChunkedStreamingMode(-2);
+
+        try {
+            uc.setFixedLengthStreamingMode(-1);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // correct
+        }
+        try {
+            uc.setFixedLengthStreamingMode(1);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // correct
+        }
+        uc.connect();
+        try {
+            uc.setFixedLengthStreamingMode(-1);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // correct
+        }
+        try {
+            uc.setChunkedStreamingMode(1);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // correct
+        }
+        MockHttpConnection mock = new MockHttpConnection(url);
+        assertEquals(-1, mock.getChunkLength());
+        mock.setChunkedStreamingMode(-1);
+        int defaultChunk = mock.getChunkLength();
+        assertTrue(defaultChunk > 0);
+        mock.setChunkedStreamingMode(0);
+        assertEquals(mock.getChunkLength(), defaultChunk);
+        mock.setChunkedStreamingMode(1);
+        assertEquals(1, mock.getChunkLength());
+    }
+
+    class MockHttpConnection extends HttpURLConnection {
+
+        protected MockHttpConnection(URL url) {
+            super(url);
+        }
+
+        public void disconnect() {
+            // do nothing
+        }
+
+        public boolean usingProxy() {
+            return false;
+        }
+
+        public void connect() throws IOException {
+            // do nothing
+        }
+
+        public int getChunkLength() {
+            return super.chunkLength;
+        }
+
+        public int getFixedLength() {
+            return super.fixedContentLength;
+        }
+
+    }
+
+    /**
+     * @tests java.net.HttpURLConnection#setFixedLengthStreamingMode_I()
+     */
+    public void test_setFixedLengthStreamingModeI_effect() throws Exception {
+        String posted = "just a test";
+        URL u = new URL("http://"
+                + Support_Configuration.InetTestAddress);
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
+                .openConnection();
+        conn.setDoOutput(true);
+        conn.setRequestMethod("POST");
+        conn.setFixedLengthStreamingMode(posted.length() - 1);
+        assertNull(conn.getRequestProperty("Content-length"));
+        conn.setRequestProperty("Content-length", String.valueOf(posted
+                .length()));
+        assertEquals(String.valueOf(posted.length()), conn
+                .getRequestProperty("Content-length"));
+        OutputStream out = conn.getOutputStream();
+        try {
+            out.write(posted.getBytes());
+            fail("should throw IOException");
+        } catch (IOException e) {
+            // correct, too many bytes written
+        }
+        try {
+            out.close();
+            fail("should throw IOException");
+        } catch (IOException e) {
+            // correct, too many bytes written
+        }
+    }
+
+    /**
+     * @tests java.net.HttpURLConnection#setChunkedStreamingMode_I()
+     */
+    public void test_setChunkedStreamingModeI_effect() throws Exception {
+        String posted = "just a test";
+        // for test, use half length of the string
+        int chunkSize = posted.length() / 2;
+        URL u = new URL("http://"
+                + Support_Configuration.InetTestAddress);
+        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u
+                .openConnection();
+        conn.setDoOutput(true);
+        conn.setRequestMethod("POST");
+        conn.setChunkedStreamingMode(chunkSize);
+        assertNull(conn.getRequestProperty("Transfer-Encoding"));
+        // does not take effect
+        conn.setRequestProperty("Content-length", String.valueOf(posted
+                .length() - 1));
+        assertEquals(conn.getRequestProperty("Content-length"), String
+                .valueOf(posted.length() - 1));
+        OutputStream out = conn.getOutputStream();
+        // no error occurs
+        out.write(posted.getBytes());
+        out.close();
+        // no assert here, pass if no exception thrown
+        assertTrue(conn.getResponseCode() > 0);
+    }
+    
 	protected void setUp() {
 		try {
 			url = new URL(Support_Resources
@@ -234,8 +413,5 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
 
 	protected void tearDown() {
 		uc.disconnect();
-	}
-
-	protected void doneSuite() {
 	}
 }

@@ -238,21 +238,56 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     }
 
     private class HttpOutputStream extends OutputStream {
+        
         static final int MAX = 1024;
 
-        ByteArrayOutputStream cache = new ByteArrayOutputStream(MAX + 7);
+        int cacheLength;
+        
+        int defaultCacheSize = MAX;
+
+        ByteArrayOutputStream cache;
 
         boolean writeToSocket, closed = false;
 
         int limit;
 
         public HttpOutputStream() {
+            cacheLength = defaultCacheSize;
+            cache = new ByteArrayOutputStream(cacheLength);
             limit = -1;
         }
 
         public HttpOutputStream(int limit) {
             writeToSocket = true;
             this.limit = limit;
+            if (limit > 0){
+                cacheLength = limit;
+            } else {
+                // chunkLength must be larger than 3
+                defaultCacheSize = chunkLength > 3 ? chunkLength : MAX;
+                cacheLength = calculateChunkDataLength();
+            }
+            cache = new ByteArrayOutputStream(cacheLength);
+        }
+        
+        // calculates the exact size of chunk data, chunk data size is chunk
+        // size minus chunk head (which writes chunk data size in HEX and
+        // "\r\n") size. For example, a string "abcd" use chunk whose size is 5
+        // must be writen to socket as "2\r\nab","2\r\ncd" ...
+        private int calculateChunkDataLength() {
+            // chunk head size is the hex string length of the cache size plus 2
+            // (which is the length of "\r\n"), it must be suitable
+            // to express the size of chunk data, as short as possible.
+            // Notices that according to RI, if chunklength is 19, chunk head
+            // length is 4 (expressed as "10\r\n"), chunk data length is 16
+            // (which real sum is 20,not 19); while if chunklength is 18, chunk
+            // head length is 3. Thus the cacheSize = chunkdataSize + 
+            // sizeof(string length of chunk head in HEX) + sizeof("\r\n");
+            int bitSize = Integer.toHexString(defaultCacheSize).length();
+            // here is the calculated head size, not real size (for 19, it
+            // counts 3, not real size 4)
+            int headSize = (Integer.toHexString(defaultCacheSize - bitSize - 2).length()) + 2;
+            return defaultCacheSize - headSize;
         }
 
         private void output(String output) throws IOException {
@@ -265,19 +300,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 if (limit < 0) {
                     if (size > 0) {
                         output(Integer.toHexString(size) + "\r\n");
-                        cache.write('\r');
-                        cache.write('\n');
+                        socketOut.write(cache.toByteArray());
+                        cache.reset();
+                        output("\r\n");
                     }
                     if (close) {
-                        cache.write('0');
-                        cache.write('\r');
-                        cache.write('\n');
-                        cache.write('\r');
-                        cache.write('\n');
+                        output("0\r\n\r\n");
                     }
                 }
-                socketOut.write(cache.toByteArray());
-                cache.reset();
             }
         }
 
@@ -310,8 +340,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 limit--;
             }
             cache.write(data);
-            if (writeToSocket && cache.size() >= MAX)
+            if (writeToSocket && cache.size() >= cacheLength){
                 sendCache(false);
+            }
         }
 
         public synchronized void write(byte[] buffer, int offset, int count)
@@ -329,17 +360,31 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 if (count > limit)
                     throw new IOException(Msg.getString("K00b2"));
                 limit -= count;
-            }
-            if (!writeToSocket || cache.size() + count < MAX) {
                 cache.write(buffer, offset, count);
+                if (limit == 0){
+                    socketOut.write(cache.toByteArray());                    
+                }
             } else {
-                if (limit < 0)
-                    output(Integer.toHexString(count + cache.size()) + "\r\n");
-                socketOut.write(cache.toByteArray());
-                cache.reset();
-                socketOut.write(buffer, offset, count);
-                if (limit < 0)
+                if (!writeToSocket || cache.size() + count < cacheLength) {
+                    cache.write(buffer, offset, count);
+                } else {
+                    output(Integer.toHexString(cacheLength) + "\r\n");
+                    int writeNum = cacheLength - cache.size();
+                    cache.write(buffer, offset, writeNum);
+                    socketOut.write(cache.toByteArray());
                     output("\r\n");
+                    cache.reset();
+                    int left = count - writeNum;
+                    int position = offset + writeNum;
+                    while (left > cacheLength) {
+                        output(Integer.toHexString(cacheLength) + "\r\n");
+                        socketOut.write(buffer, position, cacheLength);
+                        output("\r\n");
+                        left = left - cacheLength;
+                        position = position + cacheLength;
+                    }
+                    cache.write(buffer, position, left);
+                }
             }
         }
 
@@ -670,6 +715,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 limit = -1;
             }
         }
+        // if user has set chunk/fixedLength mode, use that value
+        if (chunkLength > 0) {
+            sendChunked = true;
+            limit = -1;
+        }
+        if (fixedContentLength >= 0) {
+            limit = fixedContentLength;
+        }
         if ((httpVersion > 0 && sendChunked) || limit >= 0) {
             os = new HttpOutputStream(limit);
             doRequest();
@@ -895,6 +948,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 output.append("Transfer-Encoding: chunked\r\n");
         }
 
+        boolean hasContentLength = false;
         // then the user-specified request headers, if any
         for (int i = 0; i < reqHeader.length(); i++) {
             String key = reqHeader.getKey(i);
@@ -909,10 +963,26 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                      * duplicates are allowed under certain conditions see
                      * http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
                      */
-                    output.append(reqHeader.get(i));
+                    if (lKey.equals("content-length")) {
+                        hasContentLength = true;
+                        // if both setFixedLengthStreamingMode and
+                        // content-length are set, use fixedContentLength
+                        // first
+                        output
+                                .append((fixedContentLength >= 0) ? String
+                                        .valueOf(fixedContentLength)
+                                        : reqHeader.get(i));
+                    } else {
+                        output.append(reqHeader.get(i));
+                    }
                     output.append("\r\n");
                 }
             }
+        }
+        if (fixedContentLength >= 0 && !hasContentLength) {
+            output.append("content-length: ");
+            output.append(String.valueOf(fixedContentLength));
+            output.append("\r\n");
         }
         // end the headers
         output.append("\r\n");

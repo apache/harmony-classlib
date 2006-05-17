@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package java.net;
 
 import java.net.ProtocolException;
 import java.net.URL;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This abstract subclass of <code>URLConnection</code> defines method for
@@ -42,6 +43,12 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	protected boolean instanceFollowRedirects = followRedirects;
 
 	private static boolean followRedirects = true;
+    
+    protected int chunkLength = -1;
+
+    protected int fixedContentLength = -1;
+    
+    private final static int DEFAULT_CHUNK_LENGTH = 1024;
 
 	// 2XX: generally "OK"
 	// 3XX: relocation/redirect
@@ -447,4 +454,57 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	public long getHeaderFieldDate(String field, long defaultValue) {
 		return super.getHeaderFieldDate(field, defaultValue);
 	}
+    
+    
+    /**
+     * If length of a HTTP request body is known ahead, sets fixed length to
+     * enable streaming without buffering. Sets after connection will cause an
+     * exception.
+     * 
+     * @see <code>setChunkedStreamingMode</code>
+     * @param contentLength
+     *            the fixed length of the HTTP request body
+     * @throws IllegalStateException
+     *             if already connected or other mode already set
+     * @throws IllegalArgumentException
+     *             if contentLength is less than zero
+     */
+    public void setFixedLengthStreamingMode(int contentLength) {
+        if (super.connected) {
+            throw new IllegalStateException(Msg.getString("K0079"));
+        }
+        if (0 < chunkLength) {
+            throw new IllegalStateException(Msg.getString("KA003"));
+        }
+        if (0 > contentLength) {
+            throw new IllegalArgumentException(Msg.getString("K0051"));
+        }
+        this.fixedContentLength = contentLength;
+    }
+
+    /**
+     * If length of a HTTP request body is NOT known ahead, enable chunked
+     * transfer encoding to enable streaming without buffering. Notice that not
+     * all http servers support this mode. Sets after connection will cause an
+     * exception.
+     * 
+     * @see <code>setFixedLengthStreamingMode</code>
+     * @param chunklen
+     *            the length of a chunk
+     * @throws IllegalStateException
+     *             if already connected or other mode already set
+     */
+    public void setChunkedStreamingMode(int chunklen) {
+        if (super.connected) {
+            throw new IllegalStateException(Msg.getString("K0079"));
+        }
+        if (0 <= fixedContentLength) {
+            throw new IllegalStateException(Msg.getString("KA003"));
+        }
+        if (0 >= chunklen) {
+            chunkLength = DEFAULT_CHUNK_LENGTH;
+        } else {
+            chunkLength = chunklen;
+        }
+    }
 }
