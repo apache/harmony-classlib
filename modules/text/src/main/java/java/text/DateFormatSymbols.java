@@ -282,8 +282,14 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 	 * 
 	 * @param data
 	 *            the String containing the pattern characters
+	 *
+	 * @exception NullPointerException
+	 *                when the data is null
 	 */
 	public void setLocalPatternChars(String data) {
+		if (data==null) {
+			throw new NullPointerException();
+		}
 		localPatternChars = data;
 	}
 

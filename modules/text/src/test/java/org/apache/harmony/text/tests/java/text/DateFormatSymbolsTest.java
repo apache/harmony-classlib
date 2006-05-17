@@ -237,6 +237,14 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
         String retVal = dfs.getLocalPatternChars();
         String val = "GyMZZkHmsSEHHFwWahKz";
         assertTrue("Returned incorrect pattern string", retVal.equals(val));
+        
+        try {
+            // Regression for HARMONY-466
+            new DateFormatSymbols().setLocalPatternChars(null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /**

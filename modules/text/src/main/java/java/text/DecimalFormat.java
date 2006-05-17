@@ -173,10 +173,15 @@ public class DecimalFormat extends NumberFormat {
      * @return an AttributedCharacterIterator with the formatted number and
      *         attributes
      * 
+     * @exception NullPointerException
+     *                when the object is null
      * @exception IllegalArgumentException
      *                when the object cannot be formatted by this Format
      */
     public AttributedCharacterIterator formatToCharacterIterator(Object object) {
+        if (object == null) {
+            throw new NullPointerException();
+        }
         return dform.formatToCharacterIterator(object);
     }
 

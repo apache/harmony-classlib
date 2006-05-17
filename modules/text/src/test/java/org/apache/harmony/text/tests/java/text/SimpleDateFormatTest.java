@@ -313,6 +313,15 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
      * @tests java.text.SimpleDateFormat#formatToCharacterIterator(java.lang.Object)
      */
     public void test_formatToCharacterIteratorLjava_lang_Object() {
+
+        try {
+            // Regression for HARMONY-466
+            new SimpleDateFormat().formatToCharacterIterator(null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
         // Test for method formatToCharacterIterator(java.lang.Object)
         new Support_SimpleDateFormat(
                 "test_formatToCharacterIteratorLjava_lang_Object")

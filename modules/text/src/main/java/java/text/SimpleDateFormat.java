@@ -402,10 +402,15 @@ public class SimpleDateFormat extends DateFormat {
 	 * @return an AttributedCharacterIterator with the formatted date and
 	 *         attributes
 	 * 
+	 * @exception NullPointerException
+	 *                when the object is null
 	 * @exception IllegalArgumentException
 	 *                when the object cannot be formatted by this Format
 	 */
 	public AttributedCharacterIterator formatToCharacterIterator(Object object) {
+		if (object==null) {
+			throw new NullPointerException();
+		}
 		if (object instanceof Date)
 			return formatToCharacterIteratorImpl((Date) object);
 		if (object instanceof Number)

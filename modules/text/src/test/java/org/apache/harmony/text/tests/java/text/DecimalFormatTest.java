@@ -1077,6 +1077,15 @@ public class DecimalFormatTest extends TestCase {
      * @tests java.text.DecimalFormat#formatToCharacterIterator(java.lang.Object)
      */
     public void test_formatToCharacterIteratorLjava_lang_Object() {
+
+        try {
+            // Regression for HARMONY-466
+            new DecimalFormat().formatToCharacterIterator(null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
         new Support_DecimalFormat(
                 "test_formatToCharacterIteratorLjava_lang_Object")
                 .t_formatToCharacterIterator();
