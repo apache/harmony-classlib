@@ -399,21 +399,25 @@ public class CalendarTest extends junit.framework.TestCase {
 	 * @tests java.util.Calendar#compareTo(Calendar)
 	 */
 	public void test_compareToLjava_util_Calendar() {
-		Calendar cal = Calendar.getInstance();
-		cal.set(1997, 12, 13, 23, 57);
-		
-		Calendar anotherCal = Calendar.getInstance();
-		anotherCal.set(1997, 12, 13, 23, 57);
-		assertEquals(0, cal.compareTo(anotherCal));
-				
-		anotherCal = Calendar.getInstance();
-		anotherCal.set(1997, 11, 13, 24, 57);
-		assertEquals(1, cal.compareTo(anotherCal));
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(1997, 12, 13, 23, 57);
 
-		anotherCal = Calendar.getInstance();
-		anotherCal.set(1997, 12, 13, 23, 58);
-		assertEquals(-1, cal.compareTo(anotherCal));
-	}
+        Calendar anotherCal = Calendar.getInstance();
+        anotherCal.clear();
+        anotherCal.set(1997, 12, 13, 23, 57);
+        assertEquals(0, cal.compareTo(anotherCal));
+
+        anotherCal = Calendar.getInstance();
+        anotherCal.clear();
+        anotherCal.set(1997, 11, 13, 24, 57);
+        assertEquals(1, cal.compareTo(anotherCal));
+
+        anotherCal = Calendar.getInstance();
+        anotherCal.clear();
+        anotherCal.set(1997, 12, 13, 23, 58);
+        assertEquals(-1, cal.compareTo(anotherCal));
+    }
 
 	protected void setUp() {
 		defaultLocale = Locale.getDefault();
