@@ -31,6 +31,11 @@ import org.apache.harmony.crypto.utils.AlgNameMapper;
  */
 public class PublicKeyImpl implements PublicKey {
     
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = 7179022516819534075L;
+
     private final byte[] encoding;
     private final String algorithm;
     

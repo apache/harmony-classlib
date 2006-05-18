@@ -72,6 +72,11 @@ public class DefaultPolicyScanner {
      */
     public static class InvalidFormatException extends Exception {
 
+        /**
+         * @serial
+         */
+        private static final long serialVersionUID = 5789786270390222184L;
+
         /** 
          * Constructor with detailed message parameter. 
          */

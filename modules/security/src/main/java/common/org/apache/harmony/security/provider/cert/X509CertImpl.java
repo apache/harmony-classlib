@@ -55,6 +55,11 @@ import org.apache.harmony.security.x509.TBSCertificate;
  */
 public class X509CertImpl extends X509Certificate {
     
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = 2972248729446736154L;
+
     private final Certificate certificate;
     private final TBSCertificate tbsCert;
     private final Extensions extensions;

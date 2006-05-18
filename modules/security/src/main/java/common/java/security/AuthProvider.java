@@ -33,6 +33,11 @@ import javax.security.auth.login.LoginException;
 public abstract class AuthProvider extends Provider {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = 4197859053084546461L;
+
+    /**
      * @com.intel.drl.spec_ref
      * 
      */

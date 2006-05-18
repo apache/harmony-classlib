@@ -30,6 +30,11 @@ import java.security.Provider;
  */
 public final class DRLCertFactory extends Provider {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = -7269650779605195879L;
+
     public DRLCertFactory() {
         super("DRLCertFactory", 1.0, "DRL Certificate Factory");
         AccessController.doPrivileged(new java.security.PrivilegedAction() {

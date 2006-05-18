@@ -28,6 +28,11 @@ package javax.security.cert;
 public class CertificateExpiredException extends CertificateException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = 5091601212177261883L;
+
+    /**
      * @com.intel.drl.spec_ref
      *  
      */

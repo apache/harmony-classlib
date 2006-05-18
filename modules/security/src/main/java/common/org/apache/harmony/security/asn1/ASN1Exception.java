@@ -30,6 +30,11 @@ import java.io.IOException;
 public class ASN1Exception extends IOException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = -3561981263989123987L;
+
+    /**
      * Constructs an ASN1Exception without a message. 
      */
     public ASN1Exception(){

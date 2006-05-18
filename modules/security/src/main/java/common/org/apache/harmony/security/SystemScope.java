@@ -34,6 +34,11 @@ import java.util.Hashtable;
 
 public class SystemScope extends IdentityScope {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = -4810285697932522607L;
+
     // Identities hash: key is the identity name
     private Hashtable names = new Hashtable();
 

@@ -28,6 +28,11 @@ package javax.security.cert;
 public class CertificateNotYetValidException extends CertificateException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = -8976172474266822818L;
+
+    /**
      * @com.intel.drl.spec_ref
      *  
      */

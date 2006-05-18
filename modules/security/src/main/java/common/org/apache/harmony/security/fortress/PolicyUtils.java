@@ -204,6 +204,11 @@ public class PolicyUtils {
      */
     public static class ExpansionFailedException extends Exception {
 
+        /**
+         * @serial
+         */
+        private static final long serialVersionUID = 2869748055182612000L;
+
         /** 
          * Constructor with user-friendly message parameter. 
          */

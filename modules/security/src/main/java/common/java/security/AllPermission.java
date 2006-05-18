@@ -35,6 +35,11 @@ import java.util.NoSuchElementException;
  */
 public final class AllPermission extends Permission {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = -2916474571451318075L;
+
     // Pemission name
     private static final String ALL_PERMISSIONS = "<all permissions>";
 

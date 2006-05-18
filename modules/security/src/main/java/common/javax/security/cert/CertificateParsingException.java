@@ -28,6 +28,11 @@ package javax.security.cert;
 public class CertificateParsingException extends CertificateException {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = -8449352422951136229L;
+
+    /**
      * @com.intel.drl.spec_ref
      *  
      */

@@ -47,6 +47,11 @@ import org.apache.harmony.security.x509.Certificate;
  */
 public class X509CertPathImpl extends CertPath {
  
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = 7989755106209515436L;
+
     // supported encoding types:
     public static final int PKI_PATH = 0;
     public static final int PKCS7 = 1;
