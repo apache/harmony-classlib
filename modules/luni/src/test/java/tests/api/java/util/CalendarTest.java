@@ -419,6 +419,19 @@ public class CalendarTest extends junit.framework.TestCase {
         assertEquals(-1, cal.compareTo(anotherCal));
     }
 
+    /**
+     * @tests java.util.Calendar#clone()
+     */
+    public void test_clone() {
+        // Regression for HARMONY-475
+        Calendar cal = Calendar.getInstance();
+        cal.set(2006, 5, 6, 11, 35);
+        Calendar anotherCal = (Calendar) cal.clone();
+        // should be deep clone
+        assertNotSame("getTimeZone", cal.getTimeZone(), anotherCal
+                .getTimeZone());
+    }
+
 	protected void setUp() {
 		defaultLocale = Locale.getDefault();
 		Locale.setDefault(Locale.US);

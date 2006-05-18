@@ -222,6 +222,7 @@ public abstract class Calendar implements Serializable, Cloneable,
 			Calendar clone = (Calendar) super.clone();
 			clone.fields = (int[]) fields.clone();
 			clone.isSet = (boolean[]) isSet.clone();
+			clone.zone = (TimeZone) zone.clone();
 			return clone;
 		} catch (CloneNotSupportedException e) {
 			return null;
