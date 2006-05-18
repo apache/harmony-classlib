@@ -1,0 +1,201 @@
+INTEL CONTRIBUTION TO APACHE HARMONY
+          28 March 2006
+======================================
+
+This archive contains the contribution to the Apache
+Harmony project from Intel. The contribution consists
+of the following component:
+
+    - Remote Method Invocation (RMI) Framework
+
+See http://wiki.apache.org/harmony/ClassLibrary for a
+definition of this component.
+
+
+1. ARCHIVE CONTENTS
+-------------------
+
+The archive contains the source files, the building environment,
+and the unit tests' source for testing the provided implementation.
+
+After extracting the archive, the following directories appear under
+<EXTRACT_DIR>/Harmony, where EXTRACT_DIR is the location of the
+archive content:
+
+  doc      - RMI Framework description
+  make     - Files required to build the class libraries and tests
+  src      - Source files that can be compiled into the class libraries
+  test     - Unit tests' source files
+
+
+2. TOOLS AND ENVIRONMENT VARIABLES REQUIRED FOR THE BUILD
+-----------------------------------------------------------
+
+To build the Java* sources contained in the src/ directory,
+install and configure the following tools in the user environment:
+
++ Apache Ant                   - Apache Ant version 1.6.4 or higher
+  http://ant.apache.org
+
++ Eclipse* compiler            - Eclipse* SDK version 3.0.1 or higher
+  http://download.eclipse.org/eclipse/downloads/index.php
+
++ Virtual machine              - Apache Harmony Execution Environment
+  http://www-128.ibm.com/developerworks/java/jdk/harmony
+
++ Class libraries              - Harmony class libraries
+  https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk
+
++ Bouncy Castle Crypto package - Java* implementation of cryptographic algorithms
+  http://www.bouncycastle.org/download/bcprov-jdk14-131.jar
+
+
+3. BUILDING CLASS LIBRARIES
+---------------------------
+
+1. Create an empty folder <EXTRACT_DIR>.
+   Use this as the parent folder to hold all files of Harmony and RMI.
+
+2. Create a new folder <EXTRACT_DIR>/Harmony .
+
+3. Set up the Harmony execution environment.
+
+   3.1 Check-out the Harmony project trunk to the <EXTRACT_DIR>/Harmony folder
+       from the SVN repository.
+       For details, refer to http://incubator.apache.org/harmony/svn.html .
+
+       Example:
+       svn checkout https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk
+
+   3.2 Build the Harmony class libraries according to README.txt
+       for the Harmony class libraries bundle.
+
+   3.3 Download the Harmony execution environment and integrate it
+       with Harmony class libraries according to the instructions
+       in the corresponding README.txt file.
+
+4. Install the Bouncy Castle Provider for JCE and JCA.
+
+   4.1 Download bcprov-jdk14-131.jar from
+       http://www.bouncycastle.org/latest_releases.html .
+
+   4.2 Copy the file bcprov-jdk14-131.jar to
+       the folder <EXTRACT_DIR>/Harmony/deploy/jre/lib/boot .
+
+   4.3 Edit the file
+       <EXTRACT_DIR>/Harmony/deploy/jre/lib/boot/bootclasspath.properties:
+       add the following line to the end of the file:
+
+       bootclasspath.38=bcprov-jdk14-131.jar
+
+After this step, the Harmony environment is ready for the RMI Framework
+installation.
+
+5. Install the RMI contribution.
+
+   5.1 Unzip the Harmony RMI bundle to the folder <EXTRACT_DIR>/rmi .
+
+   5.2 Change to the folder <EXTRACT_DIR>/rmi/Harmony/make .
+
+   5.3 Build the contibution by running:
+
+       ant -Dbuild.compiler=org.eclipse.jdt.core.JDTCompilerAdapter
+
+   NOTE:
+       You need to have jdtCompilerAdapter.jar in your CLASSPATH to be able
+       to build RMI with the Eclipse* compiler. For Eclipse* version 3.1
+       or higher you may need to unzip the file
+       <ECLIPSE_HOME>/plugins/org.eclipse.jdt.core_3.*.*.jar because
+       jdtCompilerAdapter.jar is inside.
+
+   5.4 Copy the contents of the folder <EXTRACT_DIR>/rmi/Harmony/build/deploy
+       to the folder <EXTRACT_DIR>/Harmony/deploy .
+
+The RMI build produces a set of .class and .jar files placed in the following
+directory tree structure:
+
+<EXTRACT_DIR>/rmi/Harmony/build
+       |
+       +---classes                         - compiled class files
+       |
+       +---deploy
+             |
+             \---jre
+                  |
+                  |
+                  \---lib
+                      |
+                      \---boot
+                             |
+                             \---rmi.jar   - built RMI jar
+
+
+4. RUNNING CLASS LIBRARIES WITH AN EXTERNAL VM
+----------------------------------------------
+
+To run an application on a third-party JRE using the classes provided
+with this contribution, add rmi.jar to the bootclasspath.
+
+Example:
+java -Xbootclasspath/p:rmi.jar MyApp
+
+
+5. BUILDING AND RUNNING TESTS
+-----------------------------
+
+Verify the values for the following environment variables:
+
++ PATH must point to the location of Ant.
++ CLASSPATH must contain the location of JUnit classes (normally, junit.jar).
++ CLASSPATH must contain the .jar files required for the Eclipse* compiler
+  to start and the boot classes of the Harmony virtual machine.
++ JAVA_HOME must point to the Harmony execution environment.
++ <EXTRACT_DIR>/rmi/Harmony/make/external_tools.properties must contain
+  a valid path to the JUnit implementation classes (normally junit.jar).
+
+NOTE: All paths must be absolute.
+
+To build and run all tests in the <EXTRACT_DIR>/rmi/Harmony/make directory, run:
+
+    ant -Dbuild.compiler=org.eclipse.jdt.core.JDTCompilerAdapter tests.run
+
+Running this target compiles all RMI and tests sources (if necessary) and
+runs tests.
+
+The build produces a set of unit tests' class files and test results.
+These files are placed in the following directory tree structure:
+
+<EXTRACT_DIR>/rmi/Harmony/build
+       |
+       |
+       +---tests                    - compiled unit tests
+       |
+       +---jars
+       |      |
+       |      \---rmi-tests.jar     - built unit tests jar
+       |
+       +---test-reports             - unit test run results
+
+
+6. KNOWN ISSUES
+---------------
+
+6.1 Binary tools rmiregisty, rmid and rmic are missing.
+
+6.2 External Java* compiler is required to compile stubs
+    generated by the RMI compiler.
+
+6.3 The RMI compiler uses the system class loader to load
+    the classes to compile, which has the following effects:
+
+    - Limits the capability to compile system classes,
+      other versions of VM distribution classes, and so on.
+
+    - Prevents the proper interpretation of the -classpath
+      and -bootclasspath options.
+
+
+7. DISCLAIMER AND LEGAL INFORMATION
+------------------------------------
+
+*) Other brands and names are the property of their respective owners.

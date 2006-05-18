@@ -1,0 +1,159 @@
+/*
+ * Copyright 2005-2006 The Apache Software Foundation or its licensors, as applicable
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @author  Mikhail A. Markov
+ * @version $Revision: 1.10.4.3 $
+ */
+package java.rmi.server;
+
+import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.rmi.MarshalException;
+import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
+import java.rmi.UnmarshalException;
+
+import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.server.ExportManager;
+
+
+/**
+ * @com.intel.drl.spec_ref
+ *
+ * @author  Mikhail A. Markov
+ * @version $Revision: 1.10.4.3 $
+ */
+public abstract class RemoteObject implements Remote, Serializable {
+
+    private static final long serialVersionUID = -3215090123894869218L;
+
+    /** @com.intel.drl.spec_ref */
+    protected transient RemoteRef ref;
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    protected RemoteObject() {
+        ref = null;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    protected RemoteObject(RemoteRef ref) {
+        this.ref = ref;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public RemoteRef getRef() {
+        return ref;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public String toString() {
+        String clName = RMIUtil.getShortName(getClass());
+        return (ref == null) ? clName
+                : clName + "[" + ref.remoteToString() + "]";
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean equals(Object obj) {
+        if (!(obj instanceof RemoteObject)) {
+            return (obj == null) ? false : obj.equals(this);
+        }
+
+        if (ref != null) {
+            return ref.remoteEquals(((RemoteObject) obj).ref);
+        }
+        return (this == obj);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public int hashCode() {
+        return (ref != null) ? ref.remoteHashCode() : super.hashCode();
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public static Remote toStub(Remote obj) throws NoSuchObjectException {
+        if (obj instanceof RemoteStub) {
+            return (RemoteStub) obj;
+        }
+        return ExportManager.getStub(obj);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    private void writeObject(ObjectOutputStream out)
+            throws IOException {
+        if (ref == null) {
+            throw new MarshalException(
+                    "Invalid remote object: RemoteRef = null");
+        }
+        String refType = ref.getRefClass(out);
+
+        if (refType != null && refType.length() != 0) {
+            out.writeUTF(refType);
+            ref.writeExternal(out);
+        } else {
+            out.writeUTF("");
+            out.writeObject(ref);
+        }
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+        String refName = null;
+
+        try {
+            refName = in.readUTF();
+
+            if (refName.length() == 0) {
+                // read RemoteRef object
+                ref = (RemoteRef) in.readObject();
+                return;
+            }
+
+            // well-known RemoteRef types
+            // TODO: the following line is a temporary solution. Line after
+            //       that should be uncommented later.
+            String refClName = "org.apache.harmony.rmi.remoteref." + refName;
+            //String refClName = RemoteRef.packagePrefix + "." + refName;
+            ref = ((RemoteRef) Class.forName(refClName).newInstance());
+            ref.readExternal(in);
+        } catch (Exception ex) {
+            throw new UnmarshalException("Unable to create RemoteRef instance",
+                    ex);
+        }
+    }
+}
