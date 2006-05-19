@@ -19,6 +19,9 @@
 
 <project name="Common Platform definitions" default="echo" basedir="..">
 
+    <!-- Module implementation properties -->
+    <property name="hy.rmi.module" value="rmi" />
+
     <!-- Javac properties -->
     <property name="hy.javac.source" value="1.5" />
     <property name="hy.javac.target" value="jsr14" />
@@ -94,6 +97,11 @@
     <target name="echo" depends="svn-prop" >
         <echo>
 
+Harmony module implementation properties:
+
+  hy.rmi.module = ${hy.rmi.module}
+
+
 Harmony javac properties:
 
   hy.javac.target = ${hy.javac.target}
@@ -157,7 +165,13 @@ properties in preference to these:
         <attribute name="target" />
         <sequential>
             <subant target="@{target}">
-                <fileset dir="modules" includes="*/make/build.xml" />
+                <fileset dir="modules">
+                    <include name="*/make/build.xml" />
+                    <exclude name="rmi*/make/build.xml" />
+                </fileset>
+                <fileset dir="modules">
+                    <include name="${hy.rmi.module}/make/build.xml" />
+                </fileset>
             </subant>
         </sequential>
     </macrodef>

@@ -98,7 +98,7 @@
             <src path="modules/nio_char/src/main/java" />
             <src path="modules/prefs/src/main/java" />
             <src path="modules/regex/src/main/java" />
-            <src path="modules/rmi/src/main/java" />
+            <src path="modules/${hy.rmi.module}/src/main/java" />
             <src path="modules/security-kernel/src/main/java" />
             <src path="modules/security/src/main/java/common" />
             <src path="modules/sql/src/main/java" />

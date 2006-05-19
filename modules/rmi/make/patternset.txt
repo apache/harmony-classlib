@@ -13,3 +13,18 @@
 # limitations under the License.
 
 java/rmi/*
+java/rmi/dgc/*
+java/rmi/activation/*
+java/rmi/server/*
+java/rmi/registry/*
+
+org/apache/harmony/rmi/internal/dgc/*
+org/apache/harmony/rmi/internal/dgc/client/*
+org/apache/harmony/rmi/internal/dgc/server/*
+org/apache/harmony/rmi/internal/transport/*
+org/apache/harmony/rmi/internal/transport/http/*
+org/apache/harmony/rmi/internal/transport/jrmp/*
+org/apache/harmony/rmi/internal/utils/*
+org/apache/harmony/rmi/internal/runtime/*
+org/apache/harmony/rmi/internal/server/*
+org/apache/harmony/rmi/internal/registry/*
