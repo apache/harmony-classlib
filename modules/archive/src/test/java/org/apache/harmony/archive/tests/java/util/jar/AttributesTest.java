@@ -196,6 +196,29 @@ public class AttributesTest extends junit.framework.TestCase {
         }
 	}
 
+    /**
+     * @tests java.util.jar.Attributes#putAll(java.util.Map)
+     */
+    public void test_putAllLjava_util_Map2() {
+        //Regression for HARMONY-464 
+        try {
+            new Attributes().putAll((Map) null);
+            fail("ClassCastException expected");
+        } catch (ClassCastException e) {
+        }
+
+        //verify that special care for null is done in the Attributes.putAll() method
+        try {
+            new Attributes() {
+                public void putAll(Map attrib) {
+                    map.putAll((Attributes) attrib);
+                }
+            }.putAll((Map) null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+        }
+    }
+
 	/**
 	 * @tests java.util.jar.Attributes#remove(java.lang.Object)
 	 */

@@ -239,6 +239,9 @@ public class Attributes implements Cloneable, Map {
 	 *            the associations to store (must be of type Attributes).
 	 */
 	public void putAll(Map attrib) {
+        if( attrib == null ) {
+            throw new ClassCastException();
+        }
 		this.map.putAll((Attributes) attrib);
 	}
 
