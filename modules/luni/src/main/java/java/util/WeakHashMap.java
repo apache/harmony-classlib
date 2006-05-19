@@ -516,10 +516,10 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
      * @return the value of any previous mapping with the specified key or null
      *         if there was no mapping
      */
-    public Object put(Object key, Object value) {
+    public V put(K key, V value) {
         poll();
         int index = 0;
-        Entry entry;
+        Entry<K,V> entry;
         if (key != null) {
             index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
             entry = elementData[index];
@@ -542,7 +542,7 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
             elementData[index] = entry;
             return null;
         }
-        Object result = entry.value;
+        V result = entry.value;
         entry.value = value;
         return result;
     }

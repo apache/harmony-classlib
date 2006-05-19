@@ -471,9 +471,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @return the value of any previous mapping with the specified key or null
      *         if there was no mapping
      */
-    public Object put(Object key, Object value) {
+    public V put(K key, V value) {
         int index = getModuloHash(key);
-        Entry entry = findEntry(key, index);
+        Entry<K,V> entry = findEntry(key, index);
 
         if (entry == null) {
             modCount++;
@@ -484,7 +484,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             }
             entry = createEntry(key, index, null);
         }
-        Object result = entry.value;
+        V result = entry.value;
         entry.value = value;
         return result;
     }
