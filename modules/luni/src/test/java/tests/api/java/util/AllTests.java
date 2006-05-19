@@ -61,6 +61,7 @@ public class AllTests {
 		suite.addTestSuite(IllegalFormatFlagsExceptionTest.class);
 		suite.addTestSuite(IllegalFormatPrecisionExceptionTest.class);
 		suite.addTestSuite(IllegalFormatWidthExceptionTest.class);
+        suite.addTestSuite(InputMismatchExceptionTest.class);
 		suite.addTestSuite(LinkedHashMapTest.class);
 		suite.addTestSuite(LinkedHashSetTest.class);
 		suite.addTestSuite(LinkedListTest.class);
