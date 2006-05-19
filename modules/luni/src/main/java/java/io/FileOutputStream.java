@@ -162,17 +162,39 @@ public class FileOutputStream extends OutputStream implements Closeable{
 	 * @throws IOException
 	 *             If an error occurs attempting to close this FileOutputStream.
 	 */
-	public void close() throws IOException {
-        synchronized (channel) {
+    public void close() throws IOException {
+        if (fd == null) {
+            // if fd is null, then the underlying file is not opened, so nothing
+            // to close
+            return;
+        }
+        if (channel == null) {
+            /*
+             * if channel is null, then the channel doesn't need be taken care
+             * of but the underlying file has been opened
+             */
             synchronized (this) {
-                //FIXME: System.in, out, err may not want to be closed?                
-                if(channel.isOpen() && fd.descriptor >= 0){
-                    channel.close();
+                if (fd.descriptor >= 0) {
+                    fileSystem.close(fd.descriptor);
                 }
                 fd.descriptor = -1;
             }
+        } else {
+            /*
+             * if the FileOutputStream is constructed sucessfully, then channel
+             * must be closed, which will close the underlying file
+             */
+            synchronized (channel) {
+                synchronized (this) {
+                    // FIXME: System.in, out, err may not want to be closed?
+                    if (channel.isOpen() && fd.descriptor >= 0) {
+                        channel.close();
+                    }
+                    fd.descriptor = -1;
+                }
+            }
         }
-	}
+    }
 
 	/**
 	 * Frees any resources allocated to represent this FileOutputStream before
