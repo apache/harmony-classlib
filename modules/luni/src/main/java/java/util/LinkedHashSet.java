@@ -27,7 +27,7 @@ import java.io.Serializable;
  * Like HashSet, LinkedHashSet is not thread safe, so access by multiple threads must be synchronized
  * by an external mechanism such as Collections.synchronizedSet.
  */
-public class LinkedHashSet extends HashSet implements Set, Cloneable,
+public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
 		Serializable {
 	
 	private static final long serialVersionUID = -2851667679971038690L;
@@ -69,7 +69,7 @@ public class LinkedHashSet extends HashSet implements Set, Cloneable,
 	 * @param collection
 	 *            the collection of elements to add
 	 */
-	public LinkedHashSet(Collection collection) {
+	public LinkedHashSet(Collection<? extends E> collection) {
 		super(new LinkedHashMap(collection.size() < 6 ? 11
 				: collection.size() * 2));
 		Iterator it = collection.iterator();

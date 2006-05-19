@@ -24,7 +24,7 @@ import java.lang.ref.WeakReference;
  * optional operations are supported, adding and removing. Keys and values can
  * be any objects.
  */
-public class WeakHashMap extends AbstractMap implements Map {
+public class WeakHashMap<K,V> extends AbstractMap<K,V> implements Map<K,V> {
 
 	private final ReferenceQueue referenceQueue;
 
@@ -40,12 +40,12 @@ public class WeakHashMap extends AbstractMap implements Map {
 
 	private static final int DEFAULT_SIZE = 16;
 
-	private static final class Entry extends WeakReference implements Map.Entry {
+        private static final class Entry<K,V> extends WeakReference<K> implements Map.Entry<K,V> {
 		int hash;
 
 		boolean isNull;
 
-		Object value;
+		V value;
 
 		Entry next;
 
@@ -53,23 +53,23 @@ public class WeakHashMap extends AbstractMap implements Map {
 			Object get(Map.Entry entry);
 		}
 
-		Entry(Object key, Object object, ReferenceQueue queue) {
+		Entry(K key, V object, ReferenceQueue<? super K> queue) {
 			super(key, queue);
 			isNull = key == null;
 			hash = isNull ? 0 : key.hashCode();
 			value = object;
 		}
 
-		public Object getKey() {
+		public K getKey() {
 			return super.get();
 		}
 
-		public Object getValue() {
+		public V getValue() {
 			return value;
 		}
 
-		public Object setValue(Object object) {
-			Object result = value;
+		public V setValue(V object) {
+			V result = value;
 			value = object;
 			return result;
 		}
@@ -388,11 +388,11 @@ public class WeakHashMap extends AbstractMap implements Map {
 	 *            the key
 	 * @return the value of the mapping with the specified key
 	 */
-	public Object get(Object key) {
+	public V get(Object key) {
 		poll();
 		if (key != null) {
 			int index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
-			Entry entry = elementData[index];
+			Entry<K,V> entry = elementData[index];
 			while (entry != null) {
 				if (key.equals(entry.get()))
 					return entry.value;
@@ -400,7 +400,7 @@ public class WeakHashMap extends AbstractMap implements Map {
 			}
 			return null;
 		}
-		Entry entry = elementData[0];
+		Entry<K,V> entry = elementData[0];
 		while (entry != null) {
 			if (entry.isNull)
 				return entry.value;
@@ -574,10 +574,10 @@ public class WeakHashMap extends AbstractMap implements Map {
 	 * @return the value of the removed mapping or null if key is not a key in
 	 *         this WeakHashMap
 	 */
-	public Object remove(Object key) {
+	public V remove(Object key) {
 		poll();
 		int index = 0;
-		Entry entry, last = null;
+		Entry<K,V> entry, last = null;
 		if (key != null) {
 			index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
 			entry = elementData[index];

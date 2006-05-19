@@ -21,7 +21,7 @@ package java.lang.ref;
  * 
  * @since JDK1.2
  */
-public class WeakReference extends java.lang.ref.Reference {
+public class WeakReference<T> extends java.lang.ref.Reference<T> {
 
 	/**
 	 * Constructs a new instance of this class.
@@ -32,7 +32,7 @@ public class WeakReference extends java.lang.ref.Reference {
 	 * @param q
 	 *            queue to register to the reference object with.
 	 */
-	public WeakReference(Object r, ReferenceQueue q) {
+	public WeakReference(T r, ReferenceQueue<? super T> q) {
 		initReference(r, q);
 	}
 
@@ -43,7 +43,7 @@ public class WeakReference extends java.lang.ref.Reference {
 	 * @param r
 	 *            referent to track.
 	 */
-	public WeakReference(Object r) {
+	public WeakReference(T r) {
 		initReference(r);
 	}
 }

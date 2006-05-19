@@ -24,8 +24,8 @@ import java.io.Serializable;
  * HashMap is an implementation of Map. All optional operations are supported,
  * adding and removing. Keys and values can be any objects.
  */
-public class HashMap extends AbstractMap implements Map, Cloneable,
-		Serializable {
+public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>,
+                Cloneable, Serializable {
 	private static final long serialVersionUID = 362498820763181265L;
 
 	transient int elementCount;
@@ -40,12 +40,12 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 
 	private static final int DEFAULT_SIZE = 16;
 
-	static class Entry extends MapEntry {
+    static class Entry<K,V> extends MapEntry<K,V> {
 		final int hash;
 
-		Entry next;
+                Entry<K,V> next;
 
-		Entry(Object theKey, Object theValue) {
+		Entry(K theKey, V theValue) {
 			super(theKey, theValue);
 			this.hash = (theKey == null) ? 0 : theKey.hashCode();
 		}
@@ -375,8 +375,8 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 *            the key
 	 * @return the value of the mapping with the specified key
 	 */
-	public Object get(Object key) {
-		Entry m = getEntry(key);
+	public V get(Object key) {
+                Entry<K,V> m = getEntry(key);
 		if (m != null) {
 			return m.value;
 		}
@@ -426,7 +426,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 * 
 	 * @return a Set of the keys
 	 */
-	public Set keySet() {
+	public Set<K> keySet() {
 		if (keySet == null) {
 			keySet = new AbstractSet() {
 				public boolean contains(Object object) {
@@ -535,8 +535,8 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 * @return the value of the removed mapping or null if key is not a key in
 	 *         this HashMap
 	 */
-	public Object remove(Object key) {
-		Entry entry = removeEntry(key);
+	public V remove(Object key) {
+                Entry<K,V> entry = removeEntry(key);
 		if (entry != null) {
 			return entry.value;
 		}
@@ -588,7 +588,7 @@ public class HashMap extends AbstractMap implements Map, Cloneable,
 	 * 
 	 * @return a Collection of the values
 	 */
-	public Collection values() {
+	public Collection<V> values() {
 		if (valuesCollection == null) {
 			valuesCollection = new AbstractCollection() {
 				public boolean contains(Object object) {
