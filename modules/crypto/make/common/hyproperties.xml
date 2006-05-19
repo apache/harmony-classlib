@@ -22,8 +22,7 @@
             <java location="src/main/java" />
         	<resources location="src/main/resources" />
          </main>
-         <test>
-            <java location="src/test/java" />
+         <test location="src/test">
             <resources location="src/test/resources" />
          </test>
          <natives location="src/natives" />
