@@ -401,6 +401,13 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         assertTrue(conn.getResponseCode() > 0);
     }
     
+    public void test_getOutputStream_afterConnection() throws Exception {
+        URLConnection uc = new URL("http://www.apache.org").openConnection();
+        uc.setDoOutput(true);
+        uc.connect();
+        assertNotNull(uc.getOutputStream());
+    }
+    
 	protected void setUp() {
 		try {
 			url = new URL(Support_Resources

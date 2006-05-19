@@ -685,27 +685,34 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * 
      */
     public OutputStream getOutputStream() throws IOException {
-        if (!doOutput)
+        if (!doOutput) {
             throw new ProtocolException(Msg.getString("K008e"));
+        }
 
         // you can't write after you read
-        if (sentRequest)
+        if (sentRequest) {
             throw new ProtocolException(Msg.getString("K0090"));
+        }
 
-        if (os != null)
+        if (os != null) {
             return os;
+        }
 
         // they are requesting a stream to write to. This implies a POST method
-        if (method == "GET")
-            setRequestMethod("POST");
+        if (method == "GET") {
+            method = "POST";
+        }
+        
         // If the request method is neither PUT or POST, then you're not writing
-        if (method != "PUT" && method != "POST")
+        if (method != "PUT" && method != "POST") {
             throw new ProtocolException(Msg.getString("K008f", method));
+        }
 
         int limit = -1;
         String contentLength = reqHeader.get("Content-Length");
-        if (contentLength != null)
+        if (contentLength != null) {
             limit = Integer.parseInt(contentLength);
+        }
 
         String encoding = reqHeader.get("Transfer-Encoding");
         if (httpVersion > 0 && encoding != null) {
