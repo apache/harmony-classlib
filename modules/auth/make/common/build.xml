@@ -134,7 +134,6 @@
                     <exclude name="org/apache/harmony/auth/internal/SecurityTest.java"/>
 
                     <!-- Harmony exclude list -->
-                    <exclude name="javax/security/auth/x500/X500PrincipalTest.java" />
                     <exclude name="tests/api/javax/security/auth/x500/X500PrincipalTest.java" />
 
                 </fileset>

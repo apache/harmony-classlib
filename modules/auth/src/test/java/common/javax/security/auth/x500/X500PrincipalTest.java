@@ -2099,16 +2099,18 @@ public class X500PrincipalTest extends TestCase {
                 0x30, 0x0B, 0x06, 0x03, 0x55, 0x04, 0x03,
                 // UTF8 String
                 0x0C, 0x04, (byte) 0xD0, (byte) 0xAF, 0x41, 0x41 }); // 0xD0AF == the last letter(capital) of Russian alphabet
-        list.add("CN=\\E0\\90\\AF", "CN=" + ((char) 1071), "CN="
-                + ((char) 1071), new byte[] { 0x30, 0x0D, 0x31, 0x0B, 0x30,
-                0x09, 0x06, 0x03, 0x55, 0x04, 0x03,
-                // UTF8 String
-                0x0C, 0x02, (byte) 0xD0, (byte) 0xAF }); // UTF8(0xE090AF that is not quite correct)== UTF8(0xD0AF) == the last letter(capital) of Russian alphabet
-        list.add("CN=\\F0\\80\\90\\AF", "CN=" + ((char) 1071), "CN="
-                + ((char) 1071), new byte[] { 0x30, 0x0D, 0x31, 0x0B, 0x30,
-                0x09, 0x06, 0x03, 0x55, 0x04, 0x03,
-                // UTF8 String
-                0x0C, 0x02, (byte) 0xD0, (byte) 0xAF }); // UTF8(0xF08090AF that is not quite correct)== UTF8(0xD0AF) == the last letter(capital) of Russian alphabet
+        // UTF-8(0xE090AF) is non-shortest form of UTF-8(0xD0AF)
+        //FIXME list.add("CN=\\E0\\90\\AF", "CN=" + ((char) 1071), "CN="
+        //        + ((char) 1071), new byte[] { 0x30, 0x0D, 0x31, 0x0B, 0x30,
+        //        0x09, 0x06, 0x03, 0x55, 0x04, 0x03,
+        //        // UTF8 String
+        //        0x0C, 0x02, (byte) 0xD0, (byte) 0xAF }); 
+        // UTF-8(0xF08090AF) is non-shortest form of UTF-8(0xD0AF)
+        //FIXME list.add("CN=\\F0\\80\\90\\AF", "CN=" + ((char) 1071), "CN="
+        //        + ((char) 1071), new byte[] { 0x30, 0x0D, 0x31, 0x0B, 0x30,
+        //        0x09, 0x06, 0x03, 0x55, 0x04, 0x03,
+        //        // UTF8 String
+        //        0x0C, 0x02, (byte) 0xD0, (byte) 0xAF });
         //FIXME        list.add("CN=\\D0", "CN=" + ((char) 65533), "CN=" + ((char) 65533),
         //                new byte[] { 0x30, 0x0C, 0x31, 0x0A, 0x30, 0x08, 0x06, 0x03,
         //                        0x55, 0x04, 0x03,
@@ -2657,18 +2659,18 @@ public class X500PrincipalTest extends TestCase {
                 // UTF8String: the last letter(capital) of Russian alphabet
                 0x0C, 0x02, (byte) 0xD0, (byte) 0xAF }, "CN=" + ((char) 1071),
                 "CN=" + ((char) 1071), "cn=" + ((char) 1103));
-        list.add(new byte[] { 0x30, 0x0E, 0x31, 0x0C, 0x30, 0x0A, 0x06, 0x03,
-                0x55, 0x04, 0x03,
-                // UTF8String: the last letter(capital) of Russian alphabet
-                0x0C, 0x03, (byte) 0xE0, (byte) 0x90, (byte) 0xAF }, "CN="
-                + ((char) 1071), "CN=" + ((char) 1071), "cn=" + ((char) 1103));
-        list.add(
-                new byte[] { 0x30, 0x0F, 0x31, 0x0D, 0x30, 0x0B, 0x06, 0x03,
-                        0x55, 0x04, 0x03,
-                        // UTF8String: the last letter(capital) of Russian alphabet
-                        0x0C, 0x04, (byte) 0xF0, (byte) 0x80, (byte) 0x90,
-                        (byte) 0xAF }, "CN=" + ((char) 1071), "CN="
-                        + ((char) 1071), "cn=" + ((char) 1103));
+        // FIXME list.add(new byte[] { 0x30, 0x0E, 0x31, 0x0C, 0x30, 0x0A, 0x06, 0x03,
+        //        0x55, 0x04, 0x03,
+        //        // UTF8String: the last letter(capital) of Russian alphabet
+        //        0x0C, 0x03, (byte) 0xE0, (byte) 0x90, (byte) 0xAF }, "CN="
+        //        + ((char) 1071), "CN=" + ((char) 1071), "cn=" + ((char) 1103));
+        // FIXME list.add(
+        //        new byte[] { 0x30, 0x0F, 0x31, 0x0D, 0x30, 0x0B, 0x06, 0x03,
+        //                0x55, 0x04, 0x03,
+        //                // UTF8String: the last letter(capital) of Russian alphabet
+        //                0x0C, 0x04, (byte) 0xF0, (byte) 0x80, (byte) 0x90,
+        //                (byte) 0xAF }, "CN=" + ((char) 1071), "CN="
+        //                + ((char) 1071), "cn=" + ((char) 1103));
         list.add(new byte[] { 0x30, 0x0C, 0x31, 0x0A, 0x30, 0x08, 0x06, 0x03,
                 0x55, 0x04, 0x03,
                 // PrintableString: char '$' is not in table 8 (X.680)
