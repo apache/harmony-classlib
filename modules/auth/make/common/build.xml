@@ -80,6 +80,7 @@
             <include name="org/ietf/jgss/*Test.java" />
             <include name="org/apache/harmony/auth/**/*Test.java" />
             <include name="org/apache/harmony/security/test/*.java" />
+            <include name="tests/api/javax/security/auth/x500/X500PrincipalTest.java" />
 
             <bootclasspath>
                 <fileset dir="${hy.target}/jre/lib/boot">
@@ -132,10 +133,6 @@
 
                     <!-- Not a test -->
                     <exclude name="org/apache/harmony/auth/internal/SecurityTest.java"/>
-
-                    <!-- Harmony exclude list -->
-                    <exclude name="tests/api/javax/security/auth/x500/X500PrincipalTest.java" />
-
                 </fileset>
             </batchtest>
         </junit>
