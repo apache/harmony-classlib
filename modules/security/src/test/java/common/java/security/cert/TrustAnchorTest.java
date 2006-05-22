@@ -23,7 +23,6 @@ package java.security.cert;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
@@ -405,13 +404,9 @@ public class TrustAnchorTest extends TestCase {
      * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorStringPublicKeybyteArray01()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+            throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         // sub testcase 1
         new TrustAnchor(validCaNameRfc2253, pk, getFullEncoding());
@@ -431,14 +426,9 @@ public class TrustAnchorTest extends TestCase {
      * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorStringPublicKeybyteArray02()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+            throws Exception {
 
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         new TrustAnchor(validCaNameRfc2253, pk, null);
     }
@@ -451,13 +441,9 @@ public class TrustAnchorTest extends TestCase {
      * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorStringPublicKeybyteArray03()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+            throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         byte[] nc = getEncodingPSOnly();
         byte[] ncCopy = (byte[])nc.clone();
@@ -479,13 +465,9 @@ public class TrustAnchorTest extends TestCase {
      * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorStringPublicKeybyteArray04()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+            throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         // sub testcase 1
         try {
@@ -517,13 +499,9 @@ public class TrustAnchorTest extends TestCase {
      * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorX500PrincipalPublicKeybyteArray01()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+            throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         X500Principal x500p = new X500Principal(validCaNameRfc2253);
         // sub testcase 1
@@ -544,13 +522,9 @@ public class TrustAnchorTest extends TestCase {
      * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorX500PrincipalPublicKeybyteArray02()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+            throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         X500Principal x500p = new X500Principal(validCaNameRfc2253);
 
@@ -565,13 +539,9 @@ public class TrustAnchorTest extends TestCase {
      * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorX500PrincipalPublicKeybyteArray03()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+            throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         byte[] nc = getEncodingPSOnly();
         byte[] ncCopy = (byte[])nc.clone();
@@ -594,13 +564,9 @@ public class TrustAnchorTest extends TestCase {
      * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorX500PrincipalPublicKeybyteArray04()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+            throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         X500Principal x500p = new X500Principal(validCaNameRfc2253);
         // sub testcase 1
@@ -665,13 +631,9 @@ public class TrustAnchorTest extends TestCase {
      * Expected: the same name must be returned by the method<br>
      * 
      */
-    public final void testGetCAPublicKey01() throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+    public final void testGetCAPublicKey01() throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         // sub testcase 1
         TrustAnchor ta =
@@ -715,13 +677,9 @@ public class TrustAnchorTest extends TestCase {
      * Expected: the same name must be returned by the method<br>
      * @throws InvalidKeySpecException
      */
-    public final void testGetCAName01() throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+    public final void testGetCAName01() throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         // sub testcase 1
         TrustAnchor ta =
@@ -787,14 +745,9 @@ public class TrustAnchorTest extends TestCase {
      * Expected: <code>null</code> as return value<br>
      * @throws InvalidKeySpecException
      */
-    public final void testGetTrustedCer02()
-        throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+    public final void testGetTrustedCer02() throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         // sub testcase 1
         TrustAnchor ta =
@@ -816,13 +769,9 @@ public class TrustAnchorTest extends TestCase {
      * by the method<br>
      * @throws InvalidKeySpecException
      */
-    public final void testGetCA01() throws InvalidKeySpecException {
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+    public final void testGetCA01() throws Exception {
+
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
         // sub testcase 1
         TrustAnchor ta =
@@ -865,8 +814,8 @@ public class TrustAnchorTest extends TestCase {
      * Test preconditions: several valid test objects created<br>
      * Expected: method returns not <code>null</code> in all cases<br>
      */
-    public final void testToString()
-        throws KeyStoreException, InvalidKeySpecException {
+    public final void testToString() throws Exception {
+
         KeyStore ks = TestUtils.getKeyStore(true, TestUtils.TRUSTED);
         if (ks == null) {
             fail(getName() + ": not performed (could not create test KeyStore)");
@@ -881,12 +830,7 @@ public class TrustAnchorTest extends TestCase {
 
         assertNotNull("#1", ta.toString());
 
-        PublicKey pk = null;
-        try {
-            pk = new TestKeyPair(keyAlg).getPublic();
-        } catch (NoSuchAlgorithmException e) {
-            fail(getName() + ": not performed (could not create test PublicKey)");
-        }
+        PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
 
         // sub testcase 2
