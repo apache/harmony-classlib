@@ -462,32 +462,45 @@ public class TrustAnchorTest extends TestCase {
      * or <code>caPublicKey</code> parameter is <code>null</code><br>
      * Test preconditions: pass <code>null</code> as mentioned parameter<br>
      * Expected: NullPointerException
-     * @throws InvalidKeySpecException
      */
     public final void testTrustAnchorStringPublicKeybyteArray04()
             throws Exception {
 
         PublicKey pk = new TestKeyPair(keyAlg).getPublic();
 
-        // sub testcase 1
+        // sub testcase 1: 'caName' param is null
         try {
             new TrustAnchor((String)null, pk, getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
         }
 
-        // sub testcase 2
+        // sub testcase 2: 'caPublicKey' param is null
         try {
             new TrustAnchor(validCaNameRfc2253, null, getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
         }
 
-        // sub testcase 3
+        // sub testcase 3: 'caName' and 'caPublicKey' params are null
         try {
             new TrustAnchor((String)null, null, getEncodingPSOnly());
             fail("NullPointerException has not been thrown");
         } catch (NullPointerException ok) {
+        }
+
+        // sub testcase 4: 'caName' param is empty
+        try {
+            new TrustAnchor("", pk, getEncodingPSOnly());
+            fail("IllegalArgumentException has not been thrown");
+        } catch (IllegalArgumentException ok) {
+        }
+
+        // sub testcase 5: 'caName' param is incorrect distinguished name
+        try {
+            new TrustAnchor("AID.11.12=A", pk, getEncodingPSOnly());
+            fail("IllegalArgumentException has not been thrown");
+        } catch (IllegalArgumentException ok) {
         }
     }
 

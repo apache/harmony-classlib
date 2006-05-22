@@ -93,7 +93,12 @@ public class TrustAnchor {
         }
 
         this.trustedCert = null;
+
         // X500Principal checks caName validity
+        if (caName.length() == 0) {
+            throw new IllegalArgumentException(
+                    "the caName parameter is empty string");
+        }
         this.caPrincipal = new X500Principal(this.caName);
     }
 
