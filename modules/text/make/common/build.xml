@@ -106,7 +106,6 @@
                     <exclude name="org/apache/harmony/text/tests/java/text/CollatorTest.java"/>
                     <exclude name="org/apache/harmony/text/tests/java/text/DecimalFormatTest.java"/>
                     <exclude name="org/apache/harmony/text/tests/java/text/MessageFormatTest.java"/>
-                    <exclude name="org/apache/harmony/text/tests/java/text/NumberFormatTest.java"/>
                 </fileset>
             </batchtest>
         </junit>
