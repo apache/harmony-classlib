@@ -28,6 +28,11 @@ import java.io.Serializable;
  */
 public class NTDomainPrincipal implements Principal, Serializable {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = 7574453578624887003L;
+
     // Domain name
     private String name;
 

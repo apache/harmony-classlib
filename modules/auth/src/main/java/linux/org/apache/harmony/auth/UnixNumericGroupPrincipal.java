@@ -28,6 +28,11 @@ import java.security.Principal;
  */
 public class UnixNumericGroupPrincipal implements Serializable, Principal {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = -535408497353506159L;
+
     // Group id
     private long gid;
     // Group name

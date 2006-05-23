@@ -259,6 +259,11 @@ public class DefaultConfigurationParser {
     public static class InvalidFormatException extends Exception {
         
         /**
+         * @serial
+         */
+        private static final long serialVersionUID = -1676412136985823379L;
+
+        /**
          *  Constructor with detailed message parameter.
          * 
          * @param message - the detail message.

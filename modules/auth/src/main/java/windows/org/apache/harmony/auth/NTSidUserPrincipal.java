@@ -26,6 +26,11 @@ package org.apache.harmony.auth;
 public class NTSidUserPrincipal extends NTSid {
 
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = -76980455882379611L;
+
+    /**
      * A constructor which takes user SID as its only argumant. 
      * @param sid user SID
      */

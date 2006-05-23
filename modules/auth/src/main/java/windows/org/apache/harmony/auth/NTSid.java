@@ -29,6 +29,11 @@ import java.io.Serializable;
  */
 public class NTSid implements Serializable, Principal {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = 5589132933506948177L;
+
     // SID
     private String sid;
 

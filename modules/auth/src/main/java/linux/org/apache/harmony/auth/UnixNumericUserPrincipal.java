@@ -28,6 +28,11 @@ import java.security.Principal;
  */
 public class UnixNumericUserPrincipal implements Serializable, Principal {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = -8301723108164907822L;
+
     // User id
     private long uid;
 

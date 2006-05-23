@@ -27,6 +27,11 @@ package org.apache.harmony.auth;
 public class NTSidPrimaryGroupPrincipal extends NTSid {
     
     /**
+     * @serial
+     */
+    private static final long serialVersionUID = 1652712324814773197L;
+
+    /**
      * A constructor which takes group SID as its only argumant. 
      * @param sid group SID
      */

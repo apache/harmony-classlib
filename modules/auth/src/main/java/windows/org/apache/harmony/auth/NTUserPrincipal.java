@@ -28,6 +28,11 @@ import java.io.Serializable;
  */
 public class NTUserPrincipal implements Serializable, Principal {
 
+    /**
+     * @serial
+     */
+    private static final long serialVersionUID = 7585428904927483501L;
+
     // User name
     private String name;
 
