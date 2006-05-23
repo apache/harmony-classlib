@@ -1,4 +1,4 @@
-/* Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,14 @@
 
 #define PORT_LIB_OPTION "_org.apache.harmony.vmi.portlib"
 
-#define HY_COPYRIGHT_STRING "(c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."
+#define HY_COPYRIGHT_STRING "(c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable."
 
 #define HY_PATH_SLASH DIR_SEPARATOR
+
+/* Tools launchers will invoke HY_TOOLS_PACKAGE+"."+<execname>+"."+HY_TOOLS_MAIN_TYPE */
+#define HY_TOOLS_PACKAGE "org.apache.harmony.tools"
+#define HY_TOOLS_MAIN_TYPE "Main"
+#define HY_TOOLS_PATH "tools.jar"
 
 #if defined(WIN32)
 #define PLATFORM_STRNICMP strnicmp
@@ -59,6 +64,10 @@ UDATA VMCALL gpProtectedMain PROTOTYPE ((struct haCmdlineOptions * args));
 IDATA convertString
 PROTOTYPE ((JNIEnv * env, HyPortLibrary * portLibrary, jclass stringClass,
             jmethodID stringMid, char *chars, jstring * str));
+int arrangeToolsArgs
+PROTOTYPE ((HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *mainClass));
+int augmentToolsPath
+PROTOTYPE ((HyPortLibrary * portLibrary, int *argc, char ***argv));
 static IDATA addJreDirToPath
 PROTOTYPE ((HyPortLibrary * portLibrary, char *newPathToAdd, char **argv));
 int main_runJavaMain
@@ -107,136 +116,160 @@ gpProtectedMain (struct haCmdlineOptions *args)
   char *newPathToAdd;
   char *propertiesFileName = NULL;
   char *exeName;
+  char *exeBaseName;
   char *endPathPtr;
-  //jint (JNICALL *JNI_CreateJavaVM)(JavaVM**, JNIEnv**, JavaVMInitArgs*);
   UDATA handle;
   int javaRc = 0;
   char defaultDllName[] = "clearvm";
   char defaultDirName[] = "default";
   int rc = -1;
   int showVersion = 0;
+  int genericLauncher = 0;
+  char *str;
+  char *knownGenericNames[] = { "java", "java.exe", "javaw.exe", NULL };
 
   PORT_ACCESS_FROM_PORT (args->portLibrary);
 
-  if (argc <= 1)
-    {
-      hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
-                     "Harmony java launcher using vmi interface\n");
+  /* Find out name of the executable we are running as */
+  hysysinfo_get_executable_name (argv[0], &exeName);
+
+  /* Pick out the file basename */
+  exeBaseName = strrchr(exeName, HY_PATH_SLASH);
+  if (exeBaseName == NULL) {
+	  exeBaseName = exeName;
+  } else {
+	  exeBaseName += 1;
+  }
+
+  /* Flag whether we are the generic java launcher (or a tool) */
+  i = 0;
+  str = knownGenericNames[i];
+  while(str != NULL) {
+      genericLauncher = 0 == strcmp (str, exeBaseName);
+	  if (genericLauncher) {
+		  break;
+	  } else {
+		  str = knownGenericNames[++i];
+	  }
+  }
+  
+  if (genericLauncher) {
+	/* The generic launcher needs at least one argument, otherwise
+	 * print out a usage message.
+	 */
+	if (argc <= 1) {
+      hyfile_printf (PORTLIB, HYPORT_TTY_OUT, "Harmony java launcher\n");
       hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
       hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
-                     "java [-vm:vmdll -vmdir:dir -D... [-X...]] classname [args]\n");
+                     "java [-vm:vmdll -vmdir:dir -D... [-X...]] [args]\n");
       return 0;
     }
-  /* Find the class to load. First arguement to launcher not starting with - */
 
-  for (i = 1; i < argc; i++)
-    {
-      if ('-' != argv[i][0])
-        {
-          classArg = i;         /* save position */
-          mainClass = argv[i];  /* save class to execute */
-          break;
+	/* We are the generic launcher, figure out if we have a main class
+	* to run (the first argument that does not start with a '-', or if we
+	* have a '-jar' argument.
+	*/
+	for (i = 1; i < argc; i++) {
+		if ((0 == strcmp ("-cp", argv[i])) ||
+		    (0 == strcmp ("-classpath", argv[i]))) {
+			/* Skip the classpath argument while looking for main class */
+			i++;
+			continue;
+		}
+		if (0 == strcmp ("-jar", argv[i])) {
+			/* The arg is a JAR file to run */
+			isStandaloneJar = 1;
+		}
+		if (0 == strcmp ("-version", argv[i])) {
+			/* We are being asked to print our version, and quit */
+			dumpVersionInfo (PORTLIB);
+			hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
+			return 0;
+		}
+		if (0 == strcmp ("-showversion", argv[i])) {
+			/* We are being asked to print our version and continue */
+			showVersion = 1;
+		}
+		if ('-' != argv[i][0]) {
+			/* This is the main class */
+			classArg = i;         /* save position */
+			mainClass = argv[i];  /* save class to execute */
+			break;
+		}
+	} /* end for-loop */
+  }	else {
+		/* We are a tool launcher: main class deduced from exe name */
+	    mainClass = hymem_allocate_memory (
+			strlen(HY_TOOLS_PACKAGE) + strlen(exeBaseName) + strlen (HY_TOOLS_MAIN_TYPE) + 3);
+      if (mainClass == NULL) {
+          /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
+          PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR, HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
+          goto bail;
         }
-      else if ((strcmp ("-cp", argv[i]) == 0)
-               || (strcmp ("-classpath", argv[i]) == 0))
-        {
-          i++;                  /* Skip the next arg */
-        }
+	  strcpy (mainClass, HY_TOOLS_PACKAGE);
+      strcat (mainClass, ".");
+	  if (NULL == (str = strchr (exeBaseName, '.'))) {
+          strcat (mainClass, exeBaseName);
+	      strcat (mainClass, ".");
+	  } else {
+		  strncat (mainClass, exeBaseName, (str - exeBaseName + 1));
+	  }
+	  strcat (mainClass, HY_TOOLS_MAIN_TYPE);
 
-      if (0 == strcmp ("-version", argv[i]))
-        {
-          if (!versionWritten)
-            {
-              dumpVersionInfo (PORTLIB);
-              hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
-                             HY_COPYRIGHT_STRING "\n");
-              copyrightWritten = 1;
-              versionWritten = 1;
-            }
-          return 0;
-        }
+	  /* Now ensure tools JAR is on classpath */
+	  augmentToolsPath(args->portLibrary, &argc, &argv);
+	  classArg = arrangeToolsArgs(args->portLibrary, &argc, &argv, mainClass);
+	}
 
-      if (0 == strcmp ("-showversion", argv[i]))
-        {
-          showVersion = 1;
-        }
+  /* At this point we either have a main class or know that we are running a JAR */
 
-      if (strcmp ("-jar", argv[i]) == 0)
-        {
-          isStandaloneJar = 1;
-        }
-    }
   /* Find the vm dll */
   vmdll = vmdll_parseCmdLine (PORTLIB, argc - 1, argv);
-  if (!vmdll)
-    {
-      vmdll = defaultDllName;
-    }
+  if (!vmdll) {
+     vmdll = defaultDllName;
+  }
 
   /* Find the directory of the dll and set up the path */
   vmdllsubdir = vmdlldir_parseCmdLine (PORTLIB, argc - 1, argv);
-  if (!vmdllsubdir)
-    {
-      isJvmSubDir = 1;
+  if (!vmdllsubdir) {
       vmdllsubdir = defaultDirName;
-    }
-  else
-    {
-      isJvmSubDir = 1;
-    }
+   }
 
-  /* if jvm dlls are located in a subdirectory off of jre/bin */
+  /* jvm dlls are located in a subdirectory off of jre/bin */
   /* setup path to dll named in -vm argument                      */
-  if (isJvmSubDir)
-    {
-      hysysinfo_get_executable_name (argv[0], &exeName);
-      endPathPtr = strrchr (exeName, DIR_SEPERATOR);
-      endPathPtr[1] = '\0';
-      newPathToAdd =
-        hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) + 1);
-      if (newPathToAdd == NULL)
-        {
-          /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
-          PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
-                               HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
-          goto bail;
-        }
-
-      vmiPath =
-        hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) +
-                               strlen (vmdll) +
-                               strlen (DIR_SEPERATOR_STRING) + 1);
-      if (vmiPath == NULL)
-        {
-          /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
-          PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
-                               HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
-          goto bail;
-        }
-      vmiPath[0] = '\0';
-      strcpy (newPathToAdd, exeName);
-      strcat (newPathToAdd, vmdllsubdir);
-      strcpy (vmiPath, newPathToAdd);
-      strcat (vmiPath, DIR_SEPERATOR_STRING);
-      strcat (vmiPath, vmdll);
-      rc = addJreDirToPath (PORTLIB, newPathToAdd, argv);
-      if (rc == -1)
-        {
-          hytty_printf (PORTLIB, "addJreDirToPath Failed\n");
-          goto bail;
-        }
+    hysysinfo_get_executable_name (argv[0], &exeName);
+    endPathPtr = strrchr (exeName, DIR_SEPERATOR);
+    endPathPtr[1] = '\0';
+    newPathToAdd = hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) + 1);
+    if (newPathToAdd == NULL) {
+        /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
+        PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
+                            HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
+        goto bail;
     }
-  else
+    vmiPath =
+    hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) +
+                            strlen (vmdll) +
+                            strlen (DIR_SEPERATOR_STRING) + 1);
+    if (vmiPath == NULL)
     {
-      vmiPath = hymem_allocate_memory (strlen (vmdll) + 1);
-      if (vmiPath == NULL)
-        {
-          /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
-          PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
-                               HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
-          goto bail;
-        }
-      strcpy (vmiPath, vmdll);
+        /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
+        PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
+                            HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
+        goto bail;
+    }
+    vmiPath[0] = '\0';
+    strcpy (newPathToAdd, exeName);
+    strcat (newPathToAdd, vmdllsubdir);
+    strcpy (vmiPath, newPathToAdd);
+    strcat (vmiPath, DIR_SEPERATOR_STRING);
+    strcat (vmiPath, vmdll);
+
+    rc = addJreDirToPath (PORTLIB, newPathToAdd, argv);
+    if (rc == -1)
+    {
+        hytty_printf (PORTLIB, "addJreDirToPath Failed\n");
+        goto bail;
     }
 
   if (showVersion == 1)
@@ -285,6 +318,10 @@ gpProtectedMain (struct haCmdlineOptions *args)
       goto bail;
     }
 bail:
+  if (mainClass)
+  {
+	  hymem_free_memory (mainClass);
+  }
   if (propertiesFileName)
     {
       hymem_free_memory (propertiesFileName);
@@ -299,6 +336,143 @@ bail:
     }
   return 0;
 }
+
+
+/**
+ * Arrange the argument list so that -J options come before the main
+ * tools class, and tools options come after.
+ */
+int
+arrangeToolsArgs (HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *mainClass)
+{
+  int argc = *pargc;
+  char **argv = *pargv;
+  char **newargv;
+  int i, rc;
+  int newargvPos;
+  PORT_ACCESS_FROM_PORT(portLibrary);
+
+  /* Make room for the main tools class */
+  newargv = hymem_allocate_memory ((argc + 1) * sizeof(pargv));
+  if (NULL == newargv) {
+    /* HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY=Internal VM error\: VM startup error: Out of memory\n */
+    portLibrary->nls_printf (portLibrary, HYNLS_ERROR,
+                             HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY);
+
+    hytty_err_printf (PORTLIB, "Failed to allocate more memory for tools main class\n");
+    return 1;
+  }
+
+  
+  /* Keep the exe name in position zero */
+  newargvPos = 0;
+  newargv[newargvPos++] = argv[0];
+
+  /* Copy any -J arguments to the left hand side of the main class */
+  for (i = 1; i < argc; i++) {
+	  if (0 == strncmp (argv[i], "-J", 2)) {
+	    newargv[newargvPos++] = argv[i] + 2; /* Remove the -J */
+		/* if it was specifying the classpath, take the next arg across too */
+		if ((0 == strncmp(argv[i], "-J-cp", 5)) ||
+			(0 == strncmp(argv[i], "-J-classpath", 12))) {
+				newargv[newargvPos++] = argv[++i];
+		}
+	  }
+  }
+
+  /* Insert the tools main class */
+  rc = newargvPos; /* We will return this position to the caller */
+  newargv[newargvPos++] = mainClass;
+
+  /* Now copy remaining arguments to the right hand side of the main class */
+  for (i = 1; i < argc; i++) {
+	  if (0 != strncmp (argv[i], "-J", 2)) {
+	    newargv[newargvPos++] = argv[i];
+	  } else {
+		  /* Remember to ignore classpath args */
+		 if ((0 == strncmp(argv[i], "-J-cp", 5)) ||
+			 (0 == strncmp(argv[i], "-J-classpath", 12))) {
+				i++;
+		 }
+	  }
+  }
+
+  *pargc +=1;
+  *pargv = newargv;
+
+  return rc;
+}
+
+
+/**
+ * Add the tools.jar to the application classpath.
+ */
+int
+augmentToolsPath (HyPortLibrary * portLibrary, int *pargc, char ***pargv)
+{
+  int argc = *pargc;
+  char **argv = *pargv;
+  char **newargv;
+  int i;
+  U_16 separator;
+  char *classpath;
+  char *newClasspath;
+  int classpathLen;
+  PORT_ACCESS_FROM_PORT(portLibrary);
+
+  /* If there is already a classpath argument, we add our tools to it */
+  for (i = 1; i < argc; i++) {
+    if ((0 == strncmp (argv[i], "-J-cp", 5)) ||
+		(0 == strncmp (argv[i], "-J-classpath", 11))) {
+      classpath = argv[++i];
+	  if (NULL == classpath) {
+		  return 1;
+	  }
+	  classpathLen = strlen (classpath);
+	  separator = hysysinfo_get_classpathSeparator();
+	  newClasspath = hymem_allocate_memory (
+		  classpathLen + sizeof(separator) + strlen (HY_TOOLS_PATH) + 1);
+      if (NULL == newClasspath) {
+        /* HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY=Internal VM error\: VM startup error: Out of memory\n */
+        portLibrary->nls_printf (portLibrary, HYNLS_ERROR,
+                                 HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY);
+
+        hytty_err_printf (PORTLIB, "Failed to allocate memory for tools path\n");
+        return 1;
+      }
+	  strcpy (newClasspath, classpath);
+	  newClasspath[classpathLen++] = (char)(separator & 0xFF);
+	  newClasspath[classpathLen] = '\0';
+	  strcat(newClasspath, HY_TOOLS_PATH);
+	  argv[i] = newClasspath;
+	  return 0;
+	}
+  }
+
+  /* There was no classpath defined, so add one */
+  newargv = hymem_allocate_memory ((argc + 2) * sizeof(pargv));
+  if (NULL == newargv) {
+    /* HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY=Internal VM error\: VM startup error: Out of memory\n */
+    portLibrary->nls_printf (portLibrary, HYNLS_ERROR,
+                             HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY);
+
+    hytty_err_printf (PORTLIB, "Failed to allocate more memory for tools path\n");
+    return 1;
+  }
+
+  for (i = 0; i < argc; i++) {
+	  newargv[i] = argv[i];
+  }
+  newargv[i++]="-J-cp";
+  newargv[i++]=HY_TOOLS_PATH;
+  newargv[i]=NULL;
+
+  *pargc +=2;
+  *pargv = newargv;
+
+  return 0;
+}
+
 
 /**
  * Scan for the -vm: option and return the associated value, or NULL
@@ -550,7 +724,6 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   rc = readPropertiesFile (portLibrary, propertiesFileName, fileContentsPtr);
   if (rc == 0)
     {
-
       lineDelimiter = strstr (fileContents, PLATFORM_LINE_DELIMITER);
       startOfLine = fileContents;
       /* note this logic means you need a line feed at the end of every line */
@@ -772,7 +945,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
 static IDATA
 addJreDirToPath (HyPortLibrary * portLibrary, char *newPathToAdd, char **argv)
 {
-  char *tempchar = NULL;
+  char *oldPath = NULL;
   char *variableName = NULL;
   char *separator = NULL;
   UDATA newPathLength;
@@ -792,10 +965,10 @@ addJreDirToPath (HyPortLibrary * portLibrary, char *newPathToAdd, char **argv)
   separator = ":";
 #endif
 
-  tempchar = getenv (variableName);
-  if (!tempchar)
-    tempchar = "";
-  newPathLength = strlen (tempchar) + strlen (newPathToAdd) + strlen (variableName) + 3;        /* 3 = separator + equals + EOL */
+  oldPath = getenv (variableName);
+  if (!oldPath)
+    oldPath = "";
+  newPathLength = strlen (oldPath) + strlen (newPathToAdd) + strlen (variableName) + 3;        /* 3 = separator + equals + EOL */
   newPath = hymem_allocate_memory (newPathLength);
 
   if (!newPath)
@@ -804,12 +977,12 @@ addJreDirToPath (HyPortLibrary * portLibrary, char *newPathToAdd, char **argv)
   strcat (newPath, "=");
   strcat (newPath, newPathToAdd);
   strcat (newPath, separator);
-  strcat (newPath, tempchar);
+  strcat (newPath, oldPath);
 
 #if defined(WIN32)
   rc = _putenv (newPath);
 #else
-  if (strstr (tempchar, newPathToAdd) == NULL)
+  if (strstr (oldPath, newPathToAdd) == NULL)
     {
       rc = putenv (newPath);
       execv (exeName, argv);
