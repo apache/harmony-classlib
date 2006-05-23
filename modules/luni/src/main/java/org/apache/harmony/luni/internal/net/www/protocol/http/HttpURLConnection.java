@@ -22,12 +22,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Authenticator;
+import java.net.CacheRequest;
+import java.net.CacheResponse;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.ProxySelector;
+import java.net.ResponseCache;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketPermission;
@@ -70,6 +73,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     private InputStream uis;
 
     OutputStream socketOut;
+    
+    OutputStream cacheOut;
+    
+    private ResponseCache responseCache;
+    
+    private CacheResponse cacheResponse;
+    
+    private CacheRequest cacheRequest;
+        
+    private boolean hasTriedCache = false;
 
     private HttpOutputStream os;
 
@@ -112,6 +125,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         public void close() throws IOException {
             bytesRemaining = 0;
             closeSocket();
+            // if user has set useCache to true and cache exists, aborts it when
+            // closing
+            if (useCaches && null != cacheRequest) {
+                cacheRequest.abort();
+            }
         }
 
         public int available() throws IOException {
@@ -125,6 +143,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             if (bytesRemaining <= 0)
                 return -1;
             int result = is.read();
+            // if user has set useCache to true and cache exists, writes to
+            // cache
+            if (useCaches && null != cacheOut) {
+                cacheOut.write(result);
+            }
             bytesRemaining--;
             return result;
         }
@@ -141,8 +164,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             if (length > bytesRemaining)
                 length = bytesRemaining;
             int result = is.read(buf, offset, length);
-            if (result > 0)
+            if (result > 0) {
                 bytesRemaining -= result;
+                // if user has set useCache to true and cache exists, writes to
+                // cache
+                if (useCaches && null != cacheOut) {
+                    cacheOut.write(buf, offset, result);
+                }
+            }
             return result;
         }
 
@@ -170,6 +199,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         public void close() throws IOException {
             atEnd = true;
             closeSocket();
+            // if user has set useCache to true and cache exists, abort when
+            // closing
+            if (useCaches && null != cacheRequest) {
+                cacheRequest.abort();
+            }
         }
 
         public int available() throws IOException {
@@ -201,7 +235,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             if (atEnd)
                 return -1;
             bytesRemaining--;
-            return is.read();
+            int result = is.read();
+            // if user has set useCache to true and cache exists, write to cache
+            if (useCaches && null != cacheOut) {
+                cacheOut.write(result);
+            }
+            return result;
         }
 
         public int read(byte[] buf, int offset, int length) throws IOException {
@@ -218,8 +257,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             if (length > bytesRemaining)
                 length = bytesRemaining;
             int result = is.read(buf, offset, length);
-            if (result > 0)
+            if (result > 0) {
                 bytesRemaining -= result;
+                // if user has set useCache to true and cache exists, write to
+                // cache
+                if (useCaches && null != cacheOut) {
+                    cacheOut.write(buf, offset, result);
+                }
+            }
             return result;
         }
 
@@ -434,6 +479,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         } catch (URISyntaxException e) {
             // do nothing.
         }
+        responseCache = ResponseCache.getDefault();
     }
 
     /**
@@ -466,6 +512,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     public void connect() throws IOException {
         if (connected)
             return;
+        if (getFromCache()) {
+            return;
+        }
         Socket socket;
         int connectTimeout = getConnectTimeout();
         InetAddress host = getHostAddress();
@@ -481,6 +530,43 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         connected = true;
         socketOut = socket.getOutputStream();
         is = new BufferedInputStream(socket.getInputStream());
+    }
+    
+    // Tries to get head and body from cache, return true if has got this time or
+    // already got before
+    private boolean getFromCache() throws IOException {
+        if (useCaches && null != responseCache && !hasTriedCache) {
+            hasTriedCache = true;
+            if (null == resHeader) {
+                resHeader = new Header();
+            }
+            cacheResponse = responseCache.get(uri, method, resHeader.getFieldMap());
+            if (null != cacheResponse) {
+                Map headMap = cacheResponse.getHeaders();
+                if (null!=headMap){
+                    resHeader = new Header(headMap);
+                }
+                is = cacheResponse.getBody();
+                if (null != is) {
+                    return true;
+                }
+            }
+        }
+        if (hasTriedCache && null != is) {
+            return true;
+        }
+        return false;
+    }
+
+    // if user sets useCache to true, tries to put response to cache if cache
+    // exists
+    private void putToCache() throws IOException {
+        if (useCaches && null != responseCache) {
+            cacheRequest = responseCache.put(uri, this);
+            if (null != cacheRequest) {
+                cacheOut = cacheRequest.getBody();
+            }
+        }
     }
 
     /**
@@ -536,11 +622,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * Answers <code>null</code> if there is fewer than <code>pos</code> fields
      * in the response header.
      *
-     * @return java.lang.String		The value of the field
-     * @param pos int				the position of the field from the top
+     * @return java.lang.String     The value of the field
+     * @param pos int               the position of the field from the top
      *
-     * @see 		#getHeaderField(String)
-     * @see 		#getHeaderFieldKey
+     * @see         #getHeaderField(String)
+     * @see         #getHeaderFieldKey
      */
     public String getHeaderField(int pos) {
         try {
@@ -605,7 +691,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * @since 1.4
      */
     public Map getHeaderFields() {
-        return resHeader.getFieldMap();
+        try {
+            // ensure that resHeader exists
+            getInputStream();
+            return resHeader.getFieldMap();
+        } catch (IOException e) {
+            return null;
+        }        
     }
 
     /**
@@ -735,6 +827,10 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             doRequest();
             return os;
         }
+        if(!connected){
+            // connect and see if there is cache available.
+            connect();
+        }
         return os = new HttpOutputStream();
 
     }
@@ -820,6 +916,10 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         // make sure we have a connection
         if (!connected)
             connect();
+        if (null != cacheResponse) {
+            // does not send if already has a response cache
+            return true;
+        }
         // send out the HTTP request
         socketOut.write(request);
         sentRequest = true;
@@ -854,6 +954,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             closeSocket();
             uis = new LimitedInputStream(0);
         }
+        putToCache();
     }
 
     /**

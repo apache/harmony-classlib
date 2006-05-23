@@ -47,7 +47,7 @@ public abstract class URLConnection {
 
 	private static boolean defaultAllowUserInteraction = false;
 
-	private static boolean defaultUseCaches = false;
+	private static boolean defaultUseCaches = true;
 
 	ContentHandler defaultHandler = new DefaultContentHandler();
 

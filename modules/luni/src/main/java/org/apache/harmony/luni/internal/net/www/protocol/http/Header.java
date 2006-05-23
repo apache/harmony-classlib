@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,6 +53,29 @@ public class Header implements Cloneable {
     public Header() {
     }
 
+    /**
+     * The alternative constructor which sets the input map as its initial
+     * keyTable.
+     * 
+     * @param map
+     *            the initial keyTable as a map
+     */
+    public Header(Map map) {
+        for (Iterator entries = map.entrySet().iterator(); entries.hasNext();) {
+            Map.Entry next = (Map.Entry) entries.next();
+            String key = (String) next.getKey();
+            props.add(key);
+            List value = (List) next.getValue();
+            LinkedList linkedList = new LinkedList();
+            for (Iterator iter = value.iterator(); iter.hasNext();) {
+                String element = (String) iter.next();
+                linkedList.add(element);
+                props.add(element);
+            }
+            keyTable.put(key, linkedList);
+        }
+    }
+    
     public Object clone() {
         try {
             Header clone = (Header) super.clone();
