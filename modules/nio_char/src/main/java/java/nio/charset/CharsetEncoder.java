@@ -202,7 +202,6 @@ public abstract class CharsetEncoder {
 		status = INIT;
 		malformAction = CodingErrorAction.REPORT;
 		unmapAction = CodingErrorAction.REPORT;
-		decoder = cs.newDecoder();
 		replaceWith(replacement);
 	}
 
@@ -722,18 +721,22 @@ public abstract class CharsetEncoder {
 	 *         replacement byte array.
 	 */
 	public boolean isLegalReplacement(byte[] repl) {
-		CodingErrorAction malform = decoder.malformedInputAction();
-		CodingErrorAction unmap = decoder.unmappableCharacterAction();
-		decoder.onMalformedInput(CodingErrorAction.REPORT);
-		decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
-		ByteBuffer in = ByteBuffer.wrap(repl);
-		CharBuffer out = CharBuffer.allocate((int) (repl.length * decoder
-				.maxCharsPerByte()));
-		CoderResult result = decoder.decode(in, out, true);
-		decoder.onMalformedInput(malform);
-		decoder.onUnmappableCharacter(unmap);
-		return !result.isError();
-	}
+        if (decoder == null) {
+            decoder = cs.newDecoder();
+        }
+
+        CodingErrorAction malform = decoder.malformedInputAction();
+        CodingErrorAction unmap = decoder.unmappableCharacterAction();
+        decoder.onMalformedInput(CodingErrorAction.REPORT);
+        decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+        ByteBuffer in = ByteBuffer.wrap(repl);
+        CharBuffer out = CharBuffer.allocate((int) (repl.length * decoder
+                .maxCharsPerByte()));
+        CoderResult result = decoder.decode(in, out, true);
+        decoder.onMalformedInput(malform);
+        decoder.onUnmappableCharacter(unmap);
+        return !result.isError();
+    }
 
 	/**
 	 * Gets this encoder's <code>CodingErrorAction</code> when malformed input

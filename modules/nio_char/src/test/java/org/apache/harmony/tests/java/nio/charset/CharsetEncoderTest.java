@@ -52,10 +52,21 @@ public class CharsetEncoderTest extends TestCase {
 		}
 	}
 
-	/**
-	 * Helper for contructor tests
-	 */
-	public static class MockCharsetEncoderForHarmony141 extends CharsetEncoder {
+    /**
+     * @tests java.nio.charset.CharsetEncoder.CharsetEncoder(
+     *        java.nio.charset.Charset, float, float)
+     */
+    public void test_ConstructorLjava_nio_charset_CharsetNull() {
+        // Regression for HARMONY-491
+        CharsetEncoder ech = new MockCharsetEncoderForHarmony491(null, 1, 1);
+        assertNull(ech.charset());
+    }
+
+    /**
+     * Helper for contructor tests
+     */
+
+    public static class MockCharsetEncoderForHarmony141 extends CharsetEncoder {
 
 		protected MockCharsetEncoderForHarmony141(Charset cs,
 				float averageBytesPerChar, float maxBytesPerChar) {
@@ -73,9 +84,25 @@ public class CharsetEncoderTest extends TestCase {
 		}
 	}
 
-	/*
-	 * Test malfunction encode(CharBuffer)
-	 */
+    public static class MockCharsetEncoderForHarmony491 extends CharsetEncoder {
+
+        public MockCharsetEncoderForHarmony491(Charset arg0, float arg1,
+                float arg2) {
+            super(arg0, arg1, arg2);
+        }
+
+        protected CoderResult encodeLoop(CharBuffer arg0, ByteBuffer arg1) {
+            return null;
+        }
+
+        public boolean isLegalReplacement(byte[] arg0) {
+            return true;
+        }
+    }
+
+    /*
+     * Test malfunction encode(CharBuffer)
+     */
 	public void test_EncodeLjava_nio_CharBuffer() throws Exception {
 		MockMalfunctionCharset cs = new MockMalfunctionCharset("mock", null);
 		try {
