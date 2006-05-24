@@ -2227,4 +2227,1005 @@ public class Collections {
         }
         return result;
     }
+
+    /**
+     * returns the immutable empty list
+     * 
+     */
+    public static List emptyList() {
+        return EMPTY_LIST;
+    }
+
+    /**
+     * returns the immutable empty set
+     * 
+     */
+    public static Set emptySet() {
+        return EMPTY_SET;
+    }
+
+    /**
+     * returns the immutable empty map
+     * 
+     */
+    public static Map emptyMap() {
+        return EMPTY_MAP;
+    }
+
+    /**
+     * Returns a dynamically typesafe view of the specified collection.
+     * 
+     * @param c the collection
+     * @param type the type of the elements is permitted to insert
+     * 
+     * @return a typesafe collection
+     */
+    public static Collection checkedCollection(Collection c, Class type) {
+        return new CheckedCollection(c, type);
+    }
+
+    /**
+     * Returns a dynamically typesafe view of the specified map.
+     * 
+     * @param c the map
+     * @param type the type of the elements is permitted to insert
+     * 
+     * @return a typesafe map
+     */
+    public static Map checkedMap(Map m, Class keyType, Class valueType) {
+        return new CheckedMap(m, keyType, valueType);
+    }
+
+    /**
+     * Returns a dynamically typesafe view of the specified list.
+     * 
+     * @param c the list
+     * @param type the type of the elements is permitted to insert
+     * 
+     * @return a typesafe list
+     */
+    public static List checkedList(List list, Class type) {
+        if (list instanceof RandomAccess) {
+            return new CheckedRandomAccessList(list, type);
+        } else {
+            return new CheckedList(list, type);
+        }
+    }
+
+    /**
+     * Returns a dynamically typesafe view of the specified set.
+     * 
+     * @param c the set
+     * @param type the type of the elements is permitted to insert
+     * 
+     * @return a typesafe set
+     */
+    public static Set checkedSet(Set s, Class type) {
+        return new CheckedSet(s, type);
+    }
+
+    /**
+     * Returns a dynamically typesafe view of the specified sorted map.
+     * 
+     * @param c the sorted map
+     * @param type the type of the elements is permitted to insert
+     * 
+     * @return a typesafe sorted map
+     */
+    public static SortedMap checkedSortedMap(SortedMap m, Class keyType,
+            Class valueType) {
+        return new CheckedSortedMap(m, keyType, valueType);
+    }
+
+    /**
+     * Adds all the specified elements to the specified collection
+     * 
+     * @param c the collection the elements are to be inserted into
+     * @param a the elemets to insert
+     * 
+     * @return true if the collection changed during insertion
+     * 
+     * @exception UnsupportedOperationException when the method is not supported
+     * @exception NullPointerException when c or elements is null, or elements
+     *            contains one or more null elements and c doesn't support null
+     *            elements
+     */
+    public static boolean addAll(Collection c, Object[] a) {
+        boolean modified = false;
+        for (int i = 0; i < a.length; i++) {
+            modified |= c.add(a[i]);
+        }
+        return modified;
+    }
+
+    /**
+     * Returns true if the collections have no elements in common
+     * 
+     * @param c1 the first collection
+     * @param c2 the second collection
+     * 
+     * @return true if the collections have no elements in common
+     * 
+     * @exception NullPointerException if one of the collections is null
+     */
+    public static boolean disjoint(Collection c1, Collection c2) {
+        if ((c1 instanceof Set) && !(c2 instanceof Set)
+                || (c2.size()) > c1.size()) {
+            Collection tmp = c1;
+            c1 = c2;
+            c2 = tmp;
+        }
+        Iterator it = c1.iterator();
+        while (it.hasNext()) {
+            if (c2.contains(it.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if specified object is instance of specified class. Used for a
+     * dynamically typesafe view of the collections.
+     * 
+     * @param obj - object is to be checked
+     * @param type - class of object that should be
+     * @return specified object
+     */
+    static Object checkType(Object obj, Class type) {
+        if (!type.isInstance(obj)) {
+            throw new ClassCastException("Attempt to insert " + obj.getClass()
+                    + " element into collection with element type " + type);
+        }
+        return obj;
+    }
+
+    /**
+     * Class represents a dynamically typesafe view of the specified collection.
+     */
+    private static class CheckedCollection implements Collection, Serializable {
+
+        Collection c;
+
+        Class type;
+
+        /**
+         * Constructs a dynamically typesafe view of the specified collection.
+         * 
+         * @param c - the collection for which an unmodifiable view is to be
+         *        constructed.
+         */
+        public CheckedCollection(Collection c, Class type) {
+            if (c == null) {
+                throw new NullPointerException();
+            }
+            this.c = c;
+            this.type = type;
+        }
+
+        /**
+         * @see java.util.Collection#size()
+         */
+        public int size() {
+            return c.size();
+        }
+
+        /**
+         * @see java.util.Collection#isEmpty()
+         */
+        public boolean isEmpty() {
+            return c.isEmpty();
+        }
+
+        /**
+         * @see java.util.Collection#contains(Object)
+         */
+        public boolean contains(Object obj) {
+            return c.contains(obj);
+        }
+
+        /**
+         * @see java.util.Collection#iterator()
+         */
+        public Iterator iterator() {
+            Iterator i = c.iterator();
+            if (i instanceof ListIterator) {
+                i = new CheckedListIterator((ListIterator) i, type);
+            }
+            return i;
+        }
+
+        /**
+         * @see java.util.Collection#toArray()
+         */
+        public Object[] toArray() {
+            return c.toArray();
+        }
+
+        /**
+         * @see java.util.Collection#toArray(Object[])
+         */
+        public Object[] toArray(Object[] arr) {
+            return c.toArray(arr);
+        }
+
+        /**
+         * @see java.util.Collection#add(Object)
+         */
+        public boolean add(Object obj) {
+            return c.add(checkType(obj, type));
+        }
+
+        /**
+         * @see java.util.Collection#remove(Object)
+         */
+        public boolean remove(Object obj) {
+            return c.remove(obj);
+        }
+
+        /**
+         * @see java.util.Collection#containsAll(Collection)
+         */
+        public boolean containsAll(Collection c1) {
+            return c.containsAll(c1);
+        }
+
+        /**
+         * @see java.util.Collection#addAll(Collection)
+         */
+        public boolean addAll(Collection c1) {
+            int size = c1.size();
+            if (size == 0) {
+                return false;
+            }
+            Object[] arr = new Object[size];
+            Iterator it = c1.iterator();
+            for (int i = 0; i < size; i++) {
+                arr[i] = checkType(it.next(), type);
+            }
+            boolean added = false;
+            for (int i = 0; i < size; i++) {
+                added |= c.add(arr[i]);
+            }
+            return added;
+        }
+
+        /**
+         * @see java.util.Collection#removeAll(Collection)
+         */
+        public boolean removeAll(Collection c1) {
+            return c.removeAll(c1);
+        }
+
+        /**
+         * @see java.util.Collection#retainAll(Collection)
+         */
+        public boolean retainAll(Collection c1) {
+            return c.retainAll(c1);
+        }
+
+        /**
+         * @see java.util.Collection#clear()
+         */
+        public void clear() {
+            c.clear();
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        public String toString() {
+            return c.toString();
+        }
+    }
+
+    /**
+     * Class represents a dynamically typesafe view of the specified
+     * ListIterator.
+     */
+    private static class CheckedListIterator implements ListIterator {
+
+        private ListIterator i;
+
+        private Class type;
+
+        /**
+         * Constructs a dynamically typesafe view of the specified ListIterator.
+         * 
+         * @param i - the listIterator for which a dynamically typesafe view to
+         *        be constructed.
+         */
+        public CheckedListIterator(ListIterator i, Class type) {
+            this.i = i;
+            this.type = type;
+        }
+
+        /**
+         * @see java.util.Iterator#hasNext()
+         */
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+
+        /**
+         * @see java.util.Iterator#next()
+         */
+        public Object next() {
+            return i.next();
+        }
+
+        /**
+         * @see java.util.Iterator#remove()
+         */
+        public void remove() {
+            i.remove();
+        }
+
+        /**
+         * @see java.util.ListIterator#hasPrevious()
+         */
+        public boolean hasPrevious() {
+            return i.hasPrevious();
+        }
+
+        /**
+         * @see java.util.ListIterator#previous()
+         */
+        public Object previous() {
+            return i.previous();
+        }
+
+        /**
+         * @see java.util.ListIterator#nextIndex()
+         */
+        public int nextIndex() {
+            return i.nextIndex();
+        }
+
+        /**
+         * @see java.util.ListIterator#previousIndex()
+         */
+        public int previousIndex() {
+            return i.previousIndex();
+        }
+
+        /**
+         * @see java.util.ListIterator#set(Object)
+         */
+        public void set(Object obj) {
+            i.set(checkType(obj, type));
+        }
+
+        /**
+         * @see java.util.ListIterator#add(Object)
+         */
+        public void add(Object obj) {
+            i.add(checkType(obj, type));
+        }
+    }
+
+    /**
+     * Class represents a dynamically typesafe view of the specified list.
+     */
+    private static class CheckedList extends CheckedCollection implements List {
+
+        List l;
+
+        /**
+         * Constructs a dynamically typesafe view of the specified list.
+         * 
+         * @param l - the list for which a dynamically typesafe view is to be
+         *        constructed.
+         */
+        public CheckedList(List l, Class type) {
+            super(l, type);
+            this.l = l;
+        }
+
+        /**
+         * @see java.util.List#addAll(int, Collection)
+         */
+        public boolean addAll(int index, Collection c1) {
+            int size = c1.size();
+            if (size == 0) {
+                return false;
+            }
+            Object[] arr = new Object[size];
+            Iterator it = c1.iterator();
+            for (int i = 0; i < size; i++) {
+                arr[i] = checkType(it.next(), type);
+            }
+            return l.addAll(index, Arrays.asList(arr));
+        }
+
+        /**
+         * @see java.util.List#get(int)
+         */
+        public Object get(int index) {
+            return l.get(index);
+        }
+
+        /**
+         * @see java.util.List#set(int, Object)
+         */
+        public Object set(int index, Object obj) {
+            return l.set(index, checkType(obj, type));
+        }
+
+        /**
+         * @see java.util.List#add(int, Object)
+         */
+        public void add(int index, Object obj) {
+            l.add(index, checkType(obj, type));
+        }
+
+        /**
+         * @see java.util.List#remove(int)
+         */
+        public Object remove(int index) {
+            return l.remove(index);
+        }
+
+        /**
+         * @see java.util.List#indexOf(Object)
+         */
+        public int indexOf(Object obj) {
+            return l.indexOf(obj);
+        }
+
+        /**
+         * @see java.util.List#lastIndexOf(Object)
+         */
+        public int lastIndexOf(Object obj) {
+            return l.lastIndexOf(obj);
+        }
+
+        /**
+         * @see java.util.List#listIterator()
+         */
+        public ListIterator listIterator() {
+            return new CheckedListIterator(l.listIterator(), type);
+        }
+
+        /**
+         * @see java.util.List#listIterator(int)
+         */
+        public ListIterator listIterator(int index) {
+            return new CheckedListIterator(l.listIterator(index), type);
+        }
+
+        /**
+         * @see java.util.List#subList(int, int)
+         */
+        public List subList(int fromIndex, int toIndex) {
+            return checkedList(l.subList(fromIndex, toIndex), type);
+        }
+
+        /**
+         * @see java.util.List#equals(Object)
+         */
+        public boolean equals(Object obj) {
+            return l.equals(obj);
+        }
+
+        /**
+         * @see java.util.List#hashCode()
+         */
+        public int hashCode() {
+            return l.hashCode();
+        }
+    }
+
+    /**
+     * Class represents a dynamically typesafe view of the specified
+     * randomAccessList.
+     */
+    private static class CheckedRandomAccessList extends CheckedList implements
+            RandomAccess {
+
+        /**
+         * Constructs a dynamically typesafe view of the specified
+         * randomAccessList.
+         * 
+         * @param l - the randomAccessList for which a dynamically typesafe view
+         *        is to be constructed.
+         */
+        public CheckedRandomAccessList(List l, Class type) {
+            super(l, type);
+        }
+    }
+
+    /**
+     * Class represents a dynamically typesafe view of the specified set.
+     */
+    private static class CheckedSet extends CheckedCollection implements Set {
+
+        /**
+         * Constructs a dynamically typesafe view of the specified set.
+         * 
+         * @param s - the set for which a dynamically typesafe view is to be
+         *        constructed.
+         */
+        public CheckedSet(Set s, Class type) {
+            super(s, type);
+        }
+
+        /**
+         * @see java.util.Set#equals(Object)
+         */
+        public boolean equals(Object obj) {
+            return c.equals(obj);
+        }
+
+        /**
+         * @see java.util.Set#hashCode()
+         */
+        public int hashCode() {
+            return c.hashCode();
+        }
+
+    }
+
+    /**
+     * Class represents a dynamically typesafe view of the specified map.
+     */
+    private static class CheckedMap implements Map, Serializable {
+
+        Map m;
+
+        Class keyType;
+
+        Class valueType;
+
+        /**
+         * Constructs a dynamically typesafe view of the specified map.
+         * 
+         * @param m - the map for which a dynamically typesafe view is to be
+         *        constructed.
+         */
+        private CheckedMap(Map m, Class keyType, Class valueType) {
+            if (m == null) {
+                throw new NullPointerException();
+            }
+            this.m = m;
+            this.keyType = keyType;
+            this.valueType = valueType;
+        }
+
+        /**
+         * @see java.util.Map#size()
+         */
+        public int size() {
+            return m.size();
+        }
+
+        /**
+         * @see java.util.Map#isEmpty()
+         */
+        public boolean isEmpty() {
+            return m.isEmpty();
+        }
+
+        /**
+         * @see java.util.Map#containsKey(Object)
+         */
+        public boolean containsKey(Object key) {
+            return m.containsKey(key);
+        }
+
+        /**
+         * @see java.util.Map#containsValue(Object)
+         */
+        public boolean containsValue(Object value) {
+            return m.containsValue(value);
+        }
+
+        /**
+         * @see java.util.Map#get(Object)
+         */
+        public Object get(Object key) {
+            return m.get(key);
+        }
+
+        /**
+         * @see java.util.Map#put(Object, Object)
+         */
+        public Object put(Object key, Object value) {
+            return m.put(checkType(key, keyType), checkType(value, valueType));
+        }
+
+        /**
+         * @see java.util.Map#remove(Object)
+         */
+        public Object remove(Object key) {
+            return m.remove(key);
+        }
+
+        /**
+         * @see java.util.Map#putAll(Map)
+         */
+        public void putAll(Map map) {
+            int size = map.size();
+            if (size == 0) {
+                return;
+            }
+            Map.Entry[] entries = new Map.Entry[size];
+            Iterator it = map.entrySet().iterator();
+            for (int i = 0; i < size; i++) {
+                Map.Entry e = (Map.Entry) it.next();
+                checkType(e.getKey(), keyType);
+                checkType(e.getValue(), valueType);
+                entries[i] = e;
+            }
+            for (int i = 0; i < size; i++) {
+                m.put(entries[i].getKey(), entries[i].getValue());
+            }
+        }
+
+        /**
+         * @see java.util.Map#clear()
+         */
+        public void clear() {
+            m.clear();
+        }
+
+        /**
+         * @see java.util.Map#keySet()
+         */
+        public Set keySet() {
+            return m.keySet();
+        }
+
+        /**
+         * @see java.util.Map#values()
+         */
+        public Collection values() {
+            return m.values();
+        }
+
+        /**
+         * @see java.util.Map#entrySet()
+         */
+        public Set entrySet() {
+            return new CheckedEntrySet(m.entrySet(), valueType);
+        }
+
+        /**
+         * @see java.util.Map#equals(Object)
+         */
+        public boolean equals(Object obj) {
+            return m.equals(obj);
+        }
+
+        /**
+         * @see java.util.Map#hashCode()
+         */
+        public int hashCode() {
+            return m.hashCode();
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        public String toString() {
+            return m.toString();
+        }
+
+        /**
+         * Class represents a dynamically typesafe view of the specified map
+         * entry.
+         */
+        private static class CheckedEntry implements Map.Entry {
+
+            Map.Entry e;
+
+            Class valueType;
+
+            /**
+             * Constructs a dynamically typesafe view of the specified map
+             * entry.
+             * 
+             * @param e - the map entry for which a dynamically typesafe view is
+             *        to be constructed.
+             */
+            public CheckedEntry(Map.Entry e, Class valueType) {
+                if (e == null) {
+                    throw new NullPointerException();
+                }
+                this.e = e;
+                this.valueType = valueType;
+            }
+
+            /**
+             * @see java.util.Map.Entry#getKey()
+             */
+            public Object getKey() {
+                return e.getKey();
+            }
+
+            /**
+             * @see java.util.Map.Entry#getValue()
+             */
+            public Object getValue() {
+                return e.getValue();
+            }
+
+            /**
+             * @see java.util.Map.Entry#setValue(Object)
+             */
+            public Object setValue(Object obj) {
+                return e.setValue(checkType(obj, valueType));
+            }
+
+            /**
+             * @see java.util.Map.Entry#equals(Object)
+             */
+            public boolean equals(Object obj) {
+                return e.equals(obj);
+            }
+
+            /**
+             * @see java.util.Map.Entry#hashCode()
+             */
+            public int hashCode() {
+                return e.hashCode();
+            }
+        }
+
+        /**
+         * Class represents a dynamically typesafe view of the specified entry
+         * set.
+         */
+        private static class CheckedEntrySet implements Set {
+
+            Set s;
+
+            Class valueType;
+
+            /**
+             * Constructs a dynamically typesafe view of the specified entry
+             * set.
+             * 
+             * @param s - the entry set for which a dynamically typesafe view is
+             *        to be constructed.
+             */
+            public CheckedEntrySet(Set s, Class valueType) {
+                this.s = s;
+                this.valueType = valueType;
+            }
+
+            /**
+             * @see java.util.Set#iterator()
+             */
+            public Iterator iterator() {
+                return new CheckedEntryIterator(s.iterator(), valueType);
+            }
+
+            /**
+             * @see java.util.Set#toArray()
+             */
+            public Object[] toArray() {
+                int thisSize = size();
+                Object[] array = new Object[thisSize];
+                Iterator it = iterator();
+                for (int i = 0; i < thisSize; i++) {
+                    array[i] = it.next();
+                }
+                return array;
+            }
+
+            /**
+             * @see java.util.Set#toArray(Object[])
+             */
+            public Object[] toArray(Object[] array) {
+                int thisSize = size();
+                if (array.length < thisSize) {
+                    array = (Object[]) Array.newInstance(array.getClass()
+                            .getComponentType(), thisSize);
+                }
+                Iterator it = iterator();
+                for (int i = 0; i < thisSize; i++) {
+                    array[i] = it.next();
+                }
+                if (thisSize < array.length) {
+                    array[thisSize] = null;
+                }
+                return array;
+            }
+
+            /**
+             * @see java.util.Set#retainAll(Collection)
+             */
+            public boolean retainAll(Collection c) {
+                return s.retainAll(c);
+            }
+
+            /**
+             * @see java.util.Set#removeAll(Collection)
+             */
+            public boolean removeAll(Collection c) {
+                return s.removeAll(c);
+            }
+
+            /**
+             * @see java.util.Set#containsAll(Collection)
+             */
+            public boolean containsAll(Collection c) {
+                return s.containsAll(c);
+            }
+
+            /**
+             * @see java.util.Set#addAll(Collection)
+             */
+            public boolean addAll(Collection c) {
+                throw new UnsupportedOperationException();
+            }
+
+            /**
+             * @see java.util.Set#remove(Object)
+             */
+            public boolean remove(Object o) {
+                return s.remove(o);
+            }
+
+            /**
+             * @see java.util.Set#contains(Object)
+             */
+            public boolean contains(Object o) {
+                return s.contains(o);
+            }
+
+            /**
+             * @see java.util.Set#add(Object)
+             */
+            public boolean add(Object o) {
+                throw new UnsupportedOperationException();
+            }
+
+            /**
+             * @see java.util.Set#isEmpty()
+             */
+            public boolean isEmpty() {
+                return s.isEmpty();
+            }
+
+            /**
+             * @see java.util.Set#clear()
+             */
+            public void clear() {
+                s.clear();
+            }
+
+            /**
+             * @see java.util.Set#size()
+             */
+            public int size() {
+                return s.size();
+            }
+
+            /**
+             * @see java.util.Set#hashCode()
+             */
+            public int hashCode() {
+                return s.hashCode();
+            }
+
+            /**
+             * @see java.util.Set#equals(Object)
+             */
+            public boolean equals(Object object) {
+                return s.equals(object);
+            }
+
+            /**
+             * Class represents a dynamically typesafe view of the specified
+             * entry iterator.
+             */
+            private static class CheckedEntryIterator implements Iterator {
+
+                Iterator i;
+
+                Class valueType;
+
+                /**
+                 * Constructs a dynamically typesafe view of the specified entry
+                 * iterator.
+                 * 
+                 * @param i - the entry iterator for which a dynamically
+                 *        typesafe view is to be constructed.
+                 */
+                public CheckedEntryIterator(Iterator i, Class valueType) {
+                    this.i = i;
+                    this.valueType = valueType;
+                }
+
+                /**
+                 * @see java.util.Iterator#hasNext()
+                 */
+                public boolean hasNext() {
+                    return i.hasNext();
+                }
+
+                /**
+                 * @see java.util.Iterator#remove()
+                 */
+                public void remove() {
+                    i.remove();
+                }
+
+                /**
+                 * @see java.util.Iterator#next()
+                 */
+                public Object next() {
+                    return new CheckedEntry((Map.Entry) i.next(), valueType);
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * Class represents a dynamically typesafe view of the specified sortedMap.
+     */
+    private static class CheckedSortedMap extends CheckedMap implements
+            SortedMap {
+
+        SortedMap sm;
+
+        /**
+         * Constructs a dynamically typesafe view of the specified sortedMap.
+         * 
+         * @param m - the sortedMap for which a dynamically typesafe view is to
+         *        be constructed.
+         */
+        CheckedSortedMap(SortedMap m, Class keyType, Class valueType) {
+            super(m, keyType, valueType);
+            this.sm = m;
+        }
+
+        /**
+         * @see java.util.SortedMap#comparator()
+         */
+        public Comparator comparator() {
+            return sm.comparator();
+        }
+
+        /**
+         * @see java.util.SortedMap#subMap(Object, Object)
+         */
+        public SortedMap subMap(Object fromKey, Object toKey) {
+            return new CheckedSortedMap(sm.subMap(fromKey, toKey), keyType,
+                    valueType);
+        }
+
+        /**
+         * @see java.util.SortedMap#headMap(Object)
+         */
+        public SortedMap headMap(Object toKey) {
+            return new CheckedSortedMap(sm.headMap(toKey), keyType, valueType);
+        }
+
+        /**
+         * @see java.util.SortedMap#tailMap(Object)
+         */
+        public SortedMap tailMap(Object fromKey) {
+            return new CheckedSortedMap(sm.tailMap(fromKey), keyType, valueType);
+        }
+
+        /**
+         * @see java.util.SortedMap#firstKey()
+         */
+        public Object firstKey() {
+            return sm.firstKey();
+        }
+
+        /**
+         * @see java.util.SortedMap#lastKey()
+         */
+        public Object lastKey() {
+            return sm.lastKey();
+        }
+    }
+
 }

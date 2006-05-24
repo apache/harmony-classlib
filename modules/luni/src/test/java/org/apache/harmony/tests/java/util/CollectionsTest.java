@@ -23,6 +23,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Collection;
+import java.util.Vector;
+import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
@@ -279,5 +283,75 @@ public class CollectionsTest extends TestCase {
         Arrays.sort(numbers, roc);
         assertTrue("Assert 5: the arrays are not equal, the sort failed",
                 Arrays.equals(fixtureDesc, numbers));
+    }
+
+    public void test_AddAll() {
+        List l = new ArrayList();
+        assertFalse(Collections.addAll(l, new Object[] {}));
+        assertTrue(l.isEmpty());
+        assertTrue(Collections.addAll(l, new Object[] { new Integer(1),
+                new Integer(2), new Integer(3) }));
+        assertFalse(l.isEmpty());
+        assertTrue(l.equals(Arrays.asList(new Object[] { new Integer(1),
+                new Integer(2), new Integer(3) })));
+    }
+
+    public void test_Disjoint() {
+        Object[] arr1 = new Object[10];
+        for (int i = 0; i < arr1.length; i++) {
+            arr1[i] = new Integer(i);
+        }
+        Object[] arr2 = new Object[20];
+        for (int i = 0; i < arr2.length; i++) {
+            arr2[i] = new Integer(100 + i);
+        }
+        Collection c1 = new ArrayList();
+        Collection c2 = new ArrayList();
+        Collections.addAll(c1, arr1);
+        Collections.addAll(c2, arr2);
+        assertTrue(Collections.disjoint(c1, c2));
+        c1.add(arr2[10]);
+        assertFalse(Collections.disjoint(c1, c2));
+
+        c1 = new LinkedList();
+        c2 = new LinkedList();
+        Collections.addAll(c1, arr1);
+        Collections.addAll(c2, arr2);
+        assertTrue(Collections.disjoint(c1, c2));
+        c1.add(arr2[10]);
+        assertFalse(Collections.disjoint(c1, c2));
+
+        c1 = new TreeSet();
+        c2 = new TreeSet();
+        Collections.addAll(c1, arr1);
+        Collections.addAll(c2, arr2);
+        assertTrue(Collections.disjoint(c1, c2));
+        c1.add(arr2[10]);
+        assertFalse(Collections.disjoint(c1, c2));
+
+        c1 = new HashSet();
+        c2 = new HashSet();
+        Collections.addAll(c1, arr1);
+        Collections.addAll(c2, arr2);
+        assertTrue(Collections.disjoint(c1, c2));
+        c1.add(arr2[10]);
+        assertFalse(Collections.disjoint(c1, c2));
+
+        c1 = new LinkedList();
+        c2 = new TreeSet();
+        Collections.addAll(c1, arr1);
+        Collections.addAll(c2, arr2);
+        assertTrue(Collections.disjoint(c1, c2));
+        c1.add(arr2[10]);
+        assertFalse(Collections.disjoint(c1, c2));
+
+        c1 = new Vector();
+        c2 = new HashSet();
+        Collections.addAll(c1, arr1);
+        Collections.addAll(c2, arr2);
+        assertTrue(Collections.disjoint(c1, c2));
+        c1.add(arr2[10]);
+        assertFalse(Collections.disjoint(c1, c2));
+
     }
 }
