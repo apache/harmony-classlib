@@ -388,8 +388,6 @@ public final class Security {
      *  
      */
     public static Set<String> getAlgorithms(String serviceName) {
-        //         FIXME for 1.5 classes
-        //        new HashSet() -> emptySet()
         Set result = new HashSet();
         Provider[] p = getProviders();
         for (int i = 0; i < p.length; i++) {

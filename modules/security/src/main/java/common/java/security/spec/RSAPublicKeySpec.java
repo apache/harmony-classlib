@@ -24,8 +24,7 @@ package java.security.spec;
 import java.math.BigInteger;
 
 /**
- * TODO Put your class description here
- * 
+ * @com.intel.drl.spec_ref
  */
 public class RSAPublicKeySpec implements KeySpec {
     // Modulus

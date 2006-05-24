@@ -473,7 +473,6 @@ public abstract class Provider extends Properties {
      *  
      */
     public synchronized Set<Provider.Service> getServices() {
-        //FIXME 1.5 signature public Set<Provider.Service> getServices() {
         updatePropertyServiceTable();
         if (lastServicesSet != null) {
             return lastServicesSet;
@@ -706,9 +705,6 @@ public abstract class Provider extends Properties {
                     propertyAliasTable.put(serviceName,
                             aliasName.toUpperCase(), s);
                 } else {
-                    // FIXME for 1.5 classes
-                    // new ArrayList() -> Collections.emptyList();
-                    // new HashMap() -> Collections.emptyMap();
                     String className = (String) changedProperties
                             .get(serviceName + "." + algorithm);
                     if (className != null) {
@@ -743,9 +739,6 @@ public abstract class Provider extends Properties {
                     s = (Provider.Service) o;
                     s.className = (String) value;
                 } else {
-                    // FIXME for 1.5 classes
-                    // new ArrayList() -> Collections.emptyList();
-                    //  new HashMap() -> Collections.emptyMap();
                     s = new Provider.Service(this, serviceName, algorithm,
                             (String) value, new ArrayList(), new HashMap());
                     if (propertyServiceTable == null) {
@@ -768,9 +761,6 @@ public abstract class Provider extends Properties {
                     s = (Provider.Service) o;
                     s.attributes.put(attribute, value);
                 } else {
-                    // FIXME for 1.5 classes
-                    // new ArrayList() -> Collections.emptyList();
-                    // new HashMap() -> Collections.emptyMap();
                     String className = (String) changedProperties
                             .get(serviceName + "." + algorithm);
                     if (className != null) {
