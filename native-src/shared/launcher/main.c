@@ -34,6 +34,7 @@
 #define HY_TOOLS_PACKAGE "org.apache.harmony.tools"
 #define HY_TOOLS_MAIN_TYPE "Main"
 #define HY_TOOLS_PATH "tools.jar"
+#define HY_TOOLS_PROP "-Dorg.apache.harmony.tool=true"
 
 #if defined(WIN32)
 #define PLATFORM_STRNICMP strnicmp
@@ -66,7 +67,7 @@ PROTOTYPE ((JNIEnv * env, HyPortLibrary * portLibrary, jclass stringClass,
             jmethodID stringMid, char *chars, jstring * str));
 int arrangeToolsArgs
 PROTOTYPE ((HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *mainClass));
-int augmentToolsPath
+int augmentToolsArgs
 PROTOTYPE ((HyPortLibrary * portLibrary, int *argc, char ***argv));
 static IDATA addJreDirToPath
 PROTOTYPE ((HyPortLibrary * portLibrary, char *newPathToAdd, char **argv));
@@ -141,11 +142,11 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	  exeBaseName += 1;
   }
 
-  /* Flag whether we are the generic java launcher (or a tool) */
+  /* Test whether we are likely the generic java launcher (or a tool) */
   i = 0;
   str = knownGenericNames[i];
   while(str != NULL) {
-      genericLauncher = 0 == strcmp (str, exeBaseName);
+      genericLauncher = (0 == strcmp (str, exeBaseName));
 	  if (genericLauncher) {
 		  break;
 	  } else {
@@ -153,12 +154,28 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	  }
   }
   
+  /* If we have a tool name we still may be execv'd so check for the orig
+   * command line arg.
+   */
+  if (!genericLauncher) {
+    for (i = 1; i < argc; i++) {
+      if (0 == strcmp (argv[i], HY_TOOLS_PROP)) {
+        genericLauncher = 1;
+        break;
+      }
+    }
+  }
+
+  /* Now we know whether we are running as the original invocation of a tool,
+   * or a generic launcher / tool execv
+   */
+
   if (genericLauncher) {
 	/* The generic launcher needs at least one argument, otherwise
 	 * print out a usage message.
 	 */
 	if (argc <= 1) {
-      hyfile_printf (PORTLIB, HYPORT_TTY_OUT, "Harmony java launcher\n");
+      hyfile_printf (PORTLIB, HYPORT_TTY_OUT, "Harmony Java launcher\n");
       hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
       hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
                      "java [-vm:vmdll -vmdir:dir -D... [-X...]] [args]\n");
@@ -197,17 +214,17 @@ gpProtectedMain (struct haCmdlineOptions *args)
 			break;
 		}
 	} /* end for-loop */
-  }	else {
-		/* We are a tool launcher: main class deduced from exe name */
-	    mainClass = hymem_allocate_memory (
-			strlen(HY_TOOLS_PACKAGE) + strlen(exeBaseName) + strlen (HY_TOOLS_MAIN_TYPE) + 3);
+  } else {
+	/* We are a tool launcher: main class deduced from exe name */
+        mainClass = hymem_allocate_memory (
+          strlen(HY_TOOLS_PACKAGE) + strlen(exeBaseName) + strlen (HY_TOOLS_MAIN_TYPE) + 3);
       if (mainClass == NULL) {
           /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
           PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR, HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
           goto bail;
         }
 	  strcpy (mainClass, HY_TOOLS_PACKAGE);
-      strcat (mainClass, ".");
+          strcat (mainClass, ".");
 	  if (NULL == (str = strchr (exeBaseName, '.'))) {
           strcat (mainClass, exeBaseName);
 	      strcat (mainClass, ".");
@@ -216,11 +233,25 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	  }
 	  strcat (mainClass, HY_TOOLS_MAIN_TYPE);
 
+       /* Useful when debugging */
+       /* hytty_printf(PORTLIB, "Before...\n");
+        * for (i=0; i<argc; i++) {
+        *   hytty_printf(PORTLIB, "i=%d, v=%s\n", i, argv[i]);
+        * }
+        */ 
+
 	  /* Now ensure tools JAR is on classpath */
-	  augmentToolsPath(args->portLibrary, &argc, &argv);
+	  augmentToolsArgs(args->portLibrary, &argc, &argv);
 	  classArg = arrangeToolsArgs(args->portLibrary, &argc, &argv, mainClass);
 	}
 
+  /* Useful when debugging */
+  /* hytty_printf(PORTLIB, "After...\n");
+   * for (i=0; i<argc; i++) {
+   *  hytty_printf(PORTLIB, "i=%d, v=%s\n", i, argv[i]);
+   * }
+   */
+  
   /* At this point we either have a main class or know that we are running a JAR */
 
   /* Find the vm dll */
@@ -352,18 +383,17 @@ arrangeToolsArgs (HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *
   int newargvPos;
   PORT_ACCESS_FROM_PORT(portLibrary);
 
-  /* Make room for the main tools class */
-  newargv = hymem_allocate_memory ((argc + 1) * sizeof(pargv));
+  /* Make room for the main tools class and tools property */
+  newargv = hymem_allocate_memory ((argc + 2) * sizeof(pargv));
   if (NULL == newargv) {
     /* HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY=Internal VM error\: VM startup error: Out of memory\n */
     portLibrary->nls_printf (portLibrary, HYNLS_ERROR,
                              HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY);
 
-    hytty_err_printf (PORTLIB, "Failed to allocate more memory for tools main class\n");
+    hytty_err_printf (PORTLIB, "Failed to allocate more memory for tools args\n");
     return 1;
   }
 
-  
   /* Keep the exe name in position zero */
   newargvPos = 0;
   newargv[newargvPos++] = argv[0];
@@ -379,6 +409,9 @@ arrangeToolsArgs (HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *
 		}
 	  }
   }
+
+  /* Insert the command line  */
+  newargv[newargvPos++] = HY_TOOLS_PROP;
 
   /* Insert the tools main class */
   rc = newargvPos; /* We will return this position to the caller */
@@ -397,7 +430,8 @@ arrangeToolsArgs (HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *
 	  }
   }
 
-  *pargc +=1;
+  newargv[newargvPos] = NULL;
+  *pargc +=2;
   *pargv = newargv;
 
   return rc;
@@ -408,7 +442,7 @@ arrangeToolsArgs (HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *
  * Add the tools.jar to the application classpath.
  */
 int
-augmentToolsPath (HyPortLibrary * portLibrary, int *pargc, char ***pargv)
+augmentToolsArgs (HyPortLibrary * portLibrary, int *pargc, char ***pargv)
 {
   int argc = *pargc;
   char **argv = *pargv;
@@ -966,8 +1000,10 @@ addJreDirToPath (HyPortLibrary * portLibrary, char *newPathToAdd, char **argv)
 #endif
 
   oldPath = getenv (variableName);
-  if (!oldPath)
+  if (!oldPath) {
     oldPath = "";
+  }
+
   newPathLength = strlen (oldPath) + strlen (newPathToAdd) + strlen (variableName) + 3;        /* 3 = separator + equals + EOL */
   newPath = hymem_allocate_memory (newPathLength);
 
