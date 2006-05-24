@@ -1085,4 +1085,23 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
         dump(o);
         return reload();
     }
+
+    /**
+     * @tests java.io.ObjectOutputStream#useProtocolVersion(int)
+     */
+    public void test_useProtocolVersionI_2() throws Exception {
+        ObjectOutputStream oos = new ObjectOutputStream(
+                new ByteArrayOutputStream());
+
+        oos.useProtocolVersion(ObjectOutputStream.PROTOCOL_VERSION_1);
+        oos.useProtocolVersion(ObjectOutputStream.PROTOCOL_VERSION_2);
+        try {
+            oos.useProtocolVersion(3);
+            fail("Protocol 3 should not be accepted");
+        } catch (IllegalArgumentException e) {
+            // expected
+        } finally {
+            oos.close();
+        }
+    }
 }

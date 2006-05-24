@@ -794,8 +794,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 *             If an IO error occurs
 	 */
 	public void useProtocolVersion(int version) throws IOException {
-		protocolVersion = version;
-	}
+        if (version != ObjectStreamConstants.PROTOCOL_VERSION_1
+                && version != ObjectStreamConstants.PROTOCOL_VERSION_2) {
+            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
+                    .getString("K00b3", version)); //$NON-NLS-1$
+        }
+        protocolVersion = version;
+    }
 
 	/**
 	 * Writes the entire contents of the byte array <code>buffer</code> to
