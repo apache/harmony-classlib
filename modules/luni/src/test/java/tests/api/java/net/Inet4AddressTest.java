@@ -1,4 +1,4 @@
-/* Copyright 2003, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2003, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,15 @@
 
 package tests.api.java.net;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+
+import tests.util.SerializationTester;
 
 public class Inet4AddressTest extends junit.framework.TestCase {
 
+    private static final String SERIALIZATION_FILE_NAME = "serialization/java/net/Inet4AddressTest.golden.ser";
+    
 	/**
 	 * @tests java.net.Inet4Address#isMulticastAddress()
 	 */
@@ -355,10 +360,38 @@ public class Inet4AddressTest extends junit.framework.TestCase {
 			fail("Unknown address : " + addrName);
 		}
 	}
+    
+    
+    /*
+    * Test serialization/deserilazation.
+    */
+   public void testSerialization() throws Exception {
+       InetAddress ia= Inet4Address.getByName("localhost");
+       InetAddress deIA = (Inet4Address) SerializationTester
+               .getDeserilizedObject(ia);
+       byte[] iaAddresss= ia.getAddress();
+       byte[] deIAAddresss= deIA.getAddress();
+       for (int i = 0; i < iaAddresss.length; i++) {
+           assertEquals(iaAddresss[i], deIAAddresss[i]);
+       } 
+       assertEquals(4, iaAddresss.length);
+       assertEquals(ia.getHostName(), deIA.getHostName());
+   }
 
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+   /*
+    * Test serialization/deserilazation compatibility with RI.
+    */
+   public void testSerializationCompatibility() throws Exception {
+       InetAddress ia= Inet4Address.getByName("localhost");
+       InetAddress deIA = (Inet4Address) SerializationTester
+               .readObject(ia,
+                       SERIALIZATION_FILE_NAME);
+       byte[] iaAddresss= ia.getAddress();
+       byte[] deIAAddresss= deIA.getAddress();
+       for (int i = 0; i < iaAddresss.length; i++) {
+           assertEquals(iaAddresss[i], deIAAddresss[i]);
+       } 
+       assertEquals(4, iaAddresss.length);
+       assertEquals(ia.getHostName(), deIA.getHostName());
+   }
 }

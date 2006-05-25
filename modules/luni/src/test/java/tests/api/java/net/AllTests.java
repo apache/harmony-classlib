@@ -66,6 +66,9 @@ public class AllTests {
 		suite.addTestSuite(URLConnectionTest.class);
 		suite.addTestSuite(URLDecoderTest.class);
 		suite.addTestSuite(URLEncoderTest.class);
+        suite.addTestSuite(HttpRetryExceptionTest.class);
+        suite.addTestSuite(Inet4AddressTest.class);
+        suite.addTestSuite(InetAddressTest.class);
 		// $JUnit-END$
 		return suite;
 	}

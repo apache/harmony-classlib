@@ -18,15 +18,15 @@ package tests.api.java.net;
 import java.net.DatagramSocket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.security.Permission;
 
-import junit.framework.AssertionFailedError;
-
 import tests.support.Support_Configuration;
+import tests.util.SerializationTester;
 
 public class InetAddressTest extends junit.framework.TestCase {
+    
+    private static final String SERIALIZATION_FILE_NAME = "serialization/java/net/InetAddressTest.golden.ser";
 
 	private static boolean someoneDone[] = new boolean[2];
 
@@ -173,7 +173,8 @@ public class InetAddressTest extends junit.framework.TestCase {
 		}
 
 		// check the getByName if there is a security manager.
-		System.setSecurityManager(new SecurityManager());
+        SecurityManager oldman = System.getSecurityManager();
+		System.setSecurityManager(new MockSecurityManager());
 		try {
 			boolean exception = false;
 			try {
@@ -185,7 +186,7 @@ public class InetAddressTest extends junit.framework.TestCase {
 			}
 			assertTrue("expected SecurityException", exception);
 		} finally {
-			System.setSecurityManager(null);
+			System.setSecurityManager(oldman);
 		}
 	}
 
@@ -246,9 +247,10 @@ public class InetAddressTest extends junit.framework.TestCase {
 		// Test for any of the host lookups, where the default SecurityManager
 		// is installed.
 
+        SecurityManager oldman = System.getSecurityManager();
 		try {
 			String exp = Support_Configuration.InetTestIP;
-			System.setSecurityManager(new SecurityManager());
+			System.setSecurityManager(new MockSecurityManager());
 			InetAddress ia = InetAddress.getByName(exp);
 			String ans = ia.getHostName();
 			assertTrue("usingSecurityManager failed, ans: " + ans + " exp: "
@@ -258,7 +260,7 @@ public class InetAddressTest extends junit.framework.TestCase {
 			fail("Exception during usingSecurityManager test : "
 					+ e.getMessage());
 		} finally {
-			System.setSecurityManager(null);
+			System.setSecurityManager(oldman);
 		}
 
 		// Make sure there is no caching
@@ -491,29 +493,47 @@ public class InetAddressTest extends junit.framework.TestCase {
         ia = Inet4Address.getByName("1.1.1.1");
         assertFalse(ia.isReachable(1000));
         assertFalse(ia.isReachable(null, 0, 1000));
-        // tests www.apache.org
-        try {
-            ia = InetAddress.getByName("www.apache.org");//$NON-NLS-1$
-            assertTrue(ia.isReachable(10000));
-            assertTrue(ia.isReachable(NetworkInterface.getByName("eth0"), 0,
-                    10000));
-        } catch (AssertionFailedError e) {
-            System.err
-                    .println("isReachableLjava_net_NetworkInterfaceII test may fail for network issue, please check.");
-        } 
     } 
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
+    /*
+     * Test serialization/deserilazation.
+     */
+    public void testSerialization() throws Exception {
+        InetAddress ia= InetAddress.getByName("localhost");
+        InetAddress deIA = (InetAddress) SerializationTester
+                .getDeserilizedObject(ia);
+        byte[] iaAddresss= ia.getAddress();
+        byte[] deIAAddresss= deIA.getAddress();
+        for (int i = 0; i < iaAddresss.length; i++) {
+            assertEquals(iaAddresss[i], deIAAddresss[i]);
+        }        
+        assertEquals(ia.getHostName(), deIA.getHostName());
+    }
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /*
+     * Test serialization/deserilazation compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        InetAddress ia= InetAddress.getByName("localhost");
+        // the ser file was serialized by InetAddress.getByName("localhost");
+        InetAddress deIA = (InetAddress) SerializationTester
+                .readObject(ia,
+                        SERIALIZATION_FILE_NAME);
+        byte[] iaAddresss= ia.getAddress();
+        byte[] deIAAddresss= deIA.getAddress();
+        for (int i = 0; i < iaAddresss.length; i++) {
+            assertEquals(iaAddresss[i], deIAAddresss[i]);
+        } 
+        assertEquals(ia.getHostName(), deIA.getHostName());
+    }
+    
+    
+    class MockSecurityManager extends SecurityManager {        
+        public void checkPermission(Permission permission) {
+            if (permission.getName().equals("setSecurityManager")){
+                return;
+            }
+            super.checkPermission(permission);
+        }
+    }
 }
