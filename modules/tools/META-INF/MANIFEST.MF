@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony Tools
+Bundle-SymbolicName: org.apache.harmony.tools
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Eclipse-JREBundle: true
+Import-Package: java.io,
+ java.lang,
+ java.lang.reflect,
+ java.net,
+ java.nio.charset,
+ java.security
+Export-Package: org.apache.harmony.tools.javac
