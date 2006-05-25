@@ -26,7 +26,7 @@ package java.util;
  * successive calls to nextToken() return either a one character delimiter, or a
  * maximal block of text between delimiters.
  */
-public class StringTokenizer implements Enumeration {
+public class StringTokenizer implements Enumeration<Object> {
 	
 	private String string;
 
