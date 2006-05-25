@@ -18,7 +18,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.asn1.der;
+package org.apache.harmony.security.x501;
 
 import java.io.ByteArrayInputStream;
 
@@ -33,7 +33,7 @@ import junit.framework.TestCase;
  * @see http://www.ietf.org/rfc/rfc1779.txt
  * @see http://www.ietf.org/rfc/rfc2253.txt
  */
-public class NameDecoderTest extends TestCase {
+public class NameTest extends TestCase {
 
     private static final byte [] mess = {
             0x30, //0 seq of
@@ -65,27 +65,29 @@ public class NameDecoderTest extends TestCase {
     };
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(NameDecoderTest.class);
+        junit.textui.TestRunner.run(NameTest.class);
     }
 
     public void testGetName1779() throws Exception {
 
         Name principal = new Name(mess);
 
-        String s= principal.getName("RFC1779");
+        String s = principal.getName("RFC1779");
 
-        assertEquals("CN=A + ST=CA, O=B, L=C, C=D, OU=E, CN=A + ST=CA, O=B, L=C, C=D, OU=E, CN=Z", s);
+        assertEquals(
+                "CN=A + ST=CA, O=B, L=C, C=D, OU=E, CN=A + ST=CA, O=B, L=C, C=D, OU=E, CN=Z",
+                s);
     }
 
+    public void testStreamGetName1779() throws Exception {
+        ByteArrayInputStream is = new ByteArrayInputStream(mess);
 
-public void testStreamGetName1779() throws Exception
-    {
-      ByteArrayInputStream is= new ByteArrayInputStream(mess);
+        Name principal = new Name(is);
 
-      Name principal = new Name(is);
+        String s = principal.getName("RFC1779");
 
-      String s= principal.getName("RFC1779");
-
-      assertEquals("CN=A + ST=CA, O=B, L=C, C=D, OU=E, CN=A + ST=CA, O=B, L=C, C=D, OU=E, CN=Z", s);
+        assertEquals(
+                "CN=A + ST=CA, O=B, L=C, C=D, OU=E, CN=A + ST=CA, O=B, L=C, C=D, OU=E, CN=Z",
+                s);
     }
 }
