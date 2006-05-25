@@ -44,6 +44,10 @@
 
 	<check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
 
+	<!-- Do not require the Eclipse compiler until the tools are integrated into the build
+	<check-one-file src="${ecj.url}" dest="${ecj.jar}" />
+	-->
+
 	<uptodate property="bcprov.uptodate"
                   srcfile="${signed.bcprov.jar}"
                   targetfile="${bcprov.jar}" />
@@ -86,6 +90,10 @@
 	<mkdir dir="${icu4j.dir}" />
 	<download-one-file src="${icu4j.url}" dest="${icu4j.jar}"
                            md5="${icu4j.md5}" />
+
+	<mkdir dir="${ecj.dir}" />
+	<download-one-file src="${ecj.url}" dest="${ecj.jar}"
+                           md5="${ecj.md5}" />
 
         <antcall target="download-win" />
 
