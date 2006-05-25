@@ -540,6 +540,26 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 				gc1.getGregorianChange()));
 	}
 
+    /**
+     * @tests java.util.GregorianCalendar#clone()
+     */
+    public void test_clone() {
+        
+        // Regression for HARMONY-498
+        GregorianCalendar gCalend = new GregorianCalendar();
+
+        gCalend.set(Calendar.MILLISECOND, 0);
+        int dayOfMonth = gCalend.get(Calendar.DAY_OF_MONTH);
+
+        // create clone object and change date
+        GregorianCalendar gCalendClone = (GregorianCalendar) gCalend.clone();
+        gCalendClone.add(Calendar.DATE, 1);
+        
+        assertEquals("Before", dayOfMonth, gCalend.get(Calendar.DAY_OF_MONTH));
+        gCalend.set(Calendar.MILLISECOND, 0);//changes nothing
+        assertEquals("After", dayOfMonth, gCalend.get(Calendar.DAY_OF_MONTH));
+    }
+
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

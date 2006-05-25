@@ -278,7 +278,18 @@ public class GregorianCalendar extends Calendar {
 		complete();
 	}
 
-	private final void fullFieldsCalc(long timeVal, int millis, int zoneOffset) {
+    /**
+     * Creates new instance of GregorianCalendar with the same properties.
+     * 
+     * @return a shallow copy of this GregorianCalendar
+     */
+    public Object clone(){
+        GregorianCalendar thisClone = (GregorianCalendar)super.clone();
+        thisClone.cachedFields = (int[])cachedFields.clone();
+        return thisClone;
+    }
+
+    private final void fullFieldsCalc(long timeVal, int millis, int zoneOffset) {
 		long days = timeVal / 86400000;
 
 		if (millis < 0) {
