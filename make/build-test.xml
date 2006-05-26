@@ -36,11 +36,20 @@
 
 	<!-- this list of components to test will grow to eventually be all modules -->
 	<target name="test-all"
-		depends="clean, test-archive, test-auth, test-beans, test-crypto, test-jndi, test-logging, test-luni, test-math, test-nio, test-nio_char, test-prefs, test-regex, test-security, test-sql, test-text, test-xnet, gen-report, check-test-result">
+		depends="clean, test-annotation, test-archive, test-auth, test-beans, test-crypto, test-jndi, test-logging, test-luni, test-math, test-nio, test-nio_char, test-prefs, test-regex, test-security, test-sql, test-text, test-xnet, gen-report, check-test-result">
 	</target>
 
 	<target name="clean">
 		<delete dir="${tests.output}" />
+	</target>
+
+	<target name="test-annotation" depends="compile-support">
+        <echo message="=================================="/>
+        <echo message="Running tests for module annotation"/>
+        <echo message="=================================="/>
+
+        <ant antfile="make/build.xml" dir="modules/annotation" target="test" />
+
 	</target>
 
 	<target name="test-luni" depends="compile-support">
