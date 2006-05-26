@@ -136,65 +136,65 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	}
 
 	/**
-	 * Inserts the objects in the specified Collection at the specified location
-	 * in this ArrayList. The objects are added in the order they are returned
-	 * from the Collection iterator.
-	 * 
-	 * @param location
-	 *            the index at which to insert
-	 * @param collection
-	 *            the Collection of objects
-	 * @return true if this ArrayList is modified, false otherwise
-	 * 
-	 * @exception IndexOutOfBoundsException
-	 *                when <code>location < 0 || >= size()</code>
-	 */
-	public boolean addAll(int location, Collection<? extends E> collection) {
-		int size = size();
-		int growSize = collection.size();
-		if (0 < location && location < size) {
-			if (array.length - size < growSize) {
-				growForInsert(location, growSize);
-			} else if ((location < size / 2 && firstIndex > 0)
-					|| lastIndex > array.length - growSize) {
-				int newFirst = firstIndex - growSize;
-				if (newFirst < 0) {
-					int index = location + firstIndex;
-					System.arraycopy(array, index, array, index - newFirst,
-							size - location);
-					lastIndex -= newFirst;
-					newFirst = 0;
-				}
-				System.arraycopy(array, firstIndex, array, newFirst, location);
-				firstIndex = newFirst;
-			} else {
-				int index = location + firstIndex;
-				System.arraycopy(array, index, array, index + growSize, size
-						- location);
-				lastIndex += growSize;
-			}
-		} else if (location == 0) {
-			if (firstIndex == 0)
-				growAtFront(growSize);
-			firstIndex -= growSize;
-		} else if (location == size) {
-			if (lastIndex > array.length - growSize)
-				growAtEnd(growSize);
-			lastIndex += growSize;
-		} else
-			throw new IndexOutOfBoundsException();
+     * Inserts the objects in the specified Collection at the specified location
+     * in this ArrayList. The objects are added in the order they are returned
+     * from the Collection iterator.
+     * 
+     * @param location the index at which to insert
+     * @param collection the Collection of objects
+     * @return true if this ArrayList is modified, false otherwise
+     * 
+     * @exception IndexOutOfBoundsException when
+     *            <code>location < 0 || > size()</code>
+     */
+    public boolean addAll(int location, Collection<? extends E> collection) {
+        int size = size();
+        if (location < 0 || location > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        int growSize = collection.size();
+        if (0 < location && location < size) {
+            if (array.length - size < growSize) {
+                growForInsert(location, growSize);
+            } else if ((location < size / 2 && firstIndex > 0)
+                    || lastIndex > array.length - growSize) {
+                int newFirst = firstIndex - growSize;
+                if (newFirst < 0) {
+                    int index = location + firstIndex;
+                    System.arraycopy(array, index, array, index - newFirst,
+                            size - location);
+                    lastIndex -= newFirst;
+                    newFirst = 0;
+                }
+                System.arraycopy(array, firstIndex, array, newFirst, location);
+                firstIndex = newFirst;
+            } else {
+                int index = location + firstIndex;
+                System.arraycopy(array, index, array, index + growSize, size
+                        - location);
+                lastIndex += growSize;
+            }
+        } else if (location == 0) {
+            if (firstIndex == 0)
+                growAtFront(growSize);
+            firstIndex -= growSize;
+        } else if (location == size) {
+            if (lastIndex > array.length - growSize)
+                growAtEnd(growSize);
+            lastIndex += growSize;
+        }
 
-		if (growSize > 0) {
-			Iterator it = collection.iterator();
-			int index = location + firstIndex;
-			int end = index + growSize;
-			while (index < end)
-				array[index++] = it.next();
-			modCount++;
-			return true;
-		}
-		return false;
-	}
+        if (growSize > 0) {
+            Iterator it = collection.iterator();
+            int index = location + firstIndex;
+            int end = index + growSize;
+            while (index < end)
+                array[index++] = it.next();
+            modCount++;
+            return true;
+        }
+        return false;
+    }
 
 	/**
 	 * Adds the objects in the specified Collection to this ArrayList.
@@ -299,8 +299,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 *                when <code>location < 0 || >= size()</code>
 	 */
 	public E get(int location) {
-		if (0 <= location && location < size())
+		if (0 <= location && location < size()) {
 			return (E)array[firstIndex + location];
+        }
 		throw new IndexOutOfBoundsException();
 	}
 

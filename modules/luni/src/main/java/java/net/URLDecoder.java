@@ -72,6 +72,13 @@ public class URLDecoder {
 		if (enc == null) {
 			throw new NullPointerException();
 		}
+
+		// If the given encoding is an empty string throw an exception.
+        if (enc.length() == 0) {
+            throw new UnsupportedEncodingException(Msg
+                    .getString("K00a5", "enc")); //$NON-NLS-1$
+        }
+
 		StringBuffer result = new StringBuffer(s.length());
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		for (int i = 0; i < s.length();) {

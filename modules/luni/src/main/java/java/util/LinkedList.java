@@ -240,48 +240,49 @@ public class LinkedList extends AbstractSequentialList implements List,
 	}
 
 	/**
-	 * Inserts the objects in the specified Collection at the specified location
-	 * in this LinkedList. The objects are added in the order they are returned
-	 * from the <code>Collection</code> iterator.
-	 * 
-	 * @param location
-	 *            the index at which to insert
-	 * @param collection
-	 *            the Collection of objects
-	 * @return true if this LinkedList is modified, false otherwise
-	 * 
-	 * @exception IndexOutOfBoundsException
-	 *                when <code>location < 0 || >= size()</code>
-	 */
-	public boolean addAll(int location, Collection collection) {
-		int adding = collection.size();
-		if (adding == 0)
-			return false;
-		if (0 <= location && location <= size) {
-			Link previous = voidLink;
-			if (location < (size / 2)) {
-				for (int i = 0; i < location; i++)
-					previous = previous.next;
-			} else {
-				for (int i = size; i >= location; i--)
-					previous = previous.previous;
-			}
-			Link next = previous.next;
+     * Inserts the objects in the specified Collection at the specified location
+     * in this LinkedList. The objects are added in the order they are returned
+     * from the <code>Collection</code> iterator.
+     * 
+     * @param location the index at which to insert
+     * @param collection the Collection of objects
+     * @return true if this LinkedList is modified, false otherwise
+     * 
+     * @exception IndexOutOfBoundsException when
+     *            <code>location < 0 || > size()</code>
+     */
+    public boolean addAll(int location, Collection collection) {
+        if (location < 0 || location > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        int adding = collection.size();
+        if (adding == 0) {
+            return false;
+        }
+        Link previous = voidLink;
+        if (location < (size / 2)) {
+            for (int i = 0; i < location; i++) {
+                previous = previous.next;
+            }
+        } else {
+            for (int i = size; i >= location; i--) {
+                previous = previous.previous;
+            }
+        }
+        Link next = previous.next;
 
-			Iterator it = collection.iterator();
-			while (it.hasNext()) {
-				Link newLink = new Link(it.next(), previous, null);
-				previous.next = newLink;
-				previous = newLink;
-			}
-			previous.next = next;
-			next.previous = previous;
-			size += adding;
-			modCount++;
-			return true;
-		} else
-			throw new IndexOutOfBoundsException();
-	}
+        Iterator it = collection.iterator();
+        while (it.hasNext()) {
+            Link newLink = new Link(it.next(), previous, null);
+            previous.next = newLink;
+            previous = newLink;
+        }
+        previous.next = next;
+        next.previous = previous;
+        size += adding;
+        modCount++;
+        return true;
+    }
 
 	/**
 	 * Adds the objects in the specified Collection to this LinkedList.

@@ -15,6 +15,7 @@
 
 package tests.api.java.net;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
@@ -55,7 +56,21 @@ public class URLDecoderTest extends junit.framework.TestCase {
 		}
 	}
 
-	/**
+    /**
+     * @tests java.net.URLDecoder#decode(java.lang.String, java.lang.String)
+     */
+    public void test_decodeLjava_lang_String_Ljava_lang_String() {
+        try {
+            URLDecoder.decode("", "");
+            fail("UnsupportedEncodingException expected");
+        } catch (UnsupportedEncodingException e) {
+            // expected
+        } catch (Exception e) {
+            assertEquals(UnsupportedEncodingException.class, e.getClass());
+        }
+    }
+
+    /**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */

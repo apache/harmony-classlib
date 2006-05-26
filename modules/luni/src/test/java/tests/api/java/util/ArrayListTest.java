@@ -16,6 +16,7 @@ package tests.api.java.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -138,7 +139,22 @@ public class ArrayListTest extends junit.framework.TestCase {
 		assertTrue("Incorrect size2: " + alist.size(), alist.size() == 210);
 	}
 
-	/**
+    /**
+     * @tests java.util.ArrayList#addAll(int, java.util.Collection)
+     */
+    public void test_addAllILjava_util_Collection_2() {
+        ArrayList obj = new ArrayList();
+        try {
+            obj.addAll((int) -1, (Collection) null);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        } catch (Exception e) {
+            assertEquals(IndexOutOfBoundsException.class, e.getClass());
+        }
+    }
+
+    /**
 	 * @tests java.util.ArrayList#addAll(java.util.Collection)
 	 */
 	public void test_addAllLjava_util_Collection() {

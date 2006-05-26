@@ -118,7 +118,22 @@ public class LinkedListTest extends junit.framework.TestCase {
 		assertNull("e) List w/nulls not added correctly", ll.get(54));
 	}
 
-	/**
+    /**
+     * @tests java.util.LinkedList#addAll(int, java.util.Collection)
+     */
+    public void test_addAllILjava_util_Collection_2() {
+        LinkedList obj = new LinkedList();
+        try {
+            obj.addAll((int) -1, (Collection) null);
+            fail("IndexOutOfBoundsException expected");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        } catch (Exception e) {
+            assertEquals(IndexOutOfBoundsException.class, e.getClass());
+        }
+    }
+
+    /**
 	 * @tests java.util.LinkedList#addAll(java.util.Collection)
 	 */
 	public void test_addAllLjava_util_Collection() {
