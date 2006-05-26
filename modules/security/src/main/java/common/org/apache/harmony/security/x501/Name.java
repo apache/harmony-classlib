@@ -113,6 +113,16 @@ public class Name {
     }
 
     /**
+     * Returns <code>X500Principal</code> instance corresponding to this
+     * <code>Name</code> instance
+     * 
+     * @return equivalent X500Principal object
+     */
+    public X500Principal getX500Principal(){
+        return new X500Principal(getName0(X500Principal.RFC2253));
+    }
+    
+    /**
      * Returns Relative Distinguished Name as <code>String</code> according
      * the format requested
      * 

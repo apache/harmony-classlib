@@ -152,32 +152,28 @@ public class X509CertImpl extends X509Certificate {
 
     public Principal getIssuerDN() {
         if (issuer == null) {
-            issuer = new X500Principal(
-                    tbsCert.getIssuer().getName(X500Principal.RFC2253));
+            issuer = tbsCert.getIssuer().getX500Principal();
         }
         return issuer;
     }
 
     public X500Principal getIssuerX500Principal() {
         if (issuer == null) {
-            issuer = new X500Principal(
-                    tbsCert.getIssuer().getName(X500Principal.RFC2253));
+            issuer = tbsCert.getIssuer().getX500Principal();
         }
         return issuer;
     }
         
     public Principal getSubjectDN() {
         if (subject == null) {
-            subject = new X500Principal(
-                    tbsCert.getSubject().getName(X500Principal.RFC2253));
+            subject = tbsCert.getSubject().getX500Principal();
         }
         return subject;
     }
 
     public X500Principal getSubjectX500Principal() {
         if (subject == null) {
-            subject = new X500Principal(
-                    tbsCert.getSubject().getName(X500Principal.RFC2253));
+            subject = tbsCert.getSubject().getX500Principal();
         }
         return subject;
     }

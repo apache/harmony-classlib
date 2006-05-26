@@ -491,10 +491,8 @@ public class Extension {
             GeneralName.ASN1
         }) {
             public Object getDecodedObject(BerInputStream in) {
-                return new X500Principal(
-                    ((Name) ((GeneralName)((Object[]) in.content)[0])
-                     .getName()).getName(X500Principal.RFC2253)
-                    );
+                return ((Name) ((GeneralName) ((Object[]) in.content)[0])
+                        .getName()).getX500Principal();
             }
 
             protected void getValues(Object object, Object[] values) {

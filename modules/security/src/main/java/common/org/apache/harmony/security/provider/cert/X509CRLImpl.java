@@ -119,8 +119,7 @@ public class X509CRLImpl extends X509CRL {
      */
     public Principal getIssuerDN() {
         if (issuer == null) {
-            issuer = new X500Principal(
-                    tbsCertList.getIssuer().getName(X500Principal.RFC2253));
+            issuer = tbsCertList.getIssuer().getX500Principal();
         }
         return issuer;
     }
@@ -130,8 +129,7 @@ public class X509CRLImpl extends X509CRL {
      */
     public X500Principal getIssuerX500Principal() {
         if (issuer == null) {
-            issuer = new X500Principal(
-                    tbsCertList.getIssuer().getName(X500Principal.RFC2253));
+            issuer = tbsCertList.getIssuer().getX500Principal();
         }
         return issuer;
     }
