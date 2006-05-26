@@ -231,7 +231,7 @@ public class SecurityManager {
 	 * @param type
 	 *            Either java.lang.reflect.Member.PUBLIC or DECLARED
 	 */
-	public void checkMemberAccess(Class cls, int type) {
+	public void checkMemberAccess(Class<?> cls, int type) {
 		if (cls == null)
 			throw new NullPointerException();
 		if (type == Member.PUBLIC)
@@ -605,7 +605,7 @@ public class SecurityManager {
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	protected Class currentLoadedClass() {
+	protected Class<?> currentLoadedClass() {
 		// First, check if AllPermission is allowed. If so, then we
 		// are effectively running in an unsafe environment, so just
 		// answer null (==> everything is a system class).
