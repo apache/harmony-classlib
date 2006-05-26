@@ -76,21 +76,21 @@ public interface AttributedCharacterIterator extends CharacterIterator {
 		}
 	}
 
-	public Set getAllAttributeKeys();
+	public Set<Attribute> getAllAttributeKeys();
 
 	public Object getAttribute(Attribute attribute);
 
-	public Map getAttributes();
+	public Map<Attribute, Object> getAttributes();
 
 	public int getRunLimit();
 
 	public int getRunLimit(Attribute attribute);
 
-	public int getRunLimit(Set attributes);
+	public int getRunLimit(Set<? extends Attribute> attributes);
 
 	public int getRunStart();
 
 	public int getRunStart(Attribute attribute);
 
-	public int getRunStart(Set attributes);
+	public int getRunStart(Set<? extends Attribute> attributes);
 }

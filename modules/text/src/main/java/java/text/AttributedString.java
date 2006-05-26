@@ -34,7 +34,7 @@ public class AttributedString {
 
 	String text;
 
-	Map attributeMap;
+	Map<AttributedCharacterIterator.Attribute, ArrayList> attributeMap;
 
 	static class Range {
 		int start, end;
@@ -174,12 +174,12 @@ public class AttributedString {
 			return false;
 		}
 
-		public Set getAllAttributeKeys() {
+		public Set<AttributedIterator.Attribute> getAllAttributeKeys() {
 			if (begin == 0 && end == attrString.text.length()
 					&& attributesAllowed == null)
 				return attrString.attributeMap.keySet();
 
-			HashSet result = new HashSet(
+            Set<AttributedIterator.Attribute> result = new HashSet(
 					(attrString.attributeMap.size() * 4 / 3) + 1);
 			Iterator it = attrString.attributeMap.entrySet().iterator();
 			while (it.hasNext()) {
@@ -188,7 +188,7 @@ public class AttributedString {
 						|| attributesAllowed.contains(entry.getKey())) {
 					ArrayList ranges = (ArrayList) entry.getValue();
 					if (inRange(ranges))
-						result.add(entry.getKey());
+						result.add((AttributedIterator.Attribute)entry.getKey());
 				}
 			}
 			return result;
@@ -217,7 +217,7 @@ public class AttributedString {
 		}
 
 		public Map getAttributes() {
-			HashMap result = new HashMap(
+			Map result = new HashMap(
 					(attrString.attributeMap.size() * 4 / 3) + 1);
 			Iterator it = attrString.attributeMap.entrySet().iterator();
 			while (it.hasNext()) {
@@ -382,30 +382,31 @@ public class AttributedString {
 	}
 
 	public AttributedString(AttributedCharacterIterator iterator) {
-		StringBuffer buffer = new StringBuffer();
-		while (iterator.current() != CharacterIterator.DONE) {
-			buffer.append(iterator.current());
-			iterator.next();
-		}
-		text = buffer.toString();
-		Set attributes = iterator.getAllAttributeKeys();
-		attributeMap = new HashMap((attributes.size() * 4 / 3) + 1);
+        StringBuffer buffer = new StringBuffer();
+        while (iterator.current() != CharacterIterator.DONE) {
+            buffer.append(iterator.current());
+            iterator.next();
+        }
+        text = buffer.toString();
+        Set<AttributedCharacterIterator.Attribute> attributes = iterator
+                .getAllAttributeKeys();
+        attributeMap = new HashMap((attributes.size() * 4 / 3) + 1);
 
-		Iterator it = attributes.iterator();
-		while (it.hasNext()) {
-			AttributedCharacterIterator.Attribute attribute = (AttributedCharacterIterator.Attribute) it
-					.next();
-			iterator.setIndex(0);
-			while (iterator.current() != CharacterIterator.DONE) {
-				int start = iterator.getRunStart(attribute);
-				int limit = iterator.getRunLimit(attribute);
-				Object value = iterator.getAttribute(attribute);
-				if (value != null)
-					addAttribute(attribute, value, start, limit);
-				iterator.setIndex(limit);
-			}
-		}
-	}
+        Iterator it = attributes.iterator();
+        while (it.hasNext()) {
+            AttributedCharacterIterator.Attribute attribute = (AttributedCharacterIterator.Attribute) it
+                    .next();
+            iterator.setIndex(0);
+            while (iterator.current() != CharacterIterator.DONE) {
+                int start = iterator.getRunStart(attribute);
+                int limit = iterator.getRunLimit(attribute);
+                Object value = iterator.getAttribute(attribute);
+                if (value != null)
+                    addAttribute(attribute, value, start, limit);
+                iterator.setIndex(limit);
+            }
+        }
+    }
 
 	private AttributedString(AttributedCharacterIterator iterator, int start,
 			int end, Set attributes) {
@@ -459,30 +460,32 @@ public class AttributedString {
 		attributeMap = new HashMap(11);
 	}
 
-	public AttributedString(String value, Map attributes) {
-		if (value == null)
-			throw new NullPointerException();
-		if (value.length() == 0 && !attributes.isEmpty())
-			throw new IllegalArgumentException(Msg.getString("K000e"));
-		text = value;
-		attributeMap = new HashMap((attributes.size() * 4 / 3) + 1);
-		Iterator it = attributes.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			ArrayList ranges = new ArrayList(1);
-			ranges.add(new Range(0, text.length(), entry.getValue()));
-			attributeMap.put(entry.getKey(), ranges);
-		}
-	}
+	public AttributedString(String value,
+            Map<? extends AttributedCharacterIterator.Attribute, ?> attributes) {
+        if (value == null)
+            throw new NullPointerException();
+        if (value.length() == 0 && !attributes.isEmpty())
+            throw new IllegalArgumentException(Msg.getString("K000e"));
+        text = value;
+        attributeMap = new HashMap((attributes.size() * 4 / 3) + 1);
+        Iterator it = attributes.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            ArrayList<Range> ranges = new ArrayList<Range>(1);
+            ranges.add(new Range(0, text.length(), entry.getValue()));
+            attributeMap.put((AttributedCharacterIterator.Attribute) entry
+                    .getKey(), ranges);
+        }
+    }
 
 	public void addAttribute(AttributedCharacterIterator.Attribute attribute,
 			Object value) {
 		if (text.length() == 0)
 			throw new IllegalArgumentException();
 
-		ArrayList ranges = (ArrayList) attributeMap.get(attribute);
+		ArrayList<Range> ranges = attributeMap.get(attribute);
 		if (ranges == null) {
-			ranges = new ArrayList(1);
+			ranges = new ArrayList<Range>(1);
 			attributeMap.put(attribute, ranges);
 		} else {
 			ranges.clear();
@@ -495,14 +498,14 @@ public class AttributedString {
 		if (start < 0 || end > text.length() || start >= end)
 			throw new IllegalArgumentException();
 
-		ArrayList ranges = (ArrayList) attributeMap.get(attribute);
+		ArrayList<Range> ranges = attributeMap.get(attribute);
 		if (ranges == null) {
-			ranges = new ArrayList(1);
+			ranges = new ArrayList<Range>(1);
 			ranges.add(new Range(start, end, value));
 			attributeMap.put(attribute, ranges);
 			return;
 		}
-		ListIterator it = ranges.listIterator();
+		ListIterator<Range> it = ranges.listIterator();
 		while (it.hasNext()) {
 			Range range = (Range) it.next();
 			if (end <= range.start) {
@@ -562,15 +565,17 @@ public class AttributedString {
 		it.add(new Range(start, end, value));
 	}
 
-	public void addAttributes(Map attributes, int start, int end) {
-		Iterator it = attributes.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			addAttribute(
-					(AttributedCharacterIterator.Attribute) entry.getKey(),
-					entry.getValue(), start, end);
-		}
-	}
+	public void addAttributes(
+            Map<? extends AttributedCharacterIterator.Attribute, ?> attributes,
+            int start, int end) {
+        Iterator it = attributes.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            addAttribute(
+                    (AttributedCharacterIterator.Attribute) entry.getKey(),
+                    entry.getValue(), start, end);
+        }
+    }
 
 	public AttributedCharacterIterator getIterator() {
 		return new AttributedIterator(this);

@@ -132,7 +132,7 @@ public class SimpleDateFormat extends DateFormat {
 	}
 
 	private void append(StringBuffer buffer, FieldPosition position,
-			Vector fields, char format, int count) {
+			Vector<FieldPosition> fields, char format, int count) {
 		int field = -1;
 		int index = patternChars.indexOf(format);
 		if (index == -1)
@@ -421,7 +421,7 @@ public class SimpleDateFormat extends DateFormat {
 
 	private AttributedCharacterIterator formatToCharacterIteratorImpl(Date date) {
 		StringBuffer buffer = new StringBuffer();
-		Vector fields = new Vector();
+		Vector<FieldPosition> fields = new Vector<FieldPosition>();
 
 		// format the date, and find fields
 		formatImpl(date, buffer, null, fields);
@@ -565,7 +565,7 @@ public class SimpleDateFormat extends DateFormat {
 	 *                when the object cannot be formatted by this Format
 	 */
 	private StringBuffer formatImpl(Date date, StringBuffer buffer,
-			FieldPosition field, Vector fields) {
+			FieldPosition field, Vector<FieldPosition> fields) {
 
 		boolean quote = false;
 		int next, last = -1, count = 0;
