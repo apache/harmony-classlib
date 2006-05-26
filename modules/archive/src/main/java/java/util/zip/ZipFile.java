@@ -134,7 +134,7 @@ public class ZipFile implements ZipConstants {
 			// Only close initialized instances
 			closeZipImpl();
 			if ((mode & OPEN_DELETE) != 0) {
-				AccessController.doPrivileged(new PrivilegedAction() {
+				AccessController.doPrivileged(new PrivilegedAction<Object>() {
 					public Object run() {
 						new File(fileName).delete();
 						return null;
@@ -149,7 +149,7 @@ public class ZipFile implements ZipConstants {
 	 * 
 	 * @return an Enumeration of the zip entries
 	 */
-	public Enumeration entries() {
+	public Enumeration<? extends ZipEntry> entries() {
 		return new ZFEnum();
 	}
 
@@ -221,10 +221,10 @@ public class ZipFile implements ZipConstants {
 
 	private static native void ntvinit();
 
-	class ZFEnum implements Enumeration {
+	class ZFEnum<T extends ZipEntry> implements Enumeration<T> {
 		private long nextEntryPointer;
 
-		private ZipEntry current;
+		private T current;
 
 		ZFEnum() {
 			nextEntryPointer = resetZip(descriptor);
@@ -233,8 +233,7 @@ public class ZipFile implements ZipConstants {
 
 		private native long resetZip(long descriptor1);
 
-		private native ZipEntry getNextEntry(long descriptor1,
-				long nextEntryPointer1);
+		private native T getNextEntry(long descriptor1, long nextEntryPointer1);
 
 		public boolean hasMoreElements() {
 			if(descriptor == -1) {
@@ -244,10 +243,10 @@ public class ZipFile implements ZipConstants {
 			return current != null;
 		}
 
-		public Object nextElement() {
+		public T nextElement() {
 			if (current == null)
 				throw new NoSuchElementException();
-			ZipEntry ze = current;
+			T ze = current;
 			current = getNextEntry(descriptor, nextEntryPointer);
 			return ze;
 		}
