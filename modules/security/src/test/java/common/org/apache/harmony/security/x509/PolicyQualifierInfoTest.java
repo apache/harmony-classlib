@@ -93,7 +93,7 @@ public class PolicyQualifierInfoTest extends TestCase {
                     // Perform DER decoding:
                     Object[] decoded =
                         (Object[])org.apache.harmony.security.x509.
-                        PolicyQualifierInfo.ASN1.getValues(
+                        PolicyQualifierInfo.ASN1.decode(
                                 getDerEncoding(myIntValue));
                     // check OID value
                     assertEquals(this.getName()+"(OID)",
@@ -126,7 +126,7 @@ public class PolicyQualifierInfoTest extends TestCase {
                     // Perform DER decoding:
                     Object[] decoded =
                         (Object[])org.apache.harmony.security.x509.
-                        PolicyQualifierInfo.ASN1.getValues(
+                        PolicyQualifierInfo.ASN1.decode(
                                 getDerInputStream(myIntValue));
                     // check OID value
                     assertEquals(this.getName()+"(OID)",

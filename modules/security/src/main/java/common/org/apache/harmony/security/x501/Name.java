@@ -22,7 +22,6 @@
 package org.apache.harmony.security.x501;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -32,11 +31,9 @@ import java.util.Locale;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.harmony.security.asn1.ASN1Exception;
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.ASN1SetOf;
 import org.apache.harmony.security.asn1.BerInputStream;
-import org.apache.harmony.security.asn1.DerInputStream;
 import org.apache.harmony.security.x509.DNParser;
 
 
@@ -59,43 +56,6 @@ public class Name {
 
     //Collection of RDNs
     private List rdn;
-
-    /**
-     * Creates new <code>Name</code> instance from its DER encoding
-     * 
-     * @param encoding - ASN.1 DER encoding
-     * @throws IOException - if encoding is wrong
-     */
-    public Name(byte[] encoding) throws IOException {
-
-        DerInputStream in = new DerInputStream(encoding);
-
-        if (in.getEndOffset() != encoding.length) {
-            throw new IllegalArgumentException("Wrong content length");
-        }
-
-        ASN1.decode(in);
-
-        this.rdn = (List) in.content;
-    }
-
-    /**
-     * Creates new <code>Name</code> instance from its DER encoding obtained
-     * from <code>InputStream</code>
-     * 
-     * @param is
-     *            <code>InputStream</code> containing DER encoding
-     * @throws IOException
-     *             if encoding is wrong
-     */
-    public Name(InputStream is) throws IOException {
-
-        try {
-            this.rdn = (List) ASN1.getValues(is);
-        } catch (ASN1Exception e) {
-            throw new IOException(e.getMessage());
-        }
-    }
 
     /**
      * Creates new <code>Name</code> instance
@@ -244,17 +204,9 @@ public class Name {
     /**
      * Gets encoded form of DN
      * 
-     * @return encoding of DN
+     * @return return encoding, no copying is performed
      */
     public byte[] getEncoded() {
-        getInternalEncoding();
-        byte[] enc = new byte[encoded.length];
-        System.arraycopy(encoded, 0, enc, 0, encoded.length);
-        return enc;
-    }
-
-    // @return encoding, no copying is performed
-    public byte[] getInternalEncoding() {
         if (encoded == null) {
             encoded = ASN1.encode(this);
         }

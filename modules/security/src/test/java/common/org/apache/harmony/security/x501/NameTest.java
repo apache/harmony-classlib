@@ -70,7 +70,7 @@ public class NameTest extends TestCase {
 
     public void testGetName1779() throws Exception {
 
-        Name principal = new Name(mess);
+        Name principal = (Name) Name.ASN1.decode(mess);
 
         String s = principal.getName("RFC1779");
 
@@ -82,7 +82,7 @@ public class NameTest extends TestCase {
     public void testStreamGetName1779() throws Exception {
         ByteArrayInputStream is = new ByteArrayInputStream(mess);
 
-        Name principal = new Name(is);
+        Name principal = (Name) Name.ASN1.decode(is);
 
         String s = principal.getName("RFC1779");
 

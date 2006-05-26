@@ -70,7 +70,7 @@ public class EncryptedPrivateKeyInfo {
         System.arraycopy(encoded, 0, this.encoded, 0, encoded.length);
         Object[] values;
             
-        values = (Object[])asn1.getValues(encoded);
+        values = (Object[])asn1.decode(encoded);
 
         AlgorithmIdentifier aId = (AlgorithmIdentifier) values[0];
 

@@ -133,7 +133,10 @@ public final class X500Principal implements Serializable, Principal {
      * @com.intel.drl.spec_ref
      */
     public byte[] getEncoded() {
-        return dn.getEncoded();
+        byte[] src = dn.getEncoded();
+        byte[] dst = new byte[src.length];
+        System.arraycopy(src, 0, dst, 0, dst.length);
+        return dst;
     }
 
     /**
@@ -168,7 +171,7 @@ public final class X500Principal implements Serializable, Principal {
      * @com.intel.drl.spec_ref
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeObject(dn.getInternalEncoding());
+        out.writeObject(dn.getEncoded());
     }
 
     /**
@@ -177,6 +180,6 @@ public final class X500Principal implements Serializable, Principal {
     private void readObject(ObjectInputStream in) throws IOException,
             ClassNotFoundException {
 
-        dn = new Name((byte[]) in.readObject());
+        dn = (Name) Name.ASN1.decode((byte[]) in.readObject());
     }
 }

@@ -153,34 +153,6 @@ public abstract class ASN1Type implements ASN1Constants {
         verify(decoder);
     }
 
-    public final Object getValues(byte[] encoded) throws IOException {
-
-        DerInputStream decoder = new DerInputStream(encoded);
-
-        if (!checkTag(decoder.tag)) {
-            throw new ASN1Exception("Mandatory value is missing at ["
-                    + decoder.tagOffset + "]. Expected " + this
-                    + " but encountered tag " + Integer.toHexString(tag));
-        }
-        verify(decoder);
-
-        return decoder.content;
-    }
-
-    public final Object getValues(InputStream in) throws IOException {
-
-        DerInputStream decoder = new DerInputStream(in);
-
-        if (!checkTag(decoder.tag)) {
-            throw new ASN1Exception("Mandatory value is missing at ["
-                    + decoder.tagOffset + "]. Expected " + this
-                    + " but encountered tag " + Integer.toHexString(tag));
-        }
-        verify(decoder);
-
-        return decoder.content;
-    }
-
     public final byte[] encode(Object object) {
 
         DerOutputStream out = new DerOutputStream(this, object);
