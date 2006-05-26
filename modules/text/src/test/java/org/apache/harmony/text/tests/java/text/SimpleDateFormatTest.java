@@ -848,16 +848,58 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
     }
 
     /**
-     * Sets up the fixture, for example, open a network connection. This method
-     * is called before a test is executed.
+     * @tests java.text.SimpleDateFormat#parse(java.lang.String,
+     *        java.text.ParsePosition)
      */
-    protected void setUp() {
-    }
+    public void test_parse_with_spaces() {
+        // Regression for HARMONY-502
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        df.setLenient(false);
 
-    /**
-     * Tears down the fixture, for example, close a network connection. This
-     * method is called after a test is executed.
-     */
-    protected void tearDown() {
+        char allowed_chars[] = { 0x9, 0x20 };
+        String allowed_char_names[] = { "tab", "space" };
+        for (int i = 0; i < allowed_chars.length; i++) {
+            Date expected = new GregorianCalendar(1970, Calendar.JANUARY, 1, 9,
+                    7, 6).getTime();
+            ParsePosition pp = new ParsePosition(0);
+            Date d = df.parse(allowed_chars[i] + "9:07:06", pp);
+            assertNotNull("hour may be prefixed by " + allowed_char_names[i], d);
+            assertEquals(expected, d);
+
+            pp = new ParsePosition(0);
+            d = df.parse("09:" + allowed_chars[i] + "7:06", pp);
+            assertNotNull("minute may be prefixed by " + allowed_char_names[i],
+                    d);
+            assertEquals(expected, d);
+
+            pp = new ParsePosition(0);
+            d = df.parse("09:07:" + allowed_chars[i] + "6", pp);
+            assertNotNull("second may be prefixed by " + allowed_char_names[i],
+                    d);
+            assertEquals(expected, d);
+        }
+
+        char not_allowed_chars[] = {
+        // whitespace
+                0x1c, 0x1d, 0x1e, 0x1f, 0xa, 0xb, 0xc, 0xd, 0x2001, 0x2002,
+                0x2003, 0x2004, 0x2005, 0x2006, 0x2008, 0x2009, 0x200a, 0x200b,
+                0x2028, 0x2029, 0x3000,
+                // non-breaking space
+                0xA0, 0x2007, 0x202F };
+
+        for (int i = 0; i < not_allowed_chars.length; i++) {
+
+            ParsePosition pp = new ParsePosition(0);
+            Date d = df.parse(not_allowed_chars[i] + "9:07", pp);
+            assertNull(d);
+
+            pp = new ParsePosition(0);
+            d = df.parse("09:" + not_allowed_chars[i] + "7", pp);
+            assertNull(d);
+
+            pp = new ParsePosition(0);
+            d = df.parse("09:07:" + not_allowed_chars[i] + "6", pp);
+            assertNull(d);
+        }
     }
 }

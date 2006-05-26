@@ -838,24 +838,31 @@ public class SimpleDateFormat extends DateFormat {
 	}
 
 	private Number parseNumber(int max, String string, ParsePosition position) {
-		if (max == 0)
-			return numberFormat.parse(string, position);
-		int digit, length = string.length(), result = 0;
-		int index = position.getIndex();
-		if (max > 0 && max < length - index)
-			length = index + max;
-		while (index < length
-				&& (digit = Character.digit(string.charAt(index), 10)) != -1) {
-			index++;
-			result = result * 10 + digit;
-		}
-		if (index == position.getIndex()) {
-			position.setErrorIndex(index);
-			return null;
-		}
-		position.setIndex(index);
-		return new Integer(result);
-	}
+        int digit, length = string.length(), result = 0;
+        int index = position.getIndex();
+        if (max > 0 && max < length - index)
+            length = index + max;
+        while (index < length
+                && (string.charAt(index) == ' ' || string.charAt(index) == '\t')) {
+            index++;
+        }
+        if (max == 0) {
+            position.setIndex(index);
+            return numberFormat.parse(string, position);
+        }
+
+        while (index < length
+                && (digit = Character.digit(string.charAt(index), 10)) != -1) {
+            index++;
+            result = result * 10 + digit;
+        }
+        if (index == position.getIndex()) {
+            position.setErrorIndex(index);
+            return null;
+        }
+        position.setIndex(index);
+        return new Integer(result);
+    }
 
 	private int parseNumber(int max, String string, int offset, int field,
 			int skew) {
