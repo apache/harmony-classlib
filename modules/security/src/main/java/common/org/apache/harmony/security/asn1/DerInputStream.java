@@ -36,6 +36,11 @@ public final class DerInputStream extends BerInputStream {
         super(encoded);
     }
 
+    public DerInputStream(byte[] encoded, int offset, int encodingLen)
+            throws IOException {
+        super(encoded, offset, encodingLen);
+    }
+
     public DerInputStream(InputStream in) throws IOException {
         super(in);
     }

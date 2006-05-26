@@ -21,13 +21,14 @@
 
 package org.apache.harmony.security.asn1.der;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import org.apache.harmony.security.asn1.BerInputStream;
-
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.security.asn1.ASN1Exception;
+import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
  * Tests BerInputStream implementation
@@ -41,67 +42,107 @@ public class BerInputStreamTest extends TestCase {
         junit.textui.TestRunner.run(BerInputStreamTest.class);
     }
 
-    public void test_LengthConstraints() {
+    /**
+     * @tests org.apache.harmony.security.asn1.BerInputStream#BerInputStream(
+     *        java.io.ByteArrayInputStream)
+     */
+    public void test_CtorLjava_io_ByteArrayInputStream() throws IOException {
 
         //
-        // Positive testcases
+        // tests for decoding initial length of encodings
         //
-        Object[][] testcase = new Object[][] {
-                // length = 0x01
-                new Object[] { new byte[] { 0x30, (byte) 0x81, 0x01 },
-                        BigInteger.valueOf(1) },
+        Object[][] testcase = {
+        // length = 0x01
+                { new byte[] { 0x30, (byte) 0x81, 0x01 }, BigInteger.valueOf(1) },
                 // length = 0xFF
-                new Object[] { new byte[] { 0x30, (byte) 0x81, (byte) 0xFF },
+                { new byte[] { 0x30, (byte) 0x81, (byte) 0xFF },
                         BigInteger.valueOf(0xFF) },
                 // length = 0x0101
-                new Object[] { new byte[] { 0x30, (byte) 0x82, 0x01, 0x01 },
+                { new byte[] { 0x30, (byte) 0x82, 0x01, 0x01 },
                         BigInteger.valueOf(0x0101) },
                 // length = 0xFFFF
-                new Object[] {
-                        new byte[] { 0x30, (byte) 0x82, (byte) 0xFF,
-                                (byte) 0xFF }, BigInteger.valueOf(0xFFFF) },
+                { new byte[] { 0x30, (byte) 0x82, (byte) 0xFF, (byte) 0xFF },
+                        BigInteger.valueOf(0xFFFF) },
                 // length = 0x0FFFFF
-                new Object[] {
+                {
                         new byte[] { 0x30, (byte) 0x83, 0x0F, (byte) 0xFF,
                                 (byte) 0xFF }, BigInteger.valueOf(0x0FFFFF) },
-
                 // length = 0xFFFFFF
-                new Object[] {
+                {
                         new byte[] { 0x30, (byte) 0x83, (byte) 0xFF,
                                 (byte) 0xFF, (byte) 0xFF },
                         BigInteger.valueOf(0xFFFFFF) },
-                // length = 0xFFFFFF
-                new Object[] {
+                // length = 0xFFFFFF (encoded length has extra byte)
+                {
                         new byte[] { 0x30, (byte) 0x84, 0x00, (byte) 0xFF,
                                 (byte) 0xFF, (byte) 0xFF },
-                        BigInteger.valueOf(0xFFFFFF) },
-        };
+                        BigInteger.valueOf(0xFFFFFF) }, };
 
+        // positive testcases
         for (int i = 0; i < testcase.length; i++) {
             try {
-                BerInputStream in = new BerInputStream((byte[]) testcase[i][0]);
+                BerInputStream in = new BerInputStream(
+                        new ByteArrayInputStream((byte[]) testcase[i][0]));
 
                 int expected = ((BigInteger) testcase[i][1]).intValue();
 
-                if (in.getLength() != expected) {
-                    fail("Testcase: " + i + ". Expected: " + expected
-                            + ", returned" + in.getLength());
-                }
+                assertEquals(expected, in.getLength());
             } catch (IOException e) {
+                e.printStackTrace();
                 fail("Testcase: " + i + "\nUnexpected exception." + e);
             }
         }
 
-        //
-        // Negative testcases
-        //
-
+        // negative testcase
         try {
-            new BerInputStream(new byte[] { 0x30, (byte) 0x84, 0x01, 0x01,
-                    0x01, 0x01 });
-            fail("No expected IOException");
-        } catch (IOException e) {
+            new BerInputStream(new ByteArrayInputStream(new byte[] { 0x30,
+                    (byte) 0x84, 0x01, 0x01, 0x01, 0x01 }));
+            fail("No expected ASN1Exception");
+        } catch (ASN1Exception e) {
             assertTrue(e.getMessage().startsWith("Too long"));
+        }
+    }
+    
+    /**
+     * @tests org.apache.harmony.security.asn1.BerInputStream#BerInputStream(byte[],
+     *        int,int)
+     */
+    public void test_Ctor$LbyteLintLint() throws IOException {
+
+        //
+        // tests for 'expectedLength' parameter
+        //
+        byte[] encoded = new byte[] { 0x01, 0x01, 0x03, // boolean bytes
+                0x06, 0x02, 0x01, 0x03, // oid bytes
+                0x01, 0x00 // just random bytes
+        };
+
+        // pass boolean encoding
+        BerInputStream in = new BerInputStream(encoded, 0, 3);
+        assertEquals("boolean", 1, in.getLength());
+
+        // pass oid encoding
+        in = new BerInputStream(encoded, 3, 4);
+        assertEquals("boolean", 2, in.getLength());
+
+        // pass random encoding (equals to ANY)
+        in = new BerInputStream(encoded, 7, 2);
+        assertEquals("any", 0, in.getLength());
+
+        // extra bytes for oid
+        try {
+            new BerInputStream(encoded, 3, 5);
+            fail("No expected ASN1Exception");
+        } catch (ASN1Exception e) {
+            assertEquals("Wrong content length", e.getMessage());
+        }
+
+        // less bytes for oid
+        try {
+            new BerInputStream(encoded, 3, 3);
+            fail("No expected ASN1Exception");
+        } catch (ASN1Exception e) {
+            assertEquals("Wrong content length", e.getMessage());
         }
     }
 }

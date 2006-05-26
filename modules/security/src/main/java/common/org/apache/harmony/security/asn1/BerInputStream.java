@@ -69,9 +69,35 @@ public class BerInputStream {
      * @throws IOException - if an error occurs
      */
     public BerInputStream(byte[] encoded) throws IOException {
-        buffer = encoded;
+        this(encoded, 0, encoded.length);
+    }
+
+    /**
+     * Creates stream for decoding.
+     * 
+     * @param encoded -
+     *            bytes array to be decoded
+     * @param offset -
+     *            the encoding offset
+     * @param expectedLength -
+     *            expeced length of full encoding, this includes identifier,
+     *            length an content octets
+     * @throws IOException -
+     *             if an error occurs
+     */
+    public BerInputStream(byte[] encoded, int offset, int expectedLength)
+            throws IOException {
+
+        this.buffer = encoded;
+        this.offset = offset;
 
         next();
+
+        // compare expected and decoded length
+        if (length != INDEFINIT_LENGTH
+                && (offset + expectedLength) != (this.offset + this.length)) {
+            throw new ASN1Exception("Wrong content length");
+        }
     }
 
     /**
@@ -785,11 +811,14 @@ public class BerInputStream {
         if (in == null) {
             return buffer[offset++] & 0xFF;
         } else {
-            buffer[offset] = (byte) in.read();
-            if (buffer[offset] == -1) {
+            int octet = in.read();
+            if (octet == -1) {
                 throw new ASN1Exception("Unexpected end of encoding");
             }
-            return buffer[offset++] & 0xFF;
+            
+            buffer[offset++] = (byte) octet;
+            
+            return octet;
         }
     }
 

@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.harmony.security.asn1.ASN1Oid;
-import org.apache.harmony.security.asn1.DerInputStream;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
 
@@ -52,13 +51,7 @@ public class Oid {
      */
     public Oid(byte[] data) throws GSSException {
         try {
-            DerInputStream in = new DerInputStream(data);
-            
-            if (in.getEndOffset() != data.length) {
-                throw new GSSException(GSSException.FAILURE);
-            }
-            
-            oid = new ObjectIdentifier((int[])ASN1.decode(in));
+            oid = new ObjectIdentifier((int[])ASN1.decode(data));
         } catch (IOException e) {
             GSSException gsse = new GSSException(GSSException.FAILURE);
             gsse.initCause(e);

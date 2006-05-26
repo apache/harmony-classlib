@@ -137,6 +137,11 @@ public abstract class ASN1Type implements ASN1Constants {
         return decode(new DerInputStream(encoded));
     }
 
+    public final Object decode(byte[] encoded, int offset, int encodingLen)
+            throws IOException {
+        return decode(new DerInputStream(encoded, offset, encodingLen));
+    }
+
     public final Object decode(InputStream in) throws IOException {
         return decode(new DerInputStream(in));
     }
