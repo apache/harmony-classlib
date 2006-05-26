@@ -43,7 +43,7 @@ successfully invoked from the command line.
                Linux, the GNU project C/C++ Compiler.
 
 * Java compiler - e.g. as delivered in a Java SDK. The compiler must be 
-                  capable of handling Java 1.4 source.
+                  capable of handling Java 1.5 source.
                   See http://www.ibm.com/developerworks/java/jdk/index.html
                   
                   Although it cannot be invoked through an executable, it is 
@@ -166,7 +166,7 @@ When compiling the Java source files the top-level Ant script calls another
 Ant script, <EXTRACT_DIR>/modules/build.xml. By opening up this Ant 
 file for editing and making a small change to the "build.compiler" property
 declared near the top of the file it is possible to specify any Java compiler of
-choice - provided it is capable of handling Java 1.4 source code. For example,
+choice - provided it is capable of handling Java 1.5 source code. For example,
 to use the JDT compiler built into Eclipse this property should be changed to
 use the Eclipse compiler adapter ...
 
@@ -180,7 +180,7 @@ together with the jdtCompilerAdapter.jar it contains.
 
 Remember that the Java source files located under
 <EXTRACT_DIR>/modules are intended for consumption by a compiler that
-understands Java 1.4 source code.
+understands Java 1.5 source code.
 
 For further information on this topic please refer to the Eclipse batch compiler
 website, the Ant documentation for the "javac" task and to the Eclipse help system
@@ -194,7 +194,7 @@ What's Next ?
 -------------
 
 The class libraries do not provide the full J2SE
-API. Instead the included source is only a subset of the Java 1.4.2 API.
+API. Instead the included source is only a subset of the Java 1.5 API.
 
 In addition there is minimal support for the Java security framework. Users 
 wishing to experiment with introducing JCE support to these class libraries are 
