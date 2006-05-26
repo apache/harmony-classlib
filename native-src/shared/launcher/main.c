@@ -355,7 +355,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
     }
 bail:
   if (exeName) {
-    hymem_free_memory (mainClass);
+    hymem_free_memory (exeName);
   }
 
   if (mainClassAlloc) {
