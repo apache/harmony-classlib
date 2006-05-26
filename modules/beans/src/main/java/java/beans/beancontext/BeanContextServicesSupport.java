@@ -123,7 +123,9 @@ public class BeanContextServicesSupport extends BeanContextSupport
      * Nested class
      */
     protected static class BCSSServiceProvider implements Serializable {
-        
+
+        private static final long serialVersionUID = 2535886151721373993L;
+
         /**
          * @serial
          */
