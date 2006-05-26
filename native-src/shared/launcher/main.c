@@ -136,7 +136,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   hysysinfo_get_executable_name (argv[0], &exeName);
 
   /* Pick out the end of the exe path, and start of the basename */
-  endPathPtr = exeBaseName = strrchr(exeName, HY_PATH_SLASH);
+  exeBaseName = strrchr(exeName, HY_PATH_SLASH);
   if (exeBaseName == NULL) {
 	  endPathPtr = exeBaseName = exeName;
   } else {
