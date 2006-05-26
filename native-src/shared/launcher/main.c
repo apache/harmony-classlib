@@ -106,6 +106,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   char **argv = args->argv;
   char *vmdll;
   char *mainClass = NULL;
+  char *mainClassAlloc = NULL;
   int isStandaloneJar = 0;
   int copyrightWritten = 0;
   int versionWritten = 0;
@@ -217,34 +218,39 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	} /* end for-loop */
   } else {
 	/* We are a tool launcher: main class deduced from exe name */
-        mainClass = hymem_allocate_memory (
-          strlen(HY_TOOLS_PACKAGE) + strlen(exeBaseName) + strlen (HY_TOOLS_MAIN_TYPE) + 3);
-      if (mainClass == NULL) {
-          /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
-          PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR, HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
-          goto bail;
-        }
-	  strcpy (mainClass, HY_TOOLS_PACKAGE);
-          strcat (mainClass, ".");
-	  if (NULL == (str = strchr (exeBaseName, '.'))) {
-          strcat (mainClass, exeBaseName);
-	      strcat (mainClass, ".");
-	  } else {
-		  strncat (mainClass, exeBaseName, (str - exeBaseName + 1));
-	  }
-	  strcat (mainClass, HY_TOOLS_MAIN_TYPE);
+    mainClass = hymem_allocate_memory (
+      strlen(HY_TOOLS_PACKAGE) + strlen(exeBaseName) + strlen (HY_TOOLS_MAIN_TYPE) + 3);
 
-       /* Useful when debugging */
-       /* hytty_printf(PORTLIB, "Before...\n");
-        * for (i=0; i<argc; i++) {
-        *   hytty_printf(PORTLIB, "i=%d, v=%s\n", i, argv[i]);
-        * }
-        */ 
-
-	  /* Now ensure tools JAR is on classpath */
-	  augmentToolsArgs(args->portLibrary, &argc, &argv);
-	  classArg = arrangeToolsArgs(args->portLibrary, &argc, &argv, mainClass);
+    if (mainClass == NULL) {
+      /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
+      PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR, HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
+      goto bail;
+	} else {
+      /* Remember that we malloc'ed this mainClass space so we can free it */
+      mainClassAlloc = mainClass;
 	}
+
+    strcpy (mainClass, HY_TOOLS_PACKAGE);
+    strcat (mainClass, ".");
+    if (NULL == (str = strchr (exeBaseName, '.'))) {
+      strcat (mainClass, exeBaseName);
+      strcat (mainClass, ".");
+	} else {
+      strncat (mainClass, exeBaseName, (str - exeBaseName + 1));
+	}
+	strcat (mainClass, HY_TOOLS_MAIN_TYPE);
+
+    /* Useful when debugging */
+    /* hytty_printf(PORTLIB, "Before...\n");
+     * for (i=0; i<argc; i++) {
+     *   hytty_printf(PORTLIB, "i=%d, v=%s\n", i, argv[i]);
+     * }
+     */ 
+
+	/* Now ensure tools JAR is on classpath */
+	augmentToolsArgs(args->portLibrary, &argc, &argv);
+	classArg = arrangeToolsArgs(args->portLibrary, &argc, &argv, mainClass);
+  }
 
   /* Useful when debugging */
   /* hytty_printf(PORTLIB, "After...\n");
@@ -352,8 +358,8 @@ bail:
     hymem_free_memory (mainClass);
   }
 
-  if (mainClass) {
-    hymem_free_memory (mainClass);
+  if (mainClassAlloc) {
+    hymem_free_memory (mainClassAlloc);
   }
   if (propertiesFileName) {
     hymem_free_memory (propertiesFileName);
