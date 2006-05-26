@@ -7,4 +7,6 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: 
  java.lang,
+ java.lang.reflect
 Export-Package: java.lang.annotation
+
