@@ -355,6 +355,9 @@ public class Cipher {
      */
     public final void init(int opmode, Key key) throws InvalidKeyException {
         if (sec_rand == null) {
+            // In theory it might be therad-unsafe but in the given case it's OK
+            // since it does not matter which SecureRandom instance is passed
+            // to the init()
             sec_rand = new SecureRandom();
         }
         init(opmode, key, sec_rand);
