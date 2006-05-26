@@ -76,7 +76,7 @@ public class SignerInfo {
             List unauthenticatedAttributes
             ) {
         this.version = version;
-        this.issuer = new X500Principal(((Name)issuerAndSerialNumber[0]).getEncoded());
+        this.issuer = ((Name)issuerAndSerialNumber[0]).getX500Principal();
         this.serialNumber = BigInteger.valueOf(ASN1Integer.toIntValue(issuerAndSerialNumber[1]));
         this.digestAlgorithm = digestAlgorithm;
         this.authenticatedAttributes = authenticatedAttributes;
