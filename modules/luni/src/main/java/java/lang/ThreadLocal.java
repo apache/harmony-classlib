@@ -23,7 +23,7 @@ package java.lang;
  * 
  * @see java.lang.Thread
  */
-public class ThreadLocal {
+public class ThreadLocal<T> {
 	/**
 	 * Constructs a new ThreadLocal object
 	 */
@@ -35,22 +35,22 @@ public class ThreadLocal {
 	 * Return the value of this variable under
 	 * <code>Thread.currentThread()</code>
 	 */
-	public Object get() {
-		return Thread.currentThread().getThreadLocal(this);
+	public T get() {
+		return (T)Thread.currentThread().getThreadLocal(this);
 	}
 
 	/**
 	 * Return the initial value of this variable under
 	 * <code>Thread.currentThread()</code>
 	 */
-	protected Object initialValue() {
+	protected T initialValue() {
 		return null;
 	}
 
 	/**
 	 * Set the value of this variable under <code>Thread.currentThread()</code>
 	 */
-	public void set(Object value) {
+	public void set(T value) {
 		Thread.currentThread().setThreadLocal(this, value);
 	}
 }

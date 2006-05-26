@@ -25,7 +25,7 @@ package java.lang;
  * @see java.lang.ThreadLocal
  */
 
-public class InheritableThreadLocal extends java.lang.ThreadLocal {
+public class InheritableThreadLocal<T> extends ThreadLocal<T> {
 	/**
 	 * Constructs a new InheritableThreadLocal object
 	 */
@@ -38,7 +38,7 @@ public class InheritableThreadLocal extends java.lang.ThreadLocal {
 	 * InheritableThreadLocal based on the current value of the same local on
 	 * the creator Thread.
 	 */
-	protected Object childValue(Object parentValue) {
+	protected T childValue(T parentValue) {
 		return parentValue;
 	}
 }
