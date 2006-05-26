@@ -1047,7 +1047,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             output.append("\r\n");
         }
         if (httpVersion > 0 && reqHeader.get("Connection") == null)
-            output.append("Connection: close\r\n");
+            output.append("Connection: Keep-Alive\r\n");
 
         // if we are doing output make sure the approprate headers are sent
         if (os != null) {
