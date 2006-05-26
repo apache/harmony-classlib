@@ -1,0 +1,31 @@
+# Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+java/rmi/*
+java/rmi/activation/*
+java/rmi/dgc/*
+java/rmi/registry/*
+java/rmi/server/*
+
+org/apache/harmony/rmi/*
+org/apache/harmony/rmi/activation/*
+org/apache/harmony/rmi/client/*
+org/apache/harmony/rmi/common/*
+org/apache/harmony/rmi/compiler/*
+org/apache/harmony/rmi/registry/*
+org/apache/harmony/rmi/remoteref/*
+org/apache/harmony/rmi/server/*
+org/apache/harmony/rmi/transport/*
+org/apache/harmony/rmi/transport/proxy/*
+org/apache/harmony/rmi/transport/tcp/*
