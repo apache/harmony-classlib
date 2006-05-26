@@ -30,7 +30,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     transient int elementCount;
 
-    transient Entry[] elementData;
+    transient Entry<K,V>[] elementData;
 
     final float loadFactor;
 
@@ -51,9 +51,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
 
         public Object clone() {
-            Entry entry = (Entry) super.clone();
+            Entry<K,V> entry = (Entry<K,V>) super.clone();
             if (next != null)
-                entry.next = (Entry) next.clone();
+                entry.next = (Entry<K,V>) next.clone();
             return entry;
         }
 
@@ -66,22 +66,22 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
     }
 
-    static class HashMapIterator implements Iterator {
+    static class HashMapIterator<E,KT,VT> implements Iterator<E> {
         private int position = 0;
 
         int expectedModCount;
 
-        final MapEntry.Type type;
+        final MapEntry.Type<E,KT,VT> type;
 
         boolean canRemove = false;
 
-        Entry entry;
+        Entry<KT,VT> entry;
 
-        Entry lastEntry;
+        Entry<KT,VT> lastEntry;
 
-        final HashMap associatedMap;
+        final HashMap<KT,VT> associatedMap;
 
-        HashMapIterator(MapEntry.Type value, HashMap hm) {
+        HashMapIterator(MapEntry.Type<E,KT,VT> value, HashMap<KT,VT> hm) {
             associatedMap = hm;
             type = value;
             expectedModCount = hm.modCount;
@@ -104,12 +104,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 throw new ConcurrentModificationException();
         }
 
-        public Object next() {
+        public E next() {
             checkConcurrentMod();
             if (!hasNext())
                 throw new NoSuchElementException();
 
-            Entry result;
+            MapEntry<KT,VT> result;
             if (entry == null) {
                 result = lastEntry = associatedMap.elementData[position++];
                 entry = lastEntry.next;
@@ -142,14 +142,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
     }
 
-    static class HashMapEntrySet extends AbstractSet {
-        private final HashMap associatedMap;
+    static class HashMapEntrySet<KT,VT> extends AbstractSet<Map.Entry<KT,VT>> {
+        private final HashMap<KT,VT> associatedMap;
 
-        public HashMapEntrySet(HashMap hm) {
+        public HashMapEntrySet(HashMap<KT,VT> hm) {
             associatedMap = hm;
         }
 
-        HashMap hashMap() {
+        HashMap<KT,VT> hashMap() {
             return associatedMap;
         }
 
@@ -178,9 +178,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             return false;
         }
 
-        public Iterator iterator() {
-            return new HashMapIterator(new MapEntry.Type() {
-                public Object get(MapEntry entry) {
+        public Iterator<Map.Entry<KT,VT>> iterator() {
+            return new HashMapIterator<Map.Entry<KT,VT>,KT,VT>(new MapEntry.Type<Map.Entry<KT,VT>, KT, VT>() {
+                public Map.Entry<KT,VT> get(MapEntry<KT,VT> entry) {
                     return entry;
                 }
             }, associatedMap);
@@ -193,8 +193,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @param s
      * @return Reference to the element array
      */
-    Entry[] newElementArray(int s) {
-        return new Entry[s];
+    Entry<K,V>[] newElementArray(int s) {
+        return (Entry<K,V>[])new Entry[s];
     }
 
     /**
@@ -255,7 +255,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @param map
      *            the mappings to add
      */
-    public HashMap(Map map) {
+    public HashMap(Map<? extends K, ? extends V> map) {
         this(map.size() < 6 ? 11 : map.size() * 2);
         putAll(map);
     }
@@ -283,12 +283,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public Object clone() {
         try {
-            HashMap map = (HashMap) super.clone();
+            HashMap<K,V> map = (HashMap<K,V>) super.clone();
             map.elementData = newElementArray(elementData.length);
-            Entry entry;
+            Entry<K,V> entry;
             for (int i = 0; i < elementData.length; i++) {
                 if ((entry = elementData[i]) != null)
-                    map.elementData[i] = (Entry) entry.clone();
+                    map.elementData[i] = (Entry<K,V>) entry.clone();
             }
             return map;
         } catch (CloneNotSupportedException e) {
@@ -337,7 +337,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     public boolean containsValue(Object value) {
         if (value != null) {
             for (int i = elementData.length; --i >= 0;) {
-                Entry entry = elementData[i];
+                Entry<K,V> entry = elementData[i];
                 while (entry != null) {
                     if (value.equals(entry.value))
                         return true;
@@ -346,7 +346,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             }
         } else {
             for (int i = elementData.length; --i >= 0;) {
-                Entry entry = elementData[i];
+                Entry<K,V> entry = elementData[i];
                 while (entry != null) {
                     if (entry.value == null)
                         return true;
@@ -364,8 +364,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * 
      * @return a Set of the mappings
      */
-    public Set entrySet() {
-        return new HashMapEntrySet(this);
+    public Set<Map.Entry<K, V>> entrySet() {
+        return new HashMapEntrySet<K,V>(this);
     }
 
     /**
@@ -383,7 +383,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         return null;
     }
 
-    Entry getEntry(Object key) {
+    Entry<K,V> getEntry(Object key) {
         int index = getModuloHash(key);
         return findEntry(key, index);
     }
@@ -394,8 +394,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         return (key.hashCode() & 0x7FFFFFFF) % elementData.length;
     }
 
-    Entry findEntry(Object key, int index) {
-        Entry m;
+    Entry<K,V> findEntry(Object key, int index) {
+        Entry<K,V> m;
         m = elementData[index];
         if (key != null) {
             while (m != null && !keysEqual(key, m)) {
@@ -428,7 +428,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public Set<K> keySet() {
         if (keySet == null) {
-            keySet = new AbstractSet() {
+            keySet = new AbstractSet<K>() {
                 public boolean contains(Object object) {
                     return containsKey(object);
                 }
@@ -449,9 +449,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                     return false;
                 }
 
-                public Iterator iterator() {
-                    return new HashMapIterator(new MapEntry.Type() {
-                        public Object get(MapEntry entry) {
+                public Iterator<K> iterator() {
+                    return new HashMapIterator<K,K,V>(new MapEntry.Type<K,K,V>() {
+                        public K get(MapEntry<K,V> entry) {
                             return entry.key;
                         }
                     }, HashMap.this);
@@ -489,8 +489,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         return result;
     }
 
-    Entry createEntry(Object key, int index, Object value) {
-        Entry entry = new Entry(key, value);
+    Entry<K,V> createEntry(K key, int index, V value) {
+        Entry<K,V> entry = new Entry<K,V>(key, value);
         entry.next = elementData[index];
         elementData[index] = entry;
         return entry;
@@ -502,7 +502,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @param map
      *            the Map to copy mappings from
      */
-    public void putAll(Map map) {
+    public void putAll(Map<? extends K, ? extends V> map) {
         super.putAll(map);
     }
 
@@ -510,14 +510,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         int length = elementData.length << 1;
         if (length == 0)
             length = 1;
-        Entry[] newData = newElementArray(length);
+        Entry<K,V>[] newData = newElementArray(length);
         for (int i = 0; i < elementData.length; i++) {
-            Entry entry = elementData[i];
+            Entry<K,V> entry = elementData[i];
             while (entry != null) {
                 Object key = entry.key;
                 int index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
                         % length;
-                Entry next = entry.next;
+                Entry<K,V> next = entry.next;
                 entry.next = newData[index];
                 newData[index] = entry;
                 entry = next;
@@ -543,10 +543,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         return null;
     }
 
-    Entry removeEntry(Object key) {
+    Entry<K,V> removeEntry(Object key) {
         int index = 0;
-        Entry entry;
-        Entry last = null;
+        Entry<K,V> entry;
+        Entry<K,V> last = null;
         if (key != null) {
             index = (key.hashCode() & 0x7FFFFFFF) % elementData.length;
             entry = elementData[index];
@@ -590,7 +590,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public Collection<V> values() {
         if (valuesCollection == null) {
-            valuesCollection = new AbstractCollection() {
+            valuesCollection = new AbstractCollection<V>() {
                 public boolean contains(Object object) {
                     return containsValue(object);
                 }
@@ -603,9 +603,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                     HashMap.this.clear();
                 }
 
-                public Iterator iterator() {
-                    return new HashMapIterator(new MapEntry.Type() {
-                        public Object get(MapEntry entry) {
+                public Iterator<V> iterator() {
+                    return new HashMapIterator<V,K,V>(new MapEntry.Type<V,K,V>() {
+                        public V get(MapEntry<K,V> entry) {
                             return entry.value;
                         }
                     }, HashMap.this);
@@ -632,12 +632,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             ClassNotFoundException {
         stream.defaultReadObject();
         int length = stream.readInt();
-        elementData = new Entry[length];
+        elementData = (Entry<K,V>[])new Entry[length];
         elementCount = stream.readInt();
         for (int i = elementCount; --i >= 0;) {
-            Object key = stream.readObject();
+            K key = (K)stream.readObject();
             int index = (key.hashCode() & 0x7FFFFFFF) % length;
-            createEntry(key, index, stream.readObject());
+            createEntry(key, index, (V)stream.readObject());
         }
     }
 }
