@@ -20,7 +20,7 @@
 <project name="Common Platform definitions" default="echo" basedir="..">
 
     <!-- Module implementation properties -->
-    <property name="hy.rmi.module" value="rmi3" />
+    <property name="hy.rmi.module" value="rmi" />
 
     <!-- Javac properties -->
     <property name="hy.javac.source" value="1.5" />
