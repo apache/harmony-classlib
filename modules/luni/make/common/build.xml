@@ -50,23 +50,6 @@
     <target name="compile.tests" depends="copy.test.resources">
         <echo message="Compiling LUNI tests from ${hy.luni.src.test.java}" />
 
-        <mkdir dir="${hy.luni.bin.injected}" />
-
-        <javac srcdir="${hy.luni.src.test.injected}"
-            destdir="${hy.luni.bin.injected}"
-            sourcepath=""
-            source="${hy.javac.source}"
-            target="${hy.javac.target}"
-            debug="${java.debug.option}">
-
-            <bootclasspath>
-                <fileset dir="${hy.target}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="${hy.tests.support.bin}" />
-        </javac>
-
         <mkdir dir="${hy.luni.bin.test}" />
 
         <javac srcdir="${hy.luni.src.test.java}"
@@ -80,7 +63,6 @@
                 <fileset dir="${hy.target}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
-                <pathelement path="${hy.luni.bin.injected}"/>
             </bootclasspath>
             <classpath location="${hy.tests.support.bin}" />
         </javac>
@@ -116,8 +98,6 @@
                 <pathelement path="${hy.luni.bin.test}" />
                 <pathelement path="${hy.tests.support.bin}" />
             </classpath>
-
-            <jvmarg value="-Xbootclasspath/a:${hy.luni.bin.injected}"/>
 
             <formatter type="xml" />
 

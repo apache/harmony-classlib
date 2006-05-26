@@ -66,6 +66,14 @@ import org.apache.harmony.luni.util.PriviAction;
 public class HttpURLConnection extends java.net.HttpURLConnection {
     int httpVersion = 1; // Assume HTTP/1.1
 
+    private static final String POST = "POST";
+
+    private static final String GET = "GET";
+
+    private static final String PUT = "PUT";
+    
+    private static final String HEAD = "HEAD";
+    
     private final int defaultPort;
 
     InputStream is;
@@ -612,7 +620,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      *         server.
      */
     public InputStream getErrorStream() {
-        if (connected && !method.equals("HEAD") && responseCode >= HTTP_BAD_REQUEST)
+        if (connected && method != HEAD && responseCode >= HTTP_BAD_REQUEST)
             return uis;
         return null;
     }
@@ -791,12 +799,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         // they are requesting a stream to write to. This implies a POST method
-        if (method.equals("GET")) {
-            method = "POST";
+        if (method == GET) {
+            method = POST;
         }
         
         // If the request method is neither PUT or POST, then you're not writing
-        if (!method.equals("PUT") && !method.equals("POST")) {
+        if (method != PUT && method != POST ) {
             throw new ProtocolException(Msg.getString("K008f", method));
         }
 
@@ -948,7 +956,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             }
         } while (getResponseCode() == 100);
 
-        if (method.equals("HEAD") || (responseCode >= 100 && responseCode < 200)
+        if (method == HEAD || (responseCode >= 100 && responseCode < 200)
                 || responseCode == HTTP_NO_CONTENT
                 || responseCode == HTTP_NOT_MODIFIED) {
             closeSocket();

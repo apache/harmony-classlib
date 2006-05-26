@@ -25,14 +25,12 @@
          <test>
             <java location="src/test/java" />
             <resources location="src/test/resources" />
-            <injected location="src/test/java.injected" />
          </test>
          <natives location="src/natives" />
       </src>
       <bin>
         <main location="bin/main" />
         <test location="bin/test" />
-        <injected location="bin/test-injected" />
       </bin>
       <packaging>
       </packaging>

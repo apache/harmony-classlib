@@ -18,7 +18,6 @@ package org.apache.harmony.tests.internal.net.www.protocol.http;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.HttpURLConnectionAccessor;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -72,17 +71,7 @@ public class HttpURLConnectionTest extends TestCase {
         c.setDoOutput(true);
         //use new String("POST") instead of simple "POST" to obtain other 
         //object instances then those that are in HttpURLConnection classes 
-        HttpURLConnectionAccessor.setRequestMethod(c, new String("POST"));
-        c.getOutputStream();
-
-        //use new String("PUT") instead of simple "PUT" to obtain other 
-        //object instances then those that are in HttpURLConnection classes 
-        HttpURLConnectionAccessor.setRequestMethod(c, new String("PUT"));
-        c.getOutputStream();
-
-        //use new String("GET") instead of simple "GET" to obtain other 
-        //object instances then those that are in HttpURLConnection classes 
-        HttpURLConnectionAccessor.setRequestMethod(c, new String("GET"));
+        c.setRequestMethod(new String("POST"));
         c.getOutputStream();
     }
 }
