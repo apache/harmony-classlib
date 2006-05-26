@@ -31,7 +31,8 @@ package java.lang;
  * @see SecurityManager
  */
 
-public class ThreadGroup {
+public class ThreadGroup implements Thread.UncaughtExceptionHandler {
+
 	// Name of this ThreadGroup
 	private String name;
 

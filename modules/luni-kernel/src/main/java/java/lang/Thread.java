@@ -691,4 +691,22 @@ public class Thread implements Runnable {
 		return false;
 	};
 
+    /**
+     * Implemented by objects that want to handle cases where a thread is being
+     * terminated by an uncaught exception.  Upon such termination, the handler is
+     * notified of the terminating thread and causal exception.  If there is no
+     * explicit handler set then the thread's group is the default handler.
+     */
+    public static interface UncaughtExceptionHandler {
+        /**
+         * The thread is being terminated by an uncaught exception.
+         * Further exceptions thrown in this method are prevent the
+         * remainder of the method from executing, but are otherwise
+         * ignored.
+         * 
+         * @param thread the thread that has an uncaught exception
+         * @param ex the exception that was thrown
+         */
+        void uncaughtException(Thread thread, Throwable ex);
+    }
 }
