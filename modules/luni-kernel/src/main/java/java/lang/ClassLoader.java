@@ -78,7 +78,7 @@ public abstract class ClassLoader {
 	 *            int the length of the class file.
 	 * @deprecated Use defineClass(String, byte[], int, int)
 	 */
-	protected final Class defineClass(byte[] classRep, int offset, int length)
+	protected final Class<?> defineClass(byte[] classRep, int offset, int length)
 			throws ClassFormatError {
 		return null;
 	}
@@ -96,7 +96,7 @@ public abstract class ClassLoader {
 	 * @param length
 	 *            int the length of the class file
 	 */
-	protected final Class defineClass(String className, byte[] classRep,
+	protected final Class<?> defineClass(String className, byte[] classRep,
 			int offset, int length) throws ClassFormatError {
 		return null;
 	}
@@ -118,7 +118,7 @@ public abstract class ClassLoader {
 	 *            ProtectionDomain the protection domain this class should
 	 *            belongs to.
 	 */
-	protected final Class defineClass(String className, byte[] classRep,
+	protected final Class<?> defineClass(String className, byte[] classRep,
 			int offset, int length, ProtectionDomain protectionDomain)
 			throws java.lang.ClassFormatError {
 		return null;
@@ -135,7 +135,7 @@ public abstract class ClassLoader {
 	 * @exception ClassNotFoundException
 	 *                always, unless overridden.
 	 */
-	protected Class findClass(String className) throws ClassNotFoundException {
+	protected Class<?> findClass(String className) throws ClassNotFoundException {
 		return null;
 	}
 
@@ -148,7 +148,7 @@ public abstract class ClassLoader {
 	 * @param className
 	 *            String the name of the class to search for.
 	 */
-	protected final Class findLoadedClass(String className) {
+	protected final Class<?> findLoadedClass(String className) {
 		return null;
 	};
 
@@ -162,7 +162,7 @@ public abstract class ClassLoader {
 	 * @exception ClassNotFoundException
 	 *                if the class can not be found.
 	 */
-	protected final Class findSystemClass(String className)
+	protected final Class<?> findSystemClass(String className)
 			throws ClassNotFoundException {
 		return null;
 	}
@@ -202,7 +202,7 @@ public abstract class ClassLoader {
 	 * @param resName
 	 *            String the name of the resource to find.
 	 */
-	public final Enumeration getResources(String resName) throws IOException {
+	public Enumeration<URL> getResources(String resName) throws IOException {
 		return null;
 	}
 
@@ -262,7 +262,7 @@ public abstract class ClassLoader {
 	 * @param resName
 	 *            String the name of the resource to find.
 	 */
-	public static Enumeration getSystemResources(String resName)
+	public static Enumeration<URL> getSystemResources(String resName)
 			throws IOException {
 		return null;
 	}
@@ -292,7 +292,7 @@ public abstract class ClassLoader {
 	 * @exception ClassNotFoundException
 	 *                If the class could not be found.
 	 */
-	public Class loadClass(String className) throws ClassNotFoundException {
+	public Class<?> loadClass(String className) throws ClassNotFoundException {
 		return null;
 	}
 
@@ -310,7 +310,7 @@ public abstract class ClassLoader {
 	 * @exception ClassNotFoundException
 	 *                If the class could not be found.
 	 */
-	protected Class loadClass(String className, boolean resolveClass)
+	protected Class<?> loadClass(String className, boolean resolveClass)
 			throws ClassNotFoundException {
 		return null;
 	}
@@ -325,7 +325,7 @@ public abstract class ClassLoader {
 	 *                if clazz is null.
 	 * @see Class#getResource
 	 */
-	protected final void resolveClass(Class clazz) {
+	protected final void resolveClass(Class<?> clazz) {
 		return;
 	}
 
@@ -391,7 +391,7 @@ public abstract class ClassLoader {
 	 *
 	 * @throws IOException when an error occurs
 	 */
-	protected Enumeration findResources(String resName) throws IOException {
+	protected Enumeration<URL> findResources(String resName) throws IOException {
 		return null;
 	}
 
@@ -479,7 +479,7 @@ public abstract class ClassLoader {
 	 * @param signers
 	 *            The signers for the class
 	 */
-	protected final void setSigners(Class c, Object[] signers) {
+	protected final void setSigners(Class<?> c, Object[] signers) {
 		return;
 	}
 

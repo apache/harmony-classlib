@@ -45,7 +45,7 @@ public final class Compiler {
 	 * @param classToCompile
 	 *            java.lang.Class the class to JIT compile
 	 */
-	public static boolean compileClass(Class classToCompile) {
+	public static boolean compileClass(Class<?> classToCompile) {
 		return false;
 	}
 
