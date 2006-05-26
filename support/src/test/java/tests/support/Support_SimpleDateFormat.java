@@ -22,6 +22,7 @@ import java.text.DateFormat.Field;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
 
@@ -47,7 +48,7 @@ public class Support_SimpleDateFormat extends Support_Format {
 		cal.set(Calendar.MILLISECOND, 0);
 		Date date = cal.getTime();
 		SimpleDateFormat format = (SimpleDateFormat) DateFormat
-				.getDateInstance();
+                .getDateInstance(DateFormat.DEFAULT, Locale.US);
 		format.setTimeZone(tz);
 
 		// test with all pattern chars, and multiple occurances
@@ -134,7 +135,7 @@ public class Support_SimpleDateFormat extends Support_Format {
 		cal.set(Calendar.MILLISECOND, 0);
 		Date date = cal.getTime();
 		SimpleDateFormat format = (SimpleDateFormat) DateFormat
-				.getDateInstance();
+                .getDateInstance(DateFormat.DEFAULT, Locale.US);
 		format.setTimeZone(tz);
 
 		format.applyPattern("yyyyMMddHHmmss");
