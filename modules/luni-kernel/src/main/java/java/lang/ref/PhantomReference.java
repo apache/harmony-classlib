@@ -23,27 +23,26 @@ package java.lang.ref;
  */
 public class PhantomReference<T> extends Reference<T> {
 
-	/**
-	 * Return the referent of the reference object. Phantom reference objects
-	 * referents are inaccessible, and so null is returned.
-	 * 
-	 * 
-	 * @return Object Returns null.
-	 */
-	public T get() {
-		return null;
-	}
+    /**
+     * Return the referent of the reference object. Phantom reference objects
+     * referents are inaccessible, and so null is returned.
+     * 
+     * @return Object Returns null.
+     */
+    public T get() {
+        return null;
+    }
 
-	/**
-	 * Constructs a new instance of this class.
-	 * 
-	 * 
-	 * @param r
-	 *            referent to track.
-	 * @param q
-	 *            queue to register to the reference object with.
-	 */
-	public PhantomReference(T r, ReferenceQueue<? super T> q) {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class.
+     * 
+     * 
+     * @param r
+     *            referent to track.
+     * @param q
+     *            queue to register to the reference object with.
+     */
+    public PhantomReference(T r, ReferenceQueue<? super T> q) {
+        super();
+    }
 }

@@ -27,94 +27,92 @@ package java.lang.ref;
  */
 public abstract class Reference<T> extends Object {
 
-	/**
-	 * Make the referent null. This does not force the reference object to be
-	 * enqueued.
-	 * 
-	 */
-	public void clear() {
-		return;
-	}
+    /**
+     * Make the referent null. This does not force the reference object to be
+     * enqueued.
+     */
+    public void clear() {
+        return;
+    }
 
-	/**
-	 * Force the reference object to be enqueued if it has been associated with
-	 * a queue.
-	 * 
-	 * @return boolean true if Reference is enqueued. false otherwise.
-	 */
-	public boolean enqueue() {
-		return false;
-	}
+    /**
+     * Force the reference object to be enqueued if it has been associated with
+     * a queue.
+     * 
+     * @return boolean true if Reference is enqueued. false otherwise.
+     */
+    public boolean enqueue() {
+        return false;
+    }
 
-	/**
-	 * Return the referent of the reference object.
-	 * 
-	 * @return Referent to which reference refers, or null if object has
-	 *         been cleared.
-	 */
-	public T get() {
-		return null;
-	}
+    /**
+     * Return the referent of the reference object.
+     * 
+     * @return Referent to which reference refers, or null if object has been
+     *         cleared.
+     */
+    public T get() {
+        return null;
+    }
 
-	/**
-	 * Return whether the reference object has been enqueued.
-	 * 
-	 * @return boolean true if Reference has been enqueued. false otherwise.
-	 */
-	public boolean isEnqueued() {
-		return false;
-	}
+    /**
+     * Return whether the reference object has been enqueued.
+     * 
+     * @return boolean true if Reference has been enqueued. false otherwise.
+     */
+    public boolean isEnqueued() {
+        return false;
+    }
 
-	/**
-	 * Enqueue the reference object on the associated queue.
-	 * 
-	 * @return boolean true if the Reference was successfully enqueued. false
-	 *         otherwise.
-	 */
-	boolean enqueueImpl() {
-		return false;
-	}
+    /**
+     * Enqueue the reference object on the associated queue.
+     * 
+     * @return boolean true if the Reference was successfully enqueued. false
+     *         otherwise.
+     */
+    boolean enqueueImpl() {
+        return false;
+    }
 
-	/**
-	 * Constructs a new instance of this class.
-	 * 
-	 */
-	Reference() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class.
+     * 
+     */
+    Reference() {
+        super();
+    }
 
-	/**
-	 * Implement this method to support the provided subclass implementations.
-	 * Initialize a newly created reference object. Associate the reference
-	 * object with the referent.
-	 * 
-	 * @param r
-	 *            the referent
-	 */
-	void initReference(Object r) {
-		return;
-	}
+    /**
+     * Implement this method to support the provided subclass implementations.
+     * Initialize a newly created reference object. Associate the reference
+     * object with the referent.
+     * 
+     * @param r
+     *            the referent
+     */
+    void initReference(Object r) {
+        return;
+    }
 
-	/**
-	 * Implement this method to support the provided subclass implementations.
-	 * Initialize a newly created reference object. Associate the reference
-	 * object with the referent, and the specified ReferenceQueue.
-	 * 
-	 * @param r
-	 *            the referent
-	 * @param q
-	 *            the ReferenceQueue
-	 */
-	void initReference(Object r, ReferenceQueue q) {
-		return;
-	}
+    /**
+     * Implement this method to support the provided subclass implementations.
+     * Initialize a newly created reference object. Associate the reference
+     * object with the referent, and the specified ReferenceQueue.
+     * 
+     * @param r
+     *            the referent
+     * @param q
+     *            the ReferenceQueue
+     */
+    void initReference(Object r, ReferenceQueue q) {
+        return;
+    }
 
-	/**
-	 * Called when a Reference has been removed from its ReferenceQueue.
-	 * Set the enqueued field to false.
-	 */
-	void dequeue() {
-		return;
-	}
-
+    /**
+     * Called when a Reference has been removed from its ReferenceQueue. Set the
+     * enqueued field to false.
+     */
+    void dequeue() {
+        return;
+    }
 }

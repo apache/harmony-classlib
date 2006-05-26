@@ -23,41 +23,35 @@ package java.lang.ref;
  */
 public class SoftReference<T> extends Reference<T> {
 
-	private int age;
+    /**
+     * Constructs a new instance of this class.
+     * 
+     * @param r
+     *            referent to track.
+     * @param q
+     *            queue to register to the reference object with.
+     */
+    public SoftReference(T r, ReferenceQueue<? super T> q) {
+        initReference(r, q);
+    }
 
-	/**
-	 * Constructs a new instance of this class.
-	 * 
-	 * 
-	 * @param r
-	 *            referent to track.
-	 * @param q
-	 *            queue to register to the reference object with.
-	 */
-	public SoftReference(T r, ReferenceQueue<? super T> q) {
-		initReference(r, q);
-	}
+    /**
+     * Constructs a new instance of this class.
+     * 
+     * @param r
+     *            referent to track.
+     */
+    public SoftReference(T r) {
+        initReference(r);
+    }
 
-	/**
-	 * Constructs a new instance of this class.
-	 * 
-	 * 
-	 * @param r
-	 *            referent to track.
-	 */
-	public SoftReference(T r) {
-		initReference(r);
-	}
-
-	/**
-	 * Return the referent of the reference object.
-	 * 
-	 * 
-	 * @return Object Referent to which reference refers, or null if object has
-	 *         been cleared.
-	 */
-	public T get() {
-		return super.get();
-	}
-
+    /**
+     * Return the referent of the reference object.
+     * 
+     * @return Object Referent to which reference refers, or null if object has
+     *         been cleared.
+     */
+    public T get() {
+        return super.get();
+    }
 }
