@@ -28,7 +28,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * Locale specific String comparison to determine their ordering with respect to
  * each other.
  */
-public abstract class Collator implements Comparator, Cloneable {
+public abstract class Collator implements Comparator<Object>, Cloneable {
 
 	static final int EQUAL = 0;
 
