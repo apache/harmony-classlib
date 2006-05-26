@@ -116,7 +116,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   char *vmiPath = NULL;
   char *newPathToAdd;
   char *propertiesFileName = NULL;
-  char *exeName;
+  char *exeName = NULL;
   char *exeBaseName;
   char *endPathPtr;
   UDATA handle;
@@ -134,12 +134,13 @@ gpProtectedMain (struct haCmdlineOptions *args)
   /* Find out name of the executable we are running as */
   hysysinfo_get_executable_name (argv[0], &exeName);
 
-  /* Pick out the file basename */
-  exeBaseName = strrchr(exeName, HY_PATH_SLASH);
+  /* Pick out the end of the exe path, and start of the basename */
+  endPathPtr = exeBaseName = strrchr(exeName, HY_PATH_SLASH);
   if (exeBaseName == NULL) {
-	  exeBaseName = exeName;
+	  endPathPtr = exeBaseName = exeName;
   } else {
 	  exeBaseName += 1;
+	  endPathPtr = exeBaseName;
   }
 
   /* Test whether we are likely the generic java launcher (or a tool) */
@@ -179,7 +180,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
       hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
       hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
                      "java [-vm:vmdll -vmdir:dir -D... [-X...]] [args]\n");
-      return 0;
+      goto bail;
     }
 
 	/* We are the generic launcher, figure out if we have a main class
@@ -201,7 +202,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
 			/* We are being asked to print our version, and quit */
 			dumpVersionInfo (PORTLIB);
 			hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
-			return 0;
+			goto bail;
 		}
 		if (0 == strcmp ("-showversion", argv[i])) {
 			/* We are being asked to print our version and continue */
@@ -268,9 +269,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
 
   /* jvm dlls are located in a subdirectory off of jre/bin */
   /* setup path to dll named in -vm argument                      */
-    hysysinfo_get_executable_name (argv[0], &exeName);
-    endPathPtr = strrchr (exeName, DIR_SEPERATOR);
-    endPathPtr[1] = '\0';
+    endPathPtr[0] = '\0';
     newPathToAdd = hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) + 1);
     if (newPathToAdd == NULL) {
         /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
@@ -349,22 +348,23 @@ gpProtectedMain (struct haCmdlineOptions *args)
       goto bail;
     }
 bail:
-  if (mainClass)
-  {
-	  hymem_free_memory (mainClass);
+  if (exeName) {
+    hymem_free_memory (mainClass);
   }
-  if (propertiesFileName)
-    {
-      hymem_free_memory (propertiesFileName);
-    }
-  if (vmiPath)
-    {
-      hymem_free_memory (vmiPath);
-    }
-  if (newPathToAdd)
-    {
-      hymem_free_memory (newPathToAdd);
-    }
+
+  if (mainClass) {
+    hymem_free_memory (mainClass);
+  }
+  if (propertiesFileName) {
+    hymem_free_memory (propertiesFileName);
+  }
+  if (vmiPath) {
+    hymem_free_memory (vmiPath);
+  }
+  if (newPathToAdd) {
+    hymem_free_memory (newPathToAdd);
+  }
+  
   return 0;
 }
 
