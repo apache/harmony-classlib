@@ -36,4 +36,23 @@ public class FileChannelTest extends TestCase {
 		out.close();
 		assertFalse("Assert 0: Channel is still open", channel.isOpen());
 	}
+
+    /**
+     * @tests java.nio.channels.FileChannel#position()
+     */
+    public void test_Position() throws Exception {
+        // Regression test for Harmony-508
+        File tmpfile = File.createTempFile("FileOutputStream", "tmp");
+        tmpfile.deleteOnExit();
+        FileOutputStream fos = new FileOutputStream(tmpfile);
+        byte[] b = new byte[10];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte) i;
+        }
+        fos.write(b);
+        fos.flush();
+        fos.close();
+        FileOutputStream f = new FileOutputStream(tmpfile, true);
+        assertEquals(10, f.getChannel().position());
+    }
 }

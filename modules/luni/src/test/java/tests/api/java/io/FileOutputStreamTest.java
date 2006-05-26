@@ -208,6 +208,25 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
     }
 
     /**
+     * @tests java.io.FileOutputStream#getChannel()
+     */
+    public void test_getChannel() throws Exception {
+		// Regression for HARMONY-
+		File tmpfile = File.createTempFile("FileOutputStream", "tmp");
+		tmpfile.deleteOnExit();
+		FileOutputStream fos = new FileOutputStream(tmpfile);
+		byte[] b = new byte[10];
+		for (int i = 10; i < b.length; i++) {
+			b[i] = (byte) i;
+		}
+		fos.write(b);
+		fos.flush();
+		fos.close();
+		FileOutputStream f = new FileOutputStream(tmpfile, true);
+		assertEquals(f.getChannel().position(), 10); 
+    }
+
+    /**
      * Tears down the fixture, for example, close a network connection. This
      * method is called after a test is executed.
      */

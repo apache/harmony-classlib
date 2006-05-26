@@ -34,6 +34,14 @@ public final class WriteOnlyFileChannel extends FileChannelImpl {
 		super(stream, handle);
 		append = isAppend;
 	}
+    
+    /*
+     * (non-Javadoc)
+     * @see org.apache.harmony.nio.internal.FileChannelImpl#position()
+     */
+    public long position() throws IOException {
+        return append ? size() : super.position();
+    }
 
 	public long transferTo(long position, long count, WritableByteChannel target)
 			throws IOException {
