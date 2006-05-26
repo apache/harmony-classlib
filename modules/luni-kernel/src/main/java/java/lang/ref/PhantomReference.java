@@ -21,7 +21,7 @@ package java.lang.ref;
  * 
  * @since JDK1.2
  */
-public class PhantomReference extends java.lang.ref.Reference {
+public class PhantomReference<T> extends Reference<T> {
 
 	/**
 	 * Return the referent of the reference object. Phantom reference objects
@@ -30,7 +30,7 @@ public class PhantomReference extends java.lang.ref.Reference {
 	 * 
 	 * @return Object Returns null.
 	 */
-	public Object get() {
+	public T get() {
 		return null;
 	}
 
@@ -43,7 +43,7 @@ public class PhantomReference extends java.lang.ref.Reference {
 	 * @param q
 	 *            queue to register to the reference object with.
 	 */
-	public PhantomReference(Object r, ReferenceQueue q) {
+	public PhantomReference(T r, ReferenceQueue<? super T> q) {
 		super();
 	}
 }

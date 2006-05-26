@@ -21,7 +21,8 @@ package java.lang.ref;
  * 
  * @since JDK1.2
  */
-public class SoftReference extends java.lang.ref.Reference {
+public class SoftReference<T> extends Reference<T> {
+
 	private int age;
 
 	/**
@@ -33,7 +34,7 @@ public class SoftReference extends java.lang.ref.Reference {
 	 * @param q
 	 *            queue to register to the reference object with.
 	 */
-	public SoftReference(Object r, ReferenceQueue q) {
+	public SoftReference(T r, ReferenceQueue<? super T> q) {
 		initReference(r, q);
 	}
 
@@ -44,7 +45,7 @@ public class SoftReference extends java.lang.ref.Reference {
 	 * @param r
 	 *            referent to track.
 	 */
-	public SoftReference(Object r) {
+	public SoftReference(T r) {
 		initReference(r);
 	}
 
@@ -55,7 +56,7 @@ public class SoftReference extends java.lang.ref.Reference {
 	 * @return Object Referent to which reference refers, or null if object has
 	 *         been cleared.
 	 */
-	public Object get() {
+	public T get() {
 		return super.get();
 	}
 
