@@ -32,8 +32,9 @@ import org.apache.harmony.kernel.vm.VM;
  * 
  * @see Properties
  * @see PropertyResourceBundle
+ * @since 1.1
  */
-abstract public class ResourceBundle {
+public abstract class ResourceBundle {
 	
 	/**
 	 * The parent of this ResourceBundle.
@@ -43,7 +44,7 @@ abstract public class ResourceBundle {
 	private Locale locale;
 
 	static class MissingBundle extends ResourceBundle {
-		public Enumeration getKeys() {
+		public Enumeration<String> getKeys() {
 			return null;
 		}
 
@@ -52,11 +53,11 @@ abstract public class ResourceBundle {
 		}
 	}
 
-	private static ResourceBundle MISSING = new MissingBundle();
+	private static final ResourceBundle MISSING = new MissingBundle();
 
-	private static ResourceBundle MISSINGBASE = new MissingBundle();
+	private static final ResourceBundle MISSINGBASE = new MissingBundle();
 
-	private static WeakHashMap cache = new WeakHashMap();
+	private static final WeakHashMap<Object,Hashtable<String,ResourceBundle>> cache = new WeakHashMap<Object,Hashtable<String,ResourceBundle>>();
 
 	/**
 	 * Constructs a new instance of this class.
@@ -158,7 +159,7 @@ abstract public class ResourceBundle {
 	 * 
 	 * @return an Enumeration of the resource names
 	 */
-	public abstract Enumeration getKeys();
+	public abstract Enumeration<String> getKeys();
 
 	/**
 	 * Gets the Locale of this ResourceBundle.
@@ -232,7 +233,7 @@ abstract public class ResourceBundle {
 				cache.put(cacheKey, loaderCache);
 			}
 		}
-		ResourceBundle result = (ResourceBundle) loaderCache.get(bundleName);
+		ResourceBundle result = loaderCache.get(bundleName);
 		if (result != null) {
 			if (result == MISSINGBASE)
 				return null;

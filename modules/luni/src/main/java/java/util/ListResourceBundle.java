@@ -22,9 +22,10 @@ package java.util;
  * the list of resources.
  * 
  * @see ResourceBundle
+ * @since 1.1
  */
 public abstract class ListResourceBundle extends ResourceBundle {
-	
+	//TODO Generify when Hashtable is generified
 	Hashtable table;
 
 	/**
@@ -41,24 +42,24 @@ public abstract class ListResourceBundle extends ResourceBundle {
 	 * 
 	 * @return a Object array containing the resources
 	 */
-	abstract protected Object[][] getContents();
+	protected abstract Object[][] getContents();
 
 	/**
 	 * Answers the names of the resources contained in this ListResourceBundle.
 	 * 
 	 * @return an Enumeration of the resource names
 	 */
-	public Enumeration getKeys() {
+	public Enumeration<String> getKeys() {
 		if (table == null)
 			initializeTable();
 		if (parent == null)
 			return table.keys();
-		return new Enumeration() {
-			Enumeration local = table.keys();
+		return new Enumeration<String>() {
+			Enumeration<String> local = table.keys();
 
-			Enumeration pEnum = parent.getKeys();
+			Enumeration<String> pEnum = parent.getKeys();
 
-			Object nextElement = null;
+			String nextElement = null;
 
 			private boolean findNext() {
 				if (nextElement != null)
@@ -79,11 +80,11 @@ public abstract class ListResourceBundle extends ResourceBundle {
 				return findNext();
 			}
 
-			public Object nextElement() {
+			public String nextElement() {
 				if (local.hasMoreElements())
 					return local.nextElement();
 				if (findNext()) {
-					Object result = nextElement;
+					String result = nextElement;
 					nextElement = null;
 					return result;
 				}

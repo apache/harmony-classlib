@@ -26,9 +26,10 @@ import java.io.InputStream;
  * 
  * @see ResourceBundle
  * @see Properties
+ * @since 1.1
  */
 public class PropertyResourceBundle extends ResourceBundle {
-	
+	//TODO Generify when Properties is generified
 	Properties resources;
 
 	/**
@@ -50,15 +51,15 @@ public class PropertyResourceBundle extends ResourceBundle {
 	 * 
 	 * @return an Enumeration of the resource names
 	 */
-	public Enumeration getKeys() {
+	public Enumeration<String> getKeys() {
 		if (parent == null)
 			return resources.keys();
-		return new Enumeration() {
-			Enumeration local = resources.keys();
+		return new Enumeration<String>() {
+			Enumeration<String> local = resources.keys();
 
-			Enumeration pEnum = parent.getKeys();
+			Enumeration<String> pEnum = parent.getKeys();
 
-			Object nextElement = null;
+			String nextElement;
 
 			private boolean findNext() {
 				if (nextElement != null)
@@ -79,11 +80,11 @@ public class PropertyResourceBundle extends ResourceBundle {
 				return findNext();
 			}
 
-			public Object nextElement() {
+			public String nextElement() {
 				if (local.hasMoreElements())
 					return local.nextElement();
 				if (findNext()) {
-					Object result = nextElement;
+					String result = nextElement;
 					nextElement = null;
 					return result;
 				}
