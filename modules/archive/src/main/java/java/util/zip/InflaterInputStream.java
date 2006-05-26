@@ -137,8 +137,6 @@ public class InflaterInputStream extends FilterInputStream {
 		// avoid int overflow, check null buffer
 		if (off <= buffer.length && nbytes >= 0 && off >= 0
 				&& buffer.length - off >= nbytes) {
-			if (nbytes == 0)
-				return 0;
 			do {
 				if (inf.needsInput())
 					fill();

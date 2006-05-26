@@ -202,13 +202,9 @@ public class XMLEncoder extends Encoder {
                         if(type != null) {
                             // check if it is necessary to assign
                             // and display *id* attribute to the object
-                            if(isReferenced) { 
-                                String objectName = NameMaker.getInstanceName(
-                                        type);
-                                
-                                node.setId(objectName);
-                                tag.addAttr("id", objectName);
-                            }
+                            String objectName = NameMaker.getInstanceName(type);
+                            node.setId(objectName);
+                            tag.addAttr("id", objectName);
                         }
                     } catch (Exception e) {
                         getExceptionListener().exceptionThrown(e);

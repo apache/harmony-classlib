@@ -664,7 +664,7 @@ class BeanInfoImpl implements BeanInfo {
             Method method = (Method) iterator.next();
             String methodName = method.getName();
             String propertyName = extractPropertyName(methodName);
-            if ((!checkExisting) || (checkExisting && (hmPropertyDescriptors.get(propertyName) == null))) {
+            if ((!checkExisting) || (hmPropertyDescriptors.get(propertyName) == null)) {
                 PropertyDescriptor propertyDescriptor = null;
                 try {
                     propertyDescriptor = new PropertyDescriptor(propertyName, beanClass);
@@ -686,8 +686,7 @@ class BeanInfoImpl implements BeanInfo {
             Method method = (Method) iterator.next();
             String methodName = method.getName();
             String propertyName = extractPropertyName(methodName);
-            if ((!checkExisting) || (checkExisting
-                    && (hmPropertyDescriptors.get(propertyName) == null))) {
+            if ((!checkExisting) || (hmPropertyDescriptors.get(propertyName) == null)) {
                 IndexedPropertyDescriptor indexedPropertyDescriptor = null;
                 try {
                     indexedPropertyDescriptor = new IndexedPropertyDescriptor(
