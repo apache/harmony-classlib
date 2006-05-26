@@ -122,14 +122,12 @@ public class LinkedListTest extends junit.framework.TestCase {
      * @tests java.util.LinkedList#addAll(int, java.util.Collection)
      */
     public void test_addAllILjava_util_Collection_2() {
+        // Regression for HARMONY-467
         LinkedList obj = new LinkedList();
         try {
-            obj.addAll((int) -1, (Collection) null);
+            obj.addAll(-1, (Collection) null);
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
-            // expected
-        } catch (Exception e) {
-            assertEquals(IndexOutOfBoundsException.class, e.getClass());
         }
     }
 
@@ -243,11 +241,9 @@ public class LinkedListTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect element", ll.get(22) == objArray[22]);
 		try {
 			ll.get(8765);
+            fail("Failed to throw expected exception for index > size");
 		} catch (IndexOutOfBoundsException e) {
-			// Correct
-			return;
 		}
-		fail("Failed to throw expected exception for index > size");
 	}
 
 	/**
@@ -476,16 +472,11 @@ public class LinkedListTest extends junit.framework.TestCase {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	protected void setUp() {
+	protected void setUp() throws Exception {
+        super.setUp();
 		ll = new LinkedList();
-		for (int i = 0; i < objArray.length; i++)
+		for (int i = 0; i < objArray.length; i++) {
 			ll.add(objArray[i]);
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
+        }
 	}
 }

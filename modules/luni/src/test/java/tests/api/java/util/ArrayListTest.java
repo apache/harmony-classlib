@@ -143,14 +143,12 @@ public class ArrayListTest extends junit.framework.TestCase {
      * @tests java.util.ArrayList#addAll(int, java.util.Collection)
      */
     public void test_addAllILjava_util_Collection_2() {
+        // Regression for HARMONY-467
         ArrayList obj = new ArrayList();
         try {
             obj.addAll((int) -1, (Collection) null);
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
-            // expected
-        } catch (Exception e) {
-            assertEquals(IndexOutOfBoundsException.class, e.getClass());
         }
     }
 
@@ -293,11 +291,9 @@ public class ArrayListTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect element", alist.get(22) == objArray[22]);
 		try {
 			alist.get(8765);
+            fail("Failed to throw expected exception for index > size");
 		} catch (IndexOutOfBoundsException e) {
-			// Correct
-			return;
 		}
-		fail("Failed to throw expected exception for index > size");
 	}
 
 	/**
@@ -350,15 +346,11 @@ public class ArrayListTest extends junit.framework.TestCase {
 		alist.remove(10);
 		assertEquals("Failed to remove element",
 				-1, alist.indexOf(objArray[10]));
-		boolean exception = false;
 		try {
 			alist.remove(999);
+            fail("Failed to throw exception when index out of range");
 		} catch (IndexOutOfBoundsException e) {
-			// Correct
-			exception = true;
 		}
-		assertTrue("Failed to throw exception when index out of range",
-				exception);
 
 		ArrayList myList = (ArrayList) (((ArrayList) (alist)).clone());
 		alist.add(25, null);
@@ -484,16 +476,10 @@ public class ArrayListTest extends junit.framework.TestCase {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	protected void setUp() {
+	protected void setUp() throws Exception {
+        super.setUp();
 		alist = new ArrayList();
 		for (int i = 0; i < objArray.length; i++)
 			alist.add(objArray[i]);
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }
