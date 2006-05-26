@@ -127,40 +127,7 @@
         <mkdir dir="${build.output}" />
 
         <copy todir="${build.output}" includeemptydirs="false">
-            <fileset dir="modules/archive/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/applet/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/auth/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/awt/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/beans/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/crypto/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
             <fileset dir="modules/luni/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/nio/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/nio_char/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/security/src">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/text/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset dir="modules/logging/src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
