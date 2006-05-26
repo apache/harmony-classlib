@@ -301,7 +301,7 @@ public class StreamTokenizer {
 		 * contained within words.
 		 */
 		if ((currentType & TOKEN_DIGIT) != 0) {
-			StringBuffer digits = new StringBuffer(20);
+            StringBuilder digits = new StringBuilder(20);
 			boolean haveDecimal = false, checkJustNegative = currentChar == '-';
 			while (true) {
 				if (currentChar == '.')
@@ -567,7 +567,7 @@ public class StreamTokenizer {
 	 */
 	public String toString() {
 		// Values determined through experimentation
-		StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 		result.append("Token["); //$NON-NLS-1$
 		switch (ttype) {
 		case TT_EOF:

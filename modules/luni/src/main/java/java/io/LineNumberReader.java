@@ -185,7 +185,7 @@ public class LineNumberReader extends BufferedReader {
 	public String readLine() throws IOException {
 		synchronized (lock) {
 			/* Typical Line Length */
-			StringBuffer result = new StringBuffer(80);
+            StringBuilder result = new StringBuilder(80);
 			while (true) {
 				int character = read();
 				if (character == -1)

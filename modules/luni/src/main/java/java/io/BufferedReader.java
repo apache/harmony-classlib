@@ -32,6 +32,7 @@ package java.io;
  * will buffer input for the file <code>file.java</code>.
  * 
  * @see BufferedWriter
+ * @since 1.1
  */
 
 public class BufferedReader extends Reader {
@@ -113,7 +114,7 @@ public class BufferedReader extends Reader {
 			return result;
 		}
 		if (markpos == 0 && marklimit > buf.length) {
-			/* Increase buffer size to accomodate the readlimit */
+			/* Increase buffer size to accommodate the readlimit */
 			int newLength = buf.length * 2;
 			if (newLength > marklimit)
 				newLength = marklimit;
@@ -151,7 +152,7 @@ public class BufferedReader extends Reader {
 	 * 
 	 * @param readlimit
 	 *            an int representing how many characters must be read
-	 *            beforeinvalidating the mark.
+	 *            before invalidating the mark.
 	 * 
 	 * @throws IOException
 	 *             If an error occurs attempting mark this BufferedReader.
@@ -310,7 +311,7 @@ public class BufferedReader extends Reader {
 		synchronized (lock) {
 			if (isOpen()) {
 				char eol = '\0';
-				StringBuffer result = new StringBuffer(80);
+				StringBuilder result = new StringBuilder(80);
 				/* Typical Line Length */
 
 				while (true) {
@@ -381,7 +382,7 @@ public class BufferedReader extends Reader {
 	 * this new location. If this Reader was not marked, throw IOException.
 	 * 
 	 * @throws IOException
-	 *             If a problem occured, the receiver does not support
+	 *             If a problem occurred, the receiver does not support
 	 *             <code>mark()/reset()</code>, or no mark has been set.
 	 */
 

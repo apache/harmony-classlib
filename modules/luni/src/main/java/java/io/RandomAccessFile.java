@@ -476,7 +476,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable{
 	 *             error occurs.
 	 */
 	public final String readLine() throws IOException {
-		StringBuffer line = new StringBuffer(80); // Typical line length
+        StringBuilder line = new StringBuilder(80); // Typical line length
 		boolean foundTerminator = false;
 		long unreadPosition = 0;
 		while (true) {

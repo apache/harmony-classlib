@@ -1085,7 +1085,7 @@ public class File implements Serializable, Comparable<File> {
 			int newInt = new java.util.Random().nextInt();
 			counter = ((newInt / 65535) & 0xFFFF) + 0x2710;
 		}
-		StringBuffer newName = new StringBuffer();
+		StringBuilder newName = new StringBuilder();
 		newName.append(prefix);
 		newName.append(counter++);
 		newName.append(suffix);
@@ -1186,7 +1186,7 @@ public class File implements Serializable, Comparable<File> {
 			if (!name.startsWith("/")) // On Windows, absolute paths might not //$NON-NLS-1$
 										// start with sep.
 				return new URI("file", null, //$NON-NLS-1$
-						new StringBuffer(name.length() + 1).append('/').append(
+						new StringBuilder(name.length() + 1).append('/').append(
 								name).toString(), null, null);
 			else if (name.startsWith("//")) //$NON-NLS-1$
 				return new URI("file", name, null); // UNC path //$NON-NLS-1$
@@ -1211,7 +1211,7 @@ public class File implements Serializable, Comparable<File> {
 		String name = getAbsoluteName();
 		if (!name.startsWith("/")) // On Windows, absolute paths might not //$NON-NLS-1$
 									// start with sep.
-			return new URL("file", "", -1, new StringBuffer(name.length() + 1) //$NON-NLS-1$ //$NON-NLS-2$
+			return new URL("file", "", -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$ //$NON-NLS-2$
 					.append('/').append(name).toString(), null);
 		else if (name.startsWith("//")) //$NON-NLS-1$
 			return new URL("file:" + name); // UNC path //$NON-NLS-1$
@@ -1226,7 +1226,7 @@ public class File implements Serializable, Comparable<File> {
 																				// with
 																				// a
 																				// slash
-			name = new StringBuffer(name.length() + 1).append(name).append('/')
+			name = new StringBuilder(name.length() + 1).append(name).append('/')
 					.toString();
 		if (separatorChar != '/') // Must convert slashes.
 			name = name.replace(separatorChar, '/');

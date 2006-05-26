@@ -125,7 +125,7 @@ public final class FilePermission extends Permission implements Serializable {
 		int highestBitMask = 1 << (len - 1);
 
 		// if a bit of mask is set, append the corresponding action to result
-		StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 		boolean addedItem = false;
 		for (int i = 0; i < len; i++) {
 			if ((highestBitMask & mask) != 0) {
