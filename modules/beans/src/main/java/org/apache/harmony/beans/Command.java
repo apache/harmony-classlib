@@ -506,8 +506,6 @@ public class Command {
                         getAttr("length")) : getArgumentsNumber();
                 copyArgumentsToCommands();
                 addArgument(new Argument(int.class, new Integer(length)), 0);
-            } else if(isTag("class")) {
-                methodValue = "forName";
             } else if(hasAttr("property")) {
                 String propertyValue = getAttr("property");
                 if(hasAttr("index")) {
