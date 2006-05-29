@@ -65,15 +65,13 @@ public class ASN1OctetString extends ASN1StringType {
     //
     //
 
-    public void verify(BerInputStream in) throws IOException {
-        if (!checkTag(in.tag)) {
-            //FIXME message: what about constr tag?
-            throw new ASN1Exception("ASN.1 Octetstring is expected at ["
-                    + in.tagOffset + "]. Expected tag: "
-                    + Integer.toHexString(tag) + ", but encountered tag "
-                    + Integer.toHexString(in.tag));
-        }
+    public Object decode(BerInputStream in) throws IOException {
         in.readOctetString();
+
+        if (in.isVerify) {
+            return null;
+        }
+        return getDecodedObject(in);
     }
 
     /**

@@ -69,19 +69,6 @@ public final class ASN1Explicit extends ASN1Constructured {
     //
     //
 
-    public void verify(BerInputStream in) throws IOException {
-        if (tag != in.tag) {
-            throw new ASN1Exception(
-                    "ASN.1 explicitly tagged type is expected at ["
-                            + in.tagOffset + "]. Expected tag: "
-                            + Integer.toHexString(tag)
-                            + ", but encountered tag "
-                            + Integer.toHexString(in.tag));
-        }
-        in.next();
-        type.verify(in);
-    }
-
     public Object decode(BerInputStream in) throws IOException {
         if (tag != in.tag) {
             throw new ASN1Exception(
@@ -95,6 +82,9 @@ public final class ASN1Explicit extends ASN1Constructured {
 
         in.content = type.decode(in);
 
+        if (in.isVerify) {
+            return null;
+        }
         return getDecodedObject(in);
     }
 

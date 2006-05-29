@@ -86,24 +86,6 @@ public class ASN1Implicit extends ASN1Type {
         return super.checkTag(tag);
     }
 
-    public void verify(BerInputStream in) throws IOException {
-        if (!checkTag(in.tag)) {
-            throw new ASN1Exception(
-                    "ASN.1 implicitly tagged type is expected at ["
-                            + in.tagOffset + "]. Expected tag: "
-                            + Integer.toHexString(tag)
-                            + ", but encountered tag "
-                            + Integer.toHexString(in.tag));
-        }
-
-        if (strTag > 0 && (in.tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
-            in.tag = strTag;
-        } else {
-            in.tag = type.tag;
-        }
-        type.verify(in);
-    }
-
     public Object decode(BerInputStream in) throws IOException {
         if (!checkTag(in.tag)) {
             throw new ASN1Exception(
@@ -122,6 +104,9 @@ public class ASN1Implicit extends ASN1Type {
 
         in.content = type.decode(in);
 
+        if (in.isVerify) {
+            return null;
+        }
         return getDecodedObject(in);
     }
 

@@ -75,6 +75,17 @@ public class ASN1Any extends ASN1Type {
         return true; //all tags are OK
     }
 
+    public Object decode(BerInputStream in) throws IOException {
+
+        // only read content, doesn't check it
+        in.readContent();
+
+        if (in.isVerify) {
+            return null;
+        }
+        return getDecodedObject(in);
+    }
+
     public Object getDecodedObject(BerInputStream in) throws IOException {
         byte[] bytesEncoded = new byte[in.offset - in.tagOffset];
         System.arraycopy(in.buffer, in.tagOffset, bytesEncoded, 0,

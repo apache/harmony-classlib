@@ -149,13 +149,13 @@ public abstract class ASN1Type implements ASN1Constants {
     public final void verify(byte[] encoded) throws IOException {
         DerInputStream decoder = new DerInputStream(encoded);
         decoder.setVerify();
-        verify(decoder);
+        decode(decoder);
     }
 
     public final void verify(InputStream in) throws IOException {
         DerInputStream decoder = new DerInputStream(in);
         decoder.setVerify();
-        verify(decoder);
+        decode(decoder);
     }
 
     public final byte[] encode(Object object) {
@@ -176,25 +176,7 @@ public abstract class ASN1Type implements ASN1Constants {
      * @param in - BER input stream
      * @throws IOException - if an I/O error occurs or the end of the stream is reached
      */
-    public Object decode(BerInputStream in) throws IOException {
-        verify(in);
-        return getDecodedObject(in);
-    }
-
-    /**
-     * Verified ASN.1 type.
-     *
-     * @param in - BER input stream
-     * @throws IOException - if an I/O error occurs or the end of the stream is reached
-     */
-    public void verify(BerInputStream in) throws IOException {
-        if (!checkTag(in.tag)) {
-            throw new ASN1Exception("Mandatory value is missing at ["
-                    + in.tagOffset + "]. Expected " + this
-                    + " but encountered tag " + Integer.toHexString(tag));
-        }
-        in.readContent();
-    }
+    public abstract Object decode(BerInputStream in) throws IOException;
 
     /**
      * Tests whether provided tag is equal to ASN.1 type tag.

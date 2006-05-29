@@ -189,7 +189,7 @@ public class SequenceTest extends TestCase {
         for (int i = 0; i < testcases.length; i++) {
             DerInputStream in = new DerInputStream((byte[]) testcases[i][1]);
             in.setVerify();
-            seqVerify.verify(in);
+            seqVerify.decode(in);
         }
     }
 

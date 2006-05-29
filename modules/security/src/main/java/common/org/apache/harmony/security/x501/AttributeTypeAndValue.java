@@ -388,28 +388,6 @@ public class AttributeTypeAndValue {
             return true;
         }
 
-        public void verify(BerInputStream in) throws IOException {
-
-            switch (in.tag) {
-            case ASN1Constants.TAG_TELETEXSTRING:
-                ASN1StringType.TELETEXSTRING.verify(in);
-                break;
-            case ASN1Constants.TAG_PRINTABLESTRING:
-                ASN1StringType.PRINTABLESTRING.verify(in);
-                break;
-            case ASN1Constants.TAG_UNIVERSALSTRING:
-                ASN1StringType.UNIVERSALSTRING.verify(in);
-                break;
-            case ASN1Constants.TAG_UTF8STRING:
-                ASN1StringType.UTF8STRING.verify(in);
-                break;
-            case ASN1Constants.TAG_BMPSTRING:
-                ASN1StringType.BMPSTRING.verify(in);
-                break;
-            }
-            in.readContent();
-        }
-
         public Object decode(BerInputStream in) throws IOException {
 
             // FIXME what about constr???

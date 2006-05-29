@@ -95,7 +95,7 @@ public abstract class ASN1StringType extends ASN1Type {
     public final boolean checkTag(int tag) {
         return super.checkTag(tag) || tag == constructedTag;
     }
-    public void verify(BerInputStream in) throws IOException {
+    public Object decode(BerInputStream in) throws IOException {
         if (!checkTag(in.tag)) {
             //FIXME message: what about constr tag?
             throw new ASN1Exception("ASN.1 String is expected at ["
@@ -104,6 +104,11 @@ public abstract class ASN1StringType extends ASN1Type {
                     + Integer.toHexString(in.tag));
         }
         in.readString();
+        
+        if (in.isVerify) {
+            return null;
+        }
+        return getDecodedObject(in);
     }
 
     /**

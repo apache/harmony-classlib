@@ -250,7 +250,7 @@ public class BerInputStream {
      */
     public void readBitString() throws IOException {
 
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) == 0) {
+        if (tag == ASN1Constants.TAG_BITSTRING) {
 
             if (length == 0) {
                 throw new ASN1Exception(
@@ -273,9 +273,56 @@ public class BerInputStream {
                         + "]. For empty string unused bits MUST be 0");
             }
 
-        } else {
+        } else if (tag == (ASN1Constants.TAG_BITSTRING | ASN1Constants.PC_CONSTRUCTED)) {
             throw new ASN1Exception("Decoding constructed ASN.1 bitstring "
                     + " type is not provided");
+        } else {
+            throw new ASN1Exception(
+                    "ASN.1 bitstring identifier is expected at [" + tagOffset
+                            + "], but encountered: " + Integer.toHexString(tag));
+        }
+    }
+
+    /**
+     * Decodes ASN.1 Enumerated type
+     * 
+     * @throws IOException - if error occured
+     */
+    public void readEnumerated() throws IOException {
+
+        if (tag != ASN1Constants.TAG_ENUM) {
+            throw new ASN1Exception(
+                    "ASN.1 enumerated identifier is expected at [" + tagOffset
+                            + "], but encountered: " + Integer.toHexString(tag));
+        }
+
+        //
+        // all checks are the same as for ASN.1 integer type
+        //
+
+        // check encoded length
+        if (length == 0) {
+            throw new ASN1Exception(
+                    "ASN.1 enumerated: wrong length for identifier at ["
+                            + tagOffset + ']');
+        }
+
+        readContent();
+
+        // check encoded content
+        if (length > 1) {
+
+            int bits = buffer[contentOffset] & 0xFF;
+            if (buffer[contentOffset + 1] < 0) {
+                bits += 0x100;
+            }
+
+            if (bits == 0 || bits == 0x1FF) {
+                throw new ASN1Exception(
+                        "ASN.1 enumerated: wrong content at ["
+                                + contentOffset
+                                + "]. An integer MUST be encoded in minimum number of octets");
+            }
         }
     }
 
@@ -285,6 +332,12 @@ public class BerInputStream {
      * @throws IOException - if error occured
      */
     public void readBoolean() throws IOException {
+
+        if (tag != ASN1Constants.TAG_BOOLEAN) {
+            throw new ASN1Exception("ASN.1 boolean identifier is expected at ["
+                    + tagOffset + "], but encountered: "
+                    + Integer.toHexString(tag));
+        }
 
         // check encoded length
         if (length != 1) {
@@ -312,64 +365,72 @@ public class BerInputStream {
      */
     public void readGeneralizedTime() throws IOException {
         
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
-            throw new ASN1Exception(
-                    "Decoding constructed ASN.1 GeneralizedTime"
-                            + " type is not provided");
-        }
+        if (tag == ASN1Constants.TAG_GENERALIZEDTIME) {
 
-        //FIXME: any other optimizations?
-        readContent();
-        //FIXME store string somewhere to allow a custom time type perform additional checks
+            // FIXME: any other optimizations?
+            readContent();
+            // FIXME store string somewhere to allow a custom time type perform
+            // additional checks
 
-        // check syntax: the last char MUST be Z
-        if (buffer[offset - 1] != 'Z') {
-            // FIXME support only format that is acceptable for DER
-            throw new ASN1Exception(
-                    "ASN.1 GeneralizedTime: encoded format is not implemented");
-        }
+            // check syntax: the last char MUST be Z
+            if (buffer[offset - 1] != 'Z') {
+                // FIXME support only format that is acceptable for DER
+                throw new ASN1Exception(
+                        "ASN.1 GeneralizedTime: encoded format is not implemented");
+            }
 
-        // check syntax: MUST be YYYYMMDDHHMMSS[(./,)DDD]'Z'
-        if (length != 15 && (length < 17 || length > 19)) // invalid length
-        {
-            throw new ASN1Exception(
-                    "ASN.1 GeneralizedTime wrongly encoded at ["
-                            + contentOffset + ']');
-        }
-
-        // check content: milliseconds
-        if (length > 16) {
-            byte char14 = buffer[contentOffset + 14];
-            if (char14 != '.' && char14 != ',') {
+            // check syntax: MUST be YYYYMMDDHHMMSS[(./,)DDD]'Z'
+            if (length != 15 && (length < 17 || length > 19)) // invalid
+                                                                // length
+            {
                 throw new ASN1Exception(
                         "ASN.1 GeneralizedTime wrongly encoded at ["
                                 + contentOffset + ']');
             }
-        }
 
-        if (times == null) {
-            times = new int[7];
-        }
-        times[0] = strToInt(contentOffset, 4); //year
-        times[1] = strToInt(contentOffset + 4, 2); //month
-        times[2] = strToInt(contentOffset + 6, 2); //day
-        times[3] = strToInt(contentOffset + 8, 2); //hour
-        times[4] = strToInt(contentOffset + 10, 2); //minute
-        times[5] = strToInt(contentOffset + 12, 2); //second
-
-
-        if (length > 16) {
-            //FIXME optimize me
-            times[6] = strToInt(contentOffset + 15, length - 16);
-
-            if (length == 17) {
-                times[6] = times[6] * 100;
-            } else if (length == 18) {
-                times[6] = times[6] * 10;
+            // check content: milliseconds
+            if (length > 16) {
+                byte char14 = buffer[contentOffset + 14];
+                if (char14 != '.' && char14 != ',') {
+                    throw new ASN1Exception(
+                            "ASN.1 GeneralizedTime wrongly encoded at ["
+                                    + contentOffset + ']');
+                }
             }
-        }
 
-        //FIXME check all values for valid numbers!!!
+            if (times == null) {
+                times = new int[7];
+            }
+            times[0] = strToInt(contentOffset, 4); // year
+            times[1] = strToInt(contentOffset + 4, 2); // month
+            times[2] = strToInt(contentOffset + 6, 2); // day
+            times[3] = strToInt(contentOffset + 8, 2); // hour
+            times[4] = strToInt(contentOffset + 10, 2); // minute
+            times[5] = strToInt(contentOffset + 12, 2); // second
+
+            if (length > 16) {
+                // FIXME optimize me
+                times[6] = strToInt(contentOffset + 15, length - 16);
+
+                if (length == 17) {
+                    times[6] = times[6] * 100;
+                } else if (length == 18) {
+                    times[6] = times[6] * 10;
+                }
+            }
+
+            // FIXME check all values for valid numbers!!!
+        } else if (tag == (ASN1Constants.TAG_GENERALIZEDTIME | ASN1Constants.PC_CONSTRUCTED)) {
+            throw new ASN1Exception(
+                    "Decoding constructed ASN.1 GeneralizedTime"
+                            + " type is not provided");
+
+        } else {
+            throw new ASN1Exception(
+                    "ASN.1 GeneralizedTime identifier is expected at ["
+                            + tagOffset + "], but encountered: "
+                            + Integer.toHexString(tag));
+        }
     }
 
     /**
@@ -379,57 +440,62 @@ public class BerInputStream {
      */
     public void readUTCTime() throws IOException {
 
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
-            // It is a string type and it can be encoded as primitive or constructed.
+        if (tag == ASN1Constants.TAG_UTCTIME) {
+
+            switch (length) {
+            case ASN1UTCTime.UTC_HM:
+            case ASN1UTCTime.UTC_HMS:
+                break;
+            case ASN1UTCTime.UTC_LOCAL_HM:
+            case ASN1UTCTime.UTC_LOCAL_HMS:
+                // FIXME only coordinated universal time formats are supported
+                throw new ASN1Exception(
+                        "ASN.1 UTCTime: local time format is not supported.");
+            default:
+                throw new ASN1Exception(
+                        "ASN.1 UTCTime: wrong length, identifier at ["
+                                + tagOffset + ']');
+            }
+
+            // FIXME: any other optimizations?
+            readContent();
+
+            // FIXME store string somewhare to allow a custom time type perform
+            // additional checks
+
+            // check syntax: the last char MUST be Z
+            if (buffer[offset - 1] != 'Z') {
+                throw new ASN1Exception("ASN.1 UTCTime wrongly encoded at ["
+                        + contentOffset + ']');
+            }
+
+            if (times == null) {
+                times = new int[7];
+            }
+
+            times[0] = strToInt(contentOffset, 2) + 1900; // year
+            if (Calendar.getInstance().get(Calendar.YEAR) - times[0] > 80) {
+                times[0] += 100;
+            }
+
+            times[1] = strToInt(contentOffset + 2, 2); // month
+            times[2] = strToInt(contentOffset + 4, 2); // day
+            times[3] = strToInt(contentOffset + 6, 2); // hour
+            times[4] = strToInt(contentOffset + 8, 2); // minute
+
+            if (length == ASN1UTCTime.UTC_HMS) {
+                times[5] = strToInt(contentOffset + 10, 2); // second
+            }
+
+            // FIXME check all time values for valid numbers!!!
+        } else if (tag == (ASN1Constants.TAG_UTCTIME | ASN1Constants.PC_CONSTRUCTED)) {
             throw new ASN1Exception("Decoding constructed ASN.1 UTCTime"
                     + " type is not provided");
+        } else {
+            throw new ASN1Exception("ASN.1 UTCTime identifier is expected at ["
+                    + tagOffset + "], but encountered: "
+                    + Integer.toHexString(tag));
         }
-
-        switch (length) {
-        case ASN1UTCTime.UTC_HM:
-        case ASN1UTCTime.UTC_HMS:
-            break;
-        case ASN1UTCTime.UTC_LOCAL_HM:
-        case ASN1UTCTime.UTC_LOCAL_HMS:
-            // FIXME only coordinated universal time formats are supported
-            throw new ASN1Exception(
-                    "ASN.1 UTCTime: local time format is not supported.");
-        default:
-            throw new ASN1Exception(
-                    "ASN.1 UTCTime: wrong length, identifier at ["
-                            + tagOffset + ']');
-        }
-
-        //FIXME: any other optimizations?
-        readContent();
-
-        // FIXME store string somewhare to allow a custom time type perform additional checks
-
-        // check syntax: the last char MUST be Z
-        if (buffer[offset - 1] != 'Z') {
-            throw new ASN1Exception("ASN.1 UTCTime wrongly encoded at ["
-                    + contentOffset + ']');
-        }
-
-        if (times == null) {
-            times = new int[7];
-        }
-
-        times[0] = strToInt(contentOffset, 2) + 1900; //year
-        if (Calendar.getInstance().get(Calendar.YEAR) - times[0] > 80) {
-            times[0] += 100;
-        }
-
-        times[1] = strToInt(contentOffset + 2, 2); //month
-        times[2] = strToInt(contentOffset + 4, 2); //day
-        times[3] = strToInt(contentOffset + 6, 2); //hour
-        times[4] = strToInt(contentOffset + 8, 2); //minute
-        
-        if (length == ASN1UTCTime.UTC_HMS) {
-            times[5] = strToInt(contentOffset + 10, 2); //second
-        }
-
-        //FIXME check all time values for valid numbers!!!
     }
 
     //TODO comment me
@@ -455,6 +521,12 @@ public class BerInputStream {
      * @throws IOException - if error occured
      */
     public void readInteger() throws IOException {
+
+        if (tag != ASN1Constants.TAG_INTEGER) {
+            throw new ASN1Exception("ASN.1 integer identifier is expected at ["
+                    + tagOffset + "], but encountered: "
+                    + Integer.toHexString(tag));
+        }
 
         // check encoded length
         if (length < 1) {
@@ -487,13 +559,16 @@ public class BerInputStream {
      */
     public void readOctetString() throws IOException {
 
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) == 0) {
+        if (tag == ASN1Constants.TAG_OCTETSTRING) {
             readContent();
-        } else {
+        } else if (tag == (ASN1Constants.TAG_OCTETSTRING | ASN1Constants.PC_CONSTRUCTED)) {
             throw new ASN1Exception("Decoding constructed ASN.1 octet string "
                     + " type is not provided");
+        } else {
+            throw new ASN1Exception(
+                    "ASN.1 octetstring identifier is expected at [" + tagOffset
+                            + "], but encountered: " + Integer.toHexString(tag));
         }
-
     }
 
     //FIXME comment me
@@ -505,6 +580,12 @@ public class BerInputStream {
      * @throws IOException - if error occured
      */
     public void readOID() throws IOException {
+
+        if (tag != ASN1Constants.TAG_OID) {
+            throw new ASN1Exception("ASN.1 OID identifier is expected at ["
+                    + tagOffset + "], but encountered: "
+                    + Integer.toHexString(tag));
+        }
 
         // check encoded length
         if (length < 1) {
@@ -548,6 +629,12 @@ public class BerInputStream {
      */
     public void readSequence(ASN1Sequence sequence) throws IOException {
 
+        if (tag != (ASN1Constants.TAG_SEQUENCE | ASN1Constants.PC_CONSTRUCTED)) {
+            throw new ASN1Exception(
+                    "ASN.1 sequence identifier is expected at [" + tagOffset
+                            + "], but encountered: " + Integer.toHexString(tag));
+        }
+
         int begOffset = offset;
         int endOffset = begOffset + length;
 
@@ -570,7 +657,7 @@ public class BerInputStream {
                     i++;
                 }
 
-                type[i].verify(this);
+                type[i].decode(this);
             }
 
             // check the rest of components
@@ -634,6 +721,13 @@ public class BerInputStream {
      * @throws IOException - if error occured
      */
     public void readSequenceOf(ASN1SequenceOf sequenceOf) throws IOException {
+        
+        if (tag != (ASN1Constants.TAG_SEQENCEOF | ASN1Constants.PC_CONSTRUCTED)) {
+            throw new ASN1Exception(
+                    "ASN.1 sequenceOf identifier is expected at [" + tagOffset
+                            + "], but encountered: " + Integer.toHexString(tag));
+        }
+
         decodeValueCollection(sequenceOf);
     }
 
@@ -644,6 +738,13 @@ public class BerInputStream {
      * @throws IOException - if error occured
      */
     public void readSet(ASN1Set set) throws IOException {
+        
+        if (tag != (ASN1Constants.TAG_SET | ASN1Constants.PC_CONSTRUCTED)) {
+            throw new ASN1Exception("ASN.1 set identifier is expected at ["
+                    + tagOffset + "], but encountered: "
+                    + Integer.toHexString(tag));
+        }
+
         throw new ASN1Exception("Decoding ASN.1 Set type is not provided");
     }
 
@@ -654,6 +755,13 @@ public class BerInputStream {
      * @throws IOException - if error occured
      */
     public void readSetOf(ASN1SetOf setOf) throws IOException {
+        
+        if (tag != (ASN1Constants.TAG_SETOF | ASN1Constants.PC_CONSTRUCTED)) {
+            throw new ASN1Exception("ASN.1 setOf identifier is expected at ["
+                    + tagOffset + "], but encountered: "
+                    + Integer.toHexString(tag));
+        }
+
         decodeValueCollection(setOf);
     }
 
@@ -668,7 +776,7 @@ public class BerInputStream {
         if (isVerify) {
             while (endOffset > offset) {
                 next();
-                type.verify(this);
+                type.decode(this);
             }
         } else {
 

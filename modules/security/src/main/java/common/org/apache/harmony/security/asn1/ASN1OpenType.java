@@ -44,7 +44,7 @@ public class ASN1OpenType extends ASN1Any {
         this.pool = pool;
     }
 
-    public void verify(BerInputStream in) throws IOException {
+    public Object decode(BerInputStream in) throws IOException {
 
         int[] oid = (int[]) in.get(key);
         if (oid == null) {
@@ -52,19 +52,12 @@ public class ASN1OpenType extends ASN1Any {
         }
 
         AttributeType attr = (AttributeType) pool.get(oid);
-        if (in.isVerify) {
-            if (attr == null) {
-                in.readContent(); //FIXME what about unknown oids???
-            } else {
-                attr.type.verify(in);
-            }
+        if (attr == null || (!attr.type.checkTag(in.tag))) {
+            in.content = (byte[]) super.getDecodedObject(in);
         } else {
-            if (attr == null || (!attr.type.checkTag(in.tag))) {
-                in.content = (byte[]) super.getDecodedObject(in);
-            } else {
-                in.content = attr.type.decode(in);
-            }
+            in.content = attr.type.decode(in);
         }
+        return in.content;
     }
 
     public Object getDecodedObject(BerInputStream in) throws IOException {
@@ -73,10 +66,15 @@ public class ASN1OpenType extends ASN1Any {
 
     public static class Id extends ASN1Oid {
 
-        public void verify(BerInputStream in) throws IOException {
-            super.verify(in);
+        public Object decode(BerInputStream in) throws IOException {
+            Object oid = super.decode(in);
 
-            in.put(this, super.getDecodedObject(in));
+            if (oid == null) {
+                in.put(this, super.getDecodedObject(in));
+            } else {
+                in.put(this, oid);
+            }
+            return oid;
         }
 
         public Object getDecodedObject(BerInputStream in) throws IOException {

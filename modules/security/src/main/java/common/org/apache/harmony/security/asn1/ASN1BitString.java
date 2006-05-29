@@ -65,15 +65,14 @@ public class ASN1BitString extends ASN1StringType {
     //
     //
 
-    public final void verify(BerInputStream in) throws IOException {
-        if (!checkTag(in.tag)) {
-            //FIXME message: what about constr tag?
-            throw new ASN1Exception("ASN.1 Bitstring is expected at ["
-                    + in.tagOffset + "]. Expected tag: "
-                    + Integer.toHexString(tag) + " but encountered tag "
-                    + Integer.toHexString(in.tag));
-        }
+    public Object decode(BerInputStream in) throws IOException {
+
         in.readBitString();
+
+        if (in.isVerify) {
+            return null;
+        }
+        return getDecodedObject(in);
     }
 
     /**

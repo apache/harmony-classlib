@@ -252,24 +252,6 @@ public abstract class ASN1Choice extends ASN1Type {
         return false;
     }
 
-    public void verify(BerInputStream in) throws IOException {
-
-        for (int index = 0; index < type.length; index++) {
-            if (type[index].checkTag(in.tag)) {
-
-                type[index].verify(in);
-
-                // set index for getDecodedObject method
-                in.choiceIndex = index;
-
-                return;
-            }
-        }
-        throw new ASN1Exception("Failed to decode ASN.1 choice type. "
-                + " No alternatives were found for " + getClass().getName());
-    }
-    
-    
     public Object decode(BerInputStream in) throws IOException {
         
         for (int index = 0; index < type.length; index++) {

@@ -44,14 +44,13 @@ public class ASN1Sequence extends ASN1TypeCollection {
     //
     //
 
-    public void verify(BerInputStream in) throws IOException {
-        if (tag != in.tag) {
-            throw new ASN1Exception("ASN.1 Sequence is expected at ["
-                    + in.tagOffset + "]. Expected tag: "
-                    + Integer.toHexString(tag) + ", but encountered tag "
-                    + Integer.toHexString(in.tag));
-        }
+    public Object decode(BerInputStream in) throws IOException {
         in.readSequence(this);
+
+        if (in.isVerify) {
+            return null;
+        }
+        return getDecodedObject(in);
     }
 
     //

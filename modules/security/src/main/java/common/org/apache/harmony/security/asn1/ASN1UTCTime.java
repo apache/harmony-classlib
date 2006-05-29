@@ -89,15 +89,13 @@ public class ASN1UTCTime extends ASN1Time {
     //
     //
 
-    public void verify(BerInputStream in) throws IOException {
-        if (!checkTag(in.tag)) {
-            //FIXME message: what about constr tag?
-            throw new ASN1Exception("ASN.1 GeneralizedTime is expected at ["
-                    + in.tagOffset + "]. Expected tag: "
-                    + Integer.toHexString(tag) + ", but encountered tag "
-                    + Integer.toHexString(in.tag));
-        }
+    public Object decode(BerInputStream in) throws IOException {
         in.readUTCTime();
+
+        if (in.isVerify) {
+            return null;
+        }
+        return getDecodedObject(in);
     }
 
     //

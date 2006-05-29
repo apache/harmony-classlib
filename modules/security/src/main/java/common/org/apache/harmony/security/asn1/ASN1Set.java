@@ -46,13 +46,13 @@ public class ASN1Set extends ASN1TypeCollection {
     // Decode
     //
 
-    public void verify(BerInputStream in) throws IOException {
-        if (tag != in.tag) {
-            throw new ASN1Exception("ASN.1 Set is expected at [" + in.tagOffset
-                    + "]. Expected tag: " + Integer.toHexString(tag)
-                    + ", but encountered tag " + Integer.toHexString(in.tag));
-        }
+    public Object decode(BerInputStream in) throws IOException {
         in.readSet(this);
+        
+        if(in.isVerify){
+            return null;
+        }
+        return getDecodedObject(in);
     }
 
     //

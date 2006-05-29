@@ -65,14 +65,13 @@ public class ASN1Oid extends ASN1Primitive {
     //
     //
 
-    public void verify(BerInputStream in) throws IOException {
-        if (tag != in.tag) {
-            throw new ASN1Exception("ASN.1 ObjectIdentifier is expected at ["
-                    + in.tagOffset + "]. Expected tag: "
-                    + Integer.toHexString(tag) + ", but encountered tag "
-                    + Integer.toHexString(in.tag));
-        }
+    public Object decode(BerInputStream in) throws IOException {
         in.readOID();
+
+        if (in.isVerify) {
+            return null;
+        }
+        return getDecodedObject(in);
     }
 
     /**
