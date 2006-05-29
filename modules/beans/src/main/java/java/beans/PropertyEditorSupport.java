@@ -42,6 +42,9 @@ public class PropertyEditorSupport implements PropertyEditor {
      * @com.intel.drl.spec_ref
      */
     protected PropertyEditorSupport(Object source) {
+        if( source == null ) {
+            throw new NullPointerException("source is null");
+        }
         this.source = source;
     }
 
@@ -75,14 +78,14 @@ public class PropertyEditorSupport implements PropertyEditor {
      * @com.intel.drl.spec_ref
      */
     public String getJavaInitializationString() {
-        return "<Unknown>";
+        return "???";
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public String getAsText() {
-        return (String) newValue;
+        return newValue == null ? "null" : (String) newValue;
     }
 
     /**
@@ -116,9 +119,7 @@ public class PropertyEditorSupport implements PropertyEditor {
      */
     public synchronized void addPropertyChangeListener(
             PropertyChangeListener listener) {
-        if (listener != null) {
-            listeners.add(listener);
-        }
+        listeners.add(listener);
     }
 
     /**

@@ -31,6 +31,7 @@ public class PropertyEditorSupportTest extends TestCase {
 	 * Class under test for void PropertyEditorSupport()
 	 */
 	public void testPropertyEditorSupport() {
+        // Regression for HARMONY-516
 		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
 
 		assertEquals("null", support.getAsText());
