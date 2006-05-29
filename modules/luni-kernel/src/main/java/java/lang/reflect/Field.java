@@ -16,24 +16,71 @@
 package java.lang.reflect;
 
 /**
- * This class must be implemented by the vm vendor. This class models a field.
+ * This class must be implemented by the VM vendor. This class models a field.
  * Information about the field can be accessed, and the field's value can be
  * accessed dynamically.
  * 
  */
 public final class Field extends AccessibleObject implements Member {
 
+    public boolean isSynthetic() {
+        return false;
+    }
+
+    /**
+     * <p>
+     * Returns the String representation of the field's declaration, including
+     * the type parameters.
+     * </p>
+     * 
+     * @return An instance of String.
+     * @since 1.5
+     */
+    public String toGenericString() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Indicates whether or not this field is an enumeration constant.
+     * </p>
+     * 
+     * @return A value of <code>true</code> if this field is an enumeration
+     *         constant, otherwise <code>false</code>.
+     * @since 1.5
+     */
+    public boolean isEnumConstant() {
+        return false;
+    }
+
+    /**
+     * <p>
+     * Gets the declared type of this field.
+     * </p>
+     * 
+     * @return An instance of {@link Type}.
+     * @throws GenericSignatureFormatError if the generic method signature is
+     *         invalid.
+     * @throws TypeNotPresentException if the component type points to a missing
+     *         type.
+     * @throws MalformedParameterizedTypeException if the component type points
+     *         to a type that can't be instantiated for some reason.
+     * @since 1.5
+     */
+    public Type getGenericType() {
+        return null;
+    }
+    
 	/**
-	 * Compares the specified object to this Field and answer if they are equal.
-	 * The object must be an instance of Field with the same defining class and
-	 * name.
-	 * 
-	 * @param object
-	 *            the object to compare
-	 * @return true if the specified object is equal to this Field, false
-	 *         otherwise
-	 * @see #hashCode
-	 */
+     * Compares the specified object to this Field and answer if they are equal.
+     * The object must be an instance of Field with the same defining class and
+     * name.
+     * 
+     * @param object the object to compare
+     * @return true if the specified object is equal to this Field, false
+     *         otherwise
+     * @see #hashCode
+     */
 	public boolean equals(Object object) {
 		return false;
 	}

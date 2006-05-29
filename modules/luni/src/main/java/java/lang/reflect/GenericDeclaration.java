@@ -16,7 +16,8 @@
 package java.lang.reflect;
 
 /**
- * Common interface for entities that have type variables. 
+ * Common interface for entities that have type variables.
+ * @since 1.5
  */
 public interface GenericDeclaration {
 

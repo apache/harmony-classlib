@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Eclipse-ExtensibleAPI: true
-Import-Package: java.math,
+Import-Package: java.lang.annotation,
+ java.math,
  java.nio,
  java.nio.channels,
  java.nio.channels.spi,
@@ -19,9 +20,9 @@ Import-Package: java.math,
  java.util.zip,
  javax.net.ssl,
  org.apache.harmony.nio,
- tests.support;resolution:=optional;hy_usage=test,
- tests.support.resource;resolution:=optional;hy_usage=test,
- tests.util;resolution:=optional;hy_usage=test
+ tests.support;hy_usage=test;resolution:=optional,
+ tests.support.resource;hy_usage=test;resolution:=optional,
+ tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.io,
  java.lang,
  java.lang.ref,

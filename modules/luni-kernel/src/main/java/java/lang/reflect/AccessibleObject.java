@@ -15,8 +15,10 @@
 
 package java.lang.reflect;
 
+import java.lang.annotation.Annotation;
+
 /**
- * This class must be implemented by the vm vendor. This class is the superclass
+ * This class must be implemented by the VM vendor. This class is the superclass
  * of all member reflect classes (Field, Constructor, Method). AccessibleObject
  * provides the ability to toggle access checks for these objects. By default
  * accessing a member (for example, setting a field or invoking a method) checks
@@ -31,8 +33,9 @@ package java.lang.reflect;
  * @see Constructor
  * @see Method
  * @see ReflectPermission
+ * @since 1.2
  */
-public class AccessibleObject {
+public class AccessibleObject implements AnnotatedElement {
 	static final Object[] emptyArgs = new Object[0];
 
 	/**
@@ -89,6 +92,22 @@ public class AccessibleObject {
 	public void setAccessible(boolean flag) throws SecurityException {
 		return;
 	}
+    
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        return false;
+    }
+    
+    public Annotation[] getDeclaredAnnotations() {
+        return new Annotation[0];
+    }
+    
+    public Annotation[] getAnnotations() {
+        return new Annotation[0];
+    }
+    
+    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+        return null;
+    }
 
 	static Object[] marshallArguments(Class[] parameterTypes, Object[] args)
 			throws IllegalArgumentException {

@@ -30,12 +30,12 @@ public interface Member {
 	public static final int DECLARED = 1;
 
 	/**
-	 * Return the java.lang.Class associated with the class that defined this
+	 * Return the {@link Class} associated with the class that defined this
 	 * member.
 	 * 
 	 * @return the declaring class
 	 */
-	public abstract Class getDeclaringClass();
+	Class getDeclaringClass();
 
 	/**
 	 * Return the modifiers for the member. The Modifier class should be used to
@@ -44,12 +44,19 @@ public interface Member {
 	 * @return the modifiers
 	 * @see java.lang.reflect.Modifier
 	 */
-	public abstract int getModifiers();
+	int getModifiers();
 
 	/**
 	 * Return the name of the member.
 	 * 
 	 * @return the name
 	 */
-	public abstract String getName();
+	String getName();
+    
+    /**
+     * <p>Indicates whether or not this member is synthetic (artificially introduced by
+     * the compiler).</p>
+     * @return A value of <code>true</code> if synthetic, otherwise <code>false</code>.
+     */
+    boolean isSynthetic();
 }

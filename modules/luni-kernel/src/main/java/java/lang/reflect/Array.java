@@ -230,10 +230,10 @@ public final class Array {
 	public static native short getShort(Object array, int index)
 			throws IllegalArgumentException, ArrayIndexOutOfBoundsException;
 
-	private static native Object multiNewArrayImpl(Class componentType,
+	private static native Object multiNewArrayImpl(Class<?> componentType,
 			int dimensions, int[] dimensionsArray);
 
-	private static native Object newArrayImpl(Class componentType, int dimension);
+	private static native Object newArrayImpl(Class<?> componentType, int dimension);
 
 	/**
 	 * Return a new multidimensional array of the specified component type and
@@ -255,7 +255,7 @@ public final class Array {
 	 *                limit of the number of dimension for an array (currently
 	 *                255)
 	 */
-	public static Object newInstance(Class componentType, int[] dimensions)
+	public static Object newInstance(Class<?> componentType, int[] dimensions)
 			throws NegativeArraySizeException, IllegalArgumentException {
 		return null;
 	}
@@ -274,7 +274,7 @@ public final class Array {
 	 * @exception java.lang.NegativeArraySizeException
 	 *                if the size if negative
 	 */
-	public static Object newInstance(Class componentType, int size)
+	public static Object newInstance(Class<?> componentType, int size)
 			throws NegativeArraySizeException {
 		return null;
 	}

@@ -15,13 +15,147 @@
 
 package java.lang.reflect;
 
+import java.lang.annotation.Annotation;
+
 /**
- * This class must be implemented by the vm vendor. This class models a method.
+ * This class must be implemented by the VM vendor. This class models a method.
  * Information about the method can be accessed, and the method can be invoked
  * dynamically.
  * 
  */
-public final class Method extends AccessibleObject implements Member {
+public final class Method extends AccessibleObject implements GenericDeclaration, Member {
+    
+    public TypeVariable<Method>[] getTypeParameters() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Returns the String representation of the method's declaration, including
+     * the type parameters.
+     * </p>
+     * 
+     * @return An instance of String.
+     * @since 1.5
+     */
+    public String toGenericString() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Gets the parameter types as an array of {@link Type} instances, in
+     * declaration order. If the method has no parameters, then an empty array
+     * is returned.
+     * </p>
+     * 
+     * @return An array of {@link Type} instances.
+     * @throws GenericSignatureFormatError if the generic method signature is
+     *         invalid.
+     * @throws TypeNotPresentException if the component type points to a missing
+     *         type.
+     * @throws MalformedParameterizedTypeException if the component type points
+     *         to a type that can't be instantiated for some reason.
+     * @since 1.5
+     */
+    public Type[] getGenericParameterTypes() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Gets the exception types as an array of {@link Type} instances. If the
+     * method has no declared exceptions, then an empty array is returned.
+     * </p>
+     * 
+     * @return An array of {@link Type} instances.
+     * @throws GenericSignatureFormatError if the generic method signature is
+     *         invalid.
+     * @throws TypeNotPresentException if the component type points to a missing
+     *         type.
+     * @throws MalformedParameterizedTypeException if the component type points
+     *         to a type that can't be instantiated for some reason.
+     * @since 1.5
+     */
+    public Type[] getGenericExceptionTypes() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Gets the return type as a {@link Type} instance.
+     * </p>
+     * 
+     * @return A {@link Type} instance.
+     * @throws GenericSignatureFormatError if the generic method signature is
+     *         invalid.
+     * @throws TypeNotPresentException if the component type points to a missing
+     *         type.
+     * @throws MalformedParameterizedTypeException if the component type points
+     *         to a type that can't be instantiated for some reason.
+     * @since 1.5
+     */
+    public Type getGenericReturnType() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Gets an array of arrays that represent the annotations of the formal
+     * parameters of this method. If there are no parameters on this method,
+     * then an empty array is returned. If there are no annotations set, then
+     * and array of empty arrays is returned.
+     * </p>
+     * 
+     * @return An array of arrays of {@link Annotation} instances.
+     * @since 1.5
+     */
+    public Annotation[][] getParameterAnnotations() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Indicates whether or not this method takes a variable number argument.
+     * </p>
+     * 
+     * @return A value of <code>true</code> if a vararg is declare, otherwise
+     *         <code>false</code>.
+     * @since 1.5
+     */
+    public boolean isVarArgs() {
+        return false;
+    }
+
+    /**
+     * <p>
+     * Indicates whether or not this method is a bridge.
+     * </p>
+     * 
+     * @return A value of <code>true</code> if this method's a bridge,
+     *         otherwise <code>false</code>.
+     * @since 1.5
+     */
+    public boolean isBridge() {
+        return false;
+    }
+
+    public boolean isSynthetic() {
+        return false;
+    }
+    
+    /**
+     * <p>Gets the default value for the annotation member represented by
+     * this method.</p>
+     * @return The default value or <code>null</code> if none.
+     * @throws TypeNotPresentException if the annotation is of type {@link Class}
+     * and no definition can be found.
+     * @since 1.5
+     */
+    public Object getDefaultValue() {
+        return null;
+    }
+    
 	/**
 	 * Compares the specified object to this Method and answer if they are
 	 * equal. The object must be an instance of Method with the same defining
@@ -39,7 +173,7 @@ public final class Method extends AccessibleObject implements Member {
 
 	/**
 	 * Return the java.lang.Class associated with the class that defined this
-	 * constructor.
+	 * method.
 	 * 
 	 * @return the declaring class
 	 */
@@ -59,7 +193,7 @@ public final class Method extends AccessibleObject implements Member {
 	}
 
 	/**
-	 * Return the modifiers for the modelled constructor. The Modifier class
+	 * Return the modifiers for the modelled method. The Modifier class
 	 * should be used to decode the result.
 	 * 
 	 * @return the modifiers
@@ -152,7 +286,7 @@ public final class Method extends AccessibleObject implements Member {
 	 * @param receiver
 	 * 	          The object on which to call the modelled method
 	 * @param args
-	 *            the arguments to the constructor
+	 *            the arguments to the method
 	 * @return the new, initialized, object
 	 * @exception java.lang.NullPointerException
 	 *                if the receiver is null for a non-static method
@@ -163,7 +297,7 @@ public final class Method extends AccessibleObject implements Member {
 	 *                receiver is incompatible with the declaring class, or an
 	 *                argument could not be converted by a widening conversion
 	 * @exception java.lang.reflect.InvocationTargetException
-	 *                if an exception was thrown by the invoked constructor
+	 *                if an exception was thrown by the invoked method
 	 * @see java.lang.reflect.AccessibleObject
 	 */
 	public Object invoke(Object receiver, Object args[])

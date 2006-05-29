@@ -15,7 +15,7 @@
 
 package java.lang.reflect;
 
-
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,16 +29,17 @@ import org.apache.harmony.luni.util.Msg;
  * This class provides methods to creating dynamic proxy classes and instances.
  * 
  * @see java.lang.reflect.InvocationHandler
+ * @since 1.3
  */
-public class Proxy implements java.io.Serializable {
+public class Proxy implements Serializable {
 
 	private static final long serialVersionUID = -2222568056686623797L;
 
 	// maps class loaders to created classes by interface names
-	private static Map loaderCache = new WeakHashMap();
+	private static final Map<ClassLoader, Map<String, WeakReference<Class<?>>>> loaderCache = new WeakHashMap<ClassLoader, Map<String, WeakReference<Class<?>>>>();
 
 	// to find previously created types
-	private static Map proxyCache = new WeakHashMap();
+	private static final Map<Class<?>, String> proxyCache = new WeakHashMap<Class<?>, String>();
 
 	private static int NextClassNameIndex = 0;
 
@@ -71,7 +72,7 @@ public class Proxy implements java.io.Serializable {
 	 *                if either <code>interfaces</code> or any of its elements
 	 *                are <code>null</code>.
 	 */
-	public static Class getProxyClass(ClassLoader loader, Class[] interfaces)
+	public static Class<?> getProxyClass(ClassLoader loader, Class<?>[] interfaces)
 			throws IllegalArgumentException {
 		// check that interfaces are a valid array of visible interfaces
 		if (interfaces == null)
@@ -110,15 +111,15 @@ public class Proxy implements java.io.Serializable {
 
 		// search cache for matching proxy class using the class loader
 		synchronized (loaderCache) {
-			Map interfaceCache = (Map) loaderCache.get(loader);
+			Map<String, WeakReference<Class<?>>> interfaceCache = loaderCache.get(loader);
 			if (interfaceCache == null)
-				loaderCache.put(loader, (interfaceCache = new HashMap()));
+				loaderCache.put(loader, (interfaceCache = new HashMap<String, WeakReference<Class<?>>>()));
 
 			String interfaceKey = "";
 			if (interfaces.length == 1) {
 				interfaceKey = interfaces[0].getName();
 			} else {
-				StringBuffer names = new StringBuffer();
+				StringBuilder names = new StringBuilder();
 				for (int i = 0, length = interfaces.length; i < length; i++) {
 					names.append(interfaces[i].getName());
 					names.append(' ');
@@ -126,9 +127,8 @@ public class Proxy implements java.io.Serializable {
 				interfaceKey = names.toString();
 			}
 
-			Class newClass;
-			WeakReference ref = (WeakReference) interfaceCache
-					.get(interfaceKey);
+			Class<?> newClass;
+			WeakReference<Class<?>> ref = interfaceCache.get(interfaceKey);
 			if (ref == null) {
 				String nextClassName = "$Proxy" + NextClassNameIndex++;
 				if (commonPackageName != null)
@@ -141,12 +141,12 @@ public class Proxy implements java.io.Serializable {
 						'/'), classFileBytes);
 				// Need a weak reference to the class so it can
 				// be unloaded if the class loader is discarded
-				interfaceCache.put(interfaceKey, new WeakReference(newClass));
+				interfaceCache.put(interfaceKey, new WeakReference<Class<?>>(newClass));
 				synchronized (proxyCache) {
 					proxyCache.put(newClass, ""); // the value is unused
 				}
 			} else {
-				newClass = (Class) ref.get();
+				newClass = ref.get();
 			}
 			return newClass;
 		}
@@ -172,21 +172,22 @@ public class Proxy implements java.io.Serializable {
 	 *                if the interfaces or any of its elements are null.
 	 */
 	public static Object newProxyInstance(ClassLoader loader,
-			Class[] interfaces, InvocationHandler h)
+			Class<?>[] interfaces, InvocationHandler h)
 			throws IllegalArgumentException {
 		if (h != null) {
 			try {
 				return getProxyClass(loader, interfaces).getConstructor(
-						new Class[] { InvocationHandler.class }).newInstance(
+						new Class<?>[] { InvocationHandler.class }).newInstance(
 						new Object[] { h });
 			} catch (NoSuchMethodException ex) {
-				throw new InternalError(ex.toString());
+				throw (InternalError)(new InternalError(ex.toString()).initCause(ex));
 			} catch (IllegalAccessException ex) {
-				throw new InternalError(ex.toString());
+                throw (InternalError)(new InternalError(ex.toString()).initCause(ex));
 			} catch (InstantiationException ex) {
-				throw new InternalError(ex.toString());
+                throw (InternalError)(new InternalError(ex.toString()).initCause(ex));
 			} catch (InvocationTargetException ex) {
-				throw new InternalError(ex.getTargetException().toString());
+                Throwable target = ex.getTargetException();
+                throw (InternalError)(new InternalError(target.toString()).initCause(target));
 			}
 		}
 		throw new NullPointerException();
@@ -201,7 +202,7 @@ public class Proxy implements java.io.Serializable {
 	 * @exception NullPointerException
 	 *                if the class is null.
 	 */
-	public static boolean isProxyClass(Class cl) {
+	public static boolean isProxyClass(Class<?> cl) {
 		if (cl != null) {
 			synchronized (proxyCache) {
 				return proxyCache.containsKey(cl);
@@ -228,7 +229,7 @@ public class Proxy implements java.io.Serializable {
 		throw new IllegalArgumentException(Msg.getString("K00f1"));
 	}
 
-	private static native Class defineClassImpl(ClassLoader classLoader,
+	private static native Class<?> defineClassImpl(ClassLoader classLoader,
 			String className, byte[] classFileBytes);
 
 }

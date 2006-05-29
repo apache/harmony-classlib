@@ -15,48 +15,138 @@
 
 package java.lang.reflect;
 
+import java.lang.annotation.Annotation;
+
 /**
- * This class must be implemented by the vm vendor. This class models a
+ * This class must be implemented by the VM vendor. This class models a
  * constructor. Information about the constructor can be accessed, and the
  * constructor can be invoked dynamically.
  * 
  */
-public final class Constructor<T> extends AccessibleObject implements Member {
+public final class Constructor<T> extends AccessibleObject implements GenericDeclaration, Member {
 
+    public TypeVariable<Constructor<T>>[] getTypeParameters() {
+        return null;
+    }
+    
+    /**
+     * <p>
+     * Returns the String representation of the constructor's declaration,
+     * including the type parameters.
+     * </p>
+     * 
+     * @return An instance of String.
+     * @since 1.5
+     */
+    public String toGenericString() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Gets the parameter types as an array of {@link Type} instances, in
+     * declaration order. If the constructor has no parameters, then an empty
+     * array is returned.
+     * </p>
+     * 
+     * @return An array of {@link Type} instances.
+     * @throws GenericSignatureFormatError if the generic method signature is
+     *         invalid.
+     * @throws TypeNotPresentException if the component type points to a missing
+     *         type.
+     * @throws MalformedParameterizedTypeException if the component type points
+     *         to a type that can't be instantiated for some reason.
+     * @since 1.5
+     */
+    public Type[] getGenericParameterTypes() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Gets the exception types as an array of {@link Type} instances. If the
+     * constructor has no declared exceptions, then an empty array is returned.
+     * </p>
+     * 
+     * @return An array of {@link Type} instances.
+     * @throws GenericSignatureFormatError if the generic method signature is
+     *         invalid.
+     * @throws TypeNotPresentException if the component type points to a missing
+     *         type.
+     * @throws MalformedParameterizedTypeException if the component type points
+     *         to a type that can't be instantiated for some reason.
+     * @since 1.5
+     */
+    public Type[] getGenericExceptionTypes() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Gets an array of arrays that represent the annotations of the formal
+     * parameters of this constructor. If there are no parameters on this
+     * constructor, then an empty array is returned. If there are no annotations
+     * set, then and array of empty arrays is returned.
+     * </p>
+     * 
+     * @return An array of arrays of {@link Annotation} instances.
+     * @since 1.5
+     */
+    public Annotation[][] getParameterAnnotations() {
+        return null;
+    }
+
+    /**
+     * <p>
+     * Indicates whether or not this constructor takes a variable number
+     * argument.
+     * </p>
+     * 
+     * @return A value of <code>true</code> if a vararg is declare, otherwise
+     *         <code>false</code>.
+     * @since 1.5
+     */
+    public boolean isVarArgs() {
+        return false;
+    }
+
+    public boolean isSynthetic() {
+        return false;
+    }
+    
 	/**
-	 * Compares the specified object to this Constructor and answer if they are
-	 * equal. The object must be an instance of Constructor with the same
-	 * defining class and parameter types.
-	 * 
-	 * @param object
-	 *            the object to compare
-	 * @return true if the specified object is equal to this Constructor, false
-	 *         otherwise
-	 * @see #hashCode
-	 */
+     * Compares the specified object to this Constructor and answer if they are
+     * equal. The object must be an instance of Constructor with the same
+     * defining class and parameter types.
+     * 
+     * @param object the object to compare
+     * @return true if the specified object is equal to this Constructor, false
+     *         otherwise
+     * @see #hashCode
+     */
 	public boolean equals(Object object) {
 		return false;
 	}
 
 	/**
-	 * Return the java.lang.Class associated with the class that defined this
+	 * Return the {@link Class} associated with the class that defined this
 	 * constructor.
 	 * 
 	 * @return the declaring class
 	 */
-	public Class getDeclaringClass() {
+	public Class<T> getDeclaringClass() {
 		return null;
 	}
 
 	/**
-	 * Return an array of the java.lang.Class objects associated with the
+	 * Return an array of the {@link Class} objects associated with the
 	 * exceptions declared to be thrown by this constructor. If the constructor
 	 * was not declared to throw any exceptions, the array returned will be
 	 * empty.
 	 * 
 	 * @return the declared exception classes
 	 */
-	public Class[] getExceptionTypes() {
+	public Class<?>[] getExceptionTypes() {
 		return null;
 	}
 
@@ -82,13 +172,13 @@ public final class Constructor<T> extends AccessibleObject implements Member {
 	}
 
 	/**
-	 * Return an array of the java.lang.Class objects associated with the
+	 * Return an array of the {@link Class} objects associated with the
 	 * parameter types of this constructor. If the constructor was declared with
 	 * no parameters, the array returned will be empty.
 	 * 
 	 * @return the parameter types
 	 */
-	public Class[] getParameterTypes() {
+	public Class<?>[] getParameterTypes() {
 		return null;
 	}
 
@@ -146,7 +236,7 @@ public final class Constructor<T> extends AccessibleObject implements Member {
 	 *                if an exception was thrown by the invoked constructor
 	 * @see java.lang.reflect.AccessibleObject
 	 */
-	public Object newInstance(Object args[]) throws InstantiationException,
+	public T newInstance(Object... args) throws InstantiationException,
 			IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
 		return null;
