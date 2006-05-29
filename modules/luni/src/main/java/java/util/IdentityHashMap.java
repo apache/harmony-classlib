@@ -34,15 +34,17 @@ import java.io.Serializable;
  * Like HashMap, IdentityHashMap is not thread safe, so access by multiple
  * threads must be synchronized by an external mechanism such as
  * Collections.synchronizedMap.
+ * 
+ * @since 1.4
  */
-public class IdentityHashMap extends AbstractMap implements Map, Serializable,
+public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Serializable,
 		Cloneable {
 
 	private static final long serialVersionUID = 8188218128353913216L;
 
 	/*
 	 * The internal data structure to hold key value pairs This array holds keys
-	 * and values alternatingly.
+	 * and values in an alternating fashion.
 	 */
 	transient Object[] elementData;
 
@@ -56,7 +58,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	transient int threshold;
 
 	/*
-	 * default treshold value that an IdentityHashMap created using the default
+	 * default threshold value that an IdentityHashMap created using the default
 	 * constructor would have.
 	 */
 	private static final int DEFAULT_MAX_SIZE = 21;
@@ -65,8 +67,8 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	private static final int loadFactor = 7500;
 
 	/*
-	 * modification count, to keep track of structural modificiations between
-	 * the Identityhashmap and the iterator
+	 * modification count, to keep track of structural modifications between
+	 * the IdentityHashMap and the iterator
 	 */
 	transient int modCount = 0;
 	
@@ -76,8 +78,8 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 */
 	private static final Object NULL_OBJECT = new Object();
 
-	static class IdentityHashMapEntry extends MapEntry {
-		IdentityHashMapEntry(Object theKey, Object theValue) {
+	static class IdentityHashMapEntry<K, V> extends MapEntry<K, V> {
+		IdentityHashMapEntry(K theKey, V theValue) {
 			super(theKey, theValue);
 		}
 
@@ -105,21 +107,21 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		}
 	}
 
-	static class IdentityHashMapIterator implements Iterator {
+	static class IdentityHashMapIterator<E, KT, VT> implements Iterator<E> {
 		private int position = 0; // the current position
 
 		// the position of the entry that was last returned from next()
 		private int lastPosition = 0;
 
-		final IdentityHashMap associatedMap;
+		final IdentityHashMap<KT, VT> associatedMap;
 
 		int expectedModCount;
 
-		final MapEntry.Type type;
+		final MapEntry.Type<E, KT, VT> type;
 
 		boolean canRemove = false;
 
-		IdentityHashMapIterator(MapEntry.Type value, IdentityHashMap hm) {
+		IdentityHashMapIterator(MapEntry.Type<E, KT, VT> value, IdentityHashMap<KT, VT> hm) {
 			associatedMap = hm;
 			type = value;
 			expectedModCount = hm.modCount;
@@ -141,11 +143,11 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 				throw new ConcurrentModificationException();
 		}
 
-		public Object next() {
+		public E next() {
 			checkConcurrentMod();
 			if (!hasNext()) throw new NoSuchElementException();
 			
-			IdentityHashMapEntry result = associatedMap.getEntry(position);
+			IdentityHashMapEntry<KT, VT> result = associatedMap.getEntry(position);
 			lastPosition = position;
 			position += 2;
 			
@@ -164,14 +166,14 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		}
 	}
 
-	static class IdentityHashMapEntrySet extends AbstractSet {
-		private final IdentityHashMap associatedMap;
+	static class IdentityHashMapEntrySet<KT,VT> extends AbstractSet<Map.Entry<KT, VT>> {
+		private final IdentityHashMap<KT,VT> associatedMap;
 
-		public IdentityHashMapEntrySet(IdentityHashMap hm) {
+		public IdentityHashMapEntrySet(IdentityHashMap<KT,VT> hm) {
 			associatedMap = hm;
 		}
 
-		IdentityHashMap hashMap() {
+		IdentityHashMap<KT,VT> hashMap() {
 			return associatedMap;
 		}
 
@@ -201,9 +203,9 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 			return false;
 		}
 
-		public Iterator iterator() {
-			return new IdentityHashMapIterator(new MapEntry.Type() {
-				public Object get(MapEntry entry) {
+		public Iterator<Map.Entry<KT, VT>> iterator() {
+			return new IdentityHashMapIterator<Map.Entry<KT,VT>,KT,VT>(new MapEntry.Type<Map.Entry<KT,VT>, KT, VT>() {
+				public Map.Entry<KT,VT> get(MapEntry<KT,VT> entry) {
 					return entry;
 				}
 			}, associatedMap);
@@ -234,7 +236,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	}
 
 	private int getThreshold(int maxSize) {
-		// assign the treshold to maxsize initially, this will change to a
+		// assign the threshold to maxSize initially, this will change to a
 		// higher value if rehashing occurs.
 		return maxSize > 3 ? maxSize : 3;
 	}
@@ -260,7 +262,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 * @param map
 	 *            A map of (key,value) pairs to copy into the IdentityHashMap
 	 */
-	public IdentityHashMap(Map map) {
+	public IdentityHashMap(Map<? extends K, ? extends V> map) {
 		this(map.size() < 6 ? 11 : map.size() * 2);
 		putAll(map);
 	}
@@ -327,7 +329,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 *            the key
 	 * @return the value of the mapping with the specified key
 	 */
-	public Object get(Object key) {
+	public V get(Object key) {
 		if (key == null) {
 			key = NULL_OBJECT;
 		}
@@ -336,7 +338,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 
 		if (elementData[index] == key) {
 			Object result = elementData[index + 1];
-			return (result == NULL_OBJECT) ? null : result;
+			return (V)((result == NULL_OBJECT) ? null : result);
 		}
 
 		return null;
@@ -359,7 +361,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 * Convenience method for getting the IdentityHashMapEntry without the
 	 * NULL_OBJECT elements
 	 */
-	private IdentityHashMapEntry getEntry(int index) {
+	private IdentityHashMapEntry<K, V> getEntry(int index) {
 		Object key = elementData[index];
 		Object value = elementData[index + 1];
 
@@ -370,7 +372,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 			value = null;
 		}
 
-		return new IdentityHashMapEntry(key, value);
+		return new IdentityHashMapEntry<K, V>((K)key, (V)value);
 	}
 
 	/**
@@ -408,35 +410,37 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 * @return the value of any previous mapping with the specified key or null
 	 *         if there was no mapping
 	 */
-	public Object put(Object key, Object value) {
-		if (key == null) {
-			key = NULL_OBJECT;
+	public V put(K key, V value) {
+        Object _key = key;
+        Object _value = value;
+		if (_key == null) {
+			_key = NULL_OBJECT;
 		}
 
-		if (value == null) {
-			value = NULL_OBJECT;
+		if (_value == null) {
+			_value = NULL_OBJECT;
 		}
 
-		int index = findIndex(key, elementData);
+		int index = findIndex(_key, elementData);
 
 		// if the key doesn't exist in the table
-		if (elementData[index] != key) {
+		if (elementData[index] != _key) {
 			modCount++;
 			if (++size > threshold) {
 				rehash();
-				index = findIndex(key, elementData);
+				index = findIndex(_key, elementData);
 			}
 
 			// insert the key and assign the value to null initially
-			elementData[index] = key;
+			elementData[index] = _key;
 			elementData[index + 1] = null;
 		}
 
 		// insert value to where it needs to go, return the old value
 		Object result = elementData[index + 1];
-		elementData[index + 1] = value;
+		elementData[index + 1] = _value;
 
-		return (result == NULL_OBJECT) ? null : result;
+		return (V)((result == NULL_OBJECT) ? null : result);
 	}
 
 	private void rehash() {
@@ -469,7 +473,7 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	 * @return the value of the removed mapping, or null if key is not a key in
 	 *         this Map
 	 */
-	public Object remove(Object key) {
+	public V remove(Object key) {
 		if (key == null) {
 			key = NULL_OBJECT;
 		}
@@ -515,31 +519,31 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		elementData[index] = null;
 		elementData[index + 1] = null;
 
-		return (result == NULL_OBJECT) ? null : result;
+		return (V)((result == NULL_OBJECT) ? null : result);
 	}
 
 	/**
 	 * Answers a Set of the mappings contained in this IdentityHashMap. Each
 	 * element in the set is a Map.Entry. The set is backed by this Map so
-	 * changes to one are relected by the other. The set does not support
+	 * changes to one are reflected by the other. The set does not support
 	 * adding.
 	 * 
 	 * @return a Set of the mappings
 	 */
-	public Set entrySet() {
-		return new IdentityHashMapEntrySet(this);
+	public Set<Map.Entry<K, V>> entrySet() {
+		return new IdentityHashMapEntrySet<K, V>(this);
 	}
 
 	/**
 	 * Answers a Set of the keys contained in this IdentityHashMap. The set is
-	 * backed by this IdentityHashMap so changes to one are relected by the
+	 * backed by this IdentityHashMap so changes to one are reflected by the
 	 * other. The set does not support adding.
 	 * 
 	 * @return a Set of the keys
 	 */
-	public Set keySet() {
+	public Set<K> keySet() {
 		if (keySet == null) {
-			keySet = new AbstractSet() {
+			keySet = new AbstractSet<K>() {
 				public boolean contains(Object object) {
 					return containsKey(object);
 				}
@@ -560,11 +564,11 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 					return false;
 				}
 
-				public Iterator iterator() {
-					return new IdentityHashMapIterator(new MapEntry.Type() {
-						public Object get(MapEntry entry) {
-							return entry.key;
-						}
+				public Iterator<K> iterator() {
+					return new IdentityHashMapIterator<K,K,V>(new MapEntry.Type<K,K,V>() {
+                        public K get(MapEntry<K,V> entry) {
+                            return entry.key;
+                        }
 					}, IdentityHashMap.this);
 				}
 			};
@@ -575,13 +579,13 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 	/**
 	 * Answers a Collection of the values contained in this IdentityHashMap. The
 	 * collection is backed by this IdentityHashMap so changes to one are
-	 * relected by the other. The collection does not support adding.
+	 * reflected by the other. The collection does not support adding.
 	 * 
 	 * @return a Collection of the values
 	 */
-	public Collection values() {
+	public Collection<V> values() {
 		if (valuesCollection == null) {
-			valuesCollection = new AbstractCollection() {
+			valuesCollection = new AbstractCollection<V>() {
 				public boolean contains(Object object) {
 					return containsValue(object);
 				}
@@ -594,11 +598,11 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 					IdentityHashMap.this.clear();
 				}
 
-				public Iterator iterator() {
-					return new IdentityHashMapIterator(new MapEntry.Type() {
-						public Object get(MapEntry entry) {
-							return entry.value;
-						}
+				public Iterator<V> iterator() {
+					return new IdentityHashMapIterator<V,K,V>(new MapEntry.Type<V,K,V>() {
+                        public V get(MapEntry<K,V> entry) {
+                            return entry.value;
+                        }
 					}, IdentityHashMap.this);
 				}
 				
@@ -702,8 +706,8 @@ public class IdentityHashMap extends AbstractMap implements Map, Serializable,
 		threshold = getThreshold(DEFAULT_MAX_SIZE);
 		elementData = newElementArray(computeElementArraySize());
 		for (int i = savedSize; --i >= 0;) {
-			Object key = stream.readObject();
-			put(key, stream.readObject());
+			K key = (K)stream.readObject();
+			put(key, (V)stream.readObject());
 		}
 	}
 }

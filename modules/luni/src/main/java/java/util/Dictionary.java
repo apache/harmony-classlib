@@ -52,7 +52,7 @@ public abstract class Dictionary<K,V> {
 	 * 
 	 * @see #put
 	 */
-	abstract public V get(K key);
+	abstract public V get(Object key);
 
 	/**
 	 * Answers if this Dictionary has no key/value pairs, a size of zero.
@@ -106,7 +106,7 @@ public abstract class Dictionary<K,V> {
 	 * @see #get
 	 * @see #put
 	 */
-	abstract public V remove(K key);
+	abstract public V remove(Object key);
 
 	/**
 	 * Answers the number of key/value pairs in this Dictionary.

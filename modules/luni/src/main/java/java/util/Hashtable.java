@@ -311,7 +311,7 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	public synchronized Object clone() {
 		try {
 			Hashtable hashtable = (Hashtable) super.clone();
-			hashtable.elementData = (Entry[]) elementData.clone();
+			hashtable.elementData = elementData.clone();
 			Entry entry;
 			for (int i = elementData.length; --i >= 0;)
 				if ((entry = elementData[i]) != null)
@@ -413,16 +413,16 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 				Hashtable.this.clear();
 			}
 
-			public boolean remove(Map.Entry<K,V> object) {
+			public boolean remove(Object object) {
 				if (contains(object)) {
-					Hashtable.this.remove(object.getKey());
+					Hashtable.this.remove(((Map.Entry)object).getKey());
 					return true;
 				}
 				return false;
 			}
 
-			public boolean contains(Map.Entry<K,V> object) {
-				Entry entry = getEntry(object.getKey());
+			public boolean contains(Object object) {
+				Entry entry = getEntry(((Map.Entry)object).getKey());
 				return object.equals(entry);
 			}
 
@@ -476,10 +476,10 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * 
 	 * @see #put
 	 */
-	public synchronized V get(K key) {
+	public synchronized V get(Object key) {
 		int hash = key.hashCode();
 		int index = (hash & 0x7FFFFFFF) % elementData.length;
-		Entry<K,V> entry = elementData[index];
+		Entry<Object,V> entry = elementData[index];
 		while (entry != null) {
 			if (entry.equalsKey(key, hash))
 				return entry.value;

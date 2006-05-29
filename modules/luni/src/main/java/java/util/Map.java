@@ -91,7 +91,7 @@ public interface Map<K,V> {
 	 *            the object to search for
 	 * @return true if <code>key</code> is a key of this Map, false otherwise
 	 */
-	public boolean containsKey(K key);
+	public boolean containsKey(Object key);
 
 	/**
 	 * Searches this Map for the specified value.
@@ -101,7 +101,7 @@ public interface Map<K,V> {
 	 * @return true if <code>value</code> is a value of this Map, false
 	 *         otherwise
 	 */
-	public boolean containsValue(V value);
+	public boolean containsValue(Object value);
 
 	/**
 	 * Returns a <code>Set</code> whose elements comprise all of the mappings
@@ -134,7 +134,7 @@ public interface Map<K,V> {
 	 *            the key
 	 * @return the value of the mapping with the specified key
 	 */
-	public V get(K key);
+	public V get(Object key);
 
 	/**
 	 * Answers an integer hash code for the receiver. Objects which are equal
@@ -217,7 +217,7 @@ public interface Map<K,V> {
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Map is not supported
 	 */
-	public V remove(K key);
+	public V remove(Object key);
 
 	/**
 	 * Answers the number of elements in this Map.
