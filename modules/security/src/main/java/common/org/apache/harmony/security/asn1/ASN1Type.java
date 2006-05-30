@@ -85,41 +85,6 @@ public abstract class ASN1Type implements ASN1Constants {
         this.constrId = this.id + PC_CONSTRUCTED;
     }
 
-    /**
-     * Tests whether ASN.1 type alternatives in
-     * provided array have distinct tags ot not
-     *
-     * @param type - an array of ASN.1 types
-     * @return - true if alternatives have distinct tags, otherwise false
-     */
-    public static boolean hasDistinctTags(ASN1Type[] type) {
-
-        for (int i = 0; i < type.length; i++) {
-
-            if ((type[i] instanceof ASN1Choice) || (type[i] instanceof ASN1Any)) {
-                return false;
-            }
-
-            int curTag = type[i].id;
-            for (int j = i + 1; j < type.length; j++) {
-                if (type[j].checkTag(curTag)) {
-                    return false;
-                }
-            }
-        }
-
-        if (type[0] instanceof ASN1StringType) {
-            int curTag = type[0].constrId;
-            for (int j = 1; j < type.length; j++) {
-                if (type[j].checkTag(curTag)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
     //
     //
     // Stubs for DER

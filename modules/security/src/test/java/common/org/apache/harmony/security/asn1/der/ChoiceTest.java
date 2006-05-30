@@ -27,16 +27,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import junit.framework.TestCase;
+
+import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.asn1.ASN1Boolean;
 import org.apache.harmony.security.asn1.ASN1Choice;
 import org.apache.harmony.security.asn1.ASN1Explicit;
 import org.apache.harmony.security.asn1.ASN1Integer;
+import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.DerInputStream;
 import org.apache.harmony.security.asn1.DerOutputStream;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -84,17 +88,17 @@ public class ChoiceTest extends TestCase {
     // Test Cases
     //
 
-    private static Object[][] testcases = new Object[][] {
+    private static Object[][] testcases = {
             // format: object to encode / byte array 
 
             // choice = Boolean (false)
-            new Object[] { Boolean.FALSE, new byte[] { 0x01, 0x01, 0x00 } },
+            { Boolean.FALSE, new byte[] { 0x01, 0x01, 0x00 } },
 
             // choice = Boolean (true)
-            new Object[] { Boolean.TRUE, new byte[] { 0x01, 0x01, (byte) 0xFF } },
+            { Boolean.TRUE, new byte[] { 0x01, 0x01, (byte) 0xFF } },
 
             // choice = SequenceOf (empty)
-            new Object[] { new ArrayList(), new byte[] { 0x30, 0x00 } },
+            { new ArrayList(), new byte[] { 0x30, 0x00 } },
 
     //TODO add testcase for another ASN.1 type` 
 
@@ -190,5 +194,144 @@ public class ChoiceTest extends TestCase {
         encoded[4] = (byte) 0xFF;
 
         assertEquals("True: ", Boolean.TRUE, explicit.decode(encoded));
+    }
+    
+    /**
+     * TODO Put method description here
+     */
+    public void testChoiceOfChoice() throws Exception {
+
+        ASN1Choice choice1 = new ASN1Choice(new ASN1Type[] {
+                ASN1Oid.getInstance(), // first
+                ASN1Boolean.getInstance(),// second: decoded component
+                ASN1Integer.getInstance() // third
+                }) {
+
+            public Object getDecodedObject(BerInputStream in)
+                    throws IOException {
+
+                assertEquals("choice1", 1, in.choiceIndex);
+
+                return in.content;
+            }
+
+            public Object getObjectToEncode(Object obj) {
+                return obj;
+            }
+
+            public int getIndex(Object obj) {
+                return 0;
+            }
+        };
+
+        ASN1Choice choice2 = new ASN1Choice(new ASN1Type[] { choice1, // first: decoded component
+                ASN1BitString.getInstance() // second
+                }) {
+
+            public Object getDecodedObject(BerInputStream in)
+                    throws IOException {
+
+                assertEquals("choice2", 0, in.choiceIndex);
+
+                return in.content;
+            }
+
+            public Object getObjectToEncode(Object obj) {
+                return obj;
+            }
+
+            public int getIndex(Object obj) {
+                return 0;
+            }
+        };
+
+        Boolean b = (Boolean) choice2.decode(new byte[] { 0x01, 0x01, 0x00 });
+
+        assertTrue(b == Boolean.FALSE);
+    }
+
+    /**
+     * TODO Put method description here
+     */
+    public void testDistinctTags() throws Exception {
+
+        ASN1Choice choice1 = new ASN1Choice(new ASN1Type[] {
+                ASN1Boolean.getInstance(),// component to be checked
+                ASN1Oid.getInstance(), ASN1Integer.getInstance() }) {
+
+            public Object getObjectToEncode(Object obj) {
+                return obj;
+            }
+
+            public int getIndex(Object obj) {
+                return 0;
+            }
+        };
+
+        // two ASN.1 booleans
+        try {
+            new ASN1Choice(new ASN1Type[] { choice1, //
+                    ASN1Boolean.getInstance() // component to be checked
+                    }) {
+
+                public Object getObjectToEncode(Object obj) {
+                    return obj;
+                }
+
+                public int getIndex(Object obj) {
+                    return 0;
+                }
+            };
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+
+        // ASN.1 ANY
+        try {
+            new ASN1Choice(new ASN1Type[] { choice1,//
+                    ASN1Any.getInstance() // component to be checked
+                    }) {
+
+                public Object getObjectToEncode(Object obj) {
+                    return obj;
+                }
+
+                public int getIndex(Object obj) {
+                    return 0;
+                }
+            };
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
+
+        // two choices
+        ASN1Choice choice2 = new ASN1Choice(new ASN1Type[] {
+                ASN1BitString.getInstance(), //
+                ASN1Boolean.getInstance() //component to be checked
+                }) {
+
+            public Object getObjectToEncode(Object obj) {
+                return obj;
+            }
+
+            public int getIndex(Object obj) {
+                return 0;
+            }
+        };
+
+        try {
+            new ASN1Choice(new ASN1Type[] { choice1, choice2 }) {
+
+                public Object getObjectToEncode(Object obj) {
+                    return obj;
+                }
+
+                public int getIndex(Object obj) {
+                    return 0;
+                }
+            };
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
     }
 }

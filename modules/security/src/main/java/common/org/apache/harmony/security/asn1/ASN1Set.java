@@ -35,10 +35,11 @@ public class ASN1Set extends ASN1TypeCollection {
     public ASN1Set(ASN1Type[] type) {
         super(TAG_SET, type);
 
-        if (!hasDistinctTags(type)) {
-            throw new RuntimeException("ASN1 set type: " + getClass().getName()
-                    + " MUST have alternatives with distinct tags");
-        }
+        //FIXME implement check for distinct tags
+        //if (!hasDistinctTags(type)) {
+        //    throw new RuntimeException("ASN1 set type: " + getClass().getName()
+        //            + " MUST have alternatives with distinct tags");
+        //}
     }
 
     //
