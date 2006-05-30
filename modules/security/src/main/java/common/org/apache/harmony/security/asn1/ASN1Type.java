@@ -33,16 +33,15 @@ import java.io.InputStream;
 
 public abstract class ASN1Type implements ASN1Constants {
 
-    public final int tagClass;
-
-    public final boolean isConstructed;
-
-    public final int tagNumber;
+    /**
+     * Integer representation of primitive identifier.
+     */
+    public final int id;
 
     /**
-     * int representation of encoded ASN.1 tag (class + P/C + number)
+     * Integer representation of constructed identifier.
      */
-    public final int tag;
+    public final int constrId;
 
     /**
      * Constructs a primitive, universal ASN.1 type.
@@ -51,7 +50,7 @@ public abstract class ASN1Type implements ASN1Constants {
      * @throws IllegalArgumentException - if tagNumber is invalid
      */
     public ASN1Type(int tagNumber) {
-        this(CLASS_UNIVERSAL, false, tagNumber);
+        this(CLASS_UNIVERSAL, tagNumber);
     }
 
     /**
@@ -63,7 +62,7 @@ public abstract class ASN1Type implements ASN1Constants {
      * @param tagNumber - ASN.1 tag number.
      * @throws IllegalArgumentException - if tagClass or tagNumber is invalid
      */
-    public ASN1Type(int tagClass, boolean isConstructed, int tagNumber) {
+    public ASN1Type(int tagClass, int tagNumber) {
 
         if (tagNumber < 0) {
             throw new IllegalArgumentException("Negative tag number");
@@ -74,22 +73,16 @@ public abstract class ASN1Type implements ASN1Constants {
                 && tagClass != CLASS_PRIVATE) {
             throw new IllegalArgumentException("Wrong tag class");
         }
-        this.tagClass = tagClass;
-        this.isConstructed = isConstructed;
-        this.tagNumber = tagNumber;
 
         if (tagNumber < 31) {
             // short form
-            if (isConstructed) {
-                tag = tagClass | PC_CONSTRUCTED | tagNumber;
-            } else {
-                tag = tagClass | tagNumber;
-            }
+            this.id = tagClass + tagNumber;
         } else {
             // long form
             throw new IllegalArgumentException(
                     "Tag long form is not implemented");
         }
+        this.constrId = this.id + PC_CONSTRUCTED;
     }
 
     /**
@@ -107,7 +100,7 @@ public abstract class ASN1Type implements ASN1Constants {
                 return false;
             }
 
-            int curTag = type[i].tag;
+            int curTag = type[i].id;
             for (int j = i + 1; j < type.length; j++) {
                 if (type[j].checkTag(curTag)) {
                     return false;
@@ -116,7 +109,7 @@ public abstract class ASN1Type implements ASN1Constants {
         }
 
         if (type[0] instanceof ASN1StringType) {
-            int curTag = type[0].tag | PC_CONSTRUCTED;
+            int curTag = type[0].constrId;
             for (int j = 1; j < type.length; j++) {
                 if (type[j].checkTag(curTag)) {
                     return false;
@@ -172,21 +165,23 @@ public abstract class ASN1Type implements ASN1Constants {
 
     /**
      * Decodes ASN.1 type.
-     *
-     * @param in - BER input stream
-     * @throws IOException - if an I/O error occurs or the end of the stream is reached
+     * 
+     * @param in -
+     *            BER input stream
+     * @throws IOException -
+     *             if an I/O error occurs or the end of the stream is reached
      */
     public abstract Object decode(BerInputStream in) throws IOException;
 
     /**
-     * Tests whether provided tag is equal to ASN.1 type tag.
-     *
-     * @param tag - ASN.1 tag to be verified
-     * @return - true if tags are equals, otherwise false
+     * Tests provided identifier.
+     * 
+     * @param identifier -
+     *            identifier to be verified
+     * @return - true if identifier is associated with this ASN.1 type,
+     *         otherwise false
      */
-    public boolean checkTag(int tag) {
-        return this.tag == tag;
-    }
+    public abstract boolean checkTag(int identifier);
 
     //FIXME make me public
     protected abstract Object getDecodedObject(BerInputStream in)
@@ -198,11 +193,12 @@ public abstract class ASN1Type implements ASN1Constants {
     //
     //
 
-    public void encodeASN(BerOutputStream out) {
-
-        out.encodeTag(tag);
-        encodeContent(out);
-    }
+    /**
+     * Encodes ASN.1 type.
+     *
+     * @param out - BER output stream
+     */
+    public abstract void encodeASN(BerOutputStream out);
 
     public abstract void encodeContent(BerOutputStream out);
 
@@ -232,6 +228,6 @@ public abstract class ASN1Type implements ASN1Constants {
         // TODO decide whether this method is necessary
         //FIXME fix performance
         return this.getClass().getName() + "(tag: 0x"
-                + Integer.toHexString(0xff & this.tag) + ")";
+                + Integer.toHexString(0xff & this.id) + ")";
     }
 }

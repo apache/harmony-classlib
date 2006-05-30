@@ -129,9 +129,9 @@ public class AttributeValue {
     public int getTag() {
         if (tag == -1) {
             if (Utils.isPrintableString(rawString)) {
-                tag = ASN1StringType.PRINTABLESTRING.tag;
+                tag = ASN1StringType.PRINTABLESTRING.id;
             } else {
-                tag = ASN1StringType.UTF8STRING.tag;
+                tag = ASN1StringType.UTF8STRING.id;
             }
         }
         return tag;

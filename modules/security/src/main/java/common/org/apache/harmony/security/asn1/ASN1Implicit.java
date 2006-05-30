@@ -31,9 +31,23 @@ import java.io.IOException;
  */
 public class ASN1Implicit extends ASN1Type {
 
+    // primitive type of tagging
+    private static final int TAGGING_PRIMITIVE = 0;
+
+    // constructed type of tagging
+    private static final int TAGGING_CONSTRUCTED = 1;
+
+    // string type of tagging
+    private static final int TAGGING_STRING = 2;
+
+    // tagged ASN.1 type
     private final ASN1Type type;
 
-    private final int strTag;
+    // type of tagging. There are three of them
+    // 1) primitive: only primitive identifier is valid
+    // 2) constructed: only constructed identifier is valid
+    // 3) string: both identifiers are valid
+    private final int taggingType;
 
     /**
      * Constructs implicitly tagged ASN.1 type
@@ -56,7 +70,7 @@ public class ASN1Implicit extends ASN1Type {
      * @throws IllegalArgumentException - if tagNumber, tagClass or type is invalid
      */
     public ASN1Implicit(int tagClass, int tagNumber, ASN1Type type) {
-        super(tagClass, (type.tag & PC_CONSTRUCTED) > 0, tagNumber);
+        super(tagClass, tagNumber);
 
         if ((type instanceof ASN1Choice) || (type instanceof ASN1Any)) {
             // According to X.680:
@@ -67,10 +81,21 @@ public class ASN1Implicit extends ASN1Type {
                     "Implicit tagging can not be used for ASN.1 ANY or CHOICE type");
         }
 
-        strTag = (type instanceof ASN1StringType) ? tagClass | PC_CONSTRUCTED
-                | tagNumber : -1;
-
         this.type = type;
+
+        if (type.checkTag(type.id)) {
+            if (type.checkTag(type.constrId)) {
+                // the base encoding can be primitive ot constructed
+                // use both encodings
+                taggingType = TAGGING_STRING;
+            } else {
+                // if the base encoding is primitive use primitive encoding
+                taggingType = TAGGING_PRIMITIVE;
+            }
+        } else {
+            // if the base encoding is constructed use constructed encoding
+            taggingType = TAGGING_CONSTRUCTED;
+        }
     }
 
     //
@@ -79,29 +104,40 @@ public class ASN1Implicit extends ASN1Type {
     //
     //
 
-    public boolean checkTag(int tag) {
-        if (strTag > 0) {
-            return super.checkTag(tag) || tag == strTag;
+    /**
+     * TODO
+     */
+    public final boolean checkTag(int identifier) {
+        switch (taggingType) {
+        case TAGGING_PRIMITIVE:
+            return id == identifier;
+        case TAGGING_CONSTRUCTED:
+            return constrId == identifier;
+        default: // TAGGING_STRING
+            return id == identifier || constrId == identifier;
         }
-        return super.checkTag(tag);
     }
 
+    /**
+     * TODO
+     */
     public Object decode(BerInputStream in) throws IOException {
         if (!checkTag(in.tag)) {
+            // FIXME need look for tagging type
             throw new ASN1Exception(
                     "ASN.1 implicitly tagged type is expected at ["
                             + in.tagOffset + "]. Expected tag: "
-                            + Integer.toHexString(tag)
+                            + Integer.toHexString(id)
                             + ", but encountered tag "
                             + Integer.toHexString(in.tag));
         }
 
-        if (strTag > 0 && (in.tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
-            in.tag = strTag;
+        // substitute indentifier for further decoding
+        if (id == in.tag) {
+            in.tag = type.id;
         } else {
-            in.tag = type.tag;
+            in.tag = type.constrId;
         }
-
         in.content = type.decode(in);
 
         if (in.isVerify) {
@@ -122,6 +158,16 @@ public class ASN1Implicit extends ASN1Type {
     // Encode
     //
     //
+
+    public void encodeASN(BerOutputStream out) {
+        //FIXME need another way for specifying identifier to be encoded
+        if (taggingType == TAGGING_CONSTRUCTED) {
+            out.encodeTag(constrId);
+        } else {
+            out.encodeTag(id);
+        }
+        encodeContent(out);
+    }
 
     public void encodeContent(BerOutputStream out) {
         type.encodeContent(out);

@@ -92,15 +92,24 @@ public abstract class ASN1StringType extends ASN1Type {
     //
     //
 
-    public final boolean checkTag(int tag) {
-        return super.checkTag(tag) || tag == constructedTag;
+    /**
+     * Tests provided identifier.
+     * 
+     * @param identifier -
+     *            identifier to be verified
+     * @return - true if identifier correspond to primitive or constructed
+     *         identifier of this ASN.1 string type, otherwise false
+     */
+    public final boolean checkTag(int identifier) {
+        return this.id == identifier || this.constructedTag == identifier;
     }
+
     public Object decode(BerInputStream in) throws IOException {
         if (!checkTag(in.tag)) {
             //FIXME message: what about constr tag?
             throw new ASN1Exception("ASN.1 String is expected at ["
                     + in.tagOffset + "]. Expected tag: "
-                    + Integer.toHexString(tag) + " but encountered tag "
+                    + Integer.toHexString(id) + " but encountered tag "
                     + Integer.toHexString(in.tag));
         }
         in.readString();
@@ -126,6 +135,11 @@ public abstract class ASN1StringType extends ASN1Type {
     // Encode
     //
     //
+    
+    public void encodeASN(BerOutputStream out) {
+        out.encodeTag(id);
+        encodeContent(out);
+    }
 
     public void encodeContent(BerOutputStream out) {
         out.encodeString();

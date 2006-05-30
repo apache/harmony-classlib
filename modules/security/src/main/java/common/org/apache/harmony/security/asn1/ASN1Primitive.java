@@ -33,4 +33,24 @@ public abstract class ASN1Primitive extends ASN1Type {
     public ASN1Primitive(int tagNumber) {
         super(tagNumber);
     }
+    
+    /**
+     * Tests provided identifier.
+     * 
+     * @param identifier -
+     *            identifier to be verified
+     * @return - true if identifier correspond to primitive identifier of this
+     *         ASN.1 type, otherwise false
+     */
+    public final boolean checkTag(int identifier) {
+        return this.id == identifier;
+    }
+    
+    /**
+     * TODO
+     */
+    public void encodeASN(BerOutputStream out) {
+        out.encodeTag(id);
+        encodeContent(out);
+    }
 }

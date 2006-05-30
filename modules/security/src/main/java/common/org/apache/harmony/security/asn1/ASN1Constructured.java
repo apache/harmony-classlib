@@ -31,10 +31,29 @@ package org.apache.harmony.security.asn1;
 public abstract class ASN1Constructured extends ASN1Type {
 
     public ASN1Constructured(int tagNumber) {
-        super(CLASS_UNIVERSAL, true, tagNumber);
+        super(CLASS_UNIVERSAL, tagNumber);
     }
 
     public ASN1Constructured(int tagClass, int tagNumber) {
-        super(tagClass, true, tagNumber);
+        super(tagClass, tagNumber);
+    }
+    
+    /**
+     * Tests provided identifier.
+     *
+     * @param identifier - identifier to be verified
+     * @return - true if identifier correspond to constructed identifier of
+     *           this ASN.1 type, otherwise false
+     */
+    public final boolean checkTag(int identifier) {
+        return this.constrId == identifier;
+    }
+    
+    /**
+     *
+     */
+    public void encodeASN(BerOutputStream out) {
+        out.encodeTag(constrId);
+        encodeContent(out);
     }
 }
