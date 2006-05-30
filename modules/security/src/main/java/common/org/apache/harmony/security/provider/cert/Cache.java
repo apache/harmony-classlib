@@ -24,46 +24,109 @@ package org.apache.harmony.security.provider.cert;
 import java.util.Arrays;
 
 /**
- * Makes correspondences between Objects and arrays of bytes.
- * Arrays of bytes should not be less than prefix_size.
+ * The caching mechanism designed to speed up the process
+ * of Certificates/CRLs generation in the case of their repeated
+ * generation.
+ *
+ * It keeps correspondences between Objects (Certificates or CLRs)
+ * and arrays of bytes on the base of which the Objects have been generated,
+ * and provides the means to determine whether it contains the object built on
+ * the base of particular encoded form or not. If there are such
+ * objects they are returned from the cache, if not - newly generated
+ * objects can be saved in the cache.<br>
+ *
+ * The process of Certificate/CRL generation
+ * (implemented in <code>X509CertFactoryImpl</code>) is accompanied with
+ * prereading of the beginning of encoded form. This prefix is used to determine
+ * whether provided form is PEM encoding or not.<br>
+ *
+ * So the use of the prefix is the first point to (approximately)
+ * determine whether object to be generated is in the cache or not.
+ *
+ * The failure of the predetermination process tells us that there were not
+ * object generated from the encoded form with such prefix and we should
+ * generate (decode) the object. If predetermination is successful,
+ * we conduct the accurate search on the base of whole encoded form. <br>
+ *
+ * So to speed up the object generation process this caching mechanism provides
+ * the following functionality:<br>
+ *
+ *      1. With having of the beginning of the encoded form (prefix)
+ * it is possible to predetermine whether object has already been
+ * generated on the base of the encoding with the SIMILAR prefix or not.
+ * This process is not computationally expensive and takes a little time.
+ * But it prevents us from use of expensive full encoding
+ * search in the case of its failure.<br>
+ *
+ *      2. If predetermination ends with success, the whole encoding
+ * form should be provided to make the final answer: whether object has
+ * already been generated on the base of this PARTICULAR encoded form or not.
+ * If it is so - the cached object is returned from the cache,
+ * if not - new object should be generated and saved in the cache.<br>
+ *
+ * Note: The length of the prefixes of the encoded forms should not be
+ * less than correspondance (default value is 28).
  */
 public class Cache {
-    
+
+    // Hash code consist of 6 bytes: AABB00
+    // where:
+    // AA - 2 bytes for prefix hash
+    //      value generated on the base of the prefix of encoding
+    // BB - 2 bytes for tail hash
+    //      value generated on the base of the tail of encoding
+    // 00 - 2 reserved bytes equals to 0
+    //
+    // Note, that it is possible for 2 different arrays to have
+    // the similar hash codes.
+
+    // The masks to work with hash codes:
+    // the hash code without the reserved bytes
+    private static final long HASH_MASK = 0xFFFFFFFFFFFF0000L;
+    // the hash code of the prefix
+    private static final long PREFIX_HASH_MASK = 0xFFFFFFFF00000000L;
+    // the index value contained in reserved bytes
+    private static final int  INDEX_MASK = 0x00FFFF;
+
     // size of the cache
     private final int cache_size;
+    // the number of bytes which will be used for array hash generation.
+    private final int prefix_size;
+
+    // The following 3 arrays contain the information about cached objects.
+    // This information includes: hash of the array, encoded form of the object,
+    // and the object itself.
+    // The hash-encoding-object correspondence is made by means of index
+    // in the particular array. I.e. for index N hash contained in hashes[N]
+    // corresponds to the encoding contained in encodings[N] which corresponds
+    // to the object cached at cache[N]
+
     // array containing the hash codes of encodings
-    // hash has the following structure:
-    // it consist of 6 bytes: 
-    //      2 bytes for prefix hash
-    //      2 bytes for tail hash
-    //      2 reserved bytes (equals 0 in this array)
     private final long[] hashes;
-    // array containing hash<->index correspondings:
-    // reserved 2 bytes contains the value of the index in cache table
-    private final long[] hashes_idx;
     // array containing the encodings of the cached objects
     private final byte[][] encodings;
-    // array containing the cached certificates
+    // array containing the cached objects
     private final Object[] cache;
-    // how many times cached value had been demanded
-    //private long[] demanded = new long[cache_size];
 
-    // the number of bytes which will be used for array hash generation.
-    private int prefix_size;
-    
+    // This array is used to speed up the process of the search in the cache.
+    // This is an ordered array of the hash codes from 'hashes' array (described
+    // above) with last 2 (reserved) bytes equals to the index of
+    // the hash in the 'hashes' array. I.e. hash code ABCD00 with index 10 in
+    // the hashes array will be represented in this array as ABCD0A (10==0x0A)
+    // So this array contains ordered <hash to index> correspondences.
+    // Note, that every item in this array is unique.
+    private final long[] hashes_idx;
+
+    // the index of the last cached object
     private int last_cached = 0;
+    // cache population indicator
     private boolean cache_is_full = false;
 
-    private static final int  INDEX_MASK = 0x00FFFF;
-    private static final long HASH_MASK = 0xFFFFFFFFFFFF0000L;
-    private static final long PREFIX_HASH_MASK = 0xFFFFFFFF00000000L;
-
     /**
-     * Creates the Cache object. Capasity of the cache is size, 
-     * 
-     * @param   size:   capacity of the cache. 
-     * @param   pref_size:  the number of bytes which will be used
-     * for array hash generation.
+     * Creates the Cache object.
+     * @param pref_size specifyes how many leading/trailing bytes of object's
+     * encoded form will be used for hash computation
+     * @param size capacity of the cache to be created.
      */
     public Cache(int pref_size, int size) {
         cache_size = size;
@@ -74,47 +137,113 @@ public class Cache {
         cache = new Object[cache_size];
     }
 
+    /**
+     * Creates the Cache object of size of 900.
+     * @param pref_size specifyes how many leading/trailing bytes of object's
+     * encoded form will be used for hash computation
+     */
     public Cache(int pref_size) {
         this(pref_size, 900);
     }
-    
+
+    /**
+     * Creates the Cache object of size of 900.
+     */
     public Cache() {
         this(28, 900);
     }
 
-    // Returns the hash value of the array (which length should be
-    // greater of equal to prefix_size).
+    /**
+     * Returns the hash code for the array. This code is used to
+     * predetermine whether the object was built on the base of the
+     * similar encoding or not (by means of <code>contains(long)</code> method),
+     * to exactly determine whether object is contained in the cache or not,
+     * and to put the object in the cache.
+     * Note: parameter array should be of length not less than
+     * specified by <code>prefix_size</code> (default 28)
+     * @param arr the byte array containing at least prefix_size leading bytes
+     * of the encoding.
+     * @return hash code for specified encoding prefix
+     */
     public long getHash(byte[] arr) {
         long hash = 0;
         for (int i=1; i<prefix_size; i++) {
             hash += (arr[i] & 0xFF);
         } // it takes about 2 bytes for prefix_size == 28
 
-        // 2 bytes for array prefix hash, 2 for suffix hash, 2 bytes for index
+        // shift to the correct place
         hash = hash << 32;
-        //System.out.println("getHash: "+Long.toHexString(hash));
         return hash;
     }
-    
-    public long getSuffHash(byte[] arr) {
-        long hash_addon = 0;
-        for (int i=arr.length-1; i>arr.length - prefix_size; i--) {
-            hash_addon += (arr[i] & 0xFF);
+
+    /**
+     * Checks if there are any object in the cache generated
+     * on the base of encoding with prefix corresponding
+     * to the specified hash code.
+     * @param prefix_hash the hash code for the prefix
+     * of the encoding (retrieved by method <code>getHash(byte[]))</code>
+     * @return false if there were not any object generated
+     * on the base of encoding with specified hash code, true
+     * otherwise.
+     */
+    public boolean contains(long prefix_hash) {
+        int idx = -1*Arrays.binarySearch(hashes_idx, prefix_hash)-1;
+        if (idx == cache_size) {
+            return false;
+        } else {
+            return (hashes_idx[idx] & PREFIX_HASH_MASK) == prefix_hash;
         }
-        return hash_addon << 16;
     }
-    
-    public void put(long hash, byte[] encoding, Object cert) {
-        // index pointing to the item of the table to be overwritten
-        int index;
-        // TODO: make throw out line:
+
+    /**
+     * Returns the object built on the base on the specified encoded
+     * form if it is contained in the cache and null otherwise.
+     * This method is computationally expensive and should be called only if
+     * the method <code>contains(long)</code> for the hash code returned true.
+     * @param hash the hash code for the prefix of the encoding
+     * (retrieved by method <code>getHash(byte[])</code>)
+     * @param encoding encoded form of the required object.
+     * @return the object corresponding to specified encoding or null if
+     * there is no such correspondence.
+     */
+    public Object get(long hash, byte[] encoding) {
+        hash |= getSuffHash(encoding);
+        int idx = -1*Arrays.binarySearch(hashes_idx, hash)-1;
+        if (idx == cache_size) {
+            return null;
+        }
+        while ((hashes_idx[idx] & HASH_MASK) == hash) {
+            int i = (int) (hashes_idx[idx] & INDEX_MASK) - 1;
+            if (Arrays.equals(encoding, encodings[i])) {
+                return cache[i];
+            }
+            idx++;
+            if (idx == cache_size) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Puts the object into the cache.
+     * @param hash hash code for the prefix of the encoding
+     * @param encoding the encoded form of the object
+     * @param object the object to be saved in the cache
+     */
+    public void put(long hash, byte[] encoding, Object object) {
+        // check for empty space in the cache
         if (last_cached == cache_size) {
+            // so cache is full, will erase the first entry in the
+            // cache (oldest entry). it could be better to throw out
+            // rarely used value instead of oldest one..
             last_cached = 0;
             cache_is_full = true;
         }
-        index = last_cached++;
+        // index pointing to the item of the table to be overwritten
+        int index = last_cached++;
 
-        // improove the hash value (now we know the tail of encoding):
+        // improve the hash value with info from the tail of encoding
         hash |= getSuffHash(encoding);
 
         if (cache_is_full) {
@@ -136,16 +265,16 @@ public class Cache {
                     // hash and the same index in hash table
                     System.out.println("WARNING: ");
                     System.out.println(">> idx: "+idx+" new_idx: "+new_idx);
-                } 
+                }
             } else {
                 new_idx = -(new_idx + 1);
                 // replace in sorted array
                 if (new_idx > idx) {
-                    System.arraycopy(hashes_idx, idx+1, hashes_idx, idx, 
+                    System.arraycopy(hashes_idx, idx+1, hashes_idx, idx,
                             new_idx - idx - 1);
                     hashes_idx[new_idx-1] = new_hash_idx;
                 } else if (idx > new_idx) {
-                    System.arraycopy(hashes_idx, new_idx, hashes_idx, new_idx+1, 
+                    System.arraycopy(hashes_idx, new_idx, hashes_idx, new_idx+1,
                             idx - new_idx);
                     hashes_idx[new_idx] = new_hash_idx;
                 } else { // idx == new_idx
@@ -160,10 +289,10 @@ public class Cache {
                 idx = -(idx + 1);
             }
             idx = idx - 1;
-            if (idx != cache_size - index - 1) { 
-                // if not in cell containing 0, do copy:
-                System.arraycopy(hashes_idx, cache_size - index, 
-                        hashes_idx, cache_size - index - 1, 
+            if (idx != cache_size - index - 1) {
+                // if not in the cell containing 0 (free cell), do copy:
+                System.arraycopy(hashes_idx, cache_size - index,
+                        hashes_idx, cache_size - index - 1,
                         idx - (cache_size - index) + 1);
             }
             hashes_idx[idx] = idx_hash;
@@ -171,58 +300,19 @@ public class Cache {
         // overwrite the values in the tables:
         hashes[index] = hash;
         encodings[index] = encoding;
-        cache[index] = cert;
-    }
-   
-    private boolean arrEquals(byte[] arr1, byte[] arr2) {
-        return Arrays.equals(arr1, arr2);
-        /*
-        // comparison from the tail:
-        int length = arr1.length;
-        if (length != arr2.length) {
-            return false;
-        }
-        while (length > 0) {
-            if (arr1[--length] != arr2[length]) {
-                return false;
-            }
-        }
-        return true;
-        //*/
+        cache[index] = object;
     }
 
-    public Object get(long hash, byte[] encoding) {
-        hash |= getSuffHash(encoding);
-        int idx = -1*Arrays.binarySearch(hashes_idx, hash)-1;
-        if (idx == cache_size) {
-            return null;
+    // Returns the hash code built on the base of the tail of the encoded form
+    // @param arr - the array containing at least prefix_size trailing bytes
+    // of encoded form
+    private long getSuffHash(byte[] arr) {
+        long hash_addon = 0;
+        for (int i=arr.length-1; i>arr.length - prefix_size; i--) {
+            hash_addon += (arr[i] & 0xFF);
         }
-        while ((hashes_idx[idx] & HASH_MASK) == hash) {
-            int i = (int) (hashes_idx[idx] & INDEX_MASK) - 1;
-            if (arrEquals(encoding, encodings[i])) {
-                // Uncomment to see the number of objects 
-                // retrieved from the cache:
-                //
-                // if (XXX%2500 == 0)
-                //     System.out.println(">> "+XXX);
-                // XXX++;
-                return cache[i];
-            }
-            idx++;
-            if (idx == cache_size) {
-                return null;
-            }
-        }
-        return null;
+        return hash_addon << 16;
     }
-    
-    public boolean contains(long prefix_hash) {
-        int idx = -1*Arrays.binarySearch(hashes_idx, prefix_hash)-1;
-        if (idx == cache_size) {
-            return false;
-        } else {
-            return (hashes_idx[idx] & PREFIX_HASH_MASK) == prefix_hash;
-        }
-    }
+
 }
 

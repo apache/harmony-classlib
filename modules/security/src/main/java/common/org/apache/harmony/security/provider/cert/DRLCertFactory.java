@@ -26,7 +26,8 @@ import java.security.Provider;
 
 
 /**
- * DRLCertFactory
+ * Master class (provider) for X509 Certificate Factory
+ * Implementation.
  */
 public final class DRLCertFactory extends Provider {
 
@@ -35,12 +36,21 @@ public final class DRLCertFactory extends Provider {
      */
     private static final long serialVersionUID = -7269650779605195879L;
 
+    /**
+     * Constructs the instance of the certificate factory provider.
+     */
     public DRLCertFactory() {
-        super("DRLCertFactory", 1.0, "DRL Certificate Factory");
+        // specification of the provider name, version, and description.
+        super("DRLCertFactory", 1.0,
+                "Certificate Factory supports CRLs and Certificates "
+                + "in (PEM) ASN.1 DER encoded form, and Certification Paths "
+                + "in PkiPath and PKCS7 formats.");
         AccessController.doPrivileged(new java.security.PrivilegedAction() {
             public Object run() {
-                put("CertificateFactory.X509", 
+                // register the service
+                put("CertificateFactory.X509",
                     "org.apache.harmony.security.provider.cert.X509CertFactoryImpl");
+                // mapping the alias
                 put("Alg.Alias.CertificateFactory.X.509", "X509");
                     return null;
             }

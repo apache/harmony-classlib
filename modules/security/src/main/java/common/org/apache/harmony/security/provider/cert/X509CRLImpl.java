@@ -50,39 +50,69 @@ import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.TBSCertList;
 
-
 /**
- * X509CRLImpl
+ * This class is an implementation of X509CRL. It wraps
+ * the instance of org.apache.harmony.security.x509.CertificateList
+ * built on the base of provided ASN.1 DER encoded form of
+ * CertificateList structure (as specified in RFC 3280
+ * http://www.ietf.org/rfc/rfc3280.txt).
+ * Implementation supports work with indirect CRLs.
+ * @see org.apache.harmony.security.x509.CertificateList
+ * @see java.security.cert.X509CRL
  */
 public class X509CRLImpl extends X509CRL {
-    
-    private final CertificateList crl;
-    private final TBSCertList tbsCertList;
-    private final Extensions extensions;
 
-    private boolean isIndirectCRL;
-    // cached values
-    private X500Principal issuer;
-    private byte[] encoding;
+    // the core object to be wrapped in X509CRL
+    private final CertificateList crl;
+
+    // To speed up access to the info, the following fields
+    // cache values retrieved from the CertificateList object
+    private final TBSCertList tbsCertList;
     private byte[] tbsCertListEncoding;
+    private final Extensions extensions;
+    private X500Principal issuer;
     private ArrayList entries;
     private int entriesSize;
-    private int nonIndirectEntriesSize;
-    private boolean entriesRetrieved;
     private byte[] signature;
     private String sigAlgOID;
     private String sigAlgName;
     private byte[] sigAlgParams;
+
+    // encoded form of crl
+    private byte[] encoding;
+
+    // indicates whether the signature algorithm parameters are null
     private boolean nullSigAlgParams;
-    
+    // indicates whether the crl entries have already been retrieved
+    // from CertificateList object (crl)
+    private boolean entriesRetrieved;
+
+    // indicates whether this X.509 CRL is direct or indirect
+    // (see rfc 3280 http://www.ietf.org/rfc/rfc3280.txt, p 5.)
+    private boolean isIndirectCRL;
+    // if crl is indirect, this field holds an info about how
+    // many of the leading certificates in the list are issued
+    // by the same issuer as CRL.
+    private int nonIndirectEntriesSize;
+
+    /**
+     * Creates X.509 CRL by wrapping of the specified CertificateList object.
+     */
     public X509CRLImpl(CertificateList crl) {
         this.crl = crl;
         this.tbsCertList = crl.getTbsCertList();
         this.extensions = tbsCertList.getCrlExtensions();
     }
 
+    /**
+     * Creates X.509 CRL on the base of ASN.1 DER encoded form of
+     * the CRL (CertificateList structure described in RFC 3280)
+     * provided via input stream.
+     * @throws CRLException if decoding errors occur.
+     */
     public X509CRLImpl(InputStream in) throws CRLException {
         try {
+            // decode CertificateList structure
             this.crl = (CertificateList) CertificateList.ASN1.decode(in);
             this.tbsCertList = crl.getTbsCertList();
             this.extensions = tbsCertList.getCrlExtensions();
@@ -91,12 +121,23 @@ public class X509CRLImpl extends X509CRL {
         }
     }
 
+    /**
+     * Creates X.509 CRL on the base of ASN.1 DER encoded form of
+     * the CRL (CertificateList structure described in RFC 3280)
+     * provided via array of bytes.
+     * @throws IOException if decoding errors occur.
+     */
     public X509CRLImpl(byte[] encoding) throws IOException {
-        this((CertificateList) CertificateList.ASN1.decode(encoding)); 
+        this((CertificateList) CertificateList.ASN1.decode(encoding));
     }
 
+    // ---------------------------------------------------------------------
+    // ----- java.security.cert.X509CRL abstract method implementations ----
+    // ---------------------------------------------------------------------
+
     /**
-     * getEncoded
+     * @see java.security.cert.X509CRL#getEncoded()
+     * method documentation for more info
      */
     public byte[] getEncoded() throws CRLException {
         if (encoding == null) {
@@ -108,14 +149,16 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * getVersion
+     * @see java.security.cert.X509CRL#getVersion()
+     * method documentation for more info
      */
     public int getVersion() {
         return tbsCertList.getVersion();
     }
 
     /**
-     * getIssuerDN
+     * @see java.security.cert.X509CRL#getIssuerDN()
+     * method documentation for more info
      */
     public Principal getIssuerDN() {
         if (issuer == null) {
@@ -125,7 +168,8 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * getIssuerX500Principal
+     * @see java.security.cert.X509CRL#getIssuerX500Principal()
+     * method documentation for more info
      */
     public X500Principal getIssuerX500Principal() {
         if (issuer == null) {
@@ -135,21 +179,26 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * getThisUpdate
+     * @see java.security.cert.X509CRL#getThisUpdate()
+     * method documentation for more info
      */
     public Date getThisUpdate() {
         return tbsCertList.getThisUpdate();
     }
 
     /**
-     * getNextUpdate
+     * @see java.security.cert.X509CRL#getNextUpdate()
+     * method documentation for more info
      */
     public Date getNextUpdate() {
         return tbsCertList.getNextUpdate();
     }
 
-    // Retrieves the crl entries and converts it to the X509CRLEntryImpl
-    // objects
+    /*
+     * Retrieves the crl entries (TBSCertList.RevokedCertificate objects)
+     * from the TBSCertList structure and converts them to the
+     * X509CRLEntryImpl objects
+     */
     private void retirieveEntries() {
         entriesRetrieved = true;
         List rcerts = tbsCertList.getRevokedCertificates();
@@ -158,22 +207,34 @@ public class X509CRLImpl extends X509CRL {
         }
         entriesSize = rcerts.size();
         entries = new ArrayList(entriesSize);
-        X500Principal rcertIssuer = null; // means that issuer is a CRL issuer
+        // null means that revoked certificate issuer is the same as CRL issuer
+        X500Principal rcertIssuer = null;
         for (int i=0; i<entriesSize; i++) {
-            TBSCertList.RevokedCertificate rcert = 
+            TBSCertList.RevokedCertificate rcert =
                 (TBSCertList.RevokedCertificate) rcerts.get(i);
             X500Principal iss = rcert.getIssuer();
             if (iss != null) {
+                // certificate issuer differs from CRL issuer
+                // and CRL is indirect.
                 rcertIssuer = iss;
                 isIndirectCRL = true;
+                // remember how many leading revoked certificates in the
+                // list are issued by the same issuer as issuer of CRL
+                // (these certificates are first in the list)
                 nonIndirectEntriesSize = i;
             }
             entries.add(new X509CRLEntryImpl(rcert, rcertIssuer));
         }
     }
-    
+
     /**
-     * getRevokedCertificate
+     * Searches for certificate in CRL.
+     * This method supports indirect CRLs: if CRL is indirect method takes
+     * into account serial number and issuer of the certificate,
+     * if CRL issued by CA (i.e. it is not indirect) search is done only
+     * by serial number of the specified certificate.
+     * @see java.security.cert.X509CRL#getRevokedCertificate(X509Certificate)
+     * method documentation for more info
      */
     public X509CRLEntry getRevokedCertificate(X509Certificate certificate) {
         if (certificate == null) {
@@ -187,25 +248,33 @@ public class X509CRLImpl extends X509CRL {
         }
         BigInteger serialN = certificate.getSerialNumber();
         if (isIndirectCRL) {
+            // search in indirect crl
             X500Principal certIssuer = certificate.getIssuerX500Principal();
             if (certIssuer.equals(getIssuerX500Principal())) {
+                // certificate issuer is CRL issuer
                 certIssuer = null;
             }
             for (int i=0; i<entriesSize; i++) {
                 X509CRLEntry entry = (X509CRLEntry) entries.get(i);
+                // check the serial number of revoked certificate
                 if (serialN.equals(entry.getSerialNumber())) {
+                    // revoked certificate issuer
                     X500Principal iss = entry.getCertificateIssuer();
+                    // check the issuer of revoked certificate
                     if (certIssuer != null) {
+                        // certificate issuer is not a CRL issuer, so
+                        // check issuers for equality
                         if (certIssuer.equals(iss)) {
-                            //System.out.println("RETURN");
                             return entry;
                         }
                     } else if (iss == null) {
+                        // both certificates was issued by CRL issuer
                         return entry;
                     }
                 }
             }
         } else {
+            // search in CA's (non indirect) crl: just look up the serial number
             for (int i=0; i<entriesSize; i++) {
                 X509CRLEntry entry = (X509CRLEntry) entries.get(i);
                 if (serialN.equals(entry.getSerialNumber())) {
@@ -215,9 +284,12 @@ public class X509CRLImpl extends X509CRL {
         }
         return null;
     }
-        
+
     /**
-     * getRevokedCertificate
+     * Method searches for CRL entry with specified serial number.
+     * The method will search only certificate issued by CRL's issuer.
+     * @see java.security.cert.X509CRL#getRevokedCertificate(BigInteger)
+     * method documentation for more info
      */
     public X509CRLEntry getRevokedCertificate(BigInteger serialNumber) {
         if (!entriesRetrieved) {
@@ -229,16 +301,17 @@ public class X509CRLImpl extends X509CRL {
         for (int i=0; i<nonIndirectEntriesSize; i++) {
             X509CRLEntry entry = (X509CRLEntry) entries.get(i);
             if (serialNumber.equals(entry.getSerialNumber())) {
-                    return entry;
+                return entry;
             }
         }
         return null;
     }
 
     /**
-     * getRevokedCertificates
+     * @see java.security.cert.X509CRL#getRevokedCertificates()
+     * method documentation for more info
      */
-    public Set/*<? extends X509CRLEntry>*/ getRevokedCertificates() {
+    public Set<? extends X509CRLEntry> getRevokedCertificates() {
         if (!entriesRetrieved) {
             retirieveEntries();
         }
@@ -249,20 +322,22 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * getTBSCertList
+     * @see java.security.cert.X509CRL#getTBSCertList()
+     * method documentation for more info
      */
     public byte[] getTBSCertList() throws CRLException {
         if (tbsCertListEncoding == null) {
             tbsCertListEncoding = tbsCertList.getEncoded();
         }
         byte[] result = new byte[tbsCertListEncoding.length];
-        System.arraycopy(tbsCertListEncoding, 0, 
+        System.arraycopy(tbsCertListEncoding, 0,
                 result, 0, tbsCertListEncoding.length);
         return result;
     }
 
     /**
-     * getSignature
+     * @see java.security.cert.X509CRL#getSignature()
+     * method documentation for more info
      */
     public byte[] getSignature() {
         if (signature == null) {
@@ -274,7 +349,8 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * getSigAlgName
+     * @see java.security.cert.X509CRL#getSigAlgName()
+     * method documentation for more info
      */
     public String getSigAlgName() {
         if (sigAlgOID == null) {
@@ -288,7 +364,8 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * getSigAlgOID
+     * @see java.security.cert.X509CRL#getSigAlgOID()
+     * method documentation for more info
      */
     public String getSigAlgOID() {
         if (sigAlgOID == null) {
@@ -302,7 +379,8 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * getSigAlgParams
+     * @see java.security.cert.X509CRL#getSigAlgParams()
+     * method documentation for more info
      */
     public byte[] getSigAlgParams() {
         if (nullSigAlgParams) {
@@ -319,14 +397,14 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * verify
+     * @see java.security.cert.X509CRL#verify(PublicKey key)
+     * method documentation for more info
      */
     public void verify(PublicKey key)
                      throws CRLException, NoSuchAlgorithmException,
                             InvalidKeyException, NoSuchProviderException,
                             SignatureException {
-        Signature signature = Signature.getInstance(
-                                tbsCertList.getSignature().getAlgorithm());
+        Signature signature = Signature.getInstance(getSigAlgName());
         signature.initVerify(key);
         byte[] tbsEncoding = tbsCertList.getEncoded();
         signature.update(tbsEncoding, 0, tbsEncoding.length);
@@ -336,14 +414,15 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * verify
+     * @see java.security.cert.X509CRL#verify(PublicKey key, String sigProvider)
+     * method documentation for more info
      */
     public void verify(PublicKey key, String sigProvider)
                      throws CRLException, NoSuchAlgorithmException,
                             InvalidKeyException, NoSuchProviderException,
                             SignatureException {
         Signature signature = Signature.getInstance(
-                    tbsCertList.getSignature().getAlgorithm(), sigProvider);
+                                            getSigAlgName(), sigProvider);
         signature.initVerify(key);
         byte[] tbsEncoding = tbsCertList.getEncoded();
         signature.update(tbsEncoding, 0, tbsEncoding.length);
@@ -352,12 +431,13 @@ public class X509CRLImpl extends X509CRL {
         }
     }
 
-    // 
-    // ----- java.security.cert.CRL methods implementations ------
-    //
-    
+    // ---------------------------------------------------------------------
+    // ------ java.security.cert.CRL abstract method implementations -------
+    // ---------------------------------------------------------------------
+
     /**
-     * isRevoked
+     * @see java.security.cert.CRL#isRevoked(Certificate)
+     * method documentation for more info
      */
     public boolean isRevoked(Certificate cert) {
         if (!(cert instanceof X509Certificate)) {
@@ -367,17 +447,21 @@ public class X509CRLImpl extends X509CRL {
     }
 
     /**
-     * toString
+     * @see java.security.cert.CRL#toString()
+     * method documentation for more info
      */
     public String toString() {
-        // FIXME
-        return "X509CRLImpl:...";
+        return "X509CRLImpl: " + crl.toString();
     }
 
-    // 
-    // ----- java.security.cert.X509Extension methods implementations ----
-    //
+    // ---------------------------------------------------------------------
+    // ------ java.security.cert.X509Extension method implementations ------
+    // ---------------------------------------------------------------------
 
+    /**
+     * @see java.security.cert.X509Extension#getNonCriticalExtensionOIDs()
+     * method documentation for more info
+     */
     public Set getNonCriticalExtensionOIDs() {
         if (extensions == null) {
             return null;
@@ -385,6 +469,10 @@ public class X509CRLImpl extends X509CRL {
         return extensions.getNonCriticalExtensions();
     }
 
+    /**
+     * @see java.security.cert.X509Extension#getCriticalExtensionOIDs()
+     * method documentation for more info
+     */
     public Set getCriticalExtensionOIDs() {
         if (extensions == null) {
             return null;
@@ -392,6 +480,10 @@ public class X509CRLImpl extends X509CRL {
         return extensions.getCriticalExtensions();
     }
 
+    /**
+     * @see java.security.cert.X509Extension#getExtensionValue(String)
+     * method documentation for more info
+     */
     public byte[] getExtensionValue(String oid) {
         if (extensions == null) {
             return null;
@@ -400,6 +492,10 @@ public class X509CRLImpl extends X509CRL {
         return (ext == null) ? null : ext.getRawExtnValue();
     }
 
+    /**
+     * @see java.security.cert.X509Extension#hasUnsupportedCriticalExtension()
+     * method documentation for more info
+     */
     public boolean hasUnsupportedCriticalExtension() {
         if (extensions == null) {
             return false;
@@ -407,3 +503,4 @@ public class X509CRLImpl extends X509CRL {
         return extensions.hasUnsupportedCritical();
     }
 }
+

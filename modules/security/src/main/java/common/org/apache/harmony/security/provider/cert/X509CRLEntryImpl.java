@@ -33,27 +33,51 @@ import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.TBSCertList;
 
-
 /**
- * X509CRLEntryImpl
+ * Implementation of X509CRLEntry. It wraps the instance
+ * of org.apache.harmony.security.x509.TBSCertList.RevokedCertificate
+ * obtained during the decoding of TBSCertList substructure
+ * of the CertificateList structure which is an X.509 form of CRL.
+ * (see RFC 3280 at http://www.ietf.org/rfc/rfc3280.txt)
+ * Normally the instances of this class are constructed by involving
+ * X509CRLImpl object.
+ * @see org.apache.harmony.security.x509.TBSCertList
+ * @see org.apache.harmony.security.provider.cert.X509CRLImpl
+ * @see java.security.cert.X509CRLEntry
  */
 public class X509CRLEntryImpl extends X509CRLEntry {
 
+    // the crl entry object to be wrapped in X509CRLEntry
     private final TBSCertList.RevokedCertificate rcert;
+    // the extensions of the entry
     private final Extensions extensions;
+    // issuer of the revoked certificate described by this crl entry
     private final X500Principal issuer;
 
+    // encoded form of this revoked certificate entry
     private byte[] encoding;
-    
-    public X509CRLEntryImpl(TBSCertList.RevokedCertificate rcert, 
+
+    /**
+     * Creates an instance on the base of existing
+     * <code>TBSCertList.RevokedCertificate</code> object and
+     * information about the issuer of revoked certificate.
+     * If specified issuer is null, it is supposed that issuer
+     * of the revoked certificate is the same as for involving CRL.
+     */
+    public X509CRLEntryImpl(TBSCertList.RevokedCertificate rcert,
             X500Principal issuer) {
         this.rcert = rcert;
         this.extensions = rcert.getCrlEntryExtensions();
         this.issuer = issuer;
     }
 
+    // ---------------------------------------------------------------------
+    // ------ java.security.cert.X509CRLEntry method implementations -------
+    // ---------------------------------------------------------------------
+
     /**
-     * getEncoded
+     * @see java.security.cert.X509CRLEntry#getEncoded()
+     * method documentation for more info
      */
     public byte[] getEncoded() throws CRLException {
         if (encoding == null) {
@@ -65,43 +89,53 @@ public class X509CRLEntryImpl extends X509CRLEntry {
     }
 
     /**
-     * getSerialNumber
+     * @see java.security.cert.X509CRLEntry#getSerialNumber()
+     * method documentation for more info
      */
     public BigInteger getSerialNumber() {
         return rcert.getUserCertificate();
     }
 
+    /**
+     * @see java.security.cert.X509CRLEntry#getCertificateIssuer()
+     * method documentation for more info
+     */
     public X500Principal getCertificateIssuer() {
         return issuer;
     }
 
     /**
-     * getRevocationDate
+     * @see java.security.cert.X509CRLEntry#getRevocationDate()
+     * method documentation for more info
      */
     public Date getRevocationDate() {
         return rcert.getRevocationDate();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * @see java.security.cert.X509CRLEntry#hasExtensions()
+     * method documentation for more info
      */
     public boolean hasExtensions() {
         return (extensions != null) && (extensions.size() != 0);
     }
 
     /**
-     * toString
-     * FIXME: recognize and print the extensions 
+     * @see java.security.cert.X509CRLEntry#toString()
+     * method documentation for more info
      */
     public String toString() {
-        // FIXME
-        return "X509CRLEntryImpl:...";
+        return "X509CRLEntryImpl: "+rcert.toString();
     }
 
-    // 
-    // ----- java.security.cert.X509Extension methods implementations ----
-    //
+    // ---------------------------------------------------------------------
+    // ------ java.security.cert.X509Extension method implementations ------
+    // ---------------------------------------------------------------------
 
+    /**
+     * @see java.security.cert.X509Extension#getNonCriticalExtensionOIDs()
+     * method documentation for more info
+     */
     public Set getNonCriticalExtensionOIDs() {
         if (extensions == null) {
             return null;
@@ -109,6 +143,10 @@ public class X509CRLEntryImpl extends X509CRLEntry {
         return extensions.getNonCriticalExtensions();
     }
 
+    /**
+     * @see java.security.cert.X509Extension#getCriticalExtensionOIDs()
+     * method documentation for more info
+     */
     public Set getCriticalExtensionOIDs() {
         if (extensions == null) {
             return null;
@@ -116,6 +154,10 @@ public class X509CRLEntryImpl extends X509CRLEntry {
         return extensions.getCriticalExtensions();
     }
 
+    /**
+     * @see java.security.cert.X509Extension#getExtensionValue(String)
+     * method documentation for more info
+     */
     public byte[] getExtensionValue(String oid) {
         if (extensions == null) {
             return null;
@@ -124,17 +166,15 @@ public class X509CRLEntryImpl extends X509CRLEntry {
         return (ext == null) ? null : ext.getRawExtnValue();
     }
 
+    /**
+     * @see java.security.cert.X509Extension#hasUnsupportedCriticalExtension()
+     * method documentation for more info
+     */
     public boolean hasUnsupportedCriticalExtension() {
         if (extensions == null) {
             return false;
         }
         return extensions.hasUnsupportedCritical();
     }
-
-
-    /**
-     * The main method.
-     */
-    public static void main(String[] args) {
-    }
 }
+
