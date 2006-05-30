@@ -106,6 +106,19 @@ public final class DerInputStream extends BerInputStream {
     }
 
     /**
+     * @see org.apache.harmony.security.asn1.BerInputStream#readOctetString()
+     */
+    public void readOctetString() throws IOException {
+
+        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
+            throw new ASN1Exception(
+                    "ASN.1 octetstring: constructed identifier at ["
+                            + tagOffset + "]. Not valid for DER.");
+        }
+        super.readOctetString();
+    }
+
+    /**
      * @see org.apache.harmony.security.asn1.BerInputStream#readSequence(org.apache.harmony.security.asn1.ASN1Sequence)
      */
     public void readSequence(ASN1Sequence sequence) throws IOException {
