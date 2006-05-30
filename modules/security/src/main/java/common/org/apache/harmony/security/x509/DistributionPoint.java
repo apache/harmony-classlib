@@ -23,6 +23,7 @@ package org.apache.harmony.security.x509;
 
 import java.io.IOException;
 
+import org.apache.harmony.security.asn1.ASN1Explicit;
 import org.apache.harmony.security.asn1.ASN1Implicit;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
@@ -92,7 +93,7 @@ public class DistributionPoint {
      * Custom X.509 decoder.
      */
     public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
-                new ASN1Implicit(0, DistributionPointName.ASN1),
+                new ASN1Explicit(0, DistributionPointName.ASN1),
                 new ASN1Implicit(1, ReasonFlags.ASN1),
                 new ASN1Implicit(2, GeneralNames.ASN1)
             }) {
