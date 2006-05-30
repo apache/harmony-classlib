@@ -18,4 +18,5 @@ javax/naming/event/*
 javax/naming/ldap/*
 javax/naming/spi/*
 
-org/apache/harmony/jndi/internal/*
+org/apache/harmony/jndi/**
+org/apache/harmony/util/logging/LogConst.*
