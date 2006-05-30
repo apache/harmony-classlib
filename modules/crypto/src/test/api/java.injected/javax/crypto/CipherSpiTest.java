@@ -82,16 +82,12 @@ public class CipherSpiTest extends TestCase {
      * Test for <code>engineGetKeySize(Key)</code> method 
      * Assertion: It throws UnsupportedOperationException if it is not overriden
      */
-    public void testCipherSpi02() {
+    public void testCipherSpi02() throws Exception {
         CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineGetKeySize(null);
             assertTrue("UnsupportedOperationException must be thrown", false);
         } catch (UnsupportedOperationException e) {
-        } catch (Exception e) {
-            assertTrue(
-                    "Unexpected ".concat(e.toString()).concat(" was thrown"),
-                    false);
         }
     }
 
@@ -99,16 +95,12 @@ public class CipherSpiTest extends TestCase {
      * Test for <code>engineWrap(Key)</code> method 
      * Assertion: It throws UnsupportedOperationException if it is not overriden
      */
-    public void testCipherSpi03() {
+    public void testCipherSpi03() throws Exception {
         CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineWrap(null);
             assertTrue("UnsupportedOperationException must be thrown", false);
         } catch (UnsupportedOperationException e) {
-        } catch (Exception e) {
-            assertTrue(
-                    "Unexpected ".concat(e.toString()).concat(" was thrown"),
-                    false);
         }
     }
 
@@ -116,16 +108,12 @@ public class CipherSpiTest extends TestCase {
      * Test for <code>engineUnwrap(byte[], String, int)</code> method
      * Assertion: It throws UnsupportedOperationException if it is not overriden
      */
-    public void testCipherSpi04() {
+    public void testCipherSpi04() throws Exception {
         CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineUnwrap(new byte[0], "", 0);
             assertTrue("UnsupportedOperationException must be thrown", false);
         } catch (UnsupportedOperationException e) {
-        } catch (Exception e) {
-            assertTrue(
-                    "Unexpected ".concat(e.toString()).concat(" was thrown"),
-                    false);
         }
     }
     
@@ -223,10 +211,6 @@ public class CipherSpiTest extends TestCase {
         bb1.position(pos);
         bb2.position(0);
         assertTrue("Incorrect result", cSpi.engineDoFinal(bb1, bb2) > 0);
-    }
-    
-    public static void main(String args[]) {
-        junit.textui.TestRunner.run(CipherSpiTest.class);
     }
 }
 /**

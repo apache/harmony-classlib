@@ -55,57 +55,36 @@ public class SealedObjectTest extends TestCase {
      * deserialized, the content od deserialized object equals to the
      * content of initial object.
      */
-    public void testReadObject() {
-        try {
-            String secret = "secret string";
-            SealedObject so = new SealedObject(secret, new NullCipher());
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(so);
+    public void testReadObject() throws Exception {
+        String secret = "secret string";
+        SealedObject so = new SealedObject(secret, new NullCipher());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(so);
 
-            ObjectInputStream ois =
-                new ObjectInputStream(
-                        new ByteArrayInputStream(bos.toByteArray()));
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                bos.toByteArray()));
 
-            SealedObject so_des = (SealedObject) ois.readObject();
-            assertEquals("The secret content of deserialized object "
+        SealedObject so_des = (SealedObject) ois.readObject();
+        assertEquals("The secret content of deserialized object "
                 + "should be equal to the secret content of initial object",
                 secret, so_des.getObject(new NullCipher()));
-            assertEquals("The value returned by getAlgorithm() method of "
+        assertEquals("The value returned by getAlgorithm() method of "
                 + "deserialized object should be equal to the value returned "
-                + "by getAlgorithm() method of initial object",
-                so.getAlgorithm(), so_des.getAlgorithm());
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-            fail("Unexpected BadPaddingException was thrown.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Unexpected ClassNotFoundException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+                + "by getAlgorithm() method of initial object", so
+                .getAlgorithm(), so_des.getAlgorithm());
     }
 
     /**
-     * SealedObject(Serializable object, Cipher c) method testing.
-     * Tests if the NullPointerException is thrown in the case of null cipher.
+     * SealedObject(Serializable object, Cipher c) method testing. Tests if the
+     * NullPointerException is thrown in the case of null cipher.
      */
-    public void testSealedObject1() {
+    public void testSealedObject1() throws Exception {
         String secret = "secret string";
         try {
             new SealedObject(secret, null);
             fail("NullPointerException should be thrown in the case "
                     + "of null cipher.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
         } catch (NullPointerException e) {
         }
     }
@@ -114,7 +93,7 @@ public class SealedObjectTest extends TestCase {
      * SealedObject(SealedObject so) method testing. Tests if the
      * NullPointerException is thrown in the case of null SealedObject.
      */
-    public void testSealedObject2() {
+    public void testSealedObject2() throws Exception {
         try {
             new SealedObject(null);
             fail("NullPointerException should be thrown in the case "
@@ -122,306 +101,133 @@ public class SealedObjectTest extends TestCase {
         } catch (NullPointerException e) {
         }
 
-        try {
-            String secret = "secret string";
-            Cipher cipher = new NullCipher();
-            SealedObject so1 = new SealedObject(secret, cipher);
-            SealedObject so2 = new SealedObject(so1);
+        String secret = "secret string";
+        Cipher cipher = new NullCipher();
+        SealedObject so1 = new SealedObject(secret, cipher);
+        SealedObject so2 = new SealedObject(so1);
 
-            assertEquals("The secret content of the object should equals "
-                    + "to the secret content of initial object.",
-                    secret, so2.getObject(cipher));
-            assertEquals("The algorithm which was used to seal the object "
-                    + "should be the same as the algorithm used to seal the "
-                    + "initial object", so1.getAlgorithm(), so2.getAlgorithm());
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-            fail("Unexpected BadPaddingException was thrown.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Unexpected ClassNotFoundException was thrown.");
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            fail("Unexpected NullPointerException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        }
+        assertEquals("The secret content of the object should equals "
+                + "to the secret content of initial object.", secret, so2
+                .getObject(cipher));
+        assertEquals("The algorithm which was used to seal the object "
+                + "should be the same as the algorithm used to seal the "
+                + "initial object", so1.getAlgorithm(), so2.getAlgorithm());
     }
 
     /**
-     * getAlgorithm() method testing. Tests if the returned value equals
-     * to the corresponding value of Cipher object.
+     * getAlgorithm() method testing. Tests if the returned value equals to the
+     * corresponding value of Cipher object.
      */
-    public void testGetAlgorithm() {
-        try {
-            String secret = "secret string";
-            String algorithm = "DES";
-            KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-            Key key = kg.generateKey();
+    public void testGetAlgorithm() throws Exception {
+        String secret = "secret string";
+        String algorithm = "DES";
+        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        Key key = kg.generateKey();
 
-            Cipher cipher = Cipher.getInstance(algorithm);
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            SealedObject so = new SealedObject(secret, cipher);
+        Cipher cipher = Cipher.getInstance(algorithm);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        SealedObject so = new SealedObject(secret, cipher);
 
-            assertEquals("The algorithm name should be the same as used "
-                    + "in cipher.", algorithm, so.getAlgorithm());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchAlgorithmException was thrown.");
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchPaddingException was thrown.");
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            fail("Unexpected InvalidKeyException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            fail("Unexpected NullPointerException was thrown.");
-        }
+        assertEquals("The algorithm name should be the same as used "
+                + "in cipher.", algorithm, so.getAlgorithm());
     }
 
     /**
-     * getObject(Key key) method testing. Tests if the object sealed
-     * with encryption algorithm and specified parameters can be
-     * retrieved by specifying the cryptographic key.
+     * getObject(Key key) method testing. Tests if the object sealed with
+     * encryption algorithm and specified parameters can be retrieved by
+     * specifying the cryptographic key.
      */
-    public void testGetObject1() {
-        try {
-            KeyGenerator kg = KeyGenerator.getInstance("DES");
-            Key key = kg.generateKey();
+    public void testGetObject1() throws Exception {
+        KeyGenerator kg = KeyGenerator.getInstance("DES");
+        Key key = kg.generateKey();
 
-            IvParameterSpec ips =
-                new IvParameterSpec(new byte[] {1, 2, 3, 4, 5, 6, 7, 8});
+        IvParameterSpec ips = new IvParameterSpec(new byte[] { 1, 2, 3, 4, 5,
+                6, 7, 8 });
 
-            Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, key, ips);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, ips);
 
-            String secret = "secret string";
-            SealedObject so = new SealedObject(secret, cipher);
+        String secret = "secret string";
+        SealedObject so = new SealedObject(secret, cipher);
 
-            assertEquals("The returned object does not equals to the "
-                    + "original object.",
-                    secret, so.getObject(key));
+        assertEquals("The returned object does not equals to the "
+                + "original object.", secret, so.getObject(key));
 
-            assertTrue("The encodedParams field of SealedObject object "
-                    + "should contain the encoded algorithm parameters.",
-                    Arrays.equals(so.encodedParams,
-                                    cipher.getParameters().getEncoded()));
-
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-            fail("Unexpected InvalidAlgorithmParameterException was thrown.");
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            fail("Unexpected InvalidKeyException was thrown.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Unexpected ClassNotFoundException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchPaddingException was thrown.");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchAlgorithmException was thrown.");
-        }
+        assertTrue("The encodedParams field of SealedObject object "
+                + "should contain the encoded algorithm parameters.", Arrays
+                .equals(so.encodedParams, cipher.getParameters().getEncoded()));
     }
 
     /**
-     * getObject(Cipher c) method testing. Tests if the proper exception
-     * is thrown in the case of incorrect input parameters and if the
-     * object sealed with encryption algorithm and specified parameters
-     * can be retrieved by specifying the initialized Cipher object.
+     * getObject(Cipher c) method testing. Tests if the proper exception is
+     * thrown in the case of incorrect input parameters and if the object sealed
+     * with encryption algorithm and specified parameters can be retrieved by
+     * specifying the initialized Cipher object.
      */
-    public void testGetObject2() {
+    public void testGetObject2() throws Exception {
         try {
-            new SealedObject("secret string",
-                new NullCipher()).getObject((Cipher) null);
+            new SealedObject("secret string", new NullCipher())
+                    .getObject((Cipher) null);
             fail("NullPointerException should be thrown in the case of "
                     + "null cipher.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Unexpected ClassNotFoundException was thrown.");
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-            fail("Unexpected BadPaddingException was thrown.");
         } catch (NullPointerException e) {
         }
 
-        try {
-            KeyGenerator kg = KeyGenerator.getInstance("DES");
-            Key key = kg.generateKey();
+        KeyGenerator kg = KeyGenerator.getInstance("DES");
+        Key key = kg.generateKey();
 
-            IvParameterSpec ips =
-                new IvParameterSpec(new byte[] {1, 2, 3, 4, 5, 6, 7, 8});
+        IvParameterSpec ips = new IvParameterSpec(new byte[] { 1, 2, 3, 4, 5,
+                6, 7, 8 });
 
-            Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, key, ips);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, ips);
 
-            String secret = "secret string";
-            SealedObject so = new SealedObject(secret, cipher);
+        String secret = "secret string";
+        SealedObject so = new SealedObject(secret, cipher);
 
-            cipher.init(Cipher.DECRYPT_MODE, key, ips);
-            assertEquals("The returned object does not equals to the "
-                    + "original object.",
-                    secret, so.getObject(cipher));
-
-        } catch (InvalidAlgorithmParameterException e) {
-           e.printStackTrace();
-            fail("Unexpected InvalidAlgorithmParameterException was thrown.");
-        } catch (BadPaddingException e) {
-           e.printStackTrace();
-            fail("Unexpected BadPaddingException was thrown.");
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            fail("Unexpected InvalidKeyException was thrown.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Unexpected ClassNotFoundException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchPaddingException was thrown.");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchAlgorithmException was thrown.");
-        }
+        cipher.init(Cipher.DECRYPT_MODE, key, ips);
+        assertEquals("The returned object does not equals to the "
+                + "original object.", secret, so.getObject(cipher));
     }
 
     /**
-     * getObject(Key key, String provider) method testing. Tests if the
-     * proper exception is thrown in the case of incorrect input parameters
-     * and if the object sealed with encryption algorithm can be
-     * retrieved by specifying the cryptographic key and provider name.
+     * getObject(Key key, String provider) method testing. Tests if the proper
+     * exception is thrown in the case of incorrect input parameters and if the
+     * object sealed with encryption algorithm can be retrieved by specifying
+     * the cryptographic key and provider name.
      */
-    public void testGetObject3() {
+    public void testGetObject3() throws Exception {
         try {
-            new SealedObject("secret string",
-                new NullCipher()).getObject(
-                    new SecretKeySpec(new byte[] {0, 0, 0}, "algorithm"),
-                null);
+            new SealedObject("secret string", new NullCipher()).getObject(
+                    new SecretKeySpec(new byte[] { 0, 0, 0 }, "algorithm"),
+                    null);
             fail("IllegalArgumentException should be thrown in the case of "
                     + "null provider.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Unexpected ClassNotFoundException was thrown.");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchAlgorithmException was thrown.");
-        } catch (NoSuchProviderException e) {
-           e.printStackTrace();
-            fail("Unexpected NoSuchProviderException was thrown.");
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            fail("Unexpected InvalidKeyException was thrown.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
-            new SealedObject("secret string",
-                new NullCipher()).getObject(
-                    new SecretKeySpec(new byte[] {0, 0, 0}, "algorithm"),
-                "");
+            new SealedObject("secret string", new NullCipher()).getObject(
+                    new SecretKeySpec(new byte[] { 0, 0, 0 }, "algorithm"), "");
             fail("IllegalArgumentException should be thrown in the case of "
                     + "empty provider.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Unexpected ClassNotFoundException was thrown.");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchAlgorithmException was thrown.");
-        } catch (NoSuchProviderException e) {
-           e.printStackTrace();
-            fail("Unexpected NoSuchProviderException was thrown.");
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            fail("Unexpected InvalidKeyException was thrown.");
         } catch (IllegalArgumentException e) {
         }
 
-        try {
-            KeyGenerator kg = KeyGenerator.getInstance("DES");
-            Key key = kg.generateKey();
+        KeyGenerator kg = KeyGenerator.getInstance("DES");
+        Key key = kg.generateKey();
 
-            Cipher cipher = Cipher.getInstance("DES");
-            String provider = cipher.getProvider().getName();
-            cipher.init(Cipher.ENCRYPT_MODE, key);
+        Cipher cipher = Cipher.getInstance("DES");
+        String provider = cipher.getProvider().getName();
+        cipher.init(Cipher.ENCRYPT_MODE, key);
 
-            String secret = "secret string";
-            SealedObject so = new SealedObject(secret, cipher);
+        String secret = "secret string";
+        SealedObject so = new SealedObject(secret, cipher);
 
-            cipher.init(Cipher.DECRYPT_MODE, key);
-            assertEquals("The returned object does not equals to the "
-                    + "original object.",
-                    secret, so.getObject(key, provider));
-        } catch (NoSuchProviderException e) {
-           e.printStackTrace();
-            fail("Unexpected NoSuchProviderException was thrown.");
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            fail("Unexpected InvalidKeyException was thrown.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Unexpected ClassNotFoundException was thrown.");
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            fail("Unexpected IllegalBlockSizeException was thrown.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchPaddingException was thrown.");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            fail("Unexpected NoSuchAlgorithmException was thrown.");
-        }
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        assertEquals("The returned object does not equals to the "
+                + "original object.", secret, so.getObject(key, provider));
     }
 
-    public static Test suite() {
-        return new TestSuite(SealedObjectTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
 }
 

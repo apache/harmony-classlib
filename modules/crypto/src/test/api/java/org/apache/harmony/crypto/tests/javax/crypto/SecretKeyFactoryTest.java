@@ -45,7 +45,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class SecretKeyFactory1Test extends TestCase {
+public class SecretKeyFactoryTest extends TestCase {
     
     public static final String srvSecretKeyFactory = "SecretKeyFactory";
         
@@ -108,15 +108,6 @@ public class SecretKeyFactory1Test extends TestCase {
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * Constructor for SecretKeyFactoryTests.
-     * 
-     * @param arg0
-     */
-    public SecretKeyFactory1Test(String arg0) {
-        super(arg0);
     }
 
     /**
@@ -422,30 +413,6 @@ public class SecretKeyFactory1Test extends TestCase {
                 assertTrue("Incorrect getKeySpec() result 2",
                         rks instanceof DESKeySpec);
             }
-        }
-    }
-    /**
-     * Test for <code>translateKey(SecretKey key)</code> method
-     * Assertion: 
-     * throw InvalidKeyException if parameter is inappropriate
-     */    
-    public void testSecretKeyFactory11() throws InvalidKeyException {
-        if (!DEFSupported) {
-            fail(NotSupportMsg);
-            return;
-        }
-        byte[] bb = new byte[10];
-        SecretKeySpec secKeySpec = new SecretKeySpec(bb,defaultAlgorithm);
-        SecretKeyFactory[] skF = createSKFac();
-        assertNotNull("SecretKeyFactory object were not created", skF);
-        for (int i = 0; i < skF.length; i++) {
-            try { 
-                skF[i].translateKey(null);
-                fail("InvalidKeyException must be thrown: " + i);
-            } catch (InvalidKeyException e) {
-            }
-
-            skF[i].translateKey(secKeySpec);
         }
     }
 }

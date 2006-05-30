@@ -18,7 +18,7 @@
 * @version $Revision$
 */
 
-package javax.crypto;
+package org.apache.harmony.crypto.tests.javax.crypto;
 
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -28,8 +28,11 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 
-import org.apache.harmony.security.support.TestKeyPair;
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.ShortBufferException;
 
+import org.apache.harmony.security.support.TestKeyPair;
 
 import junit.framework.TestCase;
 
@@ -253,65 +256,6 @@ public class Cipher_ImplTest extends TestCase {
 		assertEquals(3, c.getIV().length);
 	}
 
-	public void testGetParameters() throws NoSuchAlgorithmException,
-            NoSuchPaddingException {
-
-		Cipher c = Cipher.getInstance("DES");
-		assertNull(c.getParameters());
-	}
-
-	public void testGetExemptionMechanism() {
-//FIXME implement testGetExemptionMechanism
-	}
-
-	/*
-	 * Class under test for void init(int, Key)
-	 */
-	public void testInitintKey() {
-	}
-
-	/*
-	 * Class under test for void init(int, Key, SecureRandom)
-	 */
-	public void testInitintKeySecureRandom() {
-	}
-
-	/*
-	 * Class under test for void init(int, Key, AlgorithmParameterSpec)
-	 */
-	public void testInitintKeyAlgorithmParameterSpec() {
-	}
-
-	/*
-	 * Class under test for void init(int, Key, AlgorithmParameterSpec, SecureRandom)
-	 */
-	public void testInitintKeyAlgorithmParameterSpecSecureRandom() {
-	}
-
-	/*
-	 * Class under test for void init(int, Key, AlgorithmParameters)
-	 */
-	public void testInitintKeyAlgorithmParameters() {
-	}
-
-	/*
-	 * Class under test for void init(int, Key, AlgorithmParameters, SecureRandom)
-	 */
-	public void testInitintKeyAlgorithmParametersSecureRandom() {
-	}
-
-	/*
-	 * Class under test for void init(int, Certificate)
-	 */
-	public void testInitintCertificate() {
-	}
-
-	/*
-	 * Class under test for void init(int, Certificate, SecureRandom)
-	 */
-	public void testInitintCertificateSecureRandom() {
-	}
-
 	/*
 	 * Class under test for byte[] update(byte[])
 	 */
@@ -337,127 +281,6 @@ public class Cipher_ImplTest extends TestCase {
 		} catch (IllegalArgumentException e){
 		}
 		assertNull(c.update(new byte[0]));
-	}
-
-	/*
-	 * Class under test for byte[] update(byte[], int, int)
-	 */
-	public void testUpdatebyteArrayintint() {
-	}
-
-	/*
-	 * Class under test for int update(byte[], int, int, byte[])
-	 */
-	public void testUpdatebyteArrayintintbyteArray() {
-	}
-
-	/*
-	 * Class under test for int update(byte[], int, int, byte[], int)
-	 */
-	public void testUpdatebyteArrayintintbyteArrayint() {
-//		try {
-//			spi.engineUpdate(b, 3, 6, b1, 5);
-//			fail("No expected ShortBufferException");
-//		} catch (ShortBufferException e) {
-//		}
-	}
-
-	/*
-	 * Class under test for int update(ByteBuffer, ByteBuffer)
-	 */
-	public void testUpdateByteBufferByteBuffer() {
-	}
-
-	/*
-	 * Class under test for byte[] doFinal()
-	 */
-	public void testDoFinal() {
-	}
-
-	/*
-	 * Class under test for int doFinal(byte[], int)
-	 */
-	public void testDoFinalbyteArrayint() {
-	}
-
-	/*
-	 * Class under test for byte[] doFinal(byte[])
-	 */
-	public void testDoFinalbyteArray() {
-	}
-
-	/*
-	 * Class under test for byte[] doFinal(byte[], int, int)
-	 */
-	public void testDoFinalbyteArrayintint() {
-	}
-
-	/*
-	 * Class under test for int doFinal(byte[], int, int, byte[])
-	 */
-	public void testDoFinalbyteArrayintintbyteArray() {
-	}
-
-	/*
-	 * Class under test for int doFinal(byte[], int, int, byte[], int)
-	 */
-	public void testDoFinalbyteArrayintintbyteArrayint() {
-//		try {
-//			spi.engineDoFinal(b, 3, 6, b1, 5);
-//			fail("No expected ShortBufferException");
-//		} catch (ShortBufferException e) {
-//		} catch (Exception e) {
-//			fail(e.toString());
-//		}
-	}
-
-	/*
-	 * Class under test for int doFinal(ByteBuffer, ByteBuffer)
-	 */
-	public void testDoFinalByteBufferByteBuffer() {
-	}
-
-	public void testWrap() {
-	}
-
-	public void testUnwrap() {
-	}
-
-	public void testGetMaxAllowedKeyLength() throws NoSuchAlgorithmException {
-		try {
-			Cipher.getMaxAllowedKeyLength(null);
-			fail("No expected NullPointerException");
-		} catch (NullPointerException e) {
-		}
-		try {
-			Cipher.getMaxAllowedKeyLength("//CBC/PKCS5Paddin");
-			fail("No expected NoSuchAlgorithmException");
-		} catch (NoSuchAlgorithmException e) {
-		}
-		try {
-			Cipher.getMaxAllowedKeyLength("/DES/CBC/PKCS5Paddin/1");
-			fail("No expected NoSuchAlgorithmException");
-		} catch (NoSuchAlgorithmException e) {
-		}
-	}
-
-	public void testGetMaxAllowedParameterSpec()
-            throws NoSuchAlgorithmException {
-		try {
-			Cipher.getMaxAllowedParameterSpec(null);
-			fail("No expected NullPointerException");
-		} catch (NullPointerException e) {
-		}
-		try {
-			Cipher.getMaxAllowedParameterSpec("/DES//PKCS5Paddin");
-			fail("No expected NoSuchAlgorithmException");
-		} catch (NoSuchAlgorithmException e) {
-		}
-		try {
-			Cipher.getMaxAllowedParameterSpec("/DES/CBC/ /1");
-			fail("No expected NoSuchAlgorithmException");
-		} catch (NoSuchAlgorithmException e) {
-		}
 	}
 	
 	private class MyProvider1 extends Provider {

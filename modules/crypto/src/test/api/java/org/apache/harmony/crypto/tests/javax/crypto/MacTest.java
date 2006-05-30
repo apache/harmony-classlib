@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  */
 
-public class Mac1Test extends TestCase {
+public class MacTest extends TestCase {
 
     public static final String srvMac = "Mac";
 
@@ -100,15 +100,7 @@ public class Mac1Test extends TestCase {
             return null;
         }
     }
-    
 
-    /**
-     * Constructor for MacTest.
-     * @param arg0
-     */
-    public Mac1Test(String arg0) {
-        super(arg0);
-    }
     /**
      * Test for <code>getInstance(String algorithm)</code> method
      * Assertion: 
@@ -791,7 +783,7 @@ public class Mac1Test extends TestCase {
     }
     
     public static Test suite() {
-        return new TestSuite(Mac1Test.class);
+        return new TestSuite(MacTest.class);
     }
 
     public static void main(String args[]) {        

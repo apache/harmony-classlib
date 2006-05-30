@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package javax.crypto;
+package org.apache.harmony.crypto.tests.javax.crypto;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -28,6 +28,9 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
@@ -72,15 +75,6 @@ public class SecretKeyFactory_ImplTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         Security.removeProvider(mProv.getName());
-    }
-
-    /**
-     * Constructor for SecurityManagerFactoryTest2.
-     * 
-     * @param arg0
-     */
-    public SecretKeyFactory_ImplTest(String arg0) {
-        super(arg0);
     }
 
     private void checkResult(SecretKeyFactory skf) throws InvalidKeyException,

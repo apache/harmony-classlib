@@ -21,16 +21,14 @@
 
 package org.apache.harmony.crypto.tests.javax.crypto;
 
-import javax.crypto.BadPaddingException;
+import java.security.SecureRandom;
+import java.util.Arrays;
+
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NullCipher;
-import javax.crypto.ShortBufferException;
 import javax.crypto.spec.SecretKeySpec;
 
 import junit.framework.TestCase;
-
-import java.security.*;
 
 /**
  *
@@ -50,339 +48,156 @@ public class NullCipherTest extends TestCase {
 	}
 
 	public void testGetBlockSize() {
-		if (c.getBlockSize() != 1) {
-			fail("getBlockSize() failed");
-		}
+        assertEquals("Incorrect BlockSize", 1, c.getBlockSize());
 	}
 
 	public void testGetOutputSize() {
-		if (c.getOutputSize(111) != 111) {
-			fail("getOutputSize() failed");
-		}
+        assertEquals("Incorrect OutputSize", 111, c.getOutputSize(111));
 	}
 
 	public void testGetIV() {
-		if (c.getIV() != null) {
-			fail("getIV() failed");
-		}
+        assertTrue("Incorrect IV", Arrays.equals(c.getIV(), new byte[8]));
 	}
 
 	public void testGetParameters() {
-		if (c.getParameters() != null) {
-			fail("getParameters() failed");	
-		}
+        assertNull("Incorrect Parameters", c.getParameters());
 	}
 
 	public void testGetExemptionMechanism() {
-		if (c.getExemptionMechanism() != null) {
-			fail("getExemptionMechanism() failed");	
-		}	
+        assertNull("Incorrect ExemptionMechanism", c.getExemptionMechanism());
 	}
 
 	/*
 	 * Class under test for void init(int, Key)
 	 */
-	public void testInitintKey() {
-		try {
-			c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(new byte[1], "algorithm"));		
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}	
+	public void testInitintKey() throws Exception {
+		c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(new byte[1], "algorithm"));
+	
 	}
 
 	/*
 	 * Class under test for void init(int, Key, SecureRandom)
 	 */
-	public void testInitintKeySecureRandom() {
-		try {
-			c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(new byte[1], "algorithm"), new SecureRandom());		
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		}
+	public void testInitintKeySecureRandom() throws Exception {
+		c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(new byte[1],
+                "algorithm"), new SecureRandom());
 	}
 
 	/*
 	 * Class under test for void init(int, Key, AlgorithmParameterSpec)
 	 */
-	public void testInitintKeyAlgorithmParameterSpec() {
+	public void testInitintKeyAlgorithmParameterSpec() throws Exception {
 		class myAlgorithmParameterSpec implements java.security.spec.AlgorithmParameterSpec {}
-		try {
-			c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(new byte[1], "algorithm"), new myAlgorithmParameterSpec());
-		} catch (InvalidKeyException e) {
-			fail(e.toString());
-		} catch (InvalidAlgorithmParameterException  e) {
-			fail(e.toString());
-		}
-	}
-
-	/*
-	 * Class under test for void init(int, Key, AlgorithmParameterSpec, SecureRandom)
-	 */
-	public void testInitintKeyAlgorithmParameterSpecSecureRandom() {
-	}
-
-	/*
-	 * Class under test for void init(int, Key, AlgorithmParameters)
-	 */
-	public void testInitintKeyAlgorithmParameters() {
-	}
-
-	/*
-	 * Class under test for void init(int, Key, AlgorithmParameters, SecureRandom)
-	 */
-	public void testInitintKeyAlgorithmParametersSecureRandom() {
-	}
-
-	/*
-	 * Class under test for void init(int, Certificate)
-	 */
-	public void testInitintCertificate() {		
-	}
-
-	/*
-	 * Class under test for void init(int, Certificate, SecureRandom)
-	 */
-	public void testInitintCertificateSecureRandom() {
+		c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(new byte[1],
+                "algorithm"), new myAlgorithmParameterSpec());
 	}
 
 	/*
 	 * Class under test for byte[] update(byte[])
 	 */
-	public void testUpdatebyteArray() {
+	public void testUpdatebyteArray() throws Exception {
 		byte [] b = {1, 2, 3, 4, 5};
 		byte [] r = c.update(b);
-		if (b.length != r.length) {
-			fail("different length");
-		}
-		for (int i = 0; i < b.length; i++) {
-			if (b[i] != r[i]) {
-				fail("different content");
-			}
-		}		
+        assertEquals("different length", b.length, r.length);
+        assertTrue("different content", Arrays.equals(b, r));
 	}
 
 	/*
 	 * Class under test for byte[] update(byte[], int, int)
 	 */
-	public void testUpdatebyteArrayintint() {
+	public void testUpdatebyteArrayintint() throws Exception {
 		byte [] b = {1, 2, 3, 4, 5};
 		byte [] r = c.update(b, 0, 5);
-		if (b.length != r.length) {
-			fail("different length");
-		}
-		for (int i = 0; i < b.length; i++) {
-			if (b[i] != r[i]) {
-				fail("different content");
-			}
-		}
+        assertEquals("different length", b.length, r.length);
+        assertTrue("different content", Arrays.equals(b, r));
 		
 		r = c.update(b, 1, 3);
-		if (r.length != 3) {
-			fail("different length");
-		}
+		assertEquals("different length", 3, r.length);
 		for (int i = 0; i < 3; i++) {
-			if (b[i + 1] != r[i]) {
-				fail("different content");
-			}
+            assertEquals("different content", b[i + 1], r[i]);
 		}
 	}
 
 	/*
 	 * Class under test for int update(byte[], int, int, byte[])
 	 */
-	public void testUpdatebyteArrayintintbyteArray() {
+	public void testUpdatebyteArrayintintbyteArray() throws Exception {
 		byte [] b = {1, 2, 3, 4, 5};
 		byte [] r = new byte[5]; 
-		try {
-			c.update(b, 0, 5, r);			
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		}
-
-		for (int i = 0; i < b.length; i++) {
-			if (b[i] != r[i]) {
-				fail("different content");
-			}
-		}		
+		c.update(b, 0, 5, r);			
+        assertTrue("different content", Arrays.equals(b, r));		
 	}
 
 	/*
 	 * Class under test for int update(byte[], int, int, byte[], int)
 	 */
-	public void testUpdatebyteArrayintintbyteArrayint() {
+	public void testUpdatebyteArrayintintbyteArrayint() throws Exception {
 		byte [] b = {1, 2, 3, 4, 5};
 		byte [] r = new byte[5]; 
-		try {
-			c.update(b, 0, 5, r, 0);			
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		}
-
-		for (int i = 0; i < b.length; i++) {
-			if (b[i] != r[i]) {
-				fail("different content");
-			}
-		}	
-	}
-
-	/*
-	 * Class under test for int update(ByteBuffer, ByteBuffer)
-	 */
-	public void testUpdateByteBufferByteBuffer() {
+		c.update(b, 0, 5, r, 0);			
+        assertTrue("different content", Arrays.equals(b, r));
 	}
 
 	/*
 	 * Class under test for byte[] doFinal()
 	 */
-	public void testDoFinal() {
-		try {
-			if (c.doFinal() != null) {
-				fail("doFinal failed");
-			}			
-		} catch (BadPaddingException e) {
-			fail(e.toString());
-		} catch (IllegalBlockSizeException  e) {
-			fail(e.toString());
-		}
-
+	public void testDoFinal() throws Exception {
+        assertNull("doFinal failed", c.doFinal());
 	}
 
 	/*
 	 * Class under test for int doFinal(byte[], int)
 	 */
-	public void testDoFinalbyteArrayint() {
+	public void testDoFinalbyteArrayint() throws Exception {
 		byte [] r = new byte[5];
-		try {
-			if (c.doFinal(r, 0) != 0) {
-				fail("doFinal failed");
-			}			
-		} catch (BadPaddingException e) {
-			fail(e.toString());
-		} catch (IllegalBlockSizeException  e) {
-			fail(e.toString());
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		}
+        assertEquals("doFinal failed", 0, c.doFinal(r, 0));
 	}
 
 	/*
 	 * Class under test for byte[] doFinal(byte[])
 	 */
-	public void testDoFinalbyteArray() {
+	public void testDoFinalbyteArray() throws Exception {
 		byte [] b = {1, 2, 3, 4, 5};
 		byte [] r = null; 
-		try {
-			r = c.doFinal(b);
-		} catch (BadPaddingException e) {
-			fail(e.toString());
-		} catch (IllegalBlockSizeException  e) {
-			fail(e.toString());
-		}
-		if (b.length != r.length) {
-			fail("different length");
-		}
-		for (int i = 0; i < b.length; i++) {
-			if (b[i] != r[i]) {
-				fail("different content");
-			}
-		}		
+		r = c.doFinal(b);
+        assertEquals("different length", b.length, r.length);
+        assertTrue("different content", Arrays.equals(b, r));		
 	}
 
 	/*
 	 * Class under test for byte[] doFinal(byte[], int, int)
 	 */
-	public void testDoFinalbyteArrayintint() {
+	public void testDoFinalbyteArrayintint() throws Exception {
 		byte [] b = {1, 2, 3, 4, 5};
 		byte [] r = null;
-		try {
-			r = c.doFinal(b, 0, 5);
-		} catch (BadPaddingException e) {
-			fail(e.toString());
-		} catch (IllegalBlockSizeException  e) {
-			fail(e.toString());
-		}
-		if (b.length != r.length) {
-			fail("different length");
-		}
-		for (int i = 0; i < b.length; i++) {
-			if (b[i] != r[i]) {
-				fail("different content");
-			}
-		}
+		r = c.doFinal(b, 0, 5);
+        assertEquals("different length", b.length, r.length);
+        assertTrue("different content", Arrays.equals(b, r));
 		
-		try {
-			r = c.doFinal(b, 1, 3);
-		} catch (BadPaddingException e) {
-			fail(e.toString());
-		} catch (IllegalBlockSizeException  e) {
-			fail(e.toString());
-		}
-		if (r.length != 3) {
-			fail("different length");
-		}
+		r = c.doFinal(b, 1, 3);
+        assertEquals("different length", 3, r.length);
 		for (int i = 0; i < 3; i++) {
-			if (b[i + 1] != r[i]) {
-				fail("different content");
-			}
+            assertEquals("different content", b[i + 1], r[i]);
 		}
 	}
 
 	/*
 	 * Class under test for int doFinal(byte[], int, int, byte[])
 	 */
-	public void testDoFinalbyteArrayintintbyteArray() {
+	public void testDoFinalbyteArrayintintbyteArray() throws Exception {
 		byte [] b = {1, 2, 3, 4, 5};
 		byte [] r = new byte[5]; 
-		try {
-			c.doFinal(b, 0, 5, r);			
-		} catch (BadPaddingException e) {
-			fail(e.toString());
-		}  catch (ShortBufferException e) {
-			fail(e.toString());
-		} catch (IllegalBlockSizeException  e) {
-			fail(e.toString());
-		}
-
-		for (int i = 0; i < b.length; i++) {
-			if (b[i] != r[i]) {
-				fail("different content");
-			}
-		}
+		c.doFinal(b, 0, 5, r);			
+        assertTrue("different content", Arrays.equals(b, r));
 	}
 
 	/*
 	 * Class under test for int doFinal(byte[], int, int, byte[], int)
 	 */
-	public void testDoFinalbyteArrayintintbyteArrayint() {
+	public void testDoFinalbyteArrayintintbyteArrayint() throws Exception {
 		byte [] b = {1, 2, 3, 4, 5};
 		byte [] r = new byte[5]; 
-		try {
-			c.doFinal(b, 0, 5, r, 0);			
-		} catch (BadPaddingException e) {
-			fail(e.toString());
-		}  catch (ShortBufferException e) {
-			fail(e.toString());
-		} catch (IllegalBlockSizeException  e) {
-			fail(e.toString());
-		}
-
-		for (int i = 0; i < b.length; i++) {
-			if (b[i] != r[i]) {
-				fail("different content");
-			}
-		}
+		c.doFinal(b, 0, 5, r, 0);
+        assertTrue("different content", Arrays.equals(b, r));
 	}
-
-	/*
-	 * Class under test for int doFinal(ByteBuffer, ByteBuffer)
-	 */
-	public void testDoFinalByteBufferByteBuffer() {
-	}
-
-	public void testWrap() {
-	}
-
-	public void testUnwrap() {
-	}
-
 }

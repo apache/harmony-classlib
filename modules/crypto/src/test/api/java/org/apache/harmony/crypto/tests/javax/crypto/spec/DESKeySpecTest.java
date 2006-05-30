@@ -18,11 +18,13 @@
 * @version $Revision$
 */
 
-package javax.crypto.spec;
+package org.apache.harmony.crypto.tests.javax.crypto.spec;
 
 import java.lang.NullPointerException;
 import java.security.InvalidKeyException;
 import java.util.Arrays;
+
+import javax.crypto.spec.DESKeySpec;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

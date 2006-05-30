@@ -50,16 +50,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyAgreement1Test extends TestCase {
-
-    /**
-     * Constructor for KeyAgreement1Test.
-     * 
-     * @param arg0
-     */
-    public KeyAgreement1Test(String arg0) {
-        super(arg0);
-    }
+public class KeyAgreementTest extends TestCase {
 
     public static final String srvKeyAgreement = "KeyAgreement";
 
@@ -116,35 +107,6 @@ public class KeyAgreement1Test extends TestCase {
 
     public static String getDefAlg() {
         return defaultAlgorithm;
-    }
-
-    /**
-     * Test for <code>KeyAgreement</code> constructor Assertion: returns
-     * KeyAgreement object
-     */
-    public void testKeyAgreement() throws NoSuchAlgorithmException,
-            InvalidKeyException, IllegalStateException {
-        if (!DEFSupported) {
-            fail(NotSupportMsg);
-            return;
-        }
-        KeyAgreementSpi spi = new MyKeyAgreementSpi();
-        KeyAgreement keyA = new myKeyAgreement(spi, defaultProvider,
-                defaultAlgorithm);
-        assertEquals("Incorrect algorithm", keyA.getAlgorithm(),
-                defaultAlgorithm);
-        assertEquals("Incorrect provider", keyA.getProvider(), defaultProvider);
-        assertNull("Incorrect result", keyA.doPhase(null, true));
-        assertEquals("Incorrect result", keyA.generateSecret().length, 0);
-
-        keyA = new myKeyAgreement(null, null, null);
-        assertNull("Algorithm must be null", keyA.getAlgorithm());
-        assertNull("Provider must be null", keyA.getProvider());
-        try {
-            keyA.doPhase(null, true);
-            fail("NullPointerEXception must be thrown");
-        } catch (NullPointerException e) {
-        }
     }
 
     /**
@@ -484,7 +446,6 @@ public class KeyAgreement1Test extends TestCase {
             }
             try {
                 kAgs[i].init(privKey, dsa, random);
-                fail("InvalidAlgorithmParameterException must be throw");
                 fail("InvalidAlgorithmParameterException or InvalidKeyException must be throw");
             } catch (InvalidAlgorithmParameterException e) {
             } catch (InvalidKeyException e) {
@@ -584,19 +545,4 @@ public class KeyAgreement1Test extends TestCase {
         }
     }
 
-    public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyAgreement1Test.class);
-    }
-}
-
-/**
- * Additional class for KeyAgreement constructor verification
- */
-
-class myKeyAgreement extends KeyAgreement {
-
-    public myKeyAgreement(KeyAgreementSpi keyAgreeSpi, Provider provider,
-            String algorithm) {
-        super(keyAgreeSpi, provider, algorithm);
-    }
 }

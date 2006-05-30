@@ -22,12 +22,12 @@
 package org.apache.harmony.crypto.internal;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import javax.crypto.ShortBufferException;
 
-import junit.framework.TestCase;
 import org.apache.harmony.crypto.internal.NullCipherSpi;
-
+import junit.framework.TestCase;
 
 /**
  *
@@ -37,23 +37,17 @@ public class NullCipherSpiTest extends TestCase {
 
 	public void testEngineGetBlockSize() {
 		NullCipherSpi spi = new NullCipherSpi();
-		if (spi.engineGetBlockSize() != 1) {
-			fail("incorrect block size");
-		}
+        assertEquals("incorrect block size", 1, spi.engineGetBlockSize());
 	}
 
 	public void testEngineGetOutputSize() {
 		NullCipherSpi spi = new NullCipherSpi();
-		if (spi.engineGetOutputSize(100) != 100) {
-			fail("incorrect output size");
-		}
+        assertEquals("incorrect output size", 100, spi.engineGetOutputSize(100));
 	}
 
 	public void testEngineGetIV() {
 		NullCipherSpi spi = new NullCipherSpi();
-		if (spi.engineGetIV() != null) {
-			fail("incorrect IV");
-		}
+        assertTrue("Incorrect IV", Arrays.equals(spi.engineGetIV() , new byte[8]));
 	}
 
 	/*
@@ -64,76 +58,46 @@ public class NullCipherSpiTest extends TestCase {
 		byte[] b = {1,2,3,4,5,6,7,8,9};
 		byte[] b1 =  spi.engineUpdate(b, 3, 4);
 		for (int i = 0; i < 4; i++) {
-			if ( b[3+i] != b1[i] ) {
-				fail("incorrect update result");
-			}
+            assertEquals("incorrect update result", b[3+i], b1[i]);
 		}
 	}
 
 	/*
 	 * Class under test for int engineUpdate(byte[], int, int, byte[], int)
 	 */
-	public void testEngineUpdatebyteArrayintintbyteArrayint() {
+	public void testEngineUpdatebyteArrayintintbyteArrayint() throws Exception {
 		NullCipherSpi spi = new NullCipherSpi();
 		byte[] b = {1,2,3,4,5,6,7,8,9};
 		byte[] b1 =  new byte[10];
-		int n = -1;
-		try {
-			n =	spi.engineUpdate(b, 3, 4, b1, 5);
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		}
-		if (n != 4) {
-			fail("incorrect update result");
-		}
+		assertEquals("incorrect update result", 4, spi.engineUpdate(b, 3, 4, b1, 5));
 		for (int i = 0; i < 4; i++) {
-			if ( b[3+i] != b1[5+i] ) {
-				fail("incorrect update result");
-			}
+            assertEquals("incorrect update result", b[3+i], b1[5+i]);
 		}	
 	}
 
 	/*
 	 * Class under test for byte[] engineDoFinal(byte[], int, int)
 	 */
-	public void testEngineDoFinalbyteArrayintint() {
+	public void testEngineDoFinalbyteArrayintint() throws Exception {
 		NullCipherSpi spi = new NullCipherSpi();
 		byte[] b = {1,2,3,4,5,6,7,8,9};
 		byte[] b1 = null; 
-		try {
-			b1 = spi.engineDoFinal(b, 3, 4);
-		} catch (Exception e) {
-			fail(e.toString());
-		}
+		b1 = spi.engineDoFinal(b, 3, 4);
 		for (int i = 0; i < 4; i++) {
-			if ( b[3+i] != b1[i] ) {
-				fail("incorrect doFinal result");
-			}
+            assertEquals("incorrect doFinal result", b[3+i], b1[i]);
 		}
 	}
 
 	/*
 	 * Class under test for int engineDoFinal(byte[], int, int, byte[], int)
 	 */
-	public void testEngineDoFinalbyteArrayintintbyteArrayint() {
+	public void testEngineDoFinalbyteArrayintintbyteArrayint() throws Exception {
 		NullCipherSpi spi = new NullCipherSpi();
 		byte[] b = {1,2,3,4,5,6,7,8,9};
 		byte[] b1 =  new byte[10];
-		int n = -1;
-		try {
-			n =	spi.engineDoFinal(b, 3, 4, b1, 5);
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		} catch (Exception e) {
-			fail(e.toString());
-		}
-		if (n != 4) {
-			fail("incorrect doFinal result");
-		}
+        assertEquals("incorrect doFinal result", 4, spi.engineDoFinal(b, 3, 4, b1, 5));
 		for (int i = 0; i < 4; i++) {
-			if ( b[3+i] != b1[5+i] ) {
-				fail("incorrect doFinal result");
-			}
+            assertEquals("incorrect doFinal result", b[3+i], b1[5+i]);
 		}
 		
 	}
@@ -141,7 +105,7 @@ public class NullCipherSpiTest extends TestCase {
 	/*
 	 * Class under test for int engineUpdate(ByteBuffer, ByteBuffer)
 	 */
-	public void testEngineUpdateByteBufferByteBuffer() {
+	public void testEngineUpdateByteBufferByteBuffer() throws Exception {
 		NullCipherSpi spi = new NullCipherSpi();
 		byte[] b = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
@@ -152,35 +116,22 @@ public class NullCipherSpiTest extends TestCase {
 			spi.engineUpdate(null, outbuf);
 			fail("No expected NullPointerException");
 		} catch (NullPointerException e) {	
-		} catch (ShortBufferException e) {
-			fail(e.toString());
 		}
 		
 		try {
 			spi.engineUpdate(inbuf, null);
 			fail("No expected NullPointerException");
 		} catch (NullPointerException e) {	
-		} catch (ShortBufferException e) {
-			fail(e.toString());
 		}
 		
 		inbuf.get();
 		inbuf.get();
 		inbuf.get();
 		inbuf.get();
-		int result = 0;
-		try {
-			result = spi.engineUpdate(inbuf, outbuf);
-			if (result != b.length - 4) {
-				fail("incorrect result " + result);
-			}
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		}
+		int result = spi.engineUpdate(inbuf, outbuf);
+        assertEquals("incorrect result", b.length - 4, result);
 		for (int i = 0; i < result; i++) {
-			if (outbuf.get(i) != i + 4) {		
-				fail("incorrect outbuf");
-			}
+            assertEquals("incorrect outbuf", i + 4, outbuf.get(i));
 		}
 		
 		inbuf = ByteBuffer.wrap(b,0,b.length);
@@ -199,7 +150,7 @@ public class NullCipherSpiTest extends TestCase {
 	/*
 	 * Class under test for int engineDoFinal(ByteBuffer, ByteBuffer)
 	 */
-	public void testEngineDoFinalByteBufferByteBuffer() {
+	public void testEngineDoFinalByteBufferByteBuffer() throws Exception {
 		NullCipherSpi spi = new NullCipherSpi();
 		byte[] b = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
@@ -209,49 +160,24 @@ public class NullCipherSpiTest extends TestCase {
 		try {
 			spi.engineDoFinal(null, outbuf);
 			fail("No expected NullPointerException");
-		} catch (NullPointerException e) {	
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		} catch (javax.crypto.BadPaddingException e) {
-			fail(e.toString());			
-		} catch (javax.crypto.IllegalBlockSizeException e) {
-			fail(e.toString());			
+		} catch (NullPointerException e) {			
 		}
 		
 		try {
 			spi.engineDoFinal(inbuf, null);
 			fail("No expected NullPointerException");
-		} catch (NullPointerException e) {	
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		} catch (javax.crypto.BadPaddingException e) {
-			fail(e.toString());			
-		} catch (javax.crypto.IllegalBlockSizeException e) {
-			fail(e.toString());			
+		} catch (NullPointerException e) {			
 		}
 		
 		inbuf.get();
 		inbuf.get();
 		inbuf.get();
 		inbuf.get();
-		int result = 0;
-		try {
-			result = spi.engineDoFinal(inbuf, outbuf);
-			if (result != b.length - 4) {
-				fail("incorrect result " + result);
-			}
-		} catch (ShortBufferException e) {
-			fail(e.toString());
-		} catch (javax.crypto.BadPaddingException e) {
-			fail(e.toString());			
-		} catch (javax.crypto.IllegalBlockSizeException e) {
-			fail(e.toString());			
-		}
-		for (int i = 0; i < result; i++) {
-			if (outbuf.get(i) != i + 4) {		
-				fail("incorrect outbuf");
-			}
-		}
+		int result = spi.engineDoFinal(inbuf, outbuf);
+        assertEquals("incorrect result", b.length - 4, result);
+        for (int i = 0; i < result; i++) {
+            assertEquals("incorrect outbuf", i + 4, outbuf.get(i));
+        }
 		
 		inbuf = ByteBuffer.wrap(b,0,b.length);
 		outbuf = ByteBuffer.allocate(5);
@@ -263,51 +189,42 @@ public class NullCipherSpiTest extends TestCase {
 			spi.engineDoFinal(inbuf, outbuf);
 			fail("No expected ShortBufferException");
 		} catch (ShortBufferException e) {
-		} catch (javax.crypto.BadPaddingException e) {
-			fail(e.toString());			
-		} catch (javax.crypto.IllegalBlockSizeException e) {
-			fail(e.toString());			
 		}
 	}
 
 	/*
 	 * Class under test for byte[] engineWrap(Key)
 	 */
-	public void testEngineWrapKey() {
+	public void testEngineWrapKey() throws Exception {
 		NullCipherSpi spi = new NullCipherSpi();
 		try {
 			spi.engineWrap(null);
 			fail("No expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e) {
-		} catch (Exception e) {
-			fail(e.toString());
-		}	}
+		}	
+    }
 
 	/*
 	 * Class under test for Key engineUnwrap(byte[], String, int)
 	 */
-	public void testEngineUnwrapbyteArrayStringint() {
+	public void testEngineUnwrapbyteArrayStringint() throws Exception {
 		NullCipherSpi spi = new NullCipherSpi();
 		try {
 			spi.engineUnwrap(new byte[3], "", 10);
 			fail("No expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e) {
-		} catch (Exception e) {
-			fail(e.toString());
 		} 
 	}
 
 	/*
 	 * Class under test for int engineGetKeySize(Key)
 	 */
-	public void testEngineGetKeySize() {
+	public void testEngineGetKeySize() throws Exception {
 		NullCipherSpi spi = new NullCipherSpi();
 		try {
 			spi.engineGetKeySize(null);
 			fail("No expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e) {
-		} catch (Exception e) {
-			fail(e.toString());
 		} 
 	}
 

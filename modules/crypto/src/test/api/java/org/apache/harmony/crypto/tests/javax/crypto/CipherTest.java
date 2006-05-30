@@ -31,6 +31,7 @@ import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.ShortBufferException;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
@@ -38,6 +39,21 @@ import tests.support.resource.Support_Resources;
 
 public class CipherTest extends junit.framework.TestCase {
 
+    static Key cipherKey;
+    static final String algorithm = "DESede";
+    static final int keyLen = 168;
+    
+    static {
+        try {
+            KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+            kg.init(keyLen, new SecureRandom());
+            cipherKey = kg.generateKey();
+        } catch (Exception e) {
+            fail("No key " + e);
+        }
+    }
+    
+    
     /**
      * @tests javax.crypto.Cipher#getInstance(java.lang.String)
      */
@@ -148,18 +164,9 @@ public class CipherTest extends junit.framework.TestCase {
      * @tests javax.crypto.Cipher#getOutputSize(int)
      */
     public void test_getOutputSizeI() throws Exception {
-        final String algorithm = "DESede";
-        final int keyLen = 168;
 
-        Key cipherKey = null;
         SecureRandom sr = new SecureRandom();
-        Cipher cipher = null;
-
-        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-        kg.init(keyLen, new SecureRandom());
-        cipherKey = kg.generateKey();
-
-        cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
+        Cipher cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, cipherKey, sr);
 
         // A 25-byte input could result in at least 4 8-byte blocks
@@ -172,99 +179,10 @@ public class CipherTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests javax.crypto.Cipher#getIV()
-     * @tests javax.crypto.Cipher#init(int, java.security.Key,
-     *        java.security.AlgorithmParameters)
-     */
-    public void test_getIV() throws Exception {
-        /*
-         * If this test is changed, implement the following:
-         * test_initILjava_security_KeyLjava_security_AlgorithmParameters()
-         */
-        final String algorithm = "DESede";
-        final int keyLen = 168;
-
-        Key cipherKey = null;
-        SecureRandom sr = new SecureRandom();
-        Cipher cipher = null;
-
-        byte[] iv = null;
-
-        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-        kg.init(keyLen, new SecureRandom());
-
-        cipherKey = kg.generateKey();
-
-        iv = new byte[8];
-        sr.nextBytes(iv);
-        AlgorithmParameters ap = AlgorithmParameters.getInstance(algorithm);
-        ap.init(iv, "RAW");
-
-        cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ap);
-
-        byte[] cipherIV = cipher.getIV();
-
-        assertTrue("IVs differ", Arrays.equals(cipherIV, iv));
-    }
-
-    /**
-     * @tests javax.crypto.Cipher#getParameters()
-     * @tests javax.crypto.Cipher#init(int, java.security.Key,
-     *        java.security.AlgorithmParameters, java.security.SecureRandom)
-     */
-    public void test_getParameters() throws Exception {
-
-        /*
-         * If this test is changed, implement the following:
-         * test_initILjava_security_KeyLjava_security_AlgorithmParametersLjava_security_SecureRandom()
-         */
-        final String algorithm = "DESede";
-        final int keyLen = 168;
-
-        Key cipherKey = null;
-        SecureRandom sr = new SecureRandom();
-        Cipher cipher = null;
-
-        byte[] apEncoding = null;
-
-        byte[] iv = null;
-
-        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-        kg.init(keyLen, new SecureRandom());
-        cipherKey = kg.generateKey();
-
-        iv = new byte[8];
-        sr.nextBytes(iv);
-
-        AlgorithmParameters ap = AlgorithmParameters.getInstance("DESede");
-        ap.init(iv, "RAW");
-        apEncoding = ap.getEncoded("ASN.1");
-
-        cipher = Cipher.getInstance(algorithm + "/CBC/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, cipherKey, ap, sr);
-
-        byte[] cipherParmsEnc = cipher.getParameters().getEncoded("ASN.1");
-        assertTrue("Parameters differ", Arrays.equals(apEncoding,
-                cipherParmsEnc));
-    }
-
-    /**
      * @tests javax.crypto.Cipher#init(int, java.security.Key)
      */
     public void test_initILjava_security_Key() throws Exception {
-        final String algorithm = "DESede";
-        final int keyLen = 168;
-
-        Key cipherKey = null;
-        Cipher cipher = null;
-
-        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-        kg.init(keyLen, new SecureRandom());
-        cipherKey = kg.generateKey();
-
-        cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
-
+        Cipher cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, cipherKey);
     }
 
@@ -274,20 +192,8 @@ public class CipherTest extends junit.framework.TestCase {
      */
     public void test_initILjava_security_KeyLjava_security_SecureRandom()
             throws Exception {
-
-        final String algorithm = "DESede";
-        final int keyLen = 168;
-
-        Key cipherKey = null;
         SecureRandom sr = new SecureRandom();
-        Cipher cipher = null;
-
-        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-        kg.init(keyLen, new SecureRandom());
-        cipherKey = kg.generateKey();
-
-        cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
-
+        Cipher cipher = Cipher.getInstance(algorithm + "/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, cipherKey, sr);
     }
 
@@ -297,20 +203,11 @@ public class CipherTest extends junit.framework.TestCase {
      */
     public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpec()
             throws Exception {
-
-        final String algorithm = "DESede";
-        final int keyLen = 168;
-
-        Key cipherKey = null;
         SecureRandom sr = new SecureRandom();
         Cipher cipher = null;
 
         byte[] iv = null;
         AlgorithmParameterSpec ivAVP = null;
-
-        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-        kg.init(keyLen, new SecureRandom());
-        cipherKey = kg.generateKey();
 
         iv = new byte[8];
         sr.nextBytes(iv);
@@ -332,19 +229,11 @@ public class CipherTest extends junit.framework.TestCase {
      */
     public void test_initILjava_security_KeyLjava_security_spec_AlgorithmParameterSpecLjava_security_SecureRandom()
             throws Exception {
-        final String algorithm = "DESede";
-        final int keyLen = 168;
-
-        Key cipherKey = null;
         SecureRandom sr = new SecureRandom();
         Cipher cipher = null;
 
         byte[] iv = null;
         AlgorithmParameterSpec ivAVP = null;
-
-        KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-        kg.init(keyLen, new SecureRandom());
-        cipherKey = kg.generateKey();
 
         iv = new byte[8];
         sr.nextBytes(iv);
@@ -471,4 +360,78 @@ public class CipherTest extends junit.framework.TestCase {
             return null;
         }
     }
+    
+    public void testGetParameters() throws Exception {
+        Cipher c = Cipher.getInstance("DES");
+        assertNull(c.getParameters());
+    }
+    
+    /*
+     * Class under test for int update(byte[], int, int, byte[], int)
+     */
+    public void testUpdatebyteArrayintintbyteArrayint() throws Exception {
+        Cipher c = Cipher.getInstance("DESede");
+        c.init(Cipher.ENCRYPT_MODE, cipherKey);
+        byte[] b = {1,2,3,4,5,6,7,8,9,10};
+        byte[] b1 = new byte[6];
+        try {
+            c.update(b, 0, 10, b1, 5);
+            fail("No expected ShortBufferException");
+        } catch (ShortBufferException e) {
+        }
+    }
+    
+    /*
+     * Class under test for int doFinal(byte[], int, int, byte[], int)
+     */
+    public void testDoFinalbyteArrayintintbyteArrayint() throws Exception {
+        Cipher c = Cipher.getInstance("DESede");
+        c.init(Cipher.ENCRYPT_MODE, cipherKey);
+        byte[] b = {1,2,3,4,5,6,7,8,9,10};
+        byte[] b1 = new byte[6];
+    // FIXME Failed on BC provider
+    //    try {
+    //        c.doFinal(b, 3, 6, b1, 5);
+    //        fail("No expected ShortBufferException");
+    //    } catch (ShortBufferException e) {
+    //    }
+    }
+    
+    public void testGetMaxAllowedKeyLength() throws NoSuchAlgorithmException {
+        try {
+            Cipher.getMaxAllowedKeyLength(null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+        try {
+            Cipher.getMaxAllowedKeyLength("//CBC/PKCS5Paddin");
+            fail("No expected NoSuchAlgorithmException");
+        } catch (NoSuchAlgorithmException e) {
+        }
+        try {
+            Cipher.getMaxAllowedKeyLength("/DES/CBC/PKCS5Paddin/1");
+            fail("No expected NoSuchAlgorithmException");
+        } catch (NoSuchAlgorithmException e) {
+        }
+    }
+
+    public void testGetMaxAllowedParameterSpec()
+            throws NoSuchAlgorithmException {
+        try {
+            Cipher.getMaxAllowedParameterSpec(null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+        try {
+            Cipher.getMaxAllowedParameterSpec("/DES//PKCS5Paddin");
+            fail("No expected NoSuchAlgorithmException");
+        } catch (NoSuchAlgorithmException e) {
+        }
+        try {
+            Cipher.getMaxAllowedParameterSpec("/DES/CBC/ /1");
+            fail("No expected NoSuchAlgorithmException");
+        } catch (NoSuchAlgorithmException e) {
+        }
+    }
+    
 }

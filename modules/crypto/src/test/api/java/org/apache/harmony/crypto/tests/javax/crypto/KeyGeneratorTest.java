@@ -43,16 +43,7 @@ import junit.framework.TestCase;
  * 
  */
 
-public class KeyGenerator1Test extends TestCase {
-
-    /**
-     * Constructor for KeyGenerator1Test.
-     * 
-     * @param arg0
-     */
-    public KeyGenerator1Test(String arg0) {
-        super(arg0);
-    }
+public class KeyGeneratorTest extends TestCase {
     
     public static final String srvKeyGenerator = "KeyGenerator";
     
@@ -438,9 +429,6 @@ public class KeyGenerator1Test extends TestCase {
         }
     }
     
-    public static void main(String args[]) {
-        junit.textui.TestRunner.run(KeyGenerator1Test.class);
-    }     
 }
 
 /**

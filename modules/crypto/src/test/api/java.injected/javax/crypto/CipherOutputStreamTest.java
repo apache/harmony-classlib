@@ -52,46 +52,33 @@ public class CipherOutputStreamTest extends TestCase {
      * CipherOutputStream uses NullCipher if Cipher is not specified
      * in the constructor.
      */
-    public void testCipherOutputStream() {
-        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+    public void testCipherOutputStream() throws Exception {
+        byte[] data = new byte[] { -127, -100, -50, -10, -1, 0, 1, 10, 50, 127 };
         TestOutputStream tos = new TestOutputStream();
         CipherOutputStream cos = new CipherOutputStream(tos);
-
-        try {
-            cos.write(data);
-            cos.flush();
-            byte[] result = tos.toByteArray();
-            if (!Arrays.equals(result, data)) {
-                    fail("NullCipher should be used "
-                            + "if Cipher is not specified.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
+        cos.write(data);
+        cos.flush();
+        byte[] result = tos.toByteArray();
+        if (!Arrays.equals(result, data)) {
+            fail("NullCipher should be used " + "if Cipher is not specified.");
         }
     }
 
     /**
-     * write(int b) method testing. Tests that method writes correct values
-     * to the underlying output stream.
+     * write(int b) method testing. Tests that method writes correct values to
+     * the underlying output stream.
      */
-    public void testWrite1() {
-        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+    public void testWrite1() throws Exception {
+        byte[] data = new byte[] { -127, -100, -50, -10, -1, 0, 1, 10, 50, 127 };
         TestOutputStream tos = new TestOutputStream();
         CipherOutputStream cos = new CipherOutputStream(tos, new NullCipher());
-
-        try {
-            for (int i=0; i<data.length; i++) {
-                cos.write(data[i]);
-            }
-            cos.flush();
-            byte[] result = tos.toByteArray();
-            if (!Arrays.equals(result, data)) {
-                    fail("CipherOutputStream wrote incorrect data.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
+        for (int i = 0; i < data.length; i++) {
+            cos.write(data[i]);
+        }
+        cos.flush();
+        byte[] result = tos.toByteArray();
+        if (!Arrays.equals(result, data)) {
+            fail("CipherOutputStream wrote incorrect data.");
         }
     }
 
@@ -99,44 +86,32 @@ public class CipherOutputStreamTest extends TestCase {
      * write(byte[] b) method testing. Tests that method writes correct values
      * to the underlying output stream.
      */
-    public void testWrite2() {
-        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+    public void testWrite2() throws Exception {
+        byte[] data = new byte[] { -127, -100, -50, -10, -1, 0, 1, 10, 50, 127 };
         TestOutputStream tos = new TestOutputStream();
         CipherOutputStream cos = new CipherOutputStream(tos, new NullCipher());
-
-        try {
-            cos.write(data);
-            cos.flush();
-            byte[] result = tos.toByteArray();
-            if (!Arrays.equals(result, data)) {
-                    fail("CipherOutputStream wrote incorrect data.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
+        cos.write(data);
+        cos.flush();
+        byte[] result = tos.toByteArray();
+        if (!Arrays.equals(result, data)) {
+            fail("CipherOutputStream wrote incorrect data.");
         }
     }
 
     /**
      * write(byte[] b, int off, int len) method testing.
      */
-    public void testWrite3() {
-        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+    public void testWrite3() throws Exception {
+        byte[] data = new byte[] { -127, -100, -50, -10, -1, 0, 1, 10, 50, 127 };
         TestOutputStream tos = new TestOutputStream();
         CipherOutputStream cos = new CipherOutputStream(tos, new NullCipher());
-
-        try {
-            for (int i=0; i<data.length; i++) {
-                cos.write(data, i, 1);
-            }
-            cos.flush();
-            byte[] result = tos.toByteArray();
-            if (!Arrays.equals(result, data)) {
-                    fail("CipherOutputStream wrote incorrect data.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
+        for (int i = 0; i < data.length; i++) {
+            cos.write(data, i, 1);
+        }
+        cos.flush();
+        byte[] result = tos.toByteArray();
+        if (!Arrays.equals(result, data)) {
+            fail("CipherOutputStream wrote incorrect data.");
         }
     }
 
@@ -144,54 +119,34 @@ public class CipherOutputStreamTest extends TestCase {
      * flush() method testing. Tests that method flushes the data to the
      * underlying output stream.
      */
-    public void testFlush() {
-        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+    public void testFlush() throws Exception {
+        byte[] data = new byte[] { -127, -100, -50, -10, -1, 0, 1, 10, 50, 127 };
         TestOutputStream tos = new TestOutputStream();
         CipherOutputStream cos = new CipherOutputStream(tos);
-
-        try {
-            cos.write(data);
-            cos.flush();
-            byte[] result = tos.toByteArray();
-            if (!Arrays.equals(result, data)) {
-                    fail("CipherOutputStream did not flush the data.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
+        cos.write(data);
+        cos.flush();
+        byte[] result = tos.toByteArray();
+        if (!Arrays.equals(result, data)) {
+            fail("CipherOutputStream did not flush the data.");
         }
     }
 
     /**
-     * close() method testing. Tests that the method calls the close()
-     * method of the underlying input stream.
+     * close() method testing. Tests that the method calls the close() method of
+     * the underlying input stream.
      */
-    public void testClose() {
-        byte[] data = new byte[] {-127, -100, -50, -10, -1, 0, 1, 10, 50, 127};
+    public void testClose() throws Exception {
+        byte[] data = new byte[] { -127, -100, -50, -10, -1, 0, 1, 10, 50, 127 };
         TestOutputStream tos = new TestOutputStream();
         CipherOutputStream cos = new CipherOutputStream(tos);
-
-        try {
-            cos.write(data);
-            cos.close();
-            byte[] result = tos.toByteArray();
-            if (!Arrays.equals(result, data)) {
-                    fail("CipherOutputStream did not flush the data.");
-            }
-            assertTrue("The close() method should call the close() method "
-                        + "of its underlying output stream.", tos.wasClosed());
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected IOException was thrown.");
+        cos.write(data);
+        cos.close();
+        byte[] result = tos.toByteArray();
+        if (!Arrays.equals(result, data)) {
+            fail("CipherOutputStream did not flush the data.");
         }
-    }
-
-    public static Test suite() {
-        return new TestSuite(CipherOutputStreamTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
+        assertTrue("The close() method should call the close() method "
+                + "of its underlying output stream.", tos.wasClosed());
     }
 }
 

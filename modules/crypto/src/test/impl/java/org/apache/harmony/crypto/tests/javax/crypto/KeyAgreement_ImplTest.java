@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package javax.crypto;
+package org.apache.harmony.crypto.tests.javax.crypto;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -31,6 +31,9 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
+
+import javax.crypto.KeyAgreement;
+import javax.crypto.ShortBufferException;
 
 import org.apache.harmony.security.SpiEngUtils;
 import junit.framework.TestCase;
@@ -77,15 +80,6 @@ public class KeyAgreement_ImplTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         Security.removeProvider(mProv.getName());
-    }
-
-    /**
-     * Constructor for SecurityManagerFactoryTest2.
-     * 
-     * @param arg0
-     */
-    public KeyAgreement_ImplTest(String arg0) {
-        super(arg0);
     }
     
     protected void checkResult(KeyAgreement keyAgr) 

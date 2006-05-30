@@ -74,7 +74,7 @@ public class NullCipherSpi extends CipherSpi {
      * See javax.crypto.CipherSpi#engineGetIV()
      */
     public byte[] engineGetIV() {
-        return null;
+        return new byte[8]; // compatible with RI
     }
 
     /**
