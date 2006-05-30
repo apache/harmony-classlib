@@ -190,8 +190,13 @@ public final class DerOutputStream extends BerOutputStream {
 
         int seqLen = 0;
         for (int i = 0; i < type.length; i++) {
+            // check optional types
             if (values[i] == null) {
-                continue; //FIXME raise exception if non-optional data is missing
+                if (sequence.OPTIONAL[i]) {
+                    continue;
+                } else {
+                    throw new RuntimeException();//FIXME type & message
+                }
             }
 
             if (sequence.DEFAULT[i] != null

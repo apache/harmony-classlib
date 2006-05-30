@@ -102,19 +102,19 @@ public class SequenceTest extends TestCase {
                 // format: object to encode / byte array 
 
                 // sequence : all values are default
-                new Object[] { new AppClass(Boolean.TRUE, defaultList),
+                { new AppClass(Boolean.TRUE, defaultList),
                         new byte[] { 0x30, 0x00 } },
 
                 // sequence : true, default
-                new Object[] { new AppClass(Boolean.FALSE, defaultList),
+                { new AppClass(Boolean.FALSE, defaultList),
                         new byte[] { 0x30, 0x03, 0x01, 0x01, 0x00 } },
 
                 // sequence = default, empty sequence
-                new Object[] { new AppClass(Boolean.TRUE, new ArrayList()),
+                { new AppClass(Boolean.TRUE, new ArrayList()),
                         new byte[] { 0x30, 0x02, 0x30, 0x00 } },
 
                 // sequence = false, empty sequence
-                new Object[] { new AppClass(Boolean.FALSE, new ArrayList()),
+                { new AppClass(Boolean.FALSE, new ArrayList()),
                         new byte[] { 0x30, 0x05, 0x01, 0x01, 0x00, 0x30, 0x00 } },
 
         //TODO add testcase for another ASN.1 type` 
@@ -193,6 +193,9 @@ public class SequenceTest extends TestCase {
         }
     }
 
+    /**
+     * Tests encoding default fields 
+     */
     public void testEncodeDefault() throws IOException {
 
         //
@@ -229,5 +232,46 @@ public class SequenceTest extends TestCase {
 
         encoded = s.encode(new Object[] { new byte[] { 0x01 } });
         assertTrue("Encoded integer:", Arrays.equals(expectedArray, encoded));
+    }
+    
+    /**
+     * Tests encoding optional fields 
+     */
+    public void testEncodeOptional() throws IOException {
+
+        //
+        // Test not optional
+        //
+        ASN1Sequence s = new ASN1Sequence(new ASN1Type[] { ASN1Boolean
+                .getInstance() }) {
+
+            protected void getValues(Object object, Object[] values) {
+                values[0] = ((Object[]) object)[0];
+            }
+        };
+
+        try {
+            s.encode(new Object[] { null });
+            fail("No expected RuntimeException"); 
+        } catch (RuntimeException e) {
+        }
+
+        //
+        // Test optional
+        //
+        s = new ASN1Sequence(new ASN1Type[] { ASN1Boolean.getInstance() }) {
+            {
+                setOptional(0);
+            }
+
+            protected void getValues(Object object, Object[] values) {
+                values[0] = ((Object[]) object)[0];
+            }
+        };
+
+        byte[] expectedArray = new byte[] { 0x30, 0x00 };
+
+        byte[] encoded = s.encode(new Object[] { null });
+        assertTrue("Encoded boolean:", Arrays.equals(expectedArray, encoded));
     }
 }
