@@ -773,6 +773,229 @@ public class Arrays {
 			array[i] = value;
 	}
 
+    public static int hashCode(boolean[] array) {
+        if (array == null) {
+            return 0;
+        }
+        
+        int hashCode = 1;
+                
+        for (int i = 0; i < array.length; i++) {
+            
+            //1231, 1237 are hash code values for boolean value
+            hashCode = 31 * hashCode + (array[i]? 1231: 1237);
+        }
+        
+        return hashCode;
+    }
+    
+    public static int hashCode(int[] array) {
+        if (array == null) {
+            return 0;
+        }
+                
+        int hashCode = 1;
+        
+        for (int i = 0; i < array.length; i++) {
+            
+            //the hash code value for integer value is integer value itself
+            hashCode = 31 * hashCode + array[i];
+        }
+        
+        return hashCode;
+    }
+        
+    public static int hashCode(short[] array) {
+        if (array == null) {
+            return 0;
+        }
+        
+        int hashCode = 1;
+        
+        for (int i = 0; i < array.length; i++) {
+            
+            //the hash code value for short value is its integer value
+            hashCode = 31 * hashCode + array[i];
+        }
+        
+        return hashCode;
+    }
+    
+    public static int hashCode(char[] array) {
+        if (array == null) {
+            return 0;
+        }
+        
+        int hashCode = 1;
+        
+        for (int i = 0; i < array.length; i++) {
+            
+            //the hash code value for char value is its integer value
+            hashCode = 31 * hashCode + array[i];
+        }
+        
+        return hashCode;
+    }
+    
+    public static int hashCode(byte[] array) {
+        if (array == null) {
+            return 0;
+        }
+        
+        int hashCode = 1;
+        
+        for (int i = 0; i < array.length; i++) {
+            
+            //the hash code value for byte value is its integer value
+            hashCode = 31 * hashCode + array[i];
+        }
+        
+        return hashCode;
+    }
+
+    public static int hashCode(long[] array) {
+        if (array == null) {
+            return 0;
+        }
+        
+        int hashCode = 1;
+        
+        for (int i = 0; i < array.length; i++) {
+            long elementValue = array[i];
+            
+            /*
+             * the hash code value for long value is 
+             * (int) (value ^ (value >>> 32))
+             */
+            hashCode = 31 * hashCode + 
+                    (int) (elementValue ^ (elementValue >>> 32));
+        }
+        
+        return hashCode;
+    }
+    
+    public static int hashCode(float[] array) {
+        if (array == null) {
+            return 0;
+        }
+        
+        int hashCode = 1;
+        
+        for (int i = 0; i < array.length; i++) {
+
+            /*
+             * the hash code value for float value is 
+             * Float.floatToIntBits(value)
+             */
+            hashCode = 31 * hashCode + Float.floatToIntBits(array[i]);                    
+        }
+        
+        return hashCode;
+    }
+
+    public static int hashCode(double[] array) {
+        if (array == null) {
+            return 0;
+        }
+        
+        int hashCode = 1;
+        
+        for (int i = 0; i < array.length; i++) {
+            long v = Double.doubleToLongBits(array[i]);
+
+            /*
+             * the hash code value for double value is 
+             * (int) (v ^ (v >>> 32)) where 
+             * v = Double.doubleToLongBits(value)
+             */
+            hashCode = 31 * hashCode + (int) (v ^ (v >>> 32));                    
+        }
+        
+        return hashCode;
+    }
+    
+    public static int hashCode(Object[] array) {
+        if (array == null) {
+            return 0;
+        }
+        
+        int hashCode = 1;
+        
+        for (int i = 0; i < array.length; i++) {
+            int elementHashCode;
+            
+            if (array[i] == null) {
+                elementHashCode = 0;
+            } else {
+                elementHashCode = (array[i]).hashCode();
+            }
+            
+            hashCode = 31 * hashCode + elementHashCode;                    
+        }
+        
+        return hashCode;
+    }
+    
+    public static int deepHashCode(Object[] array) {
+        if (array == null) {
+            return 0;
+        }
+
+        int hashCode = 1;
+                
+        for (int i = 0; i < array.length; i++) {
+            int elementHashCode = deepHashCodeElement(array[i]);
+                        
+            hashCode = 31 * hashCode + elementHashCode;
+        }
+        
+        return hashCode;
+    }
+    
+    private static int deepHashCodeElement(Object element) {
+        Class cl; 
+        
+        if (element == null) {
+            return 0;
+        } 
+        
+        cl = element.getClass().getComponentType();
+        
+        if (cl == null) {
+            return element.hashCode();
+        }
+                
+        /*
+         * element is an array
+         */
+        if (!cl.isPrimitive()) {
+            return deepHashCode((Object[]) element);
+        }
+                     
+        if (cl.equals(int.class)) {
+            return hashCode((int []) element);
+        }
+        if (cl.equals(char.class)) {
+            return hashCode((char []) element);
+        }
+        if (cl.equals(boolean.class)) {
+            return hashCode((boolean []) element);
+        }
+        if (cl.equals(byte.class)) {
+            return hashCode((byte []) element);
+        }
+        if (cl.equals(long.class)) {
+            return hashCode((long []) element);
+        }
+        if (cl.equals(float.class)) {
+            return hashCode((float []) element);
+        }
+        if (cl.equals(double.class)) {
+            return hashCode((double []) element);
+        }
+        return hashCode((short []) element);
+    }
+    
 	/**
 	 * Compares the two arrays.
 	 * 
@@ -982,6 +1205,76 @@ public class Arrays {
 		return true;
 	}
 
+    public static boolean deepEquals(Object[] array1, Object[] array2) {
+        if (array1 == array2) {
+            return true;
+        }
+        if (array1 == null || array2 == null || array1.length != array2.length) {
+            return false;
+        }
+        for (int i = 0; i < array1.length; i++) {
+            Object e1 = array1[i], e2 = array2[i];
+            
+            if (!deepEqualsElements(e1, e2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private static boolean deepEqualsElements(Object e1, Object e2) {
+        Class cl1, cl2;
+        
+        if (e1 == e2) {
+            return true;
+        }
+        
+        if (e1 == null || e2 == null) {
+            return false;
+        }
+                
+        cl1 = e1.getClass().getComponentType();
+        cl2 = e2.getClass().getComponentType();
+        
+        if (cl1 != cl2) {
+            return false;
+        }
+            
+        if (cl1 == null) {
+            return e1.equals(e2);
+        }
+                
+        /*
+         * compare as arrays
+         */
+        if (!cl1.isPrimitive()) {
+            return deepEquals((Object[]) e1, (Object[]) e2);
+        }
+        
+        if (cl1.equals(int.class)) {
+            return equals((int []) e1, (int []) e2);
+        }
+        if (cl1.equals(char.class)) {
+            return equals((char []) e1, (char []) e2);
+        }
+        if (cl1.equals(boolean.class)) {
+            return equals((boolean []) e1, (boolean []) e2);
+        }
+        if (cl1.equals(byte.class)) {
+            return equals((byte []) e1, (byte []) e2);
+        }
+        if (cl1.equals(long.class)) {
+            return equals((long []) e1, (long []) e2);
+        }
+        if (cl1.equals(float.class)) {
+            return equals((float []) e1, (float []) e2);
+        }
+        if (cl1.equals(double.class)) {
+            return equals((double []) e1, (double []) e2);
+        }   
+        return equals((short []) e1, (short []) e2);                 
+    }
+    
 	private static boolean lessThan(double double1, double double2) {
 		long d1, d2;
 		long NaNbits = Double.doubleToLongBits(Double.NaN);
@@ -1848,7 +2141,7 @@ public class Arrays {
 	 *                <code>end > array.size()</code>
 	 */
 	public static <T> void sort(T[] array, int start, int end,
-			Comparator<T> comparator) {
+            Comparator<? super T> comparator) {
 		if (array == null) {
 			throw new NullPointerException();
 		}
@@ -1862,7 +2155,7 @@ public class Arrays {
 	}
 
 	private static <T> void sort(int start, int end, T[] array,
-			Comparator<T> comparator) {
+            Comparator<? super T> comparator) {
         if (comparator == null) {
             sort(start, end, array);
             return;
