@@ -85,7 +85,7 @@ public class PropertyEditorSupport implements PropertyEditor {
      * @com.intel.drl.spec_ref
      */
     public String getAsText() {
-        return newValue == null ? "null" : (String) newValue;
+        return newValue == null ? "null" : newValue.toString();
     }
 
     /**

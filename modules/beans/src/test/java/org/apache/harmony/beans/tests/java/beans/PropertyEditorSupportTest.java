@@ -41,11 +41,15 @@ public class PropertyEditorSupportTest extends TestCase {
 		assertNull(support.getTags());
 		assertFalse(support.supportsCustomEditor());
 		assertFalse(support.isPaintable());
-	}
+
+        Object value = new String[] { "java.awt.Color.orange" };
+        support.setValue(value);
+        assertEquals(value.toString(), support.getAsText());
+    }
 
 	/*
-	 * Class under test for void PropertyEditorSupport(Object)
-	 */
+     * Class under test for void PropertyEditorSupport(Object)
+     */
 	public void testPropertyEditorSupportObject() {
 		MockSource source = new MockSource();
 		MockPropertyEditorSupport support = new MockPropertyEditorSupport(
@@ -58,11 +62,11 @@ public class PropertyEditorSupportTest extends TestCase {
 		assertNull(support.getTags());
 		assertFalse(support.supportsCustomEditor());
 		assertFalse(support.isPaintable());
-	}
+    }
 
 	/*
-	 * source null
-	 */
+     * source null
+     */
 	public void testPropertyEditorSupportObject_null() {
 		try {
 			MockPropertyEditorSupport support = new MockPropertyEditorSupport(
