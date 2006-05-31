@@ -750,9 +750,9 @@ public class NamingManager {
 
         // set CPE property of the env
         if (cpe.getEnvironment() == null) {
-            cpe.setEnvironment(new Hashtable());
+            cpe.setEnvironment(new Hashtable<String, CannotProceedException>());
         }
-        cpe.getEnvironment().put(CPE, cpe);
+        ((Hashtable<String, CannotProceedException>)cpe.getEnvironment()).put(CPE, cpe);
 
         // if resolved object is null
         if (null == cpe.getResolvedObj()) {
@@ -792,9 +792,8 @@ public class NamingManager {
     private static Class classForName(final String className)
         throws ClassNotFoundException {
 
-        Class cls =
-            (Class) AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        Class cls = AccessController.doPrivileged(new PrivilegedAction<Class>() {
+            public Class run() {
                     // try thread context class loader first
     try {
                     return Class.forName(

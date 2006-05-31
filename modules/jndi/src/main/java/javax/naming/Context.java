@@ -602,7 +602,7 @@ public interface Context {
      *          this context, which should not be modified
      * @throws NamingException if an error occurs.
      */
-    public Hashtable getEnvironment() throws NamingException;
+    public Hashtable<?, ?> getEnvironment() throws NamingException;
 
     /**
      * Returns the complete name as a string for this context in the 
@@ -674,7 +674,7 @@ public interface Context {
      *          specified name excluding any bindings for any subcontexts
      * @throws NamingException if an error occurs.
      */
-    public NamingEnumeration list(String s) throws NamingException;
+    public NamingEnumeration<NameClassPair> list(String s) throws NamingException;
 
     /**
      * Returns an enumeration of the bindings of the context for the specified
@@ -688,7 +688,7 @@ public interface Context {
      *          name excluding any bindings for any subcontexts
      * @throws NamingException if an error occurs.
      */
-    public NamingEnumeration listBindings(Name n) throws NamingException;
+    public NamingEnumeration<Binding> listBindings(Name n) throws NamingException;
 
     /**
      * Returns an enumeration of the bindings of the context for the specified
@@ -702,7 +702,7 @@ public interface Context {
      *          name excluding any bindings for any subcontexts
      * @throws NamingException if an error occurs.
      */
-    public NamingEnumeration listBindings(String s) throws NamingException;
+    public NamingEnumeration<Binding> listBindings(String s) throws NamingException;
 
     /**
      * Returns the object bound to the specified name in this context. If the

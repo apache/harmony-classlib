@@ -203,7 +203,7 @@ public class Reference implements Cloneable, Serializable {
      *  
      * @return              an enumeration of all the addresses
      */
-    public Enumeration getAll() {
+    public Enumeration<RefAddr> getAll() {
         return addrs.elements();
     }
 

@@ -89,7 +89,7 @@ public abstract class ReferralException extends NamingException {
      *          following a referral exception. This should not return null.
      * @throws  NamingException
      */
-    public abstract Context getReferralContext(Hashtable h) throws NamingException;
+    public abstract Context getReferralContext(Hashtable<?, ?> h) throws NamingException;
 
     /**
      * Returns the information relating to the exception. This should

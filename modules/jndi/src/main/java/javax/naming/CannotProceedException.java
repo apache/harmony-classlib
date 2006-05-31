@@ -102,7 +102,7 @@ public class CannotProceedException extends NamingException {
      * be manipulated using <code>getEnvironment</code> 
      * and <code>setEnvironment methods</code>. 
      */
-    protected Hashtable environment = null;
+    protected Hashtable<?, ?> environment = null;
 
     /**
      * Contains a composite name that is the unresolved part of the new name 
@@ -174,7 +174,7 @@ public class CannotProceedException extends NamingException {
      * @return the value of the protected field <code>environment</code> 
      * which may be null.
      */
-    public Hashtable getEnvironment() {
+    public Hashtable<?, ?> getEnvironment() {
         return environment;
     }
 
@@ -213,7 +213,7 @@ public class CannotProceedException extends NamingException {
      * 
      * @param hashtable the new environment to set.
      */
-    public void setEnvironment(Hashtable hashtable) {
+    public void setEnvironment(Hashtable<?, ?> hashtable) {
         environment = hashtable;
     }
 

@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import javax.naming.NamingException;
  * more elements or on closing the <code>Enumeration</code>.
  * 
  */
-public interface NamingEnumeration extends Enumeration {
+public interface NamingEnumeration<T> extends Enumeration<T> {
 
     /*
      * -------------------------------------------------------------------
@@ -41,7 +41,7 @@ public interface NamingEnumeration extends Enumeration {
      * @exception NamingException if a naming error occurs
      * @exception java.util.NoSuchElementException when no more elements exist.
      */
-    public Object next() throws NamingException;
+    public T next() throws NamingException;
 
     /**
      * Check for more elements.

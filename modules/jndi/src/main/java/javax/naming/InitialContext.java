@@ -186,7 +186,7 @@ public class InitialContext implements Context {
      *                          the context 
      * @throws NamingException  If failed to create an InitialContext.
      */
-    private void internalInit(Hashtable env) throws NamingException {
+    private void internalInit(Hashtable<?, ?> env) throws NamingException {
 
         // 1. Read the environment parameter used to create this Context
         if (null == env) {
@@ -232,7 +232,7 @@ public class InitialContext implements Context {
      * @throws NamingException  If naming problems are encountered during
      *                          initialization of these fields.
      */
-    protected void init(Hashtable env) throws NamingException {
+    protected void init(Hashtable<?, ?> env) throws NamingException {
         this.internalInit(env);
     }
 
