@@ -156,14 +156,11 @@ public class Timestamp extends Date {
 	 * false if the object is not a Timestamp object or if the object is a Timestamp but
 	 * represents a different instant in time
 	 */
-    public boolean equals( Object theObject ) {
-    	Timestamp theTimestamp;
-    	try {
-    		theTimestamp = (Timestamp) theObject;
-    	} catch (ClassCastException e) {
-    		return false;
-    	} // end 
-    	return this.equals( (Timestamp) theTimestamp );
+    public boolean equals(Object theObject) {
+        if (theObject instanceof Timestamp) {
+            return equals((Timestamp) theObject);
+        }
+        return false;
     } // end method equals( Object )
     
 	/**
@@ -172,6 +169,9 @@ public class Timestamp extends Date {
 	 * @return true if this Timestamp object is equal to the supplied Timestamp object
 	 */
     public boolean equals( Timestamp theTimestamp ) {
+        if (theTimestamp == null) {
+            return false;
+        }
     	if( (this.getTime() == theTimestamp.getTime()) && (this.getNanos() == theTimestamp.getNanos()) ) {
     		return true;
     	} else {

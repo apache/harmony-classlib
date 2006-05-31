@@ -454,6 +454,9 @@ public class TimestampTest extends TestCase {
 
 			assertFalse(theTimestamp.equals(theTest));
 		} // end for
+        
+        // Regression for HARMONY-526
+        assertFalse(new Timestamp(0).equals((Timestamp) null));
 	} // end method testequalsTimestamp
 
 	/*
@@ -480,6 +483,8 @@ public class TimestampTest extends TestCase {
 		Timestamp theTimestamp = new Timestamp(TIME_ARRAY[1]);
 		assertFalse(theTimestamp.equals(nastyTest));
 
+        // Regression for HARMONY-526
+        assertFalse(new Timestamp(0).equals((Object) null));
 	} // end method testequalsObject
 
 	/*
