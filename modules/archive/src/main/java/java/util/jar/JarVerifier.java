@@ -31,10 +31,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
-import org.apache.harmony.security.utils.JarUtils;
-
 import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.security.utils.JarUtils;
 
 /**
  * Non-public class used by {@link java.util.jar.JarFile} and
@@ -58,13 +57,16 @@ class JarVerifier {
 
     private Manifest man;
 
-    private HashMap metaEntries = new HashMap(5);
+    private HashMap<String, byte[]> metaEntries = new HashMap<String, byte[]>(5);
 
-    private Hashtable signatures = new Hashtable(5);
+    private Hashtable<String, HashMap<String, Attributes>> signatures =
+        new Hashtable<String, HashMap<String, Attributes>>(5);
 
-    private Hashtable certificates = new Hashtable(5);
+    private Hashtable<String, Certificate[]> certificates =
+        new Hashtable<String, Certificate[]>(5);
 
-    private Hashtable verifiedEntries = new Hashtable();
+    private Hashtable<String, Certificate[]> verifiedEntries =
+        new Hashtable<String, Certificate[]>();
 
     byte[] mainAttributesChunk;
 
@@ -72,28 +74,15 @@ class JarVerifier {
      * TODO Type description
      */
     static class VerifierEntry extends OutputStream {
-        /**
-         * Comment for <code>digest</code>
-         */
+
         MessageDigest digest;
 
-        /**
-         * Comment for <code>hash</code>
-         */
         byte[] hash;
 
-        /**
-         * Comment for <code>certificates</code>
-         */
-        java.security.cert.Certificate[] certificates;
+        Certificate[] certificates;
 
-        /**
-         * @param digest
-         * @param hash
-         * @param certificates
-         */
         VerifierEntry(MessageDigest digest, byte[] hash,
-                java.security.cert.Certificate[] certificates) {
+                Certificate[] certificates) {
             this.digest = digest;
             this.hash = hash;
             this.certificates = certificates;
@@ -154,18 +143,19 @@ class JarVerifier {
             return null;
         }
 
-        Vector certs = new Vector();
-        Iterator it = signatures.entrySet().iterator();
+        Vector<Certificate> certs = new Vector<Certificate>();
+        Iterator<Map.Entry<String, HashMap<String, Attributes>>> it =
+            signatures.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            HashMap hm = (HashMap) entry.getValue();
+            Map.Entry<String, HashMap<String, Attributes>> entry = it.next();
+            HashMap<String, Attributes> hm = entry.getValue();
             if (hm.get(name) != null) {
                 // Found an entry for entry name in .SF file
-                String signatureFile = (String) entry.getKey();
+                String signatureFile = entry.getKey();
 
-                Vector newCerts = getSignerCertificates(signatureFile,
-                        certificates);
-                Iterator iter = newCerts.iterator();
+                Vector<Certificate> newCerts = getSignerCertificates(
+                        signatureFile, certificates);
+                Iterator<Certificate> iter = newCerts.iterator();
                 while (iter.hasNext()) {
                     certs.add(iter.next());
                 }
@@ -201,6 +191,7 @@ class JarVerifier {
                 return new VerifierEntry(MessageDigest.getInstance(algorithm),
                         hashBytes, certificatesArray);
             } catch (NoSuchAlgorithmException e) {
+                // Ignored
             }
         }
         return null;
@@ -266,12 +257,12 @@ class JarVerifier {
         // Found Digital Sig, .SF should already have been read
         String signatureFile = certFile.substring(0, certFile.lastIndexOf('.'))
                 + ".SF";
-        byte[] sfBytes = (byte[]) metaEntries.get(signatureFile);
+        byte[] sfBytes = metaEntries.get(signatureFile);
         if (sfBytes == null) {
             return;
         }
 
-        byte[] sBlockBytes = (byte[]) metaEntries.get(certFile);
+        byte[] sBlockBytes = metaEntries.get(certFile);
         try {
             Certificate[] signerCertChain = JarUtils.verifySignature(
                     new ByteArrayInputStream(sfBytes),
@@ -283,13 +274,13 @@ class JarVerifier {
             return;
         } catch (GeneralSecurityException e) {
             /* [MSG "K00eb", "{0} failed verification of {1}"] */
-            throw new SecurityException(Msg.getString("K00eb", jarName,
-                    signatureFile));
+            throw new SecurityException(
+                    Msg.getString("K00eb", jarName, signatureFile));
         }
 
         // Verify manifest hash in .sf file
         Attributes attributes = new Attributes();
-        HashMap hm = new HashMap();
+        HashMap<String, Attributes> hm = new HashMap<String, Attributes>();
         try {
             new InitManifest(new ByteArrayInputStream(sfBytes), attributes, hm,
                     null, "Signature-Version");
@@ -313,12 +304,12 @@ class JarVerifier {
             if (!verify(attributes, digestAttribute, this.mainAttributesChunk,
                     false, true)) {
                 /* [MSG "K00eb", "{0} failed verification of {1}"] */
-                throw new SecurityException(Msg.getString("K00eb", jarName,
-                        signatureFile));
+                throw new SecurityException(
+                    Msg.getString("K00eb", jarName, signatureFile));
             }
         }
 
-        byte[] manifest = (byte[]) metaEntries.get(JarFile.MANIFEST_NAME);
+        byte[] manifest = metaEntries.get(JarFile.MANIFEST_NAME);
         if (manifest == null) {
             return;
         }
@@ -326,19 +317,20 @@ class JarVerifier {
         String digestAttribute = createdBySigntool ? "-Digest"
                 : "-Digest-Manifest";
         if (!verify(attributes, digestAttribute, manifest, false, false)) {
-            Iterator it = hm.entrySet().iterator();
+            Iterator<Map.Entry<String, Attributes>> it = hm.entrySet()
+                    .iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
-                byte[] chunk = man.getChunk((String) entry.getKey());
+                Map.Entry<String, Attributes> entry = it.next();
+                byte[] chunk = man.getChunk(entry.getKey());
                 if (chunk == null) {
                     return;
                 }
-                if (!verify((Attributes) entry.getValue(), "-Digest", chunk,
+                if (!verify(entry.getValue(), "-Digest", chunk,
                         createdBySigntool, false)) {
                     /* [MSG "K00ec", "{0} has invalid digest for {1} in {2}"] */
-                    throw new SecurityException(Msg.getString("K00ec",
-                            new Object[] { signatureFile, entry.getKey(),
-                                    jarName }));
+                    throw new SecurityException(
+                        Msg.getString("K00ec",
+                            new Object[] { signatureFile, entry.getKey(), jarName }));
                 }
             }
         }
@@ -397,10 +389,6 @@ class JarVerifier {
         return certificates.size() > 0;
     }
 
-    /*
-     * @param attributes @param entry @param data @param ignoreSecondEndline
-     * @param ignorable @return
-     */
     private boolean verify(Attributes attributes, String entry, byte[] data,
             boolean ignoreSecondEndline, boolean ignorable) {
         String algorithms = attributes.getValue("Digest-Algorithms");
@@ -436,11 +424,7 @@ class JarVerifier {
             }
             return MessageDigest.isEqual(b, Base64.decode(hashBytes));
         }
-        if (ignorable) {
-            return true;
-        } else {
-            return false;
-        }
+        return ignorable;
     }
 
     /**
@@ -453,7 +437,7 @@ class JarVerifier {
      * @return an array of {@link java.security.cert.Certificate}.
      */
     Certificate[] getCertificates(String name) {
-        Certificate[] verifiedCerts = (Certificate[]) verifiedEntries.get(name);
+        Certificate[] verifiedCerts = verifiedEntries.get(name);
         if (verifiedCerts == null) {
             return null;
         }
@@ -489,11 +473,10 @@ class JarVerifier {
      *         the jar whose actions led to the creation of the named signature
      *         file.
      */
-    public static Vector getSignerCertificates(String signatureFileName,
-            Map certificates) {
-        Vector result = new Vector();
-        Certificate[] certChain = (Certificate[]) certificates
-                .get(signatureFileName);
+    public static Vector<Certificate> getSignerCertificates(
+            String signatureFileName, Map<String, Certificate[]> certificates) {
+        Vector<Certificate> result = new Vector<Certificate>();
+        Certificate[] certChain = certificates.get(signatureFileName);
         if (certChain != null) {
             for (Certificate element : certChain) {
                 result.add(element);
