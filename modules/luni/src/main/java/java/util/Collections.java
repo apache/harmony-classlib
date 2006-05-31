@@ -2318,6 +2318,18 @@ public class Collections {
     }
 
     /**
+     * Returns a dynamically typesafe view of the specified sorted set.
+     * 
+     * @param c the sorted set
+     * @param type the type of the elements is permitted to insert
+     * 
+     * @return a typesafe sorted set
+     */
+    public static SortedSet checkedSortedSet(SortedSet s, Class type) {
+        return new CheckedSortedSet(s, type);
+    }
+
+    /**
      * Adds all the specified elements to the specified collection
      * 
      * @param c the collection the elements are to be inserted into
@@ -3163,6 +3175,68 @@ public class Collections {
 
         }
 
+    }
+
+    /**
+     * Class represents a dynamically typesafe view of the specified sortedSet.
+     */
+    private static class CheckedSortedSet extends CheckedSet implements
+            SortedSet {
+
+        private SortedSet ss;
+
+        /**
+         * Constructs a dynamically typesafe view of the specified sortedSet.
+         * 
+         * @param s - the sortedSet for which a dynamically typesafe view is to
+         *        be constructed.
+         */
+        public CheckedSortedSet(SortedSet s, Class type) {
+            super(s, type);
+            this.ss = s;
+        }
+
+        /**
+         * @see java.util.SortedSet#comparator()
+         */
+        public Comparator comparator() {
+            return ss.comparator();
+        }
+
+        /**
+         * @see java.util.SortedSet#subSet(Object, Object)
+         */
+        public SortedSet subSet(Object fromElement, Object toElement) {
+            return new CheckedSortedSet(ss.subSet(fromElement, toElement), type);
+        }
+
+        /**
+         * @see java.util.SortedSet#headSet(Object)
+         */
+        public SortedSet headSet(Object toElement) {
+            return new CheckedSortedSet(ss.headSet(toElement), type);
+        }
+
+        /**
+         * @see java.util.SortedSet#tailSet(Object)
+         */
+        public SortedSet tailSet(Object fromElement) {
+            return new CheckedSortedSet(ss.tailSet(fromElement), type);
+        }
+
+        /**
+         * @see java.util.SortedSet#first()
+         */
+        public Object first() {
+            return ss.first();
+        }
+
+        /**
+         * @see java.util.SortedSet#last()
+         */
+        public Object last() {
+            return ss.last();
+        }
     }
 
     /**
