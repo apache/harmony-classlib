@@ -48,7 +48,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     /**
      * @com.intel.drl.spec_ref
      */
-    protected void initialize(Class type, Object oldInstance,
+    protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder out) {
         try {
             PropertyDescriptor[] pds =
