@@ -118,16 +118,19 @@ public abstract class Charset implements Comparable<Charset> {
 	private final String canonicalName;
 
 	// the aliases set
-	private final HashSet aliasesSet;
+	private final HashSet<String> aliasesSet;
 
 	// cached Charset table
-	private static HashMap cachedCharsetTable = new HashMap();
+	private static HashMap<String, Charset> cachedCharsetTable =
+        new HashMap<String, Charset>();
 	
 	// cached CharsetDecoder table
-	private static HashMap cachedCharsetDecoderTable = new HashMap();
+	private static HashMap<String, CharsetDecoder> cachedCharsetDecoderTable =
+        new HashMap<String, CharsetDecoder>();
 	
 	// cached CharsetEncoder table
-	private static HashMap cachedCharsetEncoderTable = new HashMap();
+	private static HashMap<String, CharsetEncoder> cachedCharsetEncoderTable =
+        new HashMap<String, CharsetEncoder>();
 	
 	/*
 	 * -------------------------------------------------------------------
@@ -177,7 +180,7 @@ public abstract class Charset implements Comparable<Charset> {
 		checkCharsetName(canonicalName);
 		this.canonicalName = canonicalName;
 		// check each aliase and put into a set
-		this.aliasesSet = new HashSet();
+		this.aliasesSet = new HashSet<String>();
 		if (null != aliases) {
 			for (int i = 0; i < aliases.length; i++) {
 				checkCharsetName(aliases[i]);
@@ -339,7 +342,7 @@ public abstract class Charset implements Comparable<Charset> {
 	 * @return an unmodifiable map of all available charsets supported by the
 	 *         runtime
 	 */
-	public static SortedMap availableCharsets() {
+	public static SortedMap<String, Charset> availableCharsets() {
 		// Initialize the built-in charsets map cache if necessary
 		if (null == _builtInCharsets) {
 			synchronized (Charset.class) {
@@ -790,7 +793,7 @@ public abstract class Charset implements Comparable<Charset> {
 	/**
 	 * A comparator that ignores case.
 	 */
-	static class IgnoreCaseComparator implements Comparator {
+	static class IgnoreCaseComparator implements Comparator<String> {
 
 		// the singleton
 		private static Comparator c = new IgnoreCaseComparator();
@@ -812,9 +815,7 @@ public abstract class Charset implements Comparable<Charset> {
 		/*
 		 * Compares two strings ignoring case.
 		 */
-		public int compare(Object obj1, Object obj2) {
-			String s1 = (String) obj1;
-			String s2 = (String) obj2;
+		public int compare(String s1, String s2) {
 			return s1.compareToIgnoreCase(s2);
 		}
 	}

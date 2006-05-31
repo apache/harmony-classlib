@@ -46,7 +46,7 @@ public abstract class CharsetProvider {
 	 * 
 	 * @return the iterator.
 	 */
-	public abstract Iterator charsets();
+	public abstract Iterator<Charset> charsets();
 
 	/**
 	 * Answers the named charset.
