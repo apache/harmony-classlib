@@ -31,11 +31,16 @@ import junit.framework.TestCase;
  */
 public class HttpURLConnectionTest extends TestCase {
     
+    private final Object bound = new Object();
+
     //TODO: replace with connection to a mock server
     Thread httpServer = new Thread(new Runnable() {
         public void run() {
             try {
                 ServerSocket ss = new ServerSocket(port);
+                synchronized(bound) {
+                    bound.notify();
+                }
                 ss.setSoTimeout(1000);
                 try {
                     ss.accept().close();
@@ -65,9 +70,11 @@ public class HttpURLConnectionTest extends TestCase {
      */
     public void testGetOutputStream() throws Exception {
         // Regression for HARMONY-482
+        synchronized(bound) {
+            bound.wait(5000);
+        }
         HttpURLConnection c = (HttpURLConnection) new URL("http://127.0.0.1:"
                 + port).openConnection();
-
         c.setDoOutput(true);
         //use new String("POST") instead of simple "POST" to obtain other 
         //object instances then those that are in HttpURLConnection classes 
