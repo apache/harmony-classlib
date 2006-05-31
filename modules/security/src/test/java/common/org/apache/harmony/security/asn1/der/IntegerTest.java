@@ -21,16 +21,17 @@
 
 package org.apache.harmony.security.asn1.der;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
+
+import junit.framework.TestCase;
 
 import org.apache.harmony.security.asn1.ASN1Exception;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.DerInputStream;
 import org.apache.harmony.security.asn1.DerOutputStream;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -45,29 +46,81 @@ public class IntegerTest extends TestCase {
         junit.textui.TestRunner.run(IntegerTest.class);
     }
 
-    private static BigInteger[] values = new BigInteger[] {
-            new BigInteger("0"), new BigInteger("1"), new BigInteger("-1"),
-            new BigInteger("1234567890"), new BigInteger("-1234567890") };
+    public static final Object[][] validTestcase = {
+            // BigInteger / two's-complement representation / encoding
+            { new BigInteger("0"), null, null },
+            { new BigInteger("1"), null, null },
+            { new BigInteger("-1"), null, null },
+            { new BigInteger("127"), null, null },
+            { new BigInteger("-127"), null, null },
+            { new BigInteger("128"), null, null },
+            { new BigInteger("-128"), null, null },
+            { new BigInteger("32767"), null, null },
+            { new BigInteger("-32767"), null, null },
+            { new BigInteger("32768"), null, null },
+            { new BigInteger("-32768"), null, null },
+            { new BigInteger("1234567890"), null, null },
+            { new BigInteger("-1234567890"), null, null },
+            { // 20 octets
+                    new BigInteger(new byte[] { 0x7F, 0x00, 0x00, 0x00, 0x00,
+                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }), null,
+                    null }, };
 
-    public void testDecode_Valid() throws IOException {
+    static {
+        for (int i = 0; i < validTestcase.length; i++) {
+            // get two's-complement representation
+            byte[] array = ((BigInteger) validTestcase[i][0]).toByteArray();
 
-        for (int i = 0; i < values.length; i++) {
-
-            //get encoding
-            byte[] encoded = new byte[values[i].toByteArray().length + 2];
+            // create encoding
+            byte[] encoded = new byte[array.length + 2];
             encoded[0] = 0x02;
             encoded[1] = (byte) (encoded.length - 2);
-            System
-                    .arraycopy(values[i].toByteArray(), 0, encoded, 2,
-                            encoded[1]);
+            System.arraycopy(array, 0, encoded, 2, encoded[1]);
 
-            //decode
-            DerInputStream in = new DerInputStream(encoded);
-            assertTrue("Testcase: " + i, Arrays.equals(values[i].toByteArray(),
-                    (byte[]) ASN1Integer.getInstance().decode(in)));
+            // assign is to testcases
+            validTestcase[i][1] = array;
+            validTestcase[i][2] = encoded;
         }
     }
 
+    /**
+     * Tests decoding/encoding integers to/from byte array
+     */
+    public void testDecode_Encode() throws IOException {
+
+        // oid decoder/encoder for testing
+        ASN1Integer asn1 = ASN1Integer.getInstance();
+
+        // decode from byte array
+        for (int i = 0; i < validTestcase.length; i++) {
+            DerInputStream in = new DerInputStream((byte[]) validTestcase[i][2]);
+            assertTrue((validTestcase[i][0]).toString(), // message
+                    Arrays.equals((byte[]) validTestcase[i][1], // expected
+                            (byte[]) asn1.decode(in))); // returned
+        }
+        
+        // decode from input stream
+        for (int i = 0; i < validTestcase.length; i++) {
+            DerInputStream in = new DerInputStream(new ByteArrayInputStream(
+                    (byte[]) validTestcase[i][2]));
+            assertTrue((validTestcase[i][0]).toString(), //message
+                    Arrays.equals((byte[]) validTestcase[i][1], //expected
+                            (byte[]) asn1.decode(in))); //returned
+        }
+
+        // encoding
+        for (int i = 0; i < validTestcase.length; i++) {
+            DerOutputStream out = new DerOutputStream(asn1, validTestcase[i][1]);
+            assertTrue((validTestcase[i][0]).toString(), //message
+                    Arrays.equals((byte[]) validTestcase[i][2], //expected
+                            out.encoded));//returned
+        }
+    }
+
+    /**
+     * Tests invalid ASN.1 integer encodings
+     */
     public void testDecode_Invalid() throws IOException {
         byte[][] invalid = new byte[][] {
         // wrong tag: tag is not 0x02
@@ -89,39 +142,13 @@ public class IntegerTest extends TestCase {
         }
     }
 
-    public void testEncode() throws IOException {
-
-        for (int i = 0; i < values.length; i++) {
-
-            //get encoding
-            byte[] encoded = new byte[values[i].toByteArray().length + 2];
-            encoded[0] = 0x02;
-            encoded[1] = (byte) (encoded.length - 2);
-            System
-                    .arraycopy(values[i].toByteArray(), 0, encoded, 2,
-                            encoded[1]);
-
-            //encode
-            DerOutputStream out = new DerOutputStream(
-                    ASN1Integer.getInstance(), values[i].toByteArray());
-            assertTrue("Testcase: " + i, Arrays.equals(encoded, out.encoded));
-        }
-    }
-
     public void testConversion() {
         int[] testcase = new int[] { 0, 1, -1, 127, -127, 128, -128, 32767,
                 -32768, Integer.MAX_VALUE, Integer.MIN_VALUE };
 
-        //        for (int j = 0; j < 5; j++) {
-        //            long startTime = System.currentTimeMillis();
-        //            for (int k = 0; k < 1000000; k++) {
         for (int i = 0; i < testcase.length; i++) {
             assertEquals("Testcase: " + i, testcase[i], ASN1Integer
                     .toIntValue(ASN1Integer.fromIntValue(testcase[i])));
         }
-        //            }
-        //            long endTime = System.currentTimeMillis();
-        //            System.out.println("Time: " + (endTime - startTime));
-        //        }
     }
 }
