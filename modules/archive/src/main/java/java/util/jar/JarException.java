@@ -15,31 +15,31 @@
 
 package java.util.jar;
 
-
 import java.util.zip.ZipException;
 
 /**
  * This runtime exception is thrown when a problem occurrs while reading a JAR
  * file.
- * 
  */
 public class JarException extends ZipException {
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public JarException() {
-		super();
-	}
+    private static final long serialVersionUID = 7159778400963954473L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public JarException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public JarException() {
+        super();
+    }
+
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public JarException(String detailMessage) {
+        super(detailMessage);
+    }
 }
