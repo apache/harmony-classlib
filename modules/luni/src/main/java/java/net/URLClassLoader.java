@@ -58,11 +58,11 @@ public class URLClassLoader extends SecureClassLoader {
 
 	URL[] urls, orgUrls;
 
-	private IdentityHashMap resCache = new IdentityHashMap(32);
+	private IdentityHashMap<URL, JarFile> resCache = new IdentityHashMap<URL, JarFile>(32);
 
 	private URLStreamHandlerFactory factory;
 
-	HashMap extensions;
+	HashMap<URL, URL[]> extensions;
 
 	Hashtable[] indexes;
 
@@ -94,7 +94,7 @@ public class URLClassLoader extends SecureClassLoader {
 		 * @exception ClassNotFoundException
 		 *                If the class could not be found.
 		 */
-		protected synchronized Class loadClass(String className,
+		protected synchronized Class<?> loadClass(String className,
 				boolean resolveClass) throws ClassNotFoundException {
 			SecurityManager sm = System.getSecurityManager();
 			if (sm != null && !checkingPackageAccess) {
@@ -197,19 +197,19 @@ public class URLClassLoader extends SecureClassLoader {
 	 *                thrown if an IO Exception occurs while attempting to
 	 *                connect
 	 */
-	public Enumeration findResources(final String name) throws IOException {
+	public Enumeration<URL> findResources(final String name) throws IOException {
 		if (name == null)
 			return null;
-		Vector result = AccessController.doPrivileged(
-                new PrivilegedAction<Vector>() {
-                    public Vector run() {
-                        return findResources(urls, name, new Vector());
+		Vector<URL> result = AccessController.doPrivileged(
+                new PrivilegedAction<Vector<URL>>() {
+                    public Vector<URL> run() {
+                        return findResources(urls, name, new Vector<URL>());
                     }
                 }, currentContext);
 		SecurityManager sm;
 		int length = result.size();
 		if (length > 0 && (sm = System.getSecurityManager()) != null) {
-			Vector reduced = new Vector(length);
+			Vector<URL> reduced = new Vector<URL>(length);
 			for (int i = 0; i < length; i++) {
 				URL url = (URL) result.elementAt(i);
 				try {
@@ -235,7 +235,7 @@ public class URLClassLoader extends SecureClassLoader {
 	 * @param name
 	 *            java.lang.String the name of the requested resource
 	 */
-	Vector findResources(URL[] searchURLs, String name, Vector result) {
+	Vector<URL> findResources(URL[] searchURLs, String name, Vector<URL> result) {
 		boolean findInExtensions = searchURLs == urls;
 		for (int i = 0; i < searchURLs.length; i++) {
 			if (searchURLs[i] != null) {
@@ -276,7 +276,7 @@ public class URLClassLoader extends SecureClassLoader {
 	 *            boolean if true a URL should be returned as the non null
 	 *            element, if false a Class should be returned.
 	 */
-	Object findInIndex(int i, String name, Vector resources, boolean url) {
+	Object findInIndex(int i, String name, Vector<URL> resources, boolean url) {
 		Hashtable index = indexes[i];
 		if (index != null) {
 			int pos = name.lastIndexOf("/");
@@ -344,7 +344,7 @@ public class URLClassLoader extends SecureClassLoader {
 	 *            element, if false a Class should be returned.
 	 */
 	Object findInExtensions(URL[] newExtensions, String name, int i,
-			Vector resources, boolean url) {
+			Vector<URL> resources, boolean url) {
 		if (newExtensions != null) {
 			for (int k = 0; k < newExtensions.length; k++) {
 				if (newExtensions[k] != null) {
@@ -565,7 +565,7 @@ public class URLClassLoader extends SecureClassLoader {
 		urls = new URL[nbUrls];
 		orgUrls = new URL[nbUrls];
 		// Search each jar for CLASS-PATH attribute in manifest
-		extensions = new HashMap(nbUrls * 2);
+		extensions = new HashMap<URL, URL[]>(nbUrls * 2);
 		for (int i = 0; i < nbUrls; i++) {
 			try {
 				urls[i] = createSearchURL(searchUrls[i]);
@@ -590,7 +590,7 @@ public class URLClassLoader extends SecureClassLoader {
 	 * @exception java.lang.ClassNotFoundException
 	 *                if the class cannot be loaded
 	 */
-	protected Class findClass(final String clsName)
+	protected Class<?> findClass(final String clsName)
 			throws ClassNotFoundException {
 		Class cls = AccessController.doPrivileged(
 				new PrivilegedAction<Class>() {
@@ -876,7 +876,7 @@ public class URLClassLoader extends SecureClassLoader {
 	private URL[] getInternalURLs(URL root, String classpath) {
 		// Class-path attribute is composed of space-separated values.
 		StringTokenizer tokenizer = new java.util.StringTokenizer(classpath);
-		Vector addedURLs = new Vector();
+		Vector<URL> addedURLs = new Vector<URL>();
 		String file = root.getFile();
 		file = file.substring(0, file.lastIndexOf("/",
 				file.lastIndexOf("!/") - 1) + 1);
