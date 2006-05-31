@@ -154,7 +154,7 @@ public class LogManager {
      * Instance variables
      * -------------------------------------------------------------------
      */
-    private Hashtable loggers;
+    private Hashtable<String, Logger> loggers;
 
     private Logger root;
 
@@ -207,11 +207,11 @@ public class LogManager {
      * can subclass the object.
      */
     protected LogManager() {
-        loggers = new Hashtable();
+        loggers = new Hashtable<String, Logger>();
         props = new Properties();
         listeners = new PropertyChangeSupport(this);
         //add shutdown hook to ensure that the associated resource will be freed when JVM exits
-        AccessController.doPrivileged(new PrivilegedAction() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 Runtime.getRuntime().addShutdownHook(new Thread() {
                     public void run() {
@@ -327,7 +327,7 @@ public class LogManager {
      *
      * @return		enumeration of registered logger names
      */
-    public synchronized Enumeration getLoggerNames() {
+    public synchronized Enumeration<String> getLoggerNames() {
         return loggers.keys();
     }
 
@@ -369,8 +369,8 @@ public class LogManager {
 
     //use privilege code to get system property
     static String getPrivilegedSystemProperty(final String key) {
-        return (String) AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
                 return System.getProperty(key);
             }
         });
