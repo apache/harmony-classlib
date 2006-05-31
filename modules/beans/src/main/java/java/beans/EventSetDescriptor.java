@@ -35,7 +35,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
     private String eventSetName = null;
     
     private Class listenerType = null;
-    private ArrayList listenerMethodDescriptors = new ArrayList();
+    private ArrayList<MethodDescriptor> listenerMethodDescriptors =
+        new ArrayList<MethodDescriptor>();
     
     private Method getListenerMethod = null;
     private Method addListenerMethod = null;
@@ -47,8 +48,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
     */
-    public EventSetDescriptor(Class sourceClass, String eventSetName,
-        Class listenerType, String listenerMethodName
+    public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
+        Class<?> listenerType, String listenerMethodName
     ) throws IntrospectionException {
         
         super();
@@ -82,8 +83,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public EventSetDescriptor(Class sourceClass, String eventSetName,
-        Class listenerType, String[] listenerMethodNames,
+    public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
+        Class<?> listenerType, String[] listenerMethodNames,
         String addListenerMethodName, String removeListenerMethodName
     ) throws IntrospectionException {
         super();
@@ -119,9 +120,9 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * @com.intel.drl.spec_ref
      */
     public EventSetDescriptor(
-            Class sourceClass,
+            Class<?> sourceClass,
             String eventSetName,
-            Class listenerType,
+            Class<?> listenerType,
             String[] listenerMethodNames,
             String addListenerMethodName,
             String removeListenerMethodName,
@@ -162,7 +163,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
      */
     public EventSetDescriptor(
             String eventSetName,
-            Class listenerType,
+            Class<?> listenerType,
             Method[] listenerMethods,
             Method addListenerMethod,
             Method removeListenerMethod) throws IntrospectionException {
@@ -195,7 +196,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-   public EventSetDescriptor(String eventSetName, Class listenerType,
+   public EventSetDescriptor(String eventSetName, Class<?> listenerType,
         Method[] listenerMethods, Method addListenerMethod,
         Method removeListenerMethod, Method getListenerMethod
     ) throws IntrospectionException {
@@ -230,7 +231,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public EventSetDescriptor(String eventSetName, Class listenerType,
+    public EventSetDescriptor(String eventSetName, Class<?> listenerType,
         MethodDescriptor[] listenerMethodDescriptors,
         Method addListenerMethod, Method removeListenerMethod
     ) throws IntrospectionException {
@@ -313,7 +314,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Class getListenerType() {
+    public Class<?> getListenerType() {
         return listenerType;
     }
 

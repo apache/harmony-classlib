@@ -50,7 +50,7 @@ public class SimpleBeanInfo implements BeanInfo {
                 resourceName);
         
         if(is != null) {
-            ArrayList byteArrayList = new ArrayList();
+            ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
             
             byte b;
             try {

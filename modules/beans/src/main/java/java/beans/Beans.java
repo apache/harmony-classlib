@@ -136,14 +136,14 @@ public class Beans {
     /**
 	 * @com.intel.drl.spec_ref
 	 */
-    public static Object getInstanceOf(Object bean, Class targetType) {
+    public static Object getInstanceOf(Object bean, Class<?> targetType) {
         return bean;            
     }
 
     /**
 	 * @com.intel.drl.spec_ref
 	 */
-    public static boolean isInstanceOf(Object bean, Class targetType) {
+    public static boolean isInstanceOf(Object bean, Class<?> targetType) {
         if (targetType == null) {
             return false;
         } else {
@@ -213,7 +213,7 @@ class CustomizedObjectInputStream extends ObjectInputStream {
         this.cls = cls;
     }
     
-    protected Class resolveClass(ObjectStreamClass desc)
+    protected Class<?> resolveClass(ObjectStreamClass desc)
         throws IOException, ClassNotFoundException
     {
         String className = desc.getName();

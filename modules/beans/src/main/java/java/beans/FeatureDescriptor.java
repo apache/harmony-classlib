@@ -32,7 +32,7 @@ import java.util.StringTokenizer;
 
 public class FeatureDescriptor {
     
-    private HashMap values = new HashMap();
+    private HashMap<String, Object> values = new HashMap<String, Object>();
     boolean preferred, hidden, expert;
     String shortDescription = null;
     String name = null;

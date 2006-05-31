@@ -38,7 +38,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
      */
     public IndexedPropertyDescriptor(
             String propertyName,
-            Class beanClass,
+            Class<?> beanClass,
             String getterName,
             String setterName,
             String indexedGetterName,
@@ -65,7 +65,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public IndexedPropertyDescriptor(String propertyName, Class beanClass)
+    public IndexedPropertyDescriptor(String propertyName, Class<?> beanClass)
             throws IntrospectionException {
         super(propertyName, beanClass);        
         
@@ -187,7 +187,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Class getIndexedPropertyType() {
+    public Class<?> getIndexedPropertyType() {
         Class result = null;
         if (indexedGetter != null) {
             result = indexedGetter.getReturnType();

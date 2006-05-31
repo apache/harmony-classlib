@@ -34,14 +34,14 @@ import java.util.Iterator;
 public class PropertyEditorSupport implements PropertyEditor {
     
     Object source = null;
-    ArrayList listeners = new ArrayList();
+    ArrayList<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
     Object oldValue = null;
     Object newValue = null;
 
     /**
      * @com.intel.drl.spec_ref
      */
-    protected PropertyEditorSupport(Object source) {
+    public PropertyEditorSupport(Object source) {
         if( source == null ) {
             throw new NullPointerException("source is null");
         }
@@ -51,7 +51,7 @@ public class PropertyEditorSupport implements PropertyEditor {
     /**
      * @com.intel.drl.spec_ref
      */
-    protected PropertyEditorSupport() {
+    public PropertyEditorSupport() {
     }
 
     /**

@@ -124,7 +124,7 @@ public class Statement {
             } else {
                 final Method method = findMethod();
                 
-                AccessController.doPrivileged(new PrivilegedAction() {
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
                     public Object run() {
                         method.setAccessible(true);
                         return null;

@@ -68,7 +68,7 @@ public class Introspector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static BeanInfo getBeanInfo(Class beanClass, int flags)
+    public static BeanInfo getBeanInfo(Class<?> beanClass, int flags)
         throws IntrospectionException 
     {
         switch (flags) {
@@ -87,7 +87,7 @@ public class Introspector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static BeanInfo getBeanInfo(Class beanClass)
+    public static BeanInfo getBeanInfo(Class<?> beanClass)
             throws IntrospectionException {
         return getBeanInfo(beanClass, null, false, false);    
     }
@@ -95,7 +95,7 @@ public class Introspector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static BeanInfo getBeanInfo(Class beanClass, Class stopClass)
+    public static BeanInfo getBeanInfo(Class<?> beanClass, Class<?> stopClass)
        throws IntrospectionException
     {
         return getBeanInfo(beanClass, stopClass, false, false);
@@ -124,7 +124,7 @@ public class Introspector {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static void flushFromCaches(Class clz) {
+    public static void flushFromCaches(Class<?> clz) {
         removeBeanInfoClassFromCache(clz);
     }
 
@@ -250,10 +250,10 @@ public class Introspector {
             Class stopClass,
             boolean ignoreBeanClassBeanInfo,
             boolean ignoreSuperClassBeanInfo) {
-        ArrayList beanInfoDatas = (ArrayList) beanInfos.get(
+        ArrayList<BeanInfoData> beanInfoDatas = beanInfos.get(
                 beanClass.getName());
         if(beanInfoDatas == null) {
-            beanInfoDatas = new ArrayList();
+            beanInfoDatas = new ArrayList<BeanInfoData>();
             beanInfos.put(beanClass.getName(), beanInfoDatas);
         }
         beanInfoDatas.add(new BeanInfoData(stopClass, ignoreBeanClassBeanInfo,
@@ -271,7 +271,8 @@ public class Introspector {
     // private fields
 
     private static String[] path = {"sun.beans.infos"};
-    private static HashMap beanInfos = new HashMap();
+    private static HashMap<String, ArrayList<BeanInfoData>> beanInfos =
+        new HashMap<String, ArrayList<BeanInfoData>>();
 
 }
 
@@ -336,11 +337,11 @@ class BeanInfoImpl implements BeanInfo {
                 ArrayList beanClassMethodsArrayList = getPublicMethods(
                         beanClass);
                 
-                ArrayList setters = new ArrayList();
-                ArrayList getters = new ArrayList();
-                ArrayList booleanGetters = new ArrayList();
-                ArrayList indexedSetters = new ArrayList();
-                ArrayList indexedGetters = new ArrayList();
+                ArrayList<Method> setters = new ArrayList<Method>();
+                ArrayList<Method> getters = new ArrayList<Method>();
+                ArrayList<Method> booleanGetters = new ArrayList<Method>();
+                ArrayList<Method> indexedSetters = new ArrayList<Method>();
+                ArrayList<Method> indexedGetters = new ArrayList<Method>();
                 
                 Iterator iterator = beanClassMethodsArrayList.iterator();
                 while (iterator.hasNext()) {
@@ -384,7 +385,7 @@ class BeanInfoImpl implements BeanInfo {
 
     public MethodDescriptor[] getMethodDescriptors() {
         if(methodDescriptors == null) {
-            ArrayList result = new ArrayList();
+            ArrayList<MethodDescriptor> result = new ArrayList<MethodDescriptor>();
             ArrayList beanClassMethodsArrayList = getPublicMethods(beanClass);
             
             Iterator iterator = beanClassMethodsArrayList.iterator();
@@ -405,7 +406,8 @@ class BeanInfoImpl implements BeanInfo {
 
     public EventSetDescriptor[] getEventSetDescriptors() {
         if(eventSetDescriptors == null) {
-            HashMap result = new HashMap();
+            HashMap<String, EventSetDescriptor> result =
+                new HashMap<String, EventSetDescriptor>();
             ArrayList beanClassMethodsArrayList = getPublicMethods(beanClass);
             
             Iterator iterator = beanClassMethodsArrayList.iterator();
@@ -467,7 +469,7 @@ class BeanInfoImpl implements BeanInfo {
                             }
                             
                             Method[] methods = listenerType.getMethods();
-                            Vector listenerMethodsVec = new Vector();
+                            Vector<Method> listenerMethodsVec = new Vector<Method>();
                             for(int i = 0; i < methods.length; ++i) {
                                 Class[] listenerMethodParams =
                                     methods[i].getParameterTypes();
@@ -642,7 +644,7 @@ class BeanInfoImpl implements BeanInfo {
     }
 
     private static ArrayList getPublicMethods(Class theClass) {
-        ArrayList result = new ArrayList();
+        ArrayList<Method> result = new ArrayList<Method>();
 
         Method[] beanClassMethods = theClass.getDeclaredMethods();
         for (int i = 0; i < beanClassMethods.length; ++i) {
@@ -655,7 +657,7 @@ class BeanInfoImpl implements BeanInfo {
     }
     
     private void addPropertyDescriptorsFromMethodList(
-            HashMap hmPropertyDescriptors,
+            HashMap<String, PropertyDescriptor> hmPropertyDescriptors,
             ArrayList methods,
             boolean checkExisting) throws Exception
     {
@@ -677,7 +679,7 @@ class BeanInfoImpl implements BeanInfo {
     }
     
     private void addIndexedPropertyDescriptorsFromMethodList(
-            HashMap hmPropertyDescriptors,
+            HashMap<String, IndexedPropertyDescriptor> hmPropertyDescriptors,
             ArrayList methods,
             boolean checkExisting) throws Exception
     {

@@ -35,10 +35,11 @@ import org.apache.harmony.beans.DefaultPersistenceDelegatesFactory;
 public class Encoder {
     
     private ExceptionListener exceptionListener = null;
-    private HashMap persistenceDelegates = new HashMap();
+    private HashMap<Class, PersistenceDelegate> persistenceDelegates =
+        new HashMap<Class, PersistenceDelegate>();
     
-    Vector roots = new Vector();
-    HashMap nodes = new HashMap();
+    Vector<Object> roots = new Vector<Object>();
+    HashMap<Object, ObjectNode> nodes = new HashMap<Object, ObjectNode>();
     
     /**
      * @com.intel.drl.spec_ref
@@ -74,7 +75,7 @@ public class Encoder {
     /**
      * @com.intel.drl.spec_ref
      */
-    public PersistenceDelegate getPersistenceDelegate(Class type) {
+    public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
         PersistenceDelegate result =
                 (PersistenceDelegate) persistenceDelegates.get(type);
         
@@ -89,7 +90,7 @@ public class Encoder {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setPersistenceDelegate(Class type,
+    public void setPersistenceDelegate(Class<?> type,
             PersistenceDelegate persistenceDelegate) {
         persistenceDelegates.put(type, persistenceDelegate);
     }

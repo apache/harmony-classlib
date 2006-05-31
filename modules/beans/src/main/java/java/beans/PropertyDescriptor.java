@@ -45,7 +45,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public PropertyDescriptor(String propertyName, Class beanClass,
+    public PropertyDescriptor(String propertyName, Class<?> beanClass,
             String getterName, String setterName) throws IntrospectionException {
 
         super();
@@ -88,7 +88,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public PropertyDescriptor(String propertyName, Class beanClass)
+    public PropertyDescriptor(String propertyName, Class<?> beanClass)
             throws IntrospectionException {
         super();
         if (beanClass == null) {
@@ -229,14 +229,14 @@ public class PropertyDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void setPropertyEditorClass(Class propertyEditorClass) {
+    public void setPropertyEditorClass(Class<?> propertyEditorClass) {
         this.propertyEditorClass = propertyEditorClass;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Class getPropertyType() {
+    public Class<?> getPropertyType() {
         Class result = null;
         if (getter != null) {
             result = getter.getReturnType();
@@ -250,7 +250,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Class getPropertyEditorClass() {
+    public Class<?> getPropertyEditorClass() {
         return propertyEditorClass;
     }
 
@@ -299,7 +299,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
     
     Method[] findMethods(Class aClass, String methodName) {
         Method[] allMethods = aClass.getMethods();
-        Vector matchedMethods = new Vector();
+        Vector<Method> matchedMethods = new Vector<Method>();
         for (int i = 0; i < allMethods.length; ++i) {
             Method method = allMethods[i];
             if (method.getName().equals(methodName)) {

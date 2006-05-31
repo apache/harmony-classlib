@@ -30,7 +30,7 @@ import java.util.HashMap;
 public class PropertyEditorManager {
     
     private static String[] path = {"org.apache.harmony.beans.editors"};
-    private static HashMap registeredEditors = new HashMap();
+    private static HashMap<Class, Class> registeredEditors = new HashMap<Class, Class>();
     
     /**
      */
@@ -40,7 +40,7 @@ public class PropertyEditorManager {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static void registerEditor(Class targetType, Class editorClass) {
+    public static void registerEditor(Class<?> targetType, Class<?> editorClass) {
         if (targetType == null) {
             throw new NullPointerException();
         }
@@ -59,7 +59,7 @@ public class PropertyEditorManager {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static synchronized PropertyEditor findEditor(Class targetType) {
+    public static synchronized PropertyEditor findEditor(Class<?> targetType) {
         if (targetType == null) {
             throw new NullPointerException();
         }

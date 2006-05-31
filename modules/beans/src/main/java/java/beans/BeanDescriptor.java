@@ -33,7 +33,7 @@ public class BeanDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public BeanDescriptor(Class beanClass, Class customizerClass) {
+    public BeanDescriptor(Class<?> beanClass, Class<?> customizerClass) {
         super();
 
         if (beanClass == null) {
@@ -47,7 +47,7 @@ public class BeanDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public BeanDescriptor(Class beanClass) {
+    public BeanDescriptor(Class<?> beanClass) {
         super();
 
         if (beanClass == null) {
@@ -60,14 +60,14 @@ public class BeanDescriptor extends FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Class getCustomizerClass() {
+    public Class<?> getCustomizerClass() {
         return customizerClass;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Class getBeanClass() {
+    public Class<?> getBeanClass() {
         return beanClass;
     }
     
