@@ -15,29 +15,30 @@
 
 package java.util.zip;
 
-
 /**
  * DataFormatException is used to indicate an error in the format of a
  * particular data stream.
  */
 public class DataFormatException extends Exception {
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
-	public DataFormatException() {
-		super();
-	}
+    private static final long serialVersionUID = 2219632870893641452L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public DataFormatException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     * 
+     */
+    public DataFormatException() {
+        super();
+    }
+
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public DataFormatException(String detailMessage) {
+        super(detailMessage);
+    }
 }
