@@ -26,6 +26,7 @@ import java.io.Serializable;
  * <p>
  * Like HashSet, LinkedHashSet is not thread safe, so access by multiple threads must be synchronized
  * by an external mechanism such as Collections.synchronizedSet.
+ * @since 1.4
  */
 public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
 		Serializable {
@@ -33,10 +34,10 @@ public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
 	private static final long serialVersionUID = -2851667679971038690L;
 
 	/**
-	 * Contructs a new empty instance of LinkedHashSet.
+	 * Constructs a new empty instance of LinkedHashSet.
 	 */
 	public LinkedHashSet() {
-		super(new LinkedHashMap());
+		super(new LinkedHashMap<E, HashSet<E>>());
 	}
 
 	/**
@@ -46,7 +47,7 @@ public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
 	 *            the initial capacity of this HashSet
 	 */
 	public LinkedHashSet(int capacity) {
-		super(new LinkedHashMap(capacity));
+		super(new LinkedHashMap<E, HashSet<E>>(capacity));
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
 	 *            the initial load factor
 	 */
 	public LinkedHashSet(int capacity, float loadFactor) {
-		super(new LinkedHashMap(capacity, loadFactor));
+		super(new LinkedHashMap<E, HashSet<E>>(capacity, loadFactor));
 	}
 
 	/**
@@ -70,15 +71,15 @@ public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
 	 *            the collection of elements to add
 	 */
 	public LinkedHashSet(Collection<? extends E> collection) {
-		super(new LinkedHashMap(collection.size() < 6 ? 11
+		super(new LinkedHashMap<E, HashSet<E>>(collection.size() < 6 ? 11
 				: collection.size() * 2));
-		Iterator it = collection.iterator();
-		while (it.hasNext())
-			add(it.next());
+        for (E e : collection) {
+            add(e);
+        }
 	}
 
 	/* overrides method in HashMap */
-	HashMap createBackingMap(int capacity, float loadFactor) {
-		return new LinkedHashMap(capacity, loadFactor);
+	HashMap<E, HashSet<E>> createBackingMap(int capacity, float loadFactor) {
+		return new LinkedHashMap<E, HashSet<E>>(capacity, loadFactor);
 	}
 }

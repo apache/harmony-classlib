@@ -81,7 +81,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Collection is not supported
 	 */
-	public boolean removeAll(Collection collection) {
+	public boolean removeAll(Collection<?> collection) {
 		boolean result = false;
 		if (size() <= collection.size()) {
 			Iterator it = iterator();

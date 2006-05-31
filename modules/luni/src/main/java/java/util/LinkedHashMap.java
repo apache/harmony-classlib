@@ -20,24 +20,24 @@ package java.util;
  * LinkedHashMap is a variant on HashMap. Its entries are kept in a doubly-linked list.
  * The iteration order is, by default, the order in which keys were inserted.
  * <p> 
- * If the three arg constructor is used, and <code>order</code> is specified as <code>true</code>, 
+ * If the three argument constructor is used, and <code>order</code> is specified as <code>true</code>, 
  * the iteration would be in the order that entries were accessed. The access order gets 
  * affected by put(), get(), putAll() operations, but not by operations on the collection views.
  * <p>
  * Null elements are allowed, and all the optional Map operations are supported.
  * <p>
- *
+ * @since 1.4
  */
-public class LinkedHashMap extends HashMap {
+public class LinkedHashMap<K, V> extends HashMap<K, V> {
 
     private static final long serialVersionUID = 3801124242820219131L;
 
     private final boolean accessOrder;
 
-    transient private LinkedHashMapEntry head, tail;
+    transient private LinkedHashMapEntry<K, V> head, tail;
 
     /**
-     * Contructs a new empty instance of LinkedHashMap.
+     * Constructs a new empty instance of LinkedHashMap.
      */
     public LinkedHashMap() {
         super();
@@ -96,15 +96,15 @@ public class LinkedHashMap extends HashMap {
      * @param m
      *            Input map
      */
-    public LinkedHashMap(Map m) {
+    public LinkedHashMap(Map<? extends K, ? extends V> m) {
         accessOrder = false;
         head = null;
         tail = null;
         putAll(m);
     }
 
-    static final class LinkedHashIterator extends HashMapIterator {
-        LinkedHashIterator(MapEntry.Type value, LinkedHashMap hm) {
+    static final class LinkedHashIterator<E, KT, VT> extends HashMapIterator<E, KT, VT> {
+        LinkedHashIterator(MapEntry.Type<E, KT, VT> value, LinkedHashMap<KT, VT> hm) {
             super(value, hm);
             entry = hm.head;
         }
@@ -113,13 +113,13 @@ public class LinkedHashMap extends HashMap {
             return (entry != null);
         }
 
-        public Object next() {
+        public E next() {
             checkConcurrentMod();
             if (!hasNext())
                 throw new NoSuchElementException();
-            Object result = type.get(entry);
+            E result = type.get(entry);
             lastEntry = entry;
-            entry = ((LinkedHashMapEntry) entry).chainForward;
+            entry = ((LinkedHashMapEntry<KT, VT>)entry).chainForward;
             canRemove = true;
             return result;
         }
@@ -133,22 +133,22 @@ public class LinkedHashMap extends HashMap {
             associatedMap.modCount++;
 
             int index = associatedMap.getModuloHash(lastEntry.key);
-            LinkedHashMapEntry m = (LinkedHashMapEntry) associatedMap.elementData[index];
+            LinkedHashMapEntry<KT, VT> m = (LinkedHashMapEntry<KT, VT>) associatedMap.elementData[index];
             if (m == lastEntry) {
                 associatedMap.elementData[index] = lastEntry.next;
             } else {
                 while (m.next != null) {
                     if (m.next == lastEntry)
                         break;
-                    m = (LinkedHashMapEntry) m.next;
+                    m = (LinkedHashMapEntry<KT, VT>) m.next;
                 }
                 // assert m.next == entry
                 m.next = lastEntry.next;
             }
-            LinkedHashMapEntry lhme = (LinkedHashMapEntry) lastEntry;
-            LinkedHashMapEntry p = lhme.chainBackward;
-            LinkedHashMapEntry n = lhme.chainForward;
-            LinkedHashMap lhm = (LinkedHashMap) associatedMap;
+            LinkedHashMapEntry<KT, VT> lhme = (LinkedHashMapEntry<KT, VT>) lastEntry;
+            LinkedHashMapEntry<KT, VT> p = lhme.chainBackward;
+            LinkedHashMapEntry<KT, VT> n = lhme.chainForward;
+            LinkedHashMap<KT, VT> lhm = (LinkedHashMap<KT, VT>) associatedMap;
             if (p != null) {
                 p.chainForward = n;
                 if (n != null)
@@ -167,36 +167,36 @@ public class LinkedHashMap extends HashMap {
         }
     }
 
-    static final class LinkedHashMapEntrySet extends HashMapEntrySet {
-        public LinkedHashMapEntrySet(LinkedHashMap lhm) {
+    static final class LinkedHashMapEntrySet<KT, VT> extends HashMapEntrySet<KT, VT> {
+        public LinkedHashMapEntrySet(LinkedHashMap<KT, VT> lhm) {
             super(lhm);
         }
 
-        public Iterator iterator() {
-            return new LinkedHashIterator(new MapEntry.Type() {
-                public Object get(MapEntry entry) {
+        public Iterator<Map.Entry<KT,VT>> iterator() {
+            return new LinkedHashIterator<Map.Entry<KT,VT>,KT,VT>(new MapEntry.Type<Map.Entry<KT,VT>, KT, VT>() {
+                public Map.Entry<KT,VT> get(MapEntry<KT,VT> entry) {
                     return entry;
                 }
-            }, (LinkedHashMap) hashMap());
+            }, (LinkedHashMap<KT, VT>) hashMap());
         }
     }
 
-    static final class LinkedHashMapEntry extends Entry {
-        LinkedHashMapEntry chainForward, chainBackward;
+    static final class LinkedHashMapEntry<K, V> extends Entry<K, V> {
+        LinkedHashMapEntry<K, V> chainForward, chainBackward;
 
-        LinkedHashMapEntry(Object theKey, Object theValue) {
+        LinkedHashMapEntry(K theKey, V theValue) {
             super(theKey, theValue);
             chainForward = null;
             chainBackward = null;
         }
 
         public Object clone() {
-            LinkedHashMapEntry entry = (LinkedHashMapEntry) super.clone();
+            LinkedHashMapEntry<K, V> entry = (LinkedHashMapEntry<K, V>) super.clone();
             entry.chainBackward = chainBackward;
             entry.chainForward = chainForward;
-            LinkedHashMapEntry lnext = (LinkedHashMapEntry) entry.next;
+            LinkedHashMapEntry<K, V> lnext = (LinkedHashMapEntry<K, V>) entry.next;
             if (lnext != null)
-                entry.next = (LinkedHashMapEntry) lnext.clone();
+                entry.next = (LinkedHashMapEntry<K, V>) lnext.clone();
             return entry;
         }
     }
@@ -207,7 +207,7 @@ public class LinkedHashMap extends HashMap {
      * @param s
      * @return Reference to the element array
      */
-    Entry[] newElementArray(int s) {
+    Entry<K, V>[] newElementArray(int s) {
         return new LinkedHashMapEntry[s];
     }
 
@@ -218,13 +218,13 @@ public class LinkedHashMap extends HashMap {
      *            Key value
      * @return mapped value or null if the key is not in the map
      */
-    public Object get(Object key) {
-        LinkedHashMapEntry m = (LinkedHashMapEntry) getEntry(key);
+    public V get(Object key) {
+        LinkedHashMapEntry<K, V> m = (LinkedHashMapEntry<K, V>) getEntry(key);
         if (m == null)
             return null;
         if (accessOrder && tail != m) {
-            LinkedHashMapEntry p = m.chainBackward;
-            LinkedHashMapEntry n = m.chainForward;
+            LinkedHashMapEntry<K, V> p = m.chainBackward;
+            LinkedHashMapEntry<K, V> n = m.chainForward;
             n.chainBackward = p;
             if (p != null)
                 p.chainForward = n;
@@ -241,8 +241,8 @@ public class LinkedHashMap extends HashMap {
     /*
      * @param key @param index @return Entry
      */
-    Entry createEntry(Object key, int index, Object value) {
-        LinkedHashMapEntry m = new LinkedHashMapEntry(key, value);
+    Entry<K, V> createEntry(K key, int index, V value) {
+        LinkedHashMapEntry<K, V> m = new LinkedHashMapEntry<K, V>(key, value);
         m.next = elementData[index];
         elementData[index] = m;
         linkEntry(m);
@@ -259,9 +259,9 @@ public class LinkedHashMap extends HashMap {
      * @return The old value if the key was already in the map or null
      *         otherwise.
      */
-    public Object put(Object key, Object value) {
+    public V put(K key, V value) {
         int index = getModuloHash(key);
-        LinkedHashMapEntry m = (LinkedHashMapEntry) findEntry(key, index);
+        LinkedHashMapEntry<K, V> m = (LinkedHashMapEntry<K, V>) findEntry(key, index);
 
         if (m == null) {
             modCount++;
@@ -274,12 +274,12 @@ public class LinkedHashMap extends HashMap {
                 index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
                         % elementData.length;
             }
-            m = (LinkedHashMapEntry) createEntry(key, index, null);
+            m = (LinkedHashMapEntry<K, V>) createEntry(key, index, null);
         } else {
             linkEntry(m);
         }
 
-        Object result = m.value;
+        V result = m.value;
         m.value = value;
 
         if (removeEldestEntry(head))
@@ -291,7 +291,7 @@ public class LinkedHashMap extends HashMap {
     /*
      * @param m
      */
-    void linkEntry(LinkedHashMapEntry m) {
+    void linkEntry(LinkedHashMapEntry<K, V> m) {
         if (tail == m) {
             return;
         }
@@ -304,8 +304,8 @@ public class LinkedHashMap extends HashMap {
 
         // we need to link the new entry into either the head or tail
         // of the chain depending on if the LinkedHashMap is accessOrder or not
-        LinkedHashMapEntry p = m.chainBackward;
-        LinkedHashMapEntry n = m.chainForward;
+        LinkedHashMapEntry<K, V> p = m.chainBackward;
+        LinkedHashMapEntry<K, V> n = m.chainForward;
         if (p == null) {
             if (n != null) {
                 // The entry must be the head but not the tail
@@ -350,10 +350,8 @@ public class LinkedHashMap extends HashMap {
      * @param m
      *            Input map
      */
-    public void putAll(Map m) {
-        Iterator i = m.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry e = (MapEntry) i.next();
+    public void putAll(Map<? extends K, ? extends V> m) {
+        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
             put(e.getKey(), e.getValue());
         }
     }
@@ -361,24 +359,24 @@ public class LinkedHashMap extends HashMap {
     /**
      * Answers a Set of the mappings contained in this HashMap. Each element in
      * the set is a Map.Entry. The set is backed by this HashMap so changes to
-     * one are relected by the other. The set does not support adding.
+     * one are reflected by the other. The set does not support adding.
      * 
      * @return a Set of the mappings
      */
-    public Set entrySet() {
-        return new LinkedHashMapEntrySet(this);
+    public Set<Map.Entry<K, V>> entrySet() {
+        return new LinkedHashMapEntrySet<K, V>(this);
     }
 
     /**
      * Answers a Set of the keys contained in this HashMap. The set is backed by
-     * this HashMap so changes to one are relected by the other. The set does
+     * this HashMap so changes to one are reflected by the other. The set does
      * not support adding.
      * 
      * @return a Set of the keys
      */
-    public Set keySet() {
+    public Set<K> keySet() {
         if (keySet == null) {
-            keySet = new AbstractSet() {
+            keySet = new AbstractSet<K>() {
                 public boolean contains(Object object) {
                     return containsKey(object);
                 }
@@ -399,9 +397,9 @@ public class LinkedHashMap extends HashMap {
                     return false;
                 }
 
-                public Iterator iterator() {
-                    return new LinkedHashIterator(new MapEntry.Type() {
-                        public Object get(MapEntry entry) {
+                public Iterator<K> iterator() {
+                    return new LinkedHashIterator<K,K,V>(new MapEntry.Type<K,K,V>() {
+                        public K get(MapEntry<K,V> entry) {
                             return entry.key;
                         }
                     }, LinkedHashMap.this);
@@ -413,14 +411,14 @@ public class LinkedHashMap extends HashMap {
 
     /**
      * Answers a Collection of the values contained in this HashMap. The
-     * collection is backed by this HashMap so changes to one are relected by
+     * collection is backed by this HashMap so changes to one are reflected by
      * the other. The collection does not support adding.
      * 
      * @return a Collection of the values
      */
-    public Collection values() {
+    public Collection<V> values() {
         if (valuesCollection == null) {
-            valuesCollection = new AbstractCollection() {
+            valuesCollection = new AbstractCollection<V>() {
                 public boolean contains(Object object) {
                     return containsValue(object);
                 }
@@ -433,9 +431,9 @@ public class LinkedHashMap extends HashMap {
                     LinkedHashMap.this.clear();
                 }
 
-                public Iterator iterator() {
-                    return new LinkedHashIterator(new MapEntry.Type() {
-                        public Object get(MapEntry entry) {
+                public Iterator<V> iterator() {
+                    return new LinkedHashIterator<V,K,V>(new MapEntry.Type<V,K,V>() {
+                        public V get(MapEntry<K,V> entry) {
                             return entry.value;
                         }
                     }, LinkedHashMap.this);
@@ -453,12 +451,12 @@ public class LinkedHashMap extends HashMap {
      * @return the value associated with the key or null if the key was no in
      *         the map
      */
-    public Object remove(Object key) {
-        LinkedHashMapEntry m = (LinkedHashMapEntry) removeEntry(key);
+    public V remove(Object key) {
+        LinkedHashMapEntry<K, V> m = (LinkedHashMapEntry<K, V>) removeEntry(key);
         if (m == null)
             return null;
-        LinkedHashMapEntry p = m.chainBackward;
-        LinkedHashMapEntry n = m.chainForward;
+        LinkedHashMapEntry<K, V> p = m.chainBackward;
+        LinkedHashMapEntry<K, V> n = m.chainForward;
         if (p != null)
             p.chainForward = n;
         else
@@ -479,7 +477,7 @@ public class LinkedHashMap extends HashMap {
      * @param eldest
      * @return true if the eldest member should be removed
      */
-    protected boolean removeEldestEntry(Map.Entry eldest) {
+    protected boolean removeEldestEntry(Map.Entry<K,V> eldest) {
         return false;
     }
 
@@ -502,11 +500,9 @@ public class LinkedHashMap extends HashMap {
      * @see java.lang.Cloneable
      */
     public Object clone() {
-        LinkedHashMap map = (LinkedHashMap) super.clone();
+        LinkedHashMap<K, V> map = (LinkedHashMap<K, V>) super.clone();
         map.clear();
-        Iterator entries = entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry entry = (Map.Entry) entries.next();
+        for (Map.Entry<K, V> entry : entrySet()) {
             map.put(entry.getKey(), entry.getValue());
         }
         return map;

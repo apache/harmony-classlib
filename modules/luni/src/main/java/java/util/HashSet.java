@@ -30,13 +30,13 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 
 	private static final long serialVersionUID = -5024744406713321676L;
 
-	transient HashMap backingMap;
+	transient HashMap<E, HashSet<E>> backingMap;
 
 	/**
-	 * Contructs a new empty instance of HashSet.
+	 * Constructs a new empty instance of HashSet.
 	 */
 	public HashSet() {
-		this(new HashMap());
+		this(new HashMap<E, HashSet<E>>());
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 *            the initial capacity of this HashSet
 	 */
 	public HashSet(int capacity) {
-		this(new HashMap(capacity));
+		this(new HashMap<E, HashSet<E>>(capacity));
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 *            the initial load factor
 	 */
 	public HashSet(int capacity, float loadFactor) {
-		this(new HashMap(capacity, loadFactor));
+		this(new HashMap<E, HashSet<E>>(capacity, loadFactor));
 	}
 
 	/**
@@ -69,14 +69,14 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * @param collection
 	 *            the collection of elements to add
 	 */
-	public HashSet(Collection collection) {
-		this(new HashMap(collection.size() < 6 ? 11 : collection.size() * 2));
-		Iterator it = collection.iterator();
-		while (it.hasNext())
-			add(it.next());
+	public HashSet(Collection<? extends E> collection) {
+		this(new HashMap<E, HashSet<E>>(collection.size() < 6 ? 11 : collection.size() * 2));
+        for (E e : collection) {
+            add(e);
+        }
 	}
 
-	HashSet(HashMap backingMap) {
+	HashSet(HashMap<E, HashSet<E>> backingMap) {
 		this.backingMap = backingMap;
 	}
 
@@ -88,7 +88,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * @return true when this HashSet did not already contain the object, false
 	 *         otherwise
 	 */
-	public boolean add(Object object) {
+	public boolean add(E object) {
 		return backingMap.put(object, this) == null;
 	}
 
@@ -111,8 +111,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 */
 	public Object clone() {
 		try {
-			HashSet clone = (HashSet) super.clone();
-			clone.backingMap = (HashMap) backingMap.clone();
+			HashSet<E> clone = (HashSet<E>) super.clone();
+			clone.backingMap = (HashMap<E, HashSet<E>>) backingMap.clone();
 			return clone;
 		} catch (CloneNotSupportedException e) {
 			return null;
@@ -149,7 +149,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * 
 	 * @see Iterator
 	 */
-	public Iterator iterator() {
+	public Iterator<E> iterator() {
 		return backingMap.keySet().iterator();
 	}
 
@@ -179,7 +179,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 		stream.writeFloat(backingMap.loadFactor);
 		stream.writeInt(backingMap.elementCount);
 		for (int i = backingMap.elementData.length; --i >= 0;) {
-			HashMap.Entry entry = backingMap.elementData[i];
+			HashMap.Entry<E, HashSet<E>> entry = backingMap.elementData[i];
 			while (entry != null) {
 				stream.writeObject(entry.key);
 				entry = entry.next;
@@ -195,12 +195,12 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 		backingMap = createBackingMap(length, loadFactor);
 		int elementCount = stream.readInt();
 		for (int i = elementCount; --i >= 0;) {
-			Object key = stream.readObject();
+			E key = (E)stream.readObject();
 			backingMap.put(key, this);
 		}
 	}
 
-	HashMap createBackingMap(int capacity, float loadFactor) {
-		return new HashMap(capacity, loadFactor);
+	HashMap<E, HashSet<E>> createBackingMap(int capacity, float loadFactor) {
+		return new HashMap<E, HashSet<E>>(capacity, loadFactor);
 	}
 }
