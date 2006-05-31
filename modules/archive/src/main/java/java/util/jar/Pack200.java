@@ -199,7 +199,7 @@ public abstract class Pack200 {
 		 * 
 		 * @return the properties of packer
 		 */
-		SortedMap properties();
+		SortedMap<String, String> properties();
 
 		/**
 		 * Pack jarfile with pack arithmetic
@@ -279,7 +279,7 @@ public abstract class Pack200 {
 		 * 
 		 * @return the properties of unpacker
 		 */
-		SortedMap properties();
+		SortedMap<String, String> properties();
 
 		/**
 		 * unpack stream into jarfile with pack arithmetic
