@@ -15,7 +15,6 @@
 
 package java.util.jar;
 
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
@@ -26,54 +25,55 @@ import java.util.zip.ZipOutputStream;
  */
 public class JarOutputStream extends ZipOutputStream {
 
-	private Manifest manifest;
+    private Manifest manifest;
 
-	/**
-	 * Contructs a new JarOuputStream using os as the underlying stream.
-	 * Manifest information for the JarFile to be written is obtained from the
-	 * parameter Manifest, mf.
-	 * 
-	 * @param os
-	 *            The OutputStream to write to
-	 * @param mf
-	 *            The Manifest to output for this Jar.
-	 * @exception IOException
-	 *                If an error occurs creating the JarOutputStream
-	 */
-	public JarOutputStream(OutputStream os, Manifest mf) throws IOException {
-		super(os);
-		if (mf == null)
-			throw new NullPointerException();
-		manifest = mf;
-		ZipEntry ze = new ZipEntry(JarFile.MANIFEST_NAME);
-		putNextEntry(ze);
-		manifest.write(this);
-		closeEntry();
-	}
+    /**
+     * Contructs a new JarOuputStream using os as the underlying stream.
+     * Manifest information for the JarFile to be written is obtained from the
+     * parameter Manifest, mf.
+     * 
+     * @param os
+     *            The OutputStream to write to
+     * @param mf
+     *            The Manifest to output for this Jar.
+     * @exception IOException
+     *                If an error occurs creating the JarOutputStream
+     */
+    public JarOutputStream(OutputStream os, Manifest mf) throws IOException {
+        super(os);
+        if (mf == null) {
+            throw new NullPointerException();
+        }
+        manifest = mf;
+        ZipEntry ze = new ZipEntry(JarFile.MANIFEST_NAME);
+        putNextEntry(ze);
+        manifest.write(this);
+        closeEntry();
+    }
 
-	/**
-	 * Contructs a new JarOuputStream using os as the underlying stream.
-	 * 
-	 * @param os
-	 *            The OutputStream to write to
-	 * @exception IOException
-	 *                If an error occurs creating the JarOutputStream
-	 */
-	public JarOutputStream(OutputStream os) throws IOException {
-		super(os);
-	}
+    /**
+     * Contructs a new JarOuputStream using os as the underlying stream.
+     * 
+     * @param os
+     *            The OutputStream to write to
+     * @exception IOException
+     *                If an error occurs creating the JarOutputStream
+     */
+    public JarOutputStream(OutputStream os) throws IOException {
+        super(os);
+    }
 
-	/**
-	 * Writes the specified entry to the underlying stream. The previous entry
-	 * is closed if it is still open.
-	 * 
-	 * 
-	 * @param ze
-	 *            The ZipEntry to write
-	 * @exception IOException
-	 *                If an error occurs writing the entry
-	 */
-	public void putNextEntry(ZipEntry ze) throws IOException {
-		super.putNextEntry(ze);
-	}
+    /**
+     * Writes the specified entry to the underlying stream. The previous entry
+     * is closed if it is still open.
+     * 
+     * 
+     * @param ze
+     *            The ZipEntry to write
+     * @exception IOException
+     *                If an error occurs writing the entry
+     */
+    public void putNextEntry(ZipEntry ze) throws IOException {
+        super.putNextEntry(ze);
+    }
 }
