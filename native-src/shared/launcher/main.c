@@ -1307,7 +1307,7 @@ dumpVersionInfo (HyPortLibrary * portLib)
         (char *) portLib->nls_lookup_message (PORTLIB,
                 HYNLS_DO_NOT_PRINT_MESSAGE_TAG,
                 HYNLS_EXELIB_VERSION,
-                "\njava version 1.4.2 (subset)\n"), "1.4.2 (subset)\n");
+                "\njava version 1.5 (subset)\n"), "1.5 (subset)\n");
 }
 
 static I_32
