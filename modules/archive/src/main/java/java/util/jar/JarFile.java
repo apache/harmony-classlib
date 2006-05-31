@@ -200,8 +200,8 @@ public class JarFile extends java.util.zip.ZipFile {
 	 * @exception java.lang.IllegalStateException
 	 *                If this JarFile has been closed.
 	 */
-	public Enumeration entries() {
-		class JarFileEnumerator implements Enumeration {
+	public Enumeration<JarEntry> entries() {
+		class JarFileEnumerator implements Enumeration<JarEntry> {
 			Enumeration ze;
 
 			JarFile jf;
@@ -215,7 +215,7 @@ public class JarFile extends java.util.zip.ZipFile {
 				return ze.hasMoreElements();
 			}
 
-			public Object nextElement() {
+			public JarEntry nextElement() {
 				JarEntry je = new JarEntry((ZipEntry) ze.nextElement());
 				je.parentJar = jf;
 				if (verifier != null)

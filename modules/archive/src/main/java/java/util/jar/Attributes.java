@@ -26,9 +26,9 @@ import java.util.Set;
  * keys are generally instances of Attributes.Name. Values associated with
  * Attributes keys are of type String.
  */
-public class Attributes implements Cloneable, Map {
+public class Attributes implements Cloneable, Map<Object, Object> {
 
-	protected Map map;
+	protected Map<Object, Object> map;
 
 	public static class Name {
 		private String name;
@@ -121,7 +121,7 @@ public class Attributes implements Cloneable, Map {
 	 * Constructs an Attributes instance
 	 */
 	public Attributes() {
-		map = new HashMap();
+		map = new HashMap<Object, Object>();
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class Attributes implements Cloneable, Map {
 	 *            The Attributes to obtain entries from.
 	 */
 	public Attributes(Attributes attrib) {
-		map = (Map) ((HashMap) attrib.map).clone();
+		map = (Map<Object, Object>)((HashMap) attrib.map).clone();
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class Attributes implements Cloneable, Map {
 	 *            Initial size of this Attributes instance.
 	 */
 	public Attributes(int size) {
-		map = new HashMap(size);
+		map = new HashMap<Object, Object>(size);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class Attributes implements Cloneable, Map {
 	 * 
 	 * @return a set of MapEntry's
 	 */
-	public Set entrySet() {
+	public Set<Map.Entry<Object, Object>> entrySet() {
 		return map.entrySet();
 	}
 
@@ -211,7 +211,7 @@ public class Attributes implements Cloneable, Map {
 	 * 
 	 * @return a Set of all keys
 	 */
-	public Set keySet() {
+	public Set<Object> keySet() {
 		return map.keySet();
 	}
 
@@ -238,7 +238,7 @@ public class Attributes implements Cloneable, Map {
 	 * @param attrib
 	 *            the associations to store (must be of type Attributes).
 	 */
-	public void putAll(Map attrib) {
+	public void putAll(Map<?, ?> attrib) {
         if( attrib == null ) {
             throw new ClassCastException();
         }
@@ -270,7 +270,7 @@ public class Attributes implements Cloneable, Map {
 	 * 
 	 * @return a Collection of all values present
 	 */
-	public Collection values() {
+	public Collection<Object> values() {
 		return map.values();
 	}
 
@@ -281,7 +281,7 @@ public class Attributes implements Cloneable, Map {
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
-		clone.map = (Map) ((HashMap) this.map).clone();
+		clone.map = (Map<Object, Object>) ((HashMap) this.map).clone();
 		return clone;
 	}
 

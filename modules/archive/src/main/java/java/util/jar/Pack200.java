@@ -43,7 +43,7 @@ public abstract class Pack200 {
 	 */
 	public static Pack200.Packer newPacker() {
 		Packer packer = (Packer) AccessController
-				.doPrivileged(new PrivilegedAction() {
+				.doPrivileged(new PrivilegedAction<Object>() {
 					public Object run() {
 						String className = System
 								.getProperty(SYSTEM_PROPERTY_PACKER);
@@ -72,7 +72,7 @@ public abstract class Pack200 {
 	 */
 	public static Pack200.Unpacker newUnpacker() {
 		Unpacker unpacker = (Unpacker) AccessController
-				.doPrivileged(new PrivilegedAction() {
+				.doPrivileged(new PrivilegedAction<Object>() {
 					public Object run() {
 						String className = System
 								.getProperty(SYSTEM_PROPERTY_UNPACKER);

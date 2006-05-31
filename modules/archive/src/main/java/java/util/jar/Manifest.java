@@ -36,9 +36,9 @@ import org.apache.harmony.luni.util.PriviAction;
 public class Manifest implements Cloneable {
 	private Attributes mainAttributes = new Attributes();
 
-	private HashMap entryAttributes = new HashMap();
+	private HashMap<String, Attributes> entryAttributes = new HashMap<String, Attributes>();
 
-	private HashMap chunks;
+	private HashMap<String, byte[]> chunks;
 
 	/*The data chunk of Main Attributes in the manifest is needed in verification.*/
 	private byte[] mainAttributesChunk;
@@ -94,7 +94,7 @@ public class Manifest implements Cloneable {
 	 * 
 	 * @return A Map of entry attributes
 	 */
-	public Map getEntries() {
+	public Map<String, Attributes> getEntries() {
 		return entryAttributes;
 	}
 
@@ -116,7 +116,7 @@ public class Manifest implements Cloneable {
 	 */
 	public Manifest(Manifest man) {
 		mainAttributes = (Attributes) man.mainAttributes.clone();
-		entryAttributes = (HashMap) man.entryAttributes.clone();
+		entryAttributes = (HashMap<String, Attributes>) man.entryAttributes.clone();
 	}
 
 	/**

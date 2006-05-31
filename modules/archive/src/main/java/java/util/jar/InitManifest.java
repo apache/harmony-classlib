@@ -46,7 +46,8 @@ class InitManifest {
 
 	private boolean usingUTF8 = true;
 
-	private Map attributeNames = new HashMap();
+	private Map<String, Attributes.Name> attributeNames =
+        new HashMap<String, Attributes.Name>();
 
 	private byte[] mainAttributesChunk;
 
@@ -59,7 +60,7 @@ class InitManifest {
 		}
 
 		Attributes current = main;
-		ArrayList list = new ArrayList();
+		ArrayList<String> list = new ArrayList<String>();
 
 		//Return the chunk of main attributes in the manifest.
 		mainAttributesChunk = nextChunk(is,list);		
@@ -99,7 +100,7 @@ class InitManifest {
 		return mainAttributesChunk;
 	}
 
-	private void addLine(int length, List lines) throws IOException {
+	private void addLine(int length, List<String> lines) throws IOException {
 		if (encoding != null) {
 			lines.add(new String(buffer, 0, length, encoding));
 		} else {
@@ -128,7 +129,7 @@ class InitManifest {
 		}
 	}
 
-	private byte[] nextChunk(InputStream in, List lines) throws IOException {
+	private byte[] nextChunk(InputStream in, List<String> lines) throws IOException {
 		if (inbufCount == -1)
 			return null;
 		byte next;
@@ -196,7 +197,7 @@ class InitManifest {
 		}
 	}
 
-	private boolean readLines(InputStream in, List lines) throws IOException {
+	private boolean readLines(InputStream in, List<String> lines) throws IOException {
 		if (inbufCount == -1)
 			return false;
 		byte next;
