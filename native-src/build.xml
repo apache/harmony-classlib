@@ -43,7 +43,7 @@
           target: clean              
          ================================= -->
     <target name="clean"
-            depends="clean-overlay-oss, make-clean, clean-layout" />
+            depends="make-clean, clean-overlay-oss, clean-layout" />
 
 
     <!-- ================================= 

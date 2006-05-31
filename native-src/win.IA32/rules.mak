@@ -49,6 +49,7 @@ $(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 !endif
 
 clean:
-	-del $(BUILDFILES) *.res *.pdb \
-             $(LIBNAME) $(LIBNAME:.lib=.exp) $(LIBNAME:.lib=.map) \
-             $(DLLNAME) $(EXENAME) >nul 2>&1
+    -del $(BUILDFILES) *.res *.pdb \
+             $(LIBNAME) $(LIBNAME:.lib=.exp) \
+             $(DLLNAME) $(DLLNAME:.dll=.pdb) $(DLLNAME:.dll=.map) \
+             $(EXENAME) $(EXENAME:.exe=.pdb) >nul 2>&1
