@@ -27,11 +27,12 @@
     <property name="build.compiler" value="modern"/>
 
     <property name="tests.output" location="build/test_report" />
-    <property name="target.output" location="deploy" />
+	<property name="hy.hdk" location="deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
     <property name="tests.build.output" location="build/tests" />
     <property name="support.dir" location="support"/>
-    <property name="tests.depends.jars" location="deploy/jre/lib/boot" />
+    <property name="tests.depends.jars" location="deploy/jdk/jre/lib/boot" />
     <property file="make/depends.properties" />
 
 	<!-- this list of components to test will grow to eventually be all modules -->
@@ -267,7 +268,7 @@
     	<!-- The location of the Harmony launcher can be overridden by 
     	     the "harmony.vm.exe" property. Default value of property
     	     is set assuming it is under the deploy tree -->
-    	<property name="harmony.vm.exe" location="${target.output}/jre/bin/java"/>
+    	<property name="harmony.vm.exe" location="${hy.jdk}/jre/bin/java"/>
     	
         <!-- Delete "junitCompleted" - an empty file that can be used to
              check that the junit test VM does not exit prematurely -->
@@ -305,7 +306,7 @@
     	<!-- The location of the Harmony launcher can be overridden by 
     	     the "harmony.vm.exe" property. Default value of property
     	     is set assuming it is under the deploy tree -->
-    	<property name="harmony.vm.exe" location="${target.output}/jre/bin/java"/>
+    	<property name="harmony.vm.exe" location="${hy.jdk}/jre/bin/java"/>
 
         <!-- Delete "junitCompleted" - an empty file that can be used to
              check that the junit test VM does not exit prematurely -->
@@ -318,7 +319,7 @@
                jvm="${harmony.vm.exe}"
                errorproperty="tests.failed"
                failureproperty="tests.failed">
-            <env key="JAVA_HOME" value="${target.output}/jre" />
+            <env key="JAVA_HOME" value="${hy.jdk}/jre" />
             <env key="LD_LIBRARY_PATH" value="" />
             <!-- required to be unset on Linux -->
             

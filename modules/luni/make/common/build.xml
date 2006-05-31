@@ -31,7 +31,7 @@
             debug="${java.debug.option}">
 
             <bootclasspath>
-                <fileset dir="${hy.target}/jre/lib/boot">
+                <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
@@ -39,7 +39,7 @@
     </target>
 
     <target name="build.jar">
-        <jar destfile="${hy.target}/jre/lib/boot/luni.jar"
+        <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
              manifest="${hy.luni}/META-INF/MANIFEST.MF">
             <fileset dir="${hy.build}"
                      includesfile="${hy.luni}/make/patternset.txt" />
@@ -60,7 +60,7 @@
             debug="${java.debug.option}">
 
             <bootclasspath>
-                <fileset dir="${hy.target}/jre/lib/boot">
+                <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
@@ -73,7 +73,7 @@
 
         <mkdir dir="${hy.tests.reports}" />
 
-        <property name="test.jre.home" value="${hy.target}/jre" />
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
             forkmode="once"

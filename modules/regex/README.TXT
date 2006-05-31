@@ -112,16 +112,17 @@ tree structure:
        |
        +---deploy
              |
-             \---jre
-                  |
-                  |
-                  \---lib
+             \---jdk
+                 \---jre
                       |
-                      +---boot
-                             |
-                             +--- beans.jar
-                             +--- math.jar
-                             \--- regex.jar
+                      |
+                      \---lib
+                          |
+                          +---boot
+                                 |
+                                 +--- beans.jar
+                                 +--- math.jar
+                                 \--- regex.jar
        
 
 NOTE: To build regex and math packages in a self-hosting environment on Linux*, you also need 

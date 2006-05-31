@@ -38,7 +38,8 @@
     <property name="depends.jars" location="depends/jars" />
     <property name="depends.manifests" location="depends/manifests" />
     <property name="depends.files" location="depends/files" />
-    <property name="target.output" location="deploy" />
+	<property name="hy.hdk" location="deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
     <property file="make/depends.properties" />
 
 
@@ -114,7 +115,7 @@
             </classpath>
         </javac>
 
-        <mkdir dir="${target.output}/jre/lib/boot" />
+        <mkdir dir="${hy.jdk}/jre/lib/boot" />
 
         <call-modules target="build" />
 
@@ -142,13 +143,13 @@
         depends="compile" 
         description="Construct the correct directory structure for the class libs">
         <!-- Create the structure -->
-        <mkdir dir="${target.output}/jre/bin" />
-        <mkdir dir="${target.output}/jre/lib/boot" />
-        <mkdir dir="${target.output}/jre/lib/ext" />
-        <mkdir dir="${target.output}/jre/lib/security" />
+        <mkdir dir="${hy.jdk}/jre/bin" />
+        <mkdir dir="${hy.jdk}/jre/lib/boot" />
+        <mkdir dir="${hy.jdk}/jre/lib/ext" />
+        <mkdir dir="${hy.jdk}/jre/lib/security" />
 
         <!-- Copy across the dependency jars -->
-        <copy todir="${target.output}/jre/lib/boot" overwrite="yes"
+        <copy todir="${hy.jdk}/jre/lib/boot" overwrite="yes"
               verbose="yes">
             <fileset dir="${depends.jars}">
                 <patternset includes="*.jar" />
@@ -160,21 +161,21 @@
         </copy>
 
         <!-- Copy across the extension dependency jars -->
-        <copy todir="${target.output}/jre/lib/ext" overwrite="yes"
+        <copy todir="${hy.jdk}/jre/lib/ext" overwrite="yes"
               verbose="yes" flatten="yes">
             <fileset file="${bcprov.jar}" />
         </copy>
 
         <!-- Copy across the support files -->
-        <copy todir="${target.output}/jre/lib/boot" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/lib/boot" overwrite="yes">
             <fileset dir="${depends.files}">
                 <include name="bootclasspath.properties" />
             </fileset>
         </copy>
-        <fixcrlf srcdir="${target.output}/jre/lib/boot"
+        <fixcrlf srcdir="${hy.jdk}/jre/lib/boot"
             includes="bootclasspath.properties" />
 
-        <copy todir="${target.output}/jre/lib/security" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/lib/security" overwrite="yes">
              <fileset dir="${depends.files}">
                  <include name="java.policy" />
                  <include name="java.security" />
@@ -189,7 +190,7 @@
          ================================= -->
     <target name="clean-layout">
         <delete includeemptydirs="true" failonerror="false">
-            <fileset dir="${target.output}">
+            <fileset dir="${hy.jdk}">
                 <exclude name="jre/bin/default/**" />
             	<exclude name="jre/bin/**" />
                 <exclude name="jre/lib/ext/**" />

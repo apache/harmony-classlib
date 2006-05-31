@@ -112,12 +112,12 @@ Generating snapshot tar
             <tarfileset dir="${basedir}" prefix="Harmony">
                 <include name="LICENSE" />
                 <include name="THIRD_PARTY_NOTICES.txt" />
-                <include name="deploy/**" />
-                <exclude name="deploy/jre/bin/default/**" /> 
-                <exclude name="deploy/jre/bin/java" /> 
+                <include name="deploy/jdk/**" />
+                <exclude name="deploy/jdk/jre/bin/default/**" /> 
+                <exclude name="deploy/jdk/jre/bin/java" /> 
             </tarfileset>
             <tarfileset dir="${basedir}" prefix="Harmony" mode="755">
-                <include name="deploy/jre/bin/java" />
+                <include name="deploy/jdk/jre/bin/java" />
             </tarfileset>
             <tarfileset dir="${basedir}/make/resources"
                 includes="README-snapshot.txt"
@@ -139,8 +139,8 @@ Generating snapshot zip
             <zipfileset dir="${basedir}" prefix="Harmony">
                 <include name="LICENSE" />
                 <include name="THIRD_PARTY_NOTICES.txt" />
-                <include name="deploy/**" />
-                <exclude name="deploy/jre/bin/default/**" /> 
+                <include name="deploy/jdk/**" />
+                <exclude name="deploy/jdk/jre/bin/default/**" /> 
             </zipfileset>
             <zipfileset dir="${basedir}/make/resources"
                 includes="README-snapshot.txt"

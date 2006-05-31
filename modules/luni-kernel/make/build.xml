@@ -21,10 +21,10 @@
 
     <description>Build for luni kernel stub jar</description>
 
-    <property name="hy.target" location="../../deploy" />
+    <property name="hy.jdk" location="../../deploy/jdk" />
     <property name="hy.build" location="../../build" />
     <property name="stub.jar"
-              location="${hy.target}/jre/lib/boot/luni-kernel-stubs.jar" />
+              location="${hy.jdk}/jre/lib/boot/luni-kernel-stubs.jar" />
 
     <target name="warn">
         <fail>...

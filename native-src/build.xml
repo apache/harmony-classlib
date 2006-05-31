@@ -50,7 +50,8 @@
           target: properties
          ================================= -->
     <target name="properties" depends="init, windows-properties, linux-properties">
-        <property name="target.output" location="../deploy" />
+        <property name="hy.hdk" location="../deploy" />
+    	<property name="hy.jdk" location="${hy.hdk}/jdk" />
         <property name="depends.oss" location="../depends/oss" />
         <property name="depends.libs" location="../depends/libs/${target.platform}" />
     	<property name="depends.files" location="../depends/files" />
@@ -133,11 +134,11 @@
         description="Construct the correct directory structure for native binaries">
 
         <!-- Create the structure -->
-        <mkdir dir="${target.output}/jre/bin" />
-        <mkdir dir="${target.output}/include" />
+        <mkdir dir="${hy.jdk}/jre/bin" />
+        <mkdir dir="${hy.jdk}/include" />
 
         <!-- Copy across the built shared libs -->
-        <copy todir="${target.output}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${target.platform}">
                 <patternset includes="*${shlib.suffix}*" />
                 <!-- Don't copy the VMI library. the one we build is a stub that is
@@ -147,7 +148,7 @@
         </copy>
 
         <!-- Copy across the built executables -->
-        <copy todir="${target.output}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${target.platform}">
                 <patternset includes="java${exe.suffix}" />
                 <patternset includes="javaw${exe.suffix}" />
@@ -155,23 +156,23 @@
         </copy>
     	
     	<!-- NLS catalog files -->
-        <copy todir="${target.output}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${depends.files}">
                 <include name="harmony*.properties" />
             </fileset>
         </copy>
 
         <!-- Make sure the Linux launcher has execute permission -->
-        <chmod file="${target.output}/jre/bin/java${exe.suffix}" perm="ugo+x" />
+        <chmod file="${hy.jdk}/jre/bin/java${exe.suffix}" perm="ugo+x" />
 
         <!-- Copy across dependency shared libs -->
-        <copy todir="${target.output}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${depends.libs}" includes="*${shlib.suffix}*" />
         </copy>
 
         <!-- Copy across JNI include files -->
-        <copy todir="${target.output}/include" overwrite="yes">
-            <fileset dir="${native.src.root}/include">
+        <copy todir="${hy.jdk}/include" overwrite="yes">
+            <fileset dir="${native.shared.src.root}/include">
                 <include name="jni.h" />
             </fileset>
             <fileset dir="${native.shared.src.root}/include">
@@ -186,7 +187,7 @@
          ================================= -->
     <target name="clean-layout" depends="properties">
         <delete includeemptydirs="true" failonerror="false">
-            <fileset dir="${target.output}">
+            <fileset dir="${hy.jdk}">
                 <include name="**/bin/java${exe.suffix}" />
                 <include name="**/bin/javaw${exe.suffix}" />
                 <include name="**/bin/*${shlib.suffix}*" />

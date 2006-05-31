@@ -43,7 +43,7 @@ Requirements :
    This is IBM's VM that works with the Harmony class libraries.
    We will use this until our own VM efforts come up to speed.
    
-   Installation - drop into deploy/jre/bin/default
+   Installation - drop into deploy/jdk/jre/bin/default
    
 
  Once the prereqs are there : 

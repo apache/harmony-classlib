@@ -104,27 +104,28 @@ tree structure:
        |
        \---deploy
              |
-             \---jre
-                  |
-                  +---bin
-                  |    |
-                  |    \--- jaaswin.dll or libjaasnix.so
-                  |
-                  |
-                  \---lib
-                      |
-                      +---boot
-                      |      |
-                      |      +--- security.jar
-                      |      +--- crypto.jar
-                      |      \--- x-net.jar
-                      | 
-                      +---ext
-                      |
-                      \---security
-                             |
-                             +--- drl.policy
-                             \--- java.security 
+             \---jdk
+                \---jre
+                     |
+                     +---bin
+                     |    |
+                     |    \--- jaaswin.dll or libjaasnix.so
+                     |
+                     |
+                     \---lib
+                         |
+                         +---boot
+                         |      |
+                         |      +--- security.jar
+                         |      +--- crypto.jar
+                         |      \--- x-net.jar
+                         | 
+                         +---ext
+                         |
+                         \---security
+                                |
+                                +--- drl.policy
+                                \--- java.security 
 
 
 4. RUNNING CLASS LIBRARIES WITH AN EXTERNAL VM

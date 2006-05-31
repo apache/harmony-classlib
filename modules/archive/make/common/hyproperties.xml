@@ -36,7 +36,8 @@
       </packaging>
    </archive>
 
-   <target location="../../deploy" />
+   <hdk location="../../deploy" />
+   <jdk location="../../deploy/jdk" />
    <build location="../../build" />
 
    <tests>

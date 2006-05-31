@@ -92,21 +92,23 @@ directory of the following directory tree structure ...
        |
        \---deploy
              |
-             \---jre
+             \---jdk
                   |
-                  +---bin           <- classlibrary native code & launcher
-                  |   |
-                  |   +---default   <- VM-specific files for launcher's default VM
-                  |   +---vm1       <- VM-specific files for 'vm1'
-                  |   \---vm2       <- VM-specific files for 'vm2', and so on
-                  |
-                  \---lib
-                      |
-                      +---boot      <- common JARs for bootclasspath
-                      | 
-                      +---ext       <- extensions directory
-                      |
-                      \---security
+                  \---jre
+                       |
+                       +---bin           <- classlibrary native code & launcher
+                       |   |
+                       |   +---default   <- VM-specific files for launcher's default VM
+                       |   +---vm1       <- VM-specific files for 'vm1'
+                       |   \---vm2       <- VM-specific files for 'vm2', and so on
+                       |
+                       \---lib
+                           |
+                           +---boot      <- common JARs for bootclasspath
+                           | 
+                           +---ext       <- extensions directory
+                           |
+                           \---security
     
 
 
@@ -200,7 +202,7 @@ API. Instead the included source is only a subset of the Java 1.5 API.
 In addition there is minimal support for the Java security framework. Users 
 wishing to experiment with introducing JCE support to these class libraries are 
 recommended to download the latest release of the Bouncy Castle Cryptography API
-and install the provider jar into the <EXTRACT_DIR>/deploy/jre/lib/ext
+and install the provider jar into the <EXTRACT_DIR>/deploy/jdk/jre/lib/ext
 location. 
 See http://www.bouncycastle.org
 
@@ -217,7 +219,7 @@ The java launcher has a bug which makes it sensitive to the JAVA_HOME
 environment setting. Until this bug is fixed users should be aware that When
 running Java applications with the built class library components on a
 compatible VM the JAVA_HOME variable should either be unset or else explicitly
-set to EXTRACT_DIR>/deploy/jre. Any other value risks crashing
+set to EXTRACT_DIR>/deploy/jdk/jre. Any other value risks crashing
 the launcher. 
 
                                   ----------
@@ -253,12 +255,12 @@ error while loading shared libraries: libhysig.so: cannot open shared
 object file: No such file or directory
 
 On some systems this error can occur even when the shared library
-(e.g. <EXTRACT_DIR>/deploy/jre/bin/libhysig.so) has been built correctly
+(e.g. <EXTRACT_DIR>/deploy/jdk/jre/bin/libhysig.so) has been built correctly
 and is present in the correct location. This is not a problem with the built
 shared library but instead is dependent on how the operating system locates and 
 loads dynamically linked libraries at runtime. Updating the LD_LIBRARY_PATH 
 environment variable to include the directory
-<EXTRACT_DIR>/deploy/jre/bin should solve this. An alternative remedy 
+<EXTRACT_DIR>/deploy/jdk/jre/bin should solve this. An alternative remedy 
 would be to add new entries for each of the shared libraries built from the
 contributed native source code to the local /etc/ld.so.conf file and then 
 running the ldconfig program to rebuild the /etc/ld.so.cache. 

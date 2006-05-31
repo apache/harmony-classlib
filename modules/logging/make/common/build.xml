@@ -31,7 +31,7 @@
             debug="${java.debug.option}">
 
             <bootclasspath>
-                <fileset dir="${hy.target}/jre/lib/boot">
+                <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
@@ -39,7 +39,7 @@
     </target>
 
     <target name="build.jar">
-        <jar destfile="${hy.target}/jre/lib/boot/logging.jar"
+        <jar destfile="${hy.jdk}/jre/lib/boot/logging.jar"
              manifest="${hy.logging}/META-INF/MANIFEST.MF">
             <fileset dir="${hy.build}"
                      includesfile="${hy.logging}/make/patternset.txt" />
@@ -61,7 +61,7 @@
             debug="${java.debug.option}">
 
             <bootclasspath>
-                <fileset dir="${hy.target}/jre/lib/boot">
+                <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
@@ -75,7 +75,7 @@
             debug="${java.debug.option}">
 
             <bootclasspath>
-                <fileset dir="${hy.target}/jre/lib/boot">
+                <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
                 <pathelement path="${hy.logging.bin.internal}"/>
@@ -89,7 +89,7 @@
 
         <mkdir dir="${hy.tests.reports}" />
 
-        <property name="test.jre.home" value="${hy.target}/jre" />
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
             forkmode="once"
@@ -105,7 +105,7 @@
             <env key="JAVA_HOME" value="${test.jre.home}"/>
 
             <bootclasspath>
-                <fileset dir="${hy.target}/jre/lib/boot">
+                <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
                 <pathelement path="${hy.logging.bin.internal}"/>
@@ -145,7 +145,7 @@
     </target>
 
     <target name="copy.resources">
-        <copy todir="${hy.target}/jre/lib" overwrite="yes" flatten="yes">
+        <copy todir="${hy.jdk}/jre/lib" overwrite="yes" flatten="yes">
             <fileset dir="${hy.logging.src.main.java}">
                 <include name="**/logging.properties" />
             </fileset>
