@@ -51,7 +51,7 @@ public class Level implements Serializable {
      * Class variables
      * -------------------------------------------------------------------
      */
-    private static Map levels = new HashMap();
+    private static Map<String, Level> levels = new HashMap<String, Level>();
 	
     // The following string constants define the name of all predefined levels.
     private static final String SEVERESTR = "SEVERE"; //$NON-NLS-1$
@@ -251,10 +251,11 @@ public class Level implements Serializable {
      *             When <code>name</code> cannot be parsed.
      */
     public static final Level parse(String name) {
-        if (null == name)
+        if (null == name) {
             throw new NullPointerException("null"); //$NON-NLS-1$
+        }
         // Check if the name is a predefined one
-        Level result = (Level) levels.get(name);
+        Level result = levels.get(name);
         if (null != result) {
             return result;
         }
@@ -300,7 +301,7 @@ public class Level implements Serializable {
      */
     private Object readResolve() {
         String levelName = this.getName();
-        Level result = (Level) levels.get(levelName);
+        Level result = levels.get(levelName);
 
         if (null != result) {
             boolean sameResourceBundle = (this.resourceBundleName == null ? result

@@ -212,8 +212,9 @@ public class XMLFormatter extends Formatter {
 
     //use privilege code to get system property
     private static String getSystemProperty(final String key) {
-        return (String) AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        return (String) AccessController.doPrivileged(
+          new PrivilegedAction<String>() {
+            public String run() {
                 return System.getProperty(key);
             }
         });

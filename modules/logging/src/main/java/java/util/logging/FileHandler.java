@@ -119,7 +119,7 @@ public class FileHandler extends StreamHandler {
      * ---------------------------------------------
      */
     //maintain all file locks hold by this process
-    private static Hashtable allLocks = new Hashtable();
+    private static Hashtable<String, FileLock> allLocks = new Hashtable<String, FileLock>();
 
     /*
      * ---------------------------------------------
@@ -539,7 +539,7 @@ public class FileHandler extends StreamHandler {
         super.publish(record);
         flush();
         if (limit > 0 && output.getLength() >= limit) {
-            AccessController.doPrivileged(new PrivilegedAction() {
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 public Object run() {
                     findNextGeneration();
                     return null;

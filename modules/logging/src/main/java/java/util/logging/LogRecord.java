@@ -42,7 +42,6 @@ import java.util.ResourceBundle;
  */
 public class LogRecord implements Serializable {
 
-    //for serialization compability with J2SE1.4.2
     private static final long serialVersionUID = 5372048053134512534L;
     
     /*
@@ -67,7 +66,7 @@ public class LogRecord implements Serializable {
     private static long currentSequenceNumber = 0;
 
     // Store the id for each thread.
-    private static ThreadLocal currentThreadId = new ThreadLocal();
+    private static ThreadLocal<Integer> currentThreadId = new ThreadLocal<Integer>();
 
     // The base id as the starting point for thread ID allocation.
     private static int initThreadId = 0;
@@ -225,8 +224,9 @@ public class LogRecord implements Serializable {
      *            the level to set
      */
     public void setLevel(Level level) {
-        if (null == level)
+        if (null == level) {
             throw new NullPointerException("null"); //$NON-NLS-1$
+        }
         this.level = level;
     }
 
@@ -485,9 +485,8 @@ public class LogRecord implements Serializable {
             out.writeInt(-1);
         } else {
             out.writeInt(parameters.length);
-            for (int i = 0; i < parameters.length; i++) {
-                out.writeObject(null == parameters[i] ? null : parameters[i]
-                        .toString());
+            for (Object element : parameters) {
+                out.writeObject(null == element ? null : element.toString());
             }
         }
     }

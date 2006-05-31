@@ -103,9 +103,8 @@ public abstract class Handler {
     // get a instance from given class name, using context classloader
     private Object getCustomizeInstance(final String className)
             throws Exception {
-        Class c = (Class) AccessController
-                .doPrivileged(new PrivilegedExceptionAction() {
-                    public Object run() throws Exception {
+        Class c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class>() {
+                    public Class run() throws Exception {
                         ClassLoader loader = Thread.currentThread()
                                 .getContextClassLoader();
                         if (null == loader)

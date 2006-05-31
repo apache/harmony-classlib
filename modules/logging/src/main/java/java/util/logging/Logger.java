@@ -120,7 +120,7 @@ public class Logger {
     private ResourceBundle resBundle;
 
     // the handlers attached to this logger
-    private Vector handlers;
+    private Vector<Handler> handlers;
 
     /*
      * flag indicating whether to notify parent's handlers on receiving a log
@@ -162,7 +162,7 @@ public class Logger {
         this.parent = null;
         this.level = null;
         this.filter = null;
-        this.handlers = new Vector();
+        this.handlers = new Vector<Handler>();
         this.notifyParentHandlers = true;
         // any logger is not anonymous by default
         this.isNamed = true;
@@ -185,9 +185,9 @@ public class Logger {
      */
     static ResourceBundle loadResourceBundle(String resourceBundleName) {
         // try context class loader to load the resource
-        ClassLoader cl = (ClassLoader) AccessController
-                .doPrivileged(new PrivilegedAction() {
-                    public Object run() {
+        ClassLoader cl = AccessController.doPrivileged(
+                new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
                         return Thread.currentThread().getContextClassLoader();
                     }
                 });
@@ -200,9 +200,9 @@ public class Logger {
             }
         }
         // try system class loader to load the resource
-        cl = (ClassLoader) AccessController
-                .doPrivileged(new PrivilegedAction() {
-                    public Object run() {
+        cl = AccessController.doPrivileged(
+                new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
                         return ClassLoader.getSystemClassLoader();
                     }
                 });
@@ -221,9 +221,9 @@ public class Logger {
         for (int i = 1; i < classes.length; i++) {
             final int index = i;
             try {
-                cl = (ClassLoader) AccessController
-                        .doPrivileged(new PrivilegedAction() {
-                            public Object run() {
+                cl = AccessController.doPrivileged(
+                        new PrivilegedAction<ClassLoader>() {
+                            public ClassLoader run() {
                                 return classes[index].getClassLoader();
                             }
                         });
@@ -398,7 +398,7 @@ public class Logger {
      * @return an array of all the hanlders associated with this logger
      */
     public synchronized Handler[] getHandlers() {
-        return (Handler[]) this.handlers.toArray(new Handler[0]);
+        return this.handlers.toArray(new Handler[0]);
     }
 
     /**
@@ -1030,16 +1030,16 @@ public class Logger {
              * occurs
              */
             Handler[] ha = this.getHandlers();
-            for (int i = 0; i < ha.length; i++) {
-                ha[i].publish(record);
+            for (Handler element : ha) {
+                element.publish(record);
             }
             // call the parent's handlers if set useParentHandlers
             if (getUseParentHandlers()) {
                 Logger anyParent = this.parent;
                 while (null != anyParent) {
                     ha = anyParent.getHandlers();
-                    for (int i = 0; i < ha.length; i++) {
-                        ha[i].publish(record);
+                    for (Handler element : ha) {
+                        element.publish(record);
                     }
                     if (anyParent.getUseParentHandlers()) {
                         anyParent = anyParent.parent;

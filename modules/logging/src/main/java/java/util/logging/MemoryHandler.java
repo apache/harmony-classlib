@@ -107,9 +107,8 @@ public class MemoryHandler extends Handler {
         //init target
         final String targetName = manager.getProperty(className+".target"); //$NON-NLS-1$
         try {
-            Class targetClass = (Class)
-            AccessController.doPrivileged(new PrivilegedExceptionAction(){
-                public Object run() throws Exception{
+            Class targetClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class>(){
+                public Class run() throws Exception{
                     ClassLoader loader = Thread.currentThread().getContextClassLoader();
                     if(loader == null){
                         loader = ClassLoader.getSystemClassLoader();
@@ -208,8 +207,9 @@ public class MemoryHandler extends Handler {
      * @param record the log record.
      */
     public void publish(LogRecord record) {
-        if (!isLoggable(record))
+        if (!isLoggable(record)) {
             return;
+        }
         if (cursor >= size) {
             cursor = 0;
         }
@@ -254,11 +254,15 @@ public class MemoryHandler extends Handler {
      */
     public void push() {
         for (int i = cursor; i < size; i++) {
-            if(null != buffer[i])target.publish(buffer[i]);
+            if(null != buffer[i]) {
+                target.publish(buffer[i]);
+            }
             buffer[i] = null;
         }
         for (int i = 0; i < cursor; i++) {
-            if(null != buffer[i])target.publish(buffer[i]);
+            if(null != buffer[i]) {
+                target.publish(buffer[i]);
+            }
             buffer[i] = null;
         }
         cursor = 0;
