@@ -232,7 +232,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      *                String
      */
     public Object put(Object key, Object value) {
-        return map.put(key, value);
+        return map.put((Name)key, (String)value);
     }
 
     /**
@@ -245,7 +245,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         if (attrib == null) {
             throw new ClassCastException();
         }
-        this.map.putAll(attrib);
+        this.map.putAll((Attributes)attrib);
     }
 
     /**
