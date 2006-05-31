@@ -757,7 +757,7 @@ public abstract class Preferences {
 	 * 				if <code>RuntimePermission("preferences")</code> is denied 
 	 * 				by a <code>SecurityManager</code>
 	 */
-	public static Preferences systemNodeForPackage (Class c) {
+	public static Preferences systemNodeForPackage (Class<?> c) {
 	    checkSecurity();
 		return factory.systemRoot().node(getNodeName(c));
 	}
@@ -804,7 +804,7 @@ public abstract class Preferences {
 	 * 				if <code>RuntimePermission("preferences")</code> is denied 
 	 * 				by a <code>SecurityManager</code>
 	 */
-	public static Preferences userNodeForPackage (Class c) {
+	public static Preferences userNodeForPackage (Class<?> c) {
 	    checkSecurity();
 		return factory.userRoot().node(getNodeName(c));
 	}
