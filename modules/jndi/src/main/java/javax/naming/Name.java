@@ -42,6 +42,11 @@ import java.util.Enumeration;
 public interface Name extends Cloneable, Serializable {
 
     /*
+     * SUID declared publically in the spec.
+     */
+    public static final long serialVersionUID = -3617482732056931635L;
+    
+    /*
      * -------------------------------------------------------------------
      * Methods
      * -------------------------------------------------------------------
@@ -54,7 +59,7 @@ public interface Name extends Cloneable, Serializable {
      * 
      * @return an enumeration of <code>Name</code> elements - cannot be null
      */
-    public Enumeration getAll();
+    public Enumeration<String> getAll();
 
     /**
      * Get an element of this <code>Name</code>.

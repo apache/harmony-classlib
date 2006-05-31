@@ -66,7 +66,7 @@ public class Reference implements Cloneable, Serializable {
      * 
      * @serial
      */
-    protected Vector addrs;
+    protected Vector<RefAddr> addrs;
 
     /**
      * The class in a factory which is used to create an object of the type 
@@ -135,7 +135,7 @@ public class Reference implements Cloneable, Serializable {
         this.className = className;
         this.classFactory = classFactory;
         this.classFactoryLocation = classFactoryLocation;
-        this.addrs = new Vector();
+        this.addrs = new Vector<RefAddr>();
     }
 
     /**
@@ -309,7 +309,7 @@ public class Reference implements Cloneable, Serializable {
     public Object clone() {
         try {
             Reference r = (Reference) super.clone();
-            r.addrs = (Vector) this.addrs.clone();
+            r.addrs = (Vector<RefAddr>) this.addrs.clone();
             return r;
         } catch (CloneNotSupportedException e) {
             throw new InternalError("Failed to clone object of Reference class."); //$NON-NLS-1$

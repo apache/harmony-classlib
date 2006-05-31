@@ -145,7 +145,7 @@ public class CompositeName implements Name {
      */
 
     /* a list holding elements */
-    private transient Vector elems;
+    private transient Vector<String> elems;
 
     /*
      * -------------------------------------------------------------------
@@ -158,8 +158,8 @@ public class CompositeName implements Name {
      *
      * @param elements  a list of name elements
      */
-    private CompositeName(List elements) {
-        elems = new Vector(elements);
+    private CompositeName(List<String> elements) {
+        elems = new Vector<String>(elements);
     }
 
     /**
@@ -167,8 +167,8 @@ public class CompositeName implements Name {
      *
      * @param elements  an enumeration of name elements
      */
-    protected CompositeName(Enumeration elements) {
-        elems = new Vector();
+    protected CompositeName(Enumeration<String> elements) {
+        elems = new Vector<String>();
         while (elements.hasMoreElements()) {
             elems.add(elements.nextElement());
         }
@@ -178,7 +178,7 @@ public class CompositeName implements Name {
      * Default constructor, creates an empty name with zero elements.
      */
     public CompositeName() {
-        elems = new Vector();
+        elems = new Vector<String>();
     }
 
     /**
@@ -202,9 +202,9 @@ public class CompositeName implements Name {
      * Parse string name elements. Delimiter is "/".
      * Escape is "\" and both single quote and double quote are supported.
      */
-    private static Vector parseName(String name) throws InvalidNameException {
+    private static Vector<String> parseName(String name) throws InvalidNameException {
 
-        Vector l = new Vector();
+        Vector<String> l = new Vector<String>();
 
         // special case: all '/', means same number of empty elements
         if (isAllSlash(name)) {
@@ -357,7 +357,7 @@ public class CompositeName implements Name {
      * -------------------------------------------------------------------
      */
 
-    public Enumeration getAll() {
+    public Enumeration<String> getAll() {
         return elems.elements();
     }
 
@@ -387,7 +387,7 @@ public class CompositeName implements Name {
             throw new InvalidNameException("Must be a CompositeName"); //$NON-NLS-1$
         }
 
-        Enumeration enumeration = name.getAll();
+        Enumeration<String> enumeration = name.getAll();
         while (enumeration.hasMoreElements()) {
             elems.add(enumeration.nextElement());
         }
@@ -405,7 +405,7 @@ public class CompositeName implements Name {
         if (index < 0 || index > elems.size()) {
             throw new ArrayIndexOutOfBoundsException();
         }
-        Enumeration enumeration = name.getAll();
+        Enumeration<String> enumeration = name.getAll();
         while (enumeration.hasMoreElements()) {
             elems.add(index++, enumeration.nextElement());
         }
@@ -547,7 +547,7 @@ public class CompositeName implements Name {
         }
 
         // replicate fields
-        copy.elems = new Vector(elems);
+        copy.elems = new Vector<String>(elems);
         return copy;
     }
 
@@ -641,9 +641,9 @@ public class CompositeName implements Name {
         ois.defaultReadObject();
 
         int size = ois.readInt();
-        elems = new Vector();
+        elems = new Vector<String>();
         for (int i = 0; i < size; i++) {
-            elems.add(ois.readObject());
+            elems.add((String)ois.readObject());
         }
     }
 

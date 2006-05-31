@@ -305,7 +305,7 @@ public class CompoundName implements Name {
     private transient boolean flat;
 
     //elements of compound name
-    private transient Vector elem;
+    private transient Vector<String> elem;
 
     //property setting
     protected transient Properties mySyntax;
@@ -332,12 +332,12 @@ public class CompoundName implements Name {
      * 						If empty, the direction defaults to flat and no 
      * 						other properties are required.
      */
-    protected CompoundName(Enumeration elements, Properties props) {
+    protected CompoundName(Enumeration<String> elements, Properties props) {
         if (null == props || null == elements) {
             throw new NullPointerException();
         }
         init(props);
-        this.elem = new Vector();
+        this.elem = new Vector<String>();
         while (elements.hasMoreElements()) {
             this.elem.add(elements.nextElement());
         }
@@ -430,7 +430,7 @@ public class CompoundName implements Name {
      * parse name from string to elements
      */
     private void parseName(String s) throws InvalidNameException {
-        this.elem = new Vector();
+        this.elem = new Vector<String>();
         if ("".equals(s)) { //$NON-NLS-1$
             // if empty string, return empty vector
             return;
@@ -611,7 +611,7 @@ public class CompoundName implements Name {
      * Methods of interface Name
      * -------------------------------------------------------------------
      */
-    public Enumeration getAll() {
+    public Enumeration<String> getAll() {
         return this.elem.elements();
     }
 
@@ -633,13 +633,13 @@ public class CompoundName implements Name {
 
     public Name getPrefix(int index) {
         validateIndex(index, true);
-        return new CompoundName(new Vector(elem.subList(0, index)).elements(),
+        return new CompoundName(new Vector<String>(elem.subList(0, index)).elements(),
                 mySyntax);
     }
 
     public Name getSuffix(int index) {
         validateIndex(index, false);
-        return new CompoundName(new Vector(elem.subList(index, elem.size()))
+        return new CompoundName(new Vector<String>(elem.subList(index, elem.size()))
                 .elements(), mySyntax);
     }
 
@@ -653,7 +653,7 @@ public class CompoundName implements Name {
                     + " is not a compound name."); //$NON-NLS-1$
         }
         validateIndex(index, true);
-        Enumeration enumeration = name.getAll();
+        Enumeration<String> enumeration = name.getAll();
         while (enumeration.hasMoreElements()) {
             elem.add(index++, enumeration.nextElement());
         }
@@ -708,7 +708,7 @@ public class CompoundName implements Name {
             throw new Error("Failed to clone object of CompoundName class"); //$NON-NLS-1$
         }
         newName.mySyntax = (Properties) mySyntax.clone();
-        newName.elem = (Vector) elem.clone();
+        newName.elem = (Vector<String>) elem.clone();
         return newName;
     }
 
@@ -782,9 +782,9 @@ public class CompoundName implements Name {
         ois.defaultReadObject();
         init(((Properties) ois.readObject()));
         int size = ois.readInt();
-        elem = new Vector();
+        elem = new Vector<String>();
         for (int i = 0; i < size; i++) {
-            elem.add(ois.readObject());
+            elem.add((String)ois.readObject());
         }
     }
 

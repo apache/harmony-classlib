@@ -119,7 +119,7 @@ public class InitialContext implements Context {
      * of the the sources of JNDI environment properties.
      * Initially null.
      */
-    protected Hashtable myProps;
+    protected Hashtable<String, Object> myProps;
 
     /*
      * -------------------------------------------------------------------
@@ -190,9 +190,9 @@ public class InitialContext implements Context {
 
         // 1. Read the environment parameter used to create this Context
         if (null == env) {
-            myProps = new Hashtable();
+            myProps = new Hashtable<String, Object>();
         } else {
-            myProps = (Hashtable) env.clone();
+            myProps = (Hashtable<String, Object>) env.clone();
         }
 
         // 2. Read Applet parameters
