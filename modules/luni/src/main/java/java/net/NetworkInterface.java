@@ -120,7 +120,7 @@ public final class NetworkInterface extends Object {
 	 * 
 	 * @return list of inet addresses bound to the interface
 	 */
-	public Enumeration getInetAddresses() {
+	public Enumeration<InetAddress> getInetAddresses() {
 		// create new vector from which Enumeration to be returned can be
 		// generated set the initial capacity to be the number of addresses for
 		// the network interface which is the maximum required size
@@ -128,18 +128,18 @@ public final class NetworkInterface extends Object {
 		// return an empty enumeration if there are no addresses associated with the
 		// interface
 		if (addresses == null) {
-			return new Vector(0).elements();
+			return new Vector<InetAddress>(0).elements();
 		}
 
 		// for those configuration that support the security manager we only
 		// return addresses for which checkConnect returns true
-		Vector accessibleAddresses = new Vector(addresses.length);
+		Vector<InetAddress> accessibleAddresses = new Vector<InetAddress>(addresses.length);
 
 		// get the security manager. If one does not exist just return
 		// the full list
 		SecurityManager security = System.getSecurityManager();
 		if (security == null) {
-			return (new Vector(Arrays.asList(addresses))).elements();
+			return (new Vector<InetAddress>(Arrays.asList(addresses))).elements();
 		}
 
 		// ok security manager exists so check each address and return
@@ -163,7 +163,7 @@ public final class NetworkInterface extends Object {
 			return accessibleAddresses.elements();
 		}
 		
-		return new Vector(0).elements();
+		return new Vector<InetAddress>(0).elements();
 	}
 
 	/**
@@ -247,7 +247,7 @@ public final class NetworkInterface extends Object {
 				// filtering
 				// Enumeration netifAddresses = netif.getInetAddresses();
 				if ((netif.addresses != null) && (netif.addresses.length != 0)) {
-					Enumeration netifAddresses = (new Vector(Arrays
+					Enumeration netifAddresses = (new Vector<InetAddress>(Arrays
 							.asList(netif.addresses))).elements();
 					if (netifAddresses != null) {
 						while (netifAddresses.hasMoreElements()) {
@@ -273,12 +273,12 @@ public final class NetworkInterface extends Object {
 	 * @throws SocketException
 	 *             if an error occurs when getting network interface information
 	 */
-	public static Enumeration getNetworkInterfaces() throws SocketException {
+	public static Enumeration<NetworkInterface> getNetworkInterfaces() throws SocketException {
 		NetworkInterface[] interfaces = getNetworkInterfacesImpl();
 		if (interfaces == null) {
 			return null;
 		}
-		return (new Vector(Arrays.asList(interfaces))).elements();
+		return (new Vector<NetworkInterface>(Arrays.asList(interfaces))).elements();
 	}
 
 	/**
