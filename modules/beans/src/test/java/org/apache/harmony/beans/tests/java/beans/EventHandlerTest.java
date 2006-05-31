@@ -426,20 +426,6 @@ public class EventHandlerTest extends TestCase {
 	}
 
 	/*
-	 * listenerInterface is not a interface
-	 */
-	public void testCreateClassObjectStringString_ClassInvalid() {
-		MockTarget target = new MockTarget();
-		MockButton button = new MockButton();
-		try {
-			PropertyChangeListener proxy = (PropertyChangeListener) EventHandler
-					.create(String.class, target, "text", "source.label");
-			fail("Should throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
-	}
-
-	/*
 	 * the target object is null
 	 */
 	public void testCreateClassObjectStringString_TargetNull() {

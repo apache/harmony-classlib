@@ -115,13 +115,13 @@ public class EventHandler implements InvocationHandler {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Object create(
-            Class listenerInterface,
+    public static <T> T create(
+            Class<T> listenerInterface,
             Object target,
             String action,
             String eventPropertyName,
             String listenerMethodName) {
-        return Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
+        return (T)Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
                new EventHandler(target, action, eventPropertyName,
                        listenerMethodName));
     }
@@ -129,23 +129,23 @@ public class EventHandler implements InvocationHandler {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Object create(
-            Class listenerInterface,
+    public static <T> T create(
+            Class<T> listenerInterface,
             Object target,
             String action,
             String eventPropertyName) {
-        return Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
+        return (T)Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
             new EventHandler(target, action, eventPropertyName, null));
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Object create(
-            Class listenerInterface,
+    public static <T> T create(
+            Class<T> listenerInterface,
             Object target,
             String action) {
-        return Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
+        return (T)Proxy.newProxyInstance(target.getClass().getClassLoader(), new Class[] { listenerInterface },
             new EventHandler(target, action, null, null));
     }
     
