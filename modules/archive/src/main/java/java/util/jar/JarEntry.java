@@ -29,170 +29,172 @@ import java.util.zip.ZipEntry;
 import javax.security.auth.x500.X500Principal;
 
 public class JarEntry extends ZipEntry {
-	private Attributes attributes;
+    private Attributes attributes;
 
-	JarFile parentJar;
+    JarFile parentJar;
 
-	Certificate certificates[];
+    Certificate certificates[];
 
-	CodeSigner signers[];
+    CodeSigner signers[];
 
-	// Cached factory used to build CertPath-s in <code>getCodeSigners()</code>.
-	private CertificateFactory factory;
+    // Cached factory used to build CertPath-s in <code>getCodeSigners()</code>.
+    private CertificateFactory factory;
 
-	private boolean isFactoryChecked = false;
+    private boolean isFactoryChecked = false;
 
-	/**
-	 * Create a new JarEntry named name
-	 * 
-	 * @param name
-	 *            The name of the new JarEntry
-	 */
-	public JarEntry(String name) {
-		super(name);
-	}
+    /**
+     * Create a new JarEntry named name
+     * 
+     * @param name
+     *            The name of the new JarEntry
+     */
+    public JarEntry(String name) {
+        super(name);
+    }
 
-	/**
-	 * Create a new JarEntry using the values obtained from entry.
-	 * 
-	 * @param entry
-	 *            The ZipEntry to obtain values from.
-	 */
-	public JarEntry(ZipEntry entry) {
-		super(entry);
-	}
+    /**
+     * Create a new JarEntry using the values obtained from entry.
+     * 
+     * @param entry
+     *            The ZipEntry to obtain values from.
+     */
+    public JarEntry(ZipEntry entry) {
+        super(entry);
+    }
 
-	/**
-	 * Returns the Attributes object associated with this entry or null if none
-	 * exists.
-	 * 
-	 * @return java.util.jar.Attributes Attributes for this entry
-	 * @exception java.io.IOException
-	 *                If an error occurs obtaining the Attributes
-	 */
-	public Attributes getAttributes() throws IOException {
-		if (attributes != null || parentJar == null)
-			return attributes;
-		Manifest manifest = parentJar.getManifest();
-		if (manifest == null)
-			return null;
-		return attributes = manifest.getAttributes(getName());
-	}
+    /**
+     * Returns the Attributes object associated with this entry or null if none
+     * exists.
+     * 
+     * @return java.util.jar.Attributes Attributes for this entry
+     * @exception java.io.IOException
+     *                If an error occurs obtaining the Attributes
+     */
+    public Attributes getAttributes() throws IOException {
+        if (attributes != null || parentJar == null) {
+            return attributes;
+        }
+        Manifest manifest = parentJar.getManifest();
+        if (manifest == null) {
+            return null;
+        }
+        return attributes = manifest.getAttributes(getName());
+    }
 
-	/**
-	 * Returns an array of Certificate Objects associated with this entry or
-	 * null if none exist.
-	 * 
-	 * @return java.security.cert.Certificate[] Certificates for this entry
-	 */
-	public Certificate[] getCertificates() {
-		return certificates;
-	}
+    /**
+     * Returns an array of Certificate Objects associated with this entry or
+     * null if none exist.
+     * 
+     * @return java.security.cert.Certificate[] Certificates for this entry
+     */
+    public Certificate[] getCertificates() {
+        return certificates;
+    }
 
-	void setAttributes(Attributes attrib) {
-		attributes = attrib;
-	}
+    void setAttributes(Attributes attrib) {
+        attributes = attrib;
+    }
 
-	/**
-	 * Create a new JarEntry using the values obtained from je.
-	 * 
-	 * @param je
-	 *            The JarEntry to obtain values from
-	 */
-	public JarEntry(JarEntry je) {
-		super(je);
-		parentJar = je.parentJar;
-		attributes = je.attributes;
-		certificates = je.certificates;
-		signers = je.signers;
+    /**
+     * Create a new JarEntry using the values obtained from je.
+     * 
+     * @param je
+     *            The JarEntry to obtain values from
+     */
+    public JarEntry(JarEntry je) {
+        super(je);
+        parentJar = je.parentJar;
+        attributes = je.attributes;
+        certificates = je.certificates;
+        signers = je.signers;
 
-	}
+    }
 
-	/**
-	 * Returns the code signers for the jar entry. If there is no such code
-	 * signers, returns null. Only when the jar entry has been completely
-	 * verified by reading till the end of the jar entry, can the method be
-	 * called. Or else the method will return null.
-	 * 
-	 * @return the code signers for the jar entry.
-	 */
-	public CodeSigner[] getCodeSigners() {
-		if (null == signers) {
-			signers = getCodeSigners(certificates);
+    /**
+     * Returns the code signers for the jar entry. If there is no such code
+     * signers, returns null. Only when the jar entry has been completely
+     * verified by reading till the end of the jar entry, can the method be
+     * called. Or else the method will return null.
+     * 
+     * @return the code signers for the jar entry.
+     */
+    public CodeSigner[] getCodeSigners() {
+        if (null == signers) {
+            signers = getCodeSigners(certificates);
 
-		}
-		if (null == signers) {
-			return null;
-		}
+        }
+        if (null == signers) {
+            return null;
+        }
 
-		CodeSigner[] tmp = new CodeSigner[signers.length];
-		System.arraycopy(signers, 0, tmp, 0, tmp.length);
-		return tmp;
+        CodeSigner[] tmp = new CodeSigner[signers.length];
+        System.arraycopy(signers, 0, tmp, 0, tmp.length);
+        return tmp;
 
-	}
+    }
 
-	private CodeSigner[] getCodeSigners(Certificate[] certs) {
+    private CodeSigner[] getCodeSigners(Certificate[] certs) {
 
-		X500Principal prevIssuer = null;
-		ArrayList<Certificate> list = new ArrayList<Certificate>(certs.length);
-		ArrayList<CodeSigner> asigners = new ArrayList<CodeSigner>();
+        X500Principal prevIssuer = null;
+        ArrayList<Certificate> list = new ArrayList<Certificate>(certs.length);
+        ArrayList<CodeSigner> asigners = new ArrayList<CodeSigner>();
 
-		for (int i = 0; i < certs.length; i++) {
-			if (!(certs[i] instanceof X509Certificate)) {
-				// Only X509CErtificate-s are taken into account - see API spec.
-				continue;
-			}
-			X509Certificate x509 = (X509Certificate) certs[i];
-			if (null != prevIssuer) {
-				X500Principal subj = x509.getSubjectX500Principal();
-				if (!prevIssuer.equals(subj)) {
-					// Ok, this ends the previous chain,
-					// so transform this one into CertPath ...
-					addCodeSigner(asigners, list);
-					// ... and start a new one
-					list.clear();
-				}// else { it's still the same chain }
+        for (Certificate element : certs) {
+            if (!(element instanceof X509Certificate)) {
+                // Only X509CErtificate-s are taken into account - see API spec.
+                continue;
+            }
+            X509Certificate x509 = (X509Certificate) element;
+            if (null != prevIssuer) {
+                X500Principal subj = x509.getSubjectX500Principal();
+                if (!prevIssuer.equals(subj)) {
+                    // Ok, this ends the previous chain,
+                    // so transform this one into CertPath ...
+                    addCodeSigner(asigners, list);
+                    // ... and start a new one
+                    list.clear();
+                }// else { it's still the same chain }
 
-			}
-			prevIssuer = x509.getIssuerX500Principal();
-			list.add(x509);
-		}
-		if (!list.isEmpty()) {
-			addCodeSigner(asigners, list);
-		}
-		if (asigners.isEmpty()) {
-			// 'signers' is 'null' already
-			return null;
-		}
+            }
+            prevIssuer = x509.getIssuerX500Principal();
+            list.add(x509);
+        }
+        if (!list.isEmpty()) {
+            addCodeSigner(asigners, list);
+        }
+        if (asigners.isEmpty()) {
+            // 'signers' is 'null' already
+            return null;
+        }
 
-		CodeSigner[] tmp = new CodeSigner[asigners.size()];
-		asigners.toArray(tmp);
-		return tmp;
+        CodeSigner[] tmp = new CodeSigner[asigners.size()];
+        asigners.toArray(tmp);
+        return tmp;
 
-	}
+    }
 
-	private void addCodeSigner(ArrayList<CodeSigner> asigners,
-			List<Certificate> list) {
-		CertPath certPath = null;
-		if (!isFactoryChecked) {
-			try {
-				factory = CertificateFactory.getInstance("X.509");
-			} catch (CertificateException ex) {
-				// do nothing
-			} finally {
-				isFactoryChecked = true;
-			}
-		}
-		if (null == factory) {
-			return;
-		}
-		try {
-			certPath = factory.generateCertPath(list);
-		} catch (CertificateException ex) {
-			// do nothing
-		}
-		if (null != certPath) {
-			asigners.add(new CodeSigner(certPath, null));
-		}
-	}
+    private void addCodeSigner(ArrayList<CodeSigner> asigners,
+            List<Certificate> list) {
+        CertPath certPath = null;
+        if (!isFactoryChecked) {
+            try {
+                factory = CertificateFactory.getInstance("X.509");
+            } catch (CertificateException ex) {
+                // do nothing
+            } finally {
+                isFactoryChecked = true;
+            }
+        }
+        if (null == factory) {
+            return;
+        }
+        try {
+            certPath = factory.generateCertPath(list);
+        } catch (CertificateException ex) {
+            // do nothing
+        }
+        if (null != certPath) {
+            asigners.add(new CodeSigner(certPath, null));
+        }
+    }
 }
