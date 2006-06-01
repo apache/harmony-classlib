@@ -107,7 +107,7 @@ public class DirectoryManager extends NamingManager {
         Object o,
         Name n,
         Context c,
-        Hashtable h,
+        Hashtable<?, ?> h,
         Attributes a)
         throws NamingException, Exception {
 
@@ -213,9 +213,9 @@ public class DirectoryManager extends NamingManager {
                 c,
                 Context.URL_PKG_PREFIXES);
         // for each RefAddr
-        Enumeration enumeration = ref.getAll();
+        Enumeration<RefAddr> enumeration = ref.getAll();
         while (enumeration.hasMoreElements()) {
-            RefAddr addr = (RefAddr) enumeration.nextElement();
+            RefAddr addr = enumeration.nextElement();
             // if it is StringRefAddr and type is URL
             if (addr instanceof StringRefAddr
                 && addr.getType().equalsIgnoreCase("URL")) { //$NON-NLS-1$
@@ -381,7 +381,7 @@ public class DirectoryManager extends NamingManager {
         Object o,
         Name n,
         Context c,
-        Hashtable h,
+        Hashtable<?, ?> h,
         Attributes a)
         throws NamingException {
 

@@ -100,7 +100,7 @@ public interface ObjectFactory {
         Object o,
         Name n,
         Context c,
-        Hashtable envmt)
+        Hashtable<?, ?> envmt)
         throws Exception;
 
 }

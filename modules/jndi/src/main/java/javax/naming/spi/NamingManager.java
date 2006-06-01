@@ -415,9 +415,9 @@ public class NamingManager {
                 .getFactoryNamesFromEnvironmentAndProviderResource(h, c,
                         Context.URL_PKG_PREFIXES);
         // for each RefAddr
-        Enumeration enumeration = ref.getAll();
+        Enumeration<RefAddr> enumeration = ref.getAll();
         while (enumeration.hasMoreElements()) {
-            RefAddr addr = (RefAddr) enumeration.nextElement();
+            RefAddr addr = enumeration.nextElement();
             // if it is StringRefAddr and type is URL
             if (addr instanceof StringRefAddr
                     && addr.getType().equalsIgnoreCase("URL")) { //$NON-NLS-1$
@@ -577,7 +577,8 @@ public class NamingManager {
      * @throws NamingException
      *             if one is encountered
      */
-    public static Object getStateToBind(Object o, Name n, Context c, Hashtable h)
+    public static Object getStateToBind(Object o, Name n,
+                                        Context c, Hashtable<?, ?> h)
             throws NamingException {
 
         // obtain state factories from hashtable and service provider resource

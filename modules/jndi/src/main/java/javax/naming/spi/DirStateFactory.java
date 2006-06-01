@@ -57,7 +57,7 @@ public interface DirStateFactory extends StateFactory {
         Object o,
         Name n,
         Context c,
-        Hashtable envmt,
+        Hashtable<?, ?> envmt,
         Attributes a)
         throws NamingException;
 

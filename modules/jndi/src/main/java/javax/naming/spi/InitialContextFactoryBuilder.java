@@ -48,7 +48,7 @@ public interface InitialContextFactoryBuilder {
      * @return an initial context factory - cannot be null.
      * @throws NamingException if an initial context factory could not be created.
      */
-    InitialContextFactory createInitialContextFactory(Hashtable envmt)
+    InitialContextFactory createInitialContextFactory(Hashtable<?, ?> envmt)
         throws NamingException;
 
 }

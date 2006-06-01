@@ -90,7 +90,7 @@ public interface StateFactory {
      * @throws NamingException if it is intended that no other state 
      *              factories be examined.
      */
-    Object getStateToBind(Object o, Name n, Context c, Hashtable envmt)
+    Object getStateToBind(Object o, Name n, Context c, Hashtable<?, ?> envmt)
         throws NamingException;
 
 }

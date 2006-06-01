@@ -54,7 +54,7 @@ public interface DirObjectFactory extends ObjectFactory {
         Object o,
         Name n,
         Context c,
-        Hashtable envmt,
+        Hashtable<?, ?> envmt,
         Attributes a)
         throws Exception;
 

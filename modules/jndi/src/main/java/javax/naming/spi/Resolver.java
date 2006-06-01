@@ -50,7 +50,8 @@ public interface Resolver {
      *          found.
      * @throws NamingException if other naming errors occur
      */
-    ResolveResult resolveToClass(Name n, Class c)
+    ResolveResult resolveToClass(Name n,
+                                 Class<? extends javax.naming.Context> c)
         throws NamingException;
 
     /**
@@ -67,7 +68,8 @@ public interface Resolver {
      *          found.
      * @throws NamingException if other naming errors occur
      */
-    ResolveResult resolveToClass(String n, Class c)
+    ResolveResult resolveToClass(String n,
+                                 Class<? extends javax.naming.Context> c)
         throws NamingException;
 
 }

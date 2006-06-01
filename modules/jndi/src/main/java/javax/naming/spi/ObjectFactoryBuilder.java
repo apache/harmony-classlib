@@ -50,7 +50,7 @@ public interface ObjectFactoryBuilder {
      *              instances of the object <code>o</code>. 
      * @throws NamingException if an object factory could not be created.
      */
-    ObjectFactory createObjectFactory(Object o, Hashtable envmt)
+    ObjectFactory createObjectFactory(Object o, Hashtable<?, ?> envmt)
         throws NamingException;
 
 }
