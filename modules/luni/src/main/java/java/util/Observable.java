@@ -22,7 +22,7 @@ package java.util;
  */
 public class Observable {
 	
-	Vector observers = new Vector();
+	Vector<Observer> observers = new Vector<Observer>();
 
 	boolean changed = false;
 
@@ -107,13 +107,14 @@ public class Observable {
 	 * @param data
 	 *            the argument passed to update()
 	 */
-	public void notifyObservers(Object data) {
+    public void notifyObservers(Object data) {
 		if (changed) {
 			// Must clone the vector in case deleteObserver is called
-			Vector clone = (Vector) observers.clone();
+			Vector<Observer> clone = (Vector<Observer>)observers.clone();
 			int size = clone.size();
-			for (int i = 0; i < size; i++)
-				((Observer) clone.elementAt(i)).update(this, data);
+			for (int i = 0; i < size; i++) {
+				clone.elementAt(i).update(this, data);
+            }
 			clearChanged();
 		}
 	}

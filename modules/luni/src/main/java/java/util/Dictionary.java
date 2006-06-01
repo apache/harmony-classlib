@@ -21,6 +21,7 @@ package java.util;
  * associate keys with values, such as Hashtable.
  * 
  * @see Hashtable
+ * @since 1.0
  */
 public abstract class Dictionary<K,V> {
 	/**
@@ -40,7 +41,7 @@ public abstract class Dictionary<K,V> {
 	 * @see #size
 	 * @see Enumeration
 	 */
-	abstract public Enumeration elements();
+	public abstract Enumeration<V> elements();
 
 	/**
 	 * Answers the value associated with <code>key</code>.
@@ -52,7 +53,7 @@ public abstract class Dictionary<K,V> {
 	 * 
 	 * @see #put
 	 */
-	abstract public V get(Object key);
+	public abstract V get(Object key);
 
 	/**
 	 * Answers if this Dictionary has no key/value pairs, a size of zero.
@@ -61,7 +62,7 @@ public abstract class Dictionary<K,V> {
 	 * 
 	 * @see #size
 	 */
-	abstract public boolean isEmpty();
+	public abstract boolean isEmpty();
 
 	/**
 	 * Answers an Enumeration on the keys of this Dictionary.
@@ -72,7 +73,7 @@ public abstract class Dictionary<K,V> {
 	 * @see #size
 	 * @see Enumeration
 	 */
-	abstract public Enumeration keys();
+	public abstract Enumeration<K> keys();
 
 	/**
 	 * Associate <code>key</code> with <code>value</code> in this
@@ -92,7 +93,7 @@ public abstract class Dictionary<K,V> {
 	 * @see #get
 	 * @see #keys
 	 */
-	abstract public V put(K key, V value);
+	public abstract V put(K key, V value);
 
 	/**
 	 * Remove the key/value pair with the specified <code>key</code> from this
@@ -106,7 +107,7 @@ public abstract class Dictionary<K,V> {
 	 * @see #get
 	 * @see #put
 	 */
-	abstract public V remove(Object key);
+	public abstract V remove(Object key);
 
 	/**
 	 * Answers the number of key/value pairs in this Dictionary.
@@ -116,5 +117,5 @@ public abstract class Dictionary<K,V> {
 	 * @see #elements
 	 * @see #keys
 	 */
-	abstract public int size();
+	public abstract int size();
 }

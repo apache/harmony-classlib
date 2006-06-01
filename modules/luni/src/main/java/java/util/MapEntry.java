@@ -49,7 +49,7 @@ class MapEntry<K,V> implements Map.Entry<K,V>, Cloneable {
 		if (this == object)
 			return true;
 		if (object instanceof Map.Entry) {
-			Map.Entry entry = (Map.Entry) object;
+			Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;
 			return (key == null ? entry.getKey() == null : key.equals(entry
 					.getKey()))
 					&& (value == null ? entry.getValue() == null : value

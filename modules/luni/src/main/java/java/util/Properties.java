@@ -64,7 +64,7 @@ public class Properties extends Hashtable<Object,Object> {
 		defaults = properties;
 	}
 
-	private void dumpString(StringBuffer buffer, String string, boolean key) {
+	private void dumpString(StringBuilder buffer, String string, boolean key) {
 		int i = 0;
 		if (!key && i < string.length() && string.charAt(i) == ' ') {
 			buffer.append("\\ "); //$NON-NLS-1$
@@ -153,7 +153,7 @@ public class Properties extends Hashtable<Object,Object> {
 		if (out == null)
 			throw new NullPointerException();
 		StringBuffer buffer = new StringBuffer(80);
-		Enumeration keys = propertyNames();
+		Enumeration<?> keys = propertyNames();
 		while (keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
 			buffer.append(key);
@@ -185,7 +185,7 @@ public class Properties extends Hashtable<Object,Object> {
 		if (writer == null)
 			throw new NullPointerException();
 		StringBuffer buffer = new StringBuffer(80);
-		Enumeration keys = propertyNames();
+		Enumeration<?> keys = propertyNames();
 		while (keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
 			buffer.append(key);
@@ -365,12 +365,12 @@ public class Properties extends Hashtable<Object,Object> {
 	 * 
 	 * @return an Enumeration containing the names of all properties
 	 */
-	public Enumeration propertyNames() {
+	public Enumeration<?> propertyNames() {
 		if (defaults == null)
 			return keys();
 
-		Hashtable set = new Hashtable(defaults.size() + size());
-		Enumeration keys = defaults.propertyNames();
+		Hashtable<Object, Object> set = new Hashtable<Object, Object>(defaults.size() + size());
+		Enumeration<?> keys = defaults.propertyNames();
 		while (keys.hasMoreElements()) {
 			set.put(keys.nextElement(), set);
 		}
@@ -435,18 +435,23 @@ public class Properties extends Hashtable<Object,Object> {
 	 */
 	public synchronized void store(OutputStream out, String comment)
 			throws IOException {
-		if (lineSeparator == null)
+		if (lineSeparator == null) {
 			lineSeparator = (String) AccessController
 					.doPrivileged(new PriviAction("line.separator")); //$NON-NLS-1$
+        }
 
-		StringBuffer buffer = new StringBuffer(200);
+		StringBuilder buffer = new StringBuilder(200);
 		OutputStreamWriter writer = new OutputStreamWriter(out, "ISO8859_1"); //$NON-NLS-1$
-		if (comment != null)
-			writer.write("#" + comment + lineSeparator); //$NON-NLS-1$
-		writer.write("#" + new Date() + lineSeparator); //$NON-NLS-1$
-		Iterator entryItr = entrySet().iterator();
-		while (entryItr.hasNext()) {
-			MapEntry entry = (MapEntry) entryItr.next();
+		if (comment != null) {
+            writer.write("#"); //$NON-NLS-1$
+            writer.write(comment);
+			writer.write(lineSeparator); 
+        }
+        writer.write("#"); //$NON-NLS-1$
+        writer.write(new Date().toString());
+        writer.write(lineSeparator); 
+
+		for (Map.Entry<Object, Object> entry : entrySet()) {
 			String key = (String) entry.getKey();
 			dumpString(buffer, key, true);
 			buffer.append('=');
