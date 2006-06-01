@@ -27,7 +27,7 @@ import java.security.Provider;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
 import junit.framework.TestCase;
 /**
  * Tests for <code>SecretKeyFactory</code> class constructors and methods.

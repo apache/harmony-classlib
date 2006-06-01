@@ -48,7 +48,7 @@ public class X500PrincipalTest extends TestCase {
 
     private boolean testing = false;
 
-    static String outputPath = System.getProperty("TEST_SRC_DIR",
+    static String outputPath = System.getProperty("RESOURCE_DIR",
             "test/common/unit");
 
     static String inputFile = outputPath + File.separator + "javax"

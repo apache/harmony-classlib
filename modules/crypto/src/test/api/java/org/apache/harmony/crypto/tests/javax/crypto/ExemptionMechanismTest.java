@@ -28,8 +28,9 @@ import javax.crypto.ExemptionMechanism;
 import javax.crypto.ExemptionMechanismSpi;
 
 import org.apache.harmony.crypto.tests.support.MyExemptionMechanismSpi;
-import org.apache.harmony.security.SpiEngUtils;
-import org.apache.harmony.security.SpiEngUtils.MyProvider;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils.MyProvider;
+
 import junit.framework.TestCase;
 /**
  * Tests for <code>ExemptionMechanism</code> class constructors and methods

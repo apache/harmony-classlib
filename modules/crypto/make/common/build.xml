@@ -52,7 +52,13 @@
 
         <compile-tests description="test support files" destdir="../../../../build/tests">
             <javac-elements>
-                <src path="${hy.crypto.src.test}/support/common/java"/>
+                <src>
+                    <pathelement location="${hy.crypto.src.test}/support/common/java"/>
+
+                    <!-- FIXME: CRYPTO tests should not reach into security module code -->
+                    <pathelement location="${hy.crypto}/../security/src/test/support/common/java"/>
+                </src>
+
                 <include name="**/*.java" />
             </javac-elements>
         </compile-tests>
@@ -60,15 +66,8 @@
 
         <compile-tests description="api tests" destdir="${hy.crypto.bin.test}/api">
             <javac-elements>
-                <!-- FIXME: CRYPTO tests should not reach into security module code -->
-                <src>
-                    <pathelement location="${hy.crypto.src.test}/api/java"/>
-                    <pathelement location="${hy.crypto}/../security/src/test/java/common"/>
-                </src>
-
-                <include name="javax/crypto/**/*Test.java" />
-                <include name="org/apache/harmony/crypto/**/*Test.java" />
-                <include name="org/apache/harmony/security/test/**/*" />
+                <src path="${hy.crypto.src.test}/api/java"/>
+                <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
 
@@ -81,29 +80,15 @@
 
         <compile-tests description="impl injected tests" destdir="${hy.crypto.bin.test}/impl.injected">
             <javac-elements>
-                <!-- FIXME: CRYPTO tests should not reach into security module code -->
-                <src>
-                    <pathelement location="${hy.crypto.src.test}/impl/java.injected"/>
-                    <pathelement location="${hy.crypto}/../security/src/test/java/common"/>
-                </src>
-
-                <include name="javax/crypto/**/*Test.java" />
-                <include name="org/apache/harmony/crypto/**/*Test.java" />
-                <include name="org/apache/harmony/security/**/*" />
+                <src path="${hy.crypto.src.test}/impl/java.injected"/>
+                <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
 
         <compile-tests description="impl tests" destdir="${hy.crypto.bin.test}/impl">
             <javac-elements>
-                <!-- FIXME: CRYPTO tests should not reach into security module code -->
-                <src>
-                	<pathelement location="${hy.crypto.src.test}/impl/java"/>
-                    <pathelement location="${hy.crypto}/../security/src/test/java/common"/>
-                </src>
-
-                <include name="javax/crypto/**/*Test.java" />
-                <include name="org/apache/harmony/crypto/**/*Test.java" />
-                <include name="org/apache/harmony/security/**/*" />
+                <src path="${hy.crypto.src.test}/impl/java"/>
+                <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
     </target>
@@ -121,7 +106,7 @@
                 <!-- Note: will be deleted after improving             -->
                 <!-- SerializationTest support class: all resource     -->
                 <!-- files will be placed on the classpath             -->
-                <jvmarg value="-DTEST_SRC_DIR=${hy.crypto.src.test}/api/java"/>
+                <jvmarg value="-DRESOURCE_DIR=${hy.crypto.src.test}/api/java"/>
 
                 <classpath>
                     <pathelement path="${hy.crypto.bin.test}/api"/>

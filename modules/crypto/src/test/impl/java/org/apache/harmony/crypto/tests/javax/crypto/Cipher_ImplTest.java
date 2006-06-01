@@ -30,9 +30,8 @@ import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.ShortBufferException;
 
-import org.apache.harmony.security.support.TestKeyPair;
+import org.apache.harmony.security.tests.support.TestKeyPair;
 
 import junit.framework.TestCase;
 

@@ -45,7 +45,7 @@ import org.apache.harmony.auth.login.DefaultConfigurationParser.InvalidFormatExc
 
 public class DefaultConfigParserTest extends TestCase {
 
-    static String outputPath = System.getProperty("TEST_SRC_DIR", "test/common/unit");
+    static String outputPath = System.getProperty("RESOURCE_DIR", "test/common/unit");
     
     static String fconf = outputPath + File.separator + "org" + 
         File.separator + "apache" + File.separator + "harmony" + 

@@ -23,7 +23,7 @@ package javax.security.auth.callback.serialization;
 
 import javax.security.auth.callback.ConfirmationCallback;
 
-import org.apache.harmony.security.support.SerializationTest;
+import org.apache.harmony.security.tests.support.SerializationTest;
 
 
 /**

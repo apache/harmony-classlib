@@ -23,7 +23,7 @@ package org.apache.harmony.crypto.tests.javax.crypto.serialization;
 
 import javax.crypto.ExemptionMechanismException;
 
-import org.apache.harmony.security.support.SerializationTest;
+import org.apache.harmony.security.tests.support.SerializationTest;
 
 
 /**

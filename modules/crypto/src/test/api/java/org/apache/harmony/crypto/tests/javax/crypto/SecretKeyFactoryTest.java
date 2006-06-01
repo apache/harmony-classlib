@@ -36,7 +36,8 @@ import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.crypto.tests.support.MySecretKeyFactorySpi;
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
+
 import junit.framework.TestCase;
 
 

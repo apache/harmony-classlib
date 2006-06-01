@@ -34,7 +34,8 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
+
 import junit.framework.TestCase;
 
 /**

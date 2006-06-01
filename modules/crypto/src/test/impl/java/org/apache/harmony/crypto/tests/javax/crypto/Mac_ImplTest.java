@@ -33,7 +33,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
 import junit.framework.TestCase;
 
 

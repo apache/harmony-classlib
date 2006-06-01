@@ -72,7 +72,7 @@
             <src>
                 <pathelement location="${hy.auth.src.test.java}"/>
                 <pathelement location="${hy.auth.src.test.java.platform}"/>
-                <pathelement location="${hy.auth}/../security/src/test/java/common"/>
+                <pathelement location="${hy.auth}/../security/src/test/support/common/java"/>
             </src>
 
             <include name="javax/security/auth/**/*Test*.java" />
@@ -112,7 +112,7 @@
             <!-- Note: will be deleted after improving             -->
             <!-- SerializationTest support class: all resource     -->
             <!-- files will be placed on the classpath             -->
-            <jvmarg value="-DTEST_SRC_DIR=${hy.auth.src.test.java}"/>
+            <jvmarg value="-DRESOURCE_DIR=${hy.auth.src.test.java}"/>
 
             <!-- to pick up junit.jar -->
             <jvmarg value="-Xbootclasspath/a:${hy.auth.bin.test}${path.separator}../../../../${junit.jar}"/>

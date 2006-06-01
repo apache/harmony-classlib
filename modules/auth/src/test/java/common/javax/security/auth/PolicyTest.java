@@ -35,8 +35,8 @@ import java.util.Enumeration;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.security.support.SecurityChecker;
-import org.apache.harmony.security.support.TestUtils;
+import org.apache.harmony.security.tests.support.SecurityChecker;
+import org.apache.harmony.security.tests.support.TestUtils;
 
 
 /**
@@ -169,7 +169,7 @@ public class PolicyTest extends TestCase {
     //
     //
 
-    static String outputPath = System.getProperty("TEST_SRC_DIR", "test"
+    static String outputPath = System.getProperty("RESOURCE_DIR", "test"
             + File.separator + "common" + File.separator + "unit");
 
     static String inputFile1 = outputPath + File.separator + "javax"

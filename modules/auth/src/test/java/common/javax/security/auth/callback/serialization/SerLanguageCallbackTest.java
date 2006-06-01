@@ -24,7 +24,7 @@ package javax.security.auth.callback.serialization;
 import java.util.Locale;
 import javax.security.auth.callback.LanguageCallback;
 
-import org.apache.harmony.security.support.SerializationTest;
+import org.apache.harmony.security.tests.support.SerializationTest;
 
 
 /**

@@ -35,7 +35,7 @@ import javax.security.auth.login.AppConfigurationEntry;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.security.support.TestUtils;
+import org.apache.harmony.security.tests.support.TestUtils;
 import org.apache.harmony.auth.login.DefaultConfiguration;
 
 
@@ -47,7 +47,7 @@ public class DefaultConfigurationTest extends TestCase {
 
     private static final String LOGIN_CONFIG = "java.security.auth.login.config";
     
-    static String outputPath = System.getProperty("TEST_SRC_DIR", "test/common/unit");
+    static String outputPath = System.getProperty("RESOURCE_DIR", "test/common/unit");
     
     static String otherConfFile = outputPath + File.separator + "org" + 
         File.separator + "apache" + File.separator + "harmony" + 

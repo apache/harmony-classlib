@@ -36,7 +36,8 @@ import javax.crypto.spec.DHGenParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.crypto.tests.support.MyMacSpi;
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
+
 import junit.framework.TestCase;
 
 import junit.framework.Test;

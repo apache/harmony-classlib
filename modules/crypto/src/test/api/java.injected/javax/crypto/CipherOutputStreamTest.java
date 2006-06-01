@@ -22,13 +22,10 @@
 package javax.crypto;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import javax.crypto.NullCipher;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  */

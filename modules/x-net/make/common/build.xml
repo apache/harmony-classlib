@@ -59,7 +59,7 @@
             <!-- FIXME: X-NET tests should not reach into security module code -->
             <src>
                 <pathelement location="${hy.x-net.src.test.java}"/>
-                <pathelement location="${hy.x-net}/../security/src/test/java/common"/>
+                <pathelement location="${hy.x-net}/../security/src/test/support/common/java"/>
             </src>
 
             <include name="javax/net/**/*Test*.java" />
@@ -95,7 +95,7 @@
             <!-- Note: will be deleted after improving             -->
             <!-- SerializationTest support class: all resource     -->
             <!-- files will be placed on the classpath             -->
-            <jvmarg value="-DTEST_SRC_DIR=${hy.x-net.src.test.java}"/>
+            <jvmarg value="-DRESOURCE_DIR=${hy.x-net.src.test.java}"/>
 
             <!--  run tests via bootclasspath  --> 
             <jvmarg value="-Xbootclasspath/a:${hy.x-net.bin.test}${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests" /> 

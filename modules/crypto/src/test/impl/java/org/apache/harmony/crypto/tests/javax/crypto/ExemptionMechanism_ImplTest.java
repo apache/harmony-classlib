@@ -38,7 +38,8 @@ import javax.crypto.ShortBufferException;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.harmony.crypto.tests.support.MyExemptionMechanismSpi;
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
+
 import junit.framework.TestCase;
 
 

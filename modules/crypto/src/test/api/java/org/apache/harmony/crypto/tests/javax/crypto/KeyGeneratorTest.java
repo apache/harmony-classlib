@@ -34,7 +34,8 @@ import javax.crypto.KeyGeneratorSpi;
 import javax.crypto.SecretKey;
 
 import org.apache.harmony.crypto.tests.support.MyKeyGeneratorSpi;
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
+
 import junit.framework.TestCase;
 
 

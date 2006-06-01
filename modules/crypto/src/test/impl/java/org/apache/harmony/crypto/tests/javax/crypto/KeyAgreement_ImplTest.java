@@ -35,7 +35,7 @@ import java.security.spec.InvalidKeySpecException;
 import javax.crypto.KeyAgreement;
 import javax.crypto.ShortBufferException;
 
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
 import junit.framework.TestCase;
 
 

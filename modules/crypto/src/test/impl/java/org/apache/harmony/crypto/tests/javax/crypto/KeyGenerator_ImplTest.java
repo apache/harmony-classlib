@@ -33,7 +33,7 @@ import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.KeyGenerator;
 
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
 import junit.framework.TestCase;
 
 

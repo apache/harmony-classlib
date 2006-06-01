@@ -32,7 +32,7 @@ import java.security.spec.KeySpec;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 
-import org.apache.harmony.security.SpiEngUtils;
+import org.apache.harmony.security.tests.support.SpiEngUtils;
 import junit.framework.TestCase;
 
 
