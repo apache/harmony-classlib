@@ -39,7 +39,7 @@ import java.util.Enumeration;
  * @see CompositeName
  * @see CompoundName
  */
-public interface Name extends Cloneable, Serializable {
+public interface Name extends Cloneable, Serializable, Comparable<Object> {
 
     /*
      * SUID declared publically in the spec.

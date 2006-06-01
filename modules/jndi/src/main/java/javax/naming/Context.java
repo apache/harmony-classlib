@@ -660,7 +660,8 @@ public interface Context {
      *          specified name excluding any bindings for any subcontexts
      * @throws NamingException if an error occurs.
      */
-    public NamingEnumeration list(Name n) throws NamingException;
+    public NamingEnumeration<NameClassPair> list(Name n)
+        throws NamingException;
 
     /**
      * Returns an enumeration of the bindings of the context for the specified
@@ -674,7 +675,8 @@ public interface Context {
      *          specified name excluding any bindings for any subcontexts
      * @throws NamingException if an error occurs.
      */
-    public NamingEnumeration<NameClassPair> list(String s) throws NamingException;
+    public NamingEnumeration<NameClassPair> list(String s)
+        throws NamingException;
 
     /**
      * Returns an enumeration of the bindings of the context for the specified
@@ -688,7 +690,8 @@ public interface Context {
      *          name excluding any bindings for any subcontexts
      * @throws NamingException if an error occurs.
      */
-    public NamingEnumeration<Binding> listBindings(Name n) throws NamingException;
+    public NamingEnumeration<Binding> listBindings(Name n)
+        throws NamingException;
 
     /**
      * Returns an enumeration of the bindings of the context for the specified
