@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.security.Identity;
 import java.security.IdentityScope;
 import java.security.KeyManagementException;
-import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Principal;
 import java.security.PublicKey;
@@ -31,6 +30,15 @@ import java.security.cert.X509Certificate;
 import tests.api.java.security.IdentityScopeTest.IdentityScopeSubclass;
 
 public class IdentityTest extends junit.framework.TestCase {
+
+    static PublicKey pubKey;
+    static {
+        try {
+            pubKey = KeyPairGenerator.getInstance("DSA").genKeyPair().getPublic();
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
 
 	public static class CertificateImpl implements java.security.Certificate {
 
@@ -108,8 +116,6 @@ public class IdentityTest extends junit.framework.TestCase {
 
 	ByteArrayInputStream certArray2 = new ByteArrayInputStream(certificate2
 			.getBytes());
-
-	static PublicKey pubKey;
 
 	public static class IdentitySubclass extends Identity {
 		public IdentitySubclass() {
@@ -300,11 +306,5 @@ public class IdentityTest extends junit.framework.TestCase {
        		IdentitySubclass sub2 = new IdentitySubclass("test", null);
        		assertEquals("The 2 hash codes are not equal", sub.hashCode(), sub2
        				.hashCode());
-	}
-
-	protected void setUp() throws Exception {
-       		KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
-       		KeyPair pair = gen.genKeyPair();
-       		pubKey = pair.getPublic();
 	}
 }

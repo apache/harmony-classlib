@@ -18,7 +18,6 @@ package tests.api.java.security;
 import java.security.Identity;
 import java.security.IdentityScope;
 import java.security.KeyManagementException;
-import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
 import java.util.Enumeration;
@@ -29,6 +28,13 @@ import tests.api.java.security.IdentityTest.IdentitySubclass;
 public class IdentityScopeTest extends junit.framework.TestCase {
 
 	static PublicKey pubKey;
+    static {
+        try {
+            pubKey = KeyPairGenerator.getInstance("DSA").genKeyPair().getPublic();
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
 
 	public static class IdentityScopeSubclass extends IdentityScope {
 		Hashtable identities;
@@ -243,11 +249,5 @@ public class IdentityScopeTest extends junit.framework.TestCase {
        		sub.addIdentity(id);
        		assertNotNull("toString returned a null", sub.toString());
        		assertTrue("Not a valid String ", sub.toString().length() > 0);
-	}
-
-	protected void setUp() throws Exception {
-       		KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
-       		KeyPair pair = gen.genKeyPair();
-       		pubKey = pair.getPublic();
 	}
 }

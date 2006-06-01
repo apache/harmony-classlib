@@ -20,7 +20,6 @@ import java.security.InvalidParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Provider;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.spec.DSAParameterSpec;
@@ -28,7 +27,17 @@ import java.security.spec.DSAParameterSpec;
 public class SignatureTest extends junit.framework.TestCase {
 
 	private static final String MESSAGE = "abc";
-
+    static KeyPair keys;
+    static {
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
+            keyGen.initialize(1024);
+            keys = keyGen.generateKeyPair();
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
+    
 	/**
 	 * @tests java.security.Signature#clone()
 	 */
@@ -95,30 +104,14 @@ public class SignatureTest extends junit.framework.TestCase {
 	 * @tests java.security.Signature#initSign(java.security.PrivateKey)
 	 */
 	public void test_initSignLjava_security_PrivateKey() throws Exception {
-
-		Signature sig = Signature.getInstance("DSA");
-
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
-
-		SecureRandom random = new SecureRandom();
-		keyGen.initialize(1024, random);
-		KeyPair keys = keyGen.generateKeyPair();
-
-		sig.initSign(keys.getPrivate());
+		Signature.getInstance("DSA").initSign(keys.getPrivate());
 	}
 
 	/**
 	 * @tests java.security.Signature#initVerify(java.security.PublicKey)
 	 */
 	public void test_initVerifyLjava_security_PublicKey() throws Exception {
-
-		Signature sig = Signature.getInstance("DSA");
-
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
-		SecureRandom random = new SecureRandom();
-		keyGen.initialize(1024, random);
-		KeyPair keys = keyGen.generateKeyPair();
-		sig.initVerify(keys.getPublic());
+		Signature.getInstance("DSA").initVerify(keys.getPublic());
 	}
 
 	/**
@@ -159,15 +152,7 @@ public class SignatureTest extends junit.framework.TestCase {
 	 * @tests java.security.Signature#sign()
 	 */
 	public void test_sign() throws Exception {
-
 		Signature sig = Signature.getInstance("DSA");
-
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
-
-		SecureRandom random = new SecureRandom();
-		keyGen.initialize(1024, random);
-		KeyPair keys = keyGen.generateKeyPair();
-
 		sig.initSign(keys.getPrivate());
 		sig.update(MESSAGE.getBytes());
 		sig.sign();
@@ -185,15 +170,7 @@ public class SignatureTest extends junit.framework.TestCase {
 	 * @tests java.security.Signature#update(byte[])
 	 */
 	public void test_update$B() throws Exception {
-
 		Signature sig = Signature.getInstance("DSA");
-
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
-
-		SecureRandom random = new SecureRandom();
-		keyGen.initialize(1024, random);
-		KeyPair keys = keyGen.generateKeyPair();
-
 		sig.initSign(keys.getPrivate());
 
 		byte[] bytes = MESSAGE.getBytes();
@@ -204,15 +181,7 @@ public class SignatureTest extends junit.framework.TestCase {
 	 * @tests java.security.Signature#update(byte[], int, int)
 	 */
 	public void test_update$BII() throws Exception {
-
 		Signature sig = Signature.getInstance("DSA");
-
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
-
-		SecureRandom random = new SecureRandom();
-		keyGen.initialize(1024, random);
-		KeyPair keys = keyGen.generateKeyPair();
-
 		sig.initSign(keys.getPrivate());
 
 		byte[] bytes = MESSAGE.getBytes();
@@ -223,15 +192,7 @@ public class SignatureTest extends junit.framework.TestCase {
 	 * @tests java.security.Signature#update(byte)
 	 */
 	public void test_updateB() throws Exception {
-
 		Signature sig = Signature.getInstance("DSA");
-
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
-
-		SecureRandom random = new SecureRandom();
-		keyGen.initialize(1024, random);
-		KeyPair keys = keyGen.generateKeyPair();
-
 		sig.initSign(keys.getPrivate());
 
 		sig.update(MESSAGE.getBytes()[0]);
@@ -241,15 +202,7 @@ public class SignatureTest extends junit.framework.TestCase {
 	 * @tests java.security.Signature#verify(byte[])
 	 */
 	public void test_verify$B() throws Exception {
-
 		Signature sig = Signature.getInstance("DSA");
-
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
-
-		SecureRandom random = new SecureRandom();
-		keyGen.initialize(1024, random);
-		KeyPair keys = keyGen.generateKeyPair();
-
 		sig.initSign(keys.getPrivate());
 		sig.update(MESSAGE.getBytes());
 		byte[] signature = sig.sign();
