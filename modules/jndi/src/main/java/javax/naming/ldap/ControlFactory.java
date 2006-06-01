@@ -94,7 +94,7 @@ public abstract class ControlFactory {
     public static Control getControlInstance(
         Control c,
         Context ctx,
-        Hashtable h)
+        Hashtable<?, ?> h)
         throws NamingException {
 
         // obtain control factories from hashtable and provider resource file

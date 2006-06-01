@@ -81,7 +81,7 @@ public class InitialLdapContext
      * @param cs                the connection controls which may be null
      * @throws NamingException  If an error is encountered.
      */
-    public InitialLdapContext(Hashtable h, Control[] cs)
+    public InitialLdapContext(Hashtable<?, ?> h, Control[] cs)
         throws NamingException {
         super(true);
 
@@ -89,11 +89,11 @@ public class InitialLdapContext
          * Prepare the environment properties to be inherited by the 
          * service provider.
          */
-        Hashtable newEnvironment = null;
+        Hashtable<Object,Object> newEnvironment = null;
         if (null == h) {
-            newEnvironment = new Hashtable();
+            newEnvironment = new Hashtable<Object,Object>();
         } else {
-            newEnvironment = (Hashtable) h.clone();
+            newEnvironment = (Hashtable<Object,Object>) h.clone();
         }
 
         // Set the environment property java.naming.ldap.control.connect

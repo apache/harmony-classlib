@@ -86,7 +86,7 @@ public abstract class LdapReferralException extends ReferralException {
      * @throws NamingException
      * 						If cannot get referral context correctly.
      */
-    public abstract Context getReferralContext(Hashtable h)
+    public abstract Context getReferralContext(Hashtable<?, ?> h)
         throws NamingException;
 
     /**
@@ -99,7 +99,7 @@ public abstract class LdapReferralException extends ReferralException {
      * @throws NamingException
      * 						If cannot get referral context correctly.
      */
-    public abstract Context getReferralContext(Hashtable h, Control[] cs)
+    public abstract Context getReferralContext(Hashtable<?, ?> h, Control[] cs)
         throws NamingException;
 
 }
