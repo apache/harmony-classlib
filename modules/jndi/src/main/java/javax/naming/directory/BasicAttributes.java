@@ -73,7 +73,7 @@ public class BasicAttributes implements Attributes {
     private boolean ignoreCase;
 
     // A map, Id => Attribute
-    private transient Hashtable attrMap = new Hashtable();
+    private transient Hashtable<String,Attribute> attrMap = new Hashtable<String,Attribute>();
 
     /*
      * -------------------------------------------------------------------
@@ -147,25 +147,25 @@ public class BasicAttributes implements Attributes {
      */
 
     public Attribute get(String id) {
-        return (Attribute) attrMap.get(convertId(id));
+        return attrMap.get(convertId(id));
     }
 
-    public NamingEnumeration getAll() {
-        return new BasicNamingEnumeration(attrMap.elements());
+    public NamingEnumeration<Attribute> getAll() {
+        return new BasicNamingEnumeration<Attribute>(attrMap.elements());
     }
 
-    public NamingEnumeration getIDs() {
+    public NamingEnumeration<String> getIDs() {
         if (ignoreCase) {
-            Enumeration e = this.attrMap.elements();
-            Vector v = new Vector(attrMap.size());
+            Enumeration<Attribute> e = this.attrMap.elements();
+            Vector<String> v = new Vector<String>(attrMap.size());
 
             while (e.hasMoreElements()) {
-                v.add(((Attribute) e.nextElement()).getID());
+                v.add((e.nextElement()).getID());
             }
 
-            return new BasicNamingEnumeration(v.elements());
+            return new BasicNamingEnumeration<String>(v.elements());
         }
-		return new BasicNamingEnumeration(this.attrMap.keys());
+		return new BasicNamingEnumeration<String>(this.attrMap.keys());
     }
 
     public boolean isCaseIgnored() {
@@ -174,7 +174,7 @@ public class BasicAttributes implements Attributes {
 
     public Attribute put(Attribute attribute) {
         String id = convertId(attribute.getID());
-        return (Attribute) attrMap.put(id, attribute);
+        return attrMap.put(id, attribute);
     }
 
     public Attribute put(String id, Object obj) {
@@ -182,7 +182,7 @@ public class BasicAttributes implements Attributes {
     }
 
     public Attribute remove(String id) {
-        return (Attribute) attrMap.remove(convertId(id));
+        return attrMap.remove(convertId(id));
     }
 
     public int size() {
@@ -207,7 +207,7 @@ public class BasicAttributes implements Attributes {
 
         ois.defaultReadObject();
         size = ois.readInt();
-        attrMap = new Hashtable();
+        attrMap = new Hashtable<String,Attribute>();
         for (int i = 0; i < size; i++) {
             BasicAttribute attr = (BasicAttribute) ois.readObject();
             attrMap.put(convertId(attr.getID()), attr);
@@ -223,7 +223,7 @@ public class BasicAttributes implements Attributes {
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
         oos.writeInt(attrMap.size());
-        for (Enumeration enumeration = attrMap.elements(); enumeration.hasMoreElements();) {
+        for (Enumeration<Attribute> enumeration = attrMap.elements(); enumeration.hasMoreElements();) {
             oos.writeObject(enumeration.nextElement());
         }
     }
@@ -238,7 +238,7 @@ public class BasicAttributes implements Attributes {
     public Object clone() {
         try {
             BasicAttributes c = (BasicAttributes) super.clone();
-            c.attrMap = (Hashtable) this.attrMap.clone();
+            c.attrMap = (Hashtable<String,Attribute>) this.attrMap.clone();
             return c;
         } catch (CloneNotSupportedException e) {
             throw new InternalError("Failed to clone object of BasicAttributes class."); //$NON-NLS-1$
@@ -268,10 +268,10 @@ public class BasicAttributes implements Attributes {
         }
 
         // compare each attribute
-        Iterator it = attrMap.entrySet().iterator();
+        Iterator<Map.Entry<String,Attribute>> it = attrMap.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry e = (Map.Entry) it.next();
-            if (!e.getValue().equals(o.get((String) e.getKey()))) {
+            Map.Entry<String,Attribute> e = it.next();
+            if (!e.getValue().equals(o.get(e.getKey()))) {
                 return false;
             }
         }
@@ -288,7 +288,7 @@ public class BasicAttributes implements Attributes {
      *                      instance
      */
     public int hashCode() {
-        Enumeration e = attrMap.elements();
+        Enumeration<Attribute> e = attrMap.elements();
         int i = (ignoreCase ? 1 : 0);
 
         while (e.hasMoreElements()) {
@@ -308,19 +308,19 @@ public class BasicAttributes implements Attributes {
      */
     public String toString() {
         String s = null;
-        Iterator it = attrMap.entrySet().iterator();
-        Map.Entry e = null;
+        Iterator<Map.Entry<String,Attribute>> it = attrMap.entrySet().iterator();
+        Map.Entry<String,Attribute> e = null;
         
         if (it.hasNext()) {
             // If there are one or more attributes, print them all.
-            e = (Map.Entry) it.next();
+            e = it.next();
             s = "{\n"; //$NON-NLS-1$
-            s += (String) e.getKey();
+            s += e.getKey();
             s += "=" + e.getValue().toString(); //$NON-NLS-1$
             while (it.hasNext()) {
-                e = (Map.Entry) it.next();
+                e = it.next();
                 s += "; "; //$NON-NLS-1$
-                s += (String) e.getKey();
+                s += e.getKey();
                 s += "=" + e.getValue().toString(); //$NON-NLS-1$
             }
             s += "}\n"; //$NON-NLS-1$
@@ -330,7 +330,4 @@ public class BasicAttributes implements Attributes {
         }
         return s;
     }
-
 }
-
-

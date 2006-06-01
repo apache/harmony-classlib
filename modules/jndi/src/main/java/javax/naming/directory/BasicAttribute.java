@@ -92,7 +92,7 @@ public class BasicAttribute implements Attribute {
      * This is initialized by the public constructor and is required to be not 
      * null.
      */
-    protected transient Vector values = new Vector();
+    protected transient Vector<Object> values = new Vector<Object>();
 
     /*
      * -------------------------------------------------------------------
@@ -295,7 +295,7 @@ public class BasicAttribute implements Attribute {
     public Object clone() {
         try {
             BasicAttribute attr = (BasicAttribute) super.clone();
-            attr.values = (Vector) this.values.clone();
+            attr.values = (Vector<Object>) this.values.clone();
             return attr;
         } catch (CloneNotSupportedException e) {
             throw new InternalError("Failed to clone object of BasicAttribute class."); //$NON-NLS-1$
@@ -303,7 +303,7 @@ public class BasicAttribute implements Attribute {
     }
 
     public boolean contains(Object val) {
-        Enumeration e = this.values.elements();
+        Enumeration<Object> e = this.values.elements();
 
         while (e.hasMoreElements()) {
             if (compareValues(e.nextElement(), val)) {
@@ -324,7 +324,7 @@ public class BasicAttribute implements Attribute {
         return values.get(index);
     }
 
-    public NamingEnumeration getAll() throws NamingException {
+    public NamingEnumeration<?> getAll() throws NamingException {
         return new BasicNamingEnumeration(values.elements());
     }
 
@@ -390,7 +390,7 @@ public class BasicAttribute implements Attribute {
 
         ois.defaultReadObject();
         size = ois.readInt();
-        this.values = new Vector();
+        this.values = new Vector<Object>();
         for (int i = 0; i < size; i++) {
             this.values.add(ois.readObject());
         }
@@ -406,7 +406,7 @@ public class BasicAttribute implements Attribute {
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
         oos.writeInt(this.values.size());
-        for (Enumeration e = this.values.elements(); e.hasMoreElements();) {
+        for (Enumeration<Object> e = this.values.elements(); e.hasMoreElements();) {
             oos.writeObject(e.nextElement());
         }
     }
@@ -456,7 +456,7 @@ public class BasicAttribute implements Attribute {
                  * Otherwise (i.e., both unordered), see whether containing the
                  * equal set of values.
                  */
-                Enumeration e = this.values.elements();
+                Enumeration<Object> e = this.values.elements();
 
                 while (e.hasMoreElements()) {
                     if (!a.contains(e.nextElement())) {
@@ -482,7 +482,7 @@ public class BasicAttribute implements Attribute {
     public int hashCode() {
         Object o;
         int i = attrID.hashCode();
-        Enumeration e = this.values.elements();
+        Enumeration<Object> e = this.values.elements();
 
         while (e.hasMoreElements()) {
             o = e.nextElement();
@@ -502,7 +502,7 @@ public class BasicAttribute implements Attribute {
      * @return              the string representation of this object
      */
     public String toString() {
-        Enumeration e = this.values.elements();
+        Enumeration<Object> e = this.values.elements();
         String s = "Attribute ID: " + this.attrID; //$NON-NLS-1$
         s += "\nAttribute values: "; //$NON-NLS-1$
 

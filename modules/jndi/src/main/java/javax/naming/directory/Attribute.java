@@ -189,7 +189,7 @@ public interface Attribute extends Cloneable, Serializable {
      * @return                  an enumeration of all values of the attribute
      * @throws NamingException  If any <code>NamingException</code> occurs.
      */
-    NamingEnumeration getAll() throws NamingException;
+    NamingEnumeration<?> getAll() throws NamingException;
 
     /**
      * Returns the attribute's schema definition. 

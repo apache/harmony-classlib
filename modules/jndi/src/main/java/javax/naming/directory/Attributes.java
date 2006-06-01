@@ -72,7 +72,7 @@ public interface Attributes extends Cloneable, Serializable {
      * @return              an enumeration of all contained attributes
      *
      */
-    NamingEnumeration getAll();
+    NamingEnumeration<? extends javax.naming.directory.Attribute> getAll();
 
     /**
      * Returns an enumeration containing the zero or more names (IDs) of the
@@ -82,7 +82,7 @@ public interface Attributes extends Cloneable, Serializable {
      *
      * @return              an enumeration of the IDs of all contained attributes
      */
-    NamingEnumeration getIDs();
+    NamingEnumeration<String> getIDs();
 
     /**
      * Indicates whether case is ignored in the names of the attributes.

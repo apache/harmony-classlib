@@ -24,6 +24,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 import javax.naming.NotContextException;
+import javax.naming.directory.SearchResult;
 
 /**
  * This is the root context for directory service operations.
@@ -83,7 +84,8 @@ public class InitialDirContext extends InitialContext implements DirContext {
      * 						If failed to construct a new instance.
      * @see InitialContext
      */
-    public InitialDirContext(Hashtable hashtable) throws NamingException {
+    public InitialDirContext(Hashtable<?, ?> hashtable)
+            throws NamingException {
     	super(hashtable);
     }
 
@@ -218,12 +220,13 @@ public class InitialDirContext extends InitialContext implements DirContext {
         getURLOrDefaultInitDirCtx(s).rebind(s, obj, attributes);
     }
 
-    public NamingEnumeration search(Name name, Attributes attributes)
+    public NamingEnumeration<SearchResult> search(Name name,
+                                                  Attributes attributes)
         throws NamingException {
         return getURLOrDefaultInitDirCtx(name).search(name, attributes);
     }
 
-    public NamingEnumeration search(
+    public NamingEnumeration<SearchResult> search(
         Name name,
         Attributes attributes,
         String[] as)
@@ -231,7 +234,7 @@ public class InitialDirContext extends InitialContext implements DirContext {
         return getURLOrDefaultInitDirCtx(name).search(name, attributes, as);
     }
 
-    public NamingEnumeration search(
+    public NamingEnumeration<SearchResult> search(
         Name name,
         String filter,
         Object[] objs,
@@ -244,7 +247,7 @@ public class InitialDirContext extends InitialContext implements DirContext {
             searchControls);
     }
 
-    public NamingEnumeration search(
+    public NamingEnumeration<SearchResult> search(
         Name name,
         String filter,
         SearchControls searchcontrols)
@@ -252,12 +255,13 @@ public class InitialDirContext extends InitialContext implements DirContext {
         return getURLOrDefaultInitDirCtx(name).search(name, filter, searchcontrols);
     }
 
-    public NamingEnumeration search(String name, Attributes attributes)
+    public NamingEnumeration<SearchResult> search(String name,
+                                                  Attributes attributes)
         throws NamingException {
         return getURLOrDefaultInitDirCtx(name).search(name, attributes);
     }
 
-    public NamingEnumeration search(
+    public NamingEnumeration<SearchResult> search(
         String name,
         Attributes attributes,
         String[] as)
@@ -265,7 +269,7 @@ public class InitialDirContext extends InitialContext implements DirContext {
         return getURLOrDefaultInitDirCtx(name).search(name, attributes, as);
     }
 
-    public NamingEnumeration search(
+    public NamingEnumeration<SearchResult> search(
         String name,
         String filter,
         Object[] objs,
@@ -274,7 +278,7 @@ public class InitialDirContext extends InitialContext implements DirContext {
         return getURLOrDefaultInitDirCtx(name).search(name, filter, objs, searchControls);
     }
 
-    public NamingEnumeration search(
+    public NamingEnumeration<SearchResult> search(
         String name,
         String filter,
         SearchControls searchControls)

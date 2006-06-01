@@ -22,6 +22,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 /**
  * This is the main interface to a directory service.
@@ -481,7 +482,7 @@ public interface DirContext extends Context {
      * @throws NamingException  If any occurs.
      * @see #search(Name name, Attributes attributes, String[] as)
      */
-    NamingEnumeration search(Name name, Attributes attributes)
+    NamingEnumeration<SearchResult> search(Name name, Attributes attributes)
         throws NamingException;
 
     /**
@@ -530,7 +531,8 @@ public interface DirContext extends Context {
      * @return					<code>NamngEnumeration</code> of <code>SearchResult</code>
      * @throws NamingException  If any occurs.
      */
-    NamingEnumeration search(Name name, Attributes attributes, String as[])
+    NamingEnumeration<SearchResult> search(Name name, Attributes attributes,
+                                           String as[])
         throws NamingException;
 
     /**
@@ -582,7 +584,7 @@ public interface DirContext extends Context {
      * @throws NamingException  If any occurs.
      * @see SearchControls
      */
-    NamingEnumeration search(
+    NamingEnumeration<SearchResult> search(
         Name name,
         String filter,
         Object[] objs,
@@ -604,7 +606,7 @@ public interface DirContext extends Context {
      * @throws NamingException  If any occurs.
      * @see #search(Name, String, Object[], SearchControls)
      */
-    NamingEnumeration search(
+    NamingEnumeration<SearchResult> search(
         Name name,
         String filter,
         SearchControls searchControls)
@@ -622,7 +624,7 @@ public interface DirContext extends Context {
      * @throws NamingException  If any occurs.
      * @see #search(Name, Attributes)
      */
-    NamingEnumeration search(String name, Attributes attributes)
+    NamingEnumeration<SearchResult> search(String name, Attributes attributes)
         throws NamingException;
 
     /**
@@ -638,7 +640,8 @@ public interface DirContext extends Context {
      * @throws NamingException  If any occurs.
      * @see #search(Name, Attributes, String[])
      */
-    NamingEnumeration search(String name, Attributes attributes, String as[])
+    NamingEnumeration<SearchResult> search(String name, Attributes attributes,
+                                           String as[])
         throws NamingException;
 
     /**
@@ -655,7 +658,7 @@ public interface DirContext extends Context {
      * @throws NamingException  If any occurs.
      * @see #search(Name, String, Object[], SearchControls)
      */
-    NamingEnumeration search(
+    NamingEnumeration<SearchResult> search(
         String name,
         String filter,
         Object[] objs,
@@ -675,7 +678,7 @@ public interface DirContext extends Context {
      * @throws NamingException  If any occurs.
      * @see #search(Name, String, SearchControls)
      */
-    NamingEnumeration search(
+    NamingEnumeration<SearchResult> search(
         String name,
         String filter,
         SearchControls searchControls)
