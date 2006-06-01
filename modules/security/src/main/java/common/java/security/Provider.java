@@ -688,7 +688,7 @@ public abstract class Provider extends Properties {
                 i = service_alias.indexOf(".");
                 serviceName = service_alias.substring(0, i);
                 aliasName = service_alias.substring(i + 1);
-                algorithm = (String) value;
+                algorithm = value;
                 String algUp = algorithm.toUpperCase();
                 Object o = null;
                 if (propertyServiceTable == null) {
@@ -737,10 +737,10 @@ public abstract class Provider extends Properties {
                 }
                 if (o != null) {
                     s = (Provider.Service) o;
-                    s.className = (String) value;
+                    s.className = value;
                 } else {
                     s = new Provider.Service(this, serviceName, algorithm,
-                            (String) value, new ArrayList(), new HashMap());
+                            value, new ArrayList(), new HashMap());
                     if (propertyServiceTable == null) {
                         propertyServiceTable = new TwoKeyHashMap(128);
                     }

@@ -27,8 +27,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.asn1.ASN1Boolean;
 import org.apache.harmony.security.asn1.ASN1Enumerated;
