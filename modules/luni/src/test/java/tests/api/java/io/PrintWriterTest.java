@@ -18,8 +18,11 @@ package tests.api.java.io;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.util.Locale;
 
 import tests.support.Support_StringReader;
 import tests.support.Support_StringWriter;
@@ -114,6 +117,60 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		assertEquals("Failed to construct proper writer", 
 				"Hello", sw.toString());
 	}
+
+    /**
+     * @tests java.io.PrintWriter#PrintWriter(java.io.File)
+     */
+    public void test_ConstructorLjava_io_File() throws Exception {
+        File file = File.createTempFile(getClass().getName(), null);
+        try {
+            PrintWriter writer = new PrintWriter(file);
+            writer.close();
+        } finally {
+            file.delete();
+        }
+    }
+
+    /**
+     * @tests java.io.PrintWriter#PrintWriter(java.io.File, java.lang.String)
+     */
+    public void test_ConstructorLjava_io_File_Ljava_lang_String() throws Exception {
+        File file = File.createTempFile(getClass().getName(), null);
+        try {
+            PrintWriter writer = new PrintWriter(file, 
+                    Charset.defaultCharset().name());
+            writer.close();
+        } finally {
+            file.delete();
+        }
+    }
+
+    /**
+     * @tests java.io.PrintWriter#PrintWriter(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() throws Exception {
+        File file = File.createTempFile(getClass().getName(), null);
+        try {
+            PrintWriter writer = new PrintWriter(file.getPath());
+            writer.close();
+        } finally {
+            file.delete();
+        }
+    }
+
+    /**
+     * @tests java.io.PrintWriter#PrintWriter(java.lang.String, java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String_Ljava_lang_String() throws Exception {
+        File file = File.createTempFile(getClass().getName(), null);
+        try {
+            PrintWriter writer = new PrintWriter(file.getPath(), 
+                    Charset.defaultCharset().name());
+            writer.close();
+        } finally {
+            file.delete();
+        }
+    }
 
 	/**
 	 * @tests java.io.PrintWriter#checkError()
@@ -623,6 +680,46 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		printWriter.close();
 
 	}
+
+    /**
+     * @tests java.io.PrintWriter#format(java.lang.String, java.lang.Object...)
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object() {
+        pw.format("%s %s", "Hello", "World");
+        pw.flush();
+        assertEquals("Wrote incorrect string", "Hello World", 
+                new String(bao.toByteArray()));
+    }
+
+    /**
+     * @tests java.io.PrintWriter#format(java.util.Locale, java.lang.String, java.lang.Object...)
+     */
+    public void test_formatLjava_util_Locale_Ljava_lang_String_$Ljava_lang_Object() {
+        pw.format(Locale.US, "%s %s", "Hello", "World");
+        pw.flush();
+        assertEquals("Wrote incorrect string", "Hello World", 
+                new String(bao.toByteArray()));
+    }
+
+    /**
+     * @tests java.io.PrintWriter#printf(java.lang.String, java.lang.Object...)
+     */
+    public void test_printfLjava_lang_String$Ljava_lang_Object() {
+        pw.printf("%s %s", "Hello", "World");
+        pw.flush();
+        assertEquals("Wrote incorrect string", "Hello World", 
+                new String(bao.toByteArray()));
+    }
+
+    /**
+     * @tests java.io.PrintWriter#printf(java.util.Locale, java.lang.String, java.lang.Object...)
+     */
+    public void test_printfLjava_util_Locale_Ljava_lang_String_$Ljava_lang_Object() {
+        pw.printf(Locale.US, "%s %s", "Hello", "World");
+        pw.flush();
+        assertEquals("Wrote incorrect string", "Hello World", 
+                new String(bao.toByteArray()));
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

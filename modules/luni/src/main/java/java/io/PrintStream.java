@@ -18,7 +18,11 @@ package java.io;
 
 import java.nio.charset.Charset;
 import java.security.AccessController;
+import java.util.Formatter;
+import java.util.IllegalFormatException;
+import java.util.Locale;
 
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -262,6 +266,112 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 		}
 		setError();
 	}
+
+    /**
+     * Writes a string formatted by an intermediate <code>Formatter</code> 
+     * to this stream using the given format string and arguments. 
+     * <p>
+     * The method uses the default for the current JVM instance locale, as if
+     * it is specified by the <code>Locale.getDefault()</code> call. 
+     * 
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list. If there are more arguments than those 
+     *            specified by the format string, then the additional 
+     *            arguments are ignored.
+     * @return This stream.
+     * @throws IllegalFormatException
+     *            If the format string is illegal or incompatible with the
+     *            arguments or the arguments are less than those required by
+     *            the format string or any other illegal situation.
+     * @throws NullPointerException
+     *            If the given format is null.
+     */
+    public PrintStream format(String format, Object... args) {
+        return format(Locale.getDefault(), format, args);
+    }
+
+    /**
+     * Writes a string formatted by an intermediate <code>Formatter</code> 
+     * to this stream using the given format string and arguments. 
+     * 
+     * @param l
+     *            The locale used in the method. If locale is null, then no
+     *            localization will be applied.
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list. If there are more arguments than those 
+     *            specified by the format string, then the additional 
+     *            arguments are ignored.
+     * @return This stream.
+     * @throws IllegalFormatException
+     *            If the format string is illegal or incompatible with the
+     *            arguments or the arguments are less than those required by
+     *            the format string or any other illegal situation.
+     * @throws NullPointerException
+     *            If the given format is null.
+     */
+    public PrintStream format(Locale l, String format, Object... args) {
+        if (format == null) {
+            throw new NullPointerException(Msg.getString("K0351")); //$NON-NLS-1$
+        }
+        new Formatter(this, l).format(format, args);
+        return this;
+    }
+
+    /**
+     * Prints a formatted string. The behavior of this method is the same 
+     * as this stream's <code>format(String format, Object... args)</code> 
+     * method.
+     * <p>
+     * The method uses the default for the current JVM instance locale, as if
+     * it is specified by the <code>Locale.getDefault()</code> call. 
+     * 
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list. If there are more arguments than those 
+     *            specified by the format string, then the additional 
+     *            arguments are ignored.
+     * @return This stream.
+     * @throws IllegalFormatException
+     *            If the format string is illegal or incompatible with the
+     *            arguments or the arguments are less than those required by
+     *            the format string or any other illegal situation.
+     * @throws NullPointerException
+     *            If the given format is null.
+     */
+    public PrintStream printf(String format, Object... args) {
+        return format(format, args);
+    }
+
+    /**
+     * Prints a formatted string. The behavior of this method is the same 
+     * as this writer's 
+     * <code>format(Locale l, String format, Object... args)</code> method.
+     * 
+     * @param l
+     *            The locale used in the method. If locale is null, then no
+     *            localization will be applied.
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list. If there are more arguments than those 
+     *            specified by the format string, then the additional 
+     *            arguments are ignored.
+     * @return This stream.
+     * @throws IllegalFormatException
+     *            If the format string is illegal or incompatible with the
+     *            arguments or the arguments are less than those required by
+     *            the format string or any other illegal situation.
+     * @throws NullPointerException
+     *            If the given format is null.
+     */
+    public PrintStream printf(Locale l, String format, Object... args) {
+        return format(l, format, args);
+    }
 
 	private void newline() {
 		print(lineSeparator);

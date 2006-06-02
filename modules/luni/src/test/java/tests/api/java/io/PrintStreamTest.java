@@ -15,10 +15,12 @@
 
 package tests.api.java.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Locale;
 
 public class PrintStreamTest extends junit.framework.TestCase {
 
@@ -543,6 +545,62 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		printStream.close();
 
 	}
+
+    /**
+     * @tests java.io.PrintStream#format(java.lang.String, java.lang.Object...)
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object() {
+        os = new PrintStream(bos, false);
+        os.format("%s %s", "Hello", "World");
+        os.flush();
+        bis = new ByteArrayInputStream(bos.toByteArray());
+        byte[] rbytes = new byte[11];
+        bis.read(rbytes, 0, rbytes.length);
+        assertEquals("Wrote incorrect string", "Hello World", 
+                new String(rbytes));
+    }
+
+    /**
+     * @tests java.io.PrintStream#format(java.util.Locale, java.lang.String, java.lang.Object...)
+     */
+    public void test_formatLjava_util_Locale_Ljava_lang_String_$Ljava_lang_Object() {
+        os = new PrintStream(bos, false);
+        os.format(Locale.US, "%s %s", "Hello", "World");
+        os.flush();
+        bis = new ByteArrayInputStream(bos.toByteArray());
+        byte[] rbytes = new byte[11];
+        bis.read(rbytes, 0, rbytes.length);
+        assertEquals("Wrote incorrect string", "Hello World", 
+                new String(rbytes));
+    }
+
+    /**
+     * @tests java.io.PrintStream#printf(java.lang.String, java.lang.Object...)
+     */
+    public void test_printfLjava_lang_String$Ljava_lang_Object() {
+        os = new PrintStream(bos, false);
+        os.printf("%s %s", "Hello", "World");
+        os.flush();
+        bis = new ByteArrayInputStream(bos.toByteArray());
+        byte[] rbytes = new byte[11];
+        bis.read(rbytes, 0, rbytes.length);
+        assertEquals("Wrote incorrect string", "Hello World", 
+                new String(rbytes));
+    }
+
+    /**
+     * @tests java.io.PrintStream#printf(java.util.Locale, java.lang.String, java.lang.Object...)
+     */
+    public void test_printfLjava_util_Locale_Ljava_lang_String_$Ljava_lang_Object() {
+        os = new PrintStream(bos, false);
+        os.printf(Locale.US, "%s %s", "Hello", "World");
+        os.flush();
+        bis = new ByteArrayInputStream(bos.toByteArray());
+        byte[] rbytes = new byte[11];
+        bis.read(rbytes, 0, rbytes.length);
+        assertEquals("Wrote incorrect string", "Hello World", 
+                new String(rbytes));
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

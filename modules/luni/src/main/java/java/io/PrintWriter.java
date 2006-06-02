@@ -17,7 +17,11 @@ package java.io;
 
 
 import java.security.AccessController;
+import java.util.Formatter;
+import java.util.IllegalFormatException;
+import java.util.Locale;
 
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -107,7 +111,91 @@ public class PrintWriter extends Writer {
 		out = wr;
 	}
 
-	/**
+    /**
+     * Constructs a new PrintWriter on the File <code>file</code>. The
+     * automatic flushing is set to <code>false</code>. An intermediate 
+     * <code>OutputStreamWriter</code> will use the default for the current JVM
+     * instance charset to encode characters.
+     * 
+     * @param file
+     *            This writer's buffered destination.
+     * @throws FileNotFoundException
+     *            If there is no such a file or some other error occurs
+     *            due to the given file opening.
+     */
+    public PrintWriter(File file) throws FileNotFoundException {
+        this(new OutputStreamWriter(
+                new BufferedOutputStream(new FileOutputStream(file))),
+                false);
+    }
+
+    /**
+     * Constructs a new PrintWriter on the File <code>file</code>. The 
+     * automatic flushing is set to <code>false</code>. An intermediate 
+     * <code>OutputStreamWriter</code> will use a charset with the 
+     * given name <code>csn</code> to encode characters.
+     * 
+     * @param file
+     *            This writer's buffered destination.
+     * @param csn
+     *            A charset name.
+     * @throws FileNotFoundException
+     *            If there is no such a file or some other error occurs
+     *            due to the given file opening.
+     * @throws UnsupportedEncodingException
+     *            If a charset with the given name is not supported.
+     */
+    public PrintWriter(File file, String csn)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        this(new OutputStreamWriter(
+                new BufferedOutputStream(new FileOutputStream(file)), csn),
+                false);
+    }
+
+    /**
+     * Constructs a new PrintWriter on a file with the given file name
+     * <code>fileName</code>. The automatic flushing is set to 
+     * <code>false</code>. An intermediate <code>OutputStreamWriter</code> 
+     * will use the default for the current JVM instance charset to 
+     * encode characters.
+     * 
+     * @param fileName
+     *            The name of file which is this writer's buffered destination.
+     * @throws FileNotFoundException
+     *            If there is no such a file or some other error occurs
+     *            due to the given file opening.
+     */
+    public PrintWriter(String fileName) throws FileNotFoundException {
+        this(new OutputStreamWriter(
+                new BufferedOutputStream(new FileOutputStream(fileName))),
+                false);
+    }
+
+    /**
+     * Constructs a new PrintWriter on a file with the given file name
+     * <code>fileName</code>. The automatic flushing is set to 
+     * <code>false</code>. An intermediate <code>OutputStreamWriter</code> 
+     * will use a charset with the given name <code>csn</code> to 
+     * encode characters.
+     * 
+     * @param fileName
+     *            The name of file which is this writer's buffered destination.
+     * @param csn
+     *            A charset name.
+     * @throws FileNotFoundException
+     *            If there is no such a file or some other error occurs
+     *            due to the given file opening.
+     * @throws UnsupportedEncodingException
+     *            If a charset with the given name is not supported.
+     */
+    public PrintWriter(String fileName, String csn)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        this(new OutputStreamWriter(
+                new BufferedOutputStream(new FileOutputStream(fileName)), csn),
+                false);
+    }
+
+    /**
 	 * Answers a boolean indicating whether or not this PrintWriter has
 	 * encountered an error. If so, the receiver should probably be closed since
 	 * futher writes will not actually take place. A side effect of calling
@@ -158,6 +246,119 @@ public class PrintWriter extends Writer {
 			}
 		}
 	}
+
+    /**
+     * Writes a string formatted by an intermediate <code>Formatter</code> 
+     * to this writer using the given format string and arguments. A call to
+     * this method flushes the buffered output, if the automatic flushing 
+     * is enabled.
+     * <p>
+     * The method uses the default for the current JVM instance locale, as if
+     * it is specified by the <code>Locale.getDefault()</code> call. 
+     * 
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list. If there are more arguments than those 
+     *            specified by the format string, then the additional 
+     *            arguments are ignored.
+     * @return This writer.
+     * @throws IllegalFormatException
+     *            If the format string is illegal or incompatible with the
+     *            arguments or the arguments are less than those required by
+     *            the format string or any other illegal situation.
+     * @throws NullPointerException
+     *            If the given format is null.
+     */
+    public PrintWriter format(String format, Object... args) {
+        return format(Locale.getDefault(), format, args);
+    }
+
+    /**
+     * Writes a string formatted by an intermediate <code>Formatter</code> 
+     * to this writer using the given format string and arguments. A call to
+     * this method flushes the buffered output, if the automatic flushing 
+     * is enabled.
+     * 
+     * @param l
+     *            The locale used in the method. If locale is null, then no
+     *            localization will be applied.
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list. If there are more arguments than those 
+     *            specified by the format string, then the additional 
+     *            arguments are ignored.
+     * @return This writer.
+     * @throws IllegalFormatException
+     *            If the format string is illegal or incompatible with the
+     *            arguments or the arguments are less than those required by
+     *            the format string or any other illegal situation.
+     * @throws NullPointerException
+     *            If the given format is null.
+     */
+    public PrintWriter format(Locale l, String format, Object... args) {
+        if (format == null) {
+            throw new NullPointerException(Msg.getString("K0351")); //$NON-NLS-1$
+        }
+        new Formatter(this, l).format(format, args);
+        if (autoflush) {
+            flush();
+        }
+        return this;
+    }
+
+    /**
+     * Prints a formatted string. The behavior of this method is the same 
+     * as this writer's <code>format(String format, Object... args)</code> 
+     * method.
+     * <p>
+     * The method uses the default for the current JVM instance locale, as if
+     * it is specified by the <code>Locale.getDefault()</code> call. 
+     * 
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list. If there are more arguments than those 
+     *            specified by the format string, then the additional 
+     *            arguments are ignored.
+     * @return This writer.
+     * @throws IllegalFormatException
+     *            If the format string is illegal or incompatible with the
+     *            arguments or the arguments are less than those required by
+     *            the format string or any other illegal situation.
+     * @throws NullPointerException
+     *            If the given format is null.
+     */
+    public PrintWriter printf(String format, Object... args) {
+        return format(format, args);
+    }
+
+    /**
+     * Prints a formatted string. The behavior of this method is the same 
+     * as this writer's 
+     * <code>format(Locale l, String format, Object... args)</code> method.
+     * 
+     * @param l
+     *            The locale used in the method. If locale is null, then no
+     *            localization will be applied.
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list. If there are more arguments than those 
+     *            specified by the format string, then the additional 
+     *            arguments are ignored.
+     * @return
+     * @throws IllegalFormatException
+     *            If the format string is illegal or incompatible with the
+     *            arguments or the arguments are less than those required by
+     *            the format string or any other illegal situation.
+     * @throws NullPointerException
+     *            If the given format is null.
+     */
+    public PrintWriter printf(Locale l, String format, Object... args) {
+        return format(l, format, args);
+    }
 
 	private void newline() {
 		print(lineSeparator);
