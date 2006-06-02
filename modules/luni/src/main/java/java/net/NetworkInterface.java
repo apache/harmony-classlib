@@ -296,6 +296,19 @@ public final class NetworkInterface extends Object {
         if (interfaces == null) {
             return null;
         }
+
+        for (NetworkInterface netif : interfaces) {
+            for (InetAddress addr : netif.addresses) {
+                if (16 == addr.ipaddress.length) {
+                    if (addr.isLinkLocalAddress() || addr.isSiteLocalAddress()) {
+                        ((Inet6Address) addr).scopedIf = netif;
+                        ((Inet6Address) addr).ifname = netif.name;
+                        ((Inet6Address) addr).scope_ifname_set = true;
+                    }
+                }
+            }
+        }
+
         return (new Vector<NetworkInterface>(Arrays.asList(interfaces)))
                 .elements();
     }
@@ -305,8 +318,7 @@ public final class NetworkInterface extends Object {
      * are equal. The object must be an instance of NetworkInterface with the
      * same name, displayName and list of network interfaces to be the same
      * 
-     * @param obj
-     *            the object to compare
+     * @param obj the object to compare
      * @return true if the specified object is equal to this NetworkInterfcae,
      *         false otherwise
      * 

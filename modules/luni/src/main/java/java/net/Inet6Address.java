@@ -44,7 +44,7 @@ public final class Inet6Address extends InetAddress {
 	/*
 	 * scoped interface.
 	 */
-	private transient NetworkInterface scopedIf = null;
+	transient NetworkInterface scopedIf = null;
 
 	Inet6Address(byte address[]) {
 		ipaddress = address;
@@ -416,7 +416,9 @@ public final class Inet6Address extends InetAddress {
 	private static final ObjectStreamField[] serialPersistentFields = {
 			new ObjectStreamField("ipaddress", new byte[0].getClass()),
 			new ObjectStreamField("scope_id", Integer.TYPE),
-			new ObjectStreamField("scope_id_set", Boolean.TYPE) };
+			new ObjectStreamField("scope_id_set", Boolean.TYPE),
+            new ObjectStreamField("scope_ifname_set", Boolean.TYPE),
+            new ObjectStreamField("ifname", String.class),};
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		ObjectOutputStream.PutField fields = stream.putFields();
@@ -428,7 +430,8 @@ public final class Inet6Address extends InetAddress {
 
 		fields.put("scope_id", scope_id);
 		fields.put("scope_id_set", scope_id_set);
-
+        fields.put("scope_ifname_set", scope_ifname_set);
+        fields.put("ifname", ifname);
 		stream.writeFields();
 	}
 
@@ -438,6 +441,11 @@ public final class Inet6Address extends InetAddress {
 		ipaddress = (byte[]) fields.get("ipaddress", null);
 		scope_id = fields.get("scope_id", 0);
 		scope_id_set = fields.get("scope_id_set", false);
+        ifname = (String)fields.get("ifname", null);
+        scope_ifname_set = fields.get("scope_ifname_set", false);
+        if (scope_ifname_set){
+            scopedIf = NetworkInterface.getByName(ifname);
+        }
 	}
 
 	/**

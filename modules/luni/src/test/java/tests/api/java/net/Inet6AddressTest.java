@@ -20,7 +20,11 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 
+import tests.util.SerializationTester;
+
 public class Inet6AddressTest extends junit.framework.TestCase {
+
+    private static final String SERIALIZATION_FILE_NAME = "serialization/java/net/Inet6Address.golden.ser";
 
 	/**
 	 * @tests java.net.Inet6Address#isMulticastAddress()
@@ -957,4 +961,36 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 
 		return fullString.toUpperCase();
 	}
+
+    /*
+     * Test serialization/deserilazation.
+     */
+    public void testSerialization() throws Exception {       
+        byte[] localv6 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };        
+        Inet6Address ia = (Inet6Address) InetAddress.getByAddress(localv6);
+        Inet6Address deIA = (Inet6Address) SerializationTester
+                .getDeserilizedObject(ia);
+        byte[] deAddr = deIA.getAddress();
+        for (int i = 0; i < localv6.length; i++) {
+            assertEquals(localv6[i], deAddr[i]);
+        }
+        assertEquals(ia.getScopeId(), deIA.getScopeId());
+        assertEquals(ia.getScopedInterface(), deIA.getScopedInterface());
+    }
+
+    /*
+     * Test serialization/deserilazation compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        byte[] localv6 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+        Inet6Address ia = (Inet6Address) InetAddress.getByAddress(localv6);
+        Inet6Address deIA = (Inet6Address) SerializationTester.readObject(ia,
+                SERIALIZATION_FILE_NAME);
+        byte[] deAddr = deIA.getAddress();
+        for (int i = 0; i < localv6.length; i++) {
+            assertEquals(localv6[i], deAddr[i]);
+        }
+        assertEquals(ia.getScopeId(), deIA.getScopeId());
+        assertEquals(ia.getScopedInterface(), deIA.getScopedInterface());
+    }
 }
