@@ -260,10 +260,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
         // connect result
         int result = EOF;
-        boolean success = false;
+        boolean finished = false;
 
-        try {
-            begin();
+        try {           
             if (!isBound) {
                 // bind
                 networkSystem.bind2(fd, 0, true, InetAddress
@@ -274,6 +273,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             localAddress = networkSystem.getSocketLocalAddress(fd, false);
 
             if (isBlocking()) {
+                begin();
                 result = networkSystem.connect(fd, trafficClass,
                         inetSocketAddress.getAddress(), inetSocketAddress
                                 .getPort());
@@ -283,32 +283,35 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                         inetSocketAddress.getAddress(), inetSocketAddress
                                 .getPort(), HY_SOCK_STEP_START, connectContext);
             }
-
-            success = (CONNECT_SUCCESS == result);
-
-            isBound = success;
+            finished = (CONNECT_SUCCESS == result);
+            isBound = finished;
         } catch (IOException e) {
             if (e instanceof ConnectException && !isBlocking()) {
                 status = SOCKET_STATUS_PENDING;
             } else {
-                close();
-                throw e;
+                if (isOpen()){
+                    close();
+                    finished = true;
+                }                
+                throw e;                
             }
         } finally {
-            end(success);
+            if (isBlocking()) {
+                end(finished);
+            }
         }
 
         // set the connected address.
         connectAddress = inetSocketAddress;
         synchronized (this) {
             if (isBlocking()) {
-                status = (success ? SOCKET_STATUS_CONNECTED
+                status = (finished ? SOCKET_STATUS_CONNECTED
                         : SOCKET_STATUS_UNCONNECTED);
             } else {
                 status = SOCKET_STATUS_PENDING;
             }
         }
-        return success;
+        return finished;
     }
 
     /*
@@ -330,7 +333,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
         // finish result
         int result = EOF;
-        boolean success = false;
+        boolean finished = false;
 
         try {
             begin();
@@ -343,19 +346,22 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                         connectAddress.getAddress(), connectAddress.getPort(),
                         HY_PORT_SOCKET_STEP_CHECK, connectContext);
             }
-            success = (result == CONNECT_SUCCESS);
+            finished = (result == CONNECT_SUCCESS);
         } catch (ConnectException e) {
-            close();
+            if (isOpen()){
+                close();
+                finished = true;
+            }     
             throw e;
         } finally {
-            end(success);
+            end(finished);
         }
 
         synchronized (this) {
-            status = (success ? SOCKET_STATUS_CONNECTED : status);
-            isBound = success;
+            status = (finished ? SOCKET_STATUS_CONNECTED : status);
+            isBound = finished;
         }
-        return success;
+        return finished;
     }
 
     // -------------------------------------------------------------------
@@ -383,6 +389,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             throws IOException {
         if (isIndexValid(targets, offset, length)) {
             checkOpenConnected();
+            if (0 == calculateByteBufferArray(targets, offset, length)){
+                return 0;
+            }
             synchronized (readLock) {
                 long totalCount = 0;
                 for (int val = offset; val < offset + length; val++) {
@@ -391,6 +400,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                     if (EOF != readCount) {
                         totalCount = totalCount + readCount;
                     } else {
+                        if (0 == totalCount){
+                            totalCount = -1;
+                        }
                         break;
                     }
                 }
@@ -413,12 +425,12 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         if (!target.hasRemaining()) {
             return 0;
         }
-
         int readCount = 0;
-
         try {
-            begin();
             byte[] readArray = new byte[target.remaining()];
+            if (isBlocking()){
+                begin();
+            }
             readCount = networkSystem.read(fd, readArray, 0, readArray.length,
                     (isBlocking() ? TIMEOUT_BLOCK : TIMEOUT_NONBLOCK));
             if (EOF != readCount) {
@@ -433,7 +445,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             }
             throw e;
         } finally {
-            end(readCount > 0);
+            if (isBlocking()){
+                end(readCount > 0);
+            }
         }
     }
 
@@ -442,7 +456,13 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
      * @see java.nio.channels.SocketChannel#write(java.nio.ByteBuffer)
      */
     public int write(ByteBuffer source) throws IOException {
+        if (null == source) {
+            throw new NullPointerException();
+        }
         checkOpenConnected();
+        if (!source.hasRemaining()) {
+            return 0;
+        }
         synchronized (writeLock) {
             return writeImpl(source);
         }
@@ -456,6 +476,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             throws IOException {
         if (isIndexValid(sources, offset, length)) {
             checkOpenConnected();
+            if (0 == calculateByteBufferArray(sources, offset, length)){
+                return 0;
+            }
             synchronized (writeLock) {
                 long writeCount = 0;
                 for (int val = offset; val < offset + length; val++) {
@@ -467,6 +490,13 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         throw new ArrayIndexOutOfBoundsException();
     }
 
+    private int calculateByteBufferArray(ByteBuffer[] sources, int offset, int length){
+        int sum = 0;
+        for (int val = offset; val < offset + length; val++) {
+            sum = sum + sources[val].remaining();
+        }
+        return sum;
+    }
     /*
      * wirte the source. return the count of bytes written.
      */
@@ -476,31 +506,34 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
         int writeCount = 0;
         try {
-            begin();
-            int pos = source.position();
-            byte[] array;
-            // FIXME enhance the perform
-            if (source.hasArray()) {
-                array = source.array();
-            } else {
-                array = new byte[source.remaining()];
-                source.get(array);
-            }
             networkSystem.setNonBlocking(fd, !this.isBlocking());
-            writeCount = networkSystem.write(fd, array, 0, array.length);
-            source.position(pos + writeCount);
-            return writeCount;
-        } catch (SocketException e) {
-            if (ERRMSG_SOCKET_NONBLOCKING_WOULD_BLOCK.equals(e.getMessage())) {
-                return writeCount;
+            int pos = source.position();
+            int length = source.remaining();
+            if (isBlocking()){
+                begin();
             }
+            if (source.hasArray()) {
+                writeCount = networkSystem.write(fd, source.array(), pos,
+                        length);
+            } else {
+                byte[] array = new byte[length];
+                source.get(array);
+                writeCount = networkSystem.write(fd, array, 0, length);
+            }
+            source.position(pos + writeCount);
+        } catch (SocketException e) {
             if (ERRORMSG_ASYNCHRONOUSCLOSE.equals(e.getMessage())) {
                 throw new AsynchronousCloseException();
             }
-            throw e;
+            if (!ERRMSG_SOCKET_NONBLOCKING_WOULD_BLOCK.equals(e.getMessage())) {
+                throw e;
+            }            
         } finally {
-            end(writeCount >= 0);
+            if (isBlocking()){
+                end(writeCount >= 0);
+            }
         }
+        return writeCount;
     }
 
     // -------------------------------------------------------------------

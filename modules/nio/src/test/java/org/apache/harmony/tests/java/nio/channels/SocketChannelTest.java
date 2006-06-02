@@ -31,6 +31,7 @@ import java.nio.channels.ConnectionPendingException;
 import java.nio.channels.IllegalBlockingModeException;
 import java.nio.channels.NoConnectionPendingException;
 import java.nio.channels.NotYetConnectedException;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.UnresolvedAddressException;
 import java.nio.channels.UnsupportedAddressTypeException;
@@ -158,28 +159,31 @@ public class SocketChannelTest extends TestCase {
         MockSocketChannel testMSChannelnull = new MockSocketChannel(null);
         MockSocketChannel testMSChannel = new MockSocketChannel(
                 SelectorProvider.provider());
-        ServerSocket testServer = new ServerSocket(1081);
+        ServerSocket testServer = new ServerSocket(Support_PortManager
+                .getNextPort());
         try {
-            this.channel1.read(byteBuf);
-            fail("Should throw NPE");
-        } catch (NullPointerException e) {
-            // correct
+            try {
+                this.channel1.read(byteBuf);
+                fail("Should throw NPE");
+            } catch (NullPointerException e) {
+                // correct
+            }
+            byteBuf = new java.nio.ByteBuffer[CAPACITY_NORMAL];
+            try {
+                this.channel1.read(byteBuf);
+                fail("Should throw NotYetConnectedException");
+            } catch (NotYetConnectedException e) {
+                // correct
+            }
+            long readNum = CAPACITY_NORMAL;
+            readNum = testMSChannel.read(byteBuf);
+            assertEquals(0, readNum);
+            readNum = CAPACITY_NORMAL;
+            readNum = testMSChannelnull.read(byteBuf);
+            assertEquals(0, readNum);
+        } finally {
+            testServer.close();
         }
-        byteBuf = new java.nio.ByteBuffer[CAPACITY_NORMAL];
-        try {
-            this.channel1.read(byteBuf);
-            fail("Should throw NotYetConnectedException");
-        } catch (NotYetConnectedException e) {
-            // correct
-        }
-        long readNum = CAPACITY_NORMAL;
-        readNum = testMSChannel.read(byteBuf);
-        assertEquals(0, readNum);
-        readNum = CAPACITY_NORMAL;
-        readNum = testMSChannelnull.read(byteBuf);
-        assertEquals(0, readNum);
-
-        testServer.close();
     }
 
     /*
@@ -2655,23 +2659,16 @@ public class SocketChannelTest extends TestCase {
         }
     }
 
-    public void testConfigureBlockingWhileRead() {
+    public void testConfigureBlockingWhileRead() throws IOException {
+        channel1.connect(localAddr1);
+        server1.accept();
+        assertTrue(this.channel1.isConnected());
+        new ReadThread(channel1).start();
         try {
-            channel1.connect(localAddr1);
-            server1.accept();
-            assertTrue(this.channel1.isConnected());
-            new ReadThread(channel1).start();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-            }
-            channel1.configureBlocking(false);
-            assertFalse(channel1.isBlocking());
-
-        } catch (IOException e) {
-            fail("connections are not established correctly");
-        }
-
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {}
+        channel1.configureBlocking(false);
+        assertFalse(channel1.isBlocking());
     }
 
     private static class ReadThread extends Thread {
@@ -2687,6 +2684,119 @@ public class SocketChannelTest extends TestCase {
                 channel.read(bf);
             } catch (IOException e) {
             }
+        }
+    }
+
+    /**
+     * @tests SocketChannel#read(ByteBuffer[], int, int) when remote server
+     *        closed
+     */
+    public void test_socketChannel_read_ByteBufferII_remoteClosed()
+            throws Exception {
+        // regression 1 for HARMONY-549
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.socket().bind(localAddr2);
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(localAddr2);
+        ssc.accept().close();
+        ByteBuffer[] buf = { ByteBuffer.allocate(10) };
+        assertEquals(-1, sc.read(buf, 0, 1));
+        ssc.close();
+        sc.close();
+    }
+
+    /**
+     * @tests SocketChannel#write(ByteBuffer[], int, int)
+     */
+    public void test_socketChannel_write_ByteBufferII() throws Exception {
+        // regression 2 for HARMONY-549
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.socket().bind(localAddr2);
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(localAddr2);
+        SocketChannel sock = ssc.accept();
+        ByteBuffer[] buf = { ByteBuffer.allocate(10), null };
+        try {
+            sc.write(buf, 0, 2);
+            fail("should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        ssc.close();
+        sc.close();
+        ByteBuffer target = ByteBuffer.allocate(10);
+        assertEquals(-1, sock.read(target));
+    }
+
+    /**
+     * @tests SocketChannel#read(ByteBuffer[], int, int) with a null ByteBuffer
+     */
+    public void test_socketChannel_read_ByteBufferII_bufNULL() throws Exception {
+        // regression 3 for HARMONY-549
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.socket().bind(localAddr2);
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(localAddr2);
+        ssc.accept();
+        ByteBuffer[] buf = new ByteBuffer[2];
+        buf[0] = ByteBuffer.allocate(1);
+        // let buf[1] be null
+        try {
+            sc.read(buf, 0, 2);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        ssc.close();
+        sc.close();
+    }
+
+    /**
+     * @tests SocketChannel#write(ByteBuffer) after close
+     */
+    public void test_socketChannel_write_close() throws Exception {
+        // regression 4 for HARMONY-549
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.socket().bind(localAddr2);
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(localAddr2);
+        SocketChannel sock = ssc.accept();
+        ByteBuffer buf = null;
+        ssc.close();
+        sc.close();
+        try {
+            sc.write(buf);
+            fail("should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        sock.close();
+    }
+
+    /**
+     * @tests SocketChannel#write(ByteBuffer) if position is not zero
+     */
+    public void test_socketChannel_write_ByteBuffer_posNotZero()
+            throws Exception {
+        // regression 5 for HARMONY-549
+        final String testStr = "Hello World";
+        ByteBuffer readBuf = ByteBuffer.allocate(11);
+        ByteBuffer buf = ByteBuffer.wrap(testStr.getBytes());
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.socket().bind(localAddr2);
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(localAddr2);
+        buf.position(2);
+        ssc.accept().write(buf);
+        assertEquals(9, sc.read(readBuf));
+        buf.flip();
+        readBuf.flip();
+        byte[] read = new byte[9];
+        byte[] write = new byte[11];
+        buf.get(write);
+        readBuf.get(read);
+        for (int i = 0; i < 9; i++) {
+            assertEquals(read[i], write[i + 2]);
         }
     }
 }
