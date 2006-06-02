@@ -775,7 +775,7 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.Inet6Address#getByName(java.lang.String)
 	 */
-	public void test_getByNameLjava_lang_String() {
+	public void test_getByNameLjava_lang_String() throws Exception {
 		// ones to add "::255.255.255.255", "::FFFF:0.0.0.0",
 		// "0.0.0.0.0.0::255.255.255.255", "F:F:F:F:F:F:F:F",
 		// "[F:F:F:F:F:F:F:F]"
@@ -785,47 +785,36 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 				"FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:255.255.255.255",
 				"0:0:0:0:0:0:0:0", "0:0:0:0:0:0:0.0.0.0" };
 
-		String invalidIPAddresses[] = { ":", "FFFF:FFFF", "1:1", "::1.2.3.444" };
+		String invalidIPAddresses[] = { "FFFF:FFFF" };
 
 		for (int i = 0; i < validIPAddresses.length; i++) {
 
-			try {
-				InetAddress.getByName(validIPAddresses[i]);
-			} catch (Exception e) {
-				fail("Valid IP address not recognized: "
-						+ validIPAddresses[i]);
-			}
-			if (!validIPAddresses[i].equals("0")) {
-				String tempIPAddress = "[" + validIPAddresses[i] + "]";
-				try {
-					InetAddress.getByName(tempIPAddress);
-				} catch (Exception e) {
-					fail("Valid IP address not recognized: "
-							+ tempIPAddress);
-				}
-			}
+			InetAddress.getByName(validIPAddresses[i]);
+
+            //exercise positive cache
+            InetAddress.getByName(validIPAddresses[i]);
+
+            if (!validIPAddresses[i].equals("0")) {
+                String tempIPAddress = "[" + validIPAddresses[i] + "]";
+                InetAddress.getByName(tempIPAddress);
+            }
 		}
 
 		for (int i = 0; i < invalidIPAddresses.length; i++) {
-			try {
-				InetAddress.getByName(invalidIPAddresses[i]);
-				fail(
-						"Invalid IP address incorrectly recognized as valid: "
-								+ invalidIPAddresses[i]);
-			} catch (Exception e) {
-			}
-			;
-
-			String tempIPAddress = "[" + invalidIPAddresses[i] + "]";
-			try {
-				InetAddress.getByName(tempIPAddress);
-				fail(
-						"Invalid IP address incorrectly recognized as valid: "
-								+ tempIPAddress);
-			} catch (Exception e) {
-			}
-			;
-
+            try {
+                InetAddress.getByName(invalidIPAddresses[i]);
+                fail("Invalid IP address incorrectly recognized as valid: "
+                        + invalidIPAddresses[i]);
+            } catch (Exception e) {
+            }
+            
+            //exercise negative cache
+            try {
+                InetAddress.getByName(invalidIPAddresses[i]);
+                fail("Invalid IP address incorrectly recognized as valid: "
+                        + invalidIPAddresses[i]);
+            } catch (Exception e) {
+            }
 		}
 	}
 	
