@@ -193,12 +193,12 @@ public final class Field extends AccessibleObject implements Member {
 			IllegalArgumentException;
 
 	/**
-	 * Return the java.lang.Class associated with the class that defined this
+	 * Return the {@link Class} associated with the class that defined this
 	 * field.
 	 * 
 	 * @return the declaring class
 	 */
-	public Class getDeclaringClass() {
+	public Class<?> getDeclaringClass() {
 		return null;
 	}
 
@@ -354,11 +354,11 @@ public final class Field extends AccessibleObject implements Member {
 	native String getSignature();
 
 	/**
-	 * Return the java.lang.Class associated with the type of this field.
+	 * Return the {@link Class} associated with the type of this field.
 	 * 
 	 * @return the type
 	 */
-	public Class getType() {
+	public Class<?> getType() {
 		return null;
 	}
 
