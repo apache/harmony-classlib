@@ -142,6 +142,50 @@ public class ChoiceFormatTest extends TestCase {
                 new double[] { 0, 1 }));
         assertTrue("Incorrect formats", java.util.Arrays.equals(f.getFormats(),
                 new String[] { "0", "1" }));
+        
+        //Regression for Harmony 540
+        double[] choiceLimits = { -1, 0, 1, ChoiceFormat.nextDouble(1) };
+        String[] choiceFormats = { "is negative", "is zero or fraction",
+                "is one", "is more than 1" };
+        
+        f = new ChoiceFormat("");
+        f.applyPattern("-1#is negative|0#is zero or fraction|1#is one|1<is more than 1");
+        assertTrue("Incorrect limits", java.util.Arrays.equals(f.getLimits(),
+                choiceLimits));
+        assertTrue("Incorrect formats", java.util.Arrays.equals(f.getFormats(),
+                choiceFormats));
+        
+        f = new ChoiceFormat("");
+        try {
+            f.applyPattern("-1#is negative|0#is zero or fraction|-1#is one|1<is more than 1");
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        
+        f = new ChoiceFormat("");
+        try {
+            f.applyPattern("-1is negative|0#is zero or fraction|1#is one|1<is more than 1");
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        
+        f = new ChoiceFormat("");
+        f.applyPattern("-1<is negative|0#is zero or fraction|1#is one|1<is more than 1");
+        choiceLimits[0] = ChoiceFormat.nextDouble(-1);
+        assertTrue("Incorrect limits", java.util.Arrays.equals(f.getLimits(),
+                choiceLimits));
+        assertTrue("Incorrect formats", java.util.Arrays.equals(f.getFormats(),
+                choiceFormats));
+        
+        f = new ChoiceFormat("");
+        f.applyPattern("-1#is negative|0#is zero or fraction|1#is one|1<is more than 1");
+        String str = "org.apache.harmony.tests.java.text.ChoiceFormat";
+        f.applyPattern(str);
+        String ptrn = f.toPattern();
+        assertEquals("Return value should be empty string for invalid pattern",
+                0, ptrn.length());
     }
 
     /**
@@ -351,20 +395,6 @@ public class ChoiceFormatTest extends TestCase {
         assertTrue("Formats copied", f.getFormats() == fs);
     }
 
-    /**
-     * Sets up the fixture, for example, open a network connection. This method
-     * is called before a test is executed.
-     */
-    protected void setUp() {
-    }
-
-    /**
-     * Tears down the fixture, for example, close a network connection. This
-     * method is called after a test is executed.
-     */
-    protected void tearDown() {
-    }
-    
 	/**
 	 * @tests java.text.ChoiceFormat#toPattern()
 	 */

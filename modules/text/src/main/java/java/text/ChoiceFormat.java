@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,6 @@ public class ChoiceFormat extends NumberFormat {
 	 *                then an error occurs parsing the pattern
 	 */
 	public void applyPattern(String template) {
-		boolean first = true;
 		double[] limits = new double[5];
 		Vector formats = new Vector();
 		int length = template.length(), limitCount = 0, index = 0;
@@ -100,8 +99,12 @@ public class ChoiceFormat extends NumberFormat {
 			position.setIndex(index);
 			Number value = format.parse(template, position);
 			index = skipWhitespace(template, position.getIndex());
-			if (position.getErrorIndex() != -1 || index >= length)
-				throw new IllegalArgumentException();
+			if (position.getErrorIndex() != -1 || index >= length) {
+                //Fix Harmony 540
+                choiceLimits = new double[0];
+                choiceFormats = new String[0];
+                return;
+            }
 			char ch = template.charAt(index++);
 			if (limitCount == limits.length) {
 				double[] newLimits = new double[limitCount * 2];
@@ -115,14 +118,11 @@ public class ChoiceFormat extends NumberFormat {
 				next = value.doubleValue();
 				break;
 			case '<':
-				if (first)
-					throw new IllegalArgumentException();
 				next = nextDouble(value.doubleValue());
 				break;
 			default:
 				throw new IllegalArgumentException();
 			}
-			first = false;
 			if (limitCount > 0 && next <= limits[limitCount - 1])
 				throw new IllegalArgumentException();
 			buffer.setLength(0);
