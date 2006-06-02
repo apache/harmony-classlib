@@ -100,7 +100,6 @@
 
                 <fileset dir="${hy.text.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="org/apache/harmony/text/tests/java/text/AttributedCharacterIteratorTest.java"/>
                     <exclude name="org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java"/>
                     <exclude name="org/apache/harmony/text/tests/java/text/CollationKeyTest.java"/>
                     <exclude name="org/apache/harmony/text/tests/java/text/CollatorTest.java"/>

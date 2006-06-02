@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,28 @@ public class AttributedStringTest extends junit.framework.TestCase {
 		assertTrue("Wrong string: " + buf, buf.toString().equals(test));
 	}
 
-	protected void setUp() {
-	}
+    public void test_addAttributeLjava_text_AttributedCharacterIterator$AttributeLjava_lang_ObjectII() {
+        AttributedString as = new AttributedString("test");
+        as.addAttribute(AttributedCharacterIterator.Attribute.LANGUAGE, "a", 2,
+                3);
+        AttributedCharacterIterator it = as.getIterator();
+        assertEquals("non-null value limit", 2, it
+                .getRunLimit(AttributedCharacterIterator.Attribute.LANGUAGE));
 
-	protected void tearDown() {
-	}
+        as = new AttributedString("test");
+        as.addAttribute(AttributedCharacterIterator.Attribute.LANGUAGE, null,
+                2, 3);
+        it = as.getIterator();
+        assertEquals("null value limit", 4, it
+                .getRunLimit(AttributedCharacterIterator.Attribute.LANGUAGE));
+
+        try {
+            as = new AttributedString("test");
+            as.addAttribute(AttributedCharacterIterator.Attribute.LANGUAGE,
+                    null, -1, 3);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
 }
