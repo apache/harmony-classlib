@@ -227,7 +227,7 @@ public abstract class ASN1Choice extends ASN1Type {
         super(TAG_CHOICE); // has not tag number
 
         if (type.length == 0) {
-            throw new RuntimeException("ASN.1 choice type: "
+            throw new IllegalArgumentException("ASN.1 choice type: "
                     + getClass().getName()
                     + " MUST have at least one alternative");
         }
