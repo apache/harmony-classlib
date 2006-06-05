@@ -86,6 +86,14 @@ public class ASN1Any extends ASN1Type {
         return getDecodedObject(in);
     }
 
+    /**
+     * Extracts array of bytes that represents full encoding from BER input
+     * stream.
+     * 
+     * @param in -
+     *            BER input stream
+     * @return array of bytes
+     */
     public Object getDecodedObject(BerInputStream in) throws IOException {
         byte[] bytesEncoded = new byte[in.offset - in.tagOffset];
         System.arraycopy(in.buffer, in.tagOffset, bytesEncoded, 0,
