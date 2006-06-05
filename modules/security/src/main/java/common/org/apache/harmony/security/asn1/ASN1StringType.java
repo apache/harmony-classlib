@@ -78,12 +78,8 @@ public abstract class ASN1StringType extends ASN1Type {
         }
     };
 
-    private final int constructedTag;
-
     public ASN1StringType(int tagNumber) {
         super(tagNumber);
-
-        constructedTag = CLASS_UNIVERSAL | PC_CONSTRUCTED | tagNumber;
     }
 
     //
@@ -101,7 +97,7 @@ public abstract class ASN1StringType extends ASN1Type {
      *         identifier of this ASN.1 string type, otherwise false
      */
     public final boolean checkTag(int identifier) {
-        return this.id == identifier || this.constructedTag == identifier;
+        return this.id == identifier || this.constrId == identifier;
     }
 
     public Object decode(BerInputStream in) throws IOException {
