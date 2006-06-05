@@ -33,7 +33,7 @@ import java.io.InputStream;
 public final class DerInputStream extends BerInputStream {
 
     public DerInputStream(byte[] encoded) throws IOException {
-        super(encoded);
+        super(encoded, 0, encoded.length);
     }
 
     public DerInputStream(byte[] encoded, int offset, int encodingLen)
@@ -71,9 +71,8 @@ public final class DerInputStream extends BerInputStream {
 
         // check encoded content
         if (buffer[contentOffset] != 0 && buffer[contentOffset] != (byte) 0xFF) {
-            throw new ASN1Exception(
-                    "DER: ASN.1 boolean type wrong content at ["
-                            + contentOffset + "]");
+            throw new ASN1Exception("ASN.1 boolean: wrong content at ["
+					+ contentOffset + "]. DER allows only 0x00 or 0xFF values");
         }
     }
 
