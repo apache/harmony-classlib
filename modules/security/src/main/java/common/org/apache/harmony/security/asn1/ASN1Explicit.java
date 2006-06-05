@@ -88,10 +88,6 @@ public final class ASN1Explicit extends ASN1Constructured {
         return getDecodedObject(in);
     }
 
-    public Object getDecodedObject(BerInputStream in) throws IOException {
-        return in.content;
-    }
-
     //
     //
     // Encode

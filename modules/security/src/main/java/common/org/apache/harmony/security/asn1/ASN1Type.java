@@ -148,9 +148,22 @@ public abstract class ASN1Type implements ASN1Constants {
      */
     public abstract boolean checkTag(int identifier);
 
+    /**
+     * Creates decoded object.
+     * 
+     * Derived classes should override this method to provide creation for a
+     * selected class of objects during decoding.
+     * 
+     * The default implementation returns an object created by decoding stream.
+     * 
+     * @param -
+     *            input stream
+     * @return - created object
+     */
     //FIXME make me public
-    protected abstract Object getDecodedObject(BerInputStream in)
-            throws IOException;
+    protected Object getDecodedObject(BerInputStream in) throws IOException {
+        return in.content;
+    }
 
     //
     //

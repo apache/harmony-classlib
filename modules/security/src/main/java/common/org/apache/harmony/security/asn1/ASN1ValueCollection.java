@@ -21,7 +21,6 @@
 
 package org.apache.harmony.security.asn1;
 
-import java.io.IOException;
 import java.util.Collection;
 
 
@@ -51,21 +50,6 @@ public abstract class ASN1ValueCollection extends ASN1Constructured {
         super(tagNumber);
 
         this.type = type;
-    }
-
-    /**
-     * Creates decoded object.
-     * 
-     * Derived classes should override this method to provide
-     * creation for a selected class of objects during decoding. 
-     * 
-     * The default implementation returns list of decoded objects.
-     *
-     * @param - input stream
-     * @return - created object
-     */
-    public Object getDecodedObject(BerInputStream in) throws IOException {
-        return in.content;
     }
 
     /**

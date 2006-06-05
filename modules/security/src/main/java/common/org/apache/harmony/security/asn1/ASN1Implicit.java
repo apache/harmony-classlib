@@ -146,13 +146,6 @@ public class ASN1Implicit extends ASN1Type {
         return getDecodedObject(in);
     }
 
-    /**
-     * TODO
-     */
-    public Object getDecodedObject(BerInputStream in) throws IOException {
-        return in.content;
-    }
-
     //
     //
     // Encode

@@ -21,8 +21,6 @@
 
 package org.apache.harmony.security.asn1;
 
-import java.io.IOException;
-
 
 /**
  * This abstract class represents ASN.1 type that is a collection of ASN.1 types.
@@ -78,21 +76,6 @@ public abstract class ASN1TypeCollection extends ASN1Constructured {
     protected final void setDefault(Object object, int index) {
         OPTIONAL[index] = true;
         DEFAULT[index] = object;
-    }
-
-    /**
-     * Creates decoded object.
-     *
-     * Derived classes should override this method to provide
-     * creation for a selected class of objects during decoding. 
-     * 
-     * The default implementation returns array of decoded objects.
-
-     * @param - input stream
-     * @return - created object
-     */
-    protected Object getDecodedObject(BerInputStream in) throws IOException {
-        return in.content;
     }
 
     /**

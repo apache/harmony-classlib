@@ -327,17 +327,6 @@ public abstract class ASN1Choice extends ASN1Type {
         return getDecodedObject(in);
     }
     
-    /**
-     * Extracts chosen object from BER input stream.
-     * 
-     * @param in -
-     *            decoding input stream
-     * @return object that represents this choice
-     */
-    public Object getDecodedObject(BerInputStream in) throws IOException {
-        return in.content;
-    }
-
     //
     //
     // ENCODE
