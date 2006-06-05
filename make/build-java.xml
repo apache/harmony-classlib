@@ -153,8 +153,8 @@
               verbose="yes">
             <fileset dir="${depends.jars}">
                 <patternset includes="*.jar" />
-                <patternset includes="xerces_2.6.2/*.jar" />
-                <patternset includes="xalan-j_2.6.0/*.jar" />
+                <patternset includes="xerces_2.8.0/*.jar" />
+                <patternset includes="xalan-j_2.7.0/*.jar" />
                 <patternset includes="icu4j_3.4.4/*.jar" />
             </fileset>
             <fileset dir="${depends.manifests}"/>
