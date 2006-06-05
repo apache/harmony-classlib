@@ -909,8 +909,12 @@ public class Collections {
 		}
 
 		public Object[] toArray(Object[] array) {
-			return c.toArray(array);
-		}
+            return c.toArray(array);
+        }
+
+        public String toString() {
+            return c.toString();
+        }
 	}
 
 	private static class UnmodifiableRandomAccessList extends UnmodifiableList
@@ -1205,6 +1209,10 @@ public class Collections {
 		public Collection values() {
 			return new UnmodifiableCollection(m.values());
 		}
+
+                public String toString() {
+                        return m.toString();
+                }
 	}
 
 	private static class UnmodifiableSet extends UnmodifiableCollection

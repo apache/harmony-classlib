@@ -1875,9 +1875,26 @@ public class CollectionsTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
+     * Test unmodifiable objects toString methods
+     */
+    public void test_unmodifiable_toString_methods() {
+        // Regression for HARMONY-552
+        ArrayList al = new ArrayList();
+        al.add("a");
+        al.add("b");
+        Collection uc = Collections.unmodifiableCollection(al);
+        assertEquals("[a, b]", uc.toString());
+        HashMap m = new HashMap();
+        m.put("one", "1");
+        m.put("two", "2");
+        Map um = Collections.unmodifiableMap(m);
+        assertEquals("{one=1, two=2}", um.toString());
+    }
+
+    /**
+     * Sets up the fixture, for example, open a network connection. This method
+     * is called before a test is executed.
+     */
 	protected void setUp() {
 		ll = new LinkedList();
 		myll = new LinkedList();
