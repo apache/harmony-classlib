@@ -18,6 +18,7 @@ package java.nio.channels.spi;
 import java.io.IOException;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.Channel;
+import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.InterruptibleChannel;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,9 +37,7 @@ import java.util.List;
 public abstract class AbstractInterruptibleChannel implements Channel,
 		InterruptibleChannel {
 
-	private static List<Thread> blockingThreads = new LinkedList();
-
-	private volatile boolean closed = false;
+    private volatile boolean closed = false;
 
 	/**
 	 * Default constructor.
@@ -83,11 +82,10 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * Once the operation is completed the application should invoke a
 	 * corresponding <code>end(boolean)</code>.
 	 */
-	protected final void begin() {
-		// FIXME: not implemented yet
-		blockingThreads.add(Thread.currentThread());
-		// throw new NotYetImplementedException();
-	}
+    protected final void begin() {
+        // FIXME: not implemented yet, need kernel class Thread's support
+        // idea is to indicate current thread that a blocking I/O begins
+    }
 
 	/**
 	 * End an IO operation that was previously started with <code>begin()</code>.
@@ -101,15 +99,16 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * @throws java.nio.channels.ClosedByInterruptException
 	 *             the thread conducting the IO operation was interrupted.
 	 */
-	protected final void end(boolean success) throws AsynchronousCloseException {
-		blockingThreads.remove(Thread.currentThread());
-		if (success) {
-			return;
-		}
-
-		// FIXME: not implemented yet
-		// throw new NotYetImplementedException();
-	}
+    protected final void end(boolean success) throws AsynchronousCloseException {
+        if(Thread.currentThread().isInterrupted()){
+            throw new ClosedByInterruptException();
+        }
+        if (!success && closed){
+            throw new AsynchronousCloseException();
+        }
+        // FIXME: not fully implemented yet, need kernel class Thread's support
+        // idea is to indicate current thread that a blocking I/O ends        
+    }
 
 	/**
 	 * Implements the close channel behavior.

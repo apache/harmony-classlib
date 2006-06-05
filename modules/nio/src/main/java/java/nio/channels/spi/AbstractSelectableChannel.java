@@ -224,7 +224,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     /*
      * package private for deregister method in AbstractSelector.
      */
-    synchronized void deRegister(SelectionKey k) {
+    synchronized void deregister(SelectionKey k) {
         if (null != keyList) {
             keyList.remove(k);
         }
