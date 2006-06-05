@@ -140,8 +140,56 @@ public class TimerTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.util.Timer#cancel()
-	 */
+     * @tests java.util.Timer#Timer(String, boolean)
+     */
+    public void test_ConstructorSZ() {
+        Timer t = null;
+        try {
+            // Ensure a task is run
+            t = new Timer("test_ConstructorSZThread", true);
+            TimerTestTask testTask = new TimerTestTask();
+            t.schedule(testTask, 200);
+            synchronized (sync) {
+                try {
+                    sync.wait(1000);
+                } catch (InterruptedException e) {}
+            }
+            assertEquals("TimerTask.run() method not called after 200ms", 1,
+                    testTask.wasRun());
+            t.cancel();
+        } finally {
+            if (t != null)
+                t.cancel();
+        }
+    }
+
+    /**
+     * @tests java.util.Timer#Timer(String)
+     */
+    public void test_ConstructorS() {
+        Timer t = null;
+        try {
+            // Ensure a task is run
+            t = new Timer("test_ConstructorSThread");
+            TimerTestTask testTask = new TimerTestTask();
+            t.schedule(testTask, 200);
+            synchronized (sync) {
+                try {
+                    sync.wait(1000);
+                } catch (InterruptedException e) {}
+            }
+            assertEquals("TimerTask.run() method not called after 200ms", 1,
+                    testTask.wasRun());
+            t.cancel();
+        } finally {
+            if (t != null)
+                t.cancel();
+        }
+    }
+
+    /**
+     * @tests java.util.Timer#cancel()
+     */
 	public void test_cancel() {
 		Timer t = null;
 		try {
@@ -238,8 +286,40 @@ public class TimerTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.util.Timer#schedule(java.util.TimerTask, java.util.Date)
-	 */
+     * @tests java.util.Timer#purge()
+     */
+    public void test_purge() throws Exception {
+        Timer t = null;
+        try {
+            t = new Timer();
+            TimerTestTask[] tasks = new TimerTestTask[100];
+            int[] delayTime = { 50, 80, 20, 70, 40, 10, 90, 30, 60 };
+
+            int j = 0;
+            for (int i = 0; i < 100; i++) {
+                tasks[i] = new TimerTestTask();
+                t.schedule(tasks[i], delayTime[j++], 200);
+                if (j == 9) {
+                    j = 0;
+                }
+            }
+
+            for (int i = 0; i < 50; i++) {
+                tasks[i].cancel();
+            }
+
+            assertTrue(t.purge() <= 50);
+            assertEquals(t.purge(), 0);
+        } finally {
+            if (t != null) {
+                t.cancel();
+            }
+        }
+    }
+
+    /**
+     * @tests java.util.Timer#schedule(java.util.TimerTask, java.util.Date)
+     */
 	public void test_scheduleLjava_util_TimerTaskLjava_util_Date() {
 		Timer t = null;
 		try {

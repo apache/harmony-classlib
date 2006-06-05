@@ -52,9 +52,31 @@ public class Timer {
 			public TimerNode(TimerTask value) {
 				this.task = value;
 			}
-		}
+            
+            public void deleteIfCancelled(TimerTree tasks) {
+
+                /*
+                 * All changes in the tree structure during deleting this node
+                 * affect only the structure of the subtree having this node as
+                 * its root
+                 */
+                if (left != null) {
+                    left.deleteIfCancelled(tasks);
+                }
+                if (right != null) {
+                    right.deleteIfCancelled(tasks);
+                }
+                if (task.isCancelled()) {
+                    tasks.delete(this);
+                    tasks.deletedCancelledNumber++;
+                }
+            }
+        }
 
 		private static final class TimerTree {
+
+            int deletedCancelledNumber;
+
 			TimerNode root;
 
 			boolean isEmpty() {
@@ -150,6 +172,12 @@ public class Timer {
 			this.start();
 		}
 
+        TimerImpl(String name, boolean isDaemon) {
+            this.setName(name);
+            this.setDaemon(isDaemon);
+            this.start();
+        }
+
 		/**
 		 * This method will be launched on separate thread for each Timer
 		 * object.
@@ -242,7 +270,14 @@ public class Timer {
 			tasks = new TimerTree();
 			this.notify();
 		}
-	}
+
+        public int purge() {
+            // callers are synchronized
+            tasks.deletedCancelledNumber = 0;
+            tasks.root.deleteIfCancelled(tasks);
+            return tasks.deletedCancelledNumber;
+        }
+    }
 
 	/* This object will be used in synchronization purposes */
 	private TimerImpl impl;
@@ -274,14 +309,28 @@ public class Timer {
 		impl = new TimerImpl(false);
 	}
 
+    public Timer(String name, boolean isDaemon) {
+        impl = new TimerImpl(name, isDaemon);
+    }
+
+    public Timer(String name) {
+        impl = new TimerImpl(name, false);
+    }
+
 	/**
-	 * Cancels the Timer and removed any scheduled tasks. If there is a
-	 * currently running task it is not effected. No more tasks may be scheduled
-	 * on this Timer. Subsequent calls do nothing.
-	 */
+     * Cancels the Timer and removed any scheduled tasks. If there is a
+     * currently running task it is not effected. No more tasks may be scheduled
+     * on this Timer. Subsequent calls do nothing.
+     */
 	public void cancel() {
 		impl.cancel();
 	}
+
+    public int purge() {
+        synchronized (impl) {
+            return impl.purge();
+        }
+    }
 
 	/**
 	 * Schedule a task for single execution. If when is less than the current
