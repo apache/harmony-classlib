@@ -81,7 +81,7 @@ public final class DerInputStream extends BerInputStream {
      */
     public void readBitString() throws IOException {
 
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
+        if (tag == ASN1Constants.TAG_C_BITSTRING) {
             throw new ASN1Exception(
                     "DER: ASN.1 Bitstring type MUST have primitive encoding");
         }
@@ -109,7 +109,7 @@ public final class DerInputStream extends BerInputStream {
      */
     public void readOctetString() throws IOException {
 
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
+        if (tag == ASN1Constants.TAG_C_OCTETSTRING) {
             throw new ASN1Exception(
                     "ASN.1 octetstring: constructed identifier at ["
                             + tagOffset + "]. Not valid for DER.");
@@ -160,7 +160,7 @@ public final class DerInputStream extends BerInputStream {
      */
     public void readUTCTime() throws IOException {
 
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
+        if (tag == ASN1Constants.TAG_C_UTCTIME) {
             // It is a string type and it can be encoded as primitive or constructed.
             throw new ASN1Exception(
                     "ASN.1 UTCTime: constructed identifier at [" + tagOffset
@@ -182,7 +182,7 @@ public final class DerInputStream extends BerInputStream {
      */
     public void readGeneralizedTime() throws IOException {
 
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
+        if (tag == ASN1Constants.TAG_C_GENERALIZEDTIME) {
             // It is a string type and it can be encoded as primitive or constructed.
             throw new ASN1Exception(
                     "ASN.1 GeneralizedTime: constructed identifier at ["

@@ -273,7 +273,7 @@ public class BerInputStream {
                         + "]. For empty string unused bits MUST be 0");
             }
 
-        } else if (tag == (ASN1Constants.TAG_BITSTRING | ASN1Constants.PC_CONSTRUCTED)) {
+        } else if (tag == ASN1Constants.TAG_C_BITSTRING) {
             throw new ASN1Exception("Decoding constructed ASN.1 bitstring "
                     + " type is not provided");
         } else {
@@ -420,7 +420,7 @@ public class BerInputStream {
             }
 
             // FIXME check all values for valid numbers!!!
-        } else if (tag == (ASN1Constants.TAG_GENERALIZEDTIME | ASN1Constants.PC_CONSTRUCTED)) {
+        } else if (tag == ASN1Constants.TAG_C_GENERALIZEDTIME) {
             throw new ASN1Exception(
                     "Decoding constructed ASN.1 GeneralizedTime"
                             + " type is not provided");
@@ -488,7 +488,7 @@ public class BerInputStream {
             }
 
             // FIXME check all time values for valid numbers!!!
-        } else if (tag == (ASN1Constants.TAG_UTCTIME | ASN1Constants.PC_CONSTRUCTED)) {
+        } else if (tag == ASN1Constants.TAG_C_UTCTIME) {
             throw new ASN1Exception("Decoding constructed ASN.1 UTCTime"
                     + " type is not provided");
         } else {
@@ -561,7 +561,7 @@ public class BerInputStream {
 
         if (tag == ASN1Constants.TAG_OCTETSTRING) {
             readContent();
-        } else if (tag == (ASN1Constants.TAG_OCTETSTRING | ASN1Constants.PC_CONSTRUCTED)) {
+        } else if (tag == ASN1Constants.TAG_C_OCTETSTRING) {
             throw new ASN1Exception("Decoding constructed ASN.1 octet string "
                     + " type is not provided");
         } else {
@@ -629,7 +629,7 @@ public class BerInputStream {
      */
     public void readSequence(ASN1Sequence sequence) throws IOException {
 
-        if (tag != (ASN1Constants.TAG_SEQUENCE | ASN1Constants.PC_CONSTRUCTED)) {
+        if (tag != ASN1Constants.TAG_C_SEQUENCE) {
             throw new ASN1Exception(
                     "ASN.1 sequence identifier is expected at [" + tagOffset
                             + "], but encountered: " + Integer.toHexString(tag));
@@ -722,7 +722,7 @@ public class BerInputStream {
      */
     public void readSequenceOf(ASN1SequenceOf sequenceOf) throws IOException {
         
-        if (tag != (ASN1Constants.TAG_SEQENCEOF | ASN1Constants.PC_CONSTRUCTED)) {
+        if (tag != ASN1Constants.TAG_C_SEQUENCEOF) {
             throw new ASN1Exception(
                     "ASN.1 sequenceOf identifier is expected at [" + tagOffset
                             + "], but encountered: " + Integer.toHexString(tag));
@@ -739,7 +739,7 @@ public class BerInputStream {
      */
     public void readSet(ASN1Set set) throws IOException {
         
-        if (tag != (ASN1Constants.TAG_SET | ASN1Constants.PC_CONSTRUCTED)) {
+        if (tag != ASN1Constants.TAG_C_SET) {
             throw new ASN1Exception("ASN.1 set identifier is expected at ["
                     + tagOffset + "], but encountered: "
                     + Integer.toHexString(tag));
@@ -756,7 +756,7 @@ public class BerInputStream {
      */
     public void readSetOf(ASN1SetOf setOf) throws IOException {
         
-        if (tag != (ASN1Constants.TAG_SETOF | ASN1Constants.PC_CONSTRUCTED)) {
+        if (tag != ASN1Constants.TAG_C_SETOF) {
             throw new ASN1Exception("ASN.1 setOf identifier is expected at ["
                     + tagOffset + "], but encountered: "
                     + Integer.toHexString(tag));
