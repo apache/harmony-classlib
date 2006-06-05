@@ -31,6 +31,39 @@ package java.lang;
  * @see java.lang.ThreadGroup
  */
 public class Thread implements Runnable {
+    
+    /**
+     * A representation of a thread's state. A given thread may only be in one
+     * state at a time.
+     * 
+     * @since 1.5
+     */
+    public enum State {
+        /**
+         * The thread is blocked and waiting for a lock.
+         */
+        BLOCKED,
+        /**
+         * The thread has been created, but has never been started.
+         */
+        NEW,
+        /**
+         * The thread may be run.
+         */
+        RUNNABLE,
+        /**
+         * The thread has been terminated.
+         */
+        TERMINATED,
+        /**
+         * The thread is waiting for a specified amount of time.
+         */
+        TIMED_WAITING,
+        /**
+         * The thread is waiting.
+         */
+        WAITING
+    }
 
 	public final static int MAX_PRIORITY = 10; // Maximum allowed priority for
 
@@ -244,7 +277,7 @@ public class Thread implements Runnable {
 	 */
 	public static Thread currentThread() {
 		return null;
-	};
+	}
 
 	/**
 	 * Destroys the receiver without any monitor cleanup. Not implemented.
@@ -364,7 +397,7 @@ public class Thread implements Runnable {
 	 */
 	public static boolean interrupted() {
 		return false;
-	};
+	}
 
 	/**
 	 * Answers <code>true</code> if the receiver has already been started and
@@ -593,7 +626,7 @@ public class Thread implements Runnable {
 	 */
 	public static void sleep(long time, int nanos) throws InterruptedException {
 		return;
-	};
+	}
 
 	/**
 	 * Starts the new Thread of execution. The <code>run()</code> method of
@@ -676,7 +709,7 @@ public class Thread implements Runnable {
 	 */
 	public static void yield() {
 		return;
-	};
+	}
 
 	/**
 	 * Returns whether the current thread has a monitor lock on the specified
@@ -689,7 +722,7 @@ public class Thread implements Runnable {
 	 */
 	public static boolean holdsLock(Object object) {
 		return false;
-	};
+	}
 
     /**
      * Implemented by objects that want to handle cases where a thread is being

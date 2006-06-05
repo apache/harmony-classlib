@@ -17,17 +17,20 @@ package java.lang;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.net.URL;
 import java.security.ProtectionDomain;
 
 /**
- * This class must be implemented by the vm vendor. The documented natives must
+ * This class must be implemented by the VM vendor. The documented natives must
  * be implemented to support other provided class implementations in this
  * package. An instance of class Class is the in-image representation of a Java
  * class. There are three basic types of Classes
@@ -67,16 +70,16 @@ import java.security.ProtectionDomain;
  * be either an object type or a base type. The signature of a Class
  * representing an array type is the same as its name.</dd>
  * </dl>
- * 
+ * @since 1.0
  */
-public final class Class<T> implements Serializable, GenericDeclaration, Type {
+public final class Class<T> implements Serializable, AnnotatedElement, GenericDeclaration, Type {
 
 	private static final long serialVersionUID = 3206093459760846163L;
 
 	/**
 	 * Answers a Class object which represents the class named by the argument.
 	 * The name should be the name of a class as described in the class
-	 * definition of java.lang.Class, however Classes representing base types
+	 * definition of {@link Class}, however Classes representing base types
 	 * can not be found using this method.
 	 * 
 	 * @param className
@@ -84,7 +87,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @return the named Class
 	 * @throws ClassNotFoundException
 	 *             If the class could not be found
-	 * @see java.lang.Class
+	 * @see {@link Class}
 	 */
 	public static Class<?> forName(String className) throws ClassNotFoundException {
 		return null;
@@ -93,7 +96,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	/**
 	 * Answers a Class object which represents the class named by the argument.
 	 * The name should be the name of a class as described in the class
-	 * definition of java.lang.Class, however Classes representing base types
+	 * definition of {@link Class}, however Classes representing base types
 	 * can not be found using this method. Security rules will be obeyed.
 	 * 
 	 * @param className
@@ -101,11 +104,11 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @param initializeBoolean
 	 *            A boolean indicating whether the class should be initialized
 	 * @param classLoader
-	 *            The classloader to use to load the class
+	 *            The class loader to use to load the class
 	 * @return the named class.
 	 * @throws ClassNotFoundException
 	 *             If the class could not be found
-	 * @see java.lang.Class
+	 * @see {@link Class}
 	 */
 	public static Class<?> forName(String className, boolean initializeBoolean,
 			ClassLoader classLoader) throws ClassNotFoundException {
@@ -114,12 +117,12 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 
 	/**
 	 * Answers an array containing all public class members of the class which
-	 * the receiver represents and its superclasses and interfaces
+	 * the receiver represents and its super classes and interfaces
 	 * 
 	 * @return the class' public class members
 	 * @throws SecurityException
 	 *             If member access is not allowed
-	 * @see java.lang.Class
+	 * @see {@link Class}
 	 */
 	public Class[] getClasses() {
 		return null;
@@ -141,11 +144,11 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
      * @param annotationClass the annotation type.
      * @return the annotation of the given type, or <code>null</code>
      * if none.
+     * @since 1.5
      */
-    // TODO: awaiting Annotation defn.
-//    public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-//        return null;
-//    }
+    public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+        return null;
+    }
 
     /**
      * Answers all the annotations of the receiver.
@@ -153,36 +156,35 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
      * 
      * @return a copy of the array containing the receiver's annotations. 
      */
-    // TODO: awaiting Annotation defn.
-//    public Annotation[] getAnnotations() {
-//        return null;
-//    }
+    public Annotation[] getAnnotations() {
+        return new Annotation[0];
+    }
 
     /**
      * Answers the canonical name of the receiver.
      * If the receiver does not have a canonical name, as defined in
-     * the Java Language Spec, then the method returns <code>null</code>.
+     * the Java Language Specification, then the method returns <code>null</code>.
      * 
-     * @return the receiver cannonical name, or <code>null</code>.
+     * @return the receiver canonical name, or <code>null</code>.
      */
     public String getCanonicalName() {
         return null;
     }
 
 	/**
-	 * Answers the classloader which was used to load the class represented by
+	 * Answers the class loader which was used to load the class represented by
 	 * the receiver. Answer null if the class was loaded by the system class
 	 * loader
 	 * 
 	 * @return the receiver's class loader or nil
-	 * @see java.lang.ClassLoader
+	 * @see {@link ClassLoader}
 	 */
 	public ClassLoader getClassLoader() {
 		return null;
 	}
 
 	/**
-	 * This must be provided by the vm vendor, as it is used by other provided
+	 * This must be provided by the VM vendor, as it is used by other provided
 	 * class implementations in this package. Outside of this class, it is used
 	 * by SecurityManager.checkMemberAccess(), classLoaderDepth(),
 	 * currentClassLoader() and currentLoadedClass(). Return the ClassLoader for
@@ -195,7 +197,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 */
 	ClassLoader getClassLoaderImpl() {
 		return null;
-	};
+	}
 
 	/**
 	 * Answers a Class object which represents the receiver's component type if
@@ -203,11 +205,11 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * component type of an array type is the type of the elements of the array.
 	 * 
 	 * @return the component type of the receiver.
-	 * @see java.lang.Class
+	 * @see {@link Class}
 	 */
 	public Class<?> getComponentType() {
 		return null;
-	};
+	}
 
 	/**
 	 * Answers a public Constructor object which represents the constructor
@@ -242,15 +244,15 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 
     /**
      * Answers the annotations that are directly defined on this type.
-     * Annoations that are inherited are not included in the result.
+     * Annotations that are inherited are not included in the result.
      * If there are no annotations, returns an empty array.
      * 
-     * @return a copy of the array containing the receiver's defined annotaions.
+     * @return a copy of the array containing the receiver's defined annotations.
+     * @since 1.5
      */
-    // TODO Awaiting defn of Annotation
-//    public Annotation[] getDeclaredAnnotations() {
-//        return null;
-//    }
+    public Annotation[] getDeclaredAnnotations() {
+        return new Annotation[0];
+    }
 
 	/**
 	 * Answers an array containing all class members of the class which the
@@ -260,10 +262,10 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @return the class' class members
 	 * @throws SecurityException
 	 *             if member access is not allowed
-	 * @see java.lang.Class
+	 * @see {@link Class}
 	 */
 	public Class[] getDeclaredClasses() throws SecurityException {
-		return null;
+		return new Class[0];
 	}
 
 	/**
@@ -296,7 +298,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @see #getMethods
 	 */
 	public Constructor[] getDeclaredConstructors() throws SecurityException {
-		return null;
+		return new Constructor[0];
 	}
 
 	/**
@@ -329,7 +331,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @see #getFields
 	 */
 	public Field[] getDeclaredFields() throws SecurityException {
-		return null;
+		return new Field[0];
 	}
 
 	/**
@@ -365,7 +367,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
      * @see #getMethods
      */
 	public Method[] getDeclaredMethods() throws SecurityException {
-		return null;
+		return new Method[0];
 	}
 
 	/**
@@ -389,25 +391,32 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
     }
 
     /**
-     * TODO javadoc
+     * Gets the {@link Constructor}, which encloses the declaration of this class, if
+     * it is an anonymous or local/automatic class, otherwise <code>null</code>.
      * 
-     * @return
+     * @return A {@link Constructor} instance or <code>null</code>.
+     * @since 1.5
      */
     public Constructor<?> getEnclosingConstructor() {
         return null;
     }
 
     /**
-     * TODO javadoc
+     * Gets the {@link Method}, which encloses the declaration of this class, if
+     * it is an anonymous or local/automatic class, otherwise <code>null</code>.
      * 
-     * @return
+     * @return A {@link Method} instance or <code>null</code>.
+     * @since 1.5
      */
     public Method getEnclosingMethod() {
         return null;
     }
     
     /**
-     * TODO javadoc
+     * Gets the <code>enum</code> constants/fields associated with this
+     * class if it is an {@linkplain #isEnum() enum}, otherwise <code>null</code>.
+     * @return An array of the <code>enum</code> constants for this class or <code>null</code>.
+     * @since 1.5
      */
     public T[] getEnumConstants() {
         return null;
@@ -441,20 +450,24 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @see #getDeclaredFields
 	 */
 	public Field[] getFields() throws SecurityException {
-		return null;
+		return new Field[0];
 	}
 
     /**
-     * TODO javadoc
+     * Gets the {@link Type types} of the interface that this class
+     * directly implements.
      * 
-     * @return
+     * @return An array of {@link Type} instances.
+     * @since 1.5
      */
     public Type[] getGenericInterfaces() {
-        return null;
+        return new Type[0];
     }
 
     /**
-     * TODO javadoc
+     * Gets the {@link Type} that represents the super class of this class.
+     * @return An instance of {@link Type}
+     * @since 1.5
      */
     public Type getGenericSuperclass() {
         return null;
@@ -467,8 +480,8 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @return Class[] the interfaces the receiver claims to implement.
 	 */
 	public Class[] getInterfaces() {
-		return null;
-	};
+		return new Class[0];
+	}
 
 	/**
 	 * Answers a Method object which represents the method described by the
@@ -500,32 +513,32 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
      * @see #getDeclaredMethods
      */
 	public Method[] getMethods() throws SecurityException {
-		return null;
+		return new Method[0];
 	}
 
 	/**
 	 * Answers an integer which which is the receiver's modifiers. Note that the
 	 * constants which describe the bits which are returned are implemented in
-	 * class java.lang.reflect.Modifier which may not be available on the
+	 * class {@link Modifier} which may not be available on the
 	 * target.
 	 * 
 	 * @return the receiver's modifiers
 	 */
 	public int getModifiers() {
 		return 0;
-	};
+	}
 
 	/**
 	 * Answers the name of the class which the receiver represents. For a
 	 * description of the format which is used, see the class definition of
-	 * java.lang.Class.
+	 * {@link Class}.
 	 * 
 	 * @return the receiver's name.
-	 * @see java.lang.Class
+	 * @see {@link Class}
 	 */
 	public String getName() {
 		return null;
-	};
+	}
 
     /**
      * Answers the simple name of the receiver as defined in the source code.
@@ -549,7 +562,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * java.security.Policy.
 	 * 
 	 * @return ProtectionDomain the receiver's ProtectionDomain.
-	 * @see java.lang.Class
+	 * @see {@link Class}
 	 */
 	public ProtectionDomain getProtectionDomain() {
 		return null;
@@ -561,11 +574,11 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * This method is for internal use only.
 	 * 
 	 * @return ProtectionDomain the receiver's ProtectionDomain.
-	 * @see java.lang.Class
+	 * @see {@link Class}
 	 */
 	ProtectionDomain getPDImpl() {
 		return null;
-	};
+	}
 
 	/**
 	 * Answers a read-only stream on the contents of the resource specified by
@@ -575,7 +588,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @param resName
 	 *            the name of the resource.
 	 * @return a stream on the resource.
-	 * @see java.lang.ClassLoader
+	 * @see {@link ClassLoader}
 	 */
 	public URL getResource(String resName) {
 		return null;
@@ -589,7 +602,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @param resName
 	 *            the name of the resource.
 	 * @return a stream on the resource.
-	 * @see java.lang.ClassLoader
+	 * @see {@link ClassLoader}
 	 */
 	public InputStream getResourceAsStream(String resName) {
 		return null;
@@ -603,49 +616,58 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @see #getMethods
 	 */
 	public Object[] getSigners() {
-		return null;
+		return new Object[0];
 	}
 
 	/**
 	 * Answers the Class which represents the receiver's superclass. For Classes
-	 * which represent base types, interfaces, and for java.lang.Object the
+	 * which represent base types, interfaces, and for {@link Object} the
 	 * method answers null.
 	 * 
 	 * @return the receiver's superclass.
 	 */
     public Class<? super T> getSuperclass() {
 		return null;
-	};
+	}
 
     /**
-     * TODO javadoc
+     * Gets the type variables associated with this class.
+     * @return An array of {@link TypeVariable} instances.
+     * @since 1.5
      */
     public TypeVariable<Class<T>>[] getTypeParameters() {
-        return null;
+        return new TypeVariable[0];
     }
 
     /**
-     * TODO javadoc
+     * Indicates whether or not this class is an annotation.
      * 
-     * @return
+     * @return A value of <code>true</code> if this class is an annotation, otherwise
+     * <code>false</code>.
+     * @since 1.5
      */
     public boolean isAnnotation() {
         return false;
     }
 
     /**
-     * TODO javadoc
+     * Indicates whether or not the given annotation is present for this
+     * class.
      * 
-     * @param annotationClass
-     * @return
+     * @param annotationClass The annotation to look for in this class.
+     * @return A value of <code>true</code> if the annotation is present, otherwise
+     * <code>false</code>.
+     * @since 1.5
      */
-    // TODO awaiting defn of annotation
-//    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
-//        return false;
-//    }
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
+        return false;
+    }
 
     /**
-     * TODO javadoc
+     * Indicates whether or not this class was anonymously declared.
+     * @return A value of <code>true</code> if this class is anonymous, otherwise
+     * <code>false</code>.
+     * @since 1.5
      */
     public boolean isAnonymousClass() {
         return false;
@@ -659,7 +681,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 */
 	public boolean isArray() {
 		return false;
-	};
+	}
 
 	/**
 	 * Answers true if the type represented by the argument can be converted via
@@ -677,10 +699,12 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 */
 	public boolean isAssignableFrom(Class<?> cls) {
 		return false;
-	};
+	}
 
     /**
-     * TODO javadoc
+     * Indicates whether or not this class is an <code>enum</code>.
+     * @return A value of <code>true</code> if this class is an {@link Enum}, otherwise <code>false</code>.
+     * @since 1.5
      */
     public boolean isEnum() {
         return false;
@@ -699,7 +723,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 */
 	public boolean isInstance(Object object) {
 		return false;
-	};
+	}
 
 	/**
 	 * Answers true if the receiver represents an interface.
@@ -739,7 +763,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 */
 	public boolean isPrimitive() {
 		return false;
-	};
+	}
 
     /**
      * Answers whether the receiver is a synthetic type.
@@ -783,7 +807,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 
 	/**
 	 * Returns the Package of which this class is a member. A class has a
-	 * Package iff it was loaded from a SecureClassLoader
+	 * Package if it was loaded from a SecureClassLoader
 	 * 
 	 * @return Package the Package of which this class is a member or null
 	 */
@@ -793,7 +817,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 
 	/**
 	 * Returns the assertion status for this class. Assertion is
-	 * enabled/disabled based on classloader default, package or class default
+	 * enabled/disabled based on class loader default, package or class default
 	 * at runtime
 	 * 
 	 * @return the assertion status for this class
@@ -829,7 +853,7 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
     }
 
 	/**
-	 * This must be provided by the vm vendor, as it is used by other provided
+	 * This must be provided by the VM vendor, as it is used by other provided
 	 * class implementations in this package. This method is used by
 	 * SecurityManager.classDepth(), and getClassContext() which use the
 	 * parameters (-1, false) and SecurityManager.classLoaderDepth(),
@@ -858,11 +882,11 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type {
 	 * @param maxDepth
 	 *            maximum depth to walk the stack, -1 for the entire stack
 	 * @param stopAtPrivileged
-	 *            stop at priviledged classes
+	 *            stop at privileged classes
 	 * @return the array of the most recent classes on the stack
 	 */
 	static final Class[] getStackClasses(int maxDepth, boolean stopAtPrivileged) {
 		return null;
-	};
+	}
 
 }
