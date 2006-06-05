@@ -26,117 +26,118 @@ import java.io.Serializable;
  * supported, adding and removing. The elements can be any objects which are
  * comparable to each other either using their natural order or a specified
  * Comparator.
+ * @since 1.2
  */
-public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
+public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>, Cloneable,
 		Serializable {
 	
 	private static final long serialVersionUID = -2479143000061671589L;
 
-	private transient TreeMap backingMap;
+	private transient TreeMap<E, E> backingMap;
 
-	private static final class SubSet extends TreeMap.SubMap.SubMapSet
-			implements SortedSet {
-		private SubSet(TreeMap map) {
-			super(map, new MapEntry.Type() {
-				public Object get(MapEntry entry) {
+	private static final class SubSet<E> extends TreeMap.SubMap.SubMapSet<E, E, E>
+			implements SortedSet<E> {
+		private SubSet(TreeMap<E, E> map) {
+			super(map, new MapEntry.Type<E, E, E>() {
+				public E get(MapEntry<E, E> entry) {
 					return entry.key;
 				}
 			});
 		}
 
-		private SubSet(Object start, TreeMap map) {
+		private SubSet(E start, TreeMap<E, E> map) {
 			this(map);
 			hasStart = true;
 			startKey = start;
 		}
 
-		private SubSet(Object start, TreeMap map, Object end) {
+		private SubSet(E start, TreeMap<E, E> map, E end) {
 			this(map);
 			hasStart = hasEnd = true;
 			startKey = start;
 			endKey = end;
 		}
 
-		private SubSet(TreeMap map, Object end) {
+		private SubSet(TreeMap<E, E> map, E end) {
 			this(map);
 			hasEnd = true;
 			endKey = end;
 		}
 
-		public boolean add(Object object) {
+		public boolean add(E object) {
 			checkRange(object);
 			return this.backingMap.put(object, object) != null;
 		}
 
-		public Comparator comparator() {
+		public Comparator<? super E> comparator() {
 			return this.backingMap.comparator();
 		}
 
 		public boolean contains(Object object) {
-			if (checkRange(object, hasStart, hasEnd))
+			if (checkRange((E)object, hasStart, hasEnd))
 				return this.backingMap.containsKey(object);
 			return false;
 		}
 
-		public Object first() {
+		public E first() {
 			if (!hasStart)
 				return this.backingMap.firstKey();
-			TreeMap.Entry node = this.backingMap.findAfter(startKey);
+			TreeMap.Entry<E, E> node = this.backingMap.findAfter(startKey);
 			if (node != null && checkRange(node.key, false, hasEnd))
 				return node.key;
 			throw new NoSuchElementException();
 		}
 
-		public SortedSet headSet(Object end) {
+		public SortedSet<E> headSet(E end) {
 			checkRange(end);
 			if (hasStart)
-				return new SubSet(startKey, this.backingMap, end);
-			return new SubSet(this.backingMap, end);
+				return new SubSet<E>(startKey, this.backingMap, end);
+			return new SubSet<E>(this.backingMap, end);
 		}
 
-		public Object last() {
+		public E last() {
 			if (!hasEnd)
 				return this.backingMap.lastKey();
-			TreeMap.Entry node = this.backingMap.findBefore(endKey);
+			TreeMap.Entry<E, E> node = this.backingMap.findBefore(endKey);
 			if (node != null && checkRange(node.key, hasStart, false))
 				return node.key;
 			throw new NoSuchElementException();
 		}
 
 		public boolean remove(Object object) {
-			if (checkRange(object, hasStart, hasEnd))
+			if (checkRange((E)object, hasStart, hasEnd))
 				return this.backingMap.remove(object) != null;
 			return false;
 		}
 
-		public SortedSet subSet(Object start, Object end) {
+		public SortedSet<E> subSet(E start, E end) {
 			checkRange(start);
 			checkRange(end);
-			Comparator c = this.backingMap.comparator();
+			Comparator<? super E> c = this.backingMap.comparator();
 			if (c == null) {
-				if (((Comparable) startKey).compareTo(endKey) <= 0)
-					return new SubSet(start, this.backingMap, end);
+				if (((Comparable<E>) startKey).compareTo(endKey) <= 0)
+					return new SubSet<E>(start, this.backingMap, end);
 			} else {
 				if (c.compare(startKey, endKey) <= 0)
-					return new SubSet(start, this.backingMap, end);
+					return new SubSet<E>(start, this.backingMap, end);
 			}
 			throw new IllegalArgumentException();
 		}
 
-		public SortedSet tailSet(Object start) {
+		public SortedSet<E> tailSet(E start) {
 			checkRange(start);
 			if (hasEnd)
-				return new SubSet(start, this.backingMap, endKey);
-			return new SubSet(start, this.backingMap);
+				return new SubSet<E>(start, this.backingMap, endKey);
+			return new SubSet<E>(start, this.backingMap);
 		}
 	}
 
 	/**
-	 * Contructs a new empty instance of TreeSet which uses natural ordering.
+	 * Constructs a new empty instance of TreeSet which uses natural ordering.
 	 * 
 	 */
 	public TreeSet() {
-		backingMap = new TreeMap();
+		backingMap = new TreeMap<E, E>();
 	}
 
 	/**
@@ -151,20 +152,20 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 *                Comparable interface, or the elements in the Collection
 	 *                cannot be compared
 	 */
-	public TreeSet(Collection collection) {
+	public TreeSet(Collection<? extends E> collection) {
 		this();
 		addAll(collection);
 	}
 
 	/**
-	 * Contructs a new empty instance of TreeSet which uses the specified
+	 * Constructs a new empty instance of TreeSet which uses the specified
 	 * Comparator.
 	 * 
 	 * @param comparator
 	 *            the Comparator
 	 */
-	public TreeSet(Comparator comparator) {
-		backingMap = new TreeMap(comparator);
+	public TreeSet(Comparator<? super E> comparator) {
+		backingMap = new TreeMap<E, E>(comparator);
 	}
 
 	/**
@@ -174,17 +175,17 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 * @param set
 	 *            the SortedSet of elements to add
 	 */
-	public TreeSet(SortedSet set) {
+	public TreeSet(SortedSet<E> set) {
 		this(set.comparator());
-		Iterator it = set.iterator();
+		Iterator<E> it = set.iterator();
 		if (it.hasNext()) {
-			Object object = it.next();
-			TreeMap.Entry last = new TreeMap.Entry(object, object);
+			E object = it.next();
+			TreeMap.Entry<E, E> last = new TreeMap.Entry<E, E>(object, object);
 			backingMap.root = last;
 			backingMap.size = 1;
 			while (it.hasNext()) {
 				object = it.next();
-				TreeMap.Entry x = new TreeMap.Entry(object, object);
+				TreeMap.Entry<E, E> x = new TreeMap.Entry<E, E>(object, object);
 				x.parent = last;
 				last.right = x;
 				backingMap.size++;
@@ -209,7 +210,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 *                when the object is null and the comparator cannot handle
 	 *                null
 	 */
-	public boolean add(Object object) {
+	public boolean add(E object) {
 		return backingMap.put(object, object) == null;
 	}
 
@@ -227,7 +228,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 *                when an object in the Collection is null and the
 	 *                comparator cannot handle null
 	 */
-	public boolean addAll(Collection collection) {
+	public boolean addAll(Collection<? extends E> collection) {
 		return super.addAll(collection);
 	}
 
@@ -251,8 +252,8 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 */
 	public Object clone() {
 		try {
-			TreeSet clone = (TreeSet) super.clone();
-			clone.backingMap = (TreeMap) backingMap.clone();
+			TreeSet<E> clone = (TreeSet<E>) super.clone();
+			clone.backingMap = (TreeMap<E, E>) backingMap.clone();
 			return clone;
 		} catch (CloneNotSupportedException e) {
 			return null;
@@ -264,7 +265,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 * 
 	 * @return a Comparator or null if the natural ordering is used
 	 */
-	public Comparator comparator() {
+	public Comparator<? super E> comparator() {
 		return backingMap.comparator();
 	}
 
@@ -295,7 +296,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 * @exception NoSuchElementException
 	 *                when this TreeSet is empty
 	 */
-	public Object first() {
+	public E first() {
 		return backingMap.firstKey();
 	}
 
@@ -315,14 +316,14 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 *                when the end object is null and the comparator cannot
 	 *                handle null
 	 */
-	public SortedSet headSet(Object end) {
+	public SortedSet<E> headSet(E end) {
 		// Check for errors
-		Comparator c = backingMap.comparator();
+		Comparator<? super E> c = backingMap.comparator();
 		if (c == null)
-			((Comparable) end).compareTo(end);
+			((Comparable<E>) end).compareTo(end);
 		else
 			c.compare(end, end);
-		return new SubSet(backingMap, end);
+		return new SubSet<E>(backingMap, end);
 	}
 
 	/**
@@ -343,7 +344,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 * 
 	 * @see Iterator
 	 */
-	public Iterator iterator() {
+	public Iterator<E> iterator() {
 		return backingMap.keySet().iterator();
 	}
 
@@ -355,7 +356,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 * @exception NoSuchElementException
 	 *                when this TreeSet is empty
 	 */
-	public Object last() {
+	public E last() {
 		return backingMap.lastKey();
 	}
 
@@ -406,14 +407,14 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 *                when the start or end object is null and the comparator
 	 *                cannot handle null
 	 */
-	public SortedSet subSet(Object start, Object end) {
-		Comparator c = backingMap.comparator();
+	public SortedSet<E> subSet(E start, E end) {
+		Comparator<? super E> c = backingMap.comparator();
 		if (c == null) {
-			if (((Comparable) start).compareTo(end) <= 0)
-				return new SubSet(start, backingMap, end);
+			if (((Comparable<E>) start).compareTo(end) <= 0)
+				return new SubSet<E>(start, backingMap, end);
 		} else {
 			if (c.compare(start, end) <= 0)
-				return new SubSet(start, backingMap, end);
+				return new SubSet<E>(start, backingMap, end);
 		}
 		throw new IllegalArgumentException();
 	}
@@ -436,14 +437,14 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	 *                when the start object is null and the comparator cannot
 	 *                handle null
 	 */
-	public SortedSet tailSet(Object start) {
+	public SortedSet<E> tailSet(E start) {
 		// Check for errors
-		Comparator c = backingMap.comparator();
+		Comparator<? super E> c = backingMap.comparator();
 		if (c == null)
-			((Comparable) start).compareTo(start);
+			((Comparable<E>) start).compareTo(start);
 		else
 			c.compare(start, start);
-		return new SubSet(start, backingMap);
+		return new SubSet<E>(start, backingMap);
 	}
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
@@ -451,7 +452,7 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 		stream.writeObject(backingMap.comparator());
 		stream.writeInt(backingMap.size);
 		if (backingMap.size > 0) {
-			TreeMap.Entry node = TreeMap.minimum(backingMap.root);
+			TreeMap.Entry<E, E> node = TreeMap.minimum(backingMap.root);
 			while (node != null) {
 				stream.writeObject(node.key);
 				node = TreeMap.successor(node);
@@ -462,12 +463,12 @@ public class TreeSet extends AbstractSet implements SortedSet, Cloneable,
 	private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		stream.defaultReadObject();
-		backingMap = new TreeMap((Comparator) stream.readObject());
+		backingMap = new TreeMap<E, E>((Comparator<? super E>) stream.readObject());
 		backingMap.size = stream.readInt();
-		TreeMap.Entry last = null;
+		TreeMap.Entry<E, E> last = null;
 		for (int i = backingMap.size; --i >= 0;) {
-			TreeMap.Entry node = new TreeMap.Entry(stream.readObject());
-			node.value = this;
+			TreeMap.Entry<E, E> node = new TreeMap.Entry<E, E>((E)stream.readObject());
+			node.value = node.key;
 			if (last == null)
 				backingMap.root = node;
 			else {

@@ -26,18 +26,18 @@ import java.io.Serializable;
  * supported, adding and removing. The values can be any objects. The keys can
  * be any objects which are comparable to each other either using their natural
  * order or a specified Comparator.
- * 
+ * @since 1.2
  */
 
-public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
+public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>, Cloneable,
 		Serializable {
 	private static final long serialVersionUID = 919286545866124006L;
 
 	transient int size = 0;
 
-	transient Entry root;
+	transient Entry<K, V> root;
 
-	private Comparator comparator;
+	private Comparator<? super K> comparator;
 
 	transient int modCount = 0;
 
@@ -45,21 +45,21 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * Entry is an internal class which is used to hold the entries of a
 	 * TreeMap.
 	 */
-	static class Entry extends MapEntry {
-		Entry parent, left, right;
+	static class Entry<K, V> extends MapEntry<K, V> {
+		Entry<K, V> parent, left, right;
 
 		boolean color;
 
-		Entry(Object key) {
+		Entry(K key) {
 			super(key);
 		}
 
-		Entry(Object key, Object value) {
+		Entry(K key, V value) {
 			super(key, value);
 		}
 
-		Entry clone(Entry parent) {
-			Entry clone = (Entry) super.clone();
+		Entry<K, V> clone(Entry<K, V> parent) {
+			Entry<K, V> clone = (Entry<K, V>) super.clone();
 			clone.parent = parent;
 			if (left != null)
 				clone.left = left.clone(clone);
@@ -69,20 +69,20 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		}
 	}
 
-	private static final class TreeMapIterator implements Iterator {
-		private final TreeMap backingMap;
+	private static final class TreeMapIterator<E, K, V> implements Iterator<E> {
+		private final TreeMap<K, V> backingMap;
 
 		private int expectedModCount;
 
-		private final MapEntry.Type type;
+		private final MapEntry.Type<E, K, V> type;
 
 		private boolean hasEnd = false;
 
-		private Entry node, lastNode;
+		private Entry<K, V> node, lastNode;
 
-		private Object endKey;
+		private K endKey;
 
-		TreeMapIterator(TreeMap map, MapEntry.Type value) {
+		TreeMapIterator(TreeMap<K, V> map, MapEntry.Type<E, K, V> value) {
 			backingMap = map;
 			type = value;
 			expectedModCount = map.modCount;
@@ -90,8 +90,8 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 				node = TreeMap.minimum(map.root);
 		}
 
-		TreeMapIterator(TreeMap map, MapEntry.Type value, Entry startNode,
-				boolean checkEnd, Object end) {
+		TreeMapIterator(TreeMap<K, V> map, MapEntry.Type<E, K, V> value, Entry<K, V> startNode,
+				boolean checkEnd, K end) {
 			backingMap = map;
 			type = value;
 			expectedModCount = map.modCount;
@@ -104,15 +104,15 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 			return node != null;
 		}
 
-		public Object next() {
+		public E next() {
 			if (expectedModCount == backingMap.modCount) {
 				if (node != null) {
 					lastNode = node;
 					node = TreeMap.successor(node);
 					if (hasEnd && node != null) {
-						Comparator c = backingMap.comparator();
+						Comparator<? super K> c = backingMap.comparator();
 						if (c == null) {
-							if (((Comparable) endKey).compareTo(node.key) <= 0)
+							if (((Comparable<K>)endKey).compareTo(node.key) <= 0)
 								node = null;
 						} else {
 							if (c.compare(endKey, node.key) <= 0)
@@ -139,29 +139,29 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		}
 	}
 
-	static final class SubMap extends AbstractMap implements SortedMap {
-		private final TreeMap backingMap;
+	static final class SubMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V> {
+		private final TreeMap<K, V> backingMap;
 
 		private boolean hasStart, hasEnd;
 
-		private Object startKey, endKey;
+		private K startKey, endKey;
 
-		static class SubMapSet extends AbstractSet implements Set {
-			final TreeMap backingMap;
+		static class SubMapSet<E, K, V> extends AbstractSet<E> implements Set<E> {
+			final TreeMap<K, V> backingMap;
 
 			boolean hasStart, hasEnd;
 
-			Object startKey, endKey;
+			K startKey, endKey;
 
-			final MapEntry.Type type;
+			final MapEntry.Type<E, K, V> type;
 
-			SubMapSet(TreeMap map, MapEntry.Type theType) {
+			SubMapSet(TreeMap<K, V> map, MapEntry.Type<E, K, V> theType) {
 				backingMap = map;
 				type = theType;
 			}
 
-			SubMapSet(boolean starting, Object start, TreeMap map,
-					boolean ending, Object end, MapEntry.Type theType) {
+			SubMapSet(boolean starting, K start, TreeMap<K, V> map,
+					boolean ending, K end, MapEntry.Type<E, K, V> theType) {
 				this(map, theType);
 				hasStart = starting;
 				startKey = start;
@@ -169,9 +169,9 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 				endKey = end;
 			}
 
-			void checkRange(Object key) {
+			void checkRange(K key) {
 				if (backingMap.comparator() == null) {
-					Comparable object = (Comparable) key;
+					Comparable<K> object = (Comparable<K>) key;
 					if (hasStart && object.compareTo(startKey) < 0)
 						throw new IllegalArgumentException();
 					if (hasEnd && object.compareTo(endKey) >= 0)
@@ -186,9 +186,9 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 				}
 			}
 
-			boolean checkRange(Object key, boolean hasStart, boolean hasEnd) {
+			boolean checkRange(K key, boolean hasStart, boolean hasEnd) {
 				if (backingMap.comparator() == null) {
-					Comparable object = (Comparable) key;
+                    Comparable<K> object = (Comparable<K>) key;
 					if (hasStart && object.compareTo(startKey) < 0)
 						return false;
 					if (hasEnd && object.compareTo(endKey) >= 0)
@@ -206,14 +206,14 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 
 			public boolean isEmpty() {
 				if (hasStart) {
-					TreeMap.Entry node = backingMap.findAfter(startKey);
+					TreeMap.Entry<K, V> node = backingMap.findAfter(startKey);
 					return node == null || !checkRange(node.key, false, hasEnd);
 				}
 				return backingMap.findBefore(endKey) == null;
 			}
 
-			public Iterator iterator() {
-				TreeMap.Entry startNode;
+			public Iterator<E> iterator() {
+				TreeMap.Entry<K, V> startNode;
 				if (hasStart) {
 					startNode = backingMap.findAfter(startKey);
 					if (startNode != null
@@ -224,13 +224,13 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 					if (startNode != null)
 						startNode = minimum(backingMap.root);
 				}
-				return new TreeMapIterator(backingMap, type, startNode, hasEnd,
+				return new TreeMapIterator<E, K, V>(backingMap, type, startNode, hasEnd,
 						endKey);
 			}
 
 			public int size() {
 				int size = 0;
-				Iterator it = iterator();
+				Iterator<E> it = iterator();
 				while (it.hasNext()) {
 					size++;
 					it.next();
@@ -239,28 +239,28 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 			}
 		}
 
-		SubMap(Object start, TreeMap map) {
+        SubMap(K start, TreeMap<K, V> map, K end) {
+            backingMap = map;
+            hasStart = hasEnd = true;
+            startKey = start;
+            endKey = end;
+        }
+        
+		SubMap(K start, TreeMap<K, V> map) {
 			backingMap = map;
 			hasStart = true;
 			startKey = start;
 		}
 
-		SubMap(Object start, TreeMap map, Object end) {
-			backingMap = map;
-			hasStart = hasEnd = true;
-			startKey = start;
-			endKey = end;
-		}
-
-		SubMap(TreeMap map, Object end) {
+		SubMap(TreeMap<K, V> map, K end) {
 			backingMap = map;
 			hasEnd = true;
 			endKey = end;
 		}
 
-		private void checkRange(Object key) {
+		private void checkRange(K key) {
 			if (backingMap.comparator() == null) {
-				Comparable object = (Comparable) key;
+				Comparable<K> object = (Comparable<K>) key;
 				if (hasStart && object.compareTo(startKey) < 0)
 					throw new IllegalArgumentException();
 				if (hasEnd && object.compareTo(endKey) >= 0)
@@ -274,9 +274,9 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 			}
 		}
 
-		private boolean checkRange(Object key, boolean hasStart, boolean hasEnd) {
+		private boolean checkRange(K key, boolean hasStart, boolean hasEnd) {
 			if (backingMap.comparator() == null) {
-				Comparable object = (Comparable) key;
+                Comparable<K> object = (Comparable<K>) key;
 				if (hasStart && object.compareTo(startKey) < 0)
 					return false;
 				if (hasEnd && object.compareTo(endKey) >= 0)
@@ -291,26 +291,26 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 			return true;
 		}
 
-		public Comparator comparator() {
+		public Comparator<? super K> comparator() {
 			return backingMap.comparator();
 		}
 
 		public boolean containsKey(Object key) {
-			if (checkRange(key, hasStart, hasEnd))
+			if (checkRange((K)key, hasStart, hasEnd))
 				return backingMap.containsKey(key);
 			return false;
 		}
 
-		public Set entrySet() {
-			return new SubMapSet(hasStart, startKey, backingMap, hasEnd,
-					endKey, new MapEntry.Type() {
-						public Object get(MapEntry entry) {
+		public Set<Map.Entry<K, V>> entrySet() {
+			return new SubMapSet<Map.Entry<K, V>, K, V>(hasStart, startKey, backingMap, hasEnd,
+					endKey, new MapEntry.Type<Map.Entry<K, V>, K, V>() {
+						public Map.Entry<K, V> get(MapEntry<K, V> entry) {
 							return entry;
 						}
 					}) {
 				public boolean contains(Object object) {
 					if (object instanceof Map.Entry) {
-						Map.Entry entry = (Map.Entry) object;
+						Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
 						Object v1 = get(entry.getKey()), v2 = entry.getValue();
 						return v1 == null ? v2 == null : v1.equals(v2);
 					}
@@ -319,41 +319,41 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 			};
 		}
 
-		public Object firstKey() {
+		public K firstKey() {
 			if (!hasStart)
 				return backingMap.firstKey();
-			TreeMap.Entry node = backingMap.findAfter(startKey);
+			TreeMap.Entry<K, V> node = backingMap.findAfter(startKey);
 			if (node != null && checkRange(node.key, false, hasEnd))
 				return node.key;
 			throw new NoSuchElementException();
 		}
 
-		public Object get(Object key) {
-			if (checkRange(key, hasStart, hasEnd))
+		public V get(Object key) {
+			if (checkRange((K)key, hasStart, hasEnd))
 				return backingMap.get(key);
 			return null;
 		}
 
-		public SortedMap headMap(Object endKey) {
+		public SortedMap<K, V> headMap(K endKey) {
 			checkRange(endKey);
 			if (hasStart)
-				return new SubMap(startKey, backingMap, endKey);
-			return new SubMap(backingMap, endKey);
+				return new SubMap<K, V>(startKey, backingMap, endKey);
+			return new SubMap<K, V>(backingMap, endKey);
 		}
 
 		public boolean isEmpty() {
 			if (hasStart) {
-				TreeMap.Entry node = backingMap.findAfter(startKey);
+				TreeMap.Entry<K, V> node = backingMap.findAfter(startKey);
 				return node == null || !checkRange(node.key, false, hasEnd);
 			}
 			return backingMap.findBefore(endKey) == null;
 		}
 
-		public Set keySet() {
+		public Set<K> keySet() {
 			if (keySet == null) {
-				keySet = new SubMapSet(hasStart, startKey, backingMap, hasEnd,
-						endKey, new MapEntry.Type() {
-							public Object get(MapEntry entry) {
+				keySet = new SubMapSet<K, K, V>(hasStart, startKey, backingMap, hasEnd,
+						endKey, new MapEntry.Type<K, K, V>() {
+							public K get(MapEntry<K, V> entry) {
 								return entry.key;
 							}
 						}) {
@@ -365,52 +365,52 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 			return keySet;
 		}
 
-		public Object lastKey() {
+		public K lastKey() {
 			if (!hasEnd)
 				return backingMap.lastKey();
-			TreeMap.Entry node = backingMap.findBefore(endKey);
+			TreeMap.Entry<K, V> node = backingMap.findBefore(endKey);
 			if (node != null && checkRange(node.key, hasStart, false))
 				return node.key;
 			throw new NoSuchElementException();
 		}
 
-		public Object put(Object key, Object value) {
+		public V put(K key, V value) {
 			if (checkRange(key, hasStart, hasEnd))
 				return backingMap.put(key, value);
 			throw new IllegalArgumentException();
 		}
 
-		public Object remove(Object key) {
-			if (checkRange(key, hasStart, hasEnd))
+		public V remove(Object key) {
+			if (checkRange((K)key, hasStart, hasEnd))
 				return backingMap.remove(key);
 			return null;
 		}
 
-		public SortedMap subMap(Object startKey, Object endKey) {
+		public SortedMap<K, V> subMap(K startKey, K endKey) {
 			checkRange(startKey);
 			checkRange(endKey);
-			Comparator c = backingMap.comparator();
+			Comparator<? super K> c = backingMap.comparator();
 			if (c == null) {
-				if (((Comparable) startKey).compareTo(endKey) <= 0)
-					return new SubMap(startKey, backingMap, endKey);
+				if (((Comparable<K>) startKey).compareTo(endKey) <= 0)
+					return new SubMap<K, V>(startKey, backingMap, endKey);
 			} else {
 				if (c.compare(startKey, endKey) <= 0)
-					return new SubMap(startKey, backingMap, endKey);
+					return new SubMap<K, V>(startKey, backingMap, endKey);
 			}
 			throw new IllegalArgumentException();
 		}
 
-		public SortedMap tailMap(Object startKey) {
+		public SortedMap<K, V> tailMap(K startKey) {
 			checkRange(startKey);
 			if (hasEnd)
-				return new SubMap(startKey, backingMap, endKey);
-			return new SubMap(startKey, backingMap);
+				return new SubMap<K, V>(startKey, backingMap, endKey);
+			return new SubMap<K, V>(startKey, backingMap);
 		}
 
-		public Collection values() {
-			return new SubMapSet(hasStart, startKey, backingMap, hasEnd,
-					endKey, new MapEntry.Type() {
-						public Object get(MapEntry entry) {
+		public Collection<V> values() {
+			return new SubMapSet<V, K, V>(hasStart, startKey, backingMap, hasEnd,
+					endKey, new MapEntry.Type<V, K, V>() {
+						public V get(MapEntry<K, V> entry) {
 							return entry.value;
 						}
 					});
@@ -418,21 +418,21 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	}
 
 	/**
-	 * Contructs a new empty instance of TreeMap.
+	 * Constructs a new empty instance of TreeMap.
 	 * 
 	 */
 	public TreeMap() {
-		/*empty*/
+		super();
 	}
 
 	/**
-	 * Contructs a new empty instance of TreeMap which uses the specified
+	 * Constructs a new empty instance of TreeMap which uses the specified
 	 * Comparator.
 	 * 
 	 * @param comparator
 	 *            the Comparator
 	 */
-	public TreeMap(Comparator comparator) {
+	public TreeMap(Comparator<? super K> comparator) {
 		this.comparator = comparator;
 	}
 
@@ -447,7 +447,7 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 *                when a key in the Map does not implement the Comparable
 	 *                interface, or they keys in the Map cannot be compared
 	 */
-	public TreeMap(Map map) {
+	public TreeMap(Map<? extends K,? extends V> map) {
 		this();
 		putAll(map);
 	}
@@ -459,17 +459,17 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * @param map
 	 *            the mappings to add
 	 */
-	public TreeMap(SortedMap map) {
+	public TreeMap(SortedMap<K,? extends V> map) {
 		this(map.comparator());
-		Iterator it = map.entrySet().iterator();
+		Iterator<? extends Map.Entry<K, ? extends V>> it = map.entrySet().iterator();
 		if (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			Entry last = new Entry(entry.getKey(), entry.getValue());
+			Map.Entry<K, ? extends V> entry = it.next();
+			Entry<K, V> last = new Entry<K, V>(entry.getKey(), entry.getValue());
 			root = last;
 			size = 1;
 			while (it.hasNext()) {
-				entry = (Map.Entry) it.next();
-				Entry x = new Entry(entry.getKey(), entry.getValue());
+				entry = it.next();
+				Entry<K, V> x = new Entry<K, V>(entry.getKey(), entry.getValue());
 				x.parent = last;
 				last.right = x;
 				size++;
@@ -479,8 +479,8 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		}
 	}
 
-	void balance(Entry x) {
-		Entry y;
+	void balance(Entry<K, V> x) {
+		Entry<K, V> y;
 		x.color = true;
 		while (x != root && x.parent.color) {
 			if (x.parent == x.parent.parent.left) {
@@ -542,7 +542,7 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 */
 	public Object clone() {
 		try {
-			TreeMap clone = (TreeMap) super.clone();
+			TreeMap<K, V> clone = (TreeMap<K, V>) super.clone();
 			if (root != null)
 				clone.root = root.clone(null);
 			return clone;
@@ -556,7 +556,7 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * 
 	 * @return a Comparator or null if the natural ordering is used
 	 */
-	public Comparator comparator() {
+	public Comparator<? super K> comparator() {
 		return comparator;
 	}
 
@@ -575,7 +575,7 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 *                when the key is null and the comparator cannot handle null
 	 */
 	public boolean containsKey(Object key) {
-		return find(key) != null;
+		return find((K)key) != null;
 	}
 
 	/**
@@ -592,7 +592,7 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		return false;
 	}
 
-	private boolean containsValue(Entry node, Object value) {
+	private boolean containsValue(Entry<K, V> node, Object value) {
 		if (value == null ? node.value == null : value.equals(node.value))
 			return true;
 		if (node.left != null)
@@ -607,12 +607,12 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	/**
 	 * Answers a Set of the mappings contained in this TreeMap. Each element in
 	 * the set is a Map.Entry. The set is backed by this TreeMap so changes to
-	 * one are relected by the other. The set does not support adding.
+	 * one are reflected by the other. The set does not support adding.
 	 * 
 	 * @return a Set of the mappings
 	 */
-	public Set entrySet() {
-		return new AbstractSet() {
+	public Set<Map.Entry<K, V>> entrySet() {
+		return new AbstractSet<Map.Entry<K, V>>() {
 			public int size() {
 				return size;
 			}
@@ -623,16 +623,16 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 
 			public boolean contains(Object object) {
 				if (object instanceof Map.Entry) {
-					Map.Entry entry = (Map.Entry) object;
+					Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
 					Object v1 = get(entry.getKey()), v2 = entry.getValue();
 					return v1 == null ? v2 == null : v1.equals(v2);
 				}
 				return false;
 			}
 
-			public Iterator iterator() {
-				return new TreeMapIterator(TreeMap.this, new MapEntry.Type() {
-					public Object get(MapEntry entry) {
+			public Iterator<Map.Entry<K, V>> iterator() {
+				return new TreeMapIterator<Map.Entry<K, V>, K, V>(TreeMap.this, new MapEntry.Type<Map.Entry<K, V>, K, V>() {
+					public Map.Entry<K, V> get(MapEntry<K, V> entry) {
 						return entry;
 					}
 				});
@@ -640,12 +640,12 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		};
 	}
 
-	private Entry find(Object key) {
+	private Entry<K, V> find(K key) {
 		int result;
-		Comparable object = null;
+		Comparable<K> object = null;
 		if (comparator == null)
-			object = (Comparable) key;
-		Entry x = root;
+			object = (Comparable<K>) key;
+		Entry<K, V> x = root;
 		while (x != null) {
 			result = object != null ? object.compareTo(x.key) : comparator
 					.compare(key, x.key);
@@ -656,12 +656,12 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		return null;
 	}
 
-	Entry findAfter(Object key) {
+	Entry<K, V> findAfter(K key) {
 		int result;
-		Comparable object = null;
+		Comparable<K> object = null;
 		if (comparator == null)
-			object = (Comparable) key;
-		Entry x = root, last = null;
+			object = (Comparable<K>) key;
+		Entry<K, V> x = root, last = null;
 		while (x != null) {
 			result = object != null ? object.compareTo(x.key) : comparator
 					.compare(key, x.key);
@@ -676,12 +676,12 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		return last;
 	}
 
-	Entry findBefore(Object key) {
+	Entry<K, V> findBefore(K key) {
 		int result;
-		Comparable object = null;
+        Comparable<K> object = null;
 		if (comparator == null)
-			object = (Comparable) key;
-		Entry x = root, last = null;
+			object = (Comparable<K>) key;
+		Entry<K, V> x = root, last = null;
 		while (x != null) {
 			result = object != null ? object.compareTo(x.key) : comparator
 					.compare(key, x.key);
@@ -703,14 +703,14 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * @exception NoSuchElementException
 	 *                when this TreeMap is empty
 	 */
-	public Object firstKey() {
+	public K firstKey() {
 		if (root != null)
 			return minimum(root).key;
 		throw new NoSuchElementException();
 	}
 
-	private void fixup(Entry x) {
-		Entry w;
+	private void fixup(Entry<K, V> x) {
+		Entry<K, V> w;
 		while (x != root && !x.color) {
 			if (x == x.parent.left) {
 				w = x.parent.right;
@@ -796,8 +796,8 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * @exception NullPointerException
 	 *                when the key is null and the comparator cannot handle null
 	 */
-	public Object get(Object key) {
-		Entry node = find(key);
+	public V get(Object key) {
+		Entry<K, V> node = find((K)key);
 		if (node != null)
 			return node.value;
 		return null;
@@ -819,25 +819,25 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 *                when the end key is null and the comparator cannot handle
 	 *                null
 	 */
-	public SortedMap headMap(Object endKey) {
+	public SortedMap<K, V> headMap(K endKey) {
 		// Check for errors
 		if (comparator == null)
-			((Comparable) endKey).compareTo(endKey);
+			((Comparable<K>) endKey).compareTo(endKey);
 		else
 			comparator.compare(endKey, endKey);
-		return new SubMap(this, endKey);
+		return new SubMap<K, V>(this, endKey);
 	}
 
 	/**
 	 * Answers a Set of the keys contained in this TreeMap. The set is backed by
-	 * this TreeMap so changes to one are relected by the other. The set does
+	 * this TreeMap so changes to one are reflected by the other. The set does
 	 * not support adding.
 	 * 
 	 * @return a Set of the keys
 	 */
-	public Set keySet() {
+	public Set<K> keySet() {
 		if (keySet == null) {
-			keySet = new AbstractSet() {
+			keySet = new AbstractSet<K>() {
 				public boolean contains(Object object) {
 					return containsKey(object);
 				}
@@ -850,10 +850,10 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 					TreeMap.this.clear();
 				}
 
-				public Iterator iterator() {
-					return new TreeMapIterator(TreeMap.this,
-							new MapEntry.Type() {
-								public Object get(MapEntry entry) {
+				public Iterator<K> iterator() {
+					return new TreeMapIterator<K, K, V>(TreeMap.this,
+							new MapEntry.Type<K, K, V>() {
+								public K get(MapEntry<K, V> entry) {
 									return entry.key;
 								}
 							});
@@ -871,14 +871,14 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * @exception NoSuchElementException
 	 *                when this TreeMap is empty
 	 */
-	public Object lastKey() {
+	public K lastKey() {
 		if (root != null)
 			return maximum(root).key;
 		throw new NoSuchElementException();
 	}
 
-	private void leftRotate(Entry x) {
-		Entry y = x.right;
+	private void leftRotate(Entry<K, V> x) {
+		Entry<K, V> y = x.right;
 		x.right = y.left;
 		if (y.left != null)
 			y.left.parent = x;
@@ -895,22 +895,22 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		x.parent = y;
 	}
 
-	static Entry maximum(Entry x) {
+	static <K, V> Entry<K, V> maximum(Entry<K, V> x) {
 		while (x.right != null)
 			x = x.right;
 		return x;
 	}
 
-	static Entry minimum(Entry x) {
+	static <K, V> Entry<K, V> minimum(Entry<K, V> x) {
 		while (x.left != null)
 			x = x.left;
 		return x;
 	}
 
-	static Entry predecessor(Entry x) {
+	static <K, V> Entry<K, V> predecessor(Entry<K, V> x) {
 		if (x.left != null)
 			return maximum(x.left);
-		Entry y = x.parent;
+		Entry<K, V> y = x.parent;
 		while (y != null && x == y.left) {
 			x = y;
 			y = y.parent;
@@ -934,9 +934,9 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * @exception NullPointerException
 	 *                when the key is null and the comparator cannot handle null
 	 */
-	public Object put(Object key, Object value) {
-		MapEntry entry = rbInsert(key);
-		Object result = entry.value;
+	public V put(K key, V value) {
+		MapEntry<K, V> entry = rbInsert(key);
+		V result = entry.value;
 		entry.value = value;
 		return result;
 	}
@@ -954,13 +954,13 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 *                when a key in the Map is null and the comparator cannot
 	 *                handle null
 	 */
-	public void putAll(Map map) {
+	public void putAll(Map<? extends K, ? extends V> map) {
 		super.putAll(map);
 	}
 
-	void rbDelete(Entry z) {
-		Entry y = z.left == null || z.right == null ? z : successor(z);
-		Entry x = y.left != null ? y.left : y.right;
+	void rbDelete(Entry<K, V> z) {
+		Entry<K, V> y = z.left == null || z.right == null ? z : successor(z);
+		Entry<K, V> x = y.left != null ? y.left : y.right;
 		if (x != null)
 			x.parent = y.parent;
 		if (y.parent == null)
@@ -983,12 +983,12 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		size--;
 	}
 
-	private Entry rbInsert(Object object) {
+	private Entry<K, V> rbInsert(K object) {
 		int result = 0;
-		Comparable key = null;
+		Comparable<K> key = null;
 		if (comparator == null)
-			key = (Comparable) object;
-		Entry y = null, x = root;
+			key = (Comparable<K>) object;
+		Entry<K, V> y = null, x = root;
 		while (x != null) {
 			y = x;
 			result = key != null ? key.compareTo(x.key) : comparator.compare(
@@ -1000,7 +1000,7 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 
 		size++;
 		modCount++;
-		Entry z = new Entry(object);
+		Entry<K, V> z = new Entry<K, V>(object);
 		if (y == null)
 			return root = z;
 		z.parent = y;
@@ -1026,17 +1026,17 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * @exception NullPointerException
 	 *                when the key is null and the comparator cannot handle null
 	 */
-	public Object remove(Object key) {
-		Entry node = find(key);
+	public V remove(Object key) {
+		Entry<K, V> node = find((K)key);
 		if (node == null)
 			return null;
-		Object result = node.value;
+		V result = node.value;
 		rbDelete(node);
 		return result;
 	}
 
-	private void rightRotate(Entry x) {
-		Entry y = x.left;
+	private void rightRotate(Entry<K, V> x) {
+		Entry<K, V> y = x.left;
 		x.left = y.right;
 		if (y.right != null)
 			y.right.parent = x;
@@ -1082,21 +1082,21 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 *                when the start or end key is null and the comparator
 	 *                cannot handle null
 	 */
-	public SortedMap subMap(Object startKey, Object endKey) {
+	public SortedMap<K, V> subMap(K startKey, K endKey) {
 		if (comparator == null) {
-			if (((Comparable) startKey).compareTo(endKey) <= 0)
-				return new SubMap(startKey, this, endKey);
+			if (((Comparable<K>) startKey).compareTo(endKey) <= 0)
+				return new SubMap<K, V>(startKey, this, endKey);
 		} else {
 			if (comparator.compare(startKey, endKey) <= 0)
-				return new SubMap(startKey, this, endKey);
+				return new SubMap<K, V>(startKey, this, endKey);
 		}
 		throw new IllegalArgumentException();
 	}
 
-	static Entry successor(Entry x) {
+	static <K, V> Entry<K, V> successor(Entry<K, V> x) {
 		if (x.right != null)
 			return minimum(x.right);
-		Entry y = x.parent;
+		Entry<K, V> y = x.parent;
 		while (y != null && x == y.right) {
 			x = y;
 			y = y.parent;
@@ -1121,13 +1121,13 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 *                when the start key is null and the comparator cannot
 	 *                handle null
 	 */
-	public SortedMap tailMap(Object startKey) {
+	public SortedMap<K, V> tailMap(K startKey) {
 		// Check for errors
 		if (comparator == null)
-			((Comparable) startKey).compareTo(startKey);
+			((Comparable<K>) startKey).compareTo(startKey);
 		else
 			comparator.compare(startKey, startKey);
-		return new SubMap(startKey, this);
+		return new SubMap<K, V>(startKey, this);
 	}
 
 	/**
@@ -1137,9 +1137,9 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 	 * 
 	 * @return a Collection of the values
 	 */
-	public Collection values() {
+	public Collection<V> values() {
 		if (valuesCollection == null) {
-			valuesCollection = new AbstractCollection() {
+			valuesCollection = new AbstractCollection<V>() {
 				public boolean contains(Object object) {
 					return containsValue(object);
 				}
@@ -1152,10 +1152,10 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 					TreeMap.this.clear();
 				}
 
-				public Iterator iterator() {
-					return new TreeMapIterator(TreeMap.this,
-							new MapEntry.Type() {
-								public Object get(MapEntry entry) {
+				public Iterator<V> iterator() {
+					return new TreeMapIterator<V, K, V>(TreeMap.this,
+							new MapEntry.Type<V, K, V>() {
+								public V get(MapEntry<K, V> entry) {
 									return entry.value;
 								}
 							});
@@ -1169,7 +1169,7 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 		stream.defaultWriteObject();
 		stream.writeInt(size);
 		if (size > 0) {
-			Entry node = minimum(root);
+			Entry<K, V> node = minimum(root);
 			while (node != null) {
 				stream.writeObject(node.key);
 				stream.writeObject(node.value);
@@ -1182,10 +1182,10 @@ public class TreeMap extends AbstractMap implements SortedMap, Cloneable,
 			ClassNotFoundException {
 		stream.defaultReadObject();
 		size = stream.readInt();
-		Entry last = null;
+		Entry<K, V> last = null;
 		for (int i = size; --i >= 0;) {
-			Entry node = new Entry(stream.readObject());
-			node.value = stream.readObject();
+			Entry<K, V> node = new Entry<K, V>((K)stream.readObject());
+			node.value = (V)stream.readObject();
 			if (last == null)
 				root = node;
 			else {
