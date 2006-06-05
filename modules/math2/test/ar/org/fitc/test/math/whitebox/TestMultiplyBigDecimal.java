@@ -1,0 +1,5840 @@
+/*
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * @author Hugo Beilis
+ * @author Osvaldo Demo
+ * @author Jorge Rafael
+ * @version 1.0
+ */
+package ar.org.fitc.test.math.whitebox;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import ar.org.fitc.test.util.Messages;
+import junit.framework.TestCase;
+
+public class TestMultiplyBigDecimal extends TestCase implements Messages{
+	
+	public TestMultiplyBigDecimal() {
+		super();
+		
+	}
+	
+	public TestMultiplyBigDecimal(String name) {
+		super(name);
+		
+	}
+	
+	public void testMultiplyBigDecimal001() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal002() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal003() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal004() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal005() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal006() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal007() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("0.01", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal008() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("-0.01", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal009() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("8974897897413521118974132041352897413521118897413521118974132097413201118974188974135211189741320974135211189741320352111897418974135211189741320320897413201352111897413.20", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal010() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-89748978974135252897413521118897413521118974132097413201118974188974135211189741320974135211189741320352111897418974135211189741320320897413201352111897413.20", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal011() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal012() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("-0.01", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal013() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("0.01", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal014() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-8974897897413521118974132041352897413521118897413521118974132097413201118974188974135211189741320974135211189741320352111897418974135211189741320320897413201352111897413.20", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal015() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("89748978974135252897413521118897413521118974132097413201118974188974135211189741320974135211189741320352111897418974135211189741320320897413201352111897413.20", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal016() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal017() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("8974897897413521118974132041352897413521118897413521118974132097413201118974188974135211189741320974135211189741320352111897418974135211189741320320897413201352111897413.20", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal018() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("-8974897897413521118974132041352897413521118897413521118974132097413201118974188974135211189741320974135211189741320352111897418974135211189741320320897413201352111897413.20", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal019() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("8054879226899764225126304862651449032952353669091462470274921672056956544948557765781612553929322749159967709258226091222479194623605475224709074308231230009223802788659918121767912127059667884082760741595926294559434124867938049620561640826695058440448609948029388748638573671166076085208356899473666409548296732350750965160632388085153424.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal020() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-80548792268997679683473002638812130479197532596665668855989555927486115307796353502107410660188005262017550514243709991479457559665504271306155668252228240944673048592907128326072232708741595926294559434124867938049620561640826695058440448609948029388748638573671166076085208356899473666409548296732350750965160632388085153424.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal021() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal022() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("-89748978974135252897413521118897413521118974132097413201118974188974135211189741320974135211189741320352111897418974135211189741320320897413201352111897413.20", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal023() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("89748978974135252897413521118897413521118974132097413201118974188974135211189741320974135211189741320352111897418974135211189741320320897413201352111897413.20", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal024() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-80548792268997679683473002638812130479197532596665668855989555927486115307796353502107410660188005262017550514243709991479457559665504271306155668252228240944673048592907128326072232708741595926294559434124867938049620561640826695058440448609948029388748638573671166076085208356899473666409548296732350750965160632388085153424.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal025() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("805487922689977171156829566511271659280755434163297206449003038777681465661352666752297943878549292796377483690410256700311382302112701667821971224329273687196984260382656741595926294559434124867938049620561640826695058440448609948029388748638573671166076085208356899473666409548296732350750965160632388085153424.00", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal026() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal027() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal028() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal029() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal030() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal031() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal032() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal033() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal034() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal035() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal036() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal037() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal038() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal039() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal040() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal041() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal042() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal043() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal044() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("805487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal045() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal046() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal047() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal048() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal049() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal050() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("80548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal051() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal052() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal053() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal054() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal055() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal056() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal057() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("0.1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal058() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-0.1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal059() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal060() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal061() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal062() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-0.1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal063() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("0.1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal064() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal065() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal066() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal067() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal068() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal069() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("80548792268997642251263048626514490329523536690914624702749216720569565449485577657816125539293227491599677092582260912224791946236054752247090743082312300092238027886599181217679121270596678840827607415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509651606323880851534240.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal070() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-805487922689976796834730026388121304791975325966656688559895559274861153077963535021074106601880052620175505142437099914794575596655042713061556682522282409446730485929071283260722327087415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509651606323880851534240.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal071() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal072() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal073() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal074() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-805487922689976796834730026388121304791975325966656688559895559274861153077963535021074106601880052620175505142437099914794575596655042713061556682522282409446730485929071283260722327087415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509651606323880851534240.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal075() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8054879226899771711568295665112716592807554341632972064490030387776814656613526667522979438785492927963774836904102567003113823021127016678219712243292736871969842603826567415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509651606323880851534240.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal076() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal077() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal078() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal079() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal080() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal081() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			bi.multiply(bi2); 
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal082() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal083() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal084() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal085() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal086() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			bi.multiply(bi2); 
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal087() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal088() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal089() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal090() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal091() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			bi.multiply(bi2); 
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal092() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			bi.multiply(bi2);
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal093() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal094() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal095() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal096() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			bi.multiply(bi2); 
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal097() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal098() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal099() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal100() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		}
+		
+		catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal101() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal102() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal103() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal104() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal105() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal106() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal107() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483644);  
+			assertEquals("1E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal108() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483644);  
+			assertEquals("-1E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal109() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483813", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal110() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483799", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal111() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal112() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483644);  
+			assertEquals("-1E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal113() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483644);  
+			assertEquals("1E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal114() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483813", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal115() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483799", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal116() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal117() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483644);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483813", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal118() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483644);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483813", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal119() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483984", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal120() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483970", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal121() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483644);  
+			assertEquals("0E+2147483643", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal122() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483644);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483799", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal123() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483644);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483799", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal124() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483970", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal125() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483644);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483956", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal126() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal127() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal128() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal129() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal130() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal131() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal132() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal133() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("-1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal134() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal135() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal136() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal137() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("-1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal138() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal139() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal140() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal141() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal142() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal143() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("-897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal144() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("805487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal145() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-8054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal146() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal147() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal148() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal149() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-8054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal150() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("80548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal151() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal152() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal153() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal154() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal155() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal156() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal157() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("1E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal158() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-1E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal159() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+172", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal160() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+158", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal161() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal162() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-1E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal163() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("1E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal164() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+172", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal165() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+158", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal166() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal167() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+172", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal168() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+172", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal169() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+343", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal170() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+329", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal171() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal172() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+158", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal173() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+158", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal174() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+329", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal175() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+315", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal176() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal177() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal178() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal179() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal180() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal181() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal182() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("1E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal183() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-1E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal184() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+171", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal185() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+157", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal186() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal187() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-1E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal188() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("1E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal189() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+171", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal190() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+157", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal191() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal192() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+171", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal193() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+171", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal194() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+342", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal195() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+328", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal196() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal197() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+157", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal198() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+157", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal199() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+328", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal200() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+314", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal201() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal202() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal203() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal204() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal205() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal206() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal207() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("1E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal208() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("-1E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal209() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483476", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal210() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483490", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal211() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal212() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("-1E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal213() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("1E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal214() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483476", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal215() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483490", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal216() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal217() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483476", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal218() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483476", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal219() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483305", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal220() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483319", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal221() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal222() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483490", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal223() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483490", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal224() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483319", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal225() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483333", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal226() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal227() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal228() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal229() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal230() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal231() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal232() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483639);  
+			assertEquals("1E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal233() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483639);  
+			assertEquals("-1E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal234() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483810", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal235() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483796", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal236() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal237() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483639);  
+			assertEquals("-1E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal238() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483639);  
+			assertEquals("1E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal239() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483810", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal240() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483796", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal241() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal242() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483639);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483810", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal243() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483639);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483810", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal244() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483981", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal245() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483967", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal246() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483639);  
+			assertEquals("0E+2147483640", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal247() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483639);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483796", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal248() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483639);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483796", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal249() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483967", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal250() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483639);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483953", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal251() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal252() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal253() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal254() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal255() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal256() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal257() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("0.1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal258() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("-0.1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal259() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal260() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal261() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal262() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("-0.1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal263() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("0.1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal264() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal265() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal266() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal267() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal268() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("-89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal269() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("80548792268997642251263048626514490329523536690914624702749216720569565449485577657816125539293227491599677092582260912224791946236054752247090743082312300092238027886599181217679121270596678840827607415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509651606323880851534240.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal270() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-805487922689976796834730026388121304791975325966656688559895559274861153077963535021074106601880052620175505142437099914794575596655042713061556682522282409446730485929071283260722327087415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509651606323880851534240.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal271() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal272() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("-897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal273() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208974132013521118974132.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal274() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-805487922689976796834730026388121304791975325966656688559895559274861153077963535021074106601880052620175505142437099914794575596655042713061556682522282409446730485929071283260722327087415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509651606323880851534240.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal275() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("8054879226899771711568295665112716592807554341632972064490030387776814656613526667522979438785492927963774836904102567003113823021127016678219712243292736871969842603826567415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509651606323880851534240.0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal276() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal277() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal278() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal279() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal280() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal281() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal282() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("1E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal283() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-1E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal284() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+171", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal285() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+157", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal286() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal287() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-1E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal288() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("1E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal289() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+171", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal290() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+157", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal291() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal292() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+171", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal293() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+171", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal294() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+342", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal295() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+328", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal296() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal297() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+157", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal298() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+157", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal299() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+328", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal300() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+314", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal301() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal302() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal303() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal304() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal305() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal306() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal307() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal308() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal309() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal310() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal311() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal312() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal313() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("1", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal314() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal315() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal316() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal317() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal318() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal319() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("805487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal320() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal321() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal322() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal323() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal324() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal325() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("80548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal326() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal327() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal328() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal329() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal330() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal331() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal332() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("1E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal333() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("-1E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal334() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483477", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal335() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483491", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal336() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal337() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("-1E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal338() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("1E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal339() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483477", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal340() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483491", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal341() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal342() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483477", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal343() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483477", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal344() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483306", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal345() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal346() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal347() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483491", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal348() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483491", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal349() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal350() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483334", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal351() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal352() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal353() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal354() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal355() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal356() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal357() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483634);  
+			assertEquals("1E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal358() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483634);  
+			assertEquals("-1E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal359() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483804", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal360() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483790", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal361() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal362() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483634);  
+			assertEquals("-1E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal363() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483634);  
+			assertEquals("1E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal364() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483804", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal365() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483790", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal366() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal367() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483634);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483804", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal368() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483634);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483804", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal369() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483975", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal370() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483961", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal371() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483634);  
+			assertEquals("0E+2147483634", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal372() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483634);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483790", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal373() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483634);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483790", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal374() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483961", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal375() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483634);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483947", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal376() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal377() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal378() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal379() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal380() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal381() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal382() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+			
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal383() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal384() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal385() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal386() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal387() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal388() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal389() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal390() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal391() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal392() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal393() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal394() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal395() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal396() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal397() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal398() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal399() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal400() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal401() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal402() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal403() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal404() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal405() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal406() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal407() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("1E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal408() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-1E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal409() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483476", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal410() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483490", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal411() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal412() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-1E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal413() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("1E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal414() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483476", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal415() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483490", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal416() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal417() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483476", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal418() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483476", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal419() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483305", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal420() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483319", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal421() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E-2147483646", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal422() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483490", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal423() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483490", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal424() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483319", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal425() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483333", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal426() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal427() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal428() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal429() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal430() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal431() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal432() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("1E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal433() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-1E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal434() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483477", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal435() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483491", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal436() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal437() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-1E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal438() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("1E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal439() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483477", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal440() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483491", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal441() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal442() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483477", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal443() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483477", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal444() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483306", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal445() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal446() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal447() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483491", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal448() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E-2147483491", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal449() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal450() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E-2147483334", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal451() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal452() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal453() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal454() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal455() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-2147483647", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal456() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal457() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal458() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal459() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal460() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal461() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal462() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal463() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal464() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal465() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal466() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal467() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal468() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal469() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal470() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal471() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal472() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal473() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal474() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal475() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal476() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal477() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal478() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal479() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal480() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal481() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal482() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483629);  
+			assertEquals("1E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal483() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483629);  
+			assertEquals("-1E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal484() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741.320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal485() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741.320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal486() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal487() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483629);  
+			assertEquals("-1E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal488() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483629);  
+			assertEquals("1E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal489() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("-897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741.320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal490() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741.320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal491() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal492() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483629);  
+			assertEquals("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741.320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal493() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483629);  
+			assertEquals("-897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741.320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal494() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("805487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516.063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal495() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("-8054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516.063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal496() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483629);  
+			assertEquals("0E-18", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal497() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483629);  
+			assertEquals("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741.320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal498() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483629);  
+			assertEquals("8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741.320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal499() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("-8054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516.063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal500() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483629);  
+			assertEquals("80548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516.063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal501() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal502() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal503() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal504() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal505() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal506() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal507() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("1E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal508() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("-1E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal509() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483797", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal510() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483783", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal511() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal512() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("-1E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal513() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("1E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal514() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483797", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal515() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483783", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal516() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal517() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483797", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal518() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483797", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal519() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483968", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal520() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483954", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal521() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),1);  
+			assertEquals("0E+2147483627", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal522() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483783", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal523() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483783", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal524() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483954", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal525() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483628);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),1);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483940", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal526() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal527() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal528() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal529() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal530() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal531() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal532() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("1E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal533() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-1E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal534() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483798", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal535() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483784", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal536() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal537() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-1E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal538() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("1E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal539() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483798", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal540() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483784", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal541() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal542() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483798", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal543() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483798", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal544() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483969", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal545() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483955", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal546() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-1);  
+			assertEquals("0E+2147483628", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal547() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-1);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483784", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal548() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-1);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483784", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal549() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483955", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal550() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483627);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-1);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483941", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal551() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal552() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal553() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal554() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal555() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal556() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal557() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("1E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal558() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-1E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal559() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483796", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal560() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483782", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal561() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal562() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-1E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal563() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("1E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal564() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483796", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal565() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483782", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal566() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal567() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483796", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal568() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("-8.97489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483796", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal569() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.05487922689976422512630486265144903295235366909146247027492167205695654494855776578161255392932274915996770925822609122247919462360547522470907430823123000922380278865991812176791212705966788408276074159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483967", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal570() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483953", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal571() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),0);  
+			assertEquals("0E+2147483626", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal572() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),0);  
+			assertEquals("-8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483782", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal573() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),0);  
+			assertEquals("8.974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320E+2147483782", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal574() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("-8.054879226899767968347300263881213047919753259666566885598955592748611530779635350210741066018800526201755051424370999147945755966550427130615566825222824094467304859290712832607223270874159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483953", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal575() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483626);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),0);  
+			assertEquals("8.0548792268997717115682956651127165928075543416329720644900303877768146566135266675229794387854929279637748369041025670031138230211270166782197122432927368719698426038265674159592629455943412486793804962056164082669505844044860994802938874863857367116607608520835689947366640954829673235075096516063238808515342400E+2147483939", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal576() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal577() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal578() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal579() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal580() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal581() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal582() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("1E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal583() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("-1E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal584() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208.9741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal585() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208.9741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal586() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal587() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("-1E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal588() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("1E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal589() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208.9741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal590() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208.9741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal591() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal592() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208.9741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal593() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("-89748978974135211189741320413528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208.9741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal594() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("80548792268997642251263048626514490329523536690914624702749216720569565449485577657816125539293227491599677092582260912224791946236054752247090743082312300092238027886599181217679121270596678840827607415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509.6516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal595() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-805487922689976796834730026388121304791975325966656688559895559274861153077963535021074106601880052620175505142437099914794575596655042713061556682522282409446730485929071283260722327087415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509.6516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal596() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),2147483647);  
+			assertEquals("0E-22", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal597() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),2147483647);  
+			assertEquals("-897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208.9741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal598() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),2147483647);  
+			assertEquals("897489789741352528974135211188974135211189741320974132011189741889741352111897413209741352111897413203521118974189741352111897413203208.9741320135211189741320", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal599() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("-805487922689976796834730026388121304791975325966656688559895559274861153077963535021074106601880052620175505142437099914794575596655042713061556682522282409446730485929071283260722327087415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509.6516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal600() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483625);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),2147483647);  
+			assertEquals("8054879226899771711568295665112716592807554341632972064490030387776814656613526667522979438785492927963774836904102567003113823021127016678219712243292736871969842603826567415959262945594341248679380496205616408266950584404486099480293887486385736711660760852083568994736664095482967323507509.6516063238808515342400", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal601() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483624);  
+			assertEquals("0E+2147483648", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal602() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483624);  
+			assertEquals("0E+2147483648", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal603() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			assertEquals("0E+2147483648", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal604() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			assertEquals("0E+2147483648", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal605() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("0"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			assertEquals("0E+2147483648", bi.multiply(bi2).toString());
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal606() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483624);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal607() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal608() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal609() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal610() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal611() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483624);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal612() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal613() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal614() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal615() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal616() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483624);  
+			bi.multiply(bi2); 
+			
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal617() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal618() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal619() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal620() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal621() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("0"),-2147483624);  
+			bi.multiply(bi2); 	
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal622() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("1"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal623() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-1"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal624() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("897489789741352111897413204135289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}
+	public void testMultiplyBigDecimal625() {
+		try{
+			BigDecimal bi= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			BigDecimal  bi2= new BigDecimal(new BigInteger("-8974897897413525289741352111889741352111897413209741320111897418897413521118974132097413521118974132035211189741897413521118974132032089741320135211189741320"),-2147483624);  
+			bi.multiply(bi2); 
+			fail("ArithmeticException is expected");
+		} catch (ArithmeticException e) {
+		} catch (Throwable e) {
+			fail(msgNoException+e);
+		}
+	}		
+}

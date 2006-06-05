@@ -1,0 +1,30 @@
+Pending improvements:
+ 
+BigInteger:
+* BigInteger.multiply: test to find out the threshold between the karatsuba and 
+  the paper and pencil multiplication methods. The Paper and Pencil algorithm 
+  should be optimized.
+
+* BigInteger.modPow: Find an efficienter algorithm to odd numbers.
+
+* BigInteger(int,int,Random): to implement a better algorithm to chose a random 
+  prime number; and not simply to generate a number and test if it's prime.
+
+
+BigDecimal:
+* divide(BigDecimal divisor, int scale, RoundingMode roundingMode):
+  could be improved. One possibility is to avoid using power of ten when it 
+  isn't necessary or return pre-calculated results for particular types of 
+  rounding and certain arguments.
+
+
+* (String Conversion): to think if it's convenient to cache the String 
+  representation of the BigInteger unscaled value to avoid processing a heavy 
+  conversion in each call to some of the string conversion methods.
+
+MathContext:
+* All works wonderfull
+
+
+RoundingMode:
+* All works wonderfull

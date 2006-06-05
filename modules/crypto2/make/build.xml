@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>  
+<project name="math" basedir=".." default="buildAll"> 
+   
+    <property name="src.base" value="src"/>
+    <property name="classes.dir" value="build/classes"/>
+    <property name="dist.dir" value="build/deploy"/>
+    <property name="doc.dir" value="doc"/>
+    <property name="javadoc.dir" value="${doc.dir}/javadoc"/>
+    
+    <property name="test.dir" value="test"/>
+    <property name="test.deps.dir" value ="dependencies"/>
+    
+    
+    <target name="buildAll" description="builds all packages">
+        <antcall target="buildMath"/> 
+        <antcall target="buildCrypto"/> 
+        <antcall target="buildTest"/>        
+        <antcall target="javadocAll"/>                
+            
+    </target>
+    
+    <target name="javadocAll" description="builds javadoc of all packages">
+        <antcall target="javadoc">     
+            <param name="packagenames" value="*"/>
+            <param name="excludepackagesnames" value="doctools/*"/>
+        </antcall>
+    </target>
+    
+    <target name="buildMath" description="build java.math">
+        <antcall target="build">
+            <param name="package" value="${src.base}/java/math"/>
+            <param name="name" value="math"/>
+            <param name="toInclude1" value="java/math/*"/>
+        </antcall>       
+    </target>
+  
+    <target name="buildCrypto" description="builds javax.crypto" depends="buildAsn1">
+        <antcall target="build">
+            <param name="package" value="${src.base}/javax/crypto"/>
+            <param name="name" value="jce"/>
+            <param name="classpath" value="${dist.dir}/asn1.jar"/>
+            <param name="toInclude1" value="javax/**"/>
+            <param name="toInclude2" value="ar/**"/>
+        </antcall>               
+        <delete file="${dist.dir}/asn1.jar" failonerror="false"/>
+    </target>
+    
+    <target name="buildTest" description="Builds all tests" >
+        <antcall target="build">
+            <param name="package" value="${test.dir}/ar"/>
+            <param name="name" value="test"/>
+            
+            <param name="classpath" value="${test.dir}/${test.deps.dir}/bcprov-jdk15-130.jar:
+            ${test.dir}/${test.deps.dir}/bwbuni.jar:
+            ${test.dir}/${test.deps.dir}/cryptix-jce-provider.jar:
+            ${test.dir}/${test.deps.dir}/itcprovider.jar:
+            ${test.dir}/${test.deps.dir}/junit.jar:
+            ${test.dir}/${test.deps.dir}/suiterunner-1.0beta7.jar:
+            ${test.dir}/${test.deps.dir}/Tidy.jar:"/>
+            <param name="toInclude1" value="ar/**"/>            
+        </antcall>               
+        
+    </target>
+     
+ 
+    
+    <target name="buildAsn1" description="build ar.org.fitc.asn1">
+        <antcall target="build">
+            <param name="package" value="${src.base}/ar/org/fitc/asn1"/>
+            <param name="name" value="asn1"/>
+        </antcall>       
+    </target>
+    
+    <target name="buildDoclet" description="build ">
+        <antcall target="build">
+            <param name="package" value="${src.base}/doctools"/>
+            <param name="name" value="doctools"/>
+            <param name="toInclude1" value="doctools/*"/>
+        </antcall>       
+    </target>
+    
+
+    <target name="clean" description="Delete all generated files"> 
+        <delete dir="${classes.dir}/${package}" failonerror="false"/> 
+        <delete file="${dist.dir}/${package.name}.jar"/> 
+    </target> 
+
+    <target name="compile" description="Compiles the Task"> 
+        <mkdir dir="${classes.dir}"/> 
+        <javac srcdir="${package}" classpath="${classpath}" destdir="${classes.dir}"/> 
+    </target> 
+
+    <target name="jar" description="Jars package.name " depends="compile"> 
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${name}.jar"  basedir="${classes.dir}" includes="${toInclude1} ${toInclude2}"/>         
+        <move file="${name}.jar" todir="${dist.dir}"/>
+    </target> 
+    
+    
+ 
+    
+    <target name="javadoc" depends="buildDoclet">
+        <javadoc access="private"
+            additionalparam="-taglet doctools.SpecRefTaglet -taglet doctools.UrlTaglet -taglet doctools.RefTaglet -tagletpath &quot;${dis.dir}&quot; "
+            author="true" 
+            destdir="${javadoc.dir}"
+            nodeprecated="false"
+            nodeprecatedlist="false"
+            noindex="false"
+            nonavbar="false"
+            notree="false"
+            sourcepath="${src.base}"
+            packagenames="${packagenames}"
+            excludepackagenames="${excludepackagesnames}"
+            source="1.5"            
+            splitindex="true"
+            use="true"
+            version="true">
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+        </javadoc>
+    </target> 
+    
+    <!--depends="clean,jar"-->
+    
+    <target name="build" description="Build package (first parameter of this target)" >
+        <antcall target="clean">
+            <param name="package" value="${package}"/>
+        </antcall>         
+        <antcall target="jar">
+            <param name="package" value="${package}"/>
+            <param name="name" value="${name}"/>
+            <param name="toInclude" value="${toInclude1}"/>
+            <param name="toInclude" value="${toInclude2}"/>
+        </antcall>        
+    </target>
+    
+</project>
