@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,65 +16,101 @@
 package java.lang;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
+
+import org.apache.harmony.luni.util.Msg;
 
 /**
- * Stub for Enum 
+ * TODO Enum doc
  */
-public class Enum <E extends Enum<E>> implements Serializable, Comparable<E> {
+public class Enum<E extends Enum<E>> implements Serializable, Comparable<E> {
 
-    private String name;
+    private static final long serialVersionUID = 0L;
 
+    private final String name;
 
-    private int ordinal;
-
+    private final int ordinal;
 
     protected Enum(String name, int ordinal) {
         this.name = name;
         this.ordinal = ordinal;
     }
 
-
     public final String name() {
         return name;
     }
-
 
     public final int ordinal() {
         return ordinal;
     }
 
-
     public String toString() {
         return "Enum:" + name;
     }
 
-
     public final boolean equals(Object other) {
-        throw new RuntimeException("not yet implemented");
+        return this == other;
     }
-
 
     public final int hashCode() {
         return ordinal + (name == null ? 0 : name.hashCode());
     }
 
-
+    /**
+     * Enums are singletons, they may not be cloned.
+     */
     protected final Object clone() throws CloneNotSupportedException {
-        return new Enum<E> (name, ordinal);
+        // KA004=Enums may not be cloned
+        throw new CloneNotSupportedException(Msg.getString("KA004"));
     }
-
 
     public final int compareTo(E o) {
         return ordinal - o.ordinal;
     }
 
-
     public final Class<E> getDeclaringClass() {
-        throw new RuntimeException("not yet implemented");
+        Class myClass = getClass();
+        Class mySuperClass = myClass.getSuperclass();
+        if (Enum.class == mySuperClass) {
+            return myClass;
+        }
+        return mySuperClass;
     }
 
-
     public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name) {
-        throw new RuntimeException("not yet implemented");
+        T[] values = getValues(enumType);
+        if (values == null) {
+            // KA005={0} is not an enum type
+            throw new IllegalArgumentException(Msg.getString("KA005", enumType));
+        }
+        for (T enumConst : values) {
+            if (enumConst.name.equals(name)) {
+                return enumConst;
+            }
+        }
+        // KA006={0} is not a constant in the enum type {1}
+        throw new IllegalArgumentException(Msg.getString("KA006", name, enumType));
+    }
+
+    /*
+     * Helper to invoke the values() static method on T and answer
+     * the result.  Returns null if there is a problem.
+     */
+    static <T extends Enum<T>> T[] getValues(final Class<T> enumType) {
+        try {
+            Method values = AccessController.doPrivileged(
+                new PrivilegedExceptionAction<Method>() {
+                    public Method run() throws Exception {
+                        Method valsMethod = enumType.getMethod("values", (Class[])null);
+                        valsMethod.setAccessible(true);
+                        return valsMethod;
+                    }
+                });
+            return (T[]) values.invoke(enumType, null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
