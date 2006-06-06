@@ -48,7 +48,7 @@ public final class DerInputStream extends BerInputStream {
     /**
      * @see org.apache.harmony.security.asn1.BerInputStream#next()
      */
-    protected final int next() throws IOException {
+    public final int next() throws IOException {
 
         int tag = super.next();
 

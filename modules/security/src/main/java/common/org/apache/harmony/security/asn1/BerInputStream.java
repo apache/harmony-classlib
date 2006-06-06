@@ -185,7 +185,7 @@ public class BerInputStream {
      * @return next decoded tag
      * @throws IOException - if error occured
      */
-    protected int next() throws IOException {
+    public int next() throws IOException {
 
         tagOffset = offset;
 

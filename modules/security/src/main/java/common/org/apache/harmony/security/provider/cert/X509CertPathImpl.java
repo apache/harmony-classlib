@@ -176,7 +176,11 @@ public class X509CertPathImpl extends CertPath {
                     // empty chain of certificates
                     certs = new ArrayList();
                 }
-                return new X509CertPathImpl(certs, PKCS7, ci.getEncoded());
+                List result = new ArrayList();
+                for (int i=0; i<certs.size(); i++) {
+                    result.add(new X509CertImpl((Certificate) certs.get(i)));
+                }
+                return new X509CertPathImpl(result, PKCS7, ci.getEncoded());
             }
         } catch (IOException e) {
             throw new CertificateException("Incorrect encoded form: "
@@ -229,7 +233,11 @@ public class X509CertPathImpl extends CertPath {
                 if (certs == null) {
                     certs = new ArrayList();
                 }
-                return new X509CertPathImpl(certs, PKCS7, ci.getEncoded());
+                List result = new ArrayList();
+                for (int i=0; i<certs.size(); i++) {
+                    result.add(new X509CertImpl((Certificate) certs.get(i)));
+                }
+                return new X509CertPathImpl(result, PKCS7, ci.getEncoded());
             }
         } catch (IOException e) {
             throw new CertificateException("Incorrect encoded form: "

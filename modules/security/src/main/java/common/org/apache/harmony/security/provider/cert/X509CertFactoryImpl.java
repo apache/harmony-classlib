@@ -37,7 +37,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.luni.util.Base64;
+import org.apache.harmony.security.asn1.ASN1Constants;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.pkcs7.ContentInfo;
+import org.apache.harmony.security.pkcs7.SignedData;
+import org.apache.harmony.security.x509.CertificateList;
 
 /**
  * X509 Certificate Factory Service Provider Interface Implementation.
@@ -95,64 +99,18 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             }
             // check whether the provided certificate is in PEM encoded form
             if ("-----BEGIN CERTIFICATE-----".equals(new String(buff, 0, 27))) {
-                // read PEM encoded form
-                int size = inStream.available();
-                if (size == 0) {
-                    size = 2048;
-                }
-                buff = new byte[size];
-                int index=0, ch;
-                // read the Base64 encoded certificate into the buffer
-                // expect "-----END CERTIFICATE-----" at the end
-                while ((ch = inStream.read()) != '-') {
-                    if (ch == -1) {
-                        throw new CertificateException(
-                                "Incorrect Base64 encoding: unexpected EOF.");
-                    }
-                    buff[index++] = (byte) ch;
-                    // enlarge the buffer if needed
-                    if (index == size) {
-                        byte[] newbuff = new byte[size+1024];
-                        System.arraycopy(buff, 0, newbuff, 0, size);
-                        buff = newbuff;
-                    }
-                }
-                byte[] tmp = new byte[25];
-                inStream.read(tmp);
-                // check the trailing sequence
-                if (!new String(tmp).startsWith("----END CERTIFICATE-----")) {
-                    throw new CertificateException(
-                    "Incorrect Base64 encoding: 'END CERTIFICATE' expected.");
-                }
-                // skip new line: set the position to the next certificate:
-                inStream.mark(1);
-                while (((ch = inStream.read()) != -1) 
-                        && (ch == '\n' || ch == '\r')) {
-                    inStream.mark(1);
-                }
-                inStream.reset();
-                // retrieve the ASN.1 DER encoded form
-                buff = Base64.decode(buff, index);
-                if (buff == null) {
-                    throw new CertificateException(
-                            "Incorrect Base64 encoding.");
-                }
-                // check whether certificate has already been generated and
-                // stored in the cache
-                long hash = CERT_CASHE.getHash(buff);
+                byte[] encoding = decodePEM(inStream, "CERTIFICATE");
+                
+                long hash = CERT_CASHE.getHash(encoding);
                 if (CERT_CASHE.contains(hash)) {
-                    // preliminary check is successful, do more accurate check
-                    Certificate res = (Certificate) CERT_CASHE.get(hash, buff);
+                    Certificate res = 
+                        (Certificate) CERT_CASHE.get(hash, encoding);
                     if (res != null) {
-                        // found in the cache
                         return res;
                     }
                 }
-                // there is no generated certificate in the cache,
-                // so generate it
-                Certificate res = new X509CertImpl(buff);
-                // put newly generated certificate in the cache
-                CERT_CASHE.put(hash, buff, res);
+                Certificate res = new X509CertImpl(encoding);
+                CERT_CASHE.put(hash, encoding, res);
                 return res;
             } else {
                 // read ASN.1 DER encoded form
@@ -207,13 +165,60 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 // create the mark supporting wrapper
                 inStream = new RestoringInputStream(inStream);
             }
-            inStream.mark(1);
-            // until the end of the stream is not reached ..
-            while (inStream.read() != -1) {
+            boolean isPKCS7 = false;
+            boolean isPEM = false;
+            // check whether it is a PKCS7 structure
+            inStream.mark(33);
+            if (inStream.read() == '-') { // it is Base64 encoded form
+                // check the boundary delimiter
+                byte[] delimiter = new byte[20];
+                inStream.read(delimiter);
+                if (new String(delimiter).startsWith("----BEGIN PKCS7-----")) {
+                    // this is PEM encoded PKCS7 structure
+                    isPKCS7 = true;
+                    isPEM = true;
+                } else {
+                    inStream.reset();
+                }
+            } else {
+                // it is plain ASN.1 DER encoded form, 
+                // so reset the stream and check the structure
                 inStream.reset();
-                // .. generate the certificate and add it to the resulting list
-                result.add(engineGenerateCertificate(inStream));
+                BerInputStream in = new BerInputStream(inStream);
+                if (in.next() == ASN1Constants.TAG_OID) { 
+                    // this is PKCS7 structure
+                    isPKCS7 = true;
+                }
+                inStream.reset();
+            }
+            if (isPKCS7) {
+                ContentInfo info;
+                if (isPEM) {
+                    info = (ContentInfo) 
+                        ContentInfo.ASN1.decode(decodePEM(inStream, "PKCS7"));
+                } else {
+                    info = (ContentInfo) ContentInfo.ASN1.decode(inStream);
+                }
+                SignedData data = info.getSignedData();
+                if (data == null) {
+                    throw new CertificateException("Invalid PKCS7 data provided");
+                }
+                List certificates = data.getCertificates();
+                if (certificates != null) {
+                    for (int i = 0; i < certificates.size(); i++) {
+                        result.add(new X509CertImpl(
+                            (org.apache.harmony.security.x509.Certificate)
+                            certificates.get(i)));
+                    }
+                }
+                return result;
+            } else {
                 inStream.mark(1);
+                while (inStream.read() != -1) {
+                    inStream.reset();
+                    result.add(engineGenerateCertificate(inStream));
+                    inStream.mark(1);
+                }
             }
         } catch (IOException e) {
             throw new CertificateException(e);
@@ -243,52 +248,16 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             }
             // check whether the provided crl is in PEM encoded form
             if ("-----BEGIN X509 CRL-----".equals(new String(buff, 0, 24))) {
-                // read PEM encoded form
-                int size = inStream.available();
-                if (size == 0) {
-                    size = 1024;
-                }
-                buff = new byte[size];
-                int index=0, ch;
-                // read the Base64 encoded crl into the buffer
-                while ((ch = inStream.read()) != '-') {
-                    if (ch == -1) {
-                        throw new CRLException(
-                                "Incorrect Base64 encoding: unexpected EOF.");
-                    }
-                    buff[index++] = (byte) ch;
-                    // enlarge the buffer if needed
-                    if (index == size) {
-                        byte[] newbuff = new byte[size+1024];
-                        System.arraycopy(buff, 0, newbuff, 0, size);
-                        buff = newbuff;
-                    }
-                }
-                byte[] tmp = new byte[21];
-                inStream.read(tmp);
-                if (!new String(tmp).startsWith("----END X509 CRL-----")) {
-                    throw new CRLException(
-                    "Incorrect Base64 encoding: 'END X509 CRL' expected.");
-                }
-                // skip new line: set the position to the next certificate:
-                inStream.mark(1);
-                while (((ch = inStream.read()) != -1) && (ch == '\n' || ch == '\r')) {
-                    inStream.mark(1);
-                }
-                inStream.reset();
-                buff = Base64.decode(buff, index);
-                if (buff == null) {
-                    throw new CRLException("Incorrect Base64 encoding.");
-                }
-                long hash = CRL_CASHE.getHash(buff);
+                byte[] encoding = decodePEM(inStream, "X509 CRL");
+                long hash = CRL_CASHE.getHash(encoding);
                 if (CRL_CASHE.contains(hash)) {
-                    X509CRL res = (X509CRL) CRL_CASHE.get(hash, buff);
+                    X509CRL res = (X509CRL) CRL_CASHE.get(hash, encoding);
                     if (res != null) {
                         return res;
                     }
                 }
-                X509CRL res = new X509CRLImpl(buff);
-                CRL_CASHE.put(hash, buff, res);
+                X509CRL res = new X509CRLImpl(encoding);
+                CRL_CASHE.put(hash, encoding, res);
                 return res;
             } else {
                 inStream.reset();
@@ -329,15 +298,63 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             if (!inStream.markSupported()) {
                 inStream = new RestoringInputStream(inStream);
             }
-            inStream.mark(1);
-            // FIXME: Check if it is a PKCS7 structure, if not, do following:
-            while (inStream.read() != -1) {
+            boolean isPKCS7 = false;
+            boolean isPEM = false;
+            // check whether it is a PKCS7 structure
+            inStream.mark(33);
+            if (inStream.read() == '-') { // it is Base64 encoded form
+                // check the boundary delimiter
+                byte[] delimiter = new byte[20];
+                inStream.read(delimiter);
+                if (new String(delimiter).startsWith("----BEGIN PKCS7-----")) {
+                    // this is PEM encoded PKCS7 structure
+                    isPKCS7 = true;
+                    isPEM = true;
+                } else {
+                    inStream.reset();
+                }
+            } else {
+                // it is plain ASN.1 DER encoded form, 
+                // so reset the stream and check the structure
                 inStream.reset();
-                result.add(engineGenerateCRL(inStream));
+                BerInputStream in = new BerInputStream(inStream);
+                if (in.next() == ASN1Constants.TAG_OID) { 
+                    // this is PKCS7 structure
+                    isPKCS7 = true;
+                }
+                inStream.reset();
+            }
+            if (isPKCS7) {
+                // decode ContentInfo structure
+                ContentInfo info;
+                if (isPEM) {
+                    info = (ContentInfo) 
+                        ContentInfo.ASN1.decode(decodePEM(inStream, "PKCS7"));
+                } else {
+                    info = (ContentInfo) ContentInfo.ASN1.decode(inStream);
+                }
+                // retrieve SignedData
+                SignedData data = info.getSignedData();
+                if (data == null) {
+                    throw new CRLException("Invalid PKCS7 data provided");
+                }
+                List crls = data.getCRLs();
+                if (crls != null) {
+                    for (int i = 0; i < crls.size(); i++) {
+                        result.add(new X509CRLImpl(
+                            (CertificateList) crls.get(i)));
+                    }
+                }
+                return result;
+            } else {
                 inStream.mark(1);
+                while (inStream.read() != -1) {
+                    inStream.reset();
+                    result.add(engineGenerateCRL(inStream));
+                    inStream.mark(1);
+                }
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw new CRLException(e);
         }
         return result;
@@ -378,6 +395,53 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
         return X509CertPathImpl.encodings.iterator();
     }
 
+    // Method retirieves the PEM encoded data from the stream 
+    // and returns its decoded representation.
+    // It is supposed that the data is bounded by
+    // "-----END" + boundary_mark + "-----" at the end.
+    private byte[] decodePEM(InputStream inStream, String boundary_mark) 
+                                                        throws IOException {
+        int size = 1024; // the size of the buffer containing Base64 data
+        byte[] buff = new byte[size];
+        int index=0, ch;
+        // read bytes while boundary delimiter is not reached
+        while ((ch = inStream.read()) != '-') {
+            if (ch == -1) {
+                throw new IOException(
+                        "Incorrect Base64 encoding: unexpected EOF.");
+            }
+            buff[index++] = (byte) ch;
+            if (index == size) {
+                // enlarge the buffer
+                byte[] newbuff = new byte[size+1024];
+                System.arraycopy(buff, 0, newbuff, 0, size);
+                buff = newbuff;
+                size += 1024;
+            }
+        }
+        // Check the boundary delimiter 
+        // one '-' has been already read
+        String boundary_delimiter = "----END " + boundary_mark + "-----";
+        byte[] tmp = new byte[boundary_delimiter.length()];
+        inStream.read(tmp);
+        if (!new String(tmp).startsWith(boundary_delimiter)) {
+            throw new IOException(
+                "Incorrect Base64 encoding: boundary delimiter expected '"
+                + boundary_delimiter + "'");
+        }
+        // skip trailing line breaks
+        inStream.mark(1);
+        while (((ch = inStream.read()) != -1) && (ch == '\n' || ch == '\r')) {
+            inStream.mark(1);
+        }
+        inStream.reset();
+        buff = Base64.decode(buff, index);
+        if (buff == null) {
+            throw new IOException("Incorrect Base64 encoding.");
+        }
+        return buff;
+    };
+    
     /*
      * This class extends any existing input stream with
      * mark functionality. It acts as a wrapper over the

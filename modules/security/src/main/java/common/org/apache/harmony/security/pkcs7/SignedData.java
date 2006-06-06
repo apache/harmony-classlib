@@ -31,6 +31,7 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.CertificateList;
 
 
 /**
@@ -73,6 +74,10 @@ public class SignedData {
         return certificates;
     }
 
+    public List getCRLs() {
+        return crls;
+    }
+
     public List getSignerInfos() {
         return signerInfos;
     }
@@ -105,12 +110,22 @@ public class SignedData {
             new ASN1SetOf(AlgorithmIdentifier.ASN1),
             ContentInfo.ASN1,
             new ASN1Implicit(0, new ASN1SetOf(Certificate.ASN1)),
-            new ASN1Implicit(1, new ASN1SetOf(ASN1Any.getInstance())),
+            new ASN1Implicit(1, new ASN1SetOf(CertificateList.ASN1)),
             new ASN1SetOf(SignerInfo.ASN1) 
 			}) {
         {
             setOptional(3); // certificates is optional
             setOptional(4); // crls is optional
+        }
+
+        protected void getValues(Object object, Object[] values) {
+            SignedData sd = (SignedData) object;
+            values[0] = new byte[] {(byte)sd.version};
+            values[1] = sd.digestAlgorithms;
+            values[2] = sd.contentInfo;
+            values[3] = sd.certificates;
+            values[4] = sd.crls;
+            values[5] = sd.signerInfos;
         }
 
         protected Object getDecodedObject(BerInputStream in) {
