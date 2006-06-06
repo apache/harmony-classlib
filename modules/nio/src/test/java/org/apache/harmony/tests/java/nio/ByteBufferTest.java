@@ -763,7 +763,8 @@ public class ByteBufferTest extends TestCase {
                 value = (char) charBuffer.remaining();
                 charBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, char2bytes(value, buf.order()));
+                //Fix for Harmony 550
+                assertTrue(Arrays.equals(bytes, char2bytes(value, buf.order())));
             }
 
             // test LITTLE_ENDIAN char buffer, write
@@ -775,7 +776,7 @@ public class ByteBufferTest extends TestCase {
                 value = (char) charBuffer.remaining();
                 charBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, char2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, char2bytes(value, buf.order())));
             }
         }
 
@@ -827,7 +828,7 @@ public class ByteBufferTest extends TestCase {
                 value = (double) doubleBuffer.remaining();
                 doubleBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, double2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, double2bytes(value, buf.order())));
             }
 
             // test LITTLE_ENDIAN double buffer, write
@@ -839,7 +840,7 @@ public class ByteBufferTest extends TestCase {
                 value = (double) doubleBuffer.remaining();
                 doubleBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, double2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, double2bytes(value, buf.order())));
             }
         }
 
@@ -891,7 +892,7 @@ public class ByteBufferTest extends TestCase {
                 value = (float) floatBuffer.remaining();
                 floatBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, float2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, float2bytes(value, buf.order())));
             }
 
             // test LITTLE_ENDIAN float buffer, write
@@ -903,7 +904,7 @@ public class ByteBufferTest extends TestCase {
                 value = (float) floatBuffer.remaining();
                 floatBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, float2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, float2bytes(value, buf.order())));
             }
         }
 
@@ -949,7 +950,7 @@ public class ByteBufferTest extends TestCase {
                 value = (int) intBuffer.remaining();
                 intBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, int2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, int2bytes(value, buf.order())));
             }
 
             // test LITTLE_ENDIAN int buffer, write
@@ -961,7 +962,7 @@ public class ByteBufferTest extends TestCase {
                 value = (int) intBuffer.remaining();
                 intBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, int2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, int2bytes(value, buf.order())));
             }
         }
 
@@ -1007,7 +1008,7 @@ public class ByteBufferTest extends TestCase {
                 value = (long) longBuffer.remaining();
                 longBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, long2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, long2bytes(value, buf.order())));
             }
 
             // test LITTLE_ENDIAN long buffer, write
@@ -1019,7 +1020,7 @@ public class ByteBufferTest extends TestCase {
                 value = (long) longBuffer.remaining();
                 longBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, long2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, long2bytes(value, buf.order())));
             }
         }
 
@@ -1065,7 +1066,7 @@ public class ByteBufferTest extends TestCase {
                 value = (short) shortBuffer.remaining();
                 shortBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, short2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, short2bytes(value, buf.order())));
             }
 
             // test LITTLE_ENDIAN short buffer, write
@@ -1077,7 +1078,7 @@ public class ByteBufferTest extends TestCase {
                 value = (short) shortBuffer.remaining();
                 shortBuffer.put(value);
                 buf.get(bytes);
-                Arrays.equals(bytes, short2bytes(value, buf.order()));
+                assertTrue(Arrays.equals(bytes, short2bytes(value, buf.order())));
             }
         }
 
@@ -1168,7 +1169,7 @@ public class ByteBufferTest extends TestCase {
             assertEquals((i + 1) * nbytes, buf.position());
             buf.reset();
             buf.get(bytes);
-            Arrays.equals(char2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(char2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1204,7 +1205,7 @@ public class ByteBufferTest extends TestCase {
             buf.putChar(i, value);
             assertEquals(i, buf.position());
             buf.get(bytes);
-            Arrays.equals(char2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(char2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1311,7 +1312,7 @@ public class ByteBufferTest extends TestCase {
             assertEquals((i + 1) * nbytes, buf.position());
             buf.reset();
             buf.get(bytes);
-            Arrays.equals(double2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(double2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1347,7 +1348,7 @@ public class ByteBufferTest extends TestCase {
             buf.putDouble(i, value);
             assertEquals(i, buf.position());
             buf.get(bytes);
-            Arrays.equals(double2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(double2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1454,7 +1455,7 @@ public class ByteBufferTest extends TestCase {
             assertEquals((i + 1) * nbytes, buf.position());
             buf.reset();
             buf.get(bytes);
-            Arrays.equals(float2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(float2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1490,7 +1491,7 @@ public class ByteBufferTest extends TestCase {
             buf.putFloat(i, value);
             assertEquals(i, buf.position());
             buf.get(bytes);
-            Arrays.equals(float2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(float2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1591,7 +1592,7 @@ public class ByteBufferTest extends TestCase {
             assertEquals((i + 1) * nbytes, buf.position());
             buf.reset();
             buf.get(bytes);
-            Arrays.equals(int2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(int2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1627,7 +1628,7 @@ public class ByteBufferTest extends TestCase {
             buf.putInt(i, value);
             assertEquals(i, buf.position());
             buf.get(bytes);
-            Arrays.equals(int2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(int2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1728,7 +1729,7 @@ public class ByteBufferTest extends TestCase {
             assertEquals((i + 1) * nbytes, buf.position());
             buf.reset();
             buf.get(bytes);
-            Arrays.equals(long2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(long2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1764,7 +1765,7 @@ public class ByteBufferTest extends TestCase {
             buf.putLong(i, value);
             assertEquals(i, buf.position());
             buf.get(bytes);
-            Arrays.equals(long2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(long2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1865,7 +1866,7 @@ public class ByteBufferTest extends TestCase {
             assertEquals((i + 1) * nbytes, buf.position());
             buf.reset();
             buf.get(bytes);
-            Arrays.equals(short2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(short2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -1901,7 +1902,7 @@ public class ByteBufferTest extends TestCase {
             buf.putShort(i, value);
             assertEquals(i, buf.position());
             buf.get(bytes);
-            Arrays.equals(short2bytes(value, buf.order()), bytes);
+            assertTrue(Arrays.equals(short2bytes(value, buf.order()), bytes));
         }
 
         try {
@@ -2053,7 +2054,8 @@ public class ByteBufferTest extends TestCase {
             step = -1;
         } else {
             smallHead = 0;
-            step = 0;
+            //Fix for Harmony 550
+            step = 1;
         }
         byte bytes[] = new byte[nbytes];
         int p = smallHead;
@@ -2072,7 +2074,7 @@ public class ByteBufferTest extends TestCase {
             step = -1;
         } else {
             smallHead = 0;
-            step = 0;
+            step = 1;
         }
         byte bytes[] = new byte[nbytes];
         int p = smallHead;
@@ -2091,7 +2093,7 @@ public class ByteBufferTest extends TestCase {
             step = -1;
         } else {
             smallHead = 0;
-            step = 0;
+            step = 1;
         }
         byte bytes[] = new byte[nbytes];
         int p = smallHead;
