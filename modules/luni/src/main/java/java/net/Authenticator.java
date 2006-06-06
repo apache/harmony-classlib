@@ -325,57 +325,18 @@ public abstract class Authenticator {
 	}
 
 	/**
-	 * an enum class of requestor type
-	 * 
-	 */
-	// FIXME: This class needs java 5 Enum feature support.
-	// The code will be modified when Enum feature is ready.
-	public static final class RequestorType {
+     * an enum class of requestor type
+     */
+    public enum RequestorType {
 
-		private String name;
+        /**
+         * type of proxy server
+         */
+        PROXY,
 
-		/**
-		 * type of proxy server
-		 */
-		public static final Authenticator.RequestorType PROXY = new RequestorType(
-				"PROXY"); //$NON-NLS-1$
-
-		/**
-		 * type of origin server
-		 */
-		public static final Authenticator.RequestorType SERVER = new RequestorType(
-				"SERVER"); //$NON-NLS-1$
-
-		private static final RequestorType[] rt = { PROXY, SERVER };
-
-		private RequestorType(String name) {
-			this.name = name;
-		}
-
-		/**
-		 * 
-		 * @return an array of requestor types
-		 */
-		public static final RequestorType[] values() {
-			return rt;
-		}
-
-		/**
-		 * 
-		 * @param name
-		 *            requestor types name
-		 * @return a requestor type according to name if exist
-		 */
-		public static RequestorType valueOf(String name) {
-			if (null == name) {
-				throw new NullPointerException();
-			}
-			for (int i = 0; i < rt.length; i++) {
-				if (rt[i].name.equals(name)) {
-					return rt[i];
-				}
-			}
-			throw new IllegalArgumentException(name);
-		}
-	}
+        /**
+         * type of origin server
+         */
+        SERVER
+    }
 }
