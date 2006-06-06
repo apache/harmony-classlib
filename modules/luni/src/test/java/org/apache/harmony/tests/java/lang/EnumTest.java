@@ -27,6 +27,13 @@ public class EnumTest extends TestCase {
 
     Sample moe = Sample.MOE;
 
+    enum Empty {
+    }
+    
+    enum Bogus {
+        UNUSED
+    }
+    
     /**
      * @tests java.lang.Enum#compareTo(java.lang.Enum) 
      */
@@ -34,6 +41,11 @@ public class EnumTest extends TestCase {
         assertTrue(0 < Sample.MOE.compareTo(Sample.LARRY));
         assertEquals(0, Sample.MOE.compareTo(Sample.MOE));
         assertTrue(0 > Sample.MOE.compareTo(Sample.CURLY));
+        try {
+            Sample.MOE.compareTo((Sample)null);
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     /**
@@ -44,6 +56,7 @@ public class EnumTest extends TestCase {
         assertTrue(moe.equals(Sample.MOE));
         assertFalse(Sample.LARRY.equals(Sample.CURLY));
         assertTrue(Sample.LARRY.equals(larry));
+        assertFalse(Sample.CURLY.equals(null));
     }
 
     /**
@@ -96,6 +109,42 @@ public class EnumTest extends TestCase {
         } catch (IllegalArgumentException e){
             // Expected
         }
+        try {
+            Sample.valueOf(null);
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        Sample s = Enum.valueOf(Sample.class, "CURLY");
+        assertSame(s, Sample.CURLY);
+        s = Enum.valueOf(Sample.class, "LARRY");
+        assertSame(larry, s);
+        s = Enum.valueOf(Sample.class, "MOE");
+        assertSame(s, moe);
+        try {
+            Enum.valueOf(Bogus.class, "MOE");
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        try {
+            Enum.valueOf((Class<Sample>)null, "a string");
+            fail("Expected NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Enum.valueOf(Sample.class, null);
+            fail("Expected IllegalArgumentException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Enum.valueOf((Class<Sample>)null, (String)null);
+            fail("Expected IllegalArgumentException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     /**
@@ -108,5 +157,7 @@ public class EnumTest extends TestCase {
         assertEquals(Sample.LARRY, myValues[0]);
         assertEquals(Sample.MOE, myValues[1]);
         assertEquals(Sample.CURLY, myValues[2]);
+        
+        assertEquals(0, Empty.values().length);
     }
 }

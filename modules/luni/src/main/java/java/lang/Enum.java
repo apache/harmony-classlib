@@ -80,6 +80,10 @@ public class Enum<E extends Enum<E>> implements Serializable, Comparable<E> {
     }
 
     public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name) {
+        if ((enumType == null) || (name == null)) {
+            // KA001=Argument must not be null
+            throw new NullPointerException(Msg.getString("KA001"));
+        }
         T[] values = getValues(enumType);
         if (values == null) {
             // KA005={0} is not an enum type
