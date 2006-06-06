@@ -298,15 +298,19 @@ public final class NetworkInterface extends Object {
         }
 
         for (NetworkInterface netif : interfaces) {
-            for (InetAddress addr : netif.addresses) {
-                if (16 == addr.ipaddress.length) {
-                    if (addr.isLinkLocalAddress() || addr.isSiteLocalAddress()) {
-                        ((Inet6Address) addr).scopedIf = netif;
-                        ((Inet6Address) addr).ifname = netif.name;
-                        ((Inet6Address) addr).scope_ifname_set = true;
+            // Ensure that current NetworkInterface is bound to at least 
+            // one InetAddress before processing
+            if (netif.addresses != null) {
+                for (InetAddress addr : netif.addresses) {
+                    if (16 == addr.ipaddress.length) {
+                        if (addr.isLinkLocalAddress() || addr.isSiteLocalAddress()) {
+                            ((Inet6Address) addr).scopedIf = netif;
+                            ((Inet6Address) addr).ifname = netif.name;
+                            ((Inet6Address) addr).scope_ifname_set = true;
+                        }
                     }
                 }
-            }
+            }// end if 
         }
 
         return (new Vector<NetworkInterface>(Arrays.asList(interfaces)))
