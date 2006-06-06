@@ -10,4 +10,5 @@ Export-Package: java.lang,
  java.lang.reflect,
  java.lang.ref,
  org.apache.harmony.kernel.vm
-Import-Package: java.io
+Import-Package: java.io,
+ java.lang.annotation
