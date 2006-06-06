@@ -62,6 +62,34 @@ public final class DerInputStream extends BerInputStream {
         return tag;
     }
 
+    // mask for verifying unused bits for ASN.1 bitstring
+    private static final byte[] UNUSED_BITS_MASK = new byte[] { 0x01, 0x03,
+            0x07, 0x0F, 0x1F, 0x3F, 0x7F };
+
+
+    /**
+     * @see org.apache.harmony.security.asn1.BerInputStream#readBitString()
+     */
+    public void readBitString() throws IOException {
+
+        if (tag == ASN1Constants.TAG_C_BITSTRING) {
+            throw new ASN1Exception(
+                    "ASN.1 bitstring: constructed identifier at [" + tagOffset
+                            + "]. Not valid for DER.");
+        }
+
+        super.readBitString();
+
+        //check: unused bits values - MUST be 0
+        if (length > 1
+                && buffer[contentOffset] != 0
+                && (buffer[offset - 1] & UNUSED_BITS_MASK[buffer[contentOffset] - 1]) != 0) {
+            throw new ASN1Exception("ASN.1 bitstring: wrong content at ["
+                    + contentOffset
+                    + "]. DER requires zero unused bits in final octet.");
+        }
+    }
+
     /**
      * @see org.apache.harmony.security.asn1.BerInputStream#readBoolean()
      */
@@ -72,35 +100,7 @@ public final class DerInputStream extends BerInputStream {
         // check encoded content
         if (buffer[contentOffset] != 0 && buffer[contentOffset] != (byte) 0xFF) {
             throw new ASN1Exception("ASN.1 boolean: wrong content at ["
-					+ contentOffset + "]. DER allows only 0x00 or 0xFF values");
-        }
-    }
-
-    /**
-     * @see org.apache.harmony.security.asn1.BerInputStream#readBitString()
-     */
-    public void readBitString() throws IOException {
-
-        if (tag == ASN1Constants.TAG_C_BITSTRING) {
-            throw new ASN1Exception(
-                    "DER: ASN.1 Bitstring type MUST have primitive encoding");
-        }
-
-        super.readBitString();
-
-        //check: unused bits values: MUST be 0
-        if (length > 1 && buffer[contentOffset] != 0) {
-
-            byte finalOctet = buffer[offset - 1];
-            for (int i = 0; i < buffer[contentOffset]; i++) {
-                if ((finalOctet & 0x01) != 0) {
-                    throw new ASN1Exception(
-                            "DER: ASN.1 Bitstring wrong content at ["
-                                    + contentOffset
-                                    + "]. Unused bits in final octet MUST be zero");
-                }
-                finalOctet = (byte) (finalOctet >> 1);
-            }
+                    + contentOffset + "]. DER allows only 0x00 or 0xFF values");
         }
     }
 
