@@ -152,75 +152,24 @@ public class Proxy {
 	}
 
 	/**
-	 * The proxy type, includes <code>DIRECT</code>, <code>HTTP</code> and
-	 * <code>SOCKS</code>.
-	 */
-	// FIXME: This class needs java 5 Enum feature support. 
-	// The code will be modified when Enum feature is ready. 
-	public static final class Type {
-		/**
-		 * Direct connection. Connect without any proxy.
-		 */
-		public static final Type DIRECT = new Type("DIRECT");
+     * The proxy type, includes <code>DIRECT</code>, <code>HTTP</code> and
+     * <code>SOCKS</code>.
+     */
+    public enum Type {
+        /**
+         * Direct connection. Connect without any proxy.
+         */
+        DIRECT,
 
-		/**
-		 * HTTP type proxy. It's often used by protocol handlers such as HTTP,
-		 * HTTPS and FTP.
-		 */
-		public static final Type HTTP = new Type("HTTP");
+        /**
+         * HTTP type proxy. It's often used by protocol handlers such as HTTP,
+         * HTTPS and FTP.
+         */
+        HTTP,
 
-		/**
-		 * SOCKS type proxy.
-		 */
-		public static final Type SOCKS = new Type("SOCKS");
-
-		private String name;
-
-		/*
-		 * Build-in proxy list.
-		 */
-		private static final Type buildInProxyList[] = { DIRECT, HTTP, SOCKS };
-
-		Type(String name) {
-			this.name = name;
-		}
-
-		/**
-		 * Retrieve <code>Proxy</code> by <code>name</code>.
-		 * 
-		 * @throws NullPointerException
-		 *             if <code>name</code> is null.
-		 * @throws IllegalArgumentException
-		 *             if <code>name</code> is not a valid proxy type name.
-		 */
-		public static Proxy.Type valueOf(String name) {
-			if (null == name) {
-				throw new NullPointerException();
-			}
-			for (int i = 0; i < buildInProxyList.length; ++i) {
-				if (buildInProxyList[i].name.equals(name)) {
-					return buildInProxyList[i];
-				}
-			}
-			throw new IllegalArgumentException(name);
-		}
-
-		/**
-		 * Retrieve an array contains all available proxy types. The sequence of
-		 * proxy types is the same as their declaration.
-		 * 
-		 * @return an array contains all available proxy types.
-		 */
-		public static final Proxy.Type[] values() {
-			return buildInProxyList;
-		}
-
-		/**
-		 * @see java.lang.Object#toString()
-		 */
-		public String toString() {
-			return name;
-		}
-
-	}
+        /**
+         * SOCKS type proxy.
+         */
+        SOCKS
+    }
 }
