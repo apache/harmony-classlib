@@ -1244,8 +1244,7 @@ public final class Character implements Serializable, Comparable<Character> {
          * valid block names and values of the UnicodeBlock constant they map
          * to.
          */
-        //TODO Generify the field assignment when TreeMap is generified.
-        private static final SortedMap<String, UnicodeBlock> BLOCKS_BY_NAME = new TreeMap(String.CASE_INSENSITIVE_ORDER);
+        private static final SortedMap<String, UnicodeBlock> BLOCKS_BY_NAME = new TreeMap<String, UnicodeBlock>(String.CASE_INSENSITIVE_ORDER);
         
         static {
             BLOCKS_BY_NAME.put("SURROGATES_AREA", SURROGATES_AREA);
