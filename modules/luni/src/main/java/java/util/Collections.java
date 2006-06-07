@@ -1320,10 +1320,10 @@ public class Collections {
 	 *         is the -index - 1 where the element would be inserted
 	 * 
 	 * @exception ClassCastException
-	 *                when an element in the List or the seach element does not
+	 *                when an element in the List or the search element does not
 	 *                implement Comparable, or cannot be compared to each other
 	 */
-	public static int binarySearch(List list, Object object) {
+	public static <T> int binarySearch(List<? extends Comparable<? super T>> list, T object) {
 		if (list == null)
 			throw new NullPointerException();
 		Comparable key = (Comparable) object;
@@ -1371,13 +1371,13 @@ public class Collections {
 	 *                when an element in the list and the searched element
 	 *                cannot be compared to each other using the Comparator
 	 */
-	public static int binarySearch(List list, Object object,
-			Comparator comparator) {
+	public static <T> int binarySearch(List<? extends T> list, T object,
+			Comparator<? super T> comparator) {
 		if (comparator == null) {
-			return Collections.binarySearch(list, object);
+			return Collections.binarySearch((List<? extends Comparable<? super T>>)list, object);
 		} 
 		if (!(list instanceof RandomAccess)) {
-			ListIterator it = list.listIterator();
+			ListIterator<? extends T> it = list.listIterator();
 			while (it.hasNext()) {
 				int result;
 				if ((result = comparator.compare(object, it.next())) <= 0)
@@ -1604,13 +1604,14 @@ public class Collections {
 	/**
      * <p>
      * A Comparator which reverses the natural order of the elements. The
-     * <code>Comparator</code> that's returned is serializable.
+     * <code>Comparator</code> that's returned is {@link Serializable}.
      * </p>
      * 
      * @return A <code>Comparator</code> instance.
      * 
      * @see Comparator
      * @see Comparable
+     * @see Serializable
      */
     public static Comparator reverseOrder() {
         return new ReverseComparator();
@@ -1619,13 +1620,13 @@ public class Collections {
     /**
      * <p>
      * Returns a {@link Comparator} that reverses the order of the
-     * <code>Comparator</code> passed. If the <code>Comparatoer</code>
+     * <code>Comparator</code> passed. If the <code>Comparator</code>
      * passed is <code>null</code>, then this method is equivalent to
      * {@link #reverseOrder()}.
      * </p>
      * 
      * <p>
-     * The <code>Comparator</code> that's returned is serializable if the
+     * The <code>Comparator</code> that's returned is {@link Serializable} if the
      * <code>Comparator</code> passed is serializable or <code>null</code>.
      * </p>
      * 
@@ -1799,19 +1800,19 @@ public class Collections {
 	}
 
 	/**
-	 * Replaces all occurances of Object <code>obj</code> in <code>list</code>
+	 * Replaces all occurrences of Object <code>obj</code> in <code>list</code>
 	 * with <code>newObj</code>. If the <code>obj</code> is
-	 * <code>null</code>, then all occurances of <code>null</code> is
+	 * <code>null</code>, then all occurrences of <code>null</code> is
 	 * replaced with <code>newObj</code>.
 	 * 
 	 * @param list
 	 *            the List to modify
 	 * @param obj
-	 *            the Object to find and replace occurances of.
+	 *            the Object to find and replace occurrences of.
 	 * @param obj2
-	 *            the Object to replace all occurances of <code>obj</code> in
+	 *            the Object to replace all occurrences of <code>obj</code> in
 	 *            <code>list</code>
-	 * @return true, if at least one occurance of <code>obj</code> has been
+	 * @return true, if at least one occurrence of <code>obj</code> has been
 	 *         found in <code>list</code>
 	 * 
 	 * @exception UnsupportedOperationException
@@ -1829,7 +1830,7 @@ public class Collections {
 	}
 
 	/**
-	 * Rotates the elements in List <code>list</code> by the distance<code>dist</code>
+	 * Rotates the elements in List <code>list</code> by the distance <code>dist</code>
 	 * <p>
 	 * e.g. for a given list with elements [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
 	 * calling rotate(list, 3) or rotate(list, -7) would modify the list to look
@@ -1883,7 +1884,7 @@ public class Collections {
 
 	/**
 	 * Searches the <code>list</code> for <code>sublist</code> and answers
-	 * the beginning index of the first occurance.
+	 * the beginning index of the first occurrence.
 	 * <p>
 	 * -1 is returned if the <code>sublist</code> does not exist in
 	 * <code>list</code>
@@ -1892,7 +1893,7 @@ public class Collections {
 	 *            the List to search <code>sublist</code> in
 	 * @param sublist
 	 *            the List to search in <code>list</code>
-	 * @return the beginning index of the first occurance of
+	 * @return the beginning index of the first occurrence of
 	 *         <code>sublist</code> in <code>list</code>, or -1
 	 */
 	public static int indexOfSubList(List list, List sublist) {
@@ -1948,7 +1949,7 @@ public class Collections {
 
 	/**
 	 * Searches the <code>list</code> for <code>sublist</code> and answers
-	 * the beginning index of the last occurance.
+	 * the beginning index of the last occurrence.
 	 * <p>
 	 * -1 is returned if the <code>sublist</code> does not exist in
 	 * <code>list</code>
@@ -1957,7 +1958,7 @@ public class Collections {
 	 *            the List to search <code>sublist</code> in
 	 * @param sublist
 	 *            the List to search in <code>list</code>
-	 * @return the beginning index of the last occurance of <code>sublist</code>
+	 * @return the beginning index of the last occurrence of <code>sublist</code>
 	 *         in <code>list</code>, or -1
 	 */
 	public static int lastIndexOfSubList(List list, List sublist) {
@@ -2341,7 +2342,7 @@ public class Collections {
      * Adds all the specified elements to the specified collection
      * 
      * @param c the collection the elements are to be inserted into
-     * @param a the elemets to insert
+     * @param a the elements to insert
      * 
      * @return true if the collection changed during insertion
      * 
