@@ -20,6 +20,7 @@ import java.io.Serializable;
 /**
  * The unchecked exception will be thrown out when the parameter is incompatible
  * with the corresponding format specifier.
+ * @since 1.5
  */
 public class IllegalFormatConversionException extends IllegalFormatException
 		implements Serializable {
@@ -27,7 +28,7 @@ public class IllegalFormatConversionException extends IllegalFormatException
 
 	private char c;
 
-	private Class arg;
+	private Class<?> arg;
 
 	/**
 	 * Constructs an IllegalFormatConversionException with the class of the
@@ -38,7 +39,7 @@ public class IllegalFormatConversionException extends IllegalFormatException
 	 * @param arg
 	 *            The corresponding parameter.
 	 */
-	public IllegalFormatConversionException(char c, Class arg) {
+	public IllegalFormatConversionException(char c, Class<?> arg) {
 		this.c = c;
 		if (arg == null) {
 			throw new NullPointerException();
@@ -51,7 +52,7 @@ public class IllegalFormatConversionException extends IllegalFormatException
 	 * 
 	 * @return The class of the mismatched parameter.
 	 */
-	public Class getArgumentClass() {
+	public Class<?> getArgumentClass() {
 		return arg;
 	}
 
@@ -67,7 +68,7 @@ public class IllegalFormatConversionException extends IllegalFormatException
 	/**
 	 * Return the message string of the IllegalFormatConversionException.
 	 * 
-	 * @retun The message string of the IllegalFormatConversionException.
+	 * @return The message string of the IllegalFormatConversionException.
 	 */
 	public String getMessage() {
 		StringBuilder buffer = new StringBuilder();
