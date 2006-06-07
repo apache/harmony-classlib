@@ -5,12 +5,18 @@ Bundle-SymbolicName: org.apache.harmony.xml.xerces
 Bundle-Version: 2.8.0
 Bundle-ClassPath: resolver.jar,xercesImpl.jar,xml-apis.jar
 Eclipse-JREBundle: true
-Export-Package: javax.xml.parsers,
+Export-Package: javax.xml,
+ javax.xml.datatype,
+ javax.xml.namespace,
+ javax.xml.parsers,
  javax.xml.transform,
  javax.xml.transform.dom,
  javax.xml.transform.sax,
  javax.xml.transform.stream,
+ javax.xml.validation,
+ javax.xml.xpath,
  org.w3c.dom,
+ org.w3c.dom.bootstrap,
  org.w3c.dom.css,
  org.w3c.dom.events,
  org.w3c.dom.html,
