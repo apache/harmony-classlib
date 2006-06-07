@@ -91,7 +91,7 @@ public abstract class AbstractSelector extends Selector {
      * 
      * @return The cancelled key set.
      */
-    protected final Set cancelledKeys() {
+    protected final Set<SelectionKey> cancelledKeys() {
         return cancelledKeysSet;
     }
 
