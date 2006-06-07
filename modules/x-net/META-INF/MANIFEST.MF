@@ -15,6 +15,6 @@ Import-Package: java.io,
  javax.security.auth.x500,
  javax.security.cert,
  org.apache.harmony.security.fortress,
- org.apache.harmony.security.support;resolution:=optional;hy_usage=test
+ org.apache.harmony.security.tests.support;resolution:=optional;hy_usage=test
 Export-Package: javax.net,
  javax.net.ssl
