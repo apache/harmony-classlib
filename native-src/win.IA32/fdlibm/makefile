@@ -45,7 +45,7 @@ BUILDFILES = \
   dist/w_remainder.obj dist/w_scalb.obj dist/w_sinh.obj dist/w_sqrt.obj
 
 HYCFLAGS = -Oityb1 -W3 -Fd$(LIBPATH)hyfdlibm.pdb -D_IEEE_LIBM \
-	 -DHY_PLATFORM_DOUBLE_ORDER /I$(SHAREDSUB)
+	 -DHY_PLATFORM_DOUBLE_ORDER /I$(SHAREDSUB) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 
 .c.obj:
         $(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.c

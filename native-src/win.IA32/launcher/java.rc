@@ -46,4 +46,4 @@ BEGIN
 	END
 END
 
-100	ICON	DISCARDABLE	"../include/apache.ico"
+100	ICON	DISCARDABLE	"apache.ico"

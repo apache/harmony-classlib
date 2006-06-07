@@ -30,7 +30,7 @@ BUILDFILES = \
 
 # TOFIX $(LIBBASE).def should be a dependency on all libs
 VIRTFILES = $(LIBBASE).res
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 
 MDLLIBFILES = ..\lib\hypool.lib ..\lib\hycommon.lib

@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
-#include "hylib.h"
 #include "portnls.h"
 
 #if !defined(HINSTANCE_ERROR)

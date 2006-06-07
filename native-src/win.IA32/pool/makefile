@@ -21,5 +21,6 @@
 SHAREDSUB=$(SHARED)pool\# comment to avoid \ being treated as continuation
 LIBNAME=$(LIBPATH)hypool.lib
 BUILDFILES = $(SHAREDSUB)pool.obj $(SHAREDSUB)pool_cap.obj
+HYCFLAGS = $(HYCFLAGS) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 
 !include <..\rules.mak>

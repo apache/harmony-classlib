@@ -53,7 +53,6 @@
 /* End copy */
 
 #include "hyport.h"
-#include "hylib.h"
 #include "portnls.h"
 
 #define PLATFORM_DLL_EXTENSION ".so"

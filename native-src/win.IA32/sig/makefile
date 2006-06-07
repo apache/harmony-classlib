@@ -24,6 +24,7 @@ DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = $(SHAREDSUB)hysig_copyright.obj hysigwin.obj
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
+HYCFLAGS = $(HYCFLAGS) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 VIRTFILES = $(LIBBASE).res
 DLLBASE=0x13100000
 COMMENT=/comment:"Signal handling support DLL. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."

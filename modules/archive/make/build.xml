@@ -51,8 +51,15 @@
         <ant dir="make/common" target="build.jar" />
         <ant dir="make/common" target="copy.resources" />
     </target>
-
-
+	
+	<target name="copy.native.includes">
+		<copy todir="${hy.hdk}/include" overwrite="yes">
+			<fileset dir="${hy.archive.src.main.native}/include/shared">
+				<include name="zipsup.h" />
+			</fileset>
+		</copy>
+	</target>
+	
     <target name="test" depends="build">
         <ant dir="make/common" target="compile.tests" />
         <ant dir="make/common" target="run.tests" />
@@ -61,6 +68,14 @@
     <target name="clean">
         <delete dir="${hy.archive.bin.main}" />
         <delete dir="${hy.archive.bin.test}" />
+    	<antcall target="clean.native.includes" />
     </target>
 
+	<target name="clean.native.includes">
+		<delete failonerror="false">
+			<fileset dir="${hy.hdk}/include">
+				<include name="zipsup.h" />
+			</fileset>
+		</delete>
+	</target>
 </project>

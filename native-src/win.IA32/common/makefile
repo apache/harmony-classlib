@@ -26,6 +26,6 @@ BUILDFILES = \
 	locklbl.obj lock386.obj \
 	$(SHAREDSUB)utf8decode.obj $(SHAREDSUB)utf8encode.obj
 
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 
 !include <..\rules.mak>

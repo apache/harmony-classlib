@@ -27,7 +27,7 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYCFLAGS = \
   -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
   -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
-  $(VMDEBUG) /I..\include /I$(SHARED)include /I.
+  $(VMDEBUG) /I..\include /I$(SHARED)include /I. /I..\..\..\modules\archive\src\main\native\include\shared
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \

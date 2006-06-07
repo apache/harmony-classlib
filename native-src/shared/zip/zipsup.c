@@ -23,7 +23,6 @@
 
 #include "hyport.h"
 #include "zipsup.h"
-#include "hylib.h"
 #include "hyzipnls.h"
 
 #include "zlib.h"

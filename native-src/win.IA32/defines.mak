@@ -4,7 +4,8 @@ _WIN32_IE=0x0500
 SEHMAP = TRUE
 !include <win32.mak>
 
-LIBPATH=..\lib\# comment to avoid \ being treated as continuation
+#DEPLOY=..\..\..\deploy\# comment to avoid \ being treated as continuation
+LIBPATH=..\lib\# ditto
 EXEPATH=..\# ditto
 DLLPATH=..\# ditto
 SHARED=..\..\shared\# ditto
@@ -12,4 +13,4 @@ SHARED=..\..\shared\# ditto
 HYCFLAGS = \
   -Ogityb1 -WX -GF -Gs -MD -Zi -Zm400 \
   -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
-  $(VMDEBUG) /I..\include /I$(SHARED)include /I.
+  $(VMDEBUG) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I.

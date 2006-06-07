@@ -18,7 +18,8 @@
 
 include ../makefile.include
 
-CFLAGS += -fpic -DHYPORT_LIBRARY_DEFINE
+CFLAGS += -fpic -DHYPORT_LIBRARY_DEFINE \
+	-I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 
 BUILDFILES = \
 	$(SHAREDSUB)port_copyright.o hycpu.o $(SHAREDSUB)hyerror.o \

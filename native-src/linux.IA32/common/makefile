@@ -21,5 +21,6 @@ include ../makefile.include
 BUILDFILES = $(SHAREDSUB)libglob.o $(SHAREDSUB)iohelp.o \
 	$(SHAREDSUB)utf8encode.o $(SHAREDSUB)utf8decode.o
 LIBNAME = $(LIBPATH)libhycommon.a
+CFLAGS += -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 
 include ../rules.mk

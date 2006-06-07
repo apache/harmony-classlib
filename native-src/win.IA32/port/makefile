@@ -23,7 +23,7 @@ LIBBASE=hyprt
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
-HYCFLAGS = $(HYCFLAGS) -DHYPORT_LIBRARY_DEFINE /I$(SHAREDSUB)
+HYCFLAGS = $(HYCFLAGS) -DHYPORT_LIBRARY_DEFINE /I$(SHAREDSUB) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \

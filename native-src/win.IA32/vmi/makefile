@@ -21,7 +21,7 @@
 SHAREDSUB=$(SHARED)vmi\# comment to avoid \ being treated as continuation
 LIBBASE=vmi
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
-HYCFLAGS = $(HYCFLAGS) -DHYPORT_LIBRARY_DEFINE
+HYCFLAGS = $(HYCFLAGS) -DHYPORT_LIBRARY_DEFINE /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = $(SHAREDSUB)vmi_copyright.obj $(SHAREDSUB)vmi.obj

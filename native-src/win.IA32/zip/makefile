@@ -23,6 +23,6 @@ LIBBASE=hyzip
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = $(SHAREDSUB)zcpool.obj $(SHAREDSUB)zipalloc.obj \
 	$(SHAREDSUB)zipcache.obj $(SHAREDSUB)zipsup.obj
-HYCFLAGS = $(HYCFLAGS) /I..\zlib\dist
+HYCFLAGS = $(HYCFLAGS) /I..\zlib\dist /I..\..\..\modules\archive\src\main\native\include\shared
 
 !include <..\rules.mak>

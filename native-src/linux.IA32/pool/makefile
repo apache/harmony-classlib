@@ -18,6 +18,7 @@
 
 include ../makefile.include
 
+CFLAGS += -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 BUILDFILES = $(SHAREDSUB)pool.o $(SHAREDSUB)pool_cap.o
 LIBNAME = $(LIBPATH)libhypool.a
 

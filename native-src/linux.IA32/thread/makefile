@@ -18,7 +18,7 @@
 
 include ../makefile.include
 
-CFLAGS += -fpic
+CFLAGS += -fpic -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 
 BUILDFILES = \
 	$(SHAREDSUB)thread_copyright.o thrhelp.o thrspinlock.o hythread.o \

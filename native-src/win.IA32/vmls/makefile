@@ -24,6 +24,6 @@ LIBNAME=$(LIBPATH)hyvmls.lib
 BUILDFILES = \
 	$(SHAREDSUB)vmls.obj
 
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 
 !include <..\rules.mak>

@@ -18,7 +18,8 @@
 
 include ../makefile.include
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHARED)fdlibm
+CFLAGS += -fpic -I$(SHARED)common -I$(SHARED)fdlibm \
+	-I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 
 BUILDFILES = \
 	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \

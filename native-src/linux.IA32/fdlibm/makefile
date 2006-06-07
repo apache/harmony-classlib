@@ -45,6 +45,7 @@ BUILDFILES = \
 CFLAGS= -O0 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM \
         -DHY_PLATFORM_DOUBLE_ORDER \
 	-I../include -I. -I$(SHARED)include -I$(SHAREDSUB) \
+	-I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux \
 	-ffloat-store $(VMDEBUG)
 
 LIBNAME = $(LIBPATH)libhyfdlibm.a

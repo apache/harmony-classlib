@@ -18,7 +18,7 @@
 
 include ../makefile.include
 
-CFLAGS += -fpic
+CFLAGS += -fpic -I../../../modules/archive/src/main/native/include/shared
 
 BUILDFILES = \
 	$(SHAREDSUB)zlib_copyright.o dist/adler32.o dist/compress.o \
