@@ -155,7 +155,7 @@ final class DirtyTask extends TimerTask {
                         taskScheduler.schedule(retryTask, 2000);
                         if (dirtyDataMap.isEmpty()) {
                             this.cancel();
-                            //FIXME: taskScheduler.purge();
+                            taskScheduler.purge();
                             dirtyTaskTable.remove(period);
                         }
                     }
