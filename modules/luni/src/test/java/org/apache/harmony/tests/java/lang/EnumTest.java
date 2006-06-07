@@ -105,15 +105,18 @@ public class EnumTest extends TestCase {
         assertSame(moe, Sample.valueOf("MOE"));
         try {
             Sample.valueOf("non-existant");
-            fail("Expected IllegalArgumentException");
+            fail("Expected an exception");
         } catch (IllegalArgumentException e){
             // Expected
         }
         try {
             Sample.valueOf(null);
         } catch (NullPointerException e) {
-            // expected
+            // May be caused by some compilers' code
+        } catch (IllegalArgumentException e) {
+            // other compilers will throw this
         }
+
         
         Sample s = Enum.valueOf(Sample.class, "CURLY");
         assertSame(s, Sample.CURLY);
@@ -129,21 +132,27 @@ public class EnumTest extends TestCase {
         }
         try {
             Enum.valueOf((Class<Sample>)null, "a string");
-            fail("Expected NullPointerException");
+            fail("Expected an exception");
         } catch (NullPointerException e) {
-            // Expected
+            // May be caused by some compilers' code
+        } catch (IllegalArgumentException e) {
+            // other compilers will throw this
         }
         try {
             Enum.valueOf(Sample.class, null);
-            fail("Expected IllegalArgumentException");
+            fail("Expected an exception");
         } catch (NullPointerException e) {
-            // Expected
+            // May be caused by some compilers' code
+        } catch (IllegalArgumentException e) {
+            // other compilers will throw this
         }
         try {
             Enum.valueOf((Class<Sample>)null, (String)null);
-            fail("Expected IllegalArgumentException");
+            fail("Expected an exception");
         } catch (NullPointerException e) {
-            // Expected
+            // May be caused by some compilers' code
+        } catch (IllegalArgumentException e) {
+            // other compilers will throw this
         }
     }
 

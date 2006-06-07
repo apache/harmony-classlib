@@ -206,14 +206,16 @@ public class ProxyTest extends TestCase {
 	 * @tests java.net.Proxy.Type#valueOf(String)
 	 */
 	public void test_Type_valueOfLjava_lang_String_NullPointerException() {
-		// Some old RIs,which throw IllegalArgumentException, will fail 
-		// this test case. Latest RIs throw NullPointerException.
+		// Some old RIs,which throw IllegalArgumentException.
+        // Latest RIs throw NullPointerException.
 		try {
 			Proxy.Type.valueOf(null);
-			fail("should throw NullPointerException.");
-		} catch (NullPointerException e) {
-			// expected
-		}
+			fail("should throw an exception.");
+        } catch (NullPointerException e) {
+            // May be caused by some compilers' code
+        } catch (IllegalArgumentException e) {
+            // other compilers will throw this
+        }
 	}
 
 	/**
