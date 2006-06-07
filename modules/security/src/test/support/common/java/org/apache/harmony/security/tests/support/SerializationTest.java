@@ -281,7 +281,7 @@ public abstract class SerializationTest extends TestCase {
 
         }
 
-        Method m = s[0].getClass().getMethod("equals", Object.class);
+        Method m = s[0].getClass().getMethod("equals", new Class[] {Object.class});
 
         if (m.getDeclaringClass() != Object.class) {
             // one of classes overrides Object.equals(Object) method
