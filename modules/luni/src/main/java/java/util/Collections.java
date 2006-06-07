@@ -23,6 +23,7 @@ import java.lang.reflect.Array;
 
 /**
  * Collections contains static methods which operate on Collection classes.
+ * @since 1.2
  */
 public class Collections {
 
@@ -132,7 +133,7 @@ public class Collections {
 		}
 	}
 
-	public static final List EMPTY_LIST = new EmptyList();
+    public static final List EMPTY_LIST = new EmptyList();
 
 	public static final Set EMPTY_SET = new EmptySet();
 
@@ -2238,26 +2239,32 @@ public class Collections {
     }
 
     /**
-     * returns the immutable empty list
-     * 
+     * Returns a type-safe empty, immutable {@link List}.
+     * @return An empty {@link List}.
+     * @since 1.5
+     * @see #EMPTY_LIST
      */
-    public static List emptyList() {
+    public static final <T> List<T> emptyList() {
         return EMPTY_LIST;
     }
 
     /**
-     * returns the immutable empty set
-     * 
+     * Returns a type-safe empty, immutable {@link Set}.
+     * @return An empty {@link Set}.
+     * @since 1.5
+     * @see #EMPTY_SET
      */
-    public static Set emptySet() {
+    public static final <T> Set<T> emptySet() {
         return EMPTY_SET;
     }
 
     /**
-     * returns the immutable empty map
-     * 
+     * Returns a type-safe empty, immutable {@link Map}.
+     * @return An empty {@link Map}.
+     * @since 1.5
+     * @see #EMPTY_MAP
      */
-    public static Map emptyMap() {
+    public static final <K, V> Map<K, V> emptyMap() {
         return EMPTY_MAP;
     }
 
