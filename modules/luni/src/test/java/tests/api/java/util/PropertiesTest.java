@@ -23,6 +23,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.InvalidPropertiesFormatException;
 
 import tests.support.resource.Support_Resources;
 
@@ -327,6 +328,116 @@ public class PropertiesTest extends junit.framework.TestCase {
 	}
 
 	/**
+     * @tests java.util.Properties#loadFromXML(java.io.InputStream)
+     */
+    public void test_loadFromXMLLjava_io_InputStream() {
+        // Test for method void java.util.Properties.loadFromXML(java.io.InputStream)
+        Properties prop = null;
+        try {
+            InputStream is;
+            prop = new Properties();
+            prop.loadFromXML(is = new ByteArrayInputStream(writePropertiesXMLUTF_8()));
+            is.close();
+        } catch (Exception e) {
+            fail("Exception during load test : " + e.getMessage());
+        }
+        assertEquals("Failed to load correct properties", "value3", prop.getProperty(
+        "key3"));
+        assertEquals("Failed to load correct properties", "value1", prop.getProperty(
+        "key1"));
+                
+        try {
+            InputStream is;
+            prop = new Properties();
+            prop.loadFromXML(is = new ByteArrayInputStream(writePropertiesXMLISO_8859_1()));
+            is.close();
+        } catch (Exception e) {
+            fail("Exception during load test : " + e.getMessage());
+        }
+        assertEquals("Failed to load correct properties", "value2", prop.getProperty(
+        "key2"));
+        assertEquals("Failed to load correct properties", "value1", prop.getProperty(
+        "key1"));
+    }
+    
+    /**
+     * @tests java.util.Properties#storeToXML(java.io.OutputStream, java.lang.String, java.lang.String)
+     */
+    public void test_storeToXMLLjava_io_OutputStreamLjava_lang_StringLjava_lang_String() {
+        // Test for method void java.util.Properties.storeToXML(java.io.OutputStream,
+        // java.lang.String, java.lang.String)
+        Properties myProps = new Properties();
+        Properties myProps2 = new Properties();
+        Enumeration e;
+        String nextKey;
+
+        myProps.setProperty("key1", "value1");
+        myProps.setProperty("key2", "value2");
+        myProps.setProperty("key3", "value3");
+        myProps.setProperty("<a>key4</a>", "\"value4");
+        myProps.setProperty("key5   ", "<h>value5</h>");
+        myProps.setProperty("<a>key6</a>", "   <h>value6</h>   ");
+        myProps.setProperty("<comment>key7</comment>", "value7");
+        myProps.setProperty("  key8   ", "<comment>value8</comment>");
+        myProps.setProperty("&lt;key9&gt;", "\u0027value9");
+        myProps.setProperty("key10\"", "&lt;value10&gt;");
+        myProps.setProperty("&amp;key11&amp;", "value11");
+        myProps.setProperty("key12", "&amp;value12&amp;");
+        myProps.setProperty("<a>&amp;key13&lt;</a>", "&amp;&value13<b>&amp;</b>");
+        
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            
+            //store in UTF-8 encoding
+            myProps.storeToXML(out, "comment");
+            out.close();
+            ByteArrayInputStream in = new ByteArrayInputStream(out
+                    .toByteArray());
+            myProps2.loadFromXML(in);
+            in.close();
+        } catch (InvalidPropertiesFormatException ipfe) {
+            fail("InvalidPropertiesFormatException occurred reading file: "
+                    + ipfe.getMessage());
+        } catch (IOException ioe) {
+            fail("IOException occurred reading/writing file : "
+                    + ioe.getMessage());
+        }
+
+        e = myProps.propertyNames();
+        while (e.hasMoreElements()) {
+            nextKey = (String) e.nextElement();
+            assertTrue("Stored property list not equal to original", myProps2
+                    .getProperty(nextKey).equals(myProps.getProperty(nextKey)));
+        }
+
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            
+            //store in ISO-8859-1 encoding
+            myProps.storeToXML(out, "comment", "ISO-8859-1");
+            out.close();
+            ByteArrayInputStream in = new ByteArrayInputStream(out
+                    .toByteArray());
+            myProps2 = new Properties();
+            myProps2.loadFromXML(in);
+            in.close();
+        } catch (InvalidPropertiesFormatException ipfe) {
+            fail("InvalidPropertiesFormatException occurred reading file: "
+                    + ipfe.getMessage());
+        } catch (IOException ioe) {
+            fail("IOException occurred reading/writing file : "
+                    + ioe.getMessage());
+        }
+
+        e = myProps.propertyNames();
+        while (e.hasMoreElements()) {
+            nextKey = (String) e.nextElement();
+            assertTrue("Stored property list not equal to original", myProps2
+                    .getProperty(nextKey).equals(myProps.getProperty(nextKey)));
+        }        
+    }
+    
+    /**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
@@ -358,4 +469,38 @@ public class PropertiesTest extends junit.framework.TestCase {
 		ps.close();
 		return bout.toByteArray();
 	}
+    
+    protected byte[] writePropertiesXMLUTF_8() throws IOException {
+        PrintStream ps = null;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ps = new PrintStream(bout, true, "UTF-8");
+        ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        ps.println("<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">");
+        ps.println("<properties>");
+        ps.println("<comment>comment</comment>");
+        ps.println("<entry key=\"key4\">value4</entry>");
+        ps.println("<entry key=\"key3\">value3</entry>");
+        ps.println("<entry key=\"key2\">value2</entry>");
+        ps.println("<entry key=\"key1\"><!-- xml comment -->value1</entry>");
+        ps.println("</properties>");
+        ps.close();
+        return bout.toByteArray();
+    }
+    
+    protected byte[] writePropertiesXMLISO_8859_1() throws IOException {
+        PrintStream ps = null;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ps = new PrintStream(bout, true, "ISO-8859-1");
+        ps.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
+        ps.println("<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">");
+        ps.println("<properties>");
+        ps.println("<comment>comment</comment>");
+        ps.println("<entry key=\"key4\">value4</entry>");
+        ps.println("<entry key=\"key3\">value3</entry>");
+        ps.println("<entry key=\"key2\">value2</entry>");
+        ps.println("<entry key=\"key1\"><!-- xml comment -->value1</entry>");
+        ps.println("</properties>");
+        ps.close();
+        return bout.toByteArray();
+    }
 }

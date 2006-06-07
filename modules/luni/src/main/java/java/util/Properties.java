@@ -22,7 +22,22 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.security.AccessController;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import org.apache.harmony.luni.util.PriviAction;
 
@@ -38,6 +53,19 @@ public class Properties extends Hashtable<Object,Object> {
 	
 	private static final long serialVersionUID = 4112578634029874840L;
 
+    private DocumentBuilder builder = null;
+
+    private static final String PROP_DTD_NAME 
+            = "http://java.sun.com/dtd/properties.dtd";
+
+    private static final String PROP_DTD 
+            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "    <!ELEMENT properties (comment?, entry*) >"
+            + "    <!ATTLIST properties version CDATA #FIXED \"1.0\" >"
+            + "    <!ELEMENT comment (#PCDATA) >"
+            + "    <!ELEMENT entry (#PCDATA) >"
+            + "    <!ATTLIST entry key CDATA #REQUIRED >";
+	
 	/**
 	 * The default values for this Properties.
 	 */
@@ -463,4 +491,160 @@ public class Properties extends Hashtable<Object,Object> {
 		writer.flush();
 	}
 
+    public synchronized void loadFromXML(InputStream in) 
+            throws IOException, InvalidPropertiesFormatException {
+        if (in == null) {
+            throw new NullPointerException();
+        }
+        
+        if (builder == null) {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(true);
+            
+            try {
+                builder = factory.newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                throw new Error(e);
+            }
+            
+            builder.setErrorHandler(new ErrorHandler() {
+                public void warning(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+
+                public void error(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+
+                public void fatalError(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+            });
+            
+            builder.setEntityResolver(new EntityResolver() {
+                public InputSource resolveEntity(String publicId, String systemId)
+                        throws SAXException, IOException {
+                    if (systemId.equals(PROP_DTD_NAME)) {
+                        InputSource result = new InputSource(new StringReader(
+                                PROP_DTD));
+                        result.setSystemId(PROP_DTD_NAME);
+                        return result;
+                    }
+                    throw new SAXException(
+                            "Invalid DOCTYPE declaration: " + systemId);
+                }
+            });
+        }
+        
+        try {
+            Document doc = builder.parse(in);
+            NodeList entries = doc.getElementsByTagName("entry"); 
+            if (entries == null) {
+                return;
+            }
+            int entriesListLength = entries.getLength();
+            
+            for (int i = 0; i < entriesListLength; i++) {
+                Element entry = (Element) entries.item(i);
+                String key = entry.getAttribute("key");
+                String value = entry.getTextContent();
+                
+                /*
+                 * key != null & value != null
+                 * but key or(and) value can be empty String
+                 */
+                put(key, value);
+            }
+        } catch (IOException e) {
+            throw e;
+        } catch (SAXException e) {
+            throw new InvalidPropertiesFormatException(e);
+        }
+    }
+    
+    public void storeToXML(OutputStream os, String comment) 
+            throws IOException {
+        storeToXML(os, comment, "UTF-8");
+    }
+    
+    public synchronized void storeToXML(OutputStream os, String comment,
+             String encoding) throws IOException {
+        String encodingCanonicalName; 
+
+        if (os == null || encoding == null) {
+            throw new NullPointerException();
+        }
+        
+        if (lineSeparator == null) {
+            lineSeparator = (String) AccessController
+                    .doPrivileged(new PriviAction("line.separator"));
+        }
+        
+        /*
+         * Uncomment following code when java.nio.charset.Charset class will
+         * be implemented. We can write to XML file using encoding parameter 
+         * but note that some aliases for encodings are not supported 
+         * by the XML parser. Thus we have to know canonical name for encoding
+         * used to store data in XML since the XML parser must recognize 
+         * encoding name used to store data.
+         */
+        
+        //try {
+        //    encodingCanonicalName = Charset.forName(encoding).name();
+        //} catch (IllegalCharsetNameException e) {
+        //    System.out.println("Warning: encoding name " + encoding +" is illegal, " 
+        //            + "using UTF-8 as default encoding");
+        //    encodingCanonicalName = "UTF-8";
+        //} catch (UnsupportedCharsetException e) {
+        //    System.out.println("Warning: encoding " + encoding +" is not supported, " 
+        //            + "using UTF-8 as default encoding");
+        //    encodingCanonicalName = "UTF-8";
+        //}
+        
+        /*
+         * We use UTF-8 as default encoding. Delete the line of code that 
+         * follows this comment when java.nio.charset.Charset class will be 
+         * implemented.
+         */
+        encodingCanonicalName = "UTF-8";
+        
+        OutputStreamWriter osw = new OutputStreamWriter(os,
+                encodingCanonicalName);
+        StringBuffer buf = new StringBuffer(200);
+        buf.append("<?xml version=\"1.0\" encoding=\"" + encodingCanonicalName 
+                + "\"?>" + lineSeparator);
+        buf.append("<!DOCTYPE properties SYSTEM \"" + PROP_DTD_NAME 
+                + "\">" + lineSeparator);
+        buf.append("<properties>" + lineSeparator);
+        if (comment != null) {
+            buf.append("<comment>" + substitutePredefinedEntries(comment) 
+                    + "</comment>" + lineSeparator);
+        }
+        Iterator iter = entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            String keyValue = (String) entry.getKey();
+            String entryValue = (String) entry.getValue();
+            buf.append("<entry key=\"" + substitutePredefinedEntries(keyValue) 
+                    + "\">" + substitutePredefinedEntries(entryValue) 
+                    + "</entry>" + lineSeparator);            
+        }
+        buf.append("</properties>" + lineSeparator);
+    
+        osw.write(buf.toString());
+        osw.flush();
+    }
+    
+    private String substitutePredefinedEntries(String s) {
+        
+        /*
+         * substitution for predefined character entities
+         * to use them safely in XML
+         */
+        return s.replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll("\u0027", "&apos;")
+            .replaceAll("\"", "&quot;");
+    }	
 }
