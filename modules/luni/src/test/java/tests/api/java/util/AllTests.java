@@ -35,6 +35,7 @@ public class AllTests {
 		suite.addTestSuite(AbstractCollectionTest.class);
 		suite.addTestSuite(AbstractListTest.class);
 		suite.addTestSuite(AbstractMapTest.class);
+        suite.addTestSuite(AbstractQueueTest.class);
 		suite.addTestSuite(ArrayListTest.class);
 		suite.addTestSuite(ArraysTest.class);
 		suite.addTestSuite(BitSetTest.class);
