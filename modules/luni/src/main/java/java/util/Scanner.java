@@ -14,11 +14,20 @@
  */
 package java.util;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -43,40 +52,142 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
  */
 public final class Scanner implements Iterator<String> {
 
+    private Readable input;
+
+    private IOException lastIOException;
+
+    private boolean closed = false; // used by find and nextXXX operation
+
+    /**
+     * Constructs a scanner that uses File as its input. The default charset is
+     * applied when reading the file.
+     * 
+     * @param src
+     *            the file to be scanned
+     * @throws FileNotFoundException
+     *             if the specified file is not found
+     */
     public Scanner(File src) throws FileNotFoundException {
-        throw new NotYetImplementedException();
+        this(src, Charset.defaultCharset().name());
     }
 
+    /**
+     * Constructs a scanner that uses File as its input. The specified charset
+     * is applied when reading the file.
+     * 
+     * @param src
+     *            the file to be scanned
+     * @param charsetName
+     *            the name of the encoding type of the file
+     * @throws FileNotFoundException
+     *             if the specified file is not found
+     */
     public Scanner(File src, String charsetName) throws FileNotFoundException {
-        throw new NotYetImplementedException();
+        FileInputStream fis = new FileInputStream(src);
+        try {
+            input = new InputStreamReader(fis, charsetName);
+        } catch (UnsupportedEncodingException e) {
+            try {
+                fis.close();
+            } catch (IOException ioException) {
+                // ignore
+            }
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
+    /**
+     * Constructs a scanner that uses String as its input.
+     * 
+     * @param src
+     *            the string to be scanned
+     */
     public Scanner(String src) {
-        throw new NotYetImplementedException();
+        input = new StringReader(src);
     }
 
+    /**
+     * Constructs a scanner that uses InputStream as its input. The default
+     * charset is applied when decoding the input.
+     * 
+     * @param src
+     *            the input stream to be scanned
+     */
     public Scanner(InputStream src) {
-        throw new NotYetImplementedException();
+        this(src, Charset.defaultCharset().name());
     }
 
+    /**
+     * Constructs a scanner that uses InputStream as its input. The specified
+     * charset is applied when decoding the input.
+     * 
+     * @param src
+     *            the input stream to be scanned
+     * @param charsetName
+     *            the encoding type of the input stream
+     */
     public Scanner(InputStream src, String charsetName) {
-        throw new NotYetImplementedException();
+        try {
+            input = new InputStreamReader(src, charsetName);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
-    public Scanner(ReadableByteChannel src) {
-        throw new NotYetImplementedException();
-    }
-
+    /**
+     * Constructs a scanner that uses Readable as its input.
+     * 
+     * @param src
+     *            the Readable to be scanned
+     */
     public Scanner(Readable src) {
-        throw new NotYetImplementedException();
+        input = src;
     }
 
+    /**
+     * Constructs a scanner that uses ReadableByteChannel as its input. The
+     * default charset is applied when decoding the input.
+     * 
+     * @param src
+     *            the ReadableByteChannel to be scanned
+     */
+    public Scanner(ReadableByteChannel src) {
+        this(src, Charset.defaultCharset().name());
+    }
+
+    /**
+     * Constructs a scanner that uses ReadableByteChannel as its input. The
+     * specified charset is applied when decoding the input.
+     * 
+     * @param src
+     *            the ReadableByteChannel to be scanned
+     * @param charsetName
+     *            the encoding type of the content in the ReadableByteChannel
+     */
     public Scanner(ReadableByteChannel src, String charsetName) {
-        throw new NotYetImplementedException();
+        try {
+            input = new InputStreamReader(Channels.newInputStream(src),
+                    charsetName);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
+    /**
+     * Closes the underlying input if the input implements Closeable. If the
+     * scanner has been closed, this method will take no effect. The scanning
+     * operation after calling this method will throw IllegalStateException
+     * 
+     */
     public void close() {
-        throw new NotYetImplementedException();
+        if (input instanceof Closeable && !closed) {
+            try {
+                ((Closeable) input).close();
+            } catch (IOException e) {
+                lastIOException = e;
+            }
+        }
+        closed = true;
     }
 
     public Pattern delimiter() {
@@ -171,8 +282,14 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
+    /**
+     * returns the last IOException thrown when reading the underlying input. If
+     * no exception is thrown, return null.
+     * 
+     * @return the last IOException thrown
+     */
     public IOException ioException() {
-        throw new NotYetImplementedException();
+        return lastIOException;
     }
 
     public Locale locale() {
@@ -195,15 +312,15 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextBigDecimal() {
+    public BigDecimal nextBigDecimal() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextBigInteger() {
+    public BigInteger nextBigInteger() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextBigInteger(int radix) {
+    public BigInteger nextBigInteger(int radix) {
         throw new NotYetImplementedException();
     }
 
@@ -211,47 +328,47 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextByte() {
+    public byte nextByte() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextByte(int radix) {
+    public byte nextByte(int radix) {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextDouble() {
+    public double nextDouble() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextFloat() {
+    public float nextFloat() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextInt() {
+    public int nextInt() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextInt(int radix) {
+    public int nextInt(int radix) {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextLine() {
+    public String nextLine() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextLong() {
+    public long nextLong() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextLong(int radix) {
+    public long nextLong(int radix) {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextShort() {
+    public short nextShort() {
         throw new NotYetImplementedException();
     }
 
-    public boolean nextShort(int radix) {
+    public short nextShort(int radix) {
         throw new NotYetImplementedException();
     }
 
