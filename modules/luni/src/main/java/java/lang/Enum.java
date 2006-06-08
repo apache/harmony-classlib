@@ -25,7 +25,7 @@ import org.apache.harmony.luni.util.Msg;
 /**
  * TODO Enum doc
  */
-public class Enum<E extends Enum<E>> implements Serializable, Comparable<E> {
+public abstract class Enum<E extends Enum<E>> implements Serializable, Comparable<E> {
 
     private static final long serialVersionUID = 0L;
 
