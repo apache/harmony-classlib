@@ -175,8 +175,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
                 lastIndex += growSize;
             }
         } else if (location == 0) {
-            if (firstIndex == 0)
-                growAtFront(growSize);
+            growAtFront(growSize);
             firstIndex -= growSize;
         } else if (location == size) {
             if (lastIndex > array.length - growSize)
