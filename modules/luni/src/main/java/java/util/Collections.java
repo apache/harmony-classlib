@@ -1437,15 +1437,16 @@ public class Collections {
 	 *            the Collection to enumerate
 	 * @return an Enumeration
 	 */
-	public static Enumeration enumeration(final Collection collection) {
-		return new Enumeration() {
-			Iterator it = collection.iterator();
+	public static <T> Enumeration<T> enumeration(Collection<T> collection) {
+        final Collection<T> c = collection;
+		return new Enumeration<T>() {
+			Iterator<T> it = c.iterator();
 
 			public boolean hasMoreElements() {
 				return it.hasNext();
 			}
 
-			public Object nextElement() {
+			public T nextElement() {
 				return it.next();
 			}
 		};
@@ -1462,8 +1463,8 @@ public class Collections {
 	 * @exception UnsupportedOperationException
 	 *                when replacing an element in the List is not supported
 	 */
-	public static void fill(List list, Object object) {
-		ListIterator it = list.listIterator();
+	public static <T> void fill(List<? super T> list, T object) {
+        ListIterator it = list.listIterator();
 		while (it.hasNext()) {
 			it.next();
 			it.set(object);
@@ -1481,15 +1482,15 @@ public class Collections {
 	 *                when an element in the Collection does not implement
 	 *                Comparable or elements cannot be compared to each other
 	 */
-	public static Object max(Collection collection) {
-		Iterator it = collection.iterator();
-		Comparable max = (Comparable) it.next();
+	public static <T extends Object & Comparable<? super T>> T max(Collection<? extends T> collection) {       
+        Iterator<? extends T> it = collection.iterator();
+		T max = it.next();
 		while (it.hasNext()) {
-			Object next = it.next();
+			T next = it.next();
 			if (max.compareTo(next) < 0)
-				max = (Comparable) next;
+				max = next;
 		}
-		return max;
+		return (T)max;
 	}
 
 	/**
@@ -1506,11 +1507,11 @@ public class Collections {
 	 *                when elements in the Collection cannot be compared to each
 	 *                other using the Comparator
 	 */
-	public static Object max(Collection collection, Comparator comparator) {
-		Iterator it = collection.iterator();
-		Object max = it.next();
+	public static <T> T max(Collection<? extends T> collection, Comparator<? super T> comparator) {
+		Iterator<? extends T> it = collection.iterator();
+		T max = it.next();
 		while (it.hasNext()) {
-			Object next = it.next();
+			T next = it.next();
 			if (comparator.compare(max, next) < 0)
 				max = next;
 		}
@@ -2358,7 +2359,7 @@ public class Collections {
      *            contains one or more null elements and c doesn't support null
      *            elements
      */
-    public static boolean addAll(Collection c, Object[] a) {
+    public static <T> boolean addAll(Collection<? super T> c, T... a) {
         boolean modified = false;
         for (int i = 0; i < a.length; i++) {
             modified |= c.add(a[i]);
