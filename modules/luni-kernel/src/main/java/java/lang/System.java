@@ -556,7 +556,6 @@ public final class System {
 	 * @param var
 	 *            the name of the environment variable
 	 * @return the value of the specified environment variable
-	 * @deprecated Use System.getProperty()
 	 */
 	public static String getenv(String var) {
 		if (var == null) {
