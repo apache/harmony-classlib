@@ -40,13 +40,15 @@ public class AuthenticatorTest extends TestCase {
         } catch (IllegalArgumentException e) {
             // correct
         }
-        // Some old RIs,which throw IllegalArgumentException, will fail 
-		// this test case. Latest RIs throw NullPointerException.
+        // Some old RIs throw IllegalArgumentException 
+		// Latest RIs throw NullPointerException.
         try {
-            RequestorType rt = Authenticator.RequestorType.valueOf(null);
-            fail("Must throw NullPointerException");
+            Authenticator.RequestorType.valueOf(null);
+            fail("Must throw an exception");
         } catch (NullPointerException e) {
-            // correct
+            // May be caused by some compilers' code
+        } catch (IllegalArgumentException e) {
+            // other compilers will throw this
         }
     }
 
