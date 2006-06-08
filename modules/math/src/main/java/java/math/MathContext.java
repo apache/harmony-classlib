@@ -28,7 +28,7 @@ import java.io.Serializable;
 /**
  * @com.intel.drl.spec_ref
  */
-public class MathContext implements Serializable {
+public final class MathContext implements Serializable {
     
     /**
      * @com.intel.drl.spec_ref
