@@ -153,9 +153,9 @@ public class XMLEncoder extends Encoder {
             
             printBytes(tabCount, tag.toStringOnOpen());
             
-            Enumeration e = node.statements();
-            while(e.hasMoreElements()) {
-                Statement s = (Statement) e.nextElement();
+            Iterator e = node.statements();
+            while(e.hasNext()) {
+                Statement s = (Statement) e.next();
                 printVoidTag(++tabCount, s);
                 --tabCount;
             }
@@ -173,10 +173,10 @@ public class XMLEncoder extends Encoder {
             boolean isReferenced = node.getReferencesNumber() > 0;
             
             if(!isReferenced) {
-                Enumeration referencedExpressions = node.referencedExpressions();
-                while(referencedExpressions.hasMoreElements()) {
+                Iterator referencedExpressions = node.referencedExpressions();
+                while(referencedExpressions.hasNext()) {
                     Expression expr =
-                            (Expression) referencedExpressions.nextElement();
+                            (Expression) referencedExpressions.next();
                     
                     //System.out.println("expr.getMethodName() = "
                     //        + expr.getMethodName());
@@ -238,17 +238,17 @@ public class XMLEncoder extends Encoder {
                     --tabCount;
                 }
                 
-                Enumeration e1 = node.expressions();
-                while(e1.hasMoreElements()) {
-                    Expression e = (Expression) e1.nextElement();
+                Iterator i1 = node.expressions();
+                while(i1.hasNext()) {
+                    Expression e = (Expression) i1.next();
                     
                     printVoidTag(++tabCount, e);
                     --tabCount;
                 }
                 
-                Enumeration e2 = node.statements();
-                while(e2.hasMoreElements()) {
-                    Statement s = (Statement) e2.nextElement();
+                Iterator i2 = node.statements();
+                while(i2.hasNext()) {
+                    Statement s = (Statement) i2.next();
                     
                     printVoidTag(++tabCount, s);
                     --tabCount;

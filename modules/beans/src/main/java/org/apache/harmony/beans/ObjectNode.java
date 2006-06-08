@@ -22,9 +22,9 @@ package org.apache.harmony.beans;
 
 import java.beans.Expression;
 import java.beans.Statement;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Vector;
 
 /**
@@ -38,7 +38,7 @@ public class ObjectNode {
     private Object objectValue = null;
     private HashMap nodes;
     
-    private Vector statements = new Vector();
+    private HashSet statements = new HashSet();
     private Vector expressions = new Vector();
     private Vector referencedExpressions = new Vector();
     
@@ -123,33 +123,21 @@ public class ObjectNode {
     public void addExpression(Expression expression) {
         expressions.add(expression);
     }
-    
+
+    // FIXME should be replaced with HashSet
     public void addStatement(Statement statement) {
-        boolean found = false;
-        Iterator i = statements.iterator();
-        while(i.hasNext()) {
-            Statement s = (Statement) i.next();
-            
-            if(s.equals(statement)) {
-                found = true;
-                break;
-            }
-        }
-        
-        if(!found) {
-            statements.add(statement);
-        }
+        statements.add(statement);
     }
     
-    public Enumeration expressions() {
-        return expressions.elements();
+    public Iterator expressions() {
+        return expressions.iterator();
     }
     
-    public Enumeration referencedExpressions() {
-        return referencedExpressions.elements();
+    public Iterator referencedExpressions() {
+        return referencedExpressions.iterator();
     }
     
-    public Enumeration statements() {
-        return statements.elements();
+    public Iterator statements() {
+        return statements.iterator();
     }
 }
