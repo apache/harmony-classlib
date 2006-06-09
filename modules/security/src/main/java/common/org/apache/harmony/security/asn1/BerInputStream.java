@@ -804,14 +804,18 @@ public class BerInputStream {
      *
      * @throws IOException - if an I/O error occurs or the end of the stream is reached
      */
-    public void readString() throws IOException {
+    public void readString(ASN1StringType type) throws IOException {
 
         //FIXME check string content
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) == 0) {
+        if (tag == type.id) {
             readContent();
-        } else {
+        } else if (tag == type.constrId) {
             throw new ASN1Exception("Decoding constructed ASN.1 string "
                     + " type is not provided");
+        } else {
+            throw new ASN1Exception(
+                    "ASN.1 string type identifier is expected at [" + tagOffset
+                            + "], but encountered: " + Integer.toHexString(tag));
         }
     }
 

@@ -146,13 +146,13 @@ public final class DerInputStream extends BerInputStream {
     /**
      * @see org.apache.harmony.security.asn1.BerInputStream#readString()
      */
-    public void readString() throws IOException {
+    public void readString(ASN1StringType type) throws IOException {
 
-        if ((tag & ASN1Constants.PC_CONSTRUCTED) != 0) {
-            throw new ASN1Exception(
-                    "DER: ASN.1 string type MUST have primitive encoding");
+        if (tag == type.constrId) {
+            throw new ASN1Exception("ASN.1 string: constructed identifier at ["
+                    + tagOffset + "]. Not valid for DER.");
         }
-        super.readString();
+        super.readString(type);
     }
 
     /**

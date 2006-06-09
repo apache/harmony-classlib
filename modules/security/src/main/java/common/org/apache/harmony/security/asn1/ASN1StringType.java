@@ -101,14 +101,8 @@ public abstract class ASN1StringType extends ASN1Type {
     }
 
     public Object decode(BerInputStream in) throws IOException {
-        if (!checkTag(in.tag)) {
-            //FIXME message: what about constr tag?
-            throw new ASN1Exception("ASN.1 String is expected at ["
-                    + in.tagOffset + "]. Expected tag: "
-                    + Integer.toHexString(id) + " but encountered tag "
-                    + Integer.toHexString(in.tag));
-        }
-        in.readString();
+
+        in.readString(this);
         
         if (in.isVerify) {
             return null;
