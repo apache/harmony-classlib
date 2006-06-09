@@ -210,6 +210,8 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 * @see #write
 	 */
 	public void putNextEntry(ZipEntry ze) throws java.io.IOException {
+        if (currentEntry != null)
+            closeEntry();
 		if (ze.getMethod() == STORED
 				|| (compressMethod == STORED && ze.getMethod() == -1)) {
 			if (ze.crc == -1)
@@ -226,8 +228,6 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 		/* [MSG "K0059", "Stream is closed"] */
 		if (cDir == null)
 			throw new IOException(Msg.getString("K0059"));
-		if (currentEntry != null)
-			closeEntry();
 		if (entries.contains(ze.name))
 			/* [MSG "K0066", "Entry already exists: {0}"] */
 			throw new ZipException(Msg.getString("K0066", ze.name));
@@ -343,9 +343,9 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 		}
 
 		if (currentEntry == null) {
-			/* [MSG "K00ab", "No active entry"] */
-			throw new ZipException(Msg.getString("K00ab"));
-		}
+            /* [MSG "K00ab", "No active entry"] */
+            throw new ZipException(Msg.getString("K00ab"));
+        }
 
 		if (currentEntry.getMethod() == STORED)
 			out.write(buffer, off, nbytes);
