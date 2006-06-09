@@ -54,10 +54,6 @@ public class DirectoryString {
            ASN1StringType.UTF8STRING,
            ASN1StringType.BMPSTRING }) {
 
-        public Object getDecodedObject(BerInputStream in) {
-            return /*(String)*/ in.content;
-        }
-
         public int getIndex(java.lang.Object object) {
             return 1; // always code as ASN1 printableString
             //return 4; // always code as ASN1 utf8String
