@@ -658,7 +658,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		final int llSize = ll.size();
 		final int rllSize = reversedLinkedList.size();
 		try {
-			Collections.sort(null);
+                        Collections.sort((List)null);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
 		}
