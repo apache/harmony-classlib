@@ -32,13 +32,13 @@ import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.ServiceUnavailableException;
 
-import org.apache.harmony.util.logging.LogConst;
+//import org.apache.harmony.util.logging.LogConst;
 
 /**
  * This class implements the functionality of a simple DNS resolver.<br> 
@@ -299,10 +299,10 @@ public class Resolver implements Runnable {
             String workZone;
             Hashtable visitedServers = new Hashtable();
 
-            if (LogConst.DEBUG) {
-                ProviderMgr.logger.fine("Current question: " +
-                        curQuestion.toString());
-            }
+            //if (LogConst.DEBUG) {
+            //    ProviderMgr.logger.fine("Current question: " +
+            //            curQuestion.toString());
+            //}
             // look in cache
             if (curQuestion.getQType() != ProviderConstants.ANY_QTYPE &&
                     curQuestion.getQClass() != ProviderConstants.ANY_QCLASS)
@@ -315,10 +315,10 @@ public class Resolver implements Runnable {
                     }
                     // we don't need to query any servers since the information
                     // we want has been found in the local cache
-                    if (LogConst.DEBUG) {
-                        ProviderMgr.logger.fine(
-                                "Information was gathered from cache");
-                    }
+                    //if (LogConst.DEBUG) {
+                    //    ProviderMgr.logger.fine(
+                    //            "Information was gathered from cache");
+                    //}
                     continue;
                 }
             }
@@ -335,18 +335,18 @@ public class Resolver implements Runnable {
             } else {
                 workZone = ".";
             }
-            if (LogConst.DEBUG) {
-                ProviderMgr.logger.fine("Lookup: new workZone is " +
-                        "\"" + workZone + "\"");
-            }
+            //if (LogConst.DEBUG) {
+            //    ProviderMgr.logger.fine("Lookup: new workZone is " +
+            //            "\"" + workZone + "\"");
+            //}
             // construct request message
             try {
                 mesToSend = createMessageForSending(qName,
                         curQuestion.getQType(), curQuestion.getQClass());
-                if (LogConst.DEBUG) {
-                    ProviderMgr.logger.finest("Message to send:\n" +
-                            mesToSend.toString());
-                }
+                //if (LogConst.DEBUG) {
+                //    ProviderMgr.logger.finest("Message to send:\n" +
+                //            mesToSend.toString());
+                //}
 
             } catch (DomainProtocolException e) {
                 throw e;
@@ -379,10 +379,10 @@ public class Resolver implements Runnable {
                         // examine the report
                         if (report.completeAnswerWasReceived) {
                             // complete answer
-                            if (LogConst.DEBUG) {
-                                ProviderMgr.logger.fine(
-                                      "Lookup: a complete answer was received");
-                            }
+                            //if (LogConst.DEBUG) {
+                            //    ProviderMgr.logger.fine(
+                            //          "Lookup: a complete answer was received");
+                            //}
                             for (int k = 0; k < report.records.size(); k++) {
                                 ResourceRecord rec = (ResourceRecord)
                                         report.records.elementAt(k); 
@@ -397,9 +397,9 @@ public class Resolver implements Runnable {
                         }
                         else if (report.nameError) {
                             // name error
-                            if (LogConst.DEBUG) {                            
-                                ProviderMgr.logger.fine("Lookup: name error");
-                            }
+                            //if (LogConst.DEBUG) {                            
+                            //    ProviderMgr.logger.fine("Lookup: name error");
+                            //}
                             throw new NameNotFoundException("The name " + name +
                                     " has not been found");
                         }
@@ -407,10 +407,10 @@ public class Resolver implements Runnable {
                             // alias received
                             //QuestionRecord newQuestion = new QuestionRecord();
 
-                            if (LogConst.DEBUG) {                            
-                                ProviderMgr.logger.fine(
-                                        "Lookup: an alias was received");
-                            }                           
+                            //if (LogConst.DEBUG) {                            
+                            //    ProviderMgr.logger.fine(
+                            //            "Lookup: an alias was received");
+                            //}                           
                             qName = report.newName;
                             curQuestion.setQName(qName);
                             // look in cache
@@ -452,13 +452,13 @@ public class Resolver implements Runnable {
                             } catch (DomainProtocolException e) {
                                 throw e;
                             }
-                            if (LogConst.DEBUG) {                            
-                                ProviderMgr.logger.fine("Lookup: new name is " +
-                                        "\"" + qName + "\"");
-                                ProviderMgr.logger.fine(
-                                        "Lookup: new workZone is " +
-                                        "\"" + workZone + "\"");
-                            }
+                            //if (LogConst.DEBUG) {                            
+                            //    ProviderMgr.logger.fine("Lookup: new name is " +
+                            //            "\"" + qName + "\"");
+                            //    ProviderMgr.logger.fine(
+                            //            "Lookup: new workZone is " +
+                            //            "\"" + workZone + "\"");
+                            //}
                         }
                         else if (report.delegationArrived) {
                             // new delegation, probably need to query once again
@@ -466,10 +466,10 @@ public class Resolver implements Runnable {
                             int matchingCount = ProviderMgr.getMatchingCount(
                                     qName, workZone);
 
-                            if (LogConst.DEBUG) {                            
-                                ProviderMgr.logger.fine(
-                                        "Lookup: delegation arrived");
-                            }
+                            //if (LogConst.DEBUG) {                            
+                            //    ProviderMgr.logger.fine(
+                            //            "Lookup: delegation arrived");
+                            //}
                             for (int k = 0; k < report.delegationZones.size();
                                     k++)
                             {
@@ -488,10 +488,10 @@ public class Resolver implements Runnable {
                                 // better delegation was received
                                 workZone = (String)
                                         report.delegationZones.elementAt(k17);
-                                if (LogConst.DEBUG) {                            
-                                    ProviderMgr.logger.fine(
-                                         "Lookup: better delegation was found");
-                                }
+                                //if (LogConst.DEBUG) {                            
+                                //    ProviderMgr.logger.fine(
+                                //         "Lookup: better delegation was found");
+                                //}
                             }
                             else {
                                 // no better delegation
@@ -511,16 +511,16 @@ public class Resolver implements Runnable {
                         // desired host while querying master hosts of the
                         // current workZone.
                         // Let's make one step up to the root.
-                        if (LogConst.DEBUG) {                            
-                            ProviderMgr.logger.fine("Lookup: no idea");
-                        }
+                        //if (LogConst.DEBUG) {                            
+                        //    ProviderMgr.logger.fine("Lookup: no idea");
+                        //}
                         if (!workZone.equals(".")) {
                             workZone = ProviderMgr.getParentName(workZone);
-                            if (LogConst.DEBUG) {                            
-                                ProviderMgr.logger.fine(
-                                        "Lookup: new work zone is " +
-                                        "\"" + workZone + "\"");
-                            }
+                            //if (LogConst.DEBUG) {                            
+                            //    ProviderMgr.logger.fine(
+                            //            "Lookup: new work zone is " +
+                            //            "\"" + workZone + "\"");
+                            //}
                         }
                         else {
                             // give up
@@ -624,7 +624,7 @@ public class Resolver implements Runnable {
                     qClassArr[0] = rr.getRRClass();
                     break;
                 } else {
-                    ProviderMgr.logger.warning("Invalid SOA record");
+                    //ProviderMgr.logger.warning("Invalid SOA record");
                 }
             }
         }
@@ -642,10 +642,10 @@ public class Resolver implements Runnable {
                 int n;
 
                 try {
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine(
-                                "Initiating zone transfer, IP=" + ip);
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine(
+                    //            "Initiating zone transfer, IP=" + ip);
+                    //}
                     n = TransportMgr.sendReceiveTCP(ip,
                             ProviderConstants.DEFAULT_DNS_PORT,
                             outBuf, outLen, inBuf, IN_BUF_SIZE,
@@ -653,13 +653,13 @@ public class Resolver implements Runnable {
                     received = true;
                 } catch (SocketTimeoutException e) {
                     
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine("Socket timeout");
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine("Socket timeout");
+                    //}
                 } catch (DomainProtocolException e) {
                     // some problem was encountered
-                    ProviderMgr.logger.log(Level.WARNING,
-                            "Connection failure", e);
+                    //ProviderMgr.logger.log(Level.WARNING,
+                    //        "Connection failure", e);
                 }
                 if (received) {
                     receivedMes = new Message();
@@ -705,15 +705,15 @@ public class Resolver implements Runnable {
                         default:
                         }
                     } catch (DomainProtocolException e) {
-                        ProviderMgr.logger.log(Level.WARNING,
-                                "Error while parsing of DNS message", e);
+                        //ProviderMgr.logger.log(Level.WARNING,
+                        //        "Error while parsing of DNS message", e);
                     }    
                 } // if received
                 if (completeAnswer) {
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine(
-                                "list: Complete answer received");
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine(
+                    //            "list: Complete answer received");
+                    //}
                     break authServersLoop;
                 }
             } // address loop 
@@ -871,12 +871,12 @@ public class Resolver implements Runnable {
                 }
                 // send the message and receive the answer
                 try {
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine("Timeout is set to " +
-                                curTimeout);
-                        ProviderMgr.logger.fine("Querying server \"" +
-                                curServer + "\"");
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine("Timeout is set to " +
+                    //            curTimeout);
+                    //    ProviderMgr.logger.fine("Querying server \"" +
+                    //            curServer + "\"");
+                    //}
                     //timeBeforeSending = System.currentTimeMillis();
                     if (tcpOnly) {
                         TransportMgr.sendReceiveTCP(curServer.getIP(),
@@ -898,16 +898,16 @@ public class Resolver implements Runnable {
                     received = true;
                 } catch (SocketTimeoutException e) {
                     slist.updateEntry(workZone, curServer, SList.TIMEOUT);
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine("Socket timeout");
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine("Socket timeout");
+                    //}
                 } catch (DomainProtocolException e) {
                     // problems with receiving the message
                     // skipping this server
                     slist.updateEntry(workZone, curServer,
                             SList.NETWORK_FAILURE);
-                    ProviderMgr.logger.log(Level.WARNING,
-                            "Connection failure", e);
+                    //ProviderMgr.logger.log(Level.WARNING,
+                    //        "Connection failure", e);
                 }
                 // parse the message
                 if (received) {
@@ -921,21 +921,21 @@ public class Resolver implements Runnable {
                         idx = 0;
                         idx = Message.parseMessage(inBuf, idx, receivedMes);
 
-                        if (LogConst.DEBUG) {                            
-                            ProviderMgr.logger.finest("Received message:\n" +
-                                    receivedMes.toString());
-                        }
+                        //if (LogConst.DEBUG) {                            
+                        //    ProviderMgr.logger.finest("Received message:\n" +
+                        //            receivedMes.toString());
+                        //}
                         parsed = true;
                         // handle a truncation
                         if (receivedMes.isTc() && !tcpOnly) {
                             // The Message is truncated.
                             // Let's try to establish a TCP connection 
                             // and retransmit the message over that connection.
-                            if (LogConst.DEBUG) {                            
-                                ProviderMgr.logger.fine("Message is truncated");
-                                ProviderMgr.logger.fine("Trying to establish " +
-                                        "a connection over TCP");
-                            }
+                            //if (LogConst.DEBUG) {                            
+                            //    ProviderMgr.logger.fine("Message is truncated");
+                            //    ProviderMgr.logger.fine("Trying to establish " +
+                            //            "a connection over TCP");
+                            //}
                             try {
                                 Message receivedMesTcp;
                                 int idx2;
@@ -955,14 +955,14 @@ public class Resolver implements Runnable {
                                     idx = idx2;
                                 }
                             } catch (Exception e) {
-                                ProviderMgr.logger.log(Level.WARNING,
-                                        "Receiving a complete message" +
-                                        " over TCP failed", e);
-                                if (LogConst.DEBUG) {                            
-                                    ProviderMgr.logger.fine(
-                                            "Parsing the message " +
-                                            "previously received over UDP");
-                                }
+                                //ProviderMgr.logger.log(Level.WARNING,
+                                //        "Receiving a complete message" +
+                                //        " over TCP failed", e);
+                                //if (LogConst.DEBUG) {                            
+                                //    ProviderMgr.logger.fine(
+                                //            "Parsing the message " +
+                                //            "previously received over UDP");
+                                //}
                             }                                
                         }
                         // Is the message still truncated?
@@ -991,30 +991,30 @@ public class Resolver implements Runnable {
                             }
                         } else if (rCode == ProviderConstants.SERVER_FAILURE) {
                             // removing server from list
-                            ProviderMgr.logger.warning("Server failure. " +
-                                    errMsg);
+                            //ProviderMgr.logger.warning("Server failure. " +
+                            //        errMsg);
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
                             visitedServers.put(curServer, new Object());
                         } else if (rCode == ProviderConstants.FORMAT_ERROR) {
                             // removing server from list
-                            ProviderMgr.logger.warning("Format error. " +
-                                    errMsg);
+                            //ProviderMgr.logger.warning("Format error. " +
+                            //        errMsg);
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
                             visitedServers.put(curServer, new Object());
                         } else if (rCode == ProviderConstants.NAME_ERROR) {
-                            ProviderMgr.logger.warning("Name error. " +
-                                    errMsg);
+                            //ProviderMgr.logger.warning("Name error. " +
+                            //        errMsg);
                             if (receivedMes.isAA()) {
                                 slist.updateEntry(workZone, curServer,
                                         responseTime);
                                 visitedServers.put(curServer, new Object());
                                 correctAnswer = true;
-                                if (LogConst.DEBUG) {                            
-                                    ProviderMgr.logger.fine(
-                                            "Return name error to user");
-                                }
+                                //if (LogConst.DEBUG) {                            
+                                //    ProviderMgr.logger.fine(
+                                //            "Return name error to user");
+                                //}
                                 break;
                             } else {
                                 // This server is not authoritative server for
@@ -1023,21 +1023,21 @@ public class Resolver implements Runnable {
                                 slist.updateEntry(workZone, curServer,
                                         SList.SERVER_FAILURE);
                                 visitedServers.put(curServer, new Object());
-                                if (LogConst.DEBUG) {                            
-                                    ProviderMgr.logger.fine(
-                                            "Not authoritative answer. " +
-                                            "Skip it.");
-                                }
+                                //if (LogConst.DEBUG) {                            
+                                //    ProviderMgr.logger.fine(
+                                //            "Not authoritative answer. " +
+                                //            "Skip it.");
+                                //}
                             }
                         } else if (rCode == ProviderConstants.NOT_IMPLEMENTED) {
-                            ProviderMgr.logger.warning("Not implemented. " +
-                                    errMsg);
+                            //ProviderMgr.logger.warning("Not implemented. " +
+                            //        errMsg);
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
                             visitedServers.put(curServer, new Object());
                         } else if (rCode == ProviderConstants.REFUSED) {
-                            ProviderMgr.logger.warning("Refused. " +
-                                    errMsg);
+                            //ProviderMgr.logger.warning("Refused. " +
+                            //        errMsg);
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
                             visitedServers.put(curServer, new Object());
@@ -1045,12 +1045,12 @@ public class Resolver implements Runnable {
                     } catch (DomainProtocolException e) {
                         // removing this server from SLIST
                         slist.dropServer(workZone, curServer);
-                        ProviderMgr.logger.warning("Unknown error.");
+                        //ProviderMgr.logger.warning("Unknown error.");
                     } catch (IndexOutOfBoundsException e) {
                         // bad message received
                         slist.dropServer(workZone, curServer);
-                        ProviderMgr.logger.warning("Bad message received: " + 
-                                " IndexOutOfBoundsException.");
+                        //ProviderMgr.logger.warning("Bad message received: " + 
+                        //        " IndexOutOfBoundsException.");
                     }
                 }
                 queriedServers.add(curServer);
@@ -1127,18 +1127,18 @@ public class Resolver implements Runnable {
                     // records.
                     
                     report.records.addElement(curRec);
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine("Adding " +
-                                ProviderConstants.rrTypeNames[
-                                        curRec.getRRType()]);
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine("Adding " +
+                    //            ProviderConstants.rrTypeNames[
+                    //                    curRec.getRRType()]);
+                    //}
                     if (curRec.getRRType() == ProviderConstants.CNAME_TYPE) {
                         report.aliasInfoWasReceived = true;
                         report.newName = (String) curRec.getRData();
-                        if (LogConst.DEBUG) {                            
-                            ProviderMgr.logger.fine("Alias \"" +
-                                    report.newName + "\" was received");
-                        }
+                        //if (LogConst.DEBUG) {                            
+                        //    ProviderMgr.logger.fine("Alias \"" +
+                        //            report.newName + "\" was received");
+                        //}
                     }
                     else {
                         // XXX have we received a complete set of records?
@@ -1154,11 +1154,11 @@ public class Resolver implements Runnable {
                     // We will treat this as a complete answer.  
 
                     report.records.addElement(curRec);
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine("Adding " +
-                                ProviderConstants.rrTypeNames[
-                                        curRec.getRRType()]);
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine("Adding " +
+                    //            ProviderConstants.rrTypeNames[
+                    //                    curRec.getRRType()]);
+                    //}
                     report.completeAnswerWasReceived = true;
                 }
                 else if (curRec.getRRType() == ProviderConstants.CNAME_TYPE &&
@@ -1181,10 +1181,10 @@ public class Resolver implements Runnable {
                     report.aliasInfoWasReceived = true;
                     report.newName = (String) curRec.getRData();
                     report.extraRecords.addElement(curRec);
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine("Alias \"" + report.newName +
-                                "\" was received");
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine("Alias \"" + report.newName +
+                    //            "\" was received");
+                    //}
                     // if we find the one of desired records in the
                     // current answer then we will treat the answer as complete
                     while (answerRRs2.hasMoreElements()) {
@@ -1195,21 +1195,21 @@ public class Resolver implements Runnable {
                         ResourceRecord tmpRec = (ResourceRecord)
                                 answerRRs2.nextElement();
 
-                        if (LogConst.DEBUG) {                            
-                            ProviderMgr.logger.fine(
-                                    "Look for an answer in ANSWER section");
-                        }
+                        //if (LogConst.DEBUG) {                            
+                        //    ProviderMgr.logger.fine(
+                        //            "Look for an answer in ANSWER section");
+                        //}
                         if (tmpRec.getRRType() == question.getQType() &&
                                 ProviderMgr.namesAreEqual(
                                         tmpRec.getName(), report.newName))
                         {
                             // the answer is founded in ANSWER section 
                             report.records.addElement(tmpRec);
-                            if (LogConst.DEBUG) {                                
-                                ProviderMgr.logger.fine("Adding " +
-                                        ProviderConstants.rrTypeNames[
-                                                tmpRec.getRRType()]);
-                            }
+                            //if (LogConst.DEBUG) {                                
+                            //    ProviderMgr.logger.fine("Adding " +
+                            //            ProviderConstants.rrTypeNames[
+                            //                    tmpRec.getRRType()]);
+                            //}
                             report.completeAnswerWasReceived = true;
                         }
                     }
@@ -1220,29 +1220,29 @@ public class Resolver implements Runnable {
                         ResourceRecord tmpRec = (ResourceRecord)
                                 additionalRRs2.nextElement();
 
-                        if (LogConst.DEBUG) {                            
-                            ProviderMgr.logger.fine("Look for an answer in " +
-                                    "ADDITIONAL section");
-                        }
+                        //if (LogConst.DEBUG) {                            
+                        //    ProviderMgr.logger.fine("Look for an answer in " +
+                        //            "ADDITIONAL section");
+                        //}
                         if (tmpRec.getRRType() == question.getQType() &&
                                 ProviderMgr.namesAreEqual(tmpRec.getName(),
                                         report.newName))
                         {
                             // the answer is founded in ADDITIONAL section 
                             report.records.addElement(tmpRec);
-                            if (LogConst.DEBUG) {                            
-                                ProviderMgr.logger.fine("Adding " +
-                                        ProviderConstants.rrTypeNames[
-                                                tmpRec.getRRType()]);
-                            }
+                            //if (LogConst.DEBUG) {                            
+                            //    ProviderMgr.logger.fine("Adding " +
+                            //            ProviderConstants.rrTypeNames[
+                            //                    tmpRec.getRRType()]);
+                            //}
                             report.completeAnswerWasReceived = true;
                         }
                     }
-                    if (report.completeAnswerWasReceived) {
-                        if (LogConst.DEBUG) {                            
-                            ProviderMgr.logger.fine("Complete answer received");
-                        }
-                    }
+                    //if (report.completeAnswerWasReceived) {
+                    //    if (LogConst.DEBUG) {                            
+                    //        ProviderMgr.logger.fine("Complete answer received");
+                    //    }
+                    //}
                 }
                 else {
                     // We have received some extra records. Let's save it for
@@ -1254,18 +1254,18 @@ public class Resolver implements Runnable {
                         report.completeAnswerWasReceived = true;
                     }
                     report.extraRecords.addElement(curRec);
-                    if (LogConst.DEBUG) {                            
-                        ProviderMgr.logger.fine("Adding additional record " +
-                                ProviderConstants.rrTypeNames[
-                                        curRec.getRRType()]);
-                    }
+                    //if (LogConst.DEBUG) {                            
+                    //    ProviderMgr.logger.fine("Adding additional record " +
+                    //            ProviderConstants.rrTypeNames[
+                    //                    curRec.getRRType()]);
+                    //}
                 }
             } else {
                 // The record from another DNS class arrived. Just ignore it.
-                if (LogConst.DEBUG) {                            
-                    ProviderMgr.logger.fine("Ignore records from DNS class " +
-                            curRec.getRRClass());
-                }
+                //if (LogConst.DEBUG) {                            
+                //    ProviderMgr.logger.fine("Ignore records from DNS class " +
+                //            curRec.getRRClass());
+                //}
             }
         }
 
@@ -1317,10 +1317,10 @@ public class Resolver implements Runnable {
                                 curRec.getRRClass());
                     }
                 }
-                if (LogConst.DEBUG) {                            
-                    ProviderMgr.logger.fine("Delegation \"" + server +
-                            "\" arrived");
-                }
+                //if (LogConst.DEBUG) {                            
+                //    ProviderMgr.logger.fine("Delegation \"" + server +
+                //            "\" arrived");
+                //}
             } // end of NS type analysis
         } // end of authority section analysis
 
@@ -1331,10 +1331,10 @@ public class Resolver implements Runnable {
                     additionalRRs.nextElement();
 
             report.extraRecords.addElement(addRec);
-            if (LogConst.DEBUG) {                            
-                ProviderMgr.logger.fine("Adding additional record " +
-                        ProviderConstants.rrTypeNames[addRec.getRRType()]);
-            }
+            //if (LogConst.DEBUG) {                            
+            //    ProviderMgr.logger.fine("Adding additional record " +
+            //            ProviderConstants.rrTypeNames[addRec.getRRType()]);
+            //}
         }
 
         // Fixing RRSet TTL issue.
@@ -1476,10 +1476,10 @@ public class Resolver implements Runnable {
             hostnamesToResolve.addElement(newEntry);
             // starting new thread that should make further updates by itself
             newThread = new Thread(this);
-            if (LogConst.DEBUG) {                            
-                ProviderMgr.logger.fine("Starting new resolver thread," +
-                        " target hostname: " + hostname);
-            }
+            //if (LogConst.DEBUG) {                            
+            //    ProviderMgr.logger.fine("Starting new resolver thread," +
+            //            " target hostname: " + hostname);
+            //}
             newThread.start();
         }
     }
@@ -1503,8 +1503,8 @@ public class Resolver implements Runnable {
                 entryToProcess.thread = Thread.currentThread();
                 resolverThreads.addElement(entryToProcess);
             } else {
-                ProviderMgr.logger.warning(
-                        "Resolver thread: no host name to resolve");
+                //ProviderMgr.logger.warning(
+                //        "Resolver thread: no host name to resolve");
                 return;
             }
         }

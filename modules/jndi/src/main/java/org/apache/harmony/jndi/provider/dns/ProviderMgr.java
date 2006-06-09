@@ -23,7 +23,7 @@
 package org.apache.harmony.jndi.provider.dns;
 
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 /**
  * Contains some useful routines that are used in other classes.
@@ -40,8 +40,8 @@ public class ProviderMgr {
 
     static final boolean CHECK_NAMES = false;
 
-    static final Logger logger =
-            Logger.getLogger(ProviderConstants.LOGGER_NAME);
+    //static final Logger logger =
+    //        Logger.getLogger(ProviderConstants.LOGGER_NAME);
 
     /**
      * Parses the given domain name and converts it into

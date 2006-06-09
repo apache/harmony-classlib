@@ -32,7 +32,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.nio.channels.IllegalBlockingModeException;
 
 /**
  * Contains service methods that are used for transporting DNS messages from
@@ -94,7 +93,7 @@ public class TransportMgr {
             dSocket.send(outPacket);
             inPacket = new DatagramPacket(inBuf, inBufLen, srvAddr, serverPort);
             dSocket.receive(inPacket);
-        } catch (IllegalBlockingModeException e) {
+        } catch (IllegalStateException e) {
             throw new DomainProtocolException(
                     "Error while querying DNS server", e);
         } catch (SocketTimeoutException e) {
@@ -180,7 +179,7 @@ public class TransportMgr {
                 throw new DomainProtocolException(
                         "Error while receiving message over TCP");
             }
-        } catch (IllegalBlockingModeException e) {
+        } catch (IllegalStateException e) {
             throw new DomainProtocolException(
                     "Error while querying DNS server", e);
         } catch (SocketTimeoutException e) {

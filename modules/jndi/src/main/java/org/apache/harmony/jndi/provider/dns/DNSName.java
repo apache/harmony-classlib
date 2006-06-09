@@ -24,7 +24,7 @@ package org.apache.harmony.jndi.provider.dns;
 
 import java.util.Enumeration;
 import java.util.Vector;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
 
@@ -248,7 +248,7 @@ public class DNSName implements Name, Cloneable {
                 k = this.compareTo(name);
             } catch (ClassCastException e) {
                 // impossible case
-                ProviderMgr.logger.log(Level.SEVERE, "impossible case", e);
+                //ProviderMgr.logger.log(Level.SEVERE, "impossible case", e);
             }
         }
         else if (len1 > len2) {
@@ -285,7 +285,7 @@ public class DNSName implements Name, Cloneable {
                 k = this.compareTo(name);
             } catch (ClassCastException e) {
                 // impossible case
-                ProviderMgr.logger.log(Level.SEVERE, "impossible error", e);
+                // ProviderMgr.logger.log(Level.SEVERE, "impossible error", e);
             }
         }
         else if (len1 > len2) {

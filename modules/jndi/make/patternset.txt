@@ -19,4 +19,3 @@ javax/naming/ldap/*
 javax/naming/spi/*
 
 org/apache/harmony/jndi/**
-org/apache/harmony/util/logging/LogConst.*

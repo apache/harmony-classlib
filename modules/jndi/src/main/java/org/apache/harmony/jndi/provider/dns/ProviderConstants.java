@@ -120,8 +120,8 @@ public class ProviderConstants {
     
     public static DNSName ROOT_ZONE_NAME_OBJ = null;
     
-    public static final String LOGGER_NAME =
-            "org.apache.harmony.jndi.provider.dns";
+    // public static final String LOGGER_NAME =
+    //        "org.apache.harmony.jndi.provider.dns";
 
     
     static {
