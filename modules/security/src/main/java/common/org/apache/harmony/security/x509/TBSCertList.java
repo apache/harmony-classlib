@@ -351,16 +351,7 @@ public class TBSCertList {
             Name.ASN1, // issuer
             Time.ASN1, // thisUpdate
             Time.ASN1, // nextUpdate
-            new ASN1SequenceOf(RevokedCertificate.ASN1) { // revokedCertificates
-                public Object getDecodedObject(BerInputStream in)
-                        throws IOException {
-                    return in.content;
-                }
-
-                public Collection getValues(Object object) {
-                    return (Collection) object;
-                }
-            },
+            new ASN1SequenceOf(RevokedCertificate.ASN1), // revokedCertificates
             new ASN1Explicit(0, Extensions.ASN1) // crlExtensions
                 }) {
         {
