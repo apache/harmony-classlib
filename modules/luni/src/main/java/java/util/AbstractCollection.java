@@ -72,7 +72,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 * @see java.util.Collection#clear()
 	 */
 	public void clear() {
-		Iterator it = iterator();
+		Iterator<E> it = iterator();
 		while (it.hasNext()) {
 			it.next();
 			it.remove();
@@ -88,7 +88,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *         false otherwise
 	 */
 	public boolean contains(Object object) {
-		Iterator it = iterator();
+		Iterator<E> it = iterator();
 		if (object != null) {
 			while (it.hasNext())
 				if (object.equals(it.next()))
@@ -110,7 +110,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *         this Collection, false otherwise
 	 */
 	public boolean containsAll(Collection<?> collection) {
-		Iterator it = collection.iterator();
+		Iterator<?> it = collection.iterator();
 		while (it.hasNext())
 			if (!contains(it.next()))
 				return false;
@@ -148,7 +148,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *                when removing from this Collection is not supported
 	 */
 	public boolean remove(Object object) {
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		if (object != null) {
 			while (it.hasNext()) {
 				if (object.equals(it.next())) {
@@ -180,7 +180,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 */
 	public boolean removeAll(Collection<?> collection) {
 		boolean result = false;
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		while (it.hasNext()) {
 			if (collection.contains(it.next())) {
 				it.remove();
@@ -203,7 +203,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 */
 	public boolean retainAll(Collection<?> collection) {
 		boolean result = false;
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		while (it.hasNext()) {
 			if (!collection.contains(it.next())) {
 				it.remove();
@@ -227,7 +227,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 */
 	public Object[] toArray() {
 		int size = size(), index = 0;
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		Object[] array = new Object[size];
 		while (index < size)
 			array[index++] = it.next();
@@ -251,13 +251,16 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 */
 	public <T> T[] toArray(T[] contents) {
 		int size = size(), index = 0;
-		if (size > contents.length)
-			contents = (T[]) Array.newInstance(contents.getClass()
-					.getComponentType(), size);
-		for (E entry: this)
+		if (size > contents.length) {
+            Class<?> ct = contents.getClass().getComponentType();
+			contents = (T[])Array.newInstance(ct, size);
+        }
+		for (E entry: this) {
 			contents[index++] = (T)entry;
-		if (index < contents.length)
+        }
+		if (index < contents.length) {
 			contents[index] = null;
+        }
 		return contents;
 	}
 
@@ -272,7 +275,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
 		StringBuilder buffer = new StringBuilder(size() * 16);
 		buffer.append('[');
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		while (it.hasNext()) {
 			Object next = it.next();
 			if (next != this) {

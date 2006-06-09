@@ -46,7 +46,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 		if (this == object)
 			return true;
 		if (object instanceof Set) {
-			Set s = (Set) object;
+			Set<?> s = (Set) object;
 			return size() == s.size() && containsAll(s);
 		}
 		return false;
@@ -62,7 +62,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 	 */
 	public int hashCode() {
 		int result = 0;
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		while (it.hasNext()) {
 			Object next = it.next();
 			result += next == null ? 0 : next.hashCode();
@@ -84,7 +84,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 	public boolean removeAll(Collection<?> collection) {
 		boolean result = false;
 		if (size() <= collection.size()) {
-			Iterator it = iterator();
+			Iterator<?> it = iterator();
 			while (it.hasNext()) {
 				if (collection.contains(it.next())) {
 					it.remove();
@@ -92,7 +92,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 				}
 			}
 		} else {
-			Iterator it = collection.iterator();
+			Iterator<?> it = collection.iterator();
 			while (it.hasNext())
 				result = remove(it.next()) || result;
 		}

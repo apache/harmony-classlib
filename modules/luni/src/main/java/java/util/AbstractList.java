@@ -438,11 +438,11 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 		if (this == object)
 			return true;
 		if (object instanceof List) {
-			List list = (List) object;
+			List<?> list = (List) object;
 			if (list.size() != size())
 				return false;
 
-			Iterator it1 = iterator(), it2 = list.iterator();
+			Iterator<?> it1 = iterator(), it2 = list.iterator();
 			while (it1.hasNext()) {
 				Object e1 = it1.next(), e2 = it2.next();
 				if (!(e1 == null ? e2 == null : e1.equals(e2)))
@@ -477,7 +477,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 	 */
 	public int hashCode() {
 		int result = 1;
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		while (it.hasNext()) {
 			Object object = it.next();
 			result = (31 * result) + (object == null ? 0 : object.hashCode());
@@ -495,7 +495,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 	 * @return the index of the first occurrence of the object
 	 */
 	public int indexOf(Object object) {
-		ListIterator it = listIterator();
+		ListIterator<?> it = listIterator();
 		if (object != null) {
 			while (it.hasNext())
 				if (object.equals(it.next()))
@@ -531,7 +531,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 	 * @return the index of the last occurrence of the object
 	 */
 	public int lastIndexOf(Object object) {
-		ListIterator it = listIterator(size());
+		ListIterator<?> it = listIterator(size());
 		if (object != null) {
 			while (it.hasPrevious())
 				if (object.equals(it.previous()))
@@ -609,7 +609,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 	 *                when <code>start < 0
 	 */
 	protected void removeRange(int start, int end) {
-		Iterator it = listIterator(start);
+		Iterator<?> it = listIterator(start);
 		for (int i = start; i < end; i++) {
 			it.next();
 			it.remove();

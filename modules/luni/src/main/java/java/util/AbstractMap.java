@@ -56,16 +56,16 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * @return true if <code>key</code> is a key of this Map, false otherwise
      */
     public boolean containsKey(Object key) {
-        Iterator it = entrySet().iterator();
+        Iterator<Map.Entry<K, V>> it = entrySet().iterator();
         if (key != null) {
             while (it.hasNext()) {
-                if (key.equals(((Map.Entry) it.next()).getKey())) {
+                if (key.equals(it.next().getKey())) {
                     return true;
                 }
             }
         } else {
             while (it.hasNext()) {
-                if (((Map.Entry) it.next()).getKey() == null) {
+                if (it.next().getKey() == null) {
                     return true;
                 }
             }
@@ -82,16 +82,16 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      *         otherwise
      */
     public boolean containsValue(Object value) {
-        Iterator it = entrySet().iterator();
+        Iterator<Map.Entry<K, V>> it = entrySet().iterator();
         if (value != null) {
             while (it.hasNext()) {
-                if (value.equals(((Map.Entry) it.next()).getValue())) {
+                if (value.equals(it.next().getValue())) {
                     return true;
                 }
             }
         } else {
             while (it.hasNext()) {
-                if (((Map.Entry) it.next()).getValue() == null) {
+                if (it.next().getValue() == null) {
                     return true;
                 }
             }
@@ -104,7 +104,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * 
      * @see java.util.Map#entrySet()
      */
-    abstract public Set<Map.Entry<K, V>> entrySet();
+    public abstract Set<Map.Entry<K, V>> entrySet();
 
     /**
      * Compares the specified object to this Map and answer if they are equal.
@@ -123,13 +123,13 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
             return true;
         }
         if (object instanceof Map) {
-            Map map = (Map) object;
+            Map<?, ?> map = (Map) object;
             if (size() != map.size()) {
                 return false;
             }
 
-            Set objectSet = map.entrySet();
-            Iterator it = entrySet().iterator();
+            Set<?> objectSet = map.entrySet();
+            Iterator<Map.Entry<K, V>> it = entrySet().iterator();
             while (it.hasNext()) {
                 if (!objectSet.contains(it.next())) {
                     return false;
@@ -177,7 +177,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      */
     public int hashCode() {
         int result = 0;
-        Iterator it = entrySet().iterator();
+        Iterator<Map.Entry<K, V>> it = entrySet().iterator();
         while (it.hasNext()) {
             result += it.next().hashCode();
         }
@@ -338,9 +338,9 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
         StringBuilder buffer = new StringBuilder(size() * 28);
         buffer.append('{');
-        Iterator it = entrySet().iterator();
+        Iterator<Map.Entry<K, V>> it = entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
+            Map.Entry<K, V> entry = it.next();
             Object key = entry.getKey();
             if (key != this) {
                 buffer.append(key);

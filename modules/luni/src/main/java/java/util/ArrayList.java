@@ -36,7 +36,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 
 	transient private int firstIndex, lastIndex;
 
-	transient private Object[] array;
+	transient private E[] array;
 
 	/**
 	 * Constructs a new instance of ArrayList with zero capacity.
@@ -54,7 +54,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	public ArrayList(int capacity) {
 		firstIndex = lastIndex = 0;
 		try {
-			array = new Object[capacity];
+			array = newElementArray(capacity);
 		} catch (NegativeArraySizeException e) {
 			throw new IllegalArgumentException();
 		}
@@ -72,9 +72,15 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	public ArrayList(Collection<? extends E> collection) {
 		int size = collection.size();
 		firstIndex = lastIndex = 0;
-		array = new Object[size + (size / 10)];
+		array = newElementArray(size + (size / 10));
 		addAll(collection);
 	}
+    
+    //TODO Remove comment when annotations are available
+    //@SuppressWarnings("unused")
+    private E[] newElementArray(int size) {
+        return (E[])new Object[size];
+    }
 
 	/**
 	 * Inserts the specified object into this ArrayList at the specified
@@ -184,7 +190,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
         }
 
         if (growSize > 0) {
-            Iterator it = collection.iterator();
+            Iterator<? extends E> it = collection.iterator();
             int index = location + firstIndex;
             int end = index + growSize;
             while (index < end)
@@ -207,7 +213,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		if (growSize > 0) {
 			if (lastIndex > array.length - growSize)
 				growAtEnd(growSize);
-			Iterator it = collection.iterator();
+			Iterator<? extends E> it = collection.iterator();
 			int end = lastIndex + growSize;
 			while (lastIndex < end)
 				array[lastIndex++] = it.next();
@@ -242,7 +248,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	public Object clone() {
 		try {
 			ArrayList<E> newList = (ArrayList<E>) super.clone();
-			newList.array = (Object[]) array.clone();
+			newList.array = (E[]) array.clone();
 			return newList;
 		} catch (CloneNotSupportedException e) {
 			return null;
@@ -321,7 +327,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 				increment = required;
 			if (increment < 12)
 				increment = 12;
-			Object[] newArray = new Object[size + increment];
+			E[] newArray = newElementArray(size + increment);
 			if (size > 0)
 				System.arraycopy(array, firstIndex, newArray, firstIndex, size);
 			array = newArray;
@@ -346,7 +352,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 				increment = required;
 			if (increment < 12)
 				increment = 12;
-			Object[] newArray = new Object[size + increment];
+			E[] newArray = newElementArray(size + increment);
 			if (size > 0)
 				System.arraycopy(array, firstIndex, newArray, newArray.length
 						- lastIndex, size);
@@ -362,7 +368,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 			increment = required;
 		if (increment < 12)
 			increment = 12;
-		Object[] newArray = new Object[size + increment];
+		E[] newArray = newElementArray(size + increment);
 		if (location < size / 2) {
 			int newFirst = newArray.length - (size + required);
 			System.arraycopy(array, location, newArray, location + increment,
@@ -569,9 +575,10 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 */
 	public <T> T[] toArray(T[] contents) {
 		int size = size();
-		if (size > contents.length)
-			contents = (T[]) Array.newInstance(contents.getClass()
-					.getComponentType(), size);
+		if (size > contents.length) {
+            Class<?> ct = contents.getClass().getComponentType();
+			contents = (T[]) Array.newInstance(ct, size);
+        }
 		System.arraycopy(array, firstIndex, contents, 0, size);
 		if (size < contents.length)
 			contents[size] = null;
@@ -585,7 +592,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 */
 	public void trimToSize() {
 		int size = size();
-		Object[] newArray = new Object[size];
+		E[] newArray = newElementArray(size);
 		System.arraycopy(array, firstIndex, newArray, 0, size);
 		array = newArray;
 		firstIndex = 0;
@@ -600,7 +607,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		fields.put("size", size()); //$NON-NLS-1$
 		stream.writeFields();
 		stream.writeInt(array.length);
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		while (it.hasNext())
 			stream.writeObject(it.next());
 	}
@@ -609,8 +616,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 			ClassNotFoundException {
 		ObjectInputStream.GetField fields = stream.readFields();
 		lastIndex = fields.get("size", 0); //$NON-NLS-1$
-		array = new Object[stream.readInt()];
+		array = newElementArray(stream.readInt());
 		for (int i = 0; i < lastIndex; i++)
-			array[i] = stream.readObject();
+			array[i] = (E)stream.readObject();
 	}
 }
