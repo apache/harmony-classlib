@@ -23,32 +23,28 @@ package javax.security.auth.login;
 
 import java.io.IOException;
 import java.net.URL;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.CodeSource;
 import java.security.DomainCombiner;
 import java.security.Permission;
-import java.security.PermissionCollection;
-import java.security.Policy;
-import java.security.PrivilegedExceptionAction;
+import java.security.Permissions;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 import java.security.Security;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.security.auth.AuthPermission;
 import javax.security.auth.Subject;
 import javax.security.auth.SubjectDomainCombiner;
-import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.auth.spi.LoginModule;
-
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
+import javax.security.auth.spi.LoginModule;
 
 import junit.framework.TestCase;
 
@@ -2145,10 +2141,9 @@ public class LoginContextTest_1 extends TestCase {
         CodeSource cs = new CodeSource(new URL(
                 "http://127.0.0.1/no/such/path/i/do/believe."),
                 (java.security.cert.Certificate[]) null);
-        // the returned is empty set of permissions
-        PermissionCollection pc = Policy.getPolicy().getPermissions(cs);
+        // create a protection domain with an empty set of permissions
         ProtectionDomain[] pds = new ProtectionDomain[] { new ProtectionDomain(
-                cs, pc) };
+                cs, new Permissions()) };
         AccessControlContext acc = new AccessControlContext(pds);
 
         try {
