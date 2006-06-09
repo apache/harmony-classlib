@@ -848,7 +848,7 @@ public class Collections {
 			c = collection;
 		}
 
-		public boolean add(Object object) {
+		public boolean add(E object) {
 			throw new UnsupportedOperationException();
 		}
 
