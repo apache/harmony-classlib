@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import junit.framework.TestCase;
-import org.apache.harmony.logging.tests.java.util.logging.util.ProjectVersion;
+
 import tests.util.SerializationTester;
 
 /**
@@ -36,16 +36,11 @@ public class LevelTest extends TestCase implements Serializable {
 
 	transient ResourceBundle rb;
 
-	public LevelTest() {
-		System.out.println(ProjectVersion.IMPLEMENTATION);
-	}
-
 	/*
 	 * @see TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		System.err.println(Locale.getDefault().toString());
 		rb = ResourceBundle.getBundle("bundles/java/util/logging/res");
 	}
 

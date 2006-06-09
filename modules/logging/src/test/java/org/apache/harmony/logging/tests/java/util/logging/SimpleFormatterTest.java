@@ -67,7 +67,7 @@ public class SimpleFormatterTest extends TestCase {
 			fail("should throw nullpointer exception");
 		} catch (NullPointerException e) {
 		}
-		System.out.println(sf.format(new LogRecord(Level.SEVERE, null)));
+		sf.format(new LogRecord(Level.SEVERE, null));
 	}
 
 	public void testLocalizedFormat() {
@@ -109,11 +109,9 @@ public class SimpleFormatterTest extends TestCase {
 		lr.setSequenceNumber(12321312);
 		lr.setMillis(0);
 		str = sf.format(lr);
-		System.out.println(str);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(12321312);
 		assertTrue(str.indexOf(String.valueOf(cal.get(Calendar.YEAR))) >= 0);
-		// System.out.println("#"+str+"#");
 		assertTrue(str.indexOf("class") > 0);
 		assertTrue(str.indexOf("method") > 0);
 		assertTrue(str.indexOf("100") > 0);
