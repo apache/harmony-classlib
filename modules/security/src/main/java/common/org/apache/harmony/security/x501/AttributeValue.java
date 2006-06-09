@@ -23,9 +23,7 @@ package org.apache.harmony.security.x501;
 
 import java.io.IOException;
 
-import org.apache.harmony.security.asn1.ASN1Constants;
 import org.apache.harmony.security.asn1.ASN1StringType;
-import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.DerInputStream;
 import org.apache.harmony.security.x509.Utils;
 
@@ -68,34 +66,12 @@ public class AttributeValue {
 
         try {
             DerInputStream in = new DerInputStream(encoded);
-            ASN1Type decoder = null;
-            switch (in.tag) {
-            case ASN1Constants.TAG_TELETEXSTRING:
-                decoder = ASN1StringType.TELETEXSTRING;
-                break;
-            case ASN1Constants.TAG_PRINTABLESTRING:
-                decoder = ASN1StringType.PRINTABLESTRING;
-                break;
-            case ASN1Constants.TAG_UNIVERSALSTRING:
-                decoder = ASN1StringType.UNIVERSALSTRING;
-                break;
-            case ASN1Constants.TAG_UTF8STRING:
-                decoder = ASN1StringType.UTF8STRING;
-                break;
-            case ASN1Constants.TAG_BMPSTRING:
-                decoder = ASN1StringType.BMPSTRING;
-                break;
-            }
-
-            if (in.getEndOffset() != encoded.length) {
-                // length of parsed hexString is greater than encoded length
-                throw new IllegalArgumentException();//FIXME message
-            }
 
             tag = in.tag;
 
-            if (decoder != null) {
-                this.rawString = (String) decoder.decode(in);
+            if (DirectoryString.ASN1.checkTag(tag)) {
+                // has string representation
+                this.rawString = (String) DirectoryString.ASN1.decode(in);
                 this.escapedString = makeEscaped(rawString);
             } else {
                 this.rawString = hexString;

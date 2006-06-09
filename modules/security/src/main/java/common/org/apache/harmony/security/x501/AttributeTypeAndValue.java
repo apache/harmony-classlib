@@ -392,24 +392,11 @@ public class AttributeTypeAndValue {
 
             // FIXME what about constr???
             String str = null;
-
-            switch (in.tag) {
-            case ASN1Constants.TAG_TELETEXSTRING:
-                str = (String) ASN1StringType.TELETEXSTRING.decode(in);
-                break;
-            case ASN1Constants.TAG_PRINTABLESTRING:
-                str = (String) ASN1StringType.PRINTABLESTRING.decode(in);
-                break;
-            case ASN1Constants.TAG_UNIVERSALSTRING:
-                str = (String) ASN1StringType.UNIVERSALSTRING.decode(in);
-                break;
-            case ASN1Constants.TAG_UTF8STRING:
-                str = (String) ASN1StringType.UTF8STRING.decode(in);
-                break;
-            case ASN1Constants.TAG_BMPSTRING:
-                str = (String) ASN1StringType.BMPSTRING.decode(in);
-                break;
-            default:
+            if (DirectoryString.ASN1.checkTag(in.tag)) {
+                // has string representation
+                str = (String) DirectoryString.ASN1.decode(in);
+            } else {
+                // gets octets only
                 in.readContent();
             }
 
