@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
+
 
 import tests.support.Support_ListTest;
 
@@ -467,6 +469,42 @@ public class LinkedListTest extends junit.framework.TestCase {
 		while (li.hasNext())
 			assertTrue("Lists are not equal", li.next() == ri.next());
 	}
+
+    public void test_offer() {
+        int origSize = ll.size();
+        assertTrue("offer() should return true'", ll.offer(objArray[0]));
+        assertEquals("offer() should add an element as the last one", origSize, ll.lastIndexOf(objArray[0]));
+    }
+
+    public void test_poll() {
+        assertEquals("should return the head", objArray[0], ll.poll());
+        LinkedList list = new LinkedList();
+        assertNull("should return 'null' if list is empty", list.poll());
+    }
+
+    public void test_remove() {
+        for (int i = 0; i < objArray.length; i++) {
+            assertEquals("should remove the head", objArray[i], ll.remove());
+        }
+        assertEquals("should be empty", 0, ll.size());
+        try {
+            ll.remove();
+            fail("NoSuchElementException is expected when removing from the empty list");
+        } catch (NoSuchElementException e) {
+            //-- expected
+        }
+    }
+
+    public void test_element() {
+        assertEquals("should return the head", objArray[0], ll.element());
+        assertEquals("element() should remove nothing", objArray.length, ll.size());
+        try {
+            new LinkedList().remove();
+            fail("NoSuchElementException is expected when the list is empty");
+        } catch (NoSuchElementException e) {
+            //-- expected
+        }
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

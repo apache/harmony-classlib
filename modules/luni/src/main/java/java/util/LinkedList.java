@@ -28,8 +28,8 @@ import java.lang.reflect.Array;
  * elements can be any objects.
  * @since 1.2
  */
-public class LinkedList<E> extends AbstractSequentialList<E> implements List<E>,
-		Cloneable, Serializable {
+public class LinkedList<E> extends AbstractSequentialList<E> implements
+        List<E>, Queue<E>, Cloneable, Serializable {
 	
 	private static final long serialVersionUID = 876323262645176354L;
 
@@ -282,6 +282,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements List<E>,
         modCount++;
         return true;
     }
+
 
 	/**
 	 * Adds the objects in the specified Collection to this LinkedList.
@@ -642,6 +643,28 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements List<E>,
 	public int size() {
 		return size;
 	}
+    
+    public boolean offer(E o) {
+        add(o);
+        return true;
+    }
+
+    public E poll() {
+        return size == 0 ? null : removeFirst();
+    }
+
+    public E remove() {
+        return removeFirst();
+    }
+
+    public E peek() {
+        Link<E> first = voidLink.next;
+        return first == voidLink ? null : first.data;
+    }
+
+    public E element() {
+        return getFirst();
+    }
 
 	/**
 	 * Answers a new array containing all elements contained in this LinkedList.
@@ -693,7 +716,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements List<E>,
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.defaultWriteObject();
 		stream.writeInt(size);
-		Iterator it = iterator();
+		Iterator<E> it = iterator();
 		while (it.hasNext())
 			stream.writeObject(it.next());
 	}
