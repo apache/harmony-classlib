@@ -668,14 +668,55 @@ public final class System {
 		}
 		return (String) systemProperties.setProperty(prop, value);
 	}
+    
+    /**
+     * <p>
+     * Removes the system property indicated by the specified key.
+     * </p>
+     * <p>
+     * First, if a security manager exists, its
+     * <code>SecurityManager.checkPermission</code> method is called with a
+     * <code>PropertyPermission(key, "write")</code> permission. This may
+     * result in a <code>SecurityException</code> being thrown. If no
+     * exception is thrown, the specified property is removed.
+     * </p>
+     * 
+     * @param key The name of the system property to remove.
+     * @return The previous value of the system property or <code>null</code>,
+     *         if there was no value.
+     * @throws NullPointerException if the <code>key</code> argument is
+     *         <code>null</code>.
+     * @throws IllegalArgumentException if the <code>key</code> argument is
+     *         empty.
+     * @throws SecurityException if a security manager exists and write access
+     *         to the specified property is not allowed.
+     * @since 1.5
+     * @see #getProperty(String)
+     * @see #setProperty(String, String)
+     * @see Properties
+     * @see SecurityException
+     * @see SecurityManager#checkPropertiesAccess()
+     */
+    public static String clearProperty(String key) {
+        if (key == null)
+            throw new NullPointerException();
+        if (key.length() == 0)
+            throw new IllegalArgumentException();
+
+        SecurityManager secMgr = System.getSecurityManager();
+        if (secMgr != null) {
+            secMgr.checkPermission(new PropertyPermission(key, "write"));
+        }
+        return (String) systemProperties.remove(key);
+    }
 
 	/**
-	 * Answers an array of Strings containing key..value pairs (in consecutive
-	 * array elements) which represent the starting values for the system
-	 * properties as provided by the virtual machine.
-	 * 
-	 * @return the default values for the system properties.
-	 */
+     * Answers an array of Strings containing key..value pairs (in consecutive
+     * array elements) which represent the starting values for the system
+     * properties as provided by the virtual machine.
+     * 
+     * @return the default values for the system properties.
+     */
 	private static native String[] getPropertyList();
 
 	/**
