@@ -47,6 +47,112 @@ public class StringTest extends TestCase {
             throw new AssertionError(e);
         }
     }
+    
+    /**
+     * @tests java.lang.String#String()
+     */
+    public void test_Constructor() {
+        assertEquals("Created incorrect string", "", new String());
+    }
+
+    /**
+     * @tests java.lang.String#String(byte[])
+     */
+    public void test_Constructor$B() {
+        assertEquals("Failed to create string", "HelloWorld", new String(
+                "HelloWorld".getBytes()));
+    }
+
+    /**
+     * @tests java.lang.String#String(byte[], int)
+     */
+    public void test_Constructor$BI() {
+        String s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0);
+        assertEquals("Incorrect string returned: " + s, "ABCDE", s);
+        s = new String(new byte[] { 65, 66, 67, 68, 69 }, 1);
+        assertFalse("Did not use nonzero hibyte", s.equals("ABCDE"));
+    }
+
+    /**
+     * @tests java.lang.String#String(byte[], int, int)
+     */
+    public void test_Constructor$BII() {
+        byte[] hwba = "HelloWorld".getBytes();
+        assertEquals("Failed to create string", "HelloWorld", new String(hwba,
+                0, hwba.length));
+
+        try {
+            new String(new byte[0], 0, Integer.MAX_VALUE);
+            fail("No IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+    }
+
+    /**
+     * @tests java.lang.String#String(byte[], int, int, int)
+     */
+    public void test_Constructor$BIII() {
+        String s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0, 1, 3);
+        assertEquals("Incorrect string returned: " + s, "BCD", s);
+        s = new String(new byte[] { 65, 66, 67, 68, 69 }, 1, 0, 5);
+        assertFalse("Did not use nonzero hibyte", s.equals("ABCDE"));
+    }
+
+    /**
+     * @tests java.lang.String#String(byte[], int, int, java.lang.String)
+     */
+    public void test_Constructor$BIILjava_lang_String() throws Exception {
+        String s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0, 5, "8859_1");
+        assertEquals("Incorrect string returned: " + s, "ABCDE", s);
+    }
+
+    /**
+     * @tests java.lang.String#String(byte[], java.lang.String)
+     */
+    public void test_Constructor$BLjava_lang_String() throws Exception {
+        String s = new String(new byte[] { 65, 66, 67, 68, 69 }, "8859_1");
+        assertEquals("Incorrect string returned: " + s, "ABCDE", s);
+    }
+
+    /**
+     * @tests java.lang.String#String(char[])
+     */
+    public void test_Constructor$C() {
+        assertEquals("Failed Constructor test", "World", new String(new char[] {
+                'W', 'o', 'r', 'l', 'd' }));
+    }
+
+    /**
+     * @tests java.lang.String#String(char[], int, int)
+     */
+    public void test_Constructor$CII() throws Exception {
+        char[] buf = { 'H', 'e', 'l', 'l', 'o', 'W', 'o', 'r', 'l', 'd' };
+        String s = new String(buf, 0, buf.length);
+        assertEquals("Incorrect string created", "HelloWorld", s);
+
+        try {
+            new String(new char[0], 0, Integer.MAX_VALUE);
+            fail("No IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+        }
+    }
+
+    /**
+     * @tests java.lang.String#String(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        String s = new String("Hello World");
+        assertEquals("Failed to construct correct string", "Hello World", s);
+    }
+
+    /**
+     * @tests java.lang.String#String(java.lang.StringBuffer)
+     */
+    public void test_ConstructorLjava_lang_StringBuffer() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("HelloWorld");
+        assertEquals("Created incorrect string", "HelloWorld", new String(sb));
+    }
 
     /**
      * @tests java.lang.String#String(java.lang.StringBuilder)
