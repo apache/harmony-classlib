@@ -1532,13 +1532,13 @@ public class Collections {
 	 *                when an element in the Collection does not implement
 	 *                Comparable or elements cannot be compared to each other
 	 */
-	public static Object min(Collection collection) {
-		Iterator it = collection.iterator();
-		Comparable min = (Comparable) it.next();
+	public static <T extends Object & Comparable<? super T>> T min(Collection<? extends T> collection) {
+		Iterator<? extends T> it = collection.iterator();
+		T min = it.next();
 		while (it.hasNext()) {
-			Object next = it.next();
+			T next = it.next();
 			if (min.compareTo(next) > 0)
-				min = (Comparable) next;
+				min = next;
 		}
 		return min;
 	}
@@ -1557,11 +1557,11 @@ public class Collections {
 	 *                when elements in the Collection cannot be compared to each
 	 *                other using the Comparator
 	 */
-	public static Object min(Collection collection, Comparator comparator) {
-		Iterator it = collection.iterator();
-		Object min = it.next();
+	public static <T> T min(Collection<? extends T> collection, Comparator<? super T> comparator) {
+		Iterator<? extends T> it = collection.iterator();
+		T min = it.next();
 		while (it.hasNext()) {
-			Object next = it.next();
+			T next = it.next();
 			if (comparator.compare(min, next) > 0)
 				min = next;
 		}
@@ -2130,10 +2130,10 @@ public class Collections {
 	 *            the Collection
 	 * @return an unmodifiable Collection
 	 */
-	public static <E> Collection<E> unmodifiableCollection(Collection<E> collection) {
+	public static <E> Collection<E> unmodifiableCollection(Collection<? extends E> collection) {
 		if (collection == null)
 			throw new NullPointerException();
-		return new UnmodifiableCollection<E>(collection);
+		return new UnmodifiableCollection<E>((Collection<E>)collection);
 	}
 
 	/**
@@ -2145,13 +2145,13 @@ public class Collections {
 	 *            the List
 	 * @return an unmodifiable List
 	 */
-	public static <E> List<E> unmodifiableList(List<E> list) {
+	public static <E> List<E> unmodifiableList(List<? extends E> list) {
 		if (list == null)
 			throw new NullPointerException();
 		if (list instanceof RandomAccess)
-			return new UnmodifiableRandomAccessList<E>(list);
+			return new UnmodifiableRandomAccessList<E>((List<E>)list);
 		else
-			return new UnmodifiableList<E>(list);
+			return new UnmodifiableList<E>((List<E>)list);
 	}
 
 	/**
@@ -2163,10 +2163,10 @@ public class Collections {
 	 *            the Map
 	 * @return a unmodifiable Map
 	 */
-	public static <K, V> Map<K, V> unmodifiableMap(Map<K, V> map) {
+	public static <K, V> Map<K, V> unmodifiableMap(Map<? extends K, ? extends V> map) {
 		if (map == null)
 			throw new NullPointerException();
-		return new UnmodifiableMap<K, V>(map);
+		return new UnmodifiableMap<K, V>((Map<K, V>)map);
 	}
 
 	/**
@@ -2178,10 +2178,10 @@ public class Collections {
 	 *            the Set
 	 * @return a unmodifiable Set
 	 */
-	public static <E> Set<E> unmodifiableSet(Set<E> set) {
+	public static <E> Set<E> unmodifiableSet(Set<? extends E> set) {
 		if (set == null)
 			throw new NullPointerException();
-		return new UnmodifiableSet<E>(set);
+		return new UnmodifiableSet<E>((Set<E>)set);
 	}
 
 	/**
@@ -2193,10 +2193,10 @@ public class Collections {
 	 *            the SortedMap
 	 * @return a unmodifiable SortedMap
 	 */
-	public static <K, V> SortedMap<K, V> unmodifiableSortedMap(SortedMap<K, V> map) {
+	public static <K, V> SortedMap<K, V> unmodifiableSortedMap(SortedMap<K, ? extends V> map) {
 		if (map == null)
 			throw new NullPointerException();
-		return new UnmodifiableSortedMap<K, V>(map);
+		return new UnmodifiableSortedMap<K, V>((SortedMap<K, V>)map);
 	}
 
 	/**
