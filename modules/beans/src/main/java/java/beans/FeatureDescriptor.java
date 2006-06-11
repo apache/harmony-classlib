@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * @author Maxim V. Berkultsev
@@ -70,18 +71,10 @@ public class FeatureDescriptor {
     /**
      * @com.intel.drl.spec_ref
      */
-    public Enumeration attributeNames() {
-        String attributeNamesStr = "";
-        Iterator i = values.keySet().iterator();
-        while(i.hasNext()) {
-            String attributeName = (String) i.next();
-            if(attributeNamesStr.equals("")) {
-                attributeNamesStr += attributeName;
-            } else {
-                attributeNamesStr += ' ' + attributeName;
-            }
-        }
-        return new StringTokenizer(attributeNamesStr);
+    public Enumeration<String> attributeNames() {
+        Vector<String> attribNames = new Vector<String>(values.size());
+        attribNames.addAll(values.keySet());
+        return attribNames.elements();
     }
 
     /**
