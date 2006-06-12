@@ -204,7 +204,7 @@ public class ConstructorTest extends junit.framework.TestCase {
 		try {
 			Constructor ctor = new ConstructorTestHelper().getClass()
 					.getConstructor(new Class[0]);
-			test = (ConstructorTestHelper) ctor.newInstance(null);
+			test = (ConstructorTestHelper) ctor.newInstance((Object[])null);
 		} catch (Exception e) {
 			fail("Failed to create instance : " + e.getMessage());
 		}
