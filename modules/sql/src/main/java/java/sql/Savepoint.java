@@ -13,32 +13,29 @@
  * limitations under the License.
  */
 
-
 package java.sql;
 
 /**
- * A Savepoint is an instant during the current transaction that can be utilised by a 
- * Rollback from the Connection.rollback method. Rolling back to a particular Savepoint means
- * that all changes that occurred after that Savepoint are removed.
- * 
+ * A Savepoint is an instant during the current transaction that can be utilised
+ * by a Rollback from the Connection.rollback method. Rolling back to a
+ * particular Savepoint means that all changes that occurred after that
+ * Savepoint are removed.
  */
 public interface Savepoint {
 
-	/**
-	 * Returns the constructed ID for this Savepoint.
-	 * @return the ID for this Savepoint.
-	 * @throws SQLException
-	 */
-	public int getSavepointId() throws SQLException;
+    /**
+     * Returns the constructed ID for this Savepoint.
+     * 
+     * @return the ID for this Savepoint.
+     * @throws SQLException
+     */
+    public int getSavepointId() throws SQLException;
 
-	/**
-	 * Returns the name for this Savepoint.
-	 * 
-	 * @return the name of this Savepoint.
-	 * @throws SQLException
-	 */
-	public String 	getSavepointName() throws SQLException;
-    	
-} // end interface Savepoint
-
-
+    /**
+     * Returns the name for this Savepoint.
+     * 
+     * @return the name of this Savepoint.
+     * @throws SQLException
+     */
+    public String getSavepointName() throws SQLException;
+}

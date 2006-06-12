@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package javax.sql;
 
 import java.sql.SQLException;
@@ -21,52 +20,65 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 
 /**
- * An interface provided by a RowSet object to either a RowSetReader or a RowSetWriter, providing
- * facilities to read and update the internal state of the RowSet.
- * 
+ * An interface provided by a RowSet object to either a RowSetReader or a
+ * RowSetWriter, providing facilities to read and update the internal state of
+ * the RowSet.
  */
 public interface RowSetInternal {
 
-	/**
-	 * Gets the Connection associated with this RowSet object.
-	 * @return the Connection
-	 * @throws SQLException if there is a problem accessing the database.
-	 */
-	public Connection getConnection() throws SQLException;
-	
-	/**
-	 * Gets the ResultSet that was the original (unmodified) content of the RowSet.
-	 * <p>
-	 * The ResultSet cursor is positioned before the first row of data
-	 * @return the ResultSet that contained the original data value of the RowSet
-	 * @throws SQLException if there is a problem accessing the database.
-	 */
-	public ResultSet getOriginal() throws SQLException;
-	
-	/**
-	 * Gets the original value of the current row only.  If the current row did not have an
-	 * original value, then an empty value is returned.
-	 * @return a ResultSet containing the value of the current row only.
-	 * @throws SQLException if there is a problem accessing the database, or if the cursor is not
-	 * on a valid row (before first, after last or pointing to the insert row).
-	 */
-	public ResultSet getOriginalRow() throws SQLException;
-	
-	/**
-	 * Gets the parameter values that have been set for this RowSet's command.
-	 * @return an Object array containing the values of parameters that have been set.
-	 * @throws SQLException if there is a problem accessing the database.
-	 */
-	public Object[] getParams() throws SQLException;
-	
-	/**
-	 * Sets RowSetMetaData for this RowSet.  The RowSetMetaData is used by a RowSetReader to
-	 * set values giving information about the RowSet's columns.
-	 * @param theMetaData a RowSetMetaData holding the metadata about the RowSet's columns.
-	 * @throws SQLException if there is a problem accessing the database.
-	 */
-	public void setMetaData( RowSetMetaData theMetaData ) throws SQLException;
-	
-} // end interface RowSetInternal
+    /**
+     * Gets the Connection associated with this RowSet object.
+     * 
+     * @return the Connection
+     * @throws SQLException
+     *             if there is a problem accessing the database.
+     */
+    public Connection getConnection() throws SQLException;
 
+    /**
+     * Gets the ResultSet that was the original (unmodified) content of the
+     * RowSet.
+     * <p>
+     * The ResultSet cursor is positioned before the first row of data
+     * 
+     * @return the ResultSet that contained the original data value of the
+     *         RowSet
+     * @throws SQLException
+     *             if there is a problem accessing the database.
+     */
+    public ResultSet getOriginal() throws SQLException;
 
+    /**
+     * Gets the original value of the current row only. If the current row did
+     * not have an original value, then an empty value is returned.
+     * 
+     * @return a ResultSet containing the value of the current row only.
+     * @throws SQLException
+     *             if there is a problem accessing the database, or if the
+     *             cursor is not on a valid row (before first, after last or
+     *             pointing to the insert row).
+     */
+    public ResultSet getOriginalRow() throws SQLException;
+
+    /**
+     * Gets the parameter values that have been set for this RowSet's command.
+     * 
+     * @return an Object array containing the values of parameters that have
+     *         been set.
+     * @throws SQLException
+     *             if there is a problem accessing the database.
+     */
+    public Object[] getParams() throws SQLException;
+
+    /**
+     * Sets RowSetMetaData for this RowSet. The RowSetMetaData is used by a
+     * RowSetReader to set values giving information about the RowSet's columns.
+     * 
+     * @param theMetaData
+     *            a RowSetMetaData holding the metadata about the RowSet's
+     *            columns.
+     * @throws SQLException
+     *             if there is a problem accessing the database.
+     */
+    public void setMetaData(RowSetMetaData theMetaData) throws SQLException;
+}

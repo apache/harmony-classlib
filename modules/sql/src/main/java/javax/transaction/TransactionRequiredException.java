@@ -13,37 +13,35 @@
  * limitations under the License.
  */
 
-
 package javax.transaction;
 
 import java.rmi.RemoteException;
 import java.io.Serializable;
 
 /**
- * An exception which is thrown when a request is made which supplied a null transaction
- * context in a situation where an active transaction is required.
- * 
+ * An exception which is thrown when a request is made which supplied a null
+ * transaction context in a situation where an active transaction is required.
  */
-public class TransactionRequiredException extends RemoteException implements Serializable {
+public class TransactionRequiredException extends RemoteException implements
+        Serializable {
 
-	private static final long serialVersionUID = -1898806419937446439L;
-	
-	/**
-	 * Creates a TransactionRequiredException with no error message.
-	 *
-	 */
-	public TransactionRequiredException() {
-		super();
-	} // end method TransactionRequiredException()
-	
-	/**
-	 * Creates a TransactionRequiredException with a specified error message.
-	 * @param msg a String holding the error message
-	 */
-	public TransactionRequiredException(String msg) {
-		super( msg );
-	} // end method TransactionRequiredException(String msg)
-	
-} // end class TransactionRequiredException
+    private static final long serialVersionUID = -1898806419937446439L;
 
+    /**
+     * Creates a TransactionRequiredException with no error message.
+     * 
+     */
+    public TransactionRequiredException() {
+        super();
+    }
 
+    /**
+     * Creates a TransactionRequiredException with a specified error message.
+     * 
+     * @param msg
+     *            a String holding the error message
+     */
+    public TransactionRequiredException(String msg) {
+        super(msg);
+    }
+}

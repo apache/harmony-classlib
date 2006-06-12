@@ -13,45 +13,48 @@
  * limitations under the License.
  */
 
-
 package javax.sql;
 
 import java.util.EventListener;
 
 /**
- * An interface used to send notification of events occurring in a RowSet.  To receive the
- * notification events, an object must implement the RowSetListener interface and then register
- * itself with the RowSet of interest using the <code>RowSet.addRowSetListener</code> method.
- * 
+ * An interface used to send notification of events occurring in a RowSet. To
+ * receive the notification events, an object must implement the RowSetListener
+ * interface and then register itself with the RowSet of interest using the
+ * <code>RowSet.addRowSetListener</code> method.
  */
 public interface RowSetListener extends EventListener {
-	
-	/**
-	 * Notifies the listener that one of the RowSet's rows has changed.
-	 * @param theEvent a RowSetEvent that contains information about the RowSet involved.
-	 * This information can be used to retrieve information about the change, such as the new
-	 * cursor position.
-	 */
-	public void cursorMoved(RowSetEvent theEvent);
-	
-	/**
-	 * Notifies the listener that the RowSet's cursor has moved.
-	 * @param theEvent theEvent a RowSetEvent that contains information about the RowSet involved.
-	 * This information can be used to retrieve information about the change, such as the updated
-	 * data values.
-	 */
-	public void rowChanged(RowSetEvent theEvent);
-	
-	/**
-	 * Notifies the listener that the RowSet's entire contents have been updated (an example is
-	 * the execution of a command which retrieves new data from the database).
-	 * @param theEvent theEvent a RowSetEvent that contains information about the RowSet involved.
-	 * This information can be used to retrieve information about the change, such as the updated
-	 * rows of data.
-	 */
-	public void rowSetChanged(RowSetEvent theEvent);
-	
 
-} // end interface RowSetListener
+    /**
+     * Notifies the listener that one of the RowSet's rows has changed.
+     * 
+     * @param theEvent
+     *            a RowSetEvent that contains information about the RowSet
+     *            involved. This information can be used to retrieve information
+     *            about the change, such as the new cursor position.
+     */
+    public void cursorMoved(RowSetEvent theEvent);
 
+    /**
+     * Notifies the listener that the RowSet's cursor has moved.
+     * 
+     * @param theEvent
+     *            theEvent a RowSetEvent that contains information about the
+     *            RowSet involved. This information can be used to retrieve
+     *            information about the change, such as the updated data values.
+     */
+    public void rowChanged(RowSetEvent theEvent);
 
+    /**
+     * Notifies the listener that the RowSet's entire contents have been updated
+     * (an example is the execution of a command which retrieves new data from
+     * the database).
+     * 
+     * @param theEvent
+     *            theEvent a RowSetEvent that contains information about the
+     *            RowSet involved. This information can be used to retrieve
+     *            information about the change, such as the updated rows of
+     *            data.
+     */
+    public void rowSetChanged(RowSetEvent theEvent);
+}

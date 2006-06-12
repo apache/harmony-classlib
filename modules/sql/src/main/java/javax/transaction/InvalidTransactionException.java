@@ -13,36 +13,35 @@
  * limitations under the License.
  */
 
-
 package javax.transaction;
 
 import java.rmi.RemoteException;
 import java.io.Serializable;
 
 /**
- * An exception which is thrown when a request contains invalid transaction context information.
- * 
+ * An exception which is thrown when a request contains invalid transaction
+ * context information.
  */
-public class InvalidTransactionException extends RemoteException implements Serializable {
-	
-	private static final long serialVersionUID = 3597320220337691496L;
-	
-	/**
-	 * Creates an InvalidTransactionException with no error message
-	 *
-	 */
-	public InvalidTransactionException() {
-		super();
-	} // end method InvalidTransactionException()
-	
-	/**
-	 * Creates an InvalidTransactionException with a specified error message
-	 * @param msg a string containing the error message
-	 */
-	public InvalidTransactionException(String msg) {
-		super( msg );
-	} // end method InvalidTransactionException( String )
+public class InvalidTransactionException extends RemoteException implements
+        Serializable {
 
-} // end class InvalidTransactionException
+    private static final long serialVersionUID = 3597320220337691496L;
 
+    /**
+     * Creates an InvalidTransactionException with no error message
+     * 
+     */
+    public InvalidTransactionException() {
+        super();
+    } // end method InvalidTransactionException()
 
+    /**
+     * Creates an InvalidTransactionException with a specified error message
+     * 
+     * @param msg
+     *            a string containing the error message
+     */
+    public InvalidTransactionException(String msg) {
+        super(msg);
+    }
+}

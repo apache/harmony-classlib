@@ -13,37 +13,35 @@
  * limitations under the License.
  */
 
-
 package javax.transaction;
 
 import java.rmi.RemoteException;
 import java.io.Serializable;
 
 /**
- * An exception which is thrown to indicate that the transaction associated with a request
- * has been rolled back or marked for rollback. So the requested operation cannot be completed.
- * 
+ * An exception which is thrown to indicate that the transaction associated with
+ * a request has been rolled back or marked for rollback. So the requested
+ * operation cannot be completed.
  */
-public class TransactionRolledbackException extends RemoteException implements Serializable {
-	
-	private static final long serialVersionUID = -3142798139623020577L;
+public class TransactionRolledbackException extends RemoteException implements
+        Serializable {
 
-	/**
-	 * Creates a TransactionRolledbackException with no error message
-	 *
-	 */
-	public TransactionRolledbackException() {
-		super();
-	} // end method TransactionRolledbackException()
-	
-	/**
-	 * Creates a TransactionRolledbackException with a specified error message
-	 * @param msg a String containing the error message
-	 */
-	public TransactionRolledbackException(String msg) {
-		super( msg );
-	} // end method TransactionRolledbackException( String )
-	
-} // end class TransactionRolledbackException
+    private static final long serialVersionUID = -3142798139623020577L;
 
+    /**
+     * Creates a TransactionRolledbackException with no error message
+     */
+    public TransactionRolledbackException() {
+        super();
+    }
 
+    /**
+     * Creates a TransactionRolledbackException with a specified error message
+     * 
+     * @param msg
+     *            a String containing the error message
+     */
+    public TransactionRolledbackException(String msg) {
+        super(msg);
+    }
+}

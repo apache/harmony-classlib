@@ -13,49 +13,53 @@
  * limitations under the License.
  */
 
-
 package org.apache.harmony.sql.internal.common;
 
 /**
- * A class containing sets of utility functions relating to Classes, ClassLoaders and associated
- * aspects of Java
- * 
+ * A class containing sets of utility functions relating to Classes,
+ * ClassLoaders and associated aspects of Java.
  */
 public class ClassUtils {
 
-	/**
-	 * Gets the ClassLoader of method that called the method which called this method.
-	 * ie if C2.m2() calls this method, and C1.m1() calls C2.m2(), this method returns the
-	 * ClassLoader for class C1.
-	 * @return The ClassLoader of the caller's caller.
-	 * TODO - needs completing
-	 */
-	public static ClassLoader getCallerClassLoader() {
-		return null;
-	} // end method getCallerClassLoader
-	
-	/**
-	 * Finds if a supplied Object belongs to the given ClassLoader.
-	 * @param theObject the object to check
-	 * @param theClassLoader the ClassLoader 
-	 * @return true if the Object does belong to the ClassLoader, false otherwise
-	 */
-	public static boolean isClassFromClassLoader( Object theObject, ClassLoader theClassLoader ) {
-		
-		if( (theObject == null) || (theClassLoader == null) ) return false;
-		
-		Class objectClass = theObject.getClass();
-		
-		try {
-			Class checkClass = Class.forName(objectClass.getName(), true, theClassLoader);
-			if( checkClass == objectClass ) return true;
-		} catch ( Throwable t ) {
-			
-		} // end try
-		
-		return false;
-	} // end method isClassFromClassLoader( Object, ClassLoader )
-	
-} // end class ClassUtils
+    /**
+     * Gets the ClassLoader of method that called the method which called this
+     * method. ie if C2.m2() calls this method, and C1.m1() calls C2.m2(), this
+     * method returns the ClassLoader for class C1.
+     * 
+     * @return The ClassLoader of the caller's caller. TODO - needs completing
+     */
+    public static ClassLoader getCallerClassLoader() {
+        return null;
+    }
 
+    /**
+     * Finds if a supplied Object belongs to the given ClassLoader.
+     * 
+     * @param theObject
+     *            the object to check
+     * @param theClassLoader
+     *            the ClassLoader
+     * @return true if the Object does belong to the ClassLoader, false
+     *         otherwise
+     */
+    public static boolean isClassFromClassLoader(Object theObject,
+            ClassLoader theClassLoader) {
 
+        if ((theObject == null) || (theClassLoader == null)) {
+            return false;
+        }
+
+        Class objectClass = theObject.getClass();
+
+        try {
+            Class checkClass = Class.forName(objectClass.getName(), true,
+                    theClassLoader);
+            if (checkClass == objectClass) {
+                return true;
+            }
+        } catch (Throwable t) {
+            // Empty
+        }
+        return false;
+    }
+}

@@ -27,54 +27,51 @@ import java.util.Map;
  * <p>
  * A Ref object is stored into the database using the PreparedStatement.setRef
  * method.
- * 
  */
 public interface Ref {
 
-	/**
-	 * Gets the fully-qualified SQL name of the SQL structured type that this
-	 * Ref references.
-	 * 
-	 * @return the fully qualified name of the SQL structured type
-	 * @throws SQLException
-	 *             if there is a database error
-	 */
-	public String getBaseTypeName() throws SQLException;
+    /**
+     * Gets the fully-qualified SQL name of the SQL structured type that this
+     * Ref references.
+     * 
+     * @return the fully qualified name of the SQL structured type
+     * @throws SQLException
+     *             if there is a database error
+     */
+    public String getBaseTypeName() throws SQLException;
 
-	/**
-	 * Gets the SQL structured type instance referenced by this Ref.
-	 * 
-	 * @return a Java object whose type is defined by the mapping for the SQL
-	 *         structured type.
-	 * @throws SQLException
-	 *             if there is a database error
-	 */
-	public Object getObject() throws SQLException;
+    /**
+     * Gets the SQL structured type instance referenced by this Ref.
+     * 
+     * @return a Java object whose type is defined by the mapping for the SQL
+     *         structured type.
+     * @throws SQLException
+     *             if there is a database error
+     */
+    public Object getObject() throws SQLException;
 
-	/**
-	 * Returns the associated object and uses the relevant mapping to convert it
-	 * to a Java type.
-	 * 
-	 * @param map
-	 *            a java.util.Map which contains the mapping to use
-	 * @return a Java object whose type is defined by the mapping for the SQL
-	 *         structured type.
-	 * @throws SQLException
-	 *             if there is a database error
-	 */
-	public Object getObject(Map<String, Class<?>> map) throws SQLException;
+    /**
+     * Returns the associated object and uses the relevant mapping to convert it
+     * to a Java type.
+     * 
+     * @param map
+     *            a java.util.Map which contains the mapping to use
+     * @return a Java object whose type is defined by the mapping for the SQL
+     *         structured type.
+     * @throws SQLException
+     *             if there is a database error
+     */
+    public Object getObject(Map<String, Class<?>> map) throws SQLException;
 
-	/**
-	 * Sets the value of the structured typethat this Ref references to a
-	 * supplied Object.
-	 * 
-	 * @param value
-	 *            the Object representing the new SQL structured type that this
-	 *            Ref will reference.
-	 * @throws SQLException
-	 *             if there is a database error
-	 */
-	public void setObject(Object value) throws SQLException;
-
-} // end interface Ref
-
+    /**
+     * Sets the value of the structured typethat this Ref references to a
+     * supplied Object.
+     * 
+     * @param value
+     *            the Object representing the new SQL structured type that this
+     *            Ref will reference.
+     * @throws SQLException
+     *             if there is a database error
+     */
+    public void setObject(Object value) throws SQLException;
+}

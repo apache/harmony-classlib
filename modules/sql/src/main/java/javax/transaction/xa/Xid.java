@@ -13,44 +13,45 @@
  * limitations under the License.
  */
 
-
 package javax.transaction.xa;
 
 /**
- * An interface which provides a mapping for the X/Open XID transaction identifier structure.
- * The Xid interface is used by the Transaction Manager and the Resource managers.  It is not
- * typically used by application programs.
- * 
+ * An interface which provides a mapping for the X/Open XID transaction
+ * identifier structure. The Xid interface is used by the Transaction Manager
+ * and the Resource managers. It is not typically used by application programs.
  */
 public interface Xid {
-	
-	/**
-	 * The maximum number of bytes which will be returned by getGlobaltransaction Id
-	 */
-	public static final int MAXGTRIDSIZE	= 64;
 
-	/**
-	 * The maximum number of bytes which will be returned by getBranchQualifier
-	 */
-	public static final int MAXBQUALSIZE	= 64;
-	
-	/**
-	 * Gets the transaction branch qualifier component of the XID.
-	 * @return an array of bytes containing the transaction branch qualifier.
-	 */
-	public byte[] getBranchQualifier();
-	
-	/**
-	 * Gets the format identifier component of the XID.
-	 * @return an integer containing the format identifier.  0 means the OSI CCR format.
-	 */
-	public int getFormatId();
-	
-	/**
-	 * Gets the global transaction identifier component of the XID.
-	 * @return an array of bytes containing the global transaction identifier.
-	 */
-	public byte[] getGlobalTransactionId();
+    /**
+     * The maximum number of bytes which will be returned by
+     * getGlobaltransaction Id
+     */
+    public static final int MAXGTRIDSIZE = 64;
 
-} // end interface Xid
+    /**
+     * The maximum number of bytes which will be returned by getBranchQualifier
+     */
+    public static final int MAXBQUALSIZE = 64;
 
+    /**
+     * Gets the transaction branch qualifier component of the XID.
+     * 
+     * @return an array of bytes containing the transaction branch qualifier.
+     */
+    public byte[] getBranchQualifier();
+
+    /**
+     * Gets the format identifier component of the XID.
+     * 
+     * @return an integer containing the format identifier. 0 means the OSI CCR
+     *         format.
+     */
+    public int getFormatId();
+
+    /**
+     * Gets the global transaction identifier component of the XID.
+     * 
+     * @return an array of bytes containing the global transaction identifier.
+     */
+    public byte[] getGlobalTransactionId();
+}

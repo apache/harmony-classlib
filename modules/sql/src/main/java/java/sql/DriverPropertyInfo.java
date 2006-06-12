@@ -19,56 +19,52 @@ package java.sql;
  * A class holding information about Driver Properties for making a Connection.
  * This class is returned from the <code>Driver.getDriverProperties</code>
  * method and is useful in using Connections in an advanced way.
- * 
  */
 public class DriverPropertyInfo {
 
-	/**
-	 * If the value member can be chosen from a set of possible values, they are
-	 * contained here. Otherwise choices is null.
-	 */
-	public String[] choices;
+    /**
+     * If the value member can be chosen from a set of possible values, they are
+     * contained here. Otherwise choices is null.
+     */
+    public String[] choices;
 
-	/**
-	 * A description of the property. May be null.
-	 */
-	public String description;
+    /**
+     * A description of the property. May be null.
+     */
+    public String description;
 
-	/**
-	 * The name of the property.
-	 */
-	public String name;
+    /**
+     * The name of the property.
+     */
+    public String name;
 
-	/**
-	 * True when the value member must be provided during Driver.connect. False
-	 * otherwise.
-	 */
-	public boolean required;
+    /**
+     * True when the value member must be provided during Driver.connect. False
+     * otherwise.
+     */
+    public boolean required;
 
-	/**
-	 * The current value associated with this property. This is based on the
-	 * data gathered by the getPropertyInfo method, the general Java environment
-	 * and the default values for the driver.
-	 */
-	public String value;
+    /**
+     * The current value associated with this property. This is based on the
+     * data gathered by the getPropertyInfo method, the general Java environment
+     * and the default values for the driver.
+     */
+    public String value;
 
-	/**
-	 * Creates a DriverPropertyInfo instance with the supplied name and value.
-	 * Other members take their default values.
-	 * 
-	 * @param name
-	 *            The property name
-	 * @param value
-	 *            The property value
-	 */
-	public DriverPropertyInfo(String name, String value) {
-		this.name = name;
-		this.value = value;
-		this.choices = null;
-		this.description = null;
-		this.required = false;
-
-	} // end method DriverPropertyInfo
-
-} // end class DriverPropertyInfo
-
+    /**
+     * Creates a DriverPropertyInfo instance with the supplied name and value.
+     * Other members take their default values.
+     * 
+     * @param name
+     *            The property name
+     * @param value
+     *            The property value
+     */
+    public DriverPropertyInfo(String name, String value) {
+        this.name = name;
+        this.value = value;
+        this.choices = null;
+        this.description = null;
+        this.required = false;
+    }
+}

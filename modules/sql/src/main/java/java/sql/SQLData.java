@@ -16,9 +16,9 @@
 package java.sql;
 
 /**
- * TODO Type description An interface for the custom mapping of an SQL User
- * Defined Type (UDT) to a Java Class. The Java Class object will be added to
- * the Connection's type map with the SQL Name of the UDT which it maps.
+ * An interface for the custom mapping of an SQL User Defined Type (UDT) to a
+ * Java Class. The Java Class object will be added to the Connection's type map
+ * with the SQL Name of the UDT which it maps.
  * <p>
  * Usually within an implementation of SQLData, there is a corresponding field
  * for every attribute of an SQL type, or only one field if the type is SQL
@@ -39,69 +39,66 @@ package java.sql;
  * <p>
  * Ordinarily a programmer would not call SQLData methods directly. Similarly
  * SQLInput and SQLOutput methods are not usually called directly.
- * 
  */
 public interface SQLData {
 
-	/**
-	 * Gets the SQL name of the User Defined Type (UDT) that this object
-	 * represents. This method, usually invoked by the JDBC driver, retrieves
-	 * the name of the UDT instance associated with this SQLData object.
-	 * 
-	 * @return a string with UDT type name for this object mapping, passed to
-	 *         readSQL when the object was created
-	 * @throws SQLException
-	 *             if a database error occurs
-	 */
-	public String getSQLTypeName() throws SQLException;
+    /**
+     * Gets the SQL name of the User Defined Type (UDT) that this object
+     * represents. This method, usually invoked by the JDBC driver, retrieves
+     * the name of the UDT instance associated with this SQLData object.
+     * 
+     * @return a string with UDT type name for this object mapping, passed to
+     *         readSQL when the object was created
+     * @throws SQLException
+     *             if a database error occurs
+     */
+    public String getSQLTypeName() throws SQLException;
 
-	/**
-	 * Reads data from the database into this object. This method follows these
-	 * steps:
-	 * <ul>
-	 * <li>Utilise the passed input stream to read the attributes or entries of
-	 * the SQL type</li>
-	 * <li>This is carried out by reading each entry from the input stream,
-	 * ordered as the are the SQL definition.</li>
-	 * <li>Assign the data to the appropriate fields or elements. This is done
-	 * by calling the relevant reader method for the type involved (eg.
-	 * SQLInput.readString, SQLInputreadBigDecimal). If the type is distinct,
-	 * then read its only data entry. For structured types, read every entry.</li>
-	 * </ul>
-	 * The supplied input stream is typically initialized by the calling JDBC
-	 * driver with the type map before readSQL is called.
-	 * 
-	 * @param stream
-	 *            the SQLInput stream from which the type map data is read for
-	 *            the custom mapping
-	 * @param typeName
-	 *            the SQL Type name for the type which is being mapped
-	 * @throws SQLException
-	 *             if a database error occurs
-	 */
-	public void readSQL(SQLInput stream, String typeName) throws SQLException;
+    /**
+     * Reads data from the database into this object. This method follows these
+     * steps:
+     * <ul>
+     * <li>Utilise the passed input stream to read the attributes or entries of
+     * the SQL type</li>
+     * <li>This is carried out by reading each entry from the input stream,
+     * ordered as the are the SQL definition.</li>
+     * <li>Assign the data to the appropriate fields or elements. This is done
+     * by calling the relevant reader method for the type involved (eg.
+     * SQLInput.readString, SQLInputreadBigDecimal). If the type is distinct,
+     * then read its only data entry. For structured types, read every entry.</li>
+     * </ul>
+     * The supplied input stream is typically initialized by the calling JDBC
+     * driver with the type map before readSQL is called.
+     * 
+     * @param stream
+     *            the SQLInput stream from which the type map data is read for
+     *            the custom mapping
+     * @param typeName
+     *            the SQL Type name for the type which is being mapped
+     * @throws SQLException
+     *             if a database error occurs
+     */
+    public void readSQL(SQLInput stream, String typeName) throws SQLException;
 
-	/**
-	 * Writes the object to a supplied SQLOuput data stream, writing it out as
-	 * an SQL value to the data source.
-	 * <p>
-	 * This method follows the following steps:
-	 * <ul>
-	 * <li>Write each attribute of the SQL type to the output stream.</li>
-	 * <li>Write each item by calling a method on the output stream, in the
-	 * order they appear in the SQL definition of the type. Use the appropriate
-	 * SQLOutput methods (eg. writeInt, writeString). Write a single data
-	 * element for a Distinct type. For a Structured type, write a value for
-	 * each attribute of the the SQL type.</li>
-	 * </ul>
-	 * 
-	 * @param stream
-	 *            the SQLOutput stream to use to write out the data for the
-	 *            custom mapping
-	 * @throws SQLException
-	 *             if a database error occurs
-	 */
-	public void writeSQL(SQLOutput stream) throws SQLException;
-
-} // end interface SQLData
-
+    /**
+     * Writes the object to a supplied SQLOuput data stream, writing it out as
+     * an SQL value to the data source.
+     * <p>
+     * This method follows the following steps:
+     * <ul>
+     * <li>Write each attribute of the SQL type to the output stream.</li>
+     * <li>Write each item by calling a method on the output stream, in the
+     * order they appear in the SQL definition of the type. Use the appropriate
+     * SQLOutput methods (eg. writeInt, writeString). Write a single data
+     * element for a Distinct type. For a Structured type, write a value for
+     * each attribute of the the SQL type.</li>
+     * </ul>
+     * 
+     * @param stream
+     *            the SQLOutput stream to use to write out the data for the
+     *            custom mapping
+     * @throws SQLException
+     *             if a database error occurs
+     */
+    public void writeSQL(SQLOutput stream) throws SQLException;
+}
