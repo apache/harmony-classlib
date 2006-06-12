@@ -20,10 +20,8 @@
  */
 package java.beans;
 
-import java.util.HashMap;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.StringTokenizer;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
