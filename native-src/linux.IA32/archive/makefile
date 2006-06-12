@@ -26,8 +26,8 @@ BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
 	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
 
 MDLLIBFILES = \
-	../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
-	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
+	../libhysig.so $(LIBPATH)libhyzip.a ../libhyzlib.so $(LIBPATH)libhycommon.a \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a ../libhythr.so ../libvmi.so
 
 DLLNAME=../libhyarchive.so
 

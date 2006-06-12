@@ -37,9 +37,9 @@ VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = \
-	..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hyzip.lib \
-        ..\lib\hyzlib.lib ..\lib\hypool.lib ..\lib\hyfdlibm.lib \
-	..\lib\hythr.lib ..\lib\vmi.lib
+	$(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib $(LIBPATH)hyzip.lib \
+        $(LIBPATH)hyzlib.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
+	$(LIBPATH)hythr.lib $(LIBPATH)vmi.lib
 DLLBASE=0x13100000
 
 !include <..\rules.mak>

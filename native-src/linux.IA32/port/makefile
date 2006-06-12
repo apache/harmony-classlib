@@ -31,7 +31,7 @@ BUILDFILES = \
 	$(SHAREDSUB)hystr.o $(SHAREDSUB)hystrftime.o $(SHAREDSUB)hystsl.o \
 	hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o hytty.o hyvmem.o
 
-MDLLIBFILES = ../libhythr.so ../lib/libhycommon.a ../libhysig.so
+MDLLIBFILES = ../libhythr.so $(LIBPATH)libhycommon.a ../libhysig.so
 
 DLLNAME = ../libhyprt.so
 

@@ -23,7 +23,7 @@ EXENAME=$(EXEPATH)javaw.exe
 BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \
         winmain.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
 VIRTFILES = javaw.res
-MDLLIBFILES =  ..\lib\hyprt.lib ..\lib\hythr.lib 
+MDLLIBFILES =  $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
 EXEFLAGS=$(guilflags) -subsystem:windows
 EXEDLLFILES=$(guilibsdll)
 

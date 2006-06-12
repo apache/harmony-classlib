@@ -28,9 +28,9 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = ..\lib\hycommon.lib ..\lib\hysig.lib ..\lib\hyzip.lib \
-	..\lib\hyzlib.lib ..\lib\hypool.lib ..\lib\hyfdlibm.lib \
-	..\lib\hythr.lib ..\lib\vmi.lib
+MDLLIBFILES = $(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib $(LIBPATH)hyzip.lib \
+	$(LIBPATH)hyzlib.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
+	$(LIBPATH)hythr.lib $(LIBPATH)vmi.lib
 DLLBASE=0x1300000
 COMMENT=/comment:"Auth component native code. (c) Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable."
 

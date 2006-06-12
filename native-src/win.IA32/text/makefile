@@ -29,8 +29,8 @@ VIRTFILES = hytext.res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = \
-  ..\lib\hysig.lib ..\lib\hycommon.lib ..\lib\hypool.lib ..\lib\hyfdlibm.lib \
-  ..\lib\hythr.lib ..\lib\vmi.lib unicode\icuuc.lib
+  $(LIBPATH)hysig.lib $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
+  $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib unicode\icuuc.lib
 
 DLLBASE=0x13300000
 COMMENT=/comment:"Text component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."

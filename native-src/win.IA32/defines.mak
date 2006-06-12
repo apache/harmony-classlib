@@ -4,8 +4,7 @@ _WIN32_IE=0x0500
 SEHMAP = TRUE
 !include <win32.mak>
 
-#DEPLOY=..\..\..\deploy\# comment to avoid \ being treated as continuation
-LIBPATH=..\lib\# ditto
+LIBPATH=$(HY_HDK)\lib\# comment to avoid \ being treated as continuation
 EXEPATH=..\# ditto
 DLLPATH=..\# ditto
 SHARED=..\..\shared\# ditto

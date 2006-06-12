@@ -42,7 +42,7 @@ SYSLIBFILES = \
 	Delayimp.lib -delayload:shell32.dll -delayload:Iphlpapi.dll \
 	ws2_32.lib Iphlpapi.lib shell32.lib
 
-MDLLIBFILES = ..\lib\hythr.lib ..\lib\hycommon.lib ..\lib\hysig.lib
+MDLLIBFILES = $(LIBPATH)hythr.lib $(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib
 
 DLLBASE=0x11100000
 COMMENT=/comment:"Platform port library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."

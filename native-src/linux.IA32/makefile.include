@@ -24,8 +24,7 @@ DLL_LD = $(CC)
 CXX_DLL_LD = $(CXX)
 
 EXEPATH=../
-#DEPLOY=../../../deploy/
-LIBPATH=../lib/
+LIBPATH=$(HY_HDK)/lib/
 
 SHARED=../../shared/
 SHAREDSUB=$(SHARED)$(notdir $(CURDIR))/

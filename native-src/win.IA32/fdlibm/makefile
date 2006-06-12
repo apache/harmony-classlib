@@ -51,12 +51,12 @@ HYCFLAGS = -Oityb1 -W3 -Fd$(LIBPATH)hyfdlibm.pdb -D_IEEE_LIBM \
         $(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.c
 
 $(LIBPATH)$(LIBNAME): $(BUILDFILES)
-	@echo /NOLOGO -out:$(LIBPATH)$(LIBNAME) >templrf
+	@echo /NOLOGO -out:$(LIBNAME) >templrf
 	@echo $(BUILDFILES) >>templrf
 	$(implib) @templrf
 	@del templrf
 
 clean:
 	-del *.obj dist\*.obj
-	-del $(LIBPATH)$(LIBNAME)
+	-del $(LIBNAME)
 	-del $(LIBPATH)hyfdlibm.pdb

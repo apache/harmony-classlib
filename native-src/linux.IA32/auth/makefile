@@ -21,8 +21,8 @@ include ../makefile.include
 CFLAGS += -fpic 
 BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
 MDLLIBFILES = \
-        ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so ../lib/libhycommon.a \
-        ../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
+        ../libhysig.so $(LIBPATH)libhyzip.a ../libhyzlib.so $(LIBPATH)libhycommon.a \
+        $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a ../libhythr.so ../libvmi.so
 
 DLLNAME = ../libhyauth.so
 

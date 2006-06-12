@@ -107,6 +107,8 @@
 
                 <fileset dir="${hy.luni.src.test.java}">
                     <include name="**/*Test.java" />
+                    <exclude name="tests/api/java/lang/IllegalThreadStateExceptionTest.java" />
+                    <exclude name="tests/api/java/lang/ThreadTest.java" />
                     <exclude name="tests/api/java/io/InputStreamReaderTest.java" />
                     <exclude name="tests/api/java/io/ObjectInputStreamTest.java" />
                     <exclude name="tests/api/java/io/ObjectOutputStreamTest.java" />

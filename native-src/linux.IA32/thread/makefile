@@ -26,7 +26,7 @@ BUILDFILES = \
 	$(SHAREDSUB)rwmutex.o thrcreate.o thrdsup.o $(SHAREDSUB)thrprof.o
 
 SYSLIBFILES = -lpthread
-MDLLIBFILES = ../lib/libhypool.a ../lib/libhycommon.a
+MDLLIBFILES = $(LIBPATH)libhypool.a $(LIBPATH)libhycommon.a
 DLLNAME = ../libhythr.so
 
 include ../rules.mk

@@ -33,7 +33,7 @@ VIRTFILES = $(LIBBASE).res
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 
-MDLLIBFILES = ..\lib\hypool.lib ..\lib\hycommon.lib
+MDLLIBFILES = $(LIBPATH)hypool.lib $(LIBPATH)hycommon.lib
 
 DLLBASE=0x11500000
 COMMENT=/comment:"Thread support library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."

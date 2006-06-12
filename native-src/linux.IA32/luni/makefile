@@ -36,8 +36,8 @@ BUILDFILES = \
 	OSNetworkSystemLinux.o
 
 MDLLIBFILES = \
-	../lib/libhycommon.a ../libhysig.so ../lib/libhyzip.a ../libhyzlib.so \
-	../lib/libhypool.a ../lib/libhyfdlibm.a ../libhythr.so ../libvmi.so
+	$(LIBPATH)libhycommon.a ../libhysig.so $(LIBPATH)libhyzip.a ../libhyzlib.so \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a ../libhythr.so ../libvmi.so
 
 DLLNAME = ../libhyluni.so
 
