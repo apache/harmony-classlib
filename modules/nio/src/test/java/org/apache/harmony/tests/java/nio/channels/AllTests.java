@@ -20,18 +20,21 @@ import junit.framework.TestSuite;
 
 public class AllTests {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.nio.channels");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(ServerSocketChannelTest.class);
-		suite.addTestSuite(SocketChannelTest.class);
-		suite.addTestSuite(FileChannelTest.class);
-		suite.addTestSuite(FileChannelLockingTest.class);
-		suite.addTestSuite(DatagramChannelTest.class);
+    public static Test suite() {
+        TestSuite suite = new TestSuite(
+                "Test for org.apache.harmony.tests.java.nio.channels");
+        //$JUnit-BEGIN$
+        suite.addTestSuite(FileChannelLockingTest.class);
+        suite.addTestSuite(FileChannelTest.class);
+        suite.addTestSuite(SinkChannelTest.class);
+        suite.addTestSuite(DatagramChannelTest.class);
+        suite.addTestSuite(PipeTest.class);
         suite.addTestSuite(ChannelsTest.class);
-		//$JUnit-END$
-		return suite;
-	}
+        suite.addTestSuite(ServerSocketChannelTest.class);
+        suite.addTestSuite(SocketChannelTest.class);
+        suite.addTestSuite(SourceChannelTest.class);
+        //$JUnit-END$
+        return suite;
+    }
 
 }

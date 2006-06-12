@@ -49,9 +49,7 @@ public class SelectorProviderImpl extends SelectorProvider {
 	 * @see java.nio.channels.spi.SelectorProvider#openPipe()
 	 */
 	public Pipe openPipe() throws IOException {
-//	    return new PipeImpl();
-		//FIXME: waiting for JIRA-41
-		return null;
+	    return new PipeImpl();
 	}
 
 	/*
