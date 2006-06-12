@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ public class InetSocketAddress extends SocketAddress {
 
 	private static final long serialVersionUID = 5076001401234631237L;
 
-	private String hostName;
+	private String hostname;
 
 	private InetAddress addr;
 
@@ -40,7 +40,7 @@ public class InetSocketAddress extends SocketAddress {
 			addr = InetAddress.ANY;
 		else
 			addr = address;
-		hostName = addr.getHostName();
+		hostname = addr.getHostName();
 		this.port = port;
 	}
 
@@ -55,12 +55,12 @@ public class InetSocketAddress extends SocketAddress {
 	InetSocketAddress(String host, int port, boolean needResolved){
 		if (host == null || port < 0 || port > 65535)
 			throw new IllegalArgumentException();
-		hostName = host;
+		hostname = host;
 		this.port = port;
 		if(needResolved){
 			try {
-				addr = InetAddress.getByName(hostName);
-				hostName = addr.getHostName();
+				addr = InetAddress.getByName(hostname);
+				hostname = null;
 			} catch (UnknownHostException e) {
 			}
 		}else{
@@ -90,8 +90,8 @@ public class InetSocketAddress extends SocketAddress {
 	}
 
 	public final String getHostName() {
-		return hostName;
-	}
+        return (null != addr) ? addr.hostName : hostname;
+    }
 
 	public final boolean isUnresolved() {
 		return addr == null;
@@ -99,10 +99,11 @@ public class InetSocketAddress extends SocketAddress {
 
 	public String toString() {
 		String host;
-		if (addr != null)
-			host = addr.toString();
-		else
-			host = hostName;
+		if (addr != null) {
+            host = addr.toString();
+        } else {
+            host = hostname;
+        }
 		return host + ":" + port; //$NON-NLS-1$
 	}
 
@@ -121,7 +122,7 @@ public class InetSocketAddress extends SocketAddress {
 		// we only use the hostnames in the comparison if the addrs were not
 		// resolved
 		if ((addr == null) && (iSockAddr.addr == null)) {
-			return hostName.equals(iSockAddr.hostName);
+			return hostname.equals(iSockAddr.hostname);
 		} else {
 			// addrs were resolved so use them for the comparison
 			if (addr == null) {
@@ -134,20 +135,15 @@ public class InetSocketAddress extends SocketAddress {
 	}
 
 	public final int hashCode() {
-		if (addr == null)
-			return hostName.hashCode() + port;
+		if (addr == null) {
+            return hostname.hashCode() + port;
+        }
 		return addr.hashCode() + port;
 	}
 
 	private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
-		stream.defaultReadObject();
-		if (addr == null) {
-			try {
-				addr = InetAddress.getByName(hostName);
-			} catch (UnknownHostException e) {
-			}
-		}
+        stream.defaultReadObject();
 	}
 
 }
