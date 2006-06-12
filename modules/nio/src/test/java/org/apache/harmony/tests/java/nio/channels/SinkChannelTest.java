@@ -125,13 +125,21 @@ public class SinkChannelTest extends TestCase {
             thread[i].join();
         }
         ByteBuffer readBuf = ByteBuffer.allocate(THREAD_NUM * BUFFER_SIZE);
-        long readVal = source.read(readBuf);
+        
+        long totalCount = 0;
+        do {
+            long count = source.read(readBuf);
+            if (count < 0) {
+                break;
+            }
+            totalCount += count;
+        } while (totalCount != (THREAD_NUM * BUFFER_SIZE));
+        
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < THREAD_NUM; i++) {
             buf.append("bytes");
         }
         String readString = buf.toString();
-        assertEquals(readString.length(), readVal);
         assertEquals(readString, new String(readBuf.array(), ISO8859_1));
 	}
 
