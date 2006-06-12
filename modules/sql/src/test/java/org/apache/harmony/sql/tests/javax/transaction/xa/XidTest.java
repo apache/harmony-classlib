@@ -34,9 +34,6 @@ public class XidTest extends TestCase {
 		thePublicStatics.put("MAXBQUALSIZE", new Integer(64));
 		thePublicStatics.put("MAXGTRIDSIZE", new Integer(64));
 
-		System.out.println("MAXBQUALSIZE: " + Xid.MAXBQUALSIZE);
-		System.out.println("MAXGTRIDSIZE: " + Xid.MAXGTRIDSIZE);
-
 		Class xidClass;
 		try {
 			xidClass = Class.forName("javax.transaction.xa.Xid");
