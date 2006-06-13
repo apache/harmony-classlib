@@ -97,29 +97,37 @@ public class Statement {
     
     Object invokeMethod() throws Exception {
         Object result = null;
-        
+
         try {
             if(target.getClass().isArray()) {
                 Method method = findArrayMethod();
                 Object[] ama = getArrayMethodArguments();
+
                 result = method.invoke(null, ama);
-            } else if(methodName.equals("new")) {
+            } else if (methodName.equals("newInstance") &&
+                    target instanceof Class &&
+                    ((Class) target).getName().equals("java.lang.reflect.Array"))
+            {
+                Class componentType = (Class) arguments[0];
+                int length = ((Integer) arguments[1]).intValue();
+
+                result = Array.newInstance(componentType, length);
+            } else if(methodName.equals("new") ||
+                      methodName.equals("newInstance"))
+            {
                 if(target instanceof Class) {
-                    Class type = (Class) target;
-                    if(type.isArray()) {
-                        Class componentType = type.getComponentType();
-                        int length = ((Integer) arguments[0]).intValue();
-                        result = Array.newInstance(componentType, length);
-                    } else {
-                        Constructor constructor = findConstructor();
-                        result = constructor.newInstance(arguments);
-                    }
-                } else {
                     Constructor constructor = findConstructor();
+                    
+                    result = constructor.newInstance(arguments);
+                } else {
+                    // XXX should be investigated, dead code?
+                    Constructor constructor = findConstructor();
+
                     result = constructor.newInstance(arguments);
                 }
             } else if(target instanceof Class) {
                 Method method = findStaticMethod();
+
                 result = method.invoke(null, arguments);
             } else {
                 final Method method = findMethod();
@@ -130,10 +138,12 @@ public class Statement {
                         return null;
                     }
                 });
+
                 result = method.invoke(target, arguments);
             }
         } catch (InvocationTargetException ite) {
             Throwable t = ite.getCause();
+
             throw (t != null) && (t instanceof Exception) ? (Exception) t : ite;
         }
         return result;
@@ -173,47 +183,47 @@ public class Statement {
     private Constructor findConstructor() throws NoSuchMethodException {
         Class[] argClasses = getClasses();
         Class targetClass = (Class) target;
-        
+
         Constructor result = null;
-        
-           Constructor[] constructors = targetClass.getConstructors();
-           for(int i = 0; i < constructors.length; ++i) {
-               Constructor constructor = constructors[i];
-               Class[] parameterTypes = constructor.getParameterTypes();
-               
-               if(parameterTypes.length == argClasses.length) {
-                   boolean found = true;
-                   
-                   for(int j = 0; j < parameterTypes.length; ++j) {
-                       boolean argIsNull = argClasses[j] == null;
-                       boolean argIsPrimitiveWrapper = isPrimitiveWrapper(
-                               argClasses[j], parameterTypes[j]);
-                       boolean paramIsPrimitive =
-                               parameterTypes[j].isPrimitive();
-                       boolean paramIsAssignable = argIsNull ? false
-                               : parameterTypes[j].isAssignableFrom(
-                                       argClasses[j]);
-                        
-                       if(!argIsNull && !paramIsAssignable
-                               && !argIsPrimitiveWrapper
-                               || argIsNull && paramIsPrimitive) {
-                           found = false;
-                           break;
-                       }
-                   }
-                   
-                   if(found) {
-                       result = constructor;
-                       break;
-                   }
-               }
+        Constructor[] constructors = targetClass.getConstructors();
+
+        for(int i = 0; i < constructors.length; ++i) {
+            Constructor constructor = constructors[i];
+            Class[] parameterTypes = constructor.getParameterTypes();
+
+            if(parameterTypes.length == argClasses.length) {
+                boolean found = true;
+
+                for(int j = 0; j < parameterTypes.length; ++j) {
+                    boolean argIsNull = argClasses[j] == null;
+                    boolean argIsPrimitiveWrapper = isPrimitiveWrapper(
+                            argClasses[j], parameterTypes[j]);
+                    boolean paramIsPrimitive =
+                            parameterTypes[j].isPrimitive();
+                    boolean paramIsAssignable = argIsNull ? false
+                            : parameterTypes[j].isAssignableFrom(
+                                   argClasses[j]);
+                    
+                    if(!argIsNull && !paramIsAssignable
+                                && !argIsPrimitiveWrapper
+                                || argIsNull && paramIsPrimitive) {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if(found) {
+                    result = constructor;
+                    break;
+                }
+            }
         }
            
-           if(result == null) {
-               throw new NoSuchMethodException(
-                   "No constructor for class " + targetClass.getName()
-                   + " found");
-           }
+        if(result == null) {
+            throw new NoSuchMethodException(
+                    "No constructor for class " + targetClass.getName()
+                    + " found");
+        }
            
         return result;
     }

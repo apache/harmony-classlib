@@ -20,6 +20,7 @@
  */
 package java.beans;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -107,11 +108,12 @@ public class Encoder {
            PersistenceDelegate pd = (object != null) ?
                getPersistenceDelegate(object.getClass()) :
                    new NullPersistenceDelegate();
-               
+
+
            if(pd == null) {
                pd = new DefaultPersistenceDelegate();
            }
-           
+
            pd.writeObject(object, this);
     }
 
@@ -123,8 +125,8 @@ public class Encoder {
         if(node != null) {
             try {
                 Object[] oldArgs = oldStm.getArguments();
-                Object[] newArgs = write(oldArgs);
-                
+                write(oldArgs);
+
                 Statement statement = new Statement(node.getObjectValue(),
                         oldStm.getMethodName(), oldArgs);
                 node.addStatement(statement);
@@ -146,7 +148,7 @@ public class Encoder {
             
             ObjectNode node = null;
             Class type = null;
-            
+
             if(oldInstance != null) {
                 type = oldInstance.getClass();
                 node = (ObjectNode) nodes.get(oldInstance);
@@ -154,17 +156,21 @@ public class Encoder {
             
             if(node == null) {
                 if(isNull(type) || isPrimitive(type) || isString(type)
-                        || isClass(type)) {
+                        //|| isClass(type)
+                   ) 
+                {
                     node = new ObjectNode(oldExp);
                 } else {
                     write(oldExp.getArguments());
                     node = new ObjectNode(oldExp, nodes);
                 }
-                
+
                 nodes.put(oldInstance, node);
-                
+
                 // if an expression is not a constructor
-                if(!(oldExp.getTarget() instanceof Class)) {
+                if(!(oldExp.getTarget() instanceof Class ||
+                     oldExp.getTarget() instanceof Field))
+                {
                     ObjectNode parent = (ObjectNode) nodes.get(
                             oldExp.getTarget());
                     parent.addExpression(oldExp);
@@ -211,14 +217,7 @@ public class Encoder {
         if(node == null) {
             Class type = oldInstance.getClass();
             
-            if(isPrimitive(type) || isString(type) || isClass(type)) {
-                Expression expr = new Expression(type, "new",
-                        new Object[] { oldInstance });
-                nodes.put(oldInstance, new ObjectNode(expr));
-            } else {
-                doWriteObject(oldInstance);
-            }
-            
+            doWriteObject(oldInstance);
             node = (ObjectNode) nodes.get(oldInstance);
         } else {
             node.addReference();

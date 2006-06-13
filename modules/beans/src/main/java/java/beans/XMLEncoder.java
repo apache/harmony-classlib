@@ -148,8 +148,8 @@ public class XMLEncoder extends Encoder {
             
             Tag tag = new Tag("array");
             
-            tag.addAttr("class", object.getClass().getComponentType().getName());
-            tag.addAttr("length", ((Integer) args[0]).toString());
+            tag.addAttr("class", ((Class) args[0]).getName());
+            tag.addAttr("length", ((Integer) args[1]).toString());
             
             printBytes(tabCount, tag.toStringOnOpen());
             

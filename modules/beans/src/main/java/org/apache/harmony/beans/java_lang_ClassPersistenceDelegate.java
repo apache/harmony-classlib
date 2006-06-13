@@ -16,6 +16,7 @@
 
 /**
  * @author Maxim V. Berkultsev
+ * @author Alexei Y. Zakharov
  * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.beans;
@@ -23,9 +24,11 @@ package org.apache.harmony.beans;
 import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
+import java.lang.reflect.Field;
 
 /**
  * @author Maxim V. Berkultsev
+ * @author Alexei Y. Zakharov
  * @version $Revision: 1.1.2.1 $
  */
 
@@ -33,8 +36,41 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
     
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Class value = (Class) oldInstance;
-        return new Expression(oldInstance, Class.class, "forName",
+        Field fld = null;
+        final String TYPE = "TYPE";
+        Expression result;
+
+        try {
+            if (value.equals(Integer.TYPE)) {
+                fld = Integer.class.getField(TYPE);
+            } else if (value.equals(Short.TYPE)) {
+                fld = Short.class.getField(TYPE);
+            } else if (value.equals(Long.TYPE)) {
+                fld = Long.class.getField(TYPE);
+            } else if (value.equals(Float.TYPE)) {
+                fld = Float.class.getField(TYPE);
+            } else if (value.equals(Double.TYPE)) {
+                fld = Double.class.getField(TYPE);
+            } else if (value.equals(Byte.TYPE)) {
+                fld = Byte.class.getField(TYPE);
+            } else if (value.equals(Character.TYPE)) {
+                fld = Character.class.getField(TYPE);
+            } else if (value.equals(Boolean.TYPE)) {
+                fld = Boolean.class.getField(TYPE);
+            }
+        } catch (NoSuchFieldException e) {
+            // impossible situation for valid java.lang classes 
+            // implementation with version >= 1.1 
+        }
+        if (fld != null) {
+            // we have primitive type 
+            result = new Expression(oldInstance, fld, "get",
+                    new Object[] {null});
+        } else {
+            result = new Expression(oldInstance, Class.class, "forName",
                 new Object[] { new String(value.getName()) });
+        }
+        return result;
     }
     
     protected void initialize(

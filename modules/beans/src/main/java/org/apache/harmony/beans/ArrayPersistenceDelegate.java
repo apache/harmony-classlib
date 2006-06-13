@@ -16,6 +16,7 @@
 
 /**
  * @author Maxim V. Berkultsev
+ * @author Alexei Y. Zakharov
  * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.beans;
@@ -28,11 +29,12 @@ import java.lang.reflect.Array;
 
 /**
  * @author Maxim V. Berkultsev
+ * @author Alexei Y. Zakharov
  * @version $Revision: 1.1.2.1 $
  */
 
 public class ArrayPersistenceDelegate extends PersistenceDelegate {
-    
+
     private static PersistenceDelegate pd = null;
     
     public static PersistenceDelegate getInstance() {
@@ -43,12 +45,13 @@ public class ArrayPersistenceDelegate extends PersistenceDelegate {
     }
 
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        Class type = getArrayWrapperClass(oldInstance.getClass());
         int length = Array.getLength(oldInstance);
-        return new Expression(oldInstance, type, "new",
-                new Object[] { new Integer(length) });
+        Class componentType = oldInstance.getClass().getComponentType();
+
+        return new Expression(oldInstance, Array.class, "newInstance",
+                new Object[] { componentType, new Integer(length) });
     }
-    
+
     protected void initialize(
             Class type, Object oldInstance, Object newInstance, Encoder out) {
         int length = Array.getLength(oldInstance);
@@ -77,32 +80,30 @@ public class ArrayPersistenceDelegate extends PersistenceDelegate {
             
         }
     }
-    
-    private static Class getArrayWrapperClass(Class type) {
-        Class result = type;
-        if(type == boolean[].class) {
-            result = Boolean[].class;
-        } else if(type == byte[].class) {
-            result = Byte[].class;
-        } else if(type == char[].class) {
-            result = Character[].class;
-        } else if(type == double[].class) {
-            result = Double[].class;
-        } else if(type == float[].class) {
-            result = Float[].class;
-        } else if(type == int[].class) {
-            result = Integer[].class;
-        } else if(type == long[].class) {
-            result = Long[].class;
-        } else if(type == short[].class) {
-            result = Short[].class;
-        }
-        return result;
-    }
-    
-    // Added for testing purposes
+
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+        if (oldInstance != null && newInstance != null) {
+            Class oldCl = oldInstance.getClass();
+            Class newCl = newInstance.getClass();
+
+            if (oldCl.isArray() && !newCl.isArray() ||
+                    newCl.isArray() && !oldCl.isArray()) {
+                return false;
+            } else if (oldCl.isArray() && newCl.isArray()) {
+                // both are arrays
+                int l1 = Array.getLength(oldInstance);
+                int l2 = Array.getLength(newInstance);
+                Class cType1 = oldCl.getComponentType();
+                Class cType2 = newCl.getComponentType();
+
+                if (l1 == l2 && cType1.equals(cType2)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        // both are nulls or have non-Array type
         return super.mutatesTo(oldInstance, newInstance);
     }
-    
 }

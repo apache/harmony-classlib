@@ -60,7 +60,7 @@ public abstract class PersistenceDelegate {
                 && (newInstance == null);
         
         if(bothInstancesAreNull) {
-            return true;
+            return false;
         } else {
             return (oldInstance != null) && (newInstance != null) ? 
                 oldInstance.getClass() == newInstance.getClass() : false;
@@ -73,7 +73,8 @@ public abstract class PersistenceDelegate {
     public void writeObject(Object oldInstance, Encoder out) {
         Object newInstance = (oldInstance != null) ? out.get(oldInstance)
                 : null;
-        
+       
+        // FIXME rewrite, handling of nulls is not obvious
        if(mutatesTo(oldInstance, newInstance)) {
            if(oldInstance != null) {
                initialize(oldInstance.getClass(), oldInstance, newInstance,
