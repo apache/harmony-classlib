@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,10 @@ package java.net;
 
 
 import java.io.IOException;
-import java.security.AccessController;
 import java.util.Enumeration;
 
+import org.apache.harmony.luni.net.SocketImplProvider;
 import org.apache.harmony.luni.util.Msg;
-import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * This class models a multicast socket for sending & receiving datagram packets
@@ -544,7 +543,7 @@ public class MulticastSocket extends DatagramSocket {
 	synchronized void createSocket(int aPort, InetAddress addr)
 			throws SocketException {
 		impl = factory != null ? factory.createDatagramSocketImpl()
-				: createSocketImpl();
+				: SocketImplProvider.getMulticastSocketImpl();
 		impl.create();
 		try {
 			// the required default options are now set in the VM where they
@@ -607,31 +606,5 @@ public class MulticastSocket extends DatagramSocket {
 		checkClosedAndBind(false);
 		impl.setOption(SocketOptions.IP_MULTICAST_LOOP, loop ? Boolean.TRUE
 				: Boolean.FALSE);
-	}
-
-	/**
-	 * Answer a concrete instance of MulticastSocketImpl, either as declared in
-	 * the system properties or the default, PlainDatagramSocketImpl. The latter
-	 * does not support security checks.
-	 * 
-	 * @return DatagramSocketImpl the concrete instance
-	 * 
-	 * @exception SocketException
-	 *                if an error occurs during the instantiation of a type
-	 *                declared in the system properties
-	 */
-	DatagramSocketImpl createSocketImpl() throws SocketException {
-		Object socketImpl = null;
-		String prefix;
-		prefix = (String) AccessController.doPrivileged(new PriviAction(
-				"impl.prefix", "Plain"));
-		try {
-			Class aClass = Class.forName("java.net." + prefix
-					+ "MulticastSocketImpl");
-			socketImpl = aClass.newInstance();
-		} catch (Exception e) {
-			throw new SocketException(Msg.getString("K0033"));
-		}
-		return (DatagramSocketImpl) socketImpl;
 	}
 }
