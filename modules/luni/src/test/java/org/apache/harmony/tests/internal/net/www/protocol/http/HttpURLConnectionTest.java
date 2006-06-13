@@ -18,51 +18,94 @@ package org.apache.harmony.tests.internal.net.www.protocol.http;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
 import java.net.ServerSocket;
+import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
+import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
 
 /**
  * Tests for <code>HTTPURLConnection</code> class constructors and methods.
- * 
+ *
  */
 public class HttpURLConnectionTest extends TestCase {
-    
-    private final Object bound = new Object();
 
-    //TODO: replace with connection to a mock server
-    Thread httpServer = new Thread(new Runnable() {
+    private final static Object bound = new Object();
+
+    static class MockServer extends Thread {
+        ServerSocket serverSocket;
+        boolean accepted = false;
+
+        public MockServer(String name) throws IOException {
+            super(name);
+            serverSocket = new ServerSocket(0);
+            serverSocket.setSoTimeout(1000);
+        }
+
+        public int port() {
+            return serverSocket.getLocalPort();
+        }
+
         public void run() {
             try {
-                ServerSocket ss = new ServerSocket(port);
-                synchronized(bound) {
+                synchronized (bound) {
                     bound.notify();
                 }
-                ss.setSoTimeout(1000);
                 try {
-                    ss.accept().close();
+                    serverSocket.accept().close();
+                    accepted = true;
                 } catch (SocketTimeoutException ignore) {
                 }
-                ss.close();
+                serverSocket.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-    }, "ServerSocket for HttpURLConnectionTest");
-
-    private int port = 34567;
-     
-    public void setUp() throws Exception {
-        super.setUp();
-        httpServer.start();
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
-        httpServer.join();
+    /**
+     * ProxySelector implementation used in the test.
+     */
+    static class TestProxySelector extends ProxySelector {
+        // proxy port
+        private int proxy_port;
+        // server port
+        private int server_port;
+
+        /**
+         * Creates proxy selector instance.
+         * Selector will return the proxy, only if the connection
+         * is made to localhost:server_port. Otherwise it will
+         * return NO_PROXY.
+         * Address of the returned proxy will be localhost:proxy_port.
+         */
+        public TestProxySelector(int server_port, int proxy_port) {
+            this.server_port = server_port;
+            this.proxy_port = proxy_port;
+        }
+
+        public java.util.List<Proxy> select(URI uri) {
+            Proxy proxy = Proxy.NO_PROXY;
+            if (("localhost".equals(uri.getHost()))
+                    && (server_port == uri.getPort())) {
+                proxy = new Proxy(Proxy.Type.HTTP,
+                            new InetSocketAddress("localhost", proxy_port));
+            }
+            ArrayList<Proxy> result = new ArrayList<Proxy>();
+            result.add(proxy);
+            return result;
+        }
+
+        public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+            // do nothing
+        }
     }
 
     /**
@@ -70,15 +113,103 @@ public class HttpURLConnectionTest extends TestCase {
      */
     public void testGetOutputStream() throws Exception {
         // Regression for HARMONY-482
+        MockServer httpServer =
+            new MockServer("ServerSocket for HttpURLConnectionTest");
+        httpServer.start();
         synchronized(bound) {
             bound.wait(5000);
         }
-        HttpURLConnection c = (HttpURLConnection) new URL("http://127.0.0.1:"
-                + port).openConnection();
+        HttpURLConnection c = (HttpURLConnection)
+            new URL("http://127.0.0.1:" + httpServer.port()).openConnection();
         c.setDoOutput(true);
-        //use new String("POST") instead of simple "POST" to obtain other 
-        //object instances then those that are in HttpURLConnection classes 
+        //use new String("POST") instead of simple "POST" to obtain other
+        //object instances then those that are in HttpURLConnection classes
         c.setRequestMethod(new String("POST"));
         c.getOutputStream();
+        httpServer.join();
+    }
+
+
+    /**
+     * Test checks if the proxy specified in openConnection
+     * method will be used for connection to the server
+     */
+    public void testUsingProxy() throws Exception {
+        // Regression for HARMONY-570
+        MockServer server = new MockServer("server");
+        MockServer proxy = new MockServer("proxy");
+
+        URL url = new URL("http://localhost:" + server.port());
+
+        HttpURLConnection connection = (HttpURLConnection) url
+                .openConnection(new Proxy(Proxy.Type.HTTP,
+                        new InetSocketAddress("localhost",
+                            proxy.port())));
+        connection.setConnectTimeout(2000);
+        connection.setReadTimeout(2000);
+
+        server.start();
+        synchronized(bound) {
+            bound.wait(5000);
+        }
+        proxy.start();
+        synchronized(bound) {
+            bound.wait(5000);
+        }
+
+        connection.connect();
+
+        // wait while server and proxy run
+        server.join();
+        proxy.join();
+
+        assertTrue("Connection does not use proxy", connection.usingProxy());
+        assertTrue("Proxy server was not used", proxy.accepted);
+    }
+
+    /**
+     * Test checks if the proxy provided by proxy selector
+     * will be used for connection to the server
+     */
+    public void testUsingProxySelector() throws Exception {
+        // Regression for HARMONY-570
+        MockServer server = new MockServer("server");
+        MockServer proxy = new MockServer("proxy");
+
+        URL url = new URL("http://localhost:" + server.port());
+
+        // keep default proxy selector
+        ProxySelector defPS = ProxySelector.getDefault();
+        // replace selector
+        ProxySelector.setDefault(
+                new TestProxySelector(server.port(), proxy.port()));
+
+        try {
+            HttpURLConnection connection =
+                (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(2000);
+            connection.setReadTimeout(2000);
+
+            server.start();
+            synchronized(bound) {
+                bound.wait(5000);
+            }
+            proxy.start();
+            synchronized(bound) {
+                bound.wait(5000);
+            }
+            connection.connect();
+
+            // wait while server and proxy run
+            server.join();
+            proxy.join();
+
+            assertTrue("Connection does not use proxy", 
+                                            connection.usingProxy());
+            assertTrue("Proxy server was not used", proxy.accepted);
+        } finally {
+            // restore default proxy selector
+            ProxySelector.setDefault(defPS);
+        }
     }
 }

@@ -37,21 +37,15 @@ import java.net.SocketPermission;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.net.UnknownServiceException;
 import java.security.AccessController;
 import java.security.Permission;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
@@ -61,7 +55,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * <code>URLConnection</code> This is the actual class that "does the work",
  * such as connecting, sending request and getting the content from the remote
  * server.
- * 
+ *
  */
 public class HttpURLConnection extends java.net.HttpURLConnection {
     int httpVersion = 1; // Assume HTTP/1.1
@@ -71,9 +65,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     private static final String GET = "GET";
 
     private static final String PUT = "PUT";
-    
+
     private static final String HEAD = "HEAD";
-    
+
     private final int defaultPort;
 
     InputStream is;
@@ -81,15 +75,15 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     private InputStream uis;
 
     OutputStream socketOut;
-    
+
     OutputStream cacheOut;
-    
+
     private ResponseCache responseCache;
-    
+
     private CacheResponse cacheResponse;
-    
+
     private CacheRequest cacheRequest;
-        
+
     private boolean hasTriedCache = false;
 
     private HttpOutputStream os;
@@ -102,14 +96,15 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     private int hostPort = -1;
 
+    private String hostName;
+
+    private InetAddress hostAddress;
+
     // proxy which is used to make the connection.
     private Proxy proxy = null;
 
     // the proxy list which is used to make the connection.
     private List<Proxy> proxyList = null;
-
-    // the current proxy which is used to make the connection.
-    private Proxy currentProxy;
 
     // the destination uri
     private URI uri = null;
@@ -291,11 +286,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     }
 
     private class HttpOutputStream extends OutputStream {
-        
+
         static final int MAX = 1024;
 
         int cacheLength;
-        
+
         int defaultCacheSize = MAX;
 
         ByteArrayOutputStream cache;
@@ -322,7 +317,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             }
             cache = new ByteArrayOutputStream(cacheLength);
         }
-        
+
         // calculates the exact size of chunk data, chunk data size is chunk
         // size minus chunk head (which writes chunk data size in HEX and
         // "\r\n") size. For example, a string "abcd" use chunk whose size is 5
@@ -334,7 +329,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             // Notices that according to RI, if chunklength is 19, chunk head
             // length is 4 (expressed as "10\r\n"), chunk data length is 16
             // (which real sum is 20,not 19); while if chunklength is 18, chunk
-            // head length is 3. Thus the cacheSize = chunkdataSize + 
+            // head length is 3. Thus the cacheSize = chunkdataSize +
             // sizeof(string length of chunk head in HEX) + sizeof("\r\n");
             int bitSize = Integer.toHexString(defaultCacheSize).length();
             // here is the calculated head size, not real size (for 19, it
@@ -415,7 +410,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 limit -= count;
                 cache.write(buffer, offset, count);
                 if (limit == 0){
-                    socketOut.write(cache.toByteArray());                    
+                    socketOut.write(cache.toByteArray());
                 }
             } else {
                 if (!writeToSocket || cache.size() + count < cacheLength) {
@@ -461,7 +456,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * Creates an instance of the <code>HttpURLConnection</code> using default
      * port 80.
-     * 
+     *
      * @param url
      *            URL The URL this connection is connecting
      */
@@ -471,7 +466,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Creates an instance of the <code>HttpURLConnection</code>
-     * 
+     *
      * @param url
      *            URL The URL this connection is connecting
      * @param port
@@ -492,7 +487,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Creates an instance of the <code>HttpURLConnection</code>
-     * 
+     *
      * @param url
      *            URL The URL this connection is connecting
      * @param port
@@ -507,12 +502,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Establishes the connection to the remote HTTP server
-     * 
+     *
      * Any methods that requires a valid connection to the resource will call
      * this method implicitly. After the connection is established,
      * <code>connected</code> is set to true.
-     * 
-     * 
+     *
+     *
      * @see #connected
      * @see java.io.IOException
      * @see URLStreamHandler
@@ -523,23 +518,76 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         if (getFromCache()) {
             return;
         }
-        Socket socket;
-        int connectTimeout = getConnectTimeout();
-        InetAddress host = getHostAddress();
-        int port = getHostPort();
-        SocketAddress sa = new InetSocketAddress(host, port);
-        if (null == currentProxy || Proxy.Type.HTTP == currentProxy.type()) {
-            socket = new Socket();
+        // socket to be used for connection
+        Socket socket = null;
+        // try to determine: to use the proxy or not
+        if (proxy != null) {
+            // try to make the connection to the proxy
+            // specified in constructor.
+            // IOException will be thrown in the case of failure
+            socket = getHTTPConnection(proxy);
         } else {
-            socket = new Socket(currentProxy);
+            // Use system-wide ProxySelect to select proxy list,
+            // then try to connect via elements in the proxy list.
+            ProxySelector selector = ProxySelector.getDefault();
+            List<Proxy> proxyList = selector.select(uri);
+            if (proxyList != null) {
+                for (Proxy selectedProxy: proxyList) {
+                    if (selectedProxy.type() == Proxy.Type.DIRECT) {
+                        // the same as NO_PROXY
+                        continue;
+                    }
+                    try {
+                        socket = getHTTPConnection(selectedProxy);
+                        proxy = selectedProxy;
+                        break; // connected
+                    } catch (IOException e) {
+                        // failed to connect, tell it to the selector
+                        selector.connectFailed(
+                                uri, selectedProxy.address(), e);
+                    }
+                }
+            }
         }
-        socket.connect(sa, connectTimeout);
+        if (socket == null) {
+            // make direct connection
+            socket = getHTTPConnection(
+                    new InetSocketAddress(getHostName(), getHostPort()));
+        }
         socket.setSoTimeout(getReadTimeout());
         connected = true;
         socketOut = socket.getOutputStream();
         is = new BufferedInputStream(socket.getInputStream());
     }
-    
+
+    /**
+     * Returns connected socket to be used for this HTTP connection.
+     * TODO: implement persistent connections.
+     */
+    protected Socket getHTTPConnection(SocketAddress address) throws IOException {
+        Socket socket = new Socket();
+        socket.connect(address, getConnectTimeout());
+        return socket;
+    }
+
+    /**
+     * Returns connected socket to be used for this HTTP connection.
+     * TODO: implement persistent connections.
+     */
+    protected Socket getHTTPConnection(Proxy proxy) throws IOException {
+        Socket socket;
+        if (proxy.type() == Proxy.Type.HTTP) {
+            socket = getHTTPConnection(proxy.address());
+        } else {
+            // using DIRECT or SOCKS proxy
+            socket = new Socket(proxy);
+            socket.connect(
+                    new InetSocketAddress(url.getHost(), url.getPort()),
+                    getConnectTimeout());
+        }
+        return socket;
+    }
+
     // Tries to get head and body from cache, return true if has got this time or
     // already got before
     private boolean getFromCache() throws IOException {
@@ -579,8 +627,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Closes the connection with the HTTP server
-     * 
-     * 
+     *
+     *
      * @see URLConnection#connect()
      */
     public void disconnect() {
@@ -615,7 +663,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * <p>
      * If the content type is not what stated above,
      * <code>FileNotFoundException</code> is thrown.
-     * 
+     *
      * @return java.io.InputStream the error input stream returned by the
      *         server.
      */
@@ -648,14 +696,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * Answers the value of the field corresponding to the <code>key</code>
      * Answers <code>null</code> if there is no such field.
-     * 
+     *
      * If there are multiple fields with that key, the last field value is
      * returned.
-     * 
+     *
      * @return java.lang.String The value of the header field
      * @param key
      *            java.lang.String the name of the header field
-     * 
+     *
      * @see #getHeaderField(int)
      * @see #getHeaderFieldKey
      */
@@ -671,12 +719,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * This method answers the header field at position <code>pos</code> from
      * the response header, null if there is fewer fields than <code>pos</code>.
-     * 
-     * 
+     *
+     *
      * @return java.lang.String
      * @param pos
      *            int
-     * 
+     *
      * @see #getHeaderField(String)
      * @see #getHeaderField(int)
      */
@@ -693,9 +741,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * Provides an unmodifiable map of the connection header values. The map
      * keys are the String header field names. Each map value is a list of the
      * header field values associated with that key name.
-     * 
+     *
      * @return the mapping of header field names to values
-     * 
+     *
      * @since 1.4
      */
     public Map getHeaderFields() {
@@ -705,16 +753,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             return resHeader.getFieldMap();
         } catch (IOException e) {
             return null;
-        }        
+        }
     }
 
     /**
      * Provides an unmodifiable map of the request properties. The map keys are
      * Strings, the map values are each a List of Strings, with each request
      * property name mapped to its corresponding property values.
-     * 
+     *
      * @return the mapping of request property names to values
-     * 
+     *
      * @since 1.4
      */
     public Map getRequestProperties() {
@@ -723,12 +771,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Creates an input stream for reading from this URL Connection.
-     * 
-     * 
+     *
+     *
      * @return InputStream The input stream to read from
      * @exception UnknownServiceException
      *                Exception thrown when reading to URL isn't supported
-     * 
+     *
      * @see #getContent()
      * @see #getOutputStream()
      * @see java.io.InputStream
@@ -773,16 +821,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * Creates an output stream for writing to this URL Connection.
      * <code>UnknownServiceException</code> will be thrown if this url denies
      * write access
-     * 
-     * 
+     *
+     *
      * @return OutputStream The output stream to write to
      * @exception UnknownServiceException
      *                thrown when writing to URL is not supported
-     * 
+     *
      * @see #getContent()
      * @see #getInputStream()
      * @see java.io.IOException
-     * 
+     *
      */
     public OutputStream getOutputStream() throws IOException {
         if (!doOutput) {
@@ -802,7 +850,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         if (method == GET) {
             method = POST;
         }
-        
+
         // If the request method is neither PUT or POST, then you're not writing
         if (method != PUT && method != POST ) {
             throw new ProtocolException(Msg.getString("K008f", method));
@@ -845,7 +893,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Answers the permission required to make the connection
-     * 
+     *
      * @return java.security.Permission the connection required to make the
      *         connection.
      * @exception java.io.IOException
@@ -860,9 +908,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * Answers the value corresponds to the field in the request Header, null if
      * no such field exists
-     * 
+     *
      * @return java.lang.String The field to look up
-     * 
+     *
      * @see #getDefaultRequestProperty
      * @see #setDefaultRequestProperty
      * @see #setRequestProperty
@@ -875,7 +923,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Answers a line read from the input stream. Does not include the \n
-     * 
+     *
      * @return java.lang.String
      */
     String readln() throws IOException {
@@ -914,7 +962,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * Sends the request header to the remote HTTP server Not all of them are
      * guaranteed to have any effect on the content the server will return,
      * depending on if the server supports that field.
-     * 
+     *
      * Examples : Accept: text/*, text/html, text/html;level=1, Accept-Charset:
      * iso-8859-5, unicode-1-1;q=0.8
      */
@@ -967,12 +1015,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Answers the reponse code returned by the remote HTTP server
-     * 
-     * 
+     *
+     *
      * @return int the response code, -1 if no valid response code
      * @exception java.io.IOException
      *                thrown when there is a IO error during the retrieval.
-     * 
+     *
      * @see #getResponseMessage()
      */
     public int getResponseCode() throws IOException {
@@ -1108,7 +1156,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * Sets the default request header fields to be sent to the remote server.
      * This does not affect the current URL Connection, only newly created ones.
-     * 
+     *
      * @param field
      *            java.lang.String The name of the field to be changed
      * @param value
@@ -1123,11 +1171,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * <code>setIfModifiedSince()</code> Since this HTTP impl supports
      * IfModifiedSince as one of the header field, the request header is updated
      * with the new value.
-     * 
-     * 
+     *
+     *
      * @param newValue
      *            the number of millisecond since epoch
-     * 
+     *
      * @exception IllegalAccessError
      *                thrown when this method attempts to change the flag after
      *                connected
@@ -1147,13 +1195,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * <code>newValue</code> Only the current URL Connection is affected. It
      * can only be called before the connection is made This method must be
      * overridden by protocols which support the value of the fields.
-     * 
-     * 
+     *
+     *
      * @param field
      *            java.lang.String the name of field to be set
      * @param newValue
      *            java.lang.String the new value for this field
-     * 
+     *
      * @see #getDefaultRequestProperty
      * @see #setDefaultRequestProperty
      * @see #getRequestProperty
@@ -1171,12 +1219,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * Adds the given request property. Will not overwrite any existing
      * properties associated with the given field name.
-     * 
+     *
      * @param field
      *            the request property field name
      * @param value
      *            the property value
-     * 
+     *
      * @since 1.4
      */
     public void addRequestProperty(String field, String value) {
@@ -1194,25 +1242,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * if a proxy port has been set.
      */
     private int getHostPort() {
-        if (usingProxy()) {
-            if (null == currentProxy) {
-                // get from system property
-                String portString = getSystemPropertyOrAlternative(
-                        "http.proxyPort", "proxyPort");
-                if (portString != null) {
-                    hostPort = Integer.parseInt(portString);
-                }
-            } else {
-                // get from proxy
-                InetSocketAddress addr = (InetSocketAddress) currentProxy
-                        .address();
-                hostPort = addr.getPort();
-            }
-        } else {
-            hostPort = url.getPort();
-        }
         if (hostPort < 0) {
-            hostPort = defaultPort;
+            // the value was not set yet
+            if (proxy != null) {
+                hostPort = ((InetSocketAddress) proxy.address()).getPort();
+            } else {
+                hostPort = url.getPort();
+            }
+            if (hostPort < 0) {
+                hostPort = defaultPort;
+            }
         }
         return hostPort;
     }
@@ -1222,7 +1261,17 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * given in the URL or the address of the proxy server.
      */
     private InetAddress getHostAddress() throws IOException {
-        return InetAddress.getByName(getHostName());
+        if (hostAddress == null) {
+            // the value was not set yet
+            if (proxy != null) {
+                hostAddress =
+                    ((InetSocketAddress) proxy.address()).getAddress();
+            } else {
+                hostAddress =
+                    InetAddress.getByName(url.getHost());
+            }
+        }
+        return hostAddress;
     }
 
     /**
@@ -1230,21 +1279,15 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * in the URL or the name of the proxy server.
      */
     private String getHostName() {
-        if (proxyName != null) {
-            return proxyName;
-        }
-        if (usingProxy()) {
-            if (null == currentProxy) {
-                proxyName = getSystemPropertyOrAlternative("http.proxyHost",
-                        "proxyHost");
+        if (hostName == null) {
+            // the value was not set yet
+            if (proxy != null) {
+                hostName = ((InetSocketAddress) proxy.address()).getHostName();
             } else {
-                InetSocketAddress addr = (InetSocketAddress) currentProxy
-                        .address();
-                proxyName = addr.getHostName();
+                hostName = url.getHost();
             }
-            return proxyName;
         }
-        return url.getHost();
+        return hostName;
     }
 
     private String getSystemPropertyOrAlternative(final String key,
@@ -1263,32 +1306,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Answer whether the connection should use a proxy server.
-     * 
+     *
      * Need to check both proxy* and http.proxy* because of change between JDK
      * 1.0 and JDK 1.1
      */
     public boolean usingProxy() {
-        if (Proxy.NO_PROXY == currentProxy) {
-            return false;
-        }
-        // using proxy if http proxy is set by caller.
-        if (null != currentProxy && Proxy.Type.HTTP == currentProxy.type()) {
-            return true;
-        }
-        // First check whether the user explicitly set whether to use a proxy.
-        String proxySet = getSystemProperty("http.proxySet");
-        if (proxySet != null)
-            return proxySet.toLowerCase().equals("true");
-
-        proxySet = getSystemProperty("proxySet");
-        if (proxySet != null)
-            return proxySet.toLowerCase().equals("true");
-
-        // The user didn't explicitly set whether to use a proxy. Answer true if
-        // the user specified a proxyHost.
-        if (getSystemProperty("http.proxyHost") != null)
-            return true;
-        return getSystemProperty("proxyHost") != null;
+        return (proxy != null);
     }
 
     /**
@@ -1306,41 +1329,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             }
             return;
         }
-        // Use system-wide ProxySelect to select proxy list,
-        // then try to connect via elements in the proxy list.
-        if (null != proxy) {
-            proxyList = new ArrayList<Proxy>(1);
-            proxyList.add(proxy);
-        } else {
-            proxyList = NetUtil.getProxyList(uri);
-        }
-        if (null == proxyList) {
-            currentProxy = null;
-            doRequestInternal();
-        } else {
-            // try the proxy list until one of them establish
-            // the connection successfully.
-            ProxySelector selector = ProxySelector.getDefault();
-            Iterator iter = proxyList.iterator();
-            boolean doRequestOK = false;
-            while (iter.hasNext() && !doRequestOK) {
-                currentProxy = (Proxy) iter.next();
-                try {
-                    doRequestInternal();
-                    doRequestOK = true;
-                } catch (IOException ioe) {
-                    // if connect failed, callback method "connectFailed"
-                    // should be invoked.
-                    if (null != selector && Proxy.NO_PROXY != currentProxy) {
-                        selector
-                                .connectFailed(uri, currentProxy.address(), ioe);
-                    }
-                }
-            }
-            if (!doRequestOK) {
-                throw new IOException(Msg.getString("K0097"));
-            }
-        }
+        doRequestInternal();
     }
 
     void doRequestInternal() throws IOException {
