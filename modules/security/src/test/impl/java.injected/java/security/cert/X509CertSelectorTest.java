@@ -206,7 +206,7 @@ public class X509CertSelectorTest extends TestCase {
         }
         
         public void setKeyIdentifier(byte[] subjectKeyID) {
-            this.keyIdentifier = (byte[]) subjectKeyID.clone(); 
+            this.keyIdentifier = subjectKeyID.clone(); 
         }
         
         public void setDate(Date date) {

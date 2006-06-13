@@ -178,11 +178,12 @@ public final class Permissions extends PermissionCollection implements
 	 *            java.security.Permission the permission to check
 	 */
     public boolean implies(Permission permission) {
+        if (permission == null) {
+            // RI compartible
+            throw new NullPointerException("Null permission");
+        }
         if (allEnabled) {
             return true;
-        }
-        if (permission == null) {
-            return false;
         }
         Class klass = permission.getClass();
         PermissionCollection klassMates = null;

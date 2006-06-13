@@ -65,33 +65,6 @@ public class MessageDigestSpiTest extends TestCase {
 	}
 
 	/*
-	 * Class under test for int engineDigest(byte[], int, int)
-	 */
-	public void testEngineDigestbyteArrayintint() {
-		MyMessageDigest md = new MyMessageDigest();
-		byte[] b = new byte[5];
-		try {
-			md.engineDigest(null, 1, 1);
-			fail("No expected NullPointerException");	
-		} catch (NullPointerException e) {		
-		} catch (DigestException e) {
-			fail(e.toString());
-		}
-		try {
-			md.engineDigest(b, 3, 10);
-			fail("No expected DigestException");	
-		} catch (DigestException e) {
-		}
-		try {
-			if (md.engineDigest(b, 1, 3) != 0) {
-				fail("incorrect result");
-			}
-		} catch (DigestException e) {
-			fail(e.toString());
-		}
-	}
-
-	/*
 	 * Class under test for Object clone()
 	 */
 	public void testClone() {
