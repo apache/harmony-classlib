@@ -158,7 +158,6 @@
                 <fileset dir="${hy.beans.src.test.java}">
                     <include name="**/*Test.java"/>
                     <exclude name="org/apache/harmony/beans/tests/java/beans/EventHandlerTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/BeansTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/CustomizedPersistenceDelegateTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/DefaultPersistenceDelegateTest.java" />
@@ -166,10 +165,10 @@
                     <exclude name="org/apache/harmony/beans/tests/java/beans/EventHandlerTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/ExpressionTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/FeatureDescriptorTest.java" />
+
                     <exclude name="org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/MethodDescriptorTest.java" />
+
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PersistenceDelegateTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyChangeSupportTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java" />

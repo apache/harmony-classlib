@@ -264,8 +264,8 @@ public class FeatureDescriptorTest extends TestCase {
 		for (int i = 0; i < attributeNames.length; i++) {
 			fd.setValue(attributeNames[i], values[i]);
 		}
-		Enumeration names = fd.attributeNames();
-		Hashtable table = new Hashtable();
+		Enumeration<String> names = fd.attributeNames();
+		Hashtable<String, Object> table = new Hashtable<String, Object>();
 		while (names.hasMoreElements()) {
 			String name = (String) names.nextElement();
 			table.put(name, fd.getValue(name));

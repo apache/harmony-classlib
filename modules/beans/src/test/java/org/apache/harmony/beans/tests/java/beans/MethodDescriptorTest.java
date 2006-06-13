@@ -67,7 +67,7 @@ public class MethodDescriptorTest extends TestCase {
     public void testMethodDescriptorMethod_Null() {
         Method method = null;
         try {
-            MethodDescriptor md = new MethodDescriptor(method);
+            new MethodDescriptor(method);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
         }
@@ -109,7 +109,7 @@ public class MethodDescriptorTest extends TestCase {
         ParameterDescriptor[] pds = new ParameterDescriptor[1];
         pds[0] = new ParameterDescriptor();
         try {
-            MethodDescriptor md = new MethodDescriptor(method, pds);
+            new MethodDescriptor(method, pds);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
         }

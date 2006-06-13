@@ -1,62 +1,73 @@
 /*
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.4.6.3 $
+ * Copyright 2005 The Apache Software Foundation or its licensors, as
+ * applicable.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package java.beans;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.Map;
 
 /**
+ * Common base class for Descriptors.
+ * 
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.4.6.3 $
  */
-
 public class FeatureDescriptor {
-    
-    private HashMap<String, Object> values = new HashMap<String, Object>();
+
+    private Map<String, Object> values;
+
     boolean preferred, hidden, expert;
-    String shortDescription = null;
-    String name = null;
-    String displayName = null;
+
+    String shortDescription;
+
+    String name;
+
+    String displayName;
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Constructs an instance.
+     * </p>
      */
     public FeatureDescriptor() {
-        this.preferred = false;
-        this.hidden = false;
-        this.expert = false;
+        this.values = new HashMap<String, Object>();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Sets the value for the named attribute.
+     * </p>
+     * 
+     * @param attributeName The name of the attribute to set a value with.
+     * @param value The value to set.
      */
     public void setValue(String attributeName, Object value) {
-        if ((attributeName != null) && (value != null)) {
-            values.put(attributeName, value);
-        }
+        if (attributeName == null || value == null)
+            throw new NullPointerException();
+        values.put(attributeName, value);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Gets the value associated with the named attribute.
+     * </p>
+     * 
+     * @param attributeName The name of the attribute to get a value for.
+     * @return The attribute's value.
      */
     public Object getValue(String attributeName) {
         Object result = null;
@@ -67,93 +78,146 @@ public class FeatureDescriptor {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Enumerates the attribute names.
+     * </p>
+     * 
+     * @return An instance of {@link Enumeration}.
      */
     public Enumeration<String> attributeNames() {
-        Vector<String> attribNames = new Vector<String>(values.size());
-        attribNames.addAll(values.keySet());
-        return attribNames.elements();
+        return Collections.enumeration(values.keySet());
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Sets the short description.
+     * </p>
+     * 
+     * @param text The description to set.
      */
     public void setShortDescription(String text) {
         this.shortDescription = text;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Sets the name.
+     * </p>
+     * 
+     * @param name The name to set.
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Sets the display name.
+     * </p>
+     * 
+     * @param displayName The display name to set.
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Gets the short description or {@link #getDisplayName()} if not set.
+     * </p>
+     * 
+     * @return The description.
      */
     public String getShortDescription() {
-        return shortDescription;
+        return shortDescription == null ? getDisplayName() : shortDescription;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Gets the name.
+     * </p>
+     * 
+     * @return The name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Gets the display name or {@link #getName()} if not set.
+     * </p>
+     * 
+     * @return The display name.
      */
     public String getDisplayName() {
-        return displayName;
+        return displayName == null ? getName() : displayName;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Sets the preferred indicator.
+     * </p>
+     * 
+     * @param preferred <code>true</code> if preferred, <code>false</code>
+     *        otherwise.
      */
     public void setPreferred(boolean preferred) {
         this.preferred = preferred;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Sets the hidden indicator.
+     * </p>
+     * 
+     * @param hidden <code>true</code> if hidden, <code>false</code>
+     *        otherwise.
      */
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Sets the expert indicator.
+     * </p>
+     * 
+     * @param expert <code>true</code> if expert, <code>false</code>
+     *        otherwise.
      */
     public void setExpert(boolean expert) {
         this.expert = expert;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Indicates if this feature is preferred.
+     * </p>
+     * 
+     * @return <code>true</code> if preferred, <code>false</code> otherwise.
      */
     public boolean isPreferred() {
         return preferred;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Indicates if this feature is hidden.
+     * </p>
+     * 
+     * @return <code>true</code> if hidden, <code>false</code> otherwise.
      */
     public boolean isHidden() {
         return hidden;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <p>
+     * Indicates if this feature is an expert feature.
+     * </p>
+     * 
+     * @return <code>true</code> if hidden, <code>false</code> otherwise.
      */
     public boolean isExpert() {
         return expert;
