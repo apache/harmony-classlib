@@ -24,6 +24,7 @@ package java.security.serialization;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Enumeration;
+import java.util.NoSuchElementException;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
 
@@ -61,8 +62,17 @@ final class RealPermissionCollection extends PermissionCollection {
 
     public void add(Permission permission) {}
 
-    public Enumeration elements() {
-        return null;
+    public Enumeration<Permission> elements() {
+
+        return new Enumeration<Permission>() {
+            public boolean hasMoreElements() {
+                return false;
+            }
+
+            public Permission nextElement() {
+                throw new NoSuchElementException();
+            }
+        };
     }
 
     public boolean implies(Permission permission) {
