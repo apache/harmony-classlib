@@ -248,7 +248,7 @@ public abstract class SerializationTest extends TestCase {
     };
 
     // for comparing java.lang.Throwable objects
-    private final static SerializableAssert THROWABLE_COMPARATOR = new SerializableAssert() {
+    public final static SerializableAssert THROWABLE_COMPARATOR = new SerializableAssert() {
         public void assertDeserialized(Serializable reference, Serializable test) {
 
             Throwable refThr = (Throwable) reference;
@@ -276,7 +276,7 @@ public abstract class SerializationTest extends TestCase {
     };
 
     // for comparing java.security.PermissionCollection objects
-    private final static SerializableAssert PERMISSION_COLLECTION_COMPARATOR = new SerializableAssert() {
+    public final static SerializableAssert PERMISSION_COLLECTION_COMPARATOR = new SerializableAssert() {
         public void assertDeserialized(Serializable reference, Serializable test) {
 
             PermissionCollection refPC = (PermissionCollection) reference;
