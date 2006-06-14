@@ -21,7 +21,6 @@
 
 package java.security.serialization;
 
-import java.io.Serializable;
 import java.security.Permission;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -32,8 +31,7 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * 
  */
 
-public class PermissionTest extends SerializationTest implements
-        SerializationTest.SerializableAssert {
+public class PermissionTest extends SerializationTest {
 
     /**
      * @see com.intel.drl.test.SerializationTest#getData()
@@ -41,12 +39,6 @@ public class PermissionTest extends SerializationTest implements
     protected Object[] getData() {
         return new Object[] { new RealPermission(null),
                 new RealPermission("IYF&*%^sd 43") };
-    }
-
-    public void assertDeserialized(Serializable golden, Serializable test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((Permission) golden).getName(), ((Permission) test)
-                .getName());
     }
 }
 
@@ -58,6 +50,13 @@ final class RealPermission extends Permission {
     }
 
     public boolean equals(Object obj) {
+        if (obj instanceof RealPermission) {
+            String name = ((RealPermission) obj).getName();
+            if (name == null) {
+                return getName() == null;
+            }
+            return name.equals(getName());
+        }
         return false;
     }
 
