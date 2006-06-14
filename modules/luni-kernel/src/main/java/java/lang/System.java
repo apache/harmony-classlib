@@ -20,11 +20,13 @@ import java.io.BufferedOutputStream;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.security.AccessController;
+import java.nio.channels.Channel;
+import java.nio.channels.spi.SelectorProvider;
 import java.security.Policy;
-import java.security.PrivilegedAction;
+import java.util.Map;
 import java.util.Properties;
 import java.util.PropertyPermission;
 
@@ -452,6 +454,16 @@ public final class System {
 	 * @return the time in milliseconds.
 	 */
 	public static native long currentTimeMillis();
+    
+    /**
+     * <p>
+     * Returns the most precise time measurement in nanoseconds that's
+     * available.
+     * </p>
+     * 
+     * @return The current time in nanoseconds.
+     */
+    public static native long nanoTime();
 
 	private static final int InitLocale = 0;
 
@@ -567,6 +579,34 @@ public final class System {
 		}
 		throw new Error();
 	}
+    
+    /**
+     * <p>
+     * Returns all environment variables.
+     * </p>
+     * 
+     * @return A Map of all environment variables.
+     */
+    public static Map<String, String> getenv() {
+        SecurityManager secMgr = System.getSecurityManager();
+        if (secMgr != null) {
+            secMgr.checkPermission(new RuntimePermission("getenv.*"));
+        }
+        throw new Error();
+    }
+    
+    /**
+     * <p>
+     * Returns the inherited channel from the system-wide provider.
+     * </p>
+     * @return A {@link Channel} or <code>null</code>.
+     * @throws IOException
+     * @see SelectorProvider
+     * @see SelectorProvider#inheritedChannel()
+     */
+    public static Channel inheritedChannel() throws IOException {
+        return SelectorProvider.provider().inheritedChannel();
+    }
 
 	/**
 	 * Answers the system properties. Note that this is not a copy, so that
