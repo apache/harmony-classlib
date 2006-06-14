@@ -33,6 +33,13 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.security.Permission;
+import java.security.PermissionCollection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
 
 import junit.framework.TestCase;
 
@@ -268,6 +275,29 @@ public abstract class SerializationTest extends TestCase {
         }
     };
 
+    // for comparing java.security.PermissionCollection objects
+    private final static SerializableAssert PERMISSION_COLLECTION_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable reference, Serializable test) {
+
+            PermissionCollection refPC = (PermissionCollection) reference;
+            PermissionCollection tstPC = (PermissionCollection) test;
+
+            // verify class
+            TestCase.assertEquals(refPC.getClass(), tstPC.getClass());
+
+            // verify 'readOnly' field
+            TestCase.assertEquals(refPC.isReadOnly(), tstPC.isReadOnly());
+
+            // verify collection of permissions
+            Collection<Permission> refCollection = new HashSet<Permission>(
+                    Collections.list(refPC.elements()));
+            Collection<Permission> tstCollection = new HashSet<Permission>(
+                    Collections.list(tstPC.elements()));
+
+            TestCase.assertEquals(refCollection, tstCollection);
+        }
+    };
+
     private SerializableAssert defineComparator() throws Exception {
 
         if (this instanceof SerializableAssert) {
@@ -293,6 +323,8 @@ public abstract class SerializationTest extends TestCase {
         // instead of 'instanceof' for the first element
         if(s[0] instanceof java.lang.Throwable){
             return THROWABLE_COMPARATOR;
+        } else if (s[0] instanceof java.security.PermissionCollection){
+            return PERMISSION_COLLECTION_COMPARATOR;
         }
 
         // TODO - throw new RuntimeException() if failed to detect comparator
