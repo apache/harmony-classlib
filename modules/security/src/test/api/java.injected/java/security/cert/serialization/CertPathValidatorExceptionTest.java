@@ -56,27 +56,13 @@ public class CertPathValidatorExceptionTest extends SerializationTest implements
     }
 
     public void assertDeserialized(Serializable oref, Serializable otest) {
+        
+        // common checks
+        THROWABLE_COMPARATOR.assertDeserialized(oref, otest);
+        
+        // class specific checks
         CertPathValidatorException ref = (CertPathValidatorException) oref;
         CertPathValidatorException test = (CertPathValidatorException) otest;
-        String s = ref.getMessage();
-        Throwable th = ref.getCause();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertEquals(test.getMessage(), s);
-        }
-        if (th == null) {
-            assertNull(test.getCause());
-        } else {
-            Throwable th1 = test.getCause();
-            assertEquals(th1.getClass(), th.getClass());
-            String s1 = th.getMessage();
-            if (s1 == null) {
-                assertNull(th1.getMessage());
-            } else {
-                assertEquals(th1.getMessage(), s1);
-            }
-        }
         CertPath cp = ref.getCertPath();
         int ind = ref.getIndex();
         assertEquals("Incorrect index", test.getIndex(), ind);

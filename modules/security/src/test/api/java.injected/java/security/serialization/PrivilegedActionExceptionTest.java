@@ -49,14 +49,18 @@ public class PrivilegedActionExceptionTest extends SerializationTest implements
     }
     
     public void assertDeserialized(Serializable reference, Serializable otest) {
+        
+        // common checks
+        THROWABLE_COMPARATOR.assertDeserialized(reference, otest);
+        
+        // class specific checks
         PrivilegedActionException ref = (PrivilegedActionException)reference;
         PrivilegedActionException test = (PrivilegedActionException)otest;
         if( ref.getException() == null ) {
             assertNull( test.getException() );
-        }
-        else {
-            // just be sure we've deserialized the right class
-            assertSame(ref.getException().getClass(), test.getException().getClass() );
+        } else {
+            THROWABLE_COMPARATOR.assertDeserialized(ref.getException(), test
+                    .getException());
         }
     }
     

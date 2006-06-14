@@ -50,15 +50,13 @@ public class AccessControlExceptionTest extends SerializationTest implements
     }
 
     public void assertDeserialized(Serializable oref, Serializable otest) {
+        
+        // common checks
+        THROWABLE_COMPARATOR.assertDeserialized(oref, otest);
+
+        // class specific checks
         AccessControlException ref = (AccessControlException) oref;
         AccessControlException test = (AccessControlException) otest;
-        String s = ref.getMessage();
-        if (s == null) {
-            assertNull(test.getMessage());
-        } else {
-            assertTrue(s.equals(test.getMessage()));
-        }
-
         Permission p = ref.getPermission();
         if (p == null) {
             assertNull(test.getPermission());
