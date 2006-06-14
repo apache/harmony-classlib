@@ -21,6 +21,8 @@
 
 package javax.security.sasl.serialization;
 
+import java.io.Serializable;
+
 import javax.security.sasl.RealmCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * 
  */
 
-public class RealmCallbackTest extends SerializationTest {
+public class RealmCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static String[] msgs = {
             "New String",
@@ -50,7 +53,7 @@ public class RealmCallbackTest extends SerializationTest {
         return oo;
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
+    public void assertDeserialized(Serializable oref, Serializable otest) {
         RealmCallback ref = (RealmCallback) oref;
         RealmCallback test = (RealmCallback) otest;
         String dText = ref.getDefaultText();

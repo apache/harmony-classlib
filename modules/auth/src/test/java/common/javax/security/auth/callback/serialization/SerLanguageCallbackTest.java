@@ -21,6 +21,7 @@
 
 package javax.security.auth.callback.serialization;
 
+import java.io.Serializable;
 import java.util.Locale;
 import javax.security.auth.callback.LanguageCallback;
 
@@ -31,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * Serialization test for LanguageCallback class
  */
 
-public class SerLanguageCallbackTest extends SerializationTest {
+public class SerLanguageCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SerLanguageCallbackTest.class);
@@ -43,7 +45,7 @@ public class SerLanguageCallbackTest extends SerializationTest {
         return new Object[] { lc };
     }
 
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertTrue(test instanceof LanguageCallback);
         assertEquals(((LanguageCallback) golden).getLocale(),
                 ((LanguageCallback) test).getLocale());

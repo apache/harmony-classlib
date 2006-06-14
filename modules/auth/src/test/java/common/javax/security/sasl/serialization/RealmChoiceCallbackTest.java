@@ -21,6 +21,8 @@
 
 package javax.security.sasl.serialization;
 
+import java.io.Serializable;
+
 import javax.security.sasl.RealmChoiceCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * 
  */
 
-public class RealmChoiceCallbackTest extends SerializationTest {
+public class RealmChoiceCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static String[] msgs = {
             "New String",
@@ -60,7 +63,7 @@ public class RealmChoiceCallbackTest extends SerializationTest {
         return oo;
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
+    public void assertDeserialized(Serializable oref, Serializable otest) {
         RealmChoiceCallback ref = (RealmChoiceCallback) oref;
         RealmChoiceCallback test = (RealmChoiceCallback) otest;
         

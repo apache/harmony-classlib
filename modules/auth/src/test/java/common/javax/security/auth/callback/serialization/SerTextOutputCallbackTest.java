@@ -21,6 +21,8 @@
 
 package javax.security.auth.callback.serialization;
 
+import java.io.Serializable;
+
 import javax.security.auth.callback.TextOutputCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * Serialization test for TextOutputCallback class
  */
 
-public class SerTextOutputCallbackTest extends SerializationTest {
+public class SerTextOutputCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SerTextOutputCallbackTest.class);
@@ -41,7 +44,7 @@ public class SerTextOutputCallbackTest extends SerializationTest {
                 TextOutputCallback.INFORMATION, "message") };
     }
 
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertTrue(test instanceof TextOutputCallback);
         assertEquals(((TextOutputCallback) golden).getMessage(),
                 ((TextOutputCallback) test).getMessage());

@@ -21,6 +21,8 @@
 
 package javax.security.auth.callback.serialization;
 
+import java.io.Serializable;
+
 import javax.security.auth.callback.ConfirmationCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * Serialization test for ConfirmationCallback class
  */
 
-public class SerConfirmationCallbackTest extends SerializationTest {
+public class SerConfirmationCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SerConfirmationCallbackTest.class);
@@ -42,7 +45,7 @@ public class SerConfirmationCallbackTest extends SerializationTest {
                 ConfirmationCallback.YES_NO_OPTION, 1) };
     }
 
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertEquals(((ConfirmationCallback) golden).getDefaultOption(),
                 ((ConfirmationCallback) test).getDefaultOption());
         assertEquals(((ConfirmationCallback) golden).getPrompt(),

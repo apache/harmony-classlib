@@ -21,6 +21,8 @@
 
 package javax.security.auth.callback.serialization;
 
+import java.io.Serializable;
+
 import javax.security.auth.callback.ChoiceCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * Serialization test for ChoiceCallback class
  */
 
-public class SerChoiceCallbackTest extends SerializationTest {
+public class SerChoiceCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
   
 
     public static void main(String[] args) {
@@ -46,7 +49,7 @@ public class SerChoiceCallbackTest extends SerializationTest {
         return new Object[] {new ChoiceCallback(prompt, choices, defaultChoice, true)};
     }
 
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertTrue(golden instanceof ChoiceCallback);
         assertEquals(((ChoiceCallback) golden).getPrompt(),
                 ((ChoiceCallback) test).getPrompt());

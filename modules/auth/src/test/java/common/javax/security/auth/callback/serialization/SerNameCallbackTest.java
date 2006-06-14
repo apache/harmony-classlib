@@ -21,6 +21,8 @@
 
 package javax.security.auth.callback.serialization;
 
+import java.io.Serializable;
+
 import javax.security.auth.callback.NameCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * Serialization test for NameCallback class
  */
 
-public class SerNameCallbackTest extends SerializationTest {
+public class SerNameCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SerNameCallbackTest.class);
@@ -42,7 +45,7 @@ public class SerNameCallbackTest extends SerializationTest {
         return new Object[] { new NameCallback("prompt", "defaultName"), nc };
     }
 
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertTrue(test instanceof NameCallback);
         assertEquals(((NameCallback) golden).getDefaultName(),
                 ((NameCallback) test).getDefaultName());

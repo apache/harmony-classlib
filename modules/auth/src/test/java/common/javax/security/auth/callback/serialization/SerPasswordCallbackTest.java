@@ -21,6 +21,8 @@
 
 package javax.security.auth.callback.serialization;
 
+import java.io.Serializable;
+
 import javax.security.auth.callback.PasswordCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * Serialization test for PasswordCallback class
  */
 
-public class SerPasswordCallbackTest extends SerializationTest {
+public class SerPasswordCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SerPasswordCallbackTest.class);
@@ -44,7 +47,7 @@ public class SerPasswordCallbackTest extends SerializationTest {
     }
 
   
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertTrue(test instanceof PasswordCallback);
         assertEquals(((PasswordCallback) golden).getPrompt(),
                 ((PasswordCallback) test).getPrompt());

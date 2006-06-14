@@ -21,6 +21,8 @@
 
 package javax.security.sasl.serialization;
 
+import java.io.Serializable;
+
 import javax.security.sasl.AuthorizeCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * 
  */
 
-public class AuthorizeCallbackTest extends SerializationTest {
+public class AuthorizeCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static String[] msgs = {
             "New String",
@@ -44,7 +47,7 @@ public class AuthorizeCallbackTest extends SerializationTest {
                 new AuthorizeCallback(msgs[1], msgs[1]), };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
+    public void assertDeserialized(Serializable oref, Serializable otest) {
         AuthorizeCallback ref = (AuthorizeCallback) oref;
         AuthorizeCallback test = (AuthorizeCallback) otest;
         String idC = ref.getAuthenticationID();

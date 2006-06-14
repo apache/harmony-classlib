@@ -21,6 +21,8 @@
 
 package javax.security.auth.callback.serialization;
 
+import java.io.Serializable;
+
 import javax.security.auth.callback.TextInputCallback;
 
 import org.apache.harmony.security.tests.support.SerializationTest;
@@ -30,7 +32,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * Serialization test for TextInputCallback class
  */
 
-public class SerTextInputCallbackTest extends SerializationTest {
+public class SerTextInputCallbackTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SerTextInputCallbackTest.class);
@@ -42,7 +45,7 @@ public class SerTextInputCallbackTest extends SerializationTest {
         return new Object[] { new TextInputCallback("prompt","defaultTextInput"), t };
     }
 
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertTrue(test instanceof TextInputCallback);
         assertEquals(((TextInputCallback) golden).getDefaultText(),
                 ((TextInputCallback) test).getDefaultText());
