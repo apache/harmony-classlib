@@ -37,12 +37,4 @@ public class ServicePermissionTest extends SerializationTest {
                 new ServicePermission("CCC", "initiate, accept"),
                 new ServicePermission("CCC", "accept, initiate ") };
     }
-
-    protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(golden instanceof ServicePermission);
-        assertEquals(((ServicePermission) golden).getName(),
-                ((ServicePermission) test).getName());
-        assertEquals(((ServicePermission) golden).getActions(),
-                ((ServicePermission) test).getActions());
-    }
 }

@@ -35,10 +35,4 @@ public class SerPrivateCredentialPermissionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new PrivateCredentialPermission("a.b.Cred a.c.Princ \"duke\"", "read")};
     }
-    	
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((PrivateCredentialPermission) golden).getName(),
-                (((PrivateCredentialPermission) test).getName()));
-    }
 }

@@ -37,10 +37,4 @@ public class DelegationPermissionTest extends SerializationTest {
                 new DelegationPermission("\"AAA\" \"BBB\"", "action"),
                 new DelegationPermission("\"AAA\" \"CCC\"") };
     }
-
-    protected void assertDeserialized(Object golden, Object test) {
-        assertTrue(golden instanceof DelegationPermission);
-        assertEquals(((DelegationPermission) golden).getName(),
-                ((DelegationPermission) test).getName());
-    }
 }

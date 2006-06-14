@@ -35,10 +35,4 @@ public class SerAuthPermissionTest extends SerializationTest {
     protected Object[] getData() {
         return new Object[] {new AuthPermission("name", "read")};
     }
-     
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((AuthPermission) golden).getName(),
-                (((AuthPermission) test).getName()));
-    }
 }
