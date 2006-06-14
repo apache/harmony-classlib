@@ -69,8 +69,24 @@ public class PropertyChangeSupport implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * TODO
+     * 
+     * @param propertyName
+     * @param index
+     * @param oldValue
+     * @param newValue
      */
+    public void fireIndexedPropertyChange(String propertyName, int index,
+			Object oldValue, Object newValue) {
+
+    	// nulls and equals check done in doFire...
+		doFirePropertyChange(new IndexedPropertyChangeEvent(source,
+				propertyName, oldValue, newValue, index));
+	}
+
+    /**
+	 * @com.intel.drl.spec_ref
+	 */
     public synchronized void removePropertyChangeListener(
             String propertyName, PropertyChangeListener listener) {
         if ( (propertyName != null) && (listener != null) ) {
@@ -128,6 +144,24 @@ public class PropertyChangeSupport implements Serializable {
         doFirePropertyChange(event);
     }
 
+
+    /**
+     * TODO
+     * 
+     * @param propertyName
+     * @param index
+     * @param oldValue
+     * @param newValue
+     */
+    public void fireIndexedPropertyChange(String propertyName, int index,
+			boolean oldValue, boolean newValue) {
+
+		if (oldValue != newValue) {
+			fireIndexedPropertyChange(propertyName, index,
+					Boolean.valueOf(oldValue), Boolean.valueOf(newValue));
+		}
+	}
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -137,6 +171,23 @@ public class PropertyChangeSupport implements Serializable {
                 oldValue, newValue);
         doFirePropertyChange(event);
     }
+
+    /**
+     * TODO
+     * 
+     * @param propertyName
+     * @param index
+     * @param oldValue
+     * @param newValue
+     */
+    public void fireIndexedPropertyChange(String propertyName, int index,
+			int oldValue, int newValue) {
+
+		if (oldValue != newValue) {
+			fireIndexedPropertyChange(propertyName, index,
+					new Integer(oldValue), new Integer(newValue));
+		}
+	}
 
     /**
      * @com.intel.drl.spec_ref
