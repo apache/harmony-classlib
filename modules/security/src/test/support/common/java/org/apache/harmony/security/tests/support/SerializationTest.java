@@ -35,10 +35,8 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.security.Permission;
 import java.security.PermissionCollection;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashSet;
 
 import junit.framework.TestCase;
@@ -128,16 +126,6 @@ public abstract class SerializationTest extends TestCase {
      * @return array of objects to be de/serialized in tests.
      */
     protected abstract Object[] getData();
-
-    /**
-     * Compares deserialized and reference objects. This default implementation
-     * just asserts equality of the two objects. Should be overriden if a class
-     * under test does not provide specific equals() method and it's instances
-     * should to be compared manually.
-     */
-    protected void assertDeserialized(Object reference, Object test) {
-        assertEquals(reference, test);
-    }
 
     /**
      * Tests that data objects can be serialized and deserialized without
@@ -235,8 +223,15 @@ public abstract class SerializationTest extends TestCase {
     
     /**
      * Interface to compare (de)serialized objects
+     * 
+     * Should be implemented if a class under test does not provide specific
+     * equals() method and it's instances should to be compared manually.
      */
     public interface SerializableAssert {
+        
+        /**
+         * Compares deserialized and reference objects.
+         */
         void assertDeserialized(Serializable reference, Serializable test);
     }
 
@@ -247,7 +242,9 @@ public abstract class SerializationTest extends TestCase {
         }
     };
 
-    // for comparing java.lang.Throwable objects
+    /**
+     * Comparator for java.lang.Throwable objects
+     */
     public final static SerializableAssert THROWABLE_COMPARATOR = new SerializableAssert() {
         public void assertDeserialized(Serializable reference, Serializable test) {
 
@@ -275,7 +272,9 @@ public abstract class SerializationTest extends TestCase {
         }
     };
 
-    // for comparing java.security.PermissionCollection objects
+    /**
+     * Comparator for java.security.PermissionCollection objects
+     */
     public final static SerializableAssert PERMISSION_COLLECTION_COMPARATOR = new SerializableAssert() {
         public void assertDeserialized(Serializable reference, Serializable test) {
 
@@ -327,14 +326,6 @@ public abstract class SerializationTest extends TestCase {
             return PERMISSION_COLLECTION_COMPARATOR;
         }
 
-        // TODO - throw new RuntimeException() if failed to detect comparator
-        // return stub comparator for a while
-        final SerializationTest thisTest = this;
-        return new SerializableAssert() {
-            public void assertDeserialized(Serializable reference,
-                    Serializable test) {
-                thisTest.assertDeserialized(reference, test);
-            }
-        };
+        throw new RuntimeException("Failed to detect comparator");
     }
 }
