@@ -19,6 +19,7 @@ package java.beans;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -85,7 +86,8 @@ public class FeatureDescriptor {
      * @return An instance of {@link Enumeration}.
      */
     public Enumeration<String> attributeNames() {
-        return Collections.enumeration(values.keySet());
+        //Create a new list, so that the references are copied
+        return Collections.enumeration(new LinkedList<String>(values.keySet()));
     }
 
     /**
