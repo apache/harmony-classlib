@@ -385,7 +385,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
 		byte[] utfBytes;
 		boolean makeBuf = true;
 		if (DataInputStream.useShared) {
-			synchronized (DataInputStream.byteBuf) {
+			synchronized (DataInputStream.cacheLock) {
 				if (DataInputStream.useShared) {
 					DataInputStream.useShared = false;
 					makeBuf = false;
@@ -395,9 +395,10 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
 		if (makeBuf) {
 			utfBytes = new byte[size];
 		} else {
-			if (DataInputStream.byteBuf.length < size)
-				DataInputStream.byteBuf = new byte[size];
+			// byteBuf is not protected by the cacheLock, so sample it first
 			utfBytes = DataInputStream.byteBuf;
+			if (utfBytes.length < size)
+				utfBytes = DataInputStream.byteBuf = new byte[size];
 		}
 
 		int utfIndex = 0, i = 0, length = str.length();
@@ -431,8 +432,10 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
 		}
 		if (utfIndex > 0)
 			write(utfBytes, 0, utfIndex);
-		if (!makeBuf)
+		if (!makeBuf) {
+			// Update the useShared flag optimistically (see DataInputStream equivalent)
 			DataInputStream.useShared = true;
+		}
 	}
 
 }

@@ -371,6 +371,8 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 
 	static final int MAX_BUF_SIZE = 8192;
 
+	static final Object cacheLock = new Object();
+	
 	static boolean useShared = true;
 
 	static byte[] byteBuf = new byte[0];
@@ -381,8 +383,14 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 		byte[] buf;
 		char[] out = null;
 		boolean makeBuf = true;
+
+		/*
+		 * Try to avoid the synchronization -- if we get a stale value for
+		 * useShared then there is no foul below, but those that sync on the
+		 * lock must see the right value.
+		 */
 		if (utfSize <= MAX_BUF_SIZE && useShared) {
-			synchronized (byteBuf) {
+			synchronized (cacheLock) {
 				if (useShared) {
 					useShared = false;
 					makeBuf = false;
@@ -393,20 +401,31 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 			buf = new byte[utfSize];
 			out = new char[utfSize];
 		} else {
-			if (byteBuf.length < utfSize)
-				byteBuf = new byte[utfSize];
-			if (charBuf.length < utfSize) {
-				charBuf = new char[utfSize];
-			}
+			/*
+			 * Need to 'sample' byteBuf and charBuf before using them because
+			 * they are not protected by the cacheLock. They may get out of sync
+			 * with the static and one another, but that is ok because we
+			 * explicitly check and fix their length after sampling.
+			 */
 			buf = byteBuf;
+			if (buf.length < utfSize)
+				buf = byteBuf = new byte[utfSize];
 			out = charBuf;
+			if (out.length < utfSize) {
+				out = charBuf = new char[utfSize];
+			}
 		}
 
 		readFully(buf, 0, utfSize);
 		String result;
 		result = org.apache.harmony.luni.util.Util.convertUTF8WithBuf(buf, out, 0, utfSize);
-		if (!makeBuf)
+		if (!makeBuf) {
+			/*
+			 * Do not synchronize useShared on cacheLock, it will make it back
+			 * to main storage at some point, and no harm until it does.
+			 */
 			useShared = true;
+		}
 		return result;
 	}
 
