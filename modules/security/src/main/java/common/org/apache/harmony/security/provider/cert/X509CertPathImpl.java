@@ -59,7 +59,7 @@ import org.apache.harmony.security.x509.Certificate;
  * <br>
  * &nbsp;&nbsp;  - PKCS #7 SignedData object provided in the form of
  * ContentInfo structure. CertPath object is generated on the base of
- * certificates presented in ?certificates? field of the SignedData
+ * certificates presented in <code>certificates</code> field of the SignedData
  * object which in its turn is retrieved from ContentInfo structure.
  * (see http://www.rsasecurity.com/rsalabs/node.asp?id=2129
  * for more info on PKCS #7)
