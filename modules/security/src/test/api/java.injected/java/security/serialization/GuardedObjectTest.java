@@ -34,7 +34,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * 
  */
 
-public class GuardedObjectTest extends SerializationTest {
+public class GuardedObjectTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     /**
      * @see com.intel.drl.test.SerializationTest#getData()
@@ -45,7 +46,7 @@ public class GuardedObjectTest extends SerializationTest {
                 new GuardedObject(new Integer(76547), new RealGuard(true)), };
     }
 
-    protected void assertDeserialized(Object golden, Object test) {
+    public void assertDeserialized(Serializable golden, Serializable test) {
         assertSame(golden.getClass(), test.getClass());
         assertEquals(((GuardedObject) golden).getObject(),
                 ((GuardedObject) test).getObject());

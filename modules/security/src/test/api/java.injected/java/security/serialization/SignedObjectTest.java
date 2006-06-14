@@ -22,6 +22,7 @@
 package java.security.serialization;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
@@ -38,7 +39,8 @@ import org.apache.harmony.security.tests.support.TestKeyPair;
  * Tests for SignedObject serialization
  * 
  */
-public class SignedObjectTest extends SerializationTest {
+public class SignedObjectTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
 	private Signature sig;
 	private TestKeyPair tkp = null;
@@ -72,7 +74,7 @@ public class SignedObjectTest extends SerializationTest {
        return new Object[] { o };
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
+    public void assertDeserialized(Serializable oref, Serializable otest) {
     	SignedObject ref = (SignedObject) oref;
     	SignedObject test = (SignedObject) otest;
 
