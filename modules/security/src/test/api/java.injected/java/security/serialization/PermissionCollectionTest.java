@@ -43,12 +43,6 @@ public class PermissionCollectionTest extends SerializationTest {
         return new Object[] { new RealPermissionCollection(false),
                 new RealPermissionCollection(true) };
     }
-
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        assertEquals(((PermissionCollection) golden).isReadOnly(),
-                ((PermissionCollection) test).isReadOnly());
-    }
 }
 
 // Bare extension to instantiate abstract PermissionCollection class

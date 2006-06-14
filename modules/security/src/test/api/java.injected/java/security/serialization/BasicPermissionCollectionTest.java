@@ -45,15 +45,4 @@ public class BasicPermissionCollectionTest extends SerializationTest {
         c3.add(new RealBasicPermission("1.4.kjhgj.*"));
         return new Object[] {c1,c2,c3};
     }
-    
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        PermissionCollection c1 = (PermissionCollection)golden;
-        PermissionCollection c2 = (PermissionCollection)test;
-        Collection s1 = new HashSet();
-        Collection s2 = new HashSet();
-        for(Enumeration en = c1.elements(); en.hasMoreElements(); s1.add(en.nextElement())) {}
-        for(Enumeration en = c2.elements(); en.hasMoreElements(); s2.add(en.nextElement())) {}
-        assertEquals(s1, s2);
-    }
 }

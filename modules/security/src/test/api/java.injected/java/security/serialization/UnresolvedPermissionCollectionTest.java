@@ -55,21 +55,4 @@ public class UnresolvedPermissionCollectionTest extends SerializationTest {
         pc3.add(up3);
         return new Object[] { pc1, pc2, pc3 };
     }
-
-    /**
-     * Checks that "golden" and "test" collections contain same elements.
-     */
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        PermissionCollection c1 = (PermissionCollection) golden;
-        PermissionCollection c2 = (PermissionCollection) test;
-        Collection s1 = new HashSet();
-        Collection s2 = new HashSet();
-        for (Enumeration en = c1.elements(); en.hasMoreElements(); s1.add(en
-                .nextElement())) {}
-        for (Enumeration en = c2.elements(); en.hasMoreElements(); s2.add(en
-                .nextElement())) {}
-        assertTrue(s1.containsAll(s2));
-        assertTrue(s2.containsAll(s1));
-    }
 }

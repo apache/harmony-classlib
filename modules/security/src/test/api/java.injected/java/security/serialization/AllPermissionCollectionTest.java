@@ -41,11 +41,4 @@ public class AllPermissionCollectionTest extends SerializationTest {
         c2.add(new AllPermission());
         return new Object[] { c1, c2 };
     }
-
-    protected void assertDeserialized(Object golden, Object test) {
-        assertSame(golden.getClass(), test.getClass());
-        Enumeration e1 = ((PermissionCollection) golden).elements();
-        Enumeration e2 = ((PermissionCollection) test).elements();
-        assertEquals(e1.hasMoreElements(), e2.hasMoreElements());
-    }
 }
