@@ -16,6 +16,8 @@
 
 package javax.net.ssl.serialization;
 
+import java.io.Serializable;
+
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
@@ -27,7 +29,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * 
  */
 
-public class HandshakeCompletedEventTest extends SerializationTest {
+public class HandshakeCompletedEventTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     protected Object[] getData() {
         try {
@@ -42,7 +45,7 @@ public class HandshakeCompletedEventTest extends SerializationTest {
         
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
+    public void assertDeserialized(Serializable oref, Serializable otest) {
         HandshakeCompletedEvent test = (HandshakeCompletedEvent) otest;
         test.getSession();
         test.getSocket();

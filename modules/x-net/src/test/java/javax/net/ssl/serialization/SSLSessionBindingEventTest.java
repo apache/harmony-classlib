@@ -16,6 +16,8 @@
 
 package javax.net.ssl.serialization;
 
+import java.io.Serializable;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSessionBindingEvent;
 import javax.net.ssl.SSLSocket;
@@ -27,7 +29,8 @@ import org.apache.harmony.security.tests.support.SerializationTest;
  * 
  */
 
-public class SSLSessionBindingEventTest extends SerializationTest {
+public class SSLSessionBindingEventTest extends SerializationTest implements
+        SerializationTest.SerializableAssert {
 
     protected Object[] getData() {
         try {
@@ -41,7 +44,7 @@ public class SSLSessionBindingEventTest extends SerializationTest {
         }
     }
 
-    protected void assertDeserialized(Object oref, Object otest) {
+    public void assertDeserialized(Serializable oref, Serializable otest) {
         SSLSessionBindingEvent ref = (SSLSessionBindingEvent) oref;
         SSLSessionBindingEvent test = (SSLSessionBindingEvent) otest;
         assertEquals(ref.getName(), test.getName());
