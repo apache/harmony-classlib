@@ -28,13 +28,10 @@ public class URLConnectionTest extends TestCase {
 	 * @tests java.net.URLConnection#setUseCaches(boolean)
 	 */
 	public void test_setUseCachesZ() throws MalformedURLException, IOException {
-		// Regression for HARMONY-71
-		URLConnection u = new URLConnection(new URL("http://www.apache.org")) {
-		    public void connect() {
-		        connected = true;
-		    }
-		};
 
+        // Regression for HARMONY-71
+        MockURLConnection u = new MockURLConnection(new URL(
+                "http://www.apache.org"));
 		u.connect();
 		try {
 			u.setUseCaches(true);
@@ -49,13 +46,10 @@ public class URLConnectionTest extends TestCase {
 	 */
 	public void test_setAllowUserInteractionZ() throws MalformedURLException,
 			IOException {
-		// Regression for HARMONY-72
-		URLConnection u = new URLConnection(new URL("http://www.apache.org")) {
-		    public void connect() {
-		        connected = true;
-		    }
-		};
-
+		
+        // Regression for HARMONY-72
+        MockURLConnection u = new MockURLConnection(new URL(
+                "http://www.apache.org"));
 		u.connect();
 		try {
 			u.setAllowUserInteraction(false);
@@ -64,4 +58,15 @@ public class URLConnectionTest extends TestCase {
 			// expected
 		}
 	}
+}
+
+class MockURLConnection extends URLConnection {
+    
+    public MockURLConnection(URL url){
+        super(url);
+    }
+    
+    public void connect() {
+        connected = true;
+    }
 }
