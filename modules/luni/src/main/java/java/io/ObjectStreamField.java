@@ -15,11 +15,9 @@
 
 package java.io;
 
-
 import java.lang.ref.WeakReference;
 
 import org.apache.harmony.luni.util.Sorter;
-
 
 /**
  * This class represents object fields that are saved to the stream, by
@@ -30,14 +28,19 @@ import org.apache.harmony.luni.util.Sorter;
  * @see ObjectInputStream#readFields()
  * 
  */
-public class ObjectStreamField extends Object implements Comparable<Object> {
-	private String name; // Declared name of the field
+public class ObjectStreamField implements Comparable<Object> {
 
-	private Object type; // Declared type of the field
+	// Declared name of the field
+	private String name;
 
-	int offset; // offset of this field in the object
+	// Declared type of the field
+	private Object type;
 
-	private String typeString; // Cached version of intern'ed type String.
+	// offset of this field in the object
+	int offset;
+
+	// Cached version of intern'ed type String
+	private String typeString;
 
 	private boolean unshared = false;
 
@@ -50,11 +53,11 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 	 *            A Class object representing the type of the field
 	 */
 	public ObjectStreamField(String name, Class<?> cl) {
-		if (name != null && cl != null) {
-			this.name = name;
-			this.type = new WeakReference(cl);
-		} else
+		if (name == null || cl == null) {
 			throw new NullPointerException();
+		}
+		this.name = name;
+		this.type = new WeakReference<Class<?>>(cl);
 	}
 
 	/**
@@ -68,16 +71,13 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 	 *            write and read the field unshared
 	 */
 	public ObjectStreamField(String name, Class<?> cl, boolean unshared) {
-		if (name != null && cl != null) {
-			this.name = name;
-			if (cl.getClassLoader() == null) {
-				this.type = cl;
-			} else {
-				this.type = new WeakReference(cl);
-			}
-			this.unshared = unshared;
-		} else
+		if (name == null || cl == null) {
 			throw new NullPointerException();
+		}
+		this.name = name;
+		this.type = (cl.getClassLoader() == null) ? cl
+				: new WeakReference<Class<?>>(cl);
+		this.unshared = unshared;
 	}
 
 	/**
@@ -90,11 +90,11 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 	 *            a String, the name of the field, or null
 	 */
 	ObjectStreamField(String signature, String name) {
-		if (name != null) {
-			this.name = name;
-			this.typeString = signature.replace('.', '/');
-		} else
+		if (name == null) {
 			throw new NullPointerException();
+		}
+		this.name = name;
+		this.typeString = signature.replace('.', '/');
 	}
 
 	/**
@@ -107,7 +107,6 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 	 * @return -1 if the receiver is "smaller" than the parameter. 0 if the
 	 *         receiver is "equal" to the parameter. 1 if the receiver is
 	 *         "greater" than the parameter.
-	 * 
 	 */
 	public int compareTo(Object o) {
 		ObjectStreamField f = (ObjectStreamField) o;
@@ -116,8 +115,9 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 
 		// If one is primitive and the other isn't, we have enough info to
 		// compare
-		if (thisPrimitive != fPrimitive)
+		if (thisPrimitive != fPrimitive) {
 			return thisPrimitive ? -1 : 1;
+		}
 
 		// Either both primitives or both not primitives. Compare based on name.
 		return this.getName().compareTo(f.getName());
@@ -148,9 +148,9 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 	 */
 	public Class<?> getType() {
 		if (type instanceof WeakReference) {
-			return (Class) ((WeakReference) type).get();
+			return ((WeakReference<Class<?>>) type).get();
 		}
-		return (Class) type;
+		return (Class<?>) type;
 	}
 
 	/**
@@ -161,24 +161,33 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 	 */
 	public char getTypeCode() {
 		Class t = getType();
-		if (t == Integer.TYPE)
+		if (t == Integer.TYPE) {
 			return 'I';
-		if (t == Byte.TYPE)
+		}
+		if (t == Byte.TYPE) {
 			return 'B';
-		if (t == Character.TYPE)
+		}
+		if (t == Character.TYPE) {
 			return 'C';
-		if (t == Short.TYPE)
+		}
+		if (t == Short.TYPE) {
 			return 'S';
-		if (t == Boolean.TYPE)
+		}
+		if (t == Boolean.TYPE) {
 			return 'Z';
-		if (t == Long.TYPE)
+		}
+		if (t == Long.TYPE) {
 			return 'J';
-		if (t == Float.TYPE)
+		}
+		if (t == Float.TYPE) {
 			return 'F';
-		if (t == Double.TYPE)
+		}
+		if (t == Double.TYPE) {
 			return 'D';
-		if (t.isArray())
+		}
+		if (t.isArray()) {
 			return '[';
+		}
 		return 'L';
 	}
 
@@ -193,50 +202,12 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 			return null;
 		}
 		if (typeString == null) {
-			typeString = computeTypeString().intern();
+			Class t = getType();
+			String typeName = t.getName().replace('.', '/');
+			String str = (t.isArray()) ? typeName : ("L" + typeName + ';'); //$NON-NLS-1$
+			typeString = str.intern();
 		}
 		return typeString;
-	}
-
-	/**
-	 * Return the type signature used by the VM to represent the type for this
-	 * field.
-	 * 
-	 * @return A String, the signature for the class of this field.
-	 */
-	private String computeTypeString() {
-		// NOTE: this is very similar to Class.getSignature(). Unfortunately
-		// we can't call that due to visibility restrictions.
-
-		Class t = getType();
-		if (t.isArray())
-			return t.getName().replace('.', '/');
-
-		if (isPrimitive()) {
-			// Special cases for each base type.
-			// NOTE: In how many places do we find this same pattern in java ?
-			// getTypeCode() return character, here we return String.
-			if (t == Integer.TYPE)
-				return "I"; //$NON-NLS-1$
-			if (t == Byte.TYPE)
-				return "B"; //$NON-NLS-1$
-			if (t == Character.TYPE)
-				return "C"; //$NON-NLS-1$
-			if (t == Short.TYPE)
-				return "S"; //$NON-NLS-1$
-			if (t == Boolean.TYPE)
-				return "Z"; //$NON-NLS-1$
-			if (t == Long.TYPE)
-				return "J"; //$NON-NLS-1$
-			if (t == Float.TYPE)
-				return "F"; //$NON-NLS-1$
-			if (t == Double.TYPE)
-				return "D"; //$NON-NLS-1$
-			throw new RuntimeException();
-		}
-
-		// General case.
-		return ("L" + t.getName() + ';').replace('.', '/'); //$NON-NLS-1$
 	}
 
 	/**
@@ -329,12 +300,9 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 		}
 		try {
 			Class cl = Class.forName(className, false, loader);
-			if (cl.getClassLoader() == null) {
-				type = cl;
-			} else {
-				type = new WeakReference(cl);
-			}
+			type = (cl.getClassLoader() == null) ? cl : new WeakReference<Class<?>>(cl);
 		} catch (ClassNotFoundException e) {
+			// Ignored
 		}
 	}
 
