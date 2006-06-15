@@ -2377,7 +2377,6 @@ public class SerializationStressTest4 extends SerializationStressTest {
 						// escaped octets for unicode chars
 						new URI(
 								"ascheme://user\u00DF\u00A3info@host:0/a\u20ACpath?qu\u00A9\u00AEery#fr\u00E4\u00E8g"),
-    					// unicode chars equivalent to = new URI("ascheme://userﬂ£info@host:0/aÄpath?qu©Æery#fr‰Ëg"),
 						// multiple arg constructors
 						new URI("http", "user%60%20info", "host", 80,
 								"/a%20path", "qu%60%20ery", "fr%5E%20ag"),
@@ -2389,8 +2388,6 @@ public class SerializationStressTest4 extends SerializationStressTest {
 						new URI("ascheme", "user\u00DF\u00A3info", "host", 80,
 								"/a\u20ACpath", "qu\u00A9\u00AEery",
 								"fr\u00E4\u00E8g"),
-						// unicode chars equivalent to = new URI("ascheme", "userﬂ£info",
-						// "host", 80, "/aÄpath", "qu©Æery", "fr‰Ëg"),
 						new URI("http", "user` info", "host", 81, "/a path",
 								"qu` ery", "fr^ ag"), // illegal chars
 						new URI("http", "user%info", "host", 0, "/a%path",
