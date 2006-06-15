@@ -26,7 +26,7 @@ import java.security.Security;
  * <code>{@link java.security.AccessController#doPrivileged(PrivilegedAction)}</code>
  * calls.
  */
-public class PriviAction implements PrivilegedAction {
+public class PriviAction<T> implements PrivilegedAction<T> {
 
 	private Object arg1;
 
@@ -51,8 +51,8 @@ public class PriviAction implements PrivilegedAction {
 	 * 
 	 * @see Security#getProperty
 	 */
-	public static PrivilegedAction getSecurityProperty(String property) {
-		return new PriviAction(GET_SECURITY_PROPERTY, property);
+	public static <T> PrivilegedAction<T> getSecurityProperty(String property) {
+		return new PriviAction<T>(GET_SECURITY_PROPERTY, property);
 	}
 
 	private PriviAction(int action, Object arg) {
@@ -120,14 +120,14 @@ public class PriviAction implements PrivilegedAction {
 	 * 
 	 * @see java.security.PrivilegedAction#run()
 	 */
-	public Object run() {
+	public T run() {
 		switch (action) {
 		case GET_SYSTEM_PROPERTY:
-			return System.getProperty((String) arg1, (String) arg2);
+			return (T)System.getProperty((String) arg1, (String) arg2);
 		case GET_SECURITY_PROPERTY:
-			return Security.getProperty((String) arg1);
+			return (T)Security.getProperty((String) arg1);
 		case GET_SECURITY_POLICY:
-			return Policy.getPolicy();
+			return (T)Policy.getPolicy();
 		case SET_ACCESSIBLE:
 			((AccessibleObject) arg1).setAccessible(true);
 		}
