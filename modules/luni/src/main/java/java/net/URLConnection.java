@@ -907,12 +907,20 @@ public abstract class URLConnection {
 	 * @param newValue
 	 *            the field's new value
 	 * 
+	 * @throws IllegalStateException - if connection already established
+	 * @throws NullPointerException - if field is null
+	 * 
 	 * @see #getDefaultRequestProperty
 	 * @see #setDefaultRequestProperty
 	 * @see #getRequestProperty
 	 */
 	public void setRequestProperty(String field, String newValue) {
-
+        if (connected) {
+            throw new IllegalStateException(Msg.getString("K0037"));
+        }
+        if (field == null) {
+            throw new NullPointerException(Msg.getString("KA007"));
+        }
 	}
 
 	/**

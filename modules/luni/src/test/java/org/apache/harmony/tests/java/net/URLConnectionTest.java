@@ -52,6 +52,32 @@ public class URLConnectionTest extends TestCase {
     }
 
     /**
+     * @tests java.net.URLConnection#setRequestProperty(String, String)
+     */
+    public void test_setRequestProperty() throws MalformedURLException,
+            IOException {
+
+        MockURLConnection u = new MockURLConnection(new URL(
+                "http://www.apache.org"));
+        try {
+            u.setRequestProperty(null, "someValue");
+            fail("Expected NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        u.connect();
+        try {
+            // state of connection is checked first
+            // so no NPE in case of null 'field' param
+            u.setRequestProperty(null, "someValue");
+            fail("Expected IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+    }
+
+    /**
      * @tests java.net.URLConnection#setUseCaches(boolean)
      */
     public void test_setUseCachesZ() throws MalformedURLException, IOException {
