@@ -39,6 +39,8 @@ import java.util.TooManyListenersException;
 public class BeanContextServicesSupport extends BeanContextSupport 
         implements BeanContextServices {
     
+    private static final long serialVersionUID = -8494482757288719206L;
+    
     /**
      * Nested class
      */
@@ -124,7 +126,7 @@ public class BeanContextServicesSupport extends BeanContextSupport
      */
     protected static class BCSSServiceProvider implements Serializable {
 
-        private static final long serialVersionUID = 2535886151721373993L;
+        private static final long serialVersionUID = 861278251667444782L;
 
         /**
          * @serial
