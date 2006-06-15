@@ -110,7 +110,7 @@ public class Beans {
         
         if (result == null) {
 			try {
-				Class c = Class.forName(beanName, true,
+				Class<?> c = Class.forName(beanName, true,
 						cls == null ? ClassLoader.getSystemClassLoader() : cls);
 
 				try {
@@ -230,7 +230,7 @@ class CustomizedObjectInputStream extends ObjectInputStream {
             
             String postfix = className.substring(idx + 1);
             
-            Class componentType = null;
+            Class<?> componentType = null;
             if(postfix.equals("Z")) {
                 componentType = boolean.class;
             } else if(postfix.equals("B")) {
