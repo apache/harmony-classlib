@@ -348,12 +348,16 @@ public class File implements Serializable, Comparable<File> {
 	 * @see java.lang.SecurityManager#checkDelete
 	 */
 	public boolean delete() {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkDelete(path);
-		return isDirectory() ? deleteDirImpl(properPath(true))
-				: deleteFileImpl(properPath(true));
-	}
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkDelete(path);
+        }
+        byte[] propPath = properPath(true);
+        if ((path.length() != 0) && isDirectoryImpl(propPath)) {
+            return deleteDirImpl(propPath);
+        }
+        return deleteFileImpl(propPath);
+    }
 
 	private native boolean deleteDirImpl(byte[] filePath);
 
