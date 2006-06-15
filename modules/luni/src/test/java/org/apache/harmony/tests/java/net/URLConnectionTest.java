@@ -39,6 +39,16 @@ public class URLConnectionTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+        
+        u.connect();
+        try {
+            // state of connection is checked first
+            // so no NPE in case of null 'field' param
+            u.addRequestProperty(null, "someValue");
+            fail("Expected IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
     }
 
     /**

@@ -447,9 +447,15 @@ public abstract class URLConnection {
 	 * @param newValue
 	 *            the property value
 	 * 
+	 * @throws IllegalStateException - if connection already established
+	 * @throws NullPointerException - if field is null
+	 * 
 	 * @since 1.4
 	 */
 	public void addRequestProperty(String field, String newValue) {
+        if (connected) {
+            throw new IllegalStateException(Msg.getString("K0037"));
+        }
         if (field == null) {
             throw new NullPointerException(Msg.getString("KA007"));
         }
