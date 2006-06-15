@@ -153,7 +153,7 @@
     </target>
 
 
-    <target name="run.tests.impl">
+    <target name="run.tests.impl" unless="test.noimpl">
         <run-tests description="impl tests">
             <junit-elements>
                 <!-- Required for running the serialization unit tests -->
