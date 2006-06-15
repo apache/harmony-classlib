@@ -28,7 +28,7 @@
     <!-- ================================= 
           target: default              
          ================================= -->
-    <target name="default" depends="clean, build" />
+    <target name="default" depends="build" />
 
     <target name="build">
         <echo>
