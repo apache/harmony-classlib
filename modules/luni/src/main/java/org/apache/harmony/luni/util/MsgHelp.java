@@ -110,7 +110,7 @@ public final class MsgHelp {
 					.doPrivileged(new PrivilegedAction<Object>() {
 						public Object run() {
 							return ResourceBundle.getBundle(resource, locale,
-									loader);
+									loader != null ? loader : ClassLoader.getSystemClassLoader());
 						}
 					});
 		} catch (MissingResourceException e) {

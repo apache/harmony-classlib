@@ -1043,6 +1043,9 @@ public class URLClassLoader extends SecureClassLoader {
                                     + name.length()).append(filename).append(
                                     name).toString();
                         }
+
+                        filename = URLDecoder.decode(filename, "UTF-8");
+
                         File file = new File(filename);
                         // Don't throw exceptions for speed
                         if (file.exists()) {
