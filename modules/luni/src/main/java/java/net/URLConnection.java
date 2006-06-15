@@ -450,6 +450,9 @@ public abstract class URLConnection {
 	 * @since 1.4
 	 */
 	public void addRequestProperty(String field, String newValue) {
+        if (field == null) {
+            throw new NullPointerException(Msg.getString("KA007"));
+        }
 	}
 
 	/**
