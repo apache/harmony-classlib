@@ -24,48 +24,48 @@ import junit.framework.TestCase;
 
 public class URLConnectionTest extends TestCase {
 
-	/**
-	 * @tests java.net.URLConnection#setUseCaches(boolean)
-	 */
-	public void test_setUseCachesZ() throws MalformedURLException, IOException {
+    /**
+     * @tests java.net.URLConnection#setUseCaches(boolean)
+     */
+    public void test_setUseCachesZ() throws MalformedURLException, IOException {
 
         // Regression for HARMONY-71
         MockURLConnection u = new MockURLConnection(new URL(
                 "http://www.apache.org"));
-		u.connect();
-		try {
-			u.setUseCaches(true);
-			fail("Assert 0: expected an IllegalStateException");
-		} catch (IllegalStateException e) {
-			// expected
-		}
-	}
+        u.connect();
+        try {
+            u.setUseCaches(true);
+            fail("Assert 0: expected an IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+    }
 
-	/**
-	 * @tests java.net.URLConnection#setAllowUserInteraction(boolean)
-	 */
-	public void test_setAllowUserInteractionZ() throws MalformedURLException,
-			IOException {
-		
+    /**
+     * @tests java.net.URLConnection#setAllowUserInteraction(boolean)
+     */
+    public void test_setAllowUserInteractionZ() throws MalformedURLException,
+            IOException {
+
         // Regression for HARMONY-72
         MockURLConnection u = new MockURLConnection(new URL(
                 "http://www.apache.org"));
-		u.connect();
-		try {
-			u.setAllowUserInteraction(false);
-			fail("Assert 0: expected an IllegalStateException");
-		} catch (IllegalStateException e) {
-			// expected
-		}
-	}
+        u.connect();
+        try {
+            u.setAllowUserInteraction(false);
+            fail("Assert 0: expected an IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+    }
 }
 
 class MockURLConnection extends URLConnection {
-    
-    public MockURLConnection(URL url){
+
+    public MockURLConnection(URL url) {
         super(url);
     }
-    
+
     public void connect() {
         connected = true;
     }
