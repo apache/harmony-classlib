@@ -99,7 +99,7 @@ class EmulatedFields {
 
 	/**
 	 * Return a boolean indicating if the field named <code>name</code> has
-	 * been assigned a value explicitely (false) or if it still holds a default
+	 * been assigned a value explicitly (false) or if it still holds a default
 	 * value for the type (true) because it hasn't been assigned to yet.
 	 * 
 	 * @param name
@@ -125,18 +125,18 @@ class EmulatedFields {
 	 * field type <code>fieldType</code> corresponds to an object type, the
 	 * field type has to be compatible in terms of assignment, or null is
 	 * returned. If <code>fieldType</code> is <code>null</code>, no such
-	 * compatibility checking is performed and teh slot is returned.
+	 * compatibility checking is performed and the slot is returned.
 	 * 
 	 * @param fieldName
 	 *            A String, the name of the field to find
 	 * @param fieldType
-	 *            A Class, the type of teh field. This will be used to test
+	 *            A Class, the type of the field. This will be used to test
 	 *            compatibility. If null, no testing is done, the corresponding
 	 *            slot is returned.
 	 * @return If there is no field with that name, or no compatible field
 	 *         (relative to <code>fieldType</code>)
 	 */
-	private ObjectSlot findSlot(String fieldName, Class fieldType) {
+	private ObjectSlot findSlot(String fieldName, Class<?> fieldType) {
 		boolean isPrimitive = fieldType != null && fieldType.isPrimitive();
 
 		for (int i = 0; i < slotsToSerialize.length; i++) {
@@ -536,7 +536,7 @@ class EmulatedFields {
 	 *             If the corresponding field can not be found.
 	 */
 	public void put(String name, Object value) throws IllegalArgumentException {
-		Class valueClass = null;
+		Class<?> valueClass = null;
 		if (value != null)
 			valueClass = value.getClass();
 		ObjectSlot slot = findSlot(name, valueClass);

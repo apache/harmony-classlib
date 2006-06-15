@@ -20,7 +20,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 import java.security.AccessController;
 import java.util.HashMap;
@@ -61,8 +60,8 @@ public class InputStreamReader extends Reader {
 	public InputStreamReader(InputStream in) {
 		super(in);
 		this.in = in;
-		String encoding = (String) AccessController
-				.doPrivileged(new PriviAction("file.encoding", "ISO8859_1")); //$NON-NLS-1$//$NON-NLS-2$
+		String encoding = AccessController
+				.doPrivileged(new PriviAction<String>("file.encoding", "ISO8859_1")); //$NON-NLS-1$//$NON-NLS-2$
 		decoder = Charset.forName(encoding).newDecoder();
 		chars.limit(0);
 	}
@@ -105,7 +104,7 @@ public class InputStreamReader extends Reader {
 	 * @param in
 	 *            the InputStream to convert to characters
 	 * @param dec
-	 *            a CharsetDecoder used by the character convertion
+	 *            a CharsetDecoder used by the character conversion
 	 */
 	public InputStreamReader(InputStream in, CharsetDecoder dec) {
 		super(in);
@@ -170,7 +169,7 @@ public class InputStreamReader extends Reader {
 	 * helper for getEncoding()
 	 */
 	static class HistoricalNamesUtil {
-		private static HashMap historicalNames = new HashMap();
+		private static HashMap<String, String> historicalNames = new HashMap<String, String>();
 		static {
 			historicalNames.put("Big5-HKSCS", "Big5_HKSCS");
 			historicalNames.put("EUC-JP", "EUC_JP");

@@ -54,7 +54,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	// primitive types are
 	// actually written to
 
-	private IdentityHashMap objectsWritten; // Table mapping Object -> Integer
+	private IdentityHashMap<Object, Integer> objectsWritten; // Table mapping Object -> Integer
 
 	// (handle)
 
@@ -90,7 +90,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	// to call
 	// writeObjectOverride
 
-	private IdentityHashMap writeReplaceCache; // cache for writeReplace
+	private IdentityHashMap<Class<?>, Object> writeReplaceCache; // cache for writeReplace
 
 	// methods
 
@@ -195,8 +195,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 *             header
 	 */
 	public ObjectOutputStream(OutputStream output) throws IOException {
-		Class implementationClass = getClass();
-		Class thisClass = ObjectInputStream.class;
+		Class<?> implementationClass = getClass();
+		Class<?> thisClass = ObjectInputStream.class;
 		if (implementationClass != thisClass) {
 			boolean mustCheck = false;
 			try {
@@ -227,7 +227,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		this.enableReplace = false;
 		this.protocolVersion = PROTOCOL_VERSION_2;
 		this.subclassOverridingImplementation = false;
-		this.writeReplaceCache = new IdentityHashMap();
+		this.writeReplaceCache = new IdentityHashMap<Class<?>, Object>();
 
 		resetState();
 		this.nestedException = new StreamCorruptedException();
@@ -452,7 +452,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native boolean getFieldBool(Object instance,
-			Class declaringClass, String fieldName);
+			Class<?> declaringClass, String fieldName);
 
 	/**
 	 * Get the value of field named
@@ -473,7 +473,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native byte getFieldByte(Object instance,
-			Class declaringClass, String fieldName);
+            Class<?> declaringClass, String fieldName);
 
 	/**
 	 * Get the value of field named
@@ -494,7 +494,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native char getFieldChar(Object instance,
-			Class declaringClass, String fieldName);
+            Class<?> declaringClass, String fieldName);
 
 	/**
 	 * Get the value of field named
@@ -515,7 +515,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native double getFieldDouble(Object instance,
-			Class declaringClass, String fieldName);
+            Class<?> declaringClass, String fieldName);
 
 	/**
 	 * Get the value of field named
@@ -536,7 +536,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native float getFieldFloat(Object instance,
-			Class declaringClass, String fieldName);
+            Class<?> declaringClass, String fieldName);
 
 	/**
 	 * Get the value of field named
@@ -557,7 +557,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native int getFieldInt(Object instance,
-			Class declaringClass, String fieldName);
+            Class<?> declaringClass, String fieldName);
 
 	/**
 	 * Get the value of field named
@@ -578,7 +578,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native long getFieldLong(Object instance,
-			Class declaringClass, String fieldName);
+            Class<?> declaringClass, String fieldName);
 
 	/**
 	 * Get the value of field named
@@ -600,7 +600,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native Object getFieldObj(Object instance,
-			Class declaringClass, String fieldName, String fieldTypeName);
+            Class<?> declaringClass, String fieldName, String fieldTypeName);
 
 	/**
 	 * Get the value of field named
@@ -621,7 +621,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws		NoSuchFieldError If the field does not exist.
 	 */
 	private static native short getFieldShort(Object instance,
-			Class declaringClass, String fieldName);
+            Class<?> declaringClass, String fieldName);
 
 	/**
 	 * Return the next <code>int</code> handle to be used to indicate cyclic
@@ -769,7 +769,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * 
 	 */
 	private void resetSeenObjects() {
-		objectsWritten = new IdentityHashMap();
+		objectsWritten = new IdentityHashMap<Object, Integer>();
 		currentHandle = baseWireHandle;
 	}
 
@@ -955,7 +955,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			handle = dumpCycle(classDesc);
 		}
 		if (handle == null) {
-			Class classToWrite = classDesc.forClass();
+            Class<?> classToWrite = classDesc.forClass();
 			Integer previousHandle = (Integer) objectsWritten.get(classDesc);
 			// If we got here, it is a new (non-null) classDesc that will have
 			// to be registered as well
@@ -1014,7 +1014,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 *             descriptor.
 	 * 
 	 */
-	private Integer writeClassDescForClass(Class objClass) throws IOException {
+	private Integer writeClassDescForClass(Class<?> objClass) throws IOException {
 		return writeClassDesc(ObjectStreamClass.lookup(objClass), false);
 	}
 
@@ -1068,7 +1068,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 */
 	private void writeFieldDescriptors(ObjectStreamClass classDesc,
 			boolean externalizable) throws IOException {
-		Class loadedClass = classDesc.forClass();
+        Class<?> loadedClass = classDesc.forClass();
 		ObjectStreamField[] fields = null;
 		int fieldCount = 0;
 
@@ -1134,7 +1134,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		for (int i = 0; i < slots.length; i++) {
 			EmulatedFields.ObjectSlot slot = slots[i];
 			Object fieldValue = slot.getFieldValue();
-			Class type = slot.getField().getType();
+            Class<?> type = slot.getField().getType();
 			// WARNING - default values exist for each primitive type
 			if (type == Integer.TYPE) {
 				output.writeInt(fieldValue != null ? ((Integer) fieldValue)
@@ -1188,7 +1188,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	private void writeFieldValues(Object obj, ObjectStreamClass classDesc)
 			throws IOException {
 		ObjectStreamField[] fields = classDesc.fields();
-		Class declaringClass = classDesc.forClass();
+        Class<?> declaringClass = classDesc.forClass();
 		for (int i = 0; i < fields.length; i++) {
 			try {
 				// Code duplication starts, just because Java is typed
@@ -1306,14 +1306,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
 			// See if the object has a writeObject method. If so, run it
 			boolean executed = false;
-			Class targetClass = classDesc.forClass();
+            Class<?> targetClass = classDesc.forClass();
 			try {
 				final Method method = ObjectStreamClass
 						.getPrivateWriteObjectMethod(targetClass);
 				if (method != null) {
 					// We have to be able to fetch its value, even if it is
 					// private
-					AccessController.doPrivileged(new PriviAction(method));
+					AccessController.doPrivileged(new PriviAction<Object>(method));
 					try {
 						method.invoke(object, new Object[] { this });
 						executed = true;
@@ -1397,8 +1397,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws IOException
 	 *             If an IO exception happened when writing the array.
 	 */
-	private Integer writeNewArray(Object array, Class arrayClass,
-			Class componentType, boolean unshared) throws IOException {
+	private Integer writeNewArray(Object array, Class<?> arrayClass,
+            Class<?> componentType, boolean unshared) throws IOException {
 		output.writeByte(TC_ARRAY);
 		writeClassDescForClass(arrayClass);
 
@@ -1483,7 +1483,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws IOException
 	 *             If an IO exception happened when writing the class.
 	 */
-	private Integer writeNewClass(Class object, boolean unshared) throws IOException {
+	private Integer writeNewClass(Class<?> object, boolean unshared) throws IOException {
 		output.writeByte(TC_CLASS);
 
 		// Instances of java.lang.Class
@@ -1609,7 +1609,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws IOException
 	 *             If an IO exception happened when writing the object.
 	 */
-	private Integer writeNewObject(Object object, Class theClass,
+	private Integer writeNewObject(Object object, Class<?> theClass,
 			boolean unshared) throws IOException {
 		// Not String, not null, not array, not cyclic reference
 
@@ -1820,7 +1820,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		}
 
 		// Non-null object, first time seen...
-		Class objClass = object.getClass();
+        Class<?> objClass = object.getClass();
 		nestedLevels++;
 		try {
 
@@ -1845,7 +1845,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 							writeReplaceMethod = null;
 						} else {
 							// Has replacement method
-							AccessController.doPrivileged(new PriviAction(
+							AccessController.doPrivileged(new PriviAction<Object>(
 									writeReplace));
 							writeReplaceCache.put(objClass, writeReplace);
 							writeReplaceMethod = writeReplace;

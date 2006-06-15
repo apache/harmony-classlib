@@ -194,7 +194,7 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 		for (int i = 0; i < slots.length; i++) {
 			EmulatedFields.ObjectSlot slot = slots[i];
 			Object fieldValue = slot.getFieldValue();
-			Class type = slot.getField().getType();
+			Class<?> type = slot.getField().getType();
 			// WARNING - default values exist for each primitive type
 			if (type == Integer.TYPE) {
 				output.writeInt(fieldValue != null ? ((Integer) fieldValue)

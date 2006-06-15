@@ -46,23 +46,23 @@ public class File implements Serializable, Comparable<File> {
 	byte[] properPath;
 
 	/**
-	 * System dependant file separator character.
+	 * System dependent file separator character.
 	 */
 	public static final char separatorChar;
 
 	/**
-	 * System dependant file separator String. The initial value of this field
+	 * System dependent file separator String. The initial value of this field
 	 * is the System property "file.separator".
 	 */
 	public static final String separator;
 
 	/**
-	 * System dependant path separator character.
+	 * System dependent path separator character.
 	 */
 	public static final char pathSeparatorChar;
 
 	/**
-	 * System dependant path separator String. The initial value of this field
+	 * System dependent path separator String. The initial value of this field
 	 * is the System property "path.separator".
 	 */
 	public static final String pathSeparator;
@@ -284,7 +284,7 @@ public class File implements Serializable, Comparable<File> {
 	}
 
 	/**
-	 * Answers a boolean indicating whether or not the current context i allowed
+	 * Answers a boolean indicating whether or not the current context is allowed
 	 * to read this File.
 	 * 
 	 * @return <code>true</code> if this File can be read, <code>false</code>
@@ -327,7 +327,7 @@ public class File implements Serializable, Comparable<File> {
      * 
      * @param another
      *            a File to compare the receiver to
-     * @return an int determined by comparing the two paths. The meanning is
+     * @return an int determined by comparing the two paths. The meaning is
      *         described in the Comparable interface.
      * @see Comparable
      */
@@ -570,7 +570,7 @@ public class File implements Serializable, Comparable<File> {
 	}
 
 	/**
-	 * Answers the pathname of the parent of this File. This is the path upto
+	 * Answers the pathname of the parent of this File. This is the path up to
 	 * but not including the last name. <code>null</code> is returned when
 	 * there is no parent.
 	 * 
@@ -593,7 +593,7 @@ public class File implements Serializable, Comparable<File> {
 
 	/**
 	 * Answers a new File made from the pathname of the parent of this File.
-	 * This is the path upto but not including the last name. <code>null</code>
+	 * This is the path up to but not including the last name. <code>null</code>
 	 * is returned when there is no parent.
 	 * 
 	 * @return a new File representing parent or <code>null</code>
@@ -690,7 +690,7 @@ public class File implements Serializable, Comparable<File> {
 	private native boolean isFileImpl(byte[] filePath);
 
 	/**
-	 * Returns wheter or not this file is a hidden file as defined by the
+	 * Returns whether or not this file is a hidden file as defined by the
 	 * operating system.
 	 * 
 	 * @return <code>true</code> if the file is hidden, <code>false</code>
@@ -896,7 +896,7 @@ public class File implements Serializable, Comparable<File> {
 		byte[][] implList = listImpl(properPath(true));
 		if (implList == null)
 			return new File[0];
-		java.util.Vector tempResult = new java.util.Vector();
+		java.util.Vector<File> tempResult = new java.util.Vector<File>();
 		for (int index = 0; index < implList.length; index++) {
 			String aName = org.apache.harmony.luni.util.Util.toString(implList[index]);
 			File aFile = new File(this, aName);
@@ -934,7 +934,7 @@ public class File implements Serializable, Comparable<File> {
 		byte[][] implList = listImpl(properPath(true));
 		if (implList == null)
 			return new String[0];
-		java.util.Vector tempResult = new java.util.Vector();
+		java.util.Vector<String> tempResult = new java.util.Vector<String>();
 		for (int index = 0; index < implList.length; index++) {
 			String aName = org.apache.harmony.luni.util.Util.toString(implList[index]);
 			if (filter == null || filter.accept(this, aName))
@@ -1065,8 +1065,7 @@ public class File implements Serializable, Comparable<File> {
 			if (prefix.length() >= 3) {
 				String newSuffix = suffix == null ? ".tmp" : suffix; //$NON-NLS-1$
 				String tmpDir = "."; //$NON-NLS-1$
-				tmpDir = (String) AccessController
-						.doPrivileged(new PriviAction("java.io.tmpdir", "."));   //$NON-NLS-1$//$NON-NLS-2$
+				tmpDir = AccessController.doPrivileged(new PriviAction<String>("java.io.tmpdir", "."));   //$NON-NLS-1$//$NON-NLS-2$
 				File result, tmpDirFile = directory == null ? new File(tmpDir)
 						: directory;
 				do {
@@ -1109,8 +1108,7 @@ public class File implements Serializable, Comparable<File> {
 		// Check security by getting user.dir when the path is not absolute
 		String userdir;
 		if (internal) {
-			userdir = (String) AccessController.doPrivileged(new PriviAction(
-					"user.dir")); //$NON-NLS-1$
+			userdir = AccessController.doPrivileged(new PriviAction<String>("user.dir")); //$NON-NLS-1$
 		} else
 			userdir = System.getProperty("user.dir"); //$NON-NLS-1$
 		if ((properPath = properPathImpl(pathBytes)) != null)
@@ -1175,7 +1173,7 @@ public class File implements Serializable, Comparable<File> {
 
 	/**
 	 * Answers a <code>file</code> URI for this File. The URI is System
-	 * dependant and may not be transferrable between different operating/file
+	 * dependent and may not be transferable between different operating/file
 	 * systems.
 	 * 
 	 * @return a <code>file</code> URI for this File.
@@ -1199,7 +1197,7 @@ public class File implements Serializable, Comparable<File> {
 
 	/**
 	 * Answers a <code>file</code> URL for this File. The URL is System
-	 * dependant and may not be transferrable between different operating/file
+	 * dependent and may not be transferable between different operating/file
 	 * systems.
 	 * 
 	 * @return a <code>file</code> URL for this File.
@@ -1219,19 +1217,17 @@ public class File implements Serializable, Comparable<File> {
 	}
 
 	private String getAbsoluteName() {
-		String name = getAbsolutePath();
-		if (isDirectory() && name.charAt(name.length() - 1) != separatorChar) // Directories
-																				// must
-																				// end
-																				// with
-																				// a
-																				// slash
-			name = new StringBuilder(name.length() + 1).append(name).append('/')
-					.toString();
-		if (separatorChar != '/') // Must convert slashes.
-			name = name.replace(separatorChar, '/');
-		return name;
-	}
+        String name = getAbsolutePath();
+        if (isDirectory() && name.charAt(name.length() - 1) != separatorChar) {
+            // Directories must end with a slash
+            name = new StringBuilder(name.length() + 1).append(name)
+                    .append('/').toString();
+        }
+        if (separatorChar != '/') { // Must convert slashes.
+            name = name.replace(separatorChar, '/');
+        }
+        return name;
+    }
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.defaultWriteObject();

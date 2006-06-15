@@ -22,7 +22,7 @@ import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * BufferedWriter is for writing buffered character output. Characters written
- * to this Writer are buffered internally before being commited to the target
+ * to this Writer are buffered internally before being committed to the target
  * Writer.
  * 
  * @see BufferedReader
@@ -34,8 +34,8 @@ public class BufferedWriter extends Writer {
 
 	private int pos;
 
-	private final String lineSeparator = (String) AccessController
-			.doPrivileged(new PriviAction("line.separator")); //$NON-NLS-1$
+	private final String lineSeparator = AccessController
+			.doPrivileged(new PriviAction<String>("line.separator")); //$NON-NLS-1$
 
 	/**
 	 * Constructs a new BufferedReader with <code>out</code> as the Writer on
