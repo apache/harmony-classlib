@@ -121,10 +121,9 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 	 * @tests java.io.ObjectStreamField#getTypeString()
 	 */
 	public void test_getTypeString() {
-		// Test for method java.lang.String
-		// java.io.ObjectStreamField.getTypeString()
 		assertTrue("getTypeString returned: " + holaField.getTypeString(),
 				holaField.getTypeString().indexOf("Object") >= 0);
+		assertNull("Primitive types' strings should be null", hamField.getTypeString());
 	}
 
 	/**

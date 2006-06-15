@@ -189,8 +189,12 @@ public class ObjectStreamField extends Object implements Comparable<Object> {
 	 * @return A String, the signature for the class of this field.
 	 */
 	public String getTypeString() {
-		if (typeString == null)
+		if (isPrimitive()) {
+			return null;
+		}
+		if (typeString == null) {
 			typeString = computeTypeString().intern();
+		}
 		return typeString;
 	}
 
