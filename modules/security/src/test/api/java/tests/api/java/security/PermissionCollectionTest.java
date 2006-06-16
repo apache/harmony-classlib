@@ -59,9 +59,7 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
         // Look for the tests classpath
         URL classURL = this.getClass().getProtectionDomain().getCodeSource()
                 .getLocation();
-        if (classURL == null) {
-            fail("Could not get this class' location");
-        }
+        assertNotNull("Could not get this class' location", classURL);
 
         File policyFile = null;
         try {
