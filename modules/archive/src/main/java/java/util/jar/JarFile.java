@@ -209,11 +209,11 @@ public class JarFile extends ZipFile {
      */
     public Enumeration<JarEntry> entries() {
         class JarFileEnumerator implements Enumeration<JarEntry> {
-            Enumeration ze;
+            Enumeration<? extends ZipEntry> ze;
 
             JarFile jf;
 
-            JarFileEnumerator(Enumeration zenum, JarFile jf) {
+            JarFileEnumerator(Enumeration<? extends ZipEntry> zenum, JarFile jf) {
                 ze = zenum;
                 this.jf = jf;
             }
@@ -223,7 +223,7 @@ public class JarFile extends ZipFile {
             }
 
             public JarEntry nextElement() {
-                JarEntry je = new JarEntry((ZipEntry) ze.nextElement());
+                JarEntry je = new JarEntry(ze.nextElement());
                 je.parentJar = jf;
                 if (verifier != null) {
                     je.certificates = verifier.getCertificates(je.getName());

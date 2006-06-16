@@ -43,7 +43,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
 	private String comment;
 
-	private Vector entries = new Vector();
+	private Vector<String> entries = new Vector<String>();
 
 	private int compressMethod = DEFLATED;
 
@@ -60,7 +60,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	private byte[] nameBytes;
 
 	/**
-	 * Contructs a new ZipOutputStream on p1
+	 * Constructs a new ZipOutputStream on p1
 	 * 
 	 * @param p1
 	 *            OutputStream The InputStream to output to
@@ -163,7 +163,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
 	/**
 	 * Indicates that all entries have been written to the stream. Any terminal
-	 * Zipfile information is written to the underlying stream.
+	 * ZipFile information is written to the underlying stream.
 	 * 
 	 * @exception IOException
 	 *                If an error occurs while finishing

@@ -46,7 +46,7 @@ public class Inflater {
 
 	/**
 	 * Release any resources associated with this Inflater. Any unused
-	 * input/ouput is discarded. This is also called by the finalize method.
+	 * input/output is discarded. This is also called by the finalize method.
 	 */
 	public synchronized void end() {
 		if (streamHandle != -1) {
@@ -65,7 +65,7 @@ public class Inflater {
 	}
 
 	/**
-	 * Indicates if the Inflater has inflated the entire defalted stream. If
+	 * Indicates if the Inflater has inflated the entire deflated stream. If
 	 * deflated bytes remain and needsInput returns true this method will return
 	 * false. This method should be called after all deflated input is supplied
 	 * to the Inflater.
@@ -80,7 +80,7 @@ public class Inflater {
 	 * Returns the Adler32 checksum of either all bytes inflated, or the
 	 * checksum of the preset dictionary if one has been supplied.
 	 * 
-	 * @return The Adler32 checksum associayted with this Inflater.
+	 * @return The Adler32 checksum associated with this Inflater.
 	 */
 	public synchronized int getAdler() {
 		if (streamHandle == -1)
@@ -94,7 +94,7 @@ public class Inflater {
 	 * Returns the number of bytes of current input remaining to be read by the
 	 * inflater
 	 * 
-	 * @return Number of bytes of unred input.
+	 * @return Number of bytes of unread input.
 	 */
 	public synchronized int getRemaining() {
 		return inLength - inRead;
@@ -151,7 +151,7 @@ public class Inflater {
 	 * @param buf
 	 *            Buffer to output inflated bytes
 	 * @param off
-	 *            Offset in buffer into wcih to store inflated bytes
+	 *            Offset in buffer into which to store inflated bytes
 	 * @param nbytes
 	 *            Number of inflated bytes to store
 	 * @exception DataFormatException
@@ -279,7 +279,7 @@ public class Inflater {
 	 * @param buf
 	 *            input buffer
 	 * @param off
-	 *            offest to read from in buffer
+	 *            offset to read from in buffer
 	 * @param nbytes
 	 *            number of bytes to read
 	 * @see #needsInput

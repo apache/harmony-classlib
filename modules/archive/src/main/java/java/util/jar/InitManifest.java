@@ -49,9 +49,9 @@ class InitManifest {
 
     private byte[] mainAttributesChunk;
 
-    InitManifest(InputStream is, Attributes main, Map entries, Map chunks,
+    InitManifest(InputStream is, Attributes main, Map<String, Attributes> entries, Map<String, byte[]> chunks,
             String verString) throws IOException {
-        encoding = (String) AccessController.doPrivileged(new PriviAction(
+        encoding = AccessController.doPrivileged(new PriviAction<String>(
                 "manifest.read.encoding"));
         if ("".equals(encoding)) {
             encoding = null;
@@ -63,9 +63,9 @@ class InitManifest {
         // Return the chunk of main attributes in the manifest.
         mainAttributesChunk = nextChunk(is, list);
 
-        Iterator it = list.iterator();
+        Iterator<String> it = list.iterator();
         while (it.hasNext()) {
-            addAttribute((String) it.next(), current);
+            addAttribute(it.next(), current);
         }
 
         // Check for version attribute
@@ -78,7 +78,7 @@ class InitManifest {
         while (chunks == null ? readLines(is, list) : (chunk = nextChunk(is,
                 list)) != null) {
             it = list.iterator();
-            String line = (String) it.next();
+            String line = it.next();
             if (line.length() < 7
                     || !line.substring(0, 5).toLowerCase().equals("name:")) {
                 throw new IOException(Msg.getString("K000a"));
@@ -91,7 +91,7 @@ class InitManifest {
             }
             entries.put(name, current);
             while (it.hasNext()) {
-                addAttribute((String) it.next(), current);
+                addAttribute(it.next(), current);
             }
             list.clear();
         }

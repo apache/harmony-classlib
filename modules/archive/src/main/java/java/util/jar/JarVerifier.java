@@ -36,8 +36,8 @@ import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.security.utils.JarUtils;
 
 /**
- * Non-public class used by {@link java.util.jar.JarFile} and
- * {@link java.util.jar.JarInputStream} to manage the verification of signed
+ * Non-public class used by {@link JarFile} and
+ * {@link JarInputStream} to manage the verification of signed
  * jars. <code>JarFile</code> and <code>JarInputStream</code> objects will
  * be expected to have a <code>JarVerifier</code> instance member which can be
  * used to carry out the tasks associated with verifying a signed jar. These
@@ -48,7 +48,7 @@ import org.apache.harmony.security.utils.JarUtils;
  * parties specified in the signature block data
  * <li>verification that the contents of all signature files (i.e.
  * <code>.SF</code> files) agree with the jar entries information found in the
- * jar maifest.
+ * jar manifest.
  * </ul>
  */
 class JarVerifier {
@@ -235,9 +235,9 @@ class JarVerifier {
         if (metaEntries == null) {
             return false;
         }
-        Iterator it = metaEntries.keySet().iterator();
+        Iterator<String> it = metaEntries.keySet().iterator();
         while (it.hasNext()) {
-            String key = (String) it.next();
+            String key = it.next();
             if (key.endsWith(".DSA") || key.endsWith(".RSA")) {
                 verifyCertificate(key);
                 // Check for recursive class load

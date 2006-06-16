@@ -17,7 +17,7 @@ package java.util.zip;
 
 
 /**
- * The Deflater class is used to compress bytes using the DEFLATE compressionn
+ * The Deflater class is used to compress bytes using the DEFLATE compression
  * algorithm. Deflation is performed by the ZLIB compression library.
  * 
  * @see DeflaterOutputStream
@@ -47,9 +47,9 @@ public class Deflater {
 
 	private int flushParm = Z_NO_FLUSH;
 
-	private boolean noHeader = false;
+	private boolean noHeader;
 
-	private boolean finished = false;
+	private boolean finished;
 
 	int compressLevel = DEFAULT_COMPRESSION;
 
@@ -92,7 +92,7 @@ public class Deflater {
 	 * @param nbytes
 	 *            number of bytes of compressed data to store in buf
 	 * 
-	 * @return number of bytes of compresed data stored
+	 * @return number of bytes of compressed data stored
 	 * 
 	 */
 	public synchronized int deflate(byte[] buf, int off, int nbytes) {
@@ -111,7 +111,7 @@ public class Deflater {
 	private synchronized native void endImpl(long handle);
 
 	/**
-	 * Frees all resources held onto by this Deflater. Any unused input or ouput
+	 * Frees all resources held onto by this Deflater. Any unused input or output
 	 * is discarded. This is also called from the finalize method.
 	 * 
 	 * @see #finalize

@@ -150,7 +150,7 @@ public class ZipFile implements ZipConstants {
 	 * @return an Enumeration of the zip entries
 	 */
 	public Enumeration<? extends ZipEntry> entries() {
-		return new ZFEnum();
+		return new ZFEnum<ZipEntry>();
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class ZipFile implements ZipConstants {
 	 * 
 	 * @param entryName
 	 *            the name of the entry in the zip file
-	 * @return a ZipEntry or null if the entryname does not exist in the zip
+	 * @return a ZipEntry or null if the entry name does not exist in the zip
 	 *         file
 	 */
 	public ZipEntry getEntry(String entryName) {
@@ -214,7 +214,7 @@ public class ZipFile implements ZipConstants {
 			return size;
 
 		size = 0;
-		Enumeration e = entries();
+		Enumeration<?> e = entries();
 		while (e.hasMoreElements()) {
 			size++;
 			e.nextElement();

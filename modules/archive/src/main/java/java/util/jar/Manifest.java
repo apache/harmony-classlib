@@ -44,13 +44,14 @@ public class Manifest implements Cloneable {
 	private byte[] mainAttributesChunk;
 	
 	/**
-	 * Contructs a new Manifest instance.
+	 * Constructs a new Manifest instance.
 	 */
 	public Manifest() {
+        super();
 	}
 
 	/**
-	 * Contructs a new Manifest instance using the attributes obtained from is.
+	 * Constructs a new Manifest instance using the attributes obtained from is.
 	 * 
 	 * @param is
 	 *            InputStream to parse for attributes
@@ -64,8 +65,9 @@ public class Manifest implements Cloneable {
 	}
 
 	Manifest(InputStream is, boolean readChunks) throws IOException {
-		if (readChunks)
-			chunks = new HashMap();
+		if (readChunks) {
+			chunks = new HashMap<String, byte[]>();
+        }
 		read(is);
 	}
 
@@ -108,7 +110,7 @@ public class Manifest implements Cloneable {
 	}
 
 	/**
-	 * Contructs a new Manifest instance. The new instance will have the same
+	 * Constructs a new Manifest instance. The new instance will have the same
 	 * attributes as those found in the parameter Manifest.
 	 * 
 	 * @param man
@@ -214,8 +216,8 @@ public class Manifest implements Cloneable {
 		 */
 		void write(Manifest manifest, OutputStream out) throws IOException {
 			os = out;
-			String encoding = (String) AccessController
-					.doPrivileged(new PriviAction("manifest.write.encoding"));
+			String encoding = AccessController
+					.doPrivileged(new PriviAction<String>("manifest.write.encoding"));
 			if (encoding != null) {
 				if ("".equals(encoding))
 					encoding = "UTF8";
@@ -225,7 +227,7 @@ public class Manifest implements Cloneable {
 					.getValue(Attributes.Name.MANIFEST_VERSION);
 			if (version != null) {
 				writeEntry(Attributes.Name.MANIFEST_VERSION, version);
-				Iterator entries = manifest.mainAttributes.keySet().iterator();
+				Iterator<?> entries = manifest.mainAttributes.keySet().iterator();
 				while (entries.hasNext()) {
 					Attributes.Name name = (Attributes.Name) entries.next();
 					if (!name.equals(Attributes.Name.MANIFEST_VERSION))
@@ -233,13 +235,13 @@ public class Manifest implements Cloneable {
 				}
 			}
 			os.write(sepBuf);
-			Iterator i = manifest.entryAttributes.keySet().iterator();
+			Iterator<String> i = manifest.entryAttributes.keySet().iterator();
 			while (i.hasNext()) {
-				String key = (String) i.next();
+				String key = i.next();
 				writeEntry(nameAttribute, key);
 				Attributes attrib = (Attributes) manifest.entryAttributes
 						.get(key);
-				Iterator entries = attrib.keySet().iterator();
+				Iterator<?> entries = attrib.keySet().iterator();
 				while (entries.hasNext()) {
 					Attributes.Name name = (Attributes.Name) entries.next();
 					writeEntry(name, attrib.getValue(name));
