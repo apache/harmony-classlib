@@ -44,6 +44,10 @@
 
 	<check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
 
+	<check-one-file src="${mx4j.url}" dest="${mx4j.jar}" />
+
+	<check-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}" />
+
 	<!-- Do not require the Eclipse compiler until the tools are integrated into the build
 	<check-one-file src="${ecj.url}" dest="${ecj.jar}" />
 	-->
@@ -90,6 +94,14 @@
 	<mkdir dir="${icu4j.dir}" />
 	<download-one-file src="${icu4j.url}" dest="${icu4j.jar}"
                            md5="${icu4j.md5}" />
+
+	<mkdir dir="${mx4j.dir}" />
+	<download-one-file src="${mx4j.url}" dest="${mx4j.jar}"
+                           md5="${mx4j.md5}" />
+
+	<mkdir dir="${mx4j.remote.dir}" />
+	<download-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}"
+                           md5="${mx4j.remote.md5}" />
 
 	<mkdir dir="${ecj.dir}" />
 	<download-one-file src="${ecj.url}" dest="${ecj.jar}"
