@@ -263,11 +263,8 @@ public abstract class SerializationTest extends TestCase {
             } else {
                 TestCase.assertNotNull(tstThr.getCause());
 
-                refThr = refThr.getCause();
-                tstThr = tstThr.getCause();
-
-                TestCase.assertEquals(refThr.getClass(), tstThr.getClass());
-                TestCase.assertEquals(refThr.getMessage(), tstThr.getMessage());
+                THROWABLE_COMPARATOR.assertDeserialized(refThr.getCause(),
+                        tstThr.getCause());
             }
         }
     };
