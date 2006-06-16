@@ -59,8 +59,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.sql.bin.main}" />
-        <delete dir="${hy.sql.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.sql}/make/patternset.txt" />
+            <fileset dir="${hy.sql.bin.test}" />
+        </delete>
     </target>
 
 </project>

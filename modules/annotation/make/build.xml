@@ -58,8 +58,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.annotation.bin.main}" />
-        <delete dir="${hy.annotation.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.annotation}/make/patternset.txt" />
+            <fileset dir="${hy.annotation.bin.test}" />
+        </delete>
     </target>
 
 </project>

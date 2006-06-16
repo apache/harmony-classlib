@@ -59,8 +59,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.awt.bin.main}" />
-        <delete dir="${hy.awt.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.awt}/make/patternset.txt" />
+            <fileset dir="${hy.awt.bin.test}" />
+        </delete>
     </target>
 
 </project>

@@ -59,8 +59,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.regex.bin.main}" />
-        <delete dir="${hy.regex.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.regex}/make/patternset.txt" />
+            <fileset dir="${hy.regex.bin.test}" />
+        </delete>
     </target>
 
 </project>

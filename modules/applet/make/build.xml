@@ -58,8 +58,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.applet.bin.main}" />
-        <delete dir="${hy.applet.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.applet}/make/patternset.txt" />
+            <fileset dir="${hy.applet.bin.test}" />
+        </delete>
     </target>
 
 </project>

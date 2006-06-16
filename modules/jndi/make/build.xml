@@ -59,8 +59,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.jndi.bin.main}" />
-        <delete dir="${hy.jndi.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.jndi}/make/patternset.txt" />
+            <fileset dir="${hy.jndi.bin.test}" />
+        </delete>
     </target>
 
 </project>

@@ -59,8 +59,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.crypto.bin.main}" />
-        <delete dir="${hy.crypto.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.crypto}/make/patternset.txt" />
+            <fileset dir="${hy.crypto.bin.test}" />
+        </delete>
     </target>
 
 </project>

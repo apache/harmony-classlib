@@ -59,8 +59,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.rmi.bin.main}" />
-        <delete dir="${hy.rmi.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.rmi}/make/patternset.txt" />
+            <fileset dir="${hy.rmi.bin.test}" />
+        </delete>
     </target>
 
 </project>

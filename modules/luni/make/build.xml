@@ -119,8 +119,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.luni.bin.main}" />
-        <delete dir="${hy.luni.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.luni}/make/patternset.txt" />
+            <fileset dir="${hy.luni.bin.test}" />
+        </delete>
     	<antcall target="clean.native.includes" />
     </target>
 	

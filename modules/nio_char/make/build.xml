@@ -58,8 +58,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.nio_char.bin.main}" />
-        <delete dir="${hy.nio_char.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.nio_char}/make/patternset.txt" />
+            <fileset dir="${hy.nio_char.bin.test}" />
+        </delete>
     </target>
 
 </project>

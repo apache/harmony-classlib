@@ -66,8 +66,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.archive.bin.main}" />
-        <delete dir="${hy.archive.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.archive}/make/patternset.txt" />
+            <fileset dir="${hy.archive.bin.test}" />
+        </delete>
     	<antcall target="clean.native.includes" />
     </target>
 

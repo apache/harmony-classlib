@@ -59,8 +59,11 @@
     </target>
 
     <target name="clean">
-        <delete dir="${hy.logging.bin.main}" />
-        <delete dir="${hy.logging.bin.test}" />
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.logging}/make/patternset.txt" />
+            <fileset dir="${hy.logging.bin.test}" />
+        </delete>
     </target>
 
 </project>
