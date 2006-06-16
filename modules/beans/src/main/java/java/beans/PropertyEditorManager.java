@@ -21,6 +21,7 @@
 package java.beans;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Maxim V. Berkultsev
@@ -30,7 +31,7 @@ import java.util.HashMap;
 public class PropertyEditorManager {
     
     private static String[] path = {"org.apache.harmony.beans.editors"};
-    private static HashMap<Class, Class> registeredEditors = new HashMap<Class, Class>();
+    private static Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
     
     /**
      */
@@ -64,10 +65,10 @@ public class PropertyEditorManager {
             throw new NullPointerException();
         }
 
-        Class editorClass = null;
+        Class<?> editorClass = null;
         PropertyEditor editor = null;
 
-        editorClass = (Class) registeredEditors.get(targetType);
+        editorClass = registeredEditors.get(targetType);
 
         if (editorClass == null) {
             String editorClassName = targetType.getName() + "Editor";

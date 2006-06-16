@@ -34,7 +34,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     private String eventSetName = null;
     
-    private Class listenerType = null;
+    private Class<?> listenerType = null;
     private ArrayList<MethodDescriptor> listenerMethodDescriptors =
         new ArrayList<MethodDescriptor>();
     
@@ -265,10 +265,10 @@ public class EventSetDescriptor extends FeatureDescriptor {
      */
     public Method[] getListenerMethods() {
         Method[] result = new Method[listenerMethodDescriptors.size()];
-        Iterator i = listenerMethodDescriptors.iterator();
+        Iterator<MethodDescriptor> i = listenerMethodDescriptors.iterator();
         int idx = 0;
         while(i.hasNext()) {
-            MethodDescriptor md = (MethodDescriptor) i.next();
+            MethodDescriptor md = i.next();
             result[idx] = md.getMethod();
             idx++;
         }
@@ -281,10 +281,10 @@ public class EventSetDescriptor extends FeatureDescriptor {
     public MethodDescriptor[] getListenerMethodDescriptors() {
         MethodDescriptor[] result =
                 new MethodDescriptor[listenerMethodDescriptors.size()];
-        Iterator i = listenerMethodDescriptors.iterator();
+        Iterator<MethodDescriptor> i = listenerMethodDescriptors.iterator();
         int idx = 0;
         while(i.hasNext()) {
-            result[idx] = (MethodDescriptor) i.next();
+            result[idx] = i.next();
             idx++;
         }
         return result;
@@ -346,7 +346,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
         return inDefaultEventSet;
     }
     
-    private Class getEventType(Class listenerType)
+    private Class<?> getEventType(Class<?> listenerType)
             throws ClassNotFoundException {
         String listenerTypeName = listenerType.getName();
         int idx = listenerTypeName.lastIndexOf("Listener");
@@ -355,7 +355,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 listenerType.getClassLoader());
     }
 
-    private boolean checkMethod(Class listenerType, Method listenerMethod)
+    private boolean checkMethod(Class<?> listenerType, Method listenerMethod)
             throws IntrospectionException {
         if(listenerMethod != null
                 && !listenerMethod.getDeclaringClass().isAssignableFrom(
@@ -368,7 +368,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
         }
     }
     
-    private Method findMethodByName(Class listenerType,
+    private Method findMethodByName(Class<?> listenerType,
             String listenerMethodName) throws IntrospectionException {
         try {
             return listenerType.getMethod(listenerMethodName,
@@ -385,10 +385,10 @@ public class EventSetDescriptor extends FeatureDescriptor {
     }
     
     private Method findMethodByPrefix(
-            Class sourceClass,
+            Class<?> sourceClass,
             String prefix,
             String postfix,
-            Class listenerType) {
+            Class<?> listenerType) {
         String fullName = listenerType.getName(); // com.drl.beans.SmthListener
         int idx = fullName.lastIndexOf(".");
         String methodName = prefix + fullName.substring(idx + 1) + postfix; // prefix(e.g., add) + SmthListener
@@ -418,12 +418,12 @@ public class EventSetDescriptor extends FeatureDescriptor {
     }
     
     private static Method checkRegistrationMethod(
-            Class listenerType,
+            Class<?> listenerType,
             Method registrationMethod) throws IntrospectionException {
         if(registrationMethod == null) {
             return null;
         } else {
-            Class returnType = registrationMethod.getReturnType();
+            Class<?> returnType = registrationMethod.getReturnType();
             
             if(returnType != void.class) {
                 throw new IntrospectionException(registrationMethod.getName()
@@ -445,7 +445,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
     }
     
     private static Method checkGetListenerMethod(
-            Class listenerType,
+            Class<?> listenerType,
             Method getListenerMethod) throws IntrospectionException {
         if(getListenerMethod == null) {
             return null;
@@ -457,7 +457,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
                         "No input params are allowed for getListenerMethod");
             }
             
-            Class returnType = getListenerMethod.getReturnType();
+            Class<?> returnType = getListenerMethod.getReturnType();
             if(returnType.isArray()
                     && returnType.getComponentType() == listenerType) {
                 return getListenerMethod;

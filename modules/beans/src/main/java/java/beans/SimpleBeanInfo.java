@@ -60,10 +60,10 @@ public class SimpleBeanInfo implements BeanInfo {
                 
                 result = new byte[byteArrayList.size()];
                 
-                Iterator i = byteArrayList.iterator();
+                Iterator<Byte> i = byteArrayList.iterator();
                 int idx = 0;
                 while(i.hasNext()) {
-                    result[idx++] = ((Byte) i.next()).byteValue();
+                    result[idx++] = i.next().byteValue();
                 }
                 
             } catch (IOException ioe) {

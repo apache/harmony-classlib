@@ -25,6 +25,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Maxim V. Berkultsev
@@ -34,7 +35,7 @@ import java.util.Iterator;
 public class PropertyEditorSupport implements PropertyEditor {
     
     Object source = null;
-    ArrayList<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
     Object oldValue = null;
     Object newValue = null;
 
@@ -150,7 +151,7 @@ public class PropertyEditorSupport implements PropertyEditor {
         if(listeners.size() > 0) {
             PropertyChangeEvent event = new PropertyChangeEvent(
                     source, null, oldValue, newValue);
-            Iterator iterator = listeners.iterator();
+            Iterator<PropertyChangeListener> iterator = listeners.iterator();
             while (iterator.hasNext()) {
                 PropertyChangeListener listener =
                         (PropertyChangeListener) iterator.next();

@@ -36,8 +36,8 @@ import org.apache.harmony.beans.DefaultPersistenceDelegatesFactory;
 public class Encoder {
     
     private ExceptionListener exceptionListener = null;
-    private HashMap<Class, PersistenceDelegate> persistenceDelegates =
-        new HashMap<Class, PersistenceDelegate>();
+    private HashMap<Class<?>, PersistenceDelegate> persistenceDelegates =
+        new HashMap<Class<?>, PersistenceDelegate>();
     
     Vector<Object> roots = new Vector<Object>();
     HashMap<Object, ObjectNode> nodes = new HashMap<Object, ObjectNode>();
@@ -147,7 +147,7 @@ public class Encoder {
             Object oldInstance = oldExp.getValue();
             
             ObjectNode node = null;
-            Class type = null;
+            Class<?> type = null;
 
             if(oldInstance != null) {
                 type = oldInstance.getClass();
@@ -215,7 +215,7 @@ public class Encoder {
 
         ObjectNode node = (ObjectNode) nodes.get(oldInstance);
         if(node == null) {
-            Class type = oldInstance.getClass();
+            Class<?> type = oldInstance.getClass();
             
             doWriteObject(oldInstance);
             node = (ObjectNode) nodes.get(oldInstance);
@@ -253,32 +253,32 @@ public class Encoder {
         return null;
     }
     
-    static boolean isNull(Class type) {
+    static boolean isNull(Class<?> type) {
         return (type == null);
     }
     
-    static boolean isPrimitive(Class type) {
+    static boolean isPrimitive(Class<?> type) {
         return (type == Boolean.class) || (type == Byte.class) ||
             (type == Character.class) || (type == Double.class) ||
             (type == Float.class) || (type == Integer.class) ||
             (type == Long.class) || (type == Short.class);
     }
     
-    static boolean isString(Class type) {
+    static boolean isString(Class<?> type) {
         return (type == String.class);
         
     }
     
-    static boolean isClass(Class type) {
+    static boolean isClass(Class<?> type) {
         return (type == Class.class);
     }
     
     
-    static boolean isArray(Class type) {
+    static boolean isArray(Class<?> type) {
         return type.isArray();
     }
     
-    static String getPrimitiveName(Class type) {
+    static String getPrimitiveName(Class<?> type) {
         String result = null;
         
         if(type == Boolean.class) {

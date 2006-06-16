@@ -31,13 +31,13 @@ import java.util.Vector;
 
 public class PropertyDescriptor extends FeatureDescriptor {
 
-    Class beanClass = null;
+    Class<?> beanClass = null;
     String propertyName = null;
     
     Method getter = null;
     Method setter = null;
     
-    Class propertyEditorClass = null;
+    Class<?> propertyEditorClass = null;
     
     boolean constrained = false;
     boolean bound = false;
@@ -136,8 +136,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
                         + "equal to 1.");
             }
             
-            Class parameterType = parameterTypes[0];
-            Class propertyType = getPropertyType();
+            Class<?> parameterType = parameterTypes[0];
+            Class<?> propertyType = getPropertyType();
             if(propertyType != null && !propertyType.equals(parameterType)) {
                 throw new IntrospectionException(
                         "Parameter type in setter method does not "
@@ -166,8 +166,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
                         + "equal to 0.");
             }
             
-            Class returnType = getter.getReturnType();
-            Class propertyType = getPropertyType();
+            Class<?> returnType = getter.getReturnType();
+            Class<?> propertyType = getPropertyType();
             if((propertyType != null) && !returnType.equals(propertyType)) {
                 throw new IntrospectionException(
                         "Parameter type in getter method does not "
@@ -237,7 +237,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * @com.intel.drl.spec_ref
      */
     public Class<?> getPropertyType() {
-        Class result = null;
+        Class<?> result = null;
         if (getter != null) {
             result = getter.getReturnType();
         } else if (setter != null) {
@@ -282,7 +282,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
         return bound;
     }
     
-    boolean hasMethod(Class beanClass, String methodName) {
+    boolean hasMethod(Class<?> beanClass, String methodName) {
         Method[] methods = findMethods(beanClass, methodName);
         return (methods.length > 0);
     }
@@ -297,7 +297,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
         return result;
     }
     
-    Method[] findMethods(Class aClass, String methodName) {
+    Method[] findMethods(Class<?> aClass, String methodName) {
         Method[] allMethods = aClass.getMethods();
         Vector<Method> matchedMethods = new Vector<Method>();
         for (int i = 0; i < allMethods.length; ++i) {
@@ -314,7 +314,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
         return result;
     }
     
-    private void setReadMethod(Class beanClass, String getterName) {
+    private void setReadMethod(Class<?> beanClass, String getterName) {
         boolean result = false;
         
         Method[] getters = findMethods(beanClass, getterName);
@@ -332,7 +332,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
     }
 
-    private void setWriteMethod(Class beanClass, String setterName)
+    private void setWriteMethod(Class<?> beanClass, String setterName)
             throws IntrospectionException {
         boolean result = false;
         

@@ -59,7 +59,7 @@ public class EventHandler implements InvocationHandler {
             arguments = new Object[] { null };
         }
         
-        Class proxyClass = proxy.getClass();
+        Class<?> proxyClass = proxy.getClass();
         // if a proxy
         if(Proxy.isProxyClass(proxyClass)) {
             InvocationHandler handler = Proxy.getInvocationHandler(proxy);
@@ -287,7 +287,7 @@ public class EventHandler implements InvocationHandler {
     }
     
     private PropertyDescriptor findPropertyDescriptor(
-        Class theClass, String propertyName) throws IntrospectionException
+        Class<?> theClass, String propertyName) throws IntrospectionException
     {
         PropertyDescriptor result = null;
         BeanInfo beanInfo = Introspector.getBeanInfo(theClass);
@@ -302,7 +302,7 @@ public class EventHandler implements InvocationHandler {
     }
     
     private Method findStaticGetter(
-        Class theClass, String propertyName) throws IntrospectionException
+        Class<?> theClass, String propertyName) throws IntrospectionException
     {
         Method result = null;
         
@@ -340,7 +340,7 @@ public class EventHandler implements InvocationHandler {
         return result;
     }
     
-    private Method findMethod(Class type, Object[] args) {
+    private Method findMethod(Class<?> type, Object[] args) {
         Method[] methods = type.getMethods();
         
         for(int i = 0; i < methods.length; ++i) {
@@ -353,7 +353,7 @@ public class EventHandler implements InvocationHandler {
         return null;
     }
     
-    private static boolean isPrimitiveWrapper(Class wrapper, Class base) {
+    private static boolean isPrimitiveWrapper(Class<?> wrapper, Class<?> base) {
         return (base == boolean.class) && (wrapper == Boolean.class) ||
             (base == byte.class) && (wrapper == Byte.class) ||
             (base == char.class) && (wrapper == Character.class) ||
@@ -369,7 +369,7 @@ public class EventHandler implements InvocationHandler {
         
         if(parameterTypes.length == arguments.length) {
             for(int i = 0; i < arguments.length; ++i) {
-                Class argumentType = (arguments[i] == null) ? null
+                Class<?> argumentType = (arguments[i] == null) ? null
                         : arguments[i].getClass();
                 if((argumentType == null) || isPrimitiveWrapper(argumentType,
                         parameterTypes[i])) {

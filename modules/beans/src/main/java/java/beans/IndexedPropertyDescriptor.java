@@ -105,8 +105,8 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
                         + "integer type.");
             }
             
-            Class returnType = indexedGetter.getReturnType();
-            Class indexedPropertyType = getIndexedPropertyType();
+            Class<?> returnType = indexedGetter.getReturnType();
+            Class<?> indexedPropertyType = getIndexedPropertyType();
             if((indexedPropertyType != null) && !returnType.equals(
                     indexedPropertyType)) {
                 throw new IntrospectionException(
@@ -137,14 +137,14 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
                         + "equal to 2.");
             }
             
-            Class firstParameterType = parameterTypes[0];
+            Class<?> firstParameterType = parameterTypes[0];
             if (!firstParameterType.equals(int.class)) {
                 throw new IntrospectionException(
                         "First parameter type in indexed setter method "
                         + "should be int.");
             }            
             
-            Class secondParameterType = parameterTypes[1];
+            Class<?> secondParameterType = parameterTypes[1];
             if (!secondParameterType.equals(getIndexedPropertyType())) {
                 throw new IntrospectionException(
                         "Second parameter type in indexed setter method "
@@ -188,7 +188,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
      * @com.intel.drl.spec_ref
      */
     public Class<?> getIndexedPropertyType() {
-        Class result = null;
+        Class<?> result = null;
         if (indexedGetter != null) {
             result = indexedGetter.getReturnType();
         } else if (indexedSetter != null) {
@@ -198,7 +198,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
         return result;        
     }
     
-    private void setIndexedReadMethod(Class beanClass,
+    private void setIndexedReadMethod(Class<?> beanClass,
             String indexedGetterName) {
         Method[] getters = findMethods(beanClass, indexedGetterName);
         boolean result = false;
@@ -211,7 +211,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
         }
     }
     
-    private void setIndexedWriteMethod(Class beanClass,
+    private void setIndexedWriteMethod(Class<?> beanClass,
             String indexedSetterName) {
         Method[] setters = findMethods(beanClass, indexedSetterName);
         boolean result = false;

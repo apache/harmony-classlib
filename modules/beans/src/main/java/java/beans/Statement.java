@@ -108,7 +108,7 @@ public class Statement {
                     target instanceof Class &&
                     ((Class) target).getName().equals("java.lang.reflect.Array"))
             {
-                Class componentType = (Class) arguments[0];
+                Class<?> componentType = (Class) arguments[0];
                 int length = ((Integer) arguments[1]).intValue();
 
                 result = Array.newInstance(componentType, length);
@@ -116,12 +116,12 @@ public class Statement {
                       methodName.equals("newInstance"))
             {
                 if(target instanceof Class) {
-                    Constructor constructor = findConstructor();
+                    Constructor<?> constructor = findConstructor();
                     
                     result = constructor.newInstance(arguments);
                 } else {
                     // XXX should be investigated, dead code?
-                    Constructor constructor = findConstructor();
+                    Constructor<?> constructor = findConstructor();
 
                     result = constructor.newInstance(arguments);
                 }
@@ -180,16 +180,16 @@ public class Statement {
         return args;
     }
     
-    private Constructor findConstructor() throws NoSuchMethodException {
+    private Constructor<?> findConstructor() throws NoSuchMethodException {
         Class[] argClasses = getClasses();
-        Class targetClass = (Class) target;
+        Class<?> targetClass = (Class) target;
 
-        Constructor result = null;
+        Constructor<?> result = null;
         Constructor[] constructors = targetClass.getConstructors();
 
         for(int i = 0; i < constructors.length; ++i) {
-            Constructor constructor = constructors[i];
-            Class[] parameterTypes = constructor.getParameterTypes();
+            Constructor<?> constructor = constructors[i];
+            Class<?>[] parameterTypes = constructor.getParameterTypes();
 
             if(parameterTypes.length == argClasses.length) {
                 boolean found = true;
@@ -230,7 +230,7 @@ public class Statement {
     
     private Method findStaticMethod() throws NoSuchMethodException {
         Class[] argClasses = getClasses();
-        Class targetClass = (Class) target;
+        Class<?> targetClass = (Class) target;
         
         Method result = null;
         
@@ -241,7 +241,7 @@ public class Statement {
                     method.getModifiers())) {
                 continue;
             }
-            Class[] parameterTypes = method.getParameterTypes();
+            Class<?>[] parameterTypes = method.getParameterTypes();
             if(parameterTypes.length == argClasses.length) {
                 boolean found = true;
                 
@@ -278,7 +278,7 @@ public class Statement {
     
     private Method findMethod() throws NoSuchMethodException {
         Class[] argClasses = getClasses();
-        Class targetClass = target.getClass();
+        Class<?> targetClass = target.getClass();
         
         Method result = null;
         
@@ -287,7 +287,7 @@ public class Statement {
             Method method = methods[i];
             
             if(method.getName().equals(methodName)) {
-                Class[] parameterTypes = method.getParameterTypes();
+                Class<?>[] parameterTypes = method.getParameterTypes();
                 
                 if(parameterTypes.length == argClasses.length) {
                     boolean found = true;
@@ -326,18 +326,7 @@ public class Statement {
         return result;
     }
     
-    private boolean areAllParamsDefined(Class[] argClasses) {
-        boolean result = true;
-        for(int i = 0; i < argClasses.length; ++i) {
-            if(argClasses[i] == null) {
-                result = false;
-                break;
-            }
-        }
-        return result;
-    }
-    
-    private static boolean isPrimitiveWrapper(Class wrapper, Class base) {
+    private static boolean isPrimitiveWrapper(Class<?> wrapper, Class<?> base) {
         return
             (base == boolean.class) && (wrapper == Boolean.class) ||
             (base == byte.class) && (wrapper == Byte.class) ||
@@ -349,9 +338,9 @@ public class Statement {
             (base == double.class) && (wrapper == Double.class);
     }
     
-    static String convertClassName(Class type) {
-        Class componentType = type.getComponentType();
-        Class resultType = (componentType == null) ? type : componentType;
+    static String convertClassName(Class<?> type) {
+        Class<?> componentType = type.getComponentType();
+        Class<?> resultType = (componentType == null) ? type : componentType;
         StringTokenizer st = new StringTokenizer(resultType.getName(), ".");
         String result = st.hasMoreElements() ? (String) st.nextElement() : null;
         if(result == null) return result;
