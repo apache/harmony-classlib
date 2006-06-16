@@ -113,13 +113,6 @@ public abstract class SerializationTest extends TestCase {
     }
 
     /**
-     * Returns zero value to exclude serialization tests from performance runs.
-     */
-    public long getRepeatCount() {
-        return 0;
-    }
-
-    /**
      * This is the main working method of this framework. Subclasses must
      * override it to provide actual objects for testing.
      * 
