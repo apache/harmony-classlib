@@ -291,6 +291,17 @@ public class JarFileTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("IOException 3");
 		}
+		try {
+			Support_Resources.copyFile(resources, null, jarName2);
+			JarFile jF = new JarFile(new File(resources, jarName2));
+			jF.close();
+			jF.getManifest();
+		        fail("FAILED: expected IllegalStateException" ); 
+		} catch (IllegalStateException ise) {
+			//expected;
+		} catch (Exception e) {
+			fail("Exception during 4th test: " + e.toString());
+		}
 	}
 
 	/**

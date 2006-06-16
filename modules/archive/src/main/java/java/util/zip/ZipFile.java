@@ -177,6 +177,10 @@ public class ZipFile implements ZipConstants {
 	 * @return an input stream on the ZipEntry data
 	 */
 	public InputStream getInputStream(ZipEntry entry) throws IOException {
+		if(descriptor == -1) {
+			/* the descriptor is set to -1 by native code to indicate the zip was closed */
+			throw new IllegalStateException();
+		}
 		byte[] buf = inflateEntryImpl2(descriptor, entry.getName());
 		if (buf == null) return null;
 		return new ByteArrayInputStream(buf);

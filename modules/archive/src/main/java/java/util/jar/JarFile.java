@@ -255,7 +255,7 @@ public class JarFile extends ZipFile {
         if (manifest != null) {
             return manifest;
         }
-        if (manifestEntry != null) {
+		try {
             ByteArrayInputStream is = (ByteArrayInputStream) super
                     .getInputStream(manifestEntry);
             if (verifier != null) {
@@ -270,8 +270,10 @@ public class JarFile extends ZipFile {
             } finally {
                 is.close();
             }
-            manifestEntry = null;
-        }
+	        manifestEntry = null;
+		} catch(NullPointerException e) {
+			manifestEntry = null;
+		}
         return manifest;
     }
 
