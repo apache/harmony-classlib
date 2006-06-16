@@ -69,13 +69,15 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
             fail("Unexpected IOException while creating policy file : " + e);
         }
 
+        URL signedBKS = getResourceURL("PermissionCollection/signedBKS.jar");
+        URL keystoreBKS = getResourceURL("PermissionCollection/keystore.bks");
+        
         // Create the policy file (and save the existing one if any)
         try {
             FileOutputStream fileOut = new FileOutputStream(policyFile);
             String linebreak = System.getProperty("line.separator");
             String towrite = "grant codeBase \""
-                    + classURL.toExternalForm()
-                    + "tests/resources/PermissionCollection/signedBKS.jar"
+                    + signedBKS.toExternalForm()
                     + "\" signedBy \"eleanor\" {"
                     + linebreak
                     + "permission java.io.FilePermission \"test1.txt\", \"write\";"
@@ -85,8 +87,7 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
                     + "};"
                     + linebreak
                     + "grant codeBase \""
-                    + classURL.toExternalForm()
-                    + "tests/resources/PermissionCollection/signedBKS.jar"
+                    + signedBKS.toExternalForm()
                     + "\" signedBy \"eleanor\" {"
                     + linebreak
                     + "permission java.io.FilePermission \"test2.txt\", \"write\";"
@@ -95,8 +96,7 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
             towrite += "\" {" + linebreak
                     + "permission java.security.AllPermission;" + linebreak
                     + "};" + linebreak + "keystore \""
-                    + classURL.toExternalForm()
-                    + "tests/resources/PermissionCollection/keystore.bks"
+                    + keystoreBKS.toExternalForm()
                     + "\",\"BKS\";";
             fileOut.write(towrite.getBytes());
             fileOut.flush();
@@ -142,8 +142,7 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
         try {
             args[0] = "-Djava.security.policy=" + policyFile.toURL();
             args[1] = "tests.support.Support_PermissionCollection";
-            args[2] = classURL.toExternalForm()
-                    + "tests/resources/PermissionCollection/signedBKS.jar";
+            args[2] = signedBKS.toExternalForm();
         } catch (MalformedURLException e) {
             fail("Unexpected MalformedURLException while policy file to url : "
                     + e);
@@ -240,5 +239,17 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
                 "testing permissionCollection-isREadOnly");
         assertNotNull("toString should have returned a string of elements",
                 permi.newPermissionCollection().toString());
+    }
+
+    // FIXME move me to Support_Resources
+    public static URL getResourceURL(String name) {
+
+        URL url = ClassLoader.getSystemClassLoader().getResource(name);
+
+        if (url == null) {
+            throw new RuntimeException("Failed to get resource url: " + name);
+        }
+
+        return url;
     }
 }
