@@ -16,7 +16,7 @@
 # Makefile for module 'thread'
 #
 
-!include <..\defines.mak>
+!include <$(HY_HDK)\build\defines.mak>
 
 SHAREDSUB=$(SHARED)thread\# comment to avoid \ being treated as continuation
 LIBBASE=hythr
@@ -38,4 +38,4 @@ MDLLIBFILES = $(LIBPATH)hypool.lib $(LIBPATH)hycommon.lib
 DLLBASE=0x11500000
 COMMENT=/comment:"Thread support library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-!include <..\rules.mak>
+!include <$(HY_HDK)\build\rules.mak>

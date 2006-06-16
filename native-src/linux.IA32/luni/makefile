@@ -16,7 +16,7 @@
 # Makefile for module 'luni'
 #
 
-include ../makefile.include
+include $(HY_HDK)/build/makefile.include
 
 CFLAGS += -fpic -I$(SHARED)common -I$(SHARED)fdlibm \
 	-I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
@@ -41,4 +41,4 @@ MDLLIBFILES = \
 
 DLLNAME = ../libhyluni.so
 
-include ../rules.mk
+include $(HY_HDK)/build/rules.mk

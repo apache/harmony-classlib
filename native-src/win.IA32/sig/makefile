@@ -16,7 +16,7 @@
 # Makefile for module 'sig'
 #
 
-!include <..\defines.mak>
+!include <$(HY_HDK)\build\defines.mak>
 
 SHAREDSUB=$(SHARED)sig\# comment to avoid \ being treated as continuation
 LIBBASE=hysig
@@ -29,4 +29,4 @@ VIRTFILES = $(LIBBASE).res
 DLLBASE=0x13100000
 COMMENT=/comment:"Signal handling support DLL. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-!include <..\rules.mak>
+!include <$(HY_HDK)\build\rules.mak>

@@ -16,7 +16,7 @@
 # Makefile for module 'fdlibm'
 #
 
-!include <..\defines.mak>
+!include <$(HY_HDK)\build\defines.mak>
 
 SHAREDSUB=$(SHARED)fdlibm\# comment to avoid \ being treated as continuation
 LIBNAME=$(LIBPATH)hyfdlibm.lib

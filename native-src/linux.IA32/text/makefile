@@ -16,7 +16,7 @@
 # Makefile for module 'text'
 #
 
-include ../makefile.include
+include $(HY_HDK)/build/makefile.include
 
 CFLAGS += -fpic
 BUILDFILES = text_copyright.o $(SHAREDSUB)BidiWrapper.o
@@ -28,4 +28,4 @@ MDLLIBFILES = \
 
 DLLNAME = ../libhytext.so
 
-include ../rules.mk
+include $(HY_HDK)/build/rules.mk

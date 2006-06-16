@@ -16,7 +16,7 @@
 # Makefile for module 'auth'
 #
 
-!include <..\defines.mak>
+!include <$(HY_HDK)\build\defines.mak>
 
 SHAREDSUB=$(SHARED)auth\# comment to avoid \ being treated as continuation
 LIBBASE=hyauth
@@ -34,4 +34,4 @@ MDLLIBFILES = $(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib $(LIBPATH)hyzip.lib \
 DLLBASE=0x1300000
 COMMENT=/comment:"Auth component native code. (c) Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable."
 
-!include <..\rules.mak>
+!include <$(HY_HDK)\build\rules.mak>

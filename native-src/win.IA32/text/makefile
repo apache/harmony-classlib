@@ -16,7 +16,7 @@
 # Makefile for module 'text'
 #
 
-!include <..\defines.mak>
+!include <$(HY_HDK)\build\defines.mak>
 
 SHAREDSUB=$(SHARED)text\# comment to avoid \ being treated as continuation
 LIBBASE=hytext
@@ -35,4 +35,4 @@ MDLLIBFILES = \
 DLLBASE=0x13300000
 COMMENT=/comment:"Text component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-!include <..\rules.mak>
+!include <$(HY_HDK)\build\rules.mak>

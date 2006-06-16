@@ -16,10 +16,10 @@
 # Makefile for module 'pool'
 #
 
-include ../makefile.include
+include $(HY_HDK)/build/makefile.include
 
 CFLAGS += -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 BUILDFILES = $(SHAREDSUB)pool.o $(SHAREDSUB)pool_cap.o
 LIBNAME = $(LIBPATH)libhypool.a
 
-include ../rules.mk
+include $(HY_HDK)/build/rules.mk

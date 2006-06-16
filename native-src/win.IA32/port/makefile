@@ -16,7 +16,7 @@
 # Makefile for module 'port'
 #
 
-!include <..\defines.mak>
+!include <$(HY_HDK)\build\defines.mak>
 
 SHAREDSUB=$(SHARED)port\# comment to avoid \ being treated as continuation
 LIBBASE=hyprt
@@ -47,4 +47,4 @@ MDLLIBFILES = $(LIBPATH)hythr.lib $(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib
 DLLBASE=0x11100000
 COMMENT=/comment:"Platform port library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-!include <..\rules.mak>
+!include <$(HY_HDK)\build\rules.mak>

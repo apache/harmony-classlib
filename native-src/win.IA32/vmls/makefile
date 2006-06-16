@@ -16,7 +16,7 @@
 # Makefile for module 'vmls'
 #
 
-!include <..\defines.mak>
+!include <$(HY_HDK)\build\defines.mak>
 
 SHAREDSUB=$(SHARED)vmls\# comment to avoid \ being treated as continuation
 LIBNAME=$(LIBPATH)hyvmls.lib
@@ -26,4 +26,4 @@ BUILDFILES = \
 
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
 
-!include <..\rules.mak>
+!include <$(HY_HDK)\build\rules.mak>

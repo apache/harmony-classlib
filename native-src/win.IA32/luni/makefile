@@ -16,7 +16,7 @@
 # Makefile for module 'luni'
 #
 
-!include <..\defines.mak>
+!include <$(HY_HDK)\build\defines.mak>
 
 SHAREDSUB=$(SHARED)luni\# comment to avoid \ being treated as continuation
 LIBBASE=hyluni
@@ -51,4 +51,4 @@ MDLLIBFILES = \
 DLLBASE=0x13200000
 COMMENT=/comment:"LUNI component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-!include <..\rules.mak>
+!include <$(HY_HDK)\build\rules.mak>

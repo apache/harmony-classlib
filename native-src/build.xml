@@ -52,6 +52,7 @@
     <target name="properties" depends="init, windows-properties, linux-properties">
         <property name="hy.hdk" location="${basedir}/../deploy" />
     	<property name="hy.jdk" location="${hy.hdk}/jdk" />
+    	<property name="depends.build" location="../depends/build" />
         <property name="depends.oss" location="../depends/oss" />
         <property name="depends.libs" location="../depends/libs/${target.platform}" />
     	<property name="depends.files" location="../depends/files" />
@@ -108,6 +109,8 @@
     <target name="make-all" depends="properties">
     	<mkdir dir="${native.lib.target}"/>
     	
+    	<antcall target="copy-makefile-includes" />
+    	
         <exec failonerror="true" 
             executable="${make.command}" 
             dir="${target.platform}">
@@ -121,6 +124,8 @@
           target: make-clean              
          ================================= -->
     <target name="make-clean" depends="properties">
+    	<antcall target="copy-makefile-includes" />
+    	
         <exec failonerror="true" 
             executable="${make.command}" 
             dir="${target.platform}">
@@ -129,6 +134,8 @@
         </exec>
     	
     	<delete dir="${native.lib.target}" />
+    	
+    	<antcall target="clean-makefile-includes" />
     </target>
 
 
@@ -230,6 +237,28 @@
     		target="clean.native.includes" />
     	<ant dir="${basedir}/../modules/luni" antfile="make/build.xml" 
     		target="clean.native.includes" />
+	</target>
+	
+	<!-- ================================= 
+          target: copy-makefile-includes              
+         ================================= -->
+	<target name="copy-makefile-includes" depends="properties" >
+		<!-- copy generic defines and rules for each platform into a shared
+			place -->
+		<mkdir dir="${hy.hdk}/build" />
+		<copy todir="${hy.hdk}/build" overwrite="yes">
+            <fileset dir="${depends.build}">
+                <include name="*" />
+            </fileset>
+        </copy>
+	</target>
+	
+	<!-- ================================= 
+          target: clean-makefile-includes              
+         ================================= -->
+	<target name="clean-makefile-includes">
+		<!-- delete generic defines and rules -->
+		<delete dir="${hy.hdk}/build" />
 	</target>
 
     <!-- ================================= 

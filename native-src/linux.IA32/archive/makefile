@@ -16,7 +16,7 @@
 # Makefile for module 'archive'
 #
 
-include ../makefile.include
+include $(HY_HDK)/build/makefile.include
 
 CFLAGS += -fpic -I$(SHARED)common -I../zlib/dist \
 	-I../../../modules/archive/src/main/native/include/shared
@@ -31,4 +31,4 @@ MDLLIBFILES = \
 
 DLLNAME=../libhyarchive.so
 
-include ../rules.mk
+include $(HY_HDK)/build/rules.mk

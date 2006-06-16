@@ -16,7 +16,7 @@
 # Makefile for module 'vmi stubs'
 #
 
-include ../makefile.include
+include $(HY_HDK)/build/makefile.include
 
 CFLAGS += -fpic -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 BUILDFILES = $(SHAREDSUB)vmi_copyright.o $(SHAREDSUB)vmi.o
@@ -24,4 +24,4 @@ MDLLIBFILES = $(LIBPATH)libhyzip.a $(LIBPATH)libhypool.a
 
 DLLNAME = ../libvmi.so
 
-include ../rules.mk
+include $(HY_HDK)/build/rules.mk
