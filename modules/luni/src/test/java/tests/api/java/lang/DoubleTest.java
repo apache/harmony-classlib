@@ -303,6 +303,14 @@ public class DoubleTest extends junit.framework.TestCase {
 		Double d = new Double("39089.88888888888888888888888888888888");
 		assertEquals("Created incorrect double",
 				39089.88888888888888888888888888888888, d.doubleValue());
+
+                // REGRESSION for HARMONY-489
+                try {
+                        d = new Double("1E+-20");
+                        fail("new Double(\"1E+-20\") should throw exception");
+                } catch (NumberFormatException e) {
+                        // expected
+                }
 	}
 
 	/**

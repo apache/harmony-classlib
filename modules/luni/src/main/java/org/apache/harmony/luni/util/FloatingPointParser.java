@@ -111,10 +111,23 @@ public final class FloatingPointParser {
 			if (end + 1 == length)
 				throw new NumberFormatException(s);
 
-			if (s.charAt(end + 1) == '+')
-				e = Integer.parseInt(s.substring(end + 2, length));
-			else
-				e = Integer.parseInt(s.substring(end + 1, length));
+                        int exponent_offset = end + 1;
+                        if (s.charAt(exponent_offset) == '+') {
+                                if (s.charAt(exponent_offset + 1) == '-') {
+                                        throw new NumberFormatException(s);
+                                }
+                                exponent_offset++; // skip the plus sign
+                        }
+			try {
+				e = Integer.parseInt(s.substring(exponent_offset,
+                                                                 length));
+                        } catch (NumberFormatException ex) {
+                                // ex contains the exponent substring
+                                // only so throw a new exception with
+                                // the correct string
+				throw new NumberFormatException(s);
+                        }                            
+                                    
 		} else {
 			end = length;
 		}
