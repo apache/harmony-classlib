@@ -46,380 +46,381 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
  */
 public final class Formatter implements Closeable, Flushable {
 
-	private Appendable out;
+    private Appendable out;
 
-	private Locale locale;
+    private Locale locale;
 
-	private boolean closed = false;
+    private boolean closed = false;
 
-	private IOException lastIOException;
+    private IOException lastIOException;
 
-	/**
-	 * Constructs a formatter.
-	 * 
-	 * The output is a StringBuilder which can be achieved by invoking the out
-	 * method and whose contents can be attained by calling the toString method.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 */
-	public Formatter() {
-		this(new StringBuilder(), Locale.getDefault());
-	}
+    /**
+     * Constructs a formatter.
+     * 
+     * The output is a StringBuilder which can be achieved by invoking the out
+     * method and whose contents can be attained by calling the toString method.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     */
+    public Formatter() {
+        this(new StringBuilder(), Locale.getDefault());
+    }
 
-	/**
-	 * Constructs a formatter of which the output is denoted.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 * @param a
-	 *            The output of the formatter. If a is null, then a
-	 *            StringBuilder will be used.
-	 */
-	public Formatter(Appendable a) {
-		this(a, Locale.getDefault());
-	}
+    /**
+     * Constructs a formatter of which the output is denoted.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     * @param a
+     *            The output of the formatter. If a is null, then a
+     *            StringBuilder will be used.
+     */
+    public Formatter(Appendable a) {
+        this(a, Locale.getDefault());
+    }
 
-	/**
-	 * Constructs a formatter of which the locale is denoted.
-	 * 
-	 * The output destination is a StringBuilder which can be achieved by
-	 * invoking the out method and whose contents can be attained by calling the
-	 * toString method.
-	 * 
-	 * @param l
-	 *            The locale of the formatter. If l is null, then no
-	 *            localization will be used.
-	 */
-	public Formatter(Locale l) {
-		this(new StringBuilder(), l);
-	}
+    /**
+     * Constructs a formatter of which the locale is denoted.
+     * 
+     * The output destination is a StringBuilder which can be achieved by
+     * invoking the out method and whose contents can be attained by calling the
+     * toString method.
+     * 
+     * @param l
+     *            The locale of the formatter. If l is null, then no
+     *            localization will be used.
+     */
+    public Formatter(Locale l) {
+        this(new StringBuilder(), l);
+    }
 
-	/**
-	 * Constructs a formatter of which the output and locale is denoted.
-	 * 
-	 * @param a
-	 *            The output of the formatter. If a is null, then a
-	 *            StringBuilder will be used.
-	 * @param l
-	 *            The locale of the formatter. If l is null, then no
-	 *            localization will be used.
-	 */
-	public Formatter(Appendable a, Locale l) {
-		if (null == a) {
-			out = new StringBuilder();
-		} else {
-			out = a;
-		}
-		locale = l;
-	}
+    /**
+     * Constructs a formatter of which the output and locale is denoted.
+     * 
+     * @param a
+     *            The output of the formatter. If a is null, then a
+     *            StringBuilder will be used.
+     * @param l
+     *            The locale of the formatter. If l is null, then no
+     *            localization will be used.
+     */
+    public Formatter(Appendable a, Locale l) {
+        if (null == a) {
+            out = new StringBuilder();
+        } else {
+            out = a;
+        }
+        locale = l;
+    }
 
-	/**
-	 * Constructs a formatter of which the filename is denoted.
-	 * 
-	 * The charset of the formatter is the default charset of JVM.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 * @param fileName
-	 *            The filename of the file that is used as the output
-	 *            destination for the formatter. The file will be truncated to
-	 *            zero size if the file exists, or else a new file will be
-	 *            created. The output of the formatter is buffered.
-	 * 
-	 * @throws FileNotFoundException
-	 *             If the filename does not denote a normal and writable file,
-	 *             or a new file cannot be created or any error rises when
-	 *             opening or creating the file.
-	 * @throws SecurityException
-	 *             If there is a security manager and it denies writing to the
-	 *             file in checkWrite(file.getPath()).
-	 */
-	public Formatter(String fileName) throws FileNotFoundException {
-		this(new File(fileName));
+    /**
+     * Constructs a formatter of which the filename is denoted.
+     * 
+     * The charset of the formatter is the default charset of JVM.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     * @param fileName
+     *            The filename of the file that is used as the output
+     *            destination for the formatter. The file will be truncated to
+     *            zero size if the file exists, or else a new file will be
+     *            created. The output of the formatter is buffered.
+     * 
+     * @throws FileNotFoundException
+     *             If the filename does not denote a normal and writable file,
+     *             or a new file cannot be created or any error rises when
+     *             opening or creating the file.
+     * @throws SecurityException
+     *             If there is a security manager and it denies writing to the
+     *             file in checkWrite(file.getPath()).
+     */
+    public Formatter(String fileName) throws FileNotFoundException {
+        this(new File(fileName));
 
-	}
+    }
 
-	/**
-	 * Constructs a formatter of which the filename and charset is denoted.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 * @param fileName
-	 *            The filename of the file that is used as the output
-	 *            destination for the formatter. The file will be truncated to
-	 *            zero size if the file exists, or else a new file will be
-	 *            created. The output of the formatter is buffered.
-	 * @param csn
-	 *            The name of the charset for the formatter.
-	 * 
-	 * @throws FileNotFoundException
-	 *             If the filename does not denote a normal and writable file,
-	 *             or a new file cannot be created or any error rises when
-	 *             opening or creating the file.
-	 * @throws SecurityException
-	 *             If there is a security manager and it denies writing to the
-	 *             file in checkWrite(file.getPath()).
-	 * @throws UnsupportedEncodingException
-	 *             If the charset with the specified name is not supported.
-	 */
-	public Formatter(String fileName, String csn) throws FileNotFoundException,
-			UnsupportedEncodingException {
-		this(new File(fileName), csn);
-	}
+    /**
+     * Constructs a formatter of which the filename and charset is denoted.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     * @param fileName
+     *            The filename of the file that is used as the output
+     *            destination for the formatter. The file will be truncated to
+     *            zero size if the file exists, or else a new file will be
+     *            created. The output of the formatter is buffered.
+     * @param csn
+     *            The name of the charset for the formatter.
+     * 
+     * @throws FileNotFoundException
+     *             If the filename does not denote a normal and writable file,
+     *             or a new file cannot be created or any error rises when
+     *             opening or creating the file.
+     * @throws SecurityException
+     *             If there is a security manager and it denies writing to the
+     *             file in checkWrite(file.getPath()).
+     * @throws UnsupportedEncodingException
+     *             If the charset with the specified name is not supported.
+     */
+    public Formatter(String fileName, String csn) throws FileNotFoundException,
+            UnsupportedEncodingException {
+        this(new File(fileName), csn);
+    }
 
-	/**
-	 * Constructs a formatter of which the filename, charset and locale is
-	 * denoted.
-	 * 
-	 * @param fileName
-	 *            The filename of the file that is used as the output
-	 *            destination for the formatter. The file will be truncated to
-	 *            zero size if the file exists, or else a new file will be
-	 *            created. The output of the formatter is buffered.
-	 * @param csn
-	 *            The name of the charset for the formatter.
-	 * @param l
-	 *            The locale of the formatter. If l is null, then no
-	 *            localization will be used.
-	 * 
-	 * @throws FileNotFoundException
-	 *             If the filename does not denote a normal and writable file,
-	 *             or a new file cannot be created or any error rises when
-	 *             opening or creating the file.
-	 * @throws SecurityException
-	 *             If there is a security manager and it denies writing to the
-	 *             file in checkWrite(file.getPath()).
-	 * @throws UnsupportedEncodingException
-	 *             If the charset with the specified name is not supported.
-	 * 
-	 */
-	public Formatter(String fileName, String csn, Locale l)
-			throws FileNotFoundException, UnsupportedEncodingException {
+    /**
+     * Constructs a formatter of which the filename, charset and locale is
+     * denoted.
+     * 
+     * @param fileName
+     *            The filename of the file that is used as the output
+     *            destination for the formatter. The file will be truncated to
+     *            zero size if the file exists, or else a new file will be
+     *            created. The output of the formatter is buffered.
+     * @param csn
+     *            The name of the charset for the formatter.
+     * @param l
+     *            The locale of the formatter. If l is null, then no
+     *            localization will be used.
+     * 
+     * @throws FileNotFoundException
+     *             If the filename does not denote a normal and writable file,
+     *             or a new file cannot be created or any error rises when
+     *             opening or creating the file.
+     * @throws SecurityException
+     *             If there is a security manager and it denies writing to the
+     *             file in checkWrite(file.getPath()).
+     * @throws UnsupportedEncodingException
+     *             If the charset with the specified name is not supported.
+     * 
+     */
+    public Formatter(String fileName, String csn, Locale l)
+            throws FileNotFoundException, UnsupportedEncodingException {
 
-		this(new File(fileName), csn, l);
-	}
+        this(new File(fileName), csn, l);
+    }
 
-	/**
-	 * Constructs a formatter of which the file is denoted.
-	 * 
-	 * The charset of the formatter is the default charset of JVM.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 * @param file
-	 *            The file that is used as the output destination for the
-	 *            formatter. The file will be truncated to zero size if the file
-	 *            exists, or else a new file will be created. The output of the
-	 *            formatter is buffered.
-	 * 
-	 * @throws FileNotFoundException
-	 *             If the file does not denote a normal and writable file, or a
-	 *             new file cannot be created or any error rises when opening or
-	 *             creating the file.
-	 * @throws SecurityException
-	 *             If there is a security manager and it denies writing to the
-	 *             file in checkWrite(file.getPath()).
-	 */
-	public Formatter(File file) throws FileNotFoundException {
-		this(new FileOutputStream(file));
-	}
+    /**
+     * Constructs a formatter of which the file is denoted.
+     * 
+     * The charset of the formatter is the default charset of JVM.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     * @param file
+     *            The file that is used as the output destination for the
+     *            formatter. The file will be truncated to zero size if the file
+     *            exists, or else a new file will be created. The output of the
+     *            formatter is buffered.
+     * 
+     * @throws FileNotFoundException
+     *             If the file does not denote a normal and writable file, or a
+     *             new file cannot be created or any error rises when opening or
+     *             creating the file.
+     * @throws SecurityException
+     *             If there is a security manager and it denies writing to the
+     *             file in checkWrite(file.getPath()).
+     */
+    public Formatter(File file) throws FileNotFoundException {
+        this(new FileOutputStream(file));
+    }
 
-	/**
-	 * Constructs a formatter of which the file and charset is denoted.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 * @param file
-	 *            The file of the file that is used as the output destination
-	 *            for the formatter. The file will be truncated to zero size if
-	 *            the file exists, or else a new file will be created. The
-	 *            output of the formatter is buffered.
-	 * @param csn
-	 *            The name of the charset for the formatter.
-	 * @throws FileNotFoundException
-	 *             If the file does not denote a normal and writable file, or a
-	 *             new file cannot be created or any error rises when opening or
-	 *             creating the file.
-	 * @throws SecurityException
-	 *             If there is a security manager and it denies writing to the
-	 *             file in checkWrite(file.getPath()).
-	 * @throws UnsupportedEncodingException
-	 *             If the charset with the specified name is not supported.
-	 */
-	public Formatter(File file, String csn) throws FileNotFoundException,
-			UnsupportedEncodingException {
-		this(file, csn, Locale.getDefault());
-	}
+    /**
+     * Constructs a formatter of which the file and charset is denoted.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     * @param file
+     *            The file of the file that is used as the output destination
+     *            for the formatter. The file will be truncated to zero size if
+     *            the file exists, or else a new file will be created. The
+     *            output of the formatter is buffered.
+     * @param csn
+     *            The name of the charset for the formatter.
+     * @throws FileNotFoundException
+     *             If the file does not denote a normal and writable file, or a
+     *             new file cannot be created or any error rises when opening or
+     *             creating the file.
+     * @throws SecurityException
+     *             If there is a security manager and it denies writing to the
+     *             file in checkWrite(file.getPath()).
+     * @throws UnsupportedEncodingException
+     *             If the charset with the specified name is not supported.
+     */
+    public Formatter(File file, String csn) throws FileNotFoundException,
+            UnsupportedEncodingException {
+        this(file, csn, Locale.getDefault());
+    }
 
-	/**
-	 * Constructs a formatter of which the file, charset and locale is denoted.
-	 * 
-	 * @param The
-	 *            file that is used as the output destination for the formatter.
-	 *            The file will be truncated to zero size if the file exists, or
-	 *            else a new file will be created. The output of the formatter
-	 *            is buffered.
-	 * @param csn
-	 *            The name of the charset for the formatter.
-	 * @param l
-	 *            The locale of the formatter. If l is null, then no
-	 *            localization will be used.
-	 * @throws FileNotFoundException
-	 *             If the file does not denote a normal and writable file, or a
-	 *             new file cannot be created or any error rises when opening or
-	 *             creating the file.
-	 * @throws SecurityException
-	 *             If there is a security manager and it denies writing to the
-	 *             file in checkWrite(file.getPath()).
-	 * @throws UnsupportedEncodingException
-	 *             If the charset with the specified name is not supported.
-	 */
-	public Formatter(File file, String csn, Locale l)
-			throws FileNotFoundException, UnsupportedEncodingException {
-		FileOutputStream fout = null;
-		try {
-			fout = new FileOutputStream(file);
-			OutputStreamWriter writer = new OutputStreamWriter(fout, csn);
-			out = new BufferedWriter(writer);
-		} catch (RuntimeException e) {
-			closeOutputStream(fout);
-			throw e;
-		} catch (UnsupportedEncodingException e) {
-			closeOutputStream(fout);
-			throw e;
-		}
+    /**
+     * Constructs a formatter of which the file, charset and locale is denoted.
+     * 
+     * @param The
+     *            file that is used as the output destination for the formatter.
+     *            The file will be truncated to zero size if the file exists, or
+     *            else a new file will be created. The output of the formatter
+     *            is buffered.
+     * @param csn
+     *            The name of the charset for the formatter.
+     * @param l
+     *            The locale of the formatter. If l is null, then no
+     *            localization will be used.
+     * @throws FileNotFoundException
+     *             If the file does not denote a normal and writable file, or a
+     *             new file cannot be created or any error rises when opening or
+     *             creating the file.
+     * @throws SecurityException
+     *             If there is a security manager and it denies writing to the
+     *             file in checkWrite(file.getPath()).
+     * @throws UnsupportedEncodingException
+     *             If the charset with the specified name is not supported.
+     */
+    public Formatter(File file, String csn, Locale l)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        FileOutputStream fout = null;
+        try {
+            fout = new FileOutputStream(file);
+            OutputStreamWriter writer = new OutputStreamWriter(fout, csn);
+            out = new BufferedWriter(writer);
+        } catch (RuntimeException e) {
+            closeOutputStream(fout);
+            throw e;
+        } catch (UnsupportedEncodingException e) {
+            closeOutputStream(fout);
+            throw e;
+        }
 
-		locale = l;
-	}
+        locale = l;
+    }
 
-	/**
-	 * Constructs a formatter of which the output destination is specified.
-	 * 
-	 * The charset of the formatter is the default charset of JVM.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 * @param os
-	 *            The stream used as the destination of the formatter.
-	 */
-	public Formatter(OutputStream os) {
-		OutputStreamWriter writer = new OutputStreamWriter(os, Charset
-				.defaultCharset());
-		out = new BufferedWriter(writer);
-		locale = Locale.getDefault();
-	}
+    /**
+     * Constructs a formatter of which the output destination is specified.
+     * 
+     * The charset of the formatter is the default charset of JVM.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     * @param os
+     *            The stream used as the destination of the formatter.
+     */
+    public Formatter(OutputStream os) {
+        OutputStreamWriter writer = new OutputStreamWriter(os, Charset
+                .defaultCharset());
+        out = new BufferedWriter(writer);
+        locale = Locale.getDefault();
+    }
 
-	/**
-	 * Constructs a formatter of which the output destination and the charset is
-	 * specified.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 * @param os
-	 *            The stream used as the destination of the formatter.
-	 * @param csn
-	 *            The name of the charset for the formatter.
-	 * @throws UnsupportedEncodingException
-	 *             If the charset with the specified name is not supported.
-	 */
-	public Formatter(OutputStream os, String csn)
-			throws UnsupportedEncodingException {
+    /**
+     * Constructs a formatter of which the output destination and the charset is
+     * specified.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     * @param os
+     *            The stream used as the destination of the formatter.
+     * @param csn
+     *            The name of the charset for the formatter.
+     * @throws UnsupportedEncodingException
+     *             If the charset with the specified name is not supported.
+     */
+    public Formatter(OutputStream os, String csn)
+            throws UnsupportedEncodingException {
 
-		this(os, csn, Locale.getDefault());
-	}
+        this(os, csn, Locale.getDefault());
+    }
 
-	/**
-	 * Constructs a formatter of which the output destination, the charset and
-	 * the locale is specified.
-	 * 
-	 * @param os
-	 *            The stream used as the destination of the formatter.
-	 * @param csn
-	 *            The name of the charset for the formatter.
-	 * @param l
-	 *            The locale of the formatter. If l is null, then no
-	 *            localization will be used.
-	 * @throws UnsupportedEncodingException
-	 *             If the charset with the specified name is not supported.
-	 */
-	public Formatter(OutputStream os, String csn, Locale l)
-			throws UnsupportedEncodingException {
+    /**
+     * Constructs a formatter of which the output destination, the charset and
+     * the locale is specified.
+     * 
+     * @param os
+     *            The stream used as the destination of the formatter.
+     * @param csn
+     *            The name of the charset for the formatter.
+     * @param l
+     *            The locale of the formatter. If l is null, then no
+     *            localization will be used.
+     * @throws UnsupportedEncodingException
+     *             If the charset with the specified name is not supported.
+     */
+    public Formatter(OutputStream os, String csn, Locale l)
+            throws UnsupportedEncodingException {
 
-		OutputStreamWriter writer = new OutputStreamWriter(os, csn);
-		out = new BufferedWriter(writer);
+        OutputStreamWriter writer = new OutputStreamWriter(os, csn);
+        out = new BufferedWriter(writer);
 
-		locale = l;
-	}
+        locale = l;
+    }
 
-	/**
-	 * Constructs a formatter of which the output destination is specified.
-	 * 
-	 * The charset of the formatter is the default charset of JVM.
-	 * 
-	 * The locale for the formatter is the default locale of the JVM.
-	 * 
-	 * @param ps
-	 *            The print stream used as destination of the formatter. If ps
-	 *            is null, then NullPointerExcepiton will be thrown out.
-	 */
-	public Formatter(PrintStream ps) {
-		if (null == ps) {
-			throw new NullPointerException();
-		}
-		out = ps;
-		locale = Locale.getDefault();
-	}
+    /**
+     * Constructs a formatter of which the output destination is specified.
+     * 
+     * The charset of the formatter is the default charset of JVM.
+     * 
+     * The locale for the formatter is the default locale of the JVM.
+     * 
+     * @param ps
+     *            The print stream used as destination of the formatter. If ps
+     *            is null, then NullPointerExcepiton will be thrown out.
+     */
+    public Formatter(PrintStream ps) {
+        if (null == ps) {
+            throw new NullPointerException();
+        }
+        out = ps;
+        locale = Locale.getDefault();
+    }
 
-	private void checkClosed() {
-		if (closed) {
-			throw new FormatterClosedException();
-		}
-	}
+    private void checkClosed() {
+        if (closed) {
+            throw new FormatterClosedException();
+        }
+    }
 
-	/**
-	 * Returns the locale of the formatter.
-	 * 
-	 * @return The locale for the formatter and null for no locale.
-	 * @throws FormatterClosedException
-	 *             If the formatter has been closed.
-	 */
-	public Locale locale() {
-		checkClosed();
-		return locale;
-	}
+    /**
+     * Returns the locale of the formatter.
+     * 
+     * @return The locale for the formatter and null for no locale.
+     * @throws FormatterClosedException
+     *             If the formatter has been closed.
+     */
+    public Locale locale() {
+        checkClosed();
+        return locale;
+    }
 
-	/**
-	 * Returns the output destination of the formatter.
-	 * 
-	 * @return The output destination of the formatter.
-	 * @throws FormatterClosedException
-	 *             If the formatter has been closed.
-	 */
-	public Appendable out() {
-		checkClosed();
-		return out;
-	}
+    /**
+     * Returns the output destination of the formatter.
+     * 
+     * @return The output destination of the formatter.
+     * @throws FormatterClosedException
+     *             If the formatter has been closed.
+     */
+    public Appendable out() {
+        checkClosed();
+        return out;
+    }
 
-	/**
-	 * Returns the content by calling the toString() method of the output
-	 * destination.
-	 * 
-	 * @return The content by calling the toString() method of the output
-	 *         destination.
-	 * @throws FormatterClosedException
-	 *             If the formatter has been closed.
-	 */
-	public String toString() {
-		checkClosed();
-		return out.toString();
-	}
+    /**
+     * Returns the content by calling the toString() method of the output
+     * destination.
+     * 
+     * @return The content by calling the toString() method of the output
+     *         destination.
+     * @throws FormatterClosedException
+     *             If the formatter has been closed.
+     */
+    public String toString() {
+        checkClosed();
+        return out.toString();
+    }
 
-	/**
+    /**
      * Flushes the formatter. If the output destination is flushable, then the
      * method flush() will be called on that destination.
      * 
-     * @throws FormatterClosedException If the formatter has been closed.
+     * @throws FormatterClosedException
+     *             If the formatter has been closed.
      */
     public void flush() {
         checkClosed();
@@ -432,83 +433,83 @@ public final class Formatter implements Closeable, Flushable {
         }
     }
 
-	/**
-	 * Closes the formatter. If the output destination is Closeable, then the
-	 * method close() will be called on that destination.
-	 * 
-	 * If the formatter has been closed, then calling the close will have no
-	 * effect.
-	 * 
-	 * Any method but the ioException() that is called after the formatter has
-	 * been closed will raise a FormatterClosedException.
-	 */
-	public void close() {
-		closed = true;
-		try {
-			if (out instanceof Closeable) {
-				((Closeable) out).close();
-			}
-		} catch (IOException e) {
+    /**
+     * Closes the formatter. If the output destination is Closeable, then the
+     * method close() will be called on that destination.
+     * 
+     * If the formatter has been closed, then calling the close will have no
+     * effect.
+     * 
+     * Any method but the ioException() that is called after the formatter has
+     * been closed will raise a FormatterClosedException.
+     */
+    public void close() {
+        closed = true;
+        try {
+            if (out instanceof Closeable) {
+                ((Closeable) out).close();
+            }
+        } catch (IOException e) {
 
-			lastIOException = e;
-		}
-	}
+            lastIOException = e;
+        }
+    }
 
-	/**
-	 * Returns the last IOException thrown out by the formatter's output
-	 * destination. If the append() method of the destination will not throw
-	 * IOException, the ioException() method will always return null.
-	 * 
-	 * @return The last IOException thrown out by the formatter's output
-	 *         destination.
-	 */
-	public IOException ioException() {
-		return lastIOException;
-	}
+    /**
+     * Returns the last IOException thrown out by the formatter's output
+     * destination. If the append() method of the destination will not throw
+     * IOException, the ioException() method will always return null.
+     * 
+     * @return The last IOException thrown out by the formatter's output
+     *         destination.
+     */
+    public IOException ioException() {
+        return lastIOException;
+    }
 
-	/**
-	 * Writes a formatted string to the output destination of the formatter.
-	 * 
-	 * @param format
-	 *            A format string.
-	 * @param args
-	 *            The arguments list used in the format() method. If there are
-	 *            more arguments than those specified by the format string, then
-	 *            the additional arguments are ignored.
-	 * @return This formatter.
-	 * @throws IllegalFormatException
-	 *             If the format string is illegal or incompatible with the
-	 *             arguments or the arguments are less than those required by
-	 *             the format string or any other illegal situcation.
-	 * @throws FormatterClosedException
-	 *             If the formatter has been closed.
-	 */
-	public Formatter format(String format, Object... args) {
-		return format(locale, format, args);
-	}
+    /**
+     * Writes a formatted string to the output destination of the formatter.
+     * 
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list used in the format() method. If there are
+     *            more arguments than those specified by the format string, then
+     *            the additional arguments are ignored.
+     * @return This formatter.
+     * @throws IllegalFormatException
+     *             If the format string is illegal or incompatible with the
+     *             arguments or the arguments are less than those required by
+     *             the format string or any other illegal situcation.
+     * @throws FormatterClosedException
+     *             If the formatter has been closed.
+     */
+    public Formatter format(String format, Object... args) {
+        return format(locale, format, args);
+    }
 
-	/**
-	 * Writes a formatted string to the output destination of the formatter.
-	 * 
-	 * @param l
-	 *            The locale used in the method. If locale is null, then no
-	 *            localization will be applied. This param does not influence
-	 *            the locale specified during construction.
-	 * @param format
-	 *            A format string.
-	 * @param args
-	 *            The arguments list used in the format() method. If there are
-	 *            more arguments than those specified by the format string, then
-	 *            the additional arguments are ignored.
-	 * @return This formatter.
-	 * @throws IllegalFormatException
-	 *             If the format string is illegal or incompatible with the
-	 *             arguments or the arguments are less than those required by
-	 *             the format string or any other illegal situcation.
-	 * @throws FormatterClosedException
-	 *             If the formatter has been closed.
-	 */
-	public Formatter format(Locale l, String format, Object... args) {
+    /**
+     * Writes a formatted string to the output destination of the formatter.
+     * 
+     * @param l
+     *            The locale used in the method. If locale is null, then no
+     *            localization will be applied. This param does not influence
+     *            the locale specified during construction.
+     * @param format
+     *            A format string.
+     * @param args
+     *            The arguments list used in the format() method. If there are
+     *            more arguments than those specified by the format string, then
+     *            the additional arguments are ignored.
+     * @return This formatter.
+     * @throws IllegalFormatException
+     *             If the format string is illegal or incompatible with the
+     *             arguments or the arguments are less than those required by
+     *             the format string or any other illegal situcation.
+     * @throws FormatterClosedException
+     *             If the formatter has been closed.
+     */
+    public Formatter format(Locale l, String format, Object... args) {
         checkClosed();
         CharBuffer formatBuffer = CharBuffer.wrap(format);
         ParserStateMachine parser = new ParserStateMachine(formatBuffer);
@@ -571,19 +572,19 @@ public final class Formatter implements Closeable, Flushable {
         return args[index];
     }
 
-	private static void closeOutputStream(OutputStream os) {
-		if (null == os) {
-			return;
-		}
-		try {
-			os.close();
+    private static void closeOutputStream(OutputStream os) {
+        if (null == os) {
+            return;
+        }
+        try {
+            os.close();
 
-		} catch (IOException e) {
-			// silently
-		}
-	}
+        } catch (IOException e) {
+            // silently
+        }
+    }
 
-	/*
+    /*
      * Information about the format string of a specified argument, which
      * includes the conversion type, flags, width, precision and the argument
      * index as well as the plainText that contains the whole format string used
@@ -681,36 +682,36 @@ public final class Formatter implements Closeable, Flushable {
         boolean setFlag(char c) {
             int newFlag;
             switch (c) {
-                case '-': {
-                    newFlag = FLAG_MINUS;
-                    break;
-                }
-                case '#': {
-                    newFlag = FLAG_SHARP;
-                    break;
-                }
-                case '+': {
-                    newFlag = FLAG_ADD;
-                    break;
-                }
-                case ' ': {
-                    newFlag = FLAG_SPACE;
-                    break;
-                }
-                case '0': {
-                    newFlag = FLAG_ZERO;
-                    break;
-                }
-                case ',': {
-                    newFlag = FLAG_COMMA;
-                    break;
-                }
-                case '(': {
-                    newFlag = FLAG_PARENTHESIS;
-                    break;
-                }
-                default:
-                    return false;
+            case '-': {
+                newFlag = FLAG_MINUS;
+                break;
+            }
+            case '#': {
+                newFlag = FLAG_SHARP;
+                break;
+            }
+            case '+': {
+                newFlag = FLAG_ADD;
+                break;
+            }
+            case ' ': {
+                newFlag = FLAG_SPACE;
+                break;
+            }
+            case '0': {
+                newFlag = FLAG_ZERO;
+                break;
+            }
+            case ',': {
+                newFlag = FLAG_COMMA;
+                break;
+            }
+            case '(': {
+                newFlag = FLAG_PARENTHESIS;
+                break;
+            }
+            default:
+                return false;
             }
             if (0 != (flags & newFlag)) {
                 throw new DuplicateFormatFlagsException(String.valueOf(c));
@@ -784,60 +785,60 @@ public final class Formatter implements Closeable, Flushable {
 
             String result;
             switch (formatToken.getConversionType()) {
-                case 'B':
-                case 'b': {
-                    result = transformFromBoolean();
-                    break;
-                }
-                case 'H':
-                case 'h': {
-                    result = transformFromHashCode();
-                    break;
-                }
-                case 'S':
-                case 's': {
-                    result = transformFromString();
-                    break;
-                }
-                case 'C':
-                case 'c': {
-                    result = transformFromCharacter();
-                    break;
-                }
-                case 'd':
-                case 'o':
-                case 'x':
-                case 'X': {
-                    result = transformFromInteger();
-                    break;
-                }
-                case 'e':
-                case 'E':
-                case 'g':
-                case 'G':
-                case 'f':
-                case 'a':
-                case 'A': {
-                    result = transformFromFloat();
-                    break;
-                }
-                case '%': {
-                    result = transformFromPercent();
-                    break;
-                }
-                case 'n': {
-                    result = transfromFromLineSeparator();
-                    break;
-                }
-                case 't':
-                case 'T': {
-                    result = transformFromDateTime();
-                    break;
-                }
-                default: {
-                    throw new UnknownFormatConversionException(String
-                            .valueOf(formatToken.getConversionType()));
-                }
+            case 'B':
+            case 'b': {
+                result = transformFromBoolean();
+                break;
+            }
+            case 'H':
+            case 'h': {
+                result = transformFromHashCode();
+                break;
+            }
+            case 'S':
+            case 's': {
+                result = transformFromString();
+                break;
+            }
+            case 'C':
+            case 'c': {
+                result = transformFromCharacter();
+                break;
+            }
+            case 'd':
+            case 'o':
+            case 'x':
+            case 'X': {
+                result = transformFromInteger();
+                break;
+            }
+            case 'e':
+            case 'E':
+            case 'g':
+            case 'G':
+            case 'f':
+            case 'a':
+            case 'A': {
+                result = transformFromFloat();
+                break;
+            }
+            case '%': {
+                result = transformFromPercent();
+                break;
+            }
+            case 'n': {
+                result = transfromFromLineSeparator();
+                break;
+            }
+            case 't':
+            case 'T': {
+                result = transformFromDateTime();
+                break;
+            }
+            default: {
+                throw new UnknownFormatConversionException(String
+                        .valueOf(formatToken.getConversionType()));
+            }
             }
 
             if (Character.isUpperCase(formatToken.getConversionType())) {
@@ -1185,41 +1186,41 @@ public final class Formatter implements Closeable, Flushable {
                 }
 
                 switch (state) {
-                    // exit state
-                    case ParserStateMachine.EXIT_STATE: {
-                        process_EXIT_STATE();
-                        return token;
-                    }
+                // exit state
+                case ParserStateMachine.EXIT_STATE: {
+                    process_EXIT_STATE();
+                    return token;
+                }
                     // plain text state, not yet applied converter
-                    case ParserStateMachine.ENTRY_STATE: {
-                        process_ENTRY_STATE();
-                        break;
-                    }
+                case ParserStateMachine.ENTRY_STATE: {
+                    process_ENTRY_STATE();
+                    break;
+                }
                     // begins converted string
-                    case ParserStateMachine.START_CONVERSION_STATE: {
-                        process_START_CONVERSION_STATE();
-                        break;
-                    }
-                    case ParserStateMachine.FLAGS_STATE: {
-                        process_FlAGS_STATE();
-                        break;
-                    }
-                    case ParserStateMachine.WIDTH_STATE: {
-                        process_WIDTH_STATE();
-                        break;
-                    }
-                    case ParserStateMachine.PRECISION_STATE: {
-                        process_PRECISION_STATE();
-                        break;
-                    }
-                    case ParserStateMachine.CONVERSION_TYPE_STATE: {
-                        process_CONVERSION_TYPE_STATE();
-                        break;
-                    }
-                    case ParserStateMachine.SUFFIX_STATE: {
-                        process_SUFFIX_STATE();
-                        break;
-                    }
+                case ParserStateMachine.START_CONVERSION_STATE: {
+                    process_START_CONVERSION_STATE();
+                    break;
+                }
+                case ParserStateMachine.FLAGS_STATE: {
+                    process_FlAGS_STATE();
+                    break;
+                }
+                case ParserStateMachine.WIDTH_STATE: {
+                    process_WIDTH_STATE();
+                    break;
+                }
+                case ParserStateMachine.PRECISION_STATE: {
+                    process_PRECISION_STATE();
+                    break;
+                }
+                case ParserStateMachine.CONVERSION_TYPE_STATE: {
+                    process_CONVERSION_TYPE_STATE();
+                    break;
+                }
+                case ParserStateMachine.SUFFIX_STATE: {
+                    process_SUFFIX_STATE();
+                    break;
+                }
                 }
             }
         }
