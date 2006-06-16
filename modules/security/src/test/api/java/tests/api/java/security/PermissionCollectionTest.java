@@ -29,6 +29,7 @@ import java.util.StringTokenizer;
 
 import tests.support.Support_Exec;
 import tests.support.Support_GetLocal;
+import tests.support.resource.Support_Resources;
 
 public class PermissionCollectionTest extends junit.framework.TestCase {
 
@@ -109,12 +110,10 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
         // the classpath
         File jarFile = null;
         try {
-            URL jarURL = new URL(
-                    classURL.toExternalForm()
-                            + "tests/resources/PermissionCollection/mypermissionBKS.jar");
+            InputStream jis = Support_Resources
+                    .getResourceStream("PermissionCollection/mypermissionBKS.jar");
             jarFile = Support_GetLocal.createTempFile(".jar");
             FileOutputStream fout = new FileOutputStream(jarFile);
-            InputStream jis = jarURL.openStream();
             int c = jis.read();
             while (c != -1) {
                 fout.write(c);
