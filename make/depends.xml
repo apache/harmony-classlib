@@ -99,7 +99,6 @@
 	<download-one-file src="${mx4j.url}" dest="${mx4j.jar}"
                            md5="${mx4j.md5}" />
 
-	<mkdir dir="${mx4j.remote.dir}" />
 	<download-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}"
                            md5="${mx4j.remote.md5}" />
 
