@@ -133,7 +133,7 @@ Version: $Revision$
         <property name="src.tst" value="${basedir}/test" />
         <property name="src.tst.common" value="${src.tst}/common" />
 
-        <property name="harmonybin.path" value="deploy/jre"/>
+        <property name="harmonybin.path" value="deploy/jdk/jre"/>
         <property name="build.lib.path" location="${harmony.path}/${harmonybin.path}/bin" />
         <property name="build.jars.path" location="${harmony.path}/${harmonybin.path}/lib/boot" />
         <property name="build.ext.path" location="${harmony.path}/${harmonybin.path}/lib/ext" />
@@ -175,7 +175,7 @@ Version: $Revision$
 
     <target name="init.win" depends="init, init.java_home" if="if.win">
 
-        <property name="native.include.path" value="${harmony.path}/native-src/win.IA32/include;${harmony.path}/native-src/shared/include" />
+        <property name="native.include.path" value="${harmony.path}/native-src/win.IA32/include;${harmony.path}/modules/luni/src/main/native/include/shared" />
 
         <property name="cPath" value="${PATH};${env.PATH}" />
         <property name="cINCLUDE" value="${INCLUDE};${env.include};${env.INCLUDE};${native.include.path}" />
@@ -192,7 +192,7 @@ Version: $Revision$
     
     <target name="init.linux" depends="init, init.java_home" if="if.linux">
 
-        <property name="native.include.path" value="${harmony.path}/native-src/linux.IA32/include:${harmony.path}/native-src/shared/include" />
+        <property name="native.include.path" value="${harmony.path}/native-src/linux.IA32/include:${harmony.path}/modules/luni/src/main/native/include/shared" />
 
         <property name="cPath" value="${env.PATH}" />
         <property name="cINCLUDE" value="${env.INCLUDE};${native.include.path}" />

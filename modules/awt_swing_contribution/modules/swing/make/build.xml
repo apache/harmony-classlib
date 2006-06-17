@@ -130,7 +130,7 @@ Version: $Revision$
         <property name="src.tst" value="${basedir}/test" />
         <property name="src.tst.common" value="${src.tst}/common" />
 
-        <property name="harmonybin.path" value="deploy/jre"/>
+        <property name="harmonybin.path" value="deploy/jdk/jre"/>
         <property name="build.lib.path" location="${harmony.path}/${harmonybin.path}/bin" />
         <property name="build.jars.path" location="${harmony.path}/${harmonybin.path}/lib/boot" />
         <property name="build.ext.path" location="${harmony.path}/${harmonybin.path}/lib/ext" />
