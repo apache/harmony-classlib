@@ -31,7 +31,7 @@ Version: $Revision$
 
         <property name="target.os" value="unix"/>
         <property name="library.ext" value=".so"/>
-        <property name="include" value="-I/usr/X11R6/include/X11/Xft -I/usr/include/freetype2/freetype/internal -I/usr/include/freetype2/freetype/config -I/usr/include/freetype2 -I/usr/include/freetype2/freetype"/>
+        <property name="include" value="-I/usr/X11R6/include -I/usr/include/freetype2/freetype/internal -I/usr/include/freetype2/freetype/config -I/usr/include/freetype2 -I/usr/include/freetype2/freetype"/>
 
         <path id="dir.current">
             <pathelement path="${ant.file}"/>
@@ -104,7 +104,7 @@ Version: $Revision$
             <compilerarg value="-I${lib_tmp}"/>
             <compilerarg value="-I${jni_h.path}"/>
 
-            <compilerarg value="-I/usr/X11R6/include/X11/Xft"/>
+            <compilerarg value="-I/usr/X11R6/include"/>
             <compilerarg value="-I/usr/include/freetype2/freetype/internal"/>
             <compilerarg value="-I/usr/include/freetype2/freetype/config"/>
             <compilerarg value="-I/usr/include/freetype2"/>

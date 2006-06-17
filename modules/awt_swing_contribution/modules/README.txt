@@ -194,7 +194,7 @@ you create the following directory tree structure:
        |    +--- png.h
        |    +--- pngconf.h
        |    +--- libpng.lib and/or libpng.ia32 and/or libpng.ipf
-       \---cms
+       \---lcms
        |    |
        |    +--- icc34.h
        |    +--- lcms.h

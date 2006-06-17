@@ -101,7 +101,7 @@ Version: $Revision$
 
             <compilerarg value="-I${jni_h.path}"/>
             <compilerarg value="-I${lib_tmp}"/>
-            <compilerarg value="-I/usr/X11R6/include/X11"/>
+            <compilerarg value="-I/usr/X11R6/include"/>
 
             <compilerarg value="-fPIC" if="if.linux"/>
 

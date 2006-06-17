@@ -21,7 +21,7 @@
  * platform. Font data obtained using Xft, FreeType and FontConfig libraries.
  * 
  */
-#include <Xft.h>
+#include <X11/Xft/Xft.h>
 #include <tttables.h>
 #include <t1tables.h>
 #include <tttypes.h>
