@@ -23,7 +23,9 @@ package java.io;
  * 
  */
 public class InterruptedIOException extends IOException {
-
+    
+    private static final long serialVersionUID = 4020568460727500567L;
+    
 	/**
 	 * The number of bytes transferred before the IO interrupt occurred. The
 	 * default is 0 but the value may be filled in by the caller of the

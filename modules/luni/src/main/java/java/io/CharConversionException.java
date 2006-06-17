@@ -22,6 +22,8 @@ package java.io;
  */
 public class CharConversionException extends IOException {
 
+    private static final long serialVersionUID = -8680016352018427031L;
+    
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 * 

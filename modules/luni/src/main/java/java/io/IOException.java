@@ -24,6 +24,8 @@ package java.io;
  */
 public class IOException extends Exception {
 
+    private static final long serialVersionUID = 7818375828146090155L;
+    
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */

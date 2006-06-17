@@ -22,6 +22,8 @@ package java.io;
  */
 public class UnsupportedEncodingException extends IOException {
 
+    private static final long serialVersionUID = -4274276298326136670L;
+    
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */

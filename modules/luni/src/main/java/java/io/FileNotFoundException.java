@@ -23,6 +23,8 @@ package java.io;
  */
 public class FileNotFoundException extends IOException {
 
+    private static final long serialVersionUID = -897856973823710492L;
+    
 	/**
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */

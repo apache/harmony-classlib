@@ -24,6 +24,8 @@ package java.io;
  */
 public class SyncFailedException extends IOException {
 
+    private static final long serialVersionUID = -2353342684412443330L;
+    
 	/**
 	 * Constructs a new instance of this class with its walkback and message
 	 * filled in.
