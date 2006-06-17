@@ -60,10 +60,13 @@ public class SecurityManager {
 	 */
 	public SecurityManager() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security
-					.checkPermission(RuntimePermission.permissionToCreateSecurityManager);
-		Class type = Security.class; // initialize Security properties
+		if (security != null) {
+            security.checkPermission(RuntimePermission.permissionToCreateSecurityManager);
+        }
+		Class<?> type = Security.class; // initialize Security properties
+        if (type == null) {
+            throw new AssertionError();
+        }
 	}
 
 	/**
@@ -76,8 +79,9 @@ public class SecurityManager {
 	 *            the port number to check
 	 */
 	public void checkAccept(String host, int port) {
-		if (host == null)
-			throw new NullPointerException();
+		if (host == null) {
+            throw new NullPointerException();
+        }
 		checkPermission(new SocketPermission(host + ':' + port, "accept"));
 	}
 
@@ -90,8 +94,9 @@ public class SecurityManager {
 	public void checkAccess(Thread thread) {
 		// Only worry about system threads. Dead threads have a null group.
 		ThreadGroup group = thread.getThreadGroup();
-		if ((group != null) && (group.parent == null))
-			checkPermission(RuntimePermission.permissionToModifyThread);
+		if ((group != null) && (group.parent == null)) {
+            checkPermission(RuntimePermission.permissionToModifyThread);
+        }
 	}
 
 	/**
@@ -103,10 +108,12 @@ public class SecurityManager {
 	 */
 	public void checkAccess(ThreadGroup group) {
 		// Only worry about system threads.
-		if (group == null)
-			throw new NullPointerException();
-		if (group.parent == null)
-			checkPermission(RuntimePermission.permissionToModifyThreadGroup);
+		if (group == null) {
+            throw new NullPointerException();
+        }
+		if (group.parent == null) {
+            checkPermission(RuntimePermission.permissionToModifyThreadGroup);
+        }
 	}
 
 	/**
@@ -120,12 +127,14 @@ public class SecurityManager {
 	 *            int the port number to check, or -1 for resolve.
 	 */
 	public void checkConnect(String host, int port) {
-		if (host == null)
-			throw new NullPointerException();
-		if (port > 0)
-			checkPermission(new SocketPermission(host + ':' + port, "connect"));
-		else
-			checkPermission(new SocketPermission(host, "resolve"));
+		if (host == null) {
+            throw new NullPointerException();
+        }
+		if (port > 0) {
+            checkPermission(new SocketPermission(host + ':' + port, "connect"));
+        } else {
+            checkPermission(new SocketPermission(host, "resolve"));
+        }
 	}
 
 	/**
@@ -141,11 +150,12 @@ public class SecurityManager {
 	 *            Object the security context to use for the check.
 	 */
 	public void checkConnect(String host, int port, Object context) {
-		if (port > 0)
-			checkPermission(new SocketPermission(host + ':' + port, "connect"),
+		if (port > 0) {
+            checkPermission(new SocketPermission(host + ':' + port, "connect"),
 					context);
-		else
-			checkPermission(new SocketPermission(host, "resolve"), context);
+        } else {
+            checkPermission(new SocketPermission(host, "resolve"), context);
+        }
 	}
 
 	/**
@@ -189,15 +199,16 @@ public class SecurityManager {
 	}
 
 	/**
-	 * Checks whether the running program is allowed to load the specifed native
+	 * Checks whether the running program is allowed to load the specified native
 	 * library.
 	 * 
 	 * @param libName
 	 *            the name of the library to load
 	 */
 	public void checkLink(String libName) {
-		if (libName == null)
-			throw new NullPointerException();
+		if (libName == null) {
+            throw new NullPointerException();
+        }
 		checkPermission(new RuntimePermission("loadLibrary." + libName));
 	}
 
@@ -209,12 +220,13 @@ public class SecurityManager {
 	 *            int the port number to check
 	 */
 	public void checkListen(int port) {
-		if (port == 0)
-			checkPermission(new SocketPermission("localhost:1024-",
+		if (port == 0) {
+            checkPermission(new SocketPermission("localhost:1024-",
 					"listen"));
-		else
-			checkPermission(new SocketPermission("localhost:" + port,
+        } else {
+            checkPermission(new SocketPermission("localhost:" + port,
 					"listen"));
+        }
 	}
 
 	/**
@@ -232,10 +244,12 @@ public class SecurityManager {
 	 *            Either java.lang.reflect.Member.PUBLIC or DECLARED
 	 */
 	public void checkMemberAccess(Class<?> cls, int type) {
-		if (cls == null)
-			throw new NullPointerException();
-		if (type == Member.PUBLIC)
-			return;
+		if (cls == null) {
+            throw new NullPointerException();
+        }
+		if (type == Member.PUBLIC) {
+            return;
+        }
 		//
 		// Need to compare the classloaders.
 		// Stack shape is
@@ -246,8 +260,9 @@ public class SecurityManager {
 		//
 		// Use getClassLoaderImpl() since getClassLoader()
 		// returns null for the bootstrap class loader.
-		if (ClassLoader.getStackClassLoader(3) == cls.getClassLoaderImpl())
-			return;
+		if (ClassLoader.getStackClassLoader(3) == cls.getClassLoaderImpl()) {
+            return;
+        }
 
 		// Forward off to the permission mechanism.
 		checkPermission(new RuntimePermission("accessDeclaredMembers"));
@@ -281,8 +296,9 @@ public class SecurityManager {
 	 *            the name of the package to be accessed.
 	 */
 	public void checkPackageAccess(String packageName) {
-		if (packageName == null)
-			throw new NullPointerException();
+		if (packageName == null) {
+            throw new NullPointerException();
+        }
 		if (securePackageList == null) {
 			String securePackages = getSecurityProperty("package.access");
 			if (securePackages != null) {
@@ -314,8 +330,9 @@ public class SecurityManager {
 	 *            the name of the package to add a class to.
 	 */
 	public void checkPackageDefinition(String packageName) {
-		if (packageName == null)
-			throw new NullPointerException();
+		if (packageName == null) {
+            throw new NullPointerException();
+        }
 		String securePackages = getSecurityProperty("package.definition");
 		if (securePackages != null) {
 			StringTokenizer tokenizer = new StringTokenizer(securePackages,
@@ -362,8 +379,9 @@ public class SecurityManager {
 	 *            the file descriptor of the file to check
 	 */
 	public void checkRead(FileDescriptor fd) {
-		if (fd == null)
-			throw new NullPointerException();
+		if (fd == null) {
+            throw new NullPointerException();
+        }
 		checkPermission(RuntimePermission.permissionToReadFileDescriptor);
 	}
 
@@ -418,12 +436,13 @@ public class SecurityManager {
 	 *            The non-null window for which to check access
 	 */
 	public boolean checkTopLevelWindow(Object window) {
-		if (window == null)
-			throw new NullPointerException();
+		if (window == null) {
+            throw new NullPointerException();
+        }
 		try {
-			Class awtPermission = Class.forName("java.awt.AWTPermission");
+			Class<?> awtPermission = Class.forName("java.awt.AWTPermission");
 			Class[] args = new Class[] { java.lang.String.class };
-			Constructor constructor = awtPermission.getConstructor(args);
+			Constructor<?> constructor = awtPermission.getConstructor(args);
 			Object[] constructorArgs = new Object[] { "showWindowWithoutWarningBanner" };
 			Permission perm = (Permission) constructor.newInstance(constructorArgs);
 			checkPermission(perm);
@@ -444,9 +463,9 @@ public class SecurityManager {
 	 */
 	public void checkSystemClipboardAccess() {
 		try {
-			Class awtPermission = Class.forName("java.awt.AWTPermission");
+			Class<?> awtPermission = Class.forName("java.awt.AWTPermission");
 			Class[] args = new Class[] { String.class };
-			Constructor constructor = awtPermission.getConstructor(args);
+			Constructor<?> constructor = awtPermission.getConstructor(args);
 			Object[] constructorArgs = new Object[] { "accessClipboard" };
 			Permission perm = (Permission) constructor.newInstance(constructorArgs);
 			checkPermission(perm);
@@ -466,9 +485,9 @@ public class SecurityManager {
 	 */
 	public void checkAwtEventQueueAccess() {
 		try {
-			Class awtPermission = Class.forName("java.awt.AWTPermission");
+			Class<?> awtPermission = Class.forName("java.awt.AWTPermission");
 			Class[] ar = new Class[] { String.class };
-			Constructor constructor = awtPermission.getConstructor(ar);
+			Constructor<?> constructor = awtPermission.getConstructor(ar);
 			Object[] constructorArgs = new Object[] { "accessEventQueue" };
 			Permission perm = (Permission) constructor.newInstance(constructorArgs);
 			checkPermission(perm);
@@ -497,8 +516,9 @@ public class SecurityManager {
 	 *            the file descriptor of the file to check
 	 */
 	public void checkWrite(FileDescriptor fd) {
-		if (fd == null)
-			throw new NullPointerException();
+		if (fd == null) {
+            throw new NullPointerException();
+        }
 		checkPermission(RuntimePermission.permissionToWriteFileDescriptor);
 	}
 
@@ -560,14 +580,15 @@ public class SecurityManager {
 		Class[] classes = Class.getStackClasses(-1, true);
 		for (int i = 0; i < classes.length; i++) {
 			ClassLoader cl = classes[i].getClassLoaderImpl();
-			if (!cl.isSystemClassLoader())
-				return cl;
+			if (!cl.isSystemClassLoader()) {
+                return cl;
+            }
 		}
 		return null;
 	}
 
 	/**
-	 * Answers the index in the stack of thee first class whose class loader is
+	 * Answers the index in the stack of three first class whose class loader is
 	 * not a system class loader.
 	 * 
 	 * @return int the frame index of the first method whose class was loaded by
@@ -591,8 +612,9 @@ public class SecurityManager {
 		Class[] classes = Class.getStackClasses(-1, true);
 		for (int i = 0; i < classes.length; i++) {
 			ClassLoader cl = classes[i].getClassLoaderImpl();
-			if (!cl.isSystemClassLoader())
-				return i;
+			if (!cl.isSystemClassLoader()) {
+                return i;
+            }
 		}
 		return -1;
 	}
@@ -621,8 +643,9 @@ public class SecurityManager {
 		Class[] classes = Class.getStackClasses(-1, true);
 		for (int i = 0; i < classes.length; i++) {
 			ClassLoader cl = classes[i].getClassLoaderImpl();
-			if (!cl.isSystemClassLoader())
-				return classes[i];
+			if (!cl.isSystemClassLoader()) {
+                return classes[i];
+            }
 		}
 		return null;
 	}
@@ -640,9 +663,11 @@ public class SecurityManager {
 	 */
 	protected int classDepth(String name) {
 		Class[] classes = Class.getStackClasses(-1, false);
-		for (int i = 0; i < classes.length; i++)
-			if (classes[i].getName().equals(name))
-				return i;
+		for (int i = 0; i < classes.length; i++) {
+            if (classes[i].getName().equals(name)) {
+                return i;
+            }
+        }
 		return -1;
 	}
 
@@ -720,10 +745,11 @@ public class SecurityManager {
 			// Must be an AccessControlContext. If we don't check
 			// this, then applications could pass in an arbitrary
 			// object which circumvents the security check.
-			if (context instanceof AccessControlContext)
-				((AccessControlContext) context).checkPermission(permission);
-			else
-				throw new SecurityException();
+			if (context instanceof AccessControlContext) {
+                ((AccessControlContext) context).checkPermission(permission);
+            } else {
+                throw new SecurityException();
+            }
 		} finally {
 			inCheck = false;
 		}

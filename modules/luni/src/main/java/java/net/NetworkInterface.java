@@ -61,14 +61,14 @@ public final class NetworkInterface extends Object {
 
     /**
      * This constructor is used by the native method in order to construct the
-     * NetworkInterface objects in the array tht it returns
+     * NetworkInterface objects in the array that it returns
      * 
      * @param name
      *            internal name associated with the interface
      * @param displayName
      *            a user interpretable name for the interface
      * @param addresses
-     *            the Inet addresses associated with the interface
+     *            the Internet addresses associated with the interface
      * @param interfaceIndex
      *            an index for the interface. Only set for platforms that
      *            support IPV6
@@ -115,9 +115,9 @@ public final class NetworkInterface extends Object {
     }
 
     /**
-     * Answers the list of inet addresses bound to the interface
+     * Answers the list of internet addresses bound to the interface
      * 
-     * @return list of inet addresses bound to the interface
+     * @return list of internet addresses bound to the interface
      */
     public Enumeration<InetAddress> getInetAddresses() {
         /*
@@ -170,7 +170,7 @@ public final class NetworkInterface extends Object {
             }
         }
 
-        Enumeration theAccessibleElements = accessibleAddresses.elements();
+        Enumeration<InetAddress> theAccessibleElements = accessibleAddresses.elements();
         if (theAccessibleElements.hasMoreElements()) {
             return accessibleAddresses.elements();
         }
@@ -230,12 +230,12 @@ public final class NetworkInterface extends Object {
     }
 
     /**
-     * Answers the network interface which has the specified inet address bound
+     * Answers the network interface which has the specified internet address bound
      * to it, if one exists.
      * 
      * @param address
      *            address of interest
-     * @return network interface for inet address specified if it exists,
+     * @return network interface for internet address specified if it exists,
      *         otherwise null
      * 
      * @throws SocketException
@@ -252,7 +252,7 @@ public final class NetworkInterface extends Object {
 
         /*
          * get the list of interfaces, and then loop through the list. For each
-         * interface loop through the associated set of inet addresses and see
+         * interface loop through the associated set of internet addresses and see
          * if one matches. If so return that network interface
          */
         Enumeration<NetworkInterface> interfaces = getNetworkInterfaces();
@@ -265,7 +265,7 @@ public final class NetworkInterface extends Object {
                  */
                 // Enumeration netifAddresses = netif.getInetAddresses();
                 if ((netif.addresses != null) && (netif.addresses.length != 0)) {
-                    Enumeration netifAddresses = (new Vector<InetAddress>(
+                    Enumeration<InetAddress> netifAddresses = (new Vector<InetAddress>(
                             Arrays.asList(netif.addresses))).elements();
                     if (netifAddresses != null) {
                         while (netifAddresses.hasMoreElements()) {
@@ -354,7 +354,7 @@ public final class NetworkInterface extends Object {
                 return false;
             }
 
-            // now check that the inet addresses are the same
+            // now check that the internet addresses are the same
             Enumeration<InetAddress> netifAddresses = netif.getInetAddresses();
             Enumeration<InetAddress> localifAddresses = getInetAddresses();
             if ((netifAddresses == null) && (localifAddresses != null)) {
@@ -375,8 +375,8 @@ public final class NetworkInterface extends Object {
                     }
                 }
                 /*
-                 * now make sure that they had the same number of inet
-                 * addresses, if not they are not the same interfac
+                 * now make sure that they had the same number of internet
+                 * addresses, if not they are not the same interface
                  */
                 if (netifAddresses.hasMoreElements()
                         || localifAddresses.hasMoreElements()) {
@@ -409,8 +409,12 @@ public final class NetworkInterface extends Object {
      * @return a printable representation for the network interface
      */
     public String toString() {
-        StringBuffer stringRepresentation = new StringBuffer("[" + name + "]["
-                + displayName + "]");
+        StringBuilder string = new StringBuilder(25);
+        string.append("[");
+        string.append(name);
+        string.append("][");
+        string.append(displayName);
+        string.append("]");
 
         /*
          * get the addresses through this call to make sure we only reveal those
@@ -420,10 +424,12 @@ public final class NetworkInterface extends Object {
         if (theAddresses != null) {
             while (theAddresses.hasMoreElements()) {
                 InetAddress nextAddress = theAddresses.nextElement();
-                stringRepresentation.append("[" + nextAddress.toString() + "]");
+                string.append("[");
+                string.append(nextAddress.toString());
+                string.append("]");
             }
         }
-        return stringRepresentation.toString();
+        return string.toString();
     }
 
 }

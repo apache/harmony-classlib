@@ -76,14 +76,13 @@ public class MulticastSocket extends DatagramSocket {
 				// level
 				NetworkInterface theInterface = getNetworkInterface();
 				if (theInterface != null) {
-					Enumeration addresses = theInterface.getInetAddresses();
+					Enumeration<InetAddress> addresses = theInterface.getInetAddresses();
 					if (addresses != null) {
 						while (addresses.hasMoreElements()) {
-							InetAddress nextAddress = (InetAddress) addresses
-									.nextElement();
-							if (nextAddress instanceof Inet6Address) {
-								return nextAddress;
-							}
+							InetAddress nextAddress = addresses.nextElement();
+                            if (nextAddress instanceof Inet6Address) {
+                                return nextAddress;
+                            }
 						}
 					}
 				}
@@ -116,13 +115,12 @@ public class MulticastSocket extends DatagramSocket {
 		}
 
 		if (theIndex.intValue() != 0) {
-			Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
+			Enumeration<NetworkInterface> theInterfaces = NetworkInterface.getNetworkInterfaces();
 			while (theInterfaces.hasMoreElements()) {
-				NetworkInterface nextInterface = (NetworkInterface) theInterfaces
-						.nextElement();
-				if (nextInterface.getIndex() == theIndex.intValue()) {
-					return nextInterface;
-				}
+				NetworkInterface nextInterface = theInterfaces.nextElement();
+                if (nextInterface.getIndex() == theIndex.intValue()) {
+                    return nextInterface;
+                }
 			}
 		}
 
@@ -142,7 +140,7 @@ public class MulticastSocket extends DatagramSocket {
 					&& (InetAddress.preferIPv6Addresses() == true)) {
 				theAddresses[0] = Inet6Address.ANY;
 			} else {
-				theAddresses[0] = Inet4Address.ANY;
+				theAddresses[0] = InetAddress.ANY;
 			}
 			return new NetworkInterface(null, null, theAddresses,
 					NetworkInterface.UNSET_INTERFACE_INDEX);
@@ -156,7 +154,7 @@ public class MulticastSocket extends DatagramSocket {
 	 * Answer the time-to-live (TTL) for multicast packets sent on this socket.
 	 * 
 	 * @return java.net.InetAddress
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                The exception description.
 	 */
 	public int getTimeToLive() throws IOException {
@@ -168,7 +166,7 @@ public class MulticastSocket extends DatagramSocket {
 	 * Answer the time-to-live (TTL) for multicast packets sent on this socket.
 	 * 
 	 * @return java.net.InetAddress
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                The exception description.
 	 * @deprecated Replaced by getTimeToLive
 	 * @see #getTimeToLive()
@@ -189,16 +187,18 @@ public class MulticastSocket extends DatagramSocket {
 	 * 
 	 * @param groupAddr
 	 *            the multicast group to be joined
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                may be thrown while joining a group
 	 */
 	public void joinGroup(InetAddress groupAddr) throws IOException {
 		checkClosedAndBind(false);
-		if (!groupAddr.isMulticastAddress())
-			throw new IOException(Msg.getString("K0039"));
+		if (!groupAddr.isMulticastAddress()) {
+            throw new IOException(Msg.getString("K0039"));
+        }
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkMulticast(groupAddr);
+		if (security != null) {
+            security.checkMulticast(groupAddr);
+        }
 		impl.join(groupAddr);
 	}
 
@@ -211,7 +211,7 @@ public class MulticastSocket extends DatagramSocket {
 	 *            the multicast group to be joined
 	 * @param netInterface
 	 *            the network interface on which the addresses should be dropped
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                will be thrown if address is not a multicast address
 	 * @exception java.lang.SecurityException
 	 *                will be thrown if caller is not authorized to join group
@@ -221,7 +221,7 @@ public class MulticastSocket extends DatagramSocket {
 	 * @since 1.4
 	 */
 	public void joinGroup(SocketAddress groupAddress,
-			NetworkInterface netInterface) throws java.io.IOException {
+			NetworkInterface netInterface) throws IOException {
 		checkClosedAndBind(false);
 		if (null == groupAddress) {
 			throw new IllegalArgumentException(Msg.getString("K0331"));
@@ -261,7 +261,7 @@ public class MulticastSocket extends DatagramSocket {
 	 * 
 	 * @param groupAddr
 	 *            the multicast group to be left
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                will be thrown if address is not a multicast address
 	 * @exception java.lang.SecurityException
 	 *                will be thrown if caller is not authorized to join group
@@ -270,11 +270,13 @@ public class MulticastSocket extends DatagramSocket {
 	 */
 	public void leaveGroup(InetAddress groupAddr) throws IOException {
 		checkClosedAndBind(false);
-		if (!groupAddr.isMulticastAddress())
-			throw new IOException(Msg.getString("K003a"));
+		if (!groupAddr.isMulticastAddress()) {
+            throw new IOException(Msg.getString("K003a"));
+        }
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkMulticast(groupAddr);
+		if (security != null) {
+            security.checkMulticast(groupAddr);
+        }
 		impl.leave(groupAddr);
 	}
 
@@ -285,7 +287,7 @@ public class MulticastSocket extends DatagramSocket {
 	 *            the multicast group to be left
 	 * @param netInterface
 	 *            the network interface on which the addresses should be dropped
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                will be thrown if address is not a multicast address
 	 * @exception java.lang.SecurityException
 	 *                will be thrown if caller is not authorized to join group
@@ -295,7 +297,7 @@ public class MulticastSocket extends DatagramSocket {
 	 * @since 1.4
 	 */
 	public void leaveGroup(SocketAddress groupAddress,
-			NetworkInterface netInterface) throws java.io.IOException {
+			NetworkInterface netInterface) throws IOException {
 		checkClosedAndBind(false);
 		if (null == groupAddress) {
 			throw new IllegalArgumentException(Msg.getString("K0331"));
@@ -336,10 +338,10 @@ public class MulticastSocket extends DatagramSocket {
 	 * @param pack
 	 *            the DatagramPacket to send
 	 * @param ttl
-	 *            the ttl setting for this transmission, overriding the socket
+	 *            the TTL setting for this transmission, overriding the socket
 	 *            default
 	 * 
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                If a send error occurs.
 	 * 
 	 * @deprecated use MulticastSocket#setTimeToLive
@@ -349,10 +351,11 @@ public class MulticastSocket extends DatagramSocket {
 		InetAddress packAddr = pack.getAddress();
 		SecurityManager security = System.getSecurityManager();
 		if (security != null) {
-			if (packAddr.isMulticastAddress())
-				security.checkMulticast(packAddr, ttl);
-			else
-				security.checkConnect(packAddr.getHostName(), pack.getPort());
+			if (packAddr.isMulticastAddress()) {
+                security.checkMulticast(packAddr, ttl);
+            } else {
+                security.checkConnect(packAddr.getHostName(), pack.getPort());
+            }
 		}
 		int currTTL = getTimeToLive();
 		if (packAddr.isMulticastAddress() && (byte) currTTL != ttl) {
@@ -378,10 +381,11 @@ public class MulticastSocket extends DatagramSocket {
 	 */
 	public void setInterface(InetAddress addr) throws SocketException {
 		checkClosedAndBind(false);
-		if (addr == null)
-			throw new NullPointerException();
+		if (addr == null) {
+            throw new NullPointerException();
+        }
 		if (addr.isAnyLocalAddress()) {
-			impl.setOption(SocketOptions.IP_MULTICAST_IF, Inet4Address.ANY);
+			impl.setOption(SocketOptions.IP_MULTICAST_IF, InetAddress.ANY);
 		} else if (addr instanceof Inet4Address) {
 			impl.setOption(SocketOptions.IP_MULTICAST_IF, addr);
 			// keep the address used to do the set as we must return the same
@@ -389,11 +393,12 @@ public class MulticastSocket extends DatagramSocket {
 			interfaceSet = addr;
 		}
 
-		// now we should also make sure this works for IPV6
-		// get the network interface for the addresss and set the interface
-		// using its index
-		// however if IPV6 is not enabled then we may get an exception.
-		// if IPV6 is not enabled
+		/*
+         * now we should also make sure this works for IPV6 get the network
+         * interface for the address and set the interface using its index
+         * however if IPV6 is not enabled then we may get an exception. if IPV6
+         * is not enabled
+         */
 		NetworkInterface theInterface = NetworkInterface.getByInetAddress(addr);
 		if ((theInterface != null) && (theInterface.getIndex() != 0)) {
 			try {
@@ -449,20 +454,21 @@ public class MulticastSocket extends DatagramSocket {
 					}
 				}
 
-				// now try to set using IPV4 way. Howerver, if interface passed
-				// in has no ip addresses associated with it then we cannot do it.
-				// first we have to make sure there is an IPV4 address that we
-				// can use to call set interface otherwise we will not set it
-				Enumeration theAddresses = netInterface.getInetAddresses();
+				/*
+                 * Now try to set using IPV4 way. However, if interface passed
+                 * in has no IP addresses associated with it then we cannot do
+                 * it. first we have to make sure there is an IPV4 address that
+                 * we can use to call set interface otherwise we will not set it
+                 */
+				Enumeration<InetAddress> theAddresses = netInterface.getInetAddresses();
 				boolean found = false;
 				firstAddress = null;
 				while ((theAddresses.hasMoreElements()) && (found != true)) {
-					InetAddress theAddress = (InetAddress) theAddresses
-							.nextElement();
-					if (theAddress instanceof Inet4Address) {
-						firstAddress = theAddress;
-						found = true;
-					}
+					InetAddress theAddress = theAddresses.nextElement();
+                    if (theAddress instanceof Inet4Address) {
+                        firstAddress = theAddress;
+                        found = true;
+                    }
 				}
 				if (netInterface.getIndex() == NetworkInterface.NO_INTERFACE_INDEX) {
 					// the system does not support IPV6 and does not provide
@@ -472,11 +478,12 @@ public class MulticastSocket extends DatagramSocket {
 						impl.setOption(SocketOptions.IP_MULTICAST_IF,
 								firstAddress);
 					} else {
-						// we should never get here as there should not be any
-						// network interfaces
-						// which have no IPV4 address and which doe not have the
-						// network interface
-						// index not set correctly
+						/*
+                         * we should never get here as there should not be any
+                         * network interfaces which have no IPV4 address and
+                         * which does not have the network interface index not
+                         * set correctly
+                         */
 						throw new SocketException(Msg.getString("K0335"));
 					}
 				} else {
@@ -514,15 +521,16 @@ public class MulticastSocket extends DatagramSocket {
 	 * 
 	 * @param ttl
 	 *            the time-to-live, 0<ttl<= 255
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                The exception thrown while setting the TTL
 	 */
 	public void setTimeToLive(int ttl) throws IOException {
 		checkClosedAndBind(false);
-		if (0 <= ttl && ttl <= 255)
-			impl.setTimeToLive(ttl);
-		else
-			throw new IllegalArgumentException(Msg.getString("K003c"));
+		if (0 <= ttl && ttl <= 255) {
+            impl.setTimeToLive(ttl);
+        } else {
+            throw new IllegalArgumentException(Msg.getString("K003c"));
+        }
 	}
 
 	/**
@@ -530,7 +538,7 @@ public class MulticastSocket extends DatagramSocket {
 	 * 
 	 * @param ttl
 	 *            the time-to-live, 0<ttl<= 255
-	 * @exception java.io.IOException
+	 * @exception IOException
 	 *                The exception thrown while setting the TTL
 	 * @deprecated Replaced by setTimeToLive
 	 * @see #setTimeToLive(int)

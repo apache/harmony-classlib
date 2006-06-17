@@ -25,17 +25,17 @@ import org.apache.harmony.luni.util.PriviAction;
 /**
  * This class is used to manage the negative name lookup cache.
  */
-class NegativeCache extends LinkedHashMap {
+class NegativeCache<K, V> extends LinkedHashMap<K, V> {
 
     private static final long serialVersionUID = 1L;
 
-    static NegativeCache negCache = null;
+    static NegativeCache<String, NegCacheElement> negCache;
 
 	// maximum number of entries in the cache
 	static final int MAX_NEGATIVE_ENTRIES = 5;
 
 	// the loading for the cache
-	static final float LOADING = (float) 0.75;
+	static final float LOADING = 0.75F;
 
 	/**
 	 * Answers the hostname for the cache element
@@ -53,9 +53,9 @@ class NegativeCache extends LinkedHashMap {
 	 * entry
 	 * 
 	 * @param eldest
-	 *            the map enty which will be deleted if we return true
+	 *            the map entry which will be deleted if we return true
 	 */
-	protected boolean removeEldestEntry(Map.Entry eldest) {
+	protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
 		return size() > MAX_NEGATIVE_ENTRIES;
 	}
 
@@ -74,7 +74,7 @@ class NegativeCache extends LinkedHashMap {
 	}
 
 	/**
-	 * Answers the message that occured when we failed to lookup the host if
+	 * Answers the message that occurred when we failed to lookup the host if
 	 * such a failure is within the cache and the entry has not yet expired
 	 * 
 	 * @param hostName
@@ -84,16 +84,16 @@ class NegativeCache extends LinkedHashMap {
 	 */
 	static String getFailedMessage(String hostName) {
 		checkCacheExists();
-		NegCacheElement element = (NegCacheElement) negCache.get(hostName);
+		NegCacheElement element = negCache.get(hostName);
 		if (element != null) {
 			// check if element is still valid
-			String ttlValue = (String) AccessController
-					.doPrivileged(new PriviAction(
-							"networkaddress.cache.negative.ttl"));
+			String ttlValue = AccessController.doPrivileged(
+                    new PriviAction<String>("networkaddress.cache.negative.ttl"));
 			int ttl = 10;
 			try {
-				if (ttlValue != null)
-					ttl = Integer.decode(ttlValue).intValue();
+				if (ttlValue != null) {
+                    ttl = Integer.decode(ttlValue).intValue();
+                }
 			} catch (NumberFormatException e) {
 			}
 			if (ttl == 0) {
@@ -119,12 +119,14 @@ class NegativeCache extends LinkedHashMap {
 	 */
 	static void checkCacheExists() {
 		if (negCache == null) {
-			// Create with the access order set so ordering is based on when the
-			// entries were last accessed. We make the default cache size one
-			// greater than the maximum number of entries as we will grow to one
-			// larger and then delete the LRU entry
-			negCache = new NegativeCache(MAX_NEGATIVE_ENTRIES + 1, LOADING,
-					true);
-		}
+            /*
+             * Create with the access order set so ordering is based on when the
+             * entries were last accessed. We make the default cache size one
+             * greater than the maximum number of entries as we will grow to one
+             * larger and then delete the LRU entry
+             */
+            negCache = new NegativeCache<String, NegCacheElement>(
+                    MAX_NEGATIVE_ENTRIES + 1, LOADING, true);
+        }
 	}
 }

@@ -15,7 +15,6 @@
 
 package java.net;
 
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -131,9 +130,9 @@ public final class Inet6Address extends InetAddress {
 		
 		// find the first address which matches the type addr,
 		// then set the scope_id, ifname and scopedIf.
-		Enumeration addressList = nif.getInetAddresses();
+		Enumeration<InetAddress> addressList = nif.getInetAddresses();
 		while (addressList.hasMoreElements()) {
-			InetAddress ia = (InetAddress) addressList.nextElement();
+			InetAddress ia = addressList.nextElement();
 			if (ia.getAddress().length == 16) {
 				Inet6Address v6ia = (Inet6Address) ia;
 				boolean isSameType = v6ia.compareLocalType(address);
@@ -156,7 +155,7 @@ public final class Inet6Address extends InetAddress {
 	}
 	
 
-	/*
+	/**
 	 * Returns true if one of following cases is true:
 	 * 1. both addresses are site local;
 	 * 2. both addresses are link local;
@@ -203,20 +202,21 @@ public final class Inet6Address extends InetAddress {
 	 */
 	public boolean isMulticastAddress() {
 
-		// mutlicast addresses are prefixed with 11111111 (255)
+		// Multicast addresses are prefixed with 11111111 (255)
 		return ipaddress[0] == -1;
 	}
 
 	/**
-	 * Answer true if the InetAddress is the unspecified adddress "::".
+	 * Answer true if the InetAddress is the unspecified address "::".
 	 * 
 	 * @return boolean true, if the address is in the multicast group, false
 	 *         otherwise
 	 */
 	public boolean isAnyLocalAddress() {
 		for (int i = 0; i < ipaddress.length; i++) {
-			if (ipaddress[i] != 0)
-				return false;
+			if (ipaddress[i] != 0) {
+                return false;
+            }
 		}
 		return true;
 	}
@@ -276,7 +276,7 @@ public final class Inet6Address extends InetAddress {
 	 * 
 	 * A valid IPv6 global multicast address is 11111111xxxx1110 (i.e. FF0E)
 	 * 
-	 * @return boolean true, if it is a global mutlicast address, false
+	 * @return boolean true, if it is a global multicast address, false
 	 *         otherwise
 	 */
 	public boolean isMCGlobal() {
@@ -289,10 +289,10 @@ public final class Inet6Address extends InetAddress {
 	/**
 	 * Answer true if the InetAddress is a node-local multicast address.
 	 * 
-	 * A valid IPv6 node-local mutlicast address is prefixed with
+	 * A valid IPv6 node-local multicast address is prefixed with
 	 * 11111111xxxx0001
 	 * 
-	 * @return boolean true, if it is a node-local mutlicast address, false
+	 * @return boolean true, if it is a node-local multicast address, false
 	 *         otherwise
 	 */
 	public boolean isMCNodeLocal() {
@@ -306,10 +306,10 @@ public final class Inet6Address extends InetAddress {
 	/**
 	 * Answer true if the InetAddress is a link-local multicast address.
 	 * 
-	 * A valid IPv6 link-local mutlicast address is prefixed with
+	 * A valid IPv6 link-local multicast address is prefixed with
 	 * 11111111xxxx0010
 	 * 
-	 * @return boolean true, if it is a link-local mutlicast address, false
+	 * @return boolean true, if it is a link-local multicast address, false
 	 *         otherwise
 	 */
 	public boolean isMCLinkLocal() {
@@ -323,10 +323,10 @@ public final class Inet6Address extends InetAddress {
 	/**
 	 * Answer true if the InetAddress is a site-local multicast address.
 	 * 
-	 * A valid IPv6 site-local mutlicast address is prefixed with
+	 * A valid IPv6 site-local multicast address is prefixed with
 	 * 11111111xxxx0101
 	 * 
-	 * @return boolean true, if it is a site-local mutlicast address, false
+	 * @return boolean true, if it is a site-local multicast address, false
 	 *         otherwise
 	 */
 	public boolean isMCSiteLocal() {
@@ -340,10 +340,10 @@ public final class Inet6Address extends InetAddress {
 	/**
 	 * Answer true if the InetAddress is a org-local multicast address.
 	 * 
-	 * A valid IPv6 org-local mutlicast address is prefixed with
+	 * A valid IPv6 org-local multicast address is prefixed with
 	 * 11111111xxxx1000
 	 * 
-	 * @return boolean true, if it is a org-local mutlicast address, false
+	 * @return boolean true, if it is a org-local multicast address, false
 	 *         otherwise
 	 */
 	public boolean isMCOrgLocal() {

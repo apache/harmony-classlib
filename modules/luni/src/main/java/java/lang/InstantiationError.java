@@ -21,7 +21,7 @@ package java.lang;
  * create a new instance of a class which has no visible constructors from the
  * location where new is invoked.
  * <p>
- * Note that this can only occur when inconsistant class files are being loaded.
+ * Note that this can only occur when inconsistent class files are being loaded.
  * 
  */
 public class InstantiationError extends IncompatibleClassChangeError {
@@ -53,7 +53,7 @@ public class InstantiationError extends IncompatibleClassChangeError {
 	 * @param clazz
 	 *            Class The class which cannot be instantiated.
 	 */
-	InstantiationError(Class clazz) {
+	InstantiationError(Class<?> clazz) {
 		super(clazz.getName());
 	}
 

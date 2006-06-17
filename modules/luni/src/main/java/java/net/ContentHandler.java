@@ -15,7 +15,6 @@
 
 package java.net;
 
-
 import java.io.IOException;
 
 /**
@@ -27,16 +26,16 @@ import java.io.IOException;
  * @see URL
  * @see URLConnection#getContent()
  */
-abstract public class ContentHandler {
+public abstract class ContentHandler {
 	/**
 	 * Answers the object pointed by the specified URL Connection
 	 * <code>uConn</code>.
 	 * 
-	 * @return java.lang.Object the object refered by <code>uConn</code>
+	 * @return java.lang.Object the object referred by <code>uConn</code>
 	 * @param uConn
-	 *            java.net.URLConnection the url connection that points to the
+	 *            URLConnection the URL connection that points to the
 	 *            desired object
-	 * @exception java.io.IOException
+	 * @throws IOException
 	 *                thrown if an IO error occurs during the retrieval of the
 	 *                object
 	 */
@@ -47,25 +46,25 @@ abstract public class ContentHandler {
 	 * <code>uConn</code>.
 	 * 
 	 * @param uConn
-	 *            java.net.URLConnection the url connection that points to the
+	 *            java.net.URLConnection the URL connection that points to the
 	 *            desired object
 	 * @param types
 	 *            The list of acceptable content types
 	 * @return Object The object of the resource pointed by this URL, or null if
 	 *         the content does not match a specified content type.
 	 * 
-	 * @exception IOException
-	 *                If an error occured obtaining the content.
+	 * @throws IOException
+	 *                If an error occurred obtaining the content.
 	 */
 	public Object getContent(URLConnection uConn, Class[] types)
-			throws IOException {
-		Object content = getContent(uConn);
-		Class cl = content.getClass();
-		for (int i = 0; i < types.length; i++) {
-			if (cl == types[i]) {
-				return content;
-			}
-		}
-		return null;
-	}
+            throws IOException {
+        Object content = getContent(uConn);
+        Class<?> cl = content.getClass();
+        for (int i = 0; i < types.length; i++) {
+            if (cl == types[i]) {
+                return content;
+            }
+        }
+        return null;
+    }
 }

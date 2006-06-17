@@ -75,45 +75,53 @@ public class Proxy implements Serializable {
 	public static Class<?> getProxyClass(ClassLoader loader, Class<?>[] interfaces)
 			throws IllegalArgumentException {
 		// check that interfaces are a valid array of visible interfaces
-		if (interfaces == null)
-			throw new NullPointerException();
+		if (interfaces == null) {
+            throw new NullPointerException();
+        }
 		String commonPackageName = null;
 		for (int i = 0, length = interfaces.length; i < length; i++) {
-			Class next = interfaces[i];
-			if (next == null)
-				throw new NullPointerException();
+			Class<?> next = interfaces[i];
+			if (next == null) {
+                throw new NullPointerException();
+            }
 			String name = next.getName();
-			if (!next.isInterface())
-				throw new IllegalArgumentException(Msg.getString("K00ed", name));
+			if (!next.isInterface()) {
+                throw new IllegalArgumentException(Msg.getString("K00ed", name));
+            }
 			if (loader != next.getClassLoader()) {
 				try {
-					if (next != Class.forName(name, false, loader))
-						throw new IllegalArgumentException(Msg.getString(
+					if (next != Class.forName(name, false, loader)) {
+                        throw new IllegalArgumentException(Msg.getString(
 								"K00ee", name));
+                    }
 				} catch (ClassNotFoundException ex) {
 					throw new IllegalArgumentException(Msg.getString("K00ee",
 							name));
 				}
 			}
-			for (int j = i + 1; j < length; j++)
-				if (next == interfaces[j])
-					throw new IllegalArgumentException(Msg.getString("K00ef",
+			for (int j = i + 1; j < length; j++) {
+                if (next == interfaces[j]) {
+                    throw new IllegalArgumentException(Msg.getString("K00ef",
 							name));
+                }
+            }
 			if (!Modifier.isPublic(next.getModifiers())) {
 				int last = name.lastIndexOf('.');
 				String p = last == -1 ? "" : name.substring(0, last);
-				if (commonPackageName == null)
-					commonPackageName = p;
-				else if (!commonPackageName.equals(p))
-					throw new IllegalArgumentException(Msg.getString("K00f0"));
+				if (commonPackageName == null) {
+                    commonPackageName = p;
+                } else if (!commonPackageName.equals(p)) {
+                    throw new IllegalArgumentException(Msg.getString("K00f0"));
+                }
 			}
 		}
 
 		// search cache for matching proxy class using the class loader
 		synchronized (loaderCache) {
 			Map<String, WeakReference<Class<?>>> interfaceCache = loaderCache.get(loader);
-			if (interfaceCache == null)
-				loaderCache.put(loader, (interfaceCache = new HashMap<String, WeakReference<Class<?>>>()));
+			if (interfaceCache == null) {
+                loaderCache.put(loader, (interfaceCache = new HashMap<String, WeakReference<Class<?>>>()));
+            }
 
 			String interfaceKey = "";
 			if (interfaces.length == 1) {
@@ -131,12 +139,14 @@ public class Proxy implements Serializable {
 			WeakReference<Class<?>> ref = interfaceCache.get(interfaceKey);
 			if (ref == null) {
 				String nextClassName = "$Proxy" + NextClassNameIndex++;
-				if (commonPackageName != null)
-					nextClassName = commonPackageName + "." + nextClassName;
+				if (commonPackageName != null) {
+                    nextClassName = commonPackageName + "." + nextClassName;
+                }
 				byte[] classFileBytes = ProxyClassFile.generateBytes(
 						nextClassName, interfaces);
-				if (loader == null)
-					loader = ClassLoader.getSystemClassLoader();
+				if (loader == null) {
+                    loader = ClassLoader.getSystemClassLoader();
+                }
 				newClass = defineClassImpl(loader, nextClassName.replace('.',
 						'/'), classFileBytes);
 				// Need a weak reference to the class so it can
@@ -223,8 +233,9 @@ public class Proxy implements Serializable {
 	 */
 	public static InvocationHandler getInvocationHandler(Object proxy)
 			throws IllegalArgumentException {
-		if (isProxyClass(proxy.getClass()))
-			return ((Proxy) proxy).h;
+		if (isProxyClass(proxy.getClass())) {
+            return ((Proxy) proxy).h;
+        }
 
 		throw new IllegalArgumentException(Msg.getString("K00f1"));
 	}

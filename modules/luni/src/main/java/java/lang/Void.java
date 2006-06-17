@@ -15,6 +15,8 @@
 
 package java.lang;
 
+import java.lang.reflect.Method;
+
 /**
  * This class is a placeholder class for the Java keyword <code>void</code>
  * @since 1.1
@@ -30,16 +32,15 @@ public final class Void extends Object {
 	// defined to be "java.lang.Void.TYPE";
 
 	static {
-		Class voidType = null;
-		try {
-			java.lang.reflect.Method method = Runnable.class.getMethod("run",
-					new Class[0]);
-			voidType = method.getReturnType();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		TYPE = voidType;
-	}
+        Class<?> voidType = null;
+        try {
+            Method method = Runnable.class.getMethod("run", new Class[0]);
+            voidType = method.getReturnType();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        TYPE = (Class<Void>) voidType;
+    }
 
 	private Void() {
 	}

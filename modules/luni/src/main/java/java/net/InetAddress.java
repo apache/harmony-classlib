@@ -111,7 +111,7 @@ public class InetAddress extends Object implements Serializable {
 	/**
 	 * Returns the IP address of the argument <code>addr</code> as an array.
 	 * The elements are in network order (the highest order address byte is in
-	 * the zeroeth element).
+	 * the zero-th element).
 	 * 
 	 * @return byte[] the network address as a byte array
 	 */
@@ -147,8 +147,9 @@ public class InetAddress extends Object implements Serializable {
 		// now check if their byte arrays match...
 		byte[] objIPaddress = ((InetAddress) obj).ipaddress;
 		for (int i = 0; i < objIPaddress.length; i++) {
-			if (objIPaddress[i] != this.ipaddress[i])
-				return false;
+			if (objIPaddress[i] != this.ipaddress[i]) {
+                return false;
+            }
 		}
 		return true;
 	}
@@ -156,12 +157,12 @@ public class InetAddress extends Object implements Serializable {
 	/**
 	 * Returns the IP address of this <code>InetAddress</code> as an array.
 	 * The elements are in network order (the highest order address byte is in
-	 * the zeroeth element).
+	 * the zero-th element).
 	 * 
 	 * @return byte[] the address as a byte array
 	 */
 	public byte[] getAddress() {
-		return (byte[]) ipaddress.clone();
+		return ipaddress.clone();
 	}
 
 	/**
@@ -182,13 +183,15 @@ public class InetAddress extends Object implements Serializable {
 		if (host == null) {
 			return new InetAddress[]{preferIPv6Addresses() ? Inet6Address.LOOPBACK : LOOPBACK};
 		}
-		if (0 == host.length())
-			throw new UnknownHostException(Msg.getString("K0038"));
+		if (0 == host.length()) {
+            throw new UnknownHostException(Msg.getString("K0038"));
+        }
 
 		if (isHostName(host)) {
 			SecurityManager security = System.getSecurityManager();
-			if (security != null)
-				security.checkConnect(host, -1);
+			if (security != null) {
+                security.checkConnect(host, -1);
+            }
 			if (Socket.preferIPv4Stack()) {
 				return getAliasesByNameImpl(host);
 			}
@@ -249,16 +252,18 @@ public class InetAddress extends Object implements Serializable {
 	 */
 	public static InetAddress getByName(String host)
 			throws UnknownHostException {
-		if (host == null || 0 == host.length())
-			return InetAddress.LOOPBACK;
+		if (host == null || 0 == host.length()) {
+            return InetAddress.LOOPBACK;
+        }
 		if (host.equals("0")) {
 			return InetAddress.ANY;
 		}
 
 		if (isHostName(host)) {
 			SecurityManager security = System.getSecurityManager();
-			if (security != null)
-				security.checkConnect(host, -1);
+			if (security != null) {
+                security.checkConnect(host, -1);
+            }
 			return lookupHostByName(host);
 		}
 		
@@ -303,8 +308,9 @@ public class InetAddress extends Object implements Serializable {
 		SecurityManager security = System.getSecurityManager();
 		try {
 			// Only check host names, not addresses
-			if (security != null && isHostName(hostName))
-				security.checkConnect(hostName, -1);
+			if (security != null && isHostName(hostName)) {
+                security.checkConnect(hostName, -1);
+            }
 		} catch (SecurityException e) {
 			return Inet6Util.createIPAddrStringFromByteArray(ipaddress);
 		}
@@ -312,7 +318,7 @@ public class InetAddress extends Object implements Serializable {
 }
 
 	/**
-	 * Answers canonical name for the host associated with the inet address
+	 * Answers canonical name for the host associated with the internet address
 	 * 
 	 * @return String string containing the host name
 	 */
@@ -333,8 +339,9 @@ public class InetAddress extends Object implements Serializable {
 		SecurityManager security = System.getSecurityManager();
 		try {
 			// Only check host names, not addresses
-			if (security != null && isHostName(canonicalName))
-				security.checkConnect(canonicalName, -1);
+			if (security != null && isHostName(canonicalName)) {
+                security.checkConnect(canonicalName, -1);
+            }
 		} catch (SecurityException e) {
 			return Inet6Util.createIPAddrStringFromByteArray(ipaddress);
 		}
@@ -353,8 +360,9 @@ public class InetAddress extends Object implements Serializable {
 		String host = getHostNameImpl();
 		SecurityManager security = System.getSecurityManager();
 		try {
-			if (security != null)
-				security.checkConnect(host, -1);
+			if (security != null) {
+                security.checkConnect(host, -1);
+            }
 		} catch (SecurityException e) {
 			return InetAddress.LOOPBACK;
 		}
@@ -383,26 +391,29 @@ public class InetAddress extends Object implements Serializable {
 			throws UnknownHostException {
 		int ttl = -1;
 
-		String ttlValue = (String) AccessController
-				.doPrivileged(new PriviAction("networkaddress.cache.ttl"));
+		String ttlValue = AccessController.doPrivileged(
+                new PriviAction<String>("networkaddress.cache.ttl"));
 		try {
-			if (ttlValue != null)
-				ttl = Integer.decode(ttlValue).intValue();
+			if (ttlValue != null) {
+                ttl = Integer.decode(ttlValue).intValue();
+            }
 		} catch (NumberFormatException e) {
 		}
 		CacheElement element = null;
-		if (ttl == 0)
-			Cache.clear();
-		else {
+		if (ttl == 0) {
+            Cache.clear();
+        } else {
 			element = Cache.get(host);
 			if (element != null
 					&& ttl > 0
 					&& element.timeAdded + (ttl * 1000) < System
-							.currentTimeMillis())
-				element = null;
+							.currentTimeMillis()) {
+                element = null;
+            }
 		}
-		if (element != null)
-			return element.inetAddress();
+		if (element != null) {
+            return element.inetAddress();
+        }
 		
 		// now try the negative cache
 		String failedMessage = NegativeCache.getFailedMessage(host);
@@ -488,10 +499,12 @@ public class InetAddress extends Object implements Serializable {
 	static native String getHostNameImpl();
 
 	static String getHostNameInternal(String host) throws UnknownHostException {
-		if (host == null || 0 == host.length())
-			return InetAddress.LOOPBACK.getHostAddress();
-		if (isHostName(host))
-			return lookupHostByName(host).getHostAddress();
+		if (host == null || 0 == host.length()) {
+            return InetAddress.LOOPBACK.getHostAddress();
+        }
+		if (isHostName(host)) {
+            return lookupHostByName(host).getHostAddress();
+        }
 		return host;
 	}
 
@@ -537,10 +550,11 @@ public class InetAddress extends Object implements Serializable {
 
 		static void add(InetAddress value) {
 			CacheElement newElement = value.cacheElement();
-			if (size < maxSize)
-				size++;
-			else
-				deleteTail();
+			if (size < maxSize) {
+                size++;
+            } else {
+                deleteTail();
+            }
 			newElement.next = head; // If the head is null, this does no harm.
 			head = newElement;
 		}
@@ -554,17 +568,20 @@ public class InetAddress extends Object implements Serializable {
 				previous = current;
 				current = current.next;
 			}
-			if (notFound)
-				return null;
+			if (notFound) {
+                return null;
+            }
 			moveToHead(current, previous);
 			return current;
 		}
 
 		private static void deleteTail() {
-			if (0 == size)
-				return;
-			if (1 == size)
-				head = null;
+			if (0 == size) {
+                return;
+            }
+			if (1 == size) {
+                head = null;
+            }
 
 			CacheElement previous = null;
 			CacheElement current = head;
@@ -641,7 +658,7 @@ public class InetAddress extends Object implements Serializable {
 	 * of flags, and the additional 112 bits make up the global multicast
 	 * address space
 	 * 
-	 * Valid IPv4 global multi-cast addresses are between: 224.0.1.0 to
+	 * Valid IPv4 global multicast addresses are between: 224.0.1.0 to
 	 * 238.255.255.255
 	 * 
 	 * @return boolean
@@ -787,11 +804,11 @@ public class InetAddress extends Object implements Serializable {
     private boolean isReachableByMultiThread(NetworkInterface netif,
             final int ttl, final int timeout, final boolean isICMP)
             throws IOException {
-        Enumeration addresses = netif.getInetAddresses();
+        Enumeration<InetAddress> addresses = netif.getInetAddresses();
         reached = false;
         addrCount = netif.addresses.length;
         while (addresses.hasMoreElements()) {
-            final InetAddress addr = (InetAddress) addresses.nextElement();
+            final InetAddress addr = addresses.nextElement();
             new Thread() {
                 public void run() {
                     boolean threadReached = false;
@@ -926,7 +943,7 @@ public class InetAddress extends Object implements Serializable {
 				}
 				return new Inet4Address(copy_address);
 			}
-			copy_address = (byte[]) ipAddress.clone();
+			copy_address = ipAddress.clone();
 			return new Inet6Address(copy_address, scope_id);
 		}
 		throw new UnknownHostException(Msg.getString("K0339"));
@@ -990,7 +1007,7 @@ public class InetAddress extends Object implements Serializable {
 	 * 
 	 * The high order byte is <code>ipAddress[0]</code>.
 	 *
-	 * @param 		hostName	string representation of hostname or ip address
+	 * @param 		hostName	string representation of hostname or IP address
 	 * @param 		ipAddress	either a 4 (IPv4) or 16 (IPv6) byte array
 	 * @param 		scope_id	the scope id for a scoped address.  If not a scoped address just pass
 	 * 							in 0
@@ -1035,7 +1052,7 @@ public class InetAddress extends Object implements Serializable {
 	/**
 	 * Takes the integer and chops it into 4 bytes, putting it into the byte
 	 * array starting with the high order byte at the index start. This method
-	 * makes no checks on the validity of the paramaters.
+	 * makes no checks on the validity of the parameters.
 	 */
 	static void intToBytes(int value, byte bytes[], int start) {
 		// Shift the int so the current byte is right-most
@@ -1107,7 +1124,7 @@ public class InetAddress extends Object implements Serializable {
 			int doubleColonIndex = -1; // If a double colon exists, we need to
 										// insert 0s.
 
-			// Go through the tokens, including the seperators ':' and '.'
+			// Go through the tokens, including the separators ':' and '.'
 			// When we hit a : or . the previous token will be added to either
 			// the hex list or decimal list. In the case where we hit a ::
 			// we will save the index of the hexStrings so we can add zeros
@@ -1175,14 +1192,14 @@ public class InetAddress extends Object implements Serializable {
 
 			// Finally convert these strings to bytes...
 			for (int i = 0; i < hexStrings.size(); i++) {
-				Inet6Util.convertToBytes((String) hexStrings.get(i),
+				Inet6Util.convertToBytes(hexStrings.get(i),
 						ipByteArray, i * 2);
 			}
 
 			// Now if there are any decimal values, we know where they go...
 			for (int i = 0; i < decStrings.size(); i++) {
 				ipByteArray[i + 12] = (byte) (Integer
-						.parseInt((String) decStrings.get(i)) & 255);
+						.parseInt(decStrings.get(i)) & 255);
 			}
 
 			// now check to see if this guy is actually and IPv4 address
@@ -1224,8 +1241,8 @@ public class InetAddress extends Object implements Serializable {
 	}
 
 	static boolean preferIPv6Addresses() {
-		String result = (String) AccessController.doPrivileged(new PriviAction(
-				"java.net.preferIPv6Addresses"));
+		String result = AccessController.doPrivileged(
+                new PriviAction<String>("java.net.preferIPv6Addresses"));
 		return "true".equals(result);
 	}
 

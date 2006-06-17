@@ -50,7 +50,7 @@ public class InstantiationException extends Exception {
 	 * @param clazz
 	 *            Class The class which cannot be instantiated.
 	 */
-	InstantiationException(Class clazz) {
+	InstantiationException(Class<?> clazz) {
 		super(clazz.getName());
 	}
 }

@@ -60,7 +60,7 @@ class ProxySelectorImpl extends ProxySelector {
 	 * 
 	 * @see java.net.ProxySelector#select(java.net.URI)
 	 */
-	public List select(URI uri) {
+	public List<Proxy> select(URI uri) {
 		// argument check
 		if (null == uri) {
             // "KA001=Argument must not be null"
@@ -96,7 +96,7 @@ class ProxySelectorImpl extends ProxySelector {
 	/*
 	 * Gets proxy for http request. 1. gets from "http.proxyHost", then gets
 	 * port from "http.proxyPort", or from "proxyPort" if "http.proxyPort" is
-	 * unavailable. 2. gets from "proxyHost" if 1 is unavaible,then get port
+	 * unavailable. 2. gets from "proxyHost" if 1 is unavailable,then get port
 	 * from "proxyPort", or from "http.proxyPort" if "proxyPort" is unavailable.
 	 * 3. gets from "socksProxyHost" if 2 is unavailable.
 	 */
@@ -280,18 +280,18 @@ class ProxySelectorImpl extends ProxySelector {
 	 */
 	private String getSystemProperty(final String property,
 			final String defaultVaule) {
-		String value = (String) AccessController.doPrivileged(new PriviAction(
-				property));
-		if (null == value || "".equals(value)) {
-			value = defaultVaule;
-		}
-		return value;
+		String value = AccessController.doPrivileged(
+                new PriviAction<String>(property));
+        if (null == value || "".equals(value)) {
+            value = defaultVaule;
+        }
+        return value;
 	}
 
 	/*
 	 * gets system property, privileged operation. If the value of "key"
 	 * property is null, then retrieve value from "alternative" property.
-	 * Finllay, if the value is null or empty String, it returns defaultValue.
+	 * Finally, if the value is null or empty String, it returns defaultValue.
 	 */
 	private String getSystemPropertyOrAlternative(final String key,
 			final String alternativeKey, final String defaultValue) {
