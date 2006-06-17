@@ -1,0 +1,1199 @@
+/*
+ *  Copyright 2005 - 2006 The Apache Software Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * @author Dmitry A. Durnev
+ * @version $Revision$
+ */
+package java.awt;
+
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
+import java.awt.im.InputContext;
+import java.awt.image.BufferStrategy;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
+import javax.accessibility.AccessibleState;
+import javax.accessibility.AccessibleStateSet;
+
+import org.apache.harmony.awt.AWTPermissionCollection;
+import org.apache.harmony.awt.FieldsAccessor;
+import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.wtk.NativeWindow;
+
+
+public class Window extends Container implements Accessible {
+
+    private static final long serialVersionUID = 4497834738069338734L;
+    private final AWTListenerList windowFocusListeners = new AWTListenerList(this);
+    private final AWTListenerList windowListeners = new AWTListenerList(this);
+    private final AWTListenerList windowStateListeners = new AWTListenerList(this);
+    private ArrayList ownedWindows = new ArrayList();
+    private transient Component focusOwner;
+    private boolean focusableWindowState = true;//By default, all Windows have a focusable Window state of true
+
+    private Insets nativeInsets = new Insets(0, 0, 0, 0);
+
+    /** Security warning for non-secure windows */
+    private final String warningString;
+
+    // Properties of Frame and Dialog
+    private String title;
+    private boolean resizable;
+    private boolean undecorated;
+    private boolean alwaysOnTop;
+    boolean locationByPlatform;
+
+    /** The window is popup menu or tooltip (for internal use) */
+    private boolean popup;
+    
+    /**
+     * Focus proxy native window actually has native focus
+     * when this Window(Frame) is active, but some other
+     * (owned) Window is focused
+     */
+    private transient NativeWindow focusProxy;
+    
+    /**
+     * Component which has requested focus last
+     */
+    private transient Component requestedFocus;
+
+    private final transient GraphicsConfiguration graphicsConfiguration;
+
+    private boolean opened = false;
+    private boolean disposed = false;
+
+    boolean painted;
+
+    protected  class AccessibleAWTWindow extends AccessibleAWTContainer {
+
+        private static final long serialVersionUID = 4215068635060671780L;
+
+        public AccessibleStateSet getAccessibleStateSet() {
+            toolkit.lockAWT();
+            try {
+                AccessibleStateSet set = super.getAccessibleStateSet();
+                if (isFocused()) {
+                    set.add(AccessibleState.ACTIVE);
+                }
+                if (isResizable()) {
+                    set.add(AccessibleState.RESIZABLE);
+                }
+                return set;
+            } finally {
+                toolkit.unlockAWT();
+            }
+        }
+
+        public AccessibleRole getAccessibleRole() {
+            toolkit.lockAWT();
+            try {
+                return AccessibleRole.WINDOW;
+            } finally {
+                toolkit.unlockAWT();
+            }
+        }
+
+    }
+
+    public Window(Window owner) {
+        this(owner, null);
+        toolkit.lockAWT();
+        try {
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    private void addWindow(Window window) {
+        ownedWindows.add(window);
+    }
+    
+    public Window(Window owner, GraphicsConfiguration gc) {
+        toolkit.lockAWT();
+        try {
+            if (! (this instanceof Frame) && ! (this instanceof EmbeddedWindow)) {
+                if (owner == null) {
+                    throw new IllegalArgumentException("null owner window");
+                }
+                owner.addWindow(this);
+            }
+
+            parent = owner; // window's parent is the same as owner(by spec)
+            graphicsConfiguration = getGraphicsConfiguration(gc);
+            warningString = getWarningStringImpl();
+
+            super.setLayout(new BorderLayout());
+
+            if (owner == null) {
+                setBackground(getDefaultBackground());
+                setForeground(getDefaultForeground());
+            }
+
+            visible = false;
+            focusCycleRoot = true; //FIXME
+            // Top-levels initialize their focus traversal policies
+            // using the context default policy.
+            // The context default policy is established by
+            // using KeyboardFocusManager.setDefaultFocusTraversalPolicy().
+            setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager().
+                    getDefaultFocusTraversalPolicy());
+
+            redrawManager = new RedrawManager(this);
+
+            setFont(new Font("dialog", Font.PLAIN, 12));        //TODO: fix it
+            cursor = Cursor.getDefaultCursor(); //for Window cursor is always set(non-null)
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    NativeWindow getFocusProxy() {
+        return focusProxy;
+    }
+    
+    public Window(Frame owner) {
+        this( (Window) owner);
+        toolkit.lockAWT();
+        try {
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    protected void finalize() throws Throwable {
+        // do nothing
+    }
+
+    public void addNotify() {
+        toolkit.lockAWT();
+        try {
+            super.addNotify();
+
+            focusProxy = toolkit.createFocusProxyNativeWindow(this);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void removeNotify() {
+        toolkit.lockAWT();
+        try {
+            disposeFocusProxy();
+
+            super.removeNotify();
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public AccessibleContext getAccessibleContext() {
+        toolkit.lockAWT();
+        try {
+            return super.getAccessibleContext();
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public Toolkit getToolkit() {
+        return toolkit;
+    }
+
+    public void setCursor(Cursor cursor) {
+        toolkit.lockAWT();
+        try {
+            //for Window cursor is always set(non-null)
+            super.setCursor(
+                    cursor != null ? cursor : Cursor.getDefaultCursor());
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        toolkit.lockAWT();
+        try {
+            super.addPropertyChangeListener(listener);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        toolkit.lockAWT();
+        try {
+            super.addPropertyChangeListener(propertyName, listener);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void createBufferStrategy(int a0) {
+        toolkit.lockAWT();
+        try {
+        } finally {
+            toolkit.unlockAWT();
+        }
+        if (true) throw new RuntimeException("Method is not implemented");
+        return;
+    }
+
+    public void createBufferStrategy(int a0, BufferCapabilities a1) throws AWTException {
+        toolkit.lockAWT();
+        try {
+        } finally {
+            toolkit.unlockAWT();
+        }
+        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        return;
+    }
+
+    public void dispose() {
+        toolkit.lockAWT();
+        try {
+            if (!disposed) {
+                prepare4HierarchyChange();
+
+                hide();
+                disposeOwnedWindows();
+                mapToDisplay(false);
+                disposed = true;
+                opened = false;
+
+                finishHierarchyChange(this, parent, 0);
+                postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSED));
+            }
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    /**
+     * Remove focus proxy native window
+     * from map which is stored in Toolkit
+     */
+    private void disposeFocusProxy() {
+        if (focusProxy != null) {
+            toolkit.removeFocusProxyNativeWindow(focusProxy);
+            focusProxy = null;
+        }
+    }
+
+    /**
+     * dispose all owned windows explicitly
+     * to remove them from Toolkit's map
+     */
+    private void disposeOwnedWindows() {
+        for (int i=0; i < ownedWindows.size(); i++) {
+            Window win = (Window) ownedWindows.get(i);
+            if (win != null) {
+                win.dispose();
+            }
+        }
+
+    }
+
+    public BufferStrategy getBufferStrategy() {
+        toolkit.lockAWT();
+        try {
+        } finally {
+            toolkit.unlockAWT();
+        }
+        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        return null;
+    }
+
+    public final Container getFocusCycleRootAncestor() {
+        toolkit.lockAWT();
+        try {
+            //Always returns null because Windows have no ancestors
+            return null;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public Component getFocusOwner() {
+        toolkit.lockAWT();
+        try {
+            return isFocused() ? focusOwner : null;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public Set getFocusTraversalKeys(int id) {
+        //why override?
+        toolkit.lockAWT();
+        try {
+            return super.getFocusTraversalKeys(id);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public GraphicsConfiguration getGraphicsConfiguration() {
+        toolkit.lockAWT();
+        try {
+            if (graphicsConfiguration != null) {
+                return graphicsConfiguration;
+            } else
+            if (parent != null) {
+                return parent.getGraphicsConfiguration();
+            } else {
+                return GraphicsEnvironment.getLocalGraphicsEnvironment().
+                    getDefaultScreenDevice().getDefaultConfiguration();
+            }
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public InputContext getInputContext() {
+        toolkit.lockAWT();
+        try {
+            return null;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public Locale getLocale() {
+        toolkit.lockAWT();
+        try {
+            return super.getLocale();
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void hide() {
+        toolkit.lockAWT();
+        try {
+            super.hide();
+            painted = false;
+            // hide all owned windows explicitly:
+            for (int i = 0; i < ownedWindows.size(); i++) {
+                Window w = (Window) ownedWindows.get(i);
+                if (w != null) {
+                    w.hide();
+                }
+            }
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public final boolean isFocusCycleRoot() {
+        toolkit.lockAWT();
+        try {
+            //Every Window is, by default, a "focus cycle root".
+            return true;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public final boolean isFocusableWindow() {
+        toolkit.lockAWT();
+        try {
+            return getFocusableWindowState() && ( isActivateable() ||
+                    getFrameDialogOwner().isShowing() && focusTraversalCycleNotEmpty());
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    final boolean isActivateable() {
+        return (this instanceof Frame) ||
+                (this instanceof Dialog) ||
+                (this instanceof EmbeddedWindow);
+    }
+
+    private boolean focusTraversalCycleNotEmpty() {
+        return getFocusTraversalPolicy().getFirstComponent(this) != null;
+    }
+
+    /**
+     * Gets the nearest ancestor "activateable" window
+     * which is typically Frame or Dialog
+     */
+    Window getFrameDialogOwner() {
+        for (Window o = this; ; o = (Window) o.parent) {
+            if ((o == null) || o.isActivateable()) {
+                return o;
+            }
+        }
+    }
+
+    public boolean isShowing() {
+        toolkit.lockAWT();
+        try {
+            return (isVisible() && isDisplayable());
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    /**
+     * @deprecated
+     */
+    public boolean postEvent(Event evt) {
+        toolkit.lockAWT();
+        try {
+            //do not propagate event to parent(owner) window:
+            return handleEvent(evt);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void show() {
+        toolkit.lockAWT();
+        try {
+            if (opened) {
+                if (isVisible()) {
+                    toFront();
+                    return;
+                }
+            } else {
+                disposed = false;
+            }
+            super.show();
+            toFront();
+            if (!opened) {
+                opened = true;
+                postEvent(new WindowEvent(this, WindowEvent.WINDOW_OPENED));
+            }
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public Component getMostRecentFocusOwner() {
+        toolkit.lockAWT();
+        try {
+            // if the Window has never been focused, focus should be set to the
+            // Window's initial Component to focus
+            return (focusOwner != null) && (focusOwner != this) ? focusOwner :
+                (isFocusableWindow() ? getFocusTraversalPolicy().getInitialComponent(this) : null);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    void setFocusOwner(Component owner) {
+        focusOwner = owner;
+    }
+
+    public final void setFocusCycleRoot(boolean value) {
+        toolkit.lockAWT();
+        try {
+            //Does nothing because Windows must always be roots of a focus traversal cycle.
+            //The passed-in value is ignored.
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void toFront() {
+        toolkit.lockAWT();
+        try {
+            NativeWindow win = getNativeWindow();
+            if (win != null) {
+                win.toFront();
+            }
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    /**
+     * @deprecated
+     */
+    public void applyResourceBundle(ResourceBundle rb) {
+        toolkit.lockAWT();
+        try {
+            applyComponentOrientation(ComponentOrientation.getOrientation(rb));
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    /**
+     * @deprecated
+     */
+    public void applyResourceBundle(String rbName) {
+        toolkit.lockAWT();
+        try {
+            applyResourceBundle(ResourceBundle.getBundle(rbName));
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public boolean getFocusableWindowState() {
+        toolkit.lockAWT();
+        try {
+            return focusableWindowState;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public Window[] getOwnedWindows() {
+        toolkit.lockAWT();
+        try {
+            return (Window[]) ownedWindows.toArray(new Window[0]);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public Window getOwner() {
+        toolkit.lockAWT();
+        try {
+            return (Window) parent;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public final String getWarningString() {
+        return warningString;
+    }
+
+
+    private final String getWarningStringImpl() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm == null) {
+            return null;
+        }
+        if (sm.checkTopLevelWindow(this)) {
+            return null;
+        }
+
+        PrivilegedAction action = new PrivilegedAction() {
+            public Object run() {
+                return System.getProperty("awt.appletWarning", "Warning: Java window");
+            }};
+
+        return (String)AccessController.doPrivileged(action);
+    }
+
+    public boolean isActive() {
+        toolkit.lockAWT();
+        try {
+            return KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow() == this;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public boolean isFocused() {
+        toolkit.lockAWT();
+        try {
+            return KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow() == this;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void pack() {
+        toolkit.lockAWT();
+        try {
+            if ((parent != null) && !parent.isDisplayable()) {
+                parent.mapToDisplay(true);
+            }
+            if (!isDisplayable()) {
+                mapToDisplay(true);
+            }
+
+            setSize(getPreferredSize());
+            validate();
+            getNativeWindow().setPacked(true);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public final boolean isAlwaysOnTop() {
+        toolkit.lockAWT();
+        try {
+            return alwaysOnTop;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public final void setAlwaysOnTop(boolean alwaysOnTop)
+            throws SecurityException {
+        boolean wasAlwaysOnTop;
+        toolkit.lockAWT();
+        try {
+            if (this.alwaysOnTop == alwaysOnTop) {
+                return;
+            }
+
+            SecurityManager sm = System.getSecurityManager();
+            if (sm != null) {
+                sm.checkPermission(AWTPermissionCollection.SET_WINDOW_ALWAYS_ON_TOP_PERMISSION);
+            }
+            wasAlwaysOnTop = this.alwaysOnTop;
+            this.alwaysOnTop = alwaysOnTop;
+            NativeWindow win = getNativeWindow();
+            if (win != null) {
+                win.setAlwaysOnTop(alwaysOnTop);
+            }
+
+        } finally {
+            toolkit.unlockAWT();
+        }
+        firePropertyChange("alwaysOnTop", wasAlwaysOnTop, alwaysOnTop);
+    }
+
+    /**
+     * Called by AWT in response to
+     * native event "insets changed" on this Window
+     * @param insets new native insets
+     */
+    void setNativeInsets(Insets insets) {
+        if (this.nativeInsets.equals(insets)) {
+            return;
+        }
+        nativeInsets = (Insets) insets.clone();
+
+        validateMenuBar();
+        invalidate();
+        validate();
+    }
+
+    void validateMenuBar() {
+        // do nothing, override in Frame to do useful work
+    }
+
+    Insets getNativeInsets() {
+        return (Insets)nativeInsets.clone();
+    }
+
+    void setBounds(int x, int y, int w, int h, int bMask, boolean updateBehavior) {
+        boolean resized = ((w != this.w) || (h != this.h));
+        super.setBounds(x, y, w, h, bMask, updateBehavior);
+
+        if (visible && resized && !updateBehavior) {
+            validate();
+        }
+    }
+
+    public void setBounds(int x, int y, int width, int height) {
+        locationByPlatform = false;
+        super.setBounds(x, y, width, height);
+    }
+
+    public void setLocationByPlatform(boolean byPlatform) {
+        toolkit.lockAWT();
+        try {
+            if (byPlatform && visible && behaviour.isDisplayable()) {
+                throw new IllegalComponentStateException("Window is showing");
+            }
+            locationByPlatform = byPlatform;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public boolean isLocationByPlatform() {
+        toolkit.lockAWT();
+        try {
+            if (visible && behaviour.isDisplayable()) {
+                return false;
+            }
+            return locationByPlatform;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void setFocusableWindowState(boolean state) {
+        boolean oldState;
+        toolkit.lockAWT();
+        try {
+            oldState = focusableWindowState;
+            focusableWindowState = state;
+            //call cb here to make window natively non-focusable
+            NativeWindow win = getNativeWindow();
+            if (win != null) {
+                win.setFocusable(state);
+            }
+            if (!state) {
+                moveFocusToOwner();
+            }
+        } finally {
+            toolkit.unlockAWT();
+        }
+        firePropertyChange("focusableWindowState",
+                oldState, focusableWindowState);
+    }
+
+    /**
+     * If this is a focused window then
+     * attempt to focus the most recently focused Component 
+     * of this Window's owner
+     * or clear global focus owner if attempt fails
+     */
+    private void moveFocusToOwner() {
+
+        if (isFocused()) {
+            Component compToFocus = null;
+            for (Window wnd = getOwner(); wnd != null && compToFocus == null; wnd = wnd.getOwner()) {
+                compToFocus = wnd.getMostRecentFocusOwner();
+                if (compToFocus != null && !compToFocus.requestFocusImpl(false, true, false)) {
+                    compToFocus = null;
+                }
+            }
+            if (compToFocus == null) {
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
+            }
+
+        }
+    }
+
+    public void setLocationRelativeTo(Component c) {
+        toolkit.lockAWT();
+        try {
+            Rectangle screenRect = getGraphicsConfiguration().getBounds();
+            int minX = screenRect.x;
+            int minY = screenRect.y;
+            int maxX = minX + screenRect.width - 1;
+            int maxY = minY + screenRect.height;
+            int centerX = (minX + maxX) / 2;
+            int centerY = (minY + maxY) / 2;
+            int x = centerX;
+            int y = centerY;
+
+            //if comp is null or not showing, then set location
+            //relative to "component" of 1-pixel size located
+            //at the center of the screen
+            Point loc = new Point(centerX, centerY);
+            int compX = loc.x;
+            Dimension compSize = new Dimension();
+
+            if ((c != null) && c.isShowing()) {
+                loc = c.getLocationOnScreen();
+                compX = loc.x;
+                compSize = c.getSize();
+            }
+            //first get center coords:
+            loc.translate(compSize.width / 2, compSize.height / 2);
+            //now get upper-left corner coords:
+            int w = getWidth(), h = getHeight();
+            loc.translate(-w / 2, -h / 2);
+            //check if screenRect contains new window
+            //bounds rectangle and if not - change location
+            //of window to fit into screenRect
+            x = Math.max(loc.x, minX);
+            y = Math.max(loc.y, minY);
+            int right = x + w, bottom = y + h;
+            if (right > maxX) {
+                x -= right - maxX;
+            }
+            if (bottom > maxY) {
+                y -= bottom - maxY;
+
+                //If the bottom of the component is offscreen,
+                //the window is placed to the side of the Component
+                //that is closest to the center of the screen.
+                int compRight = compX + compSize.width;
+                int distRight = Math.abs(compRight - centerX);
+                int distLeft = Math.abs(centerX - compX);
+                x = ((distRight < distLeft) ? compRight : (compX - w));
+                x = Math.max(x, minX);
+                right = x + w;
+                if (right > maxX) {
+                    x -= right - maxX;
+                }
+            }
+            setLocation(x, y);
+
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public void toBack() {
+        toolkit.lockAWT();
+        try {
+            NativeWindow win = getNativeWindow();
+            if (win != null) {
+                win.toBack();
+            }
+            //TODO?: reset the focused Window(this or any of owners) to the top-most Window in the VM
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    boolean isResizable() {
+        return resizable;
+    }
+
+    void setResizable(boolean resizable) {
+        if (this.resizable == resizable) {
+            return;
+        }
+        this.resizable = resizable;
+        NativeWindow win = getNativeWindow();
+        if (win != null && !undecorated && !popup) {
+            win.setResizable(resizable);
+        }
+    }
+
+    boolean isUndecorated() {
+        return undecorated;
+    }
+
+    void setUndecorated(boolean undecorated) {
+        if (this.undecorated == undecorated) {
+            return;
+        }
+        if(isDisplayable())
+            throw new IllegalComponentStateException("Cannot change the decorations while the window is visible");
+
+        this.undecorated = undecorated;
+    }
+
+    boolean isPopup() {
+        return popup;
+    }
+
+    void setPopup(boolean popup) {
+        if(isDisplayable())
+            throw new IllegalComponentStateException("Cannot change the decorations while the window is visible");
+        this.popup = popup;
+    }
+
+    String getTitle() {
+        return title;
+    }
+
+    /**
+     * Set title for Frame or Dialog<br>
+     * It does lockAWT() properly so there's no need
+     * to synchronize the calls of this method
+     * @param title - value to set
+     */
+    void setTitle(String title) {
+        String oldTitle = this.title;
+        toolkit.lockAWT();
+        try {
+            this.title = title;
+            NativeWindow win = getNativeWindow();
+            if (win != null) {
+                win.setTitle(title);
+            }
+        } finally {
+            toolkit.unlockAWT();
+        }
+        firePropertyChange("title", oldTitle, title);
+    }
+
+    RedrawManager getRedrawManager() {
+        return redrawManager;
+    }
+
+    void redrawAll() {
+        if (redrawManager.redrawAll()) {
+            painted = true;
+        }
+    }
+
+    void setRequestedFocus(Component component) {
+        requestedFocus = component;
+
+    }
+
+    Component getRequestedFocus() {
+        return requestedFocus;
+    }
+
+    AccessibleContext createAccessibleContext() {
+        return new AccessibleAWTWindow();
+    }
+
+    /**
+     * Gets the default Cursor if Window is disabled
+     * even if Cursor is explicitly set
+     * @return actual Cursor to be displayed
+     * @see Component.getRealCursor()
+     */
+    Cursor getRealCursor() {
+       return isEnabled() ? getCursor() : Cursor.getDefaultCursor();
+    }
+
+    String autoName() {
+        int number = toolkit.autoNumber.nextWindow++;
+        return "window" + Integer.toString(number);
+    }
+
+    public void addWindowFocusListener(WindowFocusListener l) {
+        windowFocusListeners.addUserListener(l);
+    }
+
+    public void addWindowListener(WindowListener l) {
+        windowListeners.addUserListener(l);
+    }
+
+    public void addWindowStateListener(WindowStateListener l) {
+        windowStateListeners.addUserListener(l);
+    }
+
+    public WindowFocusListener[] getWindowFocusListeners() {
+        return (WindowFocusListener[])
+                windowFocusListeners.getUserListeners(new WindowFocusListener[0]);
+    }
+
+    public WindowListener[] getWindowListeners() {
+        return (WindowListener[]) windowListeners.getUserListeners(new WindowListener[0]);
+    }
+
+    public WindowStateListener[] getWindowStateListeners() {
+        return (WindowStateListener[])
+                windowStateListeners.getUserListeners(new WindowStateListener[0]);
+    }
+
+    public void removeWindowFocusListener(WindowFocusListener l) {
+        windowFocusListeners.removeUserListener(l);
+    }
+
+    public void removeWindowListener(WindowListener l) {
+        windowListeners.removeUserListener(l);
+    }
+
+    public void removeWindowStateListener(WindowStateListener l) {
+        windowStateListeners.removeUserListener(l);
+    }
+
+    public EventListener[] getListeners(Class listenerType) {
+        if (WindowFocusListener.class.isAssignableFrom(listenerType)) {
+            return getWindowFocusListeners();
+        } else if (WindowStateListener.class.isAssignableFrom(listenerType)) {
+            return getWindowStateListeners();
+        } else if (WindowListener.class.isAssignableFrom(listenerType)) {
+            return getWindowListeners();
+        } else {
+            return super.getListeners(listenerType);
+        }
+    }
+
+    protected void processEvent(AWTEvent e) {
+        long eventMask = toolkit.eventTypeLookup.getEventMask(e);
+
+        if (eventMask == AWTEvent.WINDOW_EVENT_MASK) {
+            processWindowEvent((WindowEvent) e);
+        } else if (eventMask == AWTEvent.WINDOW_STATE_EVENT_MASK) {
+            processWindowStateEvent((WindowEvent) e);
+        } else if (eventMask == AWTEvent.WINDOW_FOCUS_EVENT_MASK) {
+            processWindowFocusEvent((WindowEvent) e);
+        } else {
+            super.processEvent(e);
+        }
+    }
+
+    protected void processWindowEvent(WindowEvent e) {
+        for (Iterator i = windowListeners.getUserIterator(); i.hasNext();) {
+            WindowListener listener = (WindowListener) i.next();
+
+            switch (e.getID()) {
+            case WindowEvent.WINDOW_ACTIVATED:
+                listener.windowActivated(e);
+                break;
+            case WindowEvent.WINDOW_CLOSED:
+                listener.windowClosed(e);
+                break;
+            case WindowEvent.WINDOW_CLOSING:
+                listener.windowClosing(e);
+                break;
+            case WindowEvent.WINDOW_DEACTIVATED:
+                listener.windowDeactivated(e);
+                break;
+            case WindowEvent.WINDOW_DEICONIFIED:
+                listener.windowDeiconified(e);
+                break;
+            case WindowEvent.WINDOW_ICONIFIED:
+                listener.windowIconified(e);
+                break;
+            case WindowEvent.WINDOW_OPENED:
+                listener.windowOpened(e);
+                break;
+            }
+        }
+    }
+
+    protected void processWindowFocusEvent(WindowEvent e) {
+        for (Iterator i = windowFocusListeners.getUserIterator(); i.hasNext();) {
+            WindowFocusListener listener = (WindowFocusListener) i.next();
+
+            switch (e.getID()) {
+            case WindowEvent.WINDOW_GAINED_FOCUS:
+                listener.windowGainedFocus(e);
+                break;
+            case WindowEvent.WINDOW_LOST_FOCUS:
+                listener.windowLostFocus(e);
+                break;
+            }
+        }
+    }
+
+    protected void processWindowStateEvent(WindowEvent e) {
+        for (Iterator i = windowStateListeners.getUserIterator(); i.hasNext();) {
+            WindowStateListener listener = (WindowStateListener) i.next();
+
+            switch (e.getID()) {
+            case WindowEvent.WINDOW_STATE_CHANGED:
+                listener.windowStateChanged(e);
+                break;
+            }
+        }
+    }
+
+    void moveFocusOnHide() {
+        // let native system move focus itself
+        // if native focused window is the same as
+        // java focused window
+        if (!isActivateable()) {
+            super.moveFocusOnHide();
+        }
+    }
+
+    ComponentBehavior createBehavior() {
+        return new HWBehavior(this);
+    }
+
+    private GraphicsConfiguration getGraphicsConfiguration(GraphicsConfiguration gc) {
+
+        if (gc == null) {
+            Toolkit.checkHeadless();
+            GraphicsEnvironment ge  = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
+        }
+        else if (GraphicsEnvironment.isHeadless()) {
+            throw new IllegalArgumentException("Graphics environment is headless");
+        }
+
+        if (gc.getDevice().getType() != GraphicsDevice.TYPE_RASTER_SCREEN) {
+            throw new IllegalArgumentException("Not a screen device");
+        }
+
+        return gc;
+    }
+
+    Color getDefaultBackground() {
+        return SystemColor.window;
+    }
+
+    Color getDefaultForeground() {
+        return SystemColor.windowText;
+    }
+
+    boolean isPrepainter() {
+        return true;
+    }
+
+    void prepaint(Graphics g) {
+        Color back = getBackground();
+        if (back == null) {
+            back = getDefaultBackground();
+        }
+        g.setColor(back);
+        Insets ins = getNativeInsets();
+        g.fillRect(ins.left, ins.top, w - ins.right - ins.left, h - ins.bottom - ins.top);
+    }
+
+    /**
+     * Called immediately after native window
+     * has been created. Updates native window state
+     * & properties to make them correspond to Java
+     * Window state/properties
+     */
+    void nativeWindowCreated(NativeWindow win) {
+        win.setFocusable(getFocusableWindowState());
+        nativeInsets = win.getInsets();
+        win.setAlwaysOnTop(isAlwaysOnTop());
+        win.setIconImage(getIconImage());
+    }
+
+    /**
+     * Returns icon image of the owner frame. 
+     * This method is overridden as public in the class Frame
+     */
+    Image getIconImage() {
+        toolkit.lockAWT();
+        try {
+            for (Container c = parent; c != null; c = c.parent) {
+                if (c instanceof Frame) {
+                    return ((Frame)c).getIconImage();
+                }
+            }
+            return null;
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    MultiRectArea getObscuredRegion(Rectangle part) {
+        if (!visible || behaviour.getNativeWindow() == null) {
+            return null;
+        }
+        Insets ins = getNativeInsets();
+        Rectangle r = new Rectangle(ins.left, ins.top,
+                w - ins.left - ins.right, h - ins.top - ins.bottom);
+        if (part != null) {
+            r = r.intersection(part);
+        }
+        if (r.isEmpty()) {
+            return null;
+        }
+        return behaviour.getNativeWindow().getObscuredRegion(r);
+    }
+
+    private void readObject(ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+
+        stream.defaultReadObject();
+
+        FieldsAccessor accessor = new FieldsAccessor(Window.class, this);
+        accessor.set("graphicsConfiguration", getGraphicsConfiguration(null));
+
+        visible = false;
+        redrawManager = new RedrawManager(this);
+    }
+}

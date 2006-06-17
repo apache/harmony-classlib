@@ -1,0 +1,1375 @@
+/*
+ *  Copyright 2005 - 2006 The Apache Software Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * @author Pavel Dolgov, Michael Danilov
+ * @version $Revision$
+ */
+package java.awt;
+
+import java.awt.datatransfer.Clipboard;
+import java.awt.dnd.peer.DragSourceContextPeer;
+import java.awt.im.InputMethodHighlight;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.security.*;
+import java.awt.image.*;
+import java.awt.peer.*;
+import java.beans.*;
+import java.util.*;
+import java.awt.dnd.*;
+import java.awt.event.*;
+
+import org.apache.harmony.awt.*;
+import org.apache.harmony.awt.datatransfer.*;
+import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.text.*;
+import org.apache.harmony.awt.wtk.*;
+
+
+public abstract class Toolkit {
+
+    private static final String RECOURCE_PATH = "org.apache.harmony.awt.resources.AWTProperties";
+
+    private static final ResourceBundle properties = loadResources(RECOURCE_PATH);
+
+    final Dispatcher dispatcher;
+    final EventQueue systemEventQueue;
+    final EventDispatchThread dispatchThread;
+    private ShutdownThread shutdownThread;
+    private final AWTEventsManager awtEventsManager;
+    /* key = nativeWindow, value = Component, should be Map<NativeWindow, Component> */
+    private final Map windowComponentMap = new HashMap();
+    /* key = nativeWindow, value = MenuComponent */
+
+    private final Map windowPopupMap = new HashMap();
+
+    private final Map windowFocusProxyMap = new HashMap();
+
+    final Object awtTreeLock = new Object();
+    private final Synchronizer synchronizer = ContextStorage.getSynchronizer();
+    private final Object shutdownThreadLock = new Object();
+
+    final Theme theme = createTheme();
+
+    final AutoNumber autoNumber = new AutoNumber();
+    final EventQueue.LastEvent eventQueueLastEvent = new EventQueue.LastEvent();
+    final AWTEvent.EventTypeLookup eventTypeLookup = new AWTEvent.EventTypeLookup();
+    final Frame.AllFrames allFrames = new Frame.AllFrames();
+
+    KeyboardFocusManager currentKeyboardFocusManager;
+
+    MouseEventPreprocessor mouseEventPreprocessor;
+
+    NativeClipboard systemClipboard = null;
+    private NativeClipboard systemSelection = null;
+
+    private boolean bDynamicLayoutSet = true;
+
+    /**
+     * The set of desktop properties that user set directly.
+     */
+    private final HashSet userPropSet = new HashSet();
+
+    protected final Map desktopProperties;
+
+    protected final PropertyChangeSupport desktopPropsSupport;
+
+    /**
+     * For this component the native window is being created
+     * It is used in the callback-driven window creation
+     * (e.g. on Windows in the handler of WM_CREATE event)
+     * to establish the connection between this component
+     * and its native window
+     */
+    private Object recentNativeWindowComponent;
+
+    final WindowList windows = new WindowList();
+
+    private WTK wtk = null;
+
+    private final class ComponentInternalsImpl extends ComponentInternals {
+
+        public NativeWindow getNativeWindow(Component component) {
+            lockAWT();
+            try {
+                return component != null ? component.getNativeWindow() : null;
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public void startMouseGrab(Window grabWindow, Runnable whenCanceled) {
+            lockAWT();
+            try {
+                dispatcher.mouseGrabManager.startGrab(grabWindow, whenCanceled);
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public void endMouseGrab() {
+            lockAWT();
+            try {
+                dispatcher.mouseGrabManager.endGrab();
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public Window attachNativeWindow(long nativeWindowId) {
+            lockAWT();
+            try {
+                Window window = new EmbeddedWindow(nativeWindowId);
+                windowComponentMap.put(window.getNativeWindow(), window);
+                windows.add(window);
+                return window;
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public void makePopup(Window window) {
+            lockAWT();
+            try {
+                window.setPopup(true);
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public void onDrawImage(Component comp, Image image, Point destLocation,
+                Dimension destSize, Rectangle source) {
+            lockAWT();
+            try {
+                comp.onDrawImage(image, destLocation, destSize, source);
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public void setCaretPos(Component c, int x, int y) {
+            c.setCaretPos(x, y);
+        }
+
+        public void unsafeInvokeAndWait(Runnable runnable)
+                throws InterruptedException, InvocationTargetException {
+            Toolkit.this.unsafeInvokeAndWait(runnable);
+        }
+
+        public TextKit getTextKit(Component comp) {
+            lockAWT();
+            try {
+                return comp.getTextKit();
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public void setTextKit(Component comp, TextKit kit) {
+            lockAWT();
+            try {
+                comp.setTextKit(kit);
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public TextFieldKit getTextFieldKit(Component comp)  {
+            lockAWT();
+            try {
+                return comp.getTextFieldKit();
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public void setTextFieldKit(Component comp, TextFieldKit kit) {
+            lockAWT();
+            try {
+                comp.setTextFieldKit(kit);
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public void shutdown() {
+            dispatchThread.shutdown();
+        }
+
+        public void setMouseEventPreprocessor(
+                MouseEventPreprocessor preprocessor) {
+            lockAWT();
+            try {
+                mouseEventPreprocessor = preprocessor;
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public Choice createCustomChoice(ChoiceStyle style) {
+            return new Choice(style);
+        }
+
+        public Insets getNativeInsets(Window w) {
+            lockAWT();
+            try {
+                return (w != null) ? w.getNativeInsets() : new Insets(0, 0, 0, 0);
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public MultiRectArea getRepaintRegion(Component c) {
+            return c.repaintRegion;
+        }
+
+        public MultiRectArea subtractPendingRepaintRegion(Component c, MultiRectArea mra) {
+            lockAWT();
+            try {
+                RedrawManager rm = c.getRedrawManager();
+                if (rm == null) {
+                    return null;
+                }
+                return rm.subtractPendingRepaintRegion(c, mra);
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public boolean wasPainted(Window w) {
+            lockAWT();
+            try {
+                return w.painted;
+            } finally {
+                unlockAWT();
+            }
+        }
+
+        public MultiRectArea getObscuredRegion(Component c) {
+            return c.getObscuredRegion(null);
+        }
+    }
+
+    void stopShutdownThread() {
+        synchronized(shutdownThreadLock) {
+            if (shutdownThread != null) {
+                shutdownThread.shutdown();
+                shutdownThread = null;
+            }
+        }
+    }
+
+    /*
+     * A lot of methods must throw HeadlessException
+     * if <code>GraphicsEnvironment.isHeadless()</code> returns <code>true</code>.
+     */
+    static void checkHeadless() throws HeadlessException {
+        if (GraphicsEnvironment.isHeadless()) {
+            throw new HeadlessException();
+        }
+    }
+
+    final void lockAWT() {
+        synchronizer.lock();
+    }
+
+    static final void staticLockAWT() {
+        ContextStorage.getSynchronizer().lock();
+    }
+
+    final void unlockAWT() {
+        synchronizer.unlock();
+    }
+
+    static final void staticUnlockAWT() {
+        ContextStorage.getSynchronizer().unlock();
+    }
+
+    /*
+     * InvokeAndWait under AWT lock. W/o this method system can hang up.
+     * Added to support modality (Dialog.show() & PopupMenu.show()) from
+     * not event dispatch thread. Use in other cases is not recomended.
+     *
+     * Still can be called only for whole API methods that
+     * cannot be called from other classes API methods.
+     * Examples:
+     *      show() for modal dialogs    - correct, only user can call it,
+     *                                      directly or through setVisible(true)
+     *      setBounds() for components  - incorrect, setBounds()
+     *                                      can be called from layoutContainer()
+     *                                      for layout managers
+     */
+    final void unsafeInvokeAndWait(Runnable runnable)
+            throws InterruptedException, InvocationTargetException
+    {
+        synchronizer.storeStateAndFree();
+        try {
+            EventQueue.invokeAndWait(runnable);
+        } finally {
+            synchronizer.lockAndRestoreState();
+        }
+    }
+
+    final Synchronizer getSynchronizer() {
+        return synchronizer;
+    }
+
+    final WTK getWTK() {
+        return wtk;
+    }
+
+    public static String getProperty(String propName, String defVal) {
+        if (propName == null) {
+            throw new NullPointerException("Property name is null");
+        }
+        staticLockAWT();
+        try {
+            String retVal = null;
+            if (properties != null) {
+                try {
+                    retVal = properties.getString(propName);
+                } catch(MissingResourceException e) {
+                } catch(ClassCastException e) {
+                }
+            }
+            return (retVal == null) ? defVal : retVal;
+        } finally {
+            staticUnlockAWT();
+        }
+    }
+
+    public static Toolkit getDefaultToolkit() {
+        synchronized(ContextStorage.getContextLock()) {
+            if (ContextStorage.shutdownPending()) {
+                return null;
+            }
+            Toolkit defToolkit = ContextStorage.getDefaultToolkit();
+            if (defToolkit != null) {
+                return defToolkit;
+            } else {
+                staticLockAWT();
+                try {
+                    defToolkit = new ToolkitImpl();
+                    ContextStorage.setDefaultToolkit(defToolkit);
+                    defToolkit.getNativeEventQueue().awake();
+
+                    return defToolkit;
+                } finally {
+                    staticUnlockAWT();
+                }
+            }
+        //TODO: read system property named awt.toolkit
+        //and create an instance of the specified class,
+        //by default use ToolkitImpl
+        }
+    }
+
+    void validateShutdownThread() {
+        synchronized(shutdownThreadLock) {
+            if (shutdownThread == null) {
+                shutdownThread = new ShutdownThread();
+                shutdownThread.startAndInit();
+                if (systemClipboard != null) {
+                    systemClipboard.onRestart();
+                }
+                if (systemSelection != null) {
+                    systemSelection.onRestart();
+                }
+            }
+        }
+    }
+
+    Font getDefaultFont() {
+        return wtk.getSystemProperties().getDefaultFont();
+    }
+
+    private static ResourceBundle loadResources(String path) {
+        try {
+            return ResourceBundle.getBundle(path);
+        } catch(MissingResourceException e) {
+            return null;
+        }
+    }
+
+    private static String getWTKClassName() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String packageBase = "org.apache.harmony.awt.wtk", win = "windows", lin = "linux";
+        if (osName.startsWith(lin)) {
+            return packageBase + "." + lin + ".LinuxWTK";
+        }
+        if (osName.startsWith(win)) {
+            return packageBase + "." + win + ".WinWTK";
+        }
+        return null;
+    }
+
+    Component getComponentById(long id) {
+        if(id == 0) {
+            return null;
+        }
+        return (Component) windowComponentMap.get(getWindowFactory().getWindowById(id));
+    }
+
+    PopupBox getPopupBoxById(long id) {
+        if(id == 0) {
+            return null;
+        }
+        return (PopupBox) windowPopupMap.get(getWindowFactory().getWindowById(id));
+    }
+
+    Window getFocusProxyOwnerById(long id) {
+        if(id == 0) {
+            return null;
+        }
+        return (Window) windowFocusProxyMap.get(getWindowFactory().getWindowById(id));
+    }
+
+    final WindowFactory getWindowFactory() {
+        return wtk.getWindowFactory();
+    }
+
+    final GraphicsFactory getGraphicsFactory() {
+        return wtk.getGraphicsFactory();
+    }
+
+    public Toolkit() {
+        lockAWT();
+        try {
+            systemEventQueue = new EventQueue(true, this);
+            dispatcher = new Dispatcher(systemEventQueue, this);
+            final String className = getWTKClassName();
+
+            desktopProperties = new HashMap();
+            desktopPropsSupport = new PropertyChangeSupport(this);
+
+            awtEventsManager = new AWTEventsManager();
+            dispatchThread = new EventDispatchThread(this, systemEventQueue, dispatcher);
+            dispatchThread.startAndInit(new Runnable() {
+                    public void run() {
+                        wtk = createWTK(className);
+                        synchronizer.setEnvironment(wtk, dispatchThread);
+                        ContextStorage.setWTK(wtk);
+                    }
+                }
+            );
+
+            ComponentInternals.setComponentInternals(new ComponentInternalsImpl());
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public abstract void sync();
+
+    protected abstract TextAreaPeer createTextArea(TextArea a0) throws HeadlessException;
+
+    public abstract int checkImage(Image a0, int a1, int a2, ImageObserver a3);
+
+    public abstract Image createImage(ImageProducer a0);
+
+    public abstract Image createImage(byte[] a0, int a1, int a2);
+
+    public abstract Image createImage(URL a0);
+
+    public abstract Image createImage(String a0);
+
+    public abstract ColorModel getColorModel() throws HeadlessException;
+
+    public abstract FontMetrics getFontMetrics(Font font);
+
+    public abstract boolean prepareImage(Image a0, int a1, int a2, ImageObserver a3);
+
+    public abstract void beep();
+
+    protected abstract ButtonPeer createButton(Button a0) throws HeadlessException;
+
+    protected abstract CanvasPeer createCanvas(Canvas a0);
+
+    protected abstract CheckboxPeer createCheckbox(Checkbox a0) throws HeadlessException;
+
+    protected abstract CheckboxMenuItemPeer createCheckboxMenuItem(CheckboxMenuItem a0) throws HeadlessException;
+
+    protected abstract ChoicePeer createChoice(Choice a0) throws HeadlessException;
+
+    protected abstract DialogPeer createDialog(Dialog a0) throws HeadlessException;
+
+    public abstract DragSourceContextPeer createDragSourceContextPeer(DragGestureEvent a0) throws InvalidDnDOperationException;
+
+    protected abstract FileDialogPeer createFileDialog(FileDialog a0) throws HeadlessException;
+
+    protected abstract FramePeer createFrame(Frame a0) throws HeadlessException;
+
+    protected abstract LabelPeer createLabel(Label a0) throws HeadlessException;
+
+    protected abstract ListPeer createList(List a0) throws HeadlessException;
+
+    protected abstract MenuPeer createMenu(Menu a0) throws HeadlessException;
+
+    protected abstract MenuBarPeer createMenuBar(MenuBar a0) throws HeadlessException;
+
+    protected abstract MenuItemPeer createMenuItem(MenuItem a0) throws HeadlessException;
+
+    protected abstract PanelPeer createPanel(Panel a0);
+
+    protected abstract PopupMenuPeer createPopupMenu(PopupMenu a0) throws HeadlessException;
+
+    protected abstract ScrollPanePeer createScrollPane(ScrollPane a0) throws HeadlessException;
+
+    protected abstract ScrollbarPeer createScrollbar(Scrollbar a0) throws HeadlessException;
+
+    protected abstract TextFieldPeer createTextField(TextField a0) throws HeadlessException;
+
+    protected abstract WindowPeer createWindow(Window a0) throws HeadlessException;
+
+    public abstract String[] getFontList();
+
+    protected abstract FontPeer getFontPeer(String a0, int a1);
+
+    public abstract Image getImage(String a0);
+
+    public abstract Image getImage(URL a0);
+
+    public abstract PrintJob getPrintJob(Frame a0, String a1, Properties a2);
+
+    public abstract int getScreenResolution() throws HeadlessException;
+
+    public abstract Dimension getScreenSize() throws HeadlessException;
+
+    public abstract Clipboard getSystemClipboard() throws HeadlessException;
+
+    protected abstract EventQueue getSystemEventQueueImpl();
+
+    public abstract Map mapInputMethodHighlight(InputMethodHighlight highlight) throws HeadlessException;
+
+    Map mapInputMethodHighlightImpl(InputMethodHighlight highlight)
+            throws HeadlessException {
+        return null;
+    }
+
+    public void addPropertyChangeListener(String propName, PropertyChangeListener l) {
+        lockAWT();
+        try {
+            if (desktopProperties.isEmpty()) {
+                initializeDesktopProperties();
+            }
+        } finally {
+            unlockAWT();
+        }
+        if (l != null) { // there is no garantee that null listener will not be added
+            desktopPropsSupport.addPropertyChangeListener(propName, l);
+        }
+    }
+
+    protected java.awt.peer.MouseInfoPeer getMouseInfoPeer() {
+        return new MouseInfoPeer() {};
+    }
+
+    protected LightweightPeer createComponent(Component a0) {
+        lockAWT();
+        try {
+        } finally {
+            unlockAWT();
+        }
+        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        return null;
+    }
+
+    public Image createImage(byte[] imagedata) {
+        return createImage(imagedata, 0, imagedata.length);
+    }
+
+    protected static Container getNativeContainer(Component c) {
+        staticLockAWT();
+        try {
+            //TODO: implement
+            return c.getWindowAncestor();
+        } finally {
+            staticUnlockAWT();
+        }
+    }
+
+    public PropertyChangeListener[] getPropertyChangeListeners() {
+        return desktopPropsSupport.getPropertyChangeListeners();
+    }
+
+    public PropertyChangeListener[] getPropertyChangeListeners(String propName) {
+        return desktopPropsSupport.getPropertyChangeListeners(propName);
+    }
+
+    public void removePropertyChangeListener(String propName, PropertyChangeListener l) {
+        desktopPropsSupport.removePropertyChangeListener(propName, l);
+    }
+
+    public Cursor createCustomCursor(Image img, Point hotSpot, String name) throws IndexOutOfBoundsException, HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+            int w = img.getWidth(null), x = hotSpot.x;
+            int h = img.getHeight(null), y = hotSpot.y;
+            if (x < 0 || x >= w || y < 0 || y >= h) {
+                throw new IndexOutOfBoundsException("invalid hotSpot");
+            }
+            return new Cursor(name, img, hotSpot);
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public DragGestureRecognizer createDragGestureRecognizer(
+            Class recognizerAbstractClass, 
+            DragSource ds, 
+            Component c, 
+            int srcActions, 
+            DragGestureListener dgl) {
+        if (recognizerAbstractClass == null) {
+            return null;
+        }
+        if (recognizerAbstractClass.isAssignableFrom(MouseDragGestureRecognizer.class)) {
+            return new DefaultMouseDragGestureRecognizer(ds, c, srcActions, dgl);
+        }
+        return null;
+    }
+
+    public Dimension getBestCursorSize(int prefWidth, int prefHeight) throws HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+            return wtk.getCursorFactory().getBestCursorSize(prefWidth, prefHeight);
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public final Object getDesktopProperty(String propName) {
+        lockAWT();
+        try {
+            if (desktopProperties.isEmpty()) {
+                initializeDesktopProperties();
+            }
+
+            if (propName.equals("awt.dynamicLayoutSupported")) {
+                // dynamicLayoutSupported is special case
+                return Boolean.valueOf(isDynamicLayoutActive());
+            }
+
+            Object val = desktopProperties.get(propName);
+            if (val == null) {
+                // try to lazily load prop value
+                // just for compatibility, our lazilyLoad is empty
+                val = lazilyLoadDesktopProperty(propName);
+            }
+
+            return val;
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public boolean getLockingKeyState(int a0) throws UnsupportedOperationException {
+        lockAWT();
+        try {
+        } finally {
+            unlockAWT();
+        }
+
+        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        return true;
+    }
+
+    public int getMaximumCursorColors() throws HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+            return wtk.getCursorFactory().getMaximumCursorColors();
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public int getMenuShortcutKeyMask() throws HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+            return KeyEvent.CTRL_MASK;
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public PrintJob getPrintJob(Frame a0, String a1, JobAttributes a2, PageAttributes a3) {
+        lockAWT();
+        try {
+        } finally {
+            unlockAWT();
+        }
+
+        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        return null;
+    }
+
+    public Insets getScreenInsets(GraphicsConfiguration gc) throws HeadlessException {
+        if (gc == null) {
+            throw new NullPointerException();
+        }
+        lockAWT();
+        try {
+            return null;
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public final EventQueue getSystemEventQueue() {
+        lockAWT();
+        try {
+            return getSystemEventQueueImpl();
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public Clipboard getSystemSelection() throws HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+
+            SecurityManager security = System.getSecurityManager();
+
+            if (security != null) {
+                security.checkSystemClipboardAccess();
+            }
+
+            if (systemSelection == null) {
+                systemSelection = DTK.getContextInstance().getNativeSelection();
+            }
+
+            return systemSelection;
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    protected void initializeDesktopProperties() {
+        lockAWT();
+        try {
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public boolean isDynamicLayoutActive() throws HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+
+            // always return true
+            return true;
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    protected boolean isDynamicLayoutSet() throws HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+
+            return bDynamicLayoutSet;
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public boolean isFrameStateSupported(int state) throws HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+
+            return wtk.getWindowFactory().isWindowStateSupported(state);
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    protected Object lazilyLoadDesktopProperty(String propName) {
+        return null;
+    }
+
+    protected void loadSystemColors(int[] colors) throws HeadlessException {
+        lockAWT();
+        try {
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    protected final void setDesktopProperty(String propName, Object value) {
+        Object oldVal;
+        lockAWT();
+        try {
+            oldVal = getDesktopProperty(propName);
+
+            userPropSet.add(propName);
+            desktopProperties.put(propName, value);
+
+        } finally {
+            unlockAWT();
+        }
+        desktopPropsSupport.firePropertyChange(propName, oldVal, value);
+    }
+
+    public void setDynamicLayout(boolean dynamic) throws HeadlessException {
+        lockAWT();
+        try {
+            checkHeadless();
+
+            bDynamicLayoutSet = dynamic;
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public void setLockingKeyState(int a0, boolean a1) throws UnsupportedOperationException {
+        lockAWT();
+        try {
+        } finally {
+            unlockAWT();
+        }
+
+        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        return;
+    }
+
+    void onQueueEmpty() {
+        if (windows.isEmpty()) {
+            if (systemClipboard != null) {
+                systemClipboard.onShutdown();
+            }
+            if (systemSelection != null) {
+                systemSelection.onShutdown();
+            }
+            stopShutdownThread();
+        } else {
+            for (Iterator i = windows.iterator(); i.hasNext();) {
+                ((Window) i.next()).redrawAll();
+            }
+        }
+    }
+
+    private WTK createWTK(String clsName) {
+        WTK newWTK = null;
+
+        try {
+            newWTK = (WTK)Class.forName(clsName).newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return newWTK;
+    }
+
+    /**
+     * Connect the component to its native window
+     * This method is called after the synchronous window creation,
+     * and also in the window creation callback if it exists (WM_CREATE on Windows)
+     * Calling this method twice is OK because in second time it just does nothing.
+     *
+     * This is done this way because on Windows the native window gets a series of native
+     * events before windowFactory.CreateWindow() returns, and the WinWindow object should be created
+     * to process them. The WM_CREATE message is garanteed to be first in the series, so that the
+     * the WM_CREATE handler creates the WinWindow object and calls nativeWindowCreated()
+     * for it.
+     *
+     * @param win - native window just created
+     */
+    void nativeWindowCreated(NativeWindow win) {
+        if (recentNativeWindowComponent == null) {
+            return;
+        }
+
+        if (recentNativeWindowComponent instanceof Component) {
+            windowComponentMap.put(win, recentNativeWindowComponent);
+            ((Component)recentNativeWindowComponent).nativeWindowCreated(win);
+
+        } else if(recentNativeWindowComponent instanceof PopupBox) {
+            windowPopupMap.put(win, recentNativeWindowComponent);
+        }
+
+        recentNativeWindowComponent = null;
+    }
+
+    /**
+     * Connect the component to its native window
+     * @param winId - id of native window just created
+     */
+    boolean onWindowCreated(long winId) {
+        nativeWindowCreated(getWindowFactory().getWindowById(winId));
+
+        return false;
+    }
+
+    NativeWindow createEmbeddedNativeWindow(EmbeddedWindow ew) {
+        windows.add(ew);
+
+        CreationParams cp = new CreationParams();
+
+        cp.child = true;
+        cp.disabled = false;
+        cp.name = "EmbeddedWindow";
+
+        cp.parentId = ew.nativeWindowId;
+        cp.x = 0;
+        cp.y = 0;
+
+        Dimension size = getWindowFactory().getWindowSizeById(ew.nativeWindowId);
+
+        cp.w = size.width;
+        cp.h = size.height;
+
+        recentNativeWindowComponent = ew;
+        NativeWindow win = getWindowFactory().createWindow(cp);
+        nativeWindowCreated(win);
+
+        validateShutdownThread();
+
+        return win;
+    }
+
+
+    NativeWindow createNativeWindow(Component c) {
+        if (c instanceof Window) {
+            windows.add(c);
+        }
+
+        Component parent = null;
+        Point location = c.getLocation();
+
+        CreationParams cp = new CreationParams();
+
+        cp.child = !(c instanceof Window);
+        cp.disabled = !c.isEnabled();
+
+        if (c instanceof Window) {
+            Window w = (Window)c;
+            cp.resizable = w.isResizable();
+            cp.undecorated = w.isUndecorated();
+            parent = w.getOwner();
+            cp.locationByPlatform = w.locationByPlatform;
+
+            if (c instanceof Frame) {
+                Frame frame = (Frame)c;
+                int state = frame.getExtendedState();
+                cp.name = frame.getTitle();
+                cp.iconified = (state & Frame.ICONIFIED) != 0;
+
+                cp.maximizedState = 0;
+                if ( (state & Frame.MAXIMIZED_BOTH) != 0)
+                    cp.maximizedState |= cp.MAXIMIZED;
+                if ( (state & Frame.MAXIMIZED_HORIZ) != 0)
+                    cp.maximizedState |= cp.MAXIMIZED_HORIZ;
+                if ( (state & Frame.MAXIMIZED_VERT) != 0)
+                    cp.maximizedState |= cp.MAXIMIZED_VERT;
+
+                cp.decorType = CreationParams.DECOR_TYPE_FRAME;
+
+            } else if (c instanceof Dialog) {
+                Dialog dlg = (Dialog)c;
+                cp.name = dlg.getTitle();
+                cp.decorType = CreationParams.DECOR_TYPE_DIALOG;
+
+            } else if (w.isPopup()) {
+                cp.decorType = CreationParams.DECOR_TYPE_POPUP;
+            } else {
+                cp.decorType = CreationParams.DECOR_TYPE_UNDECOR;
+            }
+        } else {
+            parent = c.getHWAncestor();
+            cp.name = c.getName();
+
+            //set location relative to the nearest heavyweight ancestor
+            location = MouseDispatcher.convertPoint(c, 0, 0, parent);
+        }
+
+        if (parent != null) {
+            NativeWindow nativeParent = parent.getNativeWindow();
+            if (nativeParent == null) {
+                if (cp.child) {
+                    return null; //component's window will be created when its parent is created ???
+                }
+                parent.mapToDisplay(true); //TODO: verify it
+                nativeParent = parent.getNativeWindow();
+            }
+            cp.parentId = nativeParent.getId();
+        }
+
+        cp.x = location.x;
+        cp.y = location.y;
+        cp.w = c.getWidth();
+        cp.h = c.getHeight();
+
+        recentNativeWindowComponent = c;
+        NativeWindow win = getWindowFactory().createWindow(cp);
+        nativeWindowCreated(win);
+
+        if (c instanceof Window) {
+            validateShutdownThread();
+        }
+
+        return win;
+    }
+
+    void removeNativeWindow(NativeWindow w) {
+        Component comp = (Component) windowComponentMap.get(w);
+
+        if ((comp != null) && (comp instanceof Window)) {
+            windows.remove(comp);
+        }
+        windowComponentMap.remove(w);
+    }
+
+    NativeWindow createPopupNativeWindow(PopupBox popup) {
+
+        CreationParams cp = new CreationParams();
+
+        cp.child = popup.isMenuBar();
+        cp.disabled = false;
+        cp.resizable = false;
+        cp.undecorated = true;
+        cp.iconified = false;
+        cp.visible = false;
+        cp.maximizedState = 0;
+        cp.decorType = CreationParams.DECOR_TYPE_POPUP;
+        NativeWindow nativeParent;
+
+        if (popup.getParent() != null) {
+            nativeParent = popup.getParent().getNativeWindow();
+        } else {
+            nativeParent = popup.getOwner().getNativeWindow();
+        }
+
+        assert nativeParent != null;
+
+        cp.parentId = nativeParent.getId();
+
+        cp.x = popup.getLocation().x;
+        cp.y = popup.getLocation().y;
+        cp.w = popup.getSize().width;
+        cp.h = popup.getSize().height;
+
+        recentNativeWindowComponent = popup;
+        NativeWindow win = getWindowFactory().createWindow(cp);
+        nativeWindowCreated(win);
+
+        return win;
+    }
+
+    void removePopupNativeWindow(NativeWindow w) {
+        windowPopupMap.remove(w);
+    }
+
+    NativeWindow createFocusProxyNativeWindow(Window owner) {
+
+        CreationParams cp = new CreationParams();
+
+        cp.child = true;
+        cp.disabled = false;
+        cp.resizable = false;
+        cp.undecorated = true;
+        cp.iconified = false;
+        cp.visible = true;
+        cp.maximizedState = 0;
+        cp.decorType = CreationParams.DECOR_TYPE_NONE;
+        cp.parentId = owner.getNativeWindow().getId();
+
+        cp.x = -10;
+        cp.y = -10;
+        cp.w = 1;
+        cp.h = 1;
+
+        NativeWindow win = getWindowFactory().createWindow(cp);
+        windowFocusProxyMap.put(win, owner);
+
+        return win;
+    }
+
+    void removeFocusProxyNativeWindow(NativeWindow w) {
+        windowFocusProxyMap.remove(w);
+    }
+
+    NativeEventQueue getNativeEventQueue(){
+        return wtk.getNativeEventQueue();
+    }
+
+    /**
+     * Returns a shared instance of implementation of org.apache.harmony.awt.wtk.NativeCursor
+     * for current platform for
+     * @param type - Java Cursor type
+     * @return new instance of implementation of NativeCursor
+     */
+    NativeCursor createNativeCursor(int type) {
+        return wtk.getCursorFactory().getCursor(type);
+    }
+    /**
+     * Returns a shared instance of implementation of org.apache.harmony.awt.wtk.NativeCursor
+     * for current platform for custom cursor
+     * @param type - Java Cursor type
+     * @return new instance of implementation of NativeCursor
+     */
+    NativeCursor createCustomNativeCursor(Image img, Point hotSpot, String name) {
+        return wtk.getCursorFactory().createCustomCursor(img, hotSpot.x, hotSpot.y);
+    }
+
+    /**
+     * Returns implementation of org.apache.harmony.awt.wtk.NativeMouseInfo
+     * for current platform.
+     * @return implementation of NativeMouseInfo
+     */
+    NativeMouseInfo getNativeMouseInfo() {
+        return wtk.getNativeMouseInfo();
+    }
+
+    public void addAWTEventListener(AWTEventListener listener, long eventMask) {
+        lockAWT();
+        try {
+            SecurityManager security = System.getSecurityManager();
+
+            if (security != null) {
+                security.checkPermission(awtEventsManager.permission);
+            }
+
+            awtEventsManager.addAWTEventListener(listener, eventMask);
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public void removeAWTEventListener(AWTEventListener listener) {
+        lockAWT();
+        try {
+            SecurityManager security = System.getSecurityManager();
+
+            if (security != null) {
+                security.checkPermission(awtEventsManager.permission);
+            }
+
+            awtEventsManager.removeAWTEventListener(listener);
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public AWTEventListener[] getAWTEventListeners() {
+        lockAWT();
+        try {
+            SecurityManager security = System.getSecurityManager();
+
+            if (security != null) {
+                security.checkPermission(awtEventsManager.permission);
+            }
+
+            return awtEventsManager.getAWTEventListeners();
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    public AWTEventListener[] getAWTEventListeners(long eventMask) {
+        lockAWT();
+        try {
+            SecurityManager security = System.getSecurityManager();
+
+            if (security != null) {
+                security.checkPermission(awtEventsManager.permission);
+            }
+
+            return awtEventsManager.getAWTEventListeners(eventMask);
+        } finally {
+            unlockAWT();
+        }
+    }
+
+    void dispatchAWTEvent(AWTEvent event) {
+        awtEventsManager.dispatchAWTEvent(event);
+    }
+
+    private static Theme createTheme() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String packageBase = "org.apache.harmony.awt.theme", win = "windows", lin = "linux";
+
+        PrivilegedAction action = new PrivilegedAction() {
+            public Object run() {
+                return System.getProperty("awt.theme");
+            }};
+
+        String className = (String)AccessController.doPrivileged(action);
+
+        if (className == null) {
+            if (osName.startsWith(lin)) {
+                className = packageBase + "." + lin + ".LinuxTheme";
+            } else if (osName.startsWith(win)) {
+                className = packageBase + "." + win + ".WinTheme";
+            }
+        }
+
+        if (className != null) {
+            try {
+                return (Theme)Class.forName(className).newInstance();
+            } catch (Exception e) {
+            }
+        }
+
+        return new Theme();
+    }
+
+    final class AWTEventsManager {
+
+        AWTPermission permission = new AWTPermission("listenToAllAWTEvents");
+
+        private AWTListenerList listeners = new AWTListenerList(null);
+
+        void addAWTEventListener(AWTEventListener listener, long eventMask) {
+            if (listener != null) {
+                listeners.addUserListener(new AWTEventListenerProxy(eventMask, listener));
+            }
+        }
+
+        void removeAWTEventListener(AWTEventListener listener) {
+            if (listener != null) {
+                for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+                    AWTEventListenerProxy proxy = (AWTEventListenerProxy) i.next();
+
+                    if (listener == proxy.getListener()) {
+                        listeners.removeUserListener(proxy);
+
+                        return;
+                    }
+                }
+            }
+        }
+
+        AWTEventListener[] getAWTEventListeners() {
+            HashSet listenersSet = new HashSet();
+
+            for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+                listenersSet.add(((AWTEventListenerProxy) i.next()).getListener());
+            }
+
+            return (AWTEventListener[]) listenersSet.toArray(new AWTEventListener[0]);
+        }
+
+        AWTEventListener[] getAWTEventListeners(long eventMask) {
+            HashSet listenersSet = new HashSet();
+
+            for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+                AWTEventListenerProxy listenerProxy = (AWTEventListenerProxy) i.next();
+
+                if ((listenerProxy.getEventMask() & eventMask) == eventMask) {
+                    listenersSet.add(listenerProxy.getListener());
+                }
+            }
+
+            return (AWTEventListener[]) listenersSet.toArray(new AWTEventListener[0]);
+        }
+
+        void dispatchAWTEvent(AWTEvent event) {
+            AWTEvent.EventDescriptor descriptor = eventTypeLookup.getEventDescriptor(event);
+
+            if (descriptor == null) {
+                return;
+            }
+
+            for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+                AWTEventListenerProxy listenerProxy = (AWTEventListenerProxy) i.next();
+
+                if ((listenerProxy.getEventMask() & descriptor.eventMask) != 0) {
+                    listenerProxy.eventDispatched(event);
+                }
+            }
+        }
+
+    }
+
+    static final class AutoNumber {
+        int nextComponent = 0;
+        int nextCanvas = 0;
+        int nextPanel = 0;
+        int nextWindow = 0;
+        int nextFrame = 0;
+        int nextDialog = 0;
+        int nextButton = 0;
+        int nextMenuComponent = 0;
+        int nextLabel = 0;
+        int nextCheckBox = 0;
+        int nextScrollbar = 0;
+        int nextScrollPane = 0;
+        int nextList = 0;
+        int nextChoice = 0;
+        int nextFileDialog = 0;
+        int nextTextArea = 0;
+        int nextTextField = 0;
+    }
+
+    /**
+     * Thread-safe collection of Window objects
+     */
+    static final class WindowList {
+
+        /**
+         * If a non-dispatch thread adds/removes a window,
+         * this set it is replaced to avoid the possible conflict
+         * with concurrently running lock-free iterator loop
+         */
+        private LinkedHashSet windows = new LinkedHashSet();
+        private final Object lock = new Object();
+
+        void add(Component w) {
+            synchronized (lock) {
+                if (isDispatchThread()) {
+                    windows.add(w);
+                } else {
+                    windows = (LinkedHashSet)windows.clone();
+                    windows.add(w);
+                }
+            }
+        }
+
+        void remove(Component w) {
+            synchronized (lock) {
+                if (isDispatchThread()) {
+                    windows.remove(w);
+                } else {
+                    windows = (LinkedHashSet)windows.clone();
+                    windows.remove(w);
+                }
+            }
+        }
+
+        Iterator iterator() {
+            synchronized (lock) {
+                return new ReadOnlyIterator(windows.iterator());
+            }
+        }
+
+        boolean isEmpty() {
+            synchronized (lock) {
+                return windows.isEmpty();
+            }
+        }
+
+        private boolean isDispatchThread() {
+            return Thread.currentThread() instanceof EventDispatchThread;
+        }
+    }
+}

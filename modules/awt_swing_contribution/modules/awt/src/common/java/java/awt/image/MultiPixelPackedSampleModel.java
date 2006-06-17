@@ -1,0 +1,310 @@
+/*
+ *  Copyright 2005 - 2006 The Apache Software Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * @author Igor V. Stolyarov
+ * @version $Revision$
+ */
+package java.awt.image;
+
+public class MultiPixelPackedSampleModel extends SampleModel {
+
+    private int pixelBitStride;
+
+    private int scanlineStride;
+
+    private int dataBitOffset;
+
+    private int bitMask;
+
+    private int dataElementSize;
+
+    private int pixelsPerDataElement;
+
+    public MultiPixelPackedSampleModel(int dataType, int w, int h,
+            int numberOfBits, int scanlineStride, int dataBitOffset) {
+
+        super(dataType, w, h, 1);
+        if (dataType != DataBuffer.TYPE_BYTE &&
+               dataType != DataBuffer.TYPE_USHORT &&
+               dataType != DataBuffer.TYPE_INT)
+            throw new IllegalArgumentException("Unsupported data type:"
+                    + dataType);
+
+        this.scanlineStride = scanlineStride;
+        if(numberOfBits == 0)
+            throw new RasterFormatException("Number of Bits equals to zero");
+        this.pixelBitStride = numberOfBits;
+        this.dataElementSize = DataBuffer.getDataTypeSize(dataType);
+        if(dataElementSize % pixelBitStride != 0)
+            throw new RasterFormatException("The number of bits per pixel " +
+                    "is not a power of 2 or pixels span data element boundaries");
+
+        if(dataBitOffset % numberOfBits != 0)
+            throw new RasterFormatException("Data Bit offset is not a multiple " +
+                    "of pixel bit stride");
+        this.dataBitOffset = dataBitOffset;
+
+        this.pixelsPerDataElement = dataElementSize / pixelBitStride;
+        this.bitMask = (1 << numberOfBits) - 1;
+    }
+
+    public MultiPixelPackedSampleModel(int dataType, int w, int h,
+            int numberOfBits) {
+
+        this(dataType, w, h, numberOfBits, (numberOfBits * w +
+               DataBuffer.getDataTypeSize(dataType) - 1) /
+               DataBuffer.getDataTypeSize(dataType), 0);
+    }
+
+    public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
+                    "not in bounds");
+        switch (getTransferType()) {
+        case DataBuffer.TYPE_BYTE:
+            byte bdata[];
+            if (obj == null)
+                bdata = new byte[1];
+            else
+                bdata = (byte[]) obj;
+            bdata[0] = (byte) getSample(x, y, 0, data);
+            obj = (Object) bdata;
+            break;
+        case DataBuffer.TYPE_USHORT:
+            short sdata[];
+            if (obj == null)
+                sdata = new short[1];
+            else
+                sdata = (short[]) obj;
+            sdata[0] = (short) getSample(x, y, 0, data);
+            obj = (Object) sdata;
+            break;
+        case DataBuffer.TYPE_INT:
+            int idata[];
+            if (obj == null)
+                idata = new int[1];
+            else
+                idata = (int[]) obj;
+            idata[0] = getSample(x, y, 0, data);
+            obj = (Object) idata;
+            break;
+        }
+
+        return obj;
+    }
+
+    public void setDataElements(int x, int y, Object obj, DataBuffer data) {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
+                    "not in bounds");
+        switch (getTransferType()) {
+        case DataBuffer.TYPE_BYTE:
+            setSample(x, y, 0, ((byte[]) obj)[0] & 0xff, data);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            setSample(x, y, 0, ((short[]) obj)[0] & 0xffff, data);
+            break;
+        case DataBuffer.TYPE_INT:
+            setSample(x, y, 0, ((int[]) obj)[0], data);
+            break;
+        }
+    }
+
+    public boolean equals(Object o) {
+        if ((o == null) || !(o instanceof MultiPixelPackedSampleModel)) {
+            return false;
+        }
+
+        MultiPixelPackedSampleModel model = (MultiPixelPackedSampleModel) o;
+        return this.width == model.width &&
+               this.height == model.height &&
+               this.numBands == model.numBands &&
+               this.dataType == model.dataType &&
+               this.pixelBitStride == model.pixelBitStride &&
+               this.bitMask == model.bitMask &&
+               this.pixelsPerDataElement == model.pixelsPerDataElement &&
+               this.dataElementSize == model.dataElementSize &&
+               this.dataBitOffset == model.dataBitOffset &&
+               this.scanlineStride == model.scanlineStride;
+    }
+
+    public SampleModel createSubsetSampleModel(int bands[]) {
+        if (bands != null && bands.length != 1)
+            throw new RasterFormatException("Number of bands must be only 1");
+        return createCompatibleSampleModel(width, height);
+    }
+
+    public SampleModel createCompatibleSampleModel(int w, int h) {
+        return new MultiPixelPackedSampleModel(dataType, w, h, pixelBitStride);
+    }
+
+    public int[] getPixel(int x, int y, int iArray[], DataBuffer data) {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
+                    "not in bounds");
+        int pixel[];
+        if (iArray == null)
+            pixel = new int[numBands];
+        else
+            pixel = iArray;
+
+        pixel[0] = getSample(x, y, 0, data);
+        return pixel;
+    }
+
+    public void setPixel(int x, int y, int iArray[], DataBuffer data) {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+            throw new ArrayIndexOutOfBoundsException("Coordinates are " +
+                    "not in bounds");
+        setSample(x, y, 0, iArray[0], data);
+    }
+
+    public int getSample(int x, int y, int b, DataBuffer data) {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height || b != 0)
+            throw new ArrayIndexOutOfBoundsException("Coordinates are not " +
+                    "in bounds");
+
+        int bitnum = dataBitOffset + x * pixelBitStride;
+        int elem = data.getElem(y * scanlineStride + bitnum / dataElementSize);
+        int shift = dataElementSize - (bitnum & (dataElementSize - 1)) -
+                pixelBitStride;
+
+        return (elem >> shift) & bitMask;
+    }
+
+    public void setSample(int x, int y, int b, int s, DataBuffer data) {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height || b != 0)
+            throw new ArrayIndexOutOfBoundsException("Coordinates are not " +
+                    "in bounds");
+
+        int bitnum = dataBitOffset + x * pixelBitStride;
+        int idx = y * scanlineStride + bitnum / dataElementSize;
+        int elem = data.getElem(idx);
+        int shift = dataElementSize - (bitnum & (dataElementSize - 1)) -
+                pixelBitStride;
+        int mask = ~(bitMask << shift);
+        elem &= mask;
+        elem |= (s & bitMask) << shift;
+        data.setElem(idx, elem);
+    }
+
+    public DataBuffer createDataBuffer() {
+        DataBuffer dataBuffer = null;
+        int size = scanlineStride * height;
+
+        switch (dataType) {
+        case DataBuffer.TYPE_BYTE:
+            dataBuffer = new DataBufferByte(size + (dataBitOffset + 7) / 8);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            dataBuffer = new DataBufferUShort(size + (dataBitOffset + 15) / 16);
+            break;
+        case DataBuffer.TYPE_INT:
+            dataBuffer = new DataBufferInt(size + (dataBitOffset + 31) / 32);
+            break;
+        }
+        return dataBuffer;
+    }
+
+    public int getOffset(int x, int y) {
+        return y * scanlineStride + (x * pixelBitStride + dataBitOffset) /
+               dataElementSize;
+    }
+
+    public int getSampleSize(int band) {
+        return pixelBitStride;
+    }
+
+    public int getBitOffset(int x) {
+        return (x * pixelBitStride + dataBitOffset) % dataElementSize;
+    }
+
+    public int[] getSampleSize() {
+        int sampleSizes[] = { pixelBitStride };
+        return sampleSizes;
+    }
+
+    public int hashCode() {
+        int hash = 0;
+        int tmp = 0;
+
+        hash = width;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= height;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= numBands;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= dataType;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= scanlineStride;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= pixelBitStride;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= dataBitOffset;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= bitMask;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= dataElementSize;
+        tmp = hash >>> 24;
+        hash <<= 8;
+        hash |= tmp;
+        hash ^= pixelsPerDataElement;
+        return hash;
+    }
+
+    public int getTransferType() {
+        if (pixelBitStride > 16)
+            return DataBuffer.TYPE_INT;
+        else if (pixelBitStride > 8)
+            return DataBuffer.TYPE_USHORT;
+        else
+            return DataBuffer.TYPE_BYTE;
+    }
+
+    public int getScanlineStride() {
+        return scanlineStride;
+    }
+
+    public int getPixelBitStride() {
+        return pixelBitStride;
+    }
+
+    public int getNumDataElements() {
+        return 1;
+    }
+
+    public int getDataBitOffset() {
+        return dataBitOffset;
+    }
+
+}
+

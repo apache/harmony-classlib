@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!--
+Author:  Alexey A. Petrenko
+Version: $Revision$
+-->
+
+<project name="HarmonySwingBuild" default="build" basedir="..">
+
+    <description> Build for AWT and Java2D stuff </description>
+
+
+
+    <!-- set global properties for this build. -->
+
+    <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+
+    <!--
+
+         In order to use Eclipse compiler (ver. 3.1.0 and higher) you will need to add
+         the compiler's jars to the CLASSPATH and path to jni.h
+         to INCLUDE environment variables before build start.
+         For example:
+
+         unpack %ECLIPSE_HOME%/plugins/org.eclipse.jdt.core_3.1.1.jar 
+         into %ECLIPSE_HOME%/plugins/ folder
+         
+         set CLASSPATH=%ECLIPSE_HOME%/plugins/org.eclipse.jdt.core_3.1.1/jdtCompilerAdapter.jar;\                
+         %ECLIPSE_HOME%/plugins/org.eclipse.jdt.core_3.1.1;%CLASSPATH%
+
+         property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"
+
+         In order to use default compiler set build.compiler property:
+         property name="build.compiler" value="modern"
+         
+     -->
+
+    <property name="build.dir" value="${basedir}/../../"/>
+    <property name="harmony.path" location="../.." />
+    <property name="harmony.depends.build.path" location="${harmony.path}/depends/jars/build" />
+    <property name="build.path" location="${build.dir}/build" />
+    <property name="src" location="${basedir}/src" />
+    <property environment="env"/>
+
+
+    <condition property="if.win" value="true">
+        <os family="Windows" />
+    </condition>
+
+    <condition property="if.linux" value="true">
+        <and>
+            <os name="linux" />
+            <os family="unix" />
+        </and>
+    </condition>
+
+    <condition property="if.x86_64" value="true">
+        <contains string="${os.arch}" substring="x86_64"/>
+    </condition>
+ 
+    <condition property="if.x86" value="true">
+        <and>
+          <contains string="${os.arch}" substring="86"/>
+            <not>
+               <isset property="if.x86_64"/>
+            </not>
+        </and>
+    </condition>
+
+
+    <condition property="if.ipf" value="true">
+        <contains string="${os.arch}" substring="ia64"/>
+    </condition>
+
+
+    <!-- Platform dependency -->
+
+    <target name="timestamp" description="Set up a timestamp">
+        <tstamp>
+            <format property="build-date" pattern="yyyyMMdd" locale="en" />
+        </tstamp>
+        <tstamp>
+            <format property="build-time" pattern="yyyyMMdd_HHmm)" />
+        </tstamp>
+        <echo message="build-date=${build-date}" />
+        <echo message="build-time=${build-time}" />
+        <echo message="on platform=${os.name} version=${os.version} arch=${os.arch}" />
+        <echo message="with java home = ${java.home} VM version = ${java.vm.version} vendor = ${java.vm.vendor}" />
+    </target>
+
+    <target name="setname.win" if="if.win">
+        <property name="platform.name" value="win" />
+        <property name="libpr" value=""/>
+        <property name="libsf" value=".dll"/>
+        <property name="src.win.java" location="${src}/windows/java" />
+    </target>
+
+    <target name="setname.linux" if="if.linux">
+        <property name="platform.name" value="lnx" />
+        <property name="libpr" value="lib"/>
+        <property name="libsf" value=".so"/>
+        <property name="src.linux.java" location="${src}" />
+    </target>
+
+
+    <!-- INIT TARGETS -->
+
+    <target name="init" depends="timestamp, setname.win, setname.linux">
+
+        <echo message="platform name=${platform.name}" />
+
+        <property name="java.debug.option" value="on" />
+
+        <property name="src.common.java" location="${src}/common/java" />
+        <property name="src.tst" value="${basedir}/test" />
+        <property name="src.tst.common" value="${src.tst}/common" />
+
+        <property name="harmonybin.path" value="deploy/jre"/>
+        <property name="build.lib.path" location="${harmony.path}/${harmonybin.path}/bin" />
+        <property name="build.jars.path" location="${harmony.path}/${harmonybin.path}/lib/boot" />
+        <property name="build.ext.path" location="${harmony.path}/${harmonybin.path}/lib/ext" />
+        <property name="build.bin.path" location="${harmony.path}/${harmonybin.path}/bin" />
+
+        <property name="tmp" location="${build.path}/tmp" />
+        <property name="source.ver" value="1.4" />
+
+        <property name="native.lib.name" value="**/*"/>
+
+        <echo message="if.x86_64=${if.x86_64}"/>
+        <echo message="if.x86=${if.x86}"/>
+        <echo message="if.ipf=${if.ipf}"/>
+
+        <echo message="create base dirs..." />
+        <mkdir dir="${build.path}" />
+        <mkdir dir="${tmp}" />
+        <mkdir dir="${build.lib.path}" />
+
+    </target>
+    
+    <target name="init.java_home">
+
+        <property name="JAVA_HOME" value="${env.JAVA_HOME}" />
+        <echo message="JAVA_HOME=${JAVA_HOME}"/>
+
+    </target>
+
+    <target name="init.win" depends="init, init.java_home" if="if.win">
+
+        <property name="src.java" value="${src.win.java}" />
+
+        <property name="src.tst.common.ps" value="${src.tst}/windows" />
+    </target>
+
+    
+    <target name="init.linux" depends="init, init.java_home" if="if.linux">
+
+        <property name="src.java" value="${src.linux.java}" />
+
+        <property name="src.tst.common.ps" value="${src.tst}/linux" />
+    </target>
+
+
+    <!-- SWING PACKAGES SETS -->
+
+    <patternset id="swing">
+        <include name="javax/swing/**"/>
+        <include name="javax/accessibility/**"/>
+        <include name="org/apache/harmony/x/swing/**"/>
+        <include name="org/apache/harmony/x/accessibility/**"/>
+    </patternset>
+
+
+    <patternset id="api.src.all">
+        <patternset refid="swing"/>
+    </patternset>
+
+    <target name="compile.awt" depends="awt.target.dist" description="Building AWT binaries">
+        <ant antfile="${basedir}/../awt/make/build.xml" inheritAll="false" target="${awt.target}"></ant>
+    </target>
+
+
+    <!-- SWING TARGETS -->
+
+    <target name="build" depends="init, init.win, init.linux, compile.awt, compile.api, build.jars"
+        description="Building SWING binaries">
+    </target>
+
+
+    <target name="tests" depends="awt.target.tests, build, tests.compile"
+        description="Building Swing tests">
+    </target>
+
+    <target name="awt.target.tests">
+        <property name="awt.target" value="tests"/>
+    </target>
+
+    <target name="awt.target.dist" unless="awt.target">
+        <property name="awt.target" value="build"/>
+    </target>
+
+    <target name="tests.run" depends="tests, run"
+        description="Running Swing tests">
+    </target>
+
+
+    <target name="tests.gen" depends="tests"
+        description="Generating serialized stuff for tests">
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.path}"/>
+    </target>
+
+    <!-- SUPPORT TARGETS -->
+
+
+    <target name="build.jars" depends="copy.icons">
+        <mkdir dir="${build.jars.path}"/>
+
+        <antcall target="build.one.jar">
+            <param name="ref.id" value="swing"/>
+        </antcall>
+    </target>
+
+    <target name="copy.icons">
+        <mkdir dir="${build.path}/classes/javax/swing/plaf/metal/icons" />
+        <copy todir="${build.path}/classes/javax/swing/plaf/metal/icons" >
+            <fileset dir="${src.common.java}/javax/swing/plaf/metal/icons" />
+        </copy>
+    </target>
+
+    <target name="compile.api" description="Compile Swing API sources">
+        <mkdir dir="${build.path}/classes" />
+        <echo message="Compiling api classes from ${src.common.java}, ${src.java}" />
+        <javac sourcepath=""
+            destdir="${build.path}/classes"
+            source="${source.ver}"
+            debug="${java.debug.option}">
+            <src>
+                <pathelement location="${src.common.java}"/>
+                <pathelement location="${src.java}"/>
+            </src>
+            <patternset refid="api.src.all"/>
+            <bootclasspath>
+                <pathelement path="${build.path}/classes"/>
+                <pathelement path="${build.jars.path}/awt.jar"/>
+                <fileset dir="${java.home}/lib">
+                    <include name="*.jar"/>
+                    <include name="boot/*.jar"/>
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+
+    <target name="build.one.jar">
+        <property name="jar.name" value="${ref.id}.jar"/>
+        <jar destfile="${build.jars.path}/${jar.name}">
+            <fileset dir="${build.path}/classes">
+                <patternset refid="${ref.id}"/>
+            </fileset>
+        </jar>
+    </target>
+
+
+    <target name="tests.compile">
+
+        <echo message="Compiling Swing tests from ${src.tst.common}/unit" />
+    
+        <mkdir dir="${build.path}/tests" />
+
+        <javac srcdir="${src.tst.common}/unit"
+               destdir="${build.path}/tests"
+               sourcepath=""
+               classpath="${env.CLASSPATH};${harmony.depends.build.path}/junit.jar;${build.path}/tests;${test.deps.path}"
+               source="${source.ver}"
+               debug="${java.debug.option}"
+        >
+
+            <bootclasspath>
+                <pathelement path="${build.path}/classes"/>
+                <fileset dir="${java.home}/lib">
+                    <include name="boot/*.jar"/>
+                    <include name="*.jar"/>
+                </fileset>
+            </bootclasspath>
+        <include name="**/*.java"/>
+
+        </javac>
+        <antcall target="copy.test.images"/>
+    </target>
+
+    <target name="copy.test.images">
+        <mkdir dir="${build.path}/tests/javax/swing/images" />
+        <copy todir="${build.path}/tests/javax/swing/images">
+            <fileset dir="${src.tst.common}/unit/javax/swing/images"/>
+        </copy>
+    </target>
+
+    <target name="run">
+
+        <mkdir dir="${build.path}/tests_report" />
+
+        <!-- run the tests -->
+
+        <junit fork="yes"
+            forkmode="perTest"
+            printsummary="withOutAndErr"
+            errorproperty="test.error"
+            showoutput="on"
+            haltonfailure="off"
+            dir="${basedir}"
+            jvm="${env.JAVA_HOME}/bin/java">
+ 
+            <jvmarg value="-Xbootclasspath/p:${build.path}/classes/security_alt.jar${path.separator}${build.jars.path}/crypto.jar${path.separator}${build.jars.path}/x_net.jar"/>
+<!--            <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${test.deps.path}"/> -->
+            <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${env.CLASSPATH}"/>
+            <jvmarg value="-Dreference.output=${src.tst.common}/unit" />
+            <jvmarg value="-Dunit.test.root=${src.tst.common}/unit"/>
+            <jvmarg value="-Djava.security.properties==${build.lib.path}/security/java.security"/>
+            <jvmarg value="-Djava.security.policy==${build.lib.path}/security/drl.policy"/>
+
+            <formatter type="plain" />
+            <batchtest todir="${build.path}/tests_report">
+                <fileset dir="${src.tst.common}/unit">
+                    <include name="**/*Test*.java"/>
+                    <exclude name="javax/swing/BasicSwingTestCase.java"/>
+                    <exclude name="javax/swing/RobotTestCase.java"/>
+                    <exclude name="javax/swing/SerializableTestCase.java"/>
+                    <exclude name="javax/swing/SwingTestCase.java"/>
+                    <exclude name="javax/swing/SwingWaitTestCase.java"/>
+                    <exclude name="javax/swing/SpringTest.java"/>
+                    <exclude name="javax/swing/table/BasicSwingTableTestCase.java"/>
+                    <exclude name="javax/swing/text/ViewTestHelpers.java"/>
+                    <exclude name="javax/swing/text/AbstractDocument_DefaultDocumentEventTest.java"/>
+                    <exclude name="javax/swing/text/AbstractDocument_ElementEditTest.java"/>
+                    <exclude name="javax/swing/text/AbstractDocument_UpdateTest.java"/>
+                    <exclude name="javax/swing/text/GapContent_InternalTest.java"/>
+                    <exclude name="javax/swing/text/GapContentTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponentTest.java"/>
+                    <exclude name="javax/swing/text/ParagraphViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LayoutTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LineView_UpdateTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LineViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_VisualPositionTest.java"/>
+                    <exclude name="javax/swing/text/StyleContextTest.java"/>
+                    <exclude name="javax/swing/text/StringContentTest.java"/>
+                    <exclude name="javax/swing/text/StringContentTest_CommonTests.java"/>
+                    <exclude name="javax/swing/TestBundle.java"/>
+                    <exclude name="javax/swing/event/SwingPropertyChangeSupportTest.java"/>
+                    <exclude name="javax/swing/text/DefaultCaret_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/DefaultEditorKit_Actions_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JEditorPaneTest.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <!--                                                       -->
+    <!-- test.classlib : Running SWING tests against the    -->
+    <!--                 Harmony classlib.  This also uses     -->
+    <!--                 the HarmonyVM (or whatever) found     -->
+    <!--                 at ../../deploy/jre                   -->
+    <!--                                                       -->
+
+    <target name="test.classlib" depends="tests"
+        description="Running AWT tests on Harmony classlib">
+
+        <property name="tests.output" value="${basedir}/tmp/testout" />
+        <mkdir dir="${tests.output}" />
+
+        <property name="vm.home" location="${harmony.path}/${harmonybin.path}" />
+
+        <junit fork="yes"
+            forkmode="perTest"
+            printsummary="withOutAndErr"
+            errorproperty="test.error"
+            showoutput="on"
+            haltonfailure="off"
+            dir="${basedir}"
+            jvm="${vm.home}/bin/java">
+
+            <env key="JAVA_HOME" value="${vm.home}"/>
+
+            <!-- to pick up junit.jar -->
+            <jvmarg value="-Xbootclasspath/a:${build.path}/tests${path.separator}${java.class.path}"/>
+
+            <jvmarg value="-DTEST_SRC_DIR=${src.tst.common}/unit"/>
+
+            <formatter type="plain" />
+
+            <batchtest todir="${tests.output}">
+                <fileset dir="${src.tst.common}/unit">
+                    <include name="**/*Test*.java"/>
+                    <exclude name="javax/swing/BasicSwingTestCase.java"/>
+                    <exclude name="javax/swing/RobotTestCase.java"/>
+                    <exclude name="javax/swing/SerializableTestCase.java"/>
+                    <exclude name="javax/swing/SwingTestCase.java"/>
+                    <exclude name="javax/swing/SwingWaitTestCase.java"/>
+                    <exclude name="javax/swing/SpringTest.java"/>
+                    <exclude name="javax/swing/table/BasicSwingTableTestCase.java"/>
+                    <exclude name="javax/swing/text/ViewTestHelpers.java"/>
+                    <exclude name="javax/swing/text/AbstractDocument_DefaultDocumentEventTest.java"/>
+                    <exclude name="javax/swing/text/AbstractDocument_ElementEditTest.java"/>
+                    <exclude name="javax/swing/text/AbstractDocument_UpdateTest.java"/>
+                    <exclude name="javax/swing/text/GapContent_InternalTest.java"/>
+                    <exclude name="javax/swing/text/GapContentTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponentTest.java"/>
+                    <exclude name="javax/swing/text/ParagraphViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LayoutTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LineView_UpdateTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LineViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_VisualPositionTest.java"/>
+                    <exclude name="javax/swing/text/StyleContextTest.java"/>
+                    <exclude name="javax/swing/text/StringContentTest.java"/>
+                    <exclude name="javax/swing/text/StringContentTest_CommonTests.java"/>
+                    <exclude name="javax/swing/TestBundle.java"/>
+                    <exclude name="javax/swing/event/SwingPropertyChangeSupportTest.java"/>
+                    <exclude name="javax/swing/text/DefaultCaret_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/DefaultEditorKit_Actions_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JEditorPaneTest.java"/>
+                    <exclude name="javax/swing/text/InternationalFormatterRTest.java"/>
+                    <exclude name="javax/swing/text/InternationalFormatterTest.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+</project>

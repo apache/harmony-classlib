@@ -1,0 +1,369 @@
+/*
+ *  Copyright 2005 - 2006 The Apache Software Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * @author Michael Danilov
+ * @version $Revision$
+ */
+package org.apache.harmony.awt.wtk.linux;
+
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Point;
+import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import org.apache.harmony.awt.nativebridge.CLongPointer;
+import org.apache.harmony.awt.nativebridge.Int32Pointer;
+import org.apache.harmony.awt.nativebridge.Int8Pointer;
+import org.apache.harmony.awt.nativebridge.NativeBridge;
+import org.apache.harmony.awt.nativebridge.linux.X11;
+import org.apache.harmony.awt.nativebridge.linux.X11Defs;
+import org.apache.harmony.awt.wtk.CreationParams;
+import org.apache.harmony.awt.wtk.NativeEvent;
+import org.apache.harmony.awt.wtk.NativeEventListener;
+import org.apache.harmony.awt.wtk.NativeEventQueue;
+import org.apache.harmony.awt.wtk.NativeWindow;
+import org.apache.harmony.awt.wtk.WindowFactory;
+
+
+public final class LinuxWindowFactory implements WindowFactory, NativeEventQueue {
+
+    private static final X11 x11 = X11.getInstance();
+    private static final NativeBridge bridge = NativeBridge.getInstance();
+
+    private final XServerConnection xConnection = new XServerConnection(x11);
+
+    private final long display = xConnection.getDisplay();
+
+    private final int screen = xConnection.getScreen();
+
+    final WindowManager wm;
+
+    private final LinuxEventDecoder eventDecoder;
+
+    private NativeEventListener listener;
+
+    private final long javaWindow;
+
+    private final LinuxWindowMap allWindows = new LinuxWindowMap();
+
+    private X11.XEvent curEvent;
+
+    private LinkedList preprocessors = new LinkedList();
+
+    public void addPreprocessor(Preprocessor preprocessor) {
+        preprocessors.add(preprocessor);
+    }
+
+    /**
+     * Returns current root window id.
+     * @return root window id
+     */
+    long getRootWindow() {
+        return x11.XRootWindow(display, screen);
+    }
+
+    public long getDisplay() {
+        return display;
+    }
+
+    public int getScreen() {
+        return screen;
+    }
+
+    public long getDisplayImpl() {
+        return display;
+    }
+
+    public int getScreenImpl() {
+        return screen;
+    }
+
+    public LinuxWindowFactory() {
+        curEvent = x11.createXEvent(false);
+        javaWindow = x11.XCreateSimpleWindow(display, x11.XDefaultRootWindow(display),
+                0, 0, 1, 1, 0, 0, 0);
+        x11.XSelectInput(display, javaWindow, X11Defs.StructureNotifyMask);
+        eventDecoder = new LinuxEventDecoder(javaWindow, this);
+
+        // select input for root window
+        // we need to have notification about selection owner change
+        long rootWindow = getRootWindow();
+        X11.XWindowAttributes attributes = x11.createXWindowAttributes(false);
+        x11.XGetWindowAttributes(display, rootWindow, attributes);
+        x11.XSelectInput(
+            display,
+            rootWindow,
+            attributes.get_your_event_mask() | X11Defs.StructureNotifyMask);
+
+        wm = new WindowManager(this);
+
+    }
+
+//  NativeEventQueue interface begin
+    public boolean waitEvent() {
+        if (eventDecoder.exposeEvent == null) {
+            do {
+                x11.XNextEvent(display, curEvent);
+            } while (preprocessEvent(curEvent));
+        }
+
+        return true; //X server doesn't provide the last event
+    }
+
+    public boolean isEmpty() {
+        return (x11.XPending(display) == 0);
+    }
+
+    public void awake() {
+        X11.XEvent event = x11.createXEvent(false);
+
+        event.set_type(X11Defs.MapNotify);
+        event.get_xany().set_window(javaWindow);
+        x11.XSendEvent(display, javaWindow, 0, X11Defs.StructureNotifyMask, event);
+        x11.XFlush(display);
+
+        listener.onAwake();
+    }
+
+    public long dispatchEventToListener() {
+        listener.onEventBegin();
+
+        if (eventDecoder.exposeEvent == null) {
+            eventDecoder.setEvent(curEvent);
+        } else {
+            eventDecoder.setEvent(eventDecoder.exposeEvent);
+            eventDecoder.exposeEvent = null;
+        }
+
+        try {
+            if ((eventDecoder.getEventId() != NativeEvent.ID_PLATFORM) &&
+                (eventDecoder.getEventId() != NativeEvent.ID_JAVA_EVENT))
+            {
+                listener.onEvent(eventDecoder);
+                if (eventDecoder.getEventId() == WindowEvent.WINDOW_CLOSED) {
+                    allWindows.remove(eventDecoder.getWindowId());
+                }
+            }
+            return 0; //Everything is always fine
+        } finally {
+            listener.onEventEnd();
+            listener.onEventNestingEnd();
+        }
+    }
+
+    public void setNativeEventListener(NativeEventListener l) {
+        listener = l;
+    }
+//NativeEventQueue interface end
+
+    public NativeWindow createWindow(CreationParams p) {
+        LinuxWindow lw = new LinuxWindow(this, p);
+        allWindows.put(lw);
+        if (!lw.isChild() && !lw.isUndecorated()) {
+            p.child = true;
+            p.parentId = lw.getId();
+            p.x = 0;
+            p.y = 0;
+            ContentWindow cw = new ContentWindow(this, p);
+            allWindows.put(cw);
+            lw.setContentWindow(cw);
+            lw = cw;
+        }
+        x11.XFlush(display);
+        return lw;
+    }
+
+    public NativeWindow getWindowById(long id) {
+        if (!validWindowId(id)) {
+            throw new RuntimeException("GetWindowById: invalid Window ID " + id);
+        }
+
+        return allWindows.get(id);
+    }
+
+    boolean validWindowId(long id) {
+        return allWindows.contains(id);
+    }
+
+    void onWindowDispose(long windowID) {
+        allWindows.remove(windowID);
+    }
+
+    //Dummy-Gummy
+    public void onModalLoopBegin() {}
+    public void onModalLoopEnd() {}
+
+    public String getAtomName(long atom) {
+        long atomNamePtr = x11.XGetAtomName(display, atom);
+        Int8Pointer rawName = bridge.createInt8Pointer(atomNamePtr);
+        String atomName = rawName.getStringUTF();
+        x11.XFree(atomNamePtr);
+
+        return atomName;
+    }
+
+    public long internAtom(String name) {
+        return x11.XInternAtom(display, name, 0);
+    }
+
+    /**
+     * @see org.apache.harmony.awt.wtk.WindowFactory#getWindowFromPoint(java.awt.Point)
+     */
+    public NativeWindow getWindowFromPoint(Point p) {
+        long rootID = getRootWindow();
+        long childID = rootID;
+        Int32Pointer x = bridge.createInt32Pointer(1, false);
+        Int32Pointer y = bridge.createInt32Pointer(1, false);
+        CLongPointer childWindow = bridge.createCLongPointer(1, false);
+
+        //recursevily ask for child containing p
+        //until the deepest child is found
+        //or until our top-level window is found
+        while (childID != X11Defs.None) {
+            x11.XTranslateCoordinates(display, rootID, childID,
+                    p.x, p.y, x, y, childWindow);
+            long nextID = childWindow.get(0);
+            // avoid endless loop
+            if (childID == nextID) {
+                return null;
+            }
+            childID = nextID;
+            if (validWindowId(childID)) {
+                break;
+            }
+        }
+
+        LinuxWindow win = ((childID != 0) ? (LinuxWindow) getWindowById(childID)
+                                         : null);
+        if (win != null) {
+            LinuxWindow content = win.getContentWindow();
+            if ((content != null) && validWindowId(content.getId())) {
+                return content;
+            }
+        }
+        return win;
+
+    }
+
+    public boolean isWindowStateSupported(int state) {
+        switch (state) {
+        case Frame.NORMAL:
+        case Frame.ICONIFIED:
+        case Frame.MAXIMIZED_BOTH:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    public NativeWindow attachWindow(long nativeWindowId) {
+        return new LinuxWindow(nativeWindowId, this);
+    }
+
+    public void setCaretPosition(int x, int y) {
+    }
+
+    /**
+     * @see org.apache.harmony.awt.wtk.WindowFactory#getWindowSizeById(long)
+     */
+    public Dimension getWindowSizeById(long id) {
+        Int32Pointer x = bridge.createInt32Pointer(1, false);
+        Int32Pointer y = bridge.createInt32Pointer(1, false);
+        Int32Pointer w = bridge.createInt32Pointer(1, false);
+        Int32Pointer h = bridge.createInt32Pointer(1, false);
+        CLongPointer root = bridge.createCLongPointer(1, false);
+        Int32Pointer border = bridge.createInt32Pointer(1, false);
+        Int32Pointer depth = bridge.createInt32Pointer(1, false);
+
+        x11.XGetGeometry(display, id, root, x, y, w, h, border, depth);
+        return new Dimension(w.get(0), h.get(0));
+    }
+
+    public long getJavaWindow() {
+        return javaWindow;
+    }
+
+    private boolean preprocessEvent(X11.XEvent event) {
+        for (Iterator i = preprocessors.iterator(); i.hasNext(); ) {
+            if (((Preprocessor) i.next()).preprocess(event)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public interface Preprocessor {
+
+        public boolean preprocess(X11.XEvent event);
+
+    }
+
+}
+
+class XServerConnection {
+
+    private long display;
+
+    private int screen;
+
+    private final X11 x11;
+
+    public XServerConnection(X11 x11) {
+        this.x11 = x11;
+        display = x11.XOpenDisplay(0); //0 - we use default display only
+        if (display == 0) {
+            String name = System.getProperty("DISPLAY");
+            throw new InternalError("Cannot open display '" + (name != null ? name : "") + "'");
+        }
+        screen = x11.XDefaultScreen(display);
+    }
+
+    public void close() {
+        x11.XCloseDisplay(display);
+    }
+
+    public long getDisplay() {
+        return display;
+    }
+
+    public int getScreen() {
+        return screen;
+    }
+}
+
+final class LinuxWindowMap {
+    private final HashMap map = new HashMap();
+
+    LinuxWindow get(long id) {
+        return (LinuxWindow)map.get(new Long(id));
+    }
+
+    void put(LinuxWindow win) {
+        map.put(new Long(win.getId()), win);
+    }
+
+    void remove(long id) {
+        map.remove(new Long(id));
+    }
+
+    boolean contains(long id) {
+        return map.containsKey(new Long(id));
+    }
+}
