@@ -84,13 +84,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     private CacheRequest cacheRequest;
 
-    private boolean hasTriedCache = false;
+    private boolean hasTriedCache;
 
     private HttpOutputStream os;
 
-    private boolean sentRequest = false;
+    private boolean sentRequest;
 
-    boolean sendChunked = false;
+    boolean sendChunked;
 
     private String proxyName;
 
@@ -101,13 +101,10 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     private InetAddress hostAddress;
 
     // proxy which is used to make the connection.
-    private Proxy proxy = null;
+    private Proxy proxy;
 
-    // the proxy list which is used to make the connection.
-    private List<Proxy> proxyList = null;
-
-    // the destination uri
-    private URI uri = null;
+    // the destination URI
+    private URI uri;
 
     // default request header
     private static Header defaultReqHeader = new Header();
@@ -137,14 +134,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         public int available() throws IOException {
             int result = is.available();
-            if (result > bytesRemaining)
+            if (result > bytesRemaining) {
                 return bytesRemaining;
+            }
             return result;
         }
 
         public int read() throws IOException {
-            if (bytesRemaining <= 0)
+            if (bytesRemaining <= 0) {
                 return -1;
+            }
             int result = is.read();
             // if user has set useCache to true and cache exists, writes to
             // cache
@@ -156,16 +155,20 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         public int read(byte[] buf, int offset, int length) throws IOException {
-            if (buf == null)
+            if (buf == null) {
                 throw new NullPointerException();
+            }
             // avoid int overflow
             if (offset < 0 || length < 0 || offset > buf.length
-                    || buf.length - offset < length)
+                    || buf.length - offset < length) {
                 throw new ArrayIndexOutOfBoundsException();
-            if (bytesRemaining <= 0)
+            }
+            if (bytesRemaining <= 0) {
                 return -1;
-            if (length > bytesRemaining)
+            }
+            if (length > bytesRemaining) {
                 length = bytesRemaining;
+            }
             int result = is.read(buf, offset, length);
             if (result > 0) {
                 bytesRemaining -= result;
@@ -179,13 +182,16 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         public long skip(int amount) throws IOException {
-            if (bytesRemaining <= 0)
+            if (bytesRemaining <= 0) {
                 return -1;
-            if (amount > bytesRemaining)
+            }
+            if (amount > bytesRemaining) {
                 amount = bytesRemaining;
+            }
             long result = is.skip(amount);
-            if (result > 0)
+            if (result > 0) {
                 bytesRemaining -= result;
+            }
             return result;
         }
     }
@@ -211,20 +217,24 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         public int available() throws IOException {
             int result = is.available();
-            if (result > bytesRemaining)
+            if (result > bytesRemaining) {
                 return bytesRemaining;
+            }
             return result;
         }
 
         private void readChunkSize() throws IOException {
-            if (atEnd)
+            if (atEnd) {
                 return;
-            if (bytesRemaining == 0)
+            }
+            if (bytesRemaining == 0) {
                 readln(); // read CR/LF
+            }
             String size = readln();
             int index = size.indexOf(";");
-            if (index >= 0)
+            if (index >= 0) {
                 size = size.substring(0, index);
+            }
             bytesRemaining = Integer.parseInt(size.trim(), 16);
             if (bytesRemaining == 0) {
                 atEnd = true;
@@ -233,10 +243,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         public int read() throws IOException {
-            if (bytesRemaining <= 0)
+            if (bytesRemaining <= 0) {
                 readChunkSize();
-            if (atEnd)
+            }
+            if (atEnd) {
                 return -1;
+            }
             bytesRemaining--;
             int result = is.read();
             // if user has set useCache to true and cache exists, write to cache
@@ -247,18 +259,23 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         public int read(byte[] buf, int offset, int length) throws IOException {
-            if (buf == null)
+            if (buf == null) {
                 throw new NullPointerException();
+            }
             // avoid int overflow
             if (offset < 0 || length < 0 || offset > buf.length
-                    || buf.length - offset < length)
+                    || buf.length - offset < length) {
                 throw new ArrayIndexOutOfBoundsException();
-            if (bytesRemaining <= 0)
+            }
+            if (bytesRemaining <= 0) {
                 readChunkSize();
-            if (atEnd)
+            }
+            if (atEnd) {
                 return -1;
-            if (length > bytesRemaining)
+            }
+            if (length > bytesRemaining) {
                 length = bytesRemaining;
+            }
             int result = is.read(buf, offset, length);
             if (result > 0) {
                 bytesRemaining -= result;
@@ -272,15 +289,19 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         public long skip(int amount) throws IOException {
-            if (atEnd)
+            if (atEnd) {
                 return -1;
-            if (bytesRemaining <= 0)
+            }
+            if (bytesRemaining <= 0) {
                 readChunkSize();
-            if (amount > bytesRemaining)
+            }
+            if (amount > bytesRemaining) {
                 amount = bytesRemaining;
+            }
             long result = is.skip(amount);
-            if (result > 0)
+            if (result > 0) {
                 bytesRemaining -= result;
+            }
             return result;
         }
     }
@@ -360,8 +381,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         public synchronized void flush() throws IOException {
-            if (closed)
+            if (closed) {
                 throw new IOException(Msg.getString("K0059"));
+            }
             if (writeToSocket) {
                 sendCache(false);
                 socketOut.flush();
@@ -369,22 +391,26 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
 
         public synchronized void close() throws IOException {
-            if (closed)
+            if (closed) {
                 return;
+            }
             closed = true;
             if (writeToSocket) {
-                if (limit > 0)
+                if (limit > 0) {
                     throw new IOException(Msg.getString("K00a4"));
+                }
                 sendCache(closed);
             }
         }
 
         public synchronized void write(int data) throws IOException {
-            if (closed)
+            if (closed) {
                 throw new IOException(Msg.getString("K0059"));
+            }
             if (limit >= 0) {
-                if (limit == 0)
+                if (limit == 0) {
                     throw new IOException(Msg.getString("K00b2"));
+                }
                 limit--;
             }
             cache.write(data);
@@ -395,18 +421,22 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         public synchronized void write(byte[] buffer, int offset, int count)
                 throws IOException {
-            if (closed)
+            if (closed) {
                 throw new IOException(Msg.getString("K0059"));
-            if (buffer == null)
+            }
+            if (buffer == null) {
                 throw new NullPointerException();
+            }
             // avoid int overflow
             if (offset < 0 || count < 0 || offset > buffer.length
-                    || buffer.length - offset < count)
+                    || buffer.length - offset < count) {
                 throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f"));
+            }
 
             if (limit >= 0) {
-                if (count > limit)
+                if (count > limit) {
                     throw new IOException(Msg.getString("K00b2"));
+                }
                 limit -= count;
                 cache.write(buffer, offset, count);
                 if (limit == 0){
@@ -513,8 +543,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * @see URLStreamHandler
      */
     public void connect() throws IOException {
-        if (connected)
+        if (connected) {
             return;
+        }
         if (getFromCache()) {
             return;
         }
@@ -598,7 +629,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             }
             cacheResponse = responseCache.get(uri, method, resHeader.getFieldMap());
             if (null != cacheResponse) {
-                Map headMap = cacheResponse.getHeaders();
+                Map<String, List<String>> headMap = cacheResponse.getHeaders();
                 if (null!=headMap){
                     resHeader = new Header(headMap);
                 }
@@ -639,13 +670,15 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     }
 
     void closeSocket() throws IOException {
-        if (is != null)
+        if (is != null) {
             is.close();
+        }
     }
 
     void endRequest() throws IOException {
-        if (os != null)
+        if (os != null) {
             os.close();
+        }
         sentRequest = false;
     }
 
@@ -664,12 +697,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * If the content type is not what stated above,
      * <code>FileNotFoundException</code> is thrown.
      *
-     * @return java.io.InputStream the error input stream returned by the
+     * @return InputStream the error input stream returned by the
      *         server.
      */
     public InputStream getErrorStream() {
-        if (connected && method != HEAD && responseCode >= HTTP_BAD_REQUEST)
+        if (connected && method != HEAD && responseCode >= HTTP_BAD_REQUEST) {
             return uis;
+        }
         return null;
     }
 
@@ -746,7 +780,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      *
      * @since 1.4
      */
-    public Map getHeaderFields() {
+    public Map<String, List<String>> getHeaderFields() {
         try {
             // ensure that resHeader exists
             getInputStream();
@@ -765,7 +799,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      *
      * @since 1.4
      */
-    public Map getRequestProperties() {
+    public Map<String, List<String>> getRequestProperties() {
         return reqHeader.getFieldMap();
     }
 
@@ -783,8 +817,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * @see java.io.IOException
      */
     public InputStream getInputStream() throws IOException {
-        if (!doInput)
+        if (!doInput) {
             throw new ProtocolException(Msg.getString("K008d"));
+        }
 
         doRequest();
 
@@ -792,19 +827,22 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         // formerly the Error page from the server was returned
         // if the requested file was text/html
         // this has changed to return FileNotFoundException for all file types
-        if (responseCode >= HTTP_BAD_REQUEST)
+        if (responseCode >= HTTP_BAD_REQUEST) {
             throw new FileNotFoundException(url.toString());
+        }
 
         return uis;
     }
 
     private InputStream getContentStream() throws IOException {
-        if (uis != null)
+        if (uis != null) {
             return uis;
+        }
 
         String encoding = resHeader.get("Transfer-Encoding");
-        if (encoding != null && encoding.toLowerCase().equals("chunked"))
+        if (encoding != null && encoding.toLowerCase().equals("chunked")) {
             return uis = new ChunkedInputStream();
+        }
 
         String sLength = resHeader.get("Content-Length");
         if (sLength != null) {
@@ -819,7 +857,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Creates an output stream for writing to this URL Connection.
-     * <code>UnknownServiceException</code> will be thrown if this url denies
+     * <code>UnknownServiceException</code> will be thrown if this URL denies
      * write access
      *
      *
@@ -916,8 +954,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * @see #setRequestProperty
      */
     public String getRequestProperty(String field) {
-        if (connected)
+        if (connected) {
             throw new IllegalAccessError(Msg.getString("K0091"));
+        }
         return reqHeader.get(field);
     }
 
@@ -930,20 +969,23 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         boolean lastCr = false;
         StringBuffer result = new StringBuffer(80);
         int c = is.read();
-        if (c < 0)
+        if (c < 0) {
             return null;
+        }
         while (c != '\n') {
             if (lastCr) {
                 result.append('\r');
                 lastCr = false;
             }
-            if (c == '\r')
+            if (c == '\r') {
                 lastCr = true;
-            else
+            } else {
                 result.append((char) c);
+            }
             c = is.read();
-            if (c < 0)
+            if (c < 0) {
                 break;
+            }
         }
         return result.toString();
     }
@@ -953,8 +995,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             return url.toString();
         }
         String file = url.getFile();
-        if (file == null || file.length() == 0)
+        if (file == null || file.length() == 0) {
             file = "/";
+        }
         return file;
     }
 
@@ -970,8 +1013,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         byte[] request = createRequest();
 
         // make sure we have a connection
-        if (!connected)
+        if (!connected) {
             connect();
+        }
         if (null != cacheResponse) {
             // does not send if already has a response cache
             return true;
@@ -1028,23 +1072,29 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         // Call connect() first since getHeaderField() doesn't return exceptions
         doRequest();
-        if (responseCode != -1)
+        if (responseCode != -1) {
             return responseCode;
+        }
         String response = resHeader.getStatusLine();
-        if (response == null || !response.startsWith("HTTP/"))
+        if (response == null || !response.startsWith("HTTP/")) {
             return -1;
+        }
         response.trim();
         int mark = response.indexOf(" ") + 1;
-        if (mark == 0)
+        if (mark == 0) {
             return -1;
-        if (response.charAt(mark - 2) != '1')
+        }
+        if (response.charAt(mark - 2) != '1') {
             httpVersion = 0;
+        }
         int last = mark + 3;
-        if (last > response.length())
+        if (last > response.length()) {
             last = response.length();
+        }
         responseCode = Integer.parseInt(response.substring(mark, last));
-        if (last + 1 <= response.length())
+        if (last + 1 <= response.length()) {
             responseMessage = response.substring(last + 1);
+        }
         return responseCode;
     }
 
@@ -1054,11 +1104,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         while (((line = readln()) != null) && (line.length() > 1)) {
             // Header parsing
             int idx;
-            if ((idx = line.indexOf(":")) < 0)
+            if ((idx = line.indexOf(":")) < 0) {
                 resHeader.add("", line.trim());
-            else
+            } else {
                 resHeader.add(line.substring(0, idx), line.substring(idx + 1)
                         .trim());
+            }
         }
     }
 
@@ -1069,10 +1120,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         output.append(requestString());
         output.append(' ');
         output.append("HTTP/1.");
-        if (httpVersion == 0)
+        if (httpVersion == 0) {
             output.append("0\r\n");
-        else
+        } else {
             output.append("1\r\n");
+        }
         if (reqHeader.get("User-Agent") == null) {
             output.append("User-Agent: ");
             String agent = getSystemProperty("http.agent");
@@ -1094,22 +1146,25 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             }
             output.append("\r\n");
         }
-        if (httpVersion > 0 && reqHeader.get("Connection") == null)
+        if (httpVersion > 0 && reqHeader.get("Connection") == null) {
             output.append("Connection: Keep-Alive\r\n");
+        }
 
         // if we are doing output make sure the approprate headers are sent
         if (os != null) {
-            if (reqHeader.get("Content-Type") == null)
+            if (reqHeader.get("Content-Type") == null) {
                 output
                         .append("Content-Type: application/x-www-form-urlencoded\r\n");
+            }
             if (os.isCached()) {
                 if (reqHeader.get("Content-Length") == null) {
                     output.append("Content-Length: ");
                     output.append(Integer.toString(os.size()));
                     output.append("\r\n");
                 }
-            } else if (os.isChunked())
+            } else if (os.isChunked()) {
                 output.append("Transfer-Encoding: chunked\r\n");
+            }
         }
 
         boolean hasContentLength = false;
@@ -1290,23 +1345,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         return hostName;
     }
 
-    private String getSystemPropertyOrAlternative(final String key,
-            final String alternativeKey) {
-        String value = getSystemProperty(key);
-        if (value == null) { // For backward compatibility.
-            value = getSystemProperty(alternativeKey);
-        }
-        return value;
-    }
-
     private String getSystemProperty(final String property) {
-        return (String) AccessController
-                .doPrivileged(new PriviAction(property));
+        return AccessController.doPrivileged(new PriviAction<String>(property));
     }
 
     /**
      * Answer whether the connection should use a proxy server.
-     *
+     * 
      * Need to check both proxy* and http.proxy* because of change between JDK
      * 1.0 and JDK 1.1
      */
@@ -1336,24 +1381,27 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         int redirect = 0;
         while (true) {
             // send the request and process the results
-            if (!sendRequest())
+            if (!sendRequest()) {
                 return;
+            }
 
             // authorization failed ?
             if (responseCode == HTTP_UNAUTHORIZED) { // keep asking for
                 // username/password
                 // until authorized
                 String challenge = resHeader.get("WWW-Authenticate");
-                if (challenge == null)
+                if (challenge == null) {
                     break;
+                }
                 int idx = challenge.indexOf(" ");
                 String scheme = challenge.substring(0, idx);
                 int realm = challenge.indexOf("realm=\"") + 7;
                 String prompt = null;
                 if (realm != -1) {
                     int end = challenge.indexOf('"', realm);
-                    if (end != -1)
+                    if (end != -1) {
                         prompt = challenge.substring(realm, end);
+                    }
                 }
 
                 // the following will use the user-defined authenticator to get
@@ -1362,8 +1410,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                         .requestPasswordAuthentication(getHostAddress(),
                                 getHostPort(), url.getProtocol(), prompt,
                                 scheme);
-                if (pa == null)
+                if (pa == null) {
                     break;
+                }
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1
                 endRequest();
@@ -1388,19 +1437,22 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                         || responseCode == HTTP_SEE_OTHER || responseCode == HTTP_USE_PROXY)
                         && os == null) {
 
-                    if (++redirect > 4)
+                    if (++redirect > 4) {
                         throw new ProtocolException(
                                 org.apache.harmony.luni.util.Msg
                                         .getString("K0093"));
+                    }
                     String location = getHeaderField("Location");
                     if (location != null) {
                         // start over
                         if (responseCode == HTTP_USE_PROXY) {
                             int start = 0;
-                            if (location.startsWith(url.getProtocol() + ':'))
+                            if (location.startsWith(url.getProtocol() + ':')) {
                                 start = url.getProtocol().length() + 1;
-                            if (location.startsWith("//", start))
+                            }
+                            if (location.startsWith("//", start)) {
                                 start += 2;
+                            }
                             setProxy(location.substring(start));
                         } else {
                             url = new URL(url, location);
@@ -1435,8 +1487,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(Msg.getString("K00af", port));
             }
-            if (hostPort < 0 || hostPort > 65535)
+            if (hostPort < 0 || hostPort > 65535) {
                 throw new IllegalArgumentException(Msg.getString("K00b0"));
+            }
         }
     }
 }

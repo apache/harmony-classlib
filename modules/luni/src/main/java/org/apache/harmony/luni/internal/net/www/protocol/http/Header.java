@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The general structure for request / reponse header. It is essentially
+ * The general structure for request / response header. It is essentially
  * constructed by hashtable with key indexed in a vector for position lookup.
  * 
  */
@@ -39,9 +39,9 @@ public class Header implements Cloneable {
      * we use the non-synchronized ArrayList and HashMap instead of the
      * synchronized Vector and Hashtable
      */
-    private ArrayList props = new ArrayList(incCapacity);
+    private ArrayList<String> props = new ArrayList<String>(incCapacity);
 
-    private HashMap keyTable = new HashMap(incCapacity);
+    private HashMap<String, LinkedList<String>> keyTable = new HashMap<String, LinkedList<String>>(incCapacity);
 
     private String statusLine;
 
@@ -60,15 +60,15 @@ public class Header implements Cloneable {
      * @param map
      *            the initial keyTable as a map
      */
-    public Header(Map map) {
-        for (Iterator entries = map.entrySet().iterator(); entries.hasNext();) {
-            Map.Entry next = (Map.Entry) entries.next();
-            String key = (String) next.getKey();
+    public Header(Map<String, List<String>> map) {
+        for (Iterator<Map.Entry<String, List<String>>> entries = map.entrySet().iterator(); entries.hasNext();) {
+            Map.Entry<String, List<String>> next = entries.next();
+            String key = next.getKey();
             props.add(key);
-            List value = (List) next.getValue();
-            LinkedList linkedList = new LinkedList();
-            for (Iterator iter = value.iterator(); iter.hasNext();) {
-                String element = (String) iter.next();
+            List<String> value = next.getValue();
+            LinkedList<String> linkedList = new LinkedList<String>();
+            for (Iterator<String> iter = value.iterator(); iter.hasNext();) {
+                String element = iter.next();
                 linkedList.add(element);
                 props.add(element);
             }
@@ -80,13 +80,13 @@ public class Header implements Cloneable {
         try {
             Header clone = (Header) super.clone();
 
-            clone.props = (ArrayList) props.clone();
-            HashMap cloneTable = clone.keyTable = new HashMap(incCapacity);
-            Iterator entries = keyTable.entrySet().iterator();
+            clone.props = (ArrayList<String>) props.clone();
+            HashMap<String, LinkedList<String>> cloneTable = clone.keyTable = new HashMap<String, LinkedList<String>>(incCapacity);
+            Iterator<Map.Entry<String, LinkedList<String>>> entries = keyTable.entrySet().iterator();
             while (entries.hasNext()) {
-                Map.Entry next = (Map.Entry) entries.next();
-                cloneTable.put(next.getKey(), ((LinkedList) next.getValue())
-                        .clone());
+                Map.Entry<String, LinkedList<String>> next = entries.next();
+                LinkedList<String> v = (LinkedList<String>)next.getValue().clone();
+                cloneTable.put(next.getKey(), v);
             }
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -106,9 +106,9 @@ public class Header implements Cloneable {
         if (key == null) {
             throw new NullPointerException();
         }
-        LinkedList list = (LinkedList) keyTable.get(key);
+        LinkedList<String> list = keyTable.get(key);
         if (list == null) {
-            list = new LinkedList();
+            list = new LinkedList<String>();
             keyTable.put(key.toLowerCase(), list);
         }
         list.add(value);
@@ -130,14 +130,14 @@ public class Header implements Cloneable {
         if (key == null) {
             throw new NullPointerException();
         }
-        LinkedList list = (LinkedList) keyTable.get(key);
+        LinkedList<String> list = keyTable.get(key);
         if (list == null) {
             add(key, value);
         } else {
             list.clear();
             list.add(value);
             for (int i = 0; i < props.size(); i += 2) {
-                String propKey = (String) props.get(i);
+                String propKey = props.get(i);
                 if (propKey != null && key.equals(propKey)) {
                     props.set(i + 1, value);
                 }
@@ -154,13 +154,11 @@ public class Header implements Cloneable {
      * 
      * @since 1.4
      */
-    public Map getFieldMap() {
-        Map result = new HashMap(keyTable.size());
-        Iterator iterator = keyTable.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry next = (Map.Entry) iterator.next();
-            result.put(next.getKey(), Collections
-                    .unmodifiableList((LinkedList) next.getValue()));
+    public Map<String, List<String>> getFieldMap() {
+        Map<String, List<String>> result = new HashMap<String, List<String>>(keyTable.size());
+        for (Map.Entry<String, LinkedList<String>> next : keyTable.entrySet()) {
+            List<String> v = next.getValue();
+            result.put(next.getKey(), Collections.unmodifiableList(v));
         }
         return Collections.unmodifiableMap(result);
     }
@@ -175,7 +173,7 @@ public class Header implements Cloneable {
      */
     public String get(int pos) {
         if (pos >= 0 && pos < props.size() / 2) {
-            return (String) props.get(pos * 2 + 1);
+            return props.get(pos * 2 + 1);
         }
         return null;
     }
@@ -191,7 +189,7 @@ public class Header implements Cloneable {
      */
     public String getKey(int pos) {
         if (pos >= 0 && pos < props.size() / 2) {
-            return (String) props.get(pos * 2);
+            return props.get(pos * 2);
         }
         return null;
     }
@@ -206,11 +204,11 @@ public class Header implements Cloneable {
      *            java.lang.String
      */
     public String get(String key) {
-        LinkedList result = (LinkedList) keyTable.get(key.toLowerCase());
+        LinkedList<String> result = keyTable.get(key.toLowerCase());
         if (result == null) {
             return null;
         }
-        return (String) result.getLast();
+        return result.getLast();
     }
 
     /**
