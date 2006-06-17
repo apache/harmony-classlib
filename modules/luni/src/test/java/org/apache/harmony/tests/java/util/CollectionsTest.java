@@ -19,16 +19,24 @@ package org.apache.harmony.tests.java.util;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.HashSet;
-import java.util.Collection;
-import java.util.Vector;
+import java.util.Map;
+import java.util.RandomAccess;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import junit.framework.TestCase;
+import tests.util.SerializationTester;
 
 public class CollectionsTest extends TestCase {
 
@@ -353,5 +361,51 @@ public class CollectionsTest extends TestCase {
         c1.add(arr2[10]);
         assertFalse(Collections.disjoint(c1, c2));
 
+    }
+    
+    public void test_checkedCollectionSerializationCompatability() throws Exception {
+        Collection<String> c = Collections.emptySet();
+        c = Collections.checkedCollection(c, String.class);
+        SerializationTester.assertCompabilityEquals(c, "serialization/java/util/Collections_CheckedCollection.golden.ser");
+    }
+    
+    public void test_checkedListRandomAccessSerializationCompatability() throws Exception {
+        List<String> c = new ArrayList<String>();
+        assertTrue(c instanceof RandomAccess);
+        c = Collections.checkedList(c, String.class);
+        SerializationTester.assertCompabilityEquals(c, "serialization/java/util/Collections_CheckedListRandomAccess.golden.ser");
+    }
+    
+    public void test_checkedListSerializationCompatability() throws Exception {
+        List<String> c = new LinkedList<String>();
+        assertFalse(c instanceof RandomAccess);
+        c = Collections.checkedList(c, String.class);
+        SerializationTester.assertCompabilityEquals(c, "serialization/java/util/Collections_CheckedList.golden.ser");
+    }
+    
+    public void test_checkedSetSerializationCompatability() throws Exception {
+        Set<String> c = new HashSet<String>();
+        assertFalse(c instanceof SortedSet);
+        c = Collections.checkedSet(c, String.class);
+        SerializationTester.assertCompabilityEquals(c, "serialization/java/util/Collections_CheckedSet.golden.ser");
+    }
+    
+    public void test_checkedMapSerializationCompatability() throws Exception {
+        Map<String, String> c = new HashMap<String, String>();
+        assertFalse(c instanceof SortedMap);
+        c = Collections.checkedMap(c, String.class, String.class);
+        SerializationTester.assertCompabilityEquals(c, "serialization/java/util/Collections_CheckedMap.golden.ser");
+    }
+    
+    public void test_checkedSortedSetSerializationCompatability() throws Exception {
+        SortedSet<String> c = new TreeSet<String>();
+        c = Collections.checkedSortedSet(c, String.class);
+        SerializationTester.assertCompabilityEquals(c, "serialization/java/util/Collections_CheckedSortedSet.golden.ser");
+    }
+    
+    public void test_checkedSortedMapSerializationCompatability() throws Exception {
+        SortedMap<String, String> c = new TreeMap<String, String>();
+        c = Collections.checkedSortedMap(c, String.class, String.class);
+        SerializationTester.assertCompabilityEquals(c, "serialization/java/util/Collections_CheckedSortedMap.golden.ser");
     }
 }

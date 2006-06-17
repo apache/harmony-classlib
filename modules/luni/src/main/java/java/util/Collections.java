@@ -15,7 +15,6 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -52,8 +51,9 @@ public class Collections {
 		}
 
 		public E get(int location) {
-			if (0 <= location && location < n)
-				return element;
+			if (0 <= location && location < n) {
+                return element;
+            }
 			throw new IndexOutOfBoundsException();
 		}
 	}
@@ -139,25 +139,26 @@ public class Collections {
 
 	public static final Map EMPTY_MAP = new EmptyMap();
 
-	private static final class ReverseComparator implements Comparator, Serializable {
+	private static final class ReverseComparator<T> implements Comparator<T>, Serializable {
 		private static final long serialVersionUID = 7207038068494060240L;
 
-		public int compare(Object o1, Object o2) {
-			return -((Comparable) o1).compareTo(o2);
+		public int compare(T o1, T o2) {
+            Comparable<T> c2 = (Comparable<T>)o2;
+			return c2.compareTo(o1);
 		}
 	}
     
-    private static final class ReverseComparatorWithComparator implements
-            Comparator, Serializable {
+    private static final class ReverseComparatorWithComparator<T> implements
+            Comparator<T>, Serializable {
         private static final long serialVersionUID = 4374092139857L;
-        private final Comparator comparator;
+        private final Comparator<T> comparator;
 
-        ReverseComparatorWithComparator(Comparator comparator) {
+        ReverseComparatorWithComparator(Comparator<T> comparator) {
             super();
             this.comparator = comparator;
         }
 
-        public int compare(Object o1, Object o2) {
+        public int compare(T o1, T o2) {
             return comparator.compare(o2, o1);
         }
     }
@@ -192,8 +193,9 @@ public class Collections {
 					if (hasNext) {
 						hasNext = false;
 						return element;
-					} else
-						throw new NoSuchElementException();
+					} else {
+                        throw new NoSuchElementException();
+                    }
 				}
 
 				public void remove() {
@@ -218,8 +220,9 @@ public class Collections {
 		}
 
 		public E get(int location) {
-			if (location == 0)
-				return element;
+			if (location == 0) {
+                return element;
+            }
 			throw new IndexOutOfBoundsException();
 		}
 
@@ -249,8 +252,9 @@ public class Collections {
 		}
 
 		public V get(Object key) {
-			if (containsKey(key))
-				return v;
+			if (containsKey(key)) {
+                return v;
+            }
 			return null;
 		}
 
@@ -306,8 +310,9 @@ public class Collections {
 										throw new UnsupportedOperationException();
 									}
 								};
-							} else
-								throw new NoSuchElementException();
+							} else {
+                                throw new NoSuchElementException();
+                            }
 						}
 
 						public void remove() {
@@ -569,10 +574,11 @@ public class Collections {
 		 * @see SynchronizedRandomAccessList#writeReplace()
 		 */
 		private Object readResolve() {
-			if (list instanceof RandomAccess)
-				return new SynchronizedRandomAccessList<E>(list, mutex);
-			else
-				return this;
+			if (list instanceof RandomAccess) {
+                return new SynchronizedRandomAccessList<E>(list, mutex);
+            } else {
+                return this;
+            }
 		}
 	}
 
@@ -1059,10 +1065,11 @@ public class Collections {
 		 * @see UnmodifiableRandomAccessList#writeReplace()
 		 */
 		private Object readResolve() {
-			if (list instanceof RandomAccess)
-				return new UnmodifiableRandomAccessList<E>(list);
-			else
-				return this;
+			if (list instanceof RandomAccess) {
+                return new UnmodifiableRandomAccessList<E>(list);
+            } else {
+                return this;
+            }
 		}
 	}
 
@@ -1132,8 +1139,9 @@ public class Collections {
 				int length = c.size();
 				Object[] result = new Object[length];
 				Iterator<?> it = iterator();
-				for (int i = length; --i >= 0;)
-					result[i] = it.next();
+				for (int i = length; --i >= 0;) {
+                    result[i] = it.next();
+                }
 				return result;
 			}
 
@@ -1323,23 +1331,26 @@ public class Collections {
 	 * @return the non-negative index of the element, or a negative index which
 	 *         is the -index - 1 where the element would be inserted
 	 * 
-	 * @exception ClassCastException
+	 * @throws ClassCastException
 	 *                when an element in the List or the search element does not
 	 *                implement Comparable, or cannot be compared to each other
 	 */
 	public static <T> int binarySearch(List<? extends Comparable<? super T>> list, T object) {
-		if (list == null)
-			throw new NullPointerException();
+		if (list == null) {
+            throw new NullPointerException();
+        }
 		Comparable key = (Comparable)object;
 		if (!(list instanceof RandomAccess)) {
 			ListIterator it = list.listIterator();
 			while (it.hasNext()) {
 				int result;
-				if ((result = key.compareTo(it.next())) <= 0)
-					if (result == 0)
-						return it.previousIndex();
-					else
-						return -it.previousIndex() - 1;
+				if ((result = key.compareTo(it.next())) <= 0) {
+                    if (result == 0) {
+                        return it.previousIndex();
+                    } else {
+                        return -it.previousIndex() - 1;
+                    }
+                }
 			}
 			return -list.size() - 1;
 		}
@@ -1347,12 +1358,13 @@ public class Collections {
 		int low = 0, mid = list.size(), high = mid - 1, result = -1;
 		while (low <= high) {
 			mid = (low + high) >> 1;
-			if ((result = key.compareTo(list.get(mid))) > 0)
-				low = mid + 1;
-			else if (result == 0)
-				return mid;
-			else
-				high = mid - 1;
+			if ((result = key.compareTo(list.get(mid))) > 0) {
+                low = mid + 1;
+            } else if (result == 0) {
+                return mid;
+            } else {
+                high = mid - 1;
+            }
 		}
 		return -mid - (result < 0 ? 1 : 2);
 	}
@@ -1371,7 +1383,7 @@ public class Collections {
 	 * @return the non-negative index of the element, or a negative index which
 	 *         is the -index - 1 where the element would be inserted
 	 * 
-	 * @exception ClassCastException
+	 * @throws ClassCastException
 	 *                when an element in the list and the searched element
 	 *                cannot be compared to each other using the Comparator
 	 */
@@ -1384,11 +1396,13 @@ public class Collections {
 			ListIterator<? extends T> it = list.listIterator();
 			while (it.hasNext()) {
 				int result;
-				if ((result = comparator.compare(object, it.next())) <= 0)
-					if (result == 0)
-						return it.previousIndex();
-					else
-						return -it.previousIndex() - 1;
+				if ((result = comparator.compare(object, it.next())) <= 0) {
+                    if (result == 0) {
+                        return it.previousIndex();
+                    } else {
+                        return -it.previousIndex() - 1;
+                    }
+                }
 			}
 			return -list.size() - 1;
 		}
@@ -1396,12 +1410,13 @@ public class Collections {
 		int low = 0, mid = list.size(), high = mid - 1, result = -1;
 		while (low <= high) {
 			mid = (low + high) >> 1;
-			if ((result = comparator.compare(object, list.get(mid))) > 0)
-				low = mid + 1;
-			else if (result == 0)
-				return mid;
-			else
-				high = mid - 1;
+			if ((result = comparator.compare(object, list.get(mid))) > 0) {
+                low = mid + 1;
+            } else if (result == 0) {
+                return mid;
+            } else {
+                high = mid - 1;
+            }
 		}
 		return -mid - (result < 0 ? 1 : 2);
 	}
@@ -1411,9 +1426,9 @@ public class Collections {
 	 * @param destination 
 	 * @param source 
 	 * 
-	 * @exception IndexOutOfBoundsException
+	 * @throws IndexOutOfBoundsException
 	 *                when the destination List is smaller than the source List
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when replacing an element in the destination list is not
 	 *                supported
 	 */
@@ -1463,7 +1478,7 @@ public class Collections {
 	 * @param object
 	 *            the fill element
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when replacing an element in the List is not supported
 	 */
 	public static <T> void fill(List<? super T> list, T object) {
@@ -1481,7 +1496,7 @@ public class Collections {
 	 *            the Collection to search
 	 * @return the maximum element in the Collection
 	 * 
-	 * @exception ClassCastException
+	 * @throws ClassCastException
 	 *                when an element in the Collection does not implement
 	 *                Comparable or elements cannot be compared to each other
 	 */
@@ -1490,10 +1505,11 @@ public class Collections {
 		T max = it.next();
 		while (it.hasNext()) {
 			T next = it.next();
-			if (max.compareTo(next) < 0)
-				max = next;
+			if (max.compareTo(next) < 0) {
+                max = next;
+            }
 		}
-		return (T)max;
+		return max;
 	}
 
 	/**
@@ -1506,7 +1522,7 @@ public class Collections {
 	 *            the Comparator
 	 * @return the maximum element in the Collection
 	 * 
-	 * @exception ClassCastException
+	 * @throws ClassCastException
 	 *                when elements in the Collection cannot be compared to each
 	 *                other using the Comparator
 	 */
@@ -1515,8 +1531,9 @@ public class Collections {
 		T max = it.next();
 		while (it.hasNext()) {
 			T next = it.next();
-			if (comparator.compare(max, next) < 0)
-				max = next;
+			if (comparator.compare(max, next) < 0) {
+                max = next;
+            }
 		}
 		return max;
 	}
@@ -1528,7 +1545,7 @@ public class Collections {
 	 *            the Collection to search
 	 * @return the minimum element in the Collection
 	 * 
-	 * @exception ClassCastException
+	 * @throws ClassCastException
 	 *                when an element in the Collection does not implement
 	 *                Comparable or elements cannot be compared to each other
 	 */
@@ -1537,8 +1554,9 @@ public class Collections {
 		T min = it.next();
 		while (it.hasNext()) {
 			T next = it.next();
-			if (min.compareTo(next) > 0)
-				min = next;
+			if (min.compareTo(next) > 0) {
+                min = next;
+            }
 		}
 		return min;
 	}
@@ -1553,7 +1571,7 @@ public class Collections {
 	 *            the Comparator
 	 * @return the minimum element in the Collection
 	 * 
-	 * @exception ClassCastException
+	 * @throws ClassCastException
 	 *                when elements in the Collection cannot be compared to each
 	 *                other using the Comparator
 	 */
@@ -1562,8 +1580,9 @@ public class Collections {
 		T min = it.next();
 		while (it.hasNext()) {
 			T next = it.next();
-			if (comparator.compare(min, next) > 0)
-				min = next;
+			if (comparator.compare(min, next) > 0) {
+                min = next;
+            }
 		}
 		return min;
 	}
@@ -1578,7 +1597,7 @@ public class Collections {
 	 *            the element
 	 * @return a List containing <code>length</code> copies of the element
 	 * 
-	 * @exception IllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *                when <code>length < 0</code>
 	 */
 	public static <T> List<T> nCopies(final int length, T object) {
@@ -1592,7 +1611,7 @@ public class Collections {
 	 * @param list
 	 *            the List to reverse
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when replacing an element in the List is not supported
 	 */
 	public static void reverse(List<?> list) {
@@ -1619,7 +1638,7 @@ public class Collections {
      * @see Serializable
      */
     public static <T> Comparator<T> reverseOrder() {
-        return new ReverseComparator();
+        return new ReverseComparator<T>();
     }
 
     /**
@@ -1641,9 +1660,10 @@ public class Collections {
      * @since 1.5
      */
     public static <T> Comparator<T> reverseOrder(Comparator<T> c) {
-        if (c == null)
+        if (c == null) {
             return reverseOrder();
-        return new ReverseComparatorWithComparator(c);
+        }
+        return new ReverseComparatorWithComparator<T>(c);
     }
 
 	/**
@@ -1652,7 +1672,7 @@ public class Collections {
 	 * @param list
 	 *            the List to shuffle
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when replacing an element in the List is not supported
 	 */
 	public static void shuffle(List<?> list) {
@@ -1668,7 +1688,7 @@ public class Collections {
 	 * @param random
 	 *            the random number generator
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when replacing an element in the List is not supported
 	 */
 	public static void shuffle(List<?> list, Random random) {
@@ -1676,8 +1696,9 @@ public class Collections {
 			Object[] array = list.toArray();
 			for (int i = array.length - 1; i > 0; i--) {
 				int index = random.nextInt() % (i + 1);
-				if (index < 0)
-					index = -index;
+				if (index < 0) {
+                    index = -index;
+                }
 				Object temp = array[i];
 				array[i] = array[index];
 				array[index] = temp;
@@ -1693,8 +1714,9 @@ public class Collections {
             List rawList = list;
 			for (int i = rawList.size() - 1; i > 0; i--) {
 				int index = random.nextInt() % (i + 1);
-				if (index < 0)
-					index = -index;
+				if (index < 0) {
+                    index = -index;
+                }
 				rawList.set(index, rawList.set(i, rawList.get(index)));
 			}
 		}
@@ -1744,18 +1766,18 @@ public class Collections {
 	 * @param list
 	 *            the List to be sorted
 	 * 
-	 * @exception ClassCastException
+	 * @throws ClassCastException
 	 *                when an element in the List does not implement Comparable
 	 *                or elements cannot be compared to each other
 	 */
 	public static <T extends Comparable<? super T>> void sort(List<T> list) {
-		Object[] array = list.toArray();
+        T[] array = list.toArray((T[])new Object[list.size()]);
 		Arrays.sort(array);
 		int i = 0;
 		ListIterator<T> it = list.listIterator();
 		while (it.hasNext()) {
 			it.next();
-			it.set((T)array[i++]);
+			it.set(array[i++]);
 		}
 	}
 
@@ -1767,13 +1789,13 @@ public class Collections {
 	 * @param comparator
 	 *            the Comparator
 	 * 
-	 * @exception ClassCastException
+	 * @throws ClassCastException
 	 *                when elements in the List cannot be compared to each other
 	 *                using the Comparator
 	 */
 	public static <T> void sort(List<T> list, Comparator<? super T> comparator) {
-		Object[] array = list.toArray();
-		Arrays.sort(array, (Comparator<Object>)comparator);
+        T[] array = list.toArray((T[])new Object[list.size()]);
+		Arrays.sort(array, comparator);
 		int i = 0;
 		ListIterator<T> it = list.listIterator();
 		while (it.hasNext()) {
@@ -1794,14 +1816,16 @@ public class Collections {
 	 * @param index2
 	 *            int position of the other element
 	 * 
-	 * @exception IndexOutOfBoundsException
+	 * @throws IndexOutOfBoundsException
 	 *                if index1 or index2 is out of range of this list
 	 */
 	public static void swap(List<?> list, int index1, int index2) {
-		if (list == null)
-			throw new NullPointerException();
-		if (index1 == index2)
-			return;
+		if (list == null) {
+            throw new NullPointerException();
+        }
+		if (index1 == index2) {
+            return;
+        }
         List rawList = list;
         rawList.set(index2, rawList.set(index1, rawList.get(index2)));
 	}
@@ -1822,7 +1846,7 @@ public class Collections {
 	 * @return true, if at least one occurrence of <code>obj</code> has been
 	 *         found in <code>list</code>
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                if the list does not support setting elements
 	 */
 	public static <T> boolean replaceAll(List<T> list, T obj, T obj2) {
@@ -1859,13 +1883,15 @@ public class Collections {
 
 		// normalize the distance
 		int normdist;
-		if (dist > 0)
-			normdist = dist % size;
-		else
-			normdist = size - ((dist % size) * (-1));
+		if (dist > 0) {
+            normdist = dist % size;
+        } else {
+            normdist = size - ((dist % size) * (-1));
+        }
 
-		if (normdist == 0 || normdist == size)
-			return;
+		if (normdist == 0 || normdist == size) {
+            return;
+        }
 
 		if (list instanceof RandomAccess) {
 			// make sure each element gets juggled
@@ -1908,33 +1934,36 @@ public class Collections {
 		int size = list.size();
 		int sublistSize = sublist.size();
 
-		if (sublistSize > size)
-			return -1;
+		if (sublistSize > size) {
+            return -1;
+        }
 
-		if (sublistSize == 0)
-			return 0;
+		if (sublistSize == 0) {
+            return 0;
+        }
 
 		// find the first element of sublist in the list to get a head start
 		Object firstObj = sublist.get(0);
 		int index = list.indexOf(firstObj);
-		if (index == -1)
-			return -1;
+		if (index == -1) {
+            return -1;
+        }
 
 		while (index < size && (size - index >= sublistSize)) {
-			ListIterator listIt = list.listIterator(index);
+			ListIterator<?> listIt = list.listIterator(index);
 
 			if ((firstObj == null) ? listIt.next() == null : firstObj
 					.equals(listIt.next())) {
 
 				// iterate through the elements in sublist to see
 				// if they are included in the same order in the list
-				ListIterator sublistIt = sublist.listIterator(1);
+				ListIterator<?> sublistIt = sublist.listIterator(1);
 				boolean difFound = false;
 				while (sublistIt.hasNext()) {
 					Object element = sublistIt.next();
-					if (!listIt.hasNext())
-						return -1;
-					else {
+					if (!listIt.hasNext()) {
+                        return -1;
+                    } else {
 						if ((element == null) ? listIt.next() != null
 								: !element.equals(listIt.next())) {
 							difFound = true;
@@ -1944,8 +1973,9 @@ public class Collections {
 				}
 				// All elements of sublist are found in main list
 				// starting from index.
-				if (!difFound)
-					return index;
+				if (!difFound) {
+                    return index;
+                }
 			}
 			// This was not the sequence we were looking for,
 			// continue search for the firstObj in main list
@@ -1973,30 +2003,32 @@ public class Collections {
 		int sublistSize = sublist.size();
 		int size = list.size();
 
-		if (sublistSize > size)
-			return -1;
+		if (sublistSize > size) {
+            return -1;
+        }
 
-		if (sublistSize == 0)
-			return size;
+		if (sublistSize == 0) {
+            return size;
+        }
 
 		// find the last element of sublist in the list to get a head start
 		Object lastObj = sublist.get(sublistSize - 1);
 		int index = list.lastIndexOf(lastObj);
 
 		while ((index > -1) && (index + 1 >= sublistSize)) {
-			ListIterator listIt = list.listIterator(index + 1);
+			ListIterator<?> listIt = list.listIterator(index + 1);
 
 			if ((lastObj == null) ? listIt.previous() == null : lastObj
 					.equals(listIt.previous())) {
 				// iterate through the elements in sublist to see
 				// if they are included in the same order in the list
-				ListIterator sublistIt = sublist.listIterator(sublistSize - 1);
+				ListIterator<?> sublistIt = sublist.listIterator(sublistSize - 1);
 				boolean difFound = false;
 				while (sublistIt.hasPrevious()) {
 					Object element = sublistIt.previous();
-					if (!listIt.hasPrevious())
-						return -1;
-					else {
+					if (!listIt.hasPrevious()) {
+                        return -1;
+                    } else {
 						if ((element == null) ? listIt.previous() != null
 								: !element.equals(listIt.previous())) {
 							difFound = true;
@@ -2006,8 +2038,9 @@ public class Collections {
 				}
 				// All elements of sublist are found in main list
 				// starting from listIt.nextIndex().
-				if (!difFound)
-					return listIt.nextIndex();
+				if (!difFound) {
+                    return listIt.nextIndex();
+                }
 			}
 			// This was not the sequence we were looking for,
 			// continue search for the lastObj in main list
@@ -2043,8 +2076,9 @@ public class Collections {
 	 * @return a synchronized Collection
 	 */
 	public static <T> Collection<T> synchronizedCollection(Collection<T> collection) {
-		if (collection == null)
-			throw new NullPointerException();
+		if (collection == null) {
+            throw new NullPointerException();
+        }
 		return new SynchronizedCollection<T>(collection);
 	}
 
@@ -2057,12 +2091,14 @@ public class Collections {
 	 * @return a synchronized List
 	 */
 	public static <T> List<T> synchronizedList(List<T> list) {
-		if (list == null)
-			throw new NullPointerException();
-		if (list instanceof RandomAccess)
-			return new SynchronizedRandomAccessList<T>(list);
-		else
-			return new SynchronizedList<T>(list);
+		if (list == null) {
+            throw new NullPointerException();
+        }
+		if (list instanceof RandomAccess) {
+            return new SynchronizedRandomAccessList<T>(list);
+        } else {
+            return new SynchronizedList<T>(list);
+        }
 	}
 
 	/**
@@ -2074,8 +2110,9 @@ public class Collections {
 	 * @return a synchronized Map
 	 */
 	public static <K, V> Map<K, V> synchronizedMap(Map<K, V> map) {
-		if (map == null)
-			throw new NullPointerException();
+		if (map == null) {
+            throw new NullPointerException();
+        }
 		return new SynchronizedMap<K, V>(map);
 	}
 
@@ -2088,8 +2125,9 @@ public class Collections {
 	 * @return a synchronized Set
 	 */
 	public static <E> Set<E> synchronizedSet(Set<E> set) {
-		if (set == null)
-			throw new NullPointerException();
+		if (set == null) {
+            throw new NullPointerException();
+        }
 		return new SynchronizedSet<E>(set);
 	}
 
@@ -2102,8 +2140,9 @@ public class Collections {
 	 * @return a synchronized SortedMap
 	 */
 	public static <K, V> SortedMap<K, V> synchronizedSortedMap(SortedMap<K, V> map) {
-		if (map == null)
-			throw new NullPointerException();
+		if (map == null) {
+            throw new NullPointerException();
+        }
 		return new SynchronizedSortedMap<K, V>(map);
 	}
 
@@ -2116,8 +2155,9 @@ public class Collections {
 	 * @return a synchronized SortedSet
 	 */
 	public static <E> SortedSet<E> synchronizedSortedSet(SortedSet<E> set) {
-		if (set == null)
-			throw new NullPointerException();
+		if (set == null) {
+            throw new NullPointerException();
+        }
 		return new SynchronizedSortedSet<E>(set);
 	}
 
@@ -2131,8 +2171,9 @@ public class Collections {
 	 * @return an unmodifiable Collection
 	 */
 	public static <E> Collection<E> unmodifiableCollection(Collection<? extends E> collection) {
-		if (collection == null)
-			throw new NullPointerException();
+		if (collection == null) {
+            throw new NullPointerException();
+        }
 		return new UnmodifiableCollection<E>((Collection<E>)collection);
 	}
 
@@ -2146,12 +2187,14 @@ public class Collections {
 	 * @return an unmodifiable List
 	 */
 	public static <E> List<E> unmodifiableList(List<? extends E> list) {
-		if (list == null)
-			throw new NullPointerException();
-		if (list instanceof RandomAccess)
-			return new UnmodifiableRandomAccessList<E>((List<E>)list);
-		else
-			return new UnmodifiableList<E>((List<E>)list);
+		if (list == null) {
+            throw new NullPointerException();
+        }
+		if (list instanceof RandomAccess) {
+            return new UnmodifiableRandomAccessList<E>((List<E>)list);
+        } else {
+            return new UnmodifiableList<E>((List<E>)list);
+        }
 	}
 
 	/**
@@ -2164,8 +2207,9 @@ public class Collections {
 	 * @return a unmodifiable Map
 	 */
 	public static <K, V> Map<K, V> unmodifiableMap(Map<? extends K, ? extends V> map) {
-		if (map == null)
-			throw new NullPointerException();
+		if (map == null) {
+            throw new NullPointerException();
+        }
 		return new UnmodifiableMap<K, V>((Map<K, V>)map);
 	}
 
@@ -2179,8 +2223,9 @@ public class Collections {
 	 * @return a unmodifiable Set
 	 */
 	public static <E> Set<E> unmodifiableSet(Set<? extends E> set) {
-		if (set == null)
-			throw new NullPointerException();
+		if (set == null) {
+            throw new NullPointerException();
+        }
 		return new UnmodifiableSet<E>((Set<E>)set);
 	}
 
@@ -2194,8 +2239,9 @@ public class Collections {
 	 * @return a unmodifiable SortedMap
 	 */
 	public static <K, V> SortedMap<K, V> unmodifiableSortedMap(SortedMap<K, ? extends V> map) {
-		if (map == null)
-			throw new NullPointerException();
+		if (map == null) {
+            throw new NullPointerException();
+        }
 		return new UnmodifiableSortedMap<K, V>((SortedMap<K, V>)map);
 	}
 
@@ -2209,8 +2255,9 @@ public class Collections {
 	 * @return a unmodifiable SortedSet
 	 */
 	public static <E> SortedSet<E> unmodifiableSortedSet(SortedSet<E> set) {
-		if (set == null)
-			throw new NullPointerException();
+		if (set == null) {
+            throw new NullPointerException();
+        }
 		return new UnmodifiableSortedSet<E>(set);
 	}
     
@@ -2231,16 +2278,19 @@ public class Collections {
      * @since 1.5
      */
     public static int frequency(Collection<?> c, Object o) {
-        if (c == null)
+        if (c == null) {
             throw new NullPointerException();
-        if (c.isEmpty())
+        }
+        if (c.isEmpty()) {
             return 0;
+        }
         int result = 0;
-        Iterator itr = c.iterator();
+        Iterator<?> itr = c.iterator();
         while (itr.hasNext()) {
             Object e = itr.next();
-            if (o == null ? e == null : o.equals(e))
+            if (o == null ? e == null : o.equals(e)) {
                 result++;
+            }
         }
         return result;
     }
@@ -2284,7 +2334,7 @@ public class Collections {
      * @return a typesafe collection
      */
     public static <E> Collection<E> checkedCollection(Collection<E> c, Class<E> type) {
-        return new CheckedCollection(c, type);
+        return new CheckedCollection<E>(c, type);
     }
 
     /**
@@ -2296,7 +2346,7 @@ public class Collections {
      * @return a typesafe map
      */
     public static <K, V> Map<K,V> checkedMap(Map<K,V> m, Class<K> keyType, Class<V> valueType) {
-        return new CheckedMap(m, keyType, valueType);
+        return new CheckedMap<K, V>(m, keyType, valueType);
     }
 
     /**
@@ -2309,9 +2359,9 @@ public class Collections {
      */
     public static <E> List<E> checkedList(List<E> list, Class<E> type) {
         if (list instanceof RandomAccess) {
-            return new CheckedRandomAccessList(list, type);
+            return new CheckedRandomAccessList<E>(list, type);
         } else {
-            return new CheckedList(list, type);
+            return new CheckedList<E>(list, type);
         }
     }
 
@@ -2324,7 +2374,7 @@ public class Collections {
      * @return a typesafe set
      */
     public static <E> Set<E> checkedSet(Set<E> s, Class<E> type) {
-        return new CheckedSet(s, type);
+        return new CheckedSet<E>(s, type);
     }
 
     /**
@@ -2337,7 +2387,7 @@ public class Collections {
      */
     public static <K,V> SortedMap<K,V> checkedSortedMap(SortedMap<K,V> m, Class<K> keyType,
             Class<V> valueType) {
-        return new CheckedSortedMap(m, keyType, valueType);
+        return new CheckedSortedMap<K, V>(m, keyType, valueType);
     }
 
     /**
@@ -2349,7 +2399,7 @@ public class Collections {
      * @return a typesafe sorted set
      */
     public static <E> SortedSet<E> checkedSortedSet(SortedSet<E> s, Class<E> type) {
-        return new CheckedSortedSet(s, type);
+        return new CheckedSortedSet<E>(s, type);
     }
 
     /**
@@ -2360,8 +2410,8 @@ public class Collections {
      * 
      * @return true if the collection changed during insertion
      * 
-     * @exception UnsupportedOperationException when the method is not supported
-     * @exception NullPointerException when c or elements is null, or elements
+     * @throws UnsupportedOperationException when the method is not supported
+     * @throws NullPointerException when c or elements is null, or elements
      *            contains one or more null elements and c doesn't support null
      *            elements
      */
@@ -2381,16 +2431,16 @@ public class Collections {
      * 
      * @return true if the collections have no elements in common
      * 
-     * @exception NullPointerException if one of the collections is null
+     * @throws NullPointerException if one of the collections is null
      */
     public static boolean disjoint(Collection<?> c1, Collection<?> c2) {
         if ((c1 instanceof Set) && !(c2 instanceof Set)
                 || (c2.size()) > c1.size()) {
-            Collection tmp = c1;
+            Collection<?> tmp = c1;
             c1 = c2;
             c2 = tmp;
         }
-        Iterator it = c1.iterator();
+        Iterator<?> it = c1.iterator();
         while (it.hasNext()) {
             if (c2.contains(it.next())) {
                 return false;
@@ -2407,7 +2457,7 @@ public class Collections {
      * @param type - class of object that should be
      * @return specified object
      */
-    static Object checkType(Object obj, Class type) {
+    static <E> E checkType(E obj, Class<E> type) {
         if (!type.isInstance(obj)) {
             throw new ClassCastException("Attempt to insert " + obj.getClass()
                     + " element into collection with element type " + type);
@@ -2418,11 +2468,13 @@ public class Collections {
     /**
      * Class represents a dynamically typesafe view of the specified collection.
      */
-    private static class CheckedCollection implements Collection, Serializable {
+    private static class CheckedCollection<E> implements Collection<E>, Serializable {
+        
+        private static final long serialVersionUID =1578914078182001775L;;
+        
+        Collection<E> c;
 
-        Collection c;
-
-        Class type;
+        Class<E> type;
 
         /**
          * Constructs a dynamically typesafe view of the specified collection.
@@ -2430,7 +2482,7 @@ public class Collections {
          * @param c - the collection for which an unmodifiable view is to be
          *        constructed.
          */
-        public CheckedCollection(Collection c, Class type) {
+        public CheckedCollection(Collection<E> c, Class<E> type) {
             if (c == null) {
                 throw new NullPointerException();
             }
@@ -2462,10 +2514,10 @@ public class Collections {
         /**
          * @see java.util.Collection#iterator()
          */
-        public Iterator iterator() {
-            Iterator i = c.iterator();
+        public Iterator<E> iterator() {
+            Iterator<E> i = c.iterator();
             if (i instanceof ListIterator) {
-                i = new CheckedListIterator((ListIterator) i, type);
+                i = new CheckedListIterator<E>((ListIterator<E>)i, type);
             }
             return i;
         }
@@ -2480,14 +2532,14 @@ public class Collections {
         /**
          * @see java.util.Collection#toArray(Object[])
          */
-        public Object[] toArray(Object[] arr) {
+        public <T> T[] toArray(T[] arr) {
             return c.toArray(arr);
         }
 
         /**
          * @see java.util.Collection#add(Object)
          */
-        public boolean add(Object obj) {
+        public boolean add(E obj) {
             return c.add(checkType(obj, type));
         }
 
@@ -2501,20 +2553,20 @@ public class Collections {
         /**
          * @see java.util.Collection#containsAll(Collection)
          */
-        public boolean containsAll(Collection c1) {
+        public boolean containsAll(Collection<?> c1) {
             return c.containsAll(c1);
         }
 
         /**
          * @see java.util.Collection#addAll(Collection)
          */
-        public boolean addAll(Collection c1) {
+        public boolean addAll(Collection<? extends E> c1) {
             int size = c1.size();
             if (size == 0) {
                 return false;
             }
-            Object[] arr = new Object[size];
-            Iterator it = c1.iterator();
+            E[] arr = (E[])new Object[size];
+            Iterator<? extends E> it = c1.iterator();
             for (int i = 0; i < size; i++) {
                 arr[i] = checkType(it.next(), type);
             }
@@ -2528,14 +2580,14 @@ public class Collections {
         /**
          * @see java.util.Collection#removeAll(Collection)
          */
-        public boolean removeAll(Collection c1) {
+        public boolean removeAll(Collection<?> c1) {
             return c.removeAll(c1);
         }
 
         /**
          * @see java.util.Collection#retainAll(Collection)
          */
-        public boolean retainAll(Collection c1) {
+        public boolean retainAll(Collection<?> c1) {
             return c.retainAll(c1);
         }
 
@@ -2558,11 +2610,11 @@ public class Collections {
      * Class represents a dynamically typesafe view of the specified
      * ListIterator.
      */
-    private static class CheckedListIterator implements ListIterator {
+    private static class CheckedListIterator<E> implements ListIterator<E> {
 
-        private ListIterator i;
+        private ListIterator<E> i;
 
-        private Class type;
+        private Class<E> type;
 
         /**
          * Constructs a dynamically typesafe view of the specified ListIterator.
@@ -2570,7 +2622,7 @@ public class Collections {
          * @param i - the listIterator for which a dynamically typesafe view to
          *        be constructed.
          */
-        public CheckedListIterator(ListIterator i, Class type) {
+        public CheckedListIterator(ListIterator<E> i, Class<E> type) {
             this.i = i;
             this.type = type;
         }
@@ -2585,7 +2637,7 @@ public class Collections {
         /**
          * @see java.util.Iterator#next()
          */
-        public Object next() {
+        public E next() {
             return i.next();
         }
 
@@ -2606,7 +2658,7 @@ public class Collections {
         /**
          * @see java.util.ListIterator#previous()
          */
-        public Object previous() {
+        public E previous() {
             return i.previous();
         }
 
@@ -2627,14 +2679,14 @@ public class Collections {
         /**
          * @see java.util.ListIterator#set(Object)
          */
-        public void set(Object obj) {
+        public void set(E obj) {
             i.set(checkType(obj, type));
         }
 
         /**
          * @see java.util.ListIterator#add(Object)
          */
-        public void add(Object obj) {
+        public void add(E obj) {
             i.add(checkType(obj, type));
         }
     }
@@ -2642,9 +2694,11 @@ public class Collections {
     /**
      * Class represents a dynamically typesafe view of the specified list.
      */
-    private static class CheckedList extends CheckedCollection implements List {
+    private static class CheckedList<E> extends CheckedCollection<E> implements List<E> {
 
-        List l;
+        private static final long serialVersionUID =65247728283967356L;
+        
+        List<E> l;
 
         /**
          * Constructs a dynamically typesafe view of the specified list.
@@ -2652,7 +2706,7 @@ public class Collections {
          * @param l - the list for which a dynamically typesafe view is to be
          *        constructed.
          */
-        public CheckedList(List l, Class type) {
+        public CheckedList(List<E> l, Class<E> type) {
             super(l, type);
             this.l = l;
         }
@@ -2660,13 +2714,13 @@ public class Collections {
         /**
          * @see java.util.List#addAll(int, Collection)
          */
-        public boolean addAll(int index, Collection c1) {
+        public boolean addAll(int index, Collection<? extends E> c1) {
             int size = c1.size();
             if (size == 0) {
                 return false;
             }
-            Object[] arr = new Object[size];
-            Iterator it = c1.iterator();
+            E[] arr = (E[])new Object[size];
+            Iterator<? extends E> it = c1.iterator();
             for (int i = 0; i < size; i++) {
                 arr[i] = checkType(it.next(), type);
             }
@@ -2676,28 +2730,28 @@ public class Collections {
         /**
          * @see java.util.List#get(int)
          */
-        public Object get(int index) {
+        public E get(int index) {
             return l.get(index);
         }
 
         /**
          * @see java.util.List#set(int, Object)
          */
-        public Object set(int index, Object obj) {
+        public E set(int index, E obj) {
             return l.set(index, checkType(obj, type));
         }
 
         /**
          * @see java.util.List#add(int, Object)
          */
-        public void add(int index, Object obj) {
+        public void add(int index, E obj) {
             l.add(index, checkType(obj, type));
         }
 
         /**
          * @see java.util.List#remove(int)
          */
-        public Object remove(int index) {
+        public E remove(int index) {
             return l.remove(index);
         }
 
@@ -2718,21 +2772,21 @@ public class Collections {
         /**
          * @see java.util.List#listIterator()
          */
-        public ListIterator listIterator() {
-            return new CheckedListIterator(l.listIterator(), type);
+        public ListIterator<E> listIterator() {
+            return new CheckedListIterator<E>(l.listIterator(), type);
         }
 
         /**
          * @see java.util.List#listIterator(int)
          */
-        public ListIterator listIterator(int index) {
-            return new CheckedListIterator(l.listIterator(index), type);
+        public ListIterator<E> listIterator(int index) {
+            return new CheckedListIterator<E>(l.listIterator(index), type);
         }
 
         /**
          * @see java.util.List#subList(int, int)
          */
-        public List subList(int fromIndex, int toIndex) {
+        public List<E> subList(int fromIndex, int toIndex) {
             return checkedList(l.subList(fromIndex, toIndex), type);
         }
 
@@ -2755,9 +2809,11 @@ public class Collections {
      * Class represents a dynamically typesafe view of the specified
      * randomAccessList.
      */
-    private static class CheckedRandomAccessList extends CheckedList implements
+    private static class CheckedRandomAccessList<E> extends CheckedList<E> implements
             RandomAccess {
-
+        
+        private static final long serialVersionUID =1638200125423088369L;
+        
         /**
          * Constructs a dynamically typesafe view of the specified
          * randomAccessList.
@@ -2765,7 +2821,7 @@ public class Collections {
          * @param l - the randomAccessList for which a dynamically typesafe view
          *        is to be constructed.
          */
-        public CheckedRandomAccessList(List l, Class type) {
+        public CheckedRandomAccessList(List<E> l, Class<E> type) {
             super(l, type);
         }
     }
@@ -2773,15 +2829,17 @@ public class Collections {
     /**
      * Class represents a dynamically typesafe view of the specified set.
      */
-    private static class CheckedSet extends CheckedCollection implements Set {
+    private static class CheckedSet<E> extends CheckedCollection<E> implements Set<E> {
 
+        private static final long serialVersionUID =4694047833775013803L;
+        
         /**
          * Constructs a dynamically typesafe view of the specified set.
          * 
          * @param s - the set for which a dynamically typesafe view is to be
          *        constructed.
          */
-        public CheckedSet(Set s, Class type) {
+        public CheckedSet(Set<E> s, Class<E> type) {
             super(s, type);
         }
 
@@ -2804,13 +2862,15 @@ public class Collections {
     /**
      * Class represents a dynamically typesafe view of the specified map.
      */
-    private static class CheckedMap implements Map, Serializable {
+    private static class CheckedMap<K, V> implements Map<K, V>, Serializable {
 
-        Map m;
+        private static final long serialVersionUID =5742860141034234728L;
+        
+        Map<K, V> m;
 
-        Class keyType;
+        Class<K> keyType;
 
-        Class valueType;
+        Class<V> valueType;
 
         /**
          * Constructs a dynamically typesafe view of the specified map.
@@ -2818,7 +2878,7 @@ public class Collections {
          * @param m - the map for which a dynamically typesafe view is to be
          *        constructed.
          */
-        private CheckedMap(Map m, Class keyType, Class valueType) {
+        private CheckedMap(Map<K, V> m, Class<K> keyType, Class<V> valueType) {
             if (m == null) {
                 throw new NullPointerException();
             }
@@ -2858,36 +2918,36 @@ public class Collections {
         /**
          * @see java.util.Map#get(Object)
          */
-        public Object get(Object key) {
+        public V get(Object key) {
             return m.get(key);
         }
 
         /**
          * @see java.util.Map#put(Object, Object)
          */
-        public Object put(Object key, Object value) {
+        public V put(K key, V value) {
             return m.put(checkType(key, keyType), checkType(value, valueType));
         }
 
         /**
          * @see java.util.Map#remove(Object)
          */
-        public Object remove(Object key) {
+        public V remove(Object key) {
             return m.remove(key);
         }
 
         /**
          * @see java.util.Map#putAll(Map)
          */
-        public void putAll(Map map) {
+        public void putAll(Map<? extends K, ? extends V> map) {
             int size = map.size();
             if (size == 0) {
                 return;
             }
-            Map.Entry[] entries = new Map.Entry[size];
-            Iterator it = map.entrySet().iterator();
+            Map.Entry<? extends K, ? extends V>[] entries = new Map.Entry[size];
+            Iterator<? extends Map.Entry<? extends K, ? extends V>> it = map.entrySet().iterator();
             for (int i = 0; i < size; i++) {
-                Map.Entry e = (Map.Entry) it.next();
+                Map.Entry<? extends K, ? extends V> e = it.next();
                 checkType(e.getKey(), keyType);
                 checkType(e.getValue(), valueType);
                 entries[i] = e;
@@ -2907,22 +2967,22 @@ public class Collections {
         /**
          * @see java.util.Map#keySet()
          */
-        public Set keySet() {
+        public Set<K> keySet() {
             return m.keySet();
         }
 
         /**
          * @see java.util.Map#values()
          */
-        public Collection values() {
+        public Collection<V> values() {
             return m.values();
         }
 
         /**
          * @see java.util.Map#entrySet()
          */
-        public Set entrySet() {
-            return new CheckedEntrySet(m.entrySet(), valueType);
+        public Set<Map.Entry<K, V>> entrySet() {
+            return new CheckedEntrySet<K, V>(m.entrySet(), valueType);
         }
 
         /**
@@ -2950,11 +3010,11 @@ public class Collections {
          * Class represents a dynamically typesafe view of the specified map
          * entry.
          */
-        private static class CheckedEntry implements Map.Entry {
+        private static class CheckedEntry<K, V> implements Map.Entry<K, V> {
 
-            Map.Entry e;
+            Map.Entry<K, V> e;
 
-            Class valueType;
+            Class<V> valueType;
 
             /**
              * Constructs a dynamically typesafe view of the specified map
@@ -2963,7 +3023,7 @@ public class Collections {
              * @param e - the map entry for which a dynamically typesafe view is
              *        to be constructed.
              */
-            public CheckedEntry(Map.Entry e, Class valueType) {
+            public CheckedEntry(Map.Entry<K, V> e, Class<V> valueType) {
                 if (e == null) {
                     throw new NullPointerException();
                 }
@@ -2974,21 +3034,21 @@ public class Collections {
             /**
              * @see java.util.Map.Entry#getKey()
              */
-            public Object getKey() {
+            public K getKey() {
                 return e.getKey();
             }
 
             /**
              * @see java.util.Map.Entry#getValue()
              */
-            public Object getValue() {
+            public V getValue() {
                 return e.getValue();
             }
 
             /**
              * @see java.util.Map.Entry#setValue(Object)
              */
-            public Object setValue(Object obj) {
+            public V setValue(V obj) {
                 return e.setValue(checkType(obj, valueType));
             }
 
@@ -3011,11 +3071,11 @@ public class Collections {
          * Class represents a dynamically typesafe view of the specified entry
          * set.
          */
-        private static class CheckedEntrySet implements Set {
+        private static class CheckedEntrySet<K, V> implements Set<Map.Entry<K, V>> {
 
-            Set s;
+            Set<Map.Entry<K, V>> s;
 
-            Class valueType;
+            Class<V> valueType;
 
             /**
              * Constructs a dynamically typesafe view of the specified entry
@@ -3024,7 +3084,7 @@ public class Collections {
              * @param s - the entry set for which a dynamically typesafe view is
              *        to be constructed.
              */
-            public CheckedEntrySet(Set s, Class valueType) {
+            public CheckedEntrySet(Set<Map.Entry<K, V>> s, Class<V> valueType) {
                 this.s = s;
                 this.valueType = valueType;
             }
@@ -3032,8 +3092,8 @@ public class Collections {
             /**
              * @see java.util.Set#iterator()
              */
-            public Iterator iterator() {
-                return new CheckedEntryIterator(s.iterator(), valueType);
+            public Iterator<Map.Entry<K, V>> iterator() {
+                return new CheckedEntryIterator<K, V>(s.iterator(), valueType);
             }
 
             /**
@@ -3042,7 +3102,7 @@ public class Collections {
             public Object[] toArray() {
                 int thisSize = size();
                 Object[] array = new Object[thisSize];
-                Iterator it = iterator();
+                Iterator<?> it = iterator();
                 for (int i = 0; i < thisSize; i++) {
                     array[i] = it.next();
                 }
@@ -3052,15 +3112,15 @@ public class Collections {
             /**
              * @see java.util.Set#toArray(Object[])
              */
-            public Object[] toArray(Object[] array) {
+            public <T> T[] toArray(T[] array) {
                 int thisSize = size();
                 if (array.length < thisSize) {
-                    array = (Object[]) Array.newInstance(array.getClass()
-                            .getComponentType(), thisSize);
+                    Class<?> ct = array.getClass().getComponentType();
+                    array = (T[]) Array.newInstance(ct, thisSize);
                 }
-                Iterator it = iterator();
+                Iterator<?> it = iterator();
                 for (int i = 0; i < thisSize; i++) {
-                    array[i] = it.next();
+                    array[i] = (T) it.next();
                 }
                 if (thisSize < array.length) {
                     array[thisSize] = null;
@@ -3071,28 +3131,28 @@ public class Collections {
             /**
              * @see java.util.Set#retainAll(Collection)
              */
-            public boolean retainAll(Collection c) {
+            public boolean retainAll(Collection<?> c) {
                 return s.retainAll(c);
             }
 
             /**
              * @see java.util.Set#removeAll(Collection)
              */
-            public boolean removeAll(Collection c) {
+            public boolean removeAll(Collection<?> c) {
                 return s.removeAll(c);
             }
 
             /**
              * @see java.util.Set#containsAll(Collection)
              */
-            public boolean containsAll(Collection c) {
+            public boolean containsAll(Collection<?> c) {
                 return s.containsAll(c);
             }
 
             /**
              * @see java.util.Set#addAll(Collection)
              */
-            public boolean addAll(Collection c) {
+            public boolean addAll(Collection<? extends Map.Entry<K, V>> c) {
                 throw new UnsupportedOperationException();
             }
 
@@ -3113,7 +3173,7 @@ public class Collections {
             /**
              * @see java.util.Set#add(Object)
              */
-            public boolean add(Object o) {
+            public boolean add(Map.Entry<K, V> o) {
                 throw new UnsupportedOperationException();
             }
 
@@ -3156,11 +3216,11 @@ public class Collections {
              * Class represents a dynamically typesafe view of the specified
              * entry iterator.
              */
-            private static class CheckedEntryIterator implements Iterator {
+            private static class CheckedEntryIterator<K, V> implements Iterator<Map.Entry<K, V>> {
 
-                Iterator i;
+                Iterator<Map.Entry<K, V>> i;
 
-                Class valueType;
+                Class<V> valueType;
 
                 /**
                  * Constructs a dynamically typesafe view of the specified entry
@@ -3169,7 +3229,7 @@ public class Collections {
                  * @param i - the entry iterator for which a dynamically
                  *        typesafe view is to be constructed.
                  */
-                public CheckedEntryIterator(Iterator i, Class valueType) {
+                public CheckedEntryIterator(Iterator<Map.Entry<K, V>> i, Class<V> valueType) {
                     this.i = i;
                     this.valueType = valueType;
                 }
@@ -3191,8 +3251,8 @@ public class Collections {
                 /**
                  * @see java.util.Iterator#next()
                  */
-                public Object next() {
-                    return new CheckedEntry((Map.Entry) i.next(), valueType);
+                public Map.Entry<K, V> next() {
+                    return new CheckedEntry<K, V>(i.next(), valueType);
                 }
             }
 
@@ -3203,10 +3263,12 @@ public class Collections {
     /**
      * Class represents a dynamically typesafe view of the specified sortedSet.
      */
-    private static class CheckedSortedSet extends CheckedSet implements
-            SortedSet {
+    private static class CheckedSortedSet<E> extends CheckedSet<E> implements
+            SortedSet<E> {
 
-        private SortedSet ss;
+        private static final long serialVersionUID = 1599911165492914959L;
+        
+        private SortedSet<E> ss;
 
         /**
          * Constructs a dynamically typesafe view of the specified sortedSet.
@@ -3214,7 +3276,7 @@ public class Collections {
          * @param s - the sortedSet for which a dynamically typesafe view is to
          *        be constructed.
          */
-        public CheckedSortedSet(SortedSet s, Class type) {
+        public CheckedSortedSet(SortedSet<E> s, Class<E> type) {
             super(s, type);
             this.ss = s;
         }
@@ -3222,42 +3284,42 @@ public class Collections {
         /**
          * @see java.util.SortedSet#comparator()
          */
-        public Comparator comparator() {
+        public Comparator<? super E> comparator() {
             return ss.comparator();
         }
 
         /**
          * @see java.util.SortedSet#subSet(Object, Object)
          */
-        public SortedSet subSet(Object fromElement, Object toElement) {
-            return new CheckedSortedSet(ss.subSet(fromElement, toElement), type);
+        public SortedSet<E> subSet(E fromElement, E toElement) {
+            return new CheckedSortedSet<E>(ss.subSet(fromElement, toElement), type);
         }
 
         /**
          * @see java.util.SortedSet#headSet(Object)
          */
-        public SortedSet headSet(Object toElement) {
-            return new CheckedSortedSet(ss.headSet(toElement), type);
+        public SortedSet<E> headSet(E toElement) {
+            return new CheckedSortedSet<E>(ss.headSet(toElement), type);
         }
 
         /**
          * @see java.util.SortedSet#tailSet(Object)
          */
-        public SortedSet tailSet(Object fromElement) {
-            return new CheckedSortedSet(ss.tailSet(fromElement), type);
+        public SortedSet<E> tailSet(E fromElement) {
+            return new CheckedSortedSet<E>(ss.tailSet(fromElement), type);
         }
 
         /**
          * @see java.util.SortedSet#first()
          */
-        public Object first() {
+        public E first() {
             return ss.first();
         }
 
         /**
          * @see java.util.SortedSet#last()
          */
-        public Object last() {
+        public E last() {
             return ss.last();
         }
     }
@@ -3265,10 +3327,12 @@ public class Collections {
     /**
      * Class represents a dynamically typesafe view of the specified sortedMap.
      */
-    private static class CheckedSortedMap extends CheckedMap implements
-            SortedMap {
+    private static class CheckedSortedMap<K, V> extends CheckedMap<K, V> implements
+            SortedMap<K, V> {
 
-        SortedMap sm;
+        private static final long serialVersionUID = 1599671320688067438L;
+        
+        SortedMap<K, V> sm;
 
         /**
          * Constructs a dynamically typesafe view of the specified sortedMap.
@@ -3276,7 +3340,7 @@ public class Collections {
          * @param m - the sortedMap for which a dynamically typesafe view is to
          *        be constructed.
          */
-        CheckedSortedMap(SortedMap m, Class keyType, Class valueType) {
+        CheckedSortedMap(SortedMap<K, V> m, Class<K> keyType, Class<V> valueType) {
             super(m, keyType, valueType);
             this.sm = m;
         }
@@ -3284,45 +3348,44 @@ public class Collections {
         /**
          * @see java.util.SortedMap#comparator()
          */
-        public Comparator comparator() {
+        public Comparator<? super K> comparator() {
             return sm.comparator();
         }
 
         /**
          * @see java.util.SortedMap#subMap(Object, Object)
          */
-        public SortedMap subMap(Object fromKey, Object toKey) {
-            return new CheckedSortedMap(sm.subMap(fromKey, toKey), keyType,
+        public SortedMap<K, V> subMap(K fromKey, K toKey) {
+            return new CheckedSortedMap<K, V>(sm.subMap(fromKey, toKey), keyType,
                     valueType);
         }
 
         /**
          * @see java.util.SortedMap#headMap(Object)
          */
-        public SortedMap headMap(Object toKey) {
-            return new CheckedSortedMap(sm.headMap(toKey), keyType, valueType);
+        public SortedMap<K, V> headMap(K toKey) {
+            return new CheckedSortedMap<K, V>(sm.headMap(toKey), keyType, valueType);
         }
 
         /**
          * @see java.util.SortedMap#tailMap(Object)
          */
-        public SortedMap tailMap(Object fromKey) {
-            return new CheckedSortedMap(sm.tailMap(fromKey), keyType, valueType);
+        public SortedMap<K, V> tailMap(K fromKey) {
+            return new CheckedSortedMap<K, V>(sm.tailMap(fromKey), keyType, valueType);
         }
 
         /**
          * @see java.util.SortedMap#firstKey()
          */
-        public Object firstKey() {
+        public K firstKey() {
             return sm.firstKey();
         }
 
         /**
          * @see java.util.SortedMap#lastKey()
          */
-        public Object lastKey() {
+        public K lastKey() {
             return sm.lastKey();
         }
     }
-
 }
