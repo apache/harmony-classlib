@@ -17,6 +17,8 @@ package java.io;
 
 
 import java.security.Permission;
+import java.security.PermissionCollection;
+import java.util.Enumeration;
 import java.util.Vector;
 
 /**
@@ -25,11 +27,11 @@ import java.util.Vector;
  * specific permissions is implied by a FilePermissionCollection.
  * 
  */
-final class FilePermissionCollection extends java.security.PermissionCollection
+final class FilePermissionCollection extends PermissionCollection
 		implements Serializable {
 	private static final long serialVersionUID = 2202956749081564585L;
 
-	Vector permissions = new Vector();
+	Vector<Permission> permissions = new Vector<Permission>();
 
 	/**
 	 * Construct a new FilePermissionCollection.
@@ -44,22 +46,22 @@ final class FilePermissionCollection extends java.security.PermissionCollection
 	 * @see java.security.PermissionCollection#add(java.security.Permission)
 	 */
 	public void add(Permission permission) {
-		if (!isReadOnly()) {
-			if (permission instanceof FilePermission)
-				permissions.addElement(permission);
-			else
-				throw new java.lang.IllegalArgumentException(permission
-						.toString());
-		} else
-			throw new IllegalStateException();
-	}
+        if (!isReadOnly()) {
+            if (permission instanceof FilePermission) {
+                permissions.addElement(permission);
+            } else {
+                throw new IllegalArgumentException(permission.toString());
+            }
+        } else
+            throw new IllegalStateException();
+    }
 
 	/**
-	 * Answers an enumeration for the collection of permissions.
-	 * 
-	 * @see java.security.PermissionCollection#elements()
-	 */
-	public java.util.Enumeration elements() {
+     * Answers an enumeration for the collection of permissions.
+     * 
+     * @see java.security.PermissionCollection#elements()
+     */
+	public Enumeration<Permission> elements() {
 		return permissions.elements();
 	}
 
@@ -70,19 +72,19 @@ final class FilePermissionCollection extends java.security.PermissionCollection
 	 * @see java.security.PermissionCollection#implies(java.security.Permission)
 	 */
 	public boolean implies(Permission permission) {
-		if (permission instanceof FilePermission) {
-			FilePermission fp = (FilePermission) permission;
-			int matchedMask = 0;
-			int i = 0;
-			while (i < permissions.size()
-					&& ((matchedMask & fp.mask) != fp.mask)) {
-				// Cast will not fail since we added it
-				matchedMask |= ((FilePermission) permissions.elementAt(i))
-						.impliesMask(permission);
-				i++;
-			}
-			return ((matchedMask & fp.mask) == fp.mask);
-		}
-		return false;
-	}
+        if (permission instanceof FilePermission) {
+            FilePermission fp = (FilePermission) permission;
+            int matchedMask = 0;
+            int i = 0;
+            while (i < permissions.size()
+                    && ((matchedMask & fp.mask) != fp.mask)) {
+                // Cast will not fail since we added it
+                matchedMask |= ((FilePermission) permissions.elementAt(i))
+                        .impliesMask(permission);
+                i++;
+            }
+            return ((matchedMask & fp.mask) == fp.mask);
+        }
+        return false;
+    }
 }

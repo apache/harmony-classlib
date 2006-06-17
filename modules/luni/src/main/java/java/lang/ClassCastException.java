@@ -15,10 +15,11 @@
 
 package java.lang;
 
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * This runtime exception is thrown when a program attempts to cast a an object
- * to a type which it is not compatable with.
+ * to a type which it is not compatible with.
  * 
  */
 public class ClassCastException extends RuntimeException {
@@ -53,8 +54,8 @@ public class ClassCastException extends RuntimeException {
 	 * @param castClass
 	 *            Class The class being cast to.
 	 */
-	ClassCastException(Class instanceClass, Class castClass) {
-		super(org.apache.harmony.luni.util.Msg.getString("K0340", instanceClass.getName(),
-				castClass.getName()));
-	}
+	ClassCastException(Class<?> instanceClass, Class<?> castClass) {
+        super(Msg.getString("K0340", instanceClass.getName(), castClass
+                .getName()));
+    }
 }

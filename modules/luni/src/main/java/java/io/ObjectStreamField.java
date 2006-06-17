@@ -16,8 +16,8 @@
 package java.io;
 
 import java.lang.ref.WeakReference;
-
-import org.apache.harmony.luni.util.Sorter;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * This class represents object fields that are saved to the stream, by
@@ -42,7 +42,7 @@ public class ObjectStreamField implements Comparable<Object> {
 	// Cached version of intern'ed type String
 	private String typeString;
 
-	private boolean unshared = false;
+	private boolean unshared;
 
 	/**
 	 * Constructs an ObjectStreamField with the given name and the given type
@@ -148,7 +148,7 @@ public class ObjectStreamField implements Comparable<Object> {
 	 */
 	public Class<?> getType() {
 		if (type instanceof WeakReference) {
-			return ((WeakReference<Class<?>>) type).get();
+			return (Class<?>)((WeakReference) type).get();
 		}
 		return (Class<?>) type;
 	}
@@ -160,7 +160,7 @@ public class ObjectStreamField implements Comparable<Object> {
 	 * @return A char, the typecode of the class
 	 */
 	public char getTypeCode() {
-		Class t = getType();
+		Class<?> t = getType();
 		if (t == Integer.TYPE) {
 			return 'I';
 		}
@@ -202,7 +202,7 @@ public class ObjectStreamField implements Comparable<Object> {
 			return null;
 		}
 		if (typeString == null) {
-			Class t = getType();
+			Class<?> t = getType();
 			String typeName = t.getName().replace('.', '/');
 			String str = (t.isArray()) ? typeName : ("L" + typeName + ';'); //$NON-NLS-1$
 			typeString = str.intern();
@@ -218,7 +218,7 @@ public class ObjectStreamField implements Comparable<Object> {
 	 *         type of this field is a regular class.
 	 */
 	public boolean isPrimitive() {
-		Class t = getType();
+		Class<?> t = getType();
 		return t != null && t.isPrimitive();
 	}
 
@@ -253,14 +253,12 @@ public class ObjectStreamField implements Comparable<Object> {
 	static void sortFields(ObjectStreamField[] fields) {
 		// Sort if necessary
 		if (fields.length > 1) {
-			Sorter.Comparator fieldDescComparator = new Sorter.Comparator() {
-				public int compare(Object o1, Object o2) {
-					ObjectStreamField f1 = (ObjectStreamField) o1;
-					ObjectStreamField f2 = (ObjectStreamField) o2;
+			Comparator<ObjectStreamField> fieldDescComparator = new Comparator<ObjectStreamField>() {
+				public int compare(ObjectStreamField f1, ObjectStreamField f2) {
 					return f1.compareTo(f2);
 				}
 			};
-			Sorter.sort(fields, fieldDescComparator);
+			Arrays.sort(fields, fieldDescComparator);
 		}
 	}
 
@@ -299,7 +297,7 @@ public class ObjectStreamField implements Comparable<Object> {
 			className = className.substring(1, className.length() - 1);
 		}
 		try {
-			Class cl = Class.forName(className, false, loader);
+			Class<?> cl = Class.forName(className, false, loader);
 			type = (cl.getClassLoader() == null) ? cl : new WeakReference<Class<?>>(cl);
 		} catch (ClassNotFoundException e) {
 			// Ignored

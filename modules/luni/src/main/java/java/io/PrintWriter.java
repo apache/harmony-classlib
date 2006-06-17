@@ -15,7 +15,6 @@
 
 package java.io;
 
-
 import java.security.AccessController;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
@@ -41,16 +40,16 @@ public class PrintWriter extends Writer {
 	/**
 	 * indicates whether or not this PrintWriter has incurred an error.
 	 */
-	boolean ioError = false;
+	boolean ioError;
 
 	/**
 	 * indicates whether or not this PrintWriter should flush its contents after
 	 * printing a new line.
 	 */
-	boolean autoflush = false;
+	boolean autoflush;
 
-	private final String lineSeparator = (String) AccessController
-			.doPrivileged(new PriviAction("line.separator")); //$NON-NLS-1$
+	private final String lineSeparator = AccessController
+            .doPrivileged(new PriviAction<String>("line.separator")); //$NON-NLS-1$
 
 	/**
 	 * Constructs a new PrintWriter on the OutputStream <code>out</code>. All
@@ -198,14 +197,15 @@ public class PrintWriter extends Writer {
     /**
 	 * Answers a boolean indicating whether or not this PrintWriter has
 	 * encountered an error. If so, the receiver should probably be closed since
-	 * futher writes will not actually take place. A side effect of calling
+	 * further writes will not actually take place. A side effect of calling
 	 * checkError is that the target Writer is flushed.
 	 * 
 	 * @return boolean has an error occurred in this PrintWriter.
 	 */
 	public boolean checkError() {
-		if (out != null)
-			flush();
+		if (out != null) {
+            flush();
+        }
 		return ioError;
 	}
 
@@ -362,8 +362,9 @@ public class PrintWriter extends Writer {
 
 	private void newline() {
 		print(lineSeparator);
-		if (autoflush)
-			flush();
+		if (autoflush) {
+            flush();
+        }
 	}
 
 	/**
@@ -693,7 +694,7 @@ public class PrintWriter extends Writer {
 	 * Append a CharSequence <code>csq</code> to the PrintWriter. The
 	 * PrintWriter.append(<code>csq</code>) works the same way as
 	 * PrintWriter.write(<code>csq</code>.toString()). If <code>csq</code>
-	 * is null, then "null" will be subsituted for <code>csq</code>
+	 * is null, then "null" will be substituted for <code>csq</code>
 	 * 
 	 * @override Writer.append
 	 * @param csq
@@ -711,7 +712,7 @@ public class PrintWriter extends Writer {
 
 	/**
 	 * Append a subsequence of a CharSequence <code>csq</code> to the
-	 * PrintWriter. The first char and the last char of the subsequnce is
+	 * PrintWriter. The first char and the last char of the subsequence is
 	 * specified by the parameter <code>start</code> and <code>end</code>.
 	 * The PrintWriter.append(<code>csq</code>) works the same way as
 	 * PrintWriter.write(<code>csq</code>.subSequence(<code>start</code>,<code>end</code>).toString).If

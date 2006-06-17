@@ -16,6 +16,7 @@
 package java.io;
 
 import java.util.Enumeration;
+import java.util.Vector;
 
 
 /**
@@ -28,7 +29,7 @@ public class SequenceInputStream extends InputStream {
 	/**
 	 * An enumeration which will return types of InputStream.
 	 */
-	java.util.Enumeration e;
+	Enumeration<? extends InputStream> e;
 
 	/**
 	 * The current input stream.
@@ -47,12 +48,13 @@ public class SequenceInputStream extends InputStream {
 	 */
 	public SequenceInputStream(InputStream s1, InputStream s2) {
 		if (s1 != null && s2 != null) {
-			java.util.Vector inVector = new java.util.Vector(1);
+			Vector<InputStream> inVector = new Vector<InputStream>(1);
 			inVector.addElement(s2);
 			e = inVector.elements();
 			in = s1;
-		} else
-			throw new NullPointerException();
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -66,9 +68,10 @@ public class SequenceInputStream extends InputStream {
 	public SequenceInputStream(Enumeration<? extends InputStream> e) {
 		this.e = e;
 		if (e.hasMoreElements()) {
-			in = (InputStream) e.nextElement();
-			if (in == null)
-				throw new NullPointerException();
+			in = e.nextElement();
+			if (in == null) {
+                throw new NullPointerException();
+            }
 		}
 	}
 
@@ -82,8 +85,9 @@ public class SequenceInputStream extends InputStream {
 	 *             If an error occurs in this InputStream.
 	 */
 	public int available() throws IOException {
-		if (e != null && in != null)
-			return in.available();
+		if (e != null && in != null) {
+            return in.available();
+        }
 		return 0;
 	}
 
@@ -97,11 +101,13 @@ public class SequenceInputStream extends InputStream {
 	 */
 	public void close() throws IOException {
 		if (e != null) {
-			while (in != null)
-				nextStream();
+			while (in != null) {
+                nextStream();
+            }
 			e = null;
-		} else
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K00b7")); //$NON-NLS-1$
+		} else {
+            throw new IOException(org.apache.harmony.luni.util.Msg.getString("K00b7")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -109,12 +115,14 @@ public class SequenceInputStream extends InputStream {
 	 * @throws IOException 
 	 */
 	private void nextStream() throws IOException {
-		if (in != null)
-			in.close();
+		if (in != null) {
+            in.close();
+        }
 		if (e.hasMoreElements()) {
-			in = (InputStream) e.nextElement();
-			if (in == null)
-				throw new NullPointerException();
+			in = e.nextElement();
+			if (in == null) {
+                throw new NullPointerException();
+            }
 		} else {
 			in = null;
 		}
@@ -134,8 +142,9 @@ public class SequenceInputStream extends InputStream {
 	public int read() throws IOException {
 		while (in != null) {
 			int result = in.read();
-			if (result >= 0)
-				return result;
+			if (result >= 0) {
+                return result;
+            }
 			nextStream();
 		}
 		return -1;
@@ -165,24 +174,28 @@ public class SequenceInputStream extends InputStream {
 			if (offset >= 0 && count >= 0) {
 				while (in != null) {
 					long result = in.skip(count);
-					if (result >= 0)
-						return (int) result;
+					if (result >= 0) {
+                        return (int) result;
+                    }
 					nextStream();
 				}
-			} else
-				throw new ArrayIndexOutOfBoundsException();
+			} else {
+                throw new ArrayIndexOutOfBoundsException();
+            }
 		} else {
 			// avoid int overflow
 			if (0 <= offset && offset <= buffer.length && 0 <= count
 					&& count <= buffer.length - offset) {
 				while (in != null) {
 					int result = in.read(buffer, offset, count);
-					if (result >= 0)
-						return result;
+					if (result >= 0) {
+                        return result;
+                    }
 					nextStream();
 				}
-			} else
-				throw new ArrayIndexOutOfBoundsException();
+			} else {
+                throw new ArrayIndexOutOfBoundsException();
+            }
 		}
 		return -1;
 	}

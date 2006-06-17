@@ -29,7 +29,7 @@ import org.apache.harmony.luni.util.PriviAction;
 /**
  * OutputStreamWriter is a class for turning a character output stream into a
  * byte output stream. The conversion of Unicode characters to their byte
- * equivalents is determinded by the converter used. By default, the encoding is
+ * equivalents is determined by the converter used. By default, the encoding is
  * ISO8859_1 (ISO-Latin-1) but can be changed by calling the constructor which
  * takes an encoding.
  * 
@@ -56,8 +56,9 @@ public class OutputStreamWriter extends Writer {
 	public OutputStreamWriter(OutputStream out) {
 		super(out);
 		this.out = out;
-		String encoding = (String) AccessController
-				.doPrivileged(new PriviAction("file.encoding", "ISO8859_1")); //$NON-NLS-1$ //$NON-NLS-2$
+		String encoding = AccessController
+                .doPrivileged(new PriviAction<String>(
+                        "file.encoding", "ISO8859_1")); //$NON-NLS-1$ //$NON-NLS-2$
 		encoder = Charset.forName(encoding).newEncoder();
 		encoder.onMalformedInput(CodingErrorAction.REPLACE);
 		encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);

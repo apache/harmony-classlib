@@ -15,6 +15,8 @@
 
 package java.io;
 
+import java.security.BasicPermission;
+
 
 /**
  * SerializablePermission objects represent permission to access unsafe
@@ -28,9 +30,10 @@ package java.io;
  * 
  * @see ObjectStreamConstants
  */
-public final class SerializablePermission extends java.security.BasicPermission {
+public final class SerializablePermission extends BasicPermission {
 	private static final long serialVersionUID = 8537212141160296410L;
 
+    //Serializable field
 	private String actions;
 
 	/**

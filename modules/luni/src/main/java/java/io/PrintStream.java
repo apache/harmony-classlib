@@ -15,7 +15,6 @@
 
 package java.io;
 
-
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.util.Formatter;
@@ -29,7 +28,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * PrintStream is a class which takes an OutputStream and provides convenience
  * methods for printing common data types in a human readable format on the
  * stream. This is not to be confused with DataOutputStream which is used for
- * encoding common datatypes so that they can be read back in. No IOExceptions
+ * encoding common data types so that they can be read back in. No IOExceptions
  * are thrown by this class. Instead, callers should call checkError() to see if
  * a problem has been encountered in this Stream.
  * 
@@ -45,18 +44,18 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	/**
 	 * indicates whether or not this PrintStream has incurred an error.
 	 */
-	boolean ioError = false;
+	boolean ioError;
 
 	/**
 	 * indicates whether or not this PrintStream should flush its contents after
 	 * printing a new line.
 	 */
-	boolean autoflush = false;
+	boolean autoflush;
 
 	private String encoding;
 
-	private final String lineSeparator = (String) AccessController
-			.doPrivileged(new PriviAction("line.separator")); //$NON-NLS-1$
+	private final String lineSeparator = AccessController
+			.doPrivileged(new PriviAction<String>("line.separator")); //$NON-NLS-1$
 
 	static final String TOKEN_NULL = "null"; //$NON-NLS-1$
 
@@ -73,8 +72,9 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 */
 	public PrintStream(OutputStream out) {
 		super(out);
-		if (out == null)
-			throw new NullPointerException();
+		if (out == null) {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -91,8 +91,9 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 */
 	public PrintStream(OutputStream out, boolean autoflush) {
 		super(out);
-		if (out == null)
-			throw new NullPointerException();
+		if (out == null) {
+            throw new NullPointerException();
+        }
 		this.autoflush = autoflush;
 	}
 
@@ -116,11 +117,13 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	public PrintStream(OutputStream out, boolean autoflush, String enc)
 			throws UnsupportedEncodingException {
 		super(out);
-		if (out == null)
-			throw new NullPointerException();
+		if (out == null) {
+            throw new NullPointerException();
+        }
 		this.autoflush = autoflush;
-		if (!Charset.isSupported(enc))
-			throw new UnsupportedEncodingException(enc);
+		if (!Charset.isSupported(enc)) {
+            throw new UnsupportedEncodingException(enc);
+        }
 		encoding = enc;
 	}
 
@@ -163,10 +166,12 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	public PrintStream(File file, String csn) throws FileNotFoundException,
 			UnsupportedEncodingException {
 		super(new FileOutputStream(file));
-		if (csn == null)
-			throw new NullPointerException();
-		if (!Charset.isSupported(csn))
-			throw new UnsupportedEncodingException();
+		if (csn == null) {
+            throw new NullPointerException();
+        }
+		if (!Charset.isSupported(csn)) {
+            throw new UnsupportedEncodingException();
+        }
 		encoding = csn;
 	}
 
@@ -216,15 +221,16 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	/**
 	 * Answers a boolean indicating whether or not this PrintStream has
 	 * encountered an error. If so, the receiver should probably be closed since
-	 * futher writes will not actually take place. A side effect of calling
+	 * further writes will not actually take place. A side effect of calling
 	 * checkError is that the target OutputStream is flushed.
 	 * 
 	 * @return <code>true</code> if an error occurred in this PrintStream,
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean checkError() {
-		if (out != null)
-			flush();
+		if (out != null) {
+            flush();
+        }
 		return ioError;
 	}
 
@@ -473,10 +479,11 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 			}
 
 			try {
-				if (encoding == null)
-					write(str.getBytes());
-				else
-					write(str.getBytes(encoding));
+				if (encoding == null) {
+                    write(str.getBytes());
+                } else {
+                    write(str.getBytes(encoding));
+                }
 			} catch (IOException e) {
 				setError();
 			}
@@ -648,17 +655,19 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 					}
 					try {
 						out.write(buffer, offset, count);
-						if (autoflush)
-							flush();
+						if (autoflush) {
+                            flush();
+                        }
 					} catch (IOException e) {
 						setError();
 					}
 				}
-			} else
-				throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
-						.getString("K002f")); //$NON-NLS-1$
-		} else
-			throw new NullPointerException();
+			} else {
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+            }
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -680,8 +689,9 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 			}
 			try {
 				out.write(oneByte);
-				if (autoflush && (oneByte & 0xFF) == '\n')
-					flush();
+				if (autoflush && (oneByte & 0xFF) == '\n') {
+                    flush();
+                }
 			} catch (IOException e) {
 				setError();
 			}
@@ -723,27 +733,24 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	}
 
 	/**
-	 * Append a subsequence of a CharSequence <code>csq</code> to the
-	 * PrintStream. The first char and the last char of the subsequnce is
-	 * specified by the parameter <code>start</code> and <code>end</code>.
-	 * The PrintStream.append(<code>csq</code>) works the same way as
-	 * PrintStream.print (<code>csq</code>csq.subSequence(<code>start</code>,<code>end</code>).toString).If
-	 * <code>csq</code> is null, then "null" will be substituted for
-	 * <code>csq</code>.
-	 * 
-	 * @param csq
-	 *            The CharSequence appended to the PrintStream.
-	 * @param start
-	 *            The index of the first char in the CharSequence appended to
-	 *            the PrintStream.
-	 * @param end
-	 *            The index of the char after the last one in the CharSequence
-	 *            appended to the PrintStream.
-	 * @return The PrintStream.
-	 * @throws IndexOutOfBoundsException
-	 *             If start is less than end, end is greater than the length of
-	 *             the CharSequence, or start or end is negative.
-	 */
+     * Append a subsequence of a CharSequence <code>csq</code> to the
+     * PrintStream. The first char and the last char of the subsequnce is
+     * specified by the parameter <code>start</code> and <code>end</code>.
+     * The PrintStream.append(<code>csq</code>) works the same way as
+     * PrintStream.print (<code>csq</code>csq.subSequence(<code>start</code>,
+     * <code>end</code>).toString). If <code>csq</code> is null, then
+     * "null" will be substituted for <code>csq</code>.
+     * 
+     * @param csq The CharSequence appended to the PrintStream.
+     * @param start The index of the first char in the CharSequence appended to
+     *        the PrintStream.
+     * @param end The index of the char after the last one in the CharSequence
+     *        appended to the PrintStream.
+     * @return The PrintStream.
+     * @throws IndexOutOfBoundsException If start is less than end, end is
+     *         greater than the length of the CharSequence, or start or end is
+     *         negative.
+     */
 	public PrintStream append(CharSequence csq, int start, int end) {
 		if (null == csq) {
 			print(TOKEN_NULL.substring(start, end));
