@@ -84,14 +84,15 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 		}
 
 		public Object clone() {
-			return (IdentityHashMapEntry) super.clone();
+			return super.clone();
 		}
 
 		public boolean equals(Object object) {
-			if (this == object)
-				return true;
+			if (this == object) {
+                return true;
+            }
 			if (object instanceof Map.Entry) {
-				Map.Entry entry = (Map.Entry) object;
+				Map.Entry<?, ?> entry = (Map.Entry) object;
 				return (key == entry.getKey()) && (value == entry.getValue());
 			}
 			return false;
@@ -130,22 +131,26 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 		public boolean hasNext() {
 			while (position < associatedMap.elementData.length) {
 				// if this is an empty spot, go to the next one
-				if (associatedMap.elementData[position] == null)
-					position += 2;
-				else
-					return true;
+				if (associatedMap.elementData[position] == null) {
+                    position += 2;
+                } else {
+                    return true;
+                }
 			}
 			return false;
 		}
 
 		void checkConcurrentMod() throws ConcurrentModificationException {
-			if (expectedModCount != associatedMap.modCount)
-				throw new ConcurrentModificationException();
+			if (expectedModCount != associatedMap.modCount) {
+                throw new ConcurrentModificationException();
+            }
 		}
 
 		public E next() {
 			checkConcurrentMod();
-			if (!hasNext()) throw new NoSuchElementException();
+			if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
 			
 			IdentityHashMapEntry<KT, VT> result = associatedMap.getEntry(position);
 			lastPosition = position;
@@ -157,7 +162,9 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 
 		public void remove() {
 			checkConcurrentMod();
-			if (!canRemove) throw new IllegalStateException();
+			if (!canRemove) {
+                throw new IllegalStateException();
+            }
 			
 			canRemove = false;
 			associatedMap.remove(associatedMap.elementData[lastPosition]);
@@ -195,7 +202,7 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 
 		public boolean contains(Object object) {
 			if (object instanceof Map.Entry) {
-				IdentityHashMapEntry entry = associatedMap
+				IdentityHashMapEntry<?, ?> entry = associatedMap
 						.getEntry(((Map.Entry) object).getKey());
 				// we must call equals on the entry obtained from "this"
 				return entry != null && entry.equals(object);
@@ -231,8 +238,9 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 			this.size = 0;
 			threshold = getThreshold(maxSize);
 			elementData = newElementArray(computeElementArraySize());
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	private int getThreshold(int maxSize) {
@@ -344,7 +352,7 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 		return null;
 	}
 
-	private IdentityHashMapEntry getEntry(Object key) {
+	private IdentityHashMapEntry<K, V> getEntry(Object key) {
 		if (key == null) {
 			key = NULL_OBJECT;
 		}
@@ -445,8 +453,9 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 
 	private void rehash() {
 		int newlength = elementData.length << 1;
-		if (newlength == 0)
-			newlength = 1;
+		if (newlength == 0) {
+            newlength = 1;
+        }
 		Object[] newData = newElementArray(newlength);
 		for (int i = 0; i < elementData.length; i = i + 2) {
 			Object key = elementData[i];
@@ -483,8 +492,9 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 		Object result, object;
 		index = next = findIndex(key, elementData);
 
-		if (elementData[index] != key)
-			return null;
+		if (elementData[index] != key) {
+            return null;
+        }
 
 		// store the value for this key
 		result = elementData[index + 1];
@@ -495,8 +505,9 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 		while (true) {
 			next = (next + 2) % length;
 			object = elementData[next];
-			if (object == null)
-				break;
+			if (object == null) {
+                break;
+            }
 
 			hash = getModuloHash(object, length);
 			hashedOk = hash > index;
@@ -607,7 +618,7 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 				}
 				
 				public boolean remove(Object object) {
-					Iterator it = iterator();
+					Iterator<?> it = iterator();
 					while (it.hasNext()) {
 						if (object == it.next()) {
 							it.remove();
@@ -640,14 +651,16 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 		// place. We must ensure that all comparison is implemented by methods
 		// in this class (or in one of our inner classes) for reference-based
 		// comparison to take place.
-		if (this == object)
-			return true;
+		if (this == object) {
+            return true;
+        }
 		if (object instanceof Map) {
-			Map map = (Map) object;
-			if (size() != map.size())
-				return false;
+			Map<?, ?> map = (Map) object;
+			if (size() != map.size()) {
+                return false;
+            }
 
-			Set set = entrySet();
+			Set<Map.Entry<K, V>> set = entrySet();
 			// ensure we use the equals method of the set created by "this"
 			return set.equals(map.entrySet());
 		}
@@ -664,7 +677,7 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 	 */
 	public Object clone() {
 		try {
-			return (IdentityHashMap) super.clone();
+			return super.clone();
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
@@ -692,9 +705,9 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.writeInt(size);
-		Iterator iterator = entrySet().iterator();
+		Iterator<?> iterator = entrySet().iterator();
 		while (iterator.hasNext()) {
-			MapEntry entry = (MapEntry) iterator.next();
+			MapEntry<?, ?> entry = (MapEntry) iterator.next();
 			stream.writeObject(entry.key);
 			stream.writeObject(entry.value);
 		}

@@ -35,14 +35,14 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
 /**
  * Formatter provides the method to give out formatted string just like the
  * printf-style. Layout,alignment and other format flags are provided to format
- * numeric,string and datetime as well as locale-specified formats applied.
+ * numeric,string and date/time as well as locale-specified formats applied.
  * Besides primitive types, formatter also support some java object types such
  * as BigInteger,BigDecimal and Calendar. Customized formatting is provided
  * through the Formattable interface.
  * 
  * The class is not multi-threaded safe. The responsibility to maintain thread
  * safety is the user's job.
- * 
+ * @since 1.5
  */
 public final class Formatter implements Closeable, Flushable {
 
@@ -416,7 +416,7 @@ public final class Formatter implements Closeable, Flushable {
     }
 
     /**
-     * Flushes the formatter. If the output destination is flushable, then the
+     * Flushes the formatter. If the output destination is {@link Flushable}, then the
      * method flush() will be called on that destination.
      * 
      * @throws FormatterClosedException
@@ -434,7 +434,7 @@ public final class Formatter implements Closeable, Flushable {
     }
 
     /**
-     * Closes the formatter. If the output destination is Closeable, then the
+     * Closes the formatter. If the output destination is {@link Closeable}, then the
      * method close() will be called on that destination.
      * 
      * If the formatter has been closed, then calling the close will have no
@@ -480,7 +480,7 @@ public final class Formatter implements Closeable, Flushable {
      * @throws IllegalFormatException
      *             If the format string is illegal or incompatible with the
      *             arguments or the arguments are less than those required by
-     *             the format string or any other illegal situcation.
+     *             the format string or any other illegal situation.
      * @throws FormatterClosedException
      *             If the formatter has been closed.
      */
@@ -493,7 +493,7 @@ public final class Formatter implements Closeable, Flushable {
      * 
      * @param l
      *            The locale used in the method. If locale is null, then no
-     *            localization will be applied. This param does not influence
+     *            localization will be applied. This parameter does not influence
      *            the locale specified during construction.
      * @param format
      *            A format string.
@@ -505,7 +505,7 @@ public final class Formatter implements Closeable, Flushable {
      * @throws IllegalFormatException
      *             If the format string is illegal or incompatible with the
      *             arguments or the arguments are less than those required by
-     *             the format string or any other illegal situcation.
+     *             the format string or any other illegal situation.
      * @throws FormatterClosedException
      *             If the formatter has been closed.
      */
@@ -589,7 +589,7 @@ public final class Formatter implements Closeable, Flushable {
      * includes the conversion type, flags, width, precision and the argument
      * index as well as the plainText that contains the whole format string used
      * as the result for output if necessary. Besides, the string for flags is
-     * recorded to construct corresponding FormatExceptions if neccessary.
+     * recorded to construct corresponding FormatExceptions if necessary.
      */
     private static class FormatToken {
 

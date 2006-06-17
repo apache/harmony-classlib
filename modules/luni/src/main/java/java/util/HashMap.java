@@ -52,8 +52,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
         public Object clone() {
             Entry<K,V> entry = (Entry<K,V>) super.clone();
-            if (next != null)
+            if (next != null) {
                 entry.next = (Entry<K,V>) next.clone();
+            }
             return entry;
         }
 
@@ -88,34 +89,39 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
 
         public boolean hasNext() {
-            if (entry != null)
+            if (entry != null) {
                 return true;
+            }
             while (position < associatedMap.elementData.length) {
-                if (associatedMap.elementData[position] == null)
+                if (associatedMap.elementData[position] == null) {
                     position++;
-                else
+                } else {
                     return true;
+                }
             }
             return false;
         }
 
         void checkConcurrentMod() throws ConcurrentModificationException {
-            if (expectedModCount != associatedMap.modCount)
+            if (expectedModCount != associatedMap.modCount) {
                 throw new ConcurrentModificationException();
+            }
         }
 
         public E next() {
             checkConcurrentMod();
-            if (!hasNext())
+            if (!hasNext()) {
                 throw new NoSuchElementException();
+            }
 
             MapEntry<KT,VT> result;
             if (entry == null) {
                 result = lastEntry = associatedMap.elementData[position++];
                 entry = lastEntry.next;
             } else {
-                if (lastEntry.next != entry)
+                if (lastEntry.next != entry) {
                     lastEntry = lastEntry.next;
+                }
                 result = entry;
                 entry = entry.next;
             }
@@ -125,18 +131,21 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
         public void remove() {
             checkConcurrentMod();
-            if (!canRemove)
+            if (!canRemove) {
                 throw new IllegalStateException();
+            }
 
             canRemove = false;
             associatedMap.modCount++;
             if (lastEntry.next == entry) {
-                while (associatedMap.elementData[--position] == null)
+                while (associatedMap.elementData[--position] == null) {
                     ;
+                }
                 associatedMap.elementData[position] = associatedMap.elementData[position].next;
                 entry = null;
-            } else
+            } else {
                 lastEntry.next = entry;
+            }
             associatedMap.elementCount--;
             expectedModCount++;
         }
@@ -171,7 +180,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
         public boolean contains(Object object) {
             if (object instanceof Map.Entry) {
-                Entry entry = associatedMap.getEntry(((Map.Entry) object)
+                Entry<KT, VT> entry = associatedMap.getEntry(((Map.Entry) object)
                         .getKey());
                 return object.equals(entry);
             }
@@ -194,11 +203,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @return Reference to the element array
      */
     Entry<K,V>[] newElementArray(int s) {
-        return (Entry<K,V>[])new Entry[s];
+        return new Entry[s];
     }
 
     /**
-     * Contructs a new empty instance of HashMap.
+     * Constructs a new empty instance of HashMap.
      * 
      */
     public HashMap() {
@@ -220,8 +229,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             elementData = newElementArray(capacity == 0 ? 1 : capacity);
             loadFactor = 0.75f; // Default load factor of 0.75
             computeMaxSize();
-        } else
+        } else {
             throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -244,8 +254,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             elementData = newElementArray(capacity == 0 ? 1 : capacity);
             this.loadFactor = loadFactor;
             computeMaxSize();
-        } else
+        } else {
             throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -287,8 +298,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             map.elementData = newElementArray(elementData.length);
             Entry<K,V> entry;
             for (int i = 0; i < elementData.length; i++) {
-                if ((entry = elementData[i]) != null)
+                if ((entry = elementData[i]) != null) {
                     map.elementData[i] = (Entry<K,V>) entry.clone();
+                }
             }
             return map;
         } catch (CloneNotSupportedException e) {
@@ -320,9 +332,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      *            first key to compare
      * @param k2
      *            second key to compare
-     * @return true iff the keys are considered equal
+     * @return true if the keys are considered equal
      */
-    boolean keysEqual(Object k1, Entry entry) {
+    boolean keysEqual(Object k1, Entry<K, V> entry) {
         return entry.hashCode() == k1.hashCode() && k1.equals(entry.key);
     }
 
@@ -339,8 +351,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             for (int i = elementData.length; --i >= 0;) {
                 Entry<K,V> entry = elementData[i];
                 while (entry != null) {
-                    if (value.equals(entry.value))
+                    if (value.equals(entry.value)) {
                         return true;
+                    }
                     entry = entry.next;
                 }
             }
@@ -348,8 +361,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             for (int i = elementData.length; --i >= 0;) {
                 Entry<K,V> entry = elementData[i];
                 while (entry != null) {
-                    if (entry.value == null)
+                    if (entry.value == null) {
                         return true;
+                    }
                     entry = entry.next;
                 }
             }
@@ -360,7 +374,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     /**
      * Answers a Set of the mappings contained in this HashMap. Each element in
      * the set is a Map.Entry. The set is backed by this HashMap so changes to
-     * one are relected by the other. The set does not support adding.
+     * one are reflected by the other. The set does not support adding.
      * 
      * @return a Set of the mappings
      */
@@ -389,8 +403,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     int getModuloHash(Object key) {
-        if (key == null)
+        if (key == null) {
             return 0;
+        }
         return (key.hashCode() & 0x7FFFFFFF) % elementData.length;
     }
 
@@ -402,8 +417,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 m = m.next;
             }
         } else {
-            while (m != null && m.key != null)
+            while (m != null && m.key != null) {
                 m = m.next;
+            }
         }
         return m;
     }
@@ -421,7 +437,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Answers a Set of the keys contained in this HashMap. The set is backed by
-     * this HashMap so changes to one are relected by the other. The set does
+     * this HashMap so changes to one are reflected by the other. The set does
      * not support adding.
      * 
      * @return a Set of the keys
@@ -508,8 +524,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     void rehash() {
         int length = elementData.length << 1;
-        if (length == 0)
+        if (length == 0) {
             length = 1;
+        }
         Entry<K,V>[] newData = newElementArray(length);
         for (int i = 0; i < elementData.length; i++) {
             Entry<K,V> entry = elementData[i];
@@ -561,12 +578,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 entry = entry.next;
             }
         }
-        if (entry == null)
+        if (entry == null) {
             return null;
-        if (last == null)
+        }
+        if (last == null) {
             elementData[index] = entry.next;
-        else
+        } else {
             last.next = entry.next;
+        }
         modCount++;
         elementCount--;
         return entry;
@@ -583,7 +602,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Answers a Collection of the values contained in this HashMap. The
-     * collection is backed by this HashMap so changes to one are relected by
+     * collection is backed by this HashMap so changes to one are reflected by
      * the other. The collection does not support adding.
      * 
      * @return a Collection of the values
@@ -619,9 +638,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         stream.defaultWriteObject();
         stream.writeInt(elementData.length);
         stream.writeInt(elementCount);
-        Iterator iterator = entrySet().iterator();
+        Iterator<?> iterator = entrySet().iterator();
         while (iterator.hasNext()) {
-            Entry entry = (Entry) iterator.next();
+            Entry<?, ?> entry = (Entry) iterator.next();
             stream.writeObject(entry.key);
             stream.writeObject(entry.value);
             entry = entry.next;
@@ -632,7 +651,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             ClassNotFoundException {
         stream.defaultReadObject();
         int length = stream.readInt();
-        elementData = (Entry<K,V>[])new Entry[length];
+        elementData = new Entry[length];
         elementCount = stream.readInt();
         for (int i = elementCount; --i >= 0;) {
             K key = (K)stream.readObject();

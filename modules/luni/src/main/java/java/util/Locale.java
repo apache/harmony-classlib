@@ -163,12 +163,12 @@ public final class Locale implements Cloneable, Serializable {
 			"user.language", "write");  //$NON-NLS-1$//$NON-NLS-2$
 
 	static {
-		String language = (String) AccessController
-				.doPrivileged(new PriviAction("user.language", "en")); //$NON-NLS-1$ //$NON-NLS-2$
-		String region = (String) AccessController.doPrivileged(new PriviAction(
+		String language = AccessController
+				.doPrivileged(new PriviAction<String>("user.language", "en")); //$NON-NLS-1$ //$NON-NLS-2$
+		String region = AccessController.doPrivileged(new PriviAction<String>(
 				"user.country", "US")); //$NON-NLS-1$ //$NON-NLS-2$
-		String variant = (String) AccessController
-				.doPrivileged(new PriviAction("user.variant", "")); //$NON-NLS-1$ //$NON-NLS-2$
+		String variant = AccessController
+				.doPrivileged(new PriviAction<String>("user.variant", "")); //$NON-NLS-1$ //$NON-NLS-2$
 		defaultLocale = new Locale(language, region, variant);
 	}
 
@@ -213,12 +213,13 @@ public final class Locale implements Cloneable, Serializable {
 		languageCode = language.toLowerCase();
 		// Map new language codes to the obsolete language
 		// codes so the correct resource bundles will be used.
-		if (languageCode.equals("he")) //$NON-NLS-1$
-			languageCode = "iw"; //$NON-NLS-1$
-		else if (languageCode.equals("id")) //$NON-NLS-1$
-			languageCode = "in"; //$NON-NLS-1$
-		else if (languageCode.equals("yi")) //$NON-NLS-1$
-			languageCode = "ji"; //$NON-NLS-1$
+		if (languageCode.equals("he")) {
+            languageCode = "iw"; //$NON-NLS-1$
+        } else if (languageCode.equals("id")) {
+            languageCode = "in"; //$NON-NLS-1$
+        } else if (languageCode.equals("yi")) {
+            languageCode = "ji"; //$NON-NLS-1$
+        }
 		countryCode = country.toUpperCase();
 		variantCode = variant;
 	}
@@ -252,8 +253,9 @@ public final class Locale implements Cloneable, Serializable {
 	 * @see #hashCode
 	 */
 	public boolean equals(Object object) {
-		if (object == this)
-			return true;
+		if (object == this) {
+            return true;
+        }
 		if (object instanceof Locale) {
 			Locale o = (Locale) object;
 			return languageCode.equals(o.languageCode)
@@ -272,7 +274,7 @@ public final class Locale implements Cloneable, Serializable {
 				return name.startsWith(classPrefix);
 			}
 		};
-		Vector result = new Vector();
+		List<String> result = new ArrayList<String>();
 		StringTokenizer paths = new StringTokenizer(System.getProperty(
 				"com.ibm.oti.system.class.path", ""), System.getProperty( //$NON-NLS-1$ //$NON-NLS-2$
 				"path.separator", ";"));  //$NON-NLS-1$//$NON-NLS-2$
@@ -284,15 +286,17 @@ public final class Locale implements Cloneable, Serializable {
 					try {
 						File newDir;
 						String path = directory.getCanonicalPath();
-						if (path.charAt(path.length() - 1) == File.separatorChar)
-							newDir = new File(path + thePackage);
-						else
-							newDir = new File(path + File.separatorChar
+						if (path.charAt(path.length() - 1) == File.separatorChar) {
+                            newDir = new File(path + thePackage);
+                        } else {
+                            newDir = new File(path + File.separatorChar
 									+ thePackage);
+                        }
 						if (newDir.isDirectory()) {
 							String[] list = newDir.list(filter);
-							for (int j = 0; j < list.length; j++)
-								result.addElement(list[j]);
+							for (int j = 0; j < list.length; j++) {
+                                result.add(list[j]);
+                            }
 						}
 					} catch (IOException e) {
 					}
@@ -300,13 +304,14 @@ public final class Locale implements Cloneable, Serializable {
 					// Handle ZIP/JAR files.
 					try {
 						ZipFile zip = new ZipFile(directory);
-						Enumeration entries = zip.entries();
+						Enumeration<? extends ZipEntry> entries = zip.entries();
 						while (entries.hasMoreElements()) {
-							String name = ((ZipEntry) entries.nextElement())
-									.getName();
+                            ZipEntry e = entries.nextElement();
+							String name = e.getName();
 							if (name.startsWith(prefix)
-									&& name.endsWith(".class")) //$NON-NLS-1$
-								result.addElement(name);
+									&& name.endsWith(".class")) {
+                                result.add(name);
+                            }
 						}
 						zip.close();
 					} catch (IOException e) {
@@ -316,7 +321,7 @@ public final class Locale implements Cloneable, Serializable {
 		}
 		Locale[] locales = new Locale[result.size()];
 		for (int i = 0; i < result.size(); i++) {
-			String name = (String) result.elementAt(i);
+			String name = result.get(i);
 			name = name.substring(0, name.length() - 6); // remove .class
 			int index = name.indexOf('_');
 			int nextIndex = name.indexOf('_', index + 1);
@@ -330,8 +335,9 @@ public final class Locale implements Cloneable, Serializable {
 			if ((index = name.indexOf('_', nextIndex + 1)) == -1) {
 				variant = ""; //$NON-NLS-1$
 				index = name.length();
-			} else
-				variant = name.substring(index + 1, name.length());
+			} else {
+                variant = name.substring(index + 1, name.length());
+            }
 			String country = name.substring(nextIndex + 1, index);
 			locales[i] = new Locale(language, country, variant);
 		}
@@ -352,7 +358,7 @@ public final class Locale implements Cloneable, Serializable {
                         }
                     });
         }
-		return (Locale[]) availableLocales.clone();
+		return availableLocales.clone();
 	}
 
 	/**
@@ -394,17 +400,20 @@ public final class Locale implements Cloneable, Serializable {
 	 * @return a country name
 	 */
 	public String getDisplayCountry(Locale locale) {
-		if (countryCode.length() == 0)
-			return countryCode;
+		if (countryCode.length() == 0) {
+            return countryCode;
+        }
 		try {
 			// First try the specified locale
 			ResourceBundle bundle = getBundle("Country", locale); //$NON-NLS-1$
 			String result = (String) bundle.handleGetObject(countryCode);
-			if (result != null)
-				return result;
+			if (result != null) {
+                return result;
+            }
 			// Now use the default locale
-			if (locale != Locale.getDefault())
-				bundle = getBundle("Country", Locale.getDefault()); //$NON-NLS-1$
+			if (locale != Locale.getDefault()) {
+                bundle = getBundle("Country", Locale.getDefault()); //$NON-NLS-1$
+            }
 			return bundle.getString(countryCode);
 		} catch (MissingResourceException e) {
 			return countryCode;
@@ -432,17 +441,20 @@ public final class Locale implements Cloneable, Serializable {
 	 * @return a language name
 	 */
 	public String getDisplayLanguage(Locale locale) {
-		if (languageCode.length() == 0)
-			return languageCode;
+		if (languageCode.length() == 0) {
+            return languageCode;
+        }
 		try {
 			// First try the specified locale
 			ResourceBundle bundle = getBundle("Language", locale); //$NON-NLS-1$
 			String result = (String) bundle.handleGetObject(languageCode);
-			if (result != null)
-				return result;
+			if (result != null) {
+                return result;
+            }
 			// Now use the default locale
-			if (locale != Locale.getDefault())
-				bundle = getBundle("Language", Locale.getDefault()); //$NON-NLS-1$
+			if (locale != Locale.getDefault()) {
+                bundle = getBundle("Language", Locale.getDefault()); //$NON-NLS-1$
+            }
 			return bundle.getString(languageCode);
 		} catch (MissingResourceException e) {
 			return languageCode;
@@ -475,21 +487,24 @@ public final class Locale implements Cloneable, Serializable {
 			count++;
 		}
 		if (countryCode.length() > 0) {
-			if (count == 1)
-				buffer.append(" ("); //$NON-NLS-1$
+			if (count == 1) {
+                buffer.append(" ("); //$NON-NLS-1$
+            }
 			buffer.append(getDisplayCountry(locale));
 			count++;
 		}
 		if (variantCode.length() > 0) {
-			if (count == 1)
-				buffer.append(" ("); //$NON-NLS-1$
-			else if (count == 2)
-				buffer.append(","); //$NON-NLS-1$
+			if (count == 1) {
+                buffer.append(" ("); //$NON-NLS-1$
+            } else if (count == 2) {
+                buffer.append(","); //$NON-NLS-1$
+            }
 			buffer.append(getDisplayVariant(locale));
 			count++;
 		}
-		if (count > 1)
-			buffer.append(")"); //$NON-NLS-1$
+		if (count > 1) {
+            buffer.append(")"); //$NON-NLS-1$
+        }
 		return buffer.toString();
 	}
 
@@ -514,8 +529,9 @@ public final class Locale implements Cloneable, Serializable {
 	 * @return a variant name
 	 */
 	public String getDisplayVariant(Locale locale) {
-		if (variantCode.length() == 0)
-			return variantCode;
+		if (variantCode.length() == 0) {
+            return variantCode;
+        }
 		ResourceBundle bundle;
 		try {
 			bundle = getBundle("Variant", locale); //$NON-NLS-1$
@@ -533,8 +549,9 @@ public final class Locale implements Cloneable, Serializable {
 				code = variant;
 			}
 			result.append(code);
-			if (tokens.hasMoreTokens())
-				result.append(',');
+			if (tokens.hasMoreTokens()) {
+                result.append(',');
+            }
 		}
 		return result.toString();
 	}
@@ -549,8 +566,9 @@ public final class Locale implements Cloneable, Serializable {
 	 *                when there is no matching three letter ISO country code
 	 */
 	public String getISO3Country() throws MissingResourceException {
-		if (countryCode.length() == 0)
-			return ""; //$NON-NLS-1$
+		if (countryCode.length() == 0) {
+            return ""; //$NON-NLS-1$
+        }
 		ResourceBundle bundle = getBundle("ISO3Countries", this); //$NON-NLS-1$
 		return bundle.getString(countryCode);
 	}
@@ -565,8 +583,9 @@ public final class Locale implements Cloneable, Serializable {
 	 *                when there is no matching three letter ISO language code
 	 */
 	public String getISO3Language() throws MissingResourceException {
-		if (languageCode.length() == 0)
-			return ""; //$NON-NLS-1$
+		if (languageCode.length() == 0) {
+            return ""; //$NON-NLS-1$
+        }
 		ResourceBundle bundle = getBundle("ISO3Languages", this); //$NON-NLS-1$
 		return bundle.getString(languageCode);
 	}
@@ -587,16 +606,18 @@ public final class Locale implements Cloneable, Serializable {
 		} catch (MissingResourceException e) {
 		}
 
-		Enumeration keys = bundle.getKeys(); // to initialize the table
+		Enumeration<String> keys = bundle.getKeys(); // to initialize the table
 		int size = bundle.table.size();
-		if (hasCS)
-			size--;
+		if (hasCS) {
+            size--;
+        }
 		String[] result = new String[size];
 		int index = 0;
 		while (keys.hasMoreElements()) {
-			String element = (String) keys.nextElement();
-			if (!element.equals("CS")) //$NON-NLS-1$
-				result[index++] = element;
+			String element = keys.nextElement();
+			if (!element.equals("CS")) {
+                result[index++] = element;
+            }
 		}
 		return result;
 	}
@@ -609,11 +630,12 @@ public final class Locale implements Cloneable, Serializable {
 	 */
 	public static String[] getISOLanguages() {
 		ListResourceBundle bundle = new Language();
-		Enumeration keys = bundle.getKeys(); // to initialize the table
+		Enumeration<String> keys = bundle.getKeys(); // to initialize the table
 		String[] result = new String[bundle.table.size()];
 		int index = 0;
-		while (keys.hasMoreElements())
-			result[index++] = (String) keys.nextElement();
+		while (keys.hasMoreElements()) {
+            result[index++] = keys.nextElement();
+        }
 		return result;
 	}
 
@@ -661,11 +683,13 @@ public final class Locale implements Cloneable, Serializable {
 	public synchronized static void setDefault(Locale locale) {
 		if (locale != null) {
 			SecurityManager security = System.getSecurityManager();
-			if (security != null)
-				security.checkPermission(setLocalePermission);
+			if (security != null) {
+                security.checkPermission(setLocalePermission);
+            }
 			defaultLocale = locale;
-		} else
-			throw new NullPointerException();
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -681,10 +705,11 @@ public final class Locale implements Cloneable, Serializable {
 			result.append(countryCode);
 		}
 		if (variantCode.length() > 0) {
-			if (countryCode.length() == 0)
-				result.append("__"); //$NON-NLS-1$
-			else
-				result.append('_');
+			if (countryCode.length() == 0) {
+                result.append("__"); //$NON-NLS-1$
+            } else {
+                result.append('_');
+            }
 			result.append(variantCode);
 		}
 		return result.toString();

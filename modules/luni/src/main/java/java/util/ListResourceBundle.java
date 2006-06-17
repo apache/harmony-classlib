@@ -25,8 +25,7 @@ package java.util;
  * @since 1.1
  */
 public abstract class ListResourceBundle extends ResourceBundle {
-	//TODO Generify when Hashtable is generified
-	Hashtable table;
+	Hashtable<String, Object> table;
 
 	/**
 	 * Constructs a new instance of this class.
@@ -50,22 +49,25 @@ public abstract class ListResourceBundle extends ResourceBundle {
 	 * @return an Enumeration of the resource names
 	 */
 	public Enumeration<String> getKeys() {
-		if (table == null)
-			initializeTable();
-		if (parent == null)
-			return table.keys();
+		if (table == null) {
+            initializeTable();
+        }
+		if (parent == null) {
+            return table.keys();
+        }
 		return new Enumeration<String>() {
 			Enumeration<String> local = table.keys();
 
 			Enumeration<String> pEnum = parent.getKeys();
 
-			String nextElement = null;
+			String nextElement;
 
 			private boolean findNext() {
-				if (nextElement != null)
-					return true;
+				if (nextElement != null) {
+                    return true;
+                }
 				while (pEnum.hasMoreElements()) {
-					String next = (String) pEnum.nextElement();
+					String next = pEnum.nextElement();
 					if (!table.containsKey(next)) {
 						nextElement = next;
 						return true;
@@ -75,14 +77,16 @@ public abstract class ListResourceBundle extends ResourceBundle {
 			}
 
 			public boolean hasMoreElements() {
-				if (local.hasMoreElements())
-					return true;
+				if (local.hasMoreElements()) {
+                    return true;
+                }
 				return findNext();
 			}
 
 			public String nextElement() {
-				if (local.hasMoreElements())
-					return local.nextElement();
+				if (local.hasMoreElements()) {
+                    return local.nextElement();
+                }
 				if (findNext()) {
 					String result = nextElement;
 					nextElement = null;
@@ -103,17 +107,18 @@ public abstract class ListResourceBundle extends ResourceBundle {
 	 * @return the resource object
 	 */
 	public final Object handleGetObject(String key) {
-		if (table == null)
-			initializeTable();
+		if (table == null) {
+            initializeTable();
+        }
 		return table.get(key);
 	}
 
 	private synchronized void initializeTable() {
 		if (table == null) {
 			Object[][] contents = getContents();
-			table = new Hashtable(contents.length / 3 * 4 + 3);
+			table = new Hashtable<String, Object>(contents.length / 3 * 4 + 3);
 			for (int i = 0; i < contents.length; i++) {
-				table.put(contents[i][0], contents[i][1]);
+				table.put((String)contents[i][0], contents[i][1]);
 			}
 		}
 	}

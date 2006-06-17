@@ -21,7 +21,7 @@ import java.io.ObjectOutputStream;
 
 /**
  * GregorianCalendar provides the conversion between Dates and integer calendar
- * fields, such as the month, year or minute, for the gregorian calendar. See
+ * fields, such as the month, year or minute, for the Gregorian calendar. See
  * Calendar for the defined fields.
  * 
  * @see Calendar
@@ -32,13 +32,21 @@ public class GregorianCalendar extends Calendar {
 
 	private static final long serialVersionUID = -8125100834729963327L;
 
-	public final static int BC = 0, AD = 1;
+	/**
+	 * Value for the BC era.
+	 */
+	public static final int BC = 0;
+    
+    /**
+     * Value for the AD era.
+     */
+    public static final int AD = 1;
 
 	private long gregorianCutover = -12219292800000l;
 
-	transient private int changeYear = 1582;
+	private transient int changeYear = 1582;
 
-	transient private int julianSkew = ((changeYear - 2000) / 400)
+	private transient int julianSkew = ((changeYear - 2000) / 400)
 			+ julianError() - ((changeYear - 2000) / 100);
 
 	static byte[] DaysInMonth = new byte[] { 31, 28, 31, 30, 31, 30, 31, 31,
@@ -56,17 +64,13 @@ public class GregorianCalendar extends Calendar {
 	private static int[] leastMaximums = new int[] { 1, 292269054, 11, 52, 4,
 			28, 365, 7, 4, 1, 11, 23, 59, 59, 999, 43200000, 3600000 };
 
-	private boolean isCached = false;
+	private boolean isCached;
 
 	private int cachedFields[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	private long nextMidnightMillis = 0L;
 
 	private long lastMidnightMillis = 0L;
-
-	private boolean dstOffsetForwardAdjustment = false;
-
-	private boolean dstOffsetBackwardAdjustment = false;
 
 	/**
 	 * Constructs a new GregorianCalendar initialized to the current date and
@@ -194,22 +198,26 @@ public class GregorianCalendar extends Calendar {
 	 *                when the specified field is DST_OFFSET or ZONE_OFFSET.
 	 */
 	public void add(int field, int value) {
-		if (value == 0)
-			return;
-		if (field < 0 || field >= ZONE_OFFSET)
-			throw new IllegalArgumentException();
+		if (value == 0) {
+            return;
+        }
+		if (field < 0 || field >= ZONE_OFFSET) {
+            throw new IllegalArgumentException();
+        }
 
 		isCached = false;
 
 		if (field == ERA) {
 			complete();
 			if (fields[ERA] == AD) {
-				if (value >= 0)
-					return;
+				if (value >= 0) {
+                    return;
+                }
 				set(ERA, BC);
 			} else {
-				if (value <= 0)
-					return;
+				if (value <= 0) {
+                    return;
+                }
 				set(ERA, AD);
 			}
 			complete();
@@ -223,14 +231,16 @@ public class GregorianCalendar extends Calendar {
 				if (month < 0) {
 					value = (month - 11) / 12;
 					month = 12 + (month % 12);
-				} else
-					value = month / 12;
+				} else {
+                    value = month / 12;
+                }
 				set(MONTH, month % 12);
 			}
 			set(YEAR, fields[YEAR] + value);
 			int days = daysInMonth(isLeapYear(fields[YEAR]), fields[MONTH]);
-			if (fields[DATE] > days)
-				set(DATE, days);
+			if (fields[DATE] > days) {
+                set(DATE, days);
+            }
 			complete();
 			return;
 		}
@@ -271,8 +281,9 @@ public class GregorianCalendar extends Calendar {
 			time += value * multiplier;
 			int newOffset = getOffset(time + zoneOffset);
 			// Adjust for moving over a DST boundary
-			if (newOffset != offset)
-				time += offset - newOffset;
+			if (newOffset != offset) {
+                time += offset - newOffset;
+            }
 		}
 		areFieldsSet = false;
 		complete();
@@ -285,7 +296,7 @@ public class GregorianCalendar extends Calendar {
      */
     public Object clone(){
         GregorianCalendar thisClone = (GregorianCalendar)super.clone();
-        thisClone.cachedFields = (int[])cachedFields.clone();
+        thisClone.cachedFields = cachedFields.clone();
         return thisClone;
     }
 
@@ -318,8 +329,9 @@ public class GregorianCalendar extends Calendar {
 		fields[DAY_OF_WEEK] = mod7(days - 3) + 1;
 		int dstOffset = fields[YEAR] <= 0 ? 0 : getTimeZone().getOffset(AD,
 				fields[YEAR], month, date, fields[DAY_OF_WEEK], millis);
-		if (fields[YEAR] > 0)
-			dstOffset -= zoneOffset;
+		if (fields[YEAR] > 0) {
+            dstOffset -= zoneOffset;
+        }
 		fields[DST_OFFSET] = dstOffset;
 		if (dstOffset != 0) {
 			long oldDays = days;
@@ -360,8 +372,9 @@ public class GregorianCalendar extends Calendar {
 		if (fields[YEAR] <= 0) {
 			fields[ERA] = BC;
 			fields[YEAR] = -fields[YEAR] + 1;
-		} else
-			fields[ERA] = AD;
+		} else {
+            fields[ERA] = AD;
+        }
 		fields[MONTH] = month;
 		fields[DATE] = date;
 		fields[DAY_OF_WEEK_IN_MONTH] = (date - 1) / 7 + 1;
@@ -424,10 +437,11 @@ public class GregorianCalendar extends Calendar {
 		int offset = zoneOffset + dstOffset;
 		long newTime = time + offset;
 
-		if (time > 0L && newTime < 0L && offset > 0)
-			newTime = 0x7fffffffffffffffL;
-		else if (time < 0L && newTime > 0L && offset < 0)
-			newTime = 0x8000000000000000L;
+		if (time > 0L && newTime < 0L && offset > 0) {
+            newTime = 0x7fffffffffffffffL;
+        } else if (time < 0L && newTime > 0L && offset < 0) {
+            newTime = 0x8000000000000000L;
+        }
 
 		if (isCached) {
 			if (millis < 0) {
@@ -462,18 +476,21 @@ public class GregorianCalendar extends Calendar {
 				newTimeAdjusted += (dstOffset == 0) ? dstSavings : -dstSavings;
 			}
 
-			if (newTime > 0L && newTimeAdjusted < 0L && dstOffset == 0)
-				newTimeAdjusted = 0x7fffffffffffffffL;
-			else if (newTime < 0L && newTimeAdjusted > 0L && dstOffset != 0)
-				newTimeAdjusted = 0x8000000000000000L;
+			if (newTime > 0L && newTimeAdjusted < 0L && dstOffset == 0) {
+                newTimeAdjusted = 0x7fffffffffffffffL;
+            } else if (newTime < 0L && newTimeAdjusted > 0L && dstOffset != 0) {
+                newTimeAdjusted = 0x8000000000000000L;
+            }
 
 			cachedFieldsCheckAndGet(time, newTime, newTimeAdjusted,
 					savedMillis, zoneOffset);
-		} else
-			fullFieldsCalc(time, savedMillis, zoneOffset);
+		} else {
+            fullFieldsCalc(time, savedMillis, zoneOffset);
+        }
 
-		for (int i = 0; i < FIELD_COUNT; i++)
-			isSet[i] = true;
+		for (int i = 0; i < FIELD_COUNT; i++) {
+            isSet[i] = true;
+        }
 
 		// Caching
 		if (!isCached
@@ -517,67 +534,86 @@ public class GregorianCalendar extends Calendar {
 	protected void computeTime() {
 		if (!isLenient()) {
 			if (isSet[HOUR_OF_DAY]) {
-				if (fields[HOUR_OF_DAY] < 0 || fields[HOUR_OF_DAY] > 23)
-					throw new IllegalArgumentException();
-			} else if (isSet[HOUR] && (fields[HOUR] < 0 || fields[HOUR] > 11))
-				throw new IllegalArgumentException();
-			if (isSet[MINUTE] && (fields[MINUTE] < 0 || fields[MINUTE] > 59))
-				throw new IllegalArgumentException();
-			if (isSet[SECOND] && (fields[SECOND] < 0 || fields[SECOND] > 59))
-				throw new IllegalArgumentException();
+				if (fields[HOUR_OF_DAY] < 0 || fields[HOUR_OF_DAY] > 23) {
+                    throw new IllegalArgumentException();
+                }
+			} else if (isSet[HOUR] && (fields[HOUR] < 0 || fields[HOUR] > 11)) {
+                throw new IllegalArgumentException();
+            }
+			if (isSet[MINUTE] && (fields[MINUTE] < 0 || fields[MINUTE] > 59)) {
+                throw new IllegalArgumentException();
+            }
+			if (isSet[SECOND] && (fields[SECOND] < 0 || fields[SECOND] > 59)) {
+                throw new IllegalArgumentException();
+            }
 			if (isSet[MILLISECOND]
-					&& (fields[MILLISECOND] < 0 || fields[MILLISECOND] > 999))
-				throw new IllegalArgumentException();
+					&& (fields[MILLISECOND] < 0 || fields[MILLISECOND] > 999)) {
+                throw new IllegalArgumentException();
+            }
 			if (isSet[WEEK_OF_YEAR]
-					&& (fields[WEEK_OF_YEAR] < 1 || fields[WEEK_OF_YEAR] > 53))
-				throw new IllegalArgumentException();
+					&& (fields[WEEK_OF_YEAR] < 1 || fields[WEEK_OF_YEAR] > 53)) {
+                throw new IllegalArgumentException();
+            }
 			if (isSet[DAY_OF_WEEK]
-					&& (fields[DAY_OF_WEEK] < 1 || fields[DAY_OF_WEEK] > 7))
-				throw new IllegalArgumentException();
+					&& (fields[DAY_OF_WEEK] < 1 || fields[DAY_OF_WEEK] > 7)) {
+                throw new IllegalArgumentException();
+            }
 			if (isSet[DAY_OF_WEEK_IN_MONTH]
-					&& (fields[DAY_OF_WEEK_IN_MONTH] < 1 || fields[DAY_OF_WEEK_IN_MONTH] > 6))
-				throw new IllegalArgumentException();
+					&& (fields[DAY_OF_WEEK_IN_MONTH] < 1 || fields[DAY_OF_WEEK_IN_MONTH] > 6)) {
+                throw new IllegalArgumentException();
+            }
 			if (isSet[WEEK_OF_MONTH]
-					&& (fields[WEEK_OF_MONTH] < 1 || fields[WEEK_OF_MONTH] > 6))
-				throw new IllegalArgumentException();
-			if (isSet[AM_PM] && fields[AM_PM] != AM && fields[AM_PM] != PM)
-				throw new IllegalArgumentException();
-			if (isSet[HOUR] && (fields[HOUR] < 0 || fields[HOUR] > 11))
-				throw new IllegalArgumentException();
+					&& (fields[WEEK_OF_MONTH] < 1 || fields[WEEK_OF_MONTH] > 6)) {
+                throw new IllegalArgumentException();
+            }
+			if (isSet[AM_PM] && fields[AM_PM] != AM && fields[AM_PM] != PM) {
+                throw new IllegalArgumentException();
+            }
+			if (isSet[HOUR] && (fields[HOUR] < 0 || fields[HOUR] > 11)) {
+                throw new IllegalArgumentException();
+            }
 			if (isSet[YEAR]) {
 				if (isSet[ERA] && fields[ERA] == BC
-						&& (fields[YEAR] < 1 || fields[YEAR] > 292269054))
-					throw new IllegalArgumentException();
-				else if (fields[YEAR] < 1 || fields[YEAR] > 292278994)
-					throw new IllegalArgumentException();
+						&& (fields[YEAR] < 1 || fields[YEAR] > 292269054)) {
+                    throw new IllegalArgumentException();
+                } else if (fields[YEAR] < 1 || fields[YEAR] > 292278994) {
+                    throw new IllegalArgumentException();
+                }
 			}
-			if (isSet[MONTH] && (fields[MONTH] < 0 || fields[MONTH] > 11))
-				throw new IllegalArgumentException();
+			if (isSet[MONTH] && (fields[MONTH] < 0 || fields[MONTH] > 11)) {
+                throw new IllegalArgumentException();
+            }
 		}
 
 		long timeVal;
 		int hour = 0;
-		if (isSet[HOUR_OF_DAY] && lastTimeFieldSet != HOUR)
-			hour = fields[HOUR_OF_DAY];
-		else if (isSet[HOUR])
-			hour = (fields[AM_PM] * 12) + fields[HOUR];
+		if (isSet[HOUR_OF_DAY] && lastTimeFieldSet != HOUR) {
+            hour = fields[HOUR_OF_DAY];
+        } else if (isSet[HOUR]) {
+            hour = (fields[AM_PM] * 12) + fields[HOUR];
+        }
 		timeVal = hour * 3600000;
 
-		if (isSet[MINUTE])
-			timeVal += fields[MINUTE] * 60000;
-		if (isSet[SECOND])
-			timeVal += fields[SECOND] * 1000;
-		if (isSet[MILLISECOND])
-			timeVal += fields[MILLISECOND];
+		if (isSet[MINUTE]) {
+            timeVal += fields[MINUTE] * 60000;
+        }
+		if (isSet[SECOND]) {
+            timeVal += fields[SECOND] * 1000;
+        }
+		if (isSet[MILLISECOND]) {
+            timeVal += fields[MILLISECOND];
+        }
 
 		long days;
 		int year = isSet[YEAR] ? fields[YEAR] : 1970;
 		if (isSet[ERA]) {
 			// Always test for valid ERA, even if the Calendar is lenient
-			if (fields[ERA] != BC && fields[ERA] != AD)
-				throw new IllegalArgumentException();
-			if (fields[ERA] == BC)
-				year = 1 - year;
+			if (fields[ERA] != BC && fields[ERA] != AD) {
+                throw new IllegalArgumentException();
+            }
+			if (fields[ERA] == BC) {
+                year = 1 - year;
+            }
 		}
 
 		boolean weekMonthSet = isSet[WEEK_OF_MONTH]
@@ -586,11 +622,12 @@ public class GregorianCalendar extends Calendar {
 				&& lastDateFieldSet != DAY_OF_YEAR;
 		if (useMonth
 				&& (lastDateFieldSet == DAY_OF_WEEK || lastDateFieldSet == WEEK_OF_YEAR)) {
-			if (isSet[WEEK_OF_YEAR] && isSet[DAY_OF_WEEK])
-				useMonth = lastDateFieldSet != WEEK_OF_YEAR && weekMonthSet
+			if (isSet[WEEK_OF_YEAR] && isSet[DAY_OF_WEEK]) {
+                useMonth = lastDateFieldSet != WEEK_OF_YEAR && weekMonthSet
 						&& isSet[DAY_OF_WEEK];
-			else if (isSet[DAY_OF_YEAR])
-				useMonth = isSet[DATE] && isSet[MONTH];
+            } else if (isSet[DAY_OF_YEAR]) {
+                useMonth = isSet[DATE] && isSet[MONTH];
+            }
 		}
 
 		if (useMonth) {
@@ -612,15 +649,17 @@ public class GregorianCalendar extends Calendar {
 			if (useDate) {
 				if (!isLenient()
 						&& (fields[DATE] < 1 || fields[DATE] > daysInMonth(
-								leapYear, month)))
-					throw new IllegalArgumentException();
+								leapYear, month))) {
+                    throw new IllegalArgumentException();
+                }
 				days += fields[DATE] - 1;
 			} else {
 				int dayOfWeek;
 				if (isSet[DAY_OF_WEEK]) {
 					dayOfWeek = fields[DAY_OF_WEEK] - 1;
-				} else
-					dayOfWeek = getFirstDayOfWeek() - 1;
+				} else {
+                    dayOfWeek = getFirstDayOfWeek() - 1;
+                }
 				if (isSet[WEEK_OF_MONTH]
 						&& lastDateFieldSet != DAY_OF_WEEK_IN_MONTH) {
 					int skew = mod7(days - 3 - (getFirstDayOfWeek() - 1));
@@ -641,25 +680,29 @@ public class GregorianCalendar extends Calendar {
 		} else {
 			boolean useWeekYear = isSet[WEEK_OF_YEAR]
 					&& lastDateFieldSet != DAY_OF_YEAR;
-			if (useWeekYear && isSet[DAY_OF_YEAR])
-				useWeekYear = isSet[DAY_OF_WEEK];
+			if (useWeekYear && isSet[DAY_OF_YEAR]) {
+                useWeekYear = isSet[DAY_OF_WEEK];
+            }
 			days = daysFromBaseYear(year);
 			if (useWeekYear) {
 				int dayOfWeek;
 				if (isSet[DAY_OF_WEEK]) {
 					dayOfWeek = fields[DAY_OF_WEEK] - 1;
-				} else
-					dayOfWeek = getFirstDayOfWeek() - 1;
+				} else {
+                    dayOfWeek = getFirstDayOfWeek() - 1;
+                }
 				int skew = mod7(days - 3 - (getFirstDayOfWeek() - 1));
 				days += (fields[WEEK_OF_YEAR] - 1) * 7
 						+ mod7(skew + dayOfWeek - (days - 3)) - skew;
-				if (7 - skew < getMinimalDaysInFirstWeek())
-					days += 7;
+				if (7 - skew < getMinimalDaysInFirstWeek()) {
+                    days += 7;
+                }
 			} else if (isSet[DAY_OF_YEAR]) {
 				if (!isLenient()
 						&& (fields[DAY_OF_YEAR] < 1 || fields[DAY_OF_YEAR] > (365 + (isLeapYear(year) ? 1
-								: 0))))
-					throw new IllegalArgumentException();
+								: 0)))) {
+                    throw new IllegalArgumentException();
+                }
 				days += fields[DAY_OF_YEAR] - 1;
 			} else if (isSet[DAY_OF_WEEK]) {
 				days += mod7(fields[DAY_OF_WEEK] - 1 - (days - 3));
@@ -670,8 +713,9 @@ public class GregorianCalendar extends Calendar {
 		timeVal += days * 86400000;
 		// Use local time to compare with the gregorian change
 		if (year == changeYear
-				&& timeVal >= gregorianCutover + julianError() * 86400000)
-			timeVal -= julianError() * 86400000;
+				&& timeVal >= gregorianCutover + julianError() * 86400000) {
+            timeVal -= julianError() * 86400000;
+        }
 		timeVal -= getOffset(timeVal);
 		this.time = timeVal;
 	}
@@ -679,8 +723,9 @@ public class GregorianCalendar extends Calendar {
 	private int computeYearAndDay(long dayCount, long localTime) {
 		int year = 1970;
 		long days = dayCount;
-		if (localTime < gregorianCutover)
-			days -= julianSkew;
+		if (localTime < gregorianCutover) {
+            days -= julianSkew;
+        }
 		int approxYears;
 
 		while ((approxYears = (int) (days / 365)) != 0) {
@@ -690,8 +735,9 @@ public class GregorianCalendar extends Calendar {
 		if (days < 0) {
 			year = year - 1;
 			days = days + 365 + (isLeapYear(year) ? 1 : 0);
-			if (year == changeYear && localTime < gregorianCutover)
-				days -= julianError();
+			if (year == changeYear && localTime < gregorianCutover) {
+                days -= julianError();
+            }
 		}
 		fields[YEAR] = year;
 		return (int) days + 1;
@@ -700,10 +746,11 @@ public class GregorianCalendar extends Calendar {
 	private long daysFromBaseYear(int year) {
 		if (year >= 1970) {
 			long days = (year - 1970) * (long) 365 + ((year - 1969) / 4);
-			if (year > changeYear)
-				days -= ((year - 1901) / 100) - ((year - 1601) / 400);
-			else
-				days += julianSkew;
+			if (year > changeYear) {
+                days -= ((year - 1901) / 100) - ((year - 1601) / 400);
+            } else {
+                days += julianSkew;
+            }
 			return days;
 		} else if (year <= changeYear) {
 			return (year - 1970) * (long) 365 + ((year - 1972) / 4)
@@ -719,8 +766,9 @@ public class GregorianCalendar extends Calendar {
 	}
 
 	private int daysInMonth(boolean leapYear, int month) {
-		if (leapYear && month == FEBRUARY)
-			return DaysInMonth[month] + 1;
+		if (leapYear && month == FEBRUARY) {
+            return DaysInMonth[month] + 1;
+        }
 
 		return DaysInMonth[month];
 	}
@@ -730,8 +778,9 @@ public class GregorianCalendar extends Calendar {
 	}
 
 	private int daysInYear(boolean leapYear, int month) {
-		if (leapYear && month > FEBRUARY)
-			return DaysInYear[month] + 1;
+		if (leapYear && month > FEBRUARY) {
+            return DaysInYear[month] + 1;
+        }
 
 		return DaysInYear[month];
 	}
@@ -767,8 +816,9 @@ public class GregorianCalendar extends Calendar {
 	 */
 	public int getActualMaximum(int field) {
 		int value;
-		if ((value = getMaximum(field)) == getLeastMaximum(field))
-			return value;
+		if ((value = getMaximum(field)) == getLeastMaximum(field)) {
+            return value;
+        }
 
 		switch (field) {
 		case WEEK_OF_YEAR:
@@ -806,14 +856,16 @@ public class GregorianCalendar extends Calendar {
 			break;
 		case YEAR:
 			GregorianCalendar clone = (GregorianCalendar) clone();
-			if (get(ERA) == AD)
-				clone.setTimeInMillis(Long.MAX_VALUE);
-			else
-				clone.setTimeInMillis(Long.MIN_VALUE);
+			if (get(ERA) == AD) {
+                clone.setTimeInMillis(Long.MAX_VALUE);
+            } else {
+                clone.setTimeInMillis(Long.MIN_VALUE);
+            }
 			result = clone.get(YEAR);
 			clone.set(YEAR, get(YEAR));
-			if (clone.before(this))
-				result--;
+			if (clone.before(this)) {
+                result--;
+            }
 			break;
 		}
 		time = orgTime;
@@ -892,8 +944,9 @@ public class GregorianCalendar extends Calendar {
 
 	int getOffset(long localTime) {
 		TimeZone timeZone = getTimeZone();
-		if (!timeZone.useDaylightTime())
-			return timeZone.getRawOffset();
+		if (!timeZone.useDaylightTime()) {
+            return timeZone.getRawOffset();
+        }
 
 		long dayCount = localTime / 86400000;
 		int millis = (int) (localTime % 86400000);
@@ -904,8 +957,9 @@ public class GregorianCalendar extends Calendar {
 
 		int year = 1970;
 		long days = dayCount;
-		if (localTime < gregorianCutover)
-			days -= julianSkew;
+		if (localTime < gregorianCutover) {
+            days -= julianSkew;
+        }
 		int approxYears;
 
 		while ((approxYears = (int) (days / 365)) != 0) {
@@ -915,11 +969,13 @@ public class GregorianCalendar extends Calendar {
 		if (days < 0) {
 			year = year - 1;
 			days = days + 365 + (isLeapYear(year) ? 1 : 0);
-			if (year == changeYear && localTime < gregorianCutover)
-				days -= julianError();
+			if (year == changeYear && localTime < gregorianCutover) {
+                days -= julianError();
+            }
 		}
-		if (year <= 0)
-			return timeZone.getRawOffset();
+		if (year <= 0) {
+            return timeZone.getRawOffset();
+        }
 		int dayOfYear = (int) days + 1;
 
 		int month = dayOfYear / 32;
@@ -956,8 +1012,9 @@ public class GregorianCalendar extends Calendar {
 	 * @return true if the specified year is a leap year, false otherwise
 	 */
 	public boolean isLeapYear(int year) {
-		if (year > changeYear)
-			return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+		if (year > changeYear) {
+            return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+        }
 
 		return year % 4 == 0;
 	}
@@ -968,15 +1025,17 @@ public class GregorianCalendar extends Calendar {
 
 	private int mod(int value, int mod) {
 		int rem = value % mod;
-		if (value < 0 && rem < 0)
-			return rem + mod;
+		if (value < 0 && rem < 0) {
+            return rem + mod;
+        }
 		return rem;
 	}
 
 	private int mod7(long num1) {
 		int rem = (int) (num1 % 7);
-		if (num1 < 0 && rem < 0)
-			return rem + 7;
+		if (num1 < 0 && rem < 0) {
+            return rem + 7;
+        }
 		return rem;
 	}
 
@@ -995,10 +1054,12 @@ public class GregorianCalendar extends Calendar {
 	 *                when an invalid field is specified
 	 */
 	public void roll(int field, int value) {
-		if (value == 0)
-			return;
-		if (field < 0 || field >= ZONE_OFFSET)
-			throw new IllegalArgumentException();
+		if (value == 0) {
+            return;
+        }
+		if (field < 0 || field >= ZONE_OFFSET) {
+            throw new IllegalArgumentException();
+        }
 
 		isCached = false;
 
@@ -1024,18 +1085,21 @@ public class GregorianCalendar extends Calendar {
 			int maxWeeks = (days - 1 + mod) / 7 + 1;
 			int newWeek = mod(fields[field] - 1 + value, maxWeeks) + 1;
 			if (newWeek == maxWeeks) {
-				if (fields[day] + (newWeek - fields[field]) * 7 > days)
-					set(day, days);
-				else
-					set(field, newWeek);
+				if (fields[day] + (newWeek - fields[field]) * 7 > days) {
+                    set(day, days);
+                } else {
+                    set(field, newWeek);
+                }
 			} else if (newWeek == 1) {
 				int week = (fields[day] - ((fields[day] - 1) / 7 * 7) - 1 + mod) / 7 + 1;
-				if (week > 1)
-					set(day, 1);
-				else
-					set(field, newWeek);
-			} else
-				set(field, newWeek);
+				if (week > 1) {
+                    set(day, 1);
+                } else {
+                    set(field, newWeek);
+                }
+			} else {
+                set(field, newWeek);
+            }
 			break;
 		case DATE:
 			max = daysInMonth();
@@ -1060,14 +1124,16 @@ public class GregorianCalendar extends Calendar {
 		case SECOND:
 		case MILLISECOND:
 			set(field, mod(fields[field] + value, maximums[field] + 1));
-			if (field == MONTH && fields[DATE] > daysInMonth())
-				set(DATE, daysInMonth());
-			else if (field == AM_PM)
-				lastTimeFieldSet = HOUR;
+			if (field == MONTH && fields[DATE] > daysInMonth()) {
+                set(DATE, daysInMonth());
+            } else if (field == AM_PM) {
+                lastTimeFieldSet = HOUR;
+            }
 			break;
 		}
-		if (max != -1)
-			set(field, mod(fields[field] - 1 + value, max) + 1);
+		if (max != -1) {
+            set(field, mod(fields[field] - 1 + value, max) + 1);
+        }
 		complete();
 	}
 
@@ -1101,8 +1167,9 @@ public class GregorianCalendar extends Calendar {
 		GregorianCalendar cal = new GregorianCalendar(TimeZone.GMT);
 		cal.setTime(date);
 		changeYear = cal.get(YEAR);
-		if (cal.get(ERA) == BC)
-			changeYear = 1 - changeYear;
+		if (cal.get(ERA) == BC) {
+            changeYear = 1 - changeYear;
+        }
 		julianSkew = ((changeYear - 2000) / 400) + julianError()
 				- ((changeYear - 2000) / 100);
 		isCached = false;

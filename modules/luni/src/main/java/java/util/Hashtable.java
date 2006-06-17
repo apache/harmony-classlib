@@ -73,14 +73,16 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 
 		public Object clone() {
 			Entry<K, V> entry = (Entry<K, V>) super.clone();
-			if (next != null)
-				entry.next = (Entry<K, V>) next.clone();
+			if (next != null) {
+                entry.next = (Entry<K, V>) next.clone();
+            }
 			return entry;
 		}
 
 		public V setValue(V object) {
-			if (object == null)
-				throw new NullPointerException();
+			if (object == null) {
+                throw new NullPointerException();
+            }
 			V result = value;
 			value = object;
 			return result;
@@ -121,10 +123,11 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 				return true;
 			}
 			while (position >= firstSlot) {
-				if (elementData[position] == null)
-					position--;
-				else
-					return true;
+				if (elementData[position] == null) {
+                    position--;
+                } else {
+                    return true;
+                }
 			}
 			return false;
 		}
@@ -151,8 +154,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 					return type.get(lastEntry);
 				}
 				throw new NoSuchElementException();
-			} else
-				throw new ConcurrentModificationException();
+			} else {
+                throw new ConcurrentModificationException();
+            }
 		}
 
 		public void remove() {
@@ -187,8 +191,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 						// throw ConcurrentModificationException() outside of
 						// synchronized block
 					}
-				} else
-					throw new IllegalStateException();
+				} else {
+                    throw new IllegalStateException();
+                }
 			}
 			throw new ConcurrentModificationException();
 		}
@@ -207,13 +212,15 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 		}
 
 		public boolean hasMoreElements() {
-			if (entry != null)
-				return true;
-			while (--start >= firstSlot)
-				if (elementData[start] != null) {
+			if (entry != null) {
+                return true;
+            }
+			while (--start >= firstSlot) {
+                if (elementData[start] != null) {
 					entry = elementData[start];
 					return true;
 				}
+            }
 			return false;
 		}
 
@@ -222,8 +229,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 				Object result = key ? entry.key : entry.value;
 				entry = entry.next;
 				return (E)result;
-			} else
-				throw new NoSuchElementException();
+			} else {
+                throw new NoSuchElementException();
+            }
 		}
 	}
 
@@ -244,12 +252,13 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	public Hashtable(int capacity) {
 		if (capacity >= 0) {
 			elementCount = 0;
-			elementData = (Entry<K, V>[])new Entry[capacity == 0 ? 1 : capacity];
+			elementData = new Entry[capacity == 0 ? 1 : capacity];
 			firstSlot = elementData.length;
 			loadFactor = 0.75f;
 			computeMaxSize();
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -264,11 +273,12 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 		if (capacity >= 0 && loadFactor > 0) {
 			elementCount = 0;
 			firstSlot = capacity;
-			elementData = (Entry<K, V>[])new Entry[capacity == 0 ? 1 : capacity];
+			elementData = new Entry[capacity == 0 ? 1 : capacity];
 			this.loadFactor = loadFactor;
 			computeMaxSize();
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -313,9 +323,11 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 			Hashtable<K, V> hashtable = (Hashtable<K, V>) super.clone();
 			hashtable.elementData = elementData.clone();
 			Entry<K, V> entry;
-			for (int i = elementData.length; --i >= 0;)
-				if ((entry = elementData[i]) != null)
-					hashtable.elementData[i] = (Entry<K, V>) entry.clone();
+			for (int i = elementData.length; --i >= 0;) {
+                if ((entry = elementData[i]) != null) {
+                    hashtable.elementData[i] = (Entry<K, V>) entry.clone();
+                }
+            }
 			return hashtable;
 		} catch (CloneNotSupportedException e) {
 			return null;
@@ -338,14 +350,16 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @see java.lang.Object#equals
 	 */
 	public synchronized boolean contains(Object value) {
-		if (value == null) 
-			throw new NullPointerException();
+		if (value == null) {
+            throw new NullPointerException();
+        }
 
 			for (int i = elementData.length; --i >= 0;) {
 				Entry<K, V> entry = elementData[i];
 				while (entry != null) {
-					if (value.equals(entry.value))
-						return true;
+					if (value.equals(entry.value)) {
+                        return true;
+                    }
 					entry = entry.next;
 				}
 			}
@@ -391,8 +405,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @see Enumeration
 	 */
 	public synchronized Enumeration<V> elements() {
-		if (elementCount == 0)
-			return emptyEnumerator;
+		if (elementCount == 0) {
+            return emptyEnumerator;
+        }
 		return new HashEnumerator<V>(false);
 	}
 
@@ -404,7 +419,7 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @return a Set of the mappings
 	 */
 	public Set<Map.Entry<K,V>> entrySet() {
-		return new Collections.SynchronizedSet(new AbstractSet<Map.Entry<K,V>>() {
+		return new Collections.SynchronizedSet<Map.Entry<K, V>>(new AbstractSet<Map.Entry<K,V>>() {
 			public int size() {
 				return elementCount;
 			}
@@ -428,7 +443,7 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 
 			public Iterator<Map.Entry<K,V>> iterator() {
 				return new HashIterator<Map.Entry<K, V>>(new MapEntry.Type<Map.Entry<K, V>, K, V>() {
-					public Map.Entry<K, V> get(MapEntry entry) {
+					public Map.Entry<K, V> get(MapEntry<K, V> entry) {
 						return entry;
 					}
 				});
@@ -449,12 +464,14 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @see #hashCode
 	 */
 	public synchronized boolean equals(Object object) {
-		if (this == object)
-			return true;
+		if (this == object) {
+            return true;
+        }
 		if (object instanceof Map) {
 			Map<?, ?> map = (Map<?, ?>) object;
-			if (size() != map.size())
-				return false;
+			if (size() != map.size()) {
+                return false;
+            }
 			
             Set<Map.Entry<K, V>> entries = entrySet();
             for (Map.Entry<?, ?> e : map.entrySet()) {
@@ -482,8 +499,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 		int index = (hash & 0x7FFFFFFF) % elementData.length;
 		Entry<K,V> entry = elementData[index];
 		while (entry != null) {
-			if (entry.equalsKey(key, hash))
-				return entry.value;
+			if (entry.equalsKey(key, hash)) {
+                return entry.value;
+            }
 			entry = entry.next;
 		}
 		return null;
@@ -494,8 +512,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 		int index = (hash & 0x7FFFFFFF) % elementData.length;
 		Entry<K, V> entry = elementData[index];
 		while (entry != null) {
-			if (entry.equalsKey(key, hash))
-				return entry;
+			if (entry.equalsKey(key, hash)) {
+                return entry;
+            }
 			entry = entry.next;
 		}
 		return null;
@@ -547,8 +566,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @see Enumeration
 	 */
 	public synchronized Enumeration<K> keys() {
-		if (elementCount == 0)
-			return emptyEnumerator;
+		if (elementCount == 0) {
+            return emptyEnumerator;
+        }
 		return new HashEnumerator<K>(true);
 	}
 
@@ -560,7 +580,7 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @return a Set of the keys
 	 */
 	public Set<K> keySet() {
-		return new Collections.SynchronizedSet(
+		return new Collections.SynchronizedSet<K>(
             new AbstractSet<K>() {
     			public boolean contains(Object object) {
     				return containsKey(object);
@@ -615,18 +635,21 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 			int hash = key.hashCode();
 			int index = (hash & 0x7FFFFFFF) % elementData.length;
 			Entry<K,V> entry = elementData[index];
-			while (entry != null && !entry.equalsKey(key, hash))
-				entry = entry.next;
+			while (entry != null && !entry.equalsKey(key, hash)) {
+                entry = entry.next;
+            }
 			if (entry == null) {
 				modCount++;
 				if (++elementCount > threshold) {
 					rehash();
 					index = (hash & 0x7FFFFFFF) % elementData.length;
 				}
-				if (index < firstSlot)
-					firstSlot = index;
-				if (index > lastSlot)
-					lastSlot = index;
+				if (index < firstSlot) {
+                    firstSlot = index;
+                }
+				if (index > lastSlot) {
+                    lastSlot = index;
+                }
 				entry = newEntry(key, value, hash);
 				entry.next = elementData[index];
 				elementData[index] = entry;
@@ -635,8 +658,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 			V result = entry.value;
 			entry.value = value;
 			return result;
-		} else
-			throw new NullPointerException();
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -657,19 +681,22 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 */
 	protected void rehash() {
 		int length = (elementData.length << 1) + 1;
-		if (length == 0)
-			length = 1;
+		if (length == 0) {
+            length = 1;
+        }
 		int newFirst = length;
 		int newLast = -1;
-		Entry<K, V>[] newData = (Entry<K, V>[])new Entry[length];
+		Entry<K, V>[] newData = new Entry[length];
 		for (int i = lastSlot + 1; --i >= firstSlot;) {
 			Entry<K, V> entry = elementData[i];
 			while (entry != null) {
 				int index = (entry.getKeyHash() & 0x7FFFFFFF) % length;
-				if (index < newFirst)
-					newFirst = index;
-				if (index > newLast)
-					newLast = index;
+				if (index < newFirst) {
+                    newFirst = index;
+                }
+				if (index > newLast) {
+                    newLast = index;
+                }
 				Entry<K, V> next = entry.next;
 				entry.next = newData[index];
 				newData[index] = entry;
@@ -704,10 +731,11 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 		}
 		if (entry != null) {
 			modCount++;
-			if (last == null)
-				elementData[index] = entry.next;
-			else
-				last.next = entry.next;
+			if (last == null) {
+                elementData[index] = entry.next;
+            } else {
+                last.next = entry.next;
+            }
 			elementCount--;
 			V result = entry.value;
 			entry.value = null;
@@ -734,8 +762,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @return the string representation of this Hashtable
 	 */
 	public synchronized String toString() {
-		if (isEmpty())
-			return "{}";
+		if (isEmpty()) {
+            return "{}";
+        }
 
 		StringBuilder buffer = new StringBuilder(size() * 28);
 		buffer.append('{');
@@ -758,8 +787,9 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 			}
 		}
 		// Remove the last ", "
-		if (elementCount > 0)
-			buffer.setLength(buffer.length() - 2);
+		if (elementCount > 0) {
+            buffer.setLength(buffer.length() - 2);
+        }
 		buffer.append('}');
 		return buffer.toString();
 	}
@@ -772,7 +802,7 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 	 * @return a Collection of the values
 	 */
 	public Collection<V> values() {
-		return new Collections.SynchronizedCollection(new AbstractCollection<V>() {
+		return new Collections.SynchronizedCollection<V>(new AbstractCollection<V>() {
 			public boolean contains(Object object) {
 				return Hashtable.this.contains(object);
 			}
@@ -814,16 +844,18 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 			ClassNotFoundException {
 		stream.defaultReadObject();
 		int length = stream.readInt();
-		elementData = (Entry<K, V>[])new Entry[length];
+		elementData = new Entry[length];
 		elementCount = stream.readInt();
 		for (int i = elementCount; --i >= 0;) {
 			Object key = stream.readObject();
 			int hash = key.hashCode();
 			int index = (hash & 0x7FFFFFFF) % length;
-			if (index < firstSlot)
-				firstSlot = index;
-			if (index > lastSlot)
-				lastSlot = index;
+			if (index < firstSlot) {
+                firstSlot = index;
+            }
+			if (index > lastSlot) {
+                lastSlot = index;
+            }
 			Entry<K, V> entry = newEntry((K)key, (V)stream.readObject(), hash);
 			entry.next = elementData[index];
 			elementData[index] = entry;

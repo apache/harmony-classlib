@@ -30,36 +30,41 @@ class PropertyPermissionCollection extends PermissionCollection {
 	
 	private static final long serialVersionUID = 7015263904581634791L;
 
-	Hashtable permissions = new Hashtable(30);
+	Hashtable<String, Permission> permissions = new Hashtable<String, Permission>(30);
 
 	public void add(Permission perm) {
-		if (!isReadOnly()) {
-			Permission previous = (Permission) permissions.put(perm.getName(),
-					perm);
-			// if the permission already existed but with only "read" or "write"
-			// set, then replace with both set
-			if (previous != null
-					&& !previous.getActions().equals(perm.getActions()))
-				permissions.put(perm.getName(), new PropertyPermission(perm
-						.getName(), "read,write")); //$NON-NLS-1$
-		} else
-			throw new IllegalStateException();
-	}
+        if (!isReadOnly()) {
+            Permission prev = permissions.put(perm.getName(), perm);
+            /*
+             * If the permission already existed but with only "read" or "write"
+             * set, then replace with both set.
+             */
+            if (prev != null && !prev.getActions().equals(perm.getActions())) {
+                Permission np = new PropertyPermission(perm.getName(),
+                        "read,write");
+                permissions.put(perm.getName(), np); //$NON-NLS-1$
+            }
+        } else {
+            throw new IllegalStateException();
+        }
+    }
 
-	public Enumeration elements() {
+	public Enumeration<Permission> elements() {
 		return permissions.elements();
 	}
 
 	public boolean implies(Permission perm) {
-		Enumeration elemEnum = elements();
-		while (elemEnum.hasMoreElements())
-			if (((Permission) elemEnum.nextElement()).implies(perm))
-				return true;
-		// At this point, the only way it can succeed is if both read and write
-		// are set,
-		// and these are separately granted by two different permissions with
-		// one
-		// representing a parent directory.
+		Enumeration<Permission> elemEnum = elements();
+		while (elemEnum.hasMoreElements()) {
+            if ((elemEnum.nextElement()).implies(perm)) {
+                return true;
+            }
+        }
+		/*
+         * At this point, the only way it can succeed is if both read and write
+         * are set, and these are separately granted by two different
+         * permissions with one representing a parent directory.
+         */
 		return perm.getActions().equals("read,write") //$NON-NLS-1$
 				&& implies(new PropertyPermission(perm.getName(), "read")) //$NON-NLS-1$
 				&& implies(new PropertyPermission(perm.getName(), "write")); //$NON-NLS-1$
@@ -79,6 +84,6 @@ class PropertyPermissionCollection extends PermissionCollection {
 	private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		ObjectInputStream.GetField fields = stream.readFields();
-		permissions = (Hashtable) fields.get("permissions", null); //$NON-NLS-1$
+		permissions = (Hashtable<String, Permission>) fields.get("permissions", null); //$NON-NLS-1$
 	}
 }

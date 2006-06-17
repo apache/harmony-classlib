@@ -116,20 +116,25 @@ public abstract class ResourceBundle {
 	 */
 	public static ResourceBundle getBundle(String bundleName, Locale locale,
 			ClassLoader loader) throws MissingResourceException {
-		if (loader == null)
-			throw new NullPointerException();
+		if (loader == null) {
+            throw new NullPointerException();
+        }
 		if (bundleName != null) {
 			ResourceBundle bundle;
-			if (!locale.equals(Locale.getDefault()))
-				if ((bundle = handleGetBundle(bundleName, "_" + locale, false, //$NON-NLS-1$
-						loader)) != null)
-					return bundle;
+			if (!locale.equals(Locale.getDefault())) {
+                if ((bundle = handleGetBundle(bundleName, "_" + locale, false, //$NON-NLS-1$
+						loader)) != null) {
+                    return bundle;
+                }
+            }
 			if ((bundle = handleGetBundle(bundleName,
-					"_" + Locale.getDefault(), true, loader)) != null) //$NON-NLS-1$
-				return bundle;
+					"_" + Locale.getDefault(), true, loader)) != null) {
+                return bundle;
+            }
 			throw new MissingResourceException(null, bundleName, ""); //$NON-NLS-1$
-		} else
-			throw new NullPointerException();
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	private static ResourceBundle getBundleImpl(String bundleName,
@@ -138,20 +143,25 @@ public abstract class ResourceBundle {
 			ResourceBundle bundle;
 			if (!locale.equals(Locale.getDefault())) {
 				String localeName = locale.toString();
-				if (localeName.length() > 0)
-					localeName = "_" + localeName; //$NON-NLS-1$
+				if (localeName.length() > 0) {
+                    localeName = "_" + localeName; //$NON-NLS-1$
+                }
 				if ((bundle = handleGetBundle(bundleName, localeName, false,
-						loader)) != null)
-					return bundle;
+						loader)) != null) {
+                    return bundle;
+                }
 			}
 			String localeName = Locale.getDefault().toString();
-			if (localeName.length() > 0)
-				localeName = "_" + localeName; //$NON-NLS-1$
-			if ((bundle = handleGetBundle(bundleName, localeName, true, loader)) != null)
-				return bundle;
+			if (localeName.length() > 0) {
+                localeName = "_" + localeName; //$NON-NLS-1$
+            }
+			if ((bundle = handleGetBundle(bundleName, localeName, true, loader)) != null) {
+                return bundle;
+            }
 			throw new MissingResourceException(null, bundleName, ""); //$NON-NLS-1$
-		} else
-			throw new NullPointerException();
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -184,8 +194,9 @@ public abstract class ResourceBundle {
 		ResourceBundle last, theParent = this;
 		do {
 			Object result = theParent.handleGetObject(key);
-			if (result != null)
-				return result;
+			if (result != null) {
+                return result;
+            }
 			last = theParent;
 			theParent = theParent.parent;
 		} while (theParent != null);
@@ -227,7 +238,7 @@ public abstract class ResourceBundle {
 		Object cacheKey = loader != null ? (Object) loader : (Object) "null"; //$NON-NLS-1$
 		Hashtable<String,ResourceBundle> loaderCache;
 		synchronized (cache) {
-			loaderCache = (Hashtable<String,ResourceBundle>) cache.get(cacheKey);
+			loaderCache = cache.get(cacheKey);
 			if (loaderCache == null) {
 				loaderCache = new Hashtable<String,ResourceBundle>(13);
 				cache.put(cacheKey, loaderCache);
@@ -235,21 +246,24 @@ public abstract class ResourceBundle {
 		}
 		ResourceBundle result = loaderCache.get(bundleName);
 		if (result != null) {
-			if (result == MISSINGBASE)
-				return null;
+			if (result == MISSINGBASE) {
+                return null;
+            }
 			if (result == MISSING) {
-				if (!loadBase)
-					return null;
+				if (!loadBase) {
+                    return null;
+                }
 				String extension = strip(locale);
-				if (extension == null)
-					return null;
+				if (extension == null) {
+                    return null;
+                }
 				return handleGetBundle(base, extension, loadBase, loader);
 			}
 			return result;
 		}
 
 		try {
-			Class bundleClass = Class.forName(bundleName, true, loader);
+			Class<?> bundleClass = Class.forName(bundleName, true, loader);
 			bundle = (ResourceBundle) bundleClass.newInstance();
 			bundle.setLocale(locale);
 		} catch (Exception e) {
@@ -282,8 +296,9 @@ public abstract class ResourceBundle {
 			if (extension != null) {
 				ResourceBundle parent = handleGetBundle(base, extension, true,
 						loader);
-				if (parent != null)
-					bundle.setParent(parent);
+				if (parent != null) {
+                    bundle.setParent(parent);
+                }
 			}
 			loaderCache.put(bundleName, bundle);
 			return bundle;
@@ -323,8 +338,9 @@ public abstract class ResourceBundle {
 
 	private static String strip(String name) {
 		int index = name.lastIndexOf('_');
-		if (index != -1)
-			return name.substring(0, index);
+		if (index != -1) {
+            return name.substring(0, index);
+        }
 		return null;
 	}
 
@@ -332,17 +348,20 @@ public abstract class ResourceBundle {
 		String language = "", country = "", variant = "";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		if (name.length() > 1) {
 			int nextIndex = name.indexOf('_', 1);
-			if (nextIndex == -1)
-				nextIndex = name.length();
+			if (nextIndex == -1) {
+                nextIndex = name.length();
+            }
 			language = name.substring(1, nextIndex);
 			if (nextIndex + 1 < name.length()) {
 				int index = nextIndex;
 				nextIndex = name.indexOf('_', nextIndex + 1);
-				if (nextIndex == -1)
-					nextIndex = name.length();
+				if (nextIndex == -1) {
+                    nextIndex = name.length();
+                }
 				country = name.substring(index + 1, nextIndex);
-				if (nextIndex + 1 < name.length())
-					variant = name.substring(nextIndex + 1, name.length());
+				if (nextIndex + 1 < name.length()) {
+                    variant = name.substring(nextIndex + 1, name.length());
+                }
 			}
 		}
 		locale = new Locale(language, country, variant);

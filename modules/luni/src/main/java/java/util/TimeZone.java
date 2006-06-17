@@ -51,7 +51,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 */
 	public static final int LONG = 1;
 
-	private static HashMap AvailableZones;
+	private static HashMap<String, TimeZone> AvailableZones;
 
 	private static TimeZone Default;
 
@@ -61,10 +61,11 @@ abstract public class TimeZone implements Serializable, Cloneable {
 
 	private static void initializeAvailable() {
 		TimeZone[] zones = TimeZones.getTimeZones();
-		AvailableZones = new HashMap((zones.length + 1) * 4 / 3);
+		AvailableZones = new HashMap<String, TimeZone>((zones.length + 1) * 4 / 3);
 		AvailableZones.put(GMT.getID(), GMT);
-		for (int i = 0; i < zones.length; i++)
-			AvailableZones.put(zones[i].getID(), zones[i]);
+		for (int i = 0; i < zones.length; i++) {
+            AvailableZones.put(zones[i].getID(), zones[i]);
+        }
 	}
 
 	/**
@@ -76,9 +77,11 @@ abstract public class TimeZone implements Serializable, Cloneable {
 
 	private void appendNumber(StringBuffer buffer, int count, int value) {
 		String string = Integer.toString(value);
-		if (count > string.length())
-			for (int i = 0; i < count - string.length(); i++)
-				buffer.append('0');
+		if (count > string.length()) {
+            for (int i = 0; i < count - string.length(); i++) {
+                buffer.append('0');
+            }
+        }
 		buffer.append(string);
 	}
 
@@ -105,13 +108,15 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 * @return an array of time zone ID strings
 	 */
 	public static synchronized String[] getAvailableIDs() {
-		if (AvailableZones == null)
-			initializeAvailable();
+		if (AvailableZones == null) {
+            initializeAvailable();
+        }
 		int length = AvailableZones.size();
 		String[] answer = new String[length];
-		Iterator keys = AvailableZones.keySet().iterator();
-		for (int i = 0; i < length; i++)
-			answer[i] = (String) keys.next();
+		Iterator<String> keys = AvailableZones.keySet().iterator();
+		for (int i = 0; i < length; i++) {
+            answer[i] = keys.next();
+        }
 		return answer;
 	}
 
@@ -124,15 +129,17 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 * @return an array of time zone ID strings
 	 */
 	public static synchronized String[] getAvailableIDs(int offset) {
-		if (AvailableZones == null)
-			initializeAvailable();
+		if (AvailableZones == null) {
+            initializeAvailable();
+        }
 		int count = 0, length = AvailableZones.size();
 		String[] all = new String[length];
-		Iterator zones = AvailableZones.values().iterator();
+		Iterator<TimeZone> zones = AvailableZones.values().iterator();
 		for (int i = 0; i < length; i++) {
-			TimeZone tz = (TimeZone) zones.next();
-			if (tz.getRawOffset() == offset)
-				all[count++] = tz.getID();
+			TimeZone tz = zones.next();
+			if (tz.getRawOffset() == offset) {
+                all[count++] = tz.getID();
+            }
 		}
 		String[] answer = new String[count];
 		System.arraycopy(all, 0, answer, 0, count);
@@ -145,8 +152,9 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 * @return the default time zone
 	 */
 	public static synchronized TimeZone getDefault() {
-		if (Default == null)
-			setDefault(null);
+		if (Default == null) {
+            setDefault(null);
+        }
 		return (TimeZone) Default.clone();
 	}
 
@@ -176,7 +184,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
 
 	/**
 	 * Gets the specified style of name (LONG or SHORT) for this TimeZone for
-	 * the default Locale in either standard or daylight time as specifed. If
+	 * the default Locale in either standard or daylight time as specified. If
 	 * the name is not available, the result is in the format GMT[+-]hh:mm.
 	 * 
 	 * @param daylightTime
@@ -191,7 +199,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
 
 	/**
 	 * Gets the specified style of name (LONG or SHORT) for this TimeZone for
-	 * the specified Locale in either standard or daylight time as specifed. If
+	 * the specified Locale in either standard or daylight time as specified. If
 	 * the name is not available, the result is in the format GMT[+-]hh:mm.
 	 * 
 	 * @param daylightTime
@@ -208,13 +216,16 @@ abstract public class TimeZone implements Serializable, Cloneable {
 			DateFormatSymbols data = new DateFormatSymbols(locale);
 			String id = getID();
 			String[][] zones = data.getZoneStrings();
-			for (int i = 0; i < zones.length; i++)
-				if (id.equals(zones[i][0]))
-					return style == SHORT ? zones[i][useDaylight ? 4 : 2]
+			for (int i = 0; i < zones.length; i++) {
+                if (id.equals(zones[i][0])) {
+                    return style == SHORT ? zones[i][useDaylight ? 4 : 2]
 							: zones[i][useDaylight ? 3 : 1];
+                }
+            }
 			int offset = getRawOffset();
-			if (useDaylight && this instanceof SimpleTimeZone)
-				offset += ((SimpleTimeZone) this).getDSTSavings();
+			if (useDaylight && this instanceof SimpleTimeZone) {
+                offset += ((SimpleTimeZone) this).getDSTSavings();
+            }
 			offset /= 60000;
 			char sign = '+';
 			if (offset < 0) {
@@ -251,7 +262,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 * hour.
 	 * <p>
 	 * 
-	 * @return the daylight savings offset in milliseconds if this Timezone
+	 * @return the daylight savings offset in milliseconds if this TimeZone
 	 *         observes daylight savings, zero otherwise.
 	 * 
 	 */
@@ -317,9 +328,10 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 *         the specified ID does not exist
 	 */
 	public static synchronized TimeZone getTimeZone(String name) {
-		if (AvailableZones == null)
-			initializeAvailable();
-		TimeZone zone = (TimeZone) AvailableZones.get(name);
+		if (AvailableZones == null) {
+            initializeAvailable();
+        }
+		TimeZone zone = AvailableZones.get(name);
 		if (zone == null) {
 			if (name.startsWith("GMT") && name.length() > 3) {
 				char sign = name.charAt(3);
@@ -337,14 +349,16 @@ abstract public class TimeZone implements Serializable, Cloneable {
 								&& formattedName.charAt(index) == ':') {
 							int minute = parseNumber(formattedName, index + 1,
 									position);
-							if (position[0] == -1 || minute < 0 || minute > 59)
-								return (TimeZone) GMT.clone();
+							if (position[0] == -1 || minute < 0 || minute > 59) {
+                                return (TimeZone) GMT.clone();
+                            }
 							raw += minute * 60000;
 						} else if (hour >= 30 || index > 6) {
 							raw = (hour / 100 * 3600000) + (hour % 100 * 60000);
 						}
-						if (sign == '-')
-							raw = -raw;
+						if (sign == '-') {
+                            raw = -raw;
+                        }
 						return new SimpleTimeZone(raw, formattedName);
 					}
 				}
@@ -392,8 +406,9 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 * @return true when the TimeZones have the same raw offset, false otherwise
 	 */
 	public boolean hasSameRules(TimeZone zone) {
-		if (zone == null)
-			return false;
+		if (zone == null) {
+            return false;
+        }
 		return getRawOffset() == zone.getRawOffset();
 	}
 
@@ -431,7 +446,7 @@ abstract public class TimeZone implements Serializable, Cloneable {
 			return;
 		}
 
-		String zone = (String) AccessController.doPrivileged(new PriviAction(
+		String zone = AccessController.doPrivileged(new PriviAction<String>(
 				"user.timezone"));
 
 		// if property user.timezone is not set, we call the native method
@@ -473,8 +488,9 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 *            a string which is the time zone ID
 	 */
 	public void setID(String name) {
-		if (name == null)
-			throw new NullPointerException();
+		if (name == null) {
+            throw new NullPointerException();
+        }
 		ID = name;
 	}
 
