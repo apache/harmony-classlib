@@ -23,6 +23,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.security.AccessController;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -115,15 +118,17 @@ public class Properties extends Hashtable<Object,Object> {
 				buffer.append("\\r"); //$NON-NLS-1$
 				break;
 			default:
-				if ("\\#!=:".indexOf(ch) >= 0 || (key && ch == ' ')) //$NON-NLS-1$
-					buffer.append('\\');
+				if ("\\#!=:".indexOf(ch) >= 0 || (key && ch == ' ')) {
+                    buffer.append('\\');
+                }
 				if (ch >= ' ' && ch <= '~') {
 					buffer.append(ch);
 				} else {
 					String hex = Integer.toHexString(ch);
 					buffer.append("\\u"); //$NON-NLS-1$
-					for (int j = 0; j < 4 - hex.length(); j++)
-						buffer.append("0"); //$NON-NLS-1$
+					for (int j = 0; j < 4 - hex.length(); j++) {
+                        buffer.append("0"); //$NON-NLS-1$
+                    }
 					buffer.append(hex);
 				}
 			}
@@ -165,8 +170,9 @@ public class Properties extends Hashtable<Object,Object> {
 		if (property == null && defaults != null) {
 			property = defaults.getProperty(name);
 		}
-		if (property == null)
-			return defaultValue;
+		if (property == null) {
+            return defaultValue;
+        }
 		return property;
 	}
 
@@ -178,8 +184,9 @@ public class Properties extends Hashtable<Object,Object> {
 	 *            the PrintStream
 	 */
 	public void list(PrintStream out) {
-		if (out == null)
-			throw new NullPointerException();
+		if (out == null) {
+            throw new NullPointerException();
+        }
 		StringBuffer buffer = new StringBuffer(80);
 		Enumeration<?> keys = propertyNames();
 		while (keys.hasMoreElements()) {
@@ -195,8 +202,9 @@ public class Properties extends Hashtable<Object,Object> {
 			if (property.length() > 40) {
 				buffer.append(property.substring(0, 37));
 				buffer.append("..."); //$NON-NLS-1$
-			} else
-				buffer.append(property);
+			} else {
+                buffer.append(property);
+            }
 			out.println(buffer.toString());
 			buffer.setLength(0);
 		}
@@ -210,8 +218,9 @@ public class Properties extends Hashtable<Object,Object> {
 	 *            the PrintWriter
 	 */
 	public void list(PrintWriter writer) {
-		if (writer == null)
-			throw new NullPointerException();
+		if (writer == null) {
+            throw new NullPointerException();
+        }
 		StringBuffer buffer = new StringBuffer(80);
 		Enumeration<?> keys = propertyNames();
 		while (keys.hasMoreElements()) {
@@ -227,8 +236,9 @@ public class Properties extends Hashtable<Object,Object> {
 			if (property.length() > 40) {
 				buffer.append(property.substring(0, 37));
 				buffer.append("..."); //$NON-NLS-1$
-			} else
-				buffer.append(property);
+			} else {
+                buffer.append(property);
+            }
 			writer.println(buffer.toString());
 			buffer.setLength(0);
 		}
@@ -252,8 +262,9 @@ public class Properties extends Hashtable<Object,Object> {
 
 		while (true) {
 			if (inbufPos == inbufCount) {
-				if ((inbufCount = in.read(inbuf)) == -1)
-					break;
+				if ((inbufCount = in.read(inbuf)) == -1) {
+                    break;
+                }
 				inbufPos = 0;
 			}
 			nextChar = (char) (inbuf[inbufPos++] & 0xff);
@@ -267,13 +278,15 @@ public class Properties extends Hashtable<Object,Object> {
 				int digit = Character.digit(nextChar, 16);
 				if (digit >= 0) {
 					unicode = (unicode << 4) + digit;
-					if (++count < 4)
-						continue;
+					if (++count < 4) {
+                        continue;
+                    }
 				}
 				mode = NONE;
 				buf[offset++] = (char) unicode;
-				if (nextChar != '\n')
-					continue;
+				if (nextChar != '\n') {
+                    continue;
+                }
 			}
 			if (mode == SLASH) {
 				mode = NONE;
@@ -320,8 +333,9 @@ public class Properties extends Hashtable<Object,Object> {
 							nextChar = (char) inbuf[inbufPos++]; // & 0xff
 																	// not
 																	// required
-							if (nextChar == '\r' || nextChar == '\n')
-								break;
+							if (nextChar == '\r' || nextChar == '\n') {
+                                break;
+                            }
 						}
 						continue;
 					}
@@ -362,18 +376,21 @@ public class Properties extends Hashtable<Object,Object> {
 					break;
 				}
 				if (Character.isWhitespace(nextChar)) {
-					if (mode == CONTINUE)
-						mode = IGNORE;
+					if (mode == CONTINUE) {
+                        mode = IGNORE;
+                    }
 					// if key length == 0 or value length == 0
-					if (offset == 0 || offset == keyLength || mode == IGNORE)
-						continue;
+					if (offset == 0 || offset == keyLength || mode == IGNORE) {
+                        continue;
+                    }
 					if (keyLength == -1) { // if parsing the key
 						mode = KEY_DONE;
 						continue;
 					}
 				}
-				if (mode == IGNORE || mode == CONTINUE)
-					mode = NONE;
+				if (mode == IGNORE || mode == CONTINUE) {
+                    mode = NONE;
+                }
 			}
 			firstChar = false;
 			if (mode == KEY_DONE) {
@@ -394,8 +411,9 @@ public class Properties extends Hashtable<Object,Object> {
 	 * @return an Enumeration containing the names of all properties
 	 */
 	public Enumeration<?> propertyNames() {
-		if (defaults == null)
-			return keys();
+		if (defaults == null) {
+            return keys();
+        }
 
 		Hashtable<Object, Object> set = new Hashtable<Object, Object>(defaults.size() + size());
 		Enumeration<?> keys = defaults.propertyNames();
@@ -464,8 +482,8 @@ public class Properties extends Hashtable<Object,Object> {
 	public synchronized void store(OutputStream out, String comment)
 			throws IOException {
 		if (lineSeparator == null) {
-			lineSeparator = (String) AccessController
-					.doPrivileged(new PriviAction("line.separator")); //$NON-NLS-1$
+			lineSeparator = AccessController
+					.doPrivileged(new PriviAction<String>("line.separator")); //$NON-NLS-1$
         }
 
 		StringBuilder buffer = new StringBuilder(200);
@@ -568,71 +586,61 @@ public class Properties extends Hashtable<Object,Object> {
     }
     
     public synchronized void storeToXML(OutputStream os, String comment,
-             String encoding) throws IOException {
-        String encodingCanonicalName; 
+            String encoding) throws IOException {
 
         if (os == null || encoding == null) {
             throw new NullPointerException();
         }
         
-        if (lineSeparator == null) {
-            lineSeparator = (String) AccessController
-                    .doPrivileged(new PriviAction("line.separator"));
+        /*
+         * We can write to XML file using encoding parameter but note that some
+         * aliases for encodings are not supported by the XML parser. Thus we
+         * have to know canonical name for encoding used to store data in XML
+         * since the XML parser must recognize encoding name used to store data.
+         */
+        
+        String encodingCanonicalName;
+        try {
+            encodingCanonicalName = Charset.forName(encoding).name();
+        } catch (IllegalCharsetNameException e) {
+            System.out.println("Warning: encoding name " + encoding
+                    + " is illegal, using UTF-8 as default encoding");
+            encodingCanonicalName = "UTF-8";
+        } catch (UnsupportedCharsetException e) {
+            System.out.println("Warning: encoding " + encoding
+                    + " is not supported, using UTF-8 as default encoding");
+            encodingCanonicalName = "UTF-8";
         }
+
+        PrintStream printStream = new PrintStream(os, false, encodingCanonicalName);
         
-        /*
-         * Uncomment following code when java.nio.charset.Charset class will
-         * be implemented. We can write to XML file using encoding parameter 
-         * but note that some aliases for encodings are not supported 
-         * by the XML parser. Thus we have to know canonical name for encoding
-         * used to store data in XML since the XML parser must recognize 
-         * encoding name used to store data.
-         */
+        printStream.print("<?xml version=\"1.0\" encoding=\"");
+        printStream.print(encodingCanonicalName);
+        printStream.println("\"?>");
         
-        //try {
-        //    encodingCanonicalName = Charset.forName(encoding).name();
-        //} catch (IllegalCharsetNameException e) {
-        //    System.out.println("Warning: encoding name " + encoding +" is illegal, " 
-        //            + "using UTF-8 as default encoding");
-        //    encodingCanonicalName = "UTF-8";
-        //} catch (UnsupportedCharsetException e) {
-        //    System.out.println("Warning: encoding " + encoding +" is not supported, " 
-        //            + "using UTF-8 as default encoding");
-        //    encodingCanonicalName = "UTF-8";
-        //}
+        printStream.print("<!DOCTYPE properties SYSTEM \"");
+        printStream.print(PROP_DTD_NAME);
+        printStream.println("\">");
         
-        /*
-         * We use UTF-8 as default encoding. Delete the line of code that 
-         * follows this comment when java.nio.charset.Charset class will be 
-         * implemented.
-         */
-        encodingCanonicalName = "UTF-8";
+        printStream.println("<properties>");
         
-        OutputStreamWriter osw = new OutputStreamWriter(os,
-                encodingCanonicalName);
-        StringBuffer buf = new StringBuffer(200);
-        buf.append("<?xml version=\"1.0\" encoding=\"" + encodingCanonicalName 
-                + "\"?>" + lineSeparator);
-        buf.append("<!DOCTYPE properties SYSTEM \"" + PROP_DTD_NAME 
-                + "\">" + lineSeparator);
-        buf.append("<properties>" + lineSeparator);
         if (comment != null) {
-            buf.append("<comment>" + substitutePredefinedEntries(comment) 
-                    + "</comment>" + lineSeparator);
+            printStream.print("<comment>");
+            printStream.print(substitutePredefinedEntries(comment));
+            printStream.println("</comment>");
         }
-        Iterator iter = entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
+
+        for (Map.Entry<Object, Object> entry : entrySet()) {
             String keyValue = (String) entry.getKey();
             String entryValue = (String) entry.getValue();
-            buf.append("<entry key=\"" + substitutePredefinedEntries(keyValue) 
-                    + "\">" + substitutePredefinedEntries(entryValue) 
-                    + "</entry>" + lineSeparator);            
+            printStream.print("<entry key=\"");
+            printStream.print(substitutePredefinedEntries(keyValue));
+            printStream.print("\">");
+            printStream.print(substitutePredefinedEntries(entryValue));
+            printStream.println("</entry>");
         }
-        buf.append("</properties>" + lineSeparator);
-    
-        osw.write(buf.toString());
-        osw.flush();
+        printStream.println("</properties>");
+        printStream.flush();
     }
     
     private String substitutePredefinedEntries(String s) {
