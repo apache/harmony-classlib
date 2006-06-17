@@ -15,7 +15,6 @@
 
 package java.net;
 
-
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Enumeration;
@@ -30,7 +29,7 @@ final class SocketPermissionCollection extends PermissionCollection {
 	
 	private static final long serialVersionUID = 2787186408602843674L;
 
-	public Vector permissions = new Vector();
+	private Vector<Permission> permissions = new Vector<Permission>();
 
 	// Constructs a new instance of this class.
 	public SocketPermissionCollection() {
@@ -39,10 +38,12 @@ final class SocketPermissionCollection extends PermissionCollection {
 
 	// Adds the argument to the collection.
 	public void add(Permission permission) {
-		if (isReadOnly())
-			throw new IllegalStateException();
-		if (!(permission instanceof SocketPermission))
-			throw new IllegalArgumentException(permission.toString());
+		if (isReadOnly()) {
+            throw new IllegalStateException();
+        }
+		if (!(permission instanceof SocketPermission)) {
+            throw new IllegalArgumentException(permission.toString());
+        }
 		permissions.addElement(permission);
 	}
 
@@ -56,8 +57,9 @@ final class SocketPermissionCollection extends PermissionCollection {
 	 * if <code>permission</code> is the subset of this collection.
 	 * */
 	public boolean implies(Permission permission) {
-		if (!(permission instanceof SocketPermission))
-			return false;
+		if (!(permission instanceof SocketPermission)) {
+            return false;
+        }
 		SocketPermission sp, argPerm = (SocketPermission) permission;
 		int pmask = argPerm.actionsMask;
 		int allMask = 0;
@@ -65,17 +67,21 @@ final class SocketPermissionCollection extends PermissionCollection {
 		while ((i < count) && ((allMask & pmask) != pmask)) {
 			sp = (SocketPermission) permissions.elementAt(i);
 			if (sp.checkHost(argPerm)) {
-				if ((sp.actionsMask & SocketPermission.SP_RESOLVE) == SocketPermission.SP_RESOLVE)
-					allMask |= SocketPermission.SP_RESOLVE;
+				if ((sp.actionsMask & SocketPermission.SP_RESOLVE) == SocketPermission.SP_RESOLVE) {
+                    allMask |= SocketPermission.SP_RESOLVE;
+                }
 				// Only set flags if the port range and host can be implied
 				if ((argPerm.portMin >= sp.portMin)
 						&& (argPerm.portMax <= sp.portMax)) {
-					if ((sp.actionsMask & SocketPermission.SP_CONNECT) == SocketPermission.SP_CONNECT)
-						allMask |= SocketPermission.SP_CONNECT;
-					if ((sp.actionsMask & SocketPermission.SP_ACCEPT) == SocketPermission.SP_ACCEPT)
-						allMask |= SocketPermission.SP_ACCEPT;
-					if ((sp.actionsMask & SocketPermission.SP_LISTEN) == SocketPermission.SP_LISTEN)
-						allMask |= SocketPermission.SP_LISTEN;
+					if ((sp.actionsMask & SocketPermission.SP_CONNECT) == SocketPermission.SP_CONNECT) {
+                        allMask |= SocketPermission.SP_CONNECT;
+                    }
+					if ((sp.actionsMask & SocketPermission.SP_ACCEPT) == SocketPermission.SP_ACCEPT) {
+                        allMask |= SocketPermission.SP_ACCEPT;
+                    }
+					if ((sp.actionsMask & SocketPermission.SP_LISTEN) == SocketPermission.SP_LISTEN) {
+                        allMask |= SocketPermission.SP_LISTEN;
+                    }
 				}
 			}
 			++i;

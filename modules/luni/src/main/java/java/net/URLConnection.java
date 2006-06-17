@@ -43,8 +43,6 @@ public abstract class URLConnection {
 
 	private String contentType;
 
-	private static String defaultRequestProperty = ""; // initial default value
-
 	private static boolean defaultAllowUserInteraction = false;
 
 	private static boolean defaultUseCaches = true;
@@ -54,8 +52,6 @@ public abstract class URLConnection {
 	private long lastModified = -1;
 
 	protected long ifModifiedSince;
-
-	private String requestProperty = defaultRequestProperty;
 
 	protected boolean useCaches = defaultUseCaches;
 
@@ -130,7 +126,7 @@ public abstract class URLConnection {
 	 * @return a non-null object
 	 * 
 	 * @throws IOException
-	 *             if an IO error occured
+	 *             if an IO error occurred
 	 * 
 	 * @see ContentHandler
 	 * @see ContentHandlerFactory
@@ -139,14 +135,18 @@ public abstract class URLConnection {
 	 * 
 	 */
 	public Object getContent() throws java.io.IOException {
-		if (!connected)
-			connect();
+		if (!connected) {
+            connect();
+        }
 
-		if ((contentType = getContentType()) == null)
-			if ((contentType = guessContentTypeFromName(url.getFile())) == null)
-				contentType = guessContentTypeFromStream(getInputStream());
-		if (contentType != null)
-			return getContentHandler(contentType).getContent(this);
+		if ((contentType = getContentType()) == null) {
+            if ((contentType = guessContentTypeFromName(url.getFile())) == null) {
+                contentType = guessContentTypeFromStream(getInputStream());
+            }
+        }
+		if (contentType != null) {
+            return getContentHandler(contentType).getContent(this);
+        }
 		return null;
 	}
 
@@ -163,17 +163,21 @@ public abstract class URLConnection {
 	 *         the content does not match a specified content type.
 	 * 
 	 * @throws IOException
-	 *             If an error occured obtaining the content.
+	 *             If an error occurred obtaining the content.
 	 */
 	public Object getContent(Class[] types) throws IOException {
-		if (!connected)
-			connect();
+		if (!connected) {
+            connect();
+        }
 
-		if ((contentType = getContentType()) == null)
-			if ((contentType = guessContentTypeFromName(url.getFile())) == null)
-				contentType = guessContentTypeFromStream(getInputStream());
-		if (contentType != null)
-			return getContentHandler(contentType).getContent(this, types);
+		if ((contentType = getContentType()) == null) {
+            if ((contentType = guessContentTypeFromName(url.getFile())) == null) {
+                contentType = guessContentTypeFromStream(getInputStream());
+            }
+        }
+		if (contentType != null) {
+            return getContentHandler(contentType).getContent(this, types);
+        }
 		return null;
 	}
 
@@ -203,28 +207,30 @@ public abstract class URLConnection {
 
 		// if there's a cached content handler, use it
 		Object cHandler = contentHandlers.get(type);
-		if (cHandler != null)
-			return (ContentHandler) cHandler;
+		if (cHandler != null) {
+            return (ContentHandler) cHandler;
+        }
 
 		if (contentHandlerFactory != null) {
 			cHandler = contentHandlerFactory.createContentHandler(type);
-			if (!(cHandler instanceof ContentHandler))
-				throw new UnknownServiceException();
+			if (!(cHandler instanceof ContentHandler)) {
+                throw new UnknownServiceException();
+            }
 			contentHandlers.put(type, cHandler);
 			return (ContentHandler) cHandler;
 		}
 
 		// search through the package list for the right class for the Content
 		// Type
-		String packageList = (String) AccessController
-				.doPrivileged(new PriviAction("java.content.handler.pkgs"));
+		String packageList = AccessController
+				.doPrivileged(new PriviAction<String>("java.content.handler.pkgs"));
 		if (packageList != null) {
 			final StringTokenizer st = new StringTokenizer(packageList, "|");
 			while (st.countTokens() > 0) {
 				try {
-					Class cl = Class.forName(st.nextToken() + "." + typeString,
+					Class<?> cl = Class.forName(st.nextToken() + "." + typeString,
 							true, ClassLoader.getSystemClassLoader());
-					cHandler = (ContentHandler) cl.newInstance();
+					cHandler = cl.newInstance();
 				} catch (Exception e) {
 				}
 			}
@@ -246,8 +252,9 @@ public abstract class URLConnection {
 			});
 		}
 		if (cHandler != null) {
-			if (!(cHandler instanceof ContentHandler))
-				throw new UnknownServiceException();
+			if (!(cHandler instanceof ContentHandler)) {
+                throw new UnknownServiceException();
+            }
 			contentHandlers.put(type, cHandler); // if we got the handler,
 			// cache it for next time
 			return (ContentHandler) cHandler;
@@ -422,7 +429,7 @@ public abstract class URLConnection {
 	 * @since 1.4
 	 */
 	public Map<String, List<String>> getHeaderFields() {
-		return Collections.EMPTY_MAP;
+		return Collections.emptyMap();
 	}
 
 	/**
@@ -435,7 +442,7 @@ public abstract class URLConnection {
 	 * @since 1.4
 	 */
 	public Map<String, List<String>> getRequestProperties() {
-		return Collections.EMPTY_MAP;
+		return Collections.emptyMap();
 	}
 
 	/**
@@ -494,8 +501,9 @@ public abstract class URLConnection {
 	 */
 	public long getHeaderFieldDate(String field, long defaultValue) {
 		String date = getHeaderField(field);
-		if (date == null)
-			return defaultValue;
+		if (date == null) {
+            return defaultValue;
+        }
 		return Util.parseDate(date);
 	}
 
@@ -583,8 +591,9 @@ public abstract class URLConnection {
 	 * @see #getExpiration
 	 */
 	public long getLastModified() {
-		if (lastModified != -1)
-			return lastModified;
+		if (lastModified != -1) {
+            return lastModified;
+        }
 		return lastModified = getHeaderFieldDate("Last-Modified", 0);
 	}
 
@@ -649,7 +658,7 @@ public abstract class URLConnection {
 	/**
 	 * Answers the <code>URL</code> of this connection
 	 * 
-	 * @return the url of this conneciton
+	 * @return the URL of this connection
 	 * 
 	 * @see URL
 	 * @see #URLConnection(URL)
@@ -669,7 +678,7 @@ public abstract class URLConnection {
 
 	/**
 	 * Determines the MIME type of the file specified by the
-	 * <code> string </code> url, using the filename extension. Any fragment
+	 * <code> string </code> URL, using the filename extension. Any fragment
 	 * identifier is removed before processing.
 	 * 
 	 * @param url
@@ -699,19 +708,24 @@ public abstract class URLConnection {
 	 */
 	public static String guessContentTypeFromStream(InputStream is)
 			throws IOException {
-		if (!is.markSupported())
-			return null;
+		if (!is.markSupported()) {
+            return null;
+        }
 		is.mark(4);
 		char[] chars = new char[4];
-		for (int i = 0; i < chars.length; i++)
-			chars[i] = (char) is.read();
+		for (int i = 0; i < chars.length; i++) {
+            chars[i] = (char) is.read();
+        }
 		is.reset();
-		if ((chars[0] == 'P') && (chars[1] == 'K'))
-			return "application/zip";
-		if ((chars[0] == 'G') && (chars[1] == 'I'))
-			return "image/gif";
-		if (new String(chars).trim().startsWith("<"))
-			return "text/html";
+		if ((chars[0] == 'P') && (chars[1] == 'K')) {
+            return "application/zip";
+        }
+		if ((chars[0] == 'G') && (chars[1] == 'I')) {
+            return "image/gif";
+        }
+		if (new String(chars).trim().startsWith("<")) {
+            return "text/html";
+        }
 		return null;
 	}
 
@@ -728,8 +742,9 @@ public abstract class URLConnection {
 		for (int i = 0; i < typeStringBuffer.length(); i++) {
 			// if non-alphanumeric, replace it with '_'
 			char c = typeStringBuffer.charAt(i);
-			if (!(Character.isLetter(c) || Character.isDigit(c) || c == '.'))
-				typeStringBuffer.setCharAt(i, '_');
+			if (!(Character.isLetter(c) || Character.isDigit(c) || c == '.')) {
+                typeStringBuffer.setCharAt(i, '_');
+            }
 		}
 		return typeStringBuffer.toString();
 	}
@@ -755,7 +770,7 @@ public abstract class URLConnection {
 	/**
 	 * Sets the current content handler factory to be
 	 * <code>contentFactory</code>. It can only do so with the permission of
-	 * the security manager. The ContentFactory can only be specified ince
+	 * the security manager. The ContentFactory can only be specified once
 	 * during the lifetime of an application.
 	 * 
 	 * @param contentFactory
@@ -772,11 +787,13 @@ public abstract class URLConnection {
 	 */
 	public static synchronized void setContentHandlerFactory(
 			ContentHandlerFactory contentFactory) {
-		if (contentHandlerFactory != null)
-			throw new Error(Msg.getString("K004e"));
+		if (contentHandlerFactory != null) {
+            throw new Error(Msg.getString("K004e"));
+        }
 		SecurityManager sManager = System.getSecurityManager();
-		if (sManager != null)
-			sManager.checkSetFactory();
+		if (sManager != null) {
+            sManager.checkSetFactory();
+        }
 		contentHandlerFactory = contentFactory;
 	}
 
@@ -806,7 +823,7 @@ public abstract class URLConnection {
 	}
 
 	/**
-	 * Set whether caches are used by deafult. Existing URLConnections are
+	 * Set whether caches are used by default. Existing URLConnections are
 	 * unaffected.
 	 * 
 	 * @param newValue
@@ -879,8 +896,9 @@ public abstract class URLConnection {
 	 */
 	public static void setFileNameMap(FileNameMap map) {
 		SecurityManager manager = System.getSecurityManager();
-		if (manager != null)
-			manager.checkSetFactory();
+		if (manager != null) {
+            manager.checkSetFactory();
+        }
 		fileNameMap = map;
 	}
 

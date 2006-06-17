@@ -57,16 +57,15 @@ public class URLClassLoader extends SecureClassLoader {
 
     URL[] urls, orgUrls;
 
-    private IdentityHashMap<URL, JarFile> resCache = new IdentityHashMap<URL, JarFile>(
-            32);
+    private IdentityHashMap<URL, JarFile> resCache = new IdentityHashMap<URL, JarFile>(32);
 
     private URLStreamHandlerFactory factory;
 
     HashMap<URL, URL[]> extensions;
 
-    Hashtable[] indexes;
+    Hashtable<String, URL[]>[] indexes;
 
-    private AccessControlContext currentContext = null;
+    private AccessControlContext currentContext;
 
     static class SubURLClassLoader extends URLClassLoader {
         // The subclass that overwrites the loadClass() method
@@ -83,7 +82,7 @@ public class URLClassLoader extends SecureClassLoader {
         /**
          * Overrides the loadClass() of <code>ClassLoader</code>. It calls
          * the security manager's <code>checkPackageAccess()</code> before
-         * attempting toload the class.
+         * attempting to load the class.
          * 
          * @return java.lang.Class the Class object.
          * @param className
@@ -178,7 +177,7 @@ public class URLClassLoader extends SecureClassLoader {
         URL[] newPath = new URL[urlArray.length + 1];
         System.arraycopy(urlArray, 0, newPath, 0, urlArray.length);
         newPath[urlArray.length] = url;
-        Hashtable[] newIndexes = new Hashtable[indexes.length + 1];
+        Hashtable<String, URL[]>[] newIndexes = new Hashtable[indexes.length + 1];
         System.arraycopy(indexes, 0, newIndexes, 0, indexes.length);
         indexes = newIndexes;
         return newPath;
@@ -191,7 +190,7 @@ public class URLClassLoader extends SecureClassLoader {
      *         resource.
      * @param name
      *            java.lang.String the name of the requested resource
-     * @exception java.io.IOException
+     * @throws IOException
      *                thrown if an IO Exception occurs while attempting to
      *                connect
      */
@@ -277,7 +276,7 @@ public class URLClassLoader extends SecureClassLoader {
      *            element, if false a Class should be returned.
      */
     Object findInIndex(int i, String name, Vector<URL> resources, boolean url) {
-        Hashtable index = indexes[i];
+        Hashtable<String, URL[]> index = indexes[i];
         if (index != null) {
             int pos = name.lastIndexOf("/");
             // only keep the directory part of the resource
@@ -285,12 +284,12 @@ public class URLClassLoader extends SecureClassLoader {
             String indexedName = (pos > 0) ? name.substring(0, pos) : name;
             URL[] jarURLs;
             if (resources != null) {
-                jarURLs = (URL[]) index.get(indexedName);
+                jarURLs = index.get(indexedName);
                 if (jarURLs != null) {
                     findResources(jarURLs, name, resources);
                 }
             } else if (url) {
-                jarURLs = (URL[]) index.get(indexedName);
+                jarURLs = index.get(indexedName);
                 if (jarURLs != null) {
                     return findResourceImpl(jarURLs, name);
                 }
@@ -300,17 +299,17 @@ public class URLClassLoader extends SecureClassLoader {
                 int position;
                 if ((position = partialName.lastIndexOf('/')) != -1) {
                     String packageName = partialName.substring(0, position);
-                    jarURLs = (URL[]) index.get(packageName);
+                    jarURLs = index.get(packageName);
                 } else {
                     String className = partialName.substring(0, partialName
                             .length())
                             + ".class";
-                    jarURLs = (URL[]) index.get(className);
+                    jarURLs = index.get(className);
                 }
                 if (jarURLs != null) {
-                    Class c = findClassImpl(jarURLs, clsName);
+                    Class<?> c = findClassImpl(jarURLs, clsName);
                     // InvalidJarException is thrown when a mapping for a class
-                    // is not valid, ie we cant find the class by following the
+                    // is not valid, i.e. we can't find the class by following the
                     // mapping.
                     if (c == null) {
                         throw new InvalidJarIndexException();
@@ -604,9 +603,9 @@ public class URLClassLoader extends SecureClassLoader {
      */
     protected Class<?> findClass(final String clsName)
             throws ClassNotFoundException {
-        Class cls = AccessController.doPrivileged(
-                new PrivilegedAction<Class>() {
-                    public Class run() {
+        Class<?> cls = AccessController.doPrivileged(
+                new PrivilegedAction<Class<?>>() {
+                    public Class<?> run() {
                         return findClassImpl(urls, clsName);
                     }
                 }, currentContext);
@@ -926,13 +925,13 @@ public class URLClassLoader extends SecureClassLoader {
         return newURLs;
     }
 
-    /*
-     * @param in java.io.InputStream the stream to read lines from @return
-     * ArrayList a list of String lines
+    /**
+     * @param in InputStream the stream to read lines from 
+     * @return List a list of String lines
      */
-    private ArrayList readLines(InputStream in) throws IOException {
+    private List<String> readLines(InputStream in) throws IOException {
         byte[] buff = new byte[144];
-        ArrayList<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<String>();
         int pos = 0;
         int next;
         while ((next = in.read()) != -1) {
@@ -968,12 +967,12 @@ public class URLClassLoader extends SecureClassLoader {
                 file, null);
     }
 
-    /*
-     * @param searchURLs java.net.URL[] the URLs to search in @param clsName
-     * java.lang.String the class name to be found @return Class the class found
-     * or null if not found
+    /**
+     * @param searchURLs java.net.URL[] the URLs to search in
+     * @param clsName java.lang.String the class name to be found
+     * @return Class the class found or null if not found
      */
-    Class findClassImpl(URL[] searchURLs, String clsName) {
+    Class<?> findClassImpl(URL[] searchURLs, String clsName) {
         boolean readAvailable = false;
         boolean findInExtensions = searchURLs == urls;
         final String name = new StringBuffer(clsName.replace('.', '/')).append(
@@ -1124,7 +1123,7 @@ public class URLClassLoader extends SecureClassLoader {
                 if ((jf != null) && findInExtensions) {
                     if (indexes[i] != null) {
                         try {
-                            Class c = (Class) findInIndex(i, clsName, null,
+                            Class<?> c = (Class<?>) findInIndex(i, clsName, null,
                                     false);
                             if (c != null) {
                                 return c;
@@ -1133,7 +1132,7 @@ public class URLClassLoader extends SecureClassLoader {
                             // Ignore misleading/wrong jar index
                         }
                     } else {
-                        Class c = (Class) findInExtensions(explore(
+                        Class<?> c = (Class<?>) findInExtensions(explore(
                                 searchURLs[i], i), clsName, i, null, false);
                         if (c != null) {
                             return c;
@@ -1151,9 +1150,9 @@ public class URLClassLoader extends SecureClassLoader {
      * @param indexNumber
      *            int the index in extensions to consider
      * 
-     * @return URL[] the URLs of bundled extensions that have been found (ie the
+     * @return URL[] the URLs of bundled extensions that have been found (i.e. the
      *         URL of jar files in the class-path attribute), or null if none.
-     *         if an INDEX.LIST has been found, an zero-lengthed array is
+     *         if an INDEX.LIST has been found, an empty array is
      *         returned
      */
     URL[] explore(URL url, int indexNumber) {
@@ -1181,9 +1180,9 @@ public class URLClassLoader extends SecureClassLoader {
                     Hashtable<String, URL[]> index = new Hashtable<String, URL[]>(
                             15);
                     InputStream indexIS = jf.getInputStream(ze);
-                    List lines = readLines(indexIS);
+                    List<String> lines = readLines(indexIS);
                     indexIS.close();
-                    ListIterator iterator = lines.listIterator();
+                    ListIterator<String> iterator = lines.listIterator();
                     // Ignore the 2 first lines (index version)
                     iterator.next();
                     iterator.next();
@@ -1200,10 +1199,10 @@ public class URLClassLoader extends SecureClassLoader {
                             .getHost(), fileURL.getPort(), parentFile);
                     while (iterator.hasNext()) {
                         URL jar = new URL("jar:" + parentURL.toExternalForm()
-                                + "/" + (String) iterator.next() + "!/");
+                                + "/" + iterator.next() + "!/");
                         String resource = null;
                         while (iterator.hasNext()
-                                && !(resource = (String) iterator.next())
+                                && !(resource = iterator.next())
                                         .equals("")) {
                             if (index.containsKey(resource)) {
                                 URL[] jars = index.get(resource);

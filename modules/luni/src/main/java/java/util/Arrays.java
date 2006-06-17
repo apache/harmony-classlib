@@ -978,7 +978,7 @@ public class Arrays {
     }
 
     private static int deepHashCodeElement(Object element) {
-        Class cl;
+        Class<?> cl;
         if (element == null) {
             return 0;
         }
@@ -1271,7 +1271,7 @@ public class Arrays {
     }
 
     private static boolean deepEqualsElements(Object e1, Object e2) {
-        Class cl1, cl2;
+        Class<?> cl1, cl2;
 
         if (e1 == e2) {
             return true;
@@ -2784,12 +2784,12 @@ public class Arrays {
                 sb.append("null");
             } else {
                 // get the Class of the current element
-                Class elemClass = elem.getClass();
+                Class<?> elemClass = elem.getClass();
                 if (elemClass.isArray()) {
                     // element is an array type
 
                     // get the declared Class of the array (element)
-                    Class elemElemClass = elemClass.getComponentType();
+                    Class<?> elemElemClass = elemClass.getComponentType();
                     if (elemElemClass.isPrimitive()) {
                         // element is a primitive array
                         if (boolean.class.equals(elemElemClass)) {

@@ -324,8 +324,9 @@ public class Socket {
 	 *         <code>null</code> return signifies no connection has been made.
 	 */
 	public InetAddress getInetAddress() {
-		if (!isConnected())
-			return null;
+		if (!isConnected()) {
+            return null;
+        }
 		return impl.getInetAddress();
 	}
 
@@ -342,8 +343,9 @@ public class Socket {
 	 */
 	public InputStream getInputStream() throws IOException {
 		checkClosedAndCreate(false);
-		if (isInputShutdown())
-			throw new SocketException(Msg.getString("K0321"));
+		if (isInputShutdown()) {
+            throw new SocketException(Msg.getString("K0321"));
+        }
 		return impl.getInputStream();
 	}
 
@@ -368,8 +370,9 @@ public class Socket {
 	 * @return the local address that this socket has bound to
 	 */
 	public InetAddress getLocalAddress() {
-		if (!isBound())
-			return InetAddress.ANY;
+		if (!isBound()) {
+            return InetAddress.ANY;
+        }
 		return Platform.getNetworkSystem().getSocketLocalAddress(impl.fd, InetAddress
 				.preferIPv6Addresses());
 	}
@@ -380,8 +383,9 @@ public class Socket {
 	 * @return the local port to which the socket is bound
 	 */
 	public int getLocalPort() {
-		if (!isBound())
-			return -1;
+		if (!isBound()) {
+            return -1;
+        }
 		return impl.getLocalPort();
 	}
 
@@ -409,8 +413,9 @@ public class Socket {
 	 *         connection in place.
 	 */
 	public int getPort() {
-		if (!isConnected())
-			return 0;
+		if (!isConnected()) {
+            return 0;
+        }
 		return impl.getPort();
 	}
 
@@ -567,12 +572,14 @@ public class Socket {
 	public static synchronized void setSocketImplFactory(SocketImplFactory fac)
 			throws IOException {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkSetFactory();
-		if (factory == null)
-			factory = fac;
-		else
-			throw new SocketException(Msg.getString("K0044"));
+		if (security != null) {
+            security.checkSetFactory();
+        }
+		if (factory == null) {
+            factory = fac;
+        } else {
+            throw new SocketException(Msg.getString("K0044"));
+        }
 	}
 
 	/**
@@ -587,10 +594,11 @@ public class Socket {
 	 */
 	public synchronized void setSendBufferSize(int size) throws SocketException {
 		checkClosedAndCreate(true);
-		if (size >= 1)
-			impl.setOption(SocketOptions.SO_SNDBUF, new Integer(size));
-		else
-			throw new IllegalArgumentException(Msg.getString("K0035"));
+		if (size >= 1) {
+            impl.setOption(SocketOptions.SO_SNDBUF, new Integer(size));
+        } else {
+            throw new IllegalArgumentException(Msg.getString("K0035"));
+        }
 	}
 
 	/**
@@ -606,10 +614,11 @@ public class Socket {
 	public synchronized void setReceiveBufferSize(int size)
 			throws SocketException {
 		checkClosedAndCreate(true);
-		if (size >= 1)
-			impl.setOption(SocketOptions.SO_RCVBUF, new Integer(size));
-		else
-			throw new IllegalArgumentException(Msg.getString("K0035"));
+		if (size >= 1) {
+            impl.setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+        } else {
+            throw new IllegalArgumentException(Msg.getString("K0035"));
+        }
 	}
 
 	/**
@@ -629,8 +638,9 @@ public class Socket {
 		if (!on || 0 <= timeout) {
 			int val = on ? (65535 < timeout ? 65535 : timeout) : -1;
 			impl.setOption(SocketOptions.SO_LINGER, new Integer(val));
-		} else
-			throw new IllegalArgumentException(Msg.getString("K0045"));
+		} else {
+            throw new IllegalArgumentException(Msg.getString("K0045"));
+        }
 	}
 
 	/**
@@ -646,10 +656,11 @@ public class Socket {
 	 */
 	public synchronized void setSoTimeout(int timeout) throws SocketException {
 		checkClosedAndCreate(true);
-		if (timeout >= 0)
-			impl.setOption(SocketOptions.SO_TIMEOUT, new Integer(timeout));
-		else
-			throw new IllegalArgumentException(Msg.getString("K0036"));
+		if (timeout >= 0) {
+            impl.setOption(SocketOptions.SO_TIMEOUT, new Integer(timeout));
+        } else {
+            throw new IllegalArgumentException(Msg.getString("K0036"));
+        }
 	}
 
 	/**
@@ -687,8 +698,9 @@ public class Socket {
 	void startupSocket(InetAddress dstAddress, int dstPort,
 			InetAddress localAddress, int localPort, boolean streaming)
 			throws IOException {
-		if (localPort < 0 || localPort > 65535)
-			throw new IllegalArgumentException(Msg.getString("K0046"));
+		if (localPort < 0 || localPort > 65535) {
+            throw new IllegalArgumentException(Msg.getString("K0046"));
+        }
 
 		InetAddress addr = localAddress == null ? InetAddress.ANY
 				: localAddress;
@@ -716,8 +728,9 @@ public class Socket {
 	 * @return the description
 	 */
 	public String toString() {
-		if (!isConnected())
-			return "Socket[unconnected]"; //$NON-NLS-1$
+		if (!isConnected()) {
+            return "Socket[unconnected]"; //$NON-NLS-1$
+        }
 		return impl.toString();
 	}
 
@@ -757,21 +770,25 @@ public class Socket {
 	 *             if the socket is closed
 	 */
 	private void checkClosedAndCreate(boolean create) throws SocketException {
-		if (isClosed())
-			throw new SocketException(Msg.getString("K003d"));
+		if (isClosed()) {
+            throw new SocketException(Msg.getString("K003d"));
+        }
 		if (!create) {
-			if (!isConnected())
-				throw new SocketException(Msg.getString("K0320"));
+			if (!isConnected()) {
+                throw new SocketException(Msg.getString("K0320"));
 			// a connected socket must be created
+            }
             
             /* return directly to fix a possible bug, if !create, should return here*/ 
             return;
 		}
-		if (isCreated)
-			return;
+		if (isCreated) {
+            return;
+        }
 		synchronized (this) {
-			if (isCreated)
-				return;
+			if (isCreated) {
+                return;
+            }
 			try {
 				impl.create(true);
 			} catch (SocketException e) {
@@ -792,8 +809,9 @@ public class Socket {
 	 * @return the local socket address
 	 */
 	public SocketAddress getLocalSocketAddress() {
-		if (!isBound())
-			return null;
+		if (!isBound()) {
+            return null;
+        }
 		return new InetSocketAddress(getLocalAddress(), getLocalPort());
 	}
 
@@ -804,8 +822,9 @@ public class Socket {
 	 * @return the remote socket address
 	 */
 	public SocketAddress getRemoteSocketAddress() {
-		if (!isConnected())
-			return null;
+		if (!isConnected()) {
+            return null;
+        }
 		return new InetSocketAddress(getInetAddress(), getPort());
 	}
 
@@ -853,19 +872,22 @@ public class Socket {
 	 */
 	public void bind(SocketAddress localAddr) throws IOException {
 		checkClosedAndCreate(true);
-		if (isBound())
-			throw new BindException(Msg.getString("K0315")); //$NON-NLS-1$
+		if (isBound()) {
+            throw new BindException(Msg.getString("K0315")); //$NON-NLS-1$
+        }
 
 		int port = 0;
 		InetAddress addr = InetAddress.ANY;
 		if (localAddr != null) {
-			if (!(localAddr instanceof InetSocketAddress))
-				throw new IllegalArgumentException(Msg.getString(
+			if (!(localAddr instanceof InetSocketAddress)) {
+                throw new IllegalArgumentException(Msg.getString(
 						"K0316", localAddr.getClass())); //$NON-NLS-1$
+            }
 			InetSocketAddress inetAddr = (InetSocketAddress) localAddr;
-			if ((addr = inetAddr.getAddress()) == null)
-				throw new SocketException(Msg.getString(
+			if ((addr = inetAddr.getAddress()) == null) {
+                throw new SocketException(Msg.getString(
 						"K0317", inetAddr.getHostName())); //$NON-NLS-1$
+            }
 			port = inetAddr.getPort();
 		}
 
@@ -918,21 +940,26 @@ public class Socket {
 	public void connect(SocketAddress remoteAddr, int timeout)
 			throws IOException {
 		checkClosedAndCreate(true);
-		if (timeout < 0)
-			throw new IllegalArgumentException(Msg.getString("K0036"));
-		if (isConnected())
-			throw new SocketException(Msg.getString("K0079")); //$NON-NLS-1$
-		if (remoteAddr == null)
-			throw new IllegalArgumentException(Msg.getString("K0318"));
+		if (timeout < 0) {
+            throw new IllegalArgumentException(Msg.getString("K0036"));
+        }
+		if (isConnected()) {
+            throw new SocketException(Msg.getString("K0079")); //$NON-NLS-1$
+        }
+		if (remoteAddr == null) {
+            throw new IllegalArgumentException(Msg.getString("K0318"));
+        }
 
-		if (!(remoteAddr instanceof InetSocketAddress))
-			throw new IllegalArgumentException(Msg.getString(
+		if (!(remoteAddr instanceof InetSocketAddress)) {
+            throw new IllegalArgumentException(Msg.getString(
 					"K0316", remoteAddr.getClass())); //$NON-NLS-1$
+        }
 		InetSocketAddress inetAddr = (InetSocketAddress) remoteAddr;
 		InetAddress addr;
-		if ((addr = inetAddr.getAddress()) == null)
-			throw new SocketException(Msg.getString(
+		if ((addr = inetAddr.getAddress()) == null) {
+            throw new SocketException(Msg.getString(
 					"K0317", inetAddr.getHostName())); //$NON-NLS-1$
+        }
 		int port = inetAddr.getPort();
 
 		checkDestination(addr, port);
@@ -1049,8 +1076,9 @@ public class Socket {
 	 */
 	public void setTrafficClass(int value) throws SocketException {
 		checkClosedAndCreate(true);
-		if (value < 0 || value > 255)
-			throw new IllegalArgumentException();
+		if (value < 0 || value > 255) {
+            throw new IllegalArgumentException();
+        }
 		impl.setOption(SocketOptions.IP_TOS, new Integer(value));
 	}
 
@@ -1093,12 +1121,13 @@ public class Socket {
 	}
 
 	static boolean preferIPv4Stack() {
-		String result = (String) AccessController.doPrivileged(new PriviAction(
-				"java.net.preferIPv4Stack"));
-		if ("true".equals(result))
-			return true;
-		return false;
-	}
+        String result = AccessController.doPrivileged(new PriviAction<String>(
+                "java.net.preferIPv4Stack"));
+        if ("true".equals(result)) {
+            return true;
+        }
+        return false;
+    }
 	
 	/**
 	 * if Socket is created by a SocketChannel, returns the related
