@@ -15,14 +15,14 @@
 
 package org.apache.harmony.luni.util;
 
-
 import java.util.Arrays;
 
 /**
  * Helper class with methods for sorting arrays.
+ * @deprecated Use Comparator and Arrays.sort().
  */
 public final class Sorter {
-	public interface Comparator extends java.util.Comparator {
+	public interface Comparator<T> extends java.util.Comparator<T> {
 	}
 
 	/**
@@ -33,7 +33,7 @@ public final class Sorter {
 	 * @param comp
 	 *            A Comparator to be used to sort the elements
 	 */
-	public static void sort(Object[] objs, Comparator comp) {
+	public static <T> void sort(T[] objs, Comparator<T> comp) {
 		Arrays.sort(objs, comp);
 	}
 
