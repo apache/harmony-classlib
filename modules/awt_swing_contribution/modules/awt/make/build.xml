@@ -50,7 +50,7 @@ Version: $Revision$
      -->
 
     <property name="build.dir" value=".."/>
-    <property name="harmony.path" location="../.." />
+    <property name="harmony.path" location="../../../.." />
     <property name="harmony.depends.build.path" location="${harmony.path}/depends/jars/build" />
     <property name="build.path" location="${build.dir}/../build" />
     <property environment="env"/>
@@ -133,11 +133,11 @@ Version: $Revision$
         <property name="src.tst" value="${basedir}/test" />
         <property name="src.tst.common" value="${src.tst}/common" />
 
-        <property name="harmonybin.path" value="deploy/jdk/jre"/>
-        <property name="build.lib.path" location="${harmony.path}/${harmonybin.path}/bin" />
-        <property name="build.jars.path" location="${harmony.path}/${harmonybin.path}/lib/boot" />
-        <property name="build.ext.path" location="${harmony.path}/${harmonybin.path}/lib/ext" />
-        <property name="build.bin.path" location="${harmony.path}/${harmonybin.path}/bin" />
+        <property name="harmonybin.path" value="${harmony.path}/deploy/jdk/jre"/>
+        <property name="build.lib.path" location="${harmonybin.path}/bin" />
+        <property name="build.jars.path" location="${harmonybin.path}/lib/boot" />
+        <property name="build.ext.path" location="${harmonybin.path}/lib/ext" />
+        <property name="build.bin.path" location="${harmonybin.path}/bin" />
 
         <property name="tmp" location="${build.path}/tmp" />
         <property name="source.ver" value="1.4" />
@@ -178,9 +178,9 @@ Version: $Revision$
     <target name="init.win" depends="init, init.java_home" if="if.win">
         <property name="target.os" value="windows"/>
 
-        <property name="native.include.path" value="${harmony.path}/native-src/win.IA32/include;${harmony.path}/modules/luni/src/main/native/include/shared" />
+        <property name="native.include.path" value="${harmony.path}/deploy/jdk/include;${harmony.path}/deploy/include" />
         <property name="native.zlib.include" value="${harmony.path}/native-src/win.IA32/zlib;${harmony.path}/native-src/win.IA32/zlib/dist" />
-        <property name="native.zlib.lib" value="${harmony.path}/native-src/win.IA32/lib" />
+        <property name="native.zlib.lib" value="${harmony.path}/deploy/lib" />
         <property name="harmony.depends.native.build.path" location="${harmony.path}/depends/libs/build/" />
 
         <property name="native.compiler" value="msvc" />
@@ -202,7 +202,7 @@ Version: $Revision$
     <target name="init.linux" depends="init, init.java_home" if="if.linux">
         <property name="target.os" value="unix"/>
 
-        <property name="native.include.path" value="${harmony.path}/native-src/linux.IA32/include:${harmony.path}/modules/luni/src/main/native/include/shared" />
+        <property name="native.include.path" value="${harmony.path}/deploy/jdk/include:${harmony.path}/deploy/include" />
         <property name="harmony.depends.native.build.path" location="${harmony.path}/depends/libs/build/" />
         
 
@@ -217,7 +217,7 @@ Version: $Revision$
 
         <property name="src.tst.common.ps" value="${src.tst}/linux" />
 
-        <property name="jni_h.path"    location="${native.include.path}"/>
+        <property name="jni_h.path"    location="${harmony.path}/deploy/jdk/include"/>
 
     </target>
 
@@ -384,7 +384,7 @@ Version: $Revision$
               <fileset dir="${src.tst.common}/unit/java/awt/geom/shapes/" />
         </copy>
 
-        <property name="vm.home" location="${harmony.path}/${harmonybin.path}" />
+        <property name="vm.home" location="${harmonybin.path}" />
 
         <junit fork="yes"
             forkmode="perTest"

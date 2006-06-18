@@ -51,7 +51,7 @@ Version: $Revision$
      -->
 
     <property name="build.dir" value="${basedir}/../../"/>
-    <property name="harmony.path" location="../.." />
+    <property name="harmony.path" location="../../../.." />
     <property name="harmony.depends.build.path" location="${harmony.path}/depends/jars/build" />
     <property name="build.path" location="${build.dir}/build" />
     <property name="src" location="${basedir}/src" />
@@ -130,11 +130,11 @@ Version: $Revision$
         <property name="src.tst" value="${basedir}/test" />
         <property name="src.tst.common" value="${src.tst}/common" />
 
-        <property name="harmonybin.path" value="deploy/jdk/jre"/>
-        <property name="build.lib.path" location="${harmony.path}/${harmonybin.path}/bin" />
-        <property name="build.jars.path" location="${harmony.path}/${harmonybin.path}/lib/boot" />
-        <property name="build.ext.path" location="${harmony.path}/${harmonybin.path}/lib/ext" />
-        <property name="build.bin.path" location="${harmony.path}/${harmonybin.path}/bin" />
+        <property name="harmonybin.path" location="${harmony.path}/deploy/jdk/jre"/>
+        <property name="build.lib.path" location="${harmonybin.path}/bin" />
+        <property name="build.jars.path" location="${harmonybin.path}/lib/boot" />
+        <property name="build.ext.path" location="${harmonybin.path}/lib/ext" />
+        <property name="build.bin.path" location="${harmonybin.path}/bin" />
 
         <property name="tmp" location="${build.path}/tmp" />
         <property name="source.ver" value="1.4" />
@@ -384,7 +384,7 @@ Version: $Revision$
         <property name="tests.output" value="${basedir}/tmp/testout" />
         <mkdir dir="${tests.output}" />
 
-        <property name="vm.home" location="${harmony.path}/${harmonybin.path}" />
+        <property name="vm.home" location="${harmonybin.path}" />
 
         <junit fork="yes"
             forkmode="perTest"
