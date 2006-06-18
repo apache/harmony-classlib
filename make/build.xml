@@ -44,6 +44,14 @@ Building native libs and executables...
 ========================================
 </echo>
         <ant antfile="native-src/build.xml" inheritall="false" target="build"/>
+        <antcall target="build-awt-swing" />
+    </target>
+ 
+    <target name="build-awt-swing" if="with.awt.swing">
+        <delete file="deploy/jdk/jre/lib/boot/awt.jar" /> 
+        <ant antfile="modules/awt_swing_contribution/modules/misc/make/build.xml" inheritall="false" />
+        <ant antfile="modules/awt_swing_contribution/modules/awt/make/build.xml" inheritall="false" />
+        <ant antfile="modules/awt_swing_contribution/modules/swing/make/build.xml" inheritall="false" />
     </target>
 
     <target name="test">
