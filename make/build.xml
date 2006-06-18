@@ -25,6 +25,13 @@
     <!-- import properties for snapshot targets -->
     <import file="${basedir}/make/properties.xml" />
 
+	<!-- ================================
+	     target : rebuild
+	     
+	     builds with a clean first
+	     ================================= -->
+	<target name="rebuild" depends="clean,build" />
+	
     <!-- ================================= 
           target: default              
          ================================= -->
