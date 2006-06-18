@@ -17,17 +17,27 @@
 
 <project name="Common_AWT_Build">
 
+    <property name="hy.awt.src.main.java.platform"
+              value="${hy.awt.src.main.java}/../${hy.os}" />
+
+    <property name="hy.awt.src.test.java.platform"
+              value="${hy.awt.src.test.java}/../${hy.os}" />
+
     <target name="compile.java" description="Compile AWT java code">
         <echo message="Compiling AWT classes from ${hy.awt.src.main.java}" />
 
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-            srcdir="${hy.awt.src.main.java}"
             destdir="${hy.build}"
             source="${hy.javac.source}"
             target="${hy.javac.target}"
             debug="${java.debug.option}">
+
+            <src>
+                <pathelement location="${hy.awt.src.main.java}"/>
+                <pathelement location="${hy.awt.src.main.java.platform}" />
+            </src>
 
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">

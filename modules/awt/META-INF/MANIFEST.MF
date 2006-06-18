@@ -8,5 +8,17 @@ Eclipse-JREBundle: true
 Import-Package: java.lang,
  java.util
 Export-Package: java.awt,
- java.awt.event
+ java.awt.color,
+ java.awt.datatransfer,
+ java.awt.dnd,
+ java.awt.dnd.peer,
+ java.awt.event,
+ java.awt.font,
+ java.awt.geom,
+ java.awt.im,
+ java.awt.image,
+ java.awt.image.renderable,
+ java.awt.im.spi,
+ java.awt.peer,
+ java.awt.print
 

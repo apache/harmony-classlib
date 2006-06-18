@@ -19,8 +19,8 @@
    <awt location=".">
       <src>
          <main>
-            <java location="src/main/java" />
-        	<resources location="src/main/resources" />
+            <java location="src/main/java/common" />
+            <resources location="src/main/resources" />
          </main>
          <test>
             <java location="src/test/java" />

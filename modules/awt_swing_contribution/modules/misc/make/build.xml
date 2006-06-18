@@ -280,7 +280,7 @@ Version: $Revision$
     </target>
 
 
-    <target name="build.native">
+    <target name="build.native" depends="init, init.win, init.linux">
         <!-- Building the native code -->
 
         <echo message="jni_h.path=${jni_h.path}"/>

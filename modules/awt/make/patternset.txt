@@ -11,6 +11,39 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 java/awt/*
+java/awt/color/*
+java/awt/datatransfer/*
+java/awt/dnd/*
+java/awt/dnd/peer/*
 java/awt/event/*
+java/awt/font/*
+java/awt/geom/*
+java/awt/im/*
+java/awt/image/*
+java/awt/image/renderable/*
+java/awt/im/spi/*
+java/awt/peer/*
+java/awt/print/*
+org/apache/harmony/awt/*
+org/apache/harmony/awt/datatransfer/*
+org/apache/harmony/awt/datatransfer/linux/*
+org/apache/harmony/awt/datatransfer/windows/*
+org/apache/harmony/awt/gl/*
+org/apache/harmony/awt/gl/color/*
+org/apache/harmony/awt/gl/font/*
+org/apache/harmony/awt/gl/image/*
+org/apache/harmony/awt/gl/linux/*
+org/apache/harmony/awt/gl/render/*
+org/apache/harmony/awt/gl/windows/*
+org/apache/harmony/awt/nativebridge/*
+org/apache/harmony/awt/nativebridge/linux/*
+org/apache/harmony/awt/nativebridge/windows/*
+org/apache/harmony/awt/state/*
+org/apache/harmony/awt/text/*
+org/apache/harmony/awt/theme/*
+org/apache/harmony/awt/theme/windows/*
+org/apache/harmony/awt/wtk/*
+org/apache/harmony/awt/wtk/linux/*
+org/apache/harmony/awt/wtk/windows/*

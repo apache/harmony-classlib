@@ -81,12 +81,14 @@
         <mkdir dir="${build.output}" />
 
         <javac destdir="${build.output}" source="${hy.javac.source}" target="${hy.javac.target}" debug="on">
+            <src path="modules/accessibility/src/main/java/" />
             <src path="modules/annotation/src/main/java/" />
             <src path="modules/applet/src/main/java" />
             <src path="modules/archive/src/main/java" />
             <src path="modules/auth/src/main/java/${hy.os}" />
             <src path="modules/auth/src/main/java/common" />
-            <src path="modules/awt/src/main/java" />
+            <src path="modules/awt/src/main/java/${hy.os}" />
+            <src path="modules/awt/src/main/java/common" />
             <src path="modules/beans/src/main/java" />
             <src path="modules/crypto/src/main/java" />
             <src path="modules/jndi/src/main/java" />
@@ -94,6 +96,7 @@
             <src path="modules/luni-kernel/src/main/java" />
             <src path="modules/luni/src/main/java" />
             <src path="modules/math/src/main/java" />
+            <src path="modules/misc/src/main/java" />
             <src path="modules/nio/src/main/java" />
             <src path="modules/nio_char/src/main/java" />
             <src path="modules/prefs/src/main/java" />
@@ -102,6 +105,8 @@
             <src path="modules/security-kernel/src/main/java" />
             <src path="modules/security/src/main/java/common" />
             <src path="modules/sql/src/main/java" />
+            <src path="modules/swing/src/main/java/${hy.os}" />
+            <src path="modules/swing/src/main/java/common" />
             <src path="modules/text/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
 

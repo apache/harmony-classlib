@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony Accessibility
+Bundle-SymbolicName: org.apache.harmony.accessibility
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Eclipse-JREBundle: true
+Import-Package: 
+ java.lang,java.io,java.util,
+ java.awt,java.awt.datatransfer,java.awt.event,
+ java.beans,
+ javax.swing.event,javax.swing.text
+Export-Package: javax.accessibility
+
