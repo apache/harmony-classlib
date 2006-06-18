@@ -7,6 +7,10 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: 
  java.lang,
- java.lang.reflect
-Export-Package: java.lang.misc
+ java.lang.reflect,
+ java.io,
+ java.nio,
+ java.util
+Export-Package: org.apache.harmony.misc,
+ org.apache.harmony.misc.accessors
 

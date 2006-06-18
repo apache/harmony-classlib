@@ -6,7 +6,23 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.lang,
- java.util
+ java.lang.ref,
+ java.lang.reflect,
+ java.beans,
+ java.io, 
+ java.math,
+ java.net,
+ java.nio,
+ java.nio.charset,
+ java.security,
+ java.text,
+ java.util,
+ javax.accessibility,
+ javax.swing,
+ javax.swing.event,
+ javax.swing.text,
+ org.apache.harmony.misc,
+ org.apache.harmony.misc.accessors
 Export-Package: java.awt,
  java.awt.color,
  java.awt.datatransfer,

@@ -6,9 +6,14 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: 
- java.lang,java.io,java.util,
- java.awt,java.awt.datatransfer,java.awt.event,
+ java.lang,
+ java.io,
+ java.util,
+ java.awt,
+ java.awt.datatransfer,
+ java.awt.event,
  java.beans,
- javax.swing.event,javax.swing.text
+ javax.swing.event,
+ javax.swing.text
 Export-Package: javax.accessibility
 
