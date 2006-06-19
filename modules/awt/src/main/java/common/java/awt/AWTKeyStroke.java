@@ -120,7 +120,7 @@ public class AWTKeyStroke implements Serializable {
             key = new AWTKeyStroke();
         } else {
             try {
-                key = (AWTKeyStroke) subConstructor.newInstance(null);
+                key = (AWTKeyStroke) subConstructor.newInstance((Object)null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -276,7 +276,7 @@ public class AWTKeyStroke implements Serializable {
             throw new ClassCastException("subclass is not derived from AWTKeyStroke");
         }
         try {
-            subConstructor = subclass.getDeclaredConstructor(null);
+            subConstructor = subclass.getDeclaredConstructor((Class)null);
             subConstructor.setAccessible(true);
         } catch (SecurityException e) {
             throw new RuntimeException(e);
