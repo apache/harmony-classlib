@@ -31,6 +31,7 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Tests for java.nio");
 		// $JUnit-BEGIN$
+        suite.addTestSuite(BufferOverflowExceptionTest.class);
 		suite.addTestSuite(BufferTest.class);
 		suite.addTestSuite(ByteBufferTest.class);
 		suite.addTestSuite(ByteOrderTest.class);
