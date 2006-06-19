@@ -73,6 +73,7 @@ public class AllTests {
 		suite.addTestSuite(MissingResourceExceptionTest.class);
 		suite.addTestSuite(NoSuchElementExceptionTest.class);
 		suite.addTestSuite(ObservableTest.class);
+        suite.addTestSuite(PriorityQueueTest.class);
 		suite.addTestSuite(PropertiesTest.class);
 		suite.addTestSuite(PropertyPermissionTest.class);
 		suite.addTestSuite(PropertyResourceBundleTest.class);
