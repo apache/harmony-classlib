@@ -16,6 +16,8 @@
 
 package org.apache.harmony.tools.keytool;
 
+import java.io.IOException;
+
 /**
  * The class to interact with the user - parse the program arguments, ask for
  * confirmations, and necessary parameters which haven't been set in the command
@@ -94,7 +96,9 @@ class ArgumentsParser {
 
     final static String sNew = "-new";
 
-    final static String sCertalias = "-certalias";
+    final static String sIssuerAlias = "-issuer";
+
+    final static String sIssuerPass = "-issuerpass";
 
     final static String sCertstore = "-certstore";
 
@@ -112,13 +116,228 @@ class ArgumentsParser {
      * The method finds known options in args which is usually taken from
      * command line and sets the corresponding fields of the returned
      * KeytoolParameters object to given values.
+     * 
+     * @throws KeytoolException
+     * @throws IOException
      */
-    static KeytoolParameters parseArgs(String[] args) {
-        // TODO: look for known options and get their values
+    static KeytoolParameters parseArgs(String[] args) throws KeytoolException,
+            IOException {
         if (args == null || args.length == 0) {
             return null;
         }
         KeytoolParameters param = new KeytoolParameters();
+
+        // look for known options and get their values.
+        try {
+            for (int i = 0; i < args.length; i++) {
+
+                // commands
+                if (args[i].compareToIgnoreCase(sGenkey) == 0) {
+                    param.setCommand(Command.GENKEY);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sSelfcert) == 0) {
+                    param.setCommand(Command.SELFCERT);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sImport) == 0) {
+                    param.setCommand(Command.IMPORT);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sExport) == 0) {
+                    param.setCommand(Command.EXPORT);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sStorepasswd) == 0) {
+                    param.setCommand(Command.STOREPASSWD);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sKeypasswd) == 0) {
+                    param.setCommand(Command.KEYPASSWD);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sCertreq) == 0) {
+                    param.setCommand(Command.CERTREQ);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sCheck) == 0) {
+                    param.setCommand(Command.CHECK);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sAdd) == 0) {
+                    param.setCommand(Command.ADD);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sVerify) == 0) {
+                    param.setCommand(Command.VERIFY);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sPrintcert) == 0) {
+                    param.setCommand(Command.PRINTCERT);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sKeyclone) == 0) {
+                    param.setCommand(Command.KEYCLONE);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sDelete) == 0) {
+                    param.setCommand(Command.DELETE);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sList) == 0) {
+                    param.setCommand(Command.LIST);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sHelp) == 0) {
+                    param.setCommand(Command.HELP);
+                    continue;
+                }
+
+                // additional options
+                if (args[i].compareToIgnoreCase(sKeystore) == 0) {
+                    param.setStorePath(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sStoretype) == 0) {
+                    param.setStoreType(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sProvider) == 0) {
+                    param.setProvider(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sAlias) == 0) {
+                    param.setAlias(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sKeyalg) == 0) {
+                    param.setKeyAlg(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sSigalg) == 0) {
+                    param.setSigAlg(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sDname) == 0) {
+                    param.setDName(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sFile) == 0) {
+                    param.setFileName(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sIssuerAlias) == 0) {
+                    param.setIssuerAlias(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sCertstore) == 0) {
+                    param.setStorePath(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sStorepass) == 0) {
+                    param.setStorePass(args[++i].toCharArray());
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sKeypass) == 0) {
+                    param.setKeyPass(args[++i].toCharArray());
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sIssuerPass) == 0) {
+                    param.setIssuerPass(args[++i].toCharArray());
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sCRLstore) == 0) {
+                    param.setCrlStore(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sDestAlias) == 0) {
+                    param.setDestAlias(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sNew) == 0) {
+                    param.setNewPasswd(args[++i].toCharArray());
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sKeysize) == 0) {
+
+                    param.setKeySize((new Integer(args[++i])).intValue());
+                    if (param.getKeySize() <= 0) {
+                        throw new KeytoolException("Key size"
+                                + " must be more than zero.");
+                    }
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sValidity) == 0) {
+                    param.setValidity((new Integer(args[++i])).intValue());
+                    if (param.getValidity() <= 0) {
+                        throw new KeytoolException("Validity"
+                                + " must be more than zero.");
+                    }
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sX509Version) == 0) {
+                    param.setX509version((new Integer(args[++i])).intValue());
+                    if (param.getX509version() < 1
+                            || param.getX509version() > 3) {
+                        throw new KeytoolException(
+                                "Certificate version must be " + "1, 2 or 3");
+                    }
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sCertSerial) == 0) {
+                    param.setCertSerialNr((new Integer(args[++i])).intValue());
+                    if (param.getCertSerialNr() <= 0) {
+                        throw new KeytoolException("Certificate serial number"
+                                + " must be more than zero.");
+                    }
+                    continue;
+                }
+
+                // flags
+                if (args[i].compareToIgnoreCase(sNoprompt) == 0) {
+                    param.setNoPrompt(true);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sTrustcacerts) == 0) {
+                    param.setTrustCACerts(true);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sRfc) == 0) {
+                    param.setRfc(true);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sV) == 0) {
+                    param.setVerbose(true);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sSecretkey) == 0) {
+                    param.setSecretKey(true);
+                    continue;
+                }
+
+                System.out.println("Illegal option: " + args[i]);
+                return null;
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // ignore the last option if its value is not provided
+        }
+
+        // set flag to use certstore, not keystore.
+        Command cmd = param.getCommand();
+
+        // check whether -v and -rfc options are used separately with -list.
+        if (cmd == Command.LIST && param.isRfc() && param.isVerbose()) {
+            throw new KeytoolException("There must not be both -v and -rfc "
+                    + "options specified");
+        }
+
+        // skip the store password setting if -printcert or -help commands were
+        // given.
+        if (cmd == Command.PRINTCERT || cmd == Command.HELP) {
+            return param;
+        }
+
+        // TODO: if the store password has not been entered, prompt for it
         return param;
     }
 
@@ -129,5 +348,4 @@ class ArgumentsParser {
         // TODO
         throw new RuntimeException("The method is not implemented yet.");
     }
-
 }
