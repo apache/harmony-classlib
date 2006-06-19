@@ -47,6 +47,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   jboolean isCopy ;
   jint *flagArray;
   int val;
+  U_32 time_sec = (U_32)timeout/1000;
+  U_32 time_msec = (U_32)(timeout%1000)*1000;
 
   fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
   fdset_write =	hymem_allocate_memory(sizeof (struct hyfdset_struct));
@@ -102,11 +104,11 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
     {
       /* only set when timeout >= 0 (non-block)*/
       if (0 <= timeout){      	
-	hysock_timeval_init ( 0, (I_32)timeout,	&timeP);
-	result = hysock_select (size, fdset_read, fdset_write, NULL,&timeP);
+		hysock_timeval_init ( time_sec, time_msec, &timeP);
+		result = hysock_select (size, fdset_read, fdset_write, NULL,&timeP);
       }	
       else{        
-	result = hysock_select (size, fdset_read, fdset_write, NULL,NULL);
+		result = hysock_select (size, fdset_read, fdset_write, NULL,NULL);
       }	
     }
     

@@ -57,10 +57,8 @@ public class SelectorProviderImpl extends SelectorProvider {
 	 * @see java.nio.channels.spi.SelectorProvider#openSelector()
 	 */
 	public AbstractSelector openSelector() throws IOException {
-//		return new SelectorImpl(this);
-		//FIXME: wait for JIRA-41
-		return null;
-	}
+        return new SelectorImpl(this);
+    }
 
 	/*
 	 * 

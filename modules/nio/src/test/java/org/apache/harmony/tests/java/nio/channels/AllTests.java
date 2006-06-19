@@ -33,6 +33,8 @@ public class AllTests {
         suite.addTestSuite(ServerSocketChannelTest.class);
         suite.addTestSuite(SocketChannelTest.class);
         suite.addTestSuite(SourceChannelTest.class);
+        suite.addTestSuite(SelectionKeyTest.class);
+        suite.addTestSuite(SelectorTest.class);
         //$JUnit-END$
         return suite;
     }
