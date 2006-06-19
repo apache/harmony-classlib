@@ -1771,14 +1771,14 @@ public class Collections {
 	 *                or elements cannot be compared to each other
 	 */
 	public static <T extends Comparable<? super T>> void sort(List<T> list) {
-        T[] array = list.toArray((T[])new Object[list.size()]);
-		Arrays.sort(array);
-		int i = 0;
-		ListIterator<T> it = list.listIterator();
-		while (it.hasNext()) {
-			it.next();
-			it.set(array[i++]);
-		}
+        Object[] array = list.toArray();
+        Arrays.sort(array);
+        int i = 0;
+        ListIterator<T> it = list.listIterator();
+        while (it.hasNext()) {
+            it.next();
+            it.set((T)array[i++]);
+        }
 	}
 
 	/**
@@ -1800,7 +1800,7 @@ public class Collections {
 		ListIterator<T> it = list.listIterator();
 		while (it.hasNext()) {
 			it.next();
-			it.set((T)array[i++]);
+			it.set(array[i++]);
 		}
 	}
 
