@@ -30,6 +30,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.security.Permission;
 
 import tests.support.Support_Configuration;
@@ -2352,6 +2353,50 @@ public class SocketTest extends SocketTestCase {
 		}
 
 	}
+    
+    /**
+     * @tests Socket#connect(SocketAddress) try an unknownhost
+     */
+    public void test_connect_unknownhost() throws Exception {
+        Socket socket = new Socket();
+        try {
+            socket.connect(new InetSocketAddress("unknownhost", 12345));
+            fail("Should throw UnknownHostException");
+        } catch (UnknownHostException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests Socket#connect(SocketAddress) try an unknownhost created by
+     *        createUnresolved()
+     */
+    public void test_connect_unresolved_unknown() throws Exception {
+        Socket socket = new Socket();
+        try {
+            socket.connect(InetSocketAddress.createUnresolved("unknownhost",
+                    12345));
+            fail("Should throw UnknownHostException");
+        } catch (UnknownHostException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests Socket#connect(SocketAddress) try a known host created by
+     *        createUnresolved()
+     */
+    public void test_connect_unresolved() throws Exception {
+        Socket socket = new Socket();
+        try {
+            socket.connect(InetSocketAddress.createUnresolved(
+                    Support_Configuration.SocksServerTestHost,
+                    Support_Configuration.SocksServerTestPort));
+            fail("Should throw UnknownHostException");
+        } catch (UnknownHostException e) {
+            // expected
+        }
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
