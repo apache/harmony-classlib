@@ -93,7 +93,6 @@ public abstract class SelectorProvider extends Object {
             if (null == provider) {
                 provider = new SelectorProviderImpl();
             }
-            return provider;
         }
         return provider;
     }
@@ -146,7 +145,7 @@ public abstract class SelectorProvider extends Object {
                     }
                 }
             } catch (Exception e) {
-                throw new Error();
+                throw new Error(e);
             }
         }
         return null;
@@ -159,19 +158,18 @@ public abstract class SelectorProvider extends Object {
         return AccessController.doPrivileged(
                 new PrivilegedAction<SelectorProvider>() {
                     public SelectorProvider run() {
-                        // FIXME check if use this ClassLoader or system
-                        // ClassLoader
                         try {
                             final String className =
                                 System.getProperty(PROVIDER_IN_SYSTEM_PROPERTY);
                             if (null != className) {
-                                Class spClass = Thread.currentThread()
-                                        .getContextClassLoader().loadClass(className);
+                                Class spClass = ClassLoader
+                                        .getSystemClassLoader().loadClass(
+                                                className);
                                 return (SelectorProvider)spClass.newInstance();
                             }
                             return null;
                         } catch (Exception e) {
-                            throw new Error();
+                            throw new Error(e);
                         }
                     }
                 });
