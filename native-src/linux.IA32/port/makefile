@@ -35,4 +35,9 @@ MDLLIBFILES = ../libhythr.so $(LIBPATH)libhycommon.a ../libhysig.so
 
 DLLNAME = ../libhyprt.so
 
+# temp by geir - please ignore
+#
+LIBNAME = $(LIBPATH)libhyprt.a
+
+
 include $(HY_HDK)/build/rules.mk
