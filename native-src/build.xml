@@ -221,9 +221,9 @@
 	<target name="copy-includes" >
 		<!-- Call copy.native.includes targets to copy across global includes to 
 		    		 deploy/includes/harmony -->
-    	<ant dir="${basedir}/../modules/archive" antfile="make/build.xml" 
+    	<ant dir="${basedir}/../modules/archive" antfile="build.xml" 
     		target="copy.native.includes" />
-    	<ant dir="${basedir}/../modules/luni" antfile="make/build.xml" 
+    	<ant dir="${basedir}/../modules/luni" antfile="build.xml" 
     		target="copy.native.includes" />
 	</target>
 	
@@ -233,9 +233,9 @@
 	<target name="clean-includes" >
 		<!-- Call clean.native.includes targets to delete global includes under
 		    		 deploy/includes/harmony -->
-    	<ant dir="${basedir}/../modules/archive" antfile="make/build.xml" 
+    	<ant dir="${basedir}/../modules/archive" antfile="build.xml" 
     		target="clean.native.includes" />
-    	<ant dir="${basedir}/../modules/luni" antfile="make/build.xml" 
+    	<ant dir="${basedir}/../modules/luni" antfile="build.xml" 
     		target="clean.native.includes" />
 	</target>
 	
