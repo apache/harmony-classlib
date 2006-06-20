@@ -206,5 +206,17 @@ public class CodeSource_ImplTest extends TestCase {
             TestCertUtils.uninstall_test_x509_factory();
         }
     }
+    
+
+    /**
+     * @tests java.security.CodeSource#toString()
+     */
+    public void test_toString() throws Exception {
+        // Test for method java.lang.String java.security.CodeSource.toString()
+        CodeSource cs = new CodeSource(new java.net.URL("file:///test"),
+                (Certificate[]) null);
+        assertEquals("toString did not return expected value.",
+                "CodeSource, url=file:/test, <no certificates>", cs.toString());
+    }
 
 }
