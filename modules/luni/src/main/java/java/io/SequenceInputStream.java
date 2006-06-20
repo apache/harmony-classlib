@@ -18,6 +18,7 @@ package java.io;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * SequenceInputStream is used for streaming over a sequence of streams
@@ -100,19 +101,20 @@ public class SequenceInputStream extends InputStream {
 	 *             If an error occurs attempting to close this FileInputStream.
 	 */
 	public void close() throws IOException {
-		if (e != null) {
-			while (in != null) {
-                nextStream();
-            }
-			e = null;
-		} else {
-            throw new IOException(org.apache.harmony.luni.util.Msg.getString("K00b7")); //$NON-NLS-1$
-        }
+		if (e == null) {
+			throw new IOException(Msg.getString("K00b7")); //$NON-NLS-1$
+		}
+
+		while (in != null) {
+			nextStream();
+		}
+		e = null;
 	}
 
 	/**
 	 * Sets up the next InputStream or leaves it alone if there are none left.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	private void nextStream() throws IOException {
 		if (in != null) {
@@ -169,34 +171,25 @@ public class SequenceInputStream extends InputStream {
 	 *             occurs.
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException {
-		if (buffer == null) {
-			// avoid int overflow
-			if (offset >= 0 && count >= 0) {
-				while (in != null) {
-					long result = in.skip(count);
-					if (result >= 0) {
-                        return (int) result;
-                    }
-					nextStream();
-				}
-			} else {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-		} else {
-			// avoid int overflow
-			if (0 <= offset && offset <= buffer.length && 0 <= count
-					&& count <= buffer.length - offset) {
-				while (in != null) {
-					int result = in.read(buffer, offset, count);
-					if (result >= 0) {
-                        return result;
-                    }
-					nextStream();
-				}
-			} else {
-                throw new ArrayIndexOutOfBoundsException();
-            }
+		if (in == null) {
+			return -1;
 		}
-		return -1;
+		if (buffer == null) {
+			throw new NullPointerException();
+		}
+		// avoid int overflow
+		if (0 <= offset && offset <= buffer.length && 0 <= count
+				&& count <= buffer.length - offset) {
+			while (in != null) {
+				int result = in.read(buffer, offset, count);
+				if (result >= 0) {
+					return result;
+				}
+				nextStream();
+			}
+			return -1;
+		} else {
+			throw new ArrayIndexOutOfBoundsException();
+		}
 	}
 }

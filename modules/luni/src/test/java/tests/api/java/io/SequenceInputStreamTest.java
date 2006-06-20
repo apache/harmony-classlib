@@ -119,7 +119,7 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.SequenceInputStream#read(byte[], int, int)
 	 */
-	public void test_read$BII() {
+	public void test_read$BII() throws IOException {
 		// Test for method int java.io.SequenceInputStream.read(byte [], int,
 		// int)
 		try {
@@ -130,6 +130,19 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 					buf).equals(s1 + s2));
 		} catch (IOException e) {
 			fail("IOException during read test : " + e.getMessage());
+		}
+		
+		ByteArrayInputStream bis1 = new ByteArrayInputStream(
+				new byte[] { 1, 2, 3, 4 });
+		ByteArrayInputStream bis2 = new ByteArrayInputStream(
+				new byte[] { 5, 6, 7, 8 });
+		SequenceInputStream sis = new SequenceInputStream(bis1, bis2);
+
+		try {
+			sis.read(null, 0, -1);
+			fail("Expected NullPointerException exception");
+		} catch (NullPointerException e) {
+			// expected
 		}
 	}
 
