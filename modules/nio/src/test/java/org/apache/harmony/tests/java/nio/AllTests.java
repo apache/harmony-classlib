@@ -24,24 +24,37 @@ import junit.framework.TestSuite;
  */
 public class AllTests {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(suite());
-	}
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(suite());
+    }
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Tests for java.nio");
-		// $JUnit-BEGIN$
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Tests for java.nio");
+        //$JUnit-BEGIN$
+        suite.addTestSuite(ByteBufferTest.class);
+        suite.addTestSuite(IntBufferTest.class);
+        suite.addTestSuite(ReadOnlyWrappedByteBufferTest.class);
+        suite.addTestSuite(AbstractBufferTest.class);
+        suite.addTestSuite(SliceWrappedByteBufferTest.class);
+        suite.addTestSuite(DirectByteBufferTest.class);
+        suite.addTestSuite(ByteOrderTest.class);
+        suite.addTestSuite(BufferTest.class);
+        suite.addTestSuite(DuplicateWrappedByteBufferTest.class);
+        suite.addTestSuite(WrappedByteBufferTest.class);
+        suite.addTestSuite(LongBufferTest.class);
+        suite.addTestSuite(HeapByteBufferTest.class);
+        suite.addTestSuite(DoubleBufferTest.class);
+        suite.addTestSuite(ReadOnlyDirectByteBufferTest.class);
+        suite.addTestSuite(SliceDirectByteBufferTest.class);
+        suite.addTestSuite(CharBufferTest.class);
+        suite.addTestSuite(DuplicateHeapByteBufferTest.class);
+        suite.addTestSuite(ShortBufferTest.class);
+        suite.addTestSuite(ReadOnlyHeapByteBufferTest.class);
+        suite.addTestSuite(FloatBufferTest.class);
+        suite.addTestSuite(SliceHeapByteBufferTest.class);
+        suite.addTestSuite(DuplicateDirectByteBufferTest.class);
         suite.addTestSuite(BufferOverflowExceptionTest.class);
-		suite.addTestSuite(BufferTest.class);
-		suite.addTestSuite(ByteBufferTest.class);
-		suite.addTestSuite(ByteOrderTest.class);
-		suite.addTestSuite(CharBufferTest.class);
-		suite.addTestSuite(DoubleBufferTest.class);
-		suite.addTestSuite(FloatBufferTest.class);
-		suite.addTestSuite(IntBufferTest.class);
-		suite.addTestSuite(LongBufferTest.class);
-		suite.addTestSuite(ShortBufferTest.class);
-		// $JUnit-END$
-		return suite;
-	}
+        //$JUnit-END$
+        return suite;
+    }
 }

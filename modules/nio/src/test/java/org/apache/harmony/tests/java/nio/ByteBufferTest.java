@@ -29,80 +29,29 @@ import java.nio.ReadOnlyBufferException;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
-
 /**
  * Tests java.nio.ByteBuffer
  * 
  */
-public class ByteBufferTest extends TestCase {
+public class ByteBufferTest extends AbstractBufferTest {
+    protected static final int SMALL_TEST_LENGTH = 5;
+    protected static final int BUFFER_LENGTH = 250;
+    
+    private static final byte[] bytes = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    
+    protected ByteBuffer buf;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ByteBufferTest.class);
+    protected void setUp() throws Exception {
+        super.setUp();
+        buf = ByteBuffer.wrap(bytes);
+        baseBuf = buf;
     }
 
-    public static void testByteBufferInstance(ByteBuffer buf) {
-        // test Buffer functions
-        BufferTest.testBufferInstance(buf);
-
-        // test ByteBuffer functions
-        testHashCode(buf);
-        testEquals(buf);
-        testToString(buf);
-        testSlice(buf);
-        testDuplicate(buf);
-        testAsReadOnlyBuffer(buf);
-        testGet(buf);
-        testPutbyte(buf);
-        testGetint(buf);
-        testPutintbyte(buf);
-        testGetbyteArrayintint(buf);
-        testGetbyteArray(buf);
-        testPutByteBuffer(buf);
-        testPutbyteArrayintint(buf);
-        testPutbyteArray(buf);
-        testHasArray(buf);
-        testArray(buf);
-        testArrayOffset(buf);
-        testCompact(buf);
-        testIsDirect(buf);
-        testCompareTo(buf);
-        testOrder(buf);
-
-        testAsCharBuffer(buf);
-        testAsDoubleBuffer(buf);
-        testAsFloatBuffer(buf);
-        testAsIntBuffer(buf);
-        testAsLongBuffer(buf);
-        testAsShortBuffer(buf);
-
-        testGetChar(buf);
-        testGetCharint(buf);
-        testPutChar(buf);
-        testPutCharint(buf);
-        testGetDouble(buf);
-        testGetDoubleint(buf);
-        testPutDouble(buf);
-        testPutDoubleint(buf);
-        testGetFloat(buf);
-        testGetFloatint(buf);
-        testPutFloat(buf);
-        testPutFloatint(buf);
-        testGetInt(buf);
-        testGetIntint(buf);
-        testPutInt(buf);
-        testPutIntint(buf);
-        testGetLong(buf);
-        testGetLongint(buf);
-        testPutLong(buf);
-        testPutLongint(buf);
-        testGetShort(buf);
-        testGetShortint(buf);
-        testPutShort(buf);
-        testPutShortint(buf);
+    protected void tearDown() throws Exception {
+        super.tearDown();
     }
 
-    public static void testArray(ByteBuffer buf) {
+    public void testArray() {
         if (buf.hasArray()) {
             byte array[] = buf.array();
             assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
@@ -140,7 +89,7 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    public static void testArrayOffset(ByteBuffer buf) {
+    public void testArrayOffset() {
         if (buf.hasArray()) {
             byte array[] = buf.array();
             assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
@@ -178,7 +127,7 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    public static void testAsReadOnlyBuffer(ByteBuffer buf) {
+    public void testAsReadOnlyBuffer() {
         buf.clear();
         buf.mark();
         buf.position(buf.limit());
@@ -202,7 +151,7 @@ public class ByteBufferTest extends TestCase {
         assertEquals(buf.position(), 0);
     }
 
-    public static void testCompact(ByteBuffer buf) {
+    public void testCompact() {
         if (buf.isReadOnly()) {
             try {
                 buf.compact();
@@ -246,9 +195,9 @@ public class ByteBufferTest extends TestCase {
         }
 
         // case: normal
-        assertTrue(buf.capacity() > 5);
+        assertTrue(buf.capacity() > SMALL_TEST_LENGTH);
         buf.position(1);
-        buf.limit(5);
+        buf.limit(SMALL_TEST_LENGTH);
         buf.mark();
         ret = buf.compact();
         assertSame(ret, buf);
@@ -263,13 +212,13 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    public static void testCompareTo(ByteBuffer buf) {
+    public void testCompareTo() {
         // compare to self
         assertEquals(0, buf.compareTo(buf));
 
         // normal cases
         if (!buf.isReadOnly()) {
-            assertTrue(buf.capacity() > 5);
+            assertTrue(buf.capacity() > SMALL_TEST_LENGTH);
             buf.clear();
             ByteBuffer other = ByteBuffer.allocate(buf.capacity());
             loadTestData1(buf);
@@ -283,13 +232,13 @@ public class ByteBufferTest extends TestCase {
             assertTrue(buf.compareTo(other) < 0);
             assertTrue(other.compareTo(buf) > 0);
             buf.position(2);
-            other.limit(5);
+            other.limit(SMALL_TEST_LENGTH);
             assertTrue(buf.compareTo(other) > 0);
             assertTrue(other.compareTo(buf) < 0);
         }
     }
 
-    public static void testDuplicate(ByteBuffer buf) {
+    public void testDuplicate() {
         buf.clear();
         buf.mark();
         buf.position(buf.limit());
@@ -321,7 +270,7 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    public static void testEquals(ByteBuffer buf) {
+    public void testEquals() {
         // equal to self
         assertTrue(buf.equals(buf));
         ByteBuffer readonly = buf.asReadOnlyBuffer();
@@ -332,7 +281,7 @@ public class ByteBufferTest extends TestCase {
         // always false, if type mismatch
         assertFalse(buf.equals(Boolean.TRUE));
 
-        assertTrue(buf.capacity() > 5);
+        assertTrue(buf.capacity() > SMALL_TEST_LENGTH);
 
         buf.limit(buf.capacity()).position(0);
         readonly.limit(readonly.capacity()).position(1);
@@ -346,7 +295,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for byte get()
      */
-    public static void testGet(ByteBuffer buf) {
+    public void testGet() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), i);
@@ -363,7 +312,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for java.nio.ByteBuffer get(byte[])
      */
-    public static void testGetbyteArray(ByteBuffer buf) {
+    public void testGetbyteArray() {
         byte array[] = new byte[1];
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
@@ -383,7 +332,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for java.nio.ByteBuffer get(byte[], int, int)
      */
-    public static void testGetbyteArrayintint(ByteBuffer buf) {
+    public void testGetbyteArrayintint() {
         buf.clear();
         byte array[] = new byte[buf.capacity()];
 
@@ -432,7 +381,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for byte get(int)
      */
-    public static void testGetint(ByteBuffer buf) {
+    public void testGetint() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), i);
@@ -452,7 +401,7 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    public static void testHasArray(ByteBuffer buf) {
+    public void testHasArray() {
         if (buf.hasArray()) {
             assertNotNull(buf.array());
         } else {
@@ -477,22 +426,36 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    public static void testHashCode(ByteBuffer buf) {
+    public void testHashCode() {
         buf.clear();
+        loadTestData1(buf);
         ByteBuffer readonly = buf.asReadOnlyBuffer();
         ByteBuffer duplicate = buf.duplicate();
         assertTrue(buf.hashCode() == readonly.hashCode());
-
-        assertTrue(buf.capacity() > 5);
-        duplicate.position(buf.capacity() / 2);
-        assertTrue(buf.hashCode() != duplicate.hashCode());
+        assertTrue(buf.capacity() > SMALL_TEST_LENGTH);
+        duplicate.position(buf.capacity()/2);
+        assertTrue(buf.hashCode()!= duplicate.hashCode());
+    }
+    
+    //for the testHashCode() method of readonly subclasses
+    protected void readOnlyHashCode() {
+        //create a new buffer initiated with some data 
+        ByteBuffer buf = ByteBuffer.allocate(BUFFER_LENGTH);
+        loadTestData1(buf);
+        buf = buf.asReadOnlyBuffer();
+        buf.clear();
+        ByteBuffer readonly = buf.asReadOnlyBuffer();
+        ByteBuffer duplicate = buf.duplicate();
+        assertEquals(buf.hashCode(),readonly.hashCode());
+        duplicate.position(buf.capacity()/2);
+        assertTrue(buf.hashCode()!= duplicate.hashCode());
     }
 
-    public static void testIsDirect(ByteBuffer buf) {
+    public void testIsDirect() {
         buf.isDirect();
     }
 
-    public static void testOrder(ByteBuffer buf) {
+    public void testOrder() {
         // BIG_ENDIAN is the default byte order
         assertEquals(ByteOrder.BIG_ENDIAN, buf.order());
     }
@@ -500,7 +463,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for java.nio.ByteBuffer put(byte)
      */
-    public static void testPutbyte(ByteBuffer buf) {
+    public void testPutbyte() {
         if (buf.isReadOnly()) {
             try {
                 buf.clear();
@@ -530,7 +493,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for java.nio.ByteBuffer put(byte[])
      */
-    public static void testPutbyteArray(ByteBuffer buf) {
+    public void testPutbyteArray() {
         byte array[] = new byte[1];
         if (buf.isReadOnly()) {
             try {
@@ -561,7 +524,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for java.nio.ByteBuffer put(byte[], int, int)
      */
-    public static void testPutbyteArrayintint(ByteBuffer buf) {
+    public void testPutbyteArrayintint() {
         buf.clear();
         byte array[] = new byte[buf.capacity()];
         if (buf.isReadOnly()) {
@@ -619,7 +582,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for java.nio.ByteBuffer put(java.nio.ByteBuffer)
      */
-    public static void testPutByteBuffer(ByteBuffer buf) {
+    public void testPutByteBuffer() {
         ByteBuffer other = ByteBuffer.allocate(buf.capacity());
         if (buf.isReadOnly()) {
             try {
@@ -658,7 +621,7 @@ public class ByteBufferTest extends TestCase {
     /*
      * Class under test for java.nio.ByteBuffer put(int, byte)
      */
-    public static void testPutintbyte(ByteBuffer buf) {
+    public void testPutintbyte() {
         if (buf.isReadOnly()) {
             try {
                 buf.put(0, (byte) 0);
@@ -690,8 +653,8 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    public static void testSlice(ByteBuffer buf) {
-        assertTrue(buf.capacity() > 5);
+    public void testSlice() {
+        assertTrue(buf.capacity() > SMALL_TEST_LENGTH);
         buf.position(1);
         buf.limit(buf.capacity() - 1);
 
@@ -718,7 +681,7 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    public static void testToString(ByteBuffer buf) {
+    public void testToString() {
         String str = buf.toString();
         assertTrue(str.indexOf("Byte") >= 0 || str.indexOf("byte") >= 0);
         assertTrue(str.indexOf("" + buf.position()) >= 0);
@@ -726,7 +689,7 @@ public class ByteBufferTest extends TestCase {
         assertTrue(str.indexOf("" + buf.capacity()) >= 0);
     }
 
-    public static void testAsCharBuffer(ByteBuffer buf) {
+    public void testAsCharBuffer() {
         CharBuffer charBuffer;
         byte bytes[] = new byte[2];
         char value;
@@ -763,7 +726,6 @@ public class ByteBufferTest extends TestCase {
                 value = (char) charBuffer.remaining();
                 charBuffer.put(value);
                 buf.get(bytes);
-                //Fix for Harmony 550
                 assertTrue(Arrays.equals(bytes, char2bytes(value, buf.order())));
             }
 
@@ -779,13 +741,11 @@ public class ByteBufferTest extends TestCase {
                 assertTrue(Arrays.equals(bytes, char2bytes(value, buf.order())));
             }
         }
-
         buf.clear();
         buf.order(ByteOrder.BIG_ENDIAN);
-        CharBufferTest.testCharBufferInstance(buf.asCharBuffer());
     }
 
-    public static void testAsDoubleBuffer(ByteBuffer buf) {
+    public void testAsDoubleBuffer() {
         DoubleBuffer doubleBuffer;
         byte bytes[] = new byte[8];
         double value;
@@ -846,10 +806,9 @@ public class ByteBufferTest extends TestCase {
 
         buf.clear();
         buf.order(ByteOrder.BIG_ENDIAN);
-        DoubleBufferTest.testDoubleBufferInstance(buf.asDoubleBuffer());
     }
 
-    public static void testAsFloatBuffer(ByteBuffer buf) {
+    public void testAsFloatBuffer() {
         FloatBuffer floatBuffer;
         byte bytes[] = new byte[4];
         float value;
@@ -910,10 +869,9 @@ public class ByteBufferTest extends TestCase {
 
         buf.clear();
         buf.order(ByteOrder.BIG_ENDIAN);
-        FloatBufferTest.testFloatBufferInstance(buf.asFloatBuffer());
     }
 
-    public static void testAsIntBuffer(ByteBuffer buf) {
+    public void testAsIntBuffer() {
         IntBuffer intBuffer;
         byte bytes[] = new byte[4];
         int value;
@@ -968,10 +926,9 @@ public class ByteBufferTest extends TestCase {
 
         buf.clear();
         buf.order(ByteOrder.BIG_ENDIAN);
-        IntBufferTest.testIntBufferInstance(buf.asIntBuffer());
     }
 
-    public static void testAsLongBuffer(ByteBuffer buf) {
+    public void testAsLongBuffer() {
         LongBuffer longBuffer;
         byte bytes[] = new byte[8];
         long value;
@@ -1026,10 +983,9 @@ public class ByteBufferTest extends TestCase {
 
         buf.clear();
         buf.order(ByteOrder.BIG_ENDIAN);
-        LongBufferTest.testLongBufferInstance(buf.asLongBuffer());
     }
 
-    public static void testAsShortBuffer(ByteBuffer buf) {
+    public void testAsShortBuffer() {
         ShortBuffer shortBuffer;
         byte bytes[] = new byte[2];
         short value;
@@ -1084,10 +1040,9 @@ public class ByteBufferTest extends TestCase {
 
         buf.clear();
         buf.order(ByteOrder.BIG_ENDIAN);
-        ShortBufferTest.testShortBufferInstance(buf.asShortBuffer());
     }
 
-    public static void testGetChar(ByteBuffer buf) {
+    public void testGetChar() {
         int nbytes = 2;
         byte bytes[] = new byte[nbytes];
         char value;
@@ -1113,7 +1068,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetCharint(ByteBuffer buf) {
+    public void testGetCharint() {
         int nbytes = 2;
         byte bytes[] = new byte[nbytes];
         char value;
@@ -1144,7 +1099,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutChar(ByteBuffer buf) {
+    public void testPutChar() {
         if (buf.isReadOnly()) {
             try {
                 buf.clear();
@@ -1182,7 +1137,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutCharint(ByteBuffer buf) {
+    public void testPutCharint() {
         if (buf.isReadOnly()) {
             try {
                 buf.putChar(0, (char) 1);
@@ -1224,7 +1179,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetDouble(ByteBuffer buf) {
+    public void testGetDouble() {
         int nbytes = 8;
         byte bytes[] = new byte[nbytes];
         double value;
@@ -1253,7 +1208,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetDoubleint(ByteBuffer buf) {
+    public void testGetDoubleint() {
         int nbytes = 8;
         byte bytes[] = new byte[nbytes];
         double value;
@@ -1287,7 +1242,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutDouble(ByteBuffer buf) {
+    public void testPutDouble() {
         if (buf.isReadOnly()) {
             try {
                 buf.clear();
@@ -1325,7 +1280,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutDoubleint(ByteBuffer buf) {
+    public void testPutDoubleint() {
         if (buf.isReadOnly()) {
             try {
                 buf.putDouble(0, (double) 1);
@@ -1367,7 +1322,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetFloat(ByteBuffer buf) {
+    public void testGetFloat() {
         int nbytes = 4;
         byte bytes[] = new byte[nbytes];
         float value;
@@ -1396,7 +1351,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetFloatint(ByteBuffer buf) {
+    public void testGetFloatint() {
         int nbytes = 4;
         byte bytes[] = new byte[nbytes];
         float value;
@@ -1430,7 +1385,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutFloat(ByteBuffer buf) {
+    public void testPutFloat() {
         if (buf.isReadOnly()) {
             try {
                 buf.clear();
@@ -1468,7 +1423,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutFloatint(ByteBuffer buf) {
+    public void testPutFloatint() {
         if (buf.isReadOnly()) {
             try {
                 buf.putFloat(0, (float) 1);
@@ -1510,7 +1465,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetInt(ByteBuffer buf) {
+    public void testGetInt() {
         int nbytes = 4;
         byte bytes[] = new byte[nbytes];
         int value;
@@ -1536,7 +1491,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetIntint(ByteBuffer buf) {
+    public void testGetIntint() {
         int nbytes = 4;
         byte bytes[] = new byte[nbytes];
         int value;
@@ -1567,7 +1522,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutInt(ByteBuffer buf) {
+    public void testPutInt() {
         if (buf.isReadOnly()) {
             try {
                 buf.clear();
@@ -1605,7 +1560,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutIntint(ByteBuffer buf) {
+    public void testPutIntint() {
         if (buf.isReadOnly()) {
             try {
                 buf.putInt(0, (int) 1);
@@ -1647,7 +1602,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetLong(ByteBuffer buf) {
+    public void testGetLong() {
         int nbytes = 8;
         byte bytes[] = new byte[nbytes];
         long value;
@@ -1673,7 +1628,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetLongint(ByteBuffer buf) {
+    public void testGetLongint() {
         int nbytes = 8;
         byte bytes[] = new byte[nbytes];
         long value;
@@ -1704,7 +1659,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutLong(ByteBuffer buf) {
+    public void testPutLong() {
         if (buf.isReadOnly()) {
             try {
                 buf.clear();
@@ -1742,7 +1697,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutLongint(ByteBuffer buf) {
+    public void testPutLongint() {
         if (buf.isReadOnly()) {
             try {
                 buf.putLong(0, (long) 1);
@@ -1784,7 +1739,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetShort(ByteBuffer buf) {
+    public void testGetShort() {
         int nbytes = 2;
         byte bytes[] = new byte[nbytes];
         short value;
@@ -1810,7 +1765,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testGetShortint(ByteBuffer buf) {
+    public void testGetShortint() {
         int nbytes = 2;
         byte bytes[] = new byte[nbytes];
         short value;
@@ -1841,7 +1796,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutShort(ByteBuffer buf) {
+    public void testPutShort() {
         if (buf.isReadOnly()) {
             try {
                 buf.clear();
@@ -1879,7 +1834,7 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    public static void testPutShortint(ByteBuffer buf) {
+    public void testPutShortint() {
         if (buf.isReadOnly()) {
             try {
                 buf.putShort(0, (short) 1);
@@ -1921,55 +1876,47 @@ public class ByteBufferTest extends TestCase {
         buf.order(ByteOrder.BIG_ENDIAN);
     }
 
-    // private static void println(byte array[]) {
-    // for (int i = 0; i < array.length; i++) {
-    // System.out.print(array[i]);
-    // System.out.print(" ");
-    // }
-    // System.out.println();
-    // }
-    //
-    private static void loadTestData1(byte array[], int offset, int length) {
+    private void loadTestData1(byte array[], int offset, int length) {
         for (int i = 0; i < length; i++) {
             array[offset + i] = (byte) i;
         }
     }
 
-    private static void loadTestData2(byte array[], int offset, int length) {
+    private void loadTestData2(byte array[], int offset, int length) {
         for (int i = 0; i < length; i++) {
             array[offset + i] = (byte) (length - i);
         }
     }
 
-    private static void loadTestData1(ByteBuffer buf) {
+    private void loadTestData1(ByteBuffer buf) {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             buf.put(i, (byte) i);
         }
     }
 
-    private static void loadTestData2(ByteBuffer buf) {
+    private void loadTestData2(ByteBuffer buf) {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             buf.put(i, (byte) (buf.capacity() - i));
         }
     }
 
-    private static void assertContentEquals(ByteBuffer buf, byte array[],
+    private void assertContentEquals(ByteBuffer buf, byte array[],
             int offset, int length) {
         for (int i = 0; i < length; i++) {
             assertEquals(buf.get(i), array[offset + i]);
         }
     }
 
-    private static void assertContentEquals(ByteBuffer buf, ByteBuffer other) {
+    private void assertContentEquals(ByteBuffer buf, ByteBuffer other) {
         assertEquals(buf.capacity(), other.capacity());
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.get(i), other.get(i));
         }
     }
 
-    private static void assertContentLikeTestData1(ByteBuffer buf,
+    private void assertContentLikeTestData1(ByteBuffer buf,
             int startIndex, byte startValue, int length) {
         byte value = startValue;
         for (int i = 0; i < length; i++) {
@@ -1978,7 +1925,7 @@ public class ByteBufferTest extends TestCase {
         }
     }
 
-    private static int bytes2int(byte bytes[], ByteOrder order) {
+    private int bytes2int(byte bytes[], ByteOrder order) {
         int nbytes = 4, bigHead, step;
         if (order == ByteOrder.BIG_ENDIAN) {
             bigHead = 0;
@@ -1997,7 +1944,7 @@ public class ByteBufferTest extends TestCase {
         return result;
     }
 
-    private static long bytes2long(byte bytes[], ByteOrder order) {
+    private long bytes2long(byte bytes[], ByteOrder order) {
         int nbytes = 8, bigHead, step;
         if (order == ByteOrder.BIG_ENDIAN) {
             bigHead = 0;
@@ -2016,7 +1963,7 @@ public class ByteBufferTest extends TestCase {
         return result;
     }
 
-    private static short bytes2short(byte bytes[], ByteOrder order) {
+    private short bytes2short(byte bytes[], ByteOrder order) {
         int nbytes = 2, bigHead, step;
         if (order == ByteOrder.BIG_ENDIAN) {
             bigHead = 0;
@@ -2035,26 +1982,25 @@ public class ByteBufferTest extends TestCase {
         return result;
     }
 
-    private static char bytes2char(byte bytes[], ByteOrder order) {
+    private char bytes2char(byte bytes[], ByteOrder order) {
         return (char) bytes2short(bytes, order);
     }
 
-    private static float bytes2float(byte bytes[], ByteOrder order) {
+    private float bytes2float(byte bytes[], ByteOrder order) {
         return Float.intBitsToFloat(bytes2int(bytes, order));
     }
 
-    private static double bytes2double(byte bytes[], ByteOrder order) {
+    private double bytes2double(byte bytes[], ByteOrder order) {
         return Double.longBitsToDouble(bytes2long(bytes, order));
     }
 
-    private static byte[] int2bytes(int value, ByteOrder order) {
+    private byte[] int2bytes(int value, ByteOrder order) {
         int nbytes = 4, smallHead, step;
         if (order == ByteOrder.BIG_ENDIAN) {
             smallHead = nbytes - 1;
             step = -1;
         } else {
             smallHead = 0;
-            //Fix for Harmony 550
             step = 1;
         }
         byte bytes[] = new byte[nbytes];
@@ -2067,7 +2013,7 @@ public class ByteBufferTest extends TestCase {
         return bytes;
     }
 
-    private static byte[] long2bytes(long value, ByteOrder order) {
+    private byte[] long2bytes(long value, ByteOrder order) {
         int nbytes = 8, smallHead, step;
         if (order == ByteOrder.BIG_ENDIAN) {
             smallHead = nbytes - 1;
@@ -2086,7 +2032,7 @@ public class ByteBufferTest extends TestCase {
         return bytes;
     }
 
-    private static byte[] short2bytes(short value, ByteOrder order) {
+    private byte[] short2bytes(short value, ByteOrder order) {
         int nbytes = 2, smallHead, step;
         if (order == ByteOrder.BIG_ENDIAN) {
             smallHead = nbytes - 1;
@@ -2105,112 +2051,15 @@ public class ByteBufferTest extends TestCase {
         return bytes;
     }
 
-    private static byte[] char2bytes(char value, ByteOrder order) {
+    private byte[] char2bytes(char value, ByteOrder order) {
         return short2bytes((short) value, order);
     }
 
-    private static byte[] float2bytes(float value, ByteOrder order) {
+    private byte[] float2bytes(float value, ByteOrder order) {
         return int2bytes(Float.floatToRawIntBits(value), order);
     }
 
-    private static byte[] double2bytes(double value, ByteOrder order) {
+    private byte[] double2bytes(double value, ByteOrder order) {
         return long2bytes(Double.doubleToRawLongBits(value), order);
     }
-
-    public void testAllocatedByteBuffer() {
-        try {
-            ByteBuffer.allocate(-1);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // expected 
-        }
-        ByteBuffer buf = ByteBuffer.allocate(250);
-        testByteBufferInstanceThoroughly(buf);
-    }
-
-    public void testAllocatedDirectByteBuffer() {
-        try {
-            ByteBuffer.allocateDirect(-1);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // expected 
-        }
-        ByteBuffer buf = ByteBuffer.allocateDirect(250);
-        testByteBufferInstanceThoroughly(buf);
-    }
-
-    public void testWrappedByteBuffer() {
-        ByteBuffer buf = ByteBuffer.wrap(new byte[250]);
-        testByteBufferInstanceThoroughly(buf);
-    }
-
-    public void testWrappedByteBuffer2() {
-        byte array[] = new byte[250];
-        try {
-            ByteBuffer.wrap(array, -1, 0);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            ByteBuffer.wrap(array, 251, 0);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            ByteBuffer.wrap(array, 0, -1);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            ByteBuffer.wrap(array, 0, 251);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-
-        ByteBuffer buf = ByteBuffer.wrap(array, 2, 240);
-        assertEquals(buf.position(), 2);
-        assertEquals(buf.limit(), 242);
-        assertEquals(buf.capacity(), 250);
-        testByteBufferInstanceThoroughly(buf);
-    }
-
-    private void testByteBufferInstanceThoroughly(ByteBuffer buf) {
-        assertTrue(buf.capacity() > 240);
-        buf.clear();
-        loadTestData1(buf);
-
-        buf.limit(230).position(1);
-        testByteBufferInstance(buf);
-        testByteBufferInstance(buf.duplicate());
-        testByteBufferInstance(buf.asReadOnlyBuffer());
-        buf.limit(230).position(1);
-        testByteBufferInstance(buf.slice());
-
-        ByteBuffer duplicate = buf.duplicate();
-        duplicate.limit(230).position(1);
-        testByteBufferInstance(duplicate.duplicate());
-        testByteBufferInstance(duplicate.asReadOnlyBuffer());
-        duplicate.limit(230).position(1);
-        testByteBufferInstance(duplicate.slice());
-
-        ByteBuffer readonly = buf.asReadOnlyBuffer();
-        readonly.limit(230).position(1);
-        testByteBufferInstance(readonly.duplicate());
-        testByteBufferInstance(readonly.asReadOnlyBuffer());
-        readonly.limit(230).position(1);
-        testByteBufferInstance(readonly.slice());
-
-        buf.limit(230).position(1);
-        ByteBuffer slice = buf.slice();
-        slice.limit(200).position(1);
-        testByteBufferInstance(slice.duplicate());
-        testByteBufferInstance(slice.asReadOnlyBuffer());
-        slice.limit(200).position(1);
-        testByteBufferInstance(slice.slice());
-    }
-
 }
