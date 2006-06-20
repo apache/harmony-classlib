@@ -106,7 +106,7 @@ public class UIDefaults extends Hashtable {
                         if (params == null) {
                             value = (methodName == null)
                                     ? classObj.newInstance()
-                                    : classObj.getMethod(methodName, (Class)null).invoke(null, null);
+                                    : classObj.getMethod(methodName, (Class[])null).invoke(null, null);
                         } else {
                             Class[] mParams = new Class[params.length];
                             for (int i = 0; i < mParams.length; i++) {

@@ -1238,7 +1238,7 @@ public class MetalLookAndFeel extends BasicLookAndFeel {
                 Class classObj = Class.forName(className);
                 result = (methodName == null)
                         ? classObj.newInstance()
-                        : classObj.getMethod(methodName, (Class)null).invoke(null, null);
+                        : classObj.getMethod(methodName, (Class[])null).invoke(null, null);
             } catch (final Exception e) {
                 e.printStackTrace();
             }
