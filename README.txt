@@ -60,12 +60,12 @@ successfully invoked from the command line.
             See http://www.doxygen.org
             
 
-The top-level Ant script <EXTRACT_DIR>/make/build.xml has a default target 
+The top-level Ant script <EXTRACT_DIR>/build.xml has a default target 
 which builds both the Java source and C source files. It is expected
 therefore that, at a minimum, a C compiler and a Java compiler be available.
 Doxygen is only necessary if generation of HTML documentation from the
 source code is to be carried out by invoking Ant with the "doc" target on
-the <EXTRACT_DIR>/make/build.xml script. As a convenience, pre-generated
+the <EXTRACT_DIR>/build.xml script. As a convenience, pre-generated
 HTML files are already stored in subversion.
 
 
@@ -73,7 +73,7 @@ HTML files are already stored in subversion.
 Building
 --------
 The simplest way to get started is to change directory into
-<EXTRACT_DIR>/make and then type "ant" to run Apache Ant against the
+<EXTRACT_DIR> and then type "ant" to run Apache Ant against the
 default target of the build.xml file. Provided that both a C compiler and a Java
 compiler are available, Ant will proceed to compile all Java source beneath
 the <EXTRACT_DIR>/modules folders and all C source beneath the
