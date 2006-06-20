@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Copyright 2005 The Apache Software Foundation or its
+    licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="SECURITY Build" default="build" basedir=".">
+    <description>Build for SECURITY component</description>
+
+    <!-- import common properties -->
+    <import file="${basedir}/../../make/properties.xml" />
+
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
+
+    <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
+	     use the Eclipse Java compiler. -->
+    <property name="build.compiler" value="modern" />
+
+    <property file="../../make/depends.properties" />
+
+    <target name="build" depends="compile.java, build.jar" />
+
+    <target name="test" depends="build, compile.tests, run.tests" />
+
+    <target name="clean">
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.security}/make/patternset.txt" />
+            <fileset dir="${hy.security.bin.test}" />
+        </delete>
+    </target>
+
+    <target name="compile.java">
+        <echo message="Compiling SECURITY classes" />
+
+        <mkdir dir="${hy.build}" />
+
+        <javac sourcepath=""
+               srcdir="${hy.security.src.main.java}"
+               destdir="${hy.build}"
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+    <target name="build.jar">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}.jar"
+             manifest="${hy.security}/META-INF/MANIFEST.MF">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.security}/make/patternset.txt" />
+        </jar>
+    </target>
+
+    <target name="compile.tests">
+
+        <compile-tests description="test support files" destdir="../../build/tests">
+            <javac-elements>
+                <src>
+                    <pathelement location="${hy.security.src.test}/support/common/java"/>
+                </src>
+                <include name="**/*.java" />
+            </javac-elements>
+        </compile-tests>
+
+
+        <compile-tests description="api tests" destdir="${hy.security.bin.test}/api">
+            <javac-elements>
+                <src>
+                    <pathelement location="${hy.security.src.test}/api/java"/>
+                </src>
+
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="api injected tests" destdir="${hy.security.bin.test}/api.injected">
+            <javac-elements>
+                <src path="${hy.security.src.test}/api/java.injected"/>
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="impl injected tests" destdir="${hy.security.bin.test}/impl.injected">
+            <javac-elements>
+                <src>
+                    <pathelement location="${hy.security.src.test}/impl/java.injected"/>
+                </src>
+
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="impl tests" destdir="${hy.security.bin.test}/impl">
+            <javac-elements>
+                <src>
+                    <pathelement location="${hy.security.src.test}/impl/java"/>
+                </src>
+
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+    </target>
+
+    <target name="run.tests" depends="run.tests.api, run.tests.impl" />
+
+    <target name="run.tests.api">
+
+        <run-tests description="api tests">
+            <junit-elements>
+                <classpath>
+                    <pathelement path="${hy.security.bin.test}/api"/>
+                    <pathelement path="../../build/tests"/>
+                </classpath>
+                <!-- Required for running the unit tests               -->
+                <!-- Note: will be deleted after improving             -->
+                <!-- support class: all resource                       -->
+                <!-- files will be placed on the classpath             -->
+                <jvmarg value="-DRESOURCE_DIR=${hy.security.src.test}/resources"/>
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                    <fileset dir="${hy.security.src.test}/api/java">
+                        <include name="**/*Test.java"/>
+
+    <exclude name="org/apache/harmony/security/tests/java/security/KeyStore2Test.java" />
+    <exclude name="org/apache/harmony/security/tests/java/security/SecureRandom2Test.java" />
+    <exclude name="tests/api/java/security/PermissionCollectionTest.java"/>
+
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <run-tests description="api.injected tests">
+            <junit-elements>
+                <!-- Required for running the serialization unit tests -->
+                <!-- Note: will be deleted after improving             -->
+                <!-- SerializationTest support class: all resource     -->
+                <!-- files will be placed on the classpath             -->
+                <jvmarg value="-DRESOURCE_DIR=${hy.security.src.test}/resources"/>
+
+                <!-- to pick up junit.jar               -->
+                <jvmarg value="-Xbootclasspath/a:${hy.security.bin.test}/api.injected${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests"/>
+
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                    <fileset dir="${hy.security.src.test}/api/java.injected">
+                        <include name="**/*Test.java"/>
+    <exclude name="java/security/serialization/KeyPairTest.java"/>
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="run.tests.impl" unless="test.noimpl">
+        <run-tests description="impl tests">
+            <junit-elements>
+                <!-- Required for running the serialization unit tests -->
+                <!-- Note: will be deleted after improving             -->
+                <!-- SerializationTest support class: all resource     -->
+                <!-- files will be placed on the classpath             -->
+                <jvmarg value="-DRESOURCE_DIR=${hy.security.src.test}/resources"/>
+
+                <classpath>
+                    <pathelement path="${hy.security.bin.test}/impl"/>
+                    <pathelement path="../../build/tests"/>
+                </classpath>
+            	
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                    <fileset dir="${hy.security.src.test}/impl/java">
+                        <include name="**/*Test.java"/>
+                        <exclude name="${hy.security.x-list}" />
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <run-tests description="impl injected tests">
+            <junit-elements>
+                <!-- Required for running the serialization unit tests -->
+                <!-- Note: will be deleted after improving             -->
+                <!-- SerializationTest support class: all resource     -->
+                <!-- files will be placed on the classpath             -->
+                <jvmarg value="-DRESOURCE_DIR=${hy.security.src.test}/resources"/>
+
+                <!-- to pick up junit.jar               -->
+                <jvmarg value="-Xbootclasspath/a:${hy.security.bin.test}/impl.injected${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests"/>
+
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                    <fileset dir="${hy.security.src.test}/impl/java.injected">
+                        <include name="**/*Test.java"/>
+
+                        <exclude name="${hy.security.x-list}" />
+
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true" >security
+</echo>
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true" >security
+</echo>
+    </target>
+
+    <macrodef name="compile-tests">
+        <attribute name="description" default="" />
+        <attribute name="destdir"  />
+        <element name="javac-elements" />
+        <sequential>
+            <echo message="Compiling SECURITY @{description}" />
+
+            <mkdir dir="@{destdir}" />
+
+            <javac destdir="@{destdir}"
+                   source="${hy.javac.source}"
+                   target="${hy.javac.target}"
+                   debug="${hy.javac.debug}">
+
+                <javac-elements />
+
+                <bootclasspath>
+                    <fileset dir="${hy.jdk}/jre/lib/boot">
+                        <include name="**/*.jar" />
+                    </fileset>
+                </bootclasspath>
+                <classpath location="../../build/tests" />
+            </javac>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="run-tests">
+        <attribute name="description" default="" />
+        <element name="junit-elements" />
+        <sequential>
+            <echo message="Running SECURITY @{description}" />
+
+            <mkdir dir="${hy.tests.reports}" />
+
+            <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+            <junit fork="yes"
+                   forkmode="once"
+                   printsummary="withOutAndErr"
+                   errorproperty="test.errors"
+                   failureproperty="test.failures"
+                   showoutput="on"
+                   dir="${hy.security.bin.test}"
+                   jvm="${test.jre.home}/bin/java">
+
+                <jvmarg value="-showversion" />
+
+                <env key="JAVA_HOME" value="${test.jre.home}"/>
+                <junit-elements />
+
+                <classpath>
+                    <pathelement path="${hy.security.src.test.resources}"/>
+                </classpath>
+
+                <formatter type="xml" />
+
+                <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
+            </junit>
+        </sequential>
+    </macrodef>
+
+</project>
