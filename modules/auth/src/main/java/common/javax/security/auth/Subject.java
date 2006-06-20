@@ -50,13 +50,13 @@ public final class Subject implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    private boolean isReadOnly;
+    private Set principals;
 
     /**
      * @com.intel.drl.spec_ref
      */
-    private Set principals;
-
+    private boolean readOnly;
+    
     // set of private credentials
     private transient SecureSet privateCredentials;
 
@@ -97,7 +97,7 @@ public final class Subject implements Serializable {
         publicCredentials = new SecureSet(_PUBLIC_CREDENTIALS);
         privateCredentials = new SecureSet(_PRIVATE_CREDENTIALS);
 
-        isReadOnly = false;
+        readOnly = false;
     }
 
     /**
@@ -116,7 +116,7 @@ public final class Subject implements Serializable {
         privateCredentials = new SecureSet(_PRIVATE_CREDENTIALS,
                 privCredentials);
 
-        this.isReadOnly = readOnly;
+        this.readOnly = readOnly;
     }
 
     /**
@@ -308,14 +308,14 @@ public final class Subject implements Serializable {
     public void setReadOnly() {
         checkPermission(_READ_ONLY);
 
-        isReadOnly = true;
+        readOnly = true;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public boolean isReadOnly() {
-        return isReadOnly;
+        return readOnly;
     }
 
     /**
@@ -406,7 +406,7 @@ public final class Subject implements Serializable {
 
     // FIXME is used only in two places. remove?
     private void checkState() {
-        if (isReadOnly) {
+        if (readOnly) {
             throw new IllegalStateException("Set is read only");
         }
     }
