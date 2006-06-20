@@ -76,7 +76,7 @@
     <!-- =================================
           target: compile
          ================================= -->
-    <target name="compile" depends="copy-resources, prepare-depends"
+    <target name="compile" depends="prepare-depends"
             description="Compile the source">
         <mkdir dir="${build.output}" />
 
@@ -122,20 +122,6 @@
 
         <call-modules target="build" />
 
-    </target>
-
-
-    <!-- =================================
-          target: copy-resources
-         ================================= -->
-    <target name="copy-resources" description="Copy non-Java files under src tree to the build output">
-        <mkdir dir="${build.output}" />
-
-        <copy todir="${build.output}" includeemptydirs="false">
-            <fileset dir="modules/luni/src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
     </target>
 
 

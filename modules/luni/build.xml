@@ -111,7 +111,7 @@
 	</delete>
     </target>
 
-    <target name="compile.java" depends="copy.resources">
+    <target name="compile.java">
         <echo message="Compiling LUNI classes" />
 
         <mkdir dir="${hy.build}" />
@@ -243,8 +243,8 @@
     </target>
 
     <target name="copy.resources">
-    	<mkdir dir="${hy.luni.bin.main}" />
-        <copy todir="${hy.luni.bin.main}" includeemptydirs="false">
+    	<mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.luni.src.main.java}">
                 <exclude name="**/*.java" />
             </fileset>
