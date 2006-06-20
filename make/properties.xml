@@ -25,6 +25,7 @@
     <!-- Javac properties -->
     <property name="hy.javac.source" value="1.5" />
     <property name="hy.javac.target" value="jsr14" />
+    <property name="hy.javac.debug" value="on" />
 
     <!-- Conditions for operating systems -->
     <condition property="is.windows">
@@ -106,6 +107,7 @@ Harmony javac properties:
 
   hy.javac.target = ${hy.javac.target}
   hy.javac.source = ${hy.javac.source}
+  hy.javac.debug  = ${hy.javac.debug}
 
 
 Harmony platform properties:
