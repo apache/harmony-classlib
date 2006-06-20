@@ -35,180 +35,39 @@
     <property name="tests.depends.jars" location="deploy/jdk/jre/lib/boot" />
     <property file="make/depends.properties" />
 
-	<!-- this list of components to test will grow to eventually be all modules -->
-	<target name="test-all"
-		depends="clean, test-annotation, test-archive, test-auth, test-beans, test-crypto, test-jndi, test-logging, test-luni, test-math, test-nio, test-nio_char, test-prefs, test-regex, test-rmi, test-security, test-sql, test-text, test-xnet, gen-report, check-test-result">
-	</target>
+    <!-- this list of components to test will grow to eventually be all modules -->
+    <target name="test-all"
+	    depends="clean, test-modules, gen-report, check-test-result">
+    </target>
 
-	<target name="clean">
-		<delete dir="${tests.output}" />
-	</target>
+    <target name="clean">
+	<delete dir="${tests.output}" />
+    </target>
 
-	<target name="test-annotation" depends="compile-support">
-        <echo message="=================================="/>
-        <echo message="Running tests for module annotation"/>
-        <echo message="=================================="/>
+    <target name="test-modules" depends="compile-support">
+        <call-modules target="test" />
+    </target>
 
-        <ant antfile="make/build.xml" dir="modules/annotation" target="test" />
+    <target name="gen-report">
+	<junitreport todir="${tests.output}">
+	    <fileset dir="${tests.output}">
+		<include name="TEST*-*.xml"/>
+	    </fileset>
+	    <report format="frames" todir="${tests.output}/html"/>
+	</junitreport>
 
-	</target>
-
-	<target name="test-luni" depends="compile-support">
-        <echo message="=================================="/>
-        <echo message="Running tests for module luni"/>
-        <echo message="=================================="/>
-
-        <ant antfile="make/build.xml" dir="modules/luni" target="test"/>
-	</target>
-
-	<target name="test-archive" depends="compile-support">
-        <echo message="=================================="/>
-        <echo message="Running tests for module archive"/>
-        <echo message="=================================="/>
-
-        <ant antfile="make/build.xml" dir="modules/archive" target="test" />
-
-	</target>
-
-	<target name="test-xnet" depends="compile-support">
-        <echo message="=================================="/>
-        <echo message="Running tests for module x-net"/>
-        <echo message="=================================="/>
-
-        <ant antfile="make/build.xml" dir="modules/x-net" target="test" />
-
-	</target>
-
-	<target name="test-crypto" depends="compile-support">
-        <echo message="=================================="/>
-        <echo message="Running tests for module crypto"/>
-        <echo message="=================================="/>
-
-        <ant antfile="make/build.xml" dir="modules/crypto" target="test" />
-
-	</target>
-
-	<target name="test-auth" depends="compile-support">
-		<echo message="=================================="/>
-		<echo message="Running tests for module auth"/>
-		<echo message="=================================="/>
-
-		<ant antfile="make/build.xml" dir="modules/auth" target="test" />
-
-	</target>
-
-	<target name="test-text" depends="compile-support">
-        <echo message="=================================="/>
-        <echo message="Running tests for module text"/>
-        <echo message="=================================="/>
-
-        <ant antfile="make/build.xml" dir="modules/text" target="test" />
-
-	</target>
-
-	<target name="test-nio" depends="compile-support">
-        <echo message="=================================="/>
-        <echo message="Running tests for module nio"/>
-        <echo message="=================================="/>
-
-        <ant antfile="make/build.xml" dir="modules/nio" target="test" />
-
-	</target>
-
-	<target name="test-nio_char" depends="compile-support">
-        <echo message="=================================="/>
-        <echo message="Running tests for module nio_char"/>
-        <echo message="=================================="/>
-
-        <ant antfile="make/build.xml" dir="modules/nio_char" target="test" />
-
-	</target>
-
-	<target name="test-jndi" depends="compile-support">
-            <echo message="=================================="/>
-            <echo message="Running tests for module jndi"/>
-            <echo message="=================================="/>
-            <ant antfile="make/build.xml" dir="modules/jndi" target="test" />
-	</target>
-
-	<target name="test-logging" depends="compile-support">
-            <echo message="=================================="/>
-            <echo message="Running tests for module logging"/>
-            <echo message="=================================="/>
-            <ant antfile="make/build.xml" dir="modules/logging" target="test" />
-	</target>
-
-	<target name="test-prefs" depends="compile-support">
-            <echo message="=================================="/>
-            <echo message="Running tests for module prefs"/>
-            <echo message="=================================="/>
-            <ant antfile="make/build.xml" dir="modules/prefs" target="test" />
-	</target>
-
-	<target name="test-sql" depends="compile-support">
-            <echo message="=================================="/>
-            <echo message="Running tests for module sql"/>
-            <echo message="=================================="/>
-            <ant antfile="make/build.xml" dir="modules/sql" target="test" />
-	</target>
-
-	<target name="test-beans" depends="compile-support">
-            <echo message="=================================="/>
-            <echo message="Running tests for module beans"/>
-            <echo message="=================================="/>
-            <ant antfile="make/build.xml" dir="modules/beans" target="test" />
-	</target>
-
-	<target name="test-math">
-            <echo message="=================================="/>
-            <echo message="Running tests for module math"/>
-            <echo message="=================================="/>
-            <ant antfile="make/build.xml" dir="modules/math" target="test" />
-	</target>
-
-	<target name="test-regex">
-            <echo message="=================================="/>
-            <echo message="Running tests for module regex"/>
-            <echo message="=================================="/>
-            <ant antfile="make/build.xml" dir="modules/regex" target="test" />
-	</target>
-
-	<target name="test-rmi">
-            <echo message="=================================="/>
-            <echo message="Running tests for module rmi"/>
-            <echo message="=================================="/>
-            <ant antfile="make/build.xml" dir="modules/${hy.rmi.module}" target="test" />
-	</target>
-
-	<target name="test-security" depends="compile-support">
-	
-            <echo message="=================================="/>
-            <echo message="Running tests for module security"/>
-            <echo message="=================================="/>
-
-            <ant antfile="make/build.xml" dir="modules/security" target="test"/>
-	</target>
-
-	<target name="gen-report">
-		<junitreport todir="${tests.output}">
-		  <fileset dir="${tests.output}">
-		    <include name="TEST*-*.xml"/>
-		  </fileset>
-		  <report format="frames" todir="${tests.output}/html"/>
-		</junitreport>
-
-		<!-- use this property just to get the slashes to display right in the echo -->
-		<property name="display-location" location="${tests.output}/html/index.html"/>
-		<echo message="The test report is in ${display-location}"/>
+	<!-- use this property just to get the slashes to display right in the echo -->
+	<property name="display-location" location="${tests.output}/html/index.html"/>
+	<echo message="The test report is in ${display-location}"/>
     </target>
 
     <target name="compile-support" depends="copy-test-resources, check-support-jars"
-    	description="Compile the unit test source">
+    	    description="Compile the unit test source">
     	<mkdir dir="${tests.build.output}" />
     	<javac destdir="${tests.build.output}"
-    		source="${hy.javac.source}"
-    		target="${hy.javac.target}"
-    		debug="on">
+    	       source="${hy.javac.source}"
+    	       target="${hy.javac.target}"
+    	       debug="on">
 
             <src path="${support.dir}/src/test/java" />
             <classpath location="${junit.jar}" />
@@ -224,9 +83,9 @@
 	
     <target name="check-test-result">
         <available property="test.errors"
-            file="${tests.output}/test.errors" />
+                   file="${tests.output}/test.errors" />
         <available property="test.failures"
-            file="${tests.output}/test.failures" />
+                   file="${tests.output}/test.failures" />
         <fail if="test.errors" message="There were test errors." />
         <fail if="test.failures" message="There were test failures." />
     </target>
@@ -235,7 +94,7 @@
           target: copy-test-resources              
          ================================= -->
     <target name="copy-test-resources"
-       description="Copy non-Java files from unit test trees to the bin output">
+            description="Copy non-Java files from unit test trees to the bin output">
         <mkdir dir="${tests.build.output}" />
 
         <copy todir="${tests.build.output}" includeemptydirs="false">
@@ -277,9 +136,9 @@
         <path id="classpath.id" location="${tests.build.output}" />
     	
     	<java classname="tests.main.AllTests"
-    		fork="true"
-    		jvm="${harmony.vm.exe}">
-    		
+    	      fork="true"
+    	      jvm="${harmony.vm.exe}">
+    	    
             <jvmarg value="-showversion" />
 
             <!-- Required by various tests that set security manager etc -->
@@ -295,7 +154,7 @@
                 <path refid="classpath.id" />
                 <pathelement location="${junit.jar}" />
             </classpath>
-   		</java>
+   	</java>
     </target>
 
 	

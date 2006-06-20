@@ -45,4 +45,8 @@ the top-level build.
         <delete file="${stub.jar}" />
     </target>
 
+    <target name="test">
+        <!-- just to match "API" for other modules. -->
+    </target>
+
 </project>

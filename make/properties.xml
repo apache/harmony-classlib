@@ -164,16 +164,34 @@ properties in preference to these:
     <macrodef name="call-modules">
         <attribute name="target" />
         <sequential>
-            <subant target="@{target}">
-                <fileset dir="modules">
-                    <include name="*/make/build.xml" />
-                    <exclude name="rmi*/make/build.xml" />
-                </fileset>
-                <fileset dir="modules">
-                    <include name="${hy.rmi.module}/make/build.xml" />
-                </fileset>
-            </subant>
+            <antcall target="call-modules-all">
+                <param name="target" value="@{target}" />
+            </antcall>
+            <antcall target="call-modules-one">
+                <param name="target" value="@{target}" />
+            </antcall>
         </sequential>
     </macrodef>
+
+    <target name="call-modules-all" unless="build.module">
+        <subant target="${target}">
+            <fileset dir="modules">
+                <include name="*/make/build.xml" />
+                <exclude name="rmi*/make/build.xml" />
+            </fileset>
+            <fileset dir="modules">
+                <include name="${hy.rmi.module}/make/build.xml" />
+            </fileset>
+        </subant>
+    </target>
+
+    <target name="call-modules-one" if="build.module">
+        <subant target="${target}">
+            <fileset dir="modules">
+                <include name="${build.module}/make/build.xml" />
+            </fileset>
+        </subant>
+    </target>
+            
 
 </project>
