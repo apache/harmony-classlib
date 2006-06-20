@@ -176,10 +176,13 @@ properties in preference to these:
     <target name="call-modules-all" unless="build.module">
         <subant target="${target}">
             <fileset dir="modules">
+                <include name="*/build.xml" />
+                <exclude name="rmi*/build.xml" />
                 <include name="*/make/build.xml" />
                 <exclude name="rmi*/make/build.xml" />
             </fileset>
             <fileset dir="modules">
+                <include name="${hy.rmi.module}/build.xml" />
                 <include name="${hy.rmi.module}/make/build.xml" />
             </fileset>
         </subant>
@@ -188,6 +191,7 @@ properties in preference to these:
     <target name="call-modules-one" if="build.module">
         <subant target="${target}">
             <fileset dir="modules">
+                <include name="${build.module}/build.xml" />
                 <include name="${build.module}/make/build.xml" />
             </fileset>
         </subant>
