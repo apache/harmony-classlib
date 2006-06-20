@@ -17,6 +17,8 @@
 
 <project name="Common_X-NET_Build">
 
+    <property file="../../../../make/depends.properties" />
+
     <target name="compile.java" description="Compile X-NET java code">
         <echo message="Compiling X-NET classes from ${hy.x-net.src.main.java}" />
 
