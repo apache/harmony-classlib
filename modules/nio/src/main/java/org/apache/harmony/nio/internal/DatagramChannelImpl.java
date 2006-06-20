@@ -229,17 +229,6 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         checkOpen();
 
         if (!isBound) {
-            // FIXME RI seems does not perform as datagram socket
-            // SecurityManager security = System.getSecurityManager();
-            // if (security != null)
-            // security.checkListen(0);
-            // final byte[] any = new byte[] { 0, 0, 0, 0 };
-            // try {
-            // networkSystem.bind(fd, 0, InetAddress.getByAddress(any));
-            // } catch (UnknownHostException e) {
-            // // impossible,do nothing
-            // }
-            // isBound = true;
             return null;
         }
 

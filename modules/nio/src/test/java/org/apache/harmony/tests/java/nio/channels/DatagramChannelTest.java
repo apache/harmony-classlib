@@ -1354,8 +1354,9 @@ public class DatagramChannelTest extends TestCase {
         // not bound
         sendByChannel("some normal string in testReceiveSend_Normal",
                 localAddr2);
-        ByteBuffer buf = ByteBuffer.wrap(new byte[CAPACITY_NORMAL]);
-        assertNull((InetSocketAddress) this.channel1.receive(buf));
+        ByteBuffer buf = ByteBuffer.allocate(CAPACITY_NORMAL);
+        assertNull(channel1.receive(buf));
+        assertFalse(channel1.socket().isBound());
     }
 
     public void testReceiveSend_NonBlock_NotBound() throws Exception {
