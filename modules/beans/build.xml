@@ -147,9 +147,6 @@
 
                 <fileset dir="${hy.beans.src.test.internal}">
                     <include name="**/*Test.java"/>
-                	<!-- Excluded pending investigation -->
-                	<exclude name="org/apache/harmony/beans/ClassPersistenceDelegateTest.java" />
-                    <exclude name="org/apache/harmony/beans/StringPersistenceDelegateTest.java" />
                 </fileset>
             </batchtest>
         </junit>

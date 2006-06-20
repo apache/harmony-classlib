@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
  */
 
 public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
-    
+
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Class value = (Class) oldInstance;
         Field fld = null;
@@ -59,26 +59,33 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
                 fld = Boolean.class.getField(TYPE);
             }
         } catch (NoSuchFieldException e) {
-            // impossible situation for valid java.lang classes 
-            // implementation with version >= 1.1 
+            // impossible situation for valid java.lang classes
+            // implementation with version >= 1.1
         }
         if (fld != null) {
-            // we have primitive type 
+            // we have primitive type
             result = new Expression(oldInstance, fld, "get",
-                    new Object[] {null});
+                                    new Object[] {null});
         } else {
             result = new Expression(oldInstance, Class.class, "forName",
-                new Object[] { new String(value.getName()) });
+                    new Object[] { new String(value.getName()) });
         }
         return result;
     }
-    
-    protected void initialize(
-            Class type, Object oldInstance, Object newInstance, Encoder out) {
-    }
-    
-    // Added for testing purposes
+
+    protected void initialize(Class type, Object oldInstance,
+                              Object newInstance, Encoder out) {}
+
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+        if (oldInstance instanceof Class && newInstance instanceof Class) {
+            Class c1 = (Class) oldInstance;
+            Class c2 = (Class) newInstance;
+
+            if (c1.getName().equals(c2.getName())) {
+                return true;
+            }
+            return false;
+        }
         return super.mutatesTo(oldInstance, newInstance);
     }
 }

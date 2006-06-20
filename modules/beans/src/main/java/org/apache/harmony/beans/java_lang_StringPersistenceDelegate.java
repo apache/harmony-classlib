@@ -30,19 +30,21 @@ import java.beans.PersistenceDelegate;
  */
 
 public class java_lang_StringPersistenceDelegate extends PersistenceDelegate {
-    
+
     protected Expression instantiate(Object oldInstance, Encoder out) {
         String value = (String) oldInstance;
+
         return new Expression(oldInstance, String.class, "new",
-                new Object[] { new String(value) });
+                              new Object[] {new String(value)});
     }
-    
-    protected void initialize(
-            Class type, Object oldInstance, Object newInstance, Encoder out) {
-    }
-    
-    // Added for testing purposes
+
+    protected void initialize(Class type, Object oldInstance,
+                              Object newInstance, Encoder out) {}
+
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+        if (oldInstance instanceof String && newInstance instanceof String) {
+            return newInstance.equals(oldInstance);
+        }
         return super.mutatesTo(oldInstance, newInstance);
     }
 }
