@@ -36,5 +36,10 @@ Export-Package: java.awt,
  java.awt.image.renderable,
  java.awt.im.spi,
  java.awt.peer,
- java.awt.print
+ java.awt.print,
+ org.apache.harmony.awt,
+ org.apache.harmony.awt.gl,
+ org.apache.harmony.awt.nativebridge,
+ org.apache.harmony.awt.nativebridge.windows,
+ org.apache.harmony.awt.text
 
