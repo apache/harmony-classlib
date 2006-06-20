@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+    Copyright 2005, 2006 The Apache Software Foundation or its
+    licensors, as applicable.
   
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +16,41 @@
     limitations under the License.
 -->
 
-<project name="Common_MISC_Build">
+<project name="MISC Build" default="build" basedir=".">
+    <description>Build for MISC component</description>
 
-    <target name="compile.java" description="Compile MISC java code">
-        <echo message="Compiling MISC classes from ${hy.misc.src.main.java}" />
+    <!-- import common properties -->
+    <import file="${basedir}/../../make/properties.xml" />
+
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
+    <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
+	     use the Eclipse Java compiler. -->
+    <property name="build.compiler" value="modern" />
+
+    <target name="build" depends="compile.java, build.jar" />
+
+    <target name="test" depends="build, compile.tests, run.tests" />
+
+    <target name="clean">
+        <delete failonerror="false">
+            <fileset dir="${hy.build}"
+                     includesfile="${hy.misc}/make/patternset.txt" />
+            <fileset dir="${hy.misc.bin.test}" />
+        </delete>
+    </target>
+
+    <target name="compile.java">
+        <echo message="Compiling MISC classes" />
 
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-            srcdir="${hy.misc.src.main.java}"
-            destdir="${hy.build}"
-            source="${hy.javac.source}"
-            target="${hy.javac.target}"
-            debug="${java.debug.option}">
+               srcdir="${hy.misc.src.main.java}"
+               destdir="${hy.build}"
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
 
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
@@ -45,28 +68,26 @@
         </jar>
     </target>
 
-
     <target name="compile.tests">
-        <echo message="Compiling MISC tests from ${hy.misc.src.test.java}" />
+        <echo message="Compiling MISC tests" />
 
         <mkdir dir="${hy.misc.bin.test}" />
 
         <javac srcdir="${hy.misc.src.test.java}"
-            destdir="${hy.misc.bin.test}"
-            sourcepath=""
-            source="${hy.javac.source}"
-            target="${hy.javac.target}"
-            debug="${java.debug.option}">
+               destdir="${hy.misc.bin.test}"
+               sourcepath=""
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
 
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-            <classpath location="../../../../build/tests" />
+            <classpath location="../../build/tests" />
         </javac>
     </target>
-
 
     <target name="run.tests">
 
@@ -75,13 +96,13 @@
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
-            forkmode="once"
-            printsummary="withOutAndErr"
-            errorproperty="test.errors"
-            failureproperty="test.failures"
-            showoutput="on"
-            dir="${hy.misc.bin.test}"
-            jvm="${test.jre.home}/bin/java">
+               forkmode="once"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${hy.misc.bin.test}"
+               jvm="${test.jre.home}/bin/java">
 
             <jvmarg value="-showversion"/>
 
@@ -93,7 +114,9 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
+            <test name="${test.case}" todir="${hy.tests.reports}"
+                 if="test.case" />
+
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
 
@@ -109,14 +132,11 @@
             append="true" >misc
 </echo>
     </target>
+
     <target name="touch-errors-file" if="test.errors">
         <echo file="${hy.tests.reports}/test.errors"
             append="true" >misc
 </echo>
     </target>
 
-    <target name="copy.resources">
-        <!-- Nothing for MISC -->
-    </target>
 </project>
-
