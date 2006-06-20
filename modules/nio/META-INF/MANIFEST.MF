@@ -17,7 +17,8 @@ Import-Package: java.io,
  org.apache.harmony.luni.net,
  org.apache.harmony.luni.platform,
  org.apache.harmony.luni.util,
- tests.support;resolution:=optional;hy_usage=test
+ tests.support;hy_usage=test;resolution:=optional,
+ tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.nio,
  java.nio.channels,
  java.nio.channels.spi,
