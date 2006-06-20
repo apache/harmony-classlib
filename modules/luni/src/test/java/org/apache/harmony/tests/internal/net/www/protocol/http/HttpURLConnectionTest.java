@@ -17,11 +17,14 @@
 package org.apache.harmony.tests.internal.net.www.protocol.http;
 
 import java.io.IOException;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.URI;
@@ -70,6 +73,43 @@ public class HttpURLConnectionTest extends TestCase {
         }
     }
 
+    static class MockProxyServer extends MockServer {
+
+        boolean acceptedAuthorizedRequest;
+        
+        public MockProxyServer(String name) throws Exception {
+            super(name);
+        }
+
+        public void run() {
+            try {
+                Socket socket = serverSocket.accept();
+                socket.setSoTimeout(1000);
+                byte[] buff = new byte[1024];
+                int num = socket.getInputStream().read(buff);
+                socket.getOutputStream().write((
+                    "HTTP/1.0 407 Proxy authentication required\n" 
+                  + "Proxy-authenticate: Basic realm=\"remotehost\"\n\n")
+                        .getBytes());
+                num = socket.getInputStream().read(buff);
+                if (num == -1) {
+                    // this connection was closed, create new one:
+                    socket = serverSocket.accept();
+                    socket.setSoTimeout(1000);
+                    num = socket.getInputStream().read(buff);
+                }
+                String request = new String(buff, 0, num);
+                acceptedAuthorizedRequest = 
+                    request.toLowerCase().indexOf("proxy-authorization:") > 0;
+                if (acceptedAuthorizedRequest) {
+                    socket.getOutputStream().write((
+                            "HTTP/1.1 200 OK\n\n").getBytes());
+                }
+            } catch (IOException e) {
+            }
+        }
+    }
+    
     /**
      * ProxySelector implementation used in the test.
      */
@@ -212,4 +252,39 @@ public class HttpURLConnectionTest extends TestCase {
             ProxySelector.setDefault(defPS);
         }
     }
+
+    public void testProxyAuthorization() throws Exception {
+        // Set up test Authenticator
+        Authenticator.setDefault(new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(
+                    "user", "password".toCharArray());
+            }
+        });
+        
+        try {
+            MockProxyServer proxy = new MockProxyServer("ProxyServer");
+
+            URL url = new URL("http://remotehost:55555/requested.data");
+            HttpURLConnection connection = 
+                (HttpURLConnection) url.openConnection(
+                        new Proxy(Proxy.Type.HTTP, 
+                            new InetSocketAddress("localhost", proxy.port())));
+            connection.setConnectTimeout(1000);
+            connection.setReadTimeout(1000);
+
+            proxy.start();
+
+            connection.connect();
+            assertEquals("unexpected response code", 
+                    200, connection.getResponseCode());
+            proxy.join();
+            assertTrue("Connection did not send proxy authorization request",
+                    proxy.acceptedAuthorizedRequest);
+        } finally {
+            // remove previously set authenticator
+            Authenticator.setDefault(null);
+        }
+    }
+    
 }

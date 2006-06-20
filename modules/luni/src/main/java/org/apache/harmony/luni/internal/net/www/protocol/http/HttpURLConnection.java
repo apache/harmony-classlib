@@ -74,6 +74,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     private InputStream uis;
 
+    protected Socket socket;
+    
     OutputStream socketOut;
 
     OutputStream cacheOut;
@@ -582,23 +584,11 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
         if (socket == null) {
             // make direct connection
-            socket = getHTTPConnection(
-                    new InetSocketAddress(getHostName(), getHostPort()));
+            socket = getHTTPConnection(null);
         }
         socket.setSoTimeout(getReadTimeout());
+        setUpTransportIO(socket);
         connected = true;
-        socketOut = socket.getOutputStream();
-        is = new BufferedInputStream(socket.getInputStream());
-    }
-
-    /**
-     * Returns connected socket to be used for this HTTP connection.
-     * TODO: implement persistent connections.
-     */
-    protected Socket getHTTPConnection(SocketAddress address) throws IOException {
-        Socket socket = new Socket();
-        socket.connect(address, getConnectTimeout());
-        return socket;
     }
 
     /**
@@ -607,16 +597,33 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      */
     protected Socket getHTTPConnection(Proxy proxy) throws IOException {
         Socket socket;
-        if (proxy.type() == Proxy.Type.HTTP) {
-            socket = getHTTPConnection(proxy.address());
+        if (proxy == null || proxy.type() == Proxy.Type.DIRECT) {
+            this.proxy = null; // not using proxy
+            socket = new Socket();
+            socket.connect(
+                    new InetSocketAddress(getHostName(), getHostPort()),
+                    getConnectTimeout());
+        } else if (proxy.type() == Proxy.Type.HTTP) {
+            socket = new Socket();
+            socket.connect(proxy.address(), getConnectTimeout());
         } else {
-            // using DIRECT or SOCKS proxy
+            // using SOCKS proxy
             socket = new Socket(proxy);
             socket.connect(
-                    new InetSocketAddress(url.getHost(), url.getPort()),
+                    new InetSocketAddress(getHostName(), getHostPort()),
                     getConnectTimeout());
         }
         return socket;
+    }
+
+    /**
+     * Sets up the data streams used to send request[s] and read response[s].
+     * @param socket socket to be used for connection
+     */
+    protected void setUpTransportIO(Socket socket) throws IOException {
+        this.socket = socket;
+        socketOut = socket.getOutputStream();
+        is = new BufferedInputStream(socket.getInputStream());
     }
 
     // Tries to get head and body from cache, return true if has got this time or
@@ -675,7 +682,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         }
     }
 
-    void endRequest() throws IOException {
+    protected void endRequest() throws IOException {
         if (os != null) {
             os.close();
         }
@@ -990,7 +997,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         return result.toString();
     }
 
-    private String requestString() {
+    protected String requestString() {
         if (usingProxy() || proxyName != null) {
             return url.toString();
         }
@@ -1351,7 +1358,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
     /**
      * Answer whether the connection should use a proxy server.
-     * 
+     *
      * Need to check both proxy* and http.proxy* because of change between JDK
      * 1.0 and JDK 1.1
      */
@@ -1362,7 +1369,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     /**
      * Handles an HTTP request along with its redirects and authentication
      */
-    void doRequest() throws IOException {
+    protected void doRequest() throws IOException {
         // do nothing if we've already sent the request
         if (sentRequest) {
             // If necessary, finish the request by
@@ -1384,48 +1391,58 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             if (!sendRequest()) {
                 return;
             }
-
-            // authorization failed ?
-            if (responseCode == HTTP_UNAUTHORIZED) { // keep asking for
+            // proxy authorization failed ?
+            if (responseCode == HTTP_PROXY_AUTH) {
+                if (!usingProxy()) {
+                    throw new IOException("Received HTTP_PROXY_AUTH (407) "
+                            +"code while not using proxy");
+                }
                 // username/password
                 // until authorized
-                String challenge = resHeader.get("WWW-Authenticate");
+                String challenge = resHeader.get("Proxy-Authenticate");
                 if (challenge == null) {
-                    break;
-                }
-                int idx = challenge.indexOf(" ");
-                String scheme = challenge.substring(0, idx);
-                int realm = challenge.indexOf("realm=\"") + 7;
-                String prompt = null;
-                if (realm != -1) {
-                    int end = challenge.indexOf('"', realm);
-                    if (end != -1) {
-                        prompt = challenge.substring(realm, end);
-                    }
-                }
-
-                // the following will use the user-defined authenticator to get
-                // the password
-                PasswordAuthentication pa = Authenticator
-                        .requestPasswordAuthentication(getHostAddress(),
-                                getHostPort(), url.getProtocol(), prompt,
-                                scheme);
-                if (pa == null) {
-                    break;
+                    throw new IOException(
+                            "Received authentication challenge is null.");
                 }
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1
                 endRequest();
                 closeSocket();
                 connected = false;
-                // base64 encode the username and password
-                byte[] bytes = (pa.getUserName() + ":" + new String(pa
-                        .getPassword())).getBytes("ISO8859_1");
-                String encoded = Base64.encode(bytes, "ISO8859_1");
-                setRequestProperty("Authorization", scheme + " " + encoded);
+                String credentials = getAuthorizationCredentials(challenge);
+                if (credentials == null) {
+                    // could not find credentials, end request cicle
+                    break;
+                }
+                // set up the authorization credentials
+                setRequestProperty("Proxy-Authorization", credentials);
+                // continue to send request
                 continue;
             }
-
+            // www authorization failed ?
+            if (responseCode == HTTP_UNAUTHORIZED) { // keep asking for
+                // username/password
+                // until authorized
+                String challenge = resHeader.get("WWW-Authenticate");
+                if (challenge == null) {
+                    throw new IOException(
+                            "Received authentication challenge is null.");
+                }
+                // drop everything and reconnect, might not be required for
+                // HTTP/1.1
+                endRequest();
+                closeSocket();
+                connected = false;
+                String credentials = getAuthorizationCredentials(challenge);
+                if (credentials == null) {
+                    // could not find credentials, end request cicle
+                    break;
+                }
+                // set up the authorization credentials
+                setRequestProperty("Authorization", credentials);
+                // continue to send request
+                continue;
+            }
             // See if there is a server redirect to the URL, but only handle 1
             // level of
             // URL redirection from the server to avoid being caught in an
@@ -1434,7 +1451,8 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                 if ((responseCode == HTTP_MULT_CHOICE
                         || responseCode == HTTP_MOVED_PERM
                         || responseCode == HTTP_MOVED_TEMP
-                        || responseCode == HTTP_SEE_OTHER || responseCode == HTTP_USE_PROXY)
+                        || responseCode == HTTP_SEE_OTHER 
+                        || responseCode == HTTP_USE_PROXY)
                         && os == null) {
 
                     if (++redirect > 4) {
@@ -1466,13 +1484,43 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
                     }
                 }
             }
-
             break;
         }
-
         // Cache the content stream and read the first chunked header
         getContentStream();
     }
+
+    // Returns the authorization credentials on the base of
+    // provided authorization challenge
+    private String getAuthorizationCredentials(String challenge) 
+            throws IOException {
+
+        int idx = challenge.indexOf(" ");
+        String scheme = challenge.substring(0, idx);
+        int realm = challenge.indexOf("realm=\"") + 7;
+        String prompt = null;
+        if (realm != -1) {
+            int end = challenge.indexOf('"', realm);
+            if (end != -1)
+                prompt = challenge.substring(realm, end);
+        }
+        // The following will use the user-defined authenticator to get
+        // the password
+        PasswordAuthentication pa = Authenticator
+                .requestPasswordAuthentication(getHostAddress(),
+                        getHostPort(), url.getProtocol(), prompt,
+                        scheme);
+        if (pa == null) {
+            // could not retrieve the credentials
+            return null;
+        }
+        // base64 encode the username and password
+        byte[] bytes = (pa.getUserName() + ":" + 
+                new String(pa.getPassword())).getBytes("ISO8859_1");
+        String encoded = Base64.encode(bytes, "ISO8859_1");
+        return scheme + " " + encoded;
+    }
+    
 
     private void setProxy(String proxy) {
         int index = proxy.indexOf(':');
