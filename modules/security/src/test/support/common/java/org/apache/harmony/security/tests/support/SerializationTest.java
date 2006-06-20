@@ -127,18 +127,7 @@ public abstract class SerializationTest extends TestCase {
      */
     public void testSelf() throws Throwable {
 
-        SerializableAssert comparator = defineComparator();
-
-        Object[] data = getData();
-        for (int i = 0; i < data.length; i++) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            putObjectToStream(data[i], bos);
-            ByteArrayInputStream bis = new ByteArrayInputStream(bos
-                .toByteArray());
-
-            comparator.assertDeserialized((Serializable) data[i],
-                    (Serializable) getObjectFromStream(bis));
-        }
+        verifySelf(this, getData());
     }
 
     /**
@@ -147,14 +136,7 @@ public abstract class SerializationTest extends TestCase {
      */
     public void testGolden() throws Throwable {
         
-        SerializableAssert comparator = defineComparator();
-        
-        Object[] data = getData();
-        for (int i = 0; i < data.length; i++) {
-            comparator.assertDeserialized((Serializable) data[i],
-                    (Serializable) getObjectFromStream(new FileInputStream(
-                            getDataFile(i))));
-        }
+        verifyGolden(this, getData());
     }
 
     /**
@@ -195,7 +177,7 @@ public abstract class SerializationTest extends TestCase {
     /**
      * Serializes specified object to an output stream.
      */
-    protected void putObjectToStream(Object obj, OutputStream os)
+    public static void putObjectToStream(Object obj, OutputStream os)
         throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(os);
         oos.writeObject(obj);
@@ -206,7 +188,7 @@ public abstract class SerializationTest extends TestCase {
     /**
      * Deserializes single object from an input stream.
      */
-    protected Object getObjectFromStream(InputStream is) throws IOException,
+    public static Object getObjectFromStream(InputStream is) throws IOException,
         ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(is);
         Object result = ois.readObject();
@@ -287,20 +269,35 @@ public abstract class SerializationTest extends TestCase {
         }
     };
 
-    private SerializableAssert defineComparator() throws Exception {
+    /**
+     * Returns <code>comparator</code> for provided serializable
+     * <code>object</code>.
+     * 
+     * The <code>comparator</code> is searched in the following order: <br>-
+     * if <code>test</code> implements SerializableAssert interface then it is
+     * selected as </code>comparator</code>.<br>- if passed <code>object</code>
+     * has class in its classes hierarchy that overrides <code>equals(Object)</code>
+     * method then <code>DEFAULT_COMPARATOR</code> is selected.<br> - the
+     * method tries to select one of known comparators basing on <code>object's</code>
+     * class,for example, if passed <code>object</code> is instance of
+     * java.lang.Throwable then <code>THROWABLE_COMPARATOR</code> is used.<br>-
+     * otherwise RuntimeException is thrown
+     * 
+     * @param test -
+     *            test case
+     * @param object -
+     *            object to be compared
+     * @return object's comparator
+     */
+    public static SerializableAssert defineComparator(TestCase test,
+            Object object) throws Exception {
 
-        if (this instanceof SerializableAssert) {
-            return (SerializableAssert) this;
+        if (test instanceof SerializableAssert) {
+            return (SerializableAssert) test;
         }
 
-        Object s[] = getData();
-        if (s == null || s.length == 0) {
-            // nothing to compare - OK with default comparator
-            return DEFAULT_COMPARATOR;
-
-        }
-
-        Method m = s[0].getClass().getMethod("equals", new Class[] {Object.class});
+        Method m = object.getClass().getMethod("equals",
+                new Class[] { Object.class });
 
         if (m.getDeclaringClass() != Object.class) {
             // one of classes overrides Object.equals(Object) method
@@ -310,12 +307,211 @@ public abstract class SerializationTest extends TestCase {
 
         // TODO use generics to detect comparator
         // instead of 'instanceof' for the first element
-        if(s[0] instanceof java.lang.Throwable){
+        if (object instanceof java.lang.Throwable) {
             return THROWABLE_COMPARATOR;
-        } else if (s[0] instanceof java.security.PermissionCollection){
+        } else if (object instanceof java.security.PermissionCollection) {
             return PERMISSION_COLLECTION_COMPARATOR;
         }
 
         throw new RuntimeException("Failed to detect comparator");
+    }
+    
+    /**
+     * Verifies that object deserialized from golden file correctly.
+     * 
+     * The method invokes <br>
+     * verifyGolden(test, object, defineComparator(test, object));
+     * 
+     * @param test -
+     *            test case
+     * @param object -
+     *            to be compared
+     */
+    public static void verifyGolden(TestCase test, Object object)
+            throws Exception {
+
+        verifyGolden(test, object, defineComparator(test, object));
+    }
+
+    /**
+     * Verifies that object deserialized from golden file correctly.
+     * 
+     * The method loads "<code>testName</code>.golden.ser" resource file
+     * from "<module root>/src/test/resources/serialization/<code>testPackage</code>"
+     * folder, reads an object from the loaded file and compares it with
+     * <code>object</code> using specified <code>comparator</code>.
+     * 
+     * @param test-
+     *            test case
+     * @param object-
+     *            to be compared
+     * @param comparator -
+     *            for comparing (de)serialized objects
+     */
+    public static void verifyGolden(TestCase test, Object object,
+            SerializableAssert comparator) throws Exception {
+
+        TestCase.assertNotNull("Null comparator", comparator);
+
+        Serializable deserialized = getObject(test, ".golden.ser");
+
+        comparator.assertDeserialized((Serializable) object, deserialized);
+    }
+
+    /**
+     * Verifies that objects from array deserialized from golden files
+     * correctly.
+     * 
+     * The method invokes <br>
+     * verifyGolden(test, objects, defineComparator(test, object[0]));
+     * 
+     * @param test -
+     *            test case
+     * @param objects -
+     *            array of objects to be compared
+     */
+    public static void verifyGolden(TestCase test, Object[] objects)
+            throws Exception {
+
+        TestCase.assertFalse("Empty array", objects.length == 0);
+        verifyGolden(test, objects, defineComparator(test, objects[0]));
+    }
+
+    /**
+     * Verifies that objects from array deserialized from golden files
+     * correctly.
+     * 
+     * The method loads "<code>testName</code>.golden.<code>N</code>.ser"
+     * resource files from "<module root>/src/test/resources/serialization/<code>testPackage</code>"
+     * folder, from each loaded file it reads an object from and compares it
+     * with corresponding object in provided array (i.e. <code>objects[N]</code>)
+     * using specified <code>comparator</code>. (<code>N</code> is index
+     * in object's array.)
+     * 
+     * @param test-
+     *            test case
+     * @param objects -
+     *            array of objects to be compared
+     * @param comparator -
+     *            for comparing (de)serialized objects
+     */
+    public static void verifyGolden(TestCase test, Object[] objects,
+            SerializableAssert comparator) throws Exception {
+
+        TestCase.assertFalse("Empty array", objects.length == 0);
+        for (int i = 0; i < objects.length; i++) {
+            Serializable deserialized = getObject(test, ".golden." + i + ".ser");
+            comparator.assertDeserialized((Serializable) objects[i],
+                    deserialized);
+        }
+    }
+    
+    /**
+     * Verifies that object can be smoothly serialized/deserialized.
+     * 
+     * The method invokes <br>
+     * verifySelf(object, defineComparator(test, object));
+     * 
+     * @param test -
+     *            test case
+     * @param object -
+     *            to be serialized/deserialized
+     */
+    public static void verifySelf(TestCase test, Object object)
+            throws Exception {
+
+        verifySelf(object, defineComparator(test, object));
+    }
+    
+    /**
+     * Verifies that object can be smoothly serialized/deserialized.
+     * 
+     * The method serialize/deserialize <code>object</code> and compare it
+     * with initial <code>object</code>.
+     * 
+     * @param object -
+     *            object to be serialized/deserialized
+     * @param comparator -
+     *            for comparing serialized/deserialized object with initial
+     *            object
+     */
+    public static void verifySelf(Object object, SerializableAssert comparator)
+            throws Exception {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        putObjectToStream(object, out);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+
+        comparator.assertDeserialized((Serializable) object,
+                (Serializable) getObjectFromStream(in));
+
+    }
+
+    /**
+     * Verifies that that objects from array can be smoothly
+     * serialized/deserialized.
+     * 
+     * The method invokes <br>
+     * verifySelf(objects, defineComparator(test, object[0]));
+     * 
+     * @param test -
+     *            test case
+     * @param objects -
+     *            array of objects to be serialized/deserialized
+     */
+    public static void verifySelf(TestCase test, Object[] objects)
+            throws Exception {
+
+        TestCase.assertFalse("Empty array", objects.length == 0);
+        verifySelf(objects, defineComparator(test, objects[0]));
+    }
+    
+    /**
+     * Verifies that that objects from array can be smoothly
+     * serialized/deserialized.
+     * 
+     * The method serialize/deserialize each object in <code>objects</code>
+     * array and compare it with initial object.
+     * 
+     * @param objects -
+     *            array of objects to be serialized/deserialized
+     * @param comparator -
+     *            for comparing serialized/deserialized object with initial
+     *            object
+     */
+    public static void verifySelf(Object[] objects, SerializableAssert comparator)
+            throws Exception {
+
+        TestCase.assertFalse("Empty array", objects.length == 0);
+        for(Object entry: objects){
+            verifySelf(entry, comparator);
+        }
+    }
+
+    private static Serializable getObject(TestCase test, String toAppend)
+            throws Exception {
+
+        StringBuilder path = new StringBuilder("serialization");
+
+        path.append(File.separatorChar);
+        path.append(test.getClass().getName().replace('.', File.separatorChar));
+        path.append(toAppend);
+
+        InputStream in = ClassLoader.getSystemClassLoader()
+                .getResourceAsStream(path.toString());
+        // TestCase.assertNotNull("Failed to load resource file: " + path, in);
+        if (in == null) {
+            // FIXME stub for loading resource files in old way 
+            String filename = test.getClass().getName().replace('.',
+                    File.separatorChar)
+                    + toAppend.replaceAll("\\.golden", "").replaceAll("\\.ser",
+                            ".dat");
+            if (outputPath != null && outputPath.length() != 0) {
+                filename = outputPath + File.separator + filename;
+            }
+            in = new FileInputStream(filename);
+        }
+
+        return (Serializable)getObjectFromStream(in);
     }
 }
