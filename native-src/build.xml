@@ -107,6 +107,9 @@
 
     <!-- This target invokes make on the all target to compile all natives -->
     <target name="make-all" depends="properties">
+    	<!-- Create the target directory structure -->
+        <mkdir dir="${hy.jdk}/jre/bin" />
+        <mkdir dir="${hy.jdk}/include" />
     	<mkdir dir="${native.lib.target}"/>
     	
     	<antcall target="copy-makefile-includes" />
@@ -117,6 +120,8 @@
         	<env key="HY_HDK" value="${hy.hdk}" />
             <arg line="all" />
         </exec>
+    	
+    	<ant dir="..\modules\prefs" antfile="build.xml" target="build.native" />
     </target>
 
 
@@ -133,6 +138,8 @@
             <arg line="clean" />
         </exec>
     	
+    	<ant dir="..\modules\prefs" antfile="build.xml" target="clean.native" />
+    	
     	<delete dir="${native.lib.target}" />
     	
     	<antcall target="clean-makefile-includes" />
@@ -145,10 +152,6 @@
     <target name="layout" 
         depends="properties" 
         description="Construct the correct directory structure for native binaries">
-
-        <!-- Create the structure -->
-        <mkdir dir="${hy.jdk}/jre/bin" />
-        <mkdir dir="${hy.jdk}/include" />
 
         <!-- Copy across the built shared libs -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -238,8 +241,8 @@
     	<ant dir="${basedir}/../modules/luni" antfile="build.xml" 
     		target="clean.native.includes" />
 	</target>
-	
-	<!-- ================================= 
+
+    <!-- ================================= 
           target: copy-makefile-includes              
          ================================= -->
 	<target name="copy-makefile-includes" depends="properties" >

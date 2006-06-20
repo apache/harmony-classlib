@@ -21,12 +21,12 @@
          <main>
             <java location="src/main/java" />
         	<resources location="src/main/resources" />
+        	<native location="src/main/native" />
          </main>
          <test>
             <java location="src/test/java" />
             <resources location="src/test/resources" />
          </test>
-         <natives location="src/natives" />
       </src>
       <bin>
         <main location="bin/main" />

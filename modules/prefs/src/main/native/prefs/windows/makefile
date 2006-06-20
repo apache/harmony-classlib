@@ -18,7 +18,6 @@
 
 !include <$(HY_HDK)\build\defines.mak>
 
-SHAREDSUB=$(SHARED)prefs\# comment to avoid \ being treated as continuation
 LIBBASE=hyprefs
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
