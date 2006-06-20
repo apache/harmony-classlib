@@ -306,7 +306,7 @@ public class AlgorithmParameterGenerator1Test extends TestCase {
      * Assertion: returns AlgorithmParameters object
      */  
     public void testAlgorithmParameterGenerator10()
-            throws NoSuchAlgorithmException {
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         if (!DSASupported) {
             fail(validAlgName + " algorithm is not supported");
             return;
