@@ -17,6 +17,8 @@
 
 <project name="Common_BEANS_Build">
 
+    <property file="../../../../make/depends.properties" />
+
     <target name="compile.java" description="Compile BEANS java code">
         <echo message="Compiling BEANS classes from ${hy.beans.src.main.java}" />
 
