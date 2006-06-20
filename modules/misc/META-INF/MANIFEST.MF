@@ -5,12 +5,10 @@ Bundle-SymbolicName: org.apache.harmony.misc
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: 
- java.lang,
+Import-Package: java.lang,
  java.lang.reflect,
  java.io,
  java.nio,
  java.util
 Export-Package: org.apache.harmony.misc,
  org.apache.harmony.misc.accessors
-
