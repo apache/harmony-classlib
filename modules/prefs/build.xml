@@ -33,22 +33,22 @@
 
     <target name="test" depends="build, compile.tests, run.tests" />
 
-	<!-- Build natives. Currently there are only windows natives for
-	prefs, so we check if we are on a windows platform -->
-	<target name="build.native" if="is.windows">
-		<exec failonerror="true" 
-            executable="${make.command}" 
-            dir="${hy.prefs.src.main.native}/prefs/${hy.os}">
-        	<env key="HY_HDK" value="${hy.hdk}" />
+    <!-- Build natives. Currently there are only windows natives for
+	 prefs, so we check if we are on a windows platform -->
+    <target name="build.native" if="is.windows">
+	<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.prefs.src.main.native}/prefs/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
         </exec>
-		
-		<!-- Copy the built shared libs over to the jre/bin dir -->
-		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+
+	<!-- Copy the built shared libs over to the jre/bin dir -->
+	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.prefs.src.main.native}/prefs">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
-	</target>
+    </target>
 
     <target name="clean">
         <delete failonerror="false">
@@ -58,16 +58,16 @@
         </delete>
     </target>
 
-	<!-- Clean natives. Currently there are only windows natives for
-	prefs, so we check if we are on a windows platform -->
-	<target name="clean.native" if="is.windows">
-		<exec failonerror="true" 
-            executable="${make.command}" 
-            dir="${hy.prefs.src.main.native}/prefs/${hy.os}">
-        	<env key="HY_HDK" value="${hy.hdk}" />
-			<arg line="clean" />
+    <!-- Clean natives. Currently there are only windows natives for
+	 prefs, so we check if we are on a windows platform -->
+    <target name="clean.native" if="is.windows">
+	<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.prefs.src.main.native}/prefs/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+	    <arg line="clean" />
         </exec>
-	</target>
+    </target>
 
 
     <target name="compile.java">
