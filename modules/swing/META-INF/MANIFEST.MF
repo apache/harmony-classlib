@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.apache.harmony.swing
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: 
- java.lang,
+Import-Package: java.lang,
+ java.lang.ref,
  java.lang.reflect,
  java.awt,
  java.awt.datatransfer,
