@@ -219,7 +219,7 @@
             <javac destdir="@{destdir}"
                    source="${hy.javac.source}"
                    target="${hy.javac.target}"
-                   debug="${java.debug.option}">
+                   debug="${hy.javac.debug}">
 
                 <javac-elements />
 
