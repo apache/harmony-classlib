@@ -38,9 +38,9 @@ public class InflaterInputStream extends FilterInputStream {
 
 	protected int len;
 
-	boolean closed = false;
+	boolean closed;
 
-	boolean eof = false;
+	boolean eof;
 
 	static final int BUF_SIZE = 512;
 
@@ -68,21 +68,23 @@ public class InflaterInputStream extends FilterInputStream {
 
 	/**
 	 * Constructs a new InflaterOutputStream on is, using the Inflater provided
-	 * in inf. The dsize of the inflation buffer is determined by bsize.
+	 * in inf. The size of the inflation buffer is determined by bsize.
 	 * 
 	 * @param is
 	 *            The InputStream to read data from
 	 * @param inf
 	 *            The Inflater to use for decompression
 	 * @param bsize
-	 *            sie of the inflation buffer
+	 *            size of the inflation buffer
 	 */
 	public InflaterInputStream(InputStream is, Inflater inf, int bsize) {
 		super(is);
-		if (is == null || inf == null)
-			throw new NullPointerException();
-		if (bsize <= 0)
-			throw new IllegalArgumentException();
+		if (is == null || inf == null) {
+            throw new NullPointerException();
+        }
+		if (bsize <= 0) {
+            throw new IllegalArgumentException();
+        }
 		this.inf = inf;
 		buf = new byte[bsize];
 	}
@@ -91,13 +93,14 @@ public class InflaterInputStream extends FilterInputStream {
 	 * Reads a single byte of decompressed data.
 	 * 
 	 * @return byte read
-	 * @exception IOException
+	 * @throws IOException
 	 *                If an error occurs reading
 	 */
 	public int read() throws IOException {
 		byte[] b = new byte[1];
-		if (read(b, 0, 1) == -1)
-			return -1;
+		if (read(b, 0, 1) == -1) {
+            return -1;
+        }
 		return b[0] & 0xff;
 	}
 
@@ -112,22 +115,26 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @param nbytes
 	 *            number of bytes to store
 	 * @return Number of uncompressed bytes read
-	 * @exception IOException
+	 * @throws IOException
 	 *                If an error occurs reading
 	 */
 	public int read(byte[] buffer, int off, int nbytes) throws IOException {
 		/* [MSG "K0059", "Stream is closed"] */
-		if (closed)
-			throw new IOException(Msg.getString("K0059"));
+		if (closed) {
+            throw new IOException(Msg.getString("K0059"));
+        }
 
-		if (null == buffer)
-			throw new NullPointerException();
+		if (null == buffer) {
+            throw new NullPointerException();
+        }
 
-		if (off < 0 || nbytes < 0 || off + nbytes > buffer.length)
-			throw new IndexOutOfBoundsException();
+		if (off < 0 || nbytes < 0 || off + nbytes > buffer.length) {
+            throw new IndexOutOfBoundsException();
+        }
 
-		if (nbytes == 0)
-			return 0;
+		if (nbytes == 0) {
+            return 0;
+        }
 
 		if (inf.finished()) {
 			eof = true;
@@ -138,36 +145,41 @@ public class InflaterInputStream extends FilterInputStream {
 		if (off <= buffer.length && nbytes >= 0 && off >= 0
 				&& buffer.length - off >= nbytes) {
 			do {
-				if (inf.needsInput())
-					fill();
+				if (inf.needsInput()) {
+                    fill();
+                }
 				int result;
 				try {
 					result = inf.inflate(buffer, off, nbytes);
 				} catch (DataFormatException e) {
-					if (len == -1)
-						throw new EOFException();
-					throw new IOException(e.getMessage());
+					if (len == -1) {
+                        throw new EOFException();
+                    }
+					throw (IOException)(new IOException().initCause(e));
 				}
-				if (result > 0)
-					return result;
-				else if (inf.finished()) {
+				if (result > 0) {
+                    return result;
+                } else if (inf.finished()) {
 					eof = true;
 					return -1;
-				} else if (inf.needsDictionary())
-					return -1;
-				else if (len == -1)
-					throw new EOFException();
+				} else if (inf.needsDictionary()) {
+                    return -1;
+                } else if (len == -1) {
+                    throw new EOFException();
 				// If result == 0, fill() and try again
+                }
 			} while (true);
 		}
 		throw new ArrayIndexOutOfBoundsException();
 	}
 
 	protected void fill() throws IOException {
-		if (closed)
-			throw new IOException(Msg.getString("K0059"));
-		if ((len = in.read(buf)) > 0)
-			inf.setInput(buf, 0, len);
+		if (closed) {
+            throw new IOException(Msg.getString("K0059"));
+        }
+		if ((len = in.read(buf)) > 0) {
+            inf.setInput(buf, 0, len);
+        }
 	}
 
 	/**
@@ -176,7 +188,7 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @param nbytes
 	 *            Number of bytes to skip
 	 * @return Number of uncompressed bytes skipped
-	 * @exception IOException
+	 * @throws IOException
 	 *                If an error occurs skipping
 	 */
 	public long skip(long nbytes) throws IOException {
@@ -200,21 +212,23 @@ public class InflaterInputStream extends FilterInputStream {
 	/**
 	 * Returns 0 if this stream has been closed, 1 otherwise.
 	 * 
-	 * @exception IOException
+	 * @throws IOException
 	 *                If an error occurs
 	 */
 	public int available() throws IOException {
-		if (closed)
-			throw new IOException(Msg.getString("K0059"));
-		if (eof)
-			return 0;
+		if (closed) {
+            throw new IOException(Msg.getString("K0059"));
+        }
+		if (eof) {
+            return 0;
+        }
 		return 1;
 	}
 
 	/**
 	 * Closes the stream
 	 * 
-	 * @exception IOException
+	 * @throws IOException
 	 *                If an error occurs closing the stream
 	 */
 	public void close() throws IOException {
