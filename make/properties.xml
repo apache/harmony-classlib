@@ -95,6 +95,11 @@
     </condition>
     <property name="shlib.suffix" value=".so" />
 
+    <condition property="make.command" value="nmake.exe">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="make.command" value="make" />
+
     <target name="echo" depends="svn-prop" >
         <echo>
 
@@ -129,6 +134,7 @@ Harmony platform properties:
 
   exe.suffix = ${exe.suffix}
   shlib.suffix = ${shlib.suffix}
+  make.command = ${make.command}
 
 
 The following property is only set if the "svn-prop" target has been
@@ -180,24 +186,17 @@ properties in preference to these:
             <fileset dir="modules">
                 <include name="*/build.xml" />
                 <exclude name="rmi*/build.xml" />
-                <include name="*/make/build.xml" />
-                <exclude name="rmi*/make/build.xml" />
             </fileset>
             <fileset dir="modules">
                 <include name="${hy.rmi.module}/build.xml" />
-                <include name="${hy.rmi.module}/make/build.xml" />
             </fileset>
         </subant>
     </target>
 
     <target name="call-modules-one" if="build.module">
         <subant target="${target}">
-            <fileset dir="modules">
-                <include name="${build.module}/build.xml" />
-                <include name="${build.module}/make/build.xml" />
-            </fileset>
+            <dirset dir="modules" includes="${build.module}" />
         </subant>
     </target>
-            
 
 </project>
