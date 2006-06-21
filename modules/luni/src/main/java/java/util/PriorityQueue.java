@@ -28,7 +28,7 @@ import java.io.Serializable;
  * The least element of the specified ordering is stored at the head of the
  * queue and the greatest element is stored at the tail of the queue.
  * 
- * PriorityQueue is not synchronized. If mutiple threads will access it
+ * PriorityQueue is not synchronized. If multiple threads will access it
  * concurrently, use the PriorityBlockingQueue.
  */
 public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
@@ -90,7 +90,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      *        queue to be constructed.
      * @throws ClassCastException if any of the elements in the collection is
      *         not comparable.
-     * @throws NullPointerExcepiton if any of the elements in the colleciton is
+     * @throws NullPointerExcepiton if any of the elements in the collection is
      *         null.
      */
     public PriorityQueue(Collection<? extends E> c) {
