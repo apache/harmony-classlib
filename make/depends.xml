@@ -172,9 +172,9 @@ should be downloaded to:
 
   @{dest}
 
-Run "ant -f depends.xml download" to automatically fetch
-dependencies.  Note: Some of Harmony's dependencies are licensed under
-terms other than the Apache License v2.
+Run "ant fetch-depends" to automatically fetch dependencies.
+Note: Some of Harmony's dependencies are licensed under terms other
+than the Apache License v2.
             </fail>
         </sequential>
     </macrodef>
