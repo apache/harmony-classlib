@@ -131,7 +131,7 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 	 *                already bound
 	 */
 	public void bind(int port, InetAddress addr) throws SocketException {
-		String prop = (String) AccessController.doPrivileged(new PriviAction(
+		String prop = AccessController.doPrivileged(new PriviAction<String>(
 				"bindToDevice"));
 		boolean useBindToDevice = prop != null
 				&& prop.toLowerCase().equals("true");

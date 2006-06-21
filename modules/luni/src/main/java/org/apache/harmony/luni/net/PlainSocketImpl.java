@@ -404,8 +404,8 @@ class PlainSocketImpl extends SocketImpl {
 			return addr.getPort();
 		}
 		
-		String proxyPort = (String) AccessController
-				.doPrivileged(new PriviAction("socksProxyPort"));
+		String proxyPort = AccessController
+				.doPrivileged(new PriviAction<String>("socksProxyPort"));
 
 		if (proxyPort != null) {
 			portValue = Integer.parseInt(proxyPort);
@@ -431,8 +431,8 @@ class PlainSocketImpl extends SocketImpl {
 			}
 		}else{
 			// get from system properties
-			proxyName = (String) AccessController
-				.doPrivileged(new PriviAction("socksProxyHost"));
+			proxyName = AccessController
+				.doPrivileged(new PriviAction<String>("socksProxyHost"));
 		}
 		InetAddress anAddr = netImpl.getHostByName(proxyName,
                 NetUtil.preferIPv6Addresses());

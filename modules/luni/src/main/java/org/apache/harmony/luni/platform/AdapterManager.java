@@ -31,10 +31,10 @@ final class AdapterManager implements IAdapterManager {
 	 * key is adaptable type, and value is list of adapter factories for that
 	 * type.
 	 */
-	private final HashMap factories = new HashMap();
+	private final HashMap<Class, List<IAdapterFactory>> factories = new HashMap<Class, List<IAdapterFactory>>();
 
 	public Object getAdapter(IAdaptable adaptable, Class adapterType) {
-		List factoryList = (List) factories.get(adaptable);
+		List factoryList = factories.get(adaptable);
 		if (factoryList != null) {
 			for (Iterator factoryItr = factoryList.iterator(); factoryItr
 					.hasNext();) {
@@ -53,25 +53,25 @@ final class AdapterManager implements IAdapterManager {
 	}
 
 	public void registerAdapters(IAdapterFactory factory, Class adaptable) {
-		List factoryList = (List) factories.get(adaptable);
+		List<IAdapterFactory> factoryList = factories.get(adaptable);
 		if (factoryList == null) {
-			factoryList = new ArrayList();
+			factoryList = new ArrayList<IAdapterFactory>();
 			factories.put(adaptable, factoryList);
 		}
 		factoryList.add(factory);
 	}
 
 	public void unregisterAdapters(IAdapterFactory factory, Class adaptable) {
-		List factoryList = (List) factories.get(adaptable);
+		List factoryList = factories.get(adaptable);
 		if (factoryList != null) {
 			factoryList.remove(factory);
 		}
 	}
 
 	public void unregisterAdapters(IAdapterFactory factory) {
-		for (Iterator knownAdaptablesItr = factories.keySet().iterator(); knownAdaptablesItr
+		for (Iterator<Class> knownAdaptablesItr = factories.keySet().iterator(); knownAdaptablesItr
 				.hasNext();) {
-			Class adaptable = (Class) knownAdaptablesItr.next();
+			Class adaptable = knownAdaptablesItr.next();
 			unregisterAdapters(factory, adaptable);
 		}
 	}

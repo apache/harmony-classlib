@@ -29,11 +29,11 @@ import java.util.Map;
 abstract class AbstractMemorySpy implements IMemorySpy {
 
 	// TODO: figure out how to prevent this being a synchronization bottleneck
-	protected Map<PlatformAddress,AddressWrapper> memoryInUse = new HashMap(); // Shadow to Wrapper
+	protected Map<PlatformAddress,AddressWrapper> memoryInUse = new HashMap<PlatformAddress, AddressWrapper>(); // Shadow to Wrapper
 
-	protected Map<Reference,PlatformAddress> refToShadow = new HashMap(); // Reference to Shadow
+	protected Map<Reference,PlatformAddress> refToShadow = new HashMap<Reference, PlatformAddress>(); // Reference to Shadow
 
-	protected ReferenceQueue notifyQueue = new ReferenceQueue();
+	protected ReferenceQueue<Object> notifyQueue = new ReferenceQueue<Object>();
 
 	protected Object lock = new Object();
 
@@ -42,7 +42,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 
 		final long size;
 
-		final PhantomReference wrAddress;
+		final PhantomReference<PlatformAddress> wrAddress;
 
 		volatile boolean autoFree = false;
 
@@ -50,7 +50,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 			super();
 			this.shadow = PlatformAddress.on(address);
 			this.size = size;
-			this.wrAddress = new PhantomReference(address, notifyQueue);
+			this.wrAddress = new PhantomReference<PlatformAddress>(address, notifyQueue);
 		}
 	}
 
@@ -69,7 +69,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 	public boolean free(PlatformAddress address) {
 		AddressWrapper wrapper;
 		synchronized (lock) {
-			wrapper = (AddressWrapper) memoryInUse.remove(address);
+			wrapper = memoryInUse.remove(address);
 		}
 		if (wrapper == null) {
 			// Attempt to free memory we didn't alloc
@@ -92,7 +92,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 	public void autoFree(PlatformAddress address) {
 		AddressWrapper wrapper;
 		synchronized (lock) {
-			wrapper = (AddressWrapper) memoryInUse.get(address);
+			wrapper = memoryInUse.get(address);
 		}
 		if (wrapper != null) {
 			wrapper.autoFree = true;
@@ -103,7 +103,7 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 		AddressWrapper wrapper;
 		synchronized (lock) {
 			PlatformAddress shadow = refToShadow.remove(ref);
-			wrapper = (AddressWrapper) memoryInUse.remove(shadow);
+			wrapper = memoryInUse.remove(shadow);
 		}
         ref.clear();
 		if (wrapper != null) {

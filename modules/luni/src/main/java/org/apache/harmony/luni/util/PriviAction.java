@@ -120,7 +120,8 @@ public class PriviAction<T> implements PrivilegedAction<T> {
 	 * 
 	 * @see java.security.PrivilegedAction#run()
 	 */
-	public T run() {
+	@SuppressWarnings("unchecked")
+    public T run() {
 		switch (action) {
 		case GET_SYSTEM_PROPERTY:
 			return (T)System.getProperty((String) arg1, (String) arg2);

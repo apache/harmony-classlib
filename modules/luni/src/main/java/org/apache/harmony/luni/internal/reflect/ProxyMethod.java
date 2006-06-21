@@ -80,9 +80,9 @@ class ProxyMethod {
 			} else {
 				int cLength = commonExceptions.length;
 				nextException: for (int c = 0, cL = cLength, oL = otherExceptions.length; c < cL; c++) {
-					Class cException = commonExceptions[c];
+					Class<?> cException = commonExceptions[c];
 					for (int o = 0; o < oL; o++) {
-						Class oException = otherExceptions[o];
+						Class<?> oException = otherExceptions[o];
 						if (cException == oException)
 							continue nextException;
 						if (oException.isAssignableFrom(cException))

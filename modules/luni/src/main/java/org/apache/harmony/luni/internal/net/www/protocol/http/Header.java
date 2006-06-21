@@ -76,6 +76,7 @@ public class Header implements Cloneable {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public Object clone() {
         try {
             Header clone = (Header) super.clone();

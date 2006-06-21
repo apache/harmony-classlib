@@ -261,7 +261,7 @@ public final class ProxyClassFile implements ProxyConstants {
 		allMethods.add(new ProxyMethod(ObjectHashCodeMethod));
 		allMethods.add(new ProxyMethod(ObjectToStringMethod));
 
-		HashSet interfacesSeen = new HashSet();
+		HashSet<Class> interfacesSeen = new HashSet<Class>();
 		for (int i = 0, length = interfaces.length; i < length; i++)
 			findMethods(interfaces[i], allMethods, interfacesSeen);
 
@@ -270,7 +270,7 @@ public final class ProxyClassFile implements ProxyConstants {
 	}
 
 	private void findMethods(Class nextInterface, ArrayList<ProxyMethod> allMethods,
-			HashSet interfacesSeen) {
+			HashSet<Class> interfacesSeen) {
 		// add the nextInterface's methods to allMethods
 		// if an equivalent method already exists then return types must be
 		// identical... don't replace it
@@ -284,7 +284,7 @@ public final class ProxyClassFile implements ProxyConstants {
 		nextMethod: for (int i = 0, length = methods.length; i < length; i++) {
 			Method method = methods[i];
 			for (int j = 0; j < existingMethodCount; j++)
-				if (((ProxyMethod) allMethods.get(j)).matchMethod(method))
+				if (allMethods.get(j).matchMethod(method))
 					continue nextMethod;
 			allMethods.add(new ProxyMethod(method));
 		}

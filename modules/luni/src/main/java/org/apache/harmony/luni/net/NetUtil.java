@@ -46,12 +46,13 @@ public class NetUtil {
     	if(null != proxy && Proxy.Type.SOCKS == proxy.type()){
     		return true;
     	}
-        String proxySet = (String) AccessController
-                .doPrivileged(new PriviAction("socksProxySet")); //$NON-NLS-1$
+        String proxySet = AccessController
+                .doPrivileged(new PriviAction<String>("socksProxySet")); //$NON-NLS-1$
         if (proxySet != null) {
             return proxySet.toLowerCase().equals("true"); //$NON-NLS-1$
         }
-        return AccessController.doPrivileged(new PriviAction("socksProxyHost")) != null; //$NON-NLS-1$
+        return AccessController.doPrivileged(new PriviAction<String>(
+                "socksProxyHost")) != null; //$NON-NLS-1$
     }
 
     /**
@@ -60,7 +61,7 @@ public class NetUtil {
      * @return boolean
      */
     public static boolean preferIPv6Addresses() {
-    	String result = (String) AccessController.doPrivileged(new PriviAction(
+    	String result = AccessController.doPrivileged(new PriviAction<String>(
     			"java.net.preferIPv6Addresses")); //$NON-NLS-1$
     	return "true".equals(result); //$NON-NLS-1$
     }
@@ -71,7 +72,7 @@ public class NetUtil {
      * @return boolean
      */
     public static boolean preferIPv4Stack() {
-    	String result = (String) AccessController.doPrivileged(new PriviAction(
+    	String result = AccessController.doPrivileged(new PriviAction<String>(
     			"java.net.preferIPv4Stack")); //$NON-NLS-1$
         return "true".equals(result); //$NON-NLS-1$
     }
