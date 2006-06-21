@@ -137,7 +137,7 @@
         <mkdir dir="${hy.jdk}/jre/lib/ext" />
         <mkdir dir="${hy.jdk}/jre/lib/security" />
 
-        <!-- Copy across the dependency jars -->
+        <!-- Copy across the boot dependency jars -->
         <copy todir="${hy.jdk}/jre/lib/boot" overwrite="yes"
               verbose="yes">
             <fileset dir="${depends.jars}">
@@ -154,6 +154,12 @@
         <copy todir="${hy.jdk}/jre/lib/ext" overwrite="yes"
               verbose="yes" flatten="yes">
             <fileset file="${bcprov.jar}" />
+        </copy>
+
+        <!-- Copy across the jdk/lib dependency jars -->
+        <copy todir="${hy.jdk}/lib" overwrite="yes"
+              verbose="yes" flatten="yes">
+            <fileset file="${ecj.jar}" />
         </copy>
 
         <!-- Copy across the support files -->
