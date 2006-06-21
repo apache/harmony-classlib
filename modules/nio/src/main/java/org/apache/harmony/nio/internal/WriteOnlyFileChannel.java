@@ -20,7 +20,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileLock;
 import java.nio.channels.NonReadableChannelException;
 import java.nio.channels.WritableByteChannel;
-import java.nio.channels.FileChannel.MapMode;
 
 public final class WriteOnlyFileChannel extends FileChannelImpl {
 

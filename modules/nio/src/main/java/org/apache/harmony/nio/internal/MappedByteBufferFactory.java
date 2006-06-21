@@ -28,7 +28,7 @@ class MappedByteBufferFactory {
 
 	static {
 		constructor = (Constructor) AccessController
-				.doPrivileged(new PrivilegedAction() {
+				.doPrivileged(new PrivilegedAction<Object>() {
 					public Object run() {
 						try {
 							Class wrapperClazz = ClassLoader

@@ -20,8 +20,6 @@ import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.Channel;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.InterruptibleChannel;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This class roots the implementation of interruptable channels.

@@ -15,7 +15,6 @@
 
 package org.apache.harmony.nio.internal;
 
-
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.util.Comparator;
@@ -29,51 +28,52 @@ import java.util.TreeSet;
  * 
  */
 final class LockManager {
-	// The set of acquired and pending locks.
-	private final Comparator lockComparator = new Comparator() {
-		public int compare(Object lock1, Object lock2) {
-			long position1 = ((FileLock) lock1).position();
-			long position2 = ((FileLock) lock2).position();
-			return position1 > position2 ? 1 : (position1 < position2 ? -1 : 0);
-		}
-	};
+    // The set of acquired and pending locks.
+    private final Comparator<FileLock> lockComparator = new Comparator<FileLock>() {
+        public int compare(FileLock lock1, FileLock lock2) {
+            long position1 = lock1.position();
+            long position2 = lock2.position();
+            return position1 > position2 ? 1 : (position1 < position2 ? -1 : 0);
+        }
+    };
 
-	private final SortedSet<FileLock> locks = new TreeSet(lockComparator);
+    private final SortedSet<FileLock> locks = new TreeSet<FileLock>(
+            lockComparator);
 
-	/*
-	 * Default Constructor.
-	 */
-	protected LockManager() {
-		super();
-	}
+    /*
+     * Default Constructor.
+     */
+    protected LockManager() {
+        super();
+    }
 
-	/*
-	 * Add a new pending lock to the manager. Thows an exception if the lock
-	 * would overlap an existing lock. Once the lock is acquired it remains in
-	 * this set as an acquired lock.
-	 */
-	synchronized void addLock(FileLock lock)
-			throws OverlappingFileLockException {
-		long lockEnd = lock.position() + lock.size();
-		for (Iterator keyItr = locks.iterator(); keyItr.hasNext();) {
-			FileLock existingLock = (FileLock) keyItr.next();
-			if (existingLock.position() > lockEnd) {
-				// This, and all remaining locks, start beyond our end (so
-				// cannot overlap).
-				break;
-			}
-			if (existingLock.overlaps(lock.position(), lock.size())) {
-				throw new OverlappingFileLockException();
-			}
-		}
-		locks.add(lock);
-	}
+    /*
+     * Add a new pending lock to the manager. Thows an exception if the lock
+     * would overlap an existing lock. Once the lock is acquired it remains in
+     * this set as an acquired lock.
+     */
+    synchronized void addLock(FileLock lock)
+            throws OverlappingFileLockException {
+        long lockEnd = lock.position() + lock.size();
+        for (Iterator<FileLock> keyItr = locks.iterator(); keyItr.hasNext();) {
+            FileLock existingLock = keyItr.next();
+            if (existingLock.position() > lockEnd) {
+                // This, and all remaining locks, start beyond our end (so
+                // cannot overlap).
+                break;
+            }
+            if (existingLock.overlaps(lock.position(), lock.size())) {
+                throw new OverlappingFileLockException();
+            }
+        }
+        locks.add(lock);
+    }
 
-	/*
-	 * Removes an acquired lock from the lock manager. If the lock did not exist
-	 * in the lock manager the operation is a no-op.
-	 */
-	synchronized void removeLock(FileLock lock) {
-		locks.remove(lock);
-	}
+    /*
+     * Removes an acquired lock from the lock manager. If the lock did not exist
+     * in the lock manager the operation is a no-op.
+     */
+    synchronized void removeLock(FileLock lock) {
+        locks.remove(lock);
+    }
 }
