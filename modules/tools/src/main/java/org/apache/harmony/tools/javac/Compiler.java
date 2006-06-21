@@ -151,7 +151,7 @@ class Compiler {
             NoSuchMethodException {
         staticMainMth = ecjCompilerClass.getMethod("main",
                 new Class[] { String[].class });
-        printUsageMth = ecjCompilerClass.getMethod("printUsage", null);
+        printUsageMth = ecjCompilerClass.getMethod("printUsage", (Class[])null);
     }
 
     /**
