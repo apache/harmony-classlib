@@ -189,13 +189,23 @@ public class Segment {
 
 	private int defaultClassMinorVersion;
 
+	private byte[][] fileBits;
+
+	private int numberOfFiles;
+
+	private long[] fileModtime;
+
+	private String[] fileName;
+
+	private long[] fileOptions;
+
+	private long[] fileSize;
+
 	private int innerClassCount;
 
 	private int major;
 
 	private int minor;
-
-	private int numberOfFiles;
 
 	private SegmentOptions options;
 
@@ -267,6 +277,14 @@ public class Segment {
 				attributeDefinitionCount, cpUTF8);
 		if (attributeDefinitionCount > 0)
 			throw new Error("No idea what the adc is for yet");
+	}
+
+	private void parseBcBands(InputStream in) {
+		System.err.println("Not yet implemented");
+	}
+
+	private void parseClassBands(InputStream in) {
+		System.err.println("Not yet implemented");
 	}
 
 	private void parseClassCounts(InputStream in) throws IOException,
@@ -584,6 +602,57 @@ public class Segment {
 	}
 
 	/**
+	 * Parses the file band headers (not including the actual bits themselves).
+	 * At the end of this parse call, the input stream will be positioned at the
+	 * start of the file_bits themselves, and there will be Sum(file_size) bits
+	 * remaining in the stream with BYTE1 compression. A decent implementation
+	 * will probably just stream the bytes out to the reconstituted Jar rather
+	 * than caching them.
+	 * 
+	 * @param in
+	 *            the input stream to read from
+	 * @throws IOException
+	 *             if a problem occurs during reading from the underlying stream
+	 * @throws Pack200Exception
+	 *             if a problem occurs with an unexpected value or unsupported
+	 *             codec
+	 */
+	private void parseFileBands(InputStream in) throws IOException,
+			Pack200Exception {
+		long last;
+		fileName = parseReferences(in, Codec.UNSIGNED5, numberOfFiles, cpUTF8);
+		fileSize = new long[numberOfFiles];
+		if (options.hasFileSizeHi()) {
+			last = 0;
+			for (int i = 0; i < numberOfFiles; i++) {
+				fileSize[i] = (last = Codec.UNSIGNED5.decode(in, last)) << 32;
+			}
+		}
+		last = 0;
+		for (int i = 0; i < numberOfFiles; i++) {
+			fileSize[i] |= (last = Codec.UNSIGNED5.decode(in, last));
+		}
+		fileModtime = new long[numberOfFiles];
+		if (options.hasFileModtime()) {
+			last = 0;
+			for (int i = 0; i < numberOfFiles; i++) {
+				fileModtime[i] |= (last = Codec.DELTA5.decode(in, last));
+			}
+		}
+		fileOptions = new long[numberOfFiles];
+		if (options.hasFileOptions()) {
+			last = 0;
+			for (int i = 0; i < numberOfFiles; i++) {
+				fileOptions[i] |= (last = Codec.UNSIGNED5.decode(in, last));
+			}
+		}
+	}
+
+	private void parseIcBands(InputStream in) {
+		System.err.println("Not yet implemented");
+	}
+
+	/**
 	 * Helper method to parse <i>count</i> references from <code>in</code>,
 	 * using <code>codec</code> to decode the values as indexes into
 	 * <code>reference</code> (which is populated prior to this call). An
@@ -652,6 +721,12 @@ public class Segment {
 		parseCpMethod(in);
 		parseCpIMethod(in);
 		parseAttributeDefinition(in);
+		parseIcBands(in); // Not yet implemented
+		parseClassBands(in); // Not yet implemented
+		parseBcBands(in); // Not yet implemented
+		parseFileBands(in);
+		processFileBits(in); // this just caches them in file_bits; it should
+								// probably start writing here?
 	}
 
 	private void parseSegmentHeader(InputStream in) throws IOException,
@@ -666,6 +741,22 @@ public class Segment {
 		parseArchiveSpecialCounts(in);
 		parseCpCounts(in);
 		parseClassCounts(in);
+	}
+
+	private void processFileBits(InputStream in) throws IOException,
+			Pack200Exception {
+		// now read in the bytes
+		fileBits = new byte[numberOfFiles][];
+		for (int i = 0; i < numberOfFiles; i++) {
+			int size = (int) fileSize[i];
+			// TODO This buggers up if file_size > 2^32. Probably an array is
+			// not the right choice, and
+			// we should just serialise the bugger here?
+			fileBits[i] = new byte[size];
+			for (int j = 0; j < size; j++) {
+				fileBits[i][j] = (byte) Codec.BYTE1.decode(in);
+			}
+		}
 	}
 
 	public void setArchiveModtime(long archiveModtime) {
