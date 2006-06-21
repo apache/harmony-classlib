@@ -15,6 +15,8 @@
 
 package java.util.zip;
 
+import org.apache.harmony.luni.util.Msg;
+
 
 /**
  * The Inflater class is used to decompress bytes using the DEFLATE compression
@@ -25,17 +27,15 @@ package java.util.zip;
  */
 public class Inflater {
 
-	private boolean finished = false; // Set by the inflateImpl native
+	private boolean finished; // Set by the inflateImpl native
 
-	private boolean needsDictionary = false; // Set by the inflateImpl native
-
-	private boolean noHeader = false;
+	private boolean needsDictionary; // Set by the inflateImpl native
 
 	private long streamHandle = -1;
 
-	private byte[] inputBuffer = null;
-
-	int inRead = 0, inLength = 0;
+	int inRead;
+    
+    int inLength;
 
 	// Fill in the JNI id caches
 	private static native void oneTimeInitialization();
@@ -52,7 +52,6 @@ public class Inflater {
 		if (streamHandle != -1) {
 			endImpl(streamHandle);
 			inRead = 0;
-			inputBuffer = null;
 			inLength = 0;
 			streamHandle = -1;
 		}
@@ -83,8 +82,9 @@ public class Inflater {
 	 * @return The Adler32 checksum associated with this Inflater.
 	 */
 	public synchronized int getAdler() {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 		return getAdlerImpl(streamHandle);
 	}
 
@@ -106,8 +106,9 @@ public class Inflater {
 	 * @return Total bytes read
 	 */
 	public synchronized int getTotalIn() {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 		long totalIn = getTotalInImpl(streamHandle);
 		return (totalIn <= Integer.MAX_VALUE ? (int) totalIn
 				: Integer.MAX_VALUE);
@@ -121,8 +122,9 @@ public class Inflater {
 	 * @return Total bytes output
 	 */
 	public synchronized int getTotalOut() {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 		long totalOut = getTotalOutImpl(streamHandle);
 		return (totalOut <= Integer.MAX_VALUE ? (int) totalOut
 				: Integer.MAX_VALUE);
@@ -163,15 +165,16 @@ public class Inflater {
 		// avoid int overflow, check null buf
 		if (off <= buf.length && nbytes >= 0 && off >= 0
 				&& buf.length - off >= nbytes) {
-			if (streamHandle == -1)
-				throw new IllegalStateException();
+			if (streamHandle == -1) {
+                throw new IllegalStateException();
+            }
 
 			boolean neededDict = needsDictionary;
 			needsDictionary = false;
 			int result = inflateImpl(buf, off, nbytes, streamHandle);
-			if (needsDictionary && neededDict)
-				throw new DataFormatException(org.apache.harmony.luni.util.Msg
-						.getString("K0324"));
+			if (needsDictionary && neededDict) {
+                throw new DataFormatException(Msg.getString("K0324"));
+            }
 			return result;
 		}
 		throw new ArrayIndexOutOfBoundsException();
@@ -195,7 +198,6 @@ public class Inflater {
 	 *            If true, read a ZLIB header from input.
 	 */
 	public Inflater(boolean noHeader) {
-		this.noHeader = noHeader;
 		streamHandle = createStream(noHeader);
 	}
 
@@ -221,9 +223,9 @@ public class Inflater {
 	 * Resets the Inflater.
 	 */
 	public synchronized void reset() {
-		if (streamHandle == -1)
-			throw new NullPointerException();
-		inputBuffer = null;
+		if (streamHandle == -1) {
+            throw new NullPointerException();
+        }
 		finished = false;
 		needsDictionary = false;
 		inLength = inRead = 0;
@@ -246,14 +248,16 @@ public class Inflater {
 	}
 
 	public synchronized void setDictionary(byte[] buf, int off, int nbytes) {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 		// avoid int overflow, check null buf
 		if (off <= buf.length && nbytes >= 0 && off >= 0
-				&& buf.length - off >= nbytes)
-			setDictionaryImpl(buf, off, nbytes, streamHandle);
-		else
-			throw new ArrayIndexOutOfBoundsException();
+				&& buf.length - off >= nbytes) {
+            setDictionaryImpl(buf, off, nbytes, streamHandle);
+        } else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 
 	private native synchronized void setDictionaryImpl(byte[] buf, int off,
@@ -285,17 +289,18 @@ public class Inflater {
 	 * @see #needsInput
 	 */
 	public synchronized void setInput(byte[] buf, int off, int nbytes) {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 		// avoid int overflow, check null buf
 		if (off <= buf.length && nbytes >= 0 && off >= 0
 				&& buf.length - off >= nbytes) {
-			inputBuffer = buf;
 			inRead = 0;
 			inLength = nbytes;
 			setInputImpl(buf, off, nbytes, streamHandle);
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+		} else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -309,8 +314,9 @@ public class Inflater {
 	 */
 	public synchronized long getBytesRead() {
 		// Throw NPE here
-		if (streamHandle == -1)
-			throw new NullPointerException();
+		if (streamHandle == -1) {
+            throw new NullPointerException();
+        }
 		return getTotalInImpl(streamHandle);
 	}
 
@@ -325,8 +331,9 @@ public class Inflater {
 	 */
 	public synchronized long getBytesWritten() {
 		// Throw NPE here
-		if (streamHandle == -1)
-			throw new NullPointerException();
+		if (streamHandle == -1) {
+            throw new NullPointerException();
+        }
 		return getTotalOutImpl(streamHandle);
 	}
 
