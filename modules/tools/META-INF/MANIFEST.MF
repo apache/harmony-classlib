@@ -10,5 +10,8 @@ Import-Package: java.io,
  java.lang.reflect,
  java.net,
  java.nio.charset,
- java.security
-Export-Package: org.apache.harmony.tools.javac
+ java.security,
+ java.security.cert,
+ org.apache.harmony.luni.util
+Export-Package: org.apache.harmony.tools.javac,
+ org.apache.harmony.tools.keytool
