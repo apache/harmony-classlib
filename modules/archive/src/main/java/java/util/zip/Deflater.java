@@ -47,8 +47,6 @@ public class Deflater {
 
 	private int flushParm = Z_NO_FLUSH;
 
-	private boolean noHeader;
-
 	private boolean finished;
 
 	int compressLevel = DEFAULT_COMPRESSION;
@@ -96,12 +94,14 @@ public class Deflater {
 	 * 
 	 */
 	public synchronized int deflate(byte[] buf, int off, int nbytes) {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 		// avoid int overflow, check null buf
 		if (off <= buf.length && nbytes >= 0 && off >= 0
-				&& buf.length - off >= nbytes)
-			return deflateImpl(buf, off, nbytes, streamHandle, flushParm);
+				&& buf.length - off >= nbytes) {
+            return deflateImpl(buf, off, nbytes, streamHandle, flushParm);
+        }
 		throw new ArrayIndexOutOfBoundsException();
 	}
 
@@ -160,8 +160,9 @@ public class Deflater {
 	 * @see #setDictionary(byte[], int, int)
 	 */
 	public synchronized int getAdler() {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 
 		return getAdlerImpl(streamHandle);
 	}
@@ -174,8 +175,9 @@ public class Deflater {
 	 * @return number of bytes of input read.
 	 */
 	public synchronized int getTotalIn() {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 
 		return (int)getTotalInImpl(streamHandle);
 	}
@@ -183,13 +185,14 @@ public class Deflater {
 	private native synchronized long getTotalInImpl(long handle);
 
 	/**
-	 * Returns the total number of compressed bytes output nby this Deflater.
+	 * Returns the total number of compressed bytes output by this Deflater.
 	 * 
 	 * @return number of compressed bytes output.
 	 */
 	public synchronized int getTotalOut() {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 
 		return (int)getTotalOutImpl(streamHandle);
 	}
@@ -203,15 +206,16 @@ public class Deflater {
 	 * have been provided to the Deflater finish() must be called to ensure the
 	 * compressed data is output.
 	 * 
-	 * @return True if input is reuired for deflation to continue, false
+	 * @return True if input is required for deflation to continue, false
 	 *         otherwise
 	 * @see #finished()
 	 * @see #setInput(byte[])
 	 * @see #setInput(byte[], int, int)
 	 */
 	public boolean needsInput() {
-		if (inputBuffer == null)
-			return true;
+		if (inputBuffer == null) {
+            return true;
+        }
 		return inRead == inLength;
 	}
 
@@ -224,8 +228,9 @@ public class Deflater {
 	 * @see #finished
 	 */
 	public synchronized void reset() {
-		if (streamHandle == -1)
-			throw new NullPointerException();
+		if (streamHandle == -1) {
+            throw new NullPointerException();
+        }
 
 		flushParm = Z_NO_FLUSH;
 		finished = false;
@@ -248,14 +253,16 @@ public class Deflater {
 	 * @see Deflater#Deflater(int, boolean)
 	 */
 	public synchronized void setDictionary(byte[] buf, int off, int nbytes) {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 		// avoid int overflow, check null buf
 		if (off <= buf.length && nbytes >= 0 && off >= 0
-				&& buf.length - off >= nbytes)
-			setDictionaryImpl(buf, off, nbytes, streamHandle);
-		else
-			throw new ArrayIndexOutOfBoundsException();
+				&& buf.length - off >= nbytes) {
+            setDictionaryImpl(buf, off, nbytes, streamHandle);
+        } else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 
 	private native synchronized void setDictionaryImpl(byte[] buf, int off,
@@ -275,19 +282,22 @@ public class Deflater {
 	 * starting at off and ending at nbytes - 1.
 	 */
 	public synchronized void setInput(byte[] buf, int off, int nbytes) {
-		if (streamHandle == -1)
-			throw new IllegalStateException();
+		if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
 		// avoid int overflow, check null buf
 		if (off <= buf.length && nbytes >= 0 && off >= 0
 				&& buf.length - off >= nbytes) {
 			inLength = nbytes;
 			inRead = 0;
-			if (inputBuffer == null)
-				setLevelsImpl(compressLevel, strategy, streamHandle);
+			if (inputBuffer == null) {
+                setLevelsImpl(compressLevel, strategy, streamHandle);
+            }
 			inputBuffer = buf;
 			setInputImpl(buf, off, nbytes, streamHandle);
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+		} else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 
 	private native synchronized void setLevelsImpl(int level, int strategy,
@@ -307,10 +317,12 @@ public class Deflater {
 	 *                If the compression level is invalid.
 	 */
 	public synchronized void setLevel(int level) {
-		if (level < DEFAULT_COMPRESSION || level > BEST_COMPRESSION)
-			throw new IllegalArgumentException();
-		if (inputBuffer != null)
-			throw new IllegalStateException();
+		if (level < DEFAULT_COMPRESSION || level > BEST_COMPRESSION) {
+            throw new IllegalArgumentException();
+        }
+		if (inputBuffer != null) {
+            throw new IllegalStateException();
+        }
 		compressLevel = level;
 	}
 
@@ -326,10 +338,12 @@ public class Deflater {
 	 *                HUFFMAN_ONLY or DEFAULT_STRATEGY.
 	 */
 	public synchronized void setStrategy(int strategy) {
-		if (strategy < DEFAULT_STRATEGY || strategy > HUFFMAN_ONLY)
-			throw new IllegalArgumentException();
-		if (inputBuffer != null)
-			throw new IllegalStateException();
+		if (strategy < DEFAULT_STRATEGY || strategy > HUFFMAN_ONLY) {
+            throw new IllegalArgumentException();
+        }
+		if (inputBuffer != null) {
+            throw new IllegalStateException();
+        }
 		this.strategy = strategy;
 	}
 
@@ -353,10 +367,10 @@ public class Deflater {
 	 *            if true do not write the ZLIB header
 	 */
 	public Deflater(int level, boolean noHeader) {
-		if (level < DEFAULT_COMPRESSION || level > BEST_COMPRESSION)
-			throw new IllegalArgumentException();
+		if (level < DEFAULT_COMPRESSION || level > BEST_COMPRESSION) {
+            throw new IllegalArgumentException();
+        }
 		compressLevel = level;
-		this.noHeader = noHeader;
 		streamHandle = createStream(compressLevel, strategy, noHeader);
 	}
 
@@ -382,8 +396,9 @@ public class Deflater {
 	 */
 	public synchronized long getBytesRead() {
 		// Throw NPE here
-		if (streamHandle == -1)
-			throw new NullPointerException();
+		if (streamHandle == -1) {
+            throw new NullPointerException();
+        }
 		return getTotalInImpl(streamHandle);
 	}
 
@@ -397,8 +412,9 @@ public class Deflater {
 	 */
     public synchronized long getBytesWritten() {
         // Throw NPE here
-        if (streamHandle == -1)
+        if (streamHandle == -1) {
             throw new NullPointerException();
+        }
         return getTotalOutImpl(streamHandle);
     }
 
