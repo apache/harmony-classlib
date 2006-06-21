@@ -35,7 +35,7 @@ class FinalSet extends FSet {
     public int matches(int stringIndex, CharSequence testString,
             MatchResultImpl matchResult) {
         if (matchResult.mode() == Matcher.MODE_FIND
-                || stringIndex == testString.length()) {
+                || stringIndex == matchResult.getRightBound()) {
             matchResult.setValid();
             matchResult.setEnd(0, stringIndex);
             return stringIndex;

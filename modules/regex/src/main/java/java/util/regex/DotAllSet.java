@@ -29,7 +29,7 @@ package java.util.regex;
 class DotAllSet extends LeafSet {
 
     public int accepts(int strIndex, CharSequence testString) {
-        return (strIndex < testString.length()) ? 1 : -1;
+        return 1;
     }
 
     protected String getName() {

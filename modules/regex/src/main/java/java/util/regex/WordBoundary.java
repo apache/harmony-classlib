@@ -40,7 +40,7 @@ class WordBoundary extends AbstractSet {
         boolean left;
         boolean right;
 
-        char ch1 = stringIndex >= testString.length() ? ' ' : testString
+        char ch1 = stringIndex >= matchResult.getRightBound() ? ' ' : testString
                 .charAt(stringIndex);
         char ch2 = stringIndex == 0 ? ' ' : testString.charAt(stringIndex - 1);
 

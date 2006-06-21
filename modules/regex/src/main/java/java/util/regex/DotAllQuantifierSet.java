@@ -36,7 +36,7 @@ class DotAllQuantifierSet extends LeafQuantifierSet {
     public int matches(int stringIndex, CharSequence testString,
             MatchResultImpl matchResult) {
 
-        int strLength = testString.length();
+        int strLength = matchResult.getRightBound();
 
         if (strLength <= stringIndex) {
             return next.matches(stringIndex, testString, matchResult);
@@ -46,7 +46,7 @@ class DotAllQuantifierSet extends LeafQuantifierSet {
 
     public int find(int stringIndex, CharSequence testString,
             MatchResultImpl matchResult) {
-        int strLength = testString.length();
+        int strLength = matchResult.getRightBound();
         if (next.findBack(stringIndex, strLength, testString, matchResult) >= 0) {
             return stringIndex;
         } else {

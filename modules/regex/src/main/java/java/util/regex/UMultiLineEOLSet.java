@@ -37,7 +37,7 @@ class UMultiLineEOLSet extends AbstractSet {
     public int matches(int strIndex, CharSequence testString,
             MatchResultImpl matchResult) {
         int strDif = matchResult.hasAnchoringBounds() ? matchResult
-                .getLeftBound()
+                .getRightBound()
                 - strIndex : testString.length() - strIndex;
         if (strDif <= 0) {
             matchResult.setConsumed(consCounter, 0);

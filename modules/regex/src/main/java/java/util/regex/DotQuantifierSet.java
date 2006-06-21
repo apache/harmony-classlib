@@ -47,7 +47,7 @@ class DotQuantifierSet extends LeafQuantifierSet {
         findLineTerminator(stringIndex, strLength, testString);
 
         if (startSearch < 0) {
-            startSearch = testString.length();
+            startSearch = matchResult.getRightBound();
         }
 
         if (startSearch <= stringIndex) {
