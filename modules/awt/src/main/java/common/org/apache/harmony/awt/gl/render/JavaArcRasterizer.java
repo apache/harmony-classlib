@@ -363,7 +363,7 @@ public class JavaArcRasterizer {
      * @param x1 - the x coordinate of the left-upper corner of the arc bounds
      * @param y1 - the y coordinate of the left-upper corner of the arc bounds
      * @param x2 - the width of the arc bounds
-     * @param y2 - the рушпре of the arc bounds
+     * @param y2 - the height of the arc bounds
      * @param angleStart - the start angle of the arc in degrees
      * @param angleExtent - the angle extent in degrees
      * @param clip - the MultiRectArea object of clipping area
