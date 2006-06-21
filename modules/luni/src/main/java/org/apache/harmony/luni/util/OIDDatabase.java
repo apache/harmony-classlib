@@ -103,16 +103,16 @@ public class OIDDatabase {
 
 	public String getFirstAlgorithmForOID(String oid) {
 		String result = null;
-		Iterator it = this.getAllAlgorithmsForOID(oid).iterator();
+		Iterator<String> it = this.getAllAlgorithmsForOID(oid).iterator();
 		if (it.hasNext()) {
-			result = ((String) it.next());
+			result = (it.next());
 		}
 		return result;
 	}
 
-	public Set getAllAlgorithmsForOID(String oid) {
-		Set result = null;
-		Iterator it = this.oids.iterator();
+	public Set<String> getAllAlgorithmsForOID(String oid) {
+		Set<String> result = null;
+		Iterator<DBEntry> it = this.oids.iterator();
 		result = getAllEquivalents(oid, it);
 		if (result == null) {
 			throw new IllegalArgumentException("Unknown OID : " + oid);
@@ -122,16 +122,16 @@ public class OIDDatabase {
 
 	public String getFirstOIDForAlgorithm(String algorithm) {
 		String result = null;
-		Iterator it = this.getAllOIDsForAlgorithm(algorithm).iterator();
+		Iterator<String> it = this.getAllOIDsForAlgorithm(algorithm).iterator();
 		if (it.hasNext()) {
-			result = ((String) it.next());
+			result = (it.next());
 		}
 		return result;
 	}
 
-	public Set getAllOIDsForAlgorithm(String algorithm) {
-		Set result = null;
-		Iterator it = this.algorithms.iterator();
+	public Set<String> getAllOIDsForAlgorithm(String algorithm) {
+		Set<String> result = null;
+		Iterator<DBEntry> it = this.algorithms.iterator();
 		result = getAllEquivalents(algorithm, it);
 		if (result == null) {
 			throw new IllegalArgumentException("Unsupported algorithm : "
@@ -140,16 +140,16 @@ public class OIDDatabase {
 		return result;
 	}
 
-	private Set getAllEquivalents(String value, Iterator it) {
+	private Set<String> getAllEquivalents(String value, Iterator<DBEntry> it) {
 		Set<String> result = null;
 		while (it.hasNext()) {
-			DBEntry element = (DBEntry) it.next();
+			DBEntry element = it.next();
 			if (element.getValue().equals(value)) {
-				Set allMatchingDBEntries = element.getAllEquivalents();
+				Set<DBEntry> allMatchingDBEntries = element.getAllEquivalents();
 				result = new HashSet<String>();
-				Iterator dbIt = allMatchingDBEntries.iterator();
+				Iterator<DBEntry> dbIt = allMatchingDBEntries.iterator();
 				while (dbIt.hasNext()) {
-					DBEntry matchingEntry = (DBEntry) dbIt.next();
+					DBEntry matchingEntry = dbIt.next();
 					result.add(matchingEntry.getValue());
 				}
 			}
@@ -158,9 +158,9 @@ public class OIDDatabase {
 	}
 
 	static class DBEntry {
-		private List<DBEntry> equivalents = new LinkedList();
+		private final List<DBEntry> equivalents = new LinkedList<DBEntry>();
 
-		private String value;
+		private final String value;
 
 		DBEntry(String value) {
 			this.value = value;
@@ -174,8 +174,8 @@ public class OIDDatabase {
 			return this.value;
 		}
 
-		Set getAllEquivalents() {
-			return new HashSet(this.equivalents);
+		Set<DBEntry> getAllEquivalents() {
+			return new HashSet<DBEntry>(this.equivalents);
 		}
 	}
 }

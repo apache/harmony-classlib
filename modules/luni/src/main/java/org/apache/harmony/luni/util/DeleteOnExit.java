@@ -22,7 +22,7 @@ import java.util.Vector;
 import org.apache.harmony.kernel.vm.VM;
 
 public class DeleteOnExit {
-	private static Vector deleteList = new Vector();
+	private static Vector<String> deleteList = new Vector<String>();
 
 	static {
 		VM.deleteOnExit();
@@ -34,7 +34,7 @@ public class DeleteOnExit {
 
 	public static void deleteOnExit() {
 		for (int i = 0; i < deleteList.size(); i++) {
-			String name = (String) deleteList.elementAt(i);
+			String name = deleteList.elementAt(i);
 			new File(name).delete();
 		}
 	}
