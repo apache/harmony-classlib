@@ -143,7 +143,7 @@ public class AlgorithmParameterGenerator {
      * @com.intel.drl.spec_ref
      *  
      */
-    public final void init(int size) throws InvalidAlgorithmParameterException {
+    public final void init(int size) {
         spiImpl.engineInit(size, randm);
     }
 
