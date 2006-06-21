@@ -88,7 +88,7 @@ public class Manifest implements Cloneable {
 	 * @return The Attributes for the entry or null if the entry does not exist.
 	 */
 	public Attributes getAttributes(String name) {
-		return (Attributes) getEntries().get(name);
+		return getEntries().get(name);
 	}
 
 	/**
@@ -159,10 +159,12 @@ public class Manifest implements Cloneable {
 			if (out.length > limit) {
 				while (out.length - offset >= limit) {
 					int len = out.length - offset;
-					if (len > limit)
-						len = limit;
-					if (offset > 0)
-						os.write(' ');
+					if (len > limit) {
+                        len = limit;
+                    }
+					if (offset > 0) {
+                        os.write(' ');
+                    }
 					os.write(out, offset, len);
 					os.write(sepBuf);
 					offset += len;
@@ -177,25 +179,29 @@ public class Manifest implements Cloneable {
 				if (oneChar[0] < 128 || charset == null) {
 					oneByte[0] = (byte) oneChar[0];
 					buf = oneByte;
-				} else
-					buf = charset.encode(CharBuffer.wrap(oneChar, 0, 1)).array();
+				} else {
+                    buf = charset.encode(CharBuffer.wrap(oneChar, 0, 1)).array();
+                }
 				if (size + buf.length > limit) {
-					if (limit != LIMIT)
-						os.write(' ');
+					if (limit != LIMIT) {
+                        os.write(' ');
+                    }
 					os.write(outBuf, 0, size);
 					os.write(sepBuf);
 					limit = LIMIT - 1;
 					size = 0;
 				}
-				if (buf.length == 1)
-					outBuf[size] = buf[0];
-				else
-					System.arraycopy(buf, 0, outBuf, size, buf.length);
+				if (buf.length == 1) {
+                    outBuf[size] = buf[0];
+                } else {
+                    System.arraycopy(buf, 0, outBuf, size, buf.length);
+                }
 				size += buf.length;
 			}
 			if (size > 0) {
-				if (limit != LIMIT)
-					os.write(' ');
+				if (limit != LIMIT) {
+                    os.write(' ');
+                }
 				os.write(outBuf, 0, size);
 				os.write(sepBuf);
 			}
@@ -219,8 +225,9 @@ public class Manifest implements Cloneable {
 			String encoding = AccessController
 					.doPrivileged(new PriviAction<String>("manifest.write.encoding"));
 			if (encoding != null) {
-				if ("".equals(encoding))
-					encoding = "UTF8";
+				if ("".equals(encoding)) {
+                    encoding = "UTF8";
+                }
 				charset = Charset.forName(encoding);				
 			}
 			String version = manifest.mainAttributes
@@ -230,8 +237,9 @@ public class Manifest implements Cloneable {
 				Iterator<?> entries = manifest.mainAttributes.keySet().iterator();
 				while (entries.hasNext()) {
 					Attributes.Name name = (Attributes.Name) entries.next();
-					if (!name.equals(Attributes.Name.MANIFEST_VERSION))
-						writeEntry(name, manifest.mainAttributes.getValue(name));
+					if (!name.equals(Attributes.Name.MANIFEST_VERSION)) {
+                        writeEntry(name, manifest.mainAttributes.getValue(name));
+                    }
 				}
 			}
 			os.write(sepBuf);
@@ -239,8 +247,7 @@ public class Manifest implements Cloneable {
 			while (i.hasNext()) {
 				String key = i.next();
 				writeEntry(nameAttribute, key);
-				Attributes attrib = (Attributes) manifest.entryAttributes
-						.get(key);
+				Attributes attrib = manifest.entryAttributes.get(key);
 				Iterator<?> entries = attrib.keySet().iterator();
 				while (entries.hasNext()) {
 					Attributes.Name name = (Attributes.Name) entries.next();
@@ -266,7 +273,7 @@ public class Manifest implements Cloneable {
 	}
 
 	/**
-	 * Contructs a new Manifest instance obtaining Attribute information from
+	 * Constructs a new Manifest instance obtaining Attribute information from
 	 * the parameter InputStream.
 	 * 
 	 * @param is
@@ -299,17 +306,20 @@ public class Manifest implements Cloneable {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean equals(Object o) {
-		if (o == null)
-			return false;
-		if (o.getClass() != this.getClass())
-			return false;
-		if (!mainAttributes.equals(((Manifest) o).mainAttributes))
-			return false;
+		if (o == null) {
+            return false;
+        }
+		if (o.getClass() != this.getClass()) {
+            return false;
+        }
+		if (!mainAttributes.equals(((Manifest) o).mainAttributes)) {
+            return false;
+        }
 		return entryAttributes.equals(((Manifest) o).entryAttributes);
 	}
 
 	byte[] getChunk(String name) {
-		return (byte[]) chunks.get(name);
+		return chunks.get(name);
 	}
 
 	void removeChunks() {
