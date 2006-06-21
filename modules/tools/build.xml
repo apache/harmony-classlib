@@ -45,6 +45,7 @@
 		<echo message="Compiling TOOLS classes" />
 
 		<mkdir dir="${hy.build}" />
+		<mkdir dir="${hy.jdk}/lib" />
 
 		<javac sourcepath=""
                srcdir="${hy.tools.src.main.java}"
