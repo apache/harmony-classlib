@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *  Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -603,6 +603,35 @@ public class MatcherTest extends TestCase {
 		assertTrue(mat.find());
 		assertEquals("a", mat.group());
 	}
+
+    /*
+     * Verify if the Matcher can match the input when region is changed
+     */
+    public void testMatchesRegionChanged() {
+        // Regression for HARMONY-610
+        String input = " word ";
+        Pattern pattern = Pattern.compile("\\w+");
+        Matcher matcher = pattern.matcher(input);
+        matcher.region(1, 5);
+        assertTrue(matcher.matches());
+    }
+
+    /*
+     * Verify if the Matcher behaves correct when region is changed
+     */
+    public void testFindRegionChanged() {
+        // Regression for HARMONY-625
+        Pattern pattern = Pattern.compile("(?s).*");
+        Matcher matcher = pattern.matcher("abcde");
+        matcher.find();
+        assertEquals("abcde", matcher.group());
+        
+        matcher = pattern.matcher("abcde");
+        matcher.region(0, 2);
+        matcher.find();
+        assertEquals("ab", matcher.group());
+
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(MatcherTest.class);

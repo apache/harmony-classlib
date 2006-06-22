@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *  Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -1022,7 +1022,25 @@ public class PatternTest extends TestCase {
     	assertTrue(mat.matches());
     }
 
-   
+    /*
+     * Verify if the Pattern support the following character classes:
+     * \p{javaLowerCase} \p{javaUpperCase} \p{javaWhitespace} \p{javaMirrored}
+     */
+    public void testCompileCharacterClass() {
+        // Regression for HARMONY-606
+        Pattern pattern = Pattern.compile("\\p{javaLowerCase}");
+        assertNotNull(pattern);
+        
+        pattern = Pattern.compile("\\p{javaUpperCase}");
+        assertNotNull(pattern);
+        
+        pattern = Pattern.compile("\\p{javaWhitespace}");
+        assertNotNull(pattern);
+        
+        pattern = Pattern.compile("\\p{javaMirrored}");
+        assertNotNull(pattern);
+    }
+
     public static void main(String[] args) {
         junit.textui.TestRunner.run(PatternTest.class);
     }
