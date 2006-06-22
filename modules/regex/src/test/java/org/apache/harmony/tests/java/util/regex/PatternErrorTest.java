@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package tests.api.java.util.regex;
+package org.apache.harmony.tests.java.util.regex;
 
 import java.util.regex.Pattern;
 import junit.framework.TestCase;
