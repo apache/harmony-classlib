@@ -48,9 +48,7 @@
 
 	<check-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}" />
 
-	<!-- Do not require the Eclipse compiler until the tools are integrated into the build
 	<check-one-file src="${ecj.url}" dest="${ecj.jar}" />
-	-->
 
 	<uptodate property="bcprov.uptodate"
                   srcfile="${signed.bcprov.jar}"
