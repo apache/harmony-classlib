@@ -41,20 +41,23 @@ class PositiveLookBehind extends AtomicJointSet {
             MatchResultImpl matchResult) {
 
         int size = children.size();
-        int shift;
-
-        // fSet will take this index to check if we at the right bound
-        // and return true if the current index equal to this one
-        matchResult.setConsumed(groupIndex, stringIndex);
-
-        for (int i = 0; i < size; i++) {
-            AbstractSet e = (AbstractSet) children.get(i);
-            // find limits could be calculated though e.getCharCount()
-            // fSet will return true only if string index at fSet equal
-            // to stringIndex
-            shift = e.findBack(0, stringIndex, testString, matchResult);
-            if (shift >= 0) {
-                return next.matches(stringIndex, testString, matchResult);
+        int leftBound = matchResult.hasTransparentBounds()?
+                0 : matchResult.getLeftBound();
+        
+        int shift = next.matches(stringIndex, testString, matchResult);
+        if (shift >= 0) {
+            //fSet will take this index to check if we at the right bound
+            // and return true if the current index equal to this one
+            matchResult.setConsumed(groupIndex, stringIndex);
+            for (int i = 0; i < size; i++) {
+                AbstractSet e = (AbstractSet) children.get(i);
+                // find limits could be calculated though e.getCharCount()
+                // fSet will return true only if string index at fSet equal
+                // to stringIndex
+                if (e.findBack(leftBound, stringIndex, testString, matchResult) >=0) {
+                    matchResult.setConsumed(groupIndex, -1);
+                    return shift;
+                }    
             }
         }
 

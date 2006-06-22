@@ -39,7 +39,6 @@ class BehindFSet extends FSet {
 
         int gr = getGroupIndex();
         int rightBound = matchResult.getConsumed(gr);
-        matchResult.setConsumed(gr, -1);
         return (rightBound == stringIndex) ? stringIndex : -1;
     }
 
