@@ -147,7 +147,7 @@
                         <include name="**/*.jar" />
                     </fileset>
                 </bootclasspath>
-                <classpath location="../../../../build/tests" />
+                <classpath location="../../build/tests" />
             </javac>
         </sequential>
     </macrodef>
