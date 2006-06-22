@@ -213,12 +213,9 @@
                     <exclude name="tests/api/java/lang/StringTest.java" />
                     <exclude name="tests/api/java/net/DatagramSocketTest.java" />
                     <exclude name="tests/api/java/net/HttpURLConnectionTest.java" />
-                    <exclude name="tests/api/java/net/InetAddressTest.java" />
                     <exclude name="tests/api/java/net/JarURLConnectionTest.java" />
                     <exclude name="tests/api/java/net/MulticastSocketTest.java" />
-                    <exclude name="tests/api/java/net/ServerSocketTest.java" />
                     <exclude name="tests/api/java/net/SocketImplTest.java" />
-                    <exclude name="tests/api/java/net/SocketPermissionTest.java" />
                     <exclude name="tests/api/java/net/SocketTest.java" />
                     <exclude name="tests/api/java/net/URLClassLoaderTest.java" />
                     <exclude name="tests/api/java/net/URLConnectionTest.java" />

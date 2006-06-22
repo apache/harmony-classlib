@@ -228,98 +228,86 @@ public class InetAddressTest extends junit.framework.TestCase {
 		}
 	}
 
-	/**
-	 * @tests java.net.InetAddress#getHostName()
-	 */
-	public void test_getHostName() {
-		// Test for method java.lang.String java.net.InetAddress.getHostName()
-		try {
-			InetAddress ia = InetAddress
-					.getByName(Support_Configuration.InetTestIP);
-			assertTrue("Incorrect host name returned: " + ia.getHostName()
-					+ " != " + Support_Configuration.InetTestAddress, ia
-					.getHostName()
-					.equals(Support_Configuration.InetTestAddress));
-		} catch (Exception e) {
-			fail("Exception during getHostName : " + e.getMessage());
-		}
+    /**
+     * @tests java.net.InetAddress#getHostName()
+     */
+    public void test_getHostName() throws Exception {
+        // Test for method java.lang.String java.net.InetAddress.getHostName()
+        InetAddress ia = InetAddress
+                .getByName(Support_Configuration.InetTestIP);
+        assertTrue("Incorrect host name returned: " + ia.getHostName() + " != "
+                + Support_Configuration.InetTestAddress, ia.getHostName()
+                .equals(Support_Configuration.InetTestAddress));
 
-		// Test for any of the host lookups, where the default SecurityManager
-		// is installed.
+        // Test for any of the host lookups, where the default SecurityManager
+        // is installed.
 
         SecurityManager oldman = System.getSecurityManager();
-		try {
-			String exp = Support_Configuration.InetTestIP;
-			System.setSecurityManager(new MockSecurityManager());
-			InetAddress ia = InetAddress.getByName(exp);
-			String ans = ia.getHostName();
-			assertTrue("usingSecurityManager failed, ans: " + ans + " exp: "
-					+ Support_Configuration.InetTestAddress, ans
-					.equals(Support_Configuration.InetTestAddress));
-		} catch (Exception e) {
-			fail("Exception during usingSecurityManager test : "
-					+ e.getMessage());
-		} finally {
-			System.setSecurityManager(oldman);
-		}
+        try {
+            String exp = Support_Configuration.InetTestIP;
+            System.setSecurityManager(new MockSecurityManager());
+            ia = InetAddress.getByName(exp);
+            String ans = ia.getHostName();
+            assertEquals(Support_Configuration.InetTestIP, ans);
+        } finally {
+            System.setSecurityManager(oldman);
+        }
 
-		// Make sure there is no caching
-		String originalPropertyValue = System
-				.getProperty("networkaddress.cache.ttl");
-		System.setProperty("networkaddress.cache.ttl", "0");
+        // Make sure there is no caching
+        String originalPropertyValue = System
+                .getProperty("networkaddress.cache.ttl");
+        System.setProperty("networkaddress.cache.ttl", "0");
 
-		// Test for threadsafety
-		try {
-			System.out
-					.println("\nTesting the threadsafety of getHostName.  This test could produce unpredictable results if getHostName is not threadsafe.");
-			InetAddress lookup1 = InetAddress
-					.getByName(Support_Configuration.InetTestAddress);
-			assertTrue(lookup1 + " expected "
-					+ Support_Configuration.InetTestIP,
-					Support_Configuration.InetTestIP.equals(lookup1
-							.getHostAddress()));
-			InetAddress lookup2 = InetAddress
-					.getByName(Support_Configuration.InetTestAddress2);
-			assertTrue(lookup2 + " expected "
-					+ Support_Configuration.InetTestIP2,
-					Support_Configuration.InetTestIP2.equals(lookup2
-							.getHostAddress()));
-			threadsafeTestThread thread1 = new threadsafeTestThread("1",
-					lookup1.getHostName(), lookup1, 0);
-			threadsafeTestThread thread2 = new threadsafeTestThread("2",
-					lookup2.getHostName(), lookup2, 0);
-			threadsafeTestThread thread3 = new threadsafeTestThread("3",
-					lookup1.getHostAddress(), lookup1, 1);
-			threadsafeTestThread thread4 = new threadsafeTestThread("4",
-					lookup2.getHostAddress(), lookup2, 1);
+        // Test for threadsafety
+        try {
+            System.out
+                    .println("\nTesting the threadsafety of getHostName.  This test could produce unpredictable results if getHostName is not threadsafe.");
+            InetAddress lookup1 = InetAddress
+                    .getByName(Support_Configuration.InetTestAddress);
+            assertTrue(lookup1 + " expected "
+                    + Support_Configuration.InetTestIP,
+                    Support_Configuration.InetTestIP.equals(lookup1
+                            .getHostAddress()));
+            InetAddress lookup2 = InetAddress
+                    .getByName(Support_Configuration.InetTestAddress2);
+            assertTrue(lookup2 + " expected "
+                    + Support_Configuration.InetTestIP2,
+                    Support_Configuration.InetTestIP2.equals(lookup2
+                            .getHostAddress()));
+            threadsafeTestThread thread1 = new threadsafeTestThread("1",
+                    lookup1.getHostName(), lookup1, 0);
+            threadsafeTestThread thread2 = new threadsafeTestThread("2",
+                    lookup2.getHostName(), lookup2, 0);
+            threadsafeTestThread thread3 = new threadsafeTestThread("3",
+                    lookup1.getHostAddress(), lookup1, 1);
+            threadsafeTestThread thread4 = new threadsafeTestThread("4",
+                    lookup2.getHostAddress(), lookup2, 1);
 
-			// initialize the flags
-			threadedTestSucceeded = true;
-			synchronized (someoneDone) {
-				thread1.start();
-				thread2.start();
-				thread3.start();
-				thread4.start();
-			}
-			System.out.println("Started threads, joining...");
-			thread1.join();
-			thread2.join();
-			thread3.join();
-			thread4.join();
-			assertTrue(threadedTestErrorString, threadedTestSucceeded);
-		} catch (Exception e) {
-			fail("Exception during threadsafe test : " + e.getMessage());
-		} finally {
-			// restore the old value of the property
-			if (originalPropertyValue == null)
-				// setting the property to -1 has the same effect as having the
-				// property be null
-				System.setProperty("networkaddress.cache.ttl", "-1");
-			else
-				System.setProperty("networkaddress.cache.ttl",
-						originalPropertyValue);
-		}
-	}
+            // initialize the flags
+            threadedTestSucceeded = true;
+            synchronized (someoneDone) {
+                thread1.start();
+                thread2.start();
+                thread3.start();
+                thread4.start();
+            }
+            System.out.println("Started threads, joining...");
+            thread1.join();
+            thread2.join();
+            thread3.join();
+            thread4.join();
+            assertTrue(threadedTestErrorString, threadedTestSucceeded);
+        } finally {
+            // restore the old value of the property
+            if (originalPropertyValue == null)
+                // setting the property to -1 has the same effect as having the
+                // property be null
+                System.setProperty("networkaddress.cache.ttl", "-1");
+            else
+                System.setProperty("networkaddress.cache.ttl",
+                        originalPropertyValue);
+        }
+    }
 
 	/**
 	 * @tests java.net.InetAddress#getLocalHost()
@@ -373,19 +361,12 @@ public class InetAddressTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.InetAddress#toString()
 	 */
-	public void test_toString() {
-		// Test for method java.lang.String java.net.InetAddress.toString()
-		try {
-			InetAddress ia2 = InetAddress
-					.getByName(Support_Configuration.InetTestIP);
-			assertTrue("toString returned incorrect result", ia2.toString()
-					.equals(
-							Support_Configuration.InetTestAddress + "/"
-									+ Support_Configuration.InetTestIP));
-		} catch (Exception e) {
-			fail("Exception duruing equals test : " + e.getMessage());
-		}
-	}
+	public void test_toString() throws Exception {
+        // Test for method java.lang.String java.net.InetAddress.toString()
+        InetAddress ia2 = InetAddress
+                .getByName(Support_Configuration.InetTestIP);
+        assertEquals("/" + Support_Configuration.InetTestIP, ia2.toString());
+    }
 
 	/**
 	 * @tests java.net.InetAddress#getByAddress(java.lang.String, byte[])

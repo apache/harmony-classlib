@@ -371,18 +371,13 @@ public class ServerSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.ServerSocket#toString()
 	 */
-	public void test_toString() {
-		// Test for method java.lang.String java.net.ServerSocket.toString()
-		int portNumber = Support_PortManager.getNextPort();
-		try {
-			s = new ServerSocket(portNumber);
-		} catch (Exception e) {
-			fail("Exception during toString test : " + e.getMessage());
-		}
-
+	public void test_toString() throws Exception {
+        // Test for method java.lang.String java.net.ServerSocket.toString()
+        int portNumber = Support_PortManager.getNextPort();
+        s = new ServerSocket(portNumber);
         assertEquals("ServerSocket[addr=0.0.0.0/0.0.0.0,port=0,localport="
-                        + portNumber + "]", s);
-	}
+                + portNumber + "]", s.toString());
+    }
 
 	/**
 	 * @tests java.net.ServerSocket#bind(java.net.SocketAddress)

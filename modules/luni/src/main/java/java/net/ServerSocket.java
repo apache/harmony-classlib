@@ -300,15 +300,18 @@ public class ServerSocket {
 	 * @return String the description
 	 */
 	public String toString() {
-		StringBuffer result = new StringBuffer(64);
-		result.append("ServerSocket["); //$NON-NLS-1$
-		if (!isBound())
-			return result.append("unbound]").toString(); //$NON-NLS-1$
-		return result.append("addr="). //$NON-NLS-1$
-				append(getInetAddress()).append(",port=0,localport="). //$NON-NLS-1$
-				append(getLocalPort()).append("]"). //$NON-NLS-1$
-				toString();
-	}
+        StringBuffer result = new StringBuffer(64);
+        result.append("ServerSocket["); //$NON-NLS-1$
+        if (!isBound()) {
+            return result.append("unbound]").toString(); //$NON-NLS-1$
+        }
+        return result
+                .append("addr="). //$NON-NLS-1$
+                append(getInetAddress().getHostName())
+                .append("/").append(getInetAddress().getHostAddress()).append(",port=0,localport="). //$NON-NLS-1$
+                append(getLocalPort()).append("]"). //$NON-NLS-1$
+                toString();
+    }
 
 	/**
 	 * Bind the ServerSocket to the nominated local host/port. The default
