@@ -80,7 +80,7 @@
             description="Compile the source">
         <mkdir dir="${build.output}" />
 
-        <javac fork="yes" memoryInitialSize="512M" memoryMaximumSize="600M"
+        <javac fork="yes" memoryMaximumSize="384M"
                destdir="${build.output}"
                source="${hy.javac.source}" target="${hy.javac.target}"
                debug="${hy.javac.debug}">
