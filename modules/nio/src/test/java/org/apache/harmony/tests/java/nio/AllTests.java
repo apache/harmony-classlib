@@ -54,6 +54,7 @@ public class AllTests {
         suite.addTestSuite(SliceHeapByteBufferTest.class);
         suite.addTestSuite(DuplicateDirectByteBufferTest.class);
         suite.addTestSuite(BufferOverflowExceptionTest.class);
+        suite.addTestSuite(BufferUnderflowExceptionTest.class);
         //$JUnit-END$
         return suite;
     }
