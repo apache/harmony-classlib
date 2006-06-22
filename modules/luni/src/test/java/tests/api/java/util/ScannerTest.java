@@ -15,16 +15,21 @@
 package tests.api.java.util;
 
 import java.io.Closeable;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.StringReader;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -39,7 +44,7 @@ public class ScannerTest extends TestCase {
         }
 
         public int read(CharBuffer cb) throws IOException {
-            return 0;
+            throw new EOFException();
         }
 
     }
@@ -58,6 +63,21 @@ public class ScannerTest extends TestCase {
             s = new Scanner(tmpFile);
             fail("should throw FileNotFoundException");
         } catch (FileNotFoundException e) {
+            // expected
+        }
+
+        tmpFile = File.createTempFile("TestFileForScanner", ".tmp");
+        FileOutputStream fos = new FileOutputStream(tmpFile);
+        fos.write("test".getBytes());
+
+        s = new Scanner(tmpFile);
+        tmpFile.delete();
+
+        // Scanner(File = null)
+        try {
+            s = new Scanner((File) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
             // expected
         }
 
@@ -81,6 +101,13 @@ public class ScannerTest extends TestCase {
         } catch (FileNotFoundException e) {
             // expected
         }
+        
+        try {
+            s = new Scanner(tmpFile, null);
+            fail("should throw FileNotFoundException");
+        } catch (FileNotFoundException e) {
+            // expected
+        }
 
         tmpFile = File.createTempFile("TestFileForScanner", ".tmp");
         try {
@@ -89,9 +116,43 @@ public class ScannerTest extends TestCase {
         } catch (IllegalArgumentException e) {
             // expected
         }
-        // fail on RI. File is opened but not closed when exception is thrown on
+
+        //fail on RI. File is opened but not closed when exception is thrown on
         // RI.
         assertTrue(tmpFile.delete());
+        
+        // Scanner(File = null, Charset = null)
+        try {
+            s = new Scanner((File) null, null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // Scanner(File = null, Charset = UTF-8)
+        try {
+            s = new Scanner((File) null, "UTF-8");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // Scanner(File = null, Charset = invalid)
+        try {
+            s = new Scanner((File) null, "invalid");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // Scanner(File, Charset = null)
+        try {
+            File f = File.createTempFile("test", ".tmp");
+            s = new Scanner(f, null);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
 
         // TODO: test if the specified charset is used.
     }
@@ -104,6 +165,14 @@ public class ScannerTest extends TestCase {
         assertNotNull(s);
         s.close();
 
+        // Scanner(InputStream)
+        try {
+            s = new Scanner((InputStream) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
         // TODO: test if the default charset is used.
     }
 
@@ -114,6 +183,20 @@ public class ScannerTest extends TestCase {
         s = new Scanner(new PipedInputStream(), Charset.defaultCharset().name());
         assertNotNull(s);
         s.close();
+
+        try {
+            s = new Scanner((PipedInputStream) null, "invalid charset");
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            s = new Scanner(new PipedInputStream(), null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
 
         try {
             s = new Scanner(new PipedInputStream(), "invalid charset");
@@ -132,6 +215,14 @@ public class ScannerTest extends TestCase {
         s = new Scanner(new StringReader("test string"));
         assertNotNull(s);
         s.close();
+
+        // Scanner(Readable)
+        try {
+            s = new Scanner((Readable) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /**
@@ -145,6 +236,14 @@ public class ScannerTest extends TestCase {
         assertNotNull(s);
         s.close();
         assertTrue(tmpFile.delete());
+
+        // Scanner(ReadableByteChannel)
+        try {
+            s = new Scanner((ReadableByteChannel) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
 
         // TODO: test if the default charset is used.
     }
@@ -170,6 +269,29 @@ public class ScannerTest extends TestCase {
         fc.close();
         assertTrue(tmpFile.delete());
 
+        // Scanner(ReadableByteChannel = null, Charset = null)
+        try {
+            s = new Scanner((ReadableByteChannel) null, null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // Scanner(ReadableByteChannel = null, Charset = invalid)
+        try {
+            s = new Scanner((ReadableByteChannel) null, "invalid");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // Scanner(ReadableByteChannel, Charset = null)
+        try {
+            s = new Scanner(fc, null);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
         // TODO: test if the specified charset is used.
     }
 
@@ -180,6 +302,14 @@ public class ScannerTest extends TestCase {
         s = new Scanner("test string");
         assertNotNull(s);
         s.close();
+
+        // Scanner(String)
+        try {
+            s = new Scanner((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /**
@@ -187,14 +317,25 @@ public class ScannerTest extends TestCase {
      */
     public void test_close() throws IOException {
         File tmpFile = File.createTempFile("TestFileForScanner", ".tmp");
-        FileChannel fc = new FileOutputStream(tmpFile).getChannel();
+        FileOutputStream fos = new FileOutputStream(tmpFile);
+        FileChannel fc = fos.getChannel();
         s = new Scanner(fc);
+
+        // Write out a int before the scanner is closed, should be OK.
+        fos.write(12);
+
         s.close();
         assertFalse(fc.isOpen());
-        s.close(); // no exception should be thrown
 
-        // TODO: test if invoking scan operation will raise
-        // IllegalStateException
+        // Write out a int after the scanner is closed, IOException should be
+        // thrown out.
+        try {
+            fos.write(12);
+        } catch (IOException e) {
+            // expected
+        }
+
+        s.close(); // no exception should be thrown
         assertTrue(tmpFile.delete());
     }
 
@@ -204,8 +345,102 @@ public class ScannerTest extends TestCase {
     public void test_ioException() throws IOException {
         MockCloseable mc = new MockCloseable();
         s = new Scanner(mc);
-        assertNull(s.ioException());
-        s.close();
+        assertNull(s.ioException()); // No operation, no exception
+
+        s.close(); // IOException should be cached
         assertNotNull(s.ioException());
+        assertTrue(s.ioException() instanceof IOException);
+    }
+    
+    /**
+     * @tests java.util.Scanner#delimiter()
+     */
+    public void test_delimiter() {
+        s = new Scanner("test");
+        Pattern pattern = s.delimiter();
+        assertEquals("\\p{javaWhitespace}+", pattern.toString());
+    }
+
+    /**
+     * @tests java.util.Scanner#useDelimiter(Pattern)
+     */
+    public void test_useDelimiter_LPattern() {
+        s = new Scanner("test");
+        s.useDelimiter(Pattern.compile("\\w+"));
+        assertEquals("\\w+", s.delimiter().toString());
+        
+        s = new Scanner("test");
+        s.useDelimiter((Pattern) null);
+        assertNull(s.delimiter());
+    }
+
+    /**
+     * @tests java.util.Scanner#useDelimiter(String)
+     */
+    public void test_useDelimiter_String() {
+        s = new Scanner("test");
+        try {
+            s.useDelimiter((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        s = new Scanner("test");
+        s.useDelimiter("\\w+");
+        assertEquals("\\w+", s.delimiter().toString());
+    }
+
+    /**
+     * @tests java.util.Scanner#locale()
+     */
+    public void test_locale() {
+        s = new Scanner("test");
+        assertEquals(Locale.getDefault(), s.locale());
+    }
+
+    /**
+     * @tests java.util.Scanner#useLocale(Locale)
+     */
+    public void test_useLocale_LLocale() {
+        s = new Scanner("test");
+        try {
+            s.useLocale(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        s.useLocale(new Locale("test", "test"));
+        assertEquals(new Locale("test", "test"), s.locale());
+    }
+
+    /**
+     * @tests java.util.Scanner#radix()
+     */
+    public void test_radix() {
+        s = new Scanner("test");
+        assertEquals(10, s.radix());
+    }
+
+    /**
+     * @tests java.util.Scanner#useRadix()
+     */
+    public void test_useRadix_I() {
+        s = new Scanner("test");
+        try {
+            s.useRadix(Character.MIN_RADIX - 1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        try {
+            s.useRadix(Character.MAX_RADIX + 1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        s.useRadix(11);
+        assertEquals(11, s.radix());
     }
 }
