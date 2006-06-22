@@ -86,6 +86,21 @@ waitForProc (IDATA procHandle)
   return StatusLocation;
 }
 
+
+/*
+ *  int execProgram()
+ * 
+ *  does a fork/execvp to launch the program
+ * 
+ *  returns :
+ *     0  successful
+ *     1001  fork failure errno = ENOMEM
+ *     1002 fork failure errno = EAGAIN
+ *     -1  error, unknown
+ * 
+ *   Note - there is one error code 'namespace' for execProgram
+ *          please coordinate w/ other platform impls
+ */
 int
 execProgram (JNIEnv * vmthread, jobject recv,
              char *command[], int commandLineLength,
@@ -97,7 +112,7 @@ execProgram (JNIEnv * vmthread, jobject recv,
    * the new thread  ==> make it a globalRef.
    */
 
-  char result;
+  int result = -1;
   char *cmd;
   int grdpid, rc = 0;
   int newFD[3][2];
@@ -114,7 +129,40 @@ execProgram (JNIEnv * vmthread, jobject recv,
   pipe (execvFailure);
 
   cmd = command[0];
+
   grdpid = fork ();
+
+  /*
+   *   if we fail, lets clean up and bail right here
+   */
+  
+    if (grdpid == -1) {
+
+	    int error = errno;
+	  	
+		close(newFD[0][0]);
+		close(newFD[0][1]);
+		close(newFD[1][0]);
+		close(newFD[1][1]);
+		close(newFD[2][0]);
+		close(newFD[2][1]);
+	
+		close(forkedChildIsRunning[0]);
+		close(forkedChildIsRunning[1]);
+		
+		close(execvFailure[0]);
+		close(execvFailure[1]);
+	
+		if (error == ENOMEM) {
+		    result = 1001;
+		}
+		else if (error = EAGAIN) { 
+		    result = 1002;
+		}
+	
+		return result;
+      }  
+
   if (grdpid == 0)
     {
       /* Redirect pipes so grand-child inherits new pipes */
@@ -122,17 +170,21 @@ execProgram (JNIEnv * vmthread, jobject recv,
       dup2 (newFD[0][0], 0);
       dup2 (newFD[1][1], 1);
       dup2 (newFD[2][1], 2);
+      
       /* tells the parent that that very process is running */
       write (forkedChildIsRunning[1], &dummy, 1);
 
-      if (dir)
+      if (dir) {
         chdir (dir);
-
+      }
+      
       /* ===try to perform the execv : on success, it does not return ===== */
-      if (envSize != 0)
+      if (envSize != 0) {
         environ = env;
+      }
 
       rc = execvp (cmd, command);
+
       /* ===================================================== */
 
       /* if we get here ==> tell the parent that the execv failed ! */
@@ -220,17 +272,12 @@ execProgram (JNIEnv * vmthread, jobject recv,
       close (execvFailure[0]);
       close (execvFailure[1]);
 
-      /* tells the parent what result it should return */
-      if ((grdpid < 0) || (rc == -1))
-        {
-          result = (char) 0;
-        }
-      else
-        {
-          result = (char) 1;
+        if (rc != -1) {
+            result = 0;
         }
     }
-  return (int) result;          /* 0 or 1 */
+
+  return result;
 }
 
 /* Stream handling support */

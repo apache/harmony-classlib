@@ -105,6 +105,11 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
         }
     }
 
+  /*
+   *  now call execProgram.  Any non-zero return code 
+   *  indicates some kind of failure
+   */
+   
   retVal = execProgram (env, recv,
       command, commandLineLength, envArray, envLength,
       workingDir, &pHandle, &inHandle, &outHandle,
@@ -115,14 +120,32 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
       jclmem_free_memory (env, workingDir);
     }
 
-  if (!retVal)
+  if (retVal)
     {
-      /* Failed to exec program */
-      jclass exClass = (*env)->FindClass (env, "java/io/IOException");
-      (*env)->ThrowNew (env, exClass, "Unable to start program");
-      goto failed;
+        char errMsg[256];
+    	jclass exClass;
+
+        /* Failed to exec program */
+        
+        switch(retVal) {
+        case 1001 :
+            sprintf(errMsg, "Unable to start program : %s", "fork() failed with errno = EOMEM");
+            break;
+        case 1002 : 
+            sprintf(errMsg, "Unable to start program : %s", "fork() failed with errno = EAGAIN");
+            break;
+        default:
+            sprintf(errMsg, "Unable to start program : %s", "unknown");
+            break;
+        }
+
+        exClass = (*env)->FindClass (env, "java/io/IOException");
+        (*env)->ThrowNew (env, exClass, errMsg);
+        goto failed;
     }
+
   pVals = (*env)->NewLongArray (env, 4);
+
   if (pVals)
     {
       npVals[0] = (jlong) pHandle;
