@@ -35,7 +35,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     private static final int EQUALS = 0;
     private static final int GREATER = 1;
     private static final int LESS = -1;
-    private static final BigInteger NEG_ONE = new BigInteger (-1, 1);
+    static final BigInteger NEG_ONE = new BigInteger (-1, 1);
 
     // bigRadices values are precomputed maximal powers of radices
     // (integer numbers from 2 to 36) that fit into unsigned int (32 bits).
@@ -49,6 +49,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
             887503681, 1073741824, 1291467969, 1544804416, 1838265625, 60466176
     };
 
+    static final int tenPows[] = {1,10,100,1000,10000,100000,1000000,
+            10000000,100000000,1000000000};
     // the first 54 prime numbers were copied from the published sources,
     // e.g. http://en.wikipedia.org/wiki/List_of_prime_numbers#The_first_500_prime_numbers
     private static final int primes[] = {
@@ -89,20 +91,44 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      */
     public static final BigInteger  ZERO = new BigInteger (0, 0); 
 
+    static final BigInteger  FIVE = new BigInteger (1, 5);
+
+    static final BigInteger[] SMALL_VALUES = {ZERO,ONE,new BigInteger(1,2),
+         new BigInteger(1,3), new BigInteger(1,4), FIVE,
+         new BigInteger(1,6), new BigInteger(1,7), new BigInteger(1,8),
+         new BigInteger(1,9), TEN   };
+
+    private static final BigInteger[] bigTenPows = new BigInteger [32];
+
+    static {
+
+        bigTenPows[0] = ONE;
+        bigTenPows[1] = TEN;
+        int i=2;
+        long val = 100;
+        for(;i<=18;i++) {
+            bigTenPows[i] = valueOf(val);
+            val*=10L;
+        }
+        for(;i<bigTenPows.length;i++) {
+            bigTenPows[i] = bigTenPows[i-1].multiply(BigInteger.TEN);
+        }
+    }
+
     /**
      * The magnitude of this in the little-endian representation
      */
-    private transient int digits[];
+    transient int digits[];
     
     /**
      * The length of this in measured in ints. Can be less than digits.length().
      */
-    private transient int numberLength;
+    transient int numberLength;
     
     /**
      * The sign of this.
      */
-    private transient int sign;
+    transient int sign;
 
     /**
      * Adds two arrays element by element taking carry into consideration.
@@ -111,8 +137,10 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     private static int[] add(int a[], int aSize, int b[], int bSize) {
         int i;
         int res[] = new int[aSize + 1];
-        long k = 0;
-        for (i = 0; i < bSize; i++) { 
+        long k = ((long)a[0] & 0x0ffffffffL) + ((long)b[0] & 0x0ffffffffL);
+        res[0] = (int)k;
+        k >>= 32;
+        for (i = 1; i < bSize; i++) {
             k += ((long)a[i] & 0x0ffffffffL) + ((long)b[i] & 0x0ffffffffL);
             res[i] = (int)k;
             k >>= 32;
@@ -124,6 +152,27 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
         }
         res[i] = (int)k;
         return res;
+    }
+
+    static int[] incInPlace(int a[]) {
+        int size = a.length;
+        long k = ((long)a[0] & 0x0ffffffffL) + 1L;
+        a[0]=(int)k;
+        k >>= 32;
+        int i=1;
+        for (; (i < size)&& k!=0; i++) {
+            k += (long)a[i] & 0x0ffffffffL;
+            a[i] = (int)k;
+            k >>= 32;
+        }
+        if(k!=0 && i==size) {
+            int res[] = new int[size + 1];
+            for(int j=0; j<size; j++) res[j]=a[j];
+            res[i] = (int)k;
+            return res;
+        } else {
+            return a;
+        }
     }
 
     /**
@@ -178,29 +227,26 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     }
 
     /**
-     * Compares magnitude of two arrays.
+     * Compares two arrays.
      * All elements are treated as unsigned integers.
      * The magnitude is the bit chain of elements in big-endian order.
      * @param a the first array
-     * @param aSize the size of a
      * @param b the second array
-     * @param bSize the size of b
+     * @param size the size of arrays
      * @return 1 if a > b, -1 if a < b, 0 if a == b
      */
-    private static int compareMagnitude(final int a[], final int aSize,
-            final int b[], final int bSize) {
-        if (aSize != bSize) {
-            return (aSize > bSize ? 1 : -1);
-        }
-        for (int i = aSize - 1; i >= 0; i--) {
-            if (((long)a[i] & 0x0ffffffffL) > ((long)b[i] & 0x0ffffffffL)) {
-                return GREATER;
-            }
-            if (((long)a[i] & 0x0ffffffffL) < ((long)b[i] & 0x0ffffffffL)) {
+    static int compareArrays(final int[] a, final int[] b, final int size) {
+        for (int i = size - 1; i >= 0; i--) {
+            long aValue = ((long)a[i] & 0x0ffffffffL);
+            long bValue = ((long)b[i] & 0x0ffffffffL);
+            if (aValue < bValue) {
                 return LESS;
             }
+            if (aValue > bValue) {
+                return GREATER;
+            }
         }
-        return EQUALS;    
+        return EQUALS;
     }
 
     /**
@@ -230,7 +276,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      * @param bLength the divisor's length
      * @return the remainder
      */
-    private static int[] divide(int quot[], int quotLength, int a[],
+    static int[] divide(int quot[], int quotLength, int a[],
             int aLength, int b[], int bLength) {
         int normA[] = new int[aLength + 1];    // the normalized dividend
         // an extra byte is needed for correct shift
@@ -347,15 +393,59 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      * @param divisor the divisor
      * @return remainder
      */
-    private static int divideArrayByInt(int dest[], int src[],
+    static int divideArrayByInt(int dest[], int src[],
+            final int srcLength, final int divisor) {
+        long rem = 0;
+        long bLong = (long)divisor & 0xffffffffL;
+        for (int i = srcLength - 1; i >= 0; i--) {
+            long temp = (rem << 32) | ((long)src[i] & 0xffffffffL);
+            long quot;
+            if (temp >= 0) {
+                quot = (temp / bLong);
+                rem = (temp % bLong);
+            } else {
+                // make the dividend positive shifting it right by 1 bit
+                // then get the quotient an remainder and correct them properly
+                long aPos = temp >>> 1;
+                long bPos = divisor >>> 1;
+                quot = aPos / bPos;
+                rem = aPos % bPos;
+                // double the remainder and add 1 if a is odd
+                rem = (rem << 1) + (temp & 1);
+                if ((divisor & 1) != 0) { // the divisor is odd
+                    if (quot <= rem) {
+                        rem -= quot;
+                    } else {
+                        if (quot - rem <= bLong) {
+                            rem += bLong - quot;
+                            quot -= 1;
+                        } else {
+                            rem += (bLong << 1) - quot;
+                            quot -=2;
+                        }
+                    }
+                }
+            }
+            dest[i] = (int)(quot & 0xffffffffL);
+        }
+        return (int)rem;
+    }
+
+    /**
+     * Divides an array by an integer value.
+     * Implements the Knuth's division algorithm.
+     * See D. Knuth, The Art of Computer Programming, vol. 2.
+     * @param src the dividend
+     * @param srcLength the length of the dividend
+     * @param divisor the divisor
+     * @return remainder
+     */
+    private static int remainderArrayByInt(int src[],
             final int srcLength, final int divisor) {
         long result = 0;
         for (int i = srcLength - 1; i >= 0; i--) {
             long temp = (result << 32) + ((long)src[i] & 0xffffffffL); 
             long res = divideLongByInt(temp, divisor);
-            if (dest != null) {
-                dest[i] = (int)res;
-            }
             result = (int)(res >> 32);
         }
         return (int)result;
@@ -601,27 +691,36 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      * @return BigInteger (BigInteger) longValue
      */
     public static BigInteger valueOf(long longValue) {
-        int valueSign = (longValue > 0 ? 1 : longValue < 0 ? -1 : 0);
         if (longValue < 0) {
             longValue = -longValue;
+            int valueLo = (int) longValue;
+            int valueHi = (int) (longValue >>> 32);
+            if (valueHi == 0) {
+                return new BigInteger(-1, valueLo);
+            } else {
+                return new BigInteger(-1, 2, new int[]{valueLo, valueHi});
         }
-        if (((int)longValue & 0xffffffffL) == longValue) {
-            return new BigInteger(valueSign, (int)longValue);
+        } else if (longValue <= 10) {
+            return SMALL_VALUES[(int) longValue];
+        } else {
+            int valueLo = (int) longValue;
+            int valueHi = (int) (longValue >> 32);
+            if (valueHi == 0) {
+                return new BigInteger(1, valueLo);
+            } else {
+                return new BigInteger(1, 2, new int[]{valueLo, valueHi});
+            }
         }
-        int digitsValue[] = new int[2];
-        digitsValue[0] = (int)longValue;
-        digitsValue[1] = (int)(longValue >> 32);
-        return new BigInteger(valueSign, 2, digitsValue);
     }
 
-    private BigInteger (int sign, int value) {
+    BigInteger (int sign, int value) {
         this.sign = sign;
         numberLength = 1;
         digits = new int[1];
         this.digits[0] = value;
     }
 
-    private BigInteger (int sign, int length, int[] value) {
+    BigInteger (int sign, int length, int[] value) {
         this.sign = sign;
         numberLength = length;
         digits = value;
@@ -833,37 +932,70 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     public BigInteger add(BigInteger that) {
         int resDigits[];
         int resSign;
-        if (this.sign == that.sign) {
-            resSign = this.sign;
-            
-            // an augend should not be shorter than addend
-            if (this.numberLength >= that.numberLength) {
-                resDigits = add(this.digits, this.numberLength, that.digits,
-                        that.numberLength);
+        int thisSign = this.sign;
+        int thatSign = that.sign;
+        if (thisSign == 0 ) {
+            return that;
+        }
+        if(thatSign == 0){
+            return this;
+        }
+        int thisLen = this.numberLength;
+        int thatLen = that.numberLength;
+        if(thisLen + thatLen == 2) {
+            long a = ((long) this.digits[0] & 0xffffffffL);
+            long b = ((long) that.digits[0] & 0xffffffffL);
+            long res;
+            if (thisSign == thatSign) {
+                res = a+b;
+                int valueLo = (int) res;
+                int valueHi = (int) (res >>> 32);
+                if (valueHi == 0) {
+                    return new BigInteger(thisSign, valueLo);
+                } else {
+                    return new BigInteger(thisSign, 2, new int[]{valueLo, valueHi});
+                }
             } else {
-                resDigits = add(that.digits, that.numberLength, this.digits,
-                        this.numberLength);
-            }            
+                if (thisSign < 0 ) {
+                    res = b-a;
+                } else {
+                    res = a-b;
+                }
+                return valueOf( res );
+            }
+        } else if (thisSign == thatSign) {
+            resSign = thisSign;
+            // an augend should not be shorter than addend
+            if (thisLen >= thatLen) {
+                resDigits = add(this.digits, thisLen,
+                                that.digits, thatLen);
+            } else {
+                resDigits = add(that.digits, thatLen,
+                                this.digits, thisLen);
+            }
         } else {    // signs are different
-            int cmp = compareMagnitude(this.digits, this.numberLength,
-                    that.digits, that.numberLength);
+
+            int cmp = (thisLen != thatLen ?
+                       ((thisLen > thatLen) ? 1 : -1) :
+                       compareArrays(this.digits,that.digits,thisLen ));
+
             if (cmp == EQUALS) {
                 return ZERO;
             }
             // a minuend should not be shorter than subtrahend
             if (cmp == GREATER) {
-                resSign = this.sign;
-                resDigits = subtract(this.digits, this.numberLength,
-                        that.digits, that.numberLength);
+                resSign = thisSign;
+                resDigits = subtract(this.digits, thisLen,
+                                     that.digits, thatLen);
             } else {
-                resSign = that.sign;
-                resDigits = subtract(that.digits, that.numberLength,
-                        this.digits, this.numberLength);
+                resSign = thatSign;
+                resDigits = subtract(that.digits, thatLen,
+                                     this.digits, thisLen);
             }
-        }           
-        BigInteger result = new BigInteger(resSign, resDigits.length, resDigits);
-        result.cutOffLeadingZeroes();
-        return result;
+        }
+        BigInteger res = new BigInteger(resSign, resDigits.length, resDigits);
+        res.cutOffLeadingZeroes();
+        return res;
     }
 
     /**
@@ -877,7 +1009,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
         if (this.sign == 0 || that.sign == 0) {
             return ZERO;
         }
-        int resSign = this.sign == -1 && that.sign == -1 ? -1 : 1;
+        int resSign = (this.sign == -1 && that.sign == -1) ? -1 : 1;
         int resLength;
         int resDigits[];
         int thisNeg[] = null;
@@ -1140,22 +1272,25 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      *                comparable with the receiver.
      */
     public int compareTo(BigInteger that) {
-        if (this.sign == that.sign) {
-           	if(this.sign == 0) {
-           		return 0;
-           	}
-            int compareResult = compareMagnitude(this.digits,
-                    this.numberLength, that.digits, that.numberLength);
-            if (this.sign == 1) {
+        int thisSign = this.sign;
+        int thatSign = that.sign;
+        if (thisSign == 0) {
+            return -thatSign;
+        }
+        if (thisSign == thatSign) {
+            int thisLen = this.numberLength;
+            int thatLen = that.numberLength;
+            int compareResult = (thisLen != thatLen ?
+                       ((thisLen > thatLen) ? 1 : -1) :
+                       compareArrays(this.digits,that.digits,thisLen ));
+
+            if (thisSign == 1) {
                 return compareResult;
             } else { 
                 return -compareResult;
             }            
         }
-        if (this.sign == 0) {
-            return -that.sign;
-        }
-        return this.sign;
+        return thisSign;
     }
 
     /**
@@ -1187,7 +1322,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     /**
      * Decreases numberLength if there are zero high elements.
      */
-    private void cutOffLeadingZeroes() {
+    final void cutOffLeadingZeroes() {
         while(numberLength > 0 && digits[--numberLength] == 0) {
         }
         if (digits[numberLength++] == 0) {
@@ -1206,37 +1341,52 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      *                if that is zero.
      */
     public BigInteger divide(BigInteger that) {
-        if (that.equals(ZERO)) {
+        if (that.isZero()) {
             throw new ArithmeticException("division by zero");
         }
-        if (that.isOne()) {    
-            if (that.sign == 1) {
+        int thatSign = that.sign;
+        if (that.isOne()) {
+            if (thatSign == 1) {
                 return this;
             } else {
                 return this.negate();
             }
         }
-        int cmp = compareMagnitude(this.digits, this.numberLength, that.digits,
-                that.numberLength);
+        int thisSign = this.sign;
+        int thisLen = this.numberLength;
+        int thatLen = that.numberLength;
+        if (thisLen + thatLen == 2) {
+            long val = ((long)this.digits[0] & 0xffffffffL)
+                    / ((long)that.digits[0] & 0xffffffffL);
+            if(thisSign != thatSign) {
+                val = -val;
+            }
+            return valueOf( val );
+        } else {
+            int cmp = (thisLen != thatLen ?
+                       ((thisLen > thatLen) ? 1 : -1) :
+                       compareArrays(this.digits,that.digits,thisLen ));
+
         if (cmp == EQUALS) {
-            return (this.sign == that.sign ? ONE : NEG_ONE);
+                return ((thisSign == thatSign) ? ONE : NEG_ONE);
         }
         if (cmp == LESS) {
             return ZERO;
         }
-        int resLength = this.numberLength - that.numberLength + 1;
+            int resLength = thisLen - thatLen + 1;
         int resDigits[] = new int[resLength];
-        int resSign = (this.sign == that.sign ? 1 : -1);
-        if (that.numberLength == 1) {
-            divideArrayByInt(resDigits, this.digits, this.numberLength,
+            int resSign = ((thisSign == thatSign) ? 1 : -1);
+            if (thatLen == 1) {
+                divideArrayByInt(resDigits, this.digits, thisLen,
                     that.digits[0]);
         } else {
-            divide(resDigits, resLength, this.digits, this.numberLength,
-                    that.digits, that.numberLength);
+                divide(resDigits, resLength, this.digits, thisLen,
+                       that.digits, thatLen);
         }
         BigInteger result = new BigInteger(resSign, resLength, resDigits); 
         result.cutOffLeadingZeroes();
         return result;
+    }
     }
 
     /**
@@ -1251,39 +1401,74 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      *                if val is zero.
      */
     public BigInteger[] divideAndRemainder(BigInteger that) {
-        if (that.isZero()) {
+        int thatSign = that.sign;
+        if (thatSign==0) {
             throw new ArithmeticException("division by zero");
         }
-        // res[0] is a quotient and res[1] is a remainder:
-        BigInteger result[] = new BigInteger[2]; 
-        int quotientLength, remainderLength;
-        int quotientSign, remainderSign;
-        int quotientDigits[], remainderDigits[];
-        if (compareMagnitude(this.digits, this.numberLength, that.digits,
-                that.numberLength) == LESS) {
-            result[0] = ZERO;
-            result[1] = this;
-        } else {
-            quotientLength = this.numberLength - that.numberLength + 1;
-            quotientDigits = new int[quotientLength];
-            quotientSign = (this.sign == that.sign ? 1 : -1);
-            remainderLength = that.numberLength;
-            remainderDigits = new int[quotientLength];
-            remainderSign = this.sign;
-            if (that.numberLength == 1) {
-                remainderDigits[0] = divideArrayByInt(quotientDigits,
-                        this.digits, this.numberLength, that.digits[0]);
-            } else {
-                remainderDigits = divide(quotientDigits, quotientLength,
-                        this.digits, this.numberLength, that.digits,
-                        that.numberLength);
-            }
-            result[0] = new BigInteger(quotientSign, quotientLength, quotientDigits);
-            result[1] = new BigInteger(remainderSign, remainderLength, remainderDigits);
-            result[0].cutOffLeadingZeroes();
-            result[1].cutOffLeadingZeroes();
+        int thatLen = that.numberLength;
+        int[] thatDigits = that.digits;
+        if(thatLen == 1) {
+            return divideAndRemainderByInteger(thatDigits[0],thatSign);
         }
-        return result;
+        // res[0] is a quotient and res[1] is a remainder:
+        int[] thisDigits = this.digits;
+        int thisLen = this.numberLength;
+        int cmp = (thisLen != thatLen ?
+                   ((thisLen > thatLen) ? 1 : -1) :
+                    compareArrays(thisDigits,thatDigits,thisLen ));
+        if ( cmp < 0 ) {
+            return new BigInteger[]{ZERO, this};
+        } else {
+            int thisSign = this.sign;
+            int quotientLength = thisLen - thatLen + 1;
+            int remainderLength = thatLen;
+            int quotientSign = ((thisSign == thatSign) ? 1 : -1);
+            int quotientDigits[] = new int[quotientLength];
+            int remainderDigits[] = divide(quotientDigits, quotientLength,
+                                         thisDigits, thisLen,
+                                         thatDigits, thatLen);
+            BigInteger result0 = new BigInteger(quotientSign, quotientLength,
+                                                quotientDigits);
+            BigInteger result1 = new BigInteger(thisSign, remainderLength,
+                                                remainderDigits);
+            result0.cutOffLeadingZeroes();
+            result1.cutOffLeadingZeroes();
+            return new BigInteger[]{result0, result1};
+        }
+    }
+
+    BigInteger[] divideAndRemainderByInteger(int that, int thatSign) {
+        // res[0] is a quotient and res[1] is a remainder:
+        int[] thisDigits = this.digits;
+        int thisLen = this.numberLength;
+        int thisSign = this.sign;
+        if (thisLen == 1) {
+            long a = ((long) thisDigits[0] & 0xffffffffL);
+            long b = ((long) that & 0xffffffffL);
+            long quo = a / b;
+            long rem = a % b;
+            if (thisSign != thatSign) {
+                quo = -quo;
+            }
+            if (thisSign <0 ) {
+                rem = -rem;
+            }
+            return new BigInteger[]{valueOf(quo), valueOf(rem)};
+        } else {
+            int quotientLength = thisLen ;
+            int quotientSign = ((thisSign == thatSign) ? 1 : -1);
+            int quotientDigits[] = new int[quotientLength];
+            int remainderDigits[];
+            remainderDigits = new int[]{divideArrayByInt(quotientDigits,
+                                                             thisDigits, thisLen, that)};
+            BigInteger result0 = new BigInteger(quotientSign, quotientLength,
+                                                quotientDigits);
+            BigInteger result1 = new BigInteger(thisSign, 1,
+                                                remainderDigits);
+            result0.cutOffLeadingZeroes();
+            result1.cutOffLeadingZeroes();
+            return new BigInteger[]{result0, result1};
+        }
     }
 
     /**
@@ -1368,7 +1553,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
         if (! (anotherObj instanceof BigInteger)) {
             return false;
         }
-        return (compareTo((BigInteger)anotherObj) == EQUALS ? true : false);
+        return compareTo((BigInteger)anotherObj) == EQUALS;
     }
 
     /**
@@ -1504,7 +1689,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
             if (numberLength == 1 && digits[0] == primes[i]) {
                 return true;
             }
-            if (divideArrayByInt(null, digits, numberLength, primes[i]) == 0) {
+            if (remainderArrayByInt( digits, numberLength, primes[i]) == 0) {
                 return false;
             }
         }
@@ -1575,12 +1760,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     /**
      * Checks if this BigInteger equals to ZERO
      */
-    private boolean isZero() {
-        if (numberLength == 1 && digits[0] == 0) {
-            return true;
-        }
-        return false;
-    }
+    final boolean isZero() {
+        return sign==0;
+     }
 
     /**
      * Answers the long value which the receiver represents
@@ -1589,6 +1771,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      */
     public long longValue() {
         long value = (long)digits[0] & 0xffffffffL;
+        if (numberLength == 0) return 0;
         if (numberLength == 1) {
             return (sign >= 1 ? value : -value);
         } else {
@@ -1753,42 +1936,89 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      * Implements traditional scholar algorithm described by Knuth.
      */
     private BigInteger multiply(BigInteger a, BigInteger b) {
-        int resSign = (a.sign == b.sign ? 1 : -1);
-        int resLength = a.numberLength + b.numberLength;
-        int resDigits[] = new int[resLength];
-        //        for (i = 0; i < a.numberLength; i++) {
-        //            r.digits[i] = 0;
-        //        }
-        long carry;
-        
-        // a special case when both numbers don't exceed int 
+        int aLen = a.numberLength;
+        int bLen = b.numberLength;
+        int resLength = aLen + bLen;
+        // a special case when both numbers don't exceed int
         if (resLength == 2) {
-            carry = ((long)a.digits[0] & 0xffffffffL) * 
-                    ((long)b.digits[0] & 0xffffffffL);
-            resDigits[0] = (int)carry;
-            resDigits[1] = (int)(carry >>> 32);
-            if(resDigits[1] == 0) {
-                resLength = 1;
+            long val = ((long)a.digits[0] & 0xffffffffL)
+                    * ((long)b.digits[0] & 0xffffffffL);
+            int sign = a.sign != b.sign ? -1 : 1;
+            int valueLo = (int) val;
+            int valueHi = (int) (val >>> 32);
+            if (valueHi == 0) {
+                return new BigInteger(sign, valueLo);
+            } else {
+                return new BigInteger(sign, 2, new int[]{valueLo, valueHi});
             }
-            return new BigInteger(resSign, resLength, resDigits);
         }
-        
+        int[] aDigits = a.digits;
+        int[] bDigits = b.digits;
+        int resDigits[] = new int[resLength];
         // common case
-        for (int j = 0; j < b.numberLength; j++) {
-            carry = 0;
+        for (int j = 0; j < bLen; j++) {
+            long carry = 0;
             int i;
-            for (i = 0; i < a.numberLength; i++) {
+            for (i = 0; i < aLen; i++) {
                 int m = i + j;
-                carry += ((long)a.digits[i] & 0xffffffffL) * 
-                        ((long)b.digits[j] & 0xffffffffL) + ((long)resDigits[m] & 0xffffffffL);
+                carry += ((long)aDigits[i] & 0xffffffffL)
+                         * ((long)bDigits[j] & 0xffffffffL)
+                            + ((long)resDigits[m] & 0xffffffffL);
                 resDigits[m] = (int)carry;
                 carry >>>= 32;
             }
             resDigits[i + j] = (int)carry;
         }
+        BigInteger result = new BigInteger((a.sign == b.sign) ? 1 : -1, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
+
+    private static BigInteger multiplyByPositiveInt(BigInteger a, int b) {
+        int resSign = a.sign;
+        if (resSign == 0) {
+            return ZERO;
+        }
+        int aNumberLength = a.numberLength;
+        int[] aDigits = a.digits;
+        if (aNumberLength == 1) {
+            long res = ((long) aDigits[0] & 0xffffffffL) * ((long) b);
+            int resLo = (int) res;
+            int resHi = (int) (res >>> 32);
+            if (resHi == 0) {
+                return new BigInteger(resSign, resLo);
+            }
+            return new BigInteger(resSign, 2, new int[]{resLo, resHi});
+        }
+        int resLength = aNumberLength + 1;
+        int resDigits[] = new int[resLength];
+        long carry = 0;
+        // common case
+        int i;
+        for (i = 0; i < aNumberLength; i++) {
+            carry += ((long) aDigits[i] & 0xffffffffL)
+                     * ((long) b & 0xffffffffL);
+            resDigits[i] = (int) carry;
+            carry >>>= 32;
+        }
+        resDigits[i] = (int) carry;
         BigInteger result = new BigInteger(resSign, resLength, resDigits);
         result.cutOffLeadingZeroes();
         return result;
+    }
+
+    BigInteger multiplyByTenPow(int exp) {
+        if(exp < 10) {
+            return multiplyByPositiveInt(this,tenPows[exp]);
+        }
+        return multiply(getTenPow(exp));
+    }
+
+    static BigInteger getTenPow(int exp) {
+        if(exp < bigTenPows.length) {
+            return bigTenPows[exp];
+        }
+        return TEN.pow(exp);
     }
 
     /**
@@ -1797,6 +2027,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      * @return BigInteger (-1) * this
      */
     public BigInteger negate() {
+        if(isZero()) {
+            return this;
+        }
         return new BigInteger(-sign, numberLength, digits);
     }
 
@@ -1808,7 +2041,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
             throw new ArithmeticException("the number must be positive");
         }
         if (sign == 0) {
-            return new BigInteger(1, 2);
+            return SMALL_VALUES[2];
         }
         int resDigits[] = new int[numberLength];
         System.arraycopy(digits, 0, resDigits, 0, numberLength);
@@ -2015,19 +2248,23 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
         if (that.equals(ZERO)) {
             throw new ArithmeticException("division by zero");
         }
-        if (compareMagnitude(this.digits, this.numberLength, that.digits,
-                that.numberLength) == LESS) {
+        int thisLen = this.numberLength;
+        int thatLen = that.numberLength;
+        if ((thisLen != thatLen ?
+                       ((thisLen > thatLen) ? 1 : -1) :
+                       compareArrays(this.digits,that.digits,thisLen ))
+               == LESS) {
             return this;
         }
-        int resLength = that.numberLength;
+        int resLength = thatLen;
         int resDigits[] = new int[resLength];
         if (resLength == 1) {
-            resDigits[0] = divideArrayByInt(null, this.digits,
-                    this.numberLength, that.digits[0]);
+            resDigits[0] = remainderArrayByInt(this.digits,
+                                               thisLen, that.digits[0]);
         } else {
-            int qLen = this.numberLength - that.numberLength + 1;
-            resDigits = divide(null, qLen,
-                this.digits, this.numberLength, that.digits, that.numberLength);
+            int qLen = thisLen - thatLen + 1;
+            resDigits = divide(null, qLen, this.digits, thisLen,
+                               that.digits, thatLen);
         }
         BigInteger result = new BigInteger(this.sign, resLength, resDigits);
         result.cutOffLeadingZeroes();
@@ -2156,32 +2393,57 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
     public BigInteger subtract(BigInteger that) {
         int resSign;
         int resDigits[];
-        int cmp = compareMagnitude(this.digits, this.numberLength, that.digits, that.numberLength);
+        int thisSign = this.sign;
+        int thatSign = that.sign;
+        if(thatSign==0) {
+            return this;
+        }
+        if(thisSign==0){
+            return that.negate();
+        }
+
+        int thisLen = this.numberLength;
+        int thatLen = that.numberLength;
+        if(thisLen+thatLen == 2){
+            long a = ((long) this.digits[0] & 0xffffffffL);
+            long b = ((long) that.digits[0] & 0xffffffffL);
+            if(thisSign<0) {
+            	a=-a;
+            }
+            if(thatSign<0){
+            	b=-b;
+            }
+            return valueOf( a-b );
+        }
+        int cmp = (thisLen != thatLen ?
+                   ((thisLen > thatLen) ? 1 : -1) :
+                   compareArrays(this.digits,that.digits,thisLen ));
+
         if (cmp == LESS) {
-            resSign = -that.sign;
-            if (this.sign == that.sign) {
-                resDigits = subtract(that.digits, that.numberLength,
-                        this.digits, this.numberLength);
+            resSign = -thatSign;
+            if (thisSign == thatSign) {
+                resDigits = subtract(that.digits, thatLen,
+                                     this.digits, thisLen);
             } else {
-                resDigits = add(that.digits, that.numberLength, this.digits,
-                        this.numberLength);
+                resDigits = add(that.digits, thatLen, this.digits,
+                                thisLen);
             }
         } else {
-            resSign = this.sign;
-            if (this.sign == that.sign) {
+            resSign = thisSign;
+            if (thisSign == thatSign) {
                 if (cmp == EQUALS) {
                     return ZERO;
                 }
-                resDigits = subtract(this.digits, this.numberLength,
-                        that.digits, that.numberLength);
+                resDigits = subtract(this.digits, thisLen,
+                                     that.digits, thatLen);
             } else {
-                resDigits = add(this.digits, this.numberLength, that.digits,
-                        that.numberLength);
+                resDigits = add(this.digits, thisLen, that.digits,
+                                thatLen);
             }
         }
-        BigInteger result = new BigInteger(resSign, resDigits.length, resDigits);
-        result.cutOffLeadingZeroes();
-        return result;
+        BigInteger res = new BigInteger(resSign, resDigits.length, resDigits);
+        res.cutOffLeadingZeroes();
+        return res;
     }
 
     /**
@@ -2266,6 +2528,26 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
         return bytes;    
     }
 
+    private static long divideLongByBillion(long a) {
+        long quot;
+        long rem;
+        if (a >= 0) {
+            long bLong = 1000000000L; //(long)1000000000 & 0xffffffffL;
+            quot = (a / bLong);
+            rem = (a % bLong);
+        } else {
+            // make the dividend positive shifting it right by 1 bit
+            // then get the quotient an remainder and correct them properly
+            long aPos = a >>> 1;
+            long bPos = 1000000000L >>> 1;
+            quot = aPos / bPos;
+            rem = aPos % bPos;
+            // double the remainder and add 1 if a is odd
+            rem = (rem << 1) + (a & 1);
+        }
+        return (rem << 32) | (quot & 0xffffffffL);
+    }
+
     /**
      * Answers a string containing a concise, human-readable description of the
      * receiver. In this case, a string of decimal digits.
@@ -2273,7 +2555,150 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
      * @return String a printable representation for the receiver.
      */
     public String toString() {
-        return toString(10);
+        return toDecimalScaledString(0);
+    }
+
+    String toDecimalScaledString(int scale) {
+        int resLengthInChars;
+        int currentChar;
+        char result[];
+        if (sign == 0) {
+            switch (scale) {
+                case 0: return "0";
+                case 1: return "0.0";
+                case 2: return "0.00";
+                case 3: return "0.000";
+                case 4: return "0.0000";
+                case 5: return "0.00000";
+                case 6: return "0.000000";
+                default:
+                    StringBuffer result1 = new StringBuffer();
+                    if (scale  < 0) {
+                        result1.append("0E+");
+                    } else {
+                        result1.append("0E");
+                    }
+                    result1.append(-scale);
+                    return result1.toString();
+            }
+        } else {
+            // one 32-bit unsigned value may contains 10 decimal digits
+            resLengthInChars = numberLength * 10 +1+7;
+            // Explanation why +1+7:
+            // +1 - one char for sign if needed.
+            // +7 - For "special case 2" (see below) we have 7 free chars for
+            //  inserting necessary scaled digits.
+            result = new char[resLengthInChars+1];
+            //  alocated [resLengthInChars+1] charactes.
+            // a free latest character may be used for "special case 1" (see below)
+            currentChar = resLengthInChars;
+            if (numberLength == 1) {
+                int highDigit = digits[0];
+                if (highDigit < 0) {
+                    long v = (long) highDigit & 0xffffffffL;
+                    do {
+                        long prev = v;
+                        v /= 10;
+                        result[--currentChar] = (char) (0x0030 + ((int) (prev - v * 10)));
+                    } while (v != 0);
+                } else {
+                    int v = highDigit;
+                    do {
+                        int prev = v;
+                        v /= 10;
+                        result[--currentChar] = (char) (0x0030 + (prev - v * 10));
+                    } while (v != 0);
+                }
+            } else {
+                int temp[] = new int[numberLength];
+                int tempLen = numberLength;
+                System.arraycopy(digits, 0, temp, 0, tempLen);
+                BIG_LOOP:
+                      while (true) {
+                          // divide the array of digits by bigRadix and convert remainders
+                          // to characters collecting them in the char array
+                          long result11 = 0;
+                          for (int i1 = tempLen - 1; i1 >= 0; i1--) {
+                              long temp1 = (result11 << 32) + ((long) temp[i1] & 0xffffffffL);
+                              long res = divideLongByBillion(temp1);
+                              temp[i1] = (int) res;
+                              result11 = (int) (res >> 32);
+                          }
+                          int resDigit = (int) result11;
+                          int previous = currentChar;
+                          do {
+                              result[--currentChar] = (char) (0x0030 + (resDigit % 10));
+                          } while (((resDigit /= 10) != 0) && (currentChar != 0));
+                          int delta = 9 - previous + currentChar;
+                          for (int i = 0; i < delta && currentChar > 0; i++) {
+                              result[--currentChar] = '0';
+                          }
+                          int j = tempLen - 1;
+                          for (; temp[j] == 0; j--) {
+                              if (j == 0) { // means temp[0] == 0
+                                  break BIG_LOOP;
+                              }
+                          }
+                          tempLen = j + 1;
+                      }
+                while (result[currentChar] == '0') {
+                    currentChar++;
+                }
+            }
+        }
+        boolean negNumber = sign < 0;
+        int exponent = resLengthInChars - currentChar - scale - 1;
+        if (scale == 0) {
+            if (negNumber) {
+                result[--currentChar] = '-';
+            }
+            return new String(result, currentChar, resLengthInChars - currentChar);
+        }
+        if (scale > 0 && exponent >= -6) {
+            if (exponent >= 0) {
+                // special case 1
+                int insertPoint = currentChar + exponent ;
+                for(int j=resLengthInChars-1; j>=insertPoint; j--) {
+                    result[j+1] = result[j];
+                }
+                result[++insertPoint]='.';
+                if (negNumber) {
+                    result[--currentChar] = '-';
+                }
+                return new String(result, currentChar, resLengthInChars - currentChar + 1);
+            } else {
+                // special case 2
+                for (int j = 2; j < -exponent + 1; j++) {
+                    result[--currentChar] = '0';
+                }
+                result[--currentChar] = '.';
+                result[--currentChar] = '0';
+                if (negNumber) {
+                    result[--currentChar] = '-';
+                }
+                return new String(result, currentChar, resLengthInChars - currentChar);
+            }
+        } else {
+            int startPoint = currentChar + 1;
+            int endPoint = resLengthInChars;
+            StringBuffer result1 = new StringBuffer(16+endPoint-startPoint);
+            if (negNumber) {
+                result1.append('-');
+            }
+            if (endPoint - startPoint >= 1) {
+                result1.append(result[currentChar]);
+                result1.append('.');
+                result1.append(result,currentChar+1,resLengthInChars - currentChar-1);
+            } else {
+                result1.append(result,currentChar,resLengthInChars - currentChar);
+            }
+            result1.append('E');
+            if (exponent > 0) {
+                result1.append('+');
+            }
+            result1.append(Integer.toString(exponent));
+            return result1.toString();
+        }
     }
 
     /**
@@ -2286,17 +2711,22 @@ public class BigInteger extends Number implements Comparable<BigInteger>, Serial
         if (sign == 0) {
             return "0";
         }
-        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
-            radix = 10;
+        if(numberLength == 1) {
+            int highDigit = digits[numberLength-1];
+            long v = (long)highDigit&0xffffffffL;
+            if (sign < 0) {
+                v = -v;
+            }
+            return Long.toString(v,radix);
+        }
+        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX || radix == 10) {
+            return toString();
         }
         double bitsForRadixDigit;
-        if (radix == 10) {
-            bitsForRadixDigit = 3.3219280948873626;
-        } else {
-            bitsForRadixDigit = Math.log(radix) / Math.log(2);
-        }
+         bitsForRadixDigit = Math.log(radix) / Math.log(2);
         int resLengthInChars = (int)(abs().bitLength() / bitsForRadixDigit
                                + ((sign == -1) ? 1 : 0)) + 1;
+
         char result[] = new char[resLengthInChars];
         int currentChar = resLengthInChars;
         int resDigit;

@@ -111,6 +111,37 @@ public class BigDecimal extends Number
      */
     public static final int ROUND_UP = 0;
     
+    private transient String toStringImage = null;
+
+    private static final BigDecimal[] SMALL_ZERO_SCALED_VALUES = {
+        ZERO,
+        ONE,
+        new BigDecimal(BigInteger.SMALL_VALUES[2], 0),
+        new BigDecimal(BigInteger.SMALL_VALUES[3], 0),
+        new BigDecimal(BigInteger.SMALL_VALUES[4], 0),
+        new BigDecimal(BigInteger.SMALL_VALUES[5], 0),
+        new BigDecimal(BigInteger.SMALL_VALUES[6], 0),
+        new BigDecimal(BigInteger.SMALL_VALUES[7], 0),
+        new BigDecimal(BigInteger.SMALL_VALUES[8], 0),
+        new BigDecimal(BigInteger.SMALL_VALUES[9], 0),
+        TEN
+    };
+
+    private static final BigDecimal[] ZERO_SMALL_SCALED_VALUES = {
+        ZERO,
+        new BigDecimal(BigInteger.ZERO, 1),
+        new BigDecimal(BigInteger.ZERO, 2),
+        new BigDecimal(BigInteger.ZERO, 3),
+        new BigDecimal(BigInteger.ZERO, 4),
+        new BigDecimal(BigInteger.ZERO, 5),
+        new BigDecimal(BigInteger.ZERO, 6),
+        new BigDecimal(BigInteger.ZERO, 7),
+        new BigDecimal(BigInteger.ZERO, 8),
+        new BigDecimal(BigInteger.ZERO, 9),
+        new BigDecimal(BigInteger.ZERO, 10),
+    };
+
+
     /**
      * Controls overflow in the calculated preferred scale.
      * If it overflows a 32-bit integer, return extreme Integer values.
@@ -165,6 +196,12 @@ public class BigDecimal extends Number
      *                the scale value is < 0;
      */
     public static BigDecimal valueOf(long unscaledValue, int scale) {
+        if (unscaledValue == 0L && (scale >= 0 && scale <= 10)) {
+            return ZERO_SMALL_SCALED_VALUES[scale];
+        }
+        if (scale == 0 && (unscaledValue >= 0 && unscaledValue <= 10)) {
+            return SMALL_ZERO_SCALED_VALUES[(int) unscaledValue];
+        }
         return new BigDecimal(BigInteger.valueOf(unscaledValue), scale);
     }
 
@@ -344,8 +381,28 @@ public class BigDecimal extends Number
             scale = 0;
         } else {
             // m * 2 ^ e = m * (10 / 5) ^ e = (m * 5 ^ (-e)) * 10 ^ e
-            intVal = intVal.multiply(BigInteger.valueOf(5L).pow(-scale));
             scale = -scale;
+            if(scale<fivePows.length) {
+                intVal = intVal.multiply(fivePows[scale]);
+            } else {
+                intVal = intVal.multiply(BigInteger.FIVE.pow(scale));
+            }
+        }
+    }
+
+    private static final BigInteger[] fivePows = new BigInteger[36];
+
+    static {
+        fivePows[0] = BigInteger.ONE;
+        fivePows[1] = BigInteger.FIVE;
+        int i=2;
+        long val = 25L;
+        for(;i<=27;i++) {
+            fivePows[i] = BigInteger.valueOf(val);
+            val*=5L;
+        }
+        for(;i<fivePows.length;i++) {
+            fivePows[i] = fivePows[i-1].multiply(BigInteger.FIVE);
         }
     }
 
@@ -507,17 +564,16 @@ public class BigDecimal extends Number
      * @return BigDecimal The sum of adding two BigDecimal.
      */
     public BigDecimal add(BigDecimal value) {
-        if (scale == value.scale) {
+        int delta = scale - value.scale;
+        if (delta == 0) {
             return new BigDecimal(intVal.add(value.intVal), scale);
         }
-        boolean thisScaleIsLess = this.scale < value.scale;
-        int newScale = thisScaleIsLess ? value.scale : this.scale;
-        if (thisScaleIsLess) {
-            return new BigDecimal(this.intVal.multiply
-                (BigInteger.TEN.pow(value.scale - this.scale)).add(value.intVal), newScale);
+        if (delta < 0) {
+            return new BigDecimal(this.intVal.multiplyByTenPow(-delta)
+                                  .add(value.intVal), value.scale);
         } else {
-            return new BigDecimal(value.intVal.multiply
-                (BigInteger.TEN.pow(this.scale - value.scale)).add(this.intVal), newScale);
+            return new BigDecimal(value.intVal.multiplyByTenPow(delta)
+                                  .add(this.intVal), this.scale);
         }
     }
 
@@ -574,16 +630,21 @@ public class BigDecimal extends Number
      * @return int 0 - equal; 1 - this > value; -1 - this < value.
      */
     public int compareTo(BigDecimal value) {
-        if (this.scale == value.scale) {
-            return this.intVal.compareTo(value.intVal);
+        if (this.intVal.sign == value.intVal.sign) {
+            int delta = scale - value.scale;
+            if (delta == 0) {
+                return this.intVal.compareTo(value.intVal);
+            }
+            if (delta < 0) {
+                return this.intVal.multiplyByTenPow(-delta).compareTo(value.intVal);
+            } else {
+                return this.intVal.compareTo(value.intVal.multiplyByTenPow(delta));
+            }
         }
-        if (this.scale < value.scale) {
-            return this.intVal.multiply(BigInteger.TEN.pow(value.scale - this.scale)).
-                compareTo(value.intVal);
-        } else {
-            return this.intVal.compareTo(value.intVal.multiply
-                (BigInteger.TEN.pow(this.scale - value.scale)));
+        if (this.intVal.sign == 0) {
+            return -value.intVal.sign;
         }
+        return this.intVal.sign;
     }
 
     /**
@@ -660,56 +721,182 @@ public class BigDecimal extends Number
         BigInteger dividend = this.intVal;
         BigInteger divisor = value.intVal;
         if (exponent < 0) {
-            divisor = divisor.multiply(BigInteger.TEN.pow(-exponent));
+            divisor = divisor.multiplyByTenPow(-exponent);
         } else if (exponent > 0) {
-            dividend = dividend.multiply(BigInteger.TEN.pow(exponent));
+            dividend = dividend.multiplyByTenPow(exponent);
         }
-        BigInteger res[] = dividend.divideAndRemainder(divisor);
-        BigInteger quotient = res[0];
-        if (res[1].signum() != 0) {
-            if (roundingMode == ROUND_UNNECESSARY) {
-                throw new ArithmeticException
-                    ("rounding mode is ROUND_UNNECESSARY but the result is not exact");
+        return divideByBigInteger(dividend, divisor, roundingMode, quotientScale);
+    }
+
+    private static boolean needIncDec(int quotientLo, boolean negativeQuotient, long divisor, long remainder, int roundingMode) {
+        // Assertion:  divisor & remainder are positive
+        if (roundingMode == ROUND_UNNECESSARY) {
+            throw new ArithmeticException("rounding mode is"
+                                          + " ROUND_UNNECESSARY but the result is not exact");
+        }
+        boolean flag = false;
+        if(roundingMode==ROUND_UP) {
+        	flag =true;
+        } else if (roundingMode == ROUND_FLOOR) {
+            flag = negativeQuotient; //negativeQuotient ? ROUND_UP : ROUND_DOWN
+        } else if (roundingMode == ROUND_CEILING) {
+            flag = !negativeQuotient; // negativeQuotient ? ROUND_DOWN : ROUND_UP;
+        } else {
+            // distance == -1 if the quotient is NOT the nearest neighbor
+            // to the exact result;
+            // distance == 0 if the exact result is equidistant from
+            // the neighbors;
+            // distance == +1 if the quotient is the nearest neighbor
+            // to the exact result.
+            long halfDivisor = divisor >>> 1;
+
+            if (roundingMode == ROUND_HALF_DOWN) {
+                flag = halfDivisor < remainder;
+                //roundingMode = (distance >= 0) ? ROUND_DOWN : ROUND_UP;
+            } else if (roundingMode == ROUND_HALF_UP) {
+                flag = halfDivisor <= remainder;
+                //roundingMode = (distance > 0) ? ROUND_DOWN : ROUND_UP;
+            } else if (roundingMode == ROUND_HALF_EVEN) {
+                if (halfDivisor > remainder) {
+                    //roundingMode = ROUND_DOWN;
+                } else if (halfDivisor < remainder) {
+                    flag = true;
+                    //roundingMode = ROUND_UP;
+                } else {
+                    flag = (quotientLo & 1) == 1;
+                    //roundingMode = ROUND_UP;
+                }
             }
-            boolean negativeQuotient = intVal.signum() != divisor.signum();
-            boolean negativeRemainder = res[1].signum() == -1;
-            boolean negativeDivisor = divisor.signum() == -1;
-            if (roundingMode == ROUND_FLOOR) {
-                roundingMode = negativeQuotient ? ROUND_UP : ROUND_DOWN;
-            } else if (roundingMode == ROUND_CEILING) {
-                roundingMode = negativeQuotient ? ROUND_DOWN : ROUND_UP;
+        }
+        return flag;
+    }
+
+    private static BigDecimal divideByInteger(BigInteger dividend, int divisor, int divisorSign, int roundingMode, int quotientScale) {
+        // res[0] is a quotient and res[1] is a remainder:
+        int[] dividendDigits = dividend.digits;
+        int dividendLen = dividend.numberLength;
+        int dividendSign = dividend.sign;
+        if (dividendLen == 1) {
+            long a = ((long) dividendDigits[0] & 0xffffffffL);
+            long b = ((long) divisor & 0xffffffffL);
+            long quo = a / b;
+            long rem = a % b;
+            if (dividendSign != divisorSign) {
+                quo = -quo;
+                if (rem != 0 && needIncDec((int) quo, true, b, rem, roundingMode)) {
+                    quo--;
+                }
             } else {
-                if (negativeDivisor) {
-                    divisor = divisor.abs();
+                if (rem != 0 && needIncDec((int) quo, false, b, rem, roundingMode)) {
+                    quo++;
                 }
-                if (negativeRemainder) {
-                    res[1] = res[1].abs();
-                }
-                // distance == -1 if the quotient is NOT the nearest neighbor to the exact result;
-                // distance == 0 if the exact result is equidistant from the neighbors;
-                // distance == +1 if the quotient is the nearest neighbor to the exact result.
-                int distance = divisor.subtract(res[1]).compareTo(res[1]);
-                if (roundingMode == ROUND_HALF_DOWN) {
-                    roundingMode = distance >= 0 ? ROUND_DOWN : ROUND_UP;
-                } else if (roundingMode == ROUND_HALF_UP) {
-                    roundingMode = distance > 0 ? ROUND_DOWN : ROUND_UP;
-                } else if (roundingMode == ROUND_HALF_EVEN) {
-                    if (distance > 0) {
-                        roundingMode = ROUND_DOWN;
-                    } else if (distance < 0) {
-                        roundingMode = ROUND_UP;
-                    } else if (!quotient.testBit(0)) {
-                        roundingMode = ROUND_DOWN;
-                    } else {
-                        roundingMode = ROUND_UP;
-                    }
-                } 
             }
-            if (roundingMode == ROUND_UP) { 
-                quotient = quotient.add(BigInteger.valueOf(negativeQuotient ? -1 : 1));
+            return new BigDecimal(BigInteger.valueOf(quo), quotientScale);
+        } else {
+            int quotientLength = dividendLen;
+            int quotientSign = ((dividendSign == divisorSign) ? 1 : -1);
+            int quotientDigits[] = new int[quotientLength];
+            int remainder = BigInteger.divideArrayByInt(quotientDigits,
+                                                        dividendDigits, dividendLen, divisor);
+            if (remainder != 0 && needIncDec(quotientDigits[0], dividendSign != divisorSign, (long) divisor & 0xffffffffL, remainder, roundingMode)) {
+                quotientDigits = BigInteger.incInPlace(quotientDigits);
+            }
+            BigInteger result = new BigInteger(quotientSign, quotientLength,
+                                               quotientDigits);
+            result.cutOffLeadingZeroes();
+            return new BigDecimal(result, quotientScale);
+        }
+    }
+
+    private static BigDecimal divideByBigInteger(BigInteger dividend, BigInteger divisor, int roundingMode, int quotientScale) {
+        int divisorLen = divisor.numberLength;
+        if (divisorLen == 1) {
+            //res = dividend.divideAndRemainderByInteger(divisorDigits[0], divisorSign);
+            return divideByInteger(dividend, divisor.digits[0], divisor.sign, roundingMode, quotientScale);
+        }
+        BigInteger quotient;
+        BigInteger remainder;
+        int divisorSign = divisor.sign;
+        int[] divisorDigits = divisor.digits;
+        // res[0] is a quotient and res[1] is a remainder:
+        int[] thisDigits = dividend.digits;
+        int thisLen = dividend.numberLength;
+        boolean negativeQuotient = dividend.signum() != divisorSign;
+        int cmp = (thisLen != divisorLen ?
+                   ((thisLen > divisorLen) ? 1 : -1) :
+                   BigInteger.compareArrays(thisDigits, divisorDigits, thisLen));
+        if (cmp < 0) {
+            if (!dividend.isZero() && needIncDec(0, negativeQuotient, divisor, dividend.abs(), roundingMode)) {
+                return new BigDecimal(negativeQuotient ? BigInteger.NEG_ONE : BigInteger.ONE, quotientScale);
+            }
+            return new BigDecimal(BigInteger.ZERO, quotientScale);
+        } else {
+            int thisSign = dividend.sign;
+            int quotientLength = thisLen - divisorLen + 1;
+            int remainderLength = divisorLen;
+            int quotientSign = ((thisSign == divisorSign) ? 1 : -1);
+            int quotientDigits[] = new int[quotientLength];
+            int remainderDigits[] = BigInteger.divide(quotientDigits, quotientLength,
+                                                      thisDigits, thisLen,
+                                                      divisorDigits, divisorLen);
+            remainder = new BigInteger(1, remainderLength,
+                                       remainderDigits);
+            remainder.cutOffLeadingZeroes();
+            if (!remainder.isZero() && needIncDec(quotientDigits[0], quotientSign < 0, divisor, remainder, roundingMode)) {
+                quotientDigits = BigInteger.incInPlace(quotientDigits);
+            }
+            quotient = new BigInteger(quotientSign, quotientLength,
+                                      quotientDigits);
+            quotient.cutOffLeadingZeroes();
+            return new BigDecimal(quotient, quotientScale);
+        }
+    }
+
+    private static boolean needIncDec(int quotientLo, boolean negativeQuotient, BigInteger divisor, BigInteger remainder, int roundingMode) {
+        if (roundingMode == ROUND_UNNECESSARY) {
+            throw new ArithmeticException("rounding mode is"
+                                          + " ROUND_UNNECESSARY but the result is not exact");
+        }
+        boolean flag = false;
+        int divisorSignum = divisor.signum();
+        if(roundingMode==ROUND_UP) {
+        	flag =true;
+        } else if (roundingMode == ROUND_FLOOR) {
+            flag = negativeQuotient; //negativeQuotient ? ROUND_UP : ROUND_DOWN
+        } else if (roundingMode == ROUND_CEILING) {
+            flag = !negativeQuotient; // negativeQuotient ? ROUND_DOWN : ROUND_UP;
+        } else {
+            // distance == -1 if the quotient is NOT the nearest neighbor
+            // to the exact result;
+            // distance == 0 if the exact result is equidistant from
+            // the neighbors;
+            // distance == +1 if the quotient is the nearest neighbor
+            // to the exact result.
+            if (divisorSignum == -1) {
+                divisor = divisor.abs();
+            }
+
+            int distance = divisor.subtract(remainder).compareTo(remainder);
+            if (roundingMode == ROUND_HALF_DOWN) {
+                flag = (distance < 0);
+                //(distance >= 0) ? ROUND_DOWN : ROUND_UP;
+            } else if (roundingMode == ROUND_HALF_UP) {
+                flag = (distance <= 0);
+                //roundingMode = (distance > 0) ? ROUND_DOWN : ROUND_UP;
+            } else if (roundingMode == ROUND_HALF_EVEN) {
+                if (distance > 0) {
+                    //roundingMode = ROUND_DOWN;
+                } else if (distance < 0) {
+                    flag = true; //roundingMode = ROUND_UP;
+                } else if (!((quotientLo & 1) == 1)) {
+                    //roundingMode = ROUND_DOWN;
+                } else {
+                    flag = true;
+                    //roundingMode = ROUND_UP;
+                }
             }
         }
-        return new BigDecimal(quotient, quotientScale);
+        return flag;
     }
 
     /**
@@ -975,11 +1162,16 @@ public class BigDecimal extends Number
      * @param shift shift distance
      */
     private BigDecimal movePoint(int shift) {
-        int newScale = getValidInt((long)scale + (long)shift, "scale");
-        if (newScale > 0) {
-            return new BigDecimal(intVal, newScale);
+        long newScale = (long) scale + (long) shift;
+        if (newScale != (int) newScale) {
+            throw new ArithmeticException("scale outside the range of a 32-bit integer");
         }
-        return new BigDecimal(this.intVal.multiply(BigInteger.TEN.pow(-newScale)), 0);
+        int newSc = (int) newScale;
+        if (newSc >= 0) {
+            return new BigDecimal(intVal, newSc);
+        }
+        return new BigDecimal(this.intVal
+                              .multiplyByTenPow(-newSc), 0);
     }
 
     /**
@@ -1192,14 +1384,25 @@ public class BigDecimal extends Number
      *                invalid rounding mode
      */
     public BigDecimal setScale(int newScale, int roundingMode) {
+        if (roundingMode > 7 || roundingMode < 0) {
+            throw new IllegalArgumentException("invalid rounding mode");
+        }
         int delta = this.scale - newScale;
         if (delta == 0) {
             return this;
         }
         if (delta > 0) {
-            return divide(new BigDecimal(BigInteger.TEN.pow(delta), delta), newScale, roundingMode);
+            return divideByTenPow(delta, roundingMode, newScale);
         } else {
-            return new BigDecimal(intVal.multiply(BigInteger.TEN.pow(-delta)), newScale);
+            return new BigDecimal(intVal.multiplyByTenPow(-delta), newScale);
+        }
+    }
+
+    private BigDecimal divideByTenPow(int delta, int roundingMode, int newScale) {
+        if (delta < 10) {
+            return divideByInteger(intVal, BigInteger.tenPows[delta], 1, roundingMode, newScale);
+        } else {
+            return divideByBigInteger(intVal, BigInteger.getTenPow(delta), roundingMode, newScale);
         }
     }
 
@@ -1265,17 +1468,17 @@ public class BigDecimal extends Number
      * @return BigDecimal The result of subtracting the BigDecimal argument.
      */
     public BigDecimal subtract(BigDecimal value) {
-        if (scale == value.scale) {
+        int delta = scale - value.scale;
+        if (delta == 0) {
             return new BigDecimal(intVal.subtract(value.intVal), scale);
         }
-        boolean thisScaleIsLess = this.scale < value.scale;
-        int newScale = thisScaleIsLess ? value.scale : this.scale;
-        if (thisScaleIsLess) {
-            return new BigDecimal(this.intVal.multiply(BigInteger.TEN.pow(value.scale - this.scale)).
-                subtract(value.intVal), newScale);
+        if (delta < 0) {
+            return new BigDecimal(this.intVal.multiplyByTenPow(-delta)
+                                  .subtract(value.intVal), value.scale);
         } else {
-            return new BigDecimal(this.intVal.
-                subtract(value.intVal.multiply(BigInteger.TEN.pow(this.scale - value.scale))), newScale);
+            return new BigDecimal(this.intVal
+                                  .subtract(value.intVal.multiplyByTenPow(delta)),
+                                  this.scale);
         }
     }
 
@@ -1299,9 +1502,9 @@ public class BigDecimal extends Number
             return intVal;
         }
         if (scale > 0) {
-            return intVal.divide(BigInteger.TEN.pow(scale));
+            return intVal.divide(BigInteger.getTenPow(scale));
         }
-        return intVal.multiply(BigInteger.TEN.pow(-scale));
+        return intVal.multiplyByTenPow(-scale);
     }
 
     /**
@@ -1428,40 +1631,10 @@ public class BigDecimal extends Number
      * @return String a printable representation for the receiver.
      */
     public String toString() {
-        String intString = intVal.toString();
-        if (scale == 0) {
-            return intString;
+        if (toStringImage == null) {
+            toStringImage = intVal.toDecimalScaledString(scale);
         }
-        boolean negNumber = intVal.signum() < 0;
-        int startPoint = negNumber ? 2 : 1;
-        int endPoint = intString.length();
-        int exponent = -scale + intString.length() - (negNumber ? 2 : 1);
-        StringBuffer result = new StringBuffer();
-        result.append(intString);
-        if (scale > 0 && exponent >= -6) {
-            if (exponent >= 0) {
-                result.insert(exponent + (negNumber ? 2 : 1), '.');
-            } else {
-                char zeros[] = new char[-exponent + 1];
-                zeros[0] = '0';
-                zeros[1] = '.';
-                for (int i = 2; i < zeros.length; i++) {
-                    zeros[i] = '0';
-                }
-                result.insert(negNumber ? 1 : 0, zeros);
-            }
-        } else {
-            if (endPoint - startPoint >= 1) {
-                result.insert(startPoint, '.');
-                endPoint++;
-            }
-            result.insert(endPoint, 'E');
-            if (exponent > 0) {
-                result.insert(++endPoint, '+');
-            }
-            result.insert(++endPoint, Integer.toString(exponent));
-        }
-        return result.toString();
+        return toStringImage;
     }
 
     /**
