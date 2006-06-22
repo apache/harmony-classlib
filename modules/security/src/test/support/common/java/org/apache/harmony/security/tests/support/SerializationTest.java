@@ -127,7 +127,12 @@ public abstract class SerializationTest extends TestCase {
      */
     public void testSelf() throws Throwable {
 
-        verifySelf(this, getData());
+        if (this instanceof SerializableAssert) {
+            verifySelf(getData(), (SerializableAssert) this);
+        } else {
+            verifySelf(getData());
+
+        }
     }
 
     /**
@@ -410,17 +415,15 @@ public abstract class SerializationTest extends TestCase {
      * Verifies that object can be smoothly serialized/deserialized.
      * 
      * The method invokes <br>
-     * verifySelf(object, defineComparator(test, object));
+     * verifySelf(object, defineComparator(null, object));
      * 
-     * @param test -
-     *            test case
      * @param object -
      *            to be serialized/deserialized
      */
-    public static void verifySelf(TestCase test, Object object)
+    public static void verifySelf(Object object)
             throws Exception {
 
-        verifySelf(object, defineComparator(test, object));
+        verifySelf(object, defineComparator(null, object));
     }
     
     /**
@@ -452,18 +455,16 @@ public abstract class SerializationTest extends TestCase {
      * serialized/deserialized.
      * 
      * The method invokes <br>
-     * verifySelf(objects, defineComparator(test, object[0]));
+     * verifySelf(objects, defineComparator(null, object[0]));
      * 
-     * @param test -
-     *            test case
      * @param objects -
      *            array of objects to be serialized/deserialized
      */
-    public static void verifySelf(TestCase test, Object[] objects)
+    public static void verifySelf(Object[] objects)
             throws Exception {
 
         TestCase.assertFalse("Empty array", objects.length == 0);
-        verifySelf(objects, defineComparator(test, objects[0]));
+        verifySelf(objects, defineComparator(null, objects[0]));
     }
     
     /**
