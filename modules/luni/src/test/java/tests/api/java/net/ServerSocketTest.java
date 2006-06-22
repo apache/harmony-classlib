@@ -25,6 +25,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Date;
+import java.util.Properties;
 
 import tests.support.Support_Configuration;
 import tests.support.Support_PortManager;
@@ -87,6 +88,25 @@ public class ServerSocketTest extends SocketTestCase {
 		assertTrue("Used during tests", true);
 	}
 
+    /**
+     * @tests java.net.ServerSocket#ServerSocket(int)
+     */
+    public void test_ConstructorI_SocksSet() throws IOException {
+        //Harmony-623 regression test
+        ServerSocket ss = null;
+        Properties props = (Properties) System.getProperties().clone();
+        try {
+            System.setProperty("socksProxyHost", "127.0.0.1");
+            System.setProperty("socksProxyPort", "12345");
+            ss = new ServerSocket(Support_PortManager.getNextPort());
+        } finally {
+            System.setProperties(props);
+            if (null != ss) {
+                ss.close();
+            }
+        }
+    }
+    
 	/**
 	 * @tests java.net.ServerSocket#ServerSocket(int, int)
 	 */
@@ -360,9 +380,8 @@ public class ServerSocketTest extends SocketTestCase {
 			fail("Exception during toString test : " + e.getMessage());
 		}
 
-		assertTrue("Returned incorrect string", s.toString().equals(
-				"ServerSocket[addr=0.0.0.0/0.0.0.0,port=0,localport="
-						+ portNumber + "]"));
+        assertEquals("ServerSocket[addr=0.0.0.0/0.0.0.0,port=0,localport="
+                        + portNumber + "]", s);
 	}
 
 	/**

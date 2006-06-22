@@ -30,12 +30,10 @@ import java.net.SocketImpl;
 import java.net.SocketOptions;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.security.AccessController;
 
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.Msg;
-import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * A concrete connected-socket implementation.
@@ -392,52 +390,36 @@ class PlainSocketImpl extends SocketImpl {
 		}
 	}
 
-	/**
-	 * Get the SOCKS proxy server port.
-	 */
-	private int socksGetServerPort() {
-		int portValue = -1;
-		
-		if(null != proxy && Proxy.Type.SOCKS == proxy.type()){
-			// get from proxy first
-			InetSocketAddress addr = (InetSocketAddress)proxy.address();
-			return addr.getPort();
-		}
-		
-		String proxyPort = AccessController
-				.doPrivileged(new PriviAction<String>("socksProxyPort"));
+    /**
+     * Gets the SOCKS proxy server port.
+     */
+    private int socksGetServerPort() {
+        // get socks server port from proxy. It is unneccessary to check
+        // "socksProxyPort" property, since proxy setting should only be
+        // determined by ProxySelector.
+        InetSocketAddress addr = (InetSocketAddress) proxy.address();
+        return addr.getPort();
 
-		if (proxyPort != null) {
-			portValue = Integer.parseInt(proxyPort);
-		}
-		if (portValue < 0) {
-			portValue = 1080;
-		}
+    }
 
-		return portValue;
-	}
+    /**
+     * Gets the InetAddress of the SOCKS proxy server.
+     */
+    private InetAddress socksGetServerAddress() throws UnknownHostException {
+        String proxyName;
+        // get socks server address from proxy. It is unneccessary to check
+        // "socksProxyHost" property, since all proxy setting should be
+        // determined by ProxySelector.
+        InetSocketAddress addr = (InetSocketAddress) proxy.address();
+        proxyName = addr.getHostName();
+        if (null == proxyName) {
+            proxyName = addr.getAddress().getHostAddress();
+        }
 
-	/**
-	 * Get the InetAddress of the SOCKS proxy server.
-	 */
-	private InetAddress socksGetServerAddress() throws UnknownHostException {
-		String proxyName;
-		if(null != proxy && Proxy.Type.SOCKS == proxy.type()){
-			// get from proxy first
-			InetSocketAddress addr = (InetSocketAddress)proxy.address();
-			proxyName = addr.getHostName();
-			if(null == proxyName){
-				proxyName = addr.getAddress().getHostAddress();
-			}
-		}else{
-			// get from system properties
-			proxyName = AccessController
-				.doPrivileged(new PriviAction<String>("socksProxyHost"));
-		}
-		InetAddress anAddr = netImpl.getHostByName(proxyName,
-                NetUtil.preferIPv6Addresses());
-		return anAddr;
-	}
+        InetAddress anAddr = netImpl.getHostByName(proxyName, NetUtil
+                .preferIPv6Addresses());
+        return anAddr;
+    }
 
 	/**
 	 * Connect using a SOCKS server.

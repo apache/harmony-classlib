@@ -24,35 +24,20 @@ import org.apache.harmony.luni.util.PriviAction;
 
 public class NetUtil {
     
-    /*
-     * FIXME: enhance performance to cache the values
-     */
-    
     /**
-	 * Answer whether to use a SOCKS proxy.
-	 * 
-	 * @param proxy
-	 *            java.net.Proxy, may be <code>null</code> in which case the 
-     *            return value is determined from the values of the 
-     *            "socksProxySet" and "socksProxyHost" system properties.
-	 * @return true if SOCKS proxy is set by <code>proxy</code> parameter or
-     *         else "socksProxySet" system property is set and has the value
-     *         of "true" or if "socksProxyHost" is set in system properties.
-	 */
+     * Answers whether to use a SOCKS proxy.
+     * 
+     * @param proxy
+     *            java.net.Proxy <code>proxy</code> is used to determine
+     *            whether using SOCKS proxy.
+     * @return true if only the type of <code>proxy</code> is
+     *         Proxy.Type.SOCKS.
+     */
     public static boolean usingSocks(Proxy proxy) {
-    	if(null != proxy && Proxy.NO_PROXY == proxy){
-    		return false;
-    	}
     	if(null != proxy && Proxy.Type.SOCKS == proxy.type()){
     		return true;
     	}
-        String proxySet = AccessController
-                .doPrivileged(new PriviAction<String>("socksProxySet")); //$NON-NLS-1$
-        if (proxySet != null) {
-            return proxySet.toLowerCase().equals("true"); //$NON-NLS-1$
-        }
-        return AccessController.doPrivileged(new PriviAction<String>(
-                "socksProxyHost")) != null; //$NON-NLS-1$
+        return false;
     }
 
     /**
