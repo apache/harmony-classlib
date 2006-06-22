@@ -41,8 +41,22 @@ waitForProc (IDATA procHandle)
   return (int) procstat;
 }
 
-/* Create a new process */
-int
+/*
+ *  int execProgram()
+ * 
+ *  does a fork/execvp to launch the program
+ * 
+ *  returns :
+ *     0  successful
+ *     1001  fork failure errno = ENOMEM
+ *     1002 fork failure errno = EAGAIN
+ *     -1  error, unknown
+ * 
+ *   TODO - fill in windows error codes 
+ * 
+ *   Note - there is one error code 'namespace' for execProgram
+ *          please coordinate w/ other platform impls
+ */int
 execProgram (JNIEnv * vmthread, jobject recv,
        char *command[], int commandLength,
        char *env[], int envSize, char *dir,
@@ -50,6 +64,7 @@ execProgram (JNIEnv * vmthread, jobject recv,
        IDATA * errHandle)
 {
   int retVal, envLength = 0;
+  int returnCode = -1;
   HANDLE inr = NULL, inw = NULL, outr = NULL, outw = NULL, errr = NULL;
   HANDLE errw = NULL, inDup = NULL, outDup = NULL, errDup = NULL;
   STARTUPINFO sinfo;
@@ -63,9 +78,10 @@ execProgram (JNIEnv * vmthread, jobject recv,
   char *needToBeQuoted;
   PORT_ACCESS_FROM_ENV (vmthread);
 
-  if (!commandLength)
+  if (!commandLength) {
     return 0;
-
+  }
+  
   ZeroMemory (&sinfo, sizeof (sinfo));
   ZeroMemory (&pinfo, sizeof (pinfo));
   ZeroMemory (&sAttrib, sizeof (sAttrib));
@@ -78,15 +94,22 @@ execProgram (JNIEnv * vmthread, jobject recv,
 
   /* Create the pipes to pass to the new process */
   retVal = CreatePipe (&outr, &outw, &sAttrib, 512);
-  if (!retVal)
-    return retVal;
-  retVal = CreatePipe (&inr, &inw, &sAttrib, 512);
-  if (!retVal)
+
+  if (!retVal) { 
     goto failed;
+  }
+
+  retVal = CreatePipe (&inr, &inw, &sAttrib, 512);
+
+  if (!retVal) {
+    goto failed;
+  }
 
   retVal = CreatePipe (&errr, &errw, &sAttrib, 512);
-  if (!retVal)
+
+  if (!retVal) {
     goto failed;
+  }
 
   /* fprintf(stdout,"fd:errw ==> %d\n",errw);fflush(stdout); */
 
@@ -94,24 +117,33 @@ execProgram (JNIEnv * vmthread, jobject recv,
   retVal = DuplicateHandle (GetCurrentProcess (), inw,
           GetCurrentProcess (), &inDup, 0,
           FALSE, DUPLICATE_SAME_ACCESS);
-  if (!retVal)
+
+  if (!retVal) {
     goto failed;
+  }
+
   CloseHandle (inw);
   inw = NULL;
 
   retVal = DuplicateHandle (GetCurrentProcess (), outr,
           GetCurrentProcess (), &outDup, 0,
           FALSE, DUPLICATE_SAME_ACCESS);
-  if (!retVal)
+
+  if (!retVal) {
     goto failed;
+  }
+
   CloseHandle (outr);
   outr = NULL;
 
   retVal = DuplicateHandle (GetCurrentProcess (), errr,
           GetCurrentProcess (), &errDup, 0,
           FALSE, DUPLICATE_SAME_ACCESS);
-  if (!retVal)
+
+  if (!retVal) {
     goto failed;
+  }
+
   CloseHandle (errr);
   errr = NULL;
 
@@ -128,12 +160,19 @@ execProgram (JNIEnv * vmthread, jobject recv,
       int i;
       char *envBldr;
       envLength = envSize + 1;  /*Length of strings + null terminators + final null terminator */
-      for (i = 0; i < envSize; i++)
+
+      for (i = 0; i < envSize; i++) {
         envLength += strlen (env[i]);
+      }
+      
       envString = (char *) jclmem_allocate_memory (env, envLength);
-      if (!envString)
+
+      if (!envString) {
         goto failed;
-      envBldr = envString;
+      }
+
+	  envBldr = envString;
+
       for (i = 0; i < envSize; i++)
         {
           strcpy (envBldr, env[i]);
@@ -153,8 +192,11 @@ execProgram (JNIEnv * vmthread, jobject recv,
    */
 
   needToBeQuoted = (char *) jclmem_allocate_memory (env, commandLength);
-  if (!needToBeQuoted)
+
+  if (!needToBeQuoted) {
     goto failed;
+  }
+
   memset (needToBeQuoted, '\0', commandLength);
 
   length = commandLength; /*add 1 <blank> between each token + a reserved place for the last NULL */
@@ -177,8 +219,9 @@ execProgram (JNIEnv * vmthread, jobject recv,
                       length += 2;  /* two quotes are added */
                       if (commandILength > 1
                         && commandStart[commandILength - 1] == '\\'
-                        && commandStart[commandILength - 2] != '\\')
+                        && commandStart[commandILength - 2] != '\\') {
                         length++; /* need to double slash */
+                      }
                       break;
                     }
                 }
@@ -203,8 +246,10 @@ execProgram (JNIEnv * vmthread, jobject recv,
       ptr += l;
       if (needToBeQuoted[i])
         {
-          if (l > 1 && *(ptr - 1) == '\\' && *(ptr - 2) != '\\')
+          if (l > 1 && *(ptr - 1) == '\\' && *(ptr - 2) != '\\') {
             *ptr++ = '\\';
+          }
+
           (*ptr) = '"' /*"XXX */ ;
           ptr++;
         }
@@ -219,11 +264,14 @@ execProgram (JNIEnv * vmthread, jobject recv,
         envString, dir, &sinfo, &pinfo);
   jclmem_free_memory (env, commandAsString);
   /* retVal is non-zero if successful */
-  if (!retVal)
-    goto failed;
 
-  if (envSize)
+  if (!retVal) {
+    goto failed;
+  }
+
+  if (envSize) {
     jclmem_free_memory (env, envString);
+  }
 
   *procHandle = (IDATA) pinfo.hProcess;
   /* Close Handles passed to child */
@@ -231,7 +279,8 @@ execProgram (JNIEnv * vmthread, jobject recv,
   CloseHandle (outw);
   CloseHandle (errw);
   CloseHandle (pinfo.hThread);  /*implicitly created, a leak otherwise */
-  return retVal;
+  
+  return 0;
 
 failed:
   if (envSize)
@@ -254,8 +303,8 @@ failed:
     CloseHandle (outDup);
   if (errDup)
     CloseHandle (errDup);
-  return 0;
-
+    
+  return returnCode;
 }
 
 /* Stream handling support */
