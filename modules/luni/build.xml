@@ -62,6 +62,8 @@
 	    <fileset dir="${hy.luni.src.main.native}/include/windows">
     		<include name="hymutex.h" />
     		<include name="jclprots.h" />
+    		<include name="hysock.h" />
+    		<include name="hyportpg.h" />
     	    </fileset>
 	</copy>
     </target>
@@ -71,6 +73,8 @@
 	    <fileset dir="${hy.luni.src.main.native}/include/linux">
     		<include name="hymutex.h" />
     		<include name="jclprots.h" />
+    		<include name="hysock.h" />
+    		<include name="hyportpg.h" />
     	    </fileset>
 	</copy>
     </target>

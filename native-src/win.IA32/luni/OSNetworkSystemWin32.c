@@ -21,7 +21,7 @@
 #include "jclglob.h"
 #include "OSNetworkSystem.h"
 #include "nethelp.h"
-#include "portsock.h"
+#include "hysock.h"
 #define NOPRIVILEGE -1
 #define UNREACHABLE -2
 #define REACHABLE 0

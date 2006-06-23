@@ -18,7 +18,7 @@
 #include<netinet/in_systm.h>
 #include "nethelp.h"
 #include "jclglob.h"
-#include "portsock.h"
+#include "hysock.h"
 #include "hyport.h"
 #include "OSNetworkSystem.h"
 #define NOPRIVILEGE -1

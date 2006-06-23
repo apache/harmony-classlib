@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include "jclprots.h"
 #include "nethelp.h"
-#include "portsock.h"
+#include "hysock.h"
 #include "jclglob.h"
 
 /**

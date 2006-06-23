@@ -19,7 +19,7 @@
 #include "nethelp.h"
 #include "helpers.h"
 #include "jclprots.h"
-#include "portsock.h"
+#include "hysock.h"
 #include "socket.h"
 #include "jclglob.h"
 

@@ -14,7 +14,7 @@
  */
 
 #include "nethelp.h"
-#include "portsock.h"
+#include "hysock.h"
 #include "hyport.h"
 #include "jclglob.h"
 

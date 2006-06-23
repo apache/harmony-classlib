@@ -30,7 +30,7 @@
 #include "jclprots.h"
 #include "jclglob.h"
 
-#include "portsock.h"
+#include "hysock.h"
 
 int platformReadLink (char *link);
 jbyteArray getPlatformPath (JNIEnv * env, jbyteArray path);

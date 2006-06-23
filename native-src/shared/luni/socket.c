@@ -17,7 +17,7 @@
 #include "jclprots.h"
 #include "helpers.h"
 #include "jclglob.h"
-#include "portsock.h"
+#include "hysock.h"
 
 #define BROKEN_MULTICAST_IF 1
 #define BROKEN_MULTICAST_TTL 2

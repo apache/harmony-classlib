@@ -17,7 +17,7 @@
 #include "jclprots.h"
 #include "helpers.h"
 #include "jclglob.h"
-#include "portsock.h"
+#include "hysock.h"
 
 /**
  * Answer an array of NetworkInterface objects.  One for each network interface within the system

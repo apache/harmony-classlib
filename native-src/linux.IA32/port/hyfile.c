@@ -31,7 +31,7 @@
 #include <time.h>
 
 #include "hyport.h"
-#include "portsock.h"
+#include "hysock.h"
 #include "hystdarg.h"
 #include "portnls.h"
 #include "ut_hyprt.h"
