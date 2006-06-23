@@ -21,6 +21,7 @@
 
 package org.apache.harmony.security.x509;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,13 +64,13 @@ public class DNParser {
      * 
      * @param dn - distinguished name string to be parsed
      */
-    public DNParser(String dn) {
+    public DNParser(String dn) throws IOException {
         this.length = dn.length();
         chars = dn.toCharArray();
     }
 
     // gets next attribute type: (ALPHA 1*keychar) / oid
-    private String nextAT() {
+    private String nextAT() throws IOException {
 
         hasQE = false; // reset
 
@@ -92,7 +93,7 @@ public class DNParser {
         }
         if (pos >= length) {
             // unexpected end of DN
-            throw new IllegalArgumentException(
+            throw new IOException(
                     "Invalid distinguished name string");
         }
 
@@ -107,7 +108,7 @@ public class DNParser {
 
             if (chars[pos] != '=' || pos == length) {
                 // unexpected end of DN
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Invalid distinguished name string");
             }
         }
@@ -132,7 +133,7 @@ public class DNParser {
     }
 
     // gets quoted attribute value: QUOTATION *( quotechar / pair ) QUOTATION 
-    private String quotedAV() {
+    private String quotedAV() throws IOException {
 
         pos++;
         beg = pos;
@@ -141,7 +142,7 @@ public class DNParser {
 
             if (pos == length) {
                 // unexpected end of DN
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Invalid distinguished name string");
             }
 
@@ -168,11 +169,11 @@ public class DNParser {
     }
 
     // gets hex string attribute value: "#" hexstring
-    private String hexAV() {
+    private String hexAV() throws IOException {
 
         if (pos + 4 >= length) {
             // encoded byte array  must be not less then 4 c
-            throw new IllegalArgumentException(
+            throw new IOException(
                     "Invalid distinguished name string");
         }
 
@@ -207,7 +208,7 @@ public class DNParser {
         // encoded byte array  must be not less then 4 and must be even number
         int hexLen = end - beg; // skip first '#' char
         if (hexLen < 5 || (hexLen & 1) == 0) {
-            throw new IllegalArgumentException(
+            throw new IOException(
                     "Invalid distinguished name string");
         }
 
@@ -221,7 +222,7 @@ public class DNParser {
     }
 
     // gets string attribute value: *( stringchar / pair )
-    private String escapedAV() {
+    private String escapedAV() throws IOException {
 
         beg = pos;
         end = pos;
@@ -268,11 +269,11 @@ public class DNParser {
     }
 
     // returns escaped char
-    private char getEscaped() {
+    private char getEscaped() throws IOException {
 
         pos++;
         if (pos == length) {
-            throw new IllegalArgumentException(
+            throw new IOException(
                     "Invalid distinguished name string");
         }
 
@@ -299,7 +300,7 @@ public class DNParser {
 
     // decodes UTF-8 char
     // see http://www.unicode.org for UTF-8 bit distribution table
-    private char getUTF8() {
+    private char getUTF8() throws IOException {
 
         int res = getByte(pos);
         pos++; //FIXME tmp
@@ -348,11 +349,11 @@ public class DNParser {
     // According to BNF syntax:
     // hexchar    = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
     //                    / "a" / "b" / "c" / "d" / "e" / "f"
-    private int getByte(int position) {
+    private int getByte(int position) throws IOException {
 
         if ((position + 1) >= length) {
             // to avoid ArrayIndexOutOfBoundsException
-            throw new IllegalArgumentException(
+            throw new IOException(
                     "Invalid distinguished name string");
         }
 
@@ -366,7 +367,7 @@ public class DNParser {
         } else if (b1 >= 'A' && b1 <= 'F') {
             b1 = b1 - 55; // 55 = 'A' - 10
         } else {
-            throw new IllegalArgumentException(
+            throw new IOException(
                     "Invalid distinguished name string");
         }
 
@@ -378,7 +379,7 @@ public class DNParser {
         } else if (b2 >= 'A' && b2 <= 'F') {
             b2 = b2 - 55; // 55 = 'A' - 10
         } else {
-            throw new IllegalArgumentException(
+            throw new IOException(
                     "Invalid distinguished name string");
         }
 
@@ -391,7 +392,7 @@ public class DNParser {
      * @return a list of Relative Distinguished Names(RND),
      *         each RDN is represented as a list of AttributeTypeAndValue objects
      */
-    public List parse() {
+    public List parse() throws IOException {
 
         List list = new ArrayList();
 
@@ -448,14 +449,14 @@ public class DNParser {
                 list.add(0, atav);
                 atav = new ArrayList();
             } else if (chars[pos] != '+') {
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Invalid distinguished name string");
             }
 
             pos++;
             attType = nextAT();
             if (attType == null) {
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Invalid distinguished name string");
             }
         }

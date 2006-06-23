@@ -425,23 +425,41 @@ public class X509CRLSelectorTest extends TestCase {
      * if the returned collection corresponds to the specified issuers and
      * this collection is unmodifiable.
      */
-    public void testGetIssuers() {
+    public void testGetIssuers() throws Exception {
         X509CRLSelector selector = new X509CRLSelector();
         X500Principal iss1 = new X500Principal("O=First Org.");
         X500Principal iss2 = new X500Principal("O=Second Org.");
         X500Principal iss3 = new X500Principal("O=Third Org.");
+        String iss_name_1 = "O=First String DN";
+        String iss_name_2 = "O=Second String DN";
+        String iss_name_3 = "O=Third String DN";
         assertNull("The collection should be null.",
                                         selector.getIssuers());
+        selector.addIssuerName(iss_name_1);
         selector.addIssuer(iss1);
+        selector.addIssuerName(iss_name_2);
         selector.addIssuer(iss2);
+        selector.addIssuerName(iss_name_3);
+            
         Collection result = selector.getIssuers();
+        assertEquals("Size does not correspond to expacted",
+                5, result.size());
         try {
             result.add(iss3);
             fail("The returned collection should be unmodifiable.");
         } catch (UnsupportedOperationException e) {
         }
         assertTrue("The collection should contain the specified DN.",
+                                            result.contains(iss1));
+        assertTrue("The collection should contain the specified DN.",
                                             result.contains(iss2));
+        assertTrue("The collection should contain the specified DN.",
+                        result.contains(new X500Principal(iss_name_1)));
+        assertTrue("The collection should contain the specified DN.",
+                        result.contains(new X500Principal(iss_name_2)));
+        selector.addIssuer(iss3);
+        assertTrue("The collection should contain the specified DN.",
+                                            result.contains(iss3));
     }
 
     /**

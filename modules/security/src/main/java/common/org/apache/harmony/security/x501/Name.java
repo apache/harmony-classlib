@@ -34,6 +34,7 @@ import javax.security.auth.x500.X500Principal;
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.ASN1SetOf;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.asn1.DerInputStream;
 import org.apache.harmony.security.x509.DNParser;
 
 
@@ -56,6 +57,25 @@ public class Name {
 
     //Collection of RDNs
     private List rdn;
+
+    /**
+     * Creates new <code>Name</code> instance from its DER encoding
+     * 
+     * @param encoding - ASN.1 DER encoding
+     * @throws IOException - if encoding is wrong
+     */
+    public Name(byte[] encoding) throws IOException {
+
+        DerInputStream in = new DerInputStream(encoding);
+
+        if (in.getEndOffset() != encoding.length) {
+            throw new IOException("Wrong content length");
+        }
+
+        ASN1.decode(in);
+
+        this.rdn = (List) in.content;
+    }
 
     /**
      * Creates new <code>Name</code> instance

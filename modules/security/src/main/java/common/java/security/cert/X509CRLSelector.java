@@ -13,34 +13,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 /**
-* @author Alexander Y. Kleymenov
-* @version $Revision$
-*/
+ * @author Alexander Y. Kleymenov
+ * @version $Revision$
+ */
 
 package java.security.cert;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.cert.CRLSelector;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
-
+import org.apache.harmony.security.x501.Name;
 
 /**
  * @com.intel.drl.spec_ref
  */
 public class X509CRLSelector implements CRLSelector {
 
-    // issuerNames criterion
-    private ArrayList issuerNames;
+    // issuerNames criterion:
+    // contains X.500 distinguished names in CANONICAL format
+    private ArrayList<String> issuerNames;
+    // contains X500Principal objects corresponding to the names
+    // from issuerNames collection (above)
+    private ArrayList<X500Principal> issuerPrincipals;
     // minCRLNumber criterion
     private BigInteger minCRL;
     // maxCRLNumber criterion
@@ -49,11 +52,11 @@ public class X509CRLSelector implements CRLSelector {
     private long dateAndTime = -1;
     // the certificate being checked
     private X509Certificate certificateChecking;
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    public X509CRLSelector() {}
+    public X509CRLSelector() { }
 
     /**
      * @com.intel.drl.spec_ref
@@ -61,29 +64,35 @@ public class X509CRLSelector implements CRLSelector {
     public void setIssuers(Collection<X500Principal> issuers) {
         if (issuers == null) {
             issuerNames = null;
+            issuerPrincipals = null;
             return;
         }
-        issuerNames = new ArrayList(issuers); 
+        issuerNames = new ArrayList<String>(issuers.size());
+        issuerPrincipals = new ArrayList<X500Principal>(issuers);
+        for (X500Principal issuer: issuers) {
+            issuerNames.add(issuer.getName(X500Principal.CANONICAL));
+        }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public void setIssuerNames(Collection<?> names) throws IOException {
         if (names == null) {
             issuerNames = null;
+            issuerPrincipals = null;
             return;
         }
-        Iterator it = names.iterator();
-        issuerNames = new ArrayList(names.size());
-        while (it.hasNext()) {
-            Object princ = it.next();
-            if (princ instanceof String) {
-                //addIssuer(new X500Principal((String) princ));
-                issuerNames.add(new X500Principal((String) princ));
-            } else if (princ instanceof byte[]) {
-                //addIssuer(new X500Principal((byte[]) princ));
-                issuerNames.add(new X500Principal((byte[]) princ));
+        issuerNames = new ArrayList<String>(names.size());
+        for (Object name: names) {
+            if (name instanceof String) {
+                issuerNames.add(
+                        new Name((String) name).getName(
+                            X500Principal.CANONICAL));
+            } else if (name instanceof byte[]) {
+                issuerNames.add(
+                        new Name((byte[]) name).getName(
+                            X500Principal.CANONICAL));
             } else {
                 throw new IOException(
                         "The name is not a String or byte array");
@@ -95,48 +104,70 @@ public class X509CRLSelector implements CRLSelector {
      * @com.intel.drl.spec_ref
      */
     public void addIssuer(X500Principal issuer) {
+        if (issuer == null) {
+            throw new NullPointerException("issuer");
+        }
         if (issuerNames == null) {
-            issuerNames = new ArrayList(); 
+            issuerNames = new ArrayList<String>();
         }
-        if (! issuerNames.contains(issuer)) {
-            issuerNames.add(issuer);
+        String name = issuer.getName(X500Principal.CANONICAL);
+        if (!issuerNames.contains(name)) {
+            issuerNames.add(name);
         }
+        if (issuerPrincipals == null) {
+            issuerPrincipals = new ArrayList<X500Principal>(issuerNames.size());
+        }
+        // extend the list of issuer Principals
+        int size = issuerNames.size() - 1;
+        for (int i=issuerPrincipals.size(); i<size; i++) {
+            issuerPrincipals.add(new X500Principal(issuerNames.get(i)));
+        }
+        issuerPrincipals.add(issuer);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    public void addIssuerName(String name) throws IOException {
+    public void addIssuerName(String iss_name) throws IOException {
         if (issuerNames == null) {
-            issuerNames = new ArrayList(); 
+            issuerNames = new ArrayList<String>();
         }
-        addIssuer(new X500Principal(name));
+        String name = new Name(iss_name).getName(X500Principal.CANONICAL);
+        if (!issuerNames.contains(name)) {
+            issuerNames.add(name);
+        }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    public void addIssuerName(byte[] name) throws IOException {
-        if (issuerNames == null) {
-            issuerNames = new ArrayList(); 
+    public void addIssuerName(byte[] iss_name) throws IOException {
+        if (iss_name == null) {
+            throw new NullPointerException("Provided parameter is null");
         }
-        addIssuer(new X500Principal(name));
+        if (issuerNames == null) {
+            issuerNames = new ArrayList<String>();
+        }
+        String name = new Name(iss_name).getName(X500Principal.CANONICAL);
+        if (!issuerNames.contains(name)) {
+            issuerNames.add(name);
+        }
     }
-     
+
     /**
      * @com.intel.drl.spec_ref
      */
     public void setMinCRLNumber(BigInteger minCRL) {
         this.minCRL = minCRL;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public void setMaxCRLNumber(BigInteger maxCRL) {
         this.maxCRL = maxCRL;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -147,7 +178,7 @@ public class X509CRLSelector implements CRLSelector {
         }
         this.dateAndTime = dateAndTime.getTime();
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -162,9 +193,17 @@ public class X509CRLSelector implements CRLSelector {
         if (issuerNames == null) {
             return null;
         }
-        return Collections.unmodifiableCollection(issuerNames);
+        if (issuerPrincipals == null) {
+            issuerPrincipals = new ArrayList<X500Principal>(issuerNames.size());
+        }
+        int size = issuerNames.size();
+        // extend the list of issuer Principals
+        for (int i=issuerPrincipals.size(); i<size; i++) {
+            issuerPrincipals.add(new X500Principal(issuerNames.get(i)));
+        }
+        return Collections.unmodifiableCollection(issuerPrincipals);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -172,28 +211,23 @@ public class X509CRLSelector implements CRLSelector {
         if (issuerNames == null) {
             return null;
         }
-        ArrayList result = new ArrayList(issuerNames.size());
-        int size = issuerNames.size();
-        for (int i=0; i<size; i++) {
-            result.add(((X500Principal) issuerNames.get(i)).getName());
-        }
-        return result;
+        return Collections.unmodifiableCollection((ArrayList<?>) issuerNames);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public BigInteger getMinCRL() {
         return minCRL;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public BigInteger getMaxCRL() {
         return maxCRL;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -203,14 +237,14 @@ public class X509CRLSelector implements CRLSelector {
         }
         return new Date(dateAndTime);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public X509Certificate getCertificateChecking() {
         return certificateChecking;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -221,8 +255,8 @@ public class X509CRLSelector implements CRLSelector {
             result.append("\n  IssuerNames:\n  [");
             int size = issuerNames.size();
             for (int i=0; i<size; i++) {
-                result.append("\n    " 
-                    + ((X500Principal) issuerNames.get(i)).getName()); 
+                result.append("\n    "
+                    + issuerNames.get(i));
             }
             result.append("\n  ]");
         }
@@ -241,18 +275,20 @@ public class X509CRLSelector implements CRLSelector {
         result.append("\n]");
         return result.toString();
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public boolean match(CRL crl) {
-        if (! (crl instanceof X509CRL)) {
+        if (!(crl instanceof X509CRL)) {
             return false;
         }
         X509CRL crlist = (X509CRL) crl;
-        if ((issuerNames != null) && 
+        if ((issuerNames != null) &&
                 // the search speed depends on the class of issuerNames
-                !(issuerNames.contains(crlist.getIssuerX500Principal()))) {
+                !(issuerNames.contains(
+                        crlist.getIssuerX500Principal().getName(
+                            X500Principal.CANONICAL)))) {
             return false;
         }
         if ((minCRL != null) || (maxCRL != null)) {
@@ -270,8 +306,6 @@ public class X509CRLSelector implements CRLSelector {
                     return false;
                 }
             } catch (IOException e) {
-                //FIXME
-                //e.printStackTrace();
                 return false;
             }
         }
@@ -281,21 +315,21 @@ public class X509CRLSelector implements CRLSelector {
             if ((thisUp == null) || (nextUp == null)) {
                 return false;
             }
-            if ((dateAndTime < thisUp.getTime()) 
+            if ((dateAndTime < thisUp.getTime())
                                 || (dateAndTime > nextUp.getTime())) {
                 return false;
             }
         }
         return true;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public Object clone() {
         X509CRLSelector result = new X509CRLSelector();
         if (issuerNames != null) {
-            result.setIssuers(issuerNames);
+            result.issuerNames = new ArrayList<String>(issuerNames);
         }
         result.minCRL = minCRL;
         result.maxCRL = maxCRL;

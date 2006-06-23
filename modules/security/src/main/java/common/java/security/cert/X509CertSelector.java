@@ -13,10 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 /**
-* @author Alexander Y. Kleymenov
-* @version $Revision$
-*/
+ * @author Alexander Y. Kleymenov
+ * @version $Revision$
+ */
 
 package java.security.cert;
 
@@ -360,6 +361,8 @@ public class X509CertSelector implements CertSelector {
             if ((comp < 0) || (comp > 39)) {
                 throw new IOException("The OID: \"" + oid + "\" is icorrect.");
             }
+        } catch (IndexOutOfBoundsException e) {
+            throw new IOException("The OID: \"" + oid + "\" is icorrect.");
         } catch (NumberFormatException e) {
             throw new IOException("The OID: \"" + oid + "\" is icorrect.");
         }

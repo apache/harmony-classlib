@@ -632,12 +632,15 @@ public class X509CertSelectorTest extends TestCase {
         assertNull("Selector should return null", selector.getIssuerAsString());
         selector.setIssuer(iss1);
         assertEquals("The returned issuer should be equal to specified",
-                                        name1, selector.getIssuerAsString());
+                            new X500Principal(name1), 
+                            new X500Principal(selector.getIssuerAsString()));
         assertFalse("The returned issuer should differ",
-                                    name2.equals(selector.getIssuerAsString()));
+                            new X500Principal(name2).equals( 
+                            new X500Principal(selector.getIssuerAsString())));
         selector.setIssuer(iss2);
         assertEquals("The returned issuer should be equal to specified",
-                                        name2, selector.getIssuerAsString());
+                            new X500Principal(name2), 
+                            new X500Principal(selector.getIssuerAsString()));
     }
 
     /**
@@ -711,13 +714,16 @@ public class X509CertSelectorTest extends TestCase {
             assertNull("Selector should return null", 
                                                 selector.getIssuerAsBytes());
             selector.setIssuer(iss1);
-            assertTrue("The returned issuer should be equal to specified",
-                            Arrays.equals(name1, selector.getIssuerAsBytes()));
+            assertEquals("The returned issuer should be equal to specified",
+                            new X500Principal(name1), 
+                            new X500Principal(selector.getIssuerAsBytes()));
             assertFalse("The returned issuer should differ",
-                                    name2.equals(selector.getIssuerAsBytes()));
+                            new X500Principal(name2).equals( 
+                            new X500Principal(selector.getIssuerAsBytes())));
             selector.setIssuer(iss2);
-            assertTrue("The returned issuer should be equal to specified",
-                            Arrays.equals(name2, selector.getIssuerAsBytes()));
+            assertEquals("The returned issuer should be equal to specified",
+                            new X500Principal(name2), 
+                            new X500Principal(selector.getIssuerAsBytes()));
         } catch (IOException e) {
             e.printStackTrace();
             fail("Unexpected IOException was thrown.");
@@ -827,12 +833,15 @@ public class X509CertSelectorTest extends TestCase {
                                                 selector.getSubjectAsString());
         selector.setSubject(sub1);
         assertEquals("The returned subject should be equal to specified",
-                                        name1, selector.getSubjectAsString());
+                            new X500Principal(name1), 
+                            new X500Principal(selector.getSubjectAsString()));
         assertFalse("The returned subject should differ",
-                                name2.equals(selector.getSubjectAsString()));
+                            new X500Principal(name2).equals( 
+                            new X500Principal(selector.getSubjectAsString())));
         selector.setSubject(sub2);
         assertEquals("The returned subject should be equal to specified",
-                                        name2, selector.getSubjectAsString());
+                            new X500Principal(name2), 
+                            new X500Principal(selector.getSubjectAsString()));
     }
 
     /**
@@ -906,13 +915,16 @@ public class X509CertSelectorTest extends TestCase {
             assertNull("Selector should return null", 
                                                 selector.getSubjectAsBytes());
             selector.setSubject(sub1);
-            assertTrue("The returned issuer should be equal to specified",
-                            Arrays.equals(name1, selector.getSubjectAsBytes()));
+            assertEquals("The returned issuer should be equal to specified",
+                            new X500Principal(name1), 
+                            new X500Principal(selector.getSubjectAsBytes()));
             assertFalse("The returned issuer should differ",
-                                    name2.equals(selector.getSubjectAsBytes()));
+                            new X500Principal(name2).equals( 
+                            new X500Principal(selector.getSubjectAsBytes())));
             selector.setSubject(sub2);
-            assertTrue("The returned issuer should be equal to specified",
-                            Arrays.equals(name2, selector.getSubjectAsBytes()));
+            assertEquals("The returned issuer should be equal to specified",
+                            new X500Principal(name2), 
+                            new X500Principal(selector.getSubjectAsBytes()));
         } catch (IOException e) {
             e.printStackTrace();
             fail("Unexpected IOException was thrown.");
@@ -1176,6 +1188,20 @@ public class X509CertSelectorTest extends TestCase {
         }
         assertTrue("The certificate should match the selection criteria.",
                                                         selector.match(cert_2));
+    }
+
+    /**
+     * @tests java.security.cert.X509CertSelector#setSubjectPublicKeyAlgID(java.lang.String)
+     */
+    public void test_setSubjectPublicKeyAlgIDLjava_lang_String() throws Exception {
+        //Regression for HARMONY-465
+        X509CertSelector obj = new X509CertSelector();
+        try {
+            obj.setSubjectPublicKeyAlgID("abc");
+            fail("IOException expected");
+        } catch (IOException e) {
+            // expected
+        }
     }
 
     /**
