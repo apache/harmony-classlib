@@ -19,8 +19,8 @@
    <security location=".">
       <src>
          <main>
-            <java location="src/main/java" />
-        	<resources location="src/main/resources" />
+             <java location="src/main/java/common" />
+    	     <resources location="src/main/resources" />
          </main>
          <test location="src/test">
             <resources location="src/test/resources" />
