@@ -155,60 +155,54 @@ public class InetAddressTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.InetAddress#getAllByName(java.lang.String)
 	 */
-	public void test_getAllByNameLjava_lang_String() {
+	public void test_getAllByNameLjava_lang_String() throws Exception {
 		// Test for method java.net.InetAddress []
-		// java.net.InetAddress.getAllByName(java.lang.String)
-
-		try {
-			InetAddress[] ia = InetAddress
-					.getAllByName(Support_Configuration.SpecialInetTestAddress);
-			assertTrue(
-					"Incorrect number of aliases returned: "
-							+ ia.length
-							+ " should be "
-							+ Support_Configuration.SpecialInetTestAddressNumber,
-					ia.length == Support_Configuration.SpecialInetTestAddressNumber);
-		} catch (Exception e) {
-			fail("Exception during getAllByName : " + e.getMessage());
-		}
-
-		// check the getByName if there is a security manager.
+        // java.net.InetAddress.getAllByName(java.lang.String)
+        InetAddress[] all = InetAddress
+                .getAllByName(Support_Configuration.SpecialInetTestAddress);
+        assertNotNull(all);
+        // Number of aliases depends on individual test machine
+        assertTrue(all.length >= 1);
+        for (InetAddress alias : all) {
+            // Check that each alias has the same hostname. Intentionally not
+            // checking for exact string match.
+            assertTrue(alias.getHostName().startsWith(
+                    Support_Configuration.SpecialInetTestAddress));
+        }// end for all aliases
+        
+        // check the getByName if there is a security manager.
         SecurityManager oldman = System.getSecurityManager();
-		System.setSecurityManager(new MockSecurityManager());
-		try {
-			boolean exception = false;
-			try {
-				InetAddress.getByName("3d.com");
-			} catch (SecurityException ex) {
-				exception = true;
-			} catch (Exception ex) {
-				fail("getByName threw wrong exception : " + ex.getMessage());
-			}
-			assertTrue("expected SecurityException", exception);
-		} finally {
-			System.setSecurityManager(oldman);
-		}
+        System.setSecurityManager(new MockSecurityManager());
+        try {
+            boolean exception = false;
+            try {
+                InetAddress.getByName("3d.com");
+            } catch (SecurityException ex) {
+                exception = true;
+            } catch (Exception ex) {
+                fail("getByName threw wrong exception : " + ex.getMessage());
+            }
+            assertTrue("expected SecurityException", exception);
+        } finally {
+            System.setSecurityManager(oldman);
+        }
 	}
 
 	/**
 	 * @tests java.net.InetAddress#getByName(java.lang.String)
 	 */
-	public void test_getByNameLjava_lang_String() {
-		// Test for method java.net.InetAddress
-		// java.net.InetAddress.getByName(java.lang.String)
-		try {
-			InetAddress ia2 = InetAddress
-					.getByName(Support_Configuration.InetTestIP);
-			assertTrue("Equals returned incorrect result: " + ia2.getHostName()
-					+ " != " + Support_Configuration.InetTestAddress, ia2
-					.getHostName()
-					.equals(Support_Configuration.InetTestAddress));
-		} catch (Exception e) {
-			fail("Exception during equals test : " + e.getMessage());
-		}
+	public void test_getByNameLjava_lang_String() throws Exception {
+        // Test for method java.net.InetAddress
+        // java.net.InetAddress.getByName(java.lang.String)
+        InetAddress ia2 = InetAddress
+                .getByName(Support_Configuration.InetTestIP);
+        
+        // Intentionally not testing for exact string match
+        assertTrue(ia2.getHostName().startsWith(
+                Support_Configuration.InetTestAddress));
 
-		// TODO : Test to ensure all the address formats are recognized
-	}
+        // TODO : Test to ensure all the address formats are recognized
+    }
 
 	/**
 	 * @tests java.net.InetAddress#getHostAddress()
@@ -235,9 +229,10 @@ public class InetAddressTest extends junit.framework.TestCase {
         // Test for method java.lang.String java.net.InetAddress.getHostName()
         InetAddress ia = InetAddress
                 .getByName(Support_Configuration.InetTestIP);
-        assertTrue("Incorrect host name returned: " + ia.getHostName() + " != "
-                + Support_Configuration.InetTestAddress, ia.getHostName()
-                .equals(Support_Configuration.InetTestAddress));
+        
+        // Intentionally not testing for exact string match
+        assertTrue(ia.getHostName().startsWith(
+                Support_Configuration.InetTestAddress));
 
         // Test for any of the host lookups, where the default SecurityManager
         // is installed.
@@ -398,36 +393,22 @@ public class InetAddressTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.InetAddress#getCanonicalHostName()
 	 */
-	public void test_getCanonicalHostName() {
+	public void test_getCanonicalHostName() throws Exception {
+        InetAddress theAddress = null;
+        theAddress = InetAddress.getLocalHost();
+        assertTrue("getCanonicalHostName returned a zero length string ",
+                theAddress.getCanonicalHostName().length() != 0);
+        assertTrue("getCanonicalHostName returned an empty string ",
+                !theAddress.equals(""));
 
-		try {
-			InetAddress theAddress = null;
-			theAddress = InetAddress.getLocalHost();
-			assertTrue("getCanonicalHostName returned a zero length string ",
-					theAddress.getCanonicalHostName().length() != 0);
-			assertTrue("getCanonicalHostName returned an empty string ",
-					!theAddress.equals(""));
-		} catch (Exception e) {
-			fail("Unexcepted exception testing getCanonicalHostName:"
-					+ e.toString());
-		}
-		;
-
-		// test against an expected value
-		try {
-			InetAddress ia = InetAddress
-					.getByName(Support_Configuration.InetTestIP);
-			assertTrue("Incorrect host name returned by getCanonicalHostHame: "
-					+ ia.getCanonicalHostName() + " != "
-					+ Support_Configuration.InetTestAddress, ia.getHostName()
-					.equals(Support_Configuration.InetTestAddress));
-		} catch (Exception e) {
-			fail(
-					"Exception during getCanonicalHostName - InetAddress.getByName: "
-							+ e);
-		}
-
-	}
+        // test against an expected value
+        InetAddress ia = InetAddress
+                .getByName(Support_Configuration.InetTestIP);
+        
+        // Intentionally not testing for exact string match
+        assertTrue(ia.getCanonicalHostName().startsWith(
+                Support_Configuration.InetTestAddress));
+    }
 	
 	/**
      * @tests java.net.InetAddress#isReachableI
