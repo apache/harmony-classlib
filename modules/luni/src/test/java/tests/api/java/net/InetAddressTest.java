@@ -91,7 +91,10 @@ public class InetAddressTest extends junit.framework.TestCase {
 					String hostName = ia.getHostName();
 					String hostAddress = ia.getHostAddress();
 
-					if (!correctName.equals(hostName)) {
+                    // Intentionally not looking for exact name match so that 
+                    // the test works across different platforms that may or 
+                    // may not include a domain suffix on the hostname
+                    if (!hostName.startsWith(correctName)) {
 						threadedTestSucceeded = false;
 						threadedTestErrorString = (testType == 0 ? "gethostbyname"
 								: "gethostbyaddr")
@@ -100,6 +103,7 @@ public class InetAddressTest extends junit.framework.TestCase {
 								+ " instead of " + correctName;
 						break;
 					}
+                    // IP addresses should match exactly
 					if (!correctAddress.equals(hostAddress)) {
 						threadedTestSucceeded = false;
 						threadedTestErrorString = (testType == 0 ? "gethostbyname"
