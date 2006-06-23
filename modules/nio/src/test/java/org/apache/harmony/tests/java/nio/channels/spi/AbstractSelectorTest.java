@@ -16,11 +16,17 @@
 package org.apache.harmony.tests.java.nio.channels.spi;
 
 import java.io.IOException;
+import java.nio.channels.IllegalBlockingModeException;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 
 import junit.framework.TestCase;
 
+/**
+ * Tests for AbstractSelector and register of its default implementation
+ */ 
 public class AbstractSelectorTest extends TestCase {
 
     /**
@@ -89,4 +95,65 @@ public class AbstractSelectorTest extends TestCase {
             mockSelector.superEnd();
         }
     }
+    
+    /**
+     * @tests AbstractSelector#isOpen()
+     */
+    public void test_isOpen() throws Exception {
+        Selector acceptSelector = SelectorProvider.provider().openSelector();
+        assertTrue(acceptSelector.isOpen());
+        acceptSelector.close();
+        assertFalse(acceptSelector.isOpen());
+    }
+    
+    /**
+     * @tests AbstractSelector#register(Selector,int)
+     */
+    public void test_register_LSelectorI() throws Exception {
+        Selector acceptSelector = SelectorProvider.provider().openSelector();
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.configureBlocking(false);
+
+        assertFalse(ssc.isRegistered());
+        SelectionKey acceptKey = ssc.register(acceptSelector,
+                SelectionKey.OP_ACCEPT);
+        assertTrue(ssc.isRegistered());
+        assertNotNull(acceptKey);
+        assertTrue(acceptSelector.keys().contains(acceptKey));
+    }
+
+    /**
+     * @tests AbstractSelector#register(Selector,int)
+     */
+    public void test_register_LSelectorI_error() throws IOException {
+        Selector acceptSelector = SelectorProvider.provider().openSelector();
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.configureBlocking(false);
+        acceptSelector.close();
+
+        assertFalse(acceptSelector.isOpen());
+        try {
+            ssc.register(acceptSelector, SelectionKey.OP_ACCEPT);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        assertFalse(ssc.isRegistered());
+
+        acceptSelector = Selector.open();
+        ssc.configureBlocking(true);
+        try {
+            ssc.register(acceptSelector, SelectionKey.OP_ACCEPT);
+            fail("should throw IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }
+        assertFalse(ssc.isRegistered());
+        ssc.configureBlocking(false);
+        SelectionKey acceptKey = ssc.register(acceptSelector,
+                SelectionKey.OP_ACCEPT);
+        assertNotNull(acceptKey);
+        assertTrue(acceptSelector.keys().contains(acceptKey));
+        assertTrue(ssc.isRegistered());
+    }    
 }
