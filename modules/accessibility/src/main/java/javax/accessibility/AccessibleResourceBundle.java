@@ -14,16 +14,13 @@
  *  limitations under the License.
  */
 
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
-
 package javax.accessibility;
 
 import java.util.ListResourceBundle;
 
-
+/**
+ * @deprecated As of J2SE 1.3, this class is no longer supported.
+ */
 public class AccessibleResourceBundle extends ListResourceBundle {
     // Localized values representing the accessible roles and states of the accessible components
     private final Object[][] contents = {
