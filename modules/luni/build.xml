@@ -220,6 +220,8 @@
                     <exclude name="tests/api/java/net/URLClassLoaderTest.java" />
                     <exclude name="tests/api/java/net/URLConnectionTest.java" />
                     <exclude name="tests/api/java/net/URLTest.java" />
+                    <exclude name="tests/api/java/net/ServerSocketTest.java" />
+                    <exclude name="tests/api/java/net/InetAddressTest.java" />
                 </fileset>
             </batchtest>
         </junit>
