@@ -36,6 +36,7 @@ public class AllTests {
         suite.addTestSuite(SelectionKeyTest.class);
         suite.addTestSuite(SelectorTest.class);
         suite.addTestSuite(AlreadyConnectedExceptionTest.class);
+        suite.addTestSuite(SelectableChannelTest.class);
         //$JUnit-END$
         return suite;
     }
