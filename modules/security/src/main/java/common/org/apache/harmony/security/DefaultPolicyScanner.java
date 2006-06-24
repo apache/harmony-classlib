@@ -113,8 +113,8 @@ public class DefaultPolicyScanner {
      * @throws InvalidFormatException
      *             if unexpected or unknown token encountered
      */
-    public void scanStream(Reader r, Collection/* <GrantEntry> */grantEntries,
-            List/* <KeystoreEntry> */keystoreEntries) throws IOException,
+    public void scanStream(Reader r, Collection<GrantEntry> grantEntries,
+            List<KeystoreEntry> keystoreEntries) throws IOException,
             InvalidFormatException {
         StreamTokenizer st = configure(new StreamTokenizer(r));
         //main parsing loop
@@ -153,7 +153,7 @@ public class DefaultPolicyScanner {
      *  
      * </pre>
      * 
-     * @return succesfully parsed KeystoreEntry
+     * @return successfully parsed KeystoreEntry
      * @throws IOException
      *             if stream reading failed
      * @throws InvalidFormatException
@@ -194,7 +194,7 @@ public class DefaultPolicyScanner {
      *  
      * </pre>
      * 
-     * @return succesfully parsed GrantEntry
+     * @return successfully parsed GrantEntry
      * @throws IOException
      *             if stream reading failed
      * @throws InvalidFormatException
@@ -253,10 +253,10 @@ public class DefaultPolicyScanner {
      *  
      * </pre>
      * 
-     * Both class and name may be wildcards, wildcarded name should not
+     * Both class and name may be wildcards, wildcard names should not
      * surrounded by quotes.
      * 
-     * @return succesfully parsed PrincipalEntry
+     * @return successfully parsed PrincipalEntry
      * @throws IOException
      *             if stream reading failed
      * @throws InvalidFormatException
@@ -297,16 +297,15 @@ public class DefaultPolicyScanner {
      * 
      * List is terminated by '}' (closing curly brace) symbol.
      * 
-     * @return collection of succesfully parsed PermissionEntries
+     * @return collection of successfully parsed PermissionEntries
      * @throws IOException
      *             if stream reading failed
      * @throws InvalidFormatException
      *             if unexpected or unknown token encountered
      */
-    protected Collection/* <PermissionEntry> */readPermissionEntries(
+    protected Collection<PermissionEntry> readPermissionEntries(
             StreamTokenizer st) throws IOException, InvalidFormatException {
-        // FIXME 1.5 signature
-        Collection/* <PermissionEntry> */permissions = new HashSet();
+        Collection<PermissionEntry> permissions = new HashSet<PermissionEntry>();
         parsing: while (true) {
             switch (st.nextToken()) {
 
@@ -443,14 +442,12 @@ public class DefaultPolicyScanner {
         /**
          * Collection of PrincipalEntries of grant clause.
          */
-        // FIXME 1.5 signature
-        public Collection/* <PrincipalEntry> */principals;
+        public Collection<PrincipalEntry> principals;
 
         /**
          * Collection of PermissionEntries of grant clause.
          */
-        // FIXME 1.5 signature
-        public Collection/* <PermissionEntry> */permissions;
+        public Collection<PermissionEntry> permissions;
 
         /**
          * Adds specified element to the <code>principals</code> collection.
@@ -458,7 +455,7 @@ public class DefaultPolicyScanner {
          */
         public void addPrincipal(PrincipalEntry pe) {
             if (principals == null) {
-                principals = new HashSet();
+                principals = new HashSet<PrincipalEntry>();
             }
             principals.add(pe);
         }

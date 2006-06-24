@@ -41,7 +41,7 @@ public interface SecurityAccess {
      * @param s
      * @return
      */
-    public Iterator getAliases(Provider.Service s);
+    public Iterator<String> getAliases(Provider.Service s);
     
     /**
      * Access to Provider.getService(String type)

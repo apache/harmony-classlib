@@ -22,6 +22,7 @@
 package org.apache.harmony.security;
 
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,19 +45,20 @@ public class PolicyEntry {
     // Array of principals 
     private final Principal[] principals;
 
-    // Permossions collection
-    private final Collection permissions;
+    // Permissions collection
+    private final Collection<Permission> permissions;
 
     /**
      * Constructor with initialization parameters. Passed collections are not
      * referenced directly, but copied.
      */
-    public PolicyEntry(CodeSource cs, Collection prs, Collection permissions) {
+    public PolicyEntry(CodeSource cs, Collection<? extends Principal> prs,
+            Collection<? extends Permission> permissions) {
         this.cs = cs;
-        this.principals = (prs == null || prs.size() == 0) ? null : (Principal[])prs
-            .toArray(new Principal[prs.size()]);
-        this.permissions = (permissions == null || permissions.size() == 0)
-            ? null : Collections.unmodifiableCollection(permissions);
+        this.principals = (prs == null || prs.isEmpty()) ? null
+                : (Principal[]) prs.toArray(new Principal[prs.size()]);
+        this.permissions = (permissions == null || permissions.isEmpty()) ? null
+                : Collections.unmodifiableCollection(permissions);
     }
 
     /**
@@ -81,7 +83,7 @@ public class PolicyEntry {
      * Returns unmodifiable collection of permissions defined by this
      * PolicyEntry, may be <code>null</code>.
      */
-    public Collection getPermissions() {
+    public Collection<Permission> getPermissions() {
         return permissions;
     }
 

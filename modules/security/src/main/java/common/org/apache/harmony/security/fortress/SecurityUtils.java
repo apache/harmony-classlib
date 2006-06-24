@@ -34,7 +34,7 @@ import java.util.WeakHashMap;
 /**
  * The class is used to perform an exchange of information between 
  * java.lang.Thread and java.security.AccessController.<br>
- * The data to excnahge is inherited contexts for the Thread-s.  
+ * The data to exchange is inherited contexts for the Thread-s.  
  * 
  */
 public final class SecurityUtils {
@@ -42,7 +42,7 @@ public final class SecurityUtils {
     // A map used to store inherited contexts.<br>
     // A thread is used as a key for the map and AccessControlContext 
     // passed to the putContext is used as a value.
-    private static WeakHashMap map = new WeakHashMap();
+    private static final WeakHashMap<Thread, AccessControlContext> ACC_CACHE = new WeakHashMap<Thread, AccessControlContext>();
 
     /**
      * This method to be invoked in the Thread's constructor. The first argument
@@ -72,17 +72,17 @@ public final class SecurityUtils {
         if (thread == null) {
             throw new NullPointerException("thread can not be null");
         }
-        synchronized (map) {
-            if (map.containsKey(thread)) {
+        synchronized (ACC_CACHE) {
+            if (ACC_CACHE.containsKey(thread)) {
                 throw new SecurityException("You can not modify this map.");
             }
             if (context == null) {
                 // this only allowed once - for the very first thread.
-                if (map.containsValue(null)) {
+                if (ACC_CACHE.containsValue(null)) {
                     throw new Error("null context may be stored only once.");
                 }
             }
-            map.put(thread, context);
+            ACC_CACHE.put(thread, context);
         }
     }
 
@@ -104,9 +104,8 @@ public final class SecurityUtils {
          }
          */
 
-        synchronized (map) {
-            AccessControlContext ctx = (AccessControlContext) map.get(thread);
-            return ctx;
+        synchronized (ACC_CACHE) {
+            return ACC_CACHE.get(thread);
         }
     }
 }

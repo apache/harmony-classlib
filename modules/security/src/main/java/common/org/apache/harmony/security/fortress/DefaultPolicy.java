@@ -25,6 +25,7 @@ import java.io.File;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Policy;
 import java.security.ProtectionDomain;
@@ -129,7 +130,7 @@ import org.apache.harmony.security.PolicyEntry;
  * This implementation is thread-safe. The policy caches sets of calculated
  * permissions for the requested objects (ProtectionDomains and CodeSources) via
  * WeakHashMap; the cache is cleaned either explicitly during refresh()
- * invokation, or naturally by garbage-collecting the corresponding objects.
+ * invocation, or naturally by garbage-collecting the corresponding objects.
  * 
  * @see org.apache.harmony.security.PolicyUtils#getPolicyURLs(Properties, String,
  *      String)
@@ -148,13 +149,13 @@ public class DefaultPolicy extends Policy {
     public static final String POLICY_URL_PREFIX = "policy.url.";
 
     // A set of PolicyEntries constituting this Policy.
-    private final Set/* <PolicyEntry> */grants = new HashSet();
+    private final Set<PolicyEntry> grants = new HashSet<PolicyEntry>();
 
     // Calculated Permissions cache, organized as
     // Map{Object->Collection&lt;Permission&gt;}.
     // The Object is a ProtectionDomain, a CodeSource or
     // any other permissions-granted entity.
-    private final Map cache = new WeakHashMap();
+    private final Map<Object, Collection<Permission>> cache = new WeakHashMap<Object, Collection<Permission>>();
 
     // A specific parser for a particular policy file format.
     private final DefaultPolicyParser parser;
@@ -184,7 +185,7 @@ public class DefaultPolicy extends Policy {
 
     /**
      * Returns collection of permissions allowed for the domain 
-     * according to the policy. The evalueated characteristics of the 
+     * according to the policy. The evaluated characteristics of the 
      * domain are it's codesource and principals; they are assumed
      * to be <code>null</code> if the domain is <code>null</code>.
      */
@@ -196,17 +197,17 @@ public class DefaultPolicy extends Policy {
                 }
             }
         }
-        Collection pc = (Collection)cache.get(pd);
+        Collection<Permission> pc = cache.get(pd);
         if (pc == null) {
             //have to synchronize to exclude cache pollution after refresh
             synchronized (cache) {
 
                 // double check in case value has been put to cache
                 // while we've been awaiting monitor
-                pc = (Collection)cache.get(pd);
+                pc = cache.get(pd);
                 if (pc == null) {
-                    pc = new HashSet();
-                    Iterator it = grants.iterator();
+                    pc = new HashSet<Permission>();
+                    Iterator<PolicyEntry> it = grants.iterator();
                     while (it.hasNext()) {
                         PolicyEntry ge = (PolicyEntry)it.next();
                         if (ge.impliesPrincipals(pd == null ? null : pd.getPrincipals())
@@ -235,17 +236,17 @@ public class DefaultPolicy extends Policy {
                 }
             }
         }
-        Collection pc = (Collection)cache.get(cs);
+        Collection<Permission> pc = cache.get(cs);
         if (pc == null) {
             //have to synchronize to exclude cache pollution after refresh
             synchronized (cache) {
 
                 // double check in case value has been put to cache
                 // while we've been awaiting monitor
-                pc = (Collection)cache.get(cs);
+                pc = cache.get(cs);
                 if (pc == null) {
-                    pc = new HashSet();
-                    Iterator it = grants.iterator();
+                    pc = new HashSet<Permission>();
+                    Iterator<PolicyEntry> it = grants.iterator();
                     while (it.hasNext()) {
                         PolicyEntry ge = (PolicyEntry)it.next();
                         if (ge.impliesPrincipals(null)
@@ -269,9 +270,9 @@ public class DefaultPolicy extends Policy {
      * @see PolicyUtils#getPolicyURLs(Properties, String, String)
      */
     public synchronized void refresh() {
-        Set fresh = new HashSet();
-        Properties system = new Properties((Properties)AccessController
-            .doPrivileged(new PolicyUtils.SystemKit()));
+        Set<PolicyEntry> fresh = new HashSet<PolicyEntry>();
+        Properties system = new Properties(AccessController
+                .doPrivileged(new PolicyUtils.SystemKit()));
         system.setProperty("/", File.separator);
         URL[] policyLocations = PolicyUtils.getPolicyURLs(system,
                                                           JAVA_SECURITY_POLICY,

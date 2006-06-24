@@ -22,6 +22,7 @@
 package org.apache.harmony.security.fortress;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.security.AccessController;
@@ -50,7 +51,7 @@ public class PolicyUtils {
     /**
      * Auxiliary action for opening InputStream from specified location.
      */
-    public static class URLLoader implements PrivilegedExceptionAction {
+    public static class URLLoader implements PrivilegedExceptionAction<InputStream> {
 
         /** 
          * URL of target location. 
@@ -67,7 +68,7 @@ public class PolicyUtils {
         /** 
          * Returns InputStream from the target URL.
          */
-        public Object run() throws Exception {
+        public InputStream run() throws Exception {
             return location.openStream();
         }
     }
@@ -75,12 +76,12 @@ public class PolicyUtils {
     /** 
      * Auxiliary action for accessing system properties in a bundle. 
      */
-    public static class SystemKit implements PrivilegedAction {
+    public static class SystemKit implements PrivilegedAction<Properties> {
 
         /** 
          * Returns system properties.
          */
-        public Object run() {
+        public Properties run() {
             return System.getProperties();
         }
     }
@@ -88,7 +89,7 @@ public class PolicyUtils {
     /** 
      * Auxiliary action for accessing specific system property. 
      */
-    public static class SystemPropertyAccessor implements PrivilegedAction {
+    public static class SystemPropertyAccessor implements PrivilegedAction<String> {
 
         /** 
          * A key of a required system property.
@@ -107,7 +108,7 @@ public class PolicyUtils {
          * &quot;provide key and supply action&quot; code block, 
          * for reusing existing action instance. 
          */
-        public PrivilegedAction key(String key) {
+        public PrivilegedAction<String> key(String key) {
             this.key = key;
             return this;
         }
@@ -115,7 +116,7 @@ public class PolicyUtils {
         /** 
          * Returns specified system property. 
          */
-        public Object run() {
+        public String run() {
             return System.getProperty(key);
         }
     }
@@ -123,19 +124,27 @@ public class PolicyUtils {
     /** 
      * Auxiliary action for accessing specific security property. 
      */
-    public static class SecurityPropertyAccessor extends SystemPropertyAccessor {
+    public static class SecurityPropertyAccessor implements PrivilegedAction<String> {
 
+        private String key;
+        
         /** 
          * Constructor with a property key parameter. 
          */
         public SecurityPropertyAccessor(String key) {
-            super(key);
+            super();
+            this.key = key;
         }
 
+        public PrivilegedAction<String> key(String key) {
+            this.key = key;
+            return this;
+        }
+        
         /** 
          * Returns specified security property. 
          */
-        public Object run() {
+        public String run() {
             return Security.getProperty(key);
         }
     }
@@ -143,20 +152,23 @@ public class PolicyUtils {
     /** 
      * Auxiliary action for loading a provider by specific security property.
      */
-    public static class ProviderLoader extends SystemPropertyAccessor {
+    public static class ProviderLoader<T> implements PrivilegedAction<T> {
 
+        private String key;
+        
         /**
          * Acceptable provider superclass.
          */
-        public Class expectedType;
+        private Class<T> expectedType;
         
         /** 
          * Constructor taking property key and acceptable provider 
          * superclass parameters.
          */
-        public ProviderLoader(String key, Class expected) {
-            super(key);
-            expectedType = expected;
+        public ProviderLoader(String key, Class<T> expected) {
+            super();
+            this.key = key;
+            this.expectedType = expected;
         }
 
         /** 
@@ -164,10 +176,10 @@ public class PolicyUtils {
          * The <code>key</code> should map to a fully qualified classname.
          * 
          * @throws SecurityException if no value specified for the key 
-         * in security properties or if an Exception has occured 
+         * in security properties or if an Exception has occurred 
          * during classloading and instantiating.
          */
-        public Object run() {
+        public T run() {
             String klassName = Security.getProperty(key);
             if (klassName == null || klassName.length() == 0) {
                 throw new SecurityException("Provider implementation should be specified via \""
@@ -175,7 +187,7 @@ public class PolicyUtils {
             }
             // TODO accurate classloading
             try {
-                Class klass = Class.forName(klassName, true,
+                Class<?> klass = Class.forName(klassName, true,
                         Thread.currentThread().getContextClassLoader());
                 if (expectedType != null && klass.isAssignableFrom(expectedType)){
                     throw new SecurityException("Provided class "
@@ -183,7 +195,8 @@ public class PolicyUtils {
                                               + " does not implement " 
                                               + expectedType.getName());
                 }
-                return klass.newInstance();
+                //FIXME expectedType.cast(klass.newInstance());
+                return (T)klass.newInstance();
             }
             catch (SecurityException se){
                 throw se;
@@ -240,7 +253,7 @@ public class PolicyUtils {
         final int START_OFFSET = START_MARK.length();
         final int END_OFFSET = END_MARK.length();
 
-        StringBuffer result = new StringBuffer(str);
+        StringBuilder result = new StringBuilder(str);
         int start = result.indexOf(START_MARK);
         while (start >= 0) {
             int end = result.indexOf(END_MARK, start);
@@ -306,7 +319,7 @@ public class PolicyUtils {
         final int START_OFFSET = START_MARK.length();
         final int END_OFFSET = END_MARK.length();
 
-        StringBuffer result = new StringBuffer(str);
+        StringBuilder result = new StringBuilder(str);
         int start = result.indexOf(START_MARK);
         while (start >= 0) {
             int end = result.indexOf(END_MARK, start);
@@ -357,7 +370,7 @@ public class PolicyUtils {
      * @see #expand(String, Properties)  
      */
     public static boolean canExpandProperties() {
-        return !FALSE.equalsIgnoreCase((String) AccessController
+        return !FALSE.equalsIgnoreCase(AccessController
                 .doPrivileged(new SecurityPropertyAccessor(POLICY_EXPAND)));
     }
 
@@ -398,12 +411,12 @@ public class PolicyUtils {
 
         final SecurityPropertyAccessor security = new SecurityPropertyAccessor(
                 null);
-        final List urls = new ArrayList();
+        final List<URL> urls = new ArrayList<URL>();
         boolean dynamicOnly = false;
         URL dynamicURL = null;
 
         //first check if policy is set via system properties
-        if (!FALSE.equalsIgnoreCase((String) AccessController
+        if (!FALSE.equalsIgnoreCase(AccessController
                 .doPrivileged(security.key(POLICY_ALLOW_DYNAMIC)))) {
             String location = system.getProperty(systemUrlKey);
             if (location != null) {
@@ -416,10 +429,10 @@ public class PolicyUtils {
                     location = expandURL(location, system);
                     // location can be a file, but we need an url...
                     final File f = new File(location);
-                    dynamicURL = (URL) AccessController
-                            .doPrivileged(new PrivilegedExceptionAction() {
+                    dynamicURL = AccessController
+                            .doPrivileged(new PrivilegedExceptionAction<URL>() {
 
-                                public Object run() throws Exception {
+                                public URL run() throws Exception {
                                     if (f.exists()) {
                                         return f.toURI().toURL();
                                     } else {
@@ -441,8 +454,8 @@ public class PolicyUtils {
         if (!dynamicOnly) {
             int i = 1;
             while (true) {
-                String location = (String) AccessController
-                        .doPrivileged(security.key(new StringBuffer(
+                String location = AccessController
+                        .doPrivileged(security.key(new StringBuilder(
                                 securityUrlPrefix).append(i++).toString()));
                 if (location == null) {
                     break;
@@ -463,22 +476,22 @@ public class PolicyUtils {
         if (dynamicURL != null) {
             urls.add(dynamicURL);
         }
-        return (URL[]) urls.toArray(new URL[urls.size()]);
+        return urls.toArray(new URL[urls.size()]);
     }
 
     /** 
      * Converts common-purpose collection of Permissions to PermissionCollection.
      *
      * @param perms a collection containing arbitrary permissions, may be null
-     * @return mutable heterogeneous PermissionCollection containg all Permissions 
+     * @return mutable heterogeneous PermissionCollection containing all Permissions 
      * from the specified collection
      */
     public static PermissionCollection toPermissionCollection(
-            Collection/*<Permission>*/perms) {
+            Collection<Permission> perms) {
         Permissions pc = new Permissions();
         if (perms != null) {
-            for (Iterator iter = perms.iterator(); iter.hasNext();) {
-                Permission element = (Permission) iter.next();
+            for (Iterator<Permission> iter = perms.iterator(); iter.hasNext();) {
+                Permission element = iter.next();
                 pc.add(element);
             }
         }
@@ -505,7 +518,7 @@ public class PolicyUtils {
      * @throws IllegalArgumentException if no suitable constructor found
      * @throws Exception any exception thrown by Constructor.newInstance()
      */
-    public static Permission instantiatePermission(Class targetType,
+    public static Permission instantiatePermission(Class<?> targetType,
             String targetName, String targetActions) throws Exception {
 
         // let's guess the best order for trying constructors
@@ -528,8 +541,8 @@ public class PolicyUtils {
         // finally try to instantiate actual permission
         for (int i = 0; i < argTypes.length; i++) {
             try {
-                Constructor ctor = targetType.getConstructor(argTypes[i]);
-                return (Permission) ctor.newInstance(args[i]);
+                Constructor<?> ctor = targetType.getConstructor(argTypes[i]);
+                return (Permission)ctor.newInstance(args[i]);
             }
             catch (NoSuchMethodException ignore) {}
         }

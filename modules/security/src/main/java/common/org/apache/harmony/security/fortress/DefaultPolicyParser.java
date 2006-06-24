@@ -48,6 +48,10 @@ import java.util.StringTokenizer;
 import org.apache.harmony.security.DefaultPolicyScanner;
 import org.apache.harmony.security.PolicyEntry;
 import org.apache.harmony.security.UnresolvedPrincipal;
+import org.apache.harmony.security.DefaultPolicyScanner.GrantEntry;
+import org.apache.harmony.security.DefaultPolicyScanner.KeystoreEntry;
+import org.apache.harmony.security.DefaultPolicyScanner.PermissionEntry;
+import org.apache.harmony.security.DefaultPolicyScanner.PrincipalEntry;
 
 
 /**
@@ -105,18 +109,16 @@ public class DefaultPolicyParser {
      * @return a collection of PolicyEntry objects, may be empty
      * @throws Exception IO error while reading location or file syntax error 
      */
-    // FIXME 1.5 signature
-    public Collection/*<PolicyEntry>*/parse(URL location, Properties system)
+    public Collection<PolicyEntry>parse(URL location, Properties system)
             throws Exception {
 
         boolean resolve = PolicyUtils.canExpandProperties();
         Reader r = new BufferedReader(new InputStreamReader(
-                (InputStream) AccessController
+                AccessController
                         .doPrivileged(new PolicyUtils.URLLoader(location))));
 
-        // FIXME 1.5 signature
-        Collection/*<GrantEntry>*/grantEntries = new HashSet();
-        List/*<KeystoreEntry>*/keystores = new ArrayList();
+        Collection<GrantEntry> grantEntries = new HashSet<GrantEntry>();
+        List<KeystoreEntry> keystores = new ArrayList<KeystoreEntry>();
 
         try {
             scanner.scanStream(r, grantEntries, keystores);
@@ -128,10 +130,9 @@ public class DefaultPolicyParser {
         //XXX KeyStore could be loaded lazily...
         KeyStore ks = initKeyStore(keystores, location, system, resolve);
 
-        // FIXME 1.5 signature
-        Collection/*<PolicyEntry>*/result = new HashSet();
-        for (Iterator iter = grantEntries.iterator(); iter.hasNext();) {
-            DefaultPolicyScanner.GrantEntry ge = (DefaultPolicyScanner.GrantEntry) iter
+        Collection<PolicyEntry> result = new HashSet<PolicyEntry>();
+        for (Iterator<GrantEntry> iter = grantEntries.iterator(); iter.hasNext();) {
+            DefaultPolicyScanner.GrantEntry ge = iter
                     .next();
             try {
                 PolicyEntry pe = resolveGrant(ge, ks, system, resolve);
@@ -185,9 +186,8 @@ public class DefaultPolicyParser {
 
         URL codebase = null;
         Certificate[] signers = null;
-        // FIXME 1.5 signature
-        Set/*<Principal>*/principals = new HashSet();
-        Set/*<Permission>*/permissions = new HashSet();
+        Set<Principal>principals = new HashSet<Principal>();
+        Set<Permission>permissions = new HashSet<Permission>();
         if (ge.codebase != null) {
             codebase = new URL(resolve ? PolicyUtils.expandURL(ge.codebase,
                     system) : ge.codebase);
@@ -199,8 +199,8 @@ public class DefaultPolicyParser {
             signers = resolveSigners(ks, ge.signers);
         }
         if (ge.principals != null) {
-            for (Iterator iter = ge.principals.iterator(); iter.hasNext();) {
-                DefaultPolicyScanner.PrincipalEntry pe = (DefaultPolicyScanner.PrincipalEntry) iter
+            for (Iterator<PrincipalEntry> iter = ge.principals.iterator(); iter.hasNext();) {
+                DefaultPolicyScanner.PrincipalEntry pe = iter
                         .next();
                 if (resolve) {
                     pe.name = PolicyUtils.expand(pe.name, system);
@@ -213,8 +213,8 @@ public class DefaultPolicyParser {
             }
         }
         if (ge.permissions != null) {
-            for (Iterator iter = ge.permissions.iterator(); iter.hasNext();) {
-                DefaultPolicyScanner.PermissionEntry pe = (DefaultPolicyScanner.PermissionEntry) iter
+            for (Iterator<PermissionEntry> iter = ge.permissions.iterator(); iter.hasNext();) {
+                DefaultPolicyScanner.PermissionEntry pe = iter
                         .next();
                 try {
                     permissions.add(resolvePermission(pe, ge, ks, system,
@@ -270,7 +270,7 @@ public class DefaultPolicyParser {
         Certificate[] signers = (pe.signers == null) ? null : resolveSigners(
                 ks, pe.signers);
         try {
-            Class klass = Class.forName(pe.klass);
+            Class<?> klass = Class.forName(pe.klass);
             if (PolicyUtils.matchSubset(signers, klass.getSigners())) {
                 return PolicyUtils.instantiatePermission(klass, pe.name,
                         pe.actions);
@@ -326,9 +326,9 @@ public class DefaultPolicyParser {
                 //need expanding to list of principals in grant clause 
                 if (ge.principals != null && ge.principals.size() != 0) {
                     StringBuffer sb = new StringBuffer();
-                    for (Iterator iter = ge.principals.iterator(); iter
+                    for (Iterator<PrincipalEntry> iter = ge.principals.iterator(); iter
                             .hasNext();) {
-                        DefaultPolicyScanner.PrincipalEntry pr = (DefaultPolicyScanner.PrincipalEntry) iter
+                        DefaultPolicyScanner.PrincipalEntry pr = iter
                                 .next();
                         if (pr.klass == null) {
                             // aliased X500Principal
@@ -393,13 +393,13 @@ public class DefaultPolicyParser {
                     + signers + "\"");
         }
 
-        Collection certs = new HashSet();
+        Collection<Certificate> certs = new HashSet<Certificate>();
         StringTokenizer snt = new StringTokenizer(signers, ",");
         while (snt.hasMoreTokens()) {
             //XXX cache found certs ??
             certs.add(ks.getCertificate(snt.nextToken().trim()));
         }
-        return (Certificate[]) certs.toArray(new Certificate[certs.size()]);
+        return certs.toArray(new Certificate[certs.size()]);
     }
 
     /**
@@ -447,12 +447,12 @@ public class DefaultPolicyParser {
      * @param resolve flag enabling/disabling property expansion
      * @return the first successfully loaded KeyStore or <code>null</code>
      */
-    protected KeyStore initKeyStore(List/*<KeystoreEntry>*/keystores,
+    protected KeyStore initKeyStore(List<KeystoreEntry>keystores,
             URL base, Properties system, boolean resolve) {
 
         for (int i = 0; i < keystores.size(); i++) {
             try {
-                DefaultPolicyScanner.KeystoreEntry ke = (DefaultPolicyScanner.KeystoreEntry) keystores
+                DefaultPolicyScanner.KeystoreEntry ke = keystores
                         .get(i);
                 if (resolve) {
                     ke.url = PolicyUtils.expandURL(ke.url, system);
@@ -465,7 +465,7 @@ public class DefaultPolicyParser {
                 }
                 KeyStore ks = KeyStore.getInstance(ke.type);
                 URL location = new URL(base, ke.url);
-                InputStream is = (InputStream) AccessController
+                InputStream is = AccessController
                         .doPrivileged(new PolicyUtils.URLLoader(location));
                 try {
                     ks.load(is, null);

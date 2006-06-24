@@ -22,11 +22,15 @@
 package org.apache.harmony.security.fortress;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.Provider;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -39,7 +43,7 @@ public class Services {
 
     // The HashMap that contains information about preferred implementations for
     // all serviceName.algName in the registered providers
-    private static HashMap services = new HashMap(512);
+    private static final Map<String, Provider.Service> services = new HashMap<String, Provider.Service>(512);
 
     // Need refresh flag
     private static boolean needRefresh; // = false;
@@ -50,13 +54,13 @@ public class Services {
     public static int refreshNumber = 1;
 
     // Registered providers
-    private static ArrayList providers = new ArrayList(20);
+    private static final List<Provider> providers = new ArrayList<Provider>(20);
 
     // Hash for quick provider access by name
-    private static HashMap providersNames = new HashMap(20);
+    private static final Map<String, Provider> providersNames = new HashMap<String, Provider>(20);
 
     static {
-        AccessController.doPrivileged(new java.security.PrivilegedAction() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 loadProviders();
                 return null;
@@ -64,7 +68,7 @@ public class Services {
         });
     }
 
-    // Load staticaly registered providers and init Services Info
+    // Load statically registered providers and init Services Info
     private static void loadProviders() {
         String providerClassName = null;
         int i = 1;
@@ -92,7 +96,7 @@ public class Services {
      * @return
      */
     public static Provider[] getProviders() {
-        return (Provider[]) providers.toArray(new Provider[providers.size()]);
+        return providers.toArray(new Provider[providers.size()]);
     }
 
     /**
@@ -100,8 +104,8 @@ public class Services {
      * 
      * @return
      */
-    public static java.util.List getProvidersList() {
-        return new ArrayList(providers);
+    public static List<Provider> getProvidersList() {
+        return new ArrayList<Provider>(providers);
     }
 
     /**
@@ -114,7 +118,7 @@ public class Services {
         if (name == null) {
             return null;
         }
-        return (Provider) providersNames.get(name);
+        return providersNames.get(name);
     }
 
     /**
@@ -141,7 +145,7 @@ public class Services {
      * @param providerNumber
      */
     public static void removeProvider(int providerNumber) {
-        Provider p = (Provider) providers.remove(providerNumber - 1);
+        Provider p = providers.remove(providerNumber - 1);
         providersNames.remove(p.getName());
         setNeedRefresh();
     }
@@ -159,8 +163,8 @@ public class Services {
         String alias;
         StringBuffer sb = new StringBuffer(128);
 
-        for (Iterator it1 = p.getServices().iterator(); it1.hasNext();) {
-            serv = (Provider.Service) it1.next();
+        for (Iterator<Provider.Service> it1 = p.getServices().iterator(); it1.hasNext();) {
+            serv = it1.next();
             type = serv.getType();
             sb.delete(0, sb.length());
             key = sb.append(type).append(".").append(
@@ -168,8 +172,8 @@ public class Services {
             if (!services.containsKey(key)) {
                 services.put(key, serv);
             }
-            for (Iterator it2 = Engine.door.getAliases(serv); it2.hasNext();) {
-                alias = (String) it2.next();
+            for (Iterator<String> it2 = Engine.door.getAliases(serv); it2.hasNext();) {
+                alias = it2.next();
                 sb.delete(0, sb.length());
                 key = sb.append(type).append(".").append(alias.toUpperCase())
                         .toString();
@@ -182,19 +186,19 @@ public class Services {
 
     /**
      * 
-     * Updates services hashtable for all registerd providers
+     * Updates services hashtable for all registered providers
      *  
      */
     public static void updateServiceInfo() {
         services.clear();
-        for (Iterator it = providers.iterator(); it.hasNext();) {
-            initServiceInfo((Provider) it.next());
+        for (Iterator<Provider> it = providers.iterator(); it.hasNext();) {
+            initServiceInfo(it.next());
         }
         needRefresh = false;
     }
 
     /**
-     * Returns true if sevices contain any provider information  
+     * Returns true if services contain any provider information  
      * @return
      */
     public static boolean isEmpty() {
@@ -204,13 +208,13 @@ public class Services {
     /**
      * 
      * Returns service description.
-     * Call refresh() befor.
+     * Call refresh() before.
      * 
      * @param key
      * @return
      */
     public static Provider.Service getService(String key) {
-        return (Provider.Service) services.get(key);
+        return services.get(key);
     }
 
     /**
@@ -219,9 +223,9 @@ public class Services {
     // FIXME remove debug function
     public static void printServices() {
         refresh();
-        java.util.Set s = services.keySet();
-        for (java.util.Iterator i = s.iterator(); i.hasNext();) {
-            Object key = i.next();
+        Set<String> s = services.keySet();
+        for (Iterator<String> i = s.iterator(); i.hasNext();) {
+            String key = i.next();
             System.out.println(key + "=" + services.get(key));
         }
     }
