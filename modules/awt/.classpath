@@ -4,7 +4,6 @@
 	<classpathentry output="bin/test" kind="src" path="src/test/api/java"/>
 	<classpathentry output="bin/main/windows" kind="src" path="src/main/java/windows"/>
 	<classpathentry output="bin/main/linux" kind="src" path="src/main/java/linux"/>
-	<classpathentry output="bin/test" kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry sourcepath="JUNIT_SRC_HOME/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="output" path="bin/main/common"/>
