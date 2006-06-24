@@ -23,8 +23,8 @@
             <resources location="src/main/resources" />
          </main>
          <test>
-            <java location="src/test/java" />
-            <resources location="src/test/resources" />
+            <java location="src/test/api/java" />
+            <resources location="src/test/api/resources" />
          </test>
          <natives location="src/natives" />
       </src>
