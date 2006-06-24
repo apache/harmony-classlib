@@ -23,6 +23,7 @@ import java.awt.event.*;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 
 import java.util.EventListener;
 import java.util.LinkedList;
@@ -65,18 +66,18 @@ public class AWTEventMulticaster implements
         s.writeObject(l);
     }
 
-    public static EventListener[] getListeners(EventListener l,
-            Class listenerType) throws ClassCastException
+    public static <T extends EventListener> T[] getListeners(EventListener l,
+            Class<T> listenerType) throws ClassCastException
     {
-        if (l == null) {
-            return new EventListener[0];
-        } else {
-            return (EventListener[]) addListeners(l, listenerType, new LinkedList()).toArray
-                    ((EventListener[]) java.lang.reflect.Array.newInstance(listenerType, 0));
+        T[] result = (T[])Array.newInstance(listenerType, 0);
+        if (l != null) {
+            LinkedList<EventListener> listeners = addListeners(l, listenerType, new LinkedList<EventListener>());
+            result = listeners.toArray(result);
         }
+        return result;
     }
 
-    private static LinkedList addListeners(EventListener l, Class listenerType, LinkedList list) {
+    private static LinkedList<EventListener> addListeners(EventListener l, Class<?> listenerType, LinkedList<EventListener> list) {
         if (l instanceof AWTEventMulticaster) {
             AWTEventMulticaster ml = (AWTEventMulticaster) l;
 
