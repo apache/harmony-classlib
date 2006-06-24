@@ -32,137 +32,55 @@ import javax.crypto.SecretKey;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public abstract class KeyStoreSpi {
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public KeyStoreSpi() {
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract Key engineGetKey(String alias, char[] password)
             throws NoSuchAlgorithmException, UnrecoverableKeyException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract Certificate[] engineGetCertificateChain(String alias);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract Certificate engineGetCertificate(String alias);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract Date engineGetCreationDate(String alias);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void engineSetKeyEntry(String alias, Key key,
             char[] password, Certificate[] chain) throws KeyStoreException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void engineSetKeyEntry(String alias, byte[] key,
             Certificate[] chain) throws KeyStoreException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void engineSetCertificateEntry(String alias,
             Certificate cert) throws KeyStoreException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void engineDeleteEntry(String alias)
             throws KeyStoreException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * FIXME: 1.5 updates are needed Enumeration <String>
-     */
     public abstract Enumeration<String> engineAliases();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean engineContainsAlias(String alias);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract int engineSize();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean engineIsKeyEntry(String alias);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean engineIsCertificateEntry(String alias);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String engineGetCertificateAlias(Certificate cert);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void engineStore(OutputStream stream, char[] password)
             throws IOException, NoSuchAlgorithmException, CertificateException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public void engineStore(KeyStore.LoadStoreParameter param)
             throws IOException, NoSuchAlgorithmException, CertificateException {
         throw new UnsupportedOperationException("Not Supported operation");
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void engineLoad(InputStream stream, char[] password)
             throws IOException, NoSuchAlgorithmException, CertificateException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public void engineLoad(KeyStore.LoadStoreParameter param)
             throws IOException, NoSuchAlgorithmException, CertificateException {
         if (param == null) {
@@ -197,10 +115,6 @@ public abstract class KeyStoreSpi {
                 "ProtectionParameter is neither PasswordProtection nor CallbackHandlerProtection");
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public KeyStore.Entry engineGetEntry(String alias,
             KeyStore.ProtectionParameter protParam) throws KeyStoreException,
             NoSuchAlgorithmException, UnrecoverableEntryException {
@@ -245,10 +159,6 @@ public abstract class KeyStoreSpi {
         throw new NoSuchAlgorithmException("Unknown KeyStore.Entry object");
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public void engineSetEntry(String alias, KeyStore.Entry entry,
             KeyStore.ProtectionParameter protParam) throws KeyStoreException {
         if (entry == null) {
@@ -298,18 +208,13 @@ public abstract class KeyStoreSpi {
                         + "nor TrustedCertificateEntry: " + entry.toString());
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * FIXME: 1.5 updates Class <? extends KeyStore.Entry> should be done
-     */
     public boolean engineEntryInstanceOf(String alias, 
             Class<? extends KeyStore.Entry> entryClass) {
         if (!engineContainsAlias(alias)) {
             return false;
         }
-        Class cl1 = null;
-        Class cl2 = null;
+        Class<?> cl1 = null;
+        Class<?> cl2 = null;
         try {
             if (engineIsCertificateEntry(alias)) {
                 cl1 = Class
@@ -333,12 +238,11 @@ public abstract class KeyStoreSpi {
         }
     }
 
-    //
-    // This method returns password wich is incapsulated in
-    // CallbackHandlerProtection object
-    // If there is no implementation of CallbackHandler then
-    // this method returns null
-    //
+    /*
+     * This method returns password which is encapsulated in
+     * CallbackHandlerProtection object If there is no implementation of
+     * CallbackHandler then this method returns null
+     */
     static char[] getPasswordFromCallBack(KeyStore.ProtectionParameter protParam)
             throws UnrecoverableEntryException {
         if (protParam == null) {
@@ -356,7 +260,7 @@ public abstract class KeyStoreSpi {
 
         }
         try {
-            Class cl = Class.forName(clName);
+            Class<?> cl = Class.forName(clName);
             CallbackHandler cbHand = (CallbackHandler) cl.newInstance();
             PasswordCallback[] pwCb = { new PasswordCallback("password: ", true) };
             cbHand.handle(pwCb);

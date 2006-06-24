@@ -26,56 +26,29 @@ import java.util.Vector;
 import java.util.Arrays;
 
 /**
- * @com.intel.drl.spec_ref 
+ * 
  * @deprecated
  */
 public abstract class Identity implements Principal, Serializable {
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = 3609922007826600659L;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private String name;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private PublicKey publicKey;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private String info = "no additional info";
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private IdentityScope scope;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
-    private Vector certificates;
+    private Vector<Certificate> certificates;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     protected Identity() {
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     public Identity(String name) {
         this.name = name;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     public Identity(String name, IdentityScope scope)
             throws KeyManagementException {
         this(name);
@@ -85,9 +58,6 @@ public abstract class Identity implements Principal, Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     public void addCertificate(Certificate certificate)
             throws KeyManagementException {
         SecurityManager sm = System.getSecurityManager();
@@ -104,14 +74,14 @@ public abstract class Identity implements Principal, Serializable {
             publicKey = certPK;
         }
         if (certificates == null) {
-            certificates = new Vector();
+            certificates = new Vector<Certificate>();
         }
         certificates.add(certificate);
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     private static boolean checkKeysEqual(PublicKey pk1, PublicKey pk2) {
         // first, they should have the same format
         // second, their encoded form must be the same
@@ -130,9 +100,9 @@ public abstract class Identity implements Principal, Serializable {
         return Arrays.equals(pk1.getEncoded(), pk2.getEncoded());
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public void removeCertificate(Certificate certificate)
             throws KeyManagementException {
         SecurityManager sm = System.getSecurityManager();
@@ -144,9 +114,9 @@ public abstract class Identity implements Principal, Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public Certificate[] certificates() {
         if (certificates == null) {
             return new Certificate[0];
@@ -156,9 +126,9 @@ public abstract class Identity implements Principal, Serializable {
         return ret;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     protected boolean identityEquals(Identity identity) {
         if (!name.equals(identity.name)) {
             return false;
@@ -171,9 +141,9 @@ public abstract class Identity implements Principal, Serializable {
         return checkKeysEqual(publicKey, identity.publicKey);
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public String toString(boolean detailed) {
         String s = toString();
         if (detailed) {
@@ -182,16 +152,16 @@ public abstract class Identity implements Principal, Serializable {
         return s;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public final IdentityScope getScope() {
         return scope;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public void setPublicKey(PublicKey key) throws KeyManagementException {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -209,16 +179,16 @@ public abstract class Identity implements Principal, Serializable {
         certificates = null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public PublicKey getPublicKey() {
         return publicKey;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public void setInfo(String info) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -227,16 +197,16 @@ public abstract class Identity implements Principal, Serializable {
         this.info = info;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public String getInfo() {
         return info;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -252,16 +222,16 @@ public abstract class Identity implements Principal, Serializable {
         return identityEquals(i);
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public final String getName() {
         return name;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public int hashCode() {
         int hash = 0;
         if (name != null) {
@@ -273,9 +243,9 @@ public abstract class Identity implements Principal, Serializable {
         return hash;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
+      
+
     public String toString() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {

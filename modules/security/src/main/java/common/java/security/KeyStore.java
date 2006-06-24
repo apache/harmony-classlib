@@ -40,11 +40,6 @@ import javax.security.auth.callback.CallbackHandler;
 import org.apache.harmony.security.fortress.Engine;
 
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public class KeyStore {
 
     // Store KeyStore SERVICE name
@@ -74,10 +69,6 @@ public class KeyStore {
     // Store used type
     private final String type;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected KeyStore(KeyStoreSpi keyStoreSpi, Provider provider, String type) {
         this.type = type;
         this.provider = provider;
@@ -86,9 +77,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
-     * throws NullPointerException if type is null
+     * @throws NullPointerException if type is null
      */
     public static KeyStore getInstance(String type) throws KeyStoreException {
         if (type == null) {
@@ -105,9 +94,9 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
      * 
-     * throws NullPointerException if type is null (instead of
+     * 
+     * @throws NullPointerException if type is null (instead of
      * NoSuchAlgorithmException) as in 1.4 release
      */
     public static KeyStore getInstance(String type, String provider)
@@ -127,7 +116,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * throws NullPointerException if type is null (instead of
      * NoSuchAlgorithmException) as in 1.4 release
@@ -154,13 +143,13 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public static final String getDefaultType() {
-        String dt = (String) AccessController.doPrivileged(
-                new java.security.PrivilegedAction() {
-                    public Object run() {
+        String dt = AccessController.doPrivileged(
+                new PrivilegedAction<String>() {
+                    public String run() {
                         return Security.getProperty(PROPERTYNAME);
                     }
                 }
@@ -169,7 +158,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final Provider getProvider() {
@@ -177,7 +166,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final String getType() {
@@ -185,7 +174,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final Key getKey(String alias, char[] password)
@@ -198,7 +187,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final Certificate[] getCertificateChain(String alias)
@@ -210,7 +199,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final Certificate getCertificate(String alias)
@@ -222,7 +211,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final Date getCreationDate(String alias) throws KeyStoreException {
@@ -233,7 +222,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * 1.4.2 and 1.5 releases throw unspecified NullPointerException -
      * when alias is null IllegalArgumentException - when password is null
@@ -261,7 +250,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final void setKeyEntry(String alias, byte[] key, Certificate[] chain)
@@ -273,7 +262,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * 1.4.2 and 1.5 releases throw unspecified NullPointerExcedption
      * when alias is null
@@ -290,7 +279,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * 1.4.2 and 1.5 releases throw NullPointerExcedption when alias is null
      */
@@ -305,9 +294,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
      * 
-     * FIXME: update to Enumeration <String>
      */
     public final Enumeration<String> aliases() throws KeyStoreException {
         if (!isInit) {
@@ -317,7 +304,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * 1.4.2 and 1.5 releases throw unspecified NullPointerException when
      * alias is null
@@ -333,7 +320,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final int size() throws KeyStoreException {
@@ -344,7 +331,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * jdk1.4.2 and 1.5 releases throw unspecified NullPointerException
      * when alias is null
@@ -360,7 +347,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * jdk1.4.2 and 1.5 releases throw unspecified NullPointerException
      * when alias is null
@@ -377,7 +364,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final String getCertificateAlias(Certificate cert)
@@ -389,7 +376,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * throws IOException when stream or password is null
      */
@@ -409,7 +396,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final void store(LoadStoreParameter param) throws KeyStoreException,
@@ -424,7 +411,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final void load(InputStream stream, char[] password)
@@ -434,7 +421,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final void load(LoadStoreParameter param) throws IOException,
@@ -447,7 +434,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      *  
      */
     public final Entry getEntry(String alias, ProtectionParameter param)
@@ -463,7 +450,7 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * 
      * 
      * 1.5 release throws unspecified NullPointerExcedption when alias or
      * entry is null
@@ -483,17 +470,17 @@ public class KeyStore {
     }
 
     /**
-     * @com.intel.drl.spec_ref
      * 
-     * FIXME: for 1.5 update to Class <? extends KeyStore.Entry>
      */
     public final boolean entryInstanceOf(String alias, 
             Class<? extends KeyStore.Entry> entryClass)
             throws KeyStoreException {
-        if (alias == null)
+        if (alias == null) {
             throw new NullPointerException("alias is null");
-        if (entryClass == null)
+        }
+        if (entryClass == null) {
             throw new NullPointerException("entryClass is null");
+        }
 
         if (!isInit) {
             throw new KeyStoreException(NOTINITKEYSTORE);
@@ -503,40 +490,42 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public abstract static class Builder {
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         protected Builder() {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public abstract KeyStore getKeyStore() throws KeyStoreException;
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public abstract ProtectionParameter getProtectionParameter(String alise)
                 throws KeyStoreException;
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public static Builder newInstance(KeyStore keyStore,
                 ProtectionParameter protectionParameter) {
-            if (keyStore == null)
+            if (keyStore == null) {
                 throw new NullPointerException("keystore is null");
-            if (protectionParameter == null)
+            }
+            if (protectionParameter == null) {
                 throw new NullPointerException("protectionParameter is null");
+            }
 
             if (!keyStore.isInit) {
                 throw new IllegalArgumentException(NOTINITKEYSTORE);
@@ -546,7 +535,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public static Builder newInstance(String type, Provider provider,
@@ -583,7 +572,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public static Builder newInstance(String type, Provider provider,
@@ -599,11 +588,10 @@ public class KeyStore {
         }
 
         /*
-         * This class is implemenation of abstract class KeyStore.Builder
+         * This class is implementation of abstract class KeyStore.Builder
          * 
          * @author Vera Petrashkova
          * 
-         * @version
          */
         private static class BuilderImpl extends Builder {
             // Store used KeyStore
@@ -700,7 +688,7 @@ public class KeyStore {
 
                     // load KeyStore from file
                     AccessController.doPrivileged(
-                            new PrivilegedExceptionAction() {
+                            new PrivilegedExceptionAction<Object>() {
                                 public Object run() throws Exception {
                                     if (fileForLoad != null) {
                                         FileInputStream fis = null;
@@ -758,8 +746,6 @@ public class KeyStore {
          * Implementation of LoadStoreParameter interface
          * 
          * @author Vera Petrashkova
-         * 
-         * @version
          */
         private class TmpLSParameter implements LoadStoreParameter {
 
@@ -784,7 +770,7 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public static class CallbackHandlerProtection implements
@@ -793,7 +779,7 @@ public class KeyStore {
         private final CallbackHandler callbackHandler;
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public CallbackHandlerProtection(CallbackHandler handler) {
@@ -804,7 +790,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public CallbackHandler getCallbackHandler() {
@@ -814,7 +800,7 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public static interface Entry {
@@ -822,12 +808,12 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public static interface LoadStoreParameter {
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public ProtectionParameter getProtectionParameter();
@@ -835,17 +821,17 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public static class PasswordProtection implements ProtectionParameter,
             Destroyable {
 
-        // Store passwoed
+        // Store password
         private char[] password;
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public PasswordProtection(char[] password) {
@@ -853,7 +839,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public synchronized char[] getPassword() {
@@ -864,7 +850,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public synchronized void destroy() throws DestroyFailedException {
@@ -873,7 +859,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public synchronized boolean isDestroyed() {
@@ -883,7 +869,7 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public static interface ProtectionParameter {
@@ -891,7 +877,7 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public static final class PrivateKeyEntry implements Entry {
@@ -902,19 +888,21 @@ public class KeyStore {
         private PrivateKey privateKey;
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public PrivateKeyEntry(PrivateKey privateKey, Certificate[] chain) {
-            if (privateKey == null)
+            if (privateKey == null) {
                 throw new NullPointerException("privateKey is null");
-            if (chain == null)
+            }
+            if (chain == null) {
                 throw new NullPointerException("chain is null");
+            }
 
             if (chain.length == 0) {
                 throw new IllegalArgumentException("chain length equals 0");
             }
-            // Match algorithm of private key and algorithm of publick key from
+            // Match algorithm of private key and algorithm of public key from
             // the end certificate
             String s = chain[0].getType();
             if (!(chain[0].getPublicKey().getAlgorithm()).equals(privateKey
@@ -938,7 +926,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public PrivateKey getPrivateKey() {
@@ -946,7 +934,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public Certificate[] getCertificateChain() {
@@ -954,7 +942,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public Certificate getCertificate() {
@@ -962,7 +950,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public String toString() {
@@ -980,7 +968,7 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public static final class SecretKeyEntry implements Entry {
@@ -989,7 +977,7 @@ public class KeyStore {
         private final SecretKey secretKey;
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public SecretKeyEntry(SecretKey secretKey) {
@@ -1000,7 +988,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public SecretKey getSecretKey() {
@@ -1008,7 +996,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public String toString() {
@@ -1020,7 +1008,7 @@ public class KeyStore {
 
     /**
      * 
-     * @com.intel.drl.spec_ref
+     * 
      * 
      */
     public static final class TrustedCertificateEntry implements Entry {
@@ -1029,7 +1017,7 @@ public class KeyStore {
         private final Certificate trustCertificate;
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public TrustedCertificateEntry(Certificate trustCertificate) {
@@ -1040,7 +1028,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public Certificate getTrustedCertificate() {
@@ -1048,7 +1036,7 @@ public class KeyStore {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * 
          *  
          */
         public String toString() {

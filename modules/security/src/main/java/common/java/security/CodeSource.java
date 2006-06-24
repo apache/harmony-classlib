@@ -42,16 +42,8 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
 
-
-/**
- * @com.intel.drl.spec_ref
- */
-
 public class CodeSource implements Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = 4977541819976013951L;
 
     // Location of this CodeSource object
@@ -87,9 +79,6 @@ public class CodeSource implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     public CodeSource(URL location, CodeSigner[] signers) {
         this.location = location;
         if (signers != null) {
@@ -176,18 +165,15 @@ public class CodeSource implements Serializable {
             return null;
         }
         // Extract Certificates from the CodeSigner-s
-        ArrayList v = new ArrayList();
+        ArrayList<Certificate> v = new ArrayList<Certificate>();
         for (int i = 0; i < signers.length; i++) {
             v.addAll(signers[i].getSignerCertPath().getCertificates());
         }
 
-        certs = (Certificate[]) v.toArray(new Certificate[v.size()]);
+        certs = v.toArray(new Certificate[v.size()]);
         return certs;
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     public final CodeSigner[] getCodeSigners() {
 
         if (signers != null) {
@@ -202,8 +188,8 @@ public class CodeSource implements Serializable {
         }
 
         X500Principal prevIssuer = null;
-        ArrayList list = new ArrayList(certs.length);
-        ArrayList asigners = new ArrayList();
+        ArrayList<Certificate> list = new ArrayList<Certificate>(certs.length);
+        ArrayList<CodeSigner> asigners = new ArrayList<CodeSigner>();
 
         // The presumption is that the chains of certificates are placed
         // according to the CertPath agreement:
@@ -261,7 +247,7 @@ public class CodeSource implements Serializable {
     // Makes an CertPath from a given List of X509Certificate-s. 
     // @param list
     // @return CertPath, or null if CertPath cannot be made  
-    private CertPath makeCertPath(List list) {
+    private CertPath makeCertPath(List<? extends Certificate> list) {
         if (factory == null) {
             try {
                 factory = CertificateFactory.getInstance("X.509");
@@ -364,13 +350,13 @@ public class CodeSource implements Serializable {
 
                 // 1. According to the spec, an empty string will be considered 
                 // as "localhost" in the SocketPermission
-                // 2. 'file://' urls will have an empty getHost()
+                // 2. 'file://' URLs will have an empty getHost()
                 // so, let's make a special processing of localhost-s, I do 
                 // believe this'll improve performance of file:// code sources 
 
                 //
                 // Don't have to evaluate both the boolean-s each time.
-                // It's better to evalueate them directly under if() statement.
+                // It's better to evaluate them directly under if() statement.
                 // 
                 // boolean thisIsLocalHost = thisHost.length() == 0 || "localhost".equals(thisHost);
                 // boolean thatIsLocalHost = thatHost.length() == 0 || "localhost".equals(thatHost);
@@ -429,7 +415,7 @@ public class CodeSource implements Serializable {
                         .length() - 2))) {
                     return false;
                 }
-                // no futher separators(s) allowed
+                // no further separators(s) allowed
                 if (thatFile.indexOf("/", thisFile.length() - 1) != -1) {
                     return false;
                 }
@@ -469,8 +455,7 @@ public class CodeSource implements Serializable {
 	 * @return a printable representation for the receiver.
 	 */
     public String toString() {
-        //FIXME 1.5 StringBuffer => StringBuilder
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("CodeSource, url=");
         buf.append(location == null ? "<null>" : location.toString());
 
@@ -493,9 +478,6 @@ public class CodeSource implements Serializable {
         return buf.toString();
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.writeObject(location);
         if (certs == null || certs.length == 0) {
@@ -520,16 +502,13 @@ public class CodeSource implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private void readObject(ObjectInputStream ois) throws IOException,
             ClassNotFoundException {
         location = (URL) ois.readObject();
         int certsCount = ois.readInt();
         certs = null;
         if (certsCount != 0) {
-            certs = new java.security.cert.Certificate[certsCount];
+            certs = new Certificate[certsCount];
             for (int i = 0; i < certsCount; i++) {
                 String type = ois.readUTF();
                 CertificateFactory factory;

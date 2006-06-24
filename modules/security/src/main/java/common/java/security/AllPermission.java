@@ -14,19 +14,8 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
-
 package java.security;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectStreamField;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
 
 /**
  * Subclass of Permission whose instances imply all other permissions. Granting
@@ -40,7 +29,7 @@ public final class AllPermission extends Permission {
      */
     private static final long serialVersionUID = -2916474571451318075L;
 
-    // Pemission name
+    // Permission name
     private static final String ALL_PERMISSIONS = "<all permissions>";
 
     // Actions name
@@ -48,7 +37,7 @@ public final class AllPermission extends Permission {
 
 	/**
 	 * Constructs a new instance of this class. The two argument version is
-	 * provided for class <code>Policy</code> so that it has a consistant call
+	 * provided for class <code>Policy</code> so that it has a consistent call
 	 * pattern across all Permissions. The name and action list are both
 	 * ignored.
 	 * 
@@ -71,7 +60,7 @@ public final class AllPermission extends Permission {
 	/**
 	 * Compares the argument to the receiver, and answers true if they represent
 	 * the <em>same</em> object using a class specific comparison. All
-	 * AllPermissions are equal to eachother.
+	 * AllPermissions are equal to each other.
 	 * 
 	 * @param obj
 	 *            the object to compare with this object
@@ -129,119 +118,5 @@ public final class AllPermission extends Permission {
 	 */
     public PermissionCollection newPermissionCollection() {
         return new AllPermissionCollection();
-    }
-}
-
-/**
- * Specific PermissionCollection for storing AllPermissions. All instances of
- * AllPermission are equivalent, so it is enough to store a single added
- * instance.
- * 
- */
-
-final class AllPermissionCollection extends PermissionCollection {
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private static final long serialVersionUID = -4023755556366636806L;
-
-    private static final ObjectStreamField[] serialPersistentFields = { new ObjectStreamField(
-        "all_allowed", Boolean.TYPE), };
-
-    // Single element of collection.
-    private transient Permission all;
-
-    /**
-     * Adds an AllPermission to the collection.
-     */
-    public void add(Permission permission) {
-        if (isReadOnly()) {
-            throw new SecurityException("collection is read-only");
-        }
-        if (!(permission instanceof AllPermission)) {
-            throw new IllegalArgumentException("invalid permission: "
-                + permission);
-        }
-        all = permission;
-    }
-
-    /**
-     * Returns enumeration of the collection.
-     */
-    public Enumeration elements() {
-        return new SingletonEnumeration(all);
-    }
-
-    /**
-     * An auxiliary implementation for enumerating a single object.
-     * 
-     */
-    final static class SingletonEnumeration implements Enumeration {
-
-        private Object element;
-
-        /**
-         * Constructor taking the single element.
-         */
-        public SingletonEnumeration(Object single) {
-            element = single;
-        }
-
-        /**
-         * Returns true if the element is not enumerated yet.
-         */
-        public boolean hasMoreElements() {
-            return element != null;
-        }
-
-        /**
-         * Returns the element and clears internal reference to it.
-         */
-        public Object nextElement() {
-            if (element == null) {
-                throw new NoSuchElementException("no more elements");
-            }
-            Object last = element;
-            element = null;
-            return last;
-        }
-    }
-
-	/**
-	 * Indicates whether the argument permission is implied by the receiver.
-	 * AllPermission objects imply all other permissions.
-	 * 
-	 * @return boolean <code>true</code> if the argument permission is implied
-	 *         by the receiver, and <code>false</code> if it is not.
-	 * @param permission
-	 *            java.security.Permission the permission to check
-	 */
-    public boolean implies(Permission permission) {
-        return all != null;
-    }
-
-    /**
-     * Writes accordingly to expected format:
-     * <dl>
-     * <dt>boolean all_allowed
-     * <dd>This is set to true if this collection is not empty
-     * </dl>
-     */
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        ObjectOutputStream.PutField fields = out.putFields();
-        fields.put("all_allowed", all != null);
-        out.writeFields();
-    }
-
-    /**
-     * Restores internal state.
-     */
-    private void readObject(java.io.ObjectInputStream in) throws IOException,
-        ClassNotFoundException {
-        ObjectInputStream.GetField fields = in.readFields();
-        if (fields.get("all_allowed", false)) {
-            all = new AllPermission();
-        }
     }
 }
