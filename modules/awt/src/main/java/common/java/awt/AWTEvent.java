@@ -67,9 +67,9 @@ public abstract class AWTEvent extends EventObject {
 
     public static final int RESERVED_ID_MAX = 1999;
 
-    private static final Hashtable eventsMap = new Hashtable();
+    private static final Hashtable<Integer, EventDescriptor> eventsMap = new Hashtable<Integer, EventDescriptor>();
 
-    private static EventConverter converter = null;
+    private static EventConverter converter;
 
     protected int id;
 
@@ -78,87 +78,87 @@ public abstract class AWTEvent extends EventObject {
     boolean dispatchedByKFM;
 
     static {
-        eventsMap.put(new Integer(KeyEvent.KEY_TYPED),
+        eventsMap.put(Integer.valueOf(KeyEvent.KEY_TYPED),
                 new EventDescriptor(KEY_EVENT_MASK, KeyListener.class));
-        eventsMap.put(new Integer(KeyEvent.KEY_PRESSED),
+        eventsMap.put(Integer.valueOf(KeyEvent.KEY_PRESSED),
                 new EventDescriptor(KEY_EVENT_MASK, KeyListener.class));
-        eventsMap.put(new Integer(KeyEvent.KEY_RELEASED),
+        eventsMap.put(Integer.valueOf(KeyEvent.KEY_RELEASED),
                 new EventDescriptor(KEY_EVENT_MASK, KeyListener.class));
-        eventsMap.put(new Integer(MouseEvent.MOUSE_CLICKED),
+        eventsMap.put(Integer.valueOf(MouseEvent.MOUSE_CLICKED),
                 new EventDescriptor(MOUSE_EVENT_MASK, MouseListener.class));
-        eventsMap.put(new Integer(MouseEvent.MOUSE_PRESSED),
+        eventsMap.put(Integer.valueOf(MouseEvent.MOUSE_PRESSED),
                 new EventDescriptor(MOUSE_EVENT_MASK, MouseListener.class));
-        eventsMap.put(new Integer(MouseEvent.MOUSE_RELEASED),
+        eventsMap.put(Integer.valueOf(MouseEvent.MOUSE_RELEASED),
                 new EventDescriptor(MOUSE_EVENT_MASK, MouseListener.class));
-        eventsMap.put(new Integer(MouseEvent.MOUSE_MOVED),
+        eventsMap.put(Integer.valueOf(MouseEvent.MOUSE_MOVED),
                 new EventDescriptor(MOUSE_MOTION_EVENT_MASK, MouseMotionListener.class));
-        eventsMap.put(new Integer(MouseEvent.MOUSE_ENTERED),
+        eventsMap.put(Integer.valueOf(MouseEvent.MOUSE_ENTERED),
                 new EventDescriptor(MOUSE_EVENT_MASK, MouseListener.class));
-        eventsMap.put(new Integer(MouseEvent.MOUSE_EXITED),
+        eventsMap.put(Integer.valueOf(MouseEvent.MOUSE_EXITED),
                 new EventDescriptor(MOUSE_EVENT_MASK, MouseListener.class));
-        eventsMap.put(new Integer(MouseEvent.MOUSE_DRAGGED),
+        eventsMap.put(Integer.valueOf(MouseEvent.MOUSE_DRAGGED),
                 new EventDescriptor(MOUSE_MOTION_EVENT_MASK, MouseMotionListener.class));
-        eventsMap.put(new Integer(MouseEvent.MOUSE_WHEEL),
+        eventsMap.put(Integer.valueOf(MouseEvent.MOUSE_WHEEL),
                 new EventDescriptor(MOUSE_WHEEL_EVENT_MASK, MouseWheelListener.class));
-        eventsMap.put(new Integer(ComponentEvent.COMPONENT_MOVED),
+        eventsMap.put(Integer.valueOf(ComponentEvent.COMPONENT_MOVED),
                 new EventDescriptor(COMPONENT_EVENT_MASK, ComponentListener.class));
-        eventsMap.put(new Integer(ComponentEvent.COMPONENT_RESIZED),
+        eventsMap.put(Integer.valueOf(ComponentEvent.COMPONENT_RESIZED),
                 new EventDescriptor(COMPONENT_EVENT_MASK, ComponentListener.class));
-        eventsMap.put(new Integer(ComponentEvent.COMPONENT_SHOWN),
+        eventsMap.put(Integer.valueOf(ComponentEvent.COMPONENT_SHOWN),
                 new EventDescriptor(COMPONENT_EVENT_MASK, ComponentListener.class));
-        eventsMap.put(new Integer(ComponentEvent.COMPONENT_HIDDEN),
+        eventsMap.put(Integer.valueOf(ComponentEvent.COMPONENT_HIDDEN),
                 new EventDescriptor(COMPONENT_EVENT_MASK, ComponentListener.class));
-        eventsMap.put(new Integer(FocusEvent.FOCUS_GAINED),
+        eventsMap.put(Integer.valueOf(FocusEvent.FOCUS_GAINED),
                 new EventDescriptor(FOCUS_EVENT_MASK, FocusListener.class));
-        eventsMap.put(new Integer(FocusEvent.FOCUS_LOST),
+        eventsMap.put(Integer.valueOf(FocusEvent.FOCUS_LOST),
                 new EventDescriptor(FOCUS_EVENT_MASK, FocusListener.class));
-        eventsMap.put(new Integer(PaintEvent.PAINT),
+        eventsMap.put(Integer.valueOf(PaintEvent.PAINT),
                 new EventDescriptor(PAINT_EVENT_MASK, null));
-        eventsMap.put(new Integer(PaintEvent.UPDATE),
+        eventsMap.put(Integer.valueOf(PaintEvent.UPDATE),
                 new EventDescriptor(PAINT_EVENT_MASK, null));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_OPENED),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_OPENED),
                 new EventDescriptor(WINDOW_EVENT_MASK, WindowListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_CLOSING),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_CLOSING),
                 new EventDescriptor(WINDOW_EVENT_MASK, WindowListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_CLOSED),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_CLOSED),
                 new EventDescriptor(WINDOW_EVENT_MASK, WindowListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_DEICONIFIED),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_DEICONIFIED),
                 new EventDescriptor(WINDOW_EVENT_MASK, WindowListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_ICONIFIED),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_ICONIFIED),
                 new EventDescriptor(WINDOW_EVENT_MASK, WindowListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_STATE_CHANGED),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_STATE_CHANGED),
                 new EventDescriptor(WINDOW_STATE_EVENT_MASK, WindowStateListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_LOST_FOCUS),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_LOST_FOCUS),
                 new EventDescriptor(WINDOW_FOCUS_EVENT_MASK, WindowFocusListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_GAINED_FOCUS),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_GAINED_FOCUS),
                 new EventDescriptor(WINDOW_FOCUS_EVENT_MASK, WindowFocusListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_DEACTIVATED),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_DEACTIVATED),
                 new EventDescriptor(WINDOW_EVENT_MASK, WindowListener.class));
-        eventsMap.put(new Integer(WindowEvent.WINDOW_ACTIVATED),
+        eventsMap.put(Integer.valueOf(WindowEvent.WINDOW_ACTIVATED),
                 new EventDescriptor(WINDOW_EVENT_MASK, WindowListener.class));
-        eventsMap.put(new Integer(HierarchyEvent.HIERARCHY_CHANGED),
+        eventsMap.put(Integer.valueOf(HierarchyEvent.HIERARCHY_CHANGED),
                 new EventDescriptor(HIERARCHY_EVENT_MASK, HierarchyListener.class));
-        eventsMap.put(new Integer(HierarchyEvent.ANCESTOR_MOVED),
+        eventsMap.put(Integer.valueOf(HierarchyEvent.ANCESTOR_MOVED),
                 new EventDescriptor(HIERARCHY_BOUNDS_EVENT_MASK, HierarchyBoundsListener.class));
-        eventsMap.put(new Integer(HierarchyEvent.ANCESTOR_RESIZED),
+        eventsMap.put(Integer.valueOf(HierarchyEvent.ANCESTOR_RESIZED),
                 new EventDescriptor(HIERARCHY_BOUNDS_EVENT_MASK, HierarchyBoundsListener.class));
-        eventsMap.put(new Integer(ContainerEvent.COMPONENT_ADDED),
+        eventsMap.put(Integer.valueOf(ContainerEvent.COMPONENT_ADDED),
                 new EventDescriptor(CONTAINER_EVENT_MASK, ContainerListener.class));
-        eventsMap.put(new Integer(ContainerEvent.COMPONENT_REMOVED),
+        eventsMap.put(Integer.valueOf(ContainerEvent.COMPONENT_REMOVED),
                 new EventDescriptor(CONTAINER_EVENT_MASK, ContainerListener.class));
-        eventsMap.put(new Integer(InputMethodEvent.INPUT_METHOD_TEXT_CHANGED),
+        eventsMap.put(Integer.valueOf(InputMethodEvent.INPUT_METHOD_TEXT_CHANGED),
                 new EventDescriptor(INPUT_METHOD_EVENT_MASK, InputMethodListener.class));
-        eventsMap.put(new Integer(InputMethodEvent.CARET_POSITION_CHANGED),
+        eventsMap.put(Integer.valueOf(InputMethodEvent.CARET_POSITION_CHANGED),
                 new EventDescriptor(INPUT_METHOD_EVENT_MASK, InputMethodListener.class));
-        eventsMap.put(new Integer(InvocationEvent.INVOCATION_DEFAULT),
+        eventsMap.put(Integer.valueOf(InvocationEvent.INVOCATION_DEFAULT),
                 new EventDescriptor(INVOCATION_EVENT_MASK, null));
-        eventsMap.put(new Integer(ItemEvent.ITEM_STATE_CHANGED),
+        eventsMap.put(Integer.valueOf(ItemEvent.ITEM_STATE_CHANGED),
                 new EventDescriptor(ITEM_EVENT_MASK, ItemListener.class));
-        eventsMap.put(new Integer(TextEvent.TEXT_VALUE_CHANGED),
+        eventsMap.put(Integer.valueOf(TextEvent.TEXT_VALUE_CHANGED),
                 new EventDescriptor(TEXT_EVENT_MASK, TextListener.class));
-        eventsMap.put(new Integer(ActionEvent.ACTION_PERFORMED),
+        eventsMap.put(Integer.valueOf(ActionEvent.ACTION_PERFORMED),
                 new EventDescriptor(ACTION_EVENT_MASK, ActionListener.class));
-        eventsMap.put(new Integer(AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED),
+        eventsMap.put(Integer.valueOf(AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED),
                 new EventDescriptor(ADJUSTMENT_EVENT_MASK, AdjustmentListener.class));
         converter = new EventConverter();
     }
@@ -263,23 +263,23 @@ public abstract class AWTEvent extends EventObject {
 
         final long eventMask;
 
-        final Class listenerType;
+        final Class<?> listenerType;
 
-        EventDescriptor(long eventMask, Class listenerType) {
+        EventDescriptor(long eventMask, Class<?> listenerType) {
             this.eventMask = eventMask;
             this.listenerType = listenerType;
         }
 
     }
-    static final class EventTypeLookup {
-        private AWTEvent lastEvent = null;
-        private EventDescriptor lastEventDescriptor = null;
+    static final class EventTypeLookup<T> {
+        private AWTEvent lastEvent;
+        private EventDescriptor lastEventDescriptor;
 
         EventDescriptor getEventDescriptor(AWTEvent event) {
             synchronized (this) {
                 if (event != lastEvent) {
                     lastEvent = event;
-                    lastEventDescriptor = (EventDescriptor) eventsMap.get(new Integer(event.id));
+                    lastEventDescriptor = eventsMap.get(Integer.valueOf(event.id));
                 }
 
                 return lastEventDescriptor;
@@ -322,7 +322,7 @@ public abstract class AWTEvent extends EventObject {
         Event convertAdjustmentEvent(AdjustmentEvent ae) {
             //TODO: Event.SCROLL_BEGIN/SCROLL_END
             return new Event(ae.source, ae.id + ae.getAdjustmentType() - 1,
-                    new Integer(ae.getValue()));
+                    Integer.valueOf(ae.getValue()));
         }
 
         Event convertComponentEvent(ComponentEvent ce) {
@@ -345,7 +345,7 @@ public abstract class AWTEvent extends EventObject {
                 Choice choice = (Choice) source;
                 idx = choice.getSelectedIndex();
             }
-            Object arg = idx >= 0 ? new Integer(idx) : null;
+            Object arg = idx >= 0 ? Integer.valueOf(idx) : null;
             return new Event(source, oldId, arg);
         }
 
