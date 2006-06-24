@@ -35,32 +35,74 @@ import org.apache.harmony.awt.wtk.NativeWindow;
 public class Frame extends Window implements MenuContainer {
     private static final long serialVersionUID = 2673458971256075116L;
 
+    /**
+     * @deprecated Please use {@link Cursor#DEFAULT_CURSOR}.
+     */
     public static final int DEFAULT_CURSOR = 0;
 
+    /**
+     * @deprecated Please use {@link Cursor#CROSSHAIR_CURSOR}.
+     */
     public static final int CROSSHAIR_CURSOR = 1;
 
+    /**
+     * @deprecated Please use {@link Cursor#TEXT_CURSOR}.
+     */
     public static final int TEXT_CURSOR = 2;
 
+    /**
+     * @deprecated Please use {@link Cursor#WAIT_CURSOR}.
+     */
     public static final int WAIT_CURSOR = 3;
 
+    /**
+     * @deprecated Please use {@link Cursor#SW_RESIZE_CURSOR}.
+     */
     public static final int SW_RESIZE_CURSOR = 4;
 
+    /**
+     * @deprecated Please use {@link Cursor#SE_RESIZE_CURSOR}.
+     */
     public static final int SE_RESIZE_CURSOR = 5;
 
+    /**
+     * @deprecated Please use {@link Cursor#NW_RESIZE_CURSOR}.
+     */
     public static final int NW_RESIZE_CURSOR = 6;
 
+    /**
+     * @deprecated Please use {@link Cursor#NE_RESIZE_CURSOR}.
+     */
     public static final int NE_RESIZE_CURSOR = 7;
 
+    /**
+     * @deprecated Please use {@link Cursor#N_RESIZE_CURSOR}.
+     */
     public static final int N_RESIZE_CURSOR = 8;
 
+    /**
+     * @deprecated Please use {@link Cursor#S_RESIZE_CURSOR}.
+     */
     public static final int S_RESIZE_CURSOR = 9;
 
+    /**
+     * @deprecated Please use {@link Cursor#W_RESIZE_CURSOR}.
+     */
     public static final int W_RESIZE_CURSOR = 10;
 
+    /**
+     * @deprecated Please use {@link Cursor#E_RESIZE_CURSOR}.
+     */
     public static final int E_RESIZE_CURSOR = 11;
 
+    /**
+     * @deprecated Please use {@link Cursor#HAND_CURSOR}.
+     */
     public static final int HAND_CURSOR = 12;
 
+    /**
+     * @deprecated Please use {@link Cursor#MOVE_CURSOR}.
+     */
     public static final int MOVE_CURSOR = 13;
 
     public static final int NORMAL = 0;
@@ -530,24 +572,24 @@ public class Frame extends Window implements MenuContainer {
 
 
     static final class AllFrames {
-        private final ArrayList frames = new ArrayList();
+        private final ArrayList<WeakReference<Frame>> frames = new ArrayList<WeakReference<Frame>>();
 
         void add(Frame f) {
-            frames.add(new WeakReference(f));
+            frames.add(new WeakReference<Frame>(f));
         }
 
         Frame[] getFrames() {
-            ArrayList aliveFrames = new ArrayList();
+            ArrayList<Frame> aliveFrames = new ArrayList<Frame>();
 
-            for(Iterator it = frames.iterator(); it.hasNext(); ) {
-                WeakReference ref = (WeakReference)it.next();
-                Frame f = (Frame)ref.get();
+            for(Iterator<WeakReference<Frame>> it = frames.iterator(); it.hasNext(); ) {
+                WeakReference<Frame> ref = it.next();
+                Frame f = ref.get();
                 if (f != null) {
                     aliveFrames.add(f);
                 }
             }
 
-            return (Frame [])aliveFrames.toArray(new Frame[0]);
+            return aliveFrames.toArray(new Frame[aliveFrames.size()]);
         }
     }
 }
