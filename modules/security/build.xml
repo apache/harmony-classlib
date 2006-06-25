@@ -26,6 +26,12 @@
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
+    <fileset id="classes" dir="${hy.build}">
+        <includesfile name="${hy.security}/make/patternset.txt" />
+        <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
+        <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
+    </fileset>
+                               
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
 	     use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
@@ -38,8 +44,7 @@
 
     <target name="clean">
         <delete failonerror="false">
-            <fileset dir="${hy.build}"
-                     includesfile="${hy.security}/make/patternset.txt" />
+            <fileset refid="classes" />
             <fileset dir="${hy.security.bin.test}" />
         </delete>
     </target>
@@ -67,8 +72,7 @@
     <target name="build.jar">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}.jar"
              manifest="${hy.security}/META-INF/MANIFEST.MF">
-            <fileset dir="${hy.build}"
-                     includesfile="${hy.security}/make/patternset.txt" />
+            <fileset refid="classes" />
         </jar>
     </target>
 

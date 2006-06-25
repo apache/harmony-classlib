@@ -64,7 +64,8 @@
     <!-- ================================= 
           target: clean-bin              
          ================================= -->
-    <target name="clean-bin" description="Delete all built classes">
+    <target name="clean-bin" description="Delete all built classes"
+            depends="clean-kernel-patternsets">
         <call-modules target="clean" />
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${build.output}">
@@ -73,10 +74,22 @@
         </delete>
     </target>
 
+    <target name="copy-kernel-patternsets">
+        <mkdir dir="${hy.hdk}/build/patternsets" />
+        <copy file="modules/luni-kernel/make/patternset.txt"
+              tofile="${hy.hdk}/build/patternsets/luni-kernel.txt" />
+        <copy file="modules/security-kernel/make/patternset.txt"
+              tofile="${hy.hdk}/build/patternsets/security-kernel.txt" />
+    </target>
+
+    <target name="clean-kernel-patternsets">
+        <delete dir="${hy.hdk}/build/patternsets" />
+    </target>
+
     <!-- =================================
           target: compile
          ================================= -->
-    <target name="compile" depends="prepare-depends"
+    <target name="compile" depends="copy-kernel-patternsets, prepare-depends"
             description="Compile the source">
         <mkdir dir="${build.output}" />
 
