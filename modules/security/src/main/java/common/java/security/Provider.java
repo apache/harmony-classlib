@@ -38,35 +38,16 @@ import java.util.Set;
 import org.apache.harmony.security.fortress.Services;
 import org.apache.harmony.security.utils.TwoKeyHashMap;
 
-
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public abstract class Provider extends Properties {
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -4298000515446427739L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private String name;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private double version;
 
     // String representation of the provider version number.
     private transient String versionString;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private String info;
 
     //The provider preference order number. 
@@ -75,20 +56,20 @@ public abstract class Provider extends Properties {
 
     // Contains "Service.Algorithm" and Provider.Service classes added using
     // putService()
-    private transient TwoKeyHashMap serviceTable;
+    private transient TwoKeyHashMap<Service> serviceTable;
 
     // Contains "Service.Alias" and Provider.Service classes added using
     // putService()
-    private transient TwoKeyHashMap aliasTable;
+    private transient TwoKeyHashMap<Service> aliasTable;
 
     // Contains "Service.Algorithm" and Provider.Service classes added using
     // put()
-    private transient TwoKeyHashMap propertyServiceTable;
+    private transient TwoKeyHashMap<Service> propertyServiceTable;
 
     // Contains "Service.Alias" and Provider.Service classes added using put()
-    private transient TwoKeyHashMap propertyAliasTable;
+    private transient TwoKeyHashMap<Service> propertyAliasTable;
 
-    // The propeties changed via put()
+    // The properties changed via put()
     private transient Properties changedProperties;
 
     // For getService(String type, String algorithm) optimization:
@@ -100,17 +81,13 @@ public abstract class Provider extends Properties {
     private transient String lastServiceName;
 
     // For getServices() optimization:
-    private transient Set lastServicesSet;
+    private transient Set<Service> lastServicesSet;
 
     // For getService(String type) optimization:
     private transient String lastType;
     // last Service found by type
     private transient Provider.Service lastServicesByType;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected Provider(String name, double version, String info) {
         this.name = name;
         this.version = version;
@@ -163,10 +140,6 @@ public abstract class Provider extends Properties {
         return name + " provider, Ver. " + version + " " + info;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public synchronized void clear() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -196,20 +169,12 @@ public abstract class Provider extends Properties {
         servicesChanged();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public synchronized void load(InputStream inStream) throws IOException {
         Properties tmp = new Properties();
         tmp.load(inStream);
         myPutAll(tmp);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public synchronized void putAll(Map<?,?> t) {
 
         // Implementation note:
@@ -227,11 +192,11 @@ public abstract class Provider extends Properties {
         if (changedProperties == null) {
             changedProperties = new Properties();
         }
-        Iterator it = t.entrySet().iterator();
+        Iterator<? extends Map.Entry<?, ?>> it = t.entrySet().iterator();
         Object key;
         Object value;
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
+            Map.Entry<?, ?> entry = it.next();
             key = entry.getKey();
             if (key instanceof String && ((String) key).startsWith("Provider.")) {
                 // Provider service type is reserved
@@ -250,34 +215,18 @@ public abstract class Provider extends Properties {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public synchronized Set<Map.Entry<Object,Object>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public Set<Object> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public Collection<Object> values() {
         return Collections.unmodifiableCollection(super.values());
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public synchronized Object put(Object key, Object value) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -301,10 +250,6 @@ public abstract class Provider extends Properties {
         return super.put(key, value);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public synchronized Object remove(Object key) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -415,8 +360,8 @@ public abstract class Provider extends Properties {
             return lastServicesByType;
         }
         Provider.Service service;
-        for (Iterator it = getServices().iterator(); it.hasNext();) {
-            service = (Provider.Service) it.next();
+        for (Iterator<Service> it = getServices().iterator(); it.hasNext();) {
+            service = it.next();
             if (type.equals(service.type)) {
                 lastType = type;
                 lastServicesByType = service;
@@ -426,10 +371,6 @@ public abstract class Provider extends Properties {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public synchronized Provider.Service getService(String type,
             String algorithm) {
         if (type == null || algorithm == null) {
@@ -468,19 +409,15 @@ public abstract class Provider extends Properties {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public synchronized Set<Provider.Service> getServices() {
         updatePropertyServiceTable();
         if (lastServicesSet != null) {
             return lastServicesSet;
         }
         if (serviceTable != null) {
-            lastServicesSet = new HashSet(serviceTable.values());
+            lastServicesSet = new HashSet<Service>(serviceTable.values());
         } else {
-            lastServicesSet = new HashSet();
+            lastServicesSet = new HashSet<Service>();
         }
         if (propertyServiceTable != null) {
             lastServicesSet.addAll(propertyServiceTable.values());
@@ -489,10 +426,6 @@ public abstract class Provider extends Properties {
         return lastServicesSet;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected synchronized void putService(Provider.Service s) {
         if (s == null) {
             throw new NullPointerException();
@@ -507,24 +440,20 @@ public abstract class Provider extends Properties {
         }
         servicesChanged();
         if (serviceTable == null) {
-            serviceTable = new TwoKeyHashMap(128);
+            serviceTable = new TwoKeyHashMap<Service>(128);
         }
         serviceTable.put(s.type, s.algorithm.toUpperCase(), s);
         if (s.aliases != null) {
             if (aliasTable == null) {
-                aliasTable = new TwoKeyHashMap(256);
+                aliasTable = new TwoKeyHashMap<Service>(256);
             }
-            for (Iterator it = s.getAliases(); it.hasNext();) {
-                aliasTable.put(s.type, ((String) it.next()).toUpperCase(), s);
+            for (Iterator<String> it = s.getAliases(); it.hasNext();) {
+                aliasTable.put(s.type, (it.next()).toUpperCase(), s);
             }
         }
         serviceInfoToProperties(s);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected synchronized void removeService(Provider.Service s) {
         if (s == null) {
             throw new NullPointerException();
@@ -538,8 +467,8 @@ public abstract class Provider extends Properties {
             serviceTable.remove(s.type, s.algorithm.toUpperCase());
         }
         if (aliasTable != null && s.aliases != null) {
-            for (Iterator it = s.getAliases(); it.hasNext();) {
-                aliasTable.remove(s.type, ((String) it.next()).toUpperCase());
+            for (Iterator<String> it = s.getAliases(); it.hasNext();) {
+                aliasTable.remove(s.type, (it.next()).toUpperCase());
             }
         }
         serviceInfoFromProperties(s);
@@ -549,13 +478,13 @@ public abstract class Provider extends Properties {
     private void serviceInfoToProperties(Provider.Service s) {
         super.put(s.type + "." + s.algorithm, s.className);
         if (s.aliases != null) {
-            for (Iterator i = s.aliases.iterator(); i.hasNext();) {
+            for (Iterator<String> i = s.aliases.iterator(); i.hasNext();) {
                 super.put("Alg.Alias." + s.type + "." + i.next(), s.algorithm);
             }
         }
         if (s.attributes != null) {
-            for (Iterator i = s.attributes.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry) i.next();
+            for (Iterator<Map.Entry<String, String>> i = s.attributes.entrySet().iterator(); i.hasNext();) {
+                Map.Entry<String, String> entry = i.next();
                 super.put(s.type + "." + s.algorithm + " " + entry.getKey(),
                         entry.getValue());
             }
@@ -570,13 +499,13 @@ public abstract class Provider extends Properties {
     private void serviceInfoFromProperties(Provider.Service s) {
         super.remove(s.type + "." + s.algorithm);
         if (s.aliases != null) {
-            for (Iterator i = s.aliases.iterator(); i.hasNext();) {
+            for (Iterator<String> i = s.aliases.iterator(); i.hasNext();) {
                 super.remove("Alg.Alias." + s.type + "." + i.next());
             }
         }
         if (s.attributes != null) {
-            for (Iterator i = s.attributes.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry) i.next();
+            for (Iterator<Map.Entry<String, String>> i = s.attributes.entrySet().iterator(); i.hasNext();) {
+                Map.Entry<String, String> entry = i.next();
                 super.remove(s.type + "." + s.algorithm + " " + entry.getKey());
             }
         }
@@ -610,9 +539,9 @@ public abstract class Provider extends Properties {
                 propertyAliasTable.remove(serviceName, aliasName.toUpperCase());
             }
             if (propertyServiceTable != null) {
-                for (Iterator it = propertyServiceTable.values().iterator(); it
+                for (Iterator<Service> it = propertyServiceTable.values().iterator(); it
                         .hasNext();) {
-                    s = (Provider.Service) it.next();
+                    s = it.next();
                     if (s.aliases.contains(aliasName)) {
                         s.aliases.remove(aliasName);
                         return;
@@ -631,12 +560,11 @@ public abstract class Provider extends Properties {
             serviceName = k.substring(0, j);
             algorithm = k.substring(j + 1);
             if (propertyServiceTable != null) {
-                Provider.Service ser = (Provider.Service) propertyServiceTable
-                        .remove(serviceName, algorithm.toUpperCase());
+                Provider.Service ser = propertyServiceTable.remove(serviceName, algorithm.toUpperCase());
                 if (ser != null && propertyAliasTable != null
                         && ser.aliases != null) {
-                    for (Iterator it = ser.aliases.iterator(); it.hasNext();) {
-                        propertyAliasTable.remove(serviceName, ((String) it
+                    for (Iterator<String> it = ser.aliases.iterator(); it.hasNext();) {
+                        propertyAliasTable.remove(serviceName, (it
                                 .next()).toUpperCase());
                     }
                 }
@@ -657,7 +585,7 @@ public abstract class Provider extends Properties {
         }
     }
 
-    // Update provider Servises if the properties was changed
+    // Update provider Services if the properties was changed
     private void updatePropertyServiceTable() {
         Object _key;
         Object _value;
@@ -667,9 +595,9 @@ public abstract class Provider extends Properties {
         if (changedProperties == null || changedProperties.isEmpty()) {
             return;
         }
-        for (Iterator it = changedProperties.entrySet().iterator(); it
+        for (Iterator<Map.Entry<Object, Object>> it = changedProperties.entrySet().iterator(); it
                 .hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
+            Map.Entry<Object, Object> entry = it.next();
             _key = entry.getKey();
             _value = entry.getValue();
             if (_key == null || _value == null || !(_key instanceof String)
@@ -692,7 +620,7 @@ public abstract class Provider extends Properties {
                 String algUp = algorithm.toUpperCase();
                 Object o = null;
                 if (propertyServiceTable == null) {
-                    propertyServiceTable = new TwoKeyHashMap(128);
+                    propertyServiceTable = new TwoKeyHashMap<Service>(128);
                 } else {
                     o = propertyServiceTable.get(serviceName, algUp);
                 }
@@ -700,7 +628,7 @@ public abstract class Provider extends Properties {
                     s = (Provider.Service) o;
                     s.aliases.add(aliasName);
                     if (propertyAliasTable == null) {
-                        propertyAliasTable = new TwoKeyHashMap(256);
+                        propertyAliasTable = new TwoKeyHashMap<Service>(256);
                     }
                     propertyAliasTable.put(serviceName,
                             aliasName.toUpperCase(), s);
@@ -708,13 +636,13 @@ public abstract class Provider extends Properties {
                     String className = (String) changedProperties
                             .get(serviceName + "." + algorithm);
                     if (className != null) {
-                        List l = new ArrayList();
+                        List<String> l = new ArrayList<String>();
                         l.add(aliasName);
                         s = new Provider.Service(this, serviceName, algorithm,
-                                className, l, new HashMap());
+                                className, l, new HashMap<String, String>());
                         propertyServiceTable.put(serviceName, algUp, s);
                         if (propertyAliasTable == null) {
-                            propertyAliasTable = new TwoKeyHashMap(256);
+                            propertyAliasTable = new TwoKeyHashMap<Service>(256);
                         }
                         propertyAliasTable.put(serviceName, aliasName
                                 .toUpperCase(), s);
@@ -740,9 +668,9 @@ public abstract class Provider extends Properties {
                     s.className = value;
                 } else {
                     s = new Provider.Service(this, serviceName, algorithm,
-                            value, new ArrayList(), new HashMap());
+                            value, new ArrayList<String>(), new HashMap<String, String>());
                     if (propertyServiceTable == null) {
-                        propertyServiceTable = new TwoKeyHashMap(128);
+                        propertyServiceTable = new TwoKeyHashMap<Service>(128);
                     }
                     propertyServiceTable.put(serviceName, alg, s);
 
@@ -764,12 +692,12 @@ public abstract class Provider extends Properties {
                     String className = (String) changedProperties
                             .get(serviceName + "." + algorithm);
                     if (className != null) {
-                        Map m = new HashMap();
+                        Map<String, String> m = new HashMap<String, String>();
                         m.put(attribute, value);
                         s = new Provider.Service(this, serviceName, algorithm,
-                                className, new ArrayList(), m);
+                                className, new ArrayList<String>(), m);
                         if (propertyServiceTable == null) {
-                            propertyServiceTable = new TwoKeyHashMap(128);
+                            propertyServiceTable = new TwoKeyHashMap<Service>(128);
                         }
                         propertyServiceTable.put(serviceName, alg, s);
                     }
@@ -806,7 +734,7 @@ public abstract class Provider extends Properties {
         if (res != null) {
             return res;
         }
-        for (Enumeration e = propertyNames(); e.hasMoreElements();) {
+        for (Enumeration<?> e = propertyNames(); e.hasMoreElements();) {
             String pname = (String) e.nextElement();
             if (key.equalsIgnoreCase(pname)) {
                 return getProperty(pname);
@@ -815,10 +743,6 @@ public abstract class Provider extends Properties {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public static class Service {
         // The provider
         private Provider provider;
@@ -839,17 +763,13 @@ public abstract class Provider extends Properties {
         private Map<String,String> attributes;
 
         // Service implementation
-        private Class implementation = null;
+        private Class<?> implementation;
 
         // For newInstance() optimization
         private String lastClassName;
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
         public Service(Provider provider, String type, String algorithm,
-                String className, List<String> aliases, Map<String,String> attributes) {
+                String className, List<String> aliases, Map<String, String> attributes) {
             if (provider == null || type == null || algorithm == null
                     || className == null) {
                 throw new NullPointerException();
@@ -862,42 +782,22 @@ public abstract class Provider extends Properties {
             this.attributes = attributes;
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
         public final String getType() {
             return type;
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
         public final String getAlgorithm() {
             return algorithm;
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
         public final Provider getProvider() {
             return provider;
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
         public final String getClassName() {
             return className;
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
         public final String getAttribute(String name) {
             if (name == null) {
                 throw new NullPointerException();
@@ -908,20 +808,16 @@ public abstract class Provider extends Properties {
             return attributes.get(name);
         }
 
-        Iterator getAliases() {
+        Iterator<String> getAliases() {
             return aliases.iterator();
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
         public Object newInstance(Object constructorParameter)
                 throws NoSuchAlgorithmException {
             if (implementation == null || !className.equals(lastClassName)) {
-                NoSuchAlgorithmException result = (NoSuchAlgorithmException) AccessController
-                        .doPrivileged(new java.security.PrivilegedAction() {
-                            public Object run() {
+                NoSuchAlgorithmException result = AccessController
+                        .doPrivileged(new PrivilegedAction<NoSuchAlgorithmException>() {
+                            public NoSuchAlgorithmException run() {
                                 ClassLoader cl = provider.getClass()
                                         .getClassLoader();
                                 if (cl == null) {
@@ -974,10 +870,6 @@ public abstract class Provider extends Properties {
             }
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         *  
-         */
         public boolean supportsParameter(Object parameter) {
             return true;
         }

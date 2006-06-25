@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package org.apache.harmony.security.utils;
 
 import java.util.AbstractCollection;
@@ -37,18 +32,18 @@ import java.util.Set;
  * Reductive hash with two keys
  * 
  */
-public class TwoKeyHashMap extends AbstractMap {
+public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
 
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
     static final int DEFAULT_INITIAL_SIZE = 16;
     
-    private Set entrySet;
-    private Collection values;
+    private Set<Map.Entry<String, V>> entrySet;
+    private Collection<V> values;
     private int size;
     private int arrSize;
     private transient int modCount;
     
-    private Entry[] arr;
+    private Entry<V>[] arr;
 
     private float loadFactor;
     int threshold = 0;
@@ -85,7 +80,7 @@ public class TwoKeyHashMap extends AbstractMap {
     /**
      * Returns a collection view of the values 
      */
-    public Collection values() {
+    public Collection<V> values() {
         if (values == null) {
             values = new ValuesCollectionImpl();
         }
@@ -95,7 +90,7 @@ public class TwoKeyHashMap extends AbstractMap {
     /**
      * Returns a collection view of the mappings  
      */
-    public Set entrySet() {
+    public Set<Map.Entry<String, V>> entrySet() {
         if (entrySet == null) {
             entrySet = new EntrySetImpl();
         }
@@ -117,8 +112,8 @@ public class TwoKeyHashMap extends AbstractMap {
      * @param key2
      * @return
      */
-    public Object remove(Object key1, Object key2) {
-        Entry e = removeEntry(key1, key2);
+    public V remove(Object key1, Object key2) {
+        Entry<V> e = removeEntry(key1, key2);
         return null != e ? e.value : null;
     }
     
@@ -129,7 +124,7 @@ public class TwoKeyHashMap extends AbstractMap {
      * @param value
      * @return
      */
-    public Object put(Object key1, Object key2, Object value) {
+    public V put(String key1, String key2, V value) {
         if (key1 == null && key2 == null) {
             int index = arrSize;
             if (arr[index] == null) {
@@ -138,7 +133,7 @@ public class TwoKeyHashMap extends AbstractMap {
                 modCount++;
                 return null;
             } else {
-                Object oldValue = arr[index].value;
+                V oldValue = arr[index].value;
                 arr[index].value = value;
                 return oldValue;
             }
@@ -146,11 +141,11 @@ public class TwoKeyHashMap extends AbstractMap {
 
         int hash = key1.hashCode() + key2.hashCode();
         int index = (hash & 0x7fffffff) % arrSize;
-        Entry e = arr[index];
+        Entry<V> e = arr[index];
 
         while (e != null) {
             if (hash == e.hash && key1.equals(e.getKey1()) && key2.equals(e.getKey2())) {
-                Object oldValue = e.value;
+                V oldValue = e.value;
                 e.value = value;
                 return oldValue;
             }
@@ -176,12 +171,12 @@ public class TwoKeyHashMap extends AbstractMap {
         if (newArrSize < 0) {
             newArrSize = Integer.MAX_VALUE - 1;
         }
-        Entry[] newArr = new Entry[newArrSize + 1];
+        Entry<V>[] newArr = new Entry[newArrSize + 1];
 
         for (int i = 0; i < arr.length - 1; i++) {
-            Entry entry = arr[i];
+            Entry<V> entry = arr[i];
             while (entry != null) {
-                Entry next = entry.next;
+                Entry<V> next = entry.next;
 
                 int newIndex = (entry.hash & 0x7fffffff) % newArrSize;
                 entry.next = newArr[newIndex];
@@ -218,8 +213,8 @@ public class TwoKeyHashMap extends AbstractMap {
      * @param key2
      * @return
      */
-    public Object get(Object key1, Object key2) {
-        Entry e = findEntry(key1, key2);
+    public V get(Object key1, Object key2) {
+        Entry<V> e = findEntry(key1, key2);
         if (e != null) {
             return e.value;
         }
@@ -249,16 +244,16 @@ public class TwoKeyHashMap extends AbstractMap {
      * @param next
      * @return
      */
-    Entry createEntry(int hashCode, Object key1, Object key2, 
-            Object value, Entry next) {
-        return new Entry(hashCode, key1, key2, value, next);
+    Entry<V> createEntry(int hashCode, String key1, String key2, 
+            V value, Entry<V> next) {
+        return new Entry<V>(hashCode, key1, key2, value, next);
     }
 
     /**
      * Creates entries iterator
      * @return
      */
-    Iterator createEntrySetIterator() {
+    Iterator<Map.Entry<String, V>> createEntrySetIterator() {
         return new EntryIteratorImpl();
     }
 
@@ -266,7 +261,7 @@ public class TwoKeyHashMap extends AbstractMap {
      * Creates values iterator
      * @return
      */
-    Iterator createValueCollectionIterator() {
+    Iterator<V> createValueCollectionIterator() {
         return new ValueIteratorImpl();
     }
 
@@ -275,45 +270,49 @@ public class TwoKeyHashMap extends AbstractMap {
      * Entry implementation for the TwoKeyHashMap class
      * 
      */
-    static class Entry { 
+    static class Entry<V> implements Map.Entry<String, V> { 
         int hash;
-        Object key1;
-        Object key2;
-        Object value;
-        Entry next;
+        String key1;
+        String key2;
+        V value;
+        Entry<V> next;
 
-        public Entry(int hash, Object key1, Object key2, Object value, Entry next) {
+        public Entry(int hash, String key1, String key2, V value, Entry<V> next) {
             this.hash = hash;
             this.key1 = key1;
             this.key2 = key2;
             this.value = value;
             this.next = next;
         }
+        
+        public String getKey() {
+            return key1 + key2;
+        }
 
-        public Object getKey1() {
+        public String getKey1() {
             return key1;
         }
         
-        public Object getKey2() {
+        public String getKey2() {
             return key2;
         }
 
-        public Object getValue() {
+        public V getValue() {
             return value;
         }
 
-        public Object setValue(Object value) {
-            Object oldValue = this.value;
+        public V setValue(V value) {
+            V oldValue = this.value;
             this.value = value;
             return oldValue;
         }
 
         public boolean equals(Object obj) {
-            if (!(obj instanceof Map.Entry)) {
+            if (!(obj instanceof Entry)) {
                 return false;
             }
 
-            Entry e = (Entry) obj;
+            Entry<?> e = (Entry<?>) obj;
             Object getKey1 = e.getKey1();
             Object getKey2 = e.getKey2();
             Object getValue = e.getValue();
@@ -336,7 +335,7 @@ public class TwoKeyHashMap extends AbstractMap {
         
     }
     
-    class EntrySetImpl extends AbstractSet {
+    class EntrySetImpl extends AbstractSet<Map.Entry<String, V>> {
         public int size() {
             return size;
         }
@@ -354,13 +353,13 @@ public class TwoKeyHashMap extends AbstractMap {
                 return false;
             }
 
-            Entry entry = (Entry) obj;
-            Entry entry2 = findEntry(entry.getKey1(), entry.getKey2());
+            Entry<?> entry = (Entry<?>) obj;
+            Entry<V> entry2 = findEntry(entry.getKey1(), entry.getKey2());
             if (entry2 == null) {
                 return false;
             }
             Object value = entry.getValue();
-            Object value2 = entry.getValue();
+            Object value2 = entry2.getValue();
             return value == null ? value2 == null : value.equals(value2);
         }
 
@@ -371,19 +370,19 @@ public class TwoKeyHashMap extends AbstractMap {
             return removeEntry(((Entry) obj).getKey1(), ((Entry)obj).getKey2()) != null;
         }
 
-        public Iterator iterator() {
+        public Iterator<Map.Entry<String, V>> iterator() {
             return createEntrySetIterator();
         }
     }
 
     // Iterates Entries inside the Map
-    class EntryIteratorImpl implements Iterator {
+    class EntryIteratorImpl implements Iterator<Map.Entry<String, V>> {
         private int startModCount;
-        private boolean found = false;
+        private boolean found;
         private int curr = -1;
         private int returned_index = -1;
-        private Entry curr_entry = null;
-        private Entry returned_entry = null;
+        private Entry<V> curr_entry;
+        private Entry<V> returned_entry;
 
         EntryIteratorImpl() {
             startModCount = modCount;
@@ -407,7 +406,7 @@ public class TwoKeyHashMap extends AbstractMap {
             return found = (curr_entry != null);
         }
 
-        public Object next() {
+        public Map.Entry<String, V> next() {
             if (modCount != startModCount) {
                 throw new ConcurrentModificationException();
             }
@@ -418,7 +417,7 @@ public class TwoKeyHashMap extends AbstractMap {
             found = false;
             returned_index = curr;
             returned_entry = curr_entry;
-            return curr_entry;
+            return (Map.Entry<String, V>)curr_entry;
         }
 
         public void remove() {
@@ -430,8 +429,8 @@ public class TwoKeyHashMap extends AbstractMap {
                 throw new ConcurrentModificationException();
             }
 
-            Entry p = null;
-            Entry e = arr[returned_index];
+            Entry<V> p = null;
+            Entry<V> e = arr[returned_index];
             while (e != returned_entry) {
                 p = e;
                 e = e.next;
@@ -447,14 +446,15 @@ public class TwoKeyHashMap extends AbstractMap {
             returned_index = -1;
         }
     }
-    private final Entry findEntry(Object key1, Object key2) {
+    
+    private final Entry<V> findEntry(Object key1, Object key2) {
         if (key1 == null && key2 == null) {
             return arr[arrSize];
         }
 
         int hash = key1.hashCode() + key2.hashCode();
         int index = (hash & 0x7fffffff) % arrSize;
-        Entry e = arr[index];
+        Entry<V> e = arr[index];
 
         while (e != null) {
             if (hash == e.hash && key1.equals(e.getKey1()) && key2.equals(e.getKey2())) {
@@ -466,11 +466,11 @@ public class TwoKeyHashMap extends AbstractMap {
     }
     
     // Removes entry
-    private final Entry removeEntry(Object key1, Object key2) {
+    private final Entry<V> removeEntry(Object key1, Object key2) {
         if (key1 == null && key2 == null) {
             int index = arrSize;
             if (arr[index] != null) {
-                Entry ret = arr[index];
+                Entry<V> ret = arr[index];
                 arr[index] = null;
                 size--;
                 modCount++;
@@ -482,8 +482,8 @@ public class TwoKeyHashMap extends AbstractMap {
         int hash = key1.hashCode() + key2.hashCode();
         int index = (hash & 0x7fffffff) % arrSize;
 
-        Entry e = arr[index];
-        Entry prev = e;
+        Entry<V> e = arr[index];
+        Entry<V> prev = e;
         while (e != null) {
             if (hash == e.hash && key1.equals(e.getKey1()) && key2.equals(e.getKey2())) {
                 if (prev == e) {
@@ -505,7 +505,7 @@ public class TwoKeyHashMap extends AbstractMap {
     /**
      * An instance is returned by the values() call.
      */
-    class ValuesCollectionImpl extends AbstractCollection {
+    class ValuesCollectionImpl extends AbstractCollection<V> {
         public int size() {
             return size;
         }
@@ -518,7 +518,7 @@ public class TwoKeyHashMap extends AbstractMap {
             return size == 0;
         }
 
-        public Iterator iterator() {
+        public Iterator<V> iterator() {
             return createValueCollectionIterator();
         }
         
@@ -526,9 +526,25 @@ public class TwoKeyHashMap extends AbstractMap {
             return containsValue(obj);
         }
     }
-    class ValueIteratorImpl extends EntryIteratorImpl {
-        public Object next() {
-            return ((Entry) super.next()).value;
+    
+    class ValueIteratorImpl implements Iterator<V> {
+        private EntryIteratorImpl itr;
+
+        ValueIteratorImpl() {
+            super();
+            this.itr = new EntryIteratorImpl();
+        }
+
+        public V next() {
+            return itr.next().getValue();
+        }
+
+        public void remove() {
+            itr.remove();
+        }
+
+        public boolean hasNext() {
+            return itr.hasNext();
         }
     }
 }
