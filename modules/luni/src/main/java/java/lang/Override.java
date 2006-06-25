@@ -17,17 +17,15 @@ package java.lang;
 
 /**
  * <p>
- * An annotation that indicates a compiler should suppress any warnings of the
- * type specified in the {@link #value()}.
+ * An annotation to indicate that a method is intended to override a superclass
+ * method. This provides a compile-time assertion that a method actually
+ * overrides the superclass method.
  * </p>
  * 
  * @since 1.5
  */
 // TODO Enable annotations when Java 5 class files are available.
-// @Target( { ElementType.TYPE, ElementType.FIELD, ElementType.METHOD,
-// ElementType.PARAMETER, ElementType.CONSTRUCTOR,
-// ElementType.LOCAL_VARIABLE })
+// @Target(ElementType.METHOD)
 // @Retention(RetentionPolicy.SOURCE)
-public @interface SuppressWarnings {
-    public String[] value();
+public @interface Override {
 }

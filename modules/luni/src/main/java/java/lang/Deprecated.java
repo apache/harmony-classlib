@@ -17,17 +17,13 @@ package java.lang;
 
 /**
  * <p>
- * An annotation that indicates a compiler should suppress any warnings of the
- * type specified in the {@link #value()}.
+ * An annotation for marking an element as deprecated.
  * </p>
  * 
  * @since 1.5
  */
 // TODO Enable annotations when Java 5 class files are available.
-// @Target( { ElementType.TYPE, ElementType.FIELD, ElementType.METHOD,
-// ElementType.PARAMETER, ElementType.CONSTRUCTOR,
-// ElementType.LOCAL_VARIABLE })
-// @Retention(RetentionPolicy.SOURCE)
-public @interface SuppressWarnings {
-    public String[] value();
+// @Documented
+// @Retention(RetentionPolicy.RUNTIME)
+public @interface Deprecated {
 }
