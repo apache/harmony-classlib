@@ -41,7 +41,7 @@ public class Array {
      * @return <code>String</code> representation of the <code>array</code>
      */
     public static String toString(byte[] array, String prefix) {
-        // Prefixex to be added to the offset values
+        // Prefixes to be added to the offset values
         // in <code>String toString(byte[], String)</code> method
         final String[] offsetPrefix = {
                 "",
@@ -50,8 +50,8 @@ public class Array {
                 "0",
                 ""
         };
-        StringBuffer sb = new StringBuffer();
-        StringBuffer charForm = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
+        StringBuilder charForm = new StringBuilder();
         int i=0;
         for (i=0; i<array.length; i++) {
             if (i%16 == 0) {
