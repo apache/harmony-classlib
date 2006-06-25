@@ -16,7 +16,7 @@
 # Makefile for module 'launcher.java'
 #
 
-!include <$(HY_HDK)\build\defines.mak>
+!include <$(HY_HDK)\build\make\defines.mak>
 
 SHAREDSUB=$(SHARED)launcher\# comment to avoid \ being treated as continuation
 EXENAME=$(EXEPATH)java.exe
