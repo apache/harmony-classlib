@@ -54,7 +54,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	/**
 	 * The java.lang.Class that represents this class.
 	 */
-	public static final Class<Byte> TYPE = (Class<Byte>) new byte[0].getClass()
+    @SuppressWarnings("unchecked")
+    public static final Class<Byte> TYPE = (Class<Byte>) new byte[0].getClass()
             .getComponentType();
 
 	// Note: This can't be set to "byte.class", since *that* is

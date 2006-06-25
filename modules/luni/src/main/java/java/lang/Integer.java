@@ -66,7 +66,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	/**
 	 * The java.lang.Class that represents this class.
 	 */
-	public static final Class<Integer> TYPE = (Class<Integer>) new int[0]
+    @SuppressWarnings("unchecked")
+    public static final Class<Integer> TYPE = (Class<Integer>) new int[0]
             .getClass().getComponentType();
 
 	// Note: This can't be set to "int.class", since *that* is

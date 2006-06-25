@@ -73,8 +73,9 @@ public final class Double extends Number implements Comparable<Double> {
 	 * The java.lang.Class that represents this class.
      * @since 1.1
 	 */
-	public static final Class<Double> TYPE = (Class<Double>) new double[0].getClass()
-			.getComponentType();
+    @SuppressWarnings("unchecked")
+    public static final Class<Double> TYPE = (Class<Double>) new double[0]
+            .getClass().getComponentType();
 
 	// Note: This can't be set to "double.class", since *that* is
 	// defined to be "java.lang.Double.TYPE";

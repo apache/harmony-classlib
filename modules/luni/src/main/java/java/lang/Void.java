@@ -27,11 +27,13 @@ public final class Void extends Object {
      * The {@link Class} instance that represents primitive type
      * <code>void</code>.
      */
-    public static final Class<Void> TYPE;
-	// Note: This can't be set to "void.class", since *that* is
-	// defined to be "java.lang.Void.TYPE";
+    public static final Class<Void> TYPE = lookupType();
 
-	static {
+    // Note: This can't be set to "void.class", since *that* is
+    // defined to be "java.lang.Void.TYPE";
+
+    @SuppressWarnings("unchecked")
+    private static Class<Void> lookupType() {
         Class<?> voidType = null;
         try {
             Method method = Runnable.class.getMethod("run", new Class[0]);
@@ -39,7 +41,7 @@ public final class Void extends Object {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        TYPE = (Class<Void>) voidType;
+        return (Class<Void>) voidType;
     }
 
 	private Void() {

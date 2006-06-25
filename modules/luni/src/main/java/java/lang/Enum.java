@@ -130,13 +130,14 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      * 
      * @return the class object representing the constant's enum type.
      */
+    @SuppressWarnings("unchecked")
     public final Class<E> getDeclaringClass() {
-        Class myClass = getClass();
-        Class mySuperClass = myClass.getSuperclass();
+        Class<?> myClass = getClass();
+        Class<?> mySuperClass = myClass.getSuperclass();
         if (Enum.class == mySuperClass) {
-            return myClass;
+            return (Class<E>)myClass;
         }
-        return mySuperClass;
+        return (Class<E>)mySuperClass;
     }
 
     /**
@@ -179,6 +180,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      * Helper to invoke the values() static method on T and answer the result.
      * Returns null if there is a problem.
      */
+    @SuppressWarnings("unchecked")
     static <T extends Enum<T>> T[] getValues(final Class<T> enumType) {
         try {
             Method values = AccessController

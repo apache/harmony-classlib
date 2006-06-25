@@ -35,6 +35,7 @@ public class ThreadLocal<T> {
 	 * Return the value of this variable under
 	 * <code>Thread.currentThread()</code>
 	 */
+    @SuppressWarnings("unchecked")
 	public T get() {
 		return (T)Thread.currentThread().getThreadLocal(this);
 	}

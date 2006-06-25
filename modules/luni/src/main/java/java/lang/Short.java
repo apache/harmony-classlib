@@ -59,7 +59,8 @@ public final class Short extends Number implements Comparable<Short> {
 	/**
 	 * The java.lang.Class that represents this class.
 	 */
-	public static final Class<Short> TYPE = (Class<Short>) new short[0]
+    @SuppressWarnings("unchecked")
+    public static final Class<Short> TYPE = (Class<Short>) new short[0]
             .getClass().getComponentType();
 
 	// Note: This can't be set to "short.class", since *that* is
