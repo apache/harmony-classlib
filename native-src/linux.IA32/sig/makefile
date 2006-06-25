@@ -16,10 +16,10 @@
 # Makefile for module 'hysig'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 CFLAGS += -fpic -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 BUILDFILES = $(SHAREDSUB)hysig_copyright.o hysiglinux.o hysigunix.o
 DLLNAME = ../libhysig.so
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk

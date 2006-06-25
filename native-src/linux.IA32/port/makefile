@@ -16,7 +16,7 @@
 # Makefile for module 'port'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 CFLAGS += -fpic -DHYPORT_LIBRARY_DEFINE \
 	-I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
@@ -40,4 +40,4 @@ DLLNAME = ../libhyprt.so
 LIBNAME = $(LIBPATH)libhyprt.a
 
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk

@@ -246,14 +246,14 @@
           target: copy-makefile-includes              
          ================================= -->
 	<target name="copy-makefile-includes" depends="properties" >
-		<!-- copy generic defines and rules for each platform into a shared
-			place -->
-		<mkdir dir="${hy.hdk}/build" />
-		<copy todir="${hy.hdk}/build" overwrite="yes">
-            <fileset dir="${depends.build}">
-                <include name="*" />
-            </fileset>
-        </copy>
+	    <!-- copy generic defines and rules for each platform into a shared
+		 place -->
+	    <mkdir dir="${hy.hdk}/build/make" />
+	    <copy todir="${hy.hdk}/build/make" overwrite="yes">
+                <fileset dir="${depends.build}">
+                    <include name="*" />
+                </fileset>
+            </copy>
 	</target>
 	
 	<!-- ================================= 
@@ -261,7 +261,7 @@
          ================================= -->
 	<target name="clean-makefile-includes">
 		<!-- delete generic defines and rules -->
-		<delete dir="${hy.hdk}/build" />
+		<delete dir="${hy.hdk}/build/make" />
 	</target>
 
     <!-- ================================= 

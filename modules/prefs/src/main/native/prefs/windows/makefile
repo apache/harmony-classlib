@@ -16,7 +16,7 @@
 # Makefile for module 'prefs'
 #
 
-!include <$(HY_HDK)\build\defines.mak>
+!include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=hyprefs
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
@@ -37,4 +37,4 @@ MDLLIBFILES = \
 DLLBASE=0x13300000
 COMMENT=/comment:"Preferences component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-!include <$(HY_HDK)\build\rules.mak>
+!include <$(HY_HDK)\build\make\rules.mak>

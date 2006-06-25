@@ -16,7 +16,7 @@
 # Makefile for module 'zlib'
 #
 
-!include <$(HY_HDK)\build\defines.mak>
+!include <$(HY_HDK)\build\make\defines.mak>
 
 SHAREDSUB=$(SHARED)zlib\# comment to avoid \ being treated as continuation
 LIBBASE=hyzlib
@@ -40,4 +40,4 @@ VIRTFILES = $(LIBBASE).res
 DLLBASE=0x11700000
 COMMENT=/comment:"zlib data compression library Copyright (C) 1995-2003 Jean-loup Gailly and Mark Adler"
 
-!include <$(HY_HDK)\build\rules.mak>
+!include <$(HY_HDK)\build\make\rules.mak>

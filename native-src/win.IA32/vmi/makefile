@@ -16,7 +16,7 @@
 # Makefile for module 'vmi'
 #
 
-!include <$(HY_HDK)\build\defines.mak>
+!include <$(HY_HDK)\build\make\defines.mak>
 
 SHAREDSUB=$(SHARED)vmi\# comment to avoid \ being treated as continuation
 LIBBASE=vmi
@@ -28,4 +28,4 @@ BUILDFILES = $(SHAREDSUB)vmi_copyright.obj $(SHAREDSUB)vmi.obj
 
 VIRTFILES = vmi.res
 
-!include <$(HY_HDK)\build\rules.mak>
+!include <$(HY_HDK)\build\make\rules.mak>

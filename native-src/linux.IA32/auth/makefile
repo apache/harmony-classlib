@@ -16,7 +16,7 @@
 # Makefile for module 'auth'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 CFLAGS += -fpic 
 BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
@@ -26,4 +26,4 @@ MDLLIBFILES = \
 
 DLLNAME = ../libhyauth.so
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk

@@ -16,10 +16,10 @@
 # Makefile for module 'common'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 CFLAGS += -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 BUILDFILES = $(SHAREDSUB)vmls.o
 LIBNAME = $(LIBPATH)libhyvmls.a
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk

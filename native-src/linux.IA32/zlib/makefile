@@ -16,7 +16,7 @@
 # Makefile for module 'zlib'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 CFLAGS += -fpic -I../../../modules/archive/src/main/native/include/shared
 
@@ -27,4 +27,4 @@ BUILDFILES = \
 
 DLLNAME = ../libhyzlib.so
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk

@@ -16,7 +16,7 @@
 # Makefile for module 'archive'
 #
 
-!include <$(HY_HDK)\build\defines.mak>
+!include <$(HY_HDK)\build\make\defines.mak>
 
 SHAREDSUB=$(SHARED)archive\# comment to avoid \ being treated as continuation
 LIBBASE=hyarchive
@@ -42,4 +42,4 @@ MDLLIBFILES = \
 	$(LIBPATH)hythr.lib $(LIBPATH)vmi.lib
 DLLBASE=0x13100000
 
-!include <$(HY_HDK)\build\rules.mak>
+!include <$(HY_HDK)\build\make\rules.mak>

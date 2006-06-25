@@ -16,7 +16,7 @@
 # Makefile for module 'thread'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 CFLAGS += -fpic -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
 
@@ -29,4 +29,4 @@ SYSLIBFILES = -lpthread
 MDLLIBFILES = $(LIBPATH)libhypool.a $(LIBPATH)libhycommon.a
 DLLNAME = ../libhythr.so
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk

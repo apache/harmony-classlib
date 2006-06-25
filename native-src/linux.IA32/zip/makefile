@@ -16,11 +16,11 @@
 # Makefile for module 'zip'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 CFLAGS += -I../zlib/dist -I../../../modules/archive/src/main/native/include/shared
 BUILDFILES = $(SHAREDSUB)zcpool.o $(SHAREDSUB)zipalloc.o \
 	$(SHAREDSUB)zipcache.o $(SHAREDSUB)zipsup.o
 LIBNAME = $(LIBPATH)libhyzip.a
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk

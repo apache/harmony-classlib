@@ -16,7 +16,7 @@
 # Makefile for 'launcher'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
 	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
@@ -24,4 +24,4 @@ BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
 MDLLIBFILES = ../libhyprt.so ../libhythr.so
 EXENAME = $(EXEPATH)java
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk

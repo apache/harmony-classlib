@@ -16,7 +16,7 @@
 # Makefile for module 'fdlibm'
 #
 
-include $(HY_HDK)/build/makefile.include
+include $(HY_HDK)/build/make/makefile.include
 
 BUILDFILES = \
 	dist/e_acos.o dist/e_acosh.o dist/e_asin.o dist/e_atan2.o \
@@ -50,4 +50,4 @@ CFLAGS= -O0 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM \
 
 LIBNAME = $(LIBPATH)libhyfdlibm.a
 
-include $(HY_HDK)/build/rules.mk
+include $(HY_HDK)/build/make/rules.mk
