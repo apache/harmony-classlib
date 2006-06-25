@@ -29,4 +29,4 @@ MDLLIBFILES = $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
 
-!include <$(HY_HDK)\build\rules.mak>
+!include <$(HY_HDK)\build\make\rules.mak>

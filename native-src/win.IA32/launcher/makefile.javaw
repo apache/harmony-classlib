@@ -27,4 +27,4 @@ MDLLIBFILES =  $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib
 EXEFLAGS=$(guilflags) -subsystem:windows
 EXEDLLFILES=$(guilibsdll)
 
-!include <$(HY_HDK)\build\rules.mak>
+!include <$(HY_HDK)\build\make\rules.mak>
