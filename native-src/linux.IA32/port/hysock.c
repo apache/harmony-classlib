@@ -58,7 +58,7 @@ typedef struct addrReq_struct
   struct nlmsghdr netlinkHeader;
   struct ifaddrmsg msg;
 } addrReq_struct;
-#define NETLINK_DATA_BUFFER_SIZE 1024
+#define NETLINK_DATA_BUFFER_SIZE 2048
 #define NETLINK_READTIMEOUT_SECS 20
 typedef struct netlinkContext_struct
 {
