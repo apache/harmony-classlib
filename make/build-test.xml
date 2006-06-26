@@ -31,7 +31,7 @@
     <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
     <property name="tests.build.output" location="build/tests" />
-    <property name="tests.support.output" location="uild/test_support" />
+    <property name="tests.support.output" location="build/test_support" />
     <property name="support.dir" location="support"/>
     <property name="tests.depends.jars" location="deploy/jdk/jre/lib/boot" />
     <property file="make/depends.properties" />
