@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ public abstract class Charset implements Comparable<Charset> {
 	private static CharsetProviderICU _builtInProvider = null;
 
 	// cached built in charsets
-	private static TreeMap _builtInCharsets = null;
+	private static TreeMap<String, Charset> _builtInCharsets = null;
 
 	/*
 	 * --------------------------------------------------------------------
@@ -121,34 +121,31 @@ public abstract class Charset implements Comparable<Charset> {
 	private final HashSet<String> aliasesSet;
 
 	// cached Charset table
-	private static HashMap<String, Charset> cachedCharsetTable =
-        new HashMap<String, Charset>();
-	
+	private static HashMap<String, Charset> cachedCharsetTable = new HashMap<String, Charset>();
+
 	// cached CharsetDecoder table
-	private static HashMap<String, CharsetDecoder> cachedCharsetDecoderTable =
-        new HashMap<String, CharsetDecoder>();
-	
+	private static HashMap<String, CharsetDecoder> cachedCharsetDecoderTable = new HashMap<String, CharsetDecoder>();
+
 	// cached CharsetEncoder table
-	private static HashMap<String, CharsetEncoder> cachedCharsetEncoderTable =
-        new HashMap<String, CharsetEncoder>();
-	
+	private static HashMap<String, CharsetEncoder> cachedCharsetEncoderTable = new HashMap<String, CharsetEncoder>();
+
 	/*
 	 * -------------------------------------------------------------------
 	 * Global initialization
 	 * -------------------------------------------------------------------
 	 */
 	static {
-        /*
-         * create built-in charset provider even if no privilege to access
-         * charset provider.
-         */
-        _builtInProvider = AccessController.doPrivileged(
-                new PrivilegedAction<CharsetProviderICU>() {
-                    public CharsetProviderICU run() {
-                        return new CharsetProviderICU();
-                    }
-                });
-    }
+		/*
+		 * create built-in charset provider even if no privilege to access
+		 * charset provider.
+		 */
+		_builtInProvider = AccessController
+				.doPrivileged(new PrivilegedAction<CharsetProviderICU>() {
+					public CharsetProviderICU run() {
+						return new CharsetProviderICU();
+					}
+				});
+	}
 
 	/*
 	 * -------------------------------------------------------------------
@@ -203,18 +200,18 @@ public abstract class Charset implements Comparable<Charset> {
 		return ('-' == c || '.' == c || ':' == c || '_' == c);
 	}
 
-    /*
-     * Checks whether a character is a letter (ascii) which are defined in 
-     * Java Spec.
-     */
+	/*
+	 * Checks whether a character is a letter (ascii) which are defined in Java
+	 * Spec.
+	 */
 	private static boolean isLetter(char c) {
 		return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
 	}
 
-    /*
-     * Checks whether a character is a digit (ascii) which are defined in 
-     * Java Spec.
-     */
+	/*
+	 * Checks whether a character is a digit (ascii) which are defined in Java
+	 * Spec.
+	 */
 	private static boolean isDigit(char c) {
 		return ('0' <= c && c <= '9');
 	}
@@ -229,11 +226,11 @@ public abstract class Charset implements Comparable<Charset> {
 			throw new IllegalCharsetNameException(name);
 		}
 		// The first character must be a letter or a digit
-        // This is related to HARMONY-68 (won't fix)
-		//char first = name.charAt(0);
-		//if (!isLetter(first) && !isDigit(first)) {
-		//	throw new IllegalCharsetNameException(name);
-		//}
+		// This is related to HARMONY-68 (won't fix)
+		// char first = name.charAt(0);
+		// if (!isLetter(first) && !isDigit(first)) {
+		// throw new IllegalCharsetNameException(name);
+		// }
 		// Check the remaining characters
 		int length = name.length();
 		for (int i = 0; i < length; i++) {
@@ -245,22 +242,23 @@ public abstract class Charset implements Comparable<Charset> {
 	}
 
 	/*
-     * Use privileged code to get the context class loader.
-     */
-    private static ClassLoader getContextClassLoader() {
-        final Thread t = Thread.currentThread();
-        return AccessController.doPrivileged(
-                new PrivilegedAction<ClassLoader>() {
-                    public ClassLoader run() {
-                        return t.getContextClassLoader();
-                    }
-                });
-    }
+	 * Use privileged code to get the context class loader.
+	 */
+	private static ClassLoader getContextClassLoader() {
+		final Thread t = Thread.currentThread();
+		return AccessController
+				.doPrivileged(new PrivilegedAction<ClassLoader>() {
+					public ClassLoader run() {
+						return t.getContextClassLoader();
+					}
+				});
+	}
 
 	/*
 	 * Add the charsets supported by the given provider to the map.
 	 */
-	private static void addCharsets(CharsetProvider cp, TreeMap charsets) {
+	private static void addCharsets(CharsetProvider cp,
+			TreeMap<String, Charset> charsets) {
 		Iterator it = cp.charsets();
 		while (it.hasNext()) {
 			Charset cs = (Charset) it.next();
@@ -289,7 +287,7 @@ public abstract class Charset implements Comparable<Charset> {
 	 * specified by this configuration file to the map.
 	 */
 	private static void loadConfiguredCharsets(URL configFile, ClassLoader cl,
-			TreeMap charsets) {
+			TreeMap<String, Charset> charsets) {
 		BufferedReader reader = null;
 		try {
 			InputStream is = configFile.openStream();
@@ -347,15 +345,16 @@ public abstract class Charset implements Comparable<Charset> {
 		if (null == _builtInCharsets) {
 			synchronized (Charset.class) {
 				if (null == _builtInCharsets) {
-					_builtInCharsets = new TreeMap(IgnoreCaseComparator
-							.getInstance());
+					_builtInCharsets = new TreeMap<String, Charset>(
+							IgnoreCaseComparator.getInstance());
 					_builtInProvider.putCharsets(_builtInCharsets);
 				}
 			}
 		}
 
 		// Add built-in charsets
-		TreeMap charsets = (TreeMap) _builtInCharsets.clone();
+		TreeMap<String, Charset> charsets = (TreeMap<String, Charset>) _builtInCharsets
+				.clone();
 
 		// Collect all charsets provided by charset providers
 		final ClassLoader cl = getContextClassLoader();
@@ -440,19 +439,19 @@ public abstract class Charset implements Comparable<Charset> {
 			throw new IllegalArgumentException();
 		}
 		checkCharsetName(charsetName);
-		synchronized(Charset.class){
+		synchronized (Charset.class) {
 			// Try to get Charset from cachedCharsetTable
 			Charset cs = getCachedCharset(charsetName);
 			if (null != cs) {
 				return cs;
-			}	
+			}
 			// Try built-in charsets
 			cs = _builtInProvider.charsetForName(charsetName);
 			if (null != cs) {
 				cacheCharset(cs);
 				return cs;
 			}
-	
+
 			// Collect all charsets provided by charset providers
 			final ClassLoader cl = getContextClassLoader();
 			if (null != cl) {
@@ -480,23 +479,25 @@ public abstract class Charset implements Comparable<Charset> {
 	/*
 	 * save charset into cachedCharsetTable
 	 */
-	private static void cacheCharset(Charset cs){
+	private static void cacheCharset(Charset cs) {
 		cachedCharsetTable.put(cs.name(), cs);
 		Set aliasesSet = cs.aliases();
-		if(null != aliasesSet){
+		if (null != aliasesSet) {
 			Iterator iter = aliasesSet.iterator();
-			while(iter.hasNext()){
-				String alias = (String)iter.next();
-				cachedCharsetTable.put(alias,cs);
+			while (iter.hasNext()) {
+				String alias = (String) iter.next();
+				cachedCharsetTable.put(alias, cs);
 			}
 		}
 	}
+
 	/*
 	 * get cached charset reference by name
 	 */
-	private static Charset getCachedCharset(String name){
-		return (Charset)cachedCharsetTable.get(name);
+	private static Charset getCachedCharset(String name) {
+		return (Charset) cachedCharsetTable.get(name);
 	}
+
 	/**
 	 * Gets a <code>Charset</code> instance for the specified charset name.
 	 * 
@@ -629,30 +630,30 @@ public abstract class Charset implements Comparable<Charset> {
 	 */
 	synchronized public final ByteBuffer encode(CharBuffer buffer) {
 		CharsetEncoder e = getCachedCharsetEncoder(canonicalName);
-		if(null == e){
-			e = this.newEncoder();
-			e.onMalformedInput(CodingErrorAction.REPLACE);
-			e.onUnmappableCharacter(CodingErrorAction.REPLACE);
-			cacheCharsetEncoder(this.canonicalName,e);
-		}
 		try {
-			return e.encode(buffer);
+			synchronized (e) {
+				return e.encode(buffer);
+			}
 		} catch (CharacterCodingException ex) {
 			throw new Error(ex.getMessage(), ex);
 		}
 	}
-	
+
 	/*
 	 * get cached CharsetEncoder by canonical name
 	 */
-	private CharsetEncoder getCachedCharsetEncoder(String name){
-		return (CharsetEncoder) cachedCharsetEncoderTable.get(name);
-	}
-	/*
-	 * save CharsetEncoder into cachedCharsetEncoderTable
-	 */
-	private void cacheCharsetEncoder(String name, CharsetEncoder encoder){
-		cachedCharsetEncoderTable.put(name,encoder);
+	private CharsetEncoder getCachedCharsetEncoder(String name) {
+		synchronized (cachedCharsetEncoderTable) {
+			CharsetEncoder e = (CharsetEncoder) cachedCharsetEncoderTable
+					.get(name);
+			if (null == e) {
+				e = this.newEncoder();
+				e.onMalformedInput(CodingErrorAction.REPLACE);
+				e.onUnmappableCharacter(CodingErrorAction.REPLACE);
+				cachedCharsetEncoderTable.put(name, e);
+			}
+			return e;
+		}
 	}
 
 	/**
@@ -682,32 +683,32 @@ public abstract class Charset implements Comparable<Charset> {
 	 *            the byte buffer containing the content to be decoded
 	 * @return a character buffer containing the output of the dencoding
 	 */
-	synchronized public final CharBuffer decode(ByteBuffer buffer) {
+	public final CharBuffer decode(ByteBuffer buffer) {
 		CharsetDecoder d = getCachedCharsetDecoder(canonicalName);
-		if(null == d){
-			d = this.newDecoder();
-			d.onMalformedInput(CodingErrorAction.REPLACE);
-			d.onUnmappableCharacter(CodingErrorAction.REPLACE);
-			cacheCharsetDecoder(canonicalName,d);
-		}
 		try {
-			return d.decode(buffer);
+			synchronized (d) {
+				return d.decode(buffer);
+			}
 		} catch (CharacterCodingException ex) {
 			throw new Error(ex.getMessage(), ex);
 		}
 	}
-	
+
 	/*
 	 * get cached CharsetDecoder by canonical name
 	 */
-	private CharsetDecoder getCachedCharsetDecoder(String name){
-		return (CharsetDecoder) cachedCharsetDecoderTable.get(name);
-	}
-	/*
-	 * save CharsetDecoder into cachedCharsetDecoderTable
-	 */
-	private void cacheCharsetDecoder(String name, CharsetDecoder decoder){
-		cachedCharsetDecoderTable.put(name,decoder);
+	private CharsetDecoder getCachedCharsetDecoder(String name) {
+		synchronized (cachedCharsetDecoderTable) {
+			CharsetDecoder d = (CharsetDecoder) cachedCharsetDecoderTable
+					.get(name);
+			if (null == d) {
+				d = this.newDecoder();
+				d.onMalformedInput(CodingErrorAction.REPLACE);
+				d.onUnmappableCharacter(CodingErrorAction.REPLACE);
+				cachedCharsetDecoderTable.put(name, d);
+			}
+			return d;
+		}
 	}
 
 	/*
@@ -768,35 +769,35 @@ public abstract class Charset implements Comparable<Charset> {
 	public final String toString() {
 		return "Charset[" + this.canonicalName + "]"; //$NON-NLS-1$//$NON-NLS-2$
 	}
-	
-    /**
-     * Gets the system default charset from jvm.
-     * 
-     * @return the default charset
-     */
-    public static Charset defaultCharset() {
-        Charset defaultCharset = null;
-        String encoding = AccessController.doPrivileged(
-                new PrivilegedAction<String>() {
-                    public String run() {
-                        return System.getProperty("file.encoding"); //$NON-NLS-1$
-                    }
-                });
-        try {
-            defaultCharset = Charset.forName(encoding);
-        } catch (UnsupportedCharsetException e) {
-            defaultCharset = Charset.forName("UTF-8"); //$NON-NLS-1$
-        }
-        return defaultCharset;
-    }
-   
+
+	/**
+	 * Gets the system default charset from jvm.
+	 * 
+	 * @return the default charset
+	 */
+	public static Charset defaultCharset() {
+		Charset defaultCharset = null;
+		String encoding = AccessController
+				.doPrivileged(new PrivilegedAction<String>() {
+					public String run() {
+						return System.getProperty("file.encoding"); //$NON-NLS-1$
+					}
+				});
+		try {
+			defaultCharset = Charset.forName(encoding);
+		} catch (UnsupportedCharsetException e) {
+			defaultCharset = Charset.forName("UTF-8"); //$NON-NLS-1$
+		}
+		return defaultCharset;
+	}
+
 	/**
 	 * A comparator that ignores case.
 	 */
 	static class IgnoreCaseComparator implements Comparator<String> {
 
 		// the singleton
-		private static Comparator c = new IgnoreCaseComparator();
+		private static Comparator<String> c = new IgnoreCaseComparator();
 
 		/*
 		 * Default constructor.
@@ -808,7 +809,7 @@ public abstract class Charset implements Comparable<Charset> {
 		/*
 		 * Gets a single instance.
 		 */
-		public static Comparator getInstance() {
+		public static Comparator<String> getInstance() {
 			return c;
 		}
 
