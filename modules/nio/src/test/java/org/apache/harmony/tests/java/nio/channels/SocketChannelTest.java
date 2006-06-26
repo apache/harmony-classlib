@@ -396,10 +396,10 @@ public class SocketChannelTest extends TestCase {
 
         assertNull(s.getInetAddress());
         assertEquals(s.getLocalAddress().getHostAddress(), "0.0.0.0");
-        // FIXME -1 means not yet bound. this maybe a bug of RI
-        // RI can't pass this, it returns 0.
-        // assertEquals(s.getLocalPort(), -1);
-        // assertFalse(s.getReuseAddress());
+        // RI fails here. RI returns 0 while spec says unbound socket should
+        // return -1.
+        assertEquals(s.getLocalPort(), -1);
+        assertFalse(s.getReuseAddress());
         assertNull(s.getLocalSocketAddress());
 
         // not connected
