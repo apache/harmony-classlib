@@ -55,6 +55,7 @@ public class AllTests {
         suite.addTestSuite(DuplicateDirectByteBufferTest.class);
         suite.addTestSuite(BufferOverflowExceptionTest.class);
         suite.addTestSuite(BufferUnderflowExceptionTest.class);
+        suite.addTestSuite(InvalidMarkExceptionTest.class);
         //$JUnit-END$
         return suite;
     }
