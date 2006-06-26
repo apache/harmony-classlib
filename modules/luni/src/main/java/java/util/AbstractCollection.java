@@ -30,14 +30,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 * Constructs a new instance of this AbstractCollection.
 	 */
 	protected AbstractCollection() {
-		// Empty
+		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#add(java.lang.Object)
-	 */
 	public boolean add(E object) {
 		throw new UnsupportedOperationException();
 	}
@@ -60,17 +55,14 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	public boolean addAll(Collection<? extends E> collection) {
 		boolean result = false;
 		Iterator<? extends E> it = collection.iterator();
-		while (it.hasNext())
-			if (add(it.next()))
-				result = true;
+		while (it.hasNext()) {
+            if (add(it.next())) {
+                result = true;
+            }
+        }
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#clear()
-	 */
 	public void clear() {
 		Iterator<E> it = iterator();
 		while (it.hasNext()) {
@@ -90,13 +82,17 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	public boolean contains(Object object) {
 		Iterator<E> it = iterator();
 		if (object != null) {
-			while (it.hasNext())
-				if (object.equals(it.next()))
-					return true;
+			while (it.hasNext()) {
+                if (object.equals(it.next())) {
+                    return true;
+                }
+            }
 		} else {
-			while (it.hasNext())
-				if (it.next() == null)
-					return true;
+			while (it.hasNext()) {
+                if (it.next() == null) {
+                    return true;
+                }
+            }
 		}
 		return false;
 	}
@@ -111,17 +107,14 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 */
 	public boolean containsAll(Collection<?> collection) {
 		Iterator<?> it = collection.iterator();
-		while (it.hasNext())
-			if (!contains(it.next()))
-				return false;
+		while (it.hasNext()) {
+            if (!contains(it.next())) {
+                return false;
+            }
+        }
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#isEmpty()
-	 */
 	public boolean isEmpty() {
 		return size() == 0;
 	}
@@ -229,8 +222,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 		int size = size(), index = 0;
 		Iterator<?> it = iterator();
 		Object[] array = new Object[size];
-		while (index < size)
-			array[index++] = it.next();
+		while (index < size) {
+            array[index++] = it.next();
+        }
 		return array;
 	}
 
@@ -270,9 +264,11 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 * 
 	 * @return the string representation of this Collection
 	 */
-	public String toString() {
-		if (isEmpty())
-			return "[]"; //$NON-NLS-1$
+	@Override
+    public String toString() {
+		if (isEmpty()) {
+            return "[]"; //$NON-NLS-1$
+        }
 
 		StringBuilder buffer = new StringBuilder(size() * 16);
 		buffer.append('[');

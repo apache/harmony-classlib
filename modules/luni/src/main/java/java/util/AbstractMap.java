@@ -32,7 +32,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * Constructs a new instance of this AbstractMap.
      */
     protected AbstractMap() {
-        /* empty */
+        super();
     }
 
     /**
@@ -99,11 +99,6 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.Map#entrySet()
-     */
     public abstract Set<Map.Entry<K, V>> entrySet();
 
     /**
@@ -118,6 +113,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * 
      * @see #hashCode
      */
+    @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;
@@ -175,6 +171,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * 
      * @see #equals
      */
+    @Override
     public int hashCode() {
         int result = 0;
         Iterator<Map.Entry<K, V>> it = entrySet().iterator();
@@ -205,14 +202,17 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
     public Set<K> keySet() {
         if (keySet == null) {
             keySet = new AbstractSet<K>() {
+                @Override
                 public boolean contains(Object object) {
                     return containsKey(object);
                 }
 
+                @Override
                 public int size() {
                     return AbstractMap.this.size();
                 }
 
+                @Override
                 public Iterator<K> iterator() {
                     return new Iterator<K>() {
                         Iterator<Map.Entry<K, V>> setIterator = entrySet()
@@ -331,6 +331,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * 
      * @return the string representation of this Map
      */
+    @Override
     public String toString() {
         if (isEmpty()) {
             return "{}"; //$NON-NLS-1$
@@ -362,22 +363,20 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
         return buffer.toString();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.Map#values()
-     */
     public Collection<V> values() {
         if (valuesCollection == null) {
             valuesCollection = new AbstractCollection<V>() {
+                @Override
                 public int size() {
                     return AbstractMap.this.size();
                 }
 
+                @Override
                 public boolean contains(Object object) {
                     return containsValue(object);
                 }
 
+                @Override
                 public Iterator<V> iterator() {
                     return new Iterator<V>() {
                         Iterator<Map.Entry<K, V>> setIterator = entrySet().iterator();
@@ -409,6 +408,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      *                if the receiver's class does not implement the interface
      *                Cloneable.
      */
+    @Override
     @SuppressWarnings("unchecked")
     protected Object clone() throws CloneNotSupportedException {
         AbstractMap<K, V> result = (AbstractMap<K, V>) super.clone();

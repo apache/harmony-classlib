@@ -28,7 +28,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 	 * Constructs a new instance of this AbstractSet.
 	 */
 	protected AbstractSet() {
-		/*empty*/
+		super();
 	}
 
 	/**
@@ -42,9 +42,11 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 	 * 
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
-		if (this == object)
-			return true;
+	@Override
+    public boolean equals(Object object) {
+		if (this == object) {
+            return true;
+        }
 		if (object instanceof Set) {
 			Set<?> s = (Set) object;
 			return size() == s.size() && containsAll(s);
@@ -60,7 +62,8 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		int result = 0;
 		Iterator<?> it = iterator();
 		while (it.hasNext()) {
@@ -81,7 +84,8 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Collection is not supported
 	 */
-	public boolean removeAll(Collection<?> collection) {
+	@Override
+    public boolean removeAll(Collection<?> collection) {
 		boolean result = false;
 		if (size() <= collection.size()) {
 			Iterator<?> it = iterator();
@@ -93,8 +97,9 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 			}
 		} else {
 			Iterator<?> it = collection.iterator();
-			while (it.hasNext())
-				result = remove(it.next()) || result;
+			while (it.hasNext()) {
+                result = remove(it.next()) || result;
+            }
 		}
 		return result;
 	}

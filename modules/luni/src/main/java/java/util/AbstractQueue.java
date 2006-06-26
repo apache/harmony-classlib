@@ -19,7 +19,7 @@ package java.util;
  * 
  * An abstract class which gives out skeletal implementations for some methods
  * in Queue which include add, remove, and element that are based on offer,
- * poll, and peek except that they throw exception to indicate the occurence of
+ * poll, and peek except that they throw exception to indicate the occurrence of
  * some error instead of the return value of false or null.
  * 
  * @param <E>
@@ -33,6 +33,7 @@ public abstract class AbstractQueue<E> extends AbstractCollection<E> implements
      * 
      */
     protected AbstractQueue() {
+        super();
     }
 
     /**
@@ -44,6 +45,7 @@ public abstract class AbstractQueue<E> extends AbstractCollection<E> implements
      * @throws IllegalStateException if the element is not allowed to be added
      *         to the queue.
      */
+    @Override
     public boolean add(E o) {
         if (null == o) {
             throw new NullPointerException();
@@ -72,6 +74,7 @@ public abstract class AbstractQueue<E> extends AbstractCollection<E> implements
      * @throws IllegalArgumentException If the collection to be added to the
      *         queue is the queue itself.
      */
+    @Override
     public boolean addAll(Collection<? extends E> c) {
         if (null == c) {
             throw new NullPointerException();
@@ -119,6 +122,7 @@ public abstract class AbstractQueue<E> extends AbstractCollection<E> implements
     /**
      * Removes all elements of the queue.
      */
+    @Override
     public void clear() {
         E o;
         do {
