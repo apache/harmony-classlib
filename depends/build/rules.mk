@@ -35,7 +35,7 @@ $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 	-o $@ -lm -lpthread -lc -ldl \
 	-Xlinker -z -Xlinker origin \
 	-Xlinker -rpath -Xlinker \$$ORIGIN/ \
-	-Xlinker -rpath-link -Xlinker ..
+	-Xlinker -rpath-link -Xlinker $(HY_HDK)/jdk/jre/bin
 
 clean:
 	-rm -f $(BUILDFILES) $(DLLNAME) $(EXENAME) $(LIBNAME)
