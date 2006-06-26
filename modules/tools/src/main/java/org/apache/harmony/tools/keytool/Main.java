@@ -16,7 +16,6 @@
 
 package org.apache.harmony.tools.keytool;
 
-
 /**
  * The main class that bundles command line parsing, interaction with the user
  * and work with keys and certificates.
@@ -34,6 +33,21 @@ public class Main {
         switch (param.getCommand()) {
             case EXPORT:
                 CertExporter.exportCert(param);
+                break;
+            case LIST:
+                KeyStoreCertPrinter.list(param);
+                break;
+            case KEYCLONE:
+                EntryManager.keyClone(param);
+                break;
+            case DELETE:
+                EntryManager.delete(param);
+                break;
+            case STOREPASSWD:
+                KeyStoreLoaderSaver.storePasswd(param);
+                break;
+            case KEYPASSWD:
+                EntryManager.keyPasswd(param);
                 break;
             // TODO: calls for other options.    
         }
@@ -68,7 +82,7 @@ public class Main {
             KeyStoreLoaderSaver.loadStore(param);
             // prompt for additional parameters if some of the expected
             // ones have not been specified.
-            ArgumentsParser.getAdditionalParameters(param);
+            //ArgumentsParser.getAdditionalParameters(param);
         }
 
         // print the warning if store password is not set

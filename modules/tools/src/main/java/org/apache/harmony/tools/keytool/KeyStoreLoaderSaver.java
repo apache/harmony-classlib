@@ -19,6 +19,7 @@ package org.apache.harmony.tools.keytool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -37,8 +38,9 @@ public class KeyStoreLoaderSaver {
      * the password is not set in param, the integrity is not checked. If the
      * path to the store is not defined an empty keystore is created.
      * 
-     * @param param - KeytoolParameters object which is used to get path to the
-     *        store and password to unlock it or check its integrity.
+     * @param param -
+     *            KeytoolParameters object which is used to get path to the
+     *            store and password to unlock it or check its integrity.
      * @throws NoSuchAlgorithmException
      * @throws CertificateException
      * @throws FileNotFoundException
@@ -147,11 +149,36 @@ public class KeyStoreLoaderSaver {
     /**
      * Saves the keystore to the file and protects its integrity with password.
      * 
-     * @param param
+     * @throws KeyStoreException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws IOException
      */
-    static void saveStore(KeytoolParameters param) {
-        // TODO
-        throw new RuntimeException("The method is not implemented yet.");
+    static void saveStore(KeytoolParameters param) throws KeyStoreException,
+            NoSuchAlgorithmException, CertificateException, IOException {
+        // TODO: store not only to a file?
+        // if the path to the store is not set, use the default value
+        if (param.getStorePath() == null) {
+            param.setStorePath(KeytoolParameters.defaultKeystorePath);
+        }
+        File ksFile = new File(param.getStorePath());
+        // the file will be created if and only if one with the same name
+        // doesn't exist
+        ksFile.createNewFile();
+        FileOutputStream fos = new FileOutputStream(param.getStorePath());
+        try {
+            param.getKeyStore().store(fos, param.getStorePass());
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchAlgorithmException(
+                    "Failed to find the algorithm to check the keystore integrity",
+                    e);
+        } catch (CertificateException e) {
+            throw new CertificateException(
+                    "Failed to save a certificate to the keystore. ", e);
+        } catch (IOException e) {
+            throw (IOException) new IOException("Failed to save the keystore. ")
+                    .initCause(e);
+        }
     }
 
     /**
@@ -160,7 +187,7 @@ public class KeyStoreLoaderSaver {
      * @param param
      */
     static void storePasswd(KeytoolParameters param) {
-        // TODO
-        throw new RuntimeException("The method is not implemented yet.");
+        param.setStorePass(param.getNewPasswd());
     }
+
 }

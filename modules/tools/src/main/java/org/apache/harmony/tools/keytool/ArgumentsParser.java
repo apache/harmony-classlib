@@ -346,6 +346,5 @@ class ArgumentsParser {
      */
     static void getAdditionalParameters(KeytoolParameters param) {
         // TODO
-        throw new RuntimeException("The method is not implemented yet.");
     }
 }
