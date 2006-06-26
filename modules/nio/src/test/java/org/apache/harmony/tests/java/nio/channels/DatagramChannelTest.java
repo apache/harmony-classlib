@@ -510,14 +510,20 @@ public class DatagramChannelTest extends TestCase {
 
     /**
      * Test method for 'DatagramChannelImpl.connect(SocketAddress)'
-     * 
-     * @throws IOException
      */
     public void testConnect_BlockWithServer() throws IOException {
         // blocking mode
         assertTrue(this.channel1.isBlocking());
         connectLocalServer();
         datagramSocket1.close();
+        disconnectAfterConnected();
+    }
+    
+    /**
+     * Test method for 'DatagramChannelImpl.connect(SocketAddress)'
+     */
+    public void testConnect_BlockNoServer() throws IOException {
+        connectWithoutServer();
         disconnectAfterConnected();
     }
 
@@ -922,16 +928,6 @@ public class DatagramChannelTest extends TestCase {
      * 
      * @throws Exception
      */
-    public void testReceive_BlockNoServerBufEmpty() throws Exception {
-        assertTrue(this.channel1.isBlocking());
-        receiveBlockNoServer(CAPACITY_NORMAL);
-    }
-
-    /**
-     * Test method for 'DatagramChannelImpl.receive(ByteBuffer)'
-     * 
-     * @throws Exception
-     */
     public void testReceive_NonBlockNoServerBufEmpty() throws Exception {
         this.channel1.configureBlocking(false);
         receiveNonBlockNoServer(CAPACITY_NORMAL);
@@ -982,31 +978,9 @@ public class DatagramChannelTest extends TestCase {
      * 
      * @throws Exception
      */
-    public void testReceive_BlockNoServerBufZero() throws Exception {
-        assertTrue(this.channel1.isBlocking());
-        receiveBlockNoServer(CAPACITY_ZERO);
-    }
-
-    /**
-     * Test method for 'DatagramChannelImpl.receive(ByteBuffer)'
-     * 
-     * @throws Exception
-     */
     public void testReceive_NonBlockNoServerBufZero() throws Exception {
         this.channel1.configureBlocking(false);
         receiveNonBlockNoServer(CAPACITY_ZERO);
-    }
-
-    /**
-     * Test method for 'DatagramChannelImpl.receive(ByteBuffer)'
-     * 
-     * @throws Exception
-     */
-    public void testReceive_BlockNoServerBufNotEmpty() throws Exception {
-        assertTrue(this.channel1.isBlocking());
-        connectWithoutServer();
-        ByteBuffer dst = allocateNonEmptyBuf();
-        closeBlockedChannelForReceive(dst);
     }
 
     /**
@@ -1021,17 +995,6 @@ public class DatagramChannelTest extends TestCase {
         assertNull(this.channel1.receive(dst));
     }
 
-    /**
-     * Test method for 'DatagramChannelImpl.receive(ByteBuffer)'
-     * 
-     * @throws Exception
-     */
-    public void testReceive_BlockNoServerBufFull() throws Exception {
-        assertTrue(this.channel1.isBlocking());
-        connectWithoutServer();
-        ByteBuffer dst = allocateFullBuf();
-        closeBlockedChannelForReceive(dst);
-    }
 
     /**
      * Test method for 'DatagramChannelImpl.receive(ByteBuffer)'
@@ -1132,35 +1095,6 @@ public class DatagramChannelTest extends TestCase {
         connectWithoutServer();
         ByteBuffer dst = ByteBuffer.allocateDirect(size);
         assertNull(this.channel1.receive(dst));
-    }
-
-    private void receiveBlockNoServer(int size) throws IOException {
-        connectWithoutServer();
-        ByteBuffer dst = ByteBuffer.allocateDirect(size);
-        closeBlockedChannelForReceive(dst);
-    }
-
-    private void closeBlockedChannelForReceive(ByteBuffer dst)
-            throws IOException {
-        // TODO refine async close test when AbstractInterruptibleChannel
-        // complete
-        // to break the blocking status, let a thread to close this channel.
-        new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(TIME_UNIT);
-                    channel1.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-        try {
-            this.channel1.receive(dst);
-            fail("Should throw a AsynchronousCloseException");
-        } catch (AsynchronousCloseException e) {
-            //expected
-        }
     }
 
     private void receiveNoServerChannelClose() throws IOException {
