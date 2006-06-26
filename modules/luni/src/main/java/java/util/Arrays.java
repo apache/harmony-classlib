@@ -118,11 +118,12 @@ public class Arrays {
             return a.clone();
         }
 
+        @SuppressWarnings("unchecked")
         public <T> T[] toArray(T[] contents) {
             int size = size();
             if (size > contents.length) {
-                contents = (T[]) Array.newInstance(contents.getClass()
-                        .getComponentType(), size);
+                Class<?> ct = contents.getClass().getComponentType();
+                contents = (T[]) Array.newInstance(ct, size);
             }
             System.arraycopy(a, 0, contents, 0, size);
             if (size < contents.length) {

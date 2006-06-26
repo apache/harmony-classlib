@@ -249,7 +249,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *                when the type of an element in this Collection cannot be
 	 *                stored in the type of the specified array
 	 */
-	public <T> T[] toArray(T[] contents) {
+	@SuppressWarnings("unchecked")
+    public <T> T[] toArray(T[] contents) {
 		int size = size(), index = 0;
 		if (size > contents.length) {
             Class<?> ct = contents.getClass().getComponentType();

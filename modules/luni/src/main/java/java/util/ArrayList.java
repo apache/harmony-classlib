@@ -76,8 +76,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		addAll(collection);
 	}
     
-    //TODO Remove comment when annotations are available
-    //@SuppressWarnings("unused")
+    @SuppressWarnings("unchecked")
     private E[] newElementArray(int size) {
         return (E[])new Object[size];
     }
@@ -245,7 +244,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	public Object clone() {
+	@SuppressWarnings("unchecked")
+    public Object clone() {
 		try {
 			ArrayList<E> newList = (ArrayList<E>) super.clone();
 			newList.array = (E[]) array.clone();
@@ -573,7 +573,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 *                when the type of an element in this ArrayList cannot be
 	 *                stored in the type of the specified array
 	 */
-	public <T> T[] toArray(T[] contents) {
+	@SuppressWarnings("unchecked")
+    public <T> T[] toArray(T[] contents) {
 		int size = size();
 		if (size > contents.length) {
             Class<?> ct = contents.getClass().getComponentType();
@@ -612,7 +613,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 			stream.writeObject(it.next());
 	}
 
-	private void readObject(ObjectInputStream stream) throws IOException,
+	@SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		ObjectInputStream.GetField fields = stream.readFields();
 		lastIndex = fields.get("size", 0); //$NON-NLS-1$

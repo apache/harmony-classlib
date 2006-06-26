@@ -409,6 +409,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      *                if the receiver's class does not implement the interface
      *                Cloneable.
      */
+    @SuppressWarnings("unchecked")
     protected Object clone() throws CloneNotSupportedException {
         AbstractMap<K, V> result = (AbstractMap<K, V>) super.clone();
         result.keySet = null;
