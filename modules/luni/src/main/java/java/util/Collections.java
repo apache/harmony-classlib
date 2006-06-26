@@ -142,7 +142,8 @@ public class Collections {
 	private static final class ReverseComparator<T> implements Comparator<T>, Serializable {
 		private static final long serialVersionUID = 7207038068494060240L;
 
-		public int compare(T o1, T o2) {
+		@SuppressWarnings("unchecked")
+        public int compare(T o1, T o2) {
             Comparable<T> c2 = (Comparable<T>)o2;
 			return c2.compareTo(o1);
 		}
@@ -1145,7 +1146,8 @@ public class Collections {
 				return result;
 			}
 
-			public <T> T[] toArray(T[] contents) {
+			@SuppressWarnings("unchecked")
+            public <T> T[] toArray(T[] contents) {
 				int size = c.size(), index = 0;
 				Iterator<Map.Entry<K, V>> it = iterator();
 				if (size > contents.length) {
@@ -1335,13 +1337,14 @@ public class Collections {
 	 *                when an element in the List or the search element does not
 	 *                implement Comparable, or cannot be compared to each other
 	 */
-	public static <T> int binarySearch(List<? extends Comparable<? super T>> list, T object) {
+	@SuppressWarnings("unchecked")
+    public static <T> int binarySearch(List<? extends Comparable<? super T>> list, T object) {
 		if (list == null) {
             throw new NullPointerException();
         }
-		Comparable key = (Comparable)object;
+		Comparable<T> key = (Comparable<T>)object;
 		if (!(list instanceof RandomAccess)) {
-			ListIterator it = list.listIterator();
+			ListIterator<T> it = (ListIterator<T>)list.listIterator();
 			while (it.hasNext()) {
 				int result;
 				if ((result = key.compareTo(it.next())) <= 0) {
@@ -1358,7 +1361,7 @@ public class Collections {
 		int low = 0, mid = list.size(), high = mid - 1, result = -1;
 		while (low <= high) {
 			mid = (low + high) >> 1;
-			if ((result = key.compareTo(list.get(mid))) > 0) {
+			if ((result = key.compareTo((T)list.get(mid))) > 0) {
                 low = mid + 1;
             } else if (result == 0) {
                 return mid;
@@ -1387,7 +1390,8 @@ public class Collections {
 	 *                when an element in the list and the searched element
 	 *                cannot be compared to each other using the Comparator
 	 */
-	public static <T> int binarySearch(List<? extends T> list, T object,
+	@SuppressWarnings("unchecked")
+    public static <T> int binarySearch(List<? extends T> list, T object,
 			Comparator<? super T> comparator) {
 		if (comparator == null) {
 			return Collections.binarySearch((List<? extends Comparable<? super T>>)list, object);
@@ -1614,14 +1618,16 @@ public class Collections {
 	 * @throws UnsupportedOperationException
 	 *                when replacing an element in the List is not supported
 	 */
-	public static void reverse(List<?> list) {
+	@SuppressWarnings("unchecked")
+    public static void reverse(List<?> list) {
 		int size = list.size();
-		ListIterator front = list.listIterator();
-		ListIterator back = list.listIterator(size);
+		ListIterator<Object> front = (ListIterator<Object>)list.listIterator();
+		ListIterator<Object> back = (ListIterator<Object>)list.listIterator(size);
 		for (int i = 0; i < size / 2; i++) {
-			Object temp = front.next();
-			front.set(back.previous());
-			back.set(temp);
+			Object frontNext = front.next();
+            Object backPrev = back.previous();
+			front.set(backPrev);
+			back.set(frontNext);
 		}
 	}
 
@@ -1691,7 +1697,8 @@ public class Collections {
 	 * @throws UnsupportedOperationException
 	 *                when replacing an element in the List is not supported
 	 */
-	public static void shuffle(List<?> list, Random random) {
+	@SuppressWarnings("unchecked")
+    public static void shuffle(List<?> list, Random random) {
 		if (!(list instanceof RandomAccess)) {
 			Object[] array = list.toArray();
 			for (int i = array.length - 1; i > 0; i--) {
@@ -1705,13 +1712,13 @@ public class Collections {
 			}
 
 			int i = 0;
-			ListIterator it = list.listIterator();
+			ListIterator<Object> it = (ListIterator<Object>)list.listIterator();
 			while (it.hasNext()) {
 				it.next();
 				it.set(array[i++]);
 			}
 		} else {
-            List rawList = list;
+            List<Object> rawList = (List<Object>)list;
 			for (int i = rawList.size() - 1; i > 0; i--) {
 				int index = random.nextInt() % (i + 1);
 				if (index < 0) {
@@ -1770,7 +1777,8 @@ public class Collections {
 	 *                when an element in the List does not implement Comparable
 	 *                or elements cannot be compared to each other
 	 */
-	public static <T extends Comparable<? super T>> void sort(List<T> list) {
+	@SuppressWarnings("unchecked")
+    public static <T extends Comparable<? super T>> void sort(List<T> list) {
         Object[] array = list.toArray();
         Arrays.sort(array);
         int i = 0;
@@ -1793,7 +1801,8 @@ public class Collections {
 	 *                when elements in the List cannot be compared to each other
 	 *                using the Comparator
 	 */
-	public static <T> void sort(List<T> list, Comparator<? super T> comparator) {
+	@SuppressWarnings("unchecked")
+    public static <T> void sort(List<T> list, Comparator<? super T> comparator) {
         T[] array = list.toArray((T[])new Object[list.size()]);
 		Arrays.sort(array, comparator);
 		int i = 0;
@@ -1819,14 +1828,15 @@ public class Collections {
 	 * @throws IndexOutOfBoundsException
 	 *                if index1 or index2 is out of range of this list
 	 */
-	public static void swap(List<?> list, int index1, int index2) {
+	@SuppressWarnings("unchecked")
+    public static void swap(List<?> list, int index1, int index2) {
 		if (list == null) {
             throw new NullPointerException();
         }
 		if (index1 == index2) {
             return;
         }
-        List rawList = list;
+        List<Object> rawList = (List<Object>)list;
         rawList.set(index2, rawList.set(index1, rawList.get(index2)));
 	}
 
@@ -1872,8 +1882,9 @@ public class Collections {
 	 *            It can be any integer: 0, positive, negative, larger than the
 	 *            list size
 	 */
-	public static void rotate(List<?> lst, int dist) {
-        List list = lst;
+	@SuppressWarnings("unchecked")
+    public static void rotate(List<?> lst, int dist) {
+        List<Object> list = (List<Object>)lst;
 		int size = list.size();
 
 		// Can't sensibly rotate an empty collection
@@ -1908,8 +1919,8 @@ public class Collections {
 			}
 		} else {
 			int divideIndex = (size - normdist) % size;
-			List sublist1 = list.subList(0, divideIndex);
-			List sublist2 = list.subList(divideIndex, size);
+			List<Object> sublist1 = list.subList(0, divideIndex);
+			List<Object> sublist2 = list.subList(divideIndex, size);
 			reverse(sublist1);
 			reverse(sublist2);
 			reverse(list);
@@ -2170,7 +2181,8 @@ public class Collections {
 	 *            the Collection
 	 * @return an unmodifiable Collection
 	 */
-	public static <E> Collection<E> unmodifiableCollection(Collection<? extends E> collection) {
+	@SuppressWarnings("unchecked")
+    public static <E> Collection<E> unmodifiableCollection(Collection<? extends E> collection) {
 		if (collection == null) {
             throw new NullPointerException();
         }
@@ -2186,7 +2198,8 @@ public class Collections {
 	 *            the List
 	 * @return an unmodifiable List
 	 */
-	public static <E> List<E> unmodifiableList(List<? extends E> list) {
+	@SuppressWarnings("unchecked")
+    public static <E> List<E> unmodifiableList(List<? extends E> list) {
 		if (list == null) {
             throw new NullPointerException();
         }
@@ -2206,7 +2219,8 @@ public class Collections {
 	 *            the Map
 	 * @return a unmodifiable Map
 	 */
-	public static <K, V> Map<K, V> unmodifiableMap(Map<? extends K, ? extends V> map) {
+	@SuppressWarnings("unchecked")
+    public static <K, V> Map<K, V> unmodifiableMap(Map<? extends K, ? extends V> map) {
 		if (map == null) {
             throw new NullPointerException();
         }
@@ -2222,7 +2236,8 @@ public class Collections {
 	 *            the Set
 	 * @return a unmodifiable Set
 	 */
-	public static <E> Set<E> unmodifiableSet(Set<? extends E> set) {
+	@SuppressWarnings("unchecked")
+    public static <E> Set<E> unmodifiableSet(Set<? extends E> set) {
 		if (set == null) {
             throw new NullPointerException();
         }
@@ -2238,7 +2253,8 @@ public class Collections {
 	 *            the SortedMap
 	 * @return a unmodifiable SortedMap
 	 */
-	public static <K, V> SortedMap<K, V> unmodifiableSortedMap(SortedMap<K, ? extends V> map) {
+	@SuppressWarnings("unchecked")
+    public static <K, V> SortedMap<K, V> unmodifiableSortedMap(SortedMap<K, ? extends V> map) {
 		if (map == null) {
             throw new NullPointerException();
         }
@@ -2301,6 +2317,7 @@ public class Collections {
      * @since 1.5
      * @see #EMPTY_LIST
      */
+    @SuppressWarnings("unchecked")
     public static final <T> List<T> emptyList() {
         return EMPTY_LIST;
     }
@@ -2311,6 +2328,7 @@ public class Collections {
      * @since 1.5
      * @see #EMPTY_SET
      */
+    @SuppressWarnings("unchecked")
     public static final <T> Set<T> emptySet() {
         return EMPTY_SET;
     }
@@ -2321,6 +2339,7 @@ public class Collections {
      * @since 1.5
      * @see #EMPTY_MAP
      */
+    @SuppressWarnings("unchecked")
     public static final <K, V> Map<K, V> emptyMap() {
         return EMPTY_MAP;
     }
@@ -2560,6 +2579,7 @@ public class Collections {
         /**
          * @see java.util.Collection#addAll(Collection)
          */
+        @SuppressWarnings("unchecked")
         public boolean addAll(Collection<? extends E> c1) {
             int size = c1.size();
             if (size == 0) {
@@ -2714,6 +2734,7 @@ public class Collections {
         /**
          * @see java.util.List#addAll(int, Collection)
          */
+        @SuppressWarnings("unchecked")
         public boolean addAll(int index, Collection<? extends E> c1) {
             int size = c1.size();
             if (size == 0) {
@@ -2939,6 +2960,7 @@ public class Collections {
         /**
          * @see java.util.Map#putAll(Map)
          */
+        @SuppressWarnings("unchecked")
         public void putAll(Map<? extends K, ? extends V> map) {
             int size = map.size();
             if (size == 0) {
@@ -3112,6 +3134,7 @@ public class Collections {
             /**
              * @see java.util.Set#toArray(Object[])
              */
+            @SuppressWarnings("unchecked")
             public <T> T[] toArray(T[] array) {
                 int thisSize = size();
                 if (array.length < thisSize) {
