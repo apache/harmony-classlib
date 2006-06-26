@@ -107,6 +107,7 @@ public class Observable {
 	 * @param data
 	 *            the argument passed to update()
 	 */
+    @SuppressWarnings("unchecked")
     public void notifyObservers(Object data) {
 		if (changed) {
 			// Must clone the vector in case deleteObserver is called

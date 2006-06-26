@@ -65,14 +65,17 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 				// if link == voidLink then pos must == -1
 				link = list.voidLink;
 				if (location < list.size / 2) {
-					for (pos = -1; pos + 1 < location; pos++)
-						link = link.next;
+					for (pos = -1; pos + 1 < location; pos++) {
+                        link = link.next;
+                    }
 				} else {
-					for (pos = list.size; pos >= location; pos--)
-						link = link.previous;
+					for (pos = list.size; pos >= location; pos--) {
+                        link = link.previous;
+                    }
 				}
-			} else
-				throw new IndexOutOfBoundsException();
+			} else {
+                throw new IndexOutOfBoundsException();
+            }
 		}
 
 		public void add(ET object) {
@@ -87,8 +90,9 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 				expectedModCount++;
 				list.size++;
 				list.modCount++;
-			} else
-				throw new ConcurrentModificationException();
+			} else {
+                throw new ConcurrentModificationException();
+            }
 		}
 
 		public boolean hasNext() {
@@ -106,10 +110,12 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 					lastLink = link = next;
 					pos++;
 					return link.data;
-				} else
-					throw new NoSuchElementException();
-			} else
-				throw new ConcurrentModificationException();
+				} else {
+                    throw new NoSuchElementException();
+                }
+			} else {
+                throw new ConcurrentModificationException();
+            }
 		}
 
 		public int nextIndex() {
@@ -123,10 +129,12 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 					link = link.previous;
 					pos--;
 					return lastLink.data;
-				} else
-					throw new NoSuchElementException();
-			} else
-				throw new ConcurrentModificationException();
+				} else {
+                    throw new NoSuchElementException();
+                }
+			} else {
+                throw new ConcurrentModificationException();
+            }
 		}
 
 		public int previousIndex() {
@@ -140,27 +148,32 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 					Link<ET> previous = lastLink.previous;
 					next.previous = previous;
 					previous.next = next;
-					if (lastLink == link)
-						pos--;
+					if (lastLink == link) {
+                        pos--;
+                    }
 					link = previous;
 					lastLink = null;
 					expectedModCount++;
 					list.size--;
 					list.modCount++;
-				} else
-					throw new IllegalStateException();
-			} else
-				throw new ConcurrentModificationException();
+				} else {
+                    throw new IllegalStateException();
+                }
+			} else {
+                throw new ConcurrentModificationException();
+            }
 		}
 
 		public void set(ET object) {
 			if (expectedModCount == list.modCount) {
-				if (lastLink != null)
-					lastLink.data = object;
-				else
-					throw new IllegalStateException();
-			} else
-				throw new ConcurrentModificationException();
+				if (lastLink != null) {
+                    lastLink.data = object;
+                } else {
+                    throw new IllegalStateException();
+                }
+			} else {
+                throw new ConcurrentModificationException();
+            }
 		}
 	}
 
@@ -202,15 +215,18 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public void add(int location, E object) {
+	@Override
+    public void add(int location, E object) {
 		if (0 <= location && location <= size) {
 			Link<E> link = voidLink;
 			if (location < (size / 2)) {
-				for (int i = 0; i <= location; i++)
-					link = link.next;
+				for (int i = 0; i <= location; i++) {
+                    link = link.next;
+                }
 			} else {
-				for (int i = size; i > location; i--)
-					link = link.previous;
+				for (int i = size; i > location; i--) {
+                    link = link.previous;
+                }
 			}
 			Link<E> previous = link.previous;
 			Link<E> newLink = new Link<E>(object, previous, link);
@@ -218,8 +234,9 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 			link.previous = newLink;
 			size++;
 			modCount++;
-		} else
-			throw new IndexOutOfBoundsException();
+		} else {
+            throw new IndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -229,7 +246,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 *            the object to add
 	 * @return true
 	 */
-	public boolean add(E object) {
+	@Override
+    public boolean add(E object) {
 		// Cannot call addLast() as subclasses can override
 		Link<E> oldLast = voidLink.previous;
 		Link<E> newLink = new Link<E>(object, oldLast, voidLink);
@@ -252,6 +270,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * @exception IndexOutOfBoundsException when
      *            <code>location < 0 || > size()</code>
      */
+    @Override
     public boolean addAll(int location, Collection<? extends E> collection) {
         if (location < 0 || location > size) {
             throw new IndexOutOfBoundsException();
@@ -291,10 +310,12 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 *            the Collection of objects
 	 * @return true if this LinkedList is modified, false otherwise
 	 */
-	public boolean addAll(Collection<? extends E> collection) {
+	@Override
+    public boolean addAll(Collection<? extends E> collection) {
 		int adding = collection.size();
-		if (adding == 0)
-			return false;
+		if (adding == 0) {
+            return false;
+        }
 		Link<E> previous = voidLink.previous;
         for (E e : collection) {
 			Link<E> newLink = new Link<E>(e, previous, null);
@@ -344,7 +365,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * @see List#isEmpty
 	 * @see #size
 	 */
-	public void clear() {
+	@Override
+    public void clear() {
 		if (size > 0) {
 			size = 0;
 			voidLink.next = voidLink;
@@ -361,7 +383,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	public Object clone() {
+	@Override
+    public Object clone() {
 		return new LinkedList<E>(this);
 	}
 
@@ -373,37 +396,44 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * @return true if <code>object</code> is an element of this LinkedList,
 	 *         false otherwise
 	 */
-	public boolean contains(Object object) {
+	@Override
+    public boolean contains(Object object) {
 		Link<E> link = voidLink.next;
 		if (object != null) {
 			while (link != voidLink) {
-				if (object.equals(link.data))
-					return true;
+				if (object.equals(link.data)) {
+                    return true;
+                }
 				link = link.next;
 			}
 		} else {
 			while (link != voidLink) {
-				if (link.data == null)
-					return true;
+				if (link.data == null) {
+                    return true;
+                }
 				link = link.next;
 			}
 		}
 		return false;
 	}
 
-	public E get(int location) {
+	@Override
+    public E get(int location) {
 		if (0 <= location && location < size) {
 			Link<E> link = voidLink;
 			if (location < (size / 2)) {
-				for (int i = 0; i <= location; i++)
-					link = link.next;
+				for (int i = 0; i <= location; i++) {
+                    link = link.next;
+                }
 			} else {
-				for (int i = size; i > location; i--)
-					link = link.previous;
+				for (int i = size; i > location; i--) {
+                    link = link.previous;
+                }
 			}
 			return link.data;
-		} else
-			throw new IndexOutOfBoundsException();
+		} else {
+            throw new IndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -416,8 +446,9 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 */
 	public E getFirst() {
 		Link<E> first = voidLink.next;
-		if (first != voidLink)
-			return first.data;
+		if (first != voidLink) {
+            return first.data;
+        }
 		throw new NoSuchElementException();
 	}
 
@@ -431,8 +462,9 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 */
 	public E getLast() {
 		Link<E> last = voidLink.previous;
-		if (last != voidLink)
-			return last.data;
+		if (last != voidLink) {
+            return last.data;
+        }
 		throw new NoSuchElementException();
 	}
 
@@ -444,20 +476,23 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 *            the object to search for
 	 * @return the index of the first occurrence of the object
 	 */
-	public int indexOf(Object object) {
+	@Override
+    public int indexOf(Object object) {
 		int pos = 0;
 		Link<E> link = voidLink.next;
 		if (object != null) {
 			while (link != voidLink) {
-				if (object.equals(link.data))
-					return pos;
+				if (object.equals(link.data)) {
+                    return pos;
+                }
 				link = link.next;
 				pos++;
 			}
 		} else {
 			while (link != voidLink) {
-				if (link.data == null)
-					return pos;
+				if (link.data == null) {
+                    return pos;
+                }
 				link = link.next;
 				pos++;
 			}
@@ -473,21 +508,24 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 *            the object to search for
 	 * @return the index of the last occurrence of the object
 	 */
-	public int lastIndexOf(Object object) {
+	@Override
+    public int lastIndexOf(Object object) {
 		int pos = size;
 		Link<E> link = voidLink.previous;
 		if (object != null) {
 			while (link != voidLink) {
 				pos--;
-				if (object.equals(link.data))
-					return pos;
+				if (object.equals(link.data)) {
+                    return pos;
+                }
 				link = link.previous;
 			}
 		} else {
 			while (link != voidLink) {
 				pos--;
-				if (link.data == null)
-					return pos;
+				if (link.data == null) {
+                    return pos;
+                }
 				link = link.previous;
 			}
 		}
@@ -508,7 +546,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * 
 	 * @see ListIterator
 	 */
-	public ListIterator<E> listIterator(int location) {
+	@Override
+    public ListIterator<E> listIterator(int location) {
 		return new LinkIterator<E>(this, location);
 	}
 
@@ -522,15 +561,18 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public E remove(int location) {
+	@Override
+    public E remove(int location) {
 		if (0 <= location && location < size) {
 			Link<E> link = voidLink;
 			if (location < (size / 2)) {
-				for (int i = 0; i <= location; i++)
-					link = link.next;
+				for (int i = 0; i <= location; i++) {
+                    link = link.next;
+                }
 			} else {
-				for (int i = size; i > location; i--)
-					link = link.previous;
+				for (int i = size; i > location; i--) {
+                    link = link.previous;
+                }
 			}
 			Link<E> previous = link.previous;
 			Link<E> next = link.next;
@@ -539,21 +581,26 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 			size--;
 			modCount++;
 			return link.data;
-		} else
-			throw new IndexOutOfBoundsException();
+		} else {
+            throw new IndexOutOfBoundsException();
+        }
 	}
 
-	public boolean remove(Object object) {
+	@Override
+    public boolean remove(Object object) {
 		Link<E> link = voidLink.next;
 		if (object != null) {
-			while (link != voidLink && !object.equals(link.data))
-				link = link.next;
+			while (link != voidLink && !object.equals(link.data)) {
+                link = link.next;
+            }
 		} else {
-			while (link != voidLink && link.data != null)
-				link = link.next;
+			while (link != voidLink && link.data != null) {
+                link = link.next;
+            }
 		}
-		if (link == voidLink)
-			return false;
+		if (link == voidLink) {
+            return false;
+        }
 		Link<E> next = link.next;
 		Link<E> previous = link.previous;
 		previous.next = next;
@@ -580,8 +627,9 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 			size--;
 			modCount++;
 			return first.data;
-		} else
-			throw new NoSuchElementException();
+		} else {
+            throw new NoSuchElementException();
+        }
 	}
 
 	/**
@@ -601,8 +649,9 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 			size--;
 			modCount++;
 			return last.data;
-		} else
-			throw new NoSuchElementException();
+		} else {
+            throw new NoSuchElementException();
+        }
 	}
 
 	/**
@@ -618,21 +667,25 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public E set(int location, E object) {
+	@Override
+    public E set(int location, E object) {
 		if (0 <= location && location < size) {
 			Link<E> link = voidLink;
 			if (location < (size / 2)) {
-				for (int i = 0; i <= location; i++)
-					link = link.next;
+				for (int i = 0; i <= location; i++) {
+                    link = link.next;
+                }
 			} else {
-				for (int i = size; i > location; i--)
-					link = link.previous;
+				for (int i = size; i > location; i--) {
+                    link = link.previous;
+                }
 			}
 			E result = link.data;
 			link.data = object;
 			return result;
-		} else
-			throw new IndexOutOfBoundsException();
+		} else {
+            throw new IndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -640,7 +693,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * 
 	 * @return the number of elements in this LinkedList
 	 */
-	public int size() {
+	@Override
+    public int size() {
 		return size;
 	}
     
@@ -671,7 +725,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 * 
 	 * @return an array of the elements from this LinkedList
 	 */
-	public Object[] toArray() {
+	@Override
+    public Object[] toArray() {
 		int index = 0;
 		Object[] contents = new Object[size];
 		Link<E> link = voidLink.next;
@@ -697,19 +752,22 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	 *                when the type of an element in this LinkedList cannot be
 	 *                stored in the type of the specified array
 	 */
-	public <T> T[] toArray(T[] contents) {
+	@Override
+    @SuppressWarnings("unchecked")
+    public <T> T[] toArray(T[] contents) {
 		int index = 0;
 		if (size > contents.length) {
-            contents = (T[]) Array.newInstance(contents.getClass()
-                    .getComponentType(), size);
+            Class<?> ct = contents.getClass().getComponentType();
+            contents = (T[]) Array.newInstance(ct, size);
         }
 		Link<E> link = voidLink.next;
 		while (link != voidLink) {
 			contents[index++] = (T)link.data;
 			link = link.next;
 		}
-		if (index < contents.length)
-			contents[index] = null;
+		if (index < contents.length) {
+            contents[index] = null;
+        }
 		return contents;
 	}
 
@@ -717,11 +775,13 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 		stream.defaultWriteObject();
 		stream.writeInt(size);
 		Iterator<E> it = iterator();
-		while (it.hasNext())
-			stream.writeObject(it.next());
+		while (it.hasNext()) {
+            stream.writeObject(it.next());
+        }
 	}
 
-	private void readObject(ObjectInputStream stream) throws IOException,
+	@SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		stream.defaultReadObject();
 		size = stream.readInt();

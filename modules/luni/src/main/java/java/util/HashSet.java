@@ -88,7 +88,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * @return true when this HashSet did not already contain the object, false
 	 *         otherwise
 	 */
-	public boolean add(E object) {
+	@Override
+    public boolean add(E object) {
 		return backingMap.put(object, this) == null;
 	}
 
@@ -98,7 +99,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * @see #isEmpty
 	 * @see #size
 	 */
-	public void clear() {
+	@Override
+    public void clear() {
 		backingMap.clear();
 	}
 
@@ -109,7 +111,9 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	public Object clone() {
+	@Override
+    @SuppressWarnings("unchecked")
+    public Object clone() {
 		try {
 			HashSet<E> clone = (HashSet<E>) super.clone();
 			clone.backingMap = (HashMap<E, HashSet<E>>) backingMap.clone();
@@ -127,7 +131,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * @return true if <code>object</code> is an element of this HashSet,
 	 *         false otherwise
 	 */
-	public boolean contains(Object object) {
+	@Override
+    public boolean contains(Object object) {
 		return backingMap.containsKey(object);
 	}
 
@@ -138,7 +143,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * 
 	 * @see #size
 	 */
-	public boolean isEmpty() {
+	@Override
+    public boolean isEmpty() {
 		return backingMap.isEmpty();
 	}
 
@@ -149,7 +155,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * 
 	 * @see Iterator
 	 */
-	public Iterator<E> iterator() {
+	@Override
+    public Iterator<E> iterator() {
 		return backingMap.keySet().iterator();
 	}
 
@@ -160,7 +167,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 *            the object to remove
 	 * @return true if this HashSet is modified, false otherwise
 	 */
-	public boolean remove(Object object) {
+	@Override
+    public boolean remove(Object object) {
 		return backingMap.remove(object) != null;
 	}
 
@@ -169,7 +177,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 	 * 
 	 * @return the number of elements in this HashSet
 	 */
-	public int size() {
+	@Override
+    public int size() {
 		return backingMap.size();
 	}
 
@@ -187,7 +196,8 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 		}
 	}
 
-	private void readObject(ObjectInputStream stream) throws IOException,
+	@SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		stream.defaultReadObject();
 		int length = stream.readInt();

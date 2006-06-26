@@ -79,7 +79,8 @@ public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
 	}
 
 	/* overrides method in HashMap */
-	HashMap<E, HashSet<E>> createBackingMap(int capacity, float loadFactor) {
+	@Override
+    HashMap<E, HashSet<E>> createBackingMap(int capacity, float loadFactor) {
 		return new LinkedHashMap<E, HashSet<E>>(capacity, loadFactor);
 	}
 }

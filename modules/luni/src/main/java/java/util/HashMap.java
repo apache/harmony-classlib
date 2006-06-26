@@ -50,6 +50,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             this.hash = (theKey == null) ? 0 : theKey.hashCode();
         }
 
+        @Override
+        @SuppressWarnings("unchecked")
         public Object clone() {
             Entry<K,V> entry = (Entry<K,V>) super.clone();
             if (next != null) {
@@ -58,10 +60,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             return entry;
         }
 
+        @Override
         public String toString() {
             return key + "=" + value;
         }
 
+        @Override
         public int hashCode() {
             return hash;
         }
@@ -162,14 +166,17 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             return associatedMap;
         }
 
+        @Override
         public int size() {
             return associatedMap.elementCount;
         }
 
+        @Override
         public void clear() {
             associatedMap.clear();
         }
 
+        @Override
         public boolean remove(Object object) {
             if (contains(object)) {
                 associatedMap.remove(((Map.Entry) object).getKey());
@@ -178,6 +185,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             return false;
         }
 
+        @Override
         public boolean contains(Object object) {
             if (object instanceof Map.Entry) {
                 Entry<KT, VT> entry = associatedMap.getEntry(((Map.Entry) object)
@@ -187,6 +195,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             return false;
         }
 
+        @Override
         public Iterator<Map.Entry<KT,VT>> iterator() {
             return new HashMapIterator<Map.Entry<KT,VT>,KT,VT>(new MapEntry.Type<Map.Entry<KT,VT>, KT, VT>() {
                 public Map.Entry<KT,VT> get(MapEntry<KT,VT> entry) {
@@ -202,6 +211,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @param s
      * @return Reference to the element array
      */
+    @SuppressWarnings("unchecked")
     Entry<K,V>[] newElementArray(int s) {
         return new Entry[s];
     }
@@ -277,6 +287,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @see #isEmpty
      * @see #size
      */
+    @Override
     public void clear() {
         if (elementCount > 0) {
             elementCount = 0;
@@ -292,6 +303,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * 
      * @see java.lang.Cloneable
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public Object clone() {
         try {
             HashMap<K,V> map = (HashMap<K,V>) super.clone();
@@ -320,6 +333,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @return true if <code>key</code> is a key of this HashMap, false
      *         otherwise
      */
+    @Override
     public boolean containsKey(Object key) {
         return getEntry(key) != null;
     }
@@ -346,6 +360,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @return true if <code>value</code> is a value of this HashMap, false
      *         otherwise
      */
+    @Override
     public boolean containsValue(Object value) {
         if (value != null) {
             for (int i = elementData.length; --i >= 0;) {
@@ -378,6 +393,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * 
      * @return a Set of the mappings
      */
+    @Override
     public Set<Map.Entry<K, V>> entrySet() {
         return new HashMapEntrySet<K,V>(this);
     }
@@ -389,6 +405,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      *            the key
      * @return the value of the mapping with the specified key
      */
+    @Override
     public V get(Object key) {
         Entry<K, V> m = getEntry(key);
         if (m != null) {
@@ -431,6 +448,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * 
      * @see #size
      */
+    @Override
     public boolean isEmpty() {
         return elementCount == 0;
     }
@@ -442,21 +460,26 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * 
      * @return a Set of the keys
      */
+    @Override
     public Set<K> keySet() {
         if (keySet == null) {
             keySet = new AbstractSet<K>() {
+                @Override
                 public boolean contains(Object object) {
                     return containsKey(object);
                 }
 
+                @Override
                 public int size() {
                     return HashMap.this.size();
                 }
 
+                @Override
                 public void clear() {
                     HashMap.this.clear();
                 }
 
+                @Override
                 public boolean remove(Object key) {
                     if (containsKey(key)) {
                         HashMap.this.remove(key);
@@ -465,6 +488,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                     return false;
                 }
 
+                @Override
                 public Iterator<K> iterator() {
                     return new HashMapIterator<K,K,V>(new MapEntry.Type<K,K,V>() {
                         public K get(MapEntry<K,V> entry) {
@@ -487,6 +511,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @return the value of any previous mapping with the specified key or null
      *         if there was no mapping
      */
+    @Override
     public V put(K key, V value) {
         int index = getModuloHash(key);
         Entry<K,V> entry = findEntry(key, index);
@@ -518,6 +543,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @param map
      *            the Map to copy mappings from
      */
+    @Override
     public void putAll(Map<? extends K, ? extends V> map) {
         super.putAll(map);
     }
@@ -552,6 +578,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @return the value of the removed mapping or null if key is not a key in
      *         this HashMap
      */
+    @Override
     public V remove(Object key) {
         Entry<K, V> entry = removeEntry(key);
         if (entry != null) {
@@ -596,6 +623,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * 
      * @return the number of mappings in this HashMap
      */
+    @Override
     public int size() {
         return elementCount;
     }
@@ -607,21 +635,26 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * 
      * @return a Collection of the values
      */
+    @Override
     public Collection<V> values() {
         if (valuesCollection == null) {
             valuesCollection = new AbstractCollection<V>() {
+                @Override
                 public boolean contains(Object object) {
                     return containsValue(object);
                 }
 
+                @Override
                 public int size() {
                     return HashMap.this.size();
                 }
 
+                @Override
                 public void clear() {
                     HashMap.this.clear();
                 }
 
+                @Override
                 public Iterator<V> iterator() {
                     return new HashMapIterator<V,K,V>(new MapEntry.Type<V,K,V>() {
                         public V get(MapEntry<K,V> entry) {
@@ -647,11 +680,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream stream) throws IOException,
             ClassNotFoundException {
         stream.defaultReadObject();
         int length = stream.readInt();
-        elementData = new Entry[length];
+        elementData = newElementArray(length);
         elementCount = stream.readInt();
         for (int i = elementCount; --i >= 0;) {
             K key = (K)stream.readObject();

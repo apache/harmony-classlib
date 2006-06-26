@@ -220,6 +220,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      * @return true if the object is in the priority queue, false if the object
      *         is not in the priority queue.
      */
+    @SuppressWarnings("unchecked")
     public boolean remove(Object o) {
         if (o == null) {
             return false;
@@ -278,6 +279,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream in) throws IOException,
             ClassNotFoundException {
         in.defaultReadObject();
@@ -288,6 +290,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private E[] newElementArray(int capacity) {
         return (E[]) new Object[capacity];
     }
@@ -300,6 +303,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void getFromPriorityQueue(PriorityQueue<? extends E> c) {
         initSize(c);
         comparator = (Comparator<? super E>) c.comparator();
@@ -307,6 +311,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
         size = c.size();
     }
 
+    @SuppressWarnings("unchecked")
     private void getFromSortedSet(SortedSet<? extends E> c) {
         initSize(c);
         comparator = (Comparator<? super E>) c.comparator();
