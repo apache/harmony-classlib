@@ -460,7 +460,7 @@ public final class Bidi {
 	 * @return a string containing the internal messsage.
 	 */
 	public String toString() {
-		// simply return nothing
-		return "";
+		return super.toString() + "[direction: " + direction + " baselevel: " + baseLevel
+			 + " length: " + length + " runs: " + runs + "]";
 	}
 }
