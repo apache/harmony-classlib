@@ -63,7 +63,8 @@ typedef struct addrReq_struct
 typedef struct netlinkContext_struct
 {
   int netlinkSocketHandle;
-  char buffer[NETLINK_DATA_BUFFER_SIZE];
+  char *buffer;
+  int bufferSize;
   struct nlmsghdr *netlinkHeader;
   U_32 remainingLength;
   U_32 done;
@@ -3824,6 +3825,29 @@ hysock_writeto (struct HyPortLibrary * portLibrary, hysocket_t sock,
 
 #undef CDEV_CURRENT_FUNCTION
 
+#define CDEV_CURRENT_FUNCTION hysock_cleanupNetlinkContext
+
+/**
+ *   Convenience function to release any allocated memory for a netlinkContext
+ * 
+ *   @param[in] portLib  The port library
+ *   @param[in] nlc NetlinkContext that needs to have memory freed
+ * 
+ *   @return
+ */
+void hysock_cleanupNetlinkContext(HyPortLibrary *portLib, struct netlinkContext_struct *nlc) 
+{
+    if (nlc && portLib && nlc->buffer) {
+        portLib->mem_free_memory(portLib, nlc->buffer);
+        nlc->buffer = NULL;
+        nlc->bufferSize = 0;
+    }
+    
+    return;
+}
+
+#undef CDEV_CURRENT_FUNCTION
+
 #define CDEV_CURRENT_FUNCTION hysock_get_network_interfaces
 
 /**
@@ -3864,6 +3888,13 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
   struct ifinfomsg *returnedInfoHeader = NULL;
   struct ifaddrmsg *returnedAddrHeader = NULL;
   netlinkContext_struct netlinkContext;
+  
+  /*
+   *  initialize the buffer as it doesn't have one yet
+   */
+  netlinkContext.buffer = portLibrary->mem_allocate_memory(portLibrary,NETLINK_DATA_BUFFER_SIZE);
+  netlinkContext.bufferSize = NETLINK_DATA_BUFFER_SIZE;
+    
   /* set the address family based on the preferIPv4stack flag */
   if (preferIPv4Stack)
     {
@@ -3875,11 +3906,15 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
     }
 
   /* we need socket to do the netlink calls so create one */
+  
   netlinkSocketHandle = socket (PF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
+
   if (netlinkSocketHandle <= 0)
     {
-      return portLibrary->error_set_last_error (portLibrary, errno,
-                                                HYPORT_ERROR_SOCKET_NORECOVERY);
+        hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
+        
+        return portLibrary->error_set_last_error (portLibrary, errno, 
+                                                 HYPORT_ERROR_SOCKET_NORECOVERY);
     }
   /* now create the message to get the network interface information */
   memset (&linkRequest, 0, sizeof (struct linkReq_struct));
@@ -3890,18 +3925,23 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
   linkRequest.msg.ifi_family = addressFamily;
   linkRequest.netlinkHeader.nlmsg_len =
     NLMSG_ALIGN (linkRequest.netlinkHeader.nlmsg_len);
-  sendLength =
-    send (netlinkSocketHandle, &linkRequest,
+  
+  sendLength = send (netlinkSocketHandle, &linkRequest,
           linkRequest.netlinkHeader.nlmsg_len, 0);
+
   /* send the request  and count the number of interfaces */
   if (sendLength != linkRequest.netlinkHeader.nlmsg_len)
     {
       I_32 err = errno;
       close (netlinkSocketHandle);
+      hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
+      
       return portLibrary->error_set_last_error (portLibrary, err,
                                                 HYPORT_ERROR_SOCKET_NORECOVERY);
     }
+
   initNetlinkContext (portLibrary, netlinkSocketHandle, &netlinkContext);
+
   do
     {
       if ((result =
@@ -3910,6 +3950,8 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
         {
           /* we failed to get the next message so return the error */
           close (netlinkSocketHandle);
+          hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
+          
           return result;
         }
       if (currentNlHeader != NULL)
@@ -3923,6 +3965,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
         }
     }
   while (currentNlHeader != NULL);
+  
   /* now allocate the space for the hyNetworkInterface structs and fill it in */
   interfaces =
     portLibrary->mem_allocate_memory (portLibrary,
@@ -3932,6 +3975,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
   if (NULL == interfaces)
     {
       close (netlinkSocketHandle);
+      hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
       return HYPORT_ERROR_SOCKET_NOBUFFERS;
     }
   /* initialize the structure so that we can free allocated if a failure occurs */
@@ -3955,17 +3999,21 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
   linkRequest.msg.ifi_family = addressFamily;
   linkRequest.netlinkHeader.nlmsg_len =
     NLMSG_ALIGN (linkRequest.netlinkHeader.nlmsg_len);
-  sendLength =
-    send (netlinkSocketHandle, &linkRequest,
+
+  sendLength = send (netlinkSocketHandle, &linkRequest,
           linkRequest.netlinkHeader.nlmsg_len, 0);
+          
   if (sendLength != linkRequest.netlinkHeader.nlmsg_len)
     {
       err = errno;
       close (netlinkSocketHandle);
+      hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
+      
       hysock_free_network_interface_struct (portLibrary, array);
       return portLibrary->error_set_last_error (portLibrary, err,
                                                 HYPORT_ERROR_SOCKET_NORECOVERY);
     }
+    
   initNetlinkContext (portLibrary, netlinkSocketHandle, &netlinkContext);
   currentAdapterIndex = 0;
   do
@@ -3976,6 +4024,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
         {
           // we failed to get the next message so return the error
           close (netlinkSocketHandle);
+          hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
           return result;
         }
       if ((currentNlHeader != NULL) && (currentAdapterIndex < numAdapters))
@@ -4006,6 +4055,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
                           hysock_free_network_interface_struct (portLibrary,
                                                                 array);
                           close (netlinkSocketHandle);
+                          hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
                           return HYPORT_ERROR_SOCKET_NOBUFFERS;
                         }
 #endif
@@ -4022,6 +4072,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
                           hysock_free_network_interface_struct (portLibrary,
                                                                 array);
                           close (netlinkSocketHandle);
+                          hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
                           return HYPORT_ERROR_SOCKET_NOBUFFERS;
                         }
 #endif
@@ -4061,6 +4112,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
           err = errno;
           close (netlinkSocketHandle);
           hysock_free_network_interface_struct (portLibrary, array);
+          hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
           return portLibrary->error_set_last_error (portLibrary, err,
                                                     HYPORT_ERROR_SOCKET_NORECOVERY);
         }
@@ -4075,6 +4127,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
               /* we failed to get the next message so return the error */
               close (netlinkSocketHandle);
               hysock_free_network_interface_struct (portLibrary, array);
+              hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
               return result;
             }
 
@@ -4119,6 +4172,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
             {
               close (netlinkSocketHandle);
               hysock_free_network_interface_struct (portLibrary, array);
+              hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
               return HYPORT_ERROR_SOCKET_NOBUFFERS;
             }
 #endif
@@ -4142,6 +4196,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
               err = errno;
               close (netlinkSocketHandle);
               hysock_free_network_interface_struct (portLibrary, array);
+              hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
               return portLibrary->error_set_last_error (portLibrary, err,
                                                         HYPORT_ERROR_SOCKET_NORECOVERY);
             }
@@ -4157,6 +4212,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
                   /* we failed to get the next message so return the error */
                   close (netlinkSocketHandle);
                   hysock_free_network_interface_struct (portLibrary, array);
+                  hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
                   return result;
                 }
 
@@ -4241,6 +4297,8 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
 
   /* do any final clean up before returning */
   close (netlinkSocketHandle);
+
+  hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
 
 #else
   struct ifconf ifc;
@@ -4870,6 +4928,7 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
           *nextMessage = NULL;
           return 0;
         }
+
       if (netlinkContext->remainingLength > 0)
         {
           /* there is data left from the last read, get the next header from this existing data */
@@ -4877,8 +4936,13 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
             NLMSG_NEXT (netlinkContext->netlinkHeader,
                         netlinkContext->remainingLength);
         }
-      /* if the remainingLength is 0 then there was no messages available in the existing data so read another datagram containing messages 
-         we first use a select to make sure we don't block forever if for some reason there is no netlink message to read */
+
+    /* 
+     * if the remainingLength is 0 then there was no messages available in the existing data 
+     * so read another datagram containing messages we first use a select to make sure we 
+     * don't block forever if for some reason there is no netlink message to read 
+     */
+     
       if (netlinkContext->remainingLength == 0)
         {
           fd_set waitSockets;
@@ -4887,22 +4951,63 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
           waitTime.tv_usec = 0;
           FD_ZERO (&waitSockets);
           FD_SET (netlinkContext->netlinkSocketHandle, &waitSockets);
+                     
           if (select
               (netlinkContext->netlinkSocketHandle + 1, &waitSockets, NULL,
                NULL, &waitTime) > 0)
             {
-              receiveLength =
-                recvfrom (netlinkContext->netlinkSocketHandle,
-                          netlinkContext->buffer,
-                          sizeof (netlinkContext->buffer), 0,
-                          (void *) &address, &addressLength);
-              if (receiveLength < 0)
-                {
+                
+                struct sockaddr_nl nladdr;
+                struct msghdr msg;
+                struct iovec iov;
+                iov.iov_base = netlinkContext->buffer;
+                iov.iov_len = netlinkContext->bufferSize;
+                msg.msg_name = (void *)&(nladdr);
+                msg.msg_namelen = sizeof(nladdr);
+                msg.msg_iov = &iov;
+                msg.msg_iovlen = 1;
+                
+                int reallocLoop = 1;
+
+                while (reallocLoop) {
+                    int len = recvmsg(netlinkContext->netlinkSocketHandle, &msg, MSG_PEEK);
+
+                    /*
+                     *  if the peek shows that we would truncate, realloc to 2x the buffer size
+                     */
+                    if (msg.msg_flags & MSG_TRUNC) {
+                        
+                        /*
+                         * safety - only go to 64k
+                         */
+                         
+                        if (netlinkContext->bufferSize * 2 > 65536) {
+                            reallocLoop = 0;
+                            break;
+                        }                        
+                        
+                        netlinkContext->buffer = portLibrary->mem_reallocate_memory(portLibrary, 
+                                                    netlinkContext->buffer, 
+                                                    netlinkContext->bufferSize * 2);
+                        netlinkContext->bufferSize *= 2;
+                                
+                        iov.iov_base = netlinkContext->buffer;
+                        iov.iov_len = netlinkContext->bufferSize;
+                    }
+                    else { 
+                        reallocLoop = 0;
+                    }
+                }
+                
+                receiveLength = recvmsg(netlinkContext->netlinkSocketHandle, &msg, 0);
+                
+                if (receiveLength < 0) {
                   /* we failed to get the response message */
                   return portLibrary->error_set_last_error (portLibrary,
                                                             errno,
                                                             HYPORT_ERROR_SOCKET_NORECOVERY);
                 }
+                
               netlinkContext->remainingLength = receiveLength;
               netlinkContext->netlinkHeader =
                 (struct nlmsghdr *) netlinkContext->buffer;
@@ -4946,6 +5051,7 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
           /* this is an error as we have to read all of the data in one shot */
           /* It is assumed that the kernel uses a reasonable max size datagram and will break up response into multi-link messages
              if a message larger than this size needs to be sent.  The max size seen so far is about  552 bytes */
+  
           return portLibrary->error_set_last_error (portLibrary, errno,
                                                     HYPORT_ERROR_SOCKET_NORECOVERY);
         }
