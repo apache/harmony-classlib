@@ -43,6 +43,11 @@ public class PropertyResourceBundle extends ResourceBundle {
 		resources = new Properties();
 		resources.load(stream);
 	}
+    
+    @SuppressWarnings("unchecked")
+    private Enumeration<String> getLocalKeys() {
+        return (Enumeration<String>)resources.propertyNames();
+    }
 
 	/**
 	 * Answers the names of the resources contained in this
@@ -50,19 +55,22 @@ public class PropertyResourceBundle extends ResourceBundle {
 	 * 
 	 * @return an Enumeration of the resource names
 	 */
-	public Enumeration<String> getKeys() {
-		if (parent == null)
-			return (Enumeration<String>)resources.propertyNames();
+	@Override
+    public Enumeration<String> getKeys() {
+		if (parent == null) {
+            return getLocalKeys();
+        }
 		return new Enumeration<String>() {
-			Enumeration<String> local = (Enumeration<String>)resources.propertyNames();
+			Enumeration<String> local = getLocalKeys();
 
 			Enumeration<String> pEnum = parent.getKeys();
 
 			String nextElement;
 
 			private boolean findNext() {
-				if (nextElement != null)
-					return true;
+				if (nextElement != null) {
+                    return true;
+                }
 				while (pEnum.hasMoreElements()) {
 					String next = pEnum.nextElement();
 					if (!resources.containsKey(next)) {
@@ -74,14 +82,16 @@ public class PropertyResourceBundle extends ResourceBundle {
 			}
 
 			public boolean hasMoreElements() {
-				if (local.hasMoreElements())
-					return true;
+				if (local.hasMoreElements()) {
+                    return true;
+                }
 				return findNext();
 			}
 
 			public String nextElement() {
-				if (local.hasMoreElements())
-					return local.nextElement();
+				if (local.hasMoreElements()) {
+                    return local.nextElement();
+                }
 				if (findNext()) {
 					String result = nextElement;
 					nextElement = null;
@@ -101,7 +111,8 @@ public class PropertyResourceBundle extends ResourceBundle {
 	 *            the name of the resource
 	 * @return the resource object
 	 */
-	public Object handleGetObject(String key) {
+	@Override
+    public Object handleGetObject(String key) {
 		return resources.get(key);
 	}
 }

@@ -18,7 +18,7 @@ package java.util;
 
 /**
  * The TimerTask class is represents a task to run at specified time. The task
- * may be run onces or repeatedly.
+ * may be run once or repeatedly.
  * 
  * @see Timer
  * @see java.lang.Object#wait(long)
@@ -26,10 +26,10 @@ package java.util;
 public abstract class TimerTask implements Runnable {
 
 	/* The timer object which launches this task */
-	private Timer timer = null;
+	private Timer timer;
 
 	/* If timer was cancelled */
-	private boolean cancelled = false;
+	private boolean cancelled;
 
 	/* Slots used by Timer */
 	long when;
@@ -102,7 +102,7 @@ public abstract class TimerTask implements Runnable {
 	}
 
 	/**
-	 * The task to run should be specified in the implemenation of the run()
+	 * The task to run should be specified in the implementation of the run()
 	 * method.
 	 */
 	public abstract void run();

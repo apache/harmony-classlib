@@ -32,7 +32,8 @@ class PropertyPermissionCollection extends PermissionCollection {
 
 	Hashtable<String, Permission> permissions = new Hashtable<String, Permission>(30);
 
-	public void add(Permission perm) {
+	@Override
+    public void add(Permission perm) {
         if (!isReadOnly()) {
             Permission prev = permissions.put(perm.getName(), perm);
             /*
@@ -42,18 +43,20 @@ class PropertyPermissionCollection extends PermissionCollection {
             if (prev != null && !prev.getActions().equals(perm.getActions())) {
                 Permission np = new PropertyPermission(perm.getName(),
                         "read,write");
-                permissions.put(perm.getName(), np); //$NON-NLS-1$
+                permissions.put(perm.getName(), np); 
             }
         } else {
             throw new IllegalStateException();
         }
     }
 
-	public Enumeration<Permission> elements() {
+	@Override
+    public Enumeration<Permission> elements() {
 		return permissions.elements();
 	}
 
-	public boolean implies(Permission perm) {
+	@Override
+    public boolean implies(Permission perm) {
 		Enumeration<Permission> elemEnum = elements();
 		while (elemEnum.hasMoreElements()) {
             if ((elemEnum.nextElement()).implies(perm)) {
@@ -81,7 +84,8 @@ class PropertyPermissionCollection extends PermissionCollection {
 		stream.writeFields();
 	}
 
-	private void readObject(ObjectInputStream stream) throws IOException,
+	@SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		ObjectInputStream.GetField fields = stream.readFields();
 		permissions = (Hashtable<String, Permission>) fields.get("permissions", null); //$NON-NLS-1$

@@ -87,45 +87,53 @@ public class Timer {
 				TimerNode y = null, x = root;
 				while (x != null) {
 					y = x;
-					if (z.task.when < x.task.when)
-						x = x.left;
-					else
-						x = x.right;
+					if (z.task.when < x.task.when) {
+                        x = x.left;
+                    } else {
+                        x = x.right;
+                    }
 				}
 				z.parent = y;
-				if (y == null)
-					root = z;
-				else if (z.task.when < y.task.when)
-					y.left = z;
-				else
-					y.right = z;
+				if (y == null) {
+                    root = z;
+                } else if (z.task.when < y.task.when) {
+                    y.left = z;
+                } else {
+                    y.right = z;
+                }
 			}
 
 			void delete(TimerNode z) {
 				TimerNode y = null, x = null;
-				if (z.left == null || z.right == null)
-					y = z;
-				else
-					y = successor(z);
-				if (y.left != null)
-					x = y.left;
-				else
-					x = y.right;
-				if (x != null)
-					x.parent = y.parent;
-				if (y.parent == null)
-					root = x;
-				else if (y == y.parent.left)
-					y.parent.left = x;
-				else
-					y.parent.right = x;
-				if (y != z)
-					z.task = y.task;
+				if (z.left == null || z.right == null) {
+                    y = z;
+                } else {
+                    y = successor(z);
+                }
+				if (y.left != null) {
+                    x = y.left;
+                } else {
+                    x = y.right;
+                }
+				if (x != null) {
+                    x.parent = y.parent;
+                }
+				if (y.parent == null) {
+                    root = x;
+                } else if (y == y.parent.left) {
+                    y.parent.left = x;
+                } else {
+                    y.parent.right = x;
+                }
+				if (y != z) {
+                    z.task = y.task;
+                }
 			}
 
 			private TimerNode successor(TimerNode x) {
-				if (x.right != null)
-					return minimum(x.right);
+				if (x.right != null) {
+                    return minimum(x.right);
+                }
 				TimerNode y = x.parent;
 				while (y != null && x == y.right) {
 					x = y;
@@ -135,8 +143,9 @@ public class Timer {
 			}
 
 			private TimerNode minimum(TimerNode x) {
-				while (x.left != null)
-					x = x.left;
+				while (x.left != null) {
+                    x = x.left;
+                }
 				return x;
 			}
 
@@ -149,12 +158,12 @@ public class Timer {
 		 * True if the method cancel() of the Timer was called or the !!!stop()
 		 * method was invoked
 		 */
-		private boolean cancelled = false;
+		private boolean cancelled;
 
 		/**
 		 * True if the Timer has become garbage
 		 */
-		private boolean finished = false;
+		private boolean finished;
 
 		/**
 		 * Vector consists of scheduled events, sorted according to
@@ -182,17 +191,20 @@ public class Timer {
 		 * This method will be launched on separate thread for each Timer
 		 * object.
 		 */
-		public void run() {
+		@Override
+        public void run() {
 
 			while (true) {
 				TimerTask task;
 				synchronized (this) {
 					// need to check cancelled inside the synchronized block
-					if (cancelled)
-						return;
+					if (cancelled) {
+                        return;
+                    }
 					if (tasks.isEmpty()) {
-						if (finished)
-							return;
+						if (finished) {
+                            return;
+                        }
 						// no tasks scheduled -- sleep until any task appear
 						try {
 							this.wait();
@@ -244,8 +256,9 @@ public class Timer {
 
 						// insert this task into queue
 						insertTask(task);
-					} else
-						task.when = 0;
+					} else {
+                        task.when = 0;
+                    }
 				}
 
 				// run the task
@@ -283,8 +296,10 @@ public class Timer {
 	private TimerImpl impl;
 
 	// Used to finalize thread
-	private Object finalizer = new Object() {
-		public void finalize() {
+	@SuppressWarnings("unused")
+    private Object finalizer = new Object() {
+		@Override
+        public void finalize() {
 			synchronized (impl) {
 				impl.finished = true;
 				impl.notify();
@@ -348,8 +363,9 @@ public class Timer {
 	 *                scheduled or cancelled.
 	 */
 	public void schedule(TimerTask task, Date when) {
-		if (when.getTime() < 0)
-			throw new IllegalArgumentException();
+		if (when.getTime() < 0) {
+            throw new IllegalArgumentException();
+        }
 		long delay = when.getTime() - System.currentTimeMillis();
 		scheduleImpl(task, delay < 0 ? 0 : delay, -1, false);
 	}
@@ -369,8 +385,9 @@ public class Timer {
 	 *                scheduled or cancelled.
 	 */
 	public void schedule(TimerTask task, long delay) {
-		if (delay < 0)
-			throw new IllegalArgumentException();
+		if (delay < 0) {
+            throw new IllegalArgumentException();
+        }
 		scheduleImpl(task, delay, -1, false);
 	}
 
@@ -391,8 +408,9 @@ public class Timer {
 	 *                scheduled or cancelled.
 	 */
 	public void schedule(TimerTask task, long delay, long period) {
-		if (delay < 0 || period <= 0)
-			throw new IllegalArgumentException();
+		if (delay < 0 || period <= 0) {
+            throw new IllegalArgumentException();
+        }
 		scheduleImpl(task, delay, period, false);
 	}
 
@@ -441,8 +459,9 @@ public class Timer {
 	 *                scheduled or cancelled.
 	 */
 	public void scheduleAtFixedRate(TimerTask task, long delay, long period) {
-		if (delay < 0 || period <= 0)
-			throw new IllegalArgumentException();
+		if (delay < 0 || period <= 0) {
+            throw new IllegalArgumentException();
+        }
 		scheduleImpl(task, delay, period, true);
 	}
 
@@ -466,8 +485,9 @@ public class Timer {
 	 *                scheduled or cancelled.
 	 */
 	public void scheduleAtFixedRate(TimerTask task, Date when, long period) {
-		if (period <= 0 || when.getTime() < 0)
-			throw new IllegalArgumentException();
+		if (period <= 0 || when.getTime() < 0) {
+            throw new IllegalArgumentException();
+        }
 		long delay = when.getTime() - System.currentTimeMillis();
 		scheduleImpl(task, delay < 0 ? 0 : delay, period, true);
 	}
@@ -483,19 +503,23 @@ public class Timer {
 	private void scheduleImpl(TimerTask task, long delay, long period,
 			boolean fixed) {
 		synchronized (impl) {
-			if (impl.cancelled)
-				throw new IllegalStateException(Msg.getString("K00f3")); //$NON-NLS-1$
+			if (impl.cancelled) {
+                throw new IllegalStateException(Msg.getString("K00f3")); //$NON-NLS-1$
+            }
 
 			long when = delay + System.currentTimeMillis();
 
-			if (when < 0)
-				throw new IllegalArgumentException(Msg.getString("K00f5")); //$NON-NLS-1$
+			if (when < 0) {
+                throw new IllegalArgumentException(Msg.getString("K00f5")); //$NON-NLS-1$
+            }
 
-			if (task.isScheduled())
-				throw new IllegalStateException(Msg.getString("K00f6")); //$NON-NLS-1$
+			if (task.isScheduled()) {
+                throw new IllegalStateException(Msg.getString("K00f6")); //$NON-NLS-1$
+            }
 
-			if (task.isCancelled())
-				throw new IllegalStateException(Msg.getString("K00f7")); //$NON-NLS-1$
+			if (task.isCancelled()) {
+                throw new IllegalStateException(Msg.getString("K00f7")); //$NON-NLS-1$
+            }
 
 			task.when = when;
 			task.period = period;
