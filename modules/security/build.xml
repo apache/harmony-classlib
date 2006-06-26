@@ -135,6 +135,7 @@
                 <classpath>
                     <pathelement path="${hy.security.bin.test}/api"/>
                     <pathelement path="../../build/tests"/>
+                    <pathelement path="${hy.hdk}/build/test/support.jar" />
                 </classpath>
                 <!-- Required for running the unit tests               -->
                 <!-- Note: will be deleted after improving             -->
@@ -265,6 +266,7 @@
                     </fileset>
                 </bootclasspath>
                 <classpath location="../../build/tests" />
+                <classpath location="${hy.hdk}/build/test/support.jar" />
             </javac>
         </sequential>
     </macrodef>

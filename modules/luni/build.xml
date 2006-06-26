@@ -164,7 +164,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-            <classpath location="${hy.tests.support.bin}" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -195,7 +195,7 @@
 
             <classpath>
                 <pathelement path="${hy.luni.bin.test}" />
-                <pathelement path="${hy.tests.support.bin}" />
+                <pathelement path="${hy.hdk}/build/test/support.jar" />
             </classpath>
 
             <formatter type="xml" />

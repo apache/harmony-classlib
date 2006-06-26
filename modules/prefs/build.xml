@@ -120,6 +120,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -146,6 +147,7 @@
                 <pathelement path="${hy.prefs.bin.test}"/>
             </classpath>
             <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
 
             <formatter type="xml" />
 

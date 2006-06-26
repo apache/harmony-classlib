@@ -91,6 +91,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
         </javac>
         <javac srcdir="${hy.logging.src.test.java}"
@@ -106,6 +107,7 @@
                 </fileset>
                 <pathelement path="${hy.logging.bin.internal}"/>
             </bootclasspath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
         </javac>
     </target>
@@ -138,6 +140,7 @@
             <classpath>
                 <pathelement path="${hy.logging.bin.test}"/>
             </classpath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
 
             <formatter type="xml" />

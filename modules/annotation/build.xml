@@ -91,6 +91,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -116,6 +117,7 @@
             <classpath>
                 <pathelement path="${hy.annotation.bin.test}"/>
             </classpath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
 
             <formatter type="xml" />
 

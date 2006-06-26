@@ -31,6 +31,7 @@
     <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
     <property name="tests.build.output" location="build/tests" />
+    <property name="tests.support.output" location="uild/test_support" />
     <property name="support.dir" location="support"/>
     <property name="tests.depends.jars" location="deploy/jdk/jre/lib/boot" />
     <property file="make/depends.properties" />
@@ -61,17 +62,25 @@
 	<echo message="The test report is in ${display-location}"/>
     </target>
 
+    <target name="support.jar" depends="compile-support">
+        <mkdir dir="${hy.hdk}/build/test" />
+        <jar destfile="${hy.hdk}/build/test/support.jar"
+             manifest="support/META-INF/MANIFEST.MF">
+            <fileset dir="${tests.support.output}" />
+        </jar>
+    </target>
+
     <target name="compile-support" depends="copy-test-resources, check-support-jars"
     	    description="Compile the unit test source">
-    	<mkdir dir="${tests.build.output}" />
-    	<javac destdir="${tests.build.output}"
+    	<mkdir dir="${tests.support.output}" />
+    	<javac destdir="${tests.support.output}"
     	       source="${hy.javac.source}"
     	       target="${hy.javac.target}"
     	       debug="on">
 
             <src path="${support.dir}/src/test/java" />
             <classpath location="${junit.jar}" />
-            <classpath location="${tests.build.output}" />
+            <classpath location="${tests.support.output}" />
             <bootclasspath>
                 <fileset dir="${tests.depends.jars}">
                     <include name="**/*.jar" />
@@ -95,8 +104,15 @@
          ================================= -->
     <target name="copy-test-resources"
             description="Copy non-Java files from unit test trees to the bin output">
-        <mkdir dir="${tests.build.output}" />
 
+        <mkdir dir="${tests.support.output}" />
+        <copy todir="${tests.support.output}" includeemptydirs="false">
+            <fileset dir="${support.dir}/src/test/java">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+
+        <mkdir dir="${tests.build.output}" />
         <copy todir="${tests.build.output}" includeemptydirs="false">
             <fileset dir="${support.dir}/src/test/java">
                 <exclude name="**/*.java" />

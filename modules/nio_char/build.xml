@@ -89,6 +89,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -114,6 +115,7 @@
             <classpath>
                 <pathelement path="${hy.nio_char.bin.test}"/>
                 <pathelement path="../../build/tests" />
+                <pathelement path="${hy.hdk}/build/test/support.jar" />
             </classpath>
 
             <formatter type="xml" />

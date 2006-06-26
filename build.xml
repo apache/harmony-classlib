@@ -88,6 +88,10 @@ Building native libs and executables...
 ========================================
 </echo>
         <ant antfile="native-src/build.xml" inheritall="false" target="build"/>
+
+        <ant antfile="make/build-test.xml" inheritall="false"
+             target="support.jar"/>
+
         <antcall target="build-awt-swing" />
     </target>
  

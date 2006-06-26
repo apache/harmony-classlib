@@ -90,7 +90,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-            <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -115,7 +115,7 @@
 
             <classpath>
                 <pathelement path="${hy.nio.bin.test}"/>
-                <pathelement path="../../build/tests" />
+                <pathelement path="${hy.hdk}/build/test/support.jar" />
             </classpath>
 
             <formatter type="xml" />
