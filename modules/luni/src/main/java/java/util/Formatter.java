@@ -1183,6 +1183,11 @@ public final class Formatter implements Closeable, Flushable {
                 if (ParserStateMachine.EXIT_STATE != state) {
                     // exit state does not need to get next char
                     currentChar = getNextFormatChar();
+                    if (EOS == currentChar
+                            && ParserStateMachine.ENTRY_STATE != state) {
+                        throw new UnknownFormatConversionException(
+                                getFormatString());
+                    }
                 }
 
                 switch (state) {

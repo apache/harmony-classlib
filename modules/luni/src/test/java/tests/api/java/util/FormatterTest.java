@@ -811,6 +811,14 @@ public class FormatterTest extends TestCase {
         } catch (UnknownFormatConversionException e) {
             // expected
         }
+        
+        try {
+            Formatter f = new Formatter(Locale.US);
+            f.format("%", "string");
+            fail("should throw UnknownFormatConversionException");
+        } catch (UnknownFormatConversionException e) {
+            // expected
+        }       
 
         formatter = new Formatter(Locale.FRANCE);
         formatter.format("%1$s%2$s%3$s%4$s%5$s%6$s%7$s%8$s%<s%s%s%<s", "1",
