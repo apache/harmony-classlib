@@ -34,7 +34,8 @@ public final class SerializablePermission extends BasicPermission {
 	private static final long serialVersionUID = 8537212141160296410L;
 
     //Serializable field
-	private String actions;
+	@SuppressWarnings("unused")
+    private String actions;
 
 	/**
 	 * Creates an instance of this class with the given name.
