@@ -20,7 +20,7 @@
 
 SHAREDSUB=$(SHARED)auth\# comment to avoid \ being treated as continuation
 LIBBASE=hyauth
-DLLNAME=$(DLLPATH)$(LIBBASE).dll
+DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = $(SHAREDSUB)auth_copyright.obj authwin32.obj
 VIRTFILES = $(LIBBASE).res

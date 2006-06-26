@@ -18,10 +18,11 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
+SHAREDSUB=../shared/
 BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
 	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
 	$(SHAREDSUB)libhlp.o  
-MDLLIBFILES = ../libhyprt.so ../libhythr.so
+MDLLIBFILES = $(DLLPATH)libhyprt.so $(DLLPATH)libhythr.so
 EXENAME = $(EXEPATH)java
 
 include $(HY_HDK)/build/make/rules.mk

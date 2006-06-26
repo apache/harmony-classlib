@@ -20,7 +20,7 @@
 
 SHAREDSUB=$(SHARED)thread\# comment to avoid \ being treated as continuation
 LIBBASE=hythr
-DLLNAME=$(DLLPATH)$(LIBBASE).dll
+DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 BUILDFILES = \

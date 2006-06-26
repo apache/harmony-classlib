@@ -20,7 +20,7 @@
 
 SHAREDSUB=$(SHARED)luni\# comment to avoid \ being treated as continuation
 LIBBASE=hyluni
-DLLNAME=$(DLLPATH)$(LIBBASE).dll
+DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I$(SHARED)fdlibm \
 	   /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows

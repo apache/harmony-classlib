@@ -13,18 +13,20 @@
 # limitations under the License.
 
 #
-# Makefile for module 'launcher.javaw'
+# Makefile for module 'launcher.java'
 #
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-SHAREDSUB=$(SHARED)launcher\# comment to avoid \ being treated as continuation
-EXENAME=$(EXEPATH)javaw.exe
-BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \
-        winmain.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
-VIRTFILES = javaw.res
-MDLLIBFILES =  $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
-EXEFLAGS=$(guilflags) -subsystem:windows
-EXEDLLFILES=$(guilibsdll)
+SHAREDSUB=..\shared\# comment to avoid \ being treated as continuation
+EXENAME=$(EXEPATH)java.exe
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+
+BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
+        $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
+VIRTFILES = java.res
+MDLLIBFILES = $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
+EXEFLAGS=$(conlflags) -subsystem:console
+EXEDLLFILES=$(conlibsdll)
 
 !include <$(HY_HDK)\build\make\rules.mak>

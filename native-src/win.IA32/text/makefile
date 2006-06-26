@@ -20,7 +20,7 @@
 
 SHAREDSUB=$(SHARED)text\# comment to avoid \ being treated as continuation
 LIBBASE=hytext
-DLLNAME=$(DLLPATH)$(LIBBASE).dll
+DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)

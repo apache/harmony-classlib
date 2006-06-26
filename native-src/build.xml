@@ -121,7 +121,19 @@
             <arg line="all" />
         </exec>
     	
+    	<!-- Copy across the built shared libs -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${target.platform}">
+                <patternset includes="*${shlib.suffix}*" />
+                <!-- Don't copy the VMI library. the one we build is a stub that is
+                                     replaced by a concrete implementation by the VM-implementor -->
+                <patternset excludes="*vmi*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+
+    	<!-- These module targets take care of building and copying their shared libs -->
     	<ant dir="..\modules\prefs" antfile="build.xml" target="build.native" />
+    	<ant dir="..\modules\luni" antfile="build.xml" target="build.native" />
     </target>
 
 
@@ -139,6 +151,7 @@
         </exec>
     	
     	<ant dir="..\modules\prefs" antfile="build.xml" target="clean.native" />
+    	<ant dir="..\modules\luni" antfile="build.xml" target="clean.native" />
     	
     	<delete dir="${native.lib.target}" />
     	
@@ -153,24 +166,6 @@
         depends="properties" 
         description="Construct the correct directory structure for native binaries">
 
-        <!-- Copy across the built shared libs -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${target.platform}">
-                <patternset includes="*${shlib.suffix}*" />
-                <!-- Don't copy the VMI library. the one we build is a stub that is
-				     replaced by a concrete implementation by the VM-implementor -->
-                <patternset excludes="*vmi*${shlib.suffix}*" />
-            </fileset>
-        </copy>
-
-        <!-- Copy across the built executables -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${target.platform}">
-                <patternset includes="java${exe.suffix}" />
-                <patternset includes="javaw${exe.suffix}" />
-            </fileset>
-        </copy>
-    	
     	<!-- NLS catalog files -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${depends.files}">
@@ -246,14 +241,14 @@
           target: copy-makefile-includes              
          ================================= -->
 	<target name="copy-makefile-includes" depends="properties" >
-	    <!-- copy generic defines and rules for each platform into a shared
-		 place -->
+		<!-- copy generic defines and rules for each platform into a shared
+			place -->
 	    <mkdir dir="${hy.hdk}/build/make" />
 	    <copy todir="${hy.hdk}/build/make" overwrite="yes">
-                <fileset dir="${depends.build}">
-                    <include name="*" />
-                </fileset>
-            </copy>
+            <fileset dir="${depends.build}">
+                <include name="*" />
+            </fileset>
+        </copy>
 	</target>
 	
 	<!-- ================================= 

@@ -21,8 +21,7 @@
 all: \
 	_sig _pool _thread _port _fdlibm _zip \
 	_zlib _common _luni _vmi _auth \
-	_archive _launcher _text \
-	_vmls
+	_archive _text
 
 _auth:
 	cd auth
@@ -89,24 +88,11 @@ _text: _sig _zip _zlib _pool _fdlibm _thread
 	$(MAKE) /NOLOGO
 	cd ..	
 
-_vmls: _thread _port
-	cd vmls
-	$(MAKE) /NOLOGO
-	cd ..
-
-_launcher: _port _thread
-	cd launcher
-	$(MAKE) /NOLOGO
-	cd ..
-
 clean:
 	cd auth
 	$(MAKE) /NOLOGO clean
 	cd ..
 	cd archive
-	$(MAKE) /NOLOGO clean
-	cd ..
-	cd launcher
 	$(MAKE) /NOLOGO clean
 	cd ..
 	cd common
@@ -142,6 +128,4 @@ clean:
 	cd zlib
 	$(MAKE) /NOLOGO clean
 	cd ..
-	cd vmls
-	$(MAKE) /NOLOGO clean
-	cd ..
+

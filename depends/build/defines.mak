@@ -6,7 +6,7 @@ SEHMAP = TRUE
 
 LIBPATH=$(HY_HDK)\lib\# comment to avoid \ being treated as continuation
 EXEPATH=..\# ditto
-DLLPATH=..\# ditto
+DLLPATH=$(HY_HDK)\jdk\jre\bin\# ditto
 SHARED=..\..\shared\# ditto
 
 HYCFLAGS = \

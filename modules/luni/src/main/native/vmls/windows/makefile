@@ -13,13 +13,17 @@
 # limitations under the License.
 
 #
-# Makefile for module 'common'
+# Makefile for module 'vmls'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+!include <$(HY_HDK)\build\make\defines.mak>
 
-CFLAGS += -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
-BUILDFILES = $(SHAREDSUB)vmls.o
-LIBNAME = $(LIBPATH)libhyvmls.a
+SHAREDSUB=..\shared\# comment to avoid \ being treated as continuation
+LIBNAME=$(LIBPATH)hyvmls.lib
 
-include $(HY_HDK)/build/make/rules.mk
+BUILDFILES = \
+	$(SHAREDSUB)vmls.obj
+
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\include\shared /I..\..\include\windows
+
+!include <$(HY_HDK)\build\make\rules.mak>

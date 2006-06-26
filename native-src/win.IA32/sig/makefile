@@ -20,7 +20,7 @@
 
 SHAREDSUB=$(SHARED)sig\# comment to avoid \ being treated as continuation
 LIBBASE=hysig
-DLLNAME=$(DLLPATH)$(LIBBASE).dll
+DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = $(SHAREDSUB)hysig_copyright.obj hysigwin.obj
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def

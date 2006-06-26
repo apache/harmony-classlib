@@ -25,6 +25,7 @@ CXX_DLL_LD = $(CXX)
 
 EXEPATH=../
 LIBPATH=$(HY_HDK)/lib/
+DLLPATH=$(HY_HDK)/jdk/jre/bin/
 
 SHARED=../../shared/
 SHAREDSUB=$(SHARED)$(notdir $(CURDIR))/

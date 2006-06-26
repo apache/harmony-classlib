@@ -85,6 +85,51 @@
 	</copy>
     </target>
 	
+	<!-- Build native code -->
+    <target name="build.native" >
+    	<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/vmls/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/launcher/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+
+		<!-- Copy the built shared libs over to the jre/bin dir -->
+		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.luni.src.main.native}/vmls">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+    	
+    	<!-- Copy across the built executables -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.luni.src.main.native}/launcher">
+                <patternset includes="java${exe.suffix}" />
+                <patternset includes="javaw${exe.suffix}" />
+            </fileset>
+        </copy>
+    </target>
+	
+	<!-- Clean natives -->
+    <target name="clean.native" if="is.windows">
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/launcher/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+		    <arg line="clean" />
+        </exec>
+    	<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/vmls/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+		    <arg line="clean" />
+        </exec>
+    </target>
+
     <target name="test" depends="build, compile.tests, run.tests" />
 
     <target name="clean">
