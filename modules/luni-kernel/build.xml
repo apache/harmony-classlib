@@ -22,7 +22,7 @@
     <description>Build for luni kernel stub jar</description>
 
     <property name="hy.jdk" location="../../deploy/jdk" />
-    <property name="hy.build" location="../../build" />
+    <property name="hy.build" location="../../build/classes" />
     <property name="stub.jar"
               location="${hy.jdk}/jre/lib/boot/luni-kernel-stubs.jar" />
 

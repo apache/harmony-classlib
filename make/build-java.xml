@@ -34,7 +34,7 @@
     <!-- jdtCompilerAdapter.jar and org.eclipse.jdt.core_3.1.0.jar   -->
     <property name="build.compiler" value="modern" />
 
-    <property name="build.output" location="build" />
+    <property name="build.output" location="build/classes" />
     <property name="depends.jars" location="depends/jars" />
     <property name="depends.manifests" location="depends/manifests" />
     <property name="depends.files" location="depends/files" />

@@ -40,7 +40,7 @@
 
    <hdk location="../../deploy" />
    <jdk location="../../deploy/jdk" />
-   <build location="../../build" />
+   <build location="../../build/classes" />
 
    <tests>
       <reports location="../../build/test_report" />
