@@ -136,6 +136,22 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_openI
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_transferImpl
   (JNIEnv *, jobject, jlong, jobject, jlong, jlong);
 
+/*
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
+ * Method:    ttyAvailableImpl
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_ttyAvailableImpl
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
+ * Method:    ttyReadImpl
+ * Signature: ([BII)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_ttyReadImpl
+  (JNIEnv *, jobject, jbyteArray, jint, jint);
+
 #ifdef __cplusplus
 }
 #endif

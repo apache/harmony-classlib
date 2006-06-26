@@ -238,4 +238,23 @@ class OSFileSystem extends OSComponent implements IFileSystem {
 	private native long transferImpl(long fileHandler,
 			FileDescriptor socketDescriptor, long offset, long count);
 
+	public long ttyAvailable() throws IOException {
+		long nChar = ttyAvailableImpl();
+		if (nChar < 0) {
+			throw new IOException();
+		}
+		return nChar;
+	}
+
+	private native long ttyAvailableImpl();
+
+	public long ttyRead(byte[] bytes, int offset, int length) throws IOException {
+		long nChar = ttyReadImpl(bytes, offset, length);
+		if (nChar < 0) {
+			throw new IOException();
+		}
+		return nChar;
+	}
+
+	private native long ttyReadImpl(byte[] bytes, int offset, int length);
 }

@@ -236,4 +236,40 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_openI
       return (jlong)portFD;
   }
 
+/*
+ * Answers the number of remaining chars in the stdin.
+ *
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
+ * Method:    ttyAvailableImpl
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_ttyAvailableImpl
+  (JNIEnv *env, jobject thiz)
+{
+    PORT_ACCESS_FROM_ENV (env);
 
+    return (jlong)hytty_available();
+}
+
+/*
+ * Reads the number of bytes from stdin.
+ *
+ * Class:     org_apache_harmony_luni_platform_OSFileSystem
+ * Method:    ttyReadImpl
+ * Signature: ([BII)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_ttyReadImpl
+  (JNIEnv *env, jobject thiz, jbyteArray byteArray, jint offset, jint nbytes)
+{
+    PORT_ACCESS_FROM_ENV (env);
+    jboolean isCopy;
+    jbyte *bytes = (*env)->GetByteArrayElements(env, byteArray, &isCopy);
+    jlong result;
+
+    result = (jlong) hytty_get_chars((char *)(bytes + offset), (IDATA) nbytes);
+    if (isCopy == JNI_TRUE) {
+        (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
+    }
+
+    return result;
+}

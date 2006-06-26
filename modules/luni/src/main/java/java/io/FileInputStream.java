@@ -123,6 +123,11 @@ public class FileInputStream extends InputStream implements Closeable{
 	public int available() throws IOException {
         openCheck();
         synchronized (repositioningLock) {
+            // stdin requires special handling
+            if (fd == FileDescriptor.in) {
+            	return (int)fileSystem.ttyAvailable();
+            }
+
             long currentPosition = fileSystem.seek(fd.descriptor, 0L,
                     IFileSystem.SEEK_CUR);
             long endOfFilePosition = fileSystem.seek(fd.descriptor, 0L,
@@ -274,6 +279,10 @@ public class FileInputStream extends InputStream implements Closeable{
 
         openCheck();
         synchronized (repositioningLock) {
+            // stdin requires special handling
+            if (fd == FileDescriptor.in) {
+            	return (int)fileSystem.ttyRead(buffer, offset, count);
+            }
             return (int) fileSystem.read(fd.descriptor, buffer, offset, count);
         }
 	}
@@ -282,8 +291,7 @@ public class FileInputStream extends InputStream implements Closeable{
 	 * Skips <code>count</code> number of bytes in this FileInputStream.
 	 * Subsequent <code>read()</code>'s will not return these bytes unless
 	 * <code>reset()</code> is used. This method may perform multiple reads to
-	 * read <code>count</code> bytes. This default implementation reads
-	 * <code>count</code> bytes into a temporary buffer.
+	 * read <code>count</code> bytes.
 	 * 
 	 * @param count
 	 *            the number of bytes to skip.
@@ -295,6 +303,27 @@ public class FileInputStream extends InputStream implements Closeable{
 	 */
     public long skip(long count) throws IOException {
         openCheck();
+
+    	if (count == 0) {
+			return 0;
+		}
+
+		// stdin requires special handling
+		if (fd == FileDescriptor.in) {
+			// Read and discard count bytes in 8k chunks
+			long skipped = 0, numRead;
+			int chunk = count < 8192 ? (int) count : 8192;
+			byte[] buffer = new byte[chunk];
+			for (long i = count / chunk; i >= 0; i--) {
+				numRead = fileSystem.ttyRead(buffer, 0, chunk);
+				skipped += numRead;
+				if (numRead < chunk) {
+					return skipped;
+				}
+			}
+			return skipped;
+		}
+
         synchronized (repositioningLock) {
             final long currentPosition = fileSystem.seek(fd.descriptor, 0L,
                     IFileSystem.SEEK_CUR);
