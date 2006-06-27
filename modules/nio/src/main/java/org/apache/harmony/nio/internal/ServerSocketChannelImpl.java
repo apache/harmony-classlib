@@ -204,7 +204,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
     }
 
     /*
-     * The adapter class of ServerSocekt.
+     * The adapter class of ServerSocket.
      */
     private class ServerSocketAdapter extends ServerSocket {
         /*
@@ -233,7 +233,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         /*
          * do the accept.
          */
-        public Socket accept(Socket aSocket, SocketChannelImpl sockChannel)
+        private Socket accept(Socket aSocket, SocketChannelImpl sockChannel)
                 throws IOException {
             if (isClosed()) {
                 throw new SocketException(Msg.getString("K003d")); //$NON-NLS-1$
@@ -242,28 +242,13 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
                 throw new SocketException(Msg.getString("K031f")); //$NON-NLS-1$
             }
 
-            // If a SOCKS proxy is being used, accept does strange things.
-            // Instead of returning a new Socket and allowing this ServerSocket
-            // to be used for another accept, it actually uses the current
-            // ServerSocket
-            // as the accepted Socket. So, closing the returned socket will
-            // close the
-            // ServerSocket as well. The ServerSocket cannot be used for a
-            // second accept.
-            if (NetUtil.usingSocks(null)) {
-                return super.accept();
-            }
-
             // a new socket is pass in so we do not need to "Socket aSocket =
             // new Socket();"
             boolean connectOK = false;
             try {
                 synchronized (this) {
                     super.implAccept(aSocket);
-                    // FIXME wait for fix.
-                    // if (aSocket.isConnected()) {
                     sockChannel.setConnected();
-                    // }
                 }
                 SecurityManager sm = System.getSecurityManager();
                 if (sm != null) {
