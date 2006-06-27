@@ -90,7 +90,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests">
+    <target name="compile.tests" depends="copy.test.resources">
         <echo message="Compiling ARCHIVE tests" />
 
         <mkdir dir="${hy.archive.bin.test}" />
@@ -165,6 +165,15 @@
         <echo file="${hy.tests.reports}/test.errors"
             append="true" >archive
 </echo>
+    </target>
+
+    <target name="copy.test.resources">
+        <mkdir dir="${hy.archive.bin.test}" />
+        <copy todir="${hy.archive.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.archive.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
 </project>

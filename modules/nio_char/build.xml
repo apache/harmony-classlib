@@ -65,13 +65,15 @@
             </bootclasspath>
         </javac>
     </target>
+
     <target name="build.jar">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.nio_char.packaging.jarname}.jar"
              manifest="${hy.nio_char}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
         </jar>
     </target>
-    <target name="compile.tests">
+
+    <target name="compile.tests" depends="copy.test.resources">
         <echo message="Compiling NIO_CHAR tests" />
 
         <mkdir dir="${hy.nio_char.bin.test}" />
@@ -158,6 +160,15 @@
         <echo file="${hy.tests.reports}/test.errors"
             append="true" >nio_char
 </echo>
+    </target>
+
+    <target name="copy.test.resources">
+        <mkdir dir="${hy.nio_char.bin.test}" />
+        <copy todir="${hy.nio_char.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.nio_char.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
 </project>
