@@ -114,9 +114,6 @@
 
         <mkdir dir="${tests.build.output}" />
         <copy todir="${tests.build.output}" includeemptydirs="false">
-            <fileset dir="${support.dir}/src/test/java">
-                <exclude name="**/*.java" />
-            </fileset>
             <fileset dir="modules/archive/src/test/java">
                 <exclude name="**/*.java" />
             </fileset>
