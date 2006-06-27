@@ -300,7 +300,7 @@ public class SelectionKeyTest extends TestCase {
             sc.connect(new InetSocketAddress(LOCAL_ADDR, port));
             assertEquals(0, selectionKey.readyOps());
             assertFalse(selectionKey.isConnectable());
-            selector.selectNow();
+            selector.select();
             assertEquals(SelectionKey.OP_CONNECT, selectionKey.readyOps());
         } finally {
             ss.close();
