@@ -134,6 +134,7 @@
     	<!-- These module targets take care of building and copying their shared libs -->
     	<ant dir="..\modules\prefs" antfile="build.xml" target="build.native" />
     	<ant dir="..\modules\luni" antfile="build.xml" target="build.native" />
+    	<ant dir="..\modules\nio" antfile="build.xml" target="build.native" />    	
     </target>
 
 
@@ -152,7 +153,8 @@
     	
     	<ant dir="..\modules\prefs" antfile="build.xml" target="clean.native" />
     	<ant dir="..\modules\luni" antfile="build.xml" target="clean.native" />
-    	
+    	<ant dir="..\modules\nio" antfile="build.xml" target="clean.native" />
+    		
     	<delete dir="${native.lib.target}" />
     	
     	<antcall target="clean-makefile-includes" />
