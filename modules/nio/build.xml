@@ -39,12 +39,39 @@
 
     <target name="test" depends="build, compile.tests, run.tests" />
 
+     <!-- Build natives.-->
+     <target name="build.native">
+ 	<exec failonerror="true" 
+               executable="${make.command}" 
+               dir="${hy.nio.src.main.native}/nio/${hy.os}">
+             <env key="HY_HDK" value="${hy.hdk}" />
+         </exec>
+ 
+ 	<!-- Copy the built shared libs over to the jre/bin dir -->
+ 	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+             <fileset dir="${hy.nio.src.main.native}/nio">
+                 <patternset includes="*${shlib.suffix}*" />
+             </fileset>
+         </copy>
+     </target>
+
     <target name="clean">
         <delete includeemptydirs="true" failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.nio.bin.test}" />
         </delete>
     </target>
+
+     <!-- Clean natives. -->
+     <target name="clean.native">
+ 	<exec failonerror="true" 
+               executable="${make.command}" 
+               dir="${hy.nio.src.main.native}/nio/${hy.os}">
+             <env key="HY_HDK" value="${hy.hdk}" />
+ 	    <arg line="clean" />
+         </exec>
+     </target>
+
 
     <target name="compile.java">
         <echo message="Compiling NIO classes" />

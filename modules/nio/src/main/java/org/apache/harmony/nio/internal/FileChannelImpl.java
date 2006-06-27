@@ -596,4 +596,8 @@ public abstract class FileChannelImpl extends FileChannel {
         }
         return bytesWritten;
     }
+    
+    public long getHandle(){
+        return handle;
+    }
 }
