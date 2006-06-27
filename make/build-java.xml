@@ -64,9 +64,9 @@
     <!-- ================================= 
           target: clean-bin              
          ================================= -->
-    <target name="clean-bin" description="Delete all built classes"
-            depends="clean-kernel-patternsets">
+    <target name="clean-bin" description="Delete all built classes">
         <call-modules target="clean" />
+        <antcall target="clean-kernel-patternsets" />
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${build.output}">
                 <include name="**/**" />
