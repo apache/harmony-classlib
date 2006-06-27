@@ -20,13 +20,15 @@
  */
 package java.applet;
 
+import java.awt.Panel;
+
 /**
  * This is an empty stub containing only empty methods for compilation purposes.
  * 
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.13.4.2 $
  */
-public class Applet {
+public class Applet extends Panel {
 
     public void init() {
     }
