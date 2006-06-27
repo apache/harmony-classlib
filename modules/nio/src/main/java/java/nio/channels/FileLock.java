@@ -154,11 +154,13 @@ public abstract class FileLock {
 	 * @return true if there is an overlap, and false otherwise.
 	 */
 	public final boolean overlaps(long start, long length) {
-		final long myEnd = position + size - 1;
-		final long otherEnd = start + length - 1;
-		return ((start >= position) && (start <= myEnd))
-				|| ((otherEnd >= position) && (otherEnd <= myEnd));
-	}
+        final long end = position + size - 1;
+        final long newEnd = start + length - 1;
+        if (end < start || position > newEnd) {
+            return false;
+        }
+        return true;
+    }
 
 	/**
 	 * Answers whether the receiver is a valid file lock or not. The lock is

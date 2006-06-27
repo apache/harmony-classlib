@@ -135,6 +135,9 @@ public class FileLockTest extends TestCase {
 		assertTrue(mockLock.overlaps(100, 110));
 		assertTrue(mockLock.overlaps(99, 110));
 		assertFalse(mockLock.overlaps(-1, 10));
+        //Harmony-671 regression test
+        assertTrue(mockLock.overlaps(1, 120));
+        assertTrue(mockLock.overlaps(20, 50));
 	}
 
 	/**
