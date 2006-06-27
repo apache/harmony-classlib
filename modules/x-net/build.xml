@@ -99,6 +99,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -126,7 +127,7 @@
             <jvmarg value="-DRESOURCE_DIR=${hy.x-net.src.test.java}"/>
 
             <!--  run tests via bootclasspath  --> 
-            <jvmarg value="-Xbootclasspath/a:${hy.x-net.bin.test}${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests" /> 
+            <jvmarg value="-Xbootclasspath/a:${hy.x-net.bin.test}${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests${path.separator}${hy.hdk}/build/test/support.jar" /> 
 
     		<env key="JAVA_HOME" value="${test.jre.home}"/>
 

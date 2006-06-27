@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.security.Guard;
 import java.security.GuardedObject;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**

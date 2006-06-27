@@ -23,7 +23,7 @@ package javax.security.sasl.serialization;
 
 import javax.security.sasl.SaslException;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Test for SaslException seialization

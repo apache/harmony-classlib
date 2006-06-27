@@ -25,7 +25,7 @@ import java.security.AllPermission;
 import java.security.PermissionCollection;
 import java.util.Enumeration;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**

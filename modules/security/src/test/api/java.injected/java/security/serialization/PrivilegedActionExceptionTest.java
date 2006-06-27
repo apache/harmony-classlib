@@ -24,7 +24,7 @@ package java.security.serialization;
 import java.io.Serializable;
 import java.security.PrivilegedActionException;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**

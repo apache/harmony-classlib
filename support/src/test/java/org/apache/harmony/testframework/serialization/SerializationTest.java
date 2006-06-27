@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.tests.support;
+package org.apache.harmony.testframework.serialization;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

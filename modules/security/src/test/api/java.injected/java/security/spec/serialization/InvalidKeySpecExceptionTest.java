@@ -23,7 +23,7 @@ package java.security.spec.serialization;
 
 import java.security.spec.InvalidKeySpecException;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**

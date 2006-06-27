@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**

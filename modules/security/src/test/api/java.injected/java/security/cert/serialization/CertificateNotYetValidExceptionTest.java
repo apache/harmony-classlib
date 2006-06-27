@@ -23,7 +23,7 @@ package java.security.cert.serialization;
 
 import java.security.cert.CertificateNotYetValidException;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**

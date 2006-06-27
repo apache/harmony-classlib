@@ -24,7 +24,7 @@ package javax.security.auth.login.serialization;
 
 import javax.security.auth.login.AccountException;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**

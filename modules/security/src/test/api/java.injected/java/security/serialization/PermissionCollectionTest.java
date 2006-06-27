@@ -26,7 +26,7 @@ import java.security.PermissionCollection;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**

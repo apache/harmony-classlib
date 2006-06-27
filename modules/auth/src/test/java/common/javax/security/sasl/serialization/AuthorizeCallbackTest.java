@@ -25,7 +25,7 @@ import java.io.Serializable;
 
 import javax.security.sasl.AuthorizeCallback;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Test for AuthorizeCallback seialization

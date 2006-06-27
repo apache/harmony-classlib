@@ -31,7 +31,7 @@ import java.security.SignedObject;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
 
-import org.apache.harmony.security.tests.support.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.security.tests.support.TestKeyPair;
 
 
