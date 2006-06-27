@@ -56,6 +56,7 @@ public class AllTests {
         suite.addTestSuite(BufferOverflowExceptionTest.class);
         suite.addTestSuite(BufferUnderflowExceptionTest.class);
         suite.addTestSuite(InvalidMarkExceptionTest.class);
+        suite.addTestSuite(ReadOnlyBufferExceptionTest.class);
         //$JUnit-END$
         return suite;
     }
