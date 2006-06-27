@@ -24,7 +24,7 @@ import java.beans.Expression;
 import java.beans.Statement;
 import java.util.Iterator;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Vector;
 
 /**
@@ -38,7 +38,7 @@ public class ObjectNode {
     private Object objectValue = null;
     private HashMap nodes;
     
-    private HashSet statements = new HashSet();
+    private LinkedHashSet statements = new LinkedHashSet();
     private Vector expressions = new Vector();
     private Vector referencedExpressions = new Vector();
     

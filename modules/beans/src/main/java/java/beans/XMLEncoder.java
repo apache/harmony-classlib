@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -129,6 +130,7 @@ public class XMLEncoder extends Encoder {
     
     private void printObjectTag(int tabCount, Object object, ObjectNode node) {
         Class nodeType = null;
+
         try {
             nodeType = node.getObjectType();
         } catch (Exception e) {
@@ -142,48 +144,19 @@ public class XMLEncoder extends Encoder {
             String tagName = getPrimitiveName(nodeType);
             Object arg = node.getObjectArguments()[0];
             Tag tag = new Tag(tagName, arg.toString());
+
             printBytes(tabCount, tag.toString());
-        } else if(isArray(nodeType)) {
-            Object[] args = node.getObjectArguments();
-            
-            Tag tag = new Tag("array");
-            
-            tag.addAttr("class", ((Class) args[0]).getName());
-            tag.addAttr("length", ((Integer) args[1]).toString());
-            
-            printBytes(tabCount, tag.toStringOnOpen());
-            
-            Iterator e = node.statements();
-            while(e.hasNext()) {
-                Statement s = (Statement) e.next();
-                printVoidTag(++tabCount, s);
-                --tabCount;
-            }
-            
-            printBytes(tabCount, tag.toStringOnClose());
-        } else {
-            Tag tag = new Tag("object");
-            
+        } else { // if array or complex object
+            Tag tag = null;
+            Object[] arguments = node.getObjectArguments();
             boolean objectPrinted = false;
-            //System.out.println("--->");
-            //System.out.println("node.getInitializer().getMethodName() = " + node.getInitializer().getMethodName());
-            //System.out.println("node.getReferencesNumber() = " + node.getReferencesNumber());
-            //System.out.println("node.getReferencedExpressionsNumber() = " +  node.getReferencedExpressionsNumber());
-            
             boolean isReferenced = node.getReferencesNumber() > 0;
             
-            if(!isReferenced) {
-                Iterator referencedExpressions = node.referencedExpressions();
-                while(referencedExpressions.hasNext()) {
-                    Expression expr =
-                            (Expression) referencedExpressions.next();
-                    
-                    //System.out.println("expr.getMethodName() = "
-                    //        + expr.getMethodName());
-                }
+            if (isArray(nodeType)) {
+                tag = new Tag("array");
+            } else {
+                tag = new Tag("object");
             }
-            
-            //System.out.println("<---");
             
             // check if the object presents references
             if(isReferenced) {
@@ -203,6 +176,7 @@ public class XMLEncoder extends Encoder {
                             // check if it is necessary to assign
                             // and display *id* attribute to the object
                             String objectName = NameMaker.getInstanceName(type);
+
                             node.setId(objectName);
                             tag.addAttr("id", objectName);
                         }
@@ -214,52 +188,90 @@ public class XMLEncoder extends Encoder {
     
             if(!objectPrinted) {
                 try {
-                    tag.addAttr("class", node.getObjectType().getName());
+                    if (isArray(nodeType)) {
+                        tag.addAttr("class", ((Class) arguments[0]).getName());
+                        tag.addAttr("length", ((Integer)
+                                arguments[1]).toString());
+                    } else {
+                        tag.addAttr("class", node.getObjectType().getName());
+                    }
                 } catch (Exception e) {
                     getExceptionListener().exceptionThrown(e);
                 }
             }
-            
-            printBytes(tabCount, tag.toStringOnOpen());
-            
-            if(!objectPrinted) {
+
+            // preprocessing is done, print it!
+            if (objectPrinted) {
+                // if object has been already printed then only print the
+                // reference
+                printBytes(tabCount, tag.toStringShortForm());
+            }
+            else if (isArray(nodeType) && !node.statements().hasNext()) {
+                // if we have an empty array 
+                printBytes(tabCount, tag.toStringShortForm());
+            } 
+            else if (arguments.length == 0  &&
+                    !node.statements().hasNext() &&
+                    !node.expressions().hasNext()) {
+                // if given tag has no children print the short form of the tag
+                printBytes(tabCount, tag.toStringShortForm());
+            } 
+            else {
+                // the tag has not been printed and contains children,
+                // let's print them  
+
+                printBytes(tabCount, tag.toStringOnOpen());
+                
                 printed.add(node);
     
-                Object[] arguments = node.getObjectArguments();
-                for(int i = 0; i < arguments.length; ++i) {
-                    if(arguments[i] != null) {
-                        ObjectNode succNode = (ObjectNode) nodes.get(
-                                arguments[i]);
-                        printObjectTag(++tabCount, arguments[i], succNode);
-                    } else {
-                        printNullTag(++tabCount);
+                if (isArray(nodeType)) { // if array
+                    Iterator it = node.statements();
+
+                    while(it.hasNext()) {
+                        Statement s = (Statement) it.next();
+
+                        printVoidTag(++tabCount, s);
+                        --tabCount;
+                    }
+                } else { // if object
+                    Iterator i1;
+                    Iterator i2;
+                    
+                    for(int i = 0; i < arguments.length; ++i) {
+                        if(arguments[i] != null) {
+                            ObjectNode succNode = (ObjectNode) nodes.get(
+                                    arguments[i]);
+
+                            printObjectTag(++tabCount, arguments[i], succNode);
+                        } else {
+                            printNullTag(++tabCount);
+                        }
+                        
+                        --tabCount;
                     }
                     
-                    --tabCount;
-                }
-                
-                Iterator i1 = node.expressions();
-                while(i1.hasNext()) {
-                    Expression e = (Expression) i1.next();
+                    i1 = node.expressions();
+                    while(i1.hasNext()) {
+                        Expression e = (Expression) i1.next();
+                        
+                        printVoidTag(++tabCount, e);
+                        --tabCount;
+                    }
                     
-                    printVoidTag(++tabCount, e);
-                    --tabCount;
-                }
+                    i2 = node.statements();
+                    while(i2.hasNext()) {
+                        Statement s = (Statement) i2.next();
+                        
+                        printVoidTag(++tabCount, s);
+                        --tabCount;
+                    }
+                } // if object
                 
-                Iterator i2 = node.statements();
-                while(i2.hasNext()) {
-                    Statement s = (Statement) i2.next();
-                    
-                    printVoidTag(++tabCount, s);
-                    --tabCount;
-                }
-                
+                printBytes(tabCount, tag.toStringOnClose());
             }
-            
-            printBytes(tabCount, tag.toStringOnClose());
         } // if node is of non-trivial type
     }
-    
+
     private void printVoidTag(int tabCount, Expression expr) {
         Object exprValue = null;
         try {
@@ -387,31 +399,73 @@ public class XMLEncoder extends Encoder {
     private void printBytes(int tabCount, String s) {
         try {
             String result = "";
-            for(int i = 0; i < tabCount; ++i) result += '\t';
+
+            for(int i = 0; i < tabCount; ++i) {
+                result += '\t';
+            }
             result = result + s + "\n";
             out.write(result.getBytes("UTF-8"));
         } catch (IOException ioe) {
             ExceptionListener listener = getExceptionListener();
+
             if(listener != null) {
                 listener.exceptionThrown(ioe);
             }
         }
     }
+  
+    /**
+     * Escapes '&', '<', '>', '\'', '"' chars.
+     * @param input input string to be escaped
+     * @return string with escaped characters 
+     */
+    static String escapeChars(String input) {
+        StringBuffer sb = new StringBuffer();
+        
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+
+            switch (c) {
+                case '&': 
+                    sb.append("&amp;");
+                    break;
+                case '<': 
+                    sb.append("&lt;");
+                    break;
+                case '>': 
+                    sb.append("&gt;");
+                    break;
+                case '\'': 
+                    sb.append("&apos;");
+                    break;
+                case '"':
+                    sb.append("&quot;");
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+            }
+        }
+        return sb.toString();
+    }
     
-    class Tag {
+    /**
+     * This class is used by XMLEncoder to store XML tag information. 
+     */
+    static class Tag {
         String name;
-        HashMap attrs;
+        LinkedHashMap attrs;
         String characters;
         
         public Tag(String name) {
             this.name = name;
-            this.attrs = new HashMap();
+            this.attrs = new LinkedHashMap();
             this.characters = null;
         }
         
         public Tag(String name, String characters) {
             this.name = name;
-            this.attrs = new HashMap();
+            this.attrs = new LinkedHashMap();
             this.characters = characters;
         }
         
@@ -423,16 +477,25 @@ public class XMLEncoder extends Encoder {
             attrs.put(attrName, attrValue);
         }
         
-        public String toStringOnOpen() {
+        public String toStringOnOpenUnfinished() {
             String result = "<" + name;
             Iterator i = attrs.keySet().iterator();
+
             while(i.hasNext()) {
                 String attrName = (String) i.next();
                 String attrValue = (String) attrs.get(attrName);
+
                 result +=" " + attrName + "=\"" + attrValue + "\"";
             }
-            result += ">";
             return result;
+        }
+
+        public String toStringOnOpen() {
+            return toStringOnOpenUnfinished() + ">";
+        }
+        
+        public String toStringShortForm() {
+            return toStringOnOpenUnfinished() + "/>";
         }
         
         public String toStringOnClose() {
@@ -440,41 +503,59 @@ public class XMLEncoder extends Encoder {
         }
         
         public String toStringOnCharacters() {
-            return characters;
+            return XMLEncoder.escapeChars(characters);
         }
         
         public String toString() {
             return toStringOnOpen() + toStringOnCharacters()
                     + toStringOnClose();
         }
-        
     }
-    
+
+
+    static class NameMaker {
+        private static HashMap numOfExemplars = new HashMap();
+        
+        public static void clear() {
+            numOfExemplars.clear();
+        }
+        
+        private static String getCompName(Class clz) {
+            if (clz.isArray()) {
+                return getCompName(clz.getComponentType()) + "Array";
+            } else {
+                return clz.getName().substring(
+                        clz.getName().lastIndexOf(".") + 1);
+            }
+        }
+        
+        public static String getInstanceName(Class type) {
+            String result = null;
+
+            String fullName;
+            String shortName;
+            Integer iNum;
+
+            if (type.isArray()) {
+                fullName = getCompName(type);
+                shortName = fullName;
+            } else {
+                fullName = type.getName();
+                shortName = fullName.substring(fullName.lastIndexOf(".") + 1);
+            }
+            iNum = (Integer) numOfExemplars.get(shortName);
+            if(iNum == null) {
+                numOfExemplars.put(shortName, new Integer(0));
+                result = shortName + "0"; 
+            } else {
+                int newValue = iNum.intValue() + 1;
+
+                result = shortName + Integer.toString(newValue);
+                numOfExemplars.put(shortName, new Integer(newValue));
+            }
+            return result;
+        }
+    }
 }
 
-class NameMaker {
-    private static HashMap numOfExemplars = new HashMap();
-    
-    public static void clear() {
-        numOfExemplars.clear();
-    }
-    
-    public static String getInstanceName(Class type) {
-        String result = null;
-        
-        String fullName = type.getName();
-        String shortName = fullName.substring(fullName.lastIndexOf(".") + 1);
-        
-        Integer iNum = (Integer) numOfExemplars.get(shortName);
-        
-        if(iNum == null) {
-            numOfExemplars.put(shortName, new Integer(0));
-            result = shortName + "0"; 
-        } else {
-            int newValue = iNum.intValue() + 1;
-            result = shortName + Integer.toString(newValue);
-            numOfExemplars.put(shortName, new Integer(newValue));
-        }
-        return result;
-    }
-}
+
