@@ -155,6 +155,8 @@
 		<include name="hysocket.h" />
 		<include name="hyporterror.h" />
 		<include name="gp.h" />
+ 		<include name="hysock.h" />
+		<include name="hyportpg.h" />	    	
 	    </fileset>
 	</delete>
 	<delete failonerror="false">
