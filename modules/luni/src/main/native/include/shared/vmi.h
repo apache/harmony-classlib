@@ -21,6 +21,7 @@
 
 #if !defined(vmi_h)
 #define vmi_h
+#define USING_VMI
 #if defined(__cplusplus)
 extern "C"
 {

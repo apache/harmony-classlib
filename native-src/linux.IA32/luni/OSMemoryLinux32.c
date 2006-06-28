@@ -21,7 +21,7 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <unistd.h>
-#include <harmony.h>
+#include "vmi.h"
 #include "OSMemory.h"
 
 #define	OS_JNI(func) JNICALL Java_org_apache_harmony_luni_platform_OSMemory_##func

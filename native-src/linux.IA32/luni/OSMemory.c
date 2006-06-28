@@ -19,7 +19,7 @@
 
 #include <sys/mman.h>
 #include <string.h>
-#include <harmony.h>
+#include "vmi.h"
 #include "OSMemory.h"
 #include "IMemorySystem.h"
 

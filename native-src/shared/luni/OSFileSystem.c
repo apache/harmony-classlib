@@ -16,7 +16,7 @@
  * Common natives supporting the file system interface.
  */
 
-#include <harmony.h>
+#include "vmi.h"
 #include <string.h>
 #include "iohelp.h"
 

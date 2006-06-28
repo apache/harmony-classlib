@@ -22,7 +22,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/sendfile.h>
-#include <harmony.h>
+#include "vmi.h"
 
 #include "IFileSystem.h"
 #include "OSFileSystem.h"

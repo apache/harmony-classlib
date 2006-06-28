@@ -15,7 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "jcl.h"
+#include "vmi.h"
 #include "helpers.h"
 
 jstring JNICALL

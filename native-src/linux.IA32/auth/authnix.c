@@ -39,7 +39,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include <stdlib.h>
 #include <assert.h>
 
-#include "harmony.h"
+#include "vmi.h"
 #include "jni.h"
 
 jfieldID jf_uid = NULL;

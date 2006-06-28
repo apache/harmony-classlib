@@ -15,7 +15,7 @@
 
 #include <windows.h>
 #include <string.h>
-#include "jcl.h"
+#include "vmi.h"
 #include "procimpl.h"
 #include "jclglob.h"
 

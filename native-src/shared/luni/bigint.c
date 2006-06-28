@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "jcl.h"
+#include "vmi.h"
 #include <string.h>
 
 /* macros for Endian portability

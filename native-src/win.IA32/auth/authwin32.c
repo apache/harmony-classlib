@@ -26,7 +26,7 @@
 
 #include <assert.h>
 
-#include "harmony.h"
+#include "vmi.h"
 #include "jni.h"
 
 #pragma warning(disable:4311)

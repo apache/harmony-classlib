@@ -15,7 +15,7 @@
  */
 
 #include "OSNetworkSystem.h"
-#include "jcl.h"
+#include "vmi.h"
 #include "nethelp.h"
 #include "helpers.h"
 #include "jclprots.h"

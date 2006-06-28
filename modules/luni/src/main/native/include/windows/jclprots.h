@@ -20,7 +20,7 @@
 extern "C"
 {
 #endif
-#include "jcl.h"
+#include "vmi.h"
 
   /* NativesCommonComm*/
   jint JNICALL Java_com_ibm_oti_connection_comm_Connection_writeImpl

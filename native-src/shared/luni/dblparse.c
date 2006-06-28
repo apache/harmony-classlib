@@ -15,7 +15,7 @@
 
 #include <string.h>
 #include <math.h>
-#include "jcl.h"
+#include "vmi.h"
 #include "cbigint.h"
 #include "jclglob.h"
 

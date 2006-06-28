@@ -15,7 +15,7 @@
 
 #if !defined(jclglob_h)
 #define jclglob_h
-#include "jcl.h"
+#include "vmi.h"
 extern void *Lib_JCL_ID_CACHE;
 #define JCL_ID_CACHE Lib_JCL_ID_CACHE
 typedef struct LibJniIDCache

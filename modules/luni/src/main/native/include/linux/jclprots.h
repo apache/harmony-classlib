@@ -20,7 +20,7 @@
 extern "C" {
 #endif
 
-#include "jcl.h"
+#include "vmi.h"
 
 /************************************************************
  ** COMPONENT: NativesCommon

@@ -16,7 +16,7 @@
 #if !defined(jclglob_h)
 #define jclglob_h
 
-#include "jcl.h"
+#include "vmi.h"
 #include "zip.h"
 
 extern void *Archive_JCL_ID_CACHE;

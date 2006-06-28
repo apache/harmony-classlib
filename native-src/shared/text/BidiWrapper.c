@@ -14,7 +14,7 @@
  */
 
 #include <unicode/ubidi.h>
-#include "harmony.h"
+#include "vmi.h"
 #include "BidiWrapper.h"
 
 void check_fail (JNIEnv * env, int err);

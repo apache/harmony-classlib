@@ -15,7 +15,7 @@
 
 #if !defined(jclglob_h)
 #define jclglob_h
-#include "jcl.h"
+#include "vmi.h"
 extern void *LUNI_JCL_ID_CACHE;
 #define JCL_ID_CACHE LUNI_JCL_ID_CACHE
 typedef struct LUNIJniIDCache

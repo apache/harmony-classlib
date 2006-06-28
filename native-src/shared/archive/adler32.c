@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "jcl.h"
+#include "vmi.h"
 #include "zconf.h"
 uLong adler32 PROTOTYPE ((uLong crc, const Bytef * buf, uInt size));
 

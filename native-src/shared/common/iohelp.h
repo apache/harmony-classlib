@@ -16,7 +16,7 @@
 #if !defined(iohelp_h)
 #define iohelp_h
 #include <string.h>
-#include "jcl.h"
+#include "vmi.h"
 /* DIR_SEPARATOR is defined in hycomp.h */
 #define jclSeparator DIR_SEPARATOR
 void *getJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd);

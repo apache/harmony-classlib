@@ -15,7 +15,7 @@
 
 #if !defined(libglob_h)
 #define libglob_h
-#include "jcl.h"
+#include "vmi.h"
 #include "hyvmls.h"
 #define JCL_CACHE_GET(env,x) \
 	(((JniIDCache*) HY_VMLS_GET((env), JCL_ID_CACHE))->x)

@@ -26,7 +26,7 @@
 #include <LMCONS.H>
 #include <direct.h>
 
-#include "jcl.h"
+#include "vmi.h"
 #include "jclprots.h"
 #include "jclglob.h"
 

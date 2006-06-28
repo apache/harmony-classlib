@@ -14,7 +14,7 @@
  */
 
 
-#include "jcl.h"
+#include "vmi.h"
 #include "helpers.h"
 #include "jclprots.h"
 #include "socket.h"

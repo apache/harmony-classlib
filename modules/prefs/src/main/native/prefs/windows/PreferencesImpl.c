@@ -14,7 +14,7 @@
  */
 
 #include <windows.h>
-#include <harmony.h>
+#include "vmi.h"
 
 #include "java_util_prefs_RegistryPreferencesImpl.h"
 

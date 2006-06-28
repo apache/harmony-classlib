@@ -20,7 +20,7 @@
  * @brief Harmony Common helpers initialization API.
  */
 
-#include "jcl.h"
+#include "vmi.h"
 #include "jclglob.h"
 #include <string.h>
 

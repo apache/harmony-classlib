@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "jcl.h"
+#include "vmi.h"
 #include "iohelp.h"
 
 #include "zlib.h"

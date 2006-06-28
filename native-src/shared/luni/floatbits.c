@@ -15,7 +15,7 @@
 
 #include <string.h>
 #include <math.h>
-#include "jcl.h"
+#include "vmi.h"
 #include "fltconst.h"
 
 #define DOUBLE_SIGN_MASK				HYCONST64(0x8000000000000000)

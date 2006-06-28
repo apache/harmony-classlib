@@ -20,7 +20,7 @@
  * @brief Harmony Archive natives initialization API.
  */
 
-#include "jcl.h"
+#include "vmi.h"
 #include "jclglob.h"
 #include "zip.h"
 #include <string.h>

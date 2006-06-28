@@ -20,7 +20,7 @@
  */
 
 #include <string.h>
-#include "jcl.h"
+#include "vmi.h"
 #include "jclglob.h"
 #include "zipsup.h"
 #include "hypool.h"

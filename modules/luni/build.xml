@@ -40,7 +40,6 @@
     <target name="copy.native.includes">
 	<copy todir="${hy.hdk}/include" overwrite="yes">
 	    <fileset dir="${hy.luni.src.main.native}/include/shared">
-		<include name="harmony.h" />
 		<include name="vmi.h" />
 		<include name="hyvmls.h" />
 		<include name="hypool.h" />
@@ -143,7 +142,6 @@
     <target name="clean.native.includes">
 	<delete failonerror="false">
 	    <fileset dir="${hy.hdk}/include">
-		<include name="harmony.h" />
 		<include name="vmi.h" />
 		<include name="hyvmls.h" />
 		<include name="hypool.h" />
