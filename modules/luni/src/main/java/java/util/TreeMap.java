@@ -41,6 +41,8 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 
 	transient int modCount = 0;
 
+        Set<Map.Entry<K,V>> entrySet = null;
+
 	/**
 	 * Entry is an internal class which is used to hold the entries of a
 	 * TreeMap.
@@ -77,406 +79,541 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
         return (Comparable<T>)obj;
     }
 
-	private static final class TreeMapIterator<E, K, V> implements Iterator<E> {
-		private final TreeMap<K, V> backingMap;
+    private static class AbstractMapIterator <K,V> {
+        TreeMap<K, V> backingMap;
+        int expectedModCount;
+        TreeMap.Entry<K, V> node;
+        TreeMap.Entry<K, V> lastNode;
 
-		private int expectedModCount;
+        AbstractMapIterator(TreeMap<K, V> map, Entry<K, V> startNode) {
+            backingMap = map;
+            expectedModCount = map.modCount;
+            node = startNode;
+        }
 
-		private final MapEntry.Type<E, K, V> type;
+        public boolean hasNext() {
+            return node != null;
+        }
 
-		private boolean hasEnd = false;
-
-		private Entry<K, V> node, lastNode;
-
-		private K endKey;
-
-		TreeMapIterator(TreeMap<K, V> map, MapEntry.Type<E, K, V> value) {
-			backingMap = map;
-			type = value;
-			expectedModCount = map.modCount;
-			if (map.root != null) {
-                node = TreeMap.minimum(map.root);
-            }
-		}
-
-		TreeMapIterator(TreeMap<K, V> map, MapEntry.Type<E, K, V> value, Entry<K, V> startNode,
-				boolean checkEnd, K end) {
-			backingMap = map;
-			type = value;
-			expectedModCount = map.modCount;
-			node = startNode;
-			hasEnd = checkEnd;
-			endKey = end;
-		}
-
-		public boolean hasNext() {
-			return node != null;
-		}
-
-		public E next() {
-			if (expectedModCount == backingMap.modCount) {
-				if (node != null) {
-					lastNode = node;
-					node = TreeMap.successor(node);
-					if (hasEnd && node != null) {
-						Comparator<? super K> c = backingMap.comparator();
-						if (c == null) {
-                            Comparable<K> cEndKey = toComparable(endKey);
-							if (cEndKey.compareTo(node.key) <= 0) {
-                                node = null;
-                            }
-						} else {
-							if (c.compare(endKey, node.key) <= 0) {
-                                node = null;
-                            }
-						}
-					}
-					return type.get(lastNode);
-				} else {
-                    throw new NoSuchElementException();
-                }
-			} else {
-                throw new ConcurrentModificationException();
-            }
-		}
-
-		public void remove() {
-			if (expectedModCount == backingMap.modCount) {
-				if (lastNode != null) {
-					backingMap.rbDelete(lastNode);
-					lastNode = null;
-					expectedModCount++;
-				} else {
+        final public void remove() {
+            if (expectedModCount == backingMap.modCount) {
+                if (lastNode != null) {
+                    backingMap.rbDelete(lastNode);
+                    lastNode = null;
+                    expectedModCount++;
+                } else {
                     throw new IllegalStateException();
                 }
-			} else {
+            } else {
                 throw new ConcurrentModificationException();
             }
-		}
-	}
-
-	static final class SubMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V> {
-		private final TreeMap<K, V> backingMap;
-
-		private boolean hasStart, hasEnd;
-
-		private K startKey, endKey;
-
-		static class SubMapSet<E, K, V> extends AbstractSet<E> implements Set<E> {
-			final TreeMap<K, V> backingMap;
-
-			boolean hasStart, hasEnd;
-
-			K startKey, endKey;
-
-			final MapEntry.Type<E, K, V> type;
-
-			SubMapSet(TreeMap<K, V> map, MapEntry.Type<E, K, V> theType) {
-				backingMap = map;
-				type = theType;
-			}
-
-			SubMapSet(boolean starting, K start, TreeMap<K, V> map,
-					boolean ending, K end, MapEntry.Type<E, K, V> theType) {
-				this(map, theType);
-				hasStart = starting;
-				startKey = start;
-				hasEnd = ending;
-				endKey = end;
-			}
-
-			void checkRange(K key) {
-				if (backingMap.comparator() == null) {
-					Comparable<K> object = toComparable(key);
-					if (hasStart && object.compareTo(startKey) < 0) {
-                        throw new IllegalArgumentException();
-                    }
-					if (hasEnd && object.compareTo(endKey) >= 0) {
-                        throw new IllegalArgumentException();
-                    }
-				} else {
-					if (hasStart
-							&& backingMap.comparator().compare(key, startKey) < 0) {
-                        throw new IllegalArgumentException();
-                    }
-					if (hasEnd
-							&& backingMap.comparator().compare(key, endKey) >= 0) {
-                        throw new IllegalArgumentException();
-                    }
-				}
-			}
-
-			boolean checkRange(K key, boolean hasStart, boolean hasEnd) {
-				if (backingMap.comparator() == null) {
-                    Comparable<K> object = toComparable(key);
-					if (hasStart && object.compareTo(startKey) < 0) {
-                        return false;
-                    }
-					if (hasEnd && object.compareTo(endKey) >= 0) {
-                        return false;
-                    }
-				} else {
-					if (hasStart
-							&& backingMap.comparator().compare(key, startKey) < 0) {
-                        return false;
-                    }
-					if (hasEnd
-							&& backingMap.comparator().compare(key, endKey) >= 0) {
-                        return false;
-                    }
-				}
-				return true;
-			}
-
-			@Override
-            public boolean isEmpty() {
-				if (hasStart) {
-					TreeMap.Entry<K, V> node = backingMap.findAfter(startKey);
-					return node == null || !checkRange(node.key, false, hasEnd);
-				}
-				return backingMap.findBefore(endKey) == null;
-			}
-
-			@Override
-            public Iterator<E> iterator() {
-				TreeMap.Entry<K, V> startNode;
-				if (hasStart) {
-					startNode = backingMap.findAfter(startKey);
-					if (startNode != null
-							&& !checkRange(startNode.key, false, hasEnd)) {
-                        startNode = null;
-                    }
-				} else {
-					startNode = backingMap.findBefore(endKey);
-					if (startNode != null) {
-                        startNode = minimum(backingMap.root);
-                    }
-				}
-				return new TreeMapIterator<E, K, V>(backingMap, type, startNode, hasEnd,
-						endKey);
-			}
-
-			@Override
-            public int size() {
-				int size = 0;
-				Iterator<E> it = iterator();
-				while (it.hasNext()) {
-					size++;
-					it.next();
-				}
-				return size;
-			}
-		}
-
-        SubMap(K start, TreeMap<K, V> map, K end) {
-            backingMap = map;
-            hasStart = hasEnd = true;
-            startKey = start;
-            endKey = end;
         }
-        
-		SubMap(K start, TreeMap<K, V> map) {
-			backingMap = map;
-			hasStart = true;
-			startKey = start;
-		}
 
-		SubMap(TreeMap<K, V> map, K end) {
-			backingMap = map;
-			hasEnd = true;
-			endKey = end;
-		}
-
-		private void checkRange(K key) {
-			if (backingMap.comparator() == null) {
-				Comparable<K> object = toComparable(key);
-				if (hasStart && object.compareTo(startKey) < 0) {
-                    throw new IllegalArgumentException();
-                }
-				if (hasEnd && object.compareTo(endKey) >= 0) {
-                    throw new IllegalArgumentException();
-                }
-			} else {
-				if (hasStart
-						&& backingMap.comparator().compare(key, startKey) < 0) {
-                    throw new IllegalArgumentException();
-                }
-				if (hasEnd && backingMap.comparator().compare(key, endKey) >= 0) {
-                    throw new IllegalArgumentException();
-                }
-			}
-		}
-
-		@SuppressWarnings("unchecked")
-        private boolean checkRange(Object keyObj, boolean hasStart, boolean hasEnd) {
-            K key = (K)keyObj;
-			if (backingMap.comparator() == null) {
-                Comparable<K> object = toComparable(key);
-				if (hasStart && object.compareTo(startKey) < 0) {
-                    return false;
-                }
-				if (hasEnd && object.compareTo(endKey) >= 0) {
-                    return false;
-                }
-			} else {
-				if (hasStart
-						&& backingMap.comparator().compare(key, startKey) < 0) {
-                    return false;
-                }
-				if (hasEnd && backingMap.comparator().compare(key, endKey) >= 0) {
-                    return false;
-                }
-			}
-			return true;
-		}
-
-		public Comparator<? super K> comparator() {
-			return backingMap.comparator();
-		}
-
-        @Override
-        public boolean containsKey(Object key) {
-			if (checkRange(key, hasStart, hasEnd)) {
-                return backingMap.containsKey(key);
+        final void makeNext() {
+            if (expectedModCount != backingMap.modCount) {
+                throw new ConcurrentModificationException();
+            } else if (node == null) {
+                throw new NoSuchElementException();
             }
-			return false;
-		}
-
-		@Override
-        public Set<Map.Entry<K, V>> entrySet() {
-			return new SubMapSet<Map.Entry<K, V>, K, V>(hasStart, startKey, backingMap, hasEnd,
-					endKey, new MapEntry.Type<Map.Entry<K, V>, K, V>() {
-						public Map.Entry<K, V> get(MapEntry<K, V> entry) {
-							return entry;
-						}
-					}) {
-				@Override
-                public boolean contains(Object object) {
-					if (object instanceof Map.Entry) {
-						Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;
-						Object v1 = get(entry.getKey()), v2 = entry.getValue();
-						return v1 == null ? v2 == null : v1.equals(v2);
-					}
-					return false;
-				}
-			};
-		}
-
-		public K firstKey() {
-			if (!hasStart) {
-                return backingMap.firstKey();
+            lastNode = node;
+            node = TreeMap.successor(node);
             }
-			TreeMap.Entry<K, V> node = backingMap.findAfter(startKey);
-			if (node != null && checkRange(node.key, false, hasEnd)) {
-                return node.key;
+        }
+
+        private static class UnboundedEntryIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<Map.Entry<K, V>> {
+
+            UnboundedEntryIterator(TreeMap<K, V> map, Entry<K, V> startNode) {
+                super(map, startNode);
             }
-			throw new NoSuchElementException();
-		}
 
-        @Override
-        public V get(Object key) {
-			if (checkRange(key, hasStart, hasEnd)) {
-                return backingMap.get(key);
+            UnboundedEntryIterator(TreeMap<K, V> map) {
+                super(map, map.root == null ? null : TreeMap.minimum(map.root));
             }
-			return null;
-		}
 
-		public SortedMap<K, V> headMap(K endKey) {
-			checkRange(endKey);
-			if (hasStart) {
-                return new SubMap<K, V>(startKey, backingMap, endKey);
+            public Map.Entry<K, V> next() {
+                makeNext();
+                return lastNode;
             }
-			return new SubMap<K, V>(backingMap, endKey);
-		}
+        }
 
-		@Override
-        public boolean isEmpty() {
-			if (hasStart) {
-				TreeMap.Entry<K, V> node = backingMap.findAfter(startKey);
-				return node == null || !checkRange(node.key, false, hasEnd);
-			}
-			return backingMap.findBefore(endKey) == null;
-		}
-
-		@Override
-        public Set<K> keySet() {
-			if (keySet == null) {
-				keySet = new SubMapSet<K, K, V>(hasStart, startKey, backingMap, hasEnd,
-						endKey, new MapEntry.Type<K, K, V>() {
-							public K get(MapEntry<K, V> entry) {
-								return entry.key;
-							}
-						}) {
-					@Override
-                    public boolean contains(Object object) {
-						return containsKey(object);
-					}
-				};
-			}
-			return keySet;
-		}
-
-		public K lastKey() {
-			if (!hasEnd) {
-                return backingMap.lastKey();
+        static class UnboundedKeyIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<K> {
+            public UnboundedKeyIterator(TreeMap<K, V> treeMap, Entry<K, V> entry) {
+                super(treeMap, entry);
             }
-			TreeMap.Entry<K, V> node = backingMap.findBefore(endKey);
-			if (node != null && checkRange(node.key, hasStart, false)) {
-                return node.key;
-            }
-			throw new NoSuchElementException();
-		}
 
-		@Override
-        public V put(K key, V value) {
-			if (checkRange(key, hasStart, hasEnd)) {
-                return backingMap.put(key, value);
+            public UnboundedKeyIterator(TreeMap<K, V> map) {
+                super(map, map.root == null ? null : TreeMap.minimum(map.root));
             }
-			throw new IllegalArgumentException();
-		}
 
-        @Override
-        public V remove(Object key) {
-			if (checkRange(key, hasStart, hasEnd)) {
-                return backingMap.remove(key);
+            public K next() {
+                makeNext();
+                return lastNode.key;
             }
-			return null;
-		}
+        }
 
-		public SortedMap<K, V> subMap(K startKey, K endKey) {
-			checkRange(startKey);
-			checkRange(endKey);
-			Comparator<? super K> c = backingMap.comparator();
-			if (c == null) {
-				if (toComparable(startKey).compareTo(endKey) <= 0) {
-                    return new SubMap<K, V>(startKey, backingMap, endKey);
+        static class UnboundedValueIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<V> {
+     
+            public UnboundedValueIterator(TreeMap<K, V> treeMap, Entry<K, V> startNode) {
+                super(treeMap, startNode);
+            }
+     
+            public UnboundedValueIterator(TreeMap<K, V> map) {
+                super(map, map.root == null ? null : TreeMap.minimum(map.root));
+            }
+     
+            public V next() {
+                makeNext();
+                return lastNode.value;
+            }
+        }
+
+        private static class ComparatorBoundedIterator <K, V> extends AbstractMapIterator<K, V>  {
+            private K endKey;
+            private Comparator<? super K> cmp;
+     
+            ComparatorBoundedIterator(TreeMap<K, V> map,
+                                           Entry<K, V> startNode, K end) {
+                super(map, startNode);
+                endKey = end;
+                cmp = map.comparator();
+            }
+     
+            final void cleanNext() {
+                if (node != null && cmp.compare(endKey, node.key) <= 0) {
+                    node = null;
                 }
-			} else {
-				if (c.compare(startKey, endKey) <= 0) {
-                    return new SubMap<K, V>(startKey, backingMap, endKey);
-                }
-			}
-			throw new IllegalArgumentException();
-		}
-
-		public SortedMap<K, V> tailMap(K startKey) {
-			checkRange(startKey);
-			if (hasEnd) {
-                return new SubMap<K, V>(startKey, backingMap, endKey);
             }
-			return new SubMap<K, V>(startKey, backingMap);
-		}
+        }
 
-		@Override
-        public Collection<V> values() {
-			return new SubMapSet<V, K, V>(hasStart, startKey, backingMap, hasEnd,
-					endKey, new MapEntry.Type<V, K, V>() {
-						public V get(MapEntry<K, V> entry) {
-							return entry.value;
-						}
-					});
-		}
-	}
+        private static class ComparatorBoundedEntryIterator <K, V> extends ComparatorBoundedIterator<K, V> implements Iterator<Map.Entry<K, V>> {
+
+            ComparatorBoundedEntryIterator(TreeMap<K, V> map,
+                                           Entry<K, V> startNode, K end) {
+                super(map, startNode,end);
+            }
+
+            public Map.Entry<K, V> next() {
+                makeNext();
+                cleanNext();
+                return lastNode;
+            }
+        }
+
+        private static class ComparatorBoundedKeyIterator <K, V> extends ComparatorBoundedIterator<K, V> implements Iterator<K> {
+
+            ComparatorBoundedKeyIterator(TreeMap<K, V> map,
+                                         Entry<K, V> startNode, K end) {
+                super(map, startNode,end);
+            }
+
+            public K next() {
+                makeNext();
+                cleanNext();
+                return lastNode.key;
+            }
+        }
+
+
+        private static class ComparatorBoundedValueIterator <K, V> extends ComparatorBoundedIterator<K, V> implements Iterator<V> {
+
+            ComparatorBoundedValueIterator(TreeMap<K, V> map,
+                                           Entry<K, V> startNode, K end) {
+                super(map, startNode,end);
+            }
+
+            public V next() {
+                makeNext();
+                cleanNext();
+                return lastNode.value;
+            }
+        }
+
+        private static class ComparableBoundedIterator <K, V> extends AbstractMapIterator<K, V> {
+            final private Comparable endKey;
+
+            public ComparableBoundedIterator(TreeMap<K, V> treeMap, Entry<K, V> entry, Comparable endKey) {
+                super(treeMap, entry);
+                this.endKey = endKey;
+            }
+
+            final void cleanNext() {
+                if ((node != null) && (endKey.compareTo(node.key) <= 0)) {
+                    node = null;
+                }
+            }
+        }
+
+        private static class ComparableBoundedEntryIterator <K, V> extends ComparableBoundedIterator<K, V> implements Iterator<Map.Entry<K, V>> {
+
+
+            ComparableBoundedEntryIterator(TreeMap<K, V> map,
+                                           Entry<K, V> startNode, Comparable end) {
+                super(map, startNode, end);
+            }
+
+            public Map.Entry<K, V> next() {
+                makeNext();
+                cleanNext();
+                return lastNode;
+            }
+
+        }
+
+        private static class ComparableBoundedKeyIterator <K, V> extends ComparableBoundedIterator<K, V> implements Iterator<K> {
+
+            ComparableBoundedKeyIterator(TreeMap<K, V> map,
+                                         Entry<K, V> startNode, Comparable end) {
+                super(map, startNode,end);
+            }
+
+            public K next() {
+                makeNext();
+                cleanNext();
+                return lastNode.key;
+            }
+        }
+
+        private static class ComparableBoundedValueIterator <K, V> extends ComparableBoundedIterator<K, V> implements Iterator<V> {
+
+            ComparableBoundedValueIterator(TreeMap<K, V> map,
+                                           Entry<K, V> startNode, Comparable end) {
+                super(map, startNode,end);
+            }
+
+            public V next() {
+                makeNext();
+                cleanNext();
+                return lastNode.value;
+            }
+        }
+
+        static final class SubMap<K,V> extends AbstractMap<K,V> implements SortedMap<K,V> {
+            private TreeMap<K,V> backingMap;
+
+            boolean hasStart, hasEnd;
+
+            K startKey, endKey;
+
+            Set<Map.Entry<K,V>> entrySet = null;
+
+            SubMap(K start, TreeMap<K,V> map) {
+                backingMap = map;
+                hasStart = true;
+                startKey = start;
+            }
+
+            SubMap(K start, TreeMap<K,V> map, K end) {
+                backingMap = map;
+                hasStart = hasEnd = true;
+                startKey = start;
+                endKey = end;
+            }
+            
+            SubMap(TreeMap<K,V> map, K end) {
+                backingMap = map;
+                hasEnd = true;
+                endKey = end;
+            }
+
+            private void checkRange(K key) {
+                Comparator cmp = backingMap.comparator;
+                if (cmp == null) {
+                    Comparable<K> object = (Comparable<K>) key;
+                    if (hasStart && object.compareTo(startKey) < 0)
+                        throw new IllegalArgumentException();
+                    if (hasEnd && object.compareTo(endKey) >= 0)
+                        throw new IllegalArgumentException();
+                } else {
+                    if (hasStart
+                            && backingMap.comparator().compare(key, startKey) < 0)
+                        throw new IllegalArgumentException();
+                    if (hasEnd && backingMap.comparator().compare(key, endKey) >= 0)
+                        throw new IllegalArgumentException();
+                }
+            }
+
+            private boolean isInRange(K key) {
+                Comparator<? super K> cmp = backingMap.comparator;
+                if (cmp == null) {
+                    Comparable<K> object = toComparable(key);
+                    if (hasStart && object.compareTo(startKey) < 0)
+                        return false;
+                    if (hasEnd && object.compareTo(endKey) >= 0)
+                        return false;
+                } else {
+                    if (hasStart && cmp.compare(key, startKey) < 0)
+                        return false;
+                    if (hasEnd && cmp.compare(key, endKey) >= 0)
+                       return false;
+                }
+                return true;
+            }
+
+            private boolean checkUpperBound(K key) {
+                if (hasEnd) {
+                    Comparator<? super K> cmp = backingMap.comparator;
+                    if (cmp == null) {
+                        return (((Comparable<K>) key).compareTo(endKey) < 0);
+                    } else {
+                        return (cmp.compare(key, endKey) < 0);
+                    }
+                } else {
+                    return true;
+                }
+            }
+
+            private boolean checkLowerBound(K key) {
+                if (hasStart) {
+                    Comparator<? super K> cmp = backingMap.comparator;
+                    if (cmp == null) {
+                        return (((Comparable<K>) key).compareTo(endKey) >= 0);
+                    } else {
+                        return (cmp.compare(key, endKey) >= 0);
+                    }
+                } else {
+                    return true;
+                }
+            }
+
+            public Comparator<? super K> comparator() {
+                return backingMap.comparator();
+            }
+
+            public boolean containsKey(Object key) {
+                if (isInRange((K)key))
+                    return backingMap.containsKey(key);
+                return false;
+            }
+
+            public Set<Map.Entry<K,V>> entrySet() {
+                if(entrySet==null) {
+                    entrySet = new SubMapEntrySet<K,V>(this);
+                }
+                return entrySet;
+            }
+
+            public K firstKey() {
+                TreeMap.Entry<K,V> node = firstEntry();
+                if (node != null ) {
+                    return node.key;
+                }
+                throw new NoSuchElementException();
+            }
+
+            TreeMap.Entry<K,V> firstEntry() {
+                if (!hasStart) {
+                    TreeMap.Entry<K,V> root = backingMap.root;
+                    return (root == null) ? null : minimum(backingMap.root);
+                }
+                TreeMap.Entry<K,V> node = backingMap.findAfter(startKey);
+                if (node != null && checkUpperBound(node.key)) {
+                    return node;
+                } else {
+                    return null;
+                }
+            }
+
+            public V get(Object key) {
+                if (isInRange((K)key))
+                    return backingMap.get(key);
+                return null;
+            }
+
+            public SortedMap<K,V> headMap(K endKey) {
+                checkRange(endKey);
+                if (hasStart)
+                    return new SubMap<K,V>(startKey, backingMap, endKey);
+                return new SubMap<K,V>(backingMap, endKey);
+            }
+
+            public boolean isEmpty() {
+                if (hasStart) {
+                    TreeMap.Entry<K,V> node = backingMap.findAfter(startKey);
+                    return node == null || !checkUpperBound(node.key);
+                }
+                return backingMap.findBefore(endKey) == null;
+            }
+
+            public Set<K> keySet() {
+                if (keySet == null) {
+                    keySet = new SubMapKeySet<K,V>(this);
+                }
+                return keySet;
+            }
+
+            public K lastKey() {
+                if (!hasEnd)
+                    return backingMap.lastKey();
+                TreeMap.Entry<K,V> node = backingMap.findBefore(endKey);
+                if (node != null && checkLowerBound(node.key))
+                    return node.key;
+                throw new NoSuchElementException();
+            }
+
+            public V put(K key, V value) {
+                if (isInRange(key))
+                    return backingMap.put(key, value);
+                throw new IllegalArgumentException();
+            }
+
+            public V remove(Object key) {
+                if (isInRange((K)key))
+                    return backingMap.remove(key);
+                return null;
+            }
+
+            public SortedMap<K,V> subMap(K startKey, K endKey) {
+                checkRange(startKey);
+                checkRange(endKey);
+                Comparator c = backingMap.comparator();
+                if (c == null) {
+                    if (((Comparable) startKey).compareTo(endKey) <= 0)
+                        return new SubMap<K,V>(startKey, backingMap, endKey);
+                } else {
+                    if (c.compare(startKey, endKey) <= 0)
+                        return new SubMap<K,V>(startKey, backingMap, endKey);
+                }
+                throw new IllegalArgumentException();
+            }
+
+            public SortedMap<K,V> tailMap(K startKey) {
+                checkRange(startKey);
+                if (hasEnd)
+                    return new SubMap<K,V>(startKey, backingMap, endKey);
+                return new SubMap<K,V>(startKey, backingMap);
+            }
+
+            public Collection<V> values() {
+                if(valuesCollection==null) {
+                    valuesCollection = new SubMapValuesCollection<K,V>(this);
+                }
+                return valuesCollection;
+            }
+        }
+
+        static class SubMapEntrySet<K,V> extends AbstractSet<Map.Entry<K,V>> implements Set<Map.Entry<K,V>> {
+            SubMap<K,V> subMap;
+
+            SubMapEntrySet(SubMap<K,V> map) {
+                subMap = map;
+            }
+
+            public boolean isEmpty() {
+                return subMap.isEmpty();
+            }
+
+            public Iterator<Map.Entry<K,V>> iterator() {
+                TreeMap.Entry<K,V> startNode = subMap.firstEntry();
+                if (subMap.hasEnd) {
+                    Comparator<? super K> cmp = subMap.comparator();
+                    if (cmp == null) {
+                        return new ComparableBoundedEntryIterator<K,V>(subMap.backingMap, startNode, (Comparable<K>) subMap.endKey);
+                    } else {
+                        return new ComparatorBoundedEntryIterator<K,V>(subMap.backingMap, startNode, subMap.endKey);
+                    }
+                } else {
+                    return new UnboundedEntryIterator<K,V>(subMap.backingMap, startNode);
+                }
+            }
+
+            public int size() {
+                int size = 0;
+                Iterator<Map.Entry<K,V>> it = iterator();
+                while (it.hasNext()) {
+                    size++;
+                    it.next();
+                }
+                return size;
+            }
+
+            public boolean contains(Object object) {
+                if (object instanceof Map.Entry) {
+                    Map.Entry<K,V> entry = (Map.Entry<K,V>) object;
+                    K key = entry.getKey();
+                    if (subMap.isInRange(key)) {
+                        V v1 = subMap.get(key), v2 = entry.getValue();
+                        return v1 == null ? v2 == null : v1.equals(v2);
+                    }
+                }
+                return false;
+            }
+
+        }
+
+        static class SubMapKeySet<K,V> extends  AbstractSet<K> implements Set<K> {
+            SubMap<K,V> subMap;
+
+            SubMapKeySet(SubMap<K,V> map) {
+                subMap = map;
+            }
+
+            public boolean contains(Object object) {
+                return subMap.containsKey(object);
+            }
+
+            public boolean isEmpty() {
+                return subMap.isEmpty();
+            }
+
+            public int size() {
+                int size = 0;
+                Iterator<K> it = iterator();
+                while (it.hasNext()) {
+                    size++;
+                    it.next();
+                }
+                return size;
+            }
+
+            public Iterator<K> iterator() {
+                TreeMap.Entry<K,V> startNode = subMap.firstEntry();
+                if (subMap.hasEnd) {
+                    Comparator<? super K> cmp = subMap.comparator();
+                    if (cmp == null) {
+                        return new ComparableBoundedKeyIterator<K,V>(subMap.backingMap, startNode, (Comparable<K>) subMap.endKey);
+                    } else {
+                        return new ComparatorBoundedKeyIterator<K,V>(subMap.backingMap, startNode, subMap.endKey);
+                    }
+                } else {
+                    return new UnboundedKeyIterator<K,V>(subMap.backingMap, startNode);
+                }
+            }
+        }
+
+        static class SubMapValuesCollection<K,V> extends AbstractCollection<V> {
+            SubMap<K,V> subMap;
+
+            public SubMapValuesCollection(SubMap<K,V> subMap) {
+                this.subMap = subMap;
+            }
+
+            public boolean isEmpty() {
+                return subMap.isEmpty();
+            }
+
+            public Iterator<V> iterator() {
+                TreeMap.Entry<K,V> startNode = subMap.firstEntry();
+                if (subMap.hasEnd) {
+                    Comparator<? super K> cmp = subMap.comparator();
+                    if (cmp == null) {
+                        return new ComparableBoundedValueIterator<K,V>(subMap.backingMap, startNode, (Comparable<K>) subMap.endKey);
+                    } else {
+                        return new ComparatorBoundedValueIterator<K,V>(subMap.backingMap, startNode, subMap.endKey);
+                    }
+                } else {
+                    return new UnboundedValueIterator<K,V>(subMap.backingMap, startNode);
+                }
+            }
+
+            public int size() {
+                int cnt = 0;
+                for (Iterator<V> it = iterator(); it.hasNext();) {
+                    it.next();
+                    cnt++;
+                }
+                return cnt;
+            }
+        }
 
 	/**
 	 * Constructs a new empty instance of TreeMap.
@@ -607,6 +744,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
     public Object clone() {
 		try {
 			TreeMap<K, V> clone = (TreeMap<K, V>) super.clone();
+			clone.entrySet = null;
 			if (root != null) {
                 clone.root = root.clone(null);
             }
@@ -686,37 +824,36 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 	 */
 	@Override
     public Set<Map.Entry<K, V>> entrySet() {
-		return new AbstractSet<Map.Entry<K, V>>() {
-			@Override
-            public int size() {
-				return size;
-			}
+        if (entrySet == null) {
+            entrySet = new AbstractSet<Map.Entry<K, V>>() {
+                 @Override
+                public int size() {
+                    return size;
+                }
 
-			@Override
-            public void clear() {
-				TreeMap.this.clear();
-			}
+                @Override
+                public void clear() {
+                    TreeMap.this.clear();
+                }
 
-			@Override
-            public boolean contains(Object object) {
-				if (object instanceof Map.Entry) {
-					Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;
-					Object v1 = get(entry.getKey()), v2 = entry.getValue();
-					return v1 == null ? v2 == null : v1.equals(v2);
-				}
-				return false;
-			}
+                @Override
+                public boolean contains(Object object) {
+                    if (object instanceof Map.Entry) {
+                        Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
+                        Object v1 = get(entry.getKey()), v2 = entry.getValue();
+                        return v1 == null ? v2 == null : v1.equals(v2);
+                    }
+                    return false;
+                }
 
-			@Override
-            public Iterator<Map.Entry<K, V>> iterator() {
-				return new TreeMapIterator<Map.Entry<K, V>, K, V>(TreeMap.this, new MapEntry.Type<Map.Entry<K, V>, K, V>() {
-					public Map.Entry<K, V> get(MapEntry<K, V> entry) {
-						return entry;
-					}
-				});
-			}
-		};
-	}
+                @Override
+                public Iterator<Map.Entry<K, V>> iterator() {
+                    return new UnboundedEntryIterator<K, V>(TreeMap.this);
+                }
+            };
+        }
+        return entrySet;
+    }
 
 	@SuppressWarnings("unchecked")
     private Entry<K, V> find(Object keyObj) {
@@ -948,12 +1085,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 
 				@Override
                 public Iterator<K> iterator() {
-					return new TreeMapIterator<K, K, V>(TreeMap.this,
-							new MapEntry.Type<K, K, V>() {
-								public K get(MapEntry<K, V> entry) {
-									return entry.key;
-								}
-							});
+                    return new UnboundedKeyIterator<K,V> (TreeMap.this);
 				}
 			};
 		}
@@ -1279,12 +1411,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 
 				@Override
                 public Iterator<V> iterator() {
-					return new TreeMapIterator<V, K, V>(TreeMap.this,
-							new MapEntry.Type<V, K, V>() {
-								public V get(MapEntry<K, V> entry) {
-									return entry.value;
-								}
-							});
+                    return new UnboundedValueIterator<K,V> (TreeMap.this);
 				}
 			};
 		}
