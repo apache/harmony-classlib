@@ -25,10 +25,14 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.CharBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
@@ -52,23 +56,41 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
  */
 public final class Scanner implements Iterator<String> {
 
-    // Default delimiting pattern
-    private final static Pattern DEFAULT_DELIMITER = Pattern
+    //  Default delimiting pattern
+    private static final Pattern DEFAULT_DELIMITER = Pattern
             .compile("\\p{javaWhitespace}+"); //$NON-NLS-1$
 
-    //Default radix
-    private final static int DEFAULT_RADIX = 10;
+    private static final int DIPLOID = 2;
 
-    //The input source of scanner
+    // Default radix
+    private static final int DEFAULT_RADIX = 10;
+
+    private static final int READ_TRUNK_SIZE = 1024;
+
+    // The input source of scanner
     private Readable input;
 
+    private CharBuffer buffer;
+
     private Pattern delimiter = DEFAULT_DELIMITER;
+
+    private Matcher matcher;
 
     private int radix = DEFAULT_RADIX;
 
     private Locale locale = Locale.getDefault();
 
-    private boolean closed = false; // used by find and nextXXX operation
+    // The position where find begins
+    private int findStartIndex = 0;
+
+    // The last find start position
+    private int preStartIndex = findStartIndex;
+
+    // The length of the buffer
+    private int bufferLength = 0;
+
+    // Used by find and nextXXX operation
+    private boolean closed = false;
 
     private IOException lastIOException;
 
@@ -386,9 +408,40 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns the next token which is prefixed and postfixed by input that
+     * matches the delimiter pattern if this token matches the specified
+     * pattern. This method may be blocked when it is waiting for input to scan,
+     * even if a previous invocation of hasNext(Pattern) returned true. If this
+     * match successes, the scanner advances past the nest token that matched
+     * the pattern.
+     * 
+     * @param pattern
+     *            the specified pattern to scan
+     * @return the next token
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     */
     public String next(Pattern pattern) {
-        throw new NotYetImplementedException();
+        checkClosed();
+        if (isInputExhausted()) {
+            throw new NoSuchElementException();
+        }
+        saveCurrentStatus();
+        if (!setTokenRegion()) {
+            recoverPreviousStatus();
+            // if setting match region fails
+            throw new NoSuchElementException();
+        }
+        matcher.usePattern(pattern);
+        if (matcher.matches()) {
+            return matcher.group(0);
+        } else {
+            recoverPreviousStatus();
+            throw new InputMismatchException();
+        }
     }
 
     //TODO: To implement this feature
@@ -530,7 +583,7 @@ public final class Scanner implements Iterator<String> {
      *              this scanner
      */
     public Scanner useLocale(Locale locale) {
-        if( null == locale )
+        if (null == locale)
             throw new NullPointerException();
         this.locale = locale;
         return this;
@@ -557,5 +610,208 @@ public final class Scanner implements Iterator<String> {
     //TODO: To implement this feature
     public void remove() {
         throw new UnsupportedOperationException();
+    }
+
+    /*
+     * Check the scanner's state, if it is closed, IllegalStateException will be
+     * thrown.
+     */
+    private void checkClosed() {
+        if (closed) {
+            throw new IllegalStateException();
+        }
+    }
+
+    /*
+     * Check input resource of this scanner, if it has been exhausted, return
+     * true.
+     */
+    private boolean isInputExhausted() {
+        if (findStartIndex == bufferLength) {
+            if (readMore()) {
+                resetMatcher();
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Change the matcher's string after reading input
+     */
+    private void resetMatcher() {
+        if (null == matcher) {
+            matcher = delimiter.matcher(buffer);
+        } else {
+            matcher.reset(buffer);
+        }
+        matcher.region(findStartIndex, bufferLength);
+    }
+
+    /*
+     * save the matcher's last find position
+     */
+    private void saveCurrentStatus() {
+        preStartIndex = findStartIndex;
+    }
+
+    /*
+     * save the matcher's last find position
+     */
+    private void recoverPreviousStatus() {
+        findStartIndex = preStartIndex;
+    }
+
+    /*
+     * Find the prefixed delimiter and posefixed delimiter in the input resource
+     * and set the start index and end index of Matcher region. If postfixed
+     * delimiter does not exist, the end index is set to be end of input.
+     */
+    private boolean setTokenRegion() {
+        // The position where token begins
+        int tokenStartIndex = 0;
+        // The position where token ends
+        int tokenEndIndex = 0;
+        // Use delimiter pattern
+        matcher.usePattern(delimiter);
+        matcher.region(findStartIndex, bufferLength);
+
+        tokenStartIndex = findPreDelimiter();
+        if (setHeadTokenRegion(tokenStartIndex)) {
+            return true;
+        }
+        tokenEndIndex = findPostDelimiter();
+        // If the second delimiter is not found
+        if (-1 == tokenEndIndex) {
+            // Just first Delimiter Exists
+            if (findStartIndex == bufferLength) {
+                return false;
+            }
+            tokenEndIndex = bufferLength;
+            findStartIndex = bufferLength;
+        }
+
+        matcher.region(tokenStartIndex, tokenEndIndex);
+        return true;
+    }
+
+    /*
+     * Find prefixed delimiter
+     */
+    private int findPreDelimiter() {
+        int tokenStartIndex;
+        boolean findComplete = false;
+        while (!findComplete) {
+            if (findComplete = matcher.find()) {
+                // If just delimiter remains
+                if (matcher.start() == findStartIndex
+                        && matcher.end() == bufferLength) {
+                    // If more input resource exists
+                    if (readMore()) {
+                        resetMatcher();
+                        findComplete = false;
+                    }
+                }
+            } else {
+                if (readMore()) {
+                    resetMatcher();
+                } else {
+                    return -1;
+                }
+            }
+        }
+        tokenStartIndex = matcher.end();
+        findStartIndex = matcher.end();
+        return tokenStartIndex;
+    }
+
+    /*
+     * Handle some special case
+     */
+    private boolean setHeadTokenRegion(int findIndex) {
+        int tokenStartIndex;
+        int tokenEndIndex;
+        boolean setSuccess = false;
+        // If no delimiter exists, but something exites in this scanner
+        if (-1 == findIndex && preStartIndex != bufferLength) {
+            tokenStartIndex = preStartIndex;
+            tokenEndIndex = bufferLength;
+            findStartIndex = bufferLength;
+            matcher.region(tokenStartIndex, tokenEndIndex);
+            setSuccess = true;
+        }
+        // If the first delimiter of scanner is not at the find start position
+        if (-1 != findIndex && preStartIndex != matcher.start()) {
+            tokenStartIndex = preStartIndex;
+            tokenEndIndex = matcher.start();
+            findStartIndex = matcher.start();
+            // set match region and return
+            matcher.region(tokenStartIndex, tokenEndIndex);
+            setSuccess = true;
+        }
+        return setSuccess;
+    }
+
+    /*
+     * Find postfixed delimiter
+     */
+    private int findPostDelimiter() {
+        int tokenEndIndex = 0;
+        boolean findComplete = false;
+        while (!findComplete) {
+            if (findComplete = matcher.find()) {
+                tokenEndIndex = matcher.start();
+                findStartIndex = matcher.start();
+            } else {
+                if (readMore()) {
+                    resetMatcher();
+                } else {
+                    return -1;
+                }
+            }
+        }
+        return tokenEndIndex;
+    }
+
+    /*
+     * Read more data from underlying Readable. Return false if nothing is
+     * available.
+     */
+    private boolean readMore() {
+        int oldBufferSize = (buffer == null ? 0 : buffer.limit());
+        int oldBufferCapacity = (buffer == null ? 0 : buffer.capacity());
+        // Increase capacity if empty space is not enough
+        if (oldBufferSize >= oldBufferCapacity / 2) {
+            expandBuffer(oldBufferSize, oldBufferCapacity);
+        }
+
+        // Read input resource
+        int readCount = 0;
+        try {
+            buffer.limit(buffer.capacity());
+            buffer.position(oldBufferSize);
+            // TODO Writes test cases to test whether this == 0 is correct.
+            while ((readCount = input.read(buffer)) == 0) {
+                // nothing to do here
+            }
+        } catch (IOException e) {
+            lastIOException = e;
+        }
+        buffer.flip();
+        buffer.position(bufferLength);
+        bufferLength = buffer.length() + bufferLength;
+        buffer.position(0);
+        return readCount != -1;
+    }
+
+    // Expand the size of internal buffer.
+    private void expandBuffer(int oldBufferSize, int oldBufferCapacity) {
+        int newCapacity = oldBufferCapacity * DIPLOID + READ_TRUNK_SIZE;
+        char[] newBuffer = new char[newCapacity];
+        if (buffer != null) {
+            System.arraycopy(buffer.array(), 0, newBuffer, 0, oldBufferSize);
+        }
+        buffer = CharBuffer.wrap(newBuffer, 0, newCapacity);
     }
 }

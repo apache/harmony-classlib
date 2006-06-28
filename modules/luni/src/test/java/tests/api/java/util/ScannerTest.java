@@ -21,13 +21,21 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.StringReader;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.util.InputMismatchException;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -36,6 +44,16 @@ import junit.framework.TestCase;
 public class ScannerTest extends TestCase {
 
     Scanner s;
+
+    ServerSocket server;
+
+    SocketAddress address;
+
+    SocketChannel client;
+
+    Socket serverSocket;
+
+    OutputStream os;
 
     private static class MockCloseable implements Closeable, Readable {
 
@@ -101,7 +119,7 @@ public class ScannerTest extends TestCase {
         } catch (FileNotFoundException e) {
             // expected
         }
-        
+
         try {
             s = new Scanner(tmpFile, null);
             fail("should throw FileNotFoundException");
@@ -120,7 +138,7 @@ public class ScannerTest extends TestCase {
         //fail on RI. File is opened but not closed when exception is thrown on
         // RI.
         assertTrue(tmpFile.delete());
-        
+
         // Scanner(File = null, Charset = null)
         try {
             s = new Scanner((File) null, null);
@@ -351,7 +369,7 @@ public class ScannerTest extends TestCase {
         assertNotNull(s.ioException());
         assertTrue(s.ioException() instanceof IOException);
     }
-    
+
     /**
      * @tests java.util.Scanner#delimiter()
      */
@@ -368,7 +386,7 @@ public class ScannerTest extends TestCase {
         s = new Scanner("test");
         s.useDelimiter(Pattern.compile("\\w+"));
         assertEquals("\\w+", s.delimiter().toString());
-        
+
         s = new Scanner("test");
         s.useDelimiter((Pattern) null);
         assertNull(s.delimiter());
@@ -385,7 +403,7 @@ public class ScannerTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
-        
+
         s = new Scanner("test");
         s.useDelimiter("\\w+");
         assertEquals("\\w+", s.delimiter().toString());
@@ -442,5 +460,92 @@ public class ScannerTest extends TestCase {
         }
         s.useRadix(11);
         assertEquals(11, s.radix());
+    }
+
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#next(Pattern)
+     */
+    public void test_nextLPattern() throws IOException {
+        Pattern pattern;
+        s = new Scanner("aab*2*").useDelimiter("\\*");
+        pattern = Pattern.compile("a*b");
+        assertEquals("aab", s.next(pattern));
+        try {
+            s.next(pattern);
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("word ? ");
+        pattern = Pattern.compile("\\w+");
+        assertEquals("word", s.next(pattern));
+        try {
+            s.next(pattern);
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("word1 word2  ");
+        pattern = Pattern.compile("\\w+");
+        assertEquals("word1", s.next(pattern));
+        assertEquals("word2", s.next(pattern));
+        // test boundary case
+        try {
+            s.next(pattern);
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // test socket inputStream
+
+        os.write("aab 2".getBytes());
+        serverSocket.close();
+
+        s = new Scanner(client);
+        pattern = Pattern.compile("a*b");
+        assertEquals("aab", s.next(pattern));
+        try {
+            s.next(pattern);
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+    }
+
+    public void setUp() throws Exception {
+        super.setUp();
+
+        server = new ServerSocket(0);
+        address = new InetSocketAddress("localhost", server.getLocalPort());
+
+        client = SocketChannel.open();
+        client.connect(address);
+        serverSocket = server.accept();
+
+        os = serverSocket.getOutputStream();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+
+        try {
+            serverSocket.close();
+        } catch (Exception e) {
+
+        }
+        try {
+            client.close();
+        } catch (Exception e) {
+            // do nothing
+        }
+        try {
+            server.close();
+        } catch (Exception e) {
+            // do nothing
+        }
     }
 }
