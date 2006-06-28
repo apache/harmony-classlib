@@ -22,21 +22,24 @@ import java.beans.ExceptionListener;
 import java.beans.PersistenceDelegate;
 import java.beans.Statement;
 import java.beans.XMLEncoder;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import junit.framework.TestCase;
+//import junit.framework.TestSuite;
 import org.apache.harmony.beans.tests.java.beans.EncoderTest.SampleBean;
 import org.apache.harmony.beans.tests.java.beans.mock.MockBean4Codec;
 
 import org.apache.harmony.beans.tests.java.beans.auxiliary.StandardBean;
 import org.apache.harmony.beans.tests.java.beans.auxiliary.AType;
+import org.apache.harmony.beans.tests.java.beans.auxiliary.TestEventHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Tests for XMLEncoder
@@ -138,6 +141,14 @@ public class XMLEncoderTest extends TestCase {
 		}
 	}
 
+    public XMLEncoderTest() {
+        super();
+    }
+    
+    public XMLEncoderTest(String s) {
+        super(s);
+    }
+    
 	public static String ident() {
 		Exception ex = new Exception();
 		int level = ex.getStackTrace().length;
@@ -180,15 +191,15 @@ public class XMLEncoderTest extends TestCase {
 		// coverd by testWriteStatement
 	}
 
-	public void testWriteObject_Null() throws IOException {
+	public void testWriteObject_Null() throws Exception {
 		assertCodedXML(null, "/xml/null.xml");
 	}
 
-	public void testWriteObject_Integer() throws IOException {
+	public void testWriteObject_Integer() throws Exception {
 		assertCodedXML(new Integer(3), "/xml/int.xml");
 	}
 
-	public void testWriteObject_StringCodec() throws IOException {
+	public void testWriteObject_StringCodec() throws Exception {
 		SampleBean b = new SampleBean();
 		b.setMyid("<Li Yang> & \"liyang'");
 		SampleBean c = new SampleBean();
@@ -197,22 +208,22 @@ public class XMLEncoderTest extends TestCase {
 		assertCodedXML(b, "/xml/SampleBean_StringCodec.xml");
 	}
 
-	public void testWriteObject_IntArray() throws IOException {
+	public void testWriteObject_IntArray() throws Exception {
 		assertCodedXML(new int[] { 1, 2, 3 }, "/xml/IntArray.xml");
 	}
 
-	public void testWriteObject_PropertyDependency() throws IOException {
+	public void testWriteObject_PropertyDependency() throws Exception {
 		DependencyBean b = new DependencyBean();
 		b.getInts()[0] = 888;
 		b.setRef(b.getInts());
 		assertCodedXML(b, "/xml/DependencyBean.xml");
 	}
 
-	public void testWriteObject_NoChange() throws IOException {
+	public void testWriteObject_NoChange() throws Exception {
 		assertCodedXML(new MockBean4Codec(), "/xml/MockBean4Codec_NoChange.xml");
 	}
 
-	public void testWriteObject_BornFriendChange() throws IOException {
+	public void testWriteObject_BornFriendChange() throws Exception {
 		MockBean4Codec b = new MockBean4Codec();
 		b.getBornFriend().getZarr()[0] = 888;
 		b.setNill(b.getBornFriend());
@@ -220,17 +231,17 @@ public class XMLEncoderTest extends TestCase {
 		assertCodedXML(b, "/xml/MockBean4Codec_BornFriendChange.xml");
 	}
 
-	public void testWriteObject_ManyChanges() throws IOException {
+	public void testWriteObject_ManyChanges() throws Exception {
 		assertCodedXML(MockBean4Codec.getInstanceOfManyChanges(),
 				"/xml/MockBean4Codec_ManyChanges.xml");
 	}
 
-	public void testWriteObject_ManyChanges_2() throws IOException {
+	public void testWriteObject_ManyChanges_2() throws Exception {
 		assertCodedXML(MockBean4Codec.getInstanceOfManyChanges2(),
 				"/xml/MockBean4Codec_ManyChanges_2.xml");
 	}
 
-	public void testWriteObject_SetOwner() throws IOException {
+	public void testWriteObject_SetOwner() throws Exception {
 		ByteArrayOutputStream temp = new ByteArrayOutputStream();
 		XMLEncoder enc = new XMLEncoder(temp);
 
@@ -243,7 +254,7 @@ public class XMLEncoderTest extends TestCase {
 
 	}
 
-	public void testWriteObject_SetOwnerWithWriteStatement() throws IOException {
+	public void testWriteObject_SetOwnerWithWriteStatement() throws Exception {
 		ByteArrayOutputStream temp = new ByteArrayOutputStream();
 		XMLEncoder enc = new XMLEncoder(temp);
 
@@ -259,7 +270,7 @@ public class XMLEncoderTest extends TestCase {
 
 	}
 
-	public void testWriteObject_StaticField() throws IOException {
+	public void testWriteObject_StaticField() throws Exception {
 		ByteArrayOutputStream temp = new ByteArrayOutputStream();
 		XMLEncoder enc = new XMLEncoder(temp);
 
@@ -337,7 +348,7 @@ public class XMLEncoderTest extends TestCase {
 		assertNull(enc.getOwner());
 	}
 
-	private void assertCodedXML(Object obj, String xmlFile) throws IOException {
+	private void assertCodedXML(Object obj, String xmlFile) throws Exception {
 		ByteArrayOutputStream temp = new ByteArrayOutputStream();
 		XMLEncoder enc = new XMLEncoder(temp);
 
@@ -345,7 +356,18 @@ public class XMLEncoderTest extends TestCase {
 	}
 
 	private void assertCodedXML(Object obj, String xmlFile,
-			ByteArrayOutputStream temp, XMLEncoder enc) throws IOException {
+			ByteArrayOutputStream temp, XMLEncoder enc) throws Exception {
+
+        InputStream refIn;
+	    InputStreamReader xml;
+        InputStreamReader refXml;
+
+        XMLReader xmlReader;
+        XMLReader refXmlReader;
+        TestEventHandler handler = new TestEventHandler();
+        TestEventHandler refHandler = new TestEventHandler();
+        String saxParserClassName = System.getProperty("org.xml.sax.driver");
+        
 		if (enc == null || temp == null) {
 			temp = new ByteArrayOutputStream();
 			enc = new XMLEncoder(temp);
@@ -354,63 +376,30 @@ public class XMLEncoderTest extends TestCase {
 		enc.close();
 		byte bytes[] = temp.toByteArray();
 
-		InputStream refIn = XMLEncoderTest.class.getResourceAsStream(xmlFile);
+		refIn = XMLEncoderTest.class.getResourceAsStream(xmlFile);
 		if (refIn == null) {
-			FileOutputStream file = new FileOutputStream(xmlFile);
-			file.write(bytes);
-			file.close();
 			throw new Error("resource " + xmlFile + " not exist in "
-					+ XMLEncoderTest.class.getPackage()
-					+ ", write in current dir!");
+					+ XMLEncoderTest.class.getPackage());
 		}
-		BufferedReader xml = new BufferedReader(new InputStreamReader(
-				new ByteArrayInputStream(bytes), "UTF-8"));
-		BufferedReader refXml = new BufferedReader(new InputStreamReader(refIn,
-				"UTF-8"));
+		xml = new InputStreamReader(new ByteArrayInputStream(bytes), "UTF-8");
+		refXml = new InputStreamReader(refIn, "UTF-8");
 
-		String line = null, refLine = null;
-		int lineNum = 0;
-		while (true) {
-			lineNum++;
-			line = xml.readLine();
-			refLine = refXml.readLine();
-			if (line == null && refLine == null) {
-				break;
-			}
-			if (line == null) {
-				throw new RuntimeException("line " + lineNum
-						+ ", xml ends, but ref line is: " + refLine);
-			}
-			if (refLine == null) {
-				throw new RuntimeException("line " + lineNum
-						+ ", ref xml ends, but line is: " + line);
-			}
-			if (lineNum == 2) {
-				String trim = line.trim();
-				assertTrue(trim.startsWith("<java version=\""));
-				assertTrue(trim.endsWith("\" class=\"java.beans.XMLDecoder\">"));
-			} else {
-				String trim = line.trim();
-				String refTrim = refLine.trim();
-				if (trim.endsWith(" />") && refTrim.endsWith("/>")
-						&& trim.length() == refTrim.length() + 1) {
-					trim = trim.substring(0, trim.length() - 3);
-					refTrim = refTrim.substring(0, refTrim.length() - 2);
-				}
-				if (!trim.equals(refTrim)) {
-					System.out.println("---- Bad xml ----");
-					BufferedReader reader = new BufferedReader(
-							new InputStreamReader(new ByteArrayInputStream(
-									bytes), "UTF-8"));
-					String l = null;
-					while ((l = reader.readLine()) != null) {
-						System.out.println(l);
-					}
-					throw new RuntimeException("line " + lineNum
-							+ ", expected: " + refLine + ", but was: " + line);
-				}
-			}
-		}
+        if (saxParserClassName == null) {
+            saxParserClassName = "org.apache.xerces.parsers.SAXParser";
+        }
+        
+        xmlReader = XMLReaderFactory.createXMLReader(saxParserClassName);
+        xmlReader.setContentHandler(handler);
+        xmlReader.setErrorHandler(handler);
+        xmlReader.parse(new InputSource(xml));
+        
+        refXmlReader = XMLReaderFactory.createXMLReader(saxParserClassName);
+        refXmlReader.setContentHandler(refHandler);
+        refXmlReader.setErrorHandler(refHandler);
+        refXmlReader.parse(new InputSource(refXml));
+
+        assertEquals("Generated XML differs from the sample,", refHandler.root,
+                handler.root);
 	}
 
     
