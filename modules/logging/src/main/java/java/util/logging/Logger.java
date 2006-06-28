@@ -20,8 +20,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.Vector;
 import java.util.MissingResourceException;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Loggers are used to log records to certain outputs, including file, console,
@@ -84,6 +85,8 @@ public class Logger {
     // message of "throwing" series methods
     private final static String MSG_THROWING = "THROW"; //$NON-NLS-1$
 
+    private final static int OFF_VALUE = Level.OFF.intValue();
+
     /*
      * --------------------------------------------------------------------
      * Class variables
@@ -108,7 +111,10 @@ public class Logger {
     private Logger parent;
 
     // the logging level of this logger
-    private Level level;
+    private volatile Level levelObjVal;
+
+    // the logging level as int of this logger
+    private volatile int levelIntVal;
 
     // the filter
     private Filter filter;
@@ -120,7 +126,7 @@ public class Logger {
     private ResourceBundle resBundle;
 
     // the handlers attached to this logger
-    private Vector<Handler> handlers;
+    private List<Handler> handlers;
 
     /*
      * flag indicating whether to notify parent's handlers on receiving a log
@@ -130,6 +136,8 @@ public class Logger {
 
     // flag indicating whether this logger is named or anonymous
     private boolean isNamed;
+
+    private List<Logger> childs;
 
     /*
      * -------------------------------------------------------------------
@@ -160,12 +168,46 @@ public class Logger {
         }
         this.name = name;
         this.parent = null;
-        this.level = null;
         this.filter = null;
-        this.handlers = new Vector<Handler>();
+        this.handlers = new ArrayList<Handler>();
+        this.childs = new ArrayList<Logger>();
         this.notifyParentHandlers = true;
         // any logger is not anonymous by default
         this.isNamed = true;
+
+        //-- 'null' means that level will be inherited from parent (see getLevel)
+        //-- Level.INFO is default level if we don't set it. It will be
+        //-- changed to parent level or to configLevel after adding to the
+        //-- family tree. As of this, actually, setting to Level.INFO is
+        //-- not needed here.
+        this.levelObjVal = null;
+        this.levelIntVal = Level.INFO.intValue();
+    }
+
+    //-- should be called under the lm lock
+    private void setLevelImpl(Level newLevel) {
+        // update levels for the whole hierarchy
+        int oldVal = levelIntVal;
+        levelObjVal = newLevel;
+        if (null == newLevel) {
+            levelIntVal = null != parent
+                    ? parent.levelIntVal
+                    : Level.INFO.intValue();
+        } else {
+            levelIntVal = newLevel.intValue();
+        }
+        if (oldVal != levelIntVal) {
+            forceChildsToInherit();
+        }
+    }
+
+    //-- should be called under the lm lock
+    private void forceChildsToInherit() {
+        for (Logger child : childs) {
+            if (null == child.levelObjVal) { // should inherit
+                child.setLevelImpl(null);
+            }
+        }
     }
 
     /*
@@ -324,16 +366,6 @@ public class Logger {
             // If no existing logger with the same name, create a new one
             if (null == l) {
                 l = new Logger(name, resourceBundleName);
-                String configedLevel = man.getProperty(name + ".level"); //$NON-NLS-1$
-                if (null != configedLevel) {
-                    try {
-                        l.setLevel(Level.parse(configedLevel));
-                    } catch (IllegalArgumentException e) {
-                        // Print invalid level setting to the screen
-                        System.err.print("Invalid level name: " + configedLevel //$NON-NLS-1$
-                                + "."); //$NON-NLS-1$
-                    }
-                }
                 man.addLogger(l);
             } else if (hasResourceName) {
                 updateResourceBundle(l, resourceBundleName);
@@ -398,7 +430,7 @@ public class Logger {
      * @return an array of all the hanlders associated with this logger
      */
     public synchronized Handler[] getHandlers() {
-        return this.handlers.toArray(new Handler[0]);
+        return handlers.toArray(new Handler[handlers.size()]);
     }
 
     /**
@@ -453,8 +485,8 @@ public class Logger {
      * 
      * @return the logging level of this logger
      */
-    public synchronized Level getLevel() {
-        return this.level;
+    public Level getLevel() {
+        return levelObjVal;
     }
 
     /**
@@ -467,12 +499,16 @@ public class Logger {
      *             If a security manager determines that the caller does not
      *             have the required permission.
      */
-    public synchronized void setLevel(Level newLevel) {
+    public void setLevel(Level newLevel) {
         // anonymouse loggers can always set the level
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
-        this.level = newLevel;
+        LogManager lm = LogManager.getLogManager();
+
+        synchronized (lm) {
+            setLevelImpl(newLevel);
+        }
     }
 
     /**
@@ -523,6 +559,12 @@ public class Logger {
      */
     synchronized void internalSetParent(Logger newParent) {
         this.parent = newParent;
+        //-- update level after setting a parent.
+        //-- if level == null we should inherit the parent's level
+        if (null == levelObjVal) {
+            setLevelImpl(levelObjVal);
+        }
+        newParent.addChild(this);
     }
 
     /**
@@ -541,8 +583,17 @@ public class Logger {
         }
         // even anonymous loggers are checked
         LogManager.getLogManager().checkAccess();
-        this.parent = parent;
+        internalSetParent(parent);
     }
+
+    final void addChild(Logger logger) {
+        childs.add(logger);
+    }
+
+    final void removeChild(Logger child) {
+        childs.remove(child);
+    }
+
 
     /**
      * Gets the name of this logger.
@@ -580,32 +631,13 @@ public class Logger {
      * directly. This behaviour is important because subclass may override 
      * isLoggable() method, so that affect the result of log methods.
      */
-    private synchronized boolean internalIsLoggable(Level l) {
-        Level effectiveLevel = this.level;
-
-        // try to inherit parent's level if this logger's level is not specified
-        if (null == effectiveLevel) {
-            Logger anyParent = this.parent;
-            while (null != anyParent) {
-                effectiveLevel = anyParent.level;
-                if (null != effectiveLevel) {
-                    break;
-                }
-                anyParent = anyParent.parent;
-            }
-        }
-        // default to Level.INFO if no level is specified or inherited
-        if (null == effectiveLevel) {
-            effectiveLevel = Level.INFO;
-        }
-
-        if (effectiveLevel.intValue() == Level.OFF.intValue()) {
+    private boolean internalIsLoggable(Level l) {
+        int effectiveLevel = levelIntVal;
+        if (effectiveLevel == OFF_VALUE) {
             // always return false if the effective level is off
             return false;
-        } else if (l.intValue() >= effectiveLevel.intValue()) {
-            return true;
         } else {
-            return false;
+            return l.intValue() >= effectiveLevel;
         }
     }
 

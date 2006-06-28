@@ -281,7 +281,25 @@ public class LogManager {
         if (name.length() == 0) {
             root = logger;
         }
+
+        setLoggerLevel(logger, name, false);
         return true;
+    }
+
+    private void setLoggerLevel(Logger logger, String loggerName,
+                                boolean inherit) {
+        String configedLevel = getProperty(loggerName + ".level");
+        if (null != configedLevel) {
+            try {
+                logger.setLevel(Level.parse(configedLevel));
+            } catch (IllegalArgumentException e) {
+                // Print invalid level setting to the screen
+                System.err.print("Invalid level name: " + configedLevel
+                        + ".");
+            }
+        } else if (inherit) {
+            logger.setLevel(null);
+        }
     }
 
     private void addToFamilyTree(Logger logger, String name) {
@@ -309,6 +327,10 @@ public class LogManager {
                     && (name.length() == 0 || child.getName().startsWith(
                             name + '.'))) {
                 child.setParent(logger);
+                if (null != oldParent) {
+                    //-- remove from old parent childs as the parent has been changed
+                    oldParent.removeChild(child);
+                }
             }
         }
     }
@@ -469,13 +491,7 @@ public class LogManager {
             if (null == l) {
                 continue;
             }
-            // if find relevant registered logger, set level for it
-            String levelName = props.getProperty(loggerLevel);
-            Level level = Level.parse(levelName);
-            if (null == level) {
-                continue;
-            }
-            l.setLevel(level);
+            setLoggerLevel(l, loggerName, true);
         }
     }
 
@@ -542,29 +558,27 @@ public class LogManager {
      *             if security manager exists and it determines that caller does
      *             not have the required permissions to perform this action
      */
-    public void reset() {
+    public synchronized void reset() {
         checkAccess();
-        synchronized (this) {
-            props.clear();
-            Iterator it = loggers.values().iterator();
-            while (it.hasNext()) {
-                Logger l = (Logger) it.next();
-                l.setLevel(null);
-                Handler[] handlers = l.getHandlers();
-                for (Handler element : handlers) {
-                    l.removeHandler(element);
-                    // close all handlers, when unknown exceptions happen,
-                    // ignore them and go on
-                    try {
-                        element.close();
-                    } catch (Exception e) {
-                        // Ignored.
-                    }
+        props.clear();
+        Iterator it = loggers.values().iterator();
+        while (it.hasNext()) {
+            Logger l = (Logger) it.next();
+            l.setLevel(null);
+            Handler[] handlers = l.getHandlers();
+            for (Handler element : handlers) {
+                l.removeHandler(element);
+                // close all handlers, when unknown exceptions happen,
+                // ignore them and go on
+                try {
+                    element.close();
+                } catch (Exception e) {
+                    // Ignored.
                 }
             }
-            if (null != root) {
-                root.setLevel(Level.INFO);
-            }
+        }
+        if (null != root) {
+            root.setLevel(Level.INFO);
         }
     }
 
