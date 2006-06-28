@@ -769,7 +769,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * @see java.net.Socket#getKeepAlive()
          */
         public boolean getKeepAlive() throws SocketException {
-            checkClosedAndCreate(true);
+            checkOpen();
             return ((Boolean) socketImpl.getOption(SocketOptions.SO_KEEPALIVE))
                     .booleanValue();
         }
@@ -779,7 +779,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * @see java.net.Socket#getOOBInline()
          */
         public boolean getOOBInline() throws SocketException {
-            checkClosedAndCreate(true);
+            checkOpen();
             return ((Boolean) socketImpl.getOption(SocketOptions.SO_OOBINLINE))
                     .booleanValue();
         }
@@ -789,7 +789,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * @see java.net.Socket#getSoLinger()
          */
         public int getSoLinger() throws SocketException {
-            checkClosedAndCreate(true);
+            checkOpen();
             return ((Integer) socketImpl.getOption(SocketOptions.SO_LINGER))
                     .intValue();
         }
@@ -799,7 +799,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * @see java.net.Socket#getTcpNoDelay()
          */
         public boolean getTcpNoDelay() throws SocketException {
-            checkClosedAndCreate(true);
+            checkOpen();
             return ((Boolean) socketImpl.getOption(SocketOptions.TCP_NODELAY))
                     .booleanValue();
         }
@@ -822,18 +822,12 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
 
         /*
-         * checl if channel is close or create a new one.
+         * Checks whether the channel is open
          */
-        private void checkClosedAndCreate(boolean create)
-                throws SocketException {
+        private void checkOpen() throws SocketException {
             if (isClosed()) {
                 throw new SocketException(Msg.getString(ERRCODE_CHANNEL_CLOSED));
             }
-            if (!create && !isConnected()) {
-                throw new SocketException(Msg
-                        .getString(ERRCODE_CHANNEL_NOT_CONNECTED));
-            }
-            // FIXME check if need cread fd
         }
 
         /*
