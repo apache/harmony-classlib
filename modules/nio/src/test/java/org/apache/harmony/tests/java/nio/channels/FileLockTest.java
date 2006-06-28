@@ -79,6 +79,13 @@ public class FileLockTest extends TestCase {
 		} catch (IllegalArgumentException ex) {
 			// expected
 		}
+        // Harmony-682 regression test
+        try {
+            new MockFileLock(readWriteChannel, Long.MAX_VALUE, 1, false);
+            fail("should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException ex) {
+            // expected
+        }
 	}
 
 	/**
