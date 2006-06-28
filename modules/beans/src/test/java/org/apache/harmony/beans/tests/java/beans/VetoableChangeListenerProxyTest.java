@@ -16,7 +16,6 @@
 package org.apache.harmony.beans.tests.java.beans;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeListenerProxy;

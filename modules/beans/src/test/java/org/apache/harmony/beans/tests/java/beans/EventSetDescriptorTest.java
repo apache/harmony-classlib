@@ -23,9 +23,11 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
-import org.apache.harmony.beans.tests.java.beans.mock.MockFakeListener;
-import org.apache.harmony.beans.tests.java.beans.auxiliary.OtherBean;
-import org.apache.harmony.beans.tests.java.beans.auxiliary.SampleListener;
+import org.apache.harmony.beans.tests.support.OtherBean;
+import org.apache.harmony.beans.tests.support.SampleListener;
+import org.apache.harmony.beans.tests.support.mock.MockFakeListener;
+import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeEvent;
+import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener;
 
 
 /**
@@ -88,13 +90,11 @@ public class EventSetDescriptorTest extends TestCase {
 		String listenerMethodName = eventSetName;
 		Class sourceClass = MockSourceClass.class;
 		Class listenerType = MockPropertyChangeListener.class;
-		EventSetDescriptor esd = null;
 		try {
-			esd = new EventSetDescriptor(sourceClass, "FFF", listenerType,
+			new EventSetDescriptor(sourceClass, "FFF", listenerType,
 					listenerMethodName);
 			fail("Should throw IntrospectionException.");
 		} catch (IntrospectionException e) {
-
 		}
 	}
 
@@ -108,7 +108,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Class sourceClass = null;
 		Class listenerType = MockPropertyChangeListener.class;
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodName);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
@@ -125,7 +125,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Class sourceClass = MockSourceClass.class;
 		Class listenerType = MockPropertyChangeListener.class;
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass, null,
+			new EventSetDescriptor(sourceClass, null,
 					listenerType, listenerMethodName);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
@@ -142,7 +142,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Class sourceClass = MockSourceClass.class;
 		Class listenerType = MockPropertyChangeListener.class;
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass, "",
+			new EventSetDescriptor(sourceClass, "",
 					listenerType, listenerMethodName);
 			fail("Should throw StringIndexOutOfBoundsException.");
 		} catch (StringIndexOutOfBoundsException e) {
@@ -169,7 +169,7 @@ public class EventSetDescriptorTest extends TestCase {
 		String eventSetName = "mockPropertyChange";
 		String listenerMethodName = eventSetName;
 		Class sourceClass = MockSourceClass.class;
-		Class listenerType = org.apache.harmony.beans.tests.java.beans.mock.MockPropertyChangeListener2.class;
+		Class listenerType = org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener2.class;
 		EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
 				eventSetName, listenerType, listenerMethodName);
 
@@ -203,7 +203,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Class sourceClass = MockSourceClass.class;
 		Class listenerType = null;
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodName);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
@@ -252,7 +252,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Class sourceClass = MockSourceClass.class;
 		Class listenerType = MockPropertyChangeListener.class;
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodName);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
@@ -269,7 +269,7 @@ public class EventSetDescriptorTest extends TestCase {
 		Class sourceClass = MockSourceClass.class;
 		Class listenerType = MockPropertyChangeListener.class;
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodName);
 			fail("Should throw IntrospectionException.");
 		} catch (IntrospectionException e) {
@@ -327,7 +327,7 @@ public class EventSetDescriptorTest extends TestCase {
 		String removeMethod = "removeMockPropertyChangeListener";
 
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodNames, addMethod,
 					removeMethod);
 			fail("Should throw NullPointerException.");
@@ -422,7 +422,7 @@ public class EventSetDescriptorTest extends TestCase {
 		String addMethod = "addMockPropertyChangeListener";
 		String removeMethod = "removeMockPropertyChangeListener";
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodNames, addMethod,
 					removeMethod);
 			fail("Should throw NullPointerException.");
@@ -443,7 +443,7 @@ public class EventSetDescriptorTest extends TestCase {
 		String addMethod = "addMockPropertyChangeListener";
 		String removeMethod = "removeMockPropertyChangeListener";
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodNames, addMethod,
 					removeMethod);
 			fail("Should throw NullPointerException.");
@@ -464,7 +464,7 @@ public class EventSetDescriptorTest extends TestCase {
 		String addMethod = "addMockPropertyChangeListener";
 		String removeMethod = "removeMockPropertyChangeListener";
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodNames, addMethod,
 					removeMethod);
 			fail("Should throw IntrospectionException.");
@@ -517,7 +517,7 @@ public class EventSetDescriptorTest extends TestCase {
 		String addMethod = "addMockPropertyChangeListener_Invalid";
 		String removeMethod = "removeMockPropertyChangeListener";
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodNames, addMethod,
 					removeMethod);
 			fail("Should throw IntrospectionException.");
@@ -556,7 +556,7 @@ public class EventSetDescriptorTest extends TestCase {
 		String addMethod = "removeMockPropertyChangeListener";
 		String removeMethod = "addMockPropertyChangeListener_Invalid";
 		try {
-			EventSetDescriptor esd = new EventSetDescriptor(sourceClass,
+			new EventSetDescriptor(sourceClass,
 					eventSetName, listenerType, listenerMethodNames, addMethod,
 					removeMethod);
 			fail("Should throw IntrospectionException.");
@@ -802,11 +802,6 @@ public class EventSetDescriptorTest extends TestCase {
 			throws IntrospectionException, NoSuchMethodException {
 		String eventSetName = "MockPropertyChange";
 		Class listenerType = MockPropertyChangeListener.class;
-		Method[] listenerMethods = new Method[] {
-				listenerType.getMethod("mockPropertyChange",
-						new Class[] { MockPropertyChangeEvent.class }),
-				listenerType.getMethod("mockPropertyChange2",
-						new Class[] { MockPropertyChangeEvent.class }), };
 		Class sourceClass = MockSourceClass.class;
 		Method addMethod = sourceClass.getMethod(
 				"addMockPropertyChangeListener", new Class[] { listenerType });
@@ -864,8 +859,6 @@ public class EventSetDescriptorTest extends TestCase {
 				listenerType.getMethod("mockPropertyChange2",
 						new Class[] { MockPropertyChangeEvent.class }), };
 		Class sourceClass = MockSourceClass.class;
-		Method addMethod = sourceClass.getMethod(
-				"addMockPropertyChangeListener", new Class[] { listenerType });
 		Method removeMethod = sourceClass.getMethod(
 				"removeMockPropertyChangeListener",
 				new Class[] { listenerType });
@@ -910,12 +903,7 @@ public class EventSetDescriptorTest extends TestCase {
 						new Class[] { MockPropertyChangeEvent.class }),
 				listenerType.getMethod("mockPropertyChange2",
 						new Class[] { MockPropertyChangeEvent.class }), };
-		Class sourceClass = MockSourceClass.class;
-		Method addMethod = sourceClass.getMethod(
-				"addMockPropertyChangeListener", new Class[] { listenerType });
-		Method removeMethod = sourceClass.getMethod(
-				"removeMockPropertyChangeListener",
-				new Class[] { listenerType });
+
 		EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
 				listenerType, listenerMethods, null, null);
 		assertNull(esd.getRemoveListenerMethod());
@@ -991,8 +979,6 @@ public class EventSetDescriptorTest extends TestCase {
 		Method removeMethod = sourceClass.getMethod(
 				"removeMockPropertyChangeListener",
 				new Class[] { listenerType });
-		Method getMethod = sourceClass.getMethod(
-				"getMockPropertyChangeListener", new Class[] { listenerType });
 
 		EventSetDescriptor esd = new EventSetDescriptor(eventSetName,
 				listenerType, listenerMethods, addMethod, removeMethod, null);
@@ -1078,14 +1064,7 @@ public class EventSetDescriptorTest extends TestCase {
 			throws IntrospectionException, NoSuchMethodException {
 		String eventSetName = "MockPropertyChange";
 		Class listenerType = MockPropertyChangeListener.class;
-		Method[] listenerMethods = {
-				listenerType.getMethod("mockPropertyChange",
-						new Class[] { MockPropertyChangeEvent.class }),
-				listenerType.getMethod("mockPropertyChange2",
-						new Class[] { MockPropertyChangeEvent.class }), };
-		MethodDescriptor[] listenerMethodDescriptors = {
-				new MethodDescriptor(listenerMethods[0]),
-				new MethodDescriptor(listenerMethods[1]), };
+
 		Class sourceClass = MockSourceClass.class;
 		Method addMethod = sourceClass.getMethod(
 				"addMockPropertyChangeListener", new Class[] { listenerType });
@@ -1282,11 +1261,11 @@ public class EventSetDescriptorTest extends TestCase {
 		}
 
 		public void addMockPropertyChangeListener2(
-				org.apache.harmony.beans.tests.java.beans.mock.MockPropertyChangeListener2 listener) {
+				org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener2 listener) {
 		}
 
 		public void removeMockPropertyChangeListener2(
-				org.apache.harmony.beans.tests.java.beans.mock.MockPropertyChangeListener2 listener) {
+				org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener2 listener) {
 		}
 
 		public void addMockFakeListener(MockFakeListener listener) {

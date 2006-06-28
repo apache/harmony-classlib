@@ -27,22 +27,15 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 
 import junit.framework.TestCase;
-import org.apache.harmony.beans.tests.java.beans.mock.MockBean4Codec;
-import org.apache.harmony.beans.tests.java.beans.mock.MockBean4CodecBadGetter;
-import org.apache.harmony.beans.tests.java.beans.mock.MockExceptionListener;
-import org.apache.harmony.beans.tests.java.beans.mock.MockFooLiYang;
+
+import org.apache.harmony.beans.tests.support.mock.MockBean4Codec;
+import org.apache.harmony.beans.tests.support.mock.MockBean4CodecBadGetter;
+import org.apache.harmony.beans.tests.support.mock.MockExceptionListener;
+import org.apache.harmony.beans.tests.support.mock.MockFooLiYang;
 
 public class EncoderTest extends TestCase {
 
 	public static void main(String[] args) throws Exception {
-		// VerboseEncoder enc = new VerboseEncoder();
-		// SampleBean b = new SampleBean();
-		// b.setI(3);
-		// b.setMyid("new name");
-		// enc.writeObject(b);
-		// enc.remove(b);
-		// enc.writeObject(null);
-
 		junit.textui.TestRunner.run(EncoderTest.class);
 	}
 
@@ -171,7 +164,7 @@ public class EncoderTest extends TestCase {
 
 		public String toString() {
 			String superResult = super.toString();
-			String addr = superResult.substring(superResult.indexOf("@"));
+			superResult.substring(superResult.indexOf("@"));
 			return "myid=" + myid;
 		}
 	}
@@ -367,7 +360,7 @@ public class EncoderTest extends TestCase {
 
 	public void testGetPersistenceDelegate_ProxyClass() {
 		MockEncoder enc = new MockEncoder();
-		PersistenceDelegate pd = enc.getPersistenceDelegate(Proxy
+		enc.getPersistenceDelegate(Proxy
 				.getProxyClass(ClassLoader.getSystemClassLoader(),
 						new Class[] { List.class }));
 	}
@@ -425,7 +418,7 @@ public class EncoderTest extends TestCase {
 		assertTrue(enc.getPersistenceDelegate(EncoderTest.class) instanceof VerbosePD);
 
 		MockEncoder enc2 = new MockEncoder();
-		assertTrue(enc.getPersistenceDelegate(EncoderTest.class) instanceof VerbosePD);
+		assertTrue(enc2.getPersistenceDelegate(EncoderTest.class) instanceof VerbosePD);
 	}
 
 	public void testGet_NullParam() {

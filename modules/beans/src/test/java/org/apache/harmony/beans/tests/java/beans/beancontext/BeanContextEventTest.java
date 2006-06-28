@@ -17,9 +17,8 @@ package org.apache.harmony.beans.tests.java.beans.beancontext;
 
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextEvent;
-import java.util.EventObject;
 
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockBeanContext;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContext;
 
 import junit.framework.TestCase;
 
@@ -49,8 +48,8 @@ public class BeanContextEventTest extends TestCase {
 
 	public void testBeanContextEvent_NullParam() {
 		try {
-			BeanContextEvent event = new MockBeanContextEvent(null);
-			fail();
+			new MockBeanContextEvent(null);
+			fail("IAE expected");
 		} catch (IllegalArgumentException e) {
 			// expected
 		}
@@ -63,8 +62,6 @@ public class BeanContextEventTest extends TestCase {
 		assertSame(ctx, event.getBeanContext());
 		assertNull(event.getPropagatedFrom());
 		assertFalse(event.isPropagated());
-
-		assertTrue(event instanceof EventObject);
 	}
 
 	public void testGetBeanContext() {
@@ -120,5 +117,4 @@ public class BeanContextEventTest extends TestCase {
 		event.setPropagatedFrom(null);
 		assertNull(event.getPropagatedFrom());
 	}
-
 }

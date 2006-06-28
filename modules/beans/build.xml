@@ -78,7 +78,24 @@
     <target name="compile.tests" depends="copy.test.resources" > 
         <mkdir dir="${hy.beans.bin.internal}" />
         <mkdir dir="${hy.beans.bin.test}" />
+        <mkdir dir="${hy.beans.bin.test}_support" />
     	
+    	<echo message="Compiling support classes for BEANS tests" />
+        <javac srcdir="${hy.beans.src.test.support}"
+               destdir="${hy.beans.bin.test}_support"
+               sourcepath=""
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../build/tests" />
+        </javac>
+
     	<echo message="Compiling internal BEANS tests" />
         <javac srcdir="${hy.beans.src.test.internal}"
                destdir="${hy.beans.bin.internal}"
@@ -93,6 +110,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
+            <classpath location="${hy.beans.bin.test}_support" />
             <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
 
@@ -110,6 +128,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
+            <classpath location="${hy.beans.bin.test}_support" />
             <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
@@ -139,6 +158,7 @@
     		
             <classpath>
                 <pathelement path="${hy.beans.bin.test}"/>
+                <pathelement path="${hy.beans.bin.test}_support"/>
                 <pathelement path="${hy.beans.src.test.resources}"/>
             </classpath>
             <classpath location="../../build/tests" />
@@ -174,6 +194,7 @@
 
             <classpath>
                 <pathelement path="${hy.beans.bin.test}"/>
+                <pathelement path="${hy.beans.bin.test}_support"/>
                 <pathelement path="${hy.beans.src.test.resources}"/>
             </classpath>
             <classpath location="../../build/tests" />

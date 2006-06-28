@@ -21,6 +21,8 @@ import java.beans.Customizer;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+
 import junit.framework.TestCase;
 
 /**
@@ -66,7 +68,7 @@ public class BeanDescriptorTest extends TestCase {
 
 	public void testBeanDescriptorClass_Null() {
 		try {
-			BeanDescriptor bd = new BeanDescriptor(null);
+			new BeanDescriptor(null);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}

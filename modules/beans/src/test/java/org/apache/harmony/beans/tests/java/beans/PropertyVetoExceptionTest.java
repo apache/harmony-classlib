@@ -20,6 +20,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+
 import junit.framework.TestCase;
 import tests.util.SerializationTester;
 

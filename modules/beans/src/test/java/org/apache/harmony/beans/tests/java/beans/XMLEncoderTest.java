@@ -32,11 +32,15 @@ import java.io.PrintWriter;
 import junit.framework.TestCase;
 //import junit.framework.TestSuite;
 import org.apache.harmony.beans.tests.java.beans.EncoderTest.SampleBean;
-import org.apache.harmony.beans.tests.java.beans.mock.MockBean4Codec;
 
-import org.apache.harmony.beans.tests.java.beans.auxiliary.StandardBean;
-import org.apache.harmony.beans.tests.java.beans.auxiliary.AType;
-import org.apache.harmony.beans.tests.java.beans.auxiliary.TestEventHandler;
+import org.apache.harmony.beans.tests.support.AType;
+import org.apache.harmony.beans.tests.support.StandardBean;
+import org.apache.harmony.beans.tests.support.TestEventHandler;
+import org.apache.harmony.beans.tests.support.mock.MockBean4Codec;
+import org.apache.harmony.beans.tests.support.mock.MockBean4Owner_Owner;
+import org.apache.harmony.beans.tests.support.mock.MockBean4Owner_Target;
+import org.apache.harmony.beans.tests.support.mock.MockBean4StaticField;
+import org.apache.harmony.beans.tests.support.mock.MockBean4StaticField_PD;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -326,7 +330,7 @@ public class XMLEncoderTest extends TestCase {
 
 	public void testXMLEncoder_Null() {
 		try {
-			XMLEncoder enc = new XMLEncoder(null);
+			new XMLEncoder(null);
 		} catch (NullPointerException e) {
 			// expected
 		}
@@ -504,7 +508,7 @@ public class XMLEncoderTest extends TestCase {
         });
         
         try {
-            e.writeObject(new Double((double) 0.01));
+            e.writeObject(new Double(0.01));
         } catch (Exception excp) {
             fail("Exception " + excp.getClass() +" is thrown: "
                     + excp.getMessage());

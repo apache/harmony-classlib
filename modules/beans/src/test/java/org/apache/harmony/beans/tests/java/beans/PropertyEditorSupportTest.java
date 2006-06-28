@@ -27,370 +27,359 @@ import junit.framework.TestCase;
  */
 public class PropertyEditorSupportTest extends TestCase {
 
-	/*
-	 * Class under test for void PropertyEditorSupport()
-	 */
-	public void testPropertyEditorSupport() {
+    /*
+     * Class under test for void PropertyEditorSupport()
+     */
+    public void testPropertyEditorSupport() {
         // Regression for HARMONY-516
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
 
-		assertEquals("null", support.getAsText());
-		assertNull(support.getValue());
-		assertNull(support.getCustomEditor());
-		assertEquals("???", support.getJavaInitializationString());
-		assertNull(support.getTags());
-		assertFalse(support.supportsCustomEditor());
-		assertFalse(support.isPaintable());
+        assertEquals("null", support.getAsText());
+        assertNull(support.getValue());
+        assertNull(support.getCustomEditor());
+        assertEquals("???", support.getJavaInitializationString());
+        assertNull(support.getTags());
+        assertFalse(support.supportsCustomEditor());
+        assertFalse(support.isPaintable());
 
         Object value = new String[] { "java.awt.Color.orange" };
         support.setValue(value);
         assertEquals(value.toString(), support.getAsText());
     }
 
-	/*
+    /*
      * Class under test for void PropertyEditorSupport(Object)
      */
-	public void testPropertyEditorSupportObject() {
-		MockSource source = new MockSource();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport(
-				source);
+    public void testPropertyEditorSupportObject() {
+        MockSource source = new MockSource();
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport(
+                source);
 
-		assertEquals("null", support.getAsText());
-		assertNull(support.getValue());
-		assertNull(support.getCustomEditor());
-		assertEquals("???", support.getJavaInitializationString());
-		assertNull(support.getTags());
-		assertFalse(support.supportsCustomEditor());
-		assertFalse(support.isPaintable());
+        assertEquals("null", support.getAsText());
+        assertNull(support.getValue());
+        assertNull(support.getCustomEditor());
+        assertEquals("???", support.getJavaInitializationString());
+        assertNull(support.getTags());
+        assertFalse(support.supportsCustomEditor());
+        assertFalse(support.isPaintable());
     }
 
-	/*
+    /*
      * source null
      */
-	public void testPropertyEditorSupportObject_null() {
-		try {
-			MockPropertyEditorSupport support = new MockPropertyEditorSupport(
-					null);
-			fail("Should throw NullPointerException.");
-		} catch (NullPointerException e) {
-			// expected
-		}
-	}
+    public void testPropertyEditorSupportObject_null() {
+        try {
+            new MockPropertyEditorSupport(null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
-	/*
-	 * public void addPropertyChangeListener(PropertyChangeListener listener)
-	 */
-	public void testAddPropertyChangeListener() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		support.addPropertyChangeListener((PropertyChangeListener) EventHandler
-				.create(PropertyChangeListener.class, target, "setCalled"));
-		support.firePropertyChange();
+    /*
+     * public void addPropertyChangeListener(PropertyChangeListener listener)
+     */
+    public void testAddPropertyChangeListener() {
+        MockTarget target = new MockTarget();
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        support.addPropertyChangeListener(EventHandler.create(
+                PropertyChangeListener.class, target, "setCalled"));
+        support.firePropertyChange();
 
-		assertEquals("called", target.getLabel());
-	}
+        assertEquals("called", target.getLabel());
+    }
 
-	public void testAddPropertyChangeListener_source() {
-		MockTarget target = new MockTarget();
-		MockSource source = new MockSource();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport(
-				source);
-		support.addPropertyChangeListener((PropertyChangeListener) EventHandler
-				.create(PropertyChangeListener.class, target, "eventSource",
-						"source"));
-		support.firePropertyChange();
-		assertSame(source, target.getEventSource());
-	}
+    public void testAddPropertyChangeListener_source() {
+        MockTarget target = new MockTarget();
+        MockSource source = new MockSource();
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport(
+                source);
+        support.addPropertyChangeListener(EventHandler.create(
+                PropertyChangeListener.class, target, "eventSource", "source"));
+        support.firePropertyChange();
+        assertSame(source, target.getEventSource());
+    }
 
-	public void testAddPropertyChangeListener_source_null() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		support
-				.addPropertyChangeListener((PropertyChangeListener) EventHandler
-						.create(PropertyChangeListener.class, target,
-								"eventSource", ""));
-		support.firePropertyChange();
-		PropertyChangeEvent event = (PropertyChangeEvent) target
-				.getEventSource();
+    public void testAddPropertyChangeListener_source_null() {
+        MockTarget target = new MockTarget();
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        support.addPropertyChangeListener(EventHandler.create(
+                PropertyChangeListener.class, target, "eventSource", ""));
+        support.firePropertyChange();
+        PropertyChangeEvent event = (PropertyChangeEvent) target
+                .getEventSource();
 
-		assertNull(event.getPropertyName());
-		assertSame(support, event.getSource());
-	}
+        assertNull(event.getPropertyName());
+        assertSame(support, event.getSource());
+    }
 
-	public void testFirePropertyChange_noListener() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		support.firePropertyChange();
-	}
+    public void testFirePropertyChange_noListener() {
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        support.firePropertyChange();
+    }
 
-	/*
-	 * listener is null
-	 */
-	public void testAddPropertyChangeListener_null() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		support.addPropertyChangeListener(null);
-		try {
-			support.firePropertyChange();
-			fail("Should throw NullPointerException.");
-		} catch (NullPointerException e) {
-			// expected
-		}
-	}
+    /*
+     * listener is null
+     */
+    public void testAddPropertyChangeListener_null() {
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        support.addPropertyChangeListener(null);
+        try {
+            support.firePropertyChange();
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
-	public void testPaintValue() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		support.paintValue(null, null);
-	}
+    public void testPaintValue() {
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        support.paintValue(null, null);
+    }
 
-	public void testRemovePropertyChangeListener() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		PropertyChangeListener proxy = (PropertyChangeListener) EventHandler
-				.create(PropertyChangeListener.class, target, "eventSource",
-						"source");
-		support.addPropertyChangeListener(proxy);
-		support.firePropertyChange();
-		assertSame(support, target.getEventSource());
+    public void testRemovePropertyChangeListener() {
+        MockTarget target = new MockTarget();
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyChangeListener proxy = EventHandler.create(
+                PropertyChangeListener.class, target, "eventSource", "source");
+        support.addPropertyChangeListener(proxy);
+        support.firePropertyChange();
+        assertSame(support, target.getEventSource());
 
-		target.setEventSource(null);
-		support.removePropertyChangeListener(proxy);
-		support.firePropertyChange();
-		assertNull(target.getEventSource());
-	}
+        target.setEventSource(null);
+        support.removePropertyChangeListener(proxy);
+        support.firePropertyChange();
+        assertNull(target.getEventSource());
+    }
 
-	public void testRemovePropertyChangeListener_null() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		PropertyChangeListener proxy = (PropertyChangeListener) EventHandler
-				.create(PropertyChangeListener.class, target, "eventSource",
-						"source");
-		support.addPropertyChangeListener(proxy);
-		support.firePropertyChange();
-		assertSame(support, target.getEventSource());
+    public void testRemovePropertyChangeListener_null() {
+        MockTarget target = new MockTarget();
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyChangeListener proxy = EventHandler.create(
+                PropertyChangeListener.class, target, "eventSource", "source");
+        support.addPropertyChangeListener(proxy);
+        support.firePropertyChange();
+        assertSame(support, target.getEventSource());
 
-		target.setEventSource(null);
-		support.removePropertyChangeListener(null);
-		support.firePropertyChange();
-		assertSame(support, target.getEventSource());
-	}
+        target.setEventSource(null);
+        support.removePropertyChangeListener(null);
+        support.firePropertyChange();
+        assertSame(support, target.getEventSource());
+    }
 
-	/*
-	 * remove a different listener
-	 */
-	public void testRemovePropertyChangeListener_diff() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		PropertyChangeListener proxy = (PropertyChangeListener) EventHandler
-				.create(PropertyChangeListener.class, target, "eventSource",
-						"source");
-		support.addPropertyChangeListener(proxy);
-		support.firePropertyChange();
-		assertSame(support, target.getEventSource());
+    /*
+     * remove a different listener
+     */
+    public void testRemovePropertyChangeListener_diff() {
+        MockTarget target = new MockTarget();
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyChangeListener proxy = EventHandler.create(
+                PropertyChangeListener.class, target, "eventSource", "source");
+        support.addPropertyChangeListener(proxy);
+        support.firePropertyChange();
+        assertSame(support, target.getEventSource());
 
-		target.setEventSource(null);
-		PropertyChangeListener proxy2 = (PropertyChangeListener) EventHandler
-				.create(PropertyChangeListener.class, target, "eventSource",
-						"source");
-		support.removePropertyChangeListener(proxy2);
-		support.firePropertyChange();
-		assertSame(support, target.getEventSource());
-	}
+        target.setEventSource(null);
+        PropertyChangeListener proxy2 = EventHandler.create(
+                PropertyChangeListener.class, target, "eventSource", "source");
+        support.removePropertyChangeListener(proxy2);
+        support.firePropertyChange();
+        assertSame(support, target.getEventSource());
+    }
 
-	/*
-	 * remove null listener
-	 */
-	public void testRemovePropertyChangeListener_null_null() {
-		MockTarget target = new MockTarget();
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		support.addPropertyChangeListener(null);
-		try {
-			support.firePropertyChange();
-			fail("Should throw NullPointerException.");
-		} catch (NullPointerException e) {
-			// expected
-		}
+    /*
+     * remove null listener
+     */
+    public void testRemovePropertyChangeListener_null_null() {
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        support.addPropertyChangeListener(null);
+        try {
+            support.firePropertyChange();
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
 
-		support.removePropertyChangeListener(null);
-		support.firePropertyChange();
-	}
+        support.removePropertyChangeListener(null);
+        support.firePropertyChange();
+    }
 
-	public void testSetAsText() {
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		String asText = "100";
-		try {
-			support.setAsText(asText);
-			fail("Should throw IllegalArgumentException.");
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
-	}
+    public void testSetAsText() {
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        String asText = "100";
+        try {
+            support.setAsText(asText);
+            fail("Should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
 
-	public void testSetValue() {
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		String[] value = new String[] { "This is a sample value." };
-		support.setValue(value);
+    public void testSetValue() {
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        String[] value = new String[] { "This is a sample value." };
+        support.setValue(value);
 
-		assertEquals(value, support.getValue());
-		assertEquals(value.toString(), support.getAsText());
+        assertEquals(value, support.getValue());
+        assertEquals(value.toString(), support.getAsText());
 
-		assertNull(support.getCustomEditor());
-		assertEquals("???", support.getJavaInitializationString());
-		assertNull(support.getTags());
-		assertFalse(support.supportsCustomEditor());
-		assertFalse(support.isPaintable());
+        assertNull(support.getCustomEditor());
+        assertEquals("???", support.getJavaInitializationString());
+        assertNull(support.getTags());
+        assertFalse(support.supportsCustomEditor());
+        assertFalse(support.isPaintable());
 
-	}
+    }
 
-	public void testSetValue_null() {
-		MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-		support.setValue(null);
+    public void testSetValue_null() {
+        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        support.setValue(null);
 
-		assertEquals(null, support.getValue());
-		assertEquals("null", support.getAsText());
+        assertEquals(null, support.getValue());
+        assertEquals("null", support.getAsText());
 
-		assertNull(support.getCustomEditor());
-		assertEquals("???", support.getJavaInitializationString());
-		assertNull(support.getTags());
-		assertFalse(support.supportsCustomEditor());
-		assertFalse(support.isPaintable());
+        assertNull(support.getCustomEditor());
+        assertEquals("???", support.getJavaInitializationString());
+        assertNull(support.getTags());
+        assertFalse(support.supportsCustomEditor());
+        assertFalse(support.isPaintable());
 
-		MockTarget target = new MockTarget();
-		support.setValue(target);
+        MockTarget target = new MockTarget();
+        support.setValue(target);
 
-		assertSame(target, support.getValue());
-		assertEquals(target.toString(), support.getAsText());
-		assertNull(support.getCustomEditor());
-		assertEquals("???", support.getJavaInitializationString());
-		assertNull(support.getTags());
-		assertFalse(support.supportsCustomEditor());
-		assertFalse(support.isPaintable());
-	}
+        assertSame(target, support.getValue());
+        assertEquals(target.toString(), support.getAsText());
+        assertNull(support.getCustomEditor());
+        assertEquals("???", support.getJavaInitializationString());
+        assertNull(support.getTags());
+        assertFalse(support.supportsCustomEditor());
+        assertFalse(support.isPaintable());
+    }
 
-	public static class MockPropertyEditorSupport extends PropertyEditorSupport {
-		public MockPropertyEditorSupport() {
-			super();
-		}
+    public static class MockPropertyEditorSupport extends PropertyEditorSupport {
 
-		public MockPropertyEditorSupport(Object source) {
-			super(source);
-		}
-	}
+        public MockPropertyEditorSupport() {
+            super();
+        }
 
-	public static class MockSource {
-		String id;
+        public MockPropertyEditorSupport(Object source) {
+            super(source);
+        }
+    }
 
-		String text;
+    public static class MockSource {
 
-		public MockSource() {
-			this.id = "0001";
-			this.text = getClass().getName();
-		}
+        String id;
 
-		/**
-		 * @return Returns the id.
-		 */
-		public String getId() {
-			return id;
-		}
+        String text;
 
-		/**
-		 * @param id
-		 *            The id to set.
-		 */
-		public void setId(String id) {
-			this.id = id;
-		}
+        public MockSource() {
+            this.id = "0001";
+            this.text = getClass().getName();
+        }
 
-		/**
-		 * @return Returns the text.
-		 */
-		public String getText() {
-			return text;
-		}
+        /**
+         * @return Returns the id.
+         */
+        public String getId() {
+            return id;
+        }
 
-		/**
-		 * @param text
-		 *            The text to set.
-		 */
-		public void setText(String text) {
-			this.text = text;
-		}
-	}
+        /**
+         * @param id The id to set.
+         */
+        public void setId(String id) {
+            this.id = id;
+        }
 
-	public static class MockTarget {
-		String id;
+        /**
+         * @return Returns the text.
+         */
+        public String getText() {
+            return text;
+        }
 
-		String label;
+        /**
+         * @param text The text to set.
+         */
+        public void setText(String text) {
+            this.text = text;
+        }
+    }
 
-		Object eventSource;
+    public static class MockTarget {
 
-		public MockTarget() {
-			this.id = "0001";
-			this.label = getClass().getName();
-		}
+        String id;
 
-		/**
-		 * @return Returns the id.
-		 */
-		public String getId() {
-			return id;
-		}
+        String label;
 
-		/**
-		 * @param id
-		 *            The id to set.
-		 */
-		public void setId(String id) {
-			this.id = id;
-		}
+        Object eventSource;
 
-		/**
-		 * @return Returns the text.
-		 */
-		public String getLabel() {
-			return label;
-		}
+        public MockTarget() {
+            this.id = "0001";
+            this.label = getClass().getName();
+        }
 
-		/**
-		 * @param text
-		 *            The text to set.
-		 */
-		public void setLabel(String label) {
-			this.label = label;
-		}
+        /**
+         * @return Returns the id.
+         */
+        public String getId() {
+            return id;
+        }
 
-		public void setCalled() {
-			this.label = "called";
-		}
+        /**
+         * @param id
+         *            The id to set.
+         */
+        public void setId(String id) {
+            this.id = id;
+        }
 
-		/**
-		 * @return Returns the eventSource.
-		 */
-		public Object getEventSource() {
-			return eventSource;
-		}
+        /**
+         * @return Returns the text.
+         */
+        public String getLabel() {
+            return label;
+        }
 
-		/**
-		 * @param eventSource
-		 *            The eventSource to set.
-		 */
-		public void setEventSource(Object eventSource) {
-			this.eventSource = eventSource;
-		}
+        /**
+         * @param text
+         *            The text to set.
+         */
+        public void setLabel(String label) {
+            this.label = label;
+        }
 
-		public boolean equals(Object o) {
-			if (!(o instanceof MockTarget)) {
-				return false;
-			}
+        public void setCalled() {
+            this.label = "called";
+        }
 
-			MockTarget other = (MockTarget) o;
-			return ((this.id == null ? other.id == null : this.id
-					.equals(other.id))
-					&& (this.eventSource == null ? other.eventSource == null
-							: this.eventSource.equals(other.eventSource)) && (this.label == null ? other.label == null
-					: this.label.equals(other.label)));
-		}
-	}
+        /**
+         * @return Returns the eventSource.
+         */
+        public Object getEventSource() {
+            return eventSource;
+        }
+
+        /**
+         * @param eventSource
+         *            The eventSource to set.
+         */
+        public void setEventSource(Object eventSource) {
+            this.eventSource = eventSource;
+        }
+
+        public boolean equals(Object o) {
+            if (!(o instanceof MockTarget)) {
+                return false;
+            }
+
+            MockTarget other = (MockTarget) o;
+            return ((this.id == null ? other.id == null : this.id
+                    .equals(other.id))
+                    && (this.eventSource == null ? other.eventSource == null
+                            : this.eventSource.equals(other.eventSource)) && (this.label == null ? other.label == null
+                    : this.label.equals(other.label)));
+        }
+    }
 }

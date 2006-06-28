@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
-import org.apache.harmony.beans.tests.java.beans.auxiliary.SampleException;
+import org.apache.harmony.beans.tests.support.SampleException;
 
 /**
  * Test the class java.beans.Statement.
@@ -238,8 +238,6 @@ public class StatementTest extends TestCase {
                 throw new IllegalAccessException("Text property is null.");
             } else {
                 // IndexOutOfBounds exception is thrown, if indexed bounds are violated
-                char oldValue = text.charAt(idx);
-                
                 String newText = "";
                 
                 if(idx > 0) {

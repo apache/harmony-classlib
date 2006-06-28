@@ -23,19 +23,20 @@ import java.beans.VetoableChangeSupport;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextChildSupport;
-import java.beans.beancontext.BeanContextServicesListener;
 import java.beans.beancontext.BeanContextSupport;
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockBeanContext;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockBeanContextChild;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockBeanContextChildDelegateS;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockPropertyChangeListener;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockPropertyChangeListenerS;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockVetoChangeListener;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockVetoableChangeListener;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockVetoableChangeListenerS;
+import org.apache.harmony.beans.tests.support.beancontext.Utils;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContext;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextChild;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextChildDelegateS;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockPropertyChangeListener;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockPropertyChangeListenerS;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoChangeListener;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoableChangeListener;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoableChangeListenerS;
+
 import tests.util.SerializationTester;
 
 import junit.framework.Test;
@@ -57,8 +58,8 @@ public class BeanContextChildSupportTest extends TestCase {
 		public boolean vetoBeanContext = false;
 
 		/**
-		 * 
-		 */
+         * 
+         */
 		public MockBeanContextChildSupport() {
 			super();
 			assertNull(this.beanContext);
@@ -67,8 +68,8 @@ public class BeanContextChildSupportTest extends TestCase {
 		}
 
 		/**
-		 * @param bcc
-		 */
+         * @param bcc
+         */
 		public MockBeanContextChildSupport(BeanContextChild bcc) {
 			super(bcc);
 			assertNull(this.beanContext);
@@ -81,19 +82,19 @@ public class BeanContextChildSupportTest extends TestCase {
 		}
 
 		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.beans.beancontext.BeanContextChildSupport#initializeBeanContextResources()
-		 */
+         * (non-Javadoc)
+         * 
+         * @see java.beans.beancontext.BeanContextChildSupport#initializeBeanContextResources()
+         */
 		protected void initializeBeanContextResources() {
 			lastInitBeanContext = this.beanContext;
 		}
 
 		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.beans.beancontext.BeanContextChildSupport#releaseBeanContextResources()
-		 */
+         * (non-Javadoc)
+         * 
+         * @see java.beans.beancontext.BeanContextChildSupport#releaseBeanContextResources()
+         */
 		protected void releaseBeanContextResources() {
 			lastReleaseBeanContext = this.beanContext;
 		}
@@ -104,10 +105,10 @@ public class BeanContextChildSupportTest extends TestCase {
 		}
 
 		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.beans.beancontext.BeanContextChildSupport#validatePendingSetBeanContext(java.beans.beancontext.BeanContext)
-		 */
+         * (non-Javadoc)
+         * 
+         * @see java.beans.beancontext.BeanContextChildSupport#validatePendingSetBeanContext(java.beans.beancontext.BeanContext)
+         */
 		public boolean validatePendingSetBeanContext(BeanContext newValue) {
 			if (vetoBeanContext) {
 				return false;
@@ -252,27 +253,21 @@ public class BeanContextChildSupportTest extends TestCase {
 	}
 
 	/*
-	 * Class under test for void BeanContextChildSupport()
-	 */
+     * Class under test for void BeanContextChildSupport()
+     */
 	public void testBeanContextChildSupport() {
 		BeanContextChildSupport support = new MockBeanContextChildSupport();
-		assertTrue(support instanceof BeanContextChild);
-		assertTrue(support instanceof BeanContextServicesListener);
-		assertTrue(support instanceof Serializable);
 		assertSame(support, support.getBeanContextChildPeer());
 		assertSame(support, support.beanContextChildPeer);
 	}
 
 	/*
-	 * Class under test for void
-	 * BeanContextChildSupport(java.beans.beancontext.BeanContextChild)
-	 */
+     * Class under test for void
+     * BeanContextChildSupport(java.beans.beancontext.BeanContextChild)
+     */
 	public void testBeanContextChildSupportBeanContextChild() {
 		BeanContextChild c = new MockBeanContextChild();
 		BeanContextChildSupport support = new MockBeanContextChildSupport(c);
-		assertTrue(support instanceof BeanContextChild);
-		assertTrue(support instanceof BeanContextServicesListener);
-		assertTrue(support instanceof Serializable);
 		assertSame(c, support.getBeanContextChildPeer());
 		assertSame(c, support.beanContextChildPeer);
 	}
@@ -647,7 +642,7 @@ public class BeanContextChildSupportTest extends TestCase {
 		BeanContextChildSupport support = new MockBeanContextChildSupport();
 		support.serviceAvailable(null);
         
-        //Regression for HARMONY-372
+        // Regression for HARMONY-372
         (new java.beans.beancontext.BeanContextChildSupport()).serviceAvailable(null);
         (new java.beans.beancontext.BeanContextChildSupport()).serviceRevoked(null); 
 	}
@@ -943,59 +938,49 @@ public class BeanContextChildSupportTest extends TestCase {
     
     
     
-    /** TEST CONSTRUCTORS **/
+    /** TEST CONSTRUCTORS * */
 
-    /** * Test constructor with BeanContextChild parameter.<p>
-     *
+    /**
+     * * Test constructor with BeanContextChild parameter.
+     * <p>
+     * 
      * @see BeanContextChildSupport#BeanContextChildSupport(BeanContextChild)
      */
-    public void testConstructorBeanContextChild() {
-        try {
-            BeanContextChildSupport sup = new BeanContextChildSupport(null);
-        }
-        catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+    public void testConstructorBeanContextChild() throws Exception {
+        new BeanContextChildSupport(null);
     }
 
-    /** * Test constructor with no parameters.<p>
-     *
+    /**
+     * * Test constructor with no parameters.
+     * <p>
+     * 
      * @see BeanContextChildSupport#BeanContextChildSupport()
      */
-    public void testConstructor() {
-        try {
-            BeanContextChildSupport sup = new BeanContextChildSupport();
-        }
-        catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+    public void testConstructor() throws Exception {
+        new BeanContextChildSupport();
     }
 
-    /** TEST METHODS **/
+    /** TEST METHODS * */
 
     /**
-     * Test method setBeanContext() with BeanContext parameter.<p>
+     * Test method setBeanContext() with BeanContext parameter.
+     * <p>
      */
-    public void testSetBeanContextBeanContext() {
-        try {
-            BeanContextChildSupport sup = new BeanContextChildSupport();
-            sup.setBeanContext(new BeanContextSupport());
-            
-            if (sup.getBeanContext() == null) {
-                fail("BeanContext should not be null");
-            }
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+    public void testSetBeanContextBeanContext() throws Exception {
+        BeanContextChildSupport sup = new BeanContextChildSupport();
+        sup.setBeanContext(new BeanContextSupport());
+
+        assertNotNull("BeanContext should not be null", sup.getBeanContext());
     }
+    
 
-    /** UTILITY METHODS **/
+    /** UTILITY METHODS * */
 
-    /** STANDARD ENDING **/
+    /** STANDARD ENDING * */
 
     /**
-     * Start testing from the command line.<p>
+     * Start testing from the command line.
+     * <p>
      */
     public static Test suite() {
         return new TestSuite(BeanContextChildSupportTest.class);

@@ -15,13 +15,9 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
-import java.awt.Image;
 import java.beans.SimpleBeanInfo;
 
-import org.apache.harmony.beans.tests.java.beans.mock.MockSimpleBeanInfo;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
 
 
 /**

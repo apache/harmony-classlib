@@ -20,26 +20,26 @@ import java.beans.AppletInitializer;
 import java.beans.Beans;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextSupport;
+import java.io.Externalizable;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.textui.TestRunner;
 import junit.framework.TestSuite;
-import org.apache.harmony.beans.tests.java.beans.mock.MockAppletInitializer;
-import org.apache.harmony.beans.tests.java.beans.auxiliary.SampleBean;
+import junit.textui.TestRunner;
+
+import org.apache.harmony.beans.tests.support.SampleBean;
+import org.apache.harmony.beans.tests.support.mock.MockAppletInitializer;
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
 
 /**
  * Unit test for java.beans.Beans
@@ -48,8 +48,6 @@ public class BeansTest extends TestCase {
 	private File fileURLCP = new File(System.getProperty("user.home"), "urlcp");
 
 	private File fileSer;
-
-	private File fileRes;
 
 	private File fileClass;
 
@@ -76,7 +74,7 @@ public class BeansTest extends TestCase {
 	 * public Beans()
 	 */
 	public void testBeans() {
-		Beans beans = new Beans();
+		new Beans();
 	}
 
 	/*
@@ -154,7 +152,7 @@ public class BeansTest extends TestCase {
 	public void testInstantiateClassLoaderString_BeanNameNull()
 			throws IOException, ClassNotFoundException {
 		try {
-			Object bean = Beans.instantiate(null, null);
+			Beans.instantiate(null, null);
 			fail("Should throw NullPointerException");
 		} catch (NullPointerException e) {
 		}
@@ -224,7 +222,7 @@ public class BeansTest extends TestCase {
 		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
 				.toURL() });
 		try {
-			Object bean = Beans.instantiate(loader, null, context);
+			Beans.instantiate(loader, null, context);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -309,7 +307,7 @@ public class BeansTest extends TestCase {
 		BeanContext context = new BeanContextSupport();
 		AppletInitializer appInit = new MockAppletInitializer();
 		try {
-			Object bean = Beans.instantiate(loader, null, context, appInit);
+			Beans.instantiate(loader, null, context, appInit);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -391,7 +389,7 @@ public class BeansTest extends TestCase {
 
 	public void testIsInstanceOf_BeanNull() {
 		try {
-			boolean is = Beans.isInstanceOf(null, Serializable.class);
+			Beans.isInstanceOf(null, Serializable.class);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -425,14 +423,6 @@ public class BeansTest extends TestCase {
 	public void testSetGuiAvailable_false() {
 		Beans.setGuiAvailable(false);
 		assertFalse(Beans.isGuiAvailable());
-	}
-
-	private void serialize(Object obj, File file) throws FileNotFoundException,
-			IOException {
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-				file));
-		oos.writeObject(obj);
-		oos.close();
 	}
 
 	private void copyFile(InputStream src, File dest) throws IOException {

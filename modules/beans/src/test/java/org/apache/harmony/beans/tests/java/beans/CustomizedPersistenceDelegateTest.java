@@ -172,10 +172,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 	}
 
 	static class MockPersistenceDelegate extends DefaultPersistenceDelegate {
-		private String name;
-
 		public MockPersistenceDelegate(String s) {
-			this.name = s;
 		}
 
 		protected void initialize(Class type, Object oldInstance,
@@ -198,10 +195,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 	}
 
 	static class MockPersistenceDelegate2 extends PersistenceDelegate {
-		private String name;
-
 		public MockPersistenceDelegate2(String s) {
-			this.name = s;
 		}
 
 		protected void initialize(Class type, Object oldInstance,
@@ -471,7 +465,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 		// enc.writeObject(al);
 
 		// Field
-		Field m = Integer.class.getDeclaredField("TYPE");
+		Integer.class.getDeclaredField("TYPE");
 		// enc.writeObject(m);
 
 		// Complex bean with indexed properties

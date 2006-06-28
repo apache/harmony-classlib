@@ -16,8 +16,6 @@
 package org.apache.harmony.beans.tests.java.beans;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeSupport;
-import java.util.EventObject;
 
 import tests.util.SerializationTester;
 
@@ -37,7 +35,6 @@ public class PropertyChangeEventTest extends TestCase {
 
 		PropertyChangeEvent event = new PropertyChangeEvent(src, "myPropName",
 				oldValue, newValue);
-		assertTrue(event instanceof EventObject);
 		assertSame(src, event.getSource());
 		assertEquals("myPropName", event.getPropertyName());
 		assertSame(oldValue, event.getOldValue());

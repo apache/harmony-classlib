@@ -26,9 +26,11 @@ import java.beans.SimpleBeanInfo;
 import java.beans.Statement;
 
 import junit.framework.TestCase;
-import org.apache.harmony.beans.tests.java.beans.mock.MockFoo;
-import org.apache.harmony.beans.tests.java.beans.mock.MockFoo2;
-import org.apache.harmony.beans.tests.java.beans.mock.MockFooStop;
+
+import org.apache.harmony.beans.tests.support.mock.MockFoo;
+import org.apache.harmony.beans.tests.support.mock.MockFoo2;
+import org.apache.harmony.beans.tests.support.mock.MockFooStop;
+
 import tests.util.CallVerificationStack;
 
 /**
@@ -752,10 +754,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 	 * Mock bean with no getter.
 	 */
 	public static class MockNoGetterBean extends MockFoo {
-		private Integer ii = new Integer(2);
-
 		public void setII(Integer i) {
-			this.ii = i;
 		}
 	}
 
@@ -763,14 +762,10 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 	 * Mock bean with no getter.
 	 */
 	public static class MockNoGetterBean2 {
-		private int ii;
-
 		public MockNoGetterBean2(int i) {
-			this.ii = i;
 		}
 
 		public void setI(int i) {
-			this.ii = i;
 		}
 	}
 
@@ -866,10 +861,6 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 			throw new Exception();
 		}
 
-		private int getProp6() {
-			return 1;
-		}
-
 		public int getProp7() {
 			throw new Error();
 		}
@@ -923,12 +914,6 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 	static class MockEncoder extends Encoder {
 
 		public ExceptionListener getExceptionListener() {
-			StackTraceElement[] eles = (new Throwable()).getStackTrace();
-			int i = 1;
-			// while (eles[i++].getClassName().equals(
-			// DefaultPersistenceDelegate.class.getName())) {
-			// // skip calls from DefaultPersistenceDelegate
-			// }
 			return super.getExceptionListener();
 		}
 

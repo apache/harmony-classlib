@@ -19,6 +19,8 @@ import java.beans.MethodDescriptor;
 import java.beans.ParameterDescriptor;
 import java.lang.reflect.Method;
 
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+
 import junit.framework.TestCase;
 
 /**

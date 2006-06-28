@@ -16,7 +16,6 @@
 package org.apache.harmony.beans.tests.java.beans.beancontext;
 
 import java.beans.beancontext.BeanContext;
-import java.beans.beancontext.BeanContextEvent;
 import java.beans.beancontext.BeanContextServiceAvailableEvent;
 import java.beans.beancontext.BeanContextServices;
 import java.io.IOException;
@@ -25,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockBeanContextDelegateS;
-import org.apache.harmony.beans.tests.java.beans.beancontext.mock.MockBeanContextServices;
+
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextDelegateS;
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextServices;
+
 import tests.util.SerializationTester;
 
 /**
@@ -34,120 +35,118 @@ import tests.util.SerializationTester;
  */
 public class BeanContextServiceAvailableEventTest extends TestCase {
 
-	private static class MockBeanContextServiceAvailableEvent extends
-			BeanContextServiceAvailableEvent {
+    private static class MockBeanContextServiceAvailableEvent extends
+            BeanContextServiceAvailableEvent {
 
-		/**
-		 * @param bcs
-		 * @param sc
-		 */
-		public MockBeanContextServiceAvailableEvent(BeanContextServices bcs,
-				Class sc) {
-			super(bcs, sc);
-			assertSame(sc, this.serviceClass);
-		}
-	}
+        /**
+         * @param bcs
+         * @param sc
+         */
+        public MockBeanContextServiceAvailableEvent(BeanContextServices bcs,
+                Class sc) {
+            super(bcs, sc);
+            assertSame(sc, this.serviceClass);
+        }
+    }
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(BeanContextServiceAvailableEventTest.class);
-	}
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(BeanContextServiceAvailableEventTest.class);
+    }
 
-	public void testBeanContextServiceAvailableEvent_NullParam() {
-		BeanContextServices services = new MockBeanContextServices();
+    public void testBeanContextServiceAvailableEvent_NullParam() {
+        BeanContextServices services = new MockBeanContextServices();
 
-		try {
-			BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
-					null, BeanContext.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
+        try {
+            new MockBeanContextServiceAvailableEvent(null, BeanContext.class);
+            fail("IAE expected");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
 
-		BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
-				services, null);
-		assertNull(event.getServiceClass());
-		assertSame(services, event.getSource());
-		assertSame(services, event.getSourceAsBeanContextServices());
-	}
+        BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
+                services, null);
+        assertNull(event.getServiceClass());
+        assertSame(services, event.getSource());
+        assertSame(services, event.getSourceAsBeanContextServices());
+    }
 
-	public void testBeanContextServiceAvailableEvent() {
-		BeanContextServices services = new MockBeanContextServices();
-		BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
-				services, BeanContext.class);
-		assertSame(BeanContext.class, event.getServiceClass());
-		assertSame(services, event.getSource());
-		assertSame(services, event.getSourceAsBeanContextServices());
-		assertTrue(event instanceof BeanContextEvent);
-	}
+    public void testBeanContextServiceAvailableEvent() {
+        BeanContextServices services = new MockBeanContextServices();
+        BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
+                services, BeanContext.class);
+        assertSame(BeanContext.class, event.getServiceClass());
+        assertSame(services, event.getSource());
+        assertSame(services, event.getSourceAsBeanContextServices());
+    }
 
-	public void testGetSourceAsBeanContextServices() {
-		BeanContextServices services = new MockBeanContextServices();
-		BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
-				services, BeanContext.class);
-		assertSame(services, event.getSource());
-		assertSame(services, event.getSourceAsBeanContextServices());
-	}
+    public void testGetSourceAsBeanContextServices() {
+        BeanContextServices services = new MockBeanContextServices();
+        BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
+                services, BeanContext.class);
+        assertSame(services, event.getSource());
+        assertSame(services, event.getSourceAsBeanContextServices());
+    }
 
-	public void testGetServiceClass() {
-		BeanContextServices services = new MockBeanContextServices();
-		BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
-				services, BeanContext.class);
-		assertSame(BeanContext.class, event.getServiceClass());
-	}
+    public void testGetServiceClass() {
+        BeanContextServices services = new MockBeanContextServices();
+        BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
+                services, BeanContext.class);
+        assertSame(BeanContext.class, event.getServiceClass());
+    }
 
-	public void testGetCurrentServiceSelectors() {
-		BeanContextServices services = new MockBeanContextServices();
-		BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
-				services, BeanContext.class);
+    public void testGetCurrentServiceSelectors() {
+        BeanContextServices services = new MockBeanContextServices();
+        BeanContextServiceAvailableEvent event = new MockBeanContextServiceAvailableEvent(
+                services, BeanContext.class);
 
-		Iterator expectedIt = services
-				.getCurrentServiceSelectors(BeanContext.class);
-		Iterator it = event.getCurrentServiceSelectors();
-		while (expectedIt.hasNext()) {
-			assertSame(expectedIt.next(), it.next());
-		}
-		assertFalse(expectedIt.hasNext());
-		assertFalse(it.hasNext());
-	}
+        Iterator expectedIt = services
+                .getCurrentServiceSelectors(BeanContext.class);
+        Iterator it = event.getCurrentServiceSelectors();
+        while (expectedIt.hasNext()) {
+            assertSame(expectedIt.next(), it.next());
+        }
+        assertFalse(expectedIt.hasNext());
+        assertFalse(it.hasNext());
+    }
 
-	public void testSerialization() throws IOException, ClassNotFoundException {
-		BeanContextServiceAvailableEvent event = new BeanContextServiceAvailableEvent(
-				new MockBeanContextServices(), ArrayList.class);
-		event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
+    public void testSerialization() throws IOException, ClassNotFoundException {
+        BeanContextServiceAvailableEvent event = new BeanContextServiceAvailableEvent(
+                new MockBeanContextServices(), ArrayList.class);
+        event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
 
-		assertEqualsSerially(event,
-				(BeanContextServiceAvailableEvent) SerializationTester
-						.getDeserilizedObject(event));
-	}
+        assertEqualsSerially(event,
+                (BeanContextServiceAvailableEvent) SerializationTester
+                        .getDeserilizedObject(event));
+    }
 
-	public void testSerialization_Compatibility() throws Exception {
-		BeanContextServiceAvailableEvent event = new BeanContextServiceAvailableEvent(
-				new MockBeanContextServices(), ArrayList.class);
-		event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
+    public void testSerialization_Compatibility() throws Exception {
+        BeanContextServiceAvailableEvent event = new BeanContextServiceAvailableEvent(
+                new MockBeanContextServices(), ArrayList.class);
+        event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
 
-		assertEqualsSerially(
-				event,
-				(BeanContextServiceAvailableEvent) SerializationTester
-						.readObject(event,
-								"serialization/java/beans/beancontext/BeanContextServiceAvailableEvent.ser"));
-	}
+        assertEqualsSerially(
+                event,
+                (BeanContextServiceAvailableEvent) SerializationTester
+                        .readObject(event,
+                                "serialization/java/beans/beancontext/BeanContextServiceAvailableEvent.ser"));
+    }
 
-	private void assertEqualsSerially(BeanContextServiceAvailableEvent orig,
-			BeanContextServiceAvailableEvent ser) {
-		assertNull(ser.getSource());
+    private void assertEqualsSerially(BeanContextServiceAvailableEvent orig,
+            BeanContextServiceAvailableEvent ser) {
+        assertNull(ser.getSource());
 
-		// check propagatedFrom
-		if (orig.getPropagatedFrom() instanceof Serializable) {
-			BeanContext origFrom = orig.getPropagatedFrom();
-			BeanContext serFrom = ser.getPropagatedFrom();
-			assertEquals(origFrom.getClass(), serFrom.getClass());
-			if (origFrom instanceof MockBeanContextDelegateS) {
-				assertEquals(((MockBeanContextDelegateS) origFrom).id,
-						((MockBeanContextDelegateS) serFrom).id);
-			}
-		}
+        // check propagatedFrom
+        if (orig.getPropagatedFrom() instanceof Serializable) {
+            BeanContext origFrom = orig.getPropagatedFrom();
+            BeanContext serFrom = ser.getPropagatedFrom();
+            assertEquals(origFrom.getClass(), serFrom.getClass());
+            if (origFrom instanceof MockBeanContextDelegateS) {
+                assertEquals(((MockBeanContextDelegateS) origFrom).id,
+                        ((MockBeanContextDelegateS) serFrom).id);
+            }
+        }
 
-		// check serviceClass
-		assertEquals(orig.getServiceClass(), ser.getServiceClass());
-	}
+        // check serviceClass
+        assertEquals(orig.getServiceClass(), ser.getServiceClass());
+    }
 }

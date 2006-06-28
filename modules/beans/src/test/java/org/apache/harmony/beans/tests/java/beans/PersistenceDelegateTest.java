@@ -22,8 +22,10 @@ import java.beans.PersistenceDelegate;
 import java.beans.Statement;
 
 import junit.framework.TestCase;
-import org.apache.harmony.beans.tests.java.beans.mock.MockFoo;
-import org.apache.harmony.beans.tests.java.beans.mock.MockFooStop;
+
+import org.apache.harmony.beans.tests.support.mock.MockFoo;
+import org.apache.harmony.beans.tests.support.mock.MockFooStop;
+
 import tests.util.CallVerificationStack;
 
 /**

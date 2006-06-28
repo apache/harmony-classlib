@@ -38,7 +38,6 @@ public class AllTests {
 		suite.addTestSuite(BeanContextServiceRevokedEventTest.class);
 		suite.addTestSuite(BeanContextServicesSupportTest.class);
 		suite.addTestSuite(BeanContextSupportTest.class);
-		suite.addTestSuite(InterfacesTest.class);
 		// $JUnit-END$
 		return suite;
 	}

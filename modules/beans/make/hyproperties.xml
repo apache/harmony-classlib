@@ -25,6 +25,7 @@
          <test>
             <java location="src/test/java" />
             <resources location="src/test/resources" />
+            <support location="src/test/support/java" />
             <internal location="src/test/java-internal" />
          </test>
          <natives location="src/natives" />
