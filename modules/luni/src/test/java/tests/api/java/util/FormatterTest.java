@@ -238,6 +238,7 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
+        // FIXME This exception will not be thrown out on linux.
         try {
             f = new Formatter(readOnly.getPath());
             fail("should throw FileNotFoundException");
@@ -292,6 +293,7 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
+        // FIXME This exception will not be thrown out on linux.
         try {
             f = new Formatter(readOnly.getPath(), "UTF-16BE");
             fail("should throw FileNotFoundException");
@@ -395,6 +397,7 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
+        // FIXME This exception will not be thrown out on linux.
         try {
             f = new Formatter(readOnly);
             fail("should throw FileNotFoundException");
@@ -435,6 +438,7 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
+        // FIXME This exception will not be thrown out on linux.
         try {
             f = new Formatter(readOnly, Charset.defaultCharset().name());
             fail("should throw FileNotFoundException");
@@ -521,6 +525,7 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
+        // FIXME This exception will not be thrown out on linux.
         try {
             f = new Formatter(readOnly.getPath(), Charset.defaultCharset()
                     .name(), Locale.ITALY);
@@ -963,7 +968,7 @@ public class FormatterTest extends TestCase {
     /**
      * @tests java.util.Formatter#format(String, Object...) for line sperator
      */
-    public void test_formatLjava_lang_String$Ljava_lang_Object_LineSperator() {
+    public void test_formatLjava_lang_String$Ljava_lang_Object_LineSeparator() {
         Formatter f = null;
 
         String oldSeparator = System.getProperty("line.separator");
@@ -984,15 +989,47 @@ public class FormatterTest extends TestCase {
         System.setProperty("line.separator", oldSeparator);
 
         f = new Formatter(Locale.US);
-        final String[] illFlags = { "%-n", "%+n", "%#n", "% n", "%0n", "%,n",
-                "%(n" };
-        for (int i = 0; i < illFlags.length; i++) {
-            try {
-                f.format(illFlags[i]);
-                fail("should throw IllegalFormatFlagsException: " + illFlags[i]);
-            } catch (IllegalFormatFlagsException e) {
-                // expected
-            }
+        try {
+            f.format("%-n");
+            fail("should throw IllegalFormatFlagsException: %-n");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+        try {
+            f.format("%+n");
+            fail("should throw IllegalFormatFlagsException: %+n");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+        try {
+            f.format("%#n");
+            fail("should throw IllegalFormatFlagsException: %#n");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+        try {
+            f.format("% n");
+            fail("should throw IllegalFormatFlagsException: % n");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+        try {
+            f.format("%0n");
+            fail("should throw IllegalFormatFlagsException: %0n");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+        try {
+            f.format("%,n");
+            fail("should throw IllegalFormatFlagsException: %,n");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+        try {
+            f.format("%(n");
+            fail("should throw IllegalFormatFlagsException: %(n");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
         }
 
         f = new Formatter(Locale.US);
@@ -1026,6 +1063,8 @@ public class FormatterTest extends TestCase {
         } catch (IllegalFormatPrecisionException e) {
             // expected
         }
+        
+        System.setProperty("line.separator", oldSeparator);
     }
 
     /**
@@ -1130,9 +1169,222 @@ public class FormatterTest extends TestCase {
 
     /**
      * @tests java.util.Formatter#format(String, Object...) for general
-     *        conversion
+     *        conversion b/B
      */
-    public void test_formatLjava_lang_String$Ljava_lang_Object_GeneralConversion() {
+    public void test_format_LString$LObject_GeneralConversionB() {
+        final Object[][] triple = { 
+                { Boolean.FALSE,                "%3.2b",  " fa", },
+                { Boolean.FALSE,                "%-4.6b", "false", },
+                { Boolean.FALSE,                "%.2b",   "fa", }, 
+                { Boolean.TRUE,                 "%3.2b",  " tr", },
+                { Boolean.TRUE,                 "%-4.6b", "true", },
+                { Boolean.TRUE,                 "%.2b",   "tr", },
+                { new Character('c'),           "%3.2b",  " tr", },
+                { new Character('c'),           "%-4.6b", "true", },
+                { new Character('c'),           "%.2b",   "tr", },
+                { new Byte((byte) 0x01),        "%3.2b",  " tr", },
+                { new Byte((byte) 0x01),        "%-4.6b", "true", },
+                { new Byte((byte) 0x01),        "%.2b",   "tr", },
+                { new Short((short) 0x0001),    "%3.2b",  " tr", },
+                { new Short((short) 0x0001),    "%-4.6b", "true", },
+                { new Short((short) 0x0001),    "%.2b",   "tr", },
+                { new Integer(1),               "%3.2b",  " tr", },
+                { new Integer(1),               "%-4.6b", "true", },
+                { new Integer(1),               "%.2b",   "tr", },
+                { new Float(1.1f),              "%3.2b",  " tr", },
+                { new Float(1.1f),              "%-4.6b", "true", },
+                { new Float(1.1f),              "%.2b",   "tr", },
+                { new Double(1.1d),             "%3.2b",  " tr", },
+                { new Double(1.1d),             "%-4.6b", "true", },
+                { new Double(1.1d),             "%.2b",   "tr", },
+                { "",                           "%3.2b",  " tr", },
+                { "",                           "%-4.6b", "true", },
+                { "",                           "%.2b",   "tr", },
+                { "string content",             "%3.2b",  " tr", },
+                { "string content",             "%-4.6b", "true", },
+                { "string content",             "%.2b",   "tr", },
+                { new MockFormattable(),        "%3.2b",  " tr", },
+                { new MockFormattable(),        "%-4.6b", "true", },
+                { new MockFormattable(),        "%.2b",   "tr", },
+                { (Object) null,                "%3.2b",  " fa", },
+                { (Object) null,                "%-4.6b", "false", },
+                { (Object) null,                "%.2b",   "fa", },
+                };
+
+
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2; 
+        Formatter f = null;
+        for (int i = 0; i < triple.length; i++) {
+            f = new Formatter(Locale.FRANCE);
+            f.format((String)triple[i][pattern], triple[i][input]);
+            assertEquals("triple[" + i + "]:" + triple[i][input]
+                          + ",pattern[" + i + "]:" + triple[i][pattern], triple[i][output], f.toString());
+
+            f = new Formatter(Locale.GERMAN);
+            f.format(((String)triple[i][pattern]).toUpperCase(Locale.US), triple[i][input]);
+            assertEquals("triple[" + i + "]:" + triple[i][input]
+                          + ",pattern[" + i + "]:" + triple[i][pattern], ((String)triple[i][output])
+                    .toUpperCase(Locale.US), f.toString());
+        }
+    }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for general
+     *        conversion type 's' and 'S'
+     */
+    public void test_format_LString$LObject_GeneralConversionS() {
+
+        final Object[][] triple = { 
+                { Boolean.FALSE,                "%2.3s",  "fal", },
+                { Boolean.FALSE,                "%-6.4s", "fals  ", },
+                { Boolean.FALSE,                "%.5s",   "false", }, 
+                { Boolean.TRUE,                 "%2.3s",  "tru", },
+                { Boolean.TRUE,                 "%-6.4s", "true  ", },
+                { Boolean.TRUE,                 "%.5s",   "true", },
+                { new Character('c'),           "%2.3s",  " c", },
+                { new Character('c'),           "%-6.4s", "c     ", },
+                { new Character('c'),           "%.5s",   "c", },
+                { new Byte((byte) 0x01),        "%2.3s",  " 1", },
+                { new Byte((byte) 0x01),        "%-6.4s", "1     ", },
+                { new Byte((byte) 0x01),        "%.5s",   "1", },
+                { new Short((short) 0x0001),    "%2.3s",  " 1", },
+                { new Short((short) 0x0001),    "%-6.4s", "1     ", },
+                { new Short((short) 0x0001),    "%.5s",   "1", },
+                { new Integer(1),               "%2.3s",  " 1", },
+                { new Integer(1),               "%-6.4s", "1     ", },
+                { new Integer(1),               "%.5s",   "1", },
+                { new Float(1.1f),              "%2.3s",  "1.1", },
+                { new Float(1.1f),              "%-6.4s", "1.1   ", },
+                { new Float(1.1f),              "%.5s",   "1.1", },
+                { new Double(1.1d),             "%2.3s",  "1.1", },
+                { new Double(1.1d),             "%-6.4s", "1.1   ", },
+                { new Double(1.1d),             "%.5s",   "1.1", },
+                { "",                           "%2.3s",  "  ", },
+                { "",                           "%-6.4s", "      ", },
+                { "",                           "%.5s",   "", },
+                { "string content",             "%2.3s",  "str", },
+                { "string content",             "%-6.4s", "stri  ", },
+                { "string content",             "%.5s",   "strin", },
+                { new MockFormattable(),        "%2.3s",  "customized format function width: 2 precision: 3", },
+                { new MockFormattable(),        "%-6.4s", "customized format function width: 6 precision: 4", },
+                { new MockFormattable(),        "%.5s",   "customized format function width: -1 precision: 5", },
+                { (Object) null,                "%2.3s",  "nul", },
+                { (Object) null,                "%-6.4s", "null  ", },
+                { (Object) null,                "%.5s",   "null", },
+                };
+
+
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+        Formatter f = null;
+        for (int i = 0; i < triple.length; i++) {
+            f = new Formatter(Locale.FRANCE);
+            f.format((String)triple[i][pattern], triple[i][input]);
+            assertEquals("triple[" + i + "]:" + triple[i][input]
+                          + ",pattern[" + i + "]:" + triple[i][pattern], triple[i][output], f.toString());
+
+            f = new Formatter(Locale.GERMAN);
+            f.format(((String)triple[i][pattern]).toUpperCase(Locale.US), triple[i][input]);
+            assertEquals("triple[" + i + "]:" + triple[i][input]
+                          + ",pattern[" + i + "]:" + triple[i][pattern], ((String)triple[i][output])
+                    .toUpperCase(Locale.US), f.toString());
+        }
+    }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for general
+     *        conversion type 'h' and 'H'
+     */
+    public void test_format_LString$LObject_GeneralConversionH() {
+
+        final Object[] input = { 
+                 Boolean.FALSE,                 
+                 Boolean.TRUE,                  
+                 new Character('c'),            
+                 new Byte((byte) 0x01),         
+                 new Short((short) 0x0001),     
+                 new Integer(1),                
+                 new Float(1.1f),               
+                 new Double(1.1d),              
+                 "",                            
+                 "string content",              
+                 new MockFormattable(),         
+                 (Object) null,                 
+                };
+
+        Formatter f = null;
+        for (int i = 0; i < input.length - 1; i++) {
+            f = new Formatter(Locale.FRANCE);
+            f.format("%h", input[i]);
+            assertEquals("triple[" + i + "]:" + input[i], 
+                    Integer.toHexString(input[i].hashCode()), f.toString());
+
+            f = new Formatter(Locale.GERMAN);
+            f.format("%H", input[i]);
+            assertEquals("triple[" + i + "]:" + input[i], 
+                    Integer.toHexString(input[i].hashCode()).toUpperCase(Locale.US), f.toString());
+        }
+    }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for general
+     *        conversion other cases
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_GeneralConversionOther() {
+        /*
+         * In Turkish locale, the upper case of '\u0069' is '\u0130'. The
+         * following test indicate that '\u0069' is coverted to upper case
+         * without using the turkish locale.
+         */
+        Formatter f = new Formatter(new Locale("tr"));
+        f.format("%S", "\u0069");
+        assertEquals("\u0049", f.toString());
+
+        final Object[] input = { 
+                Boolean.FALSE,                 
+                Boolean.TRUE,                  
+                new Character('c'),            
+                new Byte((byte) 0x01),         
+                new Short((short) 0x0001),     
+                new Integer(1),                
+                new Float(1.1f),               
+                new Double(1.1d),              
+                "",                            
+                "string content",              
+                new MockFormattable(),         
+                (Object) null,                 
+               };
+        f = new Formatter(Locale.GERMAN);
+        for (int i = 0; i < input.length; i++) {
+            if (!(input[i] instanceof Formattable)) {
+                try {
+                    f.format("%#s", input[i]);
+                    /*
+                     * fail on RI, spec says if the '#' flag is present and the
+                     * argument is not a Formattable , then a
+                     * FormatFlagsConversionMismatchException will be thrown.
+                     */
+                    fail("should throw FormatFlagsConversionMismatchException");
+                } catch (FormatFlagsConversionMismatchException e) {
+                    // expected
+                }
+            } else {
+                f.format("%#s%<-#8s", input[i]);
+                assertEquals(
+                        "customized format function width: -1 precision: -1customized format function width: 8 precision: -1",
+                        f.toString());
+            }
+        }
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for general
+     *        conversion exception
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_GeneralConversionException() {
         final String[] flagMismatch = { "%#b", "%+b", "% b", "%0b", "%,b",
                 "%(b", "%#B", "%+B", "% B", "%0B", "%,B", "%(B", "%#h", "%+h",
                 "% h", "%0h", "%,h", "%(h", "%#H", "%+H", "% H", "%0H", "%,H",
@@ -1150,126 +1402,14 @@ public class FormatterTest extends TestCase {
             }
         }
 
-        try {
-            f.format("%-.8s", "something");
-            fail("should throw MissingFormatWidthException");
-        } catch (MissingFormatWidthException e) {
-            // expected
-        }
-
-        final Object[] args = { Boolean.FALSE, Boolean.TRUE,
-                new Character('c'), new Byte((byte) 0x01),
-                new Short((short) 0x0001), new Integer(1), new Float(1.1f),
-                new Double(1.1d), "", "string content", new MockFormattable(),
-                (Object) null };
-
-        final String[] bResult = { " fa", "false", "fa", " tr", "true", "tr",
-                " tr", "true", "tr", " tr", "true", "tr", " tr", "true", "tr",
-                " tr", "true", "tr", " tr", "true", "tr", " tr", "true", "tr",
-                " tr", "true", "tr", " tr", "true", "tr", " tr", "true", "tr",
-                " fa", "false", "fa" };
-        for (int i = 0, resultCount = 0; i < args.length; i++) {
-            f = new Formatter(Locale.JAPANESE);
-            f.format("prefix%3.2b", args[i]);
-            assertEquals("prefix" + bResult[resultCount], f.toString());
-
-            f = new Formatter(Locale.JAPANESE);
-            f.format("prefix%3.2B", args[i]);
-            assertEquals("prefix" + bResult[resultCount++].toUpperCase(), f
-                    .toString());
-
-            f = new Formatter(Locale.KOREA);
-            f.format("%-4.6b", args[i]);
-            assertEquals(bResult[resultCount], f.toString());
-
-            f = new Formatter(Locale.KOREA);
-            f.format("%-4.6B", args[i]);
-            assertEquals(bResult[resultCount++].toUpperCase(), f.toString());
-
-            f = new Formatter(Locale.ITALY);
-            f.format("%.2bsuffix", args[i]);
-            assertEquals(bResult[resultCount] + "suffix", f.toString());
-
-            f = new Formatter(Locale.ITALY);
-            f.format("%.2Bsuffix", args[i]);
-            assertEquals(bResult[resultCount++].toUpperCase() + "suffix", f
-                    .toString());
-        }
-
-        final String[] sResult = { "fal", "fals  ", "false", "tru", "true  ",
-                "true", " c", "c     ", "c", " 1", "1     ", "1", " 1",
-                "1     ", "1", " 1", "1     ", "1", "1.1", "1.1   ", "1.1",
-                "1.1", "1.1   ", "1.1", "  ", "      ", "", "str", "stri  ",
-                "strin", "customized format function width: 2 precision: 3",
-                "customized format function width: 6 precision: 4",
-                "customized format function width: -1 precision: 5", "nul",
-                "null  ", "null" };
-        for (int i = 0, resultCount = 0; i < args.length; i++) {
-            f = new Formatter(Locale.CHINA);
-            f.format("%2.3s", args[i]);
-            assertEquals(sResult[resultCount], f.toString());
-
-            f = new Formatter(Locale.CHINA);
-            f.format("%2.3S", args[i]);
-            assertEquals(sResult[resultCount++].toUpperCase(), f.toString());
-
-            f = new Formatter(Locale.KOREA);
-            f.format("%-6.4s", args[i]);
-            assertEquals(sResult[resultCount], f.toString());
-
-            f = new Formatter(Locale.KOREA);
-            f.format("%-6.4S", args[i]);
-            assertEquals(sResult[resultCount++].toUpperCase(), f.toString());
-
-            f = new Formatter(Locale.GERMAN);
-            f.format("%.5s", args[i]);
-            assertEquals(sResult[resultCount], f.toString());
-
-            f = new Formatter(Locale.GERMAN);
-            f.format("%.5S", args[i]);
-            assertEquals(sResult[resultCount++].toUpperCase(), f.toString());
-        }
-
-        // skip args[length-1]: null, do it seperately
-        for (int i = 0; i < args.length - 1; i++) {
-            f = new Formatter(Locale.CHINA);
-            f.format("%h", args[i]);
-            assertEquals(Integer.toHexString(args[i].hashCode()), f.toString());
-
-            f = new Formatter(Locale.CHINA);
-            f.format("%H", args[i]);
-            assertEquals(Integer.toHexString(args[i].hashCode()).toUpperCase(),
-                    f.toString());
-        }
-
-        /*
-         * In Turkish locale, the upper case of '\u0069' is '\u0130'. The
-         * following test indicate that '\u0069' is coverted to upper case
-         * without using the turkish locale.
-         */
-        f = new Formatter(new Locale("tr"));
-        f.format("%S", "\u0069");
-        assertEquals("\u0049", f.toString());
-
-        f = new Formatter(Locale.GERMAN);
-        for (int i = 0; i < args.length; i++) {
-            if (!(args[i] instanceof Formattable)) {
-                try {
-                    f.format("%#s", args[i]);
-                    /*
-                     * fail on RI If the '#' flag is present and the argument is
-                     * not a Formattable , then a
-                     * FormatFlagsConversionMismatchException should be thrown.
-                     */
-                    fail("should throw FormatFlagsConversionMismatchException");
-                } catch (FormatFlagsConversionMismatchException e) {
-                    // expected
-                }
-            } else {
-                f.format("%#s%<-#8s", args[i]);
-                assertEquals(
-                        "customized format function width: -1 precision: -1customized format function width: 8 precision: -1",
-                        f.toString());
+        final String[] missingWidth = { "%-b", "%-B", "%-h", "%-H", "%-s",
+                "%-S", };
+        for (int i = 0; i < missingWidth.length; i++) {
+            try {
+                f.format(missingWidth[i], "something");
+                fail("should throw MissingFormatWidthException");
+            } catch (MissingFormatWidthException e) {
+                // expected
             }
         }
     }
@@ -1305,19 +1445,26 @@ public class FormatterTest extends TestCase {
             // expected
         }
 
-        final Object[] legalArgs = { 'c', '\u0123', (byte) 0x11,
-                (short) 0x1111, 0x11 };
-        final Object[] result = { "c", "c ", "\u0123", "\u0123 ", "\u0011",
-                "\u0011 ", "\u1111", "\u1111 ", "\u0011", "\u0011 " };
+        final Object[][] triple = {
+                {'c',               "%c",   "c"},
+                {'c',               "%-2c", "c "},
+                {'\u0123',          "%c",   "\u0123"},
+                {'\u0123',          "%-2c", "\u0123 "},
+                {(byte) 0x11,       "%c",   "\u0011"},
+                {(byte) 0x11,       "%-2c", "\u0011 "},
+                {(short) 0x1111,    "%c",   "\u1111"},
+                {(short) 0x1111,    "%-2c", "\u1111 "},
+                {0x11,              "%c",   "\u0011"},
+                {0x11,              "%-2c", "\u0011 "},
+        };
 
-        for (int i = 0, resultCount = 0; i < legalArgs.length; i++) {
-            f = new Formatter(Locale.US);
-            f.format("pre%c", legalArgs[i]);
-            assertEquals("pre" + result[resultCount++], f.toString());
-
-            f = new Formatter(Locale.GERMANY);
-            f.format("%-2c.txt", legalArgs[i]);
-            assertEquals(result[resultCount++] + ".txt", f.toString());
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+        for (int i = 0; i < triple.length; i++) {
+                f = new Formatter(Locale.US);
+                f.format((String)triple[i][pattern], triple[i][input]);
+                assertEquals(triple[i][output], f.toString());
         }
 
         f = new Formatter(Locale.US);
