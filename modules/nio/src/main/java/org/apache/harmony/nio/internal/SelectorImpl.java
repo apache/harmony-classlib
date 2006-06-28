@@ -336,7 +336,7 @@ final class SelectorImpl extends AbstractSelector {
             return set.hashCode();
         }
 
-        public boolean add(Object object) {
+        public boolean add(E object) {
             throw new UnsupportedOperationException();
         }
 

@@ -1032,7 +1032,7 @@ public class Collections {
 					throw new UnsupportedOperationException();
 				}
 
-				public void set(Object object) {
+				public void set(E object) {
 					throw new UnsupportedOperationException();
 				}
 			};
