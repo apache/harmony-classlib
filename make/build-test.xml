@@ -43,6 +43,8 @@
 
     <target name="clean">
 	<delete dir="${tests.output}" />
+	<delete dir="${tests.build.output}" />
+	<delete dir="${tests.support.output}" />
     </target>
 
     <target name="test-modules" depends="compile-support">
