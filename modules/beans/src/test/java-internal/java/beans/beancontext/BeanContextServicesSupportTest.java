@@ -65,13 +65,7 @@ public class BeanContextServicesSupportTest extends TestCase {
      * BeanContextServices, Locale, boolean, boolean)
      */
     public void testConstructorBeanContextServicesLocalebooleanboolean() {
-        try {
-            BeanContextServicesSupport sup = 
-                new BeanContextServicesSupport(null, null, true, true);
-        }
-        catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        new BeanContextServicesSupport(null, null, true, true);
     }
 
     /** 
@@ -81,13 +75,7 @@ public class BeanContextServicesSupportTest extends TestCase {
      * BeanContextServices, Locale, boolean)
      */
     public void testConstructorBeanContextServicesLocaleboolean() {
-        try {
-            BeanContextServicesSupport sup = 
-                new BeanContextServicesSupport(null, null, true);
-        }
-        catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        new BeanContextServicesSupport(null, null, true);
     }
 
     /** 
@@ -97,13 +85,7 @@ public class BeanContextServicesSupportTest extends TestCase {
      * BeanContextServices, Locale)
      */
     public void testConstructorBeanContextServicesLocale() {
-        try {
-            BeanContextServicesSupport sup = 
-                new BeanContextServicesSupport(null, null);
-        }
-        catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        new BeanContextServicesSupport(null, null);
     }
 
     /** 
@@ -113,13 +95,7 @@ public class BeanContextServicesSupportTest extends TestCase {
      * BeanContextServices)
      */
     public void testConstructorBeanContextServices() {
-        try {
-            BeanContextServicesSupport sup = 
-                new BeanContextServicesSupport(null);
-        }
-        catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        new BeanContextServicesSupport(null);
     }
 
     /** * Test constructor with no parameters.<p>
@@ -127,12 +103,7 @@ public class BeanContextServicesSupportTest extends TestCase {
      * @see BeanContextServicesSupport#BeanContextServicesSupport()
      */
     public void testConstructor() {
-        try {
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-        }
-        catch (Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        new BeanContextServicesSupport();
     }
 
     /** TEST METHODS **/
@@ -141,146 +112,89 @@ public class BeanContextServicesSupportTest extends TestCase {
      * Test method createBCSChild() with Object, Object parameters.<p>
      */
     public void testCreateBCSChildObjectObject() {
-        try {
-            
-            // Just call the method
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-            sup.createBCSChild(new Object(), new Object());
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        // Just call the method
+        BeanContextServicesSupport sup = new BeanContextServicesSupport();
+        sup.createBCSChild(new Object(), new Object());
     }
 
     /**
      * Test method addService() with Class, BeanContextServiceProvider, boolean parameters.<p>
      */
     public void testAddServiceClassBeanContextServiceProviderboolean() {
-        try {
-            
-            // Instantiate services and add service
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-            sup.addService(Object.class, getProvider(), true);
-            
-            if (sup.services.size() != 1) {
-                fail("One service should be registered");
-            }
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        // Instantiate services and add service
+        BeanContextServicesSupport sup = new BeanContextServicesSupport();
+        sup.addService(Object.class, getProvider(), true);
+
+        assertEquals("One service should be registered", 1, sup.services.size());
     }
 
     /**
      * Test method revokeService() with Class, BeanContextServiceProvider, boolean parameters.<p>
      */
     public void testRevokeServiceClassBeanContextServiceProviderboolean() {
-        try {
-            
-            // Instantiate services, add and remove service
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-            BeanContextServiceProvider pr = getProvider();
-            sup.addService(Object.class, pr, true);
-            sup.revokeService(Object.class, pr, true);
-            
-            if (sup.services.size() != 0) {
-                fail("No service should be registered");
-            }
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        // Instantiate services, add and remove service
+        BeanContextServicesSupport sup = new BeanContextServicesSupport();
+        BeanContextServiceProvider pr = getProvider();
+        sup.addService(Object.class, pr, true);
+        sup.revokeService(Object.class, pr, true);
+
+        assertEquals("No service should be registered", 0, sup.services.size());
     }
 
     /**
      * Test method addService() with Class, BeanContextServiceProvider parameters.<p>
      */
     public void testAddServiceClassBeanContextServiceProvider() {
-        try {
-            
-            // Instantiate services and add service
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-            sup.addService(Object.class, getProvider());
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        // Instantiate services and add service
+        BeanContextServicesSupport sup = new BeanContextServicesSupport();
+        sup.addService(Object.class, getProvider());
     }
 
     /**
      * Test method hasService() with Class parameter.<p>
      */
     public void testHasServiceClass() {
-        try {
-            
-            // Instantiate services and add service
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-            Class cl = new Object().getClass();
-            sup.addService(cl, getProvider(), true);
-            
-            if (!sup.hasService(cl)) {
-                fail("Service not found");
-            }
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        // Instantiate services and add service
+        BeanContextServicesSupport sup = new BeanContextServicesSupport();
+        Class cl = new Object().getClass();
+        sup.addService(cl, getProvider(), true);
+
+        assertTrue("Service not found", sup.hasService(cl));
     }
 
     /**
      * Test method getBeanContextServicesPeer() with no parameters.<p>
      */
     public void testGetBeanContextServicesPeer() {
-        try {
-            
-            // Instantiate services
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-            
-            if (!sup.getBeanContextServicesPeer().equals(sup)) {
-                fail("The objects are not equal");
-            }
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        // Instantiate services
+        BeanContextServicesSupport sup = new BeanContextServicesSupport();
+
+        assertTrue("The objects are not equal", sup
+                .getBeanContextServicesPeer().equals(sup));
     }
 
     /**
      * Test method releaseBeanContextResources() with no parameters.<p>
      */
     public void testReleaseBeanContextResources() {
-        try {
-            
-            // Instantiate services
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-            sup.releaseBeanContextResources();
-            
-            if (sup.proxy != null) {
-                fail("The resources are not released");
-            }
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        // Instantiate services
+        BeanContextServicesSupport sup = new BeanContextServicesSupport();
+        sup.releaseBeanContextResources();
+
+        assertNull("The resources are not released", sup.proxy);
     }
 
     /**
      * Test method initializeBeanContextResources() with no parameters.<p>
      */
     public void testInitializeBeanContextResources() {
-        try {
-            
-            // Instantiate services
-            BeanContextServicesSupport sup = new BeanContextServicesSupport();
-            sup.initializeBeanContextResources();
-            
-            //if (sup.proxy == null) {
-                //fail("The resources are not initialized");
-            //}
-        }
-        catch(Exception e) {
-            fail("Unexpected exception: " + e + " caused by: " + e.getCause());
-        }
+        // Instantiate services
+        BeanContextServicesSupport sup = new BeanContextServicesSupport();
+        sup.initializeBeanContextResources();
+
+        //if (sup.proxy == null) {
+        //fail("The resources are not initialized");
+        //}
     }
 
     /**
@@ -291,8 +205,7 @@ public class BeanContextServicesSupportTest extends TestCase {
         try {
             obj.hasService(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {
-        }
+        } catch (NullPointerException t) {}
     }
 
     /**
@@ -303,8 +216,7 @@ public class BeanContextServicesSupportTest extends TestCase {
         try {
             obj.removeBeanContextServicesListener(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {
-        }
+        } catch (NullPointerException t) {}
     }
 
     /**
@@ -315,8 +227,7 @@ public class BeanContextServicesSupportTest extends TestCase {
         try {
             obj.serviceAvailable(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {
-        }
+        } catch (NullPointerException t) {}
     }
 
     /**
@@ -327,34 +238,32 @@ public class BeanContextServicesSupportTest extends TestCase {
         try {
             obj.serviceRevoked(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {
-        }
+        } catch (NullPointerException t) {}
     }
 
     /** UTILITY METHODS **/
-    
+
     /**
      * Fake implementation of provider
      */
     private BeanContextServiceProvider getProvider() {
-    
+
         return new BeanContextServiceProvider() {
 
-            public java.util.Iterator getCurrentServiceSelectors(BeanContextServices bcs, 
-                    Class serviceClass) {
-                        
+            public java.util.Iterator getCurrentServiceSelectors(
+                    BeanContextServices bcs, Class serviceClass) {
+
                 return bcs.getCurrentServiceSelectors(serviceClass);
             }
-            
+
             public Object getService(BeanContextServices bcs, Object requestor,
-                    Class serviceClass, Object serviceSelector) {                            
-                
+                    Class serviceClass, Object serviceSelector) {
+
                 return null;
             }
-            
-            public void releaseService(BeanContextServices bcs, Object requestor, 
-                    Object service) {
-            }
+
+            public void releaseService(BeanContextServices bcs,
+                    Object requestor, Object service) {}
         };
     }
 
