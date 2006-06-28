@@ -2404,8 +2404,20 @@ public class DatagramChannelTest extends TestCase {
         // read
         ByteBuffer targetBuf = ByteBuffer.wrap(targetArray);
         assertEquals(0, this.channel2.read(targetBuf));
-
     }
+    
+    public void test_write_LBuffer_positioned() throws Exception {
+        // Regression test for Harmony-683
+        int postion = 16;
+        DatagramChannel dc = DatagramChannel.open();
+        byte[] sourceArray = new byte[CAPACITY_NORMAL];        
+        dc.connect(localAddr1);
+        // write
+        ByteBuffer sourceBuf = ByteBuffer.wrap(sourceArray);
+        sourceBuf.position(postion);
+        assertEquals(CAPACITY_NORMAL - postion, dc.write(sourceBuf));
+    }
+    
 
     // -------------------------------------------------------------------
     // Mock class for security test.

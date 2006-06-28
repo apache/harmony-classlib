@@ -501,6 +501,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
                 for (int val = offset; val < length; val++) {
                     writeBuf.put(sources[val]);
                 }
+                writeBuf.flip();
                 return writeImpl(writeBuf);
             }
         }
@@ -513,20 +514,23 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
     private int writeImpl(ByteBuffer buf) throws IOException {
         // the return value
         int result = 0;
-
         try {
-            begin();
+            begin();            
             byte[] array;
-            // FIXME enhence the perform
+            int length = buf.remaining();
+            int oldposition = buf.position();
+            int start;
             if (buf.hasArray()) {
-                array = buf.array();
+                array = buf.array();  
+                start = oldposition;
             } else {
-                array = new byte[buf.remaining()];
+                array = new byte[length];
                 buf.get(array);
+                start = 0;
             }
-            DatagramPacket pack = new DatagramPacket(array, array.length);
-            result = networkSystem.sendConnectedDatagram(fd, pack.getData(), 0,
-                    pack.getLength(), isBound);
+            result = networkSystem.sendConnectedDatagram(fd, array, start,
+                    length, isBound);
+            buf.position(oldposition + result);
             return result;
         } finally {
             end(result > 0);
