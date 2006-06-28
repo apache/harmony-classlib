@@ -38,6 +38,7 @@ public class AllTests {
         suite.addTestSuite(AlreadyConnectedExceptionTest.class);
         suite.addTestSuite(SelectableChannelTest.class);
         suite.addTestSuite(FileLockTest.class);
+        suite.addTestSuite(AsynchronousCloseExceptionTest.class);
         //$JUnit-END$
         return suite;
     }
