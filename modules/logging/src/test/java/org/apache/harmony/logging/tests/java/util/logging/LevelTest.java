@@ -67,11 +67,12 @@ public class LevelTest extends TestCase implements Serializable {
 	 * As byproducts, getName & intValue are also tested.
 	 */
 	public void testConstructorNoResBundle_NullName() {
-		MockLevel l = new MockLevel(null, -2);
-		assertEquals(l.getName(), null);
-		assertEquals(l.intValue(), -2);
-		assertNull(l.getResourceBundleName());
-	}
+        try {
+            MockLevel l = new MockLevel(null, -2);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException ignore) {
+        }
+    }
 
 	/*
 	 * Test the constructor without resource bundle parameter using empty name.
@@ -99,11 +100,12 @@ public class LevelTest extends TestCase implements Serializable {
 	 * As byproducts, getName & intValue are also tested.
 	 */
 	public void testConstructorHavingResBundle_NullName() {
-		MockLevel l = new MockLevel(null, -123, null);
-		assertNull(l.getName());
-		assertEquals(l.intValue(), -123);
-		assertNull(l.getResourceBundleName());
-	}
+        try {
+            MockLevel l = new MockLevel(null, -123, "qwe");
+            fail("No expected NullPointerException");
+        } catch (NullPointerException ignore) {
+        }
+    }
 
 	// /*
 	// * Test the constructor having resource bundle parameter using empty
@@ -290,13 +292,6 @@ public class LevelTest extends TestCase implements Serializable {
 		assertEquals("", emptyLevel.toString());
 	}
 
-	/*
-	 * Test toString of a Level with null name.
-	 */
-	public void testToString_Null() {
-		MockLevel l = new MockLevel(null, 2);
-		assertEquals(null, l.toString());
-	}
 
 	/*
 	 * Test serilaziation of pre-defined const levels. It is expected that the
@@ -317,7 +312,7 @@ public class LevelTest extends TestCase implements Serializable {
 		SerializationTester.assertSame(l);
 		SerializationTester.assertEquals(Level.parse("-1"));
 		SerializationTester.assertEquals(new MockLevel("123", 123, "bundle"));
-		SerializationTester.assertEquals(new MockLevel(null, 123, null));
+		SerializationTester.assertEquals(new MockLevel("123", 123, null));
 	}
 
 	public void testSerializationCompability() throws Exception {

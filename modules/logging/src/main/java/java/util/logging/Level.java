@@ -192,6 +192,9 @@ public class Level implements Serializable {
      *            the name of the resource bundle to use
      */
     protected Level(String name, int level, String resourceBundleName) {
+        if (null == name) {
+            throw new NullPointerException("null"); //$NON-NLS-1$
+        }
         this.name = name;
         this.value = level;
         this.resourceBundleName = resourceBundleName;
