@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -787,6 +787,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 return readNewString(unshared);
             case TC_LONGSTRING:
                 return readNewLongString(unshared);
+            case TC_ENUM:
+                return readEnum(unshared);
             case TC_REFERENCE:
                 if (unshared) {
                     readNewHandle();
@@ -1239,7 +1241,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             }
             int lastIndex = 0;
             for (int i = 0; i < classList.size(); i++) {
-                Class<?> superclass = (Class) classList.get(i);
+                Class<?> superclass = classList.get(i);
                 int index = findStreamSuperclass(superclass, streamClassList,
                         lastIndex);
                 if (index == -1) {
@@ -1247,7 +1249,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 } else {
                     for (int j = lastIndex; j <= index; j++) {
                         readObjectForClass(object,
-                                (ObjectStreamClass) streamClassList.get(j));
+                                streamClassList.get(j));
                     }
                     lastIndex = index + 1;
                 }
@@ -1491,7 +1493,82 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }
         throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
     }
+    
+    /*
+     * read class type for Enum, note there's difference between enum and
+     * normal classes
+     */
+    private ObjectStreamClass readEnumDesc() throws IOException,
+            ClassNotFoundException {
+        ObjectStreamClass classDesc;     
+        byte tc = nextTC();
+        if (tc != TC_CLASSDESC) {
+            throw new StreamCorruptedException(Msg.getString(
+                    "K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
+        }
+        primitiveData = input;
+        Integer oldHandle = descriptorHandle;
+        descriptorHandle = new Integer(nextHandle());
+        classDesc = readClassDescriptor();
+        if (descriptorHandle != null) {
+            registerObjectRead(classDesc, descriptorHandle);
+        }
+        descriptorHandle = oldHandle;
+        primitiveData = emptyStream;
+        classDesc.setClass(resolveClass(classDesc));
+        // Consume unread class annotation data and TC_ENDBLOCKDATA
+        discardData();
+        ObjectStreamClass superClass = readClassDesc();
+        classDesc.setSuperclass(superClass);
+        // Check SUIDs, note all SUID for Enum is 0L
+        if (0L != classDesc.getSerialVersionUID()
+                || 0L != superClass.getSerialVersionUID()) {
+            throw new InvalidClassException(superClass.getName(), Msg
+                    .getString("K00da", superClass, //$NON-NLS-1$
+                            superClass));
+        }        
+        tc = nextTC();
+        // discard TC_ENDBLOCKDATA after classDesc if any
+        if (tc == TC_ENDBLOCKDATA) {
+            // read next parent class. For enum, it may be null
+            superClass.setSuperclass(readClassDesc());
+        } else {
+            // not TC_ENDBLOCKDATA, push back for next read
+            pushbackTC();
+        }
+        return classDesc;
+    }
 
+    private Object readEnum(boolean unshared) throws OptionalDataException,
+            ClassNotFoundException, IOException {
+        // read classdesc for Enum first
+        ObjectStreamClass classDesc = readEnumDesc();
+        Integer newHandle = new Integer(nextHandle());
+        // read name after class desc
+        String name;
+        byte tc = nextTC();
+        switch (tc) {
+        case TC_REFERENCE:
+            if (unshared) {
+                readNewHandle();
+                throw new InvalidObjectException(Msg.getString("KA002")); //$NON-NLS-1$
+            }
+            name = (String) readCyclicReference();
+            break;
+        case TC_STRING:
+            name = (String) readNewString(unshared);
+            break;
+        default:
+            throw new StreamCorruptedException(Msg.getString("K00d2"));//$NON-NLS-1$
+        }
+
+        Enum result = Enum.valueOf((Class)classDesc.forClass(), name);
+        if (!unshared) {
+            registerObjectRead(result, newHandle);
+        }
+        return result;
+    }
+    
     /**
      * Reads a new class descriptor from the receiver. It is assumed the class
      * descriptor has not been read yet (not a cyclic reference). Return the

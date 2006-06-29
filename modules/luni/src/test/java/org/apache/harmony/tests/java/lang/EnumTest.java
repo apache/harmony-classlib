@@ -15,7 +15,10 @@
 
 package org.apache.harmony.tests.java.lang;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
+import tests.util.SerializationTester;
 
 public class EnumTest extends TestCase {
 
@@ -32,7 +35,7 @@ public class EnumTest extends TestCase {
     
     enum Bogus {
         UNUSED
-    }
+    }   
     
     /**
      * @tests java.lang.Enum#compareTo(java.lang.Enum) 
@@ -169,4 +172,72 @@ public class EnumTest extends TestCase {
         
         assertEquals(0, Empty.values().length);
     }
+    
+    /**
+     * @test Serialization/deserilazation compatibility with RI.
+     */
+    public void test_compatibilitySerialization() throws Exception{
+        assertTrue(SerializationTester.assertCompabilityEquals(Sample.CURLY,"serialization/java/lang/EnumTest.golden.1.ser"));
+    }
+    
+    /**
+     * @test Serialization/deserilazation compatibility with RI.
+     */
+    public void test_compatibilitySerialization_inClass() throws Exception{
+        assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum(),"serialization/java/lang/EnumTest.golden.2.ser"));
+    }
+    
+    /**
+     * @test Serialization/deserilazation compatibility.
+     */
+    public void test_serialization() throws IOException, ClassNotFoundException{
+        Sample object = Sample.CURLY;
+        Sample deObject = (Sample) SerializationTester
+                .getDeserilizedObject(object);
+        assertEquals(object, deObject);
+    }
+    
+    /**
+     * test a class that has enums as its fields.
+     * 
+     * @test Serialization/deserilazation compatibility.
+     */
+    public void test_serialization_inClass() throws IOException, ClassNotFoundException{
+        MockEnum mock = new MockEnum();
+        MockEnum test = (MockEnum) SerializationTester
+                .getDeserilizedObject(mock);
+        assertEquals(mock.i,test.i);
+        assertEquals(mock.str,test.str);
+        assertEquals(mock.samEnum,test.samEnum);
+    }
+    
+    /**
+     * test a class that has enums and a string of same name as its fields.
+     * 
+     * @test Serialization/deserilazation compatibility with RI.
+     */
+    public void test_compatibilitySerialization_inClass_Complex() throws Exception{
+        assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum2(),"serialization/java/lang/EnumTest.golden.3.ser"));
+    }
+    
+    /**
+     * @test Serialization/deserilazation compatibility with Harmony.
+     */
+    public void test_compatibilitySerialization_inClass_Complex_Harmony() throws Exception{
+        assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum2(),"serialization/java/lang/EnumTest.Harmony.ser"));
+    }
+    
+    /**
+     * test a class that has enums and a string of same name as its fields.
+     * 
+     * @test Serialization/deserilazation compatibility.
+     */
+    public void test_serialization_inClass_Complex() throws Exception{
+        MockEnum2 mock = new MockEnum2();
+        MockEnum2 test = (MockEnum2) SerializationTester
+                .getDeserilizedObject(mock);
+        assertEquals(mock.i,test.i);
+        assertEquals(mock.str,test.str);
+        assertEquals(mock.samEnum,test.samEnum);
+    }    
 }

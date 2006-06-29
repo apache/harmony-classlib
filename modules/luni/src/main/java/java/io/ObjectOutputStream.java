@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1924,6 +1924,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 				return writeNewArray(object, objClass, objClass
 						.getComponentType(), unshared);
 
+            if (object instanceof Enum){
+                return writeNewEnum(object, objClass, unshared);
+            }
+            
 			// Not a String or Class or Array. Default procedure.
 			return writeNewObject(object, objClass, unshared);
 		} finally {
@@ -1931,16 +1935,96 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		}
 	}
 
-	/**
-	 * Method to be overriden by subclasses to write <code>object</code> into
-	 * the receiver's underlying stream.
-	 * 
-	 * @param object
-	 *            the object
-	 * 
-	 * @throws IOException
-	 *             If an IO exception happened when writing the object
-	 */
+    // write for Enum Class Desc only, which is different from other classes
+    private ObjectStreamClass writeEnumDesc(Class theClass, boolean unshared)
+            throws IOException {
+        // write classDesc, classDesc for enum is different
+        ObjectStreamClass classDesc = ObjectStreamClass.lookup(theClass);
+        // SUID of enum is 0L
+        classDesc.setSerialVersionUID(0L);
+        // set flag for enum, the flag is (SC_SERIALIZABLE | SC_ENUM)
+        classDesc.setFlags((byte)(SC_SERIALIZABLE|SC_ENUM));
+        Integer previousHandle = (Integer) objectsWritten.get(classDesc);
+        Integer handle = null;
+        if (!unshared) {
+            handle = dumpCycle(classDesc);
+        }
+        if (handle == null) {
+            Class classToWrite = classDesc.forClass();
+            // If we got here, it is a new (non-null) classDesc that will have
+            // to be registered as well
+            registerObjectWritten(classDesc);
+
+            output.writeByte(TC_CLASSDESC);
+            if (protocolVersion == PROTOCOL_VERSION_1)
+                writeNewClassDesc(classDesc);
+            else {
+                // So write...() methods can be used by
+                // subclasses during writeClassDescriptor()
+                primitiveTypes = output;
+                writeClassDescriptor(classDesc);
+                primitiveTypes = null;
+            }
+            // Extra class info (optional)
+            annotateClass(classToWrite);
+            drain(); // flush primitive types in the annotation
+            output.writeByte(TC_ENDBLOCKDATA);
+            // write super class
+            writeClassDesc(classDesc.getSuperclass(), unshared);
+            if (unshared) {
+                // remove reference to unshared object
+                removeUnsharedReference(classDesc, previousHandle);
+            }
+        }
+        return classDesc;
+    }
+
+    private Integer writeNewEnum(Object object, Class theClass, boolean unshared)
+            throws IOException {
+        // write new Enum
+        EmulatedFieldsForDumping originalCurrentPutField = currentPutField; // save
+        // null it, to make sure one will be computed if needed
+        currentPutField = null;
+
+        output.writeByte(TC_ENUM);
+        ObjectStreamClass classDesc = writeEnumDesc(theClass, unshared);
+
+        Integer previousHandle = (Integer) objectsWritten.get(object);
+        Integer handle = registerObjectWritten(object);        
+
+        ObjectStreamField[] fields = classDesc.getSuperclass().fields();
+        Class declaringClass = classDesc.getSuperclass().forClass();
+        // Only write field "name" for enum class, which is the second field of
+        // enum
+        String str = (String) getFieldObj(object, declaringClass, fields[1]
+                .getName(), fields[1].getTypeString());
+
+        Integer strhandle = null;
+        if (!unshared) {
+            strhandle = dumpCycle(str);
+        }
+        if (null == strhandle) {
+            writeNewString(str, unshared);
+        }
+
+        if (unshared) {
+            // remove reference to unshared object
+            removeUnsharedReference(object, previousHandle);
+        }
+        currentPutField = originalCurrentPutField;
+        return handle;
+    }
+
+    /**
+     * Method to be overriden by subclasses to write <code>object</code> into
+     * the receiver's underlying stream.
+     * 
+     * @param object
+     *            the object
+     * 
+     * @throws IOException
+     *             If an IO exception happened when writing the object
+     */
 	protected void writeObjectOverride(Object object) throws IOException {
 		// Subclasses must override.
 		throw new IOException();
