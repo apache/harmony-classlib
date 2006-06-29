@@ -39,6 +39,7 @@ public class Arrays {
             a = storage;
         }
 
+        @Override
         public boolean contains(Object object) {
             if (object != null) {
                 for (E element : a) {
@@ -56,6 +57,7 @@ public class Arrays {
             return false;
         }
 
+        @Override
         public E get(int location) {
             try {
                 return a[location];
@@ -64,6 +66,7 @@ public class Arrays {
             }
         }
 
+        @Override
         public int indexOf(Object object) {
             if (object != null) {
                 for (int i = 0; i < a.length; i++) {
@@ -81,6 +84,7 @@ public class Arrays {
             return -1;
         }
 
+        @Override
         public int lastIndexOf(Object object) {
             if (object != null) {
                 for (int i = a.length - 1; i >= 0; i--) {
@@ -98,6 +102,7 @@ public class Arrays {
             return -1;
         }
 
+        @Override
         public E set(int location, E object) {
             try {
                 E result = a[location];
@@ -110,14 +115,17 @@ public class Arrays {
             }
         }
 
+        @Override
         public int size() {
             return a.length;
         }
 
+        @Override
         public Object[] toArray() {
             return a.clone();
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public <T> T[] toArray(T[] contents) {
             int size = size();
@@ -344,8 +352,9 @@ public class Arrays {
      *                not implement Comparable, or cannot be compared to each
      *                other
      */
+    @SuppressWarnings("unchecked")
     public static int binarySearch(Object[] array, Object object) {
-        Comparable key = (Comparable) object;
+        Comparable<Object> key = (Comparable<Object>) object;
         int low = 0, mid = 0, high = array.length - 1, result = 0;
         while (low <= high) {
             mid = (low + high) >> 1;
@@ -2176,6 +2185,7 @@ public class Arrays {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void sort(int start, int end, Object[] array) {
         int middle = (start + end) / 2;
         if (start + 1 < middle) {
@@ -2188,7 +2198,7 @@ public class Arrays {
             return; // this case can only happen when this method is called by
         }
         // the user
-        if (((Comparable) array[middle - 1]).compareTo(array[middle]) <= 0) {
+        if (((Comparable<Object>) array[middle - 1]).compareTo(array[middle]) <= 0) {
             return;
         }
         if (start + 2 == end) {
@@ -2200,7 +2210,7 @@ public class Arrays {
         int i1 = start, i2 = middle, i3 = 0;
         Object[] merge = new Object[end - start];
         while (i1 < middle && i2 < end) {
-            merge[i3++] = ((Comparable) array[i1]).compareTo(array[i2]) <= 0 ? array[i1++]
+            merge[i3++] = ((Comparable<Object>) array[i1]).compareTo(array[i2]) <= 0 ? array[i1++]
                     : array[i2++];
         }
         if (i1 < middle) {

@@ -58,7 +58,8 @@ public class Collections {
 		}
 	}
 
-	private static final class EmptyList extends AbstractList implements
+	@SuppressWarnings("unchecked")
+    private static final class EmptyList extends AbstractList implements
 			Serializable {
 		private static final long serialVersionUID = 8842843931221139166L;
 
@@ -75,7 +76,8 @@ public class Collections {
 		}
 	}
 
-	private static final class EmptySet extends AbstractSet implements
+	@SuppressWarnings("unchecked")
+    private static final class EmptySet extends AbstractSet implements
 			Serializable {
 		private static final long serialVersionUID = 1582296315990362920L;
 
@@ -104,7 +106,8 @@ public class Collections {
 		}
 	}
 
-	private static final class EmptyMap extends AbstractMap implements
+	@SuppressWarnings("unchecked")
+    private static final class EmptyMap extends AbstractMap implements
 			Serializable {
 		private static final long serialVersionUID = 6428348081105594320L;
 
@@ -133,11 +136,14 @@ public class Collections {
 		}
 	}
 
+    @SuppressWarnings("unchecked")
     public static final List EMPTY_LIST = new EmptyList();
 
-	public static final Set EMPTY_SET = new EmptySet();
+	@SuppressWarnings("unchecked")
+    public static final Set EMPTY_SET = new EmptySet();
 
-	public static final Map EMPTY_MAP = new EmptyMap();
+	@SuppressWarnings("unchecked")
+    public static final Map EMPTY_MAP = new EmptyMap();
 
 	private static final class ReverseComparator<T> implements Comparator<T>, Serializable {
 		private static final long serialVersionUID = 7207038068494060240L;
