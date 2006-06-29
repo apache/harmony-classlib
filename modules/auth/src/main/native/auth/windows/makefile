@@ -1,4 +1,4 @@
-# Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+# Copyright 2006 The Apache Software Foundation or its licensors, as applicable
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,33 +13,25 @@
 # limitations under the License.
 
 #
-# Makefile for module 'archive'
+# Makefile for module 'auth'
 #
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-SHAREDSUB=$(SHARED)archive\# comment to avoid \ being treated as continuation
-LIBBASE=hyarchive
+SHAREDSUB=..\shared\# comment to avoid \ being treated as continuation
+LIBBASE=hyauth
 DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\zlib\dist \
-	   /I..\..\..\modules\archive\src\main\native\include\shared
-HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
-
-BUILDFILES = \
-	$(SHAREDSUB)archive_copyright.obj $(SHAREDSUB)jclcrc32.obj \
-	$(SHAREDSUB)zip.obj $(SHAREDSUB)adler32.obj $(SHAREDSUB)inflater.obj \
-	$(SHAREDSUB)jarfile.obj $(SHAREDSUB)deflater.obj \
-	$(SHAREDSUB)archiveglob.obj
-
+BUILDFILES = $(SHAREDSUB)auth_copyright.obj authwin32.obj
 VIRTFILES = $(LIBBASE).res
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = \
-	$(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib $(LIBPATH)hyzip.lib \
-        $(LIBPATH)hyzlib.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
+MDLLIBFILES = $(LIBPATH)hycommon.lib $(LIBPATH)hysig.lib $(LIBPATH)hyzip.lib \
+	$(LIBPATH)hyzlib.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
 	$(LIBPATH)hythr.lib $(LIBPATH)vmi.lib
-DLLBASE=0x13100000
+DLLBASE=0x1300000
+COMMENT=/comment:"Auth component native code. (c) Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

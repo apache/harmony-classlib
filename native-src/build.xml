@@ -62,8 +62,6 @@
     	<property name="native.lib.target" location="${hy.hdk}/lib" />
 
         <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
-        <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
-        <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
     </target>
 
 
@@ -130,11 +128,23 @@
                 <patternset excludes="*vmi*${shlib.suffix}*" />
             </fileset>
         </copy>
+    	<!-- On Linux we want to copy the libvmi.so into the deploy/lib
+    	directory so that the natives can link against it. This is only used at
+    	build time - at runtime the libvmi.so provided by the VM implementation
+    	is loaded -->
+    	<copy todir="${hy.hdk}/lib" overwrite="yes" failonerror="false">
+    		<fileset dir="${target.platform}">
+    			<include name="libvmi.so"/>
+    		</fileset>
+    	</copy>
 
     	<!-- These module targets take care of building and copying their shared libs -->
+    	<ant dir="..\modules\auth" antfile="build.xml" target="build.native" />
+    	<ant dir="..\modules\archive" antfile="build.xml" target="build.native" />
+    	<ant dir="..\modules\text" antfile="build.xml" target="build.native" />
     	<ant dir="..\modules\prefs" antfile="build.xml" target="build.native" />
     	<ant dir="..\modules\luni" antfile="build.xml" target="build.native" />
-    	<ant dir="..\modules\nio" antfile="build.xml" target="build.native" />    	
+        <ant dir="..\modules\nio" antfile="build.xml" target="build.native" />    	
     </target>
 
 
@@ -151,10 +161,13 @@
             <arg line="clean" />
         </exec>
     	
+    	<ant dir="..\modules\auth" antfile="build.xml" target="clean.native" />
+    	<ant dir="..\modules\archive" antfile="build.xml" target="clean.native" />
+       	<ant dir="..\modules\text" antfile="build.xml" target="clean.native" />
     	<ant dir="..\modules\prefs" antfile="build.xml" target="clean.native" />
     	<ant dir="..\modules\luni" antfile="build.xml" target="clean.native" />
     	<ant dir="..\modules\nio" antfile="build.xml" target="clean.native" />
-    		
+    	
     	<delete dir="${native.lib.target}" />
     	
     	<antcall target="clean-makefile-includes" />
@@ -207,12 +220,11 @@
         <unzip src="${fdlibm.zip}" dest="${native.src.root}/fdlibm/dist" />
         <chmod dir="${native.src.root}/fdlibm/dist" perm="ugo+r" />
 
-        <unzip src="${zlib.zip}" dest="${native.src.root}/zlib/dist" />
-        <chmod dir="${native.src.root}/zlib/dist" perm="ugo+r" />
-
-		<mkdir dir="${native.src.root}/text/unicode" />
-    	<unzip src="${iculib.zip}" dest="${native.src.root}/text/unicode" />
-        <chmod dir="${native.src.root}/text/unicode" perm="ugo+r" />
+    	<ant dir="${basedir}/../modules/archive" antfile="build.xml" 
+			target="overlay-oss" />        
+    	
+    	<ant dir="${basedir}/../modules/text" antfile="build.xml" 
+    				target="overlay-oss" /> 
     </target>
 
     <!-- ================================= 
@@ -266,8 +278,11 @@
          ================================= -->
     <target name="clean-overlay-oss" depends="properties">
         <delete dir="${native.src.root}/fdlibm/dist" quiet="true" />
-        <delete dir="${native.src.root}/zlib/dist" quiet="true" />
-        <delete dir="${native.src.root}/text/unicode" quiet="true" />
+    	
+    	<ant dir="${basedir}/../modules/archive" antfile="build.xml" 
+    				target="clean-overlay-oss" />
+    	<ant dir="${basedir}/../modules/text" antfile="build.xml" 
+    	    				target="clean-overlay-oss" />
     </target>
 
 </project>

@@ -34,6 +34,7 @@
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
 	     use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
+	<property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
 
     <target name="build" depends="compile.java, build.jar" />
 	
@@ -43,6 +44,42 @@
 		<include name="zipsup.h" />
 	    </fileset>
 	</copy>
+    </target>
+	
+	<target name="overlay-oss">
+		<mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
+		<unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
+		<chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
+	</target>
+	
+	<target name="clean-overlay-oss">
+		<delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
+	</target>
+
+	<!-- Build native code -->
+    <target name="build.native" >
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.archive.src.main.native}/archive/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+
+		<!-- Copy the built shared libs over to the jre/bin dir -->
+		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.archive.src.main.native}/archive">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+    </target>
+	
+	<!-- Clean natives -->
+    <target name="clean.native">
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.archive.src.main.native}/archive/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+		    <arg line="clean" />
+        </exec>
     </target>
 
     <target name="test" depends="build, compile.tests, run.tests" />

@@ -34,10 +34,48 @@
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
 	     use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
+	
+	<property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
 
     <target name="build" depends="compile.java, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
+	
+	<target name="overlay-oss">
+		<mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
+	   	<unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
+	     <chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
+	</target>
+	
+	<target name="clean-overlay-oss">
+		<delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
+	</target>
+	
+	<!-- Build native code -->
+    <target name="build.native" >
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.text.src.main.native}/text/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+
+		<!-- Copy the built shared libs over to the jre/bin dir -->
+		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.text.src.main.native}/text">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+    </target>
+	
+	<!-- Clean natives -->
+    <target name="clean.native">
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.text.src.main.native}/text/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+		    <arg line="clean" />
+        </exec>
+    </target>
 
     <target name="clean">
         <delete failonerror="false">

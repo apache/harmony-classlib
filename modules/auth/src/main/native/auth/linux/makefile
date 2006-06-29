@@ -1,4 +1,4 @@
-# Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+# Copyright 2006 The Apache Software Foundation or its licensors, as applicable
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,19 +13,18 @@
 # limitations under the License.
 
 #
-# Makefile for module 'text'
+# Makefile for module 'auth'
 #
 
 include $(HY_HDK)/build/make/makefile.include
 
-CFLAGS += -fpic
-BUILDFILES = text_copyright.o $(SHAREDSUB)BidiWrapper.o
-
+SHAREDSUB=../shared/
+CFLAGS += -fpic 
+BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
 MDLLIBFILES = \
-	unicode/libicuuc.so.34 \
-	../libhysig.so $(LIBPATH)libhyzip.a ../libhyzlib.so $(LIBPATH)libhycommon.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a ../libhythr.so ../libvmi.so
+        $(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
+        $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-DLLNAME = ../libhytext.so
+DLLNAME = ../libhyauth.so
 
 include $(HY_HDK)/build/make/rules.mk

@@ -1,4 +1,4 @@
-# Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+# Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,17 +13,24 @@
 # limitations under the License.
 
 #
-# Makefile for module 'auth'
+# Makefile for module 'archive'
 #
 
 include $(HY_HDK)/build/make/makefile.include
 
-CFLAGS += -fpic 
-BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
-MDLLIBFILES = \
-        ../libhysig.so $(LIBPATH)libhyzip.a ../libhyzlib.so $(LIBPATH)libhycommon.a \
-        $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a ../libhythr.so ../libvmi.so
+SHAREDSUB=../shared/
 
-DLLNAME = ../libhyauth.so
+CFLAGS += -fpic -I$(SHARED)common -I../../zlib_dist \
+	-I../../include/shared
+
+BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
+	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
+	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
+
+MDLLIBFILES = \
+	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
+
+DLLNAME=../libhyarchive.so
 
 include $(HY_HDK)/build/make/rules.mk

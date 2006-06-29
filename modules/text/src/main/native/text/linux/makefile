@@ -13,22 +13,20 @@
 # limitations under the License.
 
 #
-# Makefile for module 'archive'
+# Makefile for module 'text'
 #
 
 include $(HY_HDK)/build/make/makefile.include
 
-CFLAGS += -fpic -I$(SHARED)common -I../zlib/dist \
-	-I../../../modules/archive/src/main/native/include/shared
-
-BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
-	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
-	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
+SHAREDSUB=../shared/
+CFLAGS += -fpic -I../../icu4c
+BUILDFILES = text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
 MDLLIBFILES = \
-	../libhysig.so $(LIBPATH)libhyzip.a ../libhyzlib.so $(LIBPATH)libhycommon.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a ../libhythr.so ../libvmi.so
+	../../icu4c/unicode/libicuuc.so.34 \
+	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-DLLNAME=../libhyarchive.so
+DLLNAME = ../libhytext.so
 
 include $(HY_HDK)/build/make/rules.mk

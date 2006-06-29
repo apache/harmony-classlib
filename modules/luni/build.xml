@@ -49,6 +49,8 @@
 		<include name="hysocket.h" />
 		<include name="hyporterror.h" />
 		<include name="gp.h" />
+	    <include name="iohelp.h" />
+	    <include name="libglob.h" />
 	    </fileset>
 	</copy>
 	<copy todir="${hy.jdk}/include" overwrite="yes">
@@ -154,7 +156,9 @@
 		<include name="hyporterror.h" />
 		<include name="gp.h" />
  		<include name="hysock.h" />
-		<include name="hyportpg.h" />	    	
+		<include name="hyportpg.h" />	 
+    	<include name="iohelp.h" />
+	    <include name="libglob.h" />
 	    </fileset>
 	</delete>
 	<delete failonerror="false">
