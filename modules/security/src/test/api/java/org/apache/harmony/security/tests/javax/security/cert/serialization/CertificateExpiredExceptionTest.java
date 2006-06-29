@@ -19,32 +19,32 @@
 * @version $Revision$
 */
 
-package javax.security.cert.serialization;
+package org.apache.harmony.security.tests.javax.security.cert.serialization;
 
-import javax.security.cert.CertificateParsingException;
+import javax.security.cert.CertificateExpiredException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertificateParsingException seialization
+ * Test for CertificateExpiredException seialization
  * 
  */
 
-public class CertificateParsingExceptionTest extends SerializationTest {
+public class CertificateExpiredExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        return new Object[] { new CertificateParsingException(),
-                new CertificateParsingException(null),
-                new CertificateParsingException(msgs[1]),
-                new CertificateParsingException(msgs[1]) };
+
+        return new Object[] { new CertificateExpiredException(),
+                new CertificateExpiredException(null),
+                new CertificateExpiredException(msgs[1]) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CertificateParsingExceptionTest.class);
+        junit.textui.TestRunner.run(CertificateExpiredExceptionTest.class);
     }
 }

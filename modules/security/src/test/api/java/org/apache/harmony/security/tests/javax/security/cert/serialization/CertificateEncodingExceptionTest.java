@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package javax.security.cert.serialization;
+package org.apache.harmony.security.tests.javax.security.cert.serialization;
 
 import javax.security.cert.CertificateEncodingException;
 
