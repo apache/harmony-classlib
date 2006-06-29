@@ -67,12 +67,11 @@ public class UTCTimeTest extends TestCase {
                                 0x31, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x5A },
                         null },
                 // YYMMDD-HHMMSS = "490203040506Z"
-// FIXME test case fails
-//                {
-//                        "3 Feb 2049 04:05:06",
-//                        new byte[] { 0x17, 0x0D, 0x34, 0x39, 0x30, 0x32, 0x30,
-//                                0x33, 0x30, 0x34, 0x30, 0x35, 0x30, 0x36, 0x5A },
-//                        null },
+                {
+                        "3 Feb 2049 04:05:06",
+                        new byte[] { 0x17, 0x0D, 0x34, 0x39, 0x30, 0x32, 0x30,
+                                0x33, 0x30, 0x34, 0x30, 0x35, 0x30, 0x36, 0x5A },
+                        null },
                         };
 
         try {

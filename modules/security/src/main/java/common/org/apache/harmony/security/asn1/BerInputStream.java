@@ -473,9 +473,11 @@ public class BerInputStream {
                 times = new int[7];
             }
 
-            times[0] = strToInt(contentOffset, 2) + 1900; // year
-            if (Calendar.getInstance().get(Calendar.YEAR) - times[0] > 80) {
-                times[0] += 100;
+            times[0] = strToInt(contentOffset, 2); // year
+            if (times[0] > 49) {
+                times[0] += 1900;
+            } else {
+                times[0] += 2000;
             }
 
             times[1] = strToInt(contentOffset + 2, 2); // month
