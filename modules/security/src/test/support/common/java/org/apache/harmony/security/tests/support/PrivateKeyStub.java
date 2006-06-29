@@ -29,6 +29,8 @@ import java.security.PrivateKey;
 
 public class PrivateKeyStub implements PrivateKey {
 
+    private static final long serialVersionUID = 111111111L;
+    
     String algorithm = null;
     String format = null;
     byte [] encoded = null;

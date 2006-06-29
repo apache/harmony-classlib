@@ -32,6 +32,8 @@ import java.security.PublicKey;
 
 public class PublicKeyStub implements PublicKey {
 
+    private static final long serialVersionUID = 333333333L;
+
     String algorithm = null;
     String format = null;
     byte [] encoded = null;
