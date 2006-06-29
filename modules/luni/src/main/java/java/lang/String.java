@@ -847,11 +847,15 @@ public final class String implements Serializable, Comparable<String>, CharSeque
 		Charset charset = lastCharset;
 		if (charset == null || !encoding.equalsIgnoreCase(charset.name())) {
 			try {
-				charset = Charset.forName(encoding);
-			} catch (UnsupportedCharsetException e) {
-				throw new UnsupportedEncodingException(encoding);
-			}
-			lastCharset = charset;
+                charset = Charset.forName(encoding);
+            } catch (IllegalCharsetNameException e) {
+                throw (UnsupportedEncodingException) (new UnsupportedEncodingException(
+                        encoding).initCause(e));
+            } catch (UnsupportedCharsetException e) {
+                throw (UnsupportedEncodingException) (new UnsupportedEncodingException(
+                        encoding).initCause(e));
+            }
+            lastCharset = charset;
 		}
 		return charset;
 	}

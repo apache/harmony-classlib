@@ -465,6 +465,13 @@ public class StringTest extends junit.framework.TestCase {
 			// Can't test missing converter
 			System.out.println(e);
 		}
+
+        // Regression for HARMONY-663
+        try {
+            "string".getBytes("?Q?D??_??_6ffa?+vG?_??»??");
+        } catch (java.io.UnsupportedEncodingException e) {
+            //expected
+        }
 	}
 
 	/**
