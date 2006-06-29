@@ -54,7 +54,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 
 	/**
 	 * How many elements should be added to the vector when it is detected that
-	 * it needs to grow to accomodate extra entries.
+	 * it needs to grow to accommodate extra entries.
 	 */
 	protected int capacityIncrement;
 
@@ -89,7 +89,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	public Vector(int capacity, int capacityIncrement) {
 		elementCount = 0;
 		try {
-			elementData = (E[]) new Object[capacity];
+			elementData = newElementArray(capacity);
 		} catch (NegativeArraySizeException e) {
 			throw new IllegalArgumentException();
 		}
@@ -112,6 +112,11 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
             elementData[elementCount++] = it.next();
         }
 	}
+    
+    @SuppressWarnings("unchecked")
+    private E[] newElementArray(int size) {
+        return (E[])new Object[size];
+    }
 
 	/**
 	 * Adds the specified object into this Vector at the specified location. The
@@ -130,7 +135,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @see #addElement
 	 * @see #size
 	 */
-	public void add(int location, E object) {
+	@Override
+    public void add(int location, E object) {
 		insertElementAt(object, location);
 	}
 
@@ -141,7 +147,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 *            the object to add to the Vector
 	 * @return true
 	 */
-	public boolean add(E object) {
+	@Override
+    public boolean add(E object) {
 		addElement(object);
 		return true;
 	}
@@ -161,7 +168,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 *                when <code>location < 0</code> or
 	 *                <code>location > size()</code>
 	 */
-	public synchronized boolean addAll(int location, Collection<? extends E> collection) {
+	@Override
+    public synchronized boolean addAll(int location, Collection<? extends E> collection) {
 		if (0 <= location && location <= elementCount) {
 			int size = collection.size();
 			if (size == 0) {
@@ -195,7 +203,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 *            the Collection of objects
 	 * @return true if this Vector is modified, false otherwise
 	 */
-	public synchronized boolean addAll(Collection<? extends E> collection) {
+	@Override
+    public synchronized boolean addAll(Collection<? extends E> collection) {
 		return addAll(elementCount, collection);
 	}
 
@@ -231,7 +240,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @see #isEmpty
 	 * @see #size
 	 */
-	public void clear() {
+	@Override
+    public void clear() {
 		removeAllElements();
 	}
 
@@ -243,7 +253,9 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	public synchronized Object clone() {
+	@Override
+    @SuppressWarnings("unchecked")
+    public synchronized Object clone() {
 		try {
 			Vector<E> vector = (Vector<E>) super.clone();
 			vector.elementData = elementData.clone();
@@ -264,7 +276,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @see #indexOf(Object, int)
 	 * @see java.lang.Object#equals
 	 */
-	public boolean contains(Object object) {
+	@Override
+    public boolean contains(Object object) {
 		return indexOf(object, 0) != -1;
 	}
 
@@ -276,7 +289,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @return true if all objects in the specified Collection are elements of
 	 *         this Vector, false otherwise
 	 */
-	public synchronized boolean containsAll(Collection<?> collection) {
+	@Override
+    public synchronized boolean containsAll(Collection<?> collection) {
 		return super.containsAll(collection);
 	}
 
@@ -372,7 +386,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @see #hashCode
 	 */
-	public synchronized boolean equals(Object object) {
+	@Override
+    public synchronized boolean equals(Object object) {
 		if (this == object) {
             return true;
         }
@@ -426,19 +441,21 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @see #size
 	 */
-	public E get(int location) {
+	@Override
+    public E get(int location) {
 		return elementAt(location);
 	}
 
 	private void grow(int newCapacity) {
-		E[] newData = (E[]) new Object[newCapacity];
+		E[] newData = newElementArray(newCapacity);
 		// Assumes elementCount is <= newCapacity
+        assert elementCount <= newCapacity;
 		System.arraycopy(elementData, 0, newData, 0, elementCount); 
 		elementData = newData;
 	}
 
 	/**
-	 * jit optimization
+	 * JIT optimization
 	 */
 	private void growByOne() {
 		int adding = 0;
@@ -450,7 +467,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
             adding = capacityIncrement;
         }
 
-		E[] newData = (E[]) new Object[elementData.length + adding];
+		E[] newData = newElementArray(elementData.length + adding);
 		System.arraycopy(elementData, 0, newData, 0, elementCount);
 		elementData = newData;
 	}
@@ -470,7 +487,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
                 adding += capacityIncrement;
             }
 		}
-		E[] newData = (E[]) new Object[elementData.length + adding];
+		E[] newData = newElementArray(elementData.length + adding);
 		System.arraycopy(elementData, 0, newData, 0, elementCount);
 		elementData = newData;
 	}
@@ -483,7 +500,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @see #equals
 	 */
-	public synchronized int hashCode() {
+	@Override
+    public synchronized int hashCode() {
 		int result = 1;
 		for (int i = 0; i < elementCount; i++) {
             result = (31 * result)
@@ -506,7 +524,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @see #lastIndexOf(Object)
 	 * @see #lastIndexOf(Object, int)
 	 */
-	public int indexOf(Object object) {
+	@Override
+    public int indexOf(Object object) {
 		return indexOf(object, 0);
 	}
 
@@ -588,7 +607,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @see #size
 	 */
-	public synchronized boolean isEmpty() {
+	@Override
+    public synchronized boolean isEmpty() {
 		return elementCount == 0;
 	}
 
@@ -626,7 +646,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @see #indexOf(Object)
 	 * @see #indexOf(Object, int)
 	 */
-	public synchronized int lastIndexOf(Object object) {
+	@Override
+    public synchronized int lastIndexOf(Object object) {
 		return lastIndexOf(object, elementCount - 1);
 	}
 
@@ -675,7 +696,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @see java.util.List#remove(int)
 	 */
-	public synchronized E remove(int location) {
+	@Override
+    public synchronized E remove(int location) {
 		if (location < elementCount) {
 			E result = elementData[location];
 			elementCount--;
@@ -704,7 +726,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @see #removeElementAt
 	 * @see #size
 	 */
-	public boolean remove(Object object) {
+	@Override
+    public boolean remove(Object object) {
 		return removeElement(object);
 	}
 
@@ -716,7 +739,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 *            the Collection of objects to remove
 	 * @return true if this Vector is modified, false otherwise
 	 */
-	public synchronized boolean removeAll(Collection<?> collection) {
+	@Override
+    public synchronized boolean removeAll(Collection<?> collection) {
 		return super.removeAll(collection);
 	}
 
@@ -796,7 +820,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 *                when <code>start < 0, start > end</code> or
 	 *                <code>end > size()</code>
 	 */
-	protected void removeRange(int start, int end) {
+	@Override
+    protected void removeRange(int start, int end) {
 		if (start >= 0 && start <= end && end <= size()) {
 			if (start == end) {
                 return;
@@ -825,7 +850,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 *            the Collection of objects to retain
 	 * @return true if this Vector is modified, false otherwise
 	 */
-	public synchronized boolean retainAll(Collection<?> collection) {
+	@Override
+    public synchronized boolean retainAll(Collection<?> collection) {
 		return super.retainAll(collection);
 	}
 
@@ -844,7 +870,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @see #size
 	 */
-	public synchronized E set(int location, E object) {
+	@Override
+    public synchronized E set(int location, E object) {
 		if (location < elementCount) {
 			E result = elementData[location];
 			elementData[location] = object;
@@ -907,7 +934,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * @see #elementCount
 	 * @see #lastElement
 	 */
-	public synchronized int size() {
+	@Override
+    public synchronized int size() {
 		return elementCount;
 	}
 
@@ -926,7 +954,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 *                when <code>start < 0 or <code>end > size()</code>
 	 * @exception	IllegalArgumentException when <code>start > end</code>
 	 */
-	public synchronized List<E> subList(int start, int end) {
+	@Override
+    public synchronized List<E> subList(int start, int end) {
 		return new Collections.SynchronizedRandomAccessList<E>(
                 super.subList(start, end), this);
 	}
@@ -936,7 +965,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @return an array of the elements from this Vector
 	 */
-	public synchronized Object[] toArray() {
+	@Override
+    public synchronized Object[] toArray() {
 		Object[] result = new Object[elementCount];
 		System.arraycopy(elementData, 0, result, 0, elementCount);
 		return result;
@@ -957,7 +987,9 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 *                when the type of an element in this Vector cannot be
 	 *                stored in the type of the specified array
 	 */
-	public synchronized <T> T[] toArray(T[] contents) {
+	@Override
+    @SuppressWarnings("unchecked")
+    public synchronized <T> T[] toArray(T[] contents) {
 		if (elementCount > contents.length) {
             Class<?> ct = contents.getClass().getComponentType();
 			contents = (T[]) Array.newInstance(ct, elementCount);
@@ -976,7 +1008,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 	 * 
 	 * @see #elements
 	 */
-	public synchronized String toString() {
+	@Override
+    public synchronized String toString() {
 		if (elementCount == 0) {
             return "[]";
         }
