@@ -33,7 +33,6 @@ public class AllTests {
 		suite.addTestSuite(ArithmeticExceptionTest.class);
 		suite.addTestSuite(ArrayIndexOutOfBoundsExceptionTest.class);
 		suite.addTestSuite(ArrayStoreExceptionTest.class);
-		suite.addTestSuite(AssertionErrorTest.class);
 		suite.addTestSuite(BooleanTest.class);
 		suite.addTestSuite(ByteTest.class);
 		suite.addTestSuite(CharacterTest.class);
