@@ -54,6 +54,11 @@ import org.apache.harmony.luni.util.InvalidJarIndexException;
 public class URLClassLoader extends SecureClassLoader {
 
     private static URL[] NO_PATH = new URL[0];
+    
+    @SuppressWarnings("unchecked")
+    private static <K, V> Hashtable<K, V>[] newHashtableArray(int size) {
+        return new Hashtable[size];
+    }
 
     URL[] urls, orgUrls;
 
@@ -93,6 +98,7 @@ public class URLClassLoader extends SecureClassLoader {
          * @exception ClassNotFoundException
          *                If the class could not be found.
          */
+        @Override
         protected synchronized Class<?> loadClass(String className,
                 boolean resolveClass) throws ClassNotFoundException {
             SecurityManager sm = System.getSecurityManager();
@@ -177,7 +183,7 @@ public class URLClassLoader extends SecureClassLoader {
         URL[] newPath = new URL[urlArray.length + 1];
         System.arraycopy(urlArray, 0, newPath, 0, urlArray.length);
         newPath[urlArray.length] = url;
-        Hashtable<String, URL[]>[] newIndexes = new Hashtable[indexes.length + 1];
+        Hashtable<String, URL[]>[] newIndexes = newHashtableArray(indexes.length + 1);
         System.arraycopy(indexes, 0, newIndexes, 0, indexes.length);
         indexes = newIndexes;
         return newPath;
@@ -194,6 +200,7 @@ public class URLClassLoader extends SecureClassLoader {
      *                thrown if an IO Exception occurs while attempting to
      *                connect
      */
+    @Override
     public Enumeration<URL> findResources(final String name) throws IOException {
         if (name == null) {
             return null;
@@ -332,7 +339,7 @@ public class URLClassLoader extends SecureClassLoader {
      * @param newExtensions
      *            URL[] the URLs to look in for.
      * @param name
-     *            String the ressource to look for : either a resource or a
+     *            String the resource to look for : either a resource or a
      *            class.
      * @param i
      *            int the index of 'indexes' array to use.
@@ -397,8 +404,7 @@ public class URLClassLoader extends SecureClassLoader {
      * Converts an input stream into a byte array.
      * 
      * @return byte[] the byte array
-     * @param is
-     *            java.io.InputStream the input stream
+     * @param is the input stream
      */
     private static byte[] getBytes(InputStream is, boolean readAvailable)
             throws IOException {
@@ -433,6 +439,7 @@ public class URLClassLoader extends SecureClassLoader {
      * @param codesource
      *            CodeSource
      */
+    @Override
     protected PermissionCollection getPermissions(final CodeSource codesource) {
         PermissionCollection pc = super.getPermissions(codesource);
         URL u = codesource.getLocation();
@@ -586,7 +593,7 @@ public class URLClassLoader extends SecureClassLoader {
             orgUrls[i] = searchUrls[i];
         }
         // Search each jar for META-INF/INDEX.LIST
-        indexes = new Hashtable[nbUrls];
+        indexes = newHashtableArray(nbUrls);
     }
 
     /**
@@ -601,6 +608,7 @@ public class URLClassLoader extends SecureClassLoader {
      * @exception java.lang.ClassNotFoundException
      *                if the class cannot be loaded
      */
+    @Override
     protected Class<?> findClass(final String clsName)
             throws ClassNotFoundException {
         Class<?> cls = AccessController.doPrivileged(
@@ -647,6 +655,7 @@ public class URLClassLoader extends SecureClassLoader {
      * @param name
      *            java.lang.String the name of the requested resource
      */
+    @Override
     public URL findResource(final String name) {
         if (name == null) {
             return null;
