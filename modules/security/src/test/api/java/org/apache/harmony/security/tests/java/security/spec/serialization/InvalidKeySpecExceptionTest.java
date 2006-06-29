@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package java.security.spec.serialization;
+package org.apache.harmony.security.tests.java.security.spec.serialization;
 
 import java.security.spec.InvalidKeySpecException;
 
