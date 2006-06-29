@@ -295,48 +295,56 @@ public class VetoableChangeSupport implements Serializable {
     }
     
     private void doFirePropertyChange(PropertyChangeEvent event)
-            throws PropertyVetoException {
-        String propName = event.getPropertyName();
-        Object oldValue = event.getOldValue();
-        Object newValue = event.getNewValue();
-        
-        if (newValue != null && oldValue != null && newValue.equals(oldValue)) {
-            return;
-        }
+			throws PropertyVetoException {
+		String propName = event.getPropertyName();
+		Object oldValue = event.getOldValue();
+		Object newValue = event.getNewValue();
 
-        try {
-            notifyAllListeners(event);
-        } catch (PropertyVetoException pve) {
-            PropertyChangeEvent rEvent = createPropertyChangeEvent(propName,
-                    newValue, oldValue);
-            notifyAllListeners(rEvent);
-            throw pve;
-        }
-    }
+		if (newValue != null && oldValue != null && newValue.equals(oldValue)) {
+			return;
+		}
 
-    private void notifyListeners(Iterator<VetoableChangeListener> iterator, PropertyChangeEvent event)
-            throws PropertyVetoException {
+		/* Take note of who we are going to notify (and potentially un-notify) */
 
-        VetoableChangeListener listener = null;
-        while (iterator.hasNext()) {
-            listener = iterator.next();
-            listener.vetoableChange(event);
-        }
+		VetoableChangeListener[] listensToAll; // Listeners to all property change events
+		VetoableChangeListener[] listensToOne = null; // Listens to a given property change
+		synchronized (this) {
+			listensToAll = allVetoableChangeListeners.toArray(
+				new VetoableChangeListener[allVetoableChangeListeners.size()]);
 
-    }
+			List<VetoableChangeListener> listeners =
+				selectedVetoableChangeListeners.get(event.getPropertyName());
+			if (listeners != null) {
+				listensToOne = listeners.toArray(
+					new VetoableChangeListener[listeners.size()]);
+			}
+		}
 
-    private void notifyAllListeners(PropertyChangeEvent event)
-            throws PropertyVetoException {
+		try {
+			for (VetoableChangeListener listener : listensToAll) {
+				listener.vetoableChange(event);
+			}
+			if (listensToOne != null) {
+				for (VetoableChangeListener listener : listensToOne) {
+					listener.vetoableChange(event);
+				}
+			}
+		} catch (PropertyVetoException pve) {
+			// Tell them we have changed it back
+			PropertyChangeEvent revertEvent = createPropertyChangeEvent(
+					propName, newValue, oldValue);
+			for (VetoableChangeListener listener : listensToAll) {
+				listener.vetoableChange(revertEvent);
+			}
+			if (listensToOne != null) {
+				for (VetoableChangeListener listener : listensToOne) {
+					listener.vetoableChange(revertEvent);
+				}
+			}
+			throw pve;
+		}
+	}
 
-        notifyListeners(allVetoableChangeListeners.iterator(), event);
-        String propertyName = event.getPropertyName();
-        List<VetoableChangeListener> listeners = selectedVetoableChangeListeners.get(propertyName);
-        if (listeners == null) {
-            return;
-        }
-        notifyListeners(listeners.iterator(), event);
-    }
-    
     private static VetoableChangeListener[] getAsVetoableChangeListenerArray(
             List<VetoableChangeListener> listeners) {
         Object[] objects = listeners.toArray();

@@ -1353,6 +1353,39 @@ public class PropertyChangeSupportTest extends TestCase {
         public void propertyChange(PropertyChangeEvent event) {}
     }
 
+    /*
+     * Mock PropertyChangeListener that modifies the listener set on notification. 
+     */
+    static class MockPropertyChangeListener3 implements PropertyChangeListener {
+
+    	PropertyChangeSupport changeSupport;
+    	
+    	public MockPropertyChangeListener3(PropertyChangeSupport changeSupport) {
+    		super();
+    		this.changeSupport = changeSupport;
+    	}
+    	
+    	/* On property changed event modify the listener set */
+		public void propertyChange(PropertyChangeEvent event) {
+			changeSupport.addPropertyChangeListener(
+				new PropertyChangeListener(){
+					public void propertyChange(PropertyChangeEvent event) {
+						// Empty							
+					}
+				}
+			);
+		}
+    }
+
+    /**
+     * Regression test for concurrent modification of listener set 
+     */
+    public void testConcurrentModification() {
+    	PropertyChangeSupport changeSupport = new PropertyChangeSupport("bogus");
+    	MockPropertyChangeListener3 changeListener = new MockPropertyChangeListener3(changeSupport);
+    	changeSupport.firePropertyChange("bogus property", "previous", "newer");
+    }
+    
     /**
      * @tests java.beans.PropertyChangeSupport#PropertyChangeSupport(
      *        java.lang.Object)

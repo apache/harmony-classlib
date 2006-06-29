@@ -382,24 +382,32 @@ public class PropertyChangeSupport implements Serializable {
 		Object oldValue = event.getOldValue();
 		Object newValue = event.getNewValue();
 
-		if ((newValue != null) && (oldValue != null)
-				&& newValue.equals(oldValue)) {
+		if ((newValue != null) && (oldValue != null) && newValue.equals(oldValue)) {
 			return;
 		}
 
-		Iterator<PropertyChangeListener> iterator = allPropertiesChangeListeners.iterator();
-		while (iterator.hasNext()) {
-			PropertyChangeListener listener = (PropertyChangeListener) iterator
-					.next();
+		/* Copy the listeners collections so they can be modified while we fire events. */
+
+		PropertyChangeListener[] listensToAll;	// Listeners to all property change events
+		PropertyChangeListener[] listensToOne = null; // Listens to a given property change
+		synchronized(this) {
+			 listensToAll = allPropertiesChangeListeners.toArray(
+				new PropertyChangeListener[allPropertiesChangeListeners.size()]);
+			
+			List<PropertyChangeListener> listeners =
+				selectedPropertiesChangeListeners.get(propertyName);
+			if (listeners != null) {
+				listensToOne = listeners.toArray(
+					new PropertyChangeListener[listeners.size()]); 
+			}
+		}
+
+		// Fire the listeners
+		for (PropertyChangeListener	listener : listensToAll) {
 			listener.propertyChange(event);
 		}
-		List<PropertyChangeListener> listeners = selectedPropertiesChangeListeners
-				.get(propertyName);
-		if (listeners != null) {
-			iterator = listeners.iterator();
-			while (iterator.hasNext()) {
-				PropertyChangeListener listener = (PropertyChangeListener) iterator
-						.next();
+		if (listensToOne != null) {
+			for (PropertyChangeListener	listener : listensToAll) {
 				listener.propertyChange(event);
 			}
 		}
