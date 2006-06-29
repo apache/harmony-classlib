@@ -126,11 +126,6 @@
 
         <run-tests description="api tests">
             <junit-elements>
-                <!-- Required for running the serialization unit tests -->
-                <!-- Note: will be deleted after improving             -->
-                <!-- SerializationTest support class: all resource     -->
-                <!-- files will be placed on the classpath             -->
-                <jvmarg value="-DRESOURCE_DIR=${hy.crypto.src.test}/api/java"/>
 
                 <classpath>
                     <pathelement path="${hy.crypto.bin.test}/api"/>
