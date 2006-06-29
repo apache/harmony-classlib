@@ -134,6 +134,7 @@
             <junit-elements>
                 <classpath>
                     <pathelement path="${hy.security.bin.test}/api"/>
+                    <pathelement path="${hy.security.src.test.resources}"/>
                     <pathelement path="../../build/tests"/>
                     <pathelement path="${hy.hdk}/build/test/support.jar" />
                 </classpath>
