@@ -444,9 +444,26 @@ public final class Scanner implements Iterator<String> {
         }
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns the next token which is prefixed and postfixed by input that
+     * matches the delimiter pattern if this token matches the pattern
+     * constructed from the sepcified string. This method may be blocked when it
+     * is waiting for input to scan. If this match successes, the scanner
+     * advances past the nest token that matched the pattern.
+     * 
+     * The invocation of this method in the form next(pattern) behaves in the
+     * same way as the invocaiton of next(Pattern.compile(pattern)).
+     * 
+     * @param pattern
+     *            the string specifying the pattern to scan for
+     * @return the next token
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     */
     public String next(String pattern) {
-        throw new NotYetImplementedException();
+        return next(Pattern.compile(pattern));
     }
 
     //TODO: To implement this feature

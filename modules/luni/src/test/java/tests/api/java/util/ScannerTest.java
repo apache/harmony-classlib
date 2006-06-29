@@ -516,6 +516,54 @@ public class ScannerTest extends TestCase {
         }
     }
 
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#next(String)
+     */
+    public void test_nextLString() throws IOException {
+        s = new Scanner("b*a*").useDelimiter("\\*");
+        assertEquals("b", s.next("a*b"));
+        try {
+            s.next("a*b");
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("word ? ");
+        assertEquals("word", s.next("\\w+"));
+        try {
+            s.next("\\w+");
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("word1 next  ");
+        assertEquals("word1", s.next("\\w+"));
+        assertEquals("next", s.next("\\w+"));
+        // test boundary case
+        try {
+            s.next("\\w+");
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // test socket inputStream
+        os.write("aab 2".getBytes());
+        serverSocket.close();
+
+        s = new Scanner(client);
+        assertEquals("aab", s.next("a*b"));
+        try {
+            s.next("a*b");
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+    }
+    
     public void setUp() throws Exception {
         super.setUp();
 
