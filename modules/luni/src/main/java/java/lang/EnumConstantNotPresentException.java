@@ -28,6 +28,7 @@ public class EnumConstantNotPresentException extends RuntimeException {
 
     private static final long serialVersionUID = -6046998521960521108L;
 
+    @SuppressWarnings("unchecked")
     private final Class<? extends Enum> enumType;
 
     private final String constantName;
@@ -40,6 +41,7 @@ public class EnumConstantNotPresentException extends RuntimeException {
      * @param enumType The enum type.
      * @param constantName The missing constant name.
      */
+    @SuppressWarnings("unchecked")
     public EnumConstantNotPresentException(Class<? extends Enum> enumType,
             String constantName) {
         super("The enum constant " + enumType.getName() + "." + constantName
@@ -55,6 +57,7 @@ public class EnumConstantNotPresentException extends RuntimeException {
      * 
      * @return A <code>Class</code> instance.
      */
+    @SuppressWarnings("unchecked")
     public Class<? extends Enum> enumType() {
         return enumType;
     }
