@@ -36,11 +36,12 @@ public class ObjectNode {
 
     private Expression initializer;
     private Object objectValue = null;
-    private HashMap nodes;
-    
-    private LinkedHashSet statements = new LinkedHashSet();
-    private Vector expressions = new Vector();
-    private Vector referencedExpressions = new Vector();
+    private HashMap<Object, ObjectNode> nodes;
+
+    private LinkedHashSet<Statement> statements =
+            new LinkedHashSet<Statement>();
+    private Vector<Expression> expressions = new Vector<Expression>();
+    private Vector<Expression> referencedExpressions = new Vector<Expression>();
     
     private int referencesNumber = 0;
     private String id = null;
@@ -50,7 +51,9 @@ public class ObjectNode {
         this.nodes = null;
     }
     
-    public ObjectNode(Expression initializer, HashMap nodes) {
+    public ObjectNode(Expression initializer,
+            HashMap<Object, ObjectNode> nodes)
+    {
         this.initializer = initializer;
         this.nodes = nodes;
     }
@@ -70,7 +73,8 @@ public class ObjectNode {
             
             for(int i = 0; i < oldArgs.length; ++i) {
                 if(oldArgs[i] != null) {
-                    ObjectNode node = (ObjectNode) nodes.get(oldArgs[i]);
+                    ObjectNode node = nodes.get(oldArgs[i]);
+
                     newArgs[i] = node.getObjectValue();
                 } else {
                     newArgs[i] = null;
@@ -88,6 +92,7 @@ public class ObjectNode {
     
     public Class getObjectType() throws Exception {
         Object value = getObjectValue();
+
         return (value != null) ? value.getClass() : null;
     }
     
@@ -124,20 +129,19 @@ public class ObjectNode {
         expressions.add(expression);
     }
 
-    // FIXME should be replaced with HashSet
     public void addStatement(Statement statement) {
         statements.add(statement);
     }
     
-    public Iterator expressions() {
+    public Iterator<Expression> expressions() {
         return expressions.iterator();
     }
     
-    public Iterator referencedExpressions() {
+    public Iterator<Expression> referencedExpressions() {
         return referencedExpressions.iterator();
     }
     
-    public Iterator statements() {
+    public Iterator<Statement> statements() {
         return statements.iterator();
     }
 }

@@ -128,6 +128,7 @@ public class XMLEncoder extends Encoder {
         printBytes(0, mainTag.toStringOnClose());
     }
     
+    // FIXME processing of default constructor: investigate
     private void printObjectTag(int tabCount, Object object, ObjectNode node) {
         Class nodeType = null;
 
@@ -202,7 +203,7 @@ public class XMLEncoder extends Encoder {
 
             // preprocessing is done, print it!
             if (objectPrinted) {
-                // if object has been already printed then only print the
+                // if object has already been printed then only print the
                 // reference
                 printBytes(tabCount, tag.toStringShortForm());
             }
@@ -225,22 +226,21 @@ public class XMLEncoder extends Encoder {
                 printed.add(node);
     
                 if (isArray(nodeType)) { // if array
-                    Iterator it = node.statements();
+                    Iterator<Statement> it = node.statements();
 
                     while(it.hasNext()) {
-                        Statement s = (Statement) it.next();
+                        Statement s = it.next();
 
                         printVoidTag(++tabCount, s);
                         --tabCount;
                     }
                 } else { // if object
-                    Iterator i1;
-                    Iterator i2;
+                    Iterator<Expression> i1;
+                    Iterator<Statement> i2;
                     
                     for(int i = 0; i < arguments.length; ++i) {
                         if(arguments[i] != null) {
-                            ObjectNode succNode = (ObjectNode) nodes.get(
-                                    arguments[i]);
+                            ObjectNode succNode = nodes.get(arguments[i]);
 
                             printObjectTag(++tabCount, arguments[i], succNode);
                         } else {
@@ -252,7 +252,7 @@ public class XMLEncoder extends Encoder {
                     
                     i1 = node.expressions();
                     while(i1.hasNext()) {
-                        Expression e = (Expression) i1.next();
+                        Expression e = i1.next();
                         
                         printVoidTag(++tabCount, e);
                         --tabCount;
@@ -260,7 +260,7 @@ public class XMLEncoder extends Encoder {
                     
                     i2 = node.statements();
                     while(i2.hasNext()) {
-                        Statement s = (Statement) i2.next();
+                        Statement s = i2.next();
                         
                         printVoidTag(++tabCount, s);
                         --tabCount;
@@ -331,7 +331,8 @@ public class XMLEncoder extends Encoder {
             
             for(int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) {
                 if(args[i] != null) {
-                    ObjectNode node2 = (ObjectNode) nodes.get(args[i]);
+                    ObjectNode node2 = nodes.get(args[i]);
+
                     printObjectTag(++tabCount, args[i], node2);
                 } else {
                     printNullTag(++tabCount);
@@ -375,6 +376,7 @@ public class XMLEncoder extends Encoder {
         } else {
             tag.addAttr("method", stat.getMethodName());
         }
+
         
         printBytes(tabCount, tag.toStringOnOpen());
         
@@ -395,6 +397,7 @@ public class XMLEncoder extends Encoder {
     private void printNullTag(int tabCount) {
         printBytes(tabCount, "<null/>");
     }
+ 
     
     private void printBytes(int tabCount, String s) {
         try {
