@@ -37,13 +37,10 @@ public class ByteBufferTest extends AbstractBufferTest {
     protected static final int SMALL_TEST_LENGTH = 5;
     protected static final int BUFFER_LENGTH = 250;
     
-    private static final byte[] bytes = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    
     protected ByteBuffer buf;
 
     protected void setUp() throws Exception {
-        super.setUp();
-        buf = ByteBuffer.wrap(bytes);
+        buf = ByteBuffer.allocate(10);
         baseBuf = buf;
     }
 

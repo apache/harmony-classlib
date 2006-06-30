@@ -26,17 +26,15 @@ import junit.framework.TestCase;
  */
 public class AbstractBufferTest extends TestCase {
     
-    private static final byte[] bytes = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    
     protected Buffer baseBuf;
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        baseBuf = ByteBuffer.wrap(bytes);
+    
+    protected void setUp() throws Exception{
+    	super.setUp();
+    	baseBuf = ByteBuffer.allocate(10);
     }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    
+    protected void tearDown() throws Exception{
+    	super.tearDown();
     }
 
     public void testCapacity() {

@@ -653,6 +653,9 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public CharBuffer put(String str, int start, int end) {
+        if(str == null){
+            throw new NullPointerException();
+        }
         if (start < 0 || end < start || end > str.length()) {
             throw new IndexOutOfBoundsException();
         }
