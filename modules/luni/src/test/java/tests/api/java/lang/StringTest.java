@@ -271,7 +271,10 @@ public class StringTest extends junit.framework.TestCase {
 		String s1 = "";
 		String s2 = "s2";
 		String s3 = s1.concat(s2);
-		assertTrue("should not be identical", s2 != s3);
+		assertEquals(s2, s3);
+        
+        s3 = s2.concat(s1);
+        assertSame(s2, s3);
 	}
 
 	/**
@@ -342,9 +345,16 @@ public class StringTest extends junit.framework.TestCase {
 			String string = new String(chars);
 			try {
 				result = string.getBytes("8859_1");
-				assertTrue("Wrong byte conversion 8859_1: " + i,
-						(i < 256 && result[0] == (byte) i)
-								|| (i > 255 && result[0] == '?'));
+                if (i < 256) {
+                    assertEquals((byte)i, result[0]);
+                } else {
+                    /*
+                     * Substitue character should be 0x1A [1], but may be
+                     * '?' character.
+                     * [1] http://en.wikipedia.org/wiki/Substitute_character
+                     */
+                    assertTrue(result[0] == '?' || result[0] == 0x1a);
+                }
 			} catch (java.io.UnsupportedEncodingException e) {
 			}
 			try {
@@ -367,12 +377,6 @@ public class StringTest extends junit.framework.TestCase {
 			String bytes = null;
 			try {
 				bytes = new String(result, "UTF8");
-				if (bytes.length() != 1) {
-					for (int j = 0; j < result.length; j++) {
-						System.out.print(Integer.toHexString(result[j]) + " ");
-					}
-					System.out.println();
-				}
 				assertTrue("Wrong UTF8 byte length: " + bytes.length() + "("
 						+ i + ")", bytes.length() == 1);
 				assertTrue(
@@ -393,29 +397,6 @@ public class StringTest extends junit.framework.TestCase {
 				assertTrue("Wrong char value", result.charAt(0) == (char) i);
 			} catch (java.io.UnsupportedEncodingException e) {
 			}
-		}
-
-		String utf8 = null;
-		try {
-			utf8 = new String(new byte[] { 0x14, (byte) 0x80, 0x24, 0x64 },
-					"UTF8");
-			assertTrue("Wrong UTF8 conversion 1", utf8.length() == 1
-					&& utf8.charAt(0) == 0x14);
-		} catch (java.io.UnsupportedEncodingException e) {
-		}
-		try {
-			utf8 = new String(new byte[] { 0x15, (byte) 0xe0, 0x24, 0x64 },
-					"UTF8");
-			assertTrue("Wrong UTF8 conversion 2", utf8.length() == 1
-					&& utf8.charAt(0) == 0x15);
-		} catch (java.io.UnsupportedEncodingException e) {
-		}
-		try {
-			utf8 = new String(new byte[] { 0x16, (byte) 0xe0, (byte) 0x80,
-					0x24, 0x64 }, "UTF8");
-			assertTrue("Wrong UTF8 conversion 3", utf8.length() == 1
-					&& utf8.charAt(0) == 0x16);
-		} catch (java.io.UnsupportedEncodingException e) {
 		}
 	}
 
@@ -442,37 +423,31 @@ public class StringTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.String#getBytes(java.lang.String)
 	 */
-	public void test_getBytesLjava_lang_String() {
-		// Test for method byte [] java.lang.String.getBytes(java.lang.String)
-		byte[] buf = "Hello World".getBytes();
-		assertEquals("Returned incorrect bytes", "Hello World", new String(buf)
-				);
+	public void test_getBytesLjava_lang_String() throws Exception {
+        // Test for method byte [] java.lang.String.getBytes(java.lang.String)
+        byte[] buf = "Hello World".getBytes();
+        assertEquals("Returned incorrect bytes", "Hello World", new String(buf));
 
-		boolean exception = false;
-		try {
-			"string".getBytes("8849_1");
-		} catch (java.io.UnsupportedEncodingException e) {
-			exception = true;
-		}
-		assertTrue("Did not throw exception", exception);
+        try {
+            "string".getBytes("8849_1");
+            fail("No UnsupportedEncodingException");
+        } catch (UnsupportedEncodingException e) {
+        }
 
-		try {
-			byte[] bytes = "\u3048".getBytes("ISO2022JP");
-			String converted = new String(bytes, "ISO8859_1");
-			assertTrue("invalid conversion: " + converted, converted
-					.equals("\u001b$B$(\u001b(B"));
-		} catch (UnsupportedEncodingException e) {
-			// Can't test missing converter
-			System.out.println(e);
-		}
+        byte[] bytes = "\u3048".getBytes("UTF-8");
+        byte[] expected = new byte[] {(byte)0xE3, (byte)0x81, (byte)0x88};
+        assertEquals(expected[0], bytes[0]);
+        assertEquals(expected[1], bytes[1]);
+        assertEquals(expected[2], bytes[2]);
 
         // Regression for HARMONY-663
         try {
-            "string".getBytes("?Q?D??_??_6ffa?+vG?_??»??");
-        } catch (java.io.UnsupportedEncodingException e) {
+            "string".getBytes("?Q?D??_??_6ffa?+vG?_??ï¿½??");
+            fail("No UnsupportedEncodingException");
+        } catch (UnsupportedEncodingException e) {
             //expected
         }
-	}
+    }
 
 	/**
 	 * @tests java.lang.String#getChars(int, int, char[], int)
@@ -715,9 +690,9 @@ public class StringTest extends junit.framework.TestCase {
 				.toLowerCase().equals(hwlc));
 
 		assertEquals("a) Sigma has same lower case value at end of word with Unicode 3.0",
-				"\u03c3\u03c3", "\u03a3\u03a3".toLowerCase());
+				"\u03c3", "\u03a3".toLowerCase());
 		assertEquals("b) Sigma has same lower case value at end of word with Unicode 3.0",
-				"a\u03c3", "a\u03a3".toLowerCase());
+				"a \u03c3", "a \u03a3".toLowerCase());
 	}
 
 	/**

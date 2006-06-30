@@ -267,7 +267,6 @@
                     <exclude name="tests/api/java/lang/AssertionErrorTest.java" />
                     <exclude name="tests/api/java/lang/ClassTest.java" />
                     <exclude name="tests/api/java/lang/ProcessTest.java" />
-                    <exclude name="tests/api/java/lang/StringTest.java" />
                     <exclude name="tests/api/java/net/DatagramSocketTest.java" />
                     <exclude name="tests/api/java/net/HttpURLConnectionTest.java" />
                     <exclude name="tests/api/java/net/JarURLConnectionTest.java" />
