@@ -164,7 +164,9 @@ Generating snapshot tar
 </echo>
         <tar destfile="${deploy.tar}" compression="gzip">
             <tarfileset dir="${basedir}" prefix="Harmony">
+                <include name="COPYRIGHT" />
                 <include name="LICENSE" />
+                <include name="NOTICE" />
                 <include name="THIRD_PARTY_NOTICES.txt" />
                 <include name="deploy/jdk/**" />
                 <exclude name="deploy/jdk/jre/bin/default/**" /> 
@@ -191,7 +193,9 @@ Generating snapshot zip
 </echo>
         <zip destfile="${deploy.zip}">
             <zipfileset dir="${basedir}" prefix="Harmony">
+                <include name="COPYRIGHT" />
                 <include name="LICENSE" />
+                <include name="NOTICE" />
                 <include name="THIRD_PARTY_NOTICES.txt" />
                 <include name="deploy/jdk/**" />
                 <exclude name="deploy/jdk/jre/bin/default/**" /> 
