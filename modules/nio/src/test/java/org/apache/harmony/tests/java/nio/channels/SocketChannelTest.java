@@ -58,6 +58,10 @@ public class SocketChannelTest extends TestCase {
     private ServerSocket server1;
 
     private ServerSocket server2;
+    
+    private final static int TIMEOUT = 60000;
+    
+    private final static int EOF = -1;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -1744,6 +1748,215 @@ public class SocketChannelTest extends TestCase {
         sock.close();
     }
 
+    /**
+     * @tests java.nio.channels.SocketChannel#read(ByteBuffer)
+     */
+    public void test_readLjava_nio_ByteBuffer_Blocking() throws IOException {
+        // initialize write content
+        byte[] writeContent = new byte[CAPACITY_NORMAL];
+        for (int i = 0; i < writeContent.length; i++) {
+            writeContent[i] = (byte) i;
+        }
+        // establish connection
+        channel1.connect(localAddr1);
+        Socket acceptedSocket = server1.accept();
+
+        // use OutputStream.write to send CAPACITY_NORMAL bytes data
+        OutputStream out = acceptedSocket.getOutputStream();
+        out.write(writeContent);
+        // use close to guarantee all data is sent
+        acceptedSocket.close();
+
+        ByteBuffer readContent = ByteBuffer.allocate(CAPACITY_NORMAL + 1);
+        int totalCount = 0;
+        int count = 0;
+        long startTime = System.currentTimeMillis();
+        // use SocketChannel.read to read data
+        while (totalCount <= CAPACITY_NORMAL) {
+            count = channel1.read(readContent);
+            if (EOF == count) {
+                break;
+            }
+            totalCount += count;
+            // if the channel could not finish reading in TIMEOUT ms, the
+            // test fails. It is used to guarantee the test never hangs even
+            // if there are bugs of SocketChannel implementation. For
+            // blocking read, it possibly returns 0 in some cases.
+            assertTimeout(startTime, TIMEOUT);
+        }
+        assertEquals(CAPACITY_NORMAL, totalCount);
+        readContent.flip();
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            assertEquals(writeContent[i], readContent.get());
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#read(ByteBuffer)
+     */
+    public void test_readLjava_nio_ByteBuffer_Nonblocking() throws IOException {
+        // initialize write content
+        byte[] writeContent = new byte[CAPACITY_NORMAL];
+        for (int i = 0; i < writeContent.length; i++) {
+            writeContent[i] = (byte) i;
+        }
+
+        // establish connection
+        channel1.connect(localAddr1);
+        Socket acceptedSocket = server1.accept();
+        // use OutputStream.write to write CAPACITY_NORMAL bytes data.
+        OutputStream out = acceptedSocket.getOutputStream();
+        out.write(writeContent);
+        // use close to guarantee all data is sent
+        acceptedSocket.close();
+
+        channel1.configureBlocking(false);
+        ByteBuffer readContent = ByteBuffer.allocate(CAPACITY_NORMAL + 1);
+        int totalCount = 0;
+        int count = 0;
+        long startTime = System.currentTimeMillis();
+        // use SocketChannel.read to read data
+        while (totalCount <= CAPACITY_NORMAL) {
+            count = channel1.read(readContent);
+            if (EOF == count) {
+                break;
+            }
+            totalCount += count;
+            // if the channel could not finish reading in TIMEOUT ms, the
+            // test fails. It is used to guarantee the test never hangs even
+            // if there are bugs of SocketChannel implementation.
+            assertTimeout(startTime, TIMEOUT);
+        }
+
+        // assert read content
+        assertEquals(CAPACITY_NORMAL, totalCount);
+        assertEquals(CAPACITY_NORMAL, readContent.position());
+        readContent.flip();
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            assertEquals(writeContent[i], readContent.get());
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer)
+     */
+    public void test_wrtieLjava_nio_ByteBuffer_Blocking() throws IOException {
+        // initialize write content
+        ByteBuffer writeContent = ByteBuffer.allocate(CAPACITY_NORMAL);
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            writeContent.put((byte) i);
+        }
+        writeContent.flip();
+        // establish connection
+        channel1.connect(localAddr1);
+        Socket acceptedSocket = server1.accept();
+
+        // use SocketChannel.write(ByteBuffer) to write CAPACITY_NORMAL bytes
+        // data
+        int writtenCount = channel1.write(writeContent);
+        // assert written count and ByteBuffer position
+        assertEquals(CAPACITY_NORMAL, writtenCount);
+        assertEquals(CAPACITY_NORMAL, writeContent.position());
+        // use close to guarantee all data is sent
+        channel1.close();
+
+        InputStream in = acceptedSocket.getInputStream();
+        int totalCount = 0;
+        int count = 0;
+        byte[] readContent = new byte[CAPACITY_NORMAL + 1];
+        // if the channel could not finish reading in TIMEOUT ms, the test
+        // fails. It is used to guarantee the test never hangs even if there
+        // are bugs of SocketChannel implementation.
+        acceptedSocket.setSoTimeout(TIMEOUT);
+
+        // use InputStream.read to read data.
+        while (totalCount <= CAPACITY_NORMAL) {
+            count = in.read(readContent, totalCount, readContent.length
+                    - totalCount);
+            if (EOF == count) {
+                break;
+            }
+            totalCount += count;
+        }
+
+        // assert read content
+        assertEquals(CAPACITY_NORMAL, totalCount);
+        writeContent.flip();
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            assertEquals(writeContent.get(), readContent[i]);
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer)
+     */
+    public void test_wrtieLjava_nio_ByteBuffer_NonBlocking() throws Exception {
+        // initialize write content
+        ByteBuffer writeContent = ByteBuffer.allocate(CAPACITY_NORMAL);
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            writeContent.put((byte) i);
+        }
+        writeContent.flip();
+
+        // establish connection
+        channel1.connect(localAddr1);
+        Socket acceptedSocket = server1.accept();
+
+        channel1.configureBlocking(false);
+        int writtenTotalCount = 0;
+        int writtenCount = 0;
+        long startTime = System.currentTimeMillis();
+        // use SocketChannel.write(ByteBuffer) to write CAPACITY_NORMAL bytes
+        while (writtenTotalCount < CAPACITY_NORMAL) {
+            writtenCount = channel1.write(writeContent);
+            writtenTotalCount += writtenCount;
+            // if the channel could not finish writing in TIMEOUT ms, the
+            // test fails. It is used to guarantee the test never hangs even
+            // if there are bugs of SocketChannel implementation.
+            assertTimeout(startTime, TIMEOUT);
+        }
+        // assert written count and ByteBuffer position
+        assertEquals(CAPACITY_NORMAL, writtenTotalCount);
+        assertEquals(CAPACITY_NORMAL, writeContent.position());
+        // use close to guarantee all data is sent
+        channel1.close();
+
+        InputStream in = acceptedSocket.getInputStream();
+        byte[] readContent = new byte[CAPACITY_NORMAL + 1];
+        int totalCount = 0;
+        int count = 0;
+        // if the channel could not finish reading in TIMEOUT ms, the test
+        // fails. It is used to guarantee the test never hangs even if there
+        // are bugs of SocketChannel implementation.
+        acceptedSocket.setSoTimeout(TIMEOUT);
+        // use InputStream.read to read data.
+        while (totalCount <= CAPACITY_NORMAL) {
+            count = in.read(readContent, totalCount, readContent.length
+                    - totalCount);
+            if (EOF == count) {
+                break;
+            }
+            totalCount += count;
+        }
+        // assert read content
+        assertEquals(CAPACITY_NORMAL, totalCount);
+        writeContent.flip();
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            assertEquals(writeContent.get(), readContent[i]);
+        }
+    }
+
+    /*
+     * Fails if the difference between current time and start time is greater
+     * than timeout.
+     */
+    private void assertTimeout(long startTime, long timeout) {
+        long currentTime = System.currentTimeMillis();
+        if ((currentTime - startTime) > timeout) {
+            fail("Timeout");
+        }
+    }
+
     // -------------------------------------------------
     // Test for read/write but no real data expressed
     // -------------------------------------------------
@@ -2263,7 +2476,8 @@ public class SocketChannelTest extends TestCase {
                 if (readCount > 0) {
                     assertEquals(CAPACITY_NORMAL, readCount);
                     buf[1].flip();
-                    assertEquals(CAPACITY_NORMAL, this.channel1.write(buf, 1, 1));
+                    assertEquals(CAPACITY_NORMAL, this.channel1
+                            .write(buf, 1, 1));
                     readCount = in.read(serverRBuf);
                     if (readCount > 0) {
                         assertEquals(CAPACITY_NORMAL, readCount);
@@ -2336,6 +2550,7 @@ public class SocketChannelTest extends TestCase {
     }
 
     private static class ReadThread extends Thread {
+
         private SocketChannel channel;
 
         ReadThread(SocketChannel sc) {
@@ -2346,8 +2561,7 @@ public class SocketChannelTest extends TestCase {
             ByteBuffer bf = ByteBuffer.allocate(100);
             try {
                 channel.read(bf);
-            } catch (IOException e) {
-            }
+            } catch (IOException e) {}
         }
     }
 
