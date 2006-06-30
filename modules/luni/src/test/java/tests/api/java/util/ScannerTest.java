@@ -464,6 +464,116 @@ public class ScannerTest extends TestCase {
 
     /**
      * @throws IOException
+     * @tests java.util.Scanner#next()
+     */
+    public void test_next() throws IOException {
+        // use special delimiter
+        s = new Scanner("1**2").useDelimiter("\\*");
+        assertEquals("1", s.next());
+        assertEquals("", s.next());
+        assertEquals("2", s.next());
+
+        s = new Scanner("word( )test( )").useDelimiter("\\( \\)");
+        assertEquals("word", s.next());
+        assertEquals("test", s.next());
+
+        s = new Scanner("? next  ").useDelimiter("( )");
+        assertEquals("?", s.next());
+        assertEquals("next", s.next());
+        assertEquals("", s.next());
+
+        s = new Scanner("word1 word2  ");
+        assertEquals("word1", s.next());
+        assertEquals("word2", s.next());
+        // test boundary case
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // just delimiter exists in this scanner
+        s = new Scanner(" ");
+        try {
+            s.next();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // nothing exists in this scanner
+        s = new Scanner("");
+        try {
+            s.next();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // no delimiter exites in this scanner
+        s = new Scanner("test");
+        assertEquals("test", s.next());
+
+        // input resourse starts with delimiter
+        s = new Scanner("  test");
+        assertEquals("test", s.next());
+
+        // input resource ends with delimiter
+        s = new Scanner("  test  ");
+        assertEquals("test", s.next());
+
+        // What if a sentence can not be read in all in once.
+        StringBuilder longSentence = new StringBuilder(1025);
+        for (int i = 0; i <= 10; i++) {
+            longSentence.append(" ");
+        }
+        for (int i = 11; i <= 1025; i++) {
+            longSentence.append("a");
+        }
+        s = new Scanner(longSentence.toString());
+        assertEquals(longSentence.toString().trim(), s.next());
+
+        s = new Scanner(" test test");
+        assertEquals("test", s.next());
+        assertEquals("test", s.next());
+
+        // What if use a delimiter of length 0.
+        s = new Scanner("test\ntest").useDelimiter(Pattern.compile("^",
+                Pattern.MULTILINE));
+        assertEquals("test\n", s.next());
+        assertEquals("test", s.next());
+
+        s = new Scanner("\ntest\ntest").useDelimiter(Pattern.compile("$",
+                Pattern.MULTILINE));
+        assertEquals("\ntest", s.next());
+        assertEquals("\ntest", s.next());
+
+        // test socket inputStream
+        // Harmony uses 1024 as default buffer size,
+        // what if the leading delimiter is larger than 1023
+        for (int i = 0; i < 1024; i++) {
+            os.write(" ".getBytes());
+        }
+        os.write("  1 2 ".getBytes());
+        s = new Scanner(client);
+        assertEquals("1", s.next());
+        assertEquals("2", s.next());
+        os.write("  1 2".getBytes());
+        serverSocket.close();
+        assertEquals("1", s.next());
+        assertEquals("2", s.next());
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+    }
+    
+    /**
+     * @throws IOException
      * @tests java.util.Scanner#next(Pattern)
      */
     public void test_nextLPattern() throws IOException {

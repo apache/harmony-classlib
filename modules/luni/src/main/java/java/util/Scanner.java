@@ -59,6 +59,9 @@ public final class Scanner implements Iterator<String> {
     //  Default delimiting pattern
     private static final Pattern DEFAULT_DELIMITER = Pattern
             .compile("\\p{javaWhitespace}+"); //$NON-NLS-1$
+    
+    // The pattern matching anything
+    private static final Pattern ANY_PATTERN = Pattern.compile("(?s).*");
 
     private static final int DIPLOID = 2;
 
@@ -403,9 +406,22 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Finds and Returns the next complete token which is prefixed and postfixed
+     * by input that matches the delimiter pattern. This method may be blocked
+     * when it is waiting for input to scan, even if a previous invocation of
+     * hasNext() returned true. If this match successes, the scanner advances
+     * past the next complete token.
+     * 
+     * @return 
+     *             the next complete token
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     */
     public String next() {
-        throw new NotYetImplementedException();
+        return next(ANY_PATTERN);
     }
 
     /**
@@ -413,12 +429,13 @@ public final class Scanner implements Iterator<String> {
      * matches the delimiter pattern if this token matches the specified
      * pattern. This method may be blocked when it is waiting for input to scan,
      * even if a previous invocation of hasNext(Pattern) returned true. If this
-     * match successes, the scanner advances past the nest token that matched
+     * match successes, the scanner advances past the next token that matched
      * the pattern.
      * 
      * @param pattern
      *            the specified pattern to scan
-     * @return the next token
+     * @return 
+     *             the next token
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -449,14 +466,15 @@ public final class Scanner implements Iterator<String> {
      * matches the delimiter pattern if this token matches the pattern
      * constructed from the sepcified string. This method may be blocked when it
      * is waiting for input to scan. If this match successes, the scanner
-     * advances past the nest token that matched the pattern.
+     * advances past the next token that matched the pattern.
      * 
      * The invocation of this method in the form next(pattern) behaves in the
      * same way as the invocaiton of next(Pattern.compile(pattern)).
      * 
      * @param pattern
      *            the string specifying the pattern to scan for
-     * @return the next token
+     * @return 
+     *             the next token
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -674,7 +692,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /*
-     * save the matcher's last find position
+     * Change the matcher's status to  last find position
      */
     private void recoverPreviousStatus() {
         findStartIndex = preStartIndex;
