@@ -49,11 +49,8 @@ class MappedByteBufferFactory {
 
 	static MappedByteBuffer getBuffer(PlatformAddress addr, int mapmode,
 			long size, int offset) throws Exception {
-		// FIXME: the long->int cast of size may be dangerous, but JavaSpec
-		// specifies that the mmap size cannot be larger than
-		// Integer.MAX_VALUE, may since the direct buffer only supports size of
-		// 32 bits. Maybe int the later version(i.e. 64 bit platform)
-		// this issue can be handled more elegantly
+		// Spec points out explicitly that the size of mmap should be no greater than
+        // Integer.MAX_VALUE, so long to int cast is safe here.
 		return (MappedByteBuffer) constructor.newInstance(new Object[] { addr,
 				new Integer((int) size), new Integer(offset),
 				new Integer(mapmode) });
