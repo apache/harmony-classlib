@@ -34,47 +34,41 @@ import java.lang.reflect.Array;
  */
 
 public class Beans {
-	
-	private static boolean designTime = false;
-	private static boolean guiAvailable = false;
+
+    private static boolean designTime = false;
+
+    private static boolean guiAvailable = false;
 
     /**
      */
-    public Beans() {
-    }
+    public Beans() {}
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Object instantiate(ClassLoader cls,
-                                     String beanName,
-                                     BeanContext beanContext,
-                                     AppletInitializer initializer)
-    	throws IOException, ClassNotFoundException
-    {
+    public static Object instantiate(ClassLoader cls, String beanName,
+            BeanContext beanContext, AppletInitializer initializer)
+            throws IOException, ClassNotFoundException {
         Object result = instantiate(cls, beanName, beanContext);
-        
-        if(result instanceof Applet) {
+
+        if (result instanceof Applet) {
             initializer.initialize((Applet) result, beanContext);
         }
-        
+
         return result;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Object instantiate(ClassLoader cls,
-                                     String beanName,
-                                     BeanContext beanContext)
-        throws IOException, ClassNotFoundException
-    {
+    public static Object instantiate(ClassLoader cls, String beanName,
+            BeanContext beanContext) throws IOException, ClassNotFoundException {
         Object result = instantiate(cls, beanName);
-        
-        if(beanContext != null) {
+
+        if (beanContext != null) {
             beanContext.add(result);
         }
-        
+
         return result;
     }
 
@@ -82,22 +76,20 @@ public class Beans {
      * @com.intel.drl.spec_ref
      */
     public static Object instantiate(ClassLoader cls, String beanName)
-        throws IOException, ClassNotFoundException
-    {
+            throws IOException, ClassNotFoundException {
         Object result = null;
 
         String beanResourceName = getBeanResourceName(beanName);
-        
-        InputStream is = (cls == null) ?
-            ClassLoader.getSystemResourceAsStream(beanResourceName) :
-            cls.getResourceAsStream(beanResourceName);
-            
-        if(is != null) {
+
+        InputStream is = (cls == null) ? ClassLoader
+                .getSystemResourceAsStream(beanResourceName) : cls
+                .getResourceAsStream(beanResourceName);
+
+        if (is != null) {
             try {
-                ObjectInputStream ois = (cls == null) ?
-                    new ObjectInputStream(is) :
-                    new CustomizedObjectInputStream(is, cls);
-                
+                ObjectInputStream ois = (cls == null) ? new ObjectInputStream(
+                        is) : new CustomizedObjectInputStream(is, cls);
+
                 try {
                     result = ois.readObject();
                 } catch (ClassNotFoundException cnfe) {
@@ -107,42 +99,43 @@ public class Beans {
                 // skip exception
             }
         }
-        
+
         if (result == null) {
-			try {
-				Class<?> c = Class.forName(beanName, true,
-						cls == null ? ClassLoader.getSystemClassLoader() : cls);
+            try {
+                Class<?> c = Class.forName(beanName, true,
+                        cls == null ? ClassLoader.getSystemClassLoader() : cls);
 
-				try {
-					result = c.newInstance();
+                try {
+                    result = c.newInstance();
 
-					if (result instanceof Applet) {
-						Applet applet = (Applet) result;
-						applet.init();
-					}
-				} catch (IllegalAccessException iae) {
-					throw new ClassNotFoundException(iae.getClass() + ": "
-							+ iae.getMessage());
-				}
-			} catch (InstantiationException ie) {
-				throw new ClassNotFoundException(ie.getClass() + ": "
-						+ ie.getMessage());
-			}
-		}
-        
+                    if (result instanceof Applet) {
+                        Applet applet = (Applet) result;
+
+                        applet.init();
+                    }
+                } catch (IllegalAccessException iae) {
+                    throw new ClassNotFoundException(iae.getClass() + ": "
+                            + iae.getMessage());
+                }
+            } catch (InstantiationException ie) {
+                throw new ClassNotFoundException(ie.getClass() + ": "
+                        + ie.getMessage());
+            }
+        }
+
         return result;
     }
 
     /**
-	 * @com.intel.drl.spec_ref
-	 */
+     * @com.intel.drl.spec_ref
+     */
     public static Object getInstanceOf(Object bean, Class<?> targetType) {
-        return bean;            
+        return bean;
     }
 
     /**
-	 * @com.intel.drl.spec_ref
-	 */
+     * @com.intel.drl.spec_ref
+     */
     public static boolean isInstanceOf(Object bean, Class<?> targetType) {
         if (targetType == null) {
             return false;
@@ -155,22 +148,20 @@ public class Beans {
      * @com.intel.drl.spec_ref
      */
     public static void setGuiAvailable(boolean isGuiAvailable)
-        throws SecurityException
-    {
+            throws SecurityException {
         checkPropertiesAccess();
-        guiAvailable = isGuiAvailable; 
+        guiAvailable = isGuiAvailable;
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public static void setDesignTime(boolean isDesignTime)
-        throws SecurityException
-    {
+            throws SecurityException {
         checkPropertiesAccess();
-        designTime = isDesignTime; 
+        designTime = isDesignTime;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -184,79 +175,77 @@ public class Beans {
     public static boolean isDesignTime() {
         return designTime;
     }
-    
+
     private static void checkPropertiesAccess() throws SecurityException {
         SecurityManager sm = System.getSecurityManager();
-        
-        if (sm != null)    {
+
+        if (sm != null) {
             sm.checkPropertiesAccess();
         }
     }
-    
+
     private static String getBeanResourceName(String beanName) {
         return beanName.replace('.', '/') + ".ser";
     }
-    
+
 }
 
-/*
- Customized object input stream that allows
- to read objects by specified class loader
-*/
+/**
+ * Customized object input stream that allows
+ * to read objects by specified class loader
+ */
 class CustomizedObjectInputStream extends ObjectInputStream {
-    
+
     private ClassLoader cls;
-    
+
     public CustomizedObjectInputStream(InputStream in, ClassLoader cls)
             throws IOException {
         super(in);
         this.cls = cls;
     }
-    
-    protected Class<?> resolveClass(ObjectStreamClass desc)
-        throws IOException, ClassNotFoundException
-    {
+
+    protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
+            ClassNotFoundException {
         String className = desc.getName();
-        
-        if(className.startsWith("[")) {
+
+        if (className.startsWith("[")) {
             int idx = className.lastIndexOf("[");
-            
             String prefix = className.substring(0, idx + 1);
-            
             int[] dimensions = new int[prefix.length()];
-            for(int i = 0; i < dimensions.length; ++i) {
+            String postfix;
+            Class<?> componentType = null;
+
+            for (int i = 0; i < dimensions.length; ++i) {
                 dimensions[i] = 0;
             }
-            
-            String postfix = className.substring(idx + 1);
-            
-            Class<?> componentType = null;
-            if(postfix.equals("Z")) {
+
+            postfix = className.substring(idx + 1);
+            if (postfix.equals("Z")) {
                 componentType = boolean.class;
-            } else if(postfix.equals("B")) {
+            } else if (postfix.equals("B")) {
                 componentType = byte.class;
-            } else if(postfix.equals("C")) {
+            } else if (postfix.equals("C")) {
                 componentType = char.class;
-            } else if(postfix.equals("D")) {
+            } else if (postfix.equals("D")) {
                 componentType = double.class;
-            } else if(postfix.equals("F")) {
+            } else if (postfix.equals("F")) {
                 componentType = float.class;
-            } else if(postfix.equals("I")) {
+            } else if (postfix.equals("I")) {
                 componentType = int.class;
-            } else if(postfix.equals("L")) {
+            } else if (postfix.equals("L")) {
                 componentType = long.class;
-            } else if(postfix.equals("S")) {
+            } else if (postfix.equals("S")) {
                 componentType = short.class;
-            } else if(postfix.equals("V")) {
+            } else if (postfix.equals("V")) {
                 componentType = null;
-            } else if(postfix.startsWith("L")){
-                componentType = cls.loadClass(postfix.substring(1,
-                        postfix.length() - 1));
+            } else if (postfix.startsWith("L")) {
+                componentType = cls.loadClass(postfix.substring(1, postfix
+                        .length() - 1));
             } else {
                 throw new IllegalArgumentException("Illegal class name: "
                         + className);
             }
-            
+
             return Array.newInstance(componentType, dimensions).getClass();
         } else {
             return Class.forName(className, true, cls);

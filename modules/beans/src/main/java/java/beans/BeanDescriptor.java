@@ -23,6 +23,7 @@ package java.beans;
  * @author Maxim V. Berkultsev
  */
 public class BeanDescriptor extends FeatureDescriptor {
+
     private Class<?> beanClass;
 
     private Class<?> customizerClass;
@@ -102,6 +103,7 @@ public class BeanDescriptor extends FeatureDescriptor {
         if (beanClass != null) {
             String beanClassName = beanClass.getName();
             int idx = beanClassName.lastIndexOf(".");
+
             result = (idx == -1) ? beanClassName : beanClassName
                     .substring(idx + 1);
         }

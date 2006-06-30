@@ -36,9 +36,11 @@ import org.apache.harmony.beans.ObjectNode;
  */
 
 public class XMLEncoder extends Encoder {
-    
+
     private OutputStream out;
+
     private Object owner;
+
     private Vector printed = new Vector();
 
     /**
@@ -102,32 +104,36 @@ public class XMLEncoder extends Encoder {
             getExceptionListener().exceptionThrown(e);
         }
     }
-    
+
     private void writeAll() {
+        Tag mainTag = new Tag("java");
+        Enumeration e;
+
         printed.clear();
         NameMaker.clear();
-        
-        Tag mainTag = new Tag("java");
+
         mainTag.addAttr("version", System.getProperty("java.version"));
         mainTag.addAttr("class", "java.beans.XMLDecoder");
 
         printBytes(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         printBytes(0, mainTag.toStringOnOpen());
-        
-        Enumeration e = roots.elements();
-        while(e.hasMoreElements()) {
+
+        e = roots.elements();
+        while (e.hasMoreElements()) {
             Object object = (Object) e.nextElement();
-            if(object != null) {
+
+            if (object != null) {
                 ObjectNode node = (ObjectNode) nodes.get(object);
+
                 printObjectTag(0, object, node);
             } else {
                 printNullTag(0);
             }
         }
-        
+
         printBytes(0, mainTag.toStringOnClose());
     }
-    
+
     // FIXME processing of default constructor: investigate
     private void printObjectTag(int tabCount, Object object, ObjectNode node) {
         Class nodeType = null;
@@ -135,13 +141,15 @@ public class XMLEncoder extends Encoder {
         try {
             nodeType = node.getObjectType();
         } catch (Exception e) {
-            getExceptionListener().exceptionThrown(e);
-            getExceptionListener().exceptionThrown(new Exception(
-                "skipping expression " + node.getInitializer() + "..."));
+            Exception e2 = new Exception("skipping expression "
+                    + node.getInitializer() + "...");
+
+            e2.initCause(e);
+            getExceptionListener().exceptionThrown(e2);
             return;
         }
-        
-        if(isPrimitive(nodeType) || isString(nodeType) || isClass(nodeType)) {
+
+        if (isPrimitive(nodeType) || isString(nodeType) || isClass(nodeType)) {
             String tagName = getPrimitiveName(nodeType);
             Object arg = node.getObjectArguments()[0];
             Tag tag = new Tag(tagName, arg.toString());
@@ -152,28 +160,28 @@ public class XMLEncoder extends Encoder {
             Object[] arguments = node.getObjectArguments();
             boolean objectPrinted = false;
             boolean isReferenced = node.getReferencesNumber() > 0;
-            
+
             if (isArray(nodeType)) {
                 tag = new Tag("array");
             } else {
                 tag = new Tag("object");
             }
-            
+
             // check if the object presents references
-            if(isReferenced) {
-                if(printed.contains(node)) {
+            if (isReferenced) {
+                if (printed.contains(node)) {
                     String nodeId = node.getId();
-                    
-                    if(nodeId != null) {
+
+                    if (nodeId != null) {
                         tag.addAttr("idref", node.getId());
                     }
-                    
+
                     objectPrinted = true;
                 } else { // if(printed.contains(node) == false
                     try {
                         Class type = node.getObjectType();
-                        
-                        if(type != null) {
+
+                        if (type != null) {
                             // check if it is necessary to assign
                             // and display *id* attribute to the object
                             String objectName = NameMaker.getInstanceName(type);
@@ -186,13 +194,13 @@ public class XMLEncoder extends Encoder {
                     }
                 }
             }
-    
-            if(!objectPrinted) {
+
+            if (!objectPrinted) {
                 try {
                     if (isArray(nodeType)) {
                         tag.addAttr("class", ((Class) arguments[0]).getName());
-                        tag.addAttr("length", ((Integer)
-                                arguments[1]).toString());
+                        tag.addAttr("length", ((Integer) arguments[1])
+                                .toString());
                     } else {
                         tag.addAttr("class", node.getObjectType().getName());
                     }
@@ -206,29 +214,25 @@ public class XMLEncoder extends Encoder {
                 // if object has already been printed then only print the
                 // reference
                 printBytes(tabCount, tag.toStringShortForm());
-            }
-            else if (isArray(nodeType) && !node.statements().hasNext()) {
+            } else if (isArray(nodeType) && !node.statements().hasNext()) {
                 // if we have an empty array 
                 printBytes(tabCount, tag.toStringShortForm());
-            } 
-            else if (arguments.length == 0  &&
-                    !node.statements().hasNext() &&
-                    !node.expressions().hasNext()) {
+            } else if (arguments.length == 0 && !node.statements().hasNext()
+                    && !node.expressions().hasNext()) {
                 // if given tag has no children print the short form of the tag
                 printBytes(tabCount, tag.toStringShortForm());
-            } 
-            else {
+            } else {
                 // the tag has not been printed and contains children,
                 // let's print them  
 
                 printBytes(tabCount, tag.toStringOnOpen());
-                
+
                 printed.add(node);
-    
+
                 if (isArray(nodeType)) { // if array
                     Iterator<Statement> it = node.statements();
 
-                    while(it.hasNext()) {
+                    while (it.hasNext()) {
                         Statement s = it.next();
 
                         printVoidTag(++tabCount, s);
@@ -237,36 +241,36 @@ public class XMLEncoder extends Encoder {
                 } else { // if object
                     Iterator<Expression> i1;
                     Iterator<Statement> i2;
-                    
-                    for(int i = 0; i < arguments.length; ++i) {
-                        if(arguments[i] != null) {
+
+                    for (int i = 0; i < arguments.length; ++i) {
+                        if (arguments[i] != null) {
                             ObjectNode succNode = nodes.get(arguments[i]);
 
                             printObjectTag(++tabCount, arguments[i], succNode);
                         } else {
                             printNullTag(++tabCount);
                         }
-                        
+
                         --tabCount;
                     }
-                    
+
                     i1 = node.expressions();
-                    while(i1.hasNext()) {
+                    while (i1.hasNext()) {
                         Expression e = i1.next();
-                        
+
                         printVoidTag(++tabCount, e);
                         --tabCount;
                     }
-                    
+
                     i2 = node.statements();
-                    while(i2.hasNext()) {
+                    while (i2.hasNext()) {
                         Statement s = i2.next();
-                        
+
                         printVoidTag(++tabCount, s);
                         --tabCount;
                     }
                 } // if object
-                
+
                 printBytes(tabCount, tag.toStringOnClose());
             }
         } // if node is of non-trivial type
@@ -274,136 +278,144 @@ public class XMLEncoder extends Encoder {
 
     private void printVoidTag(int tabCount, Expression expr) {
         Object exprValue = null;
+
         try {
+            Enumeration enumeration;
+            Tag tag;
+            String objectName;
+            String methodName;
+            ObjectNode node;
+            Object[] args;
+
             exprValue = expr.getValue();
-            
+
             // find out, if this object is already printed
-            Enumeration enumeration = printed.elements();
-            while(enumeration.hasMoreElements()) {
-                ObjectNode node = (ObjectNode) enumeration.nextElement();
-                if(node.getObjectValue() == exprValue) {
+            enumeration = printed.elements();
+            while (enumeration.hasMoreElements()) {
+                ObjectNode node2 = (ObjectNode) enumeration.nextElement();
+
+                if (node2.getObjectValue() == exprValue) {
                     return;
                 }
             }
-            
-            ObjectNode node = (ObjectNode) nodes.get(exprValue);
-            
+
+            node = (ObjectNode) nodes.get(exprValue);
+
             // find out, if this object has no references to be printed
             // System.out.println("---- node.getReferencesNumber() = " + node.getReferencesNumber());
             // System.out.println("---- node.getReferencedExpressionsNumber() = " + node.getReferencedExpressionsNumber());
-            
-            if(node.getReferencesNumber() == 0) {
+
+            if (node.getReferencesNumber() == 0) {
                 return;
             }
-            
-            Tag tag = new Tag("void");
-            
-            String objectName = NameMaker.getInstanceName(exprValue.getClass());
-            
+
+            tag = new Tag("void");
+            objectName = NameMaker.getInstanceName(exprValue.getClass());
+
             node.setId(objectName);
             tag.addAttr("id", objectName);
-            
-            String methodName = expr.getMethodName();
-            Object[] args = expr.getArguments();
-            if(methodName.startsWith("get")
+
+            methodName = expr.getMethodName();
+            args = expr.getArguments();
+
+            if (methodName.startsWith("get")
                     && (args.length == 0 || args.length == 1
                             && args[0].getClass() == Integer.class)
                     || methodName.startsWith("set")
                     && (args.length == 1 || args.length == 2
-                            && args[0].getClass() == Integer.class))
-            {
+                            && args[0].getClass() == Integer.class)) {
                 String propertyName = methodName.substring(3);
-                if(propertyName.length() > 0) {
-                    tag.addAttr("property", Introspector.decapitalize(
-                            propertyName));
+
+                if (propertyName.length() > 0) {
+                    tag.addAttr("property", Introspector
+                            .decapitalize(propertyName));
                 }
-                
-                if(methodName.startsWith("get") && args.length == 1 ||
-                    methodName.startsWith("set") && args.length == 2)
-                {
+
+                if (methodName.startsWith("get") && args.length == 1
+                        || methodName.startsWith("set") && args.length == 2) {
                     tag.addAttr("index", args[0].toString());
                 }
             } else {
                 tag.addAttr("method", expr.getMethodName());
             }
-            
+
             printBytes(tabCount, tag.toStringOnOpen());
-            
-            for(int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) {
-                if(args[i] != null) {
+
+            for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) {
+                if (args[i] != null) {
                     ObjectNode node2 = nodes.get(args[i]);
 
                     printObjectTag(++tabCount, args[i], node2);
                 } else {
                     printNullTag(++tabCount);
                 }
-                
+
                 --tabCount;
             }
 
             printBytes(tabCount, tag.toStringOnClose());
-            
+
             printed.add(node);
         } catch (Exception e) {
             //TODO - signal problem with expr.getValue()
         }
-        
+
     }
-    
+
     private void printVoidTag(int tabCount, Statement stat) {
         Tag tag = new Tag("void");
-        
+
         String methodName = stat.getMethodName();
         Object[] args = stat.getArguments();
-        if(methodName.startsWith("get")
+
+        if (methodName.startsWith("get")
                 && (args.length == 0 || args.length == 1
                         && args[0].getClass() == Integer.class)
                 || methodName.startsWith("set")
                 && (args.length == 1 || args.length == 2
-                        && args[0].getClass() == Integer.class))
-        {
+                        && args[0].getClass() == Integer.class)) {
             String propertyName = methodName.substring(3);
-            if(propertyName.length() > 0) {
-                tag.addAttr("property", Introspector.decapitalize(
-                        propertyName));
+
+            if (propertyName.length() > 0) {
+                tag
+                        .addAttr("property", Introspector
+                                .decapitalize(propertyName));
             }
-            
-            if(methodName.startsWith("get") && args.length == 1 ||
-                methodName.startsWith("set") && args.length == 2)
-            {
+
+            if (methodName.startsWith("get") && args.length == 1
+                    || methodName.startsWith("set") && args.length == 2) {
                 tag.addAttr("index", args[0].toString());
             }
         } else {
             tag.addAttr("method", stat.getMethodName());
         }
 
-        
         printBytes(tabCount, tag.toStringOnOpen());
-        
-        for(int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) {
-            if(args[i] != null) {
+
+        for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) {
+            if (args[i] != null) {
                 ObjectNode node = (ObjectNode) nodes.get(args[i]);
+
                 printObjectTag(++tabCount, args[i], node);
             } else {
                 printNullTag(++tabCount);
             }
-            
+
             --tabCount;
         }
 
         printBytes(tabCount, tag.toStringOnClose());
     }
-    
+
     private void printNullTag(int tabCount) {
         printBytes(tabCount, "<null/>");
     }
- 
-    
+
     private void printBytes(int tabCount, String s) {
         try {
             String result = "";
 
-            for(int i = 0; i < tabCount; ++i) {
+            for (int i = 0; i < tabCount; ++i) {
                 result += '\t';
             }
             result = result + s + "\n";
@@ -411,12 +423,12 @@ public class XMLEncoder extends Encoder {
         } catch (IOException ioe) {
             ExceptionListener listener = getExceptionListener();
 
-            if(listener != null) {
+            if (listener != null) {
                 listener.exceptionThrown(ioe);
             }
         }
     }
-  
+
     /**
      * Escapes '&', '<', '>', '\'', '"' chars.
      * @param input input string to be escaped
@@ -424,21 +436,21 @@ public class XMLEncoder extends Encoder {
      */
     static String escapeChars(String input) {
         StringBuffer sb = new StringBuffer();
-        
+
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
 
             switch (c) {
-                case '&': 
+                case '&':
                     sb.append("&amp;");
                     break;
-                case '<': 
+                case '<':
                     sb.append("&lt;");
                     break;
-                case '>': 
+                case '>':
                     sb.append("&gt;");
                     break;
-                case '\'': 
+                case '\'':
                     sb.append("&apos;");
                     break;
                 case '"':
@@ -451,44 +463,47 @@ public class XMLEncoder extends Encoder {
         }
         return sb.toString();
     }
-    
+
     /**
      * This class is used by XMLEncoder to store XML tag information. 
      */
     static class Tag {
+
         String name;
+
         LinkedHashMap attrs;
+
         String characters;
-        
+
         public Tag(String name) {
             this.name = name;
             this.attrs = new LinkedHashMap();
             this.characters = null;
         }
-        
+
         public Tag(String name, String characters) {
             this.name = name;
             this.attrs = new LinkedHashMap();
             this.characters = characters;
         }
-        
+
         public boolean hasAttr(String attrName) {
             return attrs.get(attrName) != null;
         }
-        
+
         public void addAttr(String attrName, String attrValue) {
             attrs.put(attrName, attrValue);
         }
-        
+
         public String toStringOnOpenUnfinished() {
             String result = "<" + name;
             Iterator i = attrs.keySet().iterator();
 
-            while(i.hasNext()) {
+            while (i.hasNext()) {
                 String attrName = (String) i.next();
                 String attrValue = (String) attrs.get(attrName);
 
-                result +=" " + attrName + "=\"" + attrValue + "\"";
+                result += " " + attrName + "=\"" + attrValue + "\"";
             }
             return result;
         }
@@ -496,33 +511,33 @@ public class XMLEncoder extends Encoder {
         public String toStringOnOpen() {
             return toStringOnOpenUnfinished() + ">";
         }
-        
+
         public String toStringShortForm() {
             return toStringOnOpenUnfinished() + "/>";
         }
-        
+
         public String toStringOnClose() {
             return "</" + name + ">";
         }
-        
+
         public String toStringOnCharacters() {
             return XMLEncoder.escapeChars(characters);
         }
-        
+
         public String toString() {
             return toStringOnOpen() + toStringOnCharacters()
                     + toStringOnClose();
         }
     }
 
-
     static class NameMaker {
+
         private static HashMap numOfExemplars = new HashMap();
-        
+
         public static void clear() {
             numOfExemplars.clear();
         }
-        
+
         private static String getCompName(Class clz) {
             if (clz.isArray()) {
                 return getCompName(clz.getComponentType()) + "Array";
@@ -531,7 +546,7 @@ public class XMLEncoder extends Encoder {
                         clz.getName().lastIndexOf(".") + 1);
             }
         }
-        
+
         public static String getInstanceName(Class type) {
             String result = null;
 
@@ -547,9 +562,9 @@ public class XMLEncoder extends Encoder {
                 shortName = fullName.substring(fullName.lastIndexOf(".") + 1);
             }
             iNum = (Integer) numOfExemplars.get(shortName);
-            if(iNum == null) {
+            if (iNum == null) {
                 numOfExemplars.put(shortName, new Integer(0));
-                result = shortName + "0"; 
+                result = shortName + "0";
             } else {
                 int newValue = iNum.intValue() + 1;
 
@@ -560,5 +575,3 @@ public class XMLEncoder extends Encoder {
         }
     }
 }
-
-
