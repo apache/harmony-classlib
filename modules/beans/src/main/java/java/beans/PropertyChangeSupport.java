@@ -407,7 +407,7 @@ public class PropertyChangeSupport implements Serializable {
 			listener.propertyChange(event);
 		}
 		if (listensToOne != null) {
-			for (PropertyChangeListener	listener : listensToAll) {
+			for (PropertyChangeListener	listener : listensToOne) {
 				listener.propertyChange(event);
 			}
 		}
