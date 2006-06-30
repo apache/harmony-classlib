@@ -771,6 +771,32 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (int counter = endIndex; counter < arraySize; counter++)
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
+
+		//exception testing
+		try {
+			Arrays.sort(reversedArray, startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
+
+        try {
+			Arrays.sort(reversedArray, -1, startIndex);
+            fail("ArrayIndexOutOfBoundsException expected (1)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+
+		try {
+			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
+            fail("ArrayIndexOutOfBoundsException expected (2)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+		
+		//exception order testing
+		try {
+			Arrays.sort(new byte[1], startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
 	}
 
 	/**
@@ -812,6 +838,31 @@ public class ArraysTest extends junit.framework.TestCase {
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
 
+		//exception testing
+		try {
+			Arrays.sort(reversedArray, startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
+
+		try {
+			Arrays.sort(reversedArray, -1, startIndex);
+            fail("ArrayIndexOutOfBoundsException expected (1)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+        
+		try {
+			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
+            fail("ArrayIndexOutOfBoundsException expected (2)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+
+		//exception order testing
+		try {
+			Arrays.sort(new char[1], startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
 	}
 
 	/**
@@ -876,6 +927,31 @@ public class ArraysTest extends junit.framework.TestCase {
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
 
+		//exception testing
+		try {
+			Arrays.sort(reversedArray, startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
+
+		try {
+			Arrays.sort(reversedArray, -1, startIndex);
+            fail("ArrayIndexOutOfBoundsException expected (1)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+
+		try {
+			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
+            fail("ArrayIndexOutOfBoundsException expected (2)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+		
+		//exception order testing
+		try {
+			Arrays.sort(new double[1], startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
 	}
 
 	/**
@@ -939,6 +1015,32 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (int counter = endIndex; counter < arraySize; counter++)
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
+
+		//exception testing
+		try {
+			Arrays.sort(reversedArray, startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
+
+        try {
+			Arrays.sort(reversedArray, -1, startIndex);
+            fail("ArrayIndexOutOfBoundsException expected (1)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+        
+		try {
+			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
+            fail("ArrayIndexOutOfBoundsException expected (2)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+		
+		//exception order testing
+		try {
+			Arrays.sort(new float[1], startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
 	}
 
 	/**
@@ -979,6 +1081,31 @@ public class ArraysTest extends junit.framework.TestCase {
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
 
+		//exception testing
+		try {
+			Arrays.sort(reversedArray, startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
+
+        try {
+			Arrays.sort(reversedArray, -1, startIndex);
+            fail("ArrayIndexOutOfBoundsException expected (1)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+        
+		try {
+			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
+            fail("ArrayIndexOutOfBoundsException expected (2)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+		
+		//exception order testing
+		try {
+			Arrays.sort(new int[1], startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
 	}
 
 	/**
@@ -1020,6 +1147,31 @@ public class ArraysTest extends junit.framework.TestCase {
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
 
+		//exception testing
+		try {
+			Arrays.sort(reversedArray, startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
+
+        try {
+			Arrays.sort(reversedArray, -1, startIndex);
+            fail("ArrayIndexOutOfBoundsException expected (1)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+
+		try {
+			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
+            fail("ArrayIndexOutOfBoundsException expected (2)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+        
+		//exception order testing
+		try {
+			Arrays.sort(new long[1], startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
 	}
 
 	/**
@@ -1061,6 +1213,32 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (int counter = endIndex; counter < arraySize; counter++)
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
+
+		//exception testing
+		try {
+			Arrays.sort(reversedArray, startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
+        
+		try {
+			Arrays.sort(reversedArray, -1, startIndex);
+            fail("ArrayIndexOutOfBoundsException expected (1)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+
+        try {
+			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
+            fail("ArrayIndexOutOfBoundsException expected (2)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+		
+		//exception order testing
+		try {
+			Arrays.sort(new Object[1], startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
 	}
 
 	/**
@@ -1140,6 +1318,32 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (int counter = endIndex; counter < arraySize; counter++)
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
+	
+		//exception testing
+		try {
+			Arrays.sort(reversedArray, startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
+        
+		try {
+			Arrays.sort(reversedArray, -1, startIndex);
+            fail("ArrayIndexOutOfBoundsException expected (1)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+        
+		try {
+			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
+            fail("ArrayIndexOutOfBoundsException expected (2)");
+		} catch (ArrayIndexOutOfBoundsException ignore) {
+		}
+		
+		//exception order testing
+		try {
+			Arrays.sort(new short[1], startIndex + 1, startIndex);
+            fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException ignore) {
+		}
 	}
 
     /**

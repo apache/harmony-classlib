@@ -1443,17 +1443,20 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array);
     }
 
+    private static void checkBounds(int arrLength, int start, int end) {
+        if (start > end) {
+        	throw new IllegalArgumentException("fromIndex(" + start 
+        				+ ") > toIndex(" + end + ")");
+        }
+        if (start < 0 || end > arrLength) {
+        	throw new ArrayIndexOutOfBoundsException();
+        }
+    }
+    
     private static void sort(int start, int end, byte[] array) {
         byte temp;
         int length = end - start;
@@ -1562,15 +1565,8 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array);
     }
 
     private static void sort(int start, int end, char[] array) {
@@ -1686,15 +1682,8 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array);
     }
 
     private static void sort(int start, int end, double[] array) {
@@ -1810,15 +1799,8 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array);
     }
 
     private static void sort(int start, int end, float[] array) {
@@ -1929,15 +1911,8 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array);
     }
 
     private static void sort(int start, int end, int[] array) {
@@ -2048,15 +2023,8 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array);
     }
 
     private static void sort(int start, int end, long[] array) {
@@ -2174,15 +2142,8 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array);
     }
 
     @SuppressWarnings("unchecked")
@@ -2245,15 +2206,8 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array, comparator);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array, comparator);
     }
 
     private static <T> void sort(int start, int end, T[] array,
@@ -2341,15 +2295,8 @@ public class Arrays {
         if (array == null) {
             throw new NullPointerException();
         }
-        if (start >= 0 && end <= array.length) {
-            if (start <= end) {
-                sort(start, end, array);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkBounds(array.length, start, end);
+        sort(start, end, array);
     }
 
     private static void sort(int start, int end, short[] array) {
