@@ -26,6 +26,7 @@ import java.net.SocketTimeoutException;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.NotYetBoundException;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
@@ -54,9 +55,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
 
     // status closed.
     private static final int SERVER_STATUS_CLOSED = 1;
-
-    // default timeout used to nonblocking mode.
-    private static final int DEFAULT_TIMEOUT = 100;
 
     // error message, for native dependent.
     private static final String ERRMSG_ASYNCHRONOUS = "The call was cancelled"; //$NON-NLS-1$
@@ -133,12 +131,30 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
 
             synchronized (acceptLock) {
                 synchronized (blockingLock()) {
-                    int oldtime = socket.getSoTimeout();
-                    // timeout, 0 means blocking.
-                    socket.setSoTimeout(isBlocking() ? 0 : DEFAULT_TIMEOUT);
-                    ((ServerSocketAdapter) socket).accept(socketGot,
-                            (SocketChannelImpl) sockChannel);
-                    socket.setSoTimeout(oldtime);
+                    boolean isBlocking = isBlocking();
+                    if (!isBlocking) {
+                        // for non blocking mode, use select to see whether
+                        // there are any pending connections.
+                        int[] tryResult = Platform.getNetworkSystem().select(
+                                new SelectableChannel[] { this },
+                                new SelectableChannel[0], 0);
+                        if (0 == tryResult.length || 0 == tryResult[0]) {
+                            // no pending connections, returns immediately.
+                            return null;
+                        }
+                    }
+                    // do accept.
+                    do {
+                        try {
+                            ((ServerSocketAdapter) socket).accept(socketGot,
+                                    (SocketChannelImpl) sockChannel);
+                            // select successfully, break out immediately.
+                            break;
+                        } catch (SocketTimeoutException e) {
+                            // continue to accept if the channel is in blocking
+                            // mode.
+                        }
+                    } while (isBlocking);
                 }
             }
         } catch (BindException e) {
@@ -146,23 +162,8 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
             if (ERRMSG_ASYNCHRONOUS.equals(e.getMessage())) {
                 throw new AsynchronousCloseException();
             }
-        } catch (SocketTimeoutException e) {
-            // nonblocking mode.
-            return null;
         } finally {
             end(socketGot.isConnected());
-        }
-
-        // security check
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            try {
-                sm.checkAccept(socketGot.getInetAddress().getHostAddress(),
-                        socketGot.getPort());
-            } catch (SecurityException e) {
-                sockChannel.close();
-                throw e;
-            }
         }
         return sockChannel;
     }

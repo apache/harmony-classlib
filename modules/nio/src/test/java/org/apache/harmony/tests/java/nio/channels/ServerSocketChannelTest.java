@@ -436,5 +436,24 @@ public class ServerSocketChannelTest extends TestCase {
             // correct
         }
     }
-
+    
+    public void test_accept_SOTIMEOUT() throws IOException {
+        // regression test for Harmony-707        
+        final int SO_TIMEOUT = 10;
+        ServerSocketChannel sc = ServerSocketChannel.open();
+        try {
+            ServerSocket ss = sc.socket();
+            ss.bind(localAddr1);
+            sc.configureBlocking(false);
+            ss.setSoTimeout(SO_TIMEOUT);
+            SocketChannel client = sc.accept();
+            // non blocking mode, returns null since there are no pending connections.
+            assertNull(client);
+            int soTimeout = ss.getSoTimeout();
+            // Harmony fails here.
+            assertEquals(SO_TIMEOUT, soTimeout);
+        } finally {
+            sc.close();
+        }
+    }
 }
