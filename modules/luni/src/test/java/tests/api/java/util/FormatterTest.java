@@ -1412,6 +1412,31 @@ public class FormatterTest extends TestCase {
                 // expected
             }
         }
+        
+        // Regression test
+        f = new Formatter();
+        try {
+            f.format("%c", (byte)-0x0001);
+            fail("Should throw IllegalFormatCodePointException");
+        } catch (IllegalFormatCodePointException e) {
+            // expected
+        }
+        
+        f = new Formatter();
+        try {
+            f.format("%c", (short)-0x0001);
+            fail("Should throw IllegalFormatCodePointException");
+        } catch (IllegalFormatCodePointException e) {
+            // expected
+        }
+        
+        f = new Formatter();
+        try {
+            f.format("%c", -0x0001);
+            fail("Should throw IllegalFormatCodePointException");
+        } catch (IllegalFormatCodePointException e) {
+            // expected
+        }
     }
 
     /**

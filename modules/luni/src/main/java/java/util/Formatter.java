@@ -993,18 +993,23 @@ public final class Formatter implements Closeable, Flushable {
                     result.append(arg);
                 } else if (arg instanceof Byte) {
                     byte b = ((Byte) arg).byteValue();
+                    if(!Character.isValidCodePoint(b)){
+                        throw new IllegalFormatCodePointException(b);
+                    }
                     result.append((char) b);
                 } else if (arg instanceof Short) {
                     short s = ((Short) arg).shortValue();
+                    if (!Character.isValidCodePoint(s)) {
+                        throw new IllegalFormatCodePointException(s);
+                    }
                     result.append((char) s);
                 } else if (arg instanceof Integer) {
                     int codePoint = ((Integer) arg).intValue();
-                    try {
-                        result.append(String.valueOf(Character
-                                .toChars(codePoint)));
-                    } catch (IllegalArgumentException e) {
+                    if (!Character.isValidCodePoint(codePoint)) {
                         throw new IllegalFormatCodePointException(codePoint);
                     }
+                        result.append(String.valueOf(Character
+                                .toChars(codePoint)));
                 } else {
                     // argument of other class is not acceptable.
                     throw new IllegalFormatConversionException(formatToken
