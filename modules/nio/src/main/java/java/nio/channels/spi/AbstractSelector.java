@@ -121,11 +121,33 @@ public abstract class AbstractSelector extends Selector {
     }
 
     protected final void begin() {
-        // TODO wait for AbstractInterruptibleChannel
+        // FIXME: be accomodate before VM actually provides
+        // setInterruptAction method
+        if (AbstractInterruptibleChannel.setInterruptAction != null) {
+            try {
+                AbstractInterruptibleChannel.setInterruptAction.invoke(Thread
+                        .currentThread(), new Object[] { new Runnable() {
+                    public void run() {
+                        AbstractSelector.this.wakeup();
+                    }
+                } });
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     protected final void end() {
-        // TODO wait for AbstractInterruptibleChannel
+        // FIXME: be accomodate before VM actually provides
+        // setInterruptAction method
+        if (AbstractInterruptibleChannel.setInterruptAction != null) {
+            try {
+                AbstractInterruptibleChannel.setInterruptAction.invoke(Thread
+                        .currentThread(), new Object[] { null });
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /*

@@ -16,10 +16,13 @@
 package java.nio.channels.spi;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.Channel;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.InterruptibleChannel;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * This class roots the implementation of interruptable channels.
@@ -35,7 +38,30 @@ import java.nio.channels.InterruptibleChannel;
 public abstract class AbstractInterruptibleChannel implements Channel,
 		InterruptibleChannel {
 
-    private volatile boolean closed = false;
+	static Method setInterruptAction = null;
+
+	static {
+		try {
+			setInterruptAction = AccessController
+					.doPrivileged(new PrivilegedExceptionAction<Method>() {
+						public Method run() throws Exception {
+							return Thread.class.getDeclaredMethod(
+									"setInterruptAction",
+									new Class[] { Runnable.class });
+
+						}
+					});
+			setInterruptAction.setAccessible(true);
+		} catch (Exception e) {
+			// FIXME: be accomodate before VM actually provides
+			// setInterruptAction method
+			// throw new Error(e);
+		}
+	}
+
+	private volatile boolean closed = false;
+
+	public volatile boolean interrupted = false;
 
 	/**
 	 * Default constructor.
@@ -80,10 +106,27 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * Once the operation is completed the application should invoke a
 	 * corresponding <code>end(boolean)</code>.
 	 */
-    protected final void begin() {
-        // FIXME: not implemented yet, need kernel class Thread's support
-        // idea is to indicate current thread that a blocking I/O begins
-    }
+	protected final void begin() {
+		// FIXME: be accomodate before VM actually provides
+		// setInterruptAction method
+		if (setInterruptAction != null) {
+			try {
+				setInterruptAction.invoke(Thread.currentThread(),
+						new Object[] { new Runnable() {
+							public void run() {
+								try {
+									interrupted = true;
+									AbstractInterruptibleChannel.this.close();
+								} catch (IOException e) {
+									// ignore
+								}
+							}
+						} });
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
 	/**
 	 * End an IO operation that was previously started with <code>begin()</code>.
@@ -97,16 +140,25 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 	 * @throws java.nio.channels.ClosedByInterruptException
 	 *             the thread conducting the IO operation was interrupted.
 	 */
-    protected final void end(boolean success) throws AsynchronousCloseException {
-        if(Thread.currentThread().isInterrupted()){
-            throw new ClosedByInterruptException();
-        }
-        if (!success && closed){
-            throw new AsynchronousCloseException();
-        }
-        // FIXME: not fully implemented yet, need kernel class Thread's support
-        // idea is to indicate current thread that a blocking I/O ends        
-    }
+	protected final void end(boolean success) throws AsynchronousCloseException {
+		// FIXME: be accomodate before VM actually provides
+		// setInterruptAction method
+		if (setInterruptAction != null) {
+			try {
+				setInterruptAction.invoke(Thread.currentThread(),
+						new Object[] { null });
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			if (interrupted) {
+				interrupted = false;
+				throw new ClosedByInterruptException();
+			}
+		}
+		if (!success && closed) {
+			throw new AsynchronousCloseException();
+		}
+	}
 
 	/**
 	 * Implements the close channel behavior.

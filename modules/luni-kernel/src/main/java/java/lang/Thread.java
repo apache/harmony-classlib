@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,6 +78,8 @@ public class Thread implements Runnable {
 	Object slot2;
 
 	Object slot3;
+
+	private Runnable action = null;
 
 	/**
 	 * Constructs a new Thread with no runnable object and a newly generated
@@ -370,7 +372,7 @@ public class Thread implements Runnable {
 	}
 
 	/**
-	 * Posts an interrupt request to the receiver
+	 * Posts an interrupt request to the receiver. 
 	 * 
 	 * @exception SecurityException
 	 *                if <code>group.checkAccess()</code> fails with a
@@ -381,7 +383,23 @@ public class Thread implements Runnable {
 	 * @see Thread#isInterrupted
 	 */
 	public void interrupt() {
+		if(action != null){
+			action.run();
+		}
 		return;
+	}
+	
+	/**
+	 * Set the action to be executed when interruption, which is probably be used 
+     * to implement the interruptible channel. The action is null by default. And 
+     * if this method is invoked by passing in a non-null value, this action's run() 
+     * method will be invoked in <code>interrupt()</code>. 
+     * 
+	 * @param action
+     *      the action to be executed when interruption 
+	 */
+	private void setInterruptAction(Runnable action){
+		this.action  = action;
 	}
 
 	/**
