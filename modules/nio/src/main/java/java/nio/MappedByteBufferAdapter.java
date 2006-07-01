@@ -21,7 +21,19 @@ import org.apache.harmony.nio.internal.DirectBuffer;
 
 class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 
-	public MappedByteBufferAdapter(ByteBuffer buffer) {
+    private static final int CHAR_SIZE = 2;
+
+    private static final int SHORT_SIZE = 2;
+
+    private static final int INTEGER_SIZE = 4;
+
+    private static final int LONG_SIZE = 8;
+
+    private static final int FLOAT_SIZE = 4;
+
+    private static final int DOUBLE_SIZE = 8;
+    
+    public MappedByteBufferAdapter(ByteBuffer buffer) {
 		super(buffer);
 	}
 
@@ -102,7 +114,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	// MappedByteBuffer
 	// is thread safe. It is the decision we should make.
 	public char getChar() {
-		int newPosition = this.position + 2;
+		int newPosition = this.position + CHAR_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferUnderflowException();
 		}
@@ -115,9 +127,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 		return this.wrapped.getChar(index);
 	}
 
-	// FIXME use fields defined in ISystemType class instead of magic number?
 	public double getDouble() {
-		int newPosition = this.position + 8;
+		int newPosition = this.position + DOUBLE_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferUnderflowException();
 		}
@@ -135,7 +146,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public float getFloat() {
-		int newPosition = this.position + 4;
+		int newPosition = this.position + FLOAT_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferUnderflowException();
 		}
@@ -149,7 +160,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public int getInt() {
-		int newPosition = this.position + 4;
+		int newPosition = this.position + INTEGER_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferUnderflowException();
 		}
@@ -163,7 +174,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public long getLong() {
-		int newPosition = this.position + 8;
+		int newPosition = this.position + LONG_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferUnderflowException();
 		}
@@ -177,7 +188,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public short getShort() {
-		int newPosition = this.position + 2;
+		int newPosition = this.position + SHORT_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferUnderflowException();
 		}
@@ -225,7 +236,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putChar(char value) {
-		int newPosition = this.position + 2;
+		int newPosition = this.position + CHAR_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
 		}
@@ -240,9 +251,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putDouble(double value) {
-		int newPosition = this.position + 8;
+		int newPosition = this.position + DOUBLE_SIZE;
 		// FIXME: Does this need synchronization?
-		// FIXME: Replace magic number
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
 		}
@@ -257,8 +267,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putFloat(float value) {
-		// FIXME Replace the magic number
-		int newPosition = this.position + 4;
+		int newPosition = this.position + FLOAT_SIZE;
 		// FIXME:Synchronization problem
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
@@ -279,8 +288,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putInt(int value) {
-		// FIXME: Replace the magic number
-		int newPosition = this.position + 4;
+		int newPosition = this.position + INTEGER_SIZE;
 		// FIXME: Synchronization
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
@@ -296,9 +304,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putLong(long value) {
-		// FIXME: Magic number
 		// FIXME: Synchronization
-		int newPosition = this.position + 8;
+		int newPosition = this.position + LONG_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
 		}
@@ -313,9 +320,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putShort(short value) {
-		// FIXME: Magic number
 		// FIXME: Synchronization
-		int newPosition = this.position + 2;
+		int newPosition = this.position + SHORT_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
 		}
