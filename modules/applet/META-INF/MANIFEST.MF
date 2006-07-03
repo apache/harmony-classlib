@@ -5,5 +5,8 @@ Bundle-SymbolicName: org.apache.harmony.applet
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.lang
+Import-Package: java.awt,
+ java.beans,
+ java.lang,
+ javax.accessibility
 Export-Package: java.applet
