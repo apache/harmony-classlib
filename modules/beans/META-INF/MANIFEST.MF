@@ -16,8 +16,9 @@ Import-Package: java.applet,
  java.security,
  java.util,
  java.util.regex;resolution:=optional,
+ javax.accessibility;resolution:=optional,
  org.xml.sax,
  org.xml.sax.helpers,
- tests.util;resolution:=optional;hy_usage=test
+ tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.beans,
  java.beans.beancontext
