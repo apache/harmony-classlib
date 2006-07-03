@@ -79,9 +79,11 @@ class MatchResultImpl implements MatchResult {
         MatchResultImpl res = new MatchResultImpl(this.string, this.leftBound,
                 this.rightBound, this.groupCount - 1, 0, 0);
 
-        System.arraycopy(groupBounds, 0, res.groupBounds, 0,
-                this.groupBounds.length);
-
+        res.valid = valid;
+        if (valid) {
+            System.arraycopy(groupBounds, 0, res.groupBounds, 0,
+                    this.groupBounds.length);
+        }
         return res;
     }
 
