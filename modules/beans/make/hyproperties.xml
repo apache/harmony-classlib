@@ -32,7 +32,9 @@
       </src>
       <bin>
         <main location="bin/main" />
-        <test location="bin/test" />
+        <test location="bin/test">
+        	<support location="bin/test_support" />
+        </test>
         <internal location="bin/test-internal" />
       </bin>
       <packaging>
