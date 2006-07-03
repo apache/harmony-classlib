@@ -36,14 +36,14 @@ class Compiler {
             "ISO8859_1");
 
     /* FIXME: Hard-coded for now, the name of the ECJ JAR file */
-    static final String ECJ_JAR_FILE = "ecj_3.2MAINT.jar";
+    static final String ECJ_JAR_FILE = "ecj_3.2.jar";
 
     /* The name of the ECJ compiler class */
     static final String MAIN_CLASS_NAME = "org.eclipse.jdt.internal.compiler.batch.Main";
 
     /*
      * Invokes the compiler with the given command-line arguments. The supported
-     * arguments can be determined form the usage mesage.
+     * arguments can be determined form the usage message.
      */
     public static void main(String[] args) {
         Compiler myself = new Compiler();
@@ -62,7 +62,7 @@ class Compiler {
     }
 
     // Reference to ECJ 'Main' compiler class.
-    Class ecjCompilerClass;
+    Class<?> ecjCompilerClass;
 
     // An instance of the ECJ compiler
     Object mainInst;
@@ -122,7 +122,7 @@ class Compiler {
         PrintWriter errWriter = new PrintWriter(esw);
 
         // Create a new instance of the compiler
-        Constructor ctor = ecjCompilerClass.getConstructor(new Class[] {
+        Constructor<?> ctor = ecjCompilerClass.getConstructor(new Class[] {
                 PrintWriter.class, PrintWriter.class, Boolean.TYPE });
 
         mainInst = ctor.newInstance(new Object[] { outWriter, errWriter,
