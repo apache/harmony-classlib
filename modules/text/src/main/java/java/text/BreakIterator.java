@@ -50,7 +50,7 @@ public abstract class BreakIterator implements Cloneable {
 
 	/*
 	 * -----------------------------------------------------------------------
-	 * constantants
+	 * constants
 	 * -----------------------------------------------------------------------
 	 */
 	/**
@@ -68,7 +68,7 @@ public abstract class BreakIterator implements Cloneable {
 	 * variables
 	 * -----------------------------------------------------------------------
 	 */
-	// the wrapped icu implementation
+	// the wrapped ICU implementation
 	com.ibm.icu.text.BreakIterator wrapped;
 
 	/*
@@ -126,8 +126,9 @@ public abstract class BreakIterator implements Cloneable {
 	 *         given locale.
 	 */
 	public static BreakIterator getCharacterInstance(Locale where) {
-	    if (where == null)
-	        throw new NullPointerException();
+	    if (where == null) {
+            throw new NullPointerException();
+        }
 
 	    return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
 	            .getCharacterInstance(where));
@@ -155,18 +156,19 @@ public abstract class BreakIterator implements Cloneable {
 	 *         given locale.
 	 */
 	public static BreakIterator getLineInstance(Locale where) {
-	    if (where == null)
-	        throw new NullPointerException();
+	    if (where == null) {
+            throw new NullPointerException();
+        }
 
 	    return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
 	            .getLineInstance(where));
 	}
 
 	/**
-	 * Return a new instance of BreakIterator used to iterate sentense-breaks
+	 * Return a new instance of BreakIterator used to iterate sentence-breaks
 	 * using default locale.
 	 * 
-	 * @return a new instance of BreakIterator used to iterate sentense-breaks
+	 * @return a new instance of BreakIterator used to iterate sentence-breaks
 	 *         using default locale.
 	 */
 	public static BreakIterator getSentenceInstance() {
@@ -175,17 +177,18 @@ public abstract class BreakIterator implements Cloneable {
 	}
 
 	/**
-	 * Return a new instance of BreakIterator used to iterate sentense-breaks
+	 * Return a new instance of BreakIterator used to iterate sentence-breaks
 	 * using given locale.
 	 * 
 	 * @param where
 	 *            the given locale
-	 * @return a new instance of BreakIterator used to iterate sentense-breaks
+	 * @return a new instance of BreakIterator used to iterate sentence-breaks
 	 *         using given locale.
 	 */
 	public static BreakIterator getSentenceInstance(Locale where) {
-	    if (where == null)
-	        throw new NullPointerException();
+	    if (where == null) {
+            throw new NullPointerException();
+        }
 
 	    return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
 	            .getSentenceInstance(where));
@@ -213,8 +216,9 @@ public abstract class BreakIterator implements Cloneable {
 	 *         given locale.
 	 */
 	public static BreakIterator getWordInstance(Locale where) {
-	    if (where == null)
-	        throw new NullPointerException();
+	    if (where == null) {
+            throw new NullPointerException();
+        }
 
 	    return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
 	            .getWordInstance(where));
@@ -228,15 +232,15 @@ public abstract class BreakIterator implements Cloneable {
 	 * 
 	 * @param offset
 	 *            the given offset to check
-	 * @return true if the given offset is a boudary postion
+	 * @return true if the given offset is a boundary position
 	 */
 	public boolean isBoundary(int offset) {
 		return wrapped.isBoundary(offset);
 	}
 
 	/**
-	 * Return the postion of last boundary precede the given offset, and set
-	 * current postion to returned value, or <code>DONE</code> if the given
+	 * Return the position of last boundary precede the given offset, and set
+	 * current position to returned value, or <code>DONE</code> if the given
 	 * offset specifies the starting position.
 	 * <p>
 	 * <code>IllegalArgumentException</code> will be thrown if given offset is
@@ -245,7 +249,7 @@ public abstract class BreakIterator implements Cloneable {
 	 * 
 	 * @param offset
 	 *            the given start position to be searched for
-	 * @return the postion of last boundary precede the given offset
+	 * @return the position of last boundary precede the given offset
 	 */
 	public int preceding(int offset) {
 		return wrapped.preceding(offset);
@@ -276,7 +280,7 @@ public abstract class BreakIterator implements Cloneable {
 
 	/**
 	 * Set this iterator's current position to the first boundary, and return
-	 * this postion.
+	 * this position.
 	 * 
 	 * @return the position of first boundary
 	 */
@@ -299,7 +303,7 @@ public abstract class BreakIterator implements Cloneable {
 
 	/**
 	 * Return a <code>CharacterIterator</code> which represents the text being
-	 * analyzed. Please note that the returned value is probablly the internal
+	 * analyzed. Please note that the returned value is probably the internal
 	 * iterator used by this object, so that if the invoker want to modify the
 	 * status of the returned iterator, a clone operation at first is
 	 * recommended.
@@ -311,7 +315,7 @@ public abstract class BreakIterator implements Cloneable {
 
 	/**
 	 * Set this iterator's current position to the last boundary, and return
-	 * this postion.
+	 * this position.
 	 * 
 	 * @return the position of last boundary
 	 */
@@ -319,7 +323,7 @@ public abstract class BreakIterator implements Cloneable {
 
 	/**
 	 * Set this iterator's current position to the next boundary after current
-	 * position, and return this postion. Return <code>DONE</code> if no
+	 * position, and return this position. Return <code>DONE</code> if no
 	 * boundary found after current position.
 	 * 
 	 * @return the position of last boundary
@@ -328,7 +332,7 @@ public abstract class BreakIterator implements Cloneable {
 
 	/**
 	 * Set this iterator's current position to the next boundary after the given
-	 * position, and return this postion. Return <code>DONE</code> if no
+	 * position, and return this position. Return <code>DONE</code> if no
 	 * boundary found after the given position.
 	 * 
 	 * @param n
@@ -339,7 +343,7 @@ public abstract class BreakIterator implements Cloneable {
 
 	/**
 	 * Set this iterator's current position to the previous boundary before
-	 * current position, and return this postion. Return <code>DONE</code> if
+	 * current position, and return this position. Return <code>DONE</code> if
 	 * no boundary found before current position.
 	 * 
 	 * @return the position of last boundary
@@ -400,7 +404,7 @@ public abstract class BreakIterator implements Cloneable {
 	}
 
 	/**
-	 * Get a ing value from the given byte array, start from given offset.
+	 * Get an int value from the given byte array, start from given offset.
 	 * 
 	 * @param buf	the bytes to be converted
 	 * @param offset	the start position of conversion
