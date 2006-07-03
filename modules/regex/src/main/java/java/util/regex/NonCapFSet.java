@@ -36,14 +36,9 @@ class NonCapFSet extends FSet {
             MatchResultImpl matchResult) {
 
         int gr = getGroupIndex();
-        int end = matchResult.getEnd(gr);
         matchResult.setConsumed(gr, stringIndex - matchResult.getConsumed(gr));
 
-        int shift = next.matches(stringIndex, testString, matchResult);
-
-        if (shift < 0)
-            matchResult.setEnd(gr, end);
-        return shift;
+        return next.matches(stringIndex, testString, matchResult);
     }
 
     protected String getName() {
