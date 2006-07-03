@@ -47,24 +47,49 @@ public class Statement {
     public Statement(Object target, String methodName, Object[] arguments) {
         this.target = target;
         this.methodName = methodName;
-        this.arguments = arguments;
+        if (arguments != null) {
+            this.arguments = arguments;
+        } else {
+            this.arguments = new Object[0];
+        }
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public String toString() {
-        String targetVar = convertClassName(target.getClass());
-        
-        String argumentsVar = "";
-        if(arguments.length > 0) {
-            argumentsVar = convertClassName(arguments[0].getClass());
+        StringBuffer sb = new StringBuffer();
+        String targetVar =
+              target != null ? convertClassName(target.getClass()) : "null";
+
+        sb.append(targetVar);
+        sb.append('.');
+        sb.append(methodName);
+        sb.append('(');
+
+        if (arguments != null) {
+            for (int i = 0; i < arguments.length; ++i) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+
+                if (arguments[i] == null) {
+                    sb.append("null");
+                }
+                else if (arguments[i] instanceof String) {
+                    sb.append('"');
+                    sb.append(arguments[i].toString());
+                    sb.append('"');
+                }
+                else {
+                    sb.append(convertClassName(
+                            arguments[i].getClass()));
+                }
+            }
         }
-        for(int i = 1; i < arguments.length; ++i) {
-            argumentsVar = argumentsVar + "," + convertClassName(
-                    arguments[0].getClass());
-        }
-        return targetVar + "." + methodName + "(" + argumentsVar +  ")";
+        sb.append(')');
+        sb.append(';');
+        return sb.toString();
     }
 
     /**
@@ -341,15 +366,17 @@ public class Statement {
     static String convertClassName(Class<?> type) {
         Class<?> componentType = type.getComponentType();
         Class<?> resultType = (componentType == null) ? type : componentType;
-        StringTokenizer st = new StringTokenizer(resultType.getName(), ".");
-        String result = st.hasMoreElements() ? (String) st.nextElement() : null;
-        if(result == null) return result;
-        while(st.hasMoreElements()) {
-            result += "_" + (String) st.nextElement();
+        String result = resultType.getName();
+        int k = result.lastIndexOf('.');;
+
+        if (k != -1 && k < result.length()) {
+            result = result.substring(k + 1);
         }
-        if(componentType != null) {
-            result += "_array";
+
+        if (componentType != null) {
+            result += "Array";
         }
+
         return result;
     }
     
