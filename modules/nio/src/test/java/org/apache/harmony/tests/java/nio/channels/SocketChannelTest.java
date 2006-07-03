@@ -2677,4 +2677,31 @@ public class SocketChannelTest extends TestCase {
             assertEquals(read[i], write[i + 2]);
         }
     }
+    
+    /**
+     * @tests SocketChannelImpl#read(ByteBuffer[])
+     */
+    public void test_read_$ByteBuffer_Blocking() throws IOException {
+        // regression test for Harmony-728
+        byte[] data = new byte[CAPACITY_NORMAL];
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            data[i] = (byte) i;
+        }
+        ByteBuffer[] buf = new ByteBuffer[2];
+        buf[0] = ByteBuffer.allocate(CAPACITY_NORMAL);
+        buf[1] = ByteBuffer.allocate(CAPACITY_NORMAL);
+        channel1.connect(localAddr1);
+        Socket socket = null;
+        try {
+            socket = server1.accept();
+            OutputStream out = socket.getOutputStream();
+            out.write(data);
+            // should not block here
+            channel1.read(buf);
+        } finally {
+            if (null != socket) {
+                socket.close();
+            }
+        }
+    }
 }

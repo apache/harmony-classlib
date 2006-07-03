@@ -29,7 +29,6 @@ import java.net.SocketOptions;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AlreadyConnectedException;
-import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ConnectionPendingException;
 import java.nio.channels.IllegalBlockingModeException;
@@ -57,8 +56,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     // -------------------------------------------------------------------
     // Class variables
     // -------------------------------------------------------------------
-
-    private static final String ERRORMSG_SOCKET_INVALID = "The socket argument is not a socket";
 
     private static final int MAX_PORT_NUMBER = 65535;
 
@@ -101,9 +98,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
     // error msg
     private static final String ERRCODE_PORT_ERROR = "K0032"; //$NON-NLS-1$
-
-    // error messages, for native dependent.
-    private static final String ERRORMSG_ASYNCHRONOUSCLOSE = "The call was cancelled";
 
     // a address of localhost
     private static final byte[] localAddrArray = { 127, 0, 0, 1 };
@@ -375,10 +369,18 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             throw new NullPointerException();
         }
         checkOpenConnected();
-
-        synchronized (readLock) {
-            return readImpl(target);
+        if (!target.hasRemaining()) {
+            return 0;
         }
+        byte[] readArray = new byte[target.remaining()];
+        int readCount;
+        synchronized (readLock) {
+            readCount = readImpl(readArray);
+        }
+        if (EOF != readCount) {
+            target.put(readArray, 0, readCount);
+        }
+        return readCount;
     }
 
     /*
@@ -387,29 +389,34 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
      */
     public long read(ByteBuffer[] targets, int offset, int length)
             throws IOException {
-        if (isIndexValid(targets, offset, length)) {
-            checkOpenConnected();
-            if (0 == calculateByteBufferArray(targets, offset, length)){
-                return 0;
-            }
-            synchronized (readLock) {
-                long totalCount = 0;
-                for (int val = offset; val < offset + length; val++) {
-                    int readCount = readImpl(targets[val]);
-                    // only -1 or a integer >=0 may return
-                    if (EOF != readCount) {
-                        totalCount = totalCount + readCount;
-                    } else {
-                        if (0 == totalCount){
-                            totalCount = -1;
-                        }
-                        break;
-                    }
-                }
-                return totalCount;
+        if (!isIndexValid(targets, offset, length)) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        checkOpenConnected();
+
+        int totalCount = calculateByteBufferArray(targets, offset, length);
+        if (0 == totalCount) {
+            return 0;
+        }
+        byte[] readBuffer = new byte[totalCount];
+        int readCount;
+        // read data to readBuffer, and then transfer data from readBuffer to
+        // targets.
+        synchronized (readLock) {
+            readCount = readImpl(readBuffer);
+        }
+        if (readCount > 0) {
+            int left = readCount;
+            int index = offset;
+            // transfer data from readBuffer to targets
+            while (left > 0) {
+                int putLength = Math.min(targets[index].remaining(), left);
+                targets[index].put(readBuffer, readCount - left, putLength);
+                index++;
+                left -= putLength;
             }
         }
-        throw new ArrayIndexOutOfBoundsException();
+        return readCount;
     }
 
     private boolean isIndexValid(ByteBuffer[] targets, int offset, int length) {
@@ -419,31 +426,18 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
     /*
      * read from channel, and store the result in the target.
-     * 
+     *
+     * @param target    output parameter
      */
-    private int readImpl(ByteBuffer target) throws IOException {
-        if (!target.hasRemaining()) {
-            return 0;
-        }
+    private int readImpl(byte[] target) throws IOException {
         int readCount = 0;
         try {
-            byte[] readArray = new byte[target.remaining()];
             if (isBlocking()){
                 begin();
             }
-            readCount = networkSystem.read(fd, readArray, 0, readArray.length,
+            readCount = networkSystem.read(fd, target, 0, target.length,
                     (isBlocking() ? TIMEOUT_BLOCK : TIMEOUT_NONBLOCK));
-            if (EOF != readCount) {
-                target.put(readArray, 0, readCount);
-            }
             return readCount;
-        } catch (SocketException e) {
-            // FIXME improve native code
-            if (ERRORMSG_ASYNCHRONOUSCLOSE.equals(e.getMessage())
-                    || ERRORMSG_SOCKET_INVALID.equals(e.getMessage())) {
-                throw new AsynchronousCloseException();
-            }
-            throw e;
         } finally {
             if (isBlocking()){
                 end(readCount > 0);
@@ -522,9 +516,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             }
             source.position(pos + writeCount);
         } catch (SocketException e) {
-            if (ERRORMSG_ASYNCHRONOUSCLOSE.equals(e.getMessage())) {
-                throw new AsynchronousCloseException();
-            }
             if (!ERRMSG_SOCKET_NONBLOCKING_WOULD_BLOCK.equals(e.getMessage())) {
                 throw e;
             }            
@@ -653,8 +644,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         // ----------------------------------------------------
         // Class Variables
         // ----------------------------------------------------
-
-        private static final String ERRCODE_CHANNEL_NOT_CONNECTED = "K0320"; //$NON-NLS-1$
 
         private static final String ERRCODE_CHANNEL_CLOSED = "K003d"; //$NON-NLS-1$
 
