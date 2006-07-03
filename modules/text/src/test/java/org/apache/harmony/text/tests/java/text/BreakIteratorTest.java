@@ -378,6 +378,42 @@ public class BreakIteratorTest extends TestCase {
 		assertEquals(1, MockBreakIterator.publicGetLong(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 }, 1));
 		assertEquals(257, MockBreakIterator.publicGetLong(new byte[] { 0, 0, 0, 0, 0, 0, 0, 1, 1 }, 1));
 	}
+    
+	/**
+	 * @tests java.text.BreakIterator#getCharacterInstance(Locale)
+	 */
+    public void testGetCharacterInstanceLocale_NPE() {
+        // Regression for HARMONY-265
+        try {
+            BreakIterator.getCharacterInstance(null);
+            fail("BreakIterator.getCharacterInstance(null); should throw NullPointerException");
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetLineInstanceLocale_NPE() {
+        try {
+            BreakIterator.getLineInstance(null);
+            fail("BreakIterator.getLineInstance(null); should throw NullPointerException");
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetSentenceInstanceLocale_NPE() {
+        try {
+            BreakIterator.getSentenceInstance(null);
+            fail("BreakIterator.getSentenceInstance(null); should throw NullPointerException");
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetWordInstanceLocale_NPE() {
+        try {
+            BreakIterator.getWordInstance(null);
+            fail("BreakIterator.getWordInstance(null); should throw NullPointerException");
+        } catch (NullPointerException e) {
+        }
+    }
 
 	private static class MockBreakIterator extends BreakIterator {
 		public static int publicGetInt(byte[] buf, int offset) {

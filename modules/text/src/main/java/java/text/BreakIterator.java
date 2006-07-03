@@ -126,8 +126,11 @@ public abstract class BreakIterator implements Cloneable {
 	 *         given locale.
 	 */
 	public static BreakIterator getCharacterInstance(Locale where) {
-		return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
-				.getCharacterInstance(where));
+	    if (where == null)
+	        throw new NullPointerException();
+
+	    return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
+	            .getCharacterInstance(where));
 	}
 
 	/**
@@ -152,8 +155,11 @@ public abstract class BreakIterator implements Cloneable {
 	 *         given locale.
 	 */
 	public static BreakIterator getLineInstance(Locale where) {
-		return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
-				.getLineInstance(where));
+	    if (where == null)
+	        throw new NullPointerException();
+
+	    return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
+	            .getLineInstance(where));
 	}
 
 	/**
@@ -178,8 +184,11 @@ public abstract class BreakIterator implements Cloneable {
 	 *         using given locale.
 	 */
 	public static BreakIterator getSentenceInstance(Locale where) {
-		return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
-				.getSentenceInstance(where));
+	    if (where == null)
+	        throw new NullPointerException();
+
+	    return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
+	            .getSentenceInstance(where));
 	}
 
 	/**
@@ -204,8 +213,11 @@ public abstract class BreakIterator implements Cloneable {
 	 *         given locale.
 	 */
 	public static BreakIterator getWordInstance(Locale where) {
-		return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
-				.getWordInstance(where));
+	    if (where == null)
+	        throw new NullPointerException();
+
+	    return new RuleBasedBreakIterator(com.ibm.icu.text.BreakIterator
+	            .getWordInstance(where));
 	}
 
 	/**
