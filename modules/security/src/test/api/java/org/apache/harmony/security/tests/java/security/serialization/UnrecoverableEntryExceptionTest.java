@@ -15,36 +15,35 @@
  */
 
 /**
-* @author Alexander V. Astapchuk
+* @author Vera Y. Petrashkova
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.Timestamp;
-import java.security.cert.CertPath;
-import java.util.Date;
+import java.security.UnrecoverableEntryException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
-import org.apache.harmony.security.tests.support.TestCertUtils;
 
 
 /**
- * Serialization tests for <code>Timestamp</code>
+ * Test for UnrecoverableEntryException seialization
  * 
  */
 
-public class TimestampTest extends SerializationTest {
+public class UnrecoverableEntryExceptionTest extends SerializationTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TimestampTest.class);
+    public static String[] msgs = {
+            "New message",
+            "Long message for Exception. Long message for Exception. Long message for Exception." };
+
+    protected Object[] getData() {
+        return new Object[] { new UnrecoverableEntryException(),
+                new UnrecoverableEntryException(null),
+                new UnrecoverableEntryException(msgs[1]) };
     }
 
-    /**
-     * @see com.intel.drl.test.SerializationTest#getData()
-     */
-    protected Object[] getData() {
-        CertPath cpath = TestCertUtils.getCertPath();
-        return new Object[] { new Timestamp(new Date(1146633251341L), cpath) };
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(UnrecoverableEntryExceptionTest.class);
     }
 }

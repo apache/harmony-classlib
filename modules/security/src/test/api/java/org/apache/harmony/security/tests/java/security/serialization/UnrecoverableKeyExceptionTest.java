@@ -19,36 +19,31 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for SignatureException seialization 
- *  
+ * Test for UnrecoverableKeyException seialization
+ * 
  */
 
-public class SignatureExceptionTest extends SerializationTest {
+public class UnrecoverableKeyExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        Exception cause = new Exception(msgs[1]);
-        SignatureException dExc = new SignatureException(msgs[0], cause);
-        String msg = null;
-        Throwable th = null;
-        return new Object[] { new SignatureException(), new SignatureException(msg),
-                new SignatureException(msgs[1]),
-                new SignatureException(new Throwable()), new SignatureException(th),
-                new SignatureException(msgs[1], dExc) };
+        return new Object[] { new UnrecoverableKeyException(),
+                new UnrecoverableKeyException(null),
+                new UnrecoverableKeyException(msgs[1]) };
     }
 
     public static void main(String[] args) {
-       junit.textui.TestRunner.run(SignatureExceptionTest.class);
+        junit.textui.TestRunner.run(UnrecoverableKeyExceptionTest.class);
     }
 }

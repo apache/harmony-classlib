@@ -19,33 +19,36 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.InvalidParameterException;
+import java.security.KeyManagementException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for InvalidParameterException seialization 
+ * Test for KeyManagementException seialization 
  *  
  */
 
-public class InvalidParameterExceptionTest extends SerializationTest {
+public class KeyManagementExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        return new Object[] { 
-                new InvalidParameterException(),
-                new InvalidParameterException(null),
-                new InvalidParameterException(msgs[1])
-                };
+        Exception cause = new Exception(msgs[1]);
+        KeyManagementException dExc = new KeyManagementException(msgs[0], cause);
+        String msg = null;
+        Throwable th = null;
+        return new Object[] { new KeyManagementException(), new KeyManagementException(msg),
+                new KeyManagementException(msgs[1]),
+                new KeyManagementException(new Throwable()), new KeyManagementException(th),
+                new KeyManagementException(msgs[1], dExc) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(InvalidParameterExceptionTest.class);
+         junit.textui.TestRunner.run(KeyManagementExceptionTest.class);
     }
 }

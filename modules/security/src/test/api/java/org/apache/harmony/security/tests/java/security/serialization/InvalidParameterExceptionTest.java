@@ -19,36 +19,33 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.KeyStoreException;
+import java.security.InvalidParameterException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for KeyStoreException seialization 
+ * Test for InvalidParameterException seialization 
  *  
  */
 
-public class KeyStoreExceptionTest extends SerializationTest {
+public class InvalidParameterExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        Exception cause = new Exception(msgs[1]);
-        KeyStoreException dExc = new KeyStoreException(msgs[0], cause);
-        String msg = null;
-        Throwable th = null;
-        return new Object[] { new KeyStoreException(), new KeyStoreException(msg),
-                new KeyStoreException(msgs[1]),
-                new KeyStoreException(new Throwable()), new KeyStoreException(th),
-                new KeyStoreException(msgs[1], dExc) };
+        return new Object[] { 
+                new InvalidParameterException(),
+                new InvalidParameterException(null),
+                new InvalidParameterException(msgs[1])
+                };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(KeyStoreExceptionTest.class);
+        junit.textui.TestRunner.run(InvalidParameterExceptionTest.class);
     }
 }

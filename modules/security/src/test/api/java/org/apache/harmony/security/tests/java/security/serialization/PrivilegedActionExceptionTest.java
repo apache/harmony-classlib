@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
 import java.io.Serializable;
 import java.security.PrivilegedActionException;

@@ -19,19 +19,19 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.KeyException;
+import java.security.KeyStoreException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for KeyException seialization 
+ * Test for KeyStoreException seialization 
  *  
  */
 
-public class KeyExceptionTest extends SerializationTest {
+public class KeyStoreExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
@@ -39,16 +39,16 @@ public class KeyExceptionTest extends SerializationTest {
 
     protected Object[] getData() {
         Exception cause = new Exception(msgs[1]);
-        KeyException dExc = new KeyException(msgs[0], cause);
+        KeyStoreException dExc = new KeyStoreException(msgs[0], cause);
         String msg = null;
         Throwable th = null;
-        return new Object[] { new KeyException(), new KeyException(msg),
-                new KeyException(msgs[1]),
-                new KeyException(new Throwable()), new KeyException(th),
-                new KeyException(msgs[1], dExc) };
+        return new Object[] { new KeyStoreException(), new KeyStoreException(msg),
+                new KeyStoreException(msgs[1]),
+                new KeyStoreException(new Throwable()), new KeyStoreException(th),
+                new KeyStoreException(msgs[1], dExc) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(KeyExceptionTest.class);
+        junit.textui.TestRunner.run(KeyStoreExceptionTest.class);
     }
 }

@@ -19,31 +19,36 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.NoSuchProviderException;
+import java.security.DigestException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for NoSuchProviderException seialization
+ * Tests for DigestException serialization
  * 
  */
 
-public class NoSuchProviderExceptionTest extends SerializationTest {
+public class DigestExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        return new Object[] { new NoSuchProviderException(),
-                new NoSuchProviderException(null),
-                new NoSuchProviderException(msgs[1]) };
+        Exception cause = new Exception(msgs[1]);
+        DigestException dExc = new DigestException(msgs[0], cause);
+        String msg = null;
+        Throwable th = null;
+        return new Object[] { new DigestException(), new DigestException(msg),
+                new DigestException(msgs[1]),
+                new DigestException(new Throwable()), new DigestException(th),
+                new DigestException(msgs[1], dExc) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(NoSuchProviderExceptionTest.class);
+        junit.textui.TestRunner.run(DigestExceptionTest.class);
     }
 }

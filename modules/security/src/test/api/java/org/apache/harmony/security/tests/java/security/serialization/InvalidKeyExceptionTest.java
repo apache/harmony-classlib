@@ -19,19 +19,19 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.NoSuchAlgorithmException;
+import java.security.InvalidKeyException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for NoSuchAlgorithmException seialization 
+ * Test for InvalidKeyException seialization 
  *  
  */
 
-public class NoSuchAlgorithmExceptionTest extends SerializationTest {
+public class InvalidKeyExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
@@ -39,16 +39,16 @@ public class NoSuchAlgorithmExceptionTest extends SerializationTest {
 
     protected Object[] getData() {
         Exception cause = new Exception(msgs[1]);
-        NoSuchAlgorithmException dExc = new NoSuchAlgorithmException(msgs[0], cause);
+        InvalidKeyException dExc = new InvalidKeyException(msgs[0], cause);
         String msg = null;
         Throwable th = null;
-        return new Object[] { new NoSuchAlgorithmException(), new NoSuchAlgorithmException(msg),
-                new NoSuchAlgorithmException(msgs[1]),
-                new NoSuchAlgorithmException(new Throwable()), new NoSuchAlgorithmException(th),
-                new NoSuchAlgorithmException(msgs[1], dExc) };
+        return new Object[] { new InvalidKeyException(), new InvalidKeyException(msg),
+                new InvalidKeyException(msgs[1]),
+                new InvalidKeyException(new Throwable()), new InvalidKeyException(th),
+                new InvalidKeyException(msgs[1], dExc) };
     }
 
     public static void main(String[] args) {
-       junit.textui.TestRunner.run(NoSuchAlgorithmExceptionTest.class);
+       junit.textui.TestRunner.run(InvalidKeyExceptionTest.class);
     }
 }

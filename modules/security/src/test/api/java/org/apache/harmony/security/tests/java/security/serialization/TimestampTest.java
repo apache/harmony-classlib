@@ -19,9 +19,8 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.CodeSigner;
 import java.security.Timestamp;
 import java.security.cert.CertPath;
 import java.util.Date;
@@ -31,14 +30,14 @@ import org.apache.harmony.security.tests.support.TestCertUtils;
 
 
 /**
- * Serialization tests for <code>CodeSigner</code>
+ * Serialization tests for <code>Timestamp</code>
  * 
  */
 
-public class CodeSignerTest extends SerializationTest {
+public class TimestampTest extends SerializationTest {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CodeSignerTest.class);
+        junit.textui.TestRunner.run(TimestampTest.class);
     }
 
     /**
@@ -46,8 +45,6 @@ public class CodeSignerTest extends SerializationTest {
      */
     protected Object[] getData() {
         CertPath cpath = TestCertUtils.getCertPath();
-        Timestamp ts = new Timestamp(new Date(1146633204309L), cpath);
-        return new Object[] { new CodeSigner(cpath, ts),
-                new CodeSigner(cpath, null) };
+        return new Object[] { new Timestamp(new Date(1146633251341L), cpath) };
     }
 }

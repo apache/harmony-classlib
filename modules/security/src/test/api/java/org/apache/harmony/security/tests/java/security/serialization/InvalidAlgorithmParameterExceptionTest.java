@@ -19,31 +19,36 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.UnrecoverableKeyException;
+import java.security.InvalidAlgorithmParameterException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for UnrecoverableKeyException seialization
- * 
+ * Test for InvalidAlgorithmParameterException seialization 
+ *  
  */
 
-public class UnrecoverableKeyExceptionTest extends SerializationTest {
+public class InvalidAlgorithmParameterExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        return new Object[] { new UnrecoverableKeyException(),
-                new UnrecoverableKeyException(null),
-                new UnrecoverableKeyException(msgs[1]) };
+        Exception cause = new Exception(msgs[1]);
+        InvalidAlgorithmParameterException dExc = new InvalidAlgorithmParameterException(msgs[0], cause);
+        String msg = null;
+        Throwable th = null;
+        return new Object[] { new InvalidAlgorithmParameterException(), new InvalidAlgorithmParameterException(msg),
+                new InvalidAlgorithmParameterException(msgs[1]),
+                new InvalidAlgorithmParameterException(new Throwable()), new InvalidAlgorithmParameterException(th),
+                new InvalidAlgorithmParameterException(msgs[1], dExc) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(UnrecoverableKeyExceptionTest.class);
+        junit.textui.TestRunner.run(InvalidAlgorithmParameterExceptionTest.class);
     }
 }
