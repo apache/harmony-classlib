@@ -64,7 +64,7 @@ public class ExemptionMechanismTest extends TestCase {
                 ExemptionMechanismProviderClass);
         
         ExemptionMechanismSpi spi = new MyExemptionMechanismSpi();
-        ExemptionMechanism em = new myEM(spi, mProv, defaultAlg);
+        ExemptionMechanism em = new MyMechanism(spi, mProv, defaultAlg);
         
         assertEquals("Incorrect provider", em.getProvider(), mProv);
         assertEquals("Incorrect algorithm", em.getName(), defaultAlg);
@@ -78,7 +78,7 @@ public class ExemptionMechanismTest extends TestCase {
             fail("IllegalStateException must be thrown");
         } catch (IllegalStateException e) {
         }        
-        em = new myEM(null, null, null);
+        em = new MyMechanism(null, null, null);
         assertNull("Incorrect mechanism", em.getName());
         assertNull("Incorrect provider", em.getProvider());
         try {
@@ -94,9 +94,9 @@ public class ExemptionMechanismTest extends TestCase {
     }
 }
 
-class myEM extends ExemptionMechanism {
+class MyMechanism extends ExemptionMechanism {
 
-    public myEM(ExemptionMechanismSpi spi, Provider prov, String mechanism) {
+    public MyMechanism(ExemptionMechanismSpi spi, Provider prov, String mechanism) {
         super(spi, prov, mechanism);
     }
 
