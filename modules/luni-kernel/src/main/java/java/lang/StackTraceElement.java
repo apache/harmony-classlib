@@ -16,6 +16,8 @@
 /*[INCLUDE-IF mJava14]*/
 package java.lang;
 
+import java.io.Serializable;
+
 /**
  * An implementation of this class is provided, but the documented constructor
  * can be used by the VM specific implementation to create instances.
@@ -25,12 +27,17 @@ package java.lang;
  * @see Throwable#getStackTrace()
  * @since 1.4
  */
-public final class StackTraceElement implements java.io.Serializable {
-	private static final long serialVersionUID = 6992337162326171013L;
+public final class StackTraceElement implements Serializable {
+    
+    private static final long serialVersionUID = 6992337162326171013L;
 
-	String declaringClass, methodName, fileName;
+    String declaringClass;
 
-	int lineNumber;
+    String methodName;
+
+    String fileName;
+
+    int lineNumber;
 
 	/**
      * <p>
@@ -51,8 +58,10 @@ public final class StackTraceElement implements java.io.Serializable {
      * @since 1.5
      */
 	public StackTraceElement(String cls, String method, String file, int line) {
-		if (cls == null || method == null)
-			throw new NullPointerException();
+        super();
+		if (cls == null || method == null) {
+            throw new NullPointerException();
+        }
 		declaringClass = cls;
 		methodName = method;
 		fileName = file;
@@ -65,7 +74,7 @@ public final class StackTraceElement implements java.io.Serializable {
      * </p>
      */
 	private StackTraceElement() {
-		// Empty
+		super();
 	}
 
 	/**
@@ -73,33 +82,42 @@ public final class StackTraceElement implements java.io.Serializable {
 	 * 
 	 * @param obj Object to compare with
 	 */
-	public boolean equals(Object obj) {
-		if (!(obj instanceof StackTraceElement))
-			return false;
-		StackTraceElement castObj = (StackTraceElement) obj;
+    public boolean equals(Object obj) {
+        if (!(obj instanceof StackTraceElement)) {
+            return false;
+        }
+        StackTraceElement castObj = (StackTraceElement) obj;
 
-		// Unknown methods are never equal to anything (not strictly to spec,
-		// but spec does not allow null method/class names)
-		if ((methodName == null) || (castObj.methodName == null))
-			return false;
+        /*
+         * Unknown methods are never equal to anything (not strictly to spec,
+         * but spec does not allow null method/class names)
+         */
+        if ((methodName == null) || (castObj.methodName == null)) {
+            return false;
+        }
 
-		if (!getMethodName().equals(castObj.getMethodName()))
-			return false;
-		if (!getClassName().equals(castObj.getClassName()))
-			return false;
-		String localFileName = getFileName();
-		if (localFileName == null) {
-			if (castObj.getFileName() != null)
-				return false;
-		} else {
-			if (!localFileName.equals(castObj.getFileName()))
-				return false;
-		}
-		if (getLineNumber() != castObj.getLineNumber())
-			return false;
+        if (!getMethodName().equals(castObj.getMethodName())) {
+            return false;
+        }
+        if (!getClassName().equals(castObj.getClassName())) {
+            return false;
+        }
+        String localFileName = getFileName();
+        if (localFileName == null) {
+            if (castObj.getFileName() != null) {
+                return false;
+            }
+        } else {
+            if (!localFileName.equals(castObj.getFileName())) {
+                return false;
+            }
+        }
+        if (getLineNumber() != castObj.getLineNumber()) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 	/**
 	 * Returns the full name (i.e. including the package) of the class where
@@ -131,7 +149,7 @@ public final class StackTraceElement implements java.io.Serializable {
 	 * 
 	 * @return if available, the line number in the source file for the class
 	 *         where this stack trace element is executing. If no such detail is
-	 *         available, a number &lt; <code>0</code>.
+	 *         available, a number less than <code>0</code>.
 	 */
 	public int getLineNumber() {
 		return lineNumber;
@@ -153,14 +171,18 @@ public final class StackTraceElement implements java.io.Serializable {
 	 * 
 	 * @return This objects hash code
 	 */
-	public int hashCode() {
-		// either both methodName and declaringClass are null, or neither are
-		// null
-		if (methodName == null)
-			return 0; // all unknown methods hash the same
-		// declaringClass never null if methodName is non-null
-		return methodName.hashCode() ^ declaringClass.hashCode();
-	}
+    public int hashCode() {
+        /*
+         * Either both methodName and declaringClass are null, or neither are
+         * null.
+         */
+        if (methodName == null) {
+            // all unknown methods hash the same
+            return 0;
+        }
+        // declaringClass never null if methodName is non-null
+        return methodName.hashCode() ^ declaringClass.hashCode();
+    }
 
 	/**
 	 * Returns <code>true</code> if the method name returned by
@@ -178,7 +200,7 @@ public final class StackTraceElement implements java.io.Serializable {
 	 * 
 	 * @return String representing this object
 	 */
-	public String toString() {
+    public String toString() {
 		StringBuilder buf = new StringBuilder(80);
 
 		buf.append(getClassName());
