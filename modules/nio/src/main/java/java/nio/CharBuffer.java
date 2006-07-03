@@ -91,9 +91,12 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                invalid
 	 */
 	public static CharBuffer wrap(char[] array, int start, int len) {
-        if ((start < 0 ) || (len < 0) || start + len > array.length) {
-            throw new IndexOutOfBoundsException();
-        }
+                if (array == null) {
+                        throw new NullPointerException();
+                }
+                if ((start < 0 ) || (len < 0) || start + len > array.length) {
+                        throw new IndexOutOfBoundsException();
+                }
 
 		CharBuffer buf = BufferFactory.newCharBuffer(array);
 		buf.position = start;
@@ -139,9 +142,11 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                invalid
 	 */
 	public static CharBuffer wrap(CharSequence chseq, int start, int end) {
-        if (start < 0 || end < start || end > chseq.length()) {
-            throw new IndexOutOfBoundsException();
-        }
+	    if (chseq == null)
+	        throw new NullPointerException();
+	    if (start < 0 || end < start || end > chseq.length()) {
+	        throw new IndexOutOfBoundsException();
+	    }
         
 		CharBuffer result = BufferFactory.newCharBuffer(chseq);
 		result.position = start;

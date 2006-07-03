@@ -84,9 +84,12 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
 	 *                invalid
 	 */
 	public static IntBuffer wrap(int[] array, int start, int len) {
-        if (start < 0 || len < 0 || len + start > array.length) {
-            throw new IndexOutOfBoundsException();
-        }
+                if (array == null) {
+                        throw new NullPointerException();
+                }
+                if (start < 0 || len < 0 || len + start > array.length) {
+                        throw new IndexOutOfBoundsException();
+                }
 
 		IntBuffer buf = BufferFactory.newIntBuffer(array);
 		buf.position = start;

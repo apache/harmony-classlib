@@ -85,9 +85,12 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 	 *                invalid
 	 */
 	public static ShortBuffer wrap(short[] array, int start, int len) {
-        if (start< 0 || len < 0 || start + len > array.length) {
-            throw new IndexOutOfBoundsException();
-        }
+                if (array == null) {
+                        throw new NullPointerException();
+                }
+                if (start< 0 || len < 0 || start + len > array.length) {
+                        throw new IndexOutOfBoundsException();
+                }
 
 		ShortBuffer buf = BufferFactory.newShortBuffer(array);
 		buf.position = start;

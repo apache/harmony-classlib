@@ -82,9 +82,12 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 	 *                invalid
 	 */
 	public static DoubleBuffer wrap(double[] array, int start, int len) {
-        if (start < 0 || len < 0 || start+ len > array.length) {
-            throw new IndexOutOfBoundsException();
-        }
+                if (array == null) {
+                        throw new NullPointerException();
+                }
+                if (start < 0 || len < 0 || start+ len > array.length) {
+                        throw new IndexOutOfBoundsException();
+                }
 
 		DoubleBuffer buf = BufferFactory.newDoubleBuffer(array);
 		buf.position = start;

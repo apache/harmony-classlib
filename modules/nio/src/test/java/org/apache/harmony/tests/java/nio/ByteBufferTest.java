@@ -1872,6 +1872,19 @@ public class ByteBufferTest extends AbstractBufferTest {
 
         buf.order(ByteOrder.BIG_ENDIAN);
     }
+    
+    /**
+     * @tests java.nio.ByteBuffer.wrap(byte[],int,int)
+     */
+    public void testWrappedByteBuffer_null_array() {
+        // Regression for HARMONY-264
+        byte array[] = null;
+        try {
+            ByteBuffer.wrap(array, -1, 0);
+            fail("Should throw NPE"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+        }
+    }
 
     private void loadTestData1(byte array[], int offset, int length) {
         for (int i = 0; i < length; i++) {

@@ -1008,4 +1008,24 @@ public class CharBufferTest extends AbstractBufferTest {
 	public void testIsReadOnly() {
 		assertFalse(buf.isReadOnly());
 	}
+    
+	/**
+	 * @tests java.nio.CharBuffer.wrap(CharSequence,int,int)
+	 */
+	public void testWrapNPE() {
+	    // Regression for HARMONY-264
+	    try {
+	        CharBuffer.wrap((CharSequence)null,1,0);
+	        fail("CharBuffer.wrap((CharSequence)null,1,0) should throw NullPointerException");
+	    } catch (NullPointerException e) {
+	    }
+
+
+	    char[] array = null;
+	    try {
+	        CharBuffer.wrap(array,-1,0);
+	        fail("CharBuffer.wrap((char[])null,-1,0) should throw NullPointerException");
+	    } catch (NullPointerException e) {
+	    }
+	}
 }

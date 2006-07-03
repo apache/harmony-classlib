@@ -789,6 +789,19 @@ public class ShortBufferTest extends TestCase {
         testShortBufferInstanceThoroughly(buf);
     }
 
+    /**
+     * @tests java.nio.ShortBuffer.wrap(short[],int,int)
+     */
+    public void testWrappedShortBuffer_null_array() {
+        // Regression for HARMONY-264
+        short array[] = null;
+        try {
+            ShortBuffer.wrap(array, -1, 0);
+            fail("Should throw NPE"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+        }
+    }
+
     public void testByteBufferAsShortBuffer() {
         ShortBuffer buf = ByteBuffer.allocate(160).asShortBuffer();
         testShortBufferInstanceThoroughly(buf);

@@ -812,6 +812,19 @@ public class DoubleBufferTest extends TestCase {
         testDoubleBufferInstanceThoroughly(buf);
     }
 
+    /**
+     * @tests java.nio.DoubleBuffer.wrap(double[],int,int)
+     */
+    public void testWrappedDoubleBuffer_null_array() {
+        // Regression for HARMONY-264
+        double array[] = null;
+        try {
+            DoubleBuffer.wrap(array, -1, 0);
+            fail("Should throw NPE"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+        }
+    }
+
     public void testByteBufferAsDoubleBuffer() {
         DoubleBuffer buf = ByteBuffer.allocate(160).asDoubleBuffer();
         testDoubleBufferInstanceThoroughly(buf);

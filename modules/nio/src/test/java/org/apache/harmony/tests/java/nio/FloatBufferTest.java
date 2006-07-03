@@ -789,6 +789,19 @@ public class FloatBufferTest extends TestCase {
         testFloatBufferInstanceThoroughly(buf);
     }
 
+    /**
+     * @tests java.nio.FloatBuffer.wrap(float[],int,int)
+     */
+    public void testWrappedFloatBuffer_null_array() {
+        // Regression for HARMONY-264
+        float array[] = null;
+        try {
+            FloatBuffer.wrap(array, -1, 0);
+            fail("Should throw NPE"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+        }
+    }
+
     public void testByteBufferAsFloatBuffer() {
         FloatBuffer buf = ByteBuffer.allocate(160).asFloatBuffer();
         testFloatBufferInstanceThoroughly(buf);

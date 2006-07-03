@@ -101,9 +101,12 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 *                invalid
 	 */
 	public static ByteBuffer wrap(byte[] array, int start, int len) {
-        if ((start< 0 ) || (len < 0) || start+ len > array.length) {
-            throw new IndexOutOfBoundsException();
-        }
+                if (array == null) {
+                        throw new NullPointerException();
+                }
+                if ((start< 0 ) || (len < 0) || start+ len > array.length) {
+                        throw new IndexOutOfBoundsException();
+                }
 
 		ByteBuffer buf = BufferFactory.newByteBuffer(array);
 		buf.position = start;

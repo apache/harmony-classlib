@@ -85,9 +85,12 @@ public abstract class LongBuffer extends Buffer implements Comparable<LongBuffer
 	 *                invalid
 	 */
 	public static LongBuffer wrap(long[] array, int start, int len) {
-        if (start < 0 || len < 0 || len + start > array.length) {
-            throw new IndexOutOfBoundsException();
-        }
+                if (array == null) {
+                        throw new NullPointerException();
+                }
+                if (start < 0 || len < 0 || len + start > array.length) {
+                        throw new IndexOutOfBoundsException();
+                }
 
 		LongBuffer buf = BufferFactory.newLongBuffer(array);
 		buf.position = start;

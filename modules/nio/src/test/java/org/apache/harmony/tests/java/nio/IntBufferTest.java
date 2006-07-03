@@ -789,6 +789,19 @@ public class IntBufferTest extends TestCase {
         testIntBufferInstanceThoroughly(buf);
     }
 
+    /**
+     * @tests java.nio.IntBuffer.wrap(int[],int,int)
+     */
+    public void testWrappedIntBuffer_null_array() {
+        // Regression for HARMONY-264
+        int array[] = null;
+        try {
+            IntBuffer.wrap(array, -1, 0);
+            fail("Should throw NPE"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+        }
+    }
+
     public void testByteBufferAsIntBuffer() {
         IntBuffer buf = ByteBuffer.allocate(160).asIntBuffer();
         testIntBufferInstanceThoroughly(buf);

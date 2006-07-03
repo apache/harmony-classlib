@@ -82,9 +82,12 @@ public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuff
 	 *                invalid
 	 */
 	public static FloatBuffer wrap(float[] array, int start, int len) {
-        if (start < 0 || len < 0 || start + len > array.length) {
-            throw new IndexOutOfBoundsException();
-        }
+                if (array == null) {
+                        throw new NullPointerException();
+                }
+                if (start < 0 || len < 0 || start + len > array.length) {
+                        throw new IndexOutOfBoundsException();
+                }
 
 		FloatBuffer buf = BufferFactory.newFloatBuffer(array);
 		buf.position = start;

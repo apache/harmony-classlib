@@ -789,6 +789,19 @@ public class LongBufferTest extends TestCase {
         testLongBufferInstanceThoroughly(buf);
     }
 
+    /**
+     * @tests java.nio.LongBuffer.wrap(long[],int,int)
+     */
+    public void testWrappedLongBuffer_null_array() {
+        // Regression for HARMONY-264
+        long array[] = null;
+        try {
+            LongBuffer.wrap(array, -1, 0);
+            fail("Should throw NPE"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+        }
+    }
+
     public void testByteBufferAsLongBuffer() {
         LongBuffer buf = ByteBuffer.allocate(160).asLongBuffer();
         testLongBufferInstanceThoroughly(buf);
