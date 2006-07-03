@@ -20,9 +20,10 @@ Import-Package: java.io,
  org.apache.harmony.security,
  org.apache.harmony.security.asn1,
  org.apache.harmony.security.fortress,
- org.apache.harmony.security.tests.support;resolution:=optional;hy_usage=test,
+ org.apache.harmony.security.tests.support;hy_usage=test;resolution:=optional,
  org.apache.harmony.security.utils,
- org.apache.harmony.security.x501
+ org.apache.harmony.security.x501,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
 Export-Package: javax.security.auth,
  javax.security.auth.callback,
  javax.security.auth.kerberos,
