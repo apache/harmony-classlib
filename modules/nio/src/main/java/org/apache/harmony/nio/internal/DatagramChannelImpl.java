@@ -346,22 +346,24 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
 
         try {
             begin();
-
             byte[] array;
-            // FIXME enhence the performance
+            int length = source.remaining();
+            int oldposition = source.position();
+            int start;
             if (source.hasArray()) {
                 array = source.array();
+                start = oldposition;
             } else {
-                array = new byte[source.remaining()];
+                array = new byte[length];
                 source.get(array);
-            }
-            DatagramPacket pack = new DatagramPacket(array, array.length, isa);
-
+                start = 0;
+            }            
             synchronized (writeLock) {
-                sendCount = networkSystem.sendDatagram(fd, pack.getData(), 0,
-                        pack.getLength(), isa.getPort(), false, trafficClass,
-                        isa.getAddress());
+                sendCount = networkSystem.sendDatagram(fd, array, start,
+                        length, isa.getPort(), false, trafficClass, isa
+                                .getAddress());
             }
+            source.position(oldposition + sendCount);            
             return sendCount;
         } finally {
             end(sendCount >= 0);
