@@ -16,14 +16,12 @@ package org.apache.harmony.nio.internal;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.SocketTimeoutException;
-import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.NotYetBoundException;
 import java.nio.channels.SelectableChannel;
@@ -55,9 +53,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
 
     // status closed.
     private static final int SERVER_STATUS_CLOSED = 1;
-
-    // error message, for native dependent.
-    private static final String ERRMSG_ASYNCHRONOUS = "The call was cancelled"; //$NON-NLS-1$
 
     // -------------------------------------------------------------------
     // Instance variables
@@ -157,11 +152,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
                     } while (isBlocking);
                 }
             }
-        } catch (BindException e) {
-            // FIXME improve native code.
-            if (ERRMSG_ASYNCHRONOUS.equals(e.getMessage())) {
-                throw new AsynchronousCloseException();
-            }
         } finally {
             end(socketGot.isConnected());
         }
@@ -257,10 +247,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
                             aSocket.getPort());
                 }
                 connectOK = true;
-            } catch (SocketException e) {
-                if (ERRMSG_ASYNCHRONOUS.equals(e.getMessage())) {
-                    throw new AsynchronousCloseException();
-                }
             } finally {
                 if (!connectOK) {
                     aSocket.close();
