@@ -6,6 +6,8 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.applet,
+ java.awt;resolution:=optional,
+ java.beans;resolution:=optional,
  java.io,
  java.lang,
  java.lang.reflect,
@@ -13,7 +15,8 @@ Import-Package: java.applet,
  java.nio.charset;resolution:=optional,
  java.security,
  java.text;resolution:=optional,
- java.util
+ java.util,
+ javax.accessibility;resolution:=optional
 Export-Package: javax.naming,
  javax.naming.directory,
  javax.naming.event,
