@@ -8,10 +8,13 @@ Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang,
  java.lang.reflect,
+ java.math,
  java.net,
  java.nio.charset,
  java.security,
  java.security.cert,
+ java.util,
+ javax.security.auth.x500,
  org.apache.harmony.luni.util
 Export-Package: org.apache.harmony.tools.javac,
  org.apache.harmony.tools.keytool
