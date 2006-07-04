@@ -40,6 +40,7 @@ public class AllTests {
         suite.addTestSuite(FileLockTest.class);
         suite.addTestSuite(AsynchronousCloseExceptionTest.class);
         suite.addTestSuite(CancelledKeyExceptionTest.class);
+        suite.addTestSuite(ClosedByInterruptExceptionTest.class);
         //$JUnit-END$
         return suite;
     }
