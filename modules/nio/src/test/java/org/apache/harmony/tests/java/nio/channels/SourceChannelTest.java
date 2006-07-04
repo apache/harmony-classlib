@@ -147,42 +147,55 @@ public class SourceChannelTest extends TestCase {
 	}
 
 	/**
-	 * @tests java.nio.channels.Pipe.SourceChannel#read(ByteBuffer[])
-	 */
-	public void test_read_$LByteBuffer() throws IOException {
-		ByteBuffer[] bufArray = { buffer, positionedBuffer };
-		boolean[] sinkBlockingMode = { true, true, false, false };
-		boolean[] sourceBlockingMode = { true, false, true, false };
-		for (int i = 0; i < sinkBlockingMode.length; ++i) {
-			sink.configureBlocking(sinkBlockingMode[i]);
-			source.configureBlocking(sourceBlockingMode[i]);
-
-			buffer.position(0);
-			positionedBuffer.position(BUFFER_SIZE);
-			long writeCount = sink.write(bufArray);
-			assertEquals(10, writeCount);
-			// if sink and source both are blocking mode, source only needs read
-			// once to get what sink write.
-			boolean isBlocking = sinkBlockingMode[i] && sourceBlockingMode[i];
-			ByteBuffer[] readBufArray = { ByteBuffer.allocate(BUFFER_SIZE),
-			        ByteBuffer.allocate(BUFFER_SIZE) };
-			long totalCount = 0;
-			do {
-				long count = source.read(readBufArray);
-				if (count < 0) {
-					break;
-				}
-				totalCount += count;
-			} while (totalCount != 10 && !isBlocking);
-
-			// assert read result
-			for (ByteBuffer readBuf : readBufArray) {
-				// RI may fail because of its bug implementation
-				assertEquals(BUFFER_SIZE, readBuf.position());
-				assertEquals("bytes", new String(readBuf.array(), ISO8859_1));
-			}
-		}
-	}
+     * @tests java.nio.channels.Pipe.SourceChannel#read(ByteBuffer[])
+     */
+    public void test_read_$LByteBuffer() throws IOException {
+        ByteBuffer[] bufArray = { buffer, positionedBuffer };
+        boolean[] sinkBlockingMode = { true, true, false, false };
+        boolean[] sourceBlockingMode = { true, false, true, false };
+        for (int i = 0; i < sinkBlockingMode.length; ++i) {
+            // open new pipe everytime, will be closed in finally block
+            pipe = Pipe.open();
+            sink = pipe.sink();
+            source = pipe.source();
+            sink.configureBlocking(sinkBlockingMode[i]);
+            source.configureBlocking(sourceBlockingMode[i]);
+            buffer.position(0);
+            positionedBuffer.position(BUFFER_SIZE);
+            try {
+                long writeCount = sink.write(bufArray);
+                assertEquals(10, writeCount);
+                // invoke close to ensure all data will be sent out
+                sink.close();
+                // read until EOF is meet or readBufArray is full.
+                ByteBuffer[] readBufArray = { ByteBuffer.allocate(BUFFER_SIZE),
+                        ByteBuffer.allocate(BUFFER_SIZE) };
+                long totalCount = 0;
+                do {
+                    long count = source.read(readBufArray);
+                    if (count < 0) {
+                        break;
+                    }
+                    if (0 == count && BUFFER_SIZE == readBufArray[1].position()) {
+                        // source.read returns 0 because readBufArray is full
+                        break;
+                    }
+                    totalCount += count;
+                } while (totalCount <= 10);
+                // assert read result
+                for (ByteBuffer readBuf : readBufArray) {
+                    // RI may fail because of its bug implementation
+                    assertEquals(BUFFER_SIZE, readBuf.position());
+                    assertEquals("bytes",
+                            new String(readBuf.array(), ISO8859_1));
+                }
+            } finally {
+                // close pipe everytime
+                sink.close();
+                source.close();
+            }
+        }
+    }
 	
 	/**
 	 * @tests java.nio.channels.Pipe.SourceChannel#read(ByteBuffer)
@@ -277,42 +290,55 @@ public class SourceChannelTest extends TestCase {
 	}
 
 	/**
-	 * @tests java.nio.channels.Pipe.SourceChannel#read(ByteBuffer[], int, int)
-	 */
-	public void test_read_$LByteBufferII() throws IOException {
-		ByteBuffer[] bufArray = { buffer, positionedBuffer };
-		boolean[] sinkBlockingMode = { true, true, false, false };
-		boolean[] sourceBlockingMode = { true, false, true, false };
-		for (int i = 0; i < sinkBlockingMode.length; ++i) {
-			sink.configureBlocking(sinkBlockingMode[i]);
-			source.configureBlocking(sourceBlockingMode[i]);
+     * @tests java.nio.channels.Pipe.SourceChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read_$LByteBufferII() throws IOException {
+        ByteBuffer[] bufArray = { buffer, positionedBuffer };
+        boolean[] sinkBlockingMode = { true, true, false, false };
+        boolean[] sourceBlockingMode = { true, false, true, false };
+        for (int i = 0; i < sinkBlockingMode.length; ++i) {
+            Pipe pipe = Pipe.open();
+            sink = pipe.sink();
+            source = pipe.source();
 
-			buffer.position(0);
-			positionedBuffer.position(BUFFER_SIZE);
-			sink.write(bufArray);
-			// begin to read
-			// if sink and source both are blocking mode, source only needs read
-			// once to get what sink write.
-			boolean isBlocking = sinkBlockingMode[i] && sourceBlockingMode[i];
-			ByteBuffer[] readBufArray = { ByteBuffer.allocate(BUFFER_SIZE),
-			        ByteBuffer.allocate(BUFFER_SIZE) };
-			long totalCount = 0;
-			do {
-				long count = source.read(readBufArray, 0, 2);
-				if (count < 0) {
-					break;
-				}
-				totalCount += count;
-			} while (totalCount != 10 && !isBlocking);
+            sink.configureBlocking(sinkBlockingMode[i]);
+            source.configureBlocking(sourceBlockingMode[i]);
 
-			// assert read result
-			for (ByteBuffer readBuf : readBufArray) {
-				// RI may fail because of its bug implementation
-				assertEquals(BUFFER_SIZE, readBuf.position());
-				assertEquals("bytes", new String(readBuf.array(), ISO8859_1));
-			}
-		}
-	}
+            buffer.position(0);
+            positionedBuffer.position(BUFFER_SIZE);
+            try {
+                sink.write(bufArray);
+                // invoke close to ensure all data will be sent out
+                sink.close();
+                // read until EOF is meet or readBufArray is full.
+                ByteBuffer[] readBufArray = { ByteBuffer.allocate(BUFFER_SIZE),
+                        ByteBuffer.allocate(BUFFER_SIZE) };
+                long totalCount = 0;
+                do {
+                    long count = source.read(readBufArray, 0, 2);
+                    if (count < 0) {
+                        break;
+                    }
+                    if (0 == count && BUFFER_SIZE == readBufArray[1].position()) {
+                        // source.read returns 0 because readBufArray is full
+                        break;
+                    }
+                    totalCount += count;
+                } while (totalCount != 10);
+
+                // assert read result
+                for (ByteBuffer readBuf : readBufArray) {
+                    // RI may fail because of its bug implementation
+                    assertEquals(BUFFER_SIZE, readBuf.position());
+                    assertEquals("bytes",
+                            new String(readBuf.array(), ISO8859_1));
+                }
+            } finally {
+                sink.close();
+                source.close();
+            }
+        }
+    }
 
 	/**
 	 * @tests java.nio.channels.Pipe.SourceChannel#read(ByteBuffer)
