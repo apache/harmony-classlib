@@ -409,20 +409,6 @@ public class HashMapTest extends junit.framework.TestCase {
 			return key == ((ReusableKey) o).key;
 		}
 	}
-    
-    public void test_hashCode() {
-        HashMap map = new HashMap(10);
-        Integer key = new Integer(1);
-        Integer val = new Integer(2);
-        map.put(key, val);
-        int expected = key.hashCode() ^ val.hashCode();
-        assertEquals(expected, map.hashCode());
-        key = new Integer(4);
-        val = new Integer(8);
-        map.put(key, val);
-        expected += key.hashCode() ^ val.hashCode();
-        assertEquals(expected, map.hashCode());
-    } 
 	
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

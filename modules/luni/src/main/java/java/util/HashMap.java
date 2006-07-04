@@ -47,8 +47,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
         Entry(K theKey, V theValue) {
             super(theKey, theValue);
-            this.hash = (theKey == null ? 0 : theKey.hashCode())
-                    ^ (theValue == null ? 0 : theValue.hashCode());
+            this.hash = (theKey == null) ? 0 : theKey.hashCode();
         }
 
         @Override
@@ -524,11 +523,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
                         % elementData.length;
             }
-            entry = createEntry(key, index, value);
-            //new entry, so nothing is replaced
-            return null;
+            entry = createEntry(key, index, null);
         }
-        
         V result = entry.value;
         entry.value = value;
         return result;
