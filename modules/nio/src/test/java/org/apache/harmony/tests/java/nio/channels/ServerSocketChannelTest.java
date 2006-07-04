@@ -23,6 +23,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedChannelException;
+import java.nio.channels.IllegalBlockingModeException;
 import java.nio.channels.NotYetBoundException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
@@ -437,6 +438,9 @@ public class ServerSocketChannelTest extends TestCase {
         }
     }
     
+    /**
+     * @tests ServerSocketChannel#socket().getSoTimeout()
+     */
     public void test_accept_SOTIMEOUT() throws IOException {
         // regression test for Harmony-707        
         final int SO_TIMEOUT = 10;
@@ -454,6 +458,90 @@ public class ServerSocketChannelTest extends TestCase {
             assertEquals(SO_TIMEOUT, soTimeout);
         } finally {
             sc.close();
+        }
+    }
+    
+    /**
+     * @tests ServerSocket#socket().accept()
+     */
+    public void test_socket_accept_Blocking_NotBound() throws IOException {
+        // regression test for Harmony-748       
+        ServerSocket gotSocket = serverChannel.socket();
+        serverChannel.configureBlocking(true);
+        try {
+            gotSocket.accept();
+            fail("Should throw an IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }        
+        serverChannel.close();
+        try {
+            gotSocket.accept();
+            fail("Should throw an IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }     
+    }
+
+    /**
+     * @tests ServerSocket#socket().accept()
+     */
+    public void test_socket_accept_Nonblocking_NotBound() throws IOException {
+        // regression test for Harmony-748       
+        ServerSocket gotSocket = serverChannel.socket();
+        serverChannel.configureBlocking(false);
+        try {
+            gotSocket.accept();
+            fail("Should throw an IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }        
+        serverChannel.close();
+        try {
+            gotSocket.accept();
+            fail("Should throw an IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }     
+    }
+    
+    /**
+     * @tests ServerSocket#socket().accept()
+     */
+    public void test_socket_accept_Nonblocking_Bound() throws IOException {
+        // regression test for Harmony-748
+        serverChannel.configureBlocking(false);
+        ServerSocket gotSocket = serverChannel.socket();
+        gotSocket.bind(localAddr1);         
+        try {
+            gotSocket.accept();
+            fail("Should throw an IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }
+        serverChannel.close();
+        try {
+            gotSocket.accept();
+            fail("Should throw a ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests ServerSocket#socket().accept()
+     */
+    public void test_socket_accept_Blocking_Bound() throws IOException {
+        // regression test for Harmony-748
+        serverChannel.configureBlocking(true);
+        ServerSocket gotSocket = serverChannel.socket();
+        gotSocket.bind(localAddr1);         
+        serverChannel.close();
+        try {
+            gotSocket.accept();
+            fail("Should throw a ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
         }
     }
 }

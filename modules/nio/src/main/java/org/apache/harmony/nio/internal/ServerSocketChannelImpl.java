@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.SocketTimeoutException;
 import java.nio.channels.ClosedChannelException;
+import java.nio.channels.IllegalBlockingModeException;
 import java.nio.channels.NotYetBoundException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.ServerSocketChannel;
@@ -33,7 +33,6 @@ import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.net.SocketImplProvider;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
 
 /*
  * The default implementation class of java.nio.channels.ServerSocketChannel.
@@ -199,12 +198,12 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
      */
     private class ServerSocketAdapter extends ServerSocket {
         /*
-         * Internal impl.
+         * The related ServerSocketChannel.
          */
         ServerSocketChannelImpl channelImpl;
 
         /*
-         * init the impl.
+         * The Constructor.
          */
         ServerSocketAdapter(SocketImpl impl,
                 ServerSocketChannelImpl aChannelImpl){
@@ -222,17 +221,28 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         }
 
         /*
+         * @see java.net.ServerSocket#accept()
+         * 
+         * If the channel is in non-blocking mode and there is no connection
+         * ready to be accepted, invoking this method will causes an
+         * IllegalBlockingModeException.
+         */
+        public Socket accept() throws IOException {
+            if (!isBound || !socket.isBound()) {
+                throw new IllegalBlockingModeException();
+            }
+            SocketChannel sc = channelImpl.accept();
+            if(null == sc){
+                throw new IllegalBlockingModeException();
+            }
+            return sc.socket();
+        }
+
+        /*
          * do the accept.
          */
         private Socket accept(Socket aSocket, SocketChannelImpl sockChannel)
                 throws IOException {
-            if (isClosed()) {
-                throw new SocketException(Msg.getString("K003d")); //$NON-NLS-1$
-            }
-            if (!isBound()) {
-                throw new SocketException(Msg.getString("K031f")); //$NON-NLS-1$
-            }
-
             // a new socket is pass in so we do not need to "Socket aSocket =
             // new Socket();"
             boolean connectOK = false;
