@@ -323,6 +323,126 @@ abstract class AbstractCharClass extends SpecialToken {
             };
         }
     }
+    
+    static class LazyJavaDefined extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isDefined((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaDigit extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isDigit((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaIdentifierIgnorable extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isIdentifierIgnorable((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaISOControl extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isISOControl((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaJavaIdentifierPart extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isJavaIdentifierPart((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaJavaIdentifierStart extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isJavaIdentifierStart((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaLetter extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isLetter((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaLetterOrDigit extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isLetterOrDigit((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaSpaceChar extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isSpaceChar((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaTitleCase extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isTitleCase((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaUnicodeIdentifierPart extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isUnicodeIdentifierPart((char) ch);
+                }
+            };
+        }
+    }
+
+    static class LazyJavaUnicodeIdentifierStart extends LazyCharClass {
+        protected AbstractCharClass computeValue() {
+            return new AbstractCharClass() {
+                public boolean contains(int ch) {
+                    return Character.isUnicodeIdentifierStart((char) ch);
+                }
+            };
+        }
+    }
 
     /**
      * character classes generated from 
@@ -350,7 +470,19 @@ abstract class AbstractCharClass extends SpecialToken {
                 { "javaLowerCase", new LazyJavaLowerCase() },
                 { "javaUpperCase", new LazyJavaUpperCase() },
                 { "javaWhitespace", new LazyJavaWhitespace() },
-                { "javaMirrored", new LazyJavaMirrored() }, 
+                { "javaMirrored", new LazyJavaMirrored() },
+                { "javaDefined", new LazyJavaDefined() },
+                { "javaDigit", new LazyJavaDigit() },
+                { "javaIdentifierIgnorable", new LazyJavaIdentifierIgnorable() },
+                { "javaISOControl", new LazyJavaISOControl() },
+                { "javaJavaIdentifierPart", new LazyJavaJavaIdentifierPart() },
+                { "javaJavaIdentifierStart", new LazyJavaJavaIdentifierStart() },
+                { "javaLetter", new LazyJavaLetter() },
+                { "javaLetterOrDigit", new LazyJavaLetterOrDigit() },
+                { "javaSpaceChar", new LazyJavaSpaceChar() },
+                { "javaTitleCase", new LazyJavaTitleCase() },
+                { "javaUnicodeIdentifierPart", new LazyJavaUnicodeIdentifierPart() },
+                { "javaUnicodeIdentifierStart", new LazyJavaUnicodeIdentifierStart() },
                 { "Space", space },
                 { "w", new LazyWord() },
                 { "W", new LazyNonWord() },

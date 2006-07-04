@@ -985,7 +985,7 @@ public class PatternTest extends TestCase {
 	 * \p{javaLowerCase} \p{javaUpperCase} \p{javaWhitespace} \p{javaMirrored}
 	 */
 	public void testCompileCharacterClass() {
-		// Regression for HARMONY-606
+		// Regression for HARMONY-606, 696
 		Pattern pattern = Pattern.compile("\\p{javaLowerCase}");
 		assertNotNull(pattern);
 
@@ -997,6 +997,42 @@ public class PatternTest extends TestCase {
 
 		pattern = Pattern.compile("\\p{javaMirrored}");
 		assertNotNull(pattern);
+        
+        pattern = Pattern.compile("\\p{javaDefined}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaDigit}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaIdentifierIgnorable}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaISOControl}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaJavaIdentifierPart}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaJavaIdentifierStart}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaLetter}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaLetterOrDigit}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaSpaceChar}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaTitleCase}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaUnicodeIdentifierPart}");
+        assertNotNull(pattern);
+
+        pattern = Pattern.compile("\\p{javaUnicodeIdentifierStart}");
+        assertNotNull(pattern);
 	}
 
 	public static void main(String[] args) {
