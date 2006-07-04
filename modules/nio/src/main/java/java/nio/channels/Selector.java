@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,40 +15,133 @@
 
 package java.nio.channels;
 
-
 import java.io.IOException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Set;
 
 /**
- * TODO Type description
+ * A controller for selection of SelectableChannel objects.
+ * 
+ * Selectable channels can be registered with a selector, and get SelectionKey
+ * as a linkage. The keys are also added to the selector's keyset. The
+ * SelectionKey can be cancelled so that the corresponding channel is no longer
+ * registered with the selector.
+ * 
+ * By invoking the select operation, the keyset is checked and all keys that are
+ * cancelled since last select operation are moved to cancelledKey set. During
+ * the select operation, the channels registered with this selector are checked
+ * to see whether they are ready for operation according to their interesting
+ * operation.
  * 
  */
 public abstract class Selector {
 
-	public static Selector open() throws IOException {
-		return SelectorProvider.provider().openSelector();
-	}
+    /**
+     * The factory method for selector.
+     * 
+     * @return a new selector
+     * @throws IOException
+     *             if I/O error occurs
+     */
+    public static Selector open() throws IOException {
+        return SelectorProvider.provider().openSelector();
+    }
 
-	protected Selector() {
-		super();
-	}
+    /**
+     * The constructor.
+     */
+    protected Selector() {
+        super();
+    }
 
-	public abstract void close() throws IOException;
+    /**
+     * Closes this selector.
+     * 
+     * @throws IOException
+     *             if I/O error occurs
+     */
+    public abstract void close() throws IOException;
 
-	public abstract boolean isOpen();
+    /**
+     * Tells whether this selector is open.
+     * 
+     * @return true if this selector is not closed
+     */
+    public abstract boolean isOpen();
 
-	public abstract Set<SelectionKey> keys();
+    /**
+     * Gets the set of registered keys.
+     * 
+     * @return the keyset of registered keys
+     */
+    public abstract Set<SelectionKey> keys();
 
-	public abstract SelectorProvider provider();
+    /**
+     * Gets the provider of this selector.
+     * 
+     * @return the provider of this selector
+     */
+    public abstract SelectorProvider provider();
 
-	public abstract int select() throws IOException;
+    /**
+     * Detects if any of the registered channels are ready for I/O operations
+     * according to their interesting operation. This operation will not return
+     * until some of the channels are ready or wakeup is invoked.
+     * 
+     * @return the number of channels that are ready for operation
+     * @throws IOException
+     *             if I/O error occurs
+     * @throws ClosedSelectorException
+     *             If the selector is closed
+     */
+    public abstract int select() throws IOException;
 
-	public abstract int select(long timeout) throws IOException;
+    /**
+     * Detects if any of the registered channels are ready for I/O operations
+     * according to their interesting operation.This operation will not return
+     * until some of the channels are ready or wakeup is invoked or timeout
+     * expired.
+     * 
+     * @param timeout
+     *            the timeout in millisecond
+     * @return the number of channels that are ready for operation
+     * @throws IOException
+     *             if I/O error occurs
+     * @throws ClosedSelectorException
+     *             If the selector is closed
+     * @throws IllegalArgumentException
+     *             If the given timeout argument is less than zero
+     */
+    public abstract int select(long timeout) throws IOException;
 
-	public abstract Set<SelectionKey> selectedKeys();
+    /**
+     * Gets the keys whose channels are ready for operation.
+     * 
+     * @return the keys whose channels are ready for operation
+     */
+    public abstract Set<SelectionKey> selectedKeys();
 
-	public abstract int selectNow() throws IOException;
+    /**
+     * Detects if any of the registered channels are ready for I/O operations
+     * according to their interesting operation.This operation will not return
+     * immediately.
+     * 
+     * @return the number of channels that are ready for operation
+     * @throws IOException
+     *             if I/O error occur
+     * @throws ClosedSelectorException
+     *             If the selector is closed
+     */
+    public abstract int selectNow() throws IOException;
 
-	public abstract Selector wakeup();
+    /**
+     * Forces the blocked select operation to return immediately. If no select
+     * operation is blocked currently, the next select operation shall return
+     * immediately.
+     * 
+     * @return this selector
+     * @throws ClosedSelectorException
+     *             If the selector is closed
+     */
+    public abstract Selector wakeup();
 }
