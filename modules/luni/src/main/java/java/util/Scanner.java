@@ -296,10 +296,39 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token matches the specified pattern.
+     * This method may be blocked when it is waiting for input to scan. This
+     * scanner does not advance past the input that matched the pattern.
+     * 
+     * @param pattern
+     *            the specified pattern to scan
+     * @return 
+     *            true iff this scanner's next token matches the specified pattern
+     * @throws IllegalStateException
+     *            if the scanner has been closed
+     */
     public boolean hasNext(Pattern pattern) {
-        throw new NotYetImplementedException();
+        checkClosed();
+        if (isInputExhausted()) {
+            return false;
+        }
+        saveCurrentStatus();
+        //if the next token exists, set the match region, otherwise return false
+        if (!setTokenRegion()) {
+            recoverPreviousStatus();
+            return false;
+        }
+        matcher.usePattern(pattern);
+        boolean hasNext = false;
+        //check whether next token matches the specified pattern
+        if (matcher.matches()) {
+            hasNext = true;
+        }
+        recoverPreviousStatus();
+        return hasNext;
     }
+
 
     //TODO: To implement this feature
     public boolean hasNext(String pattern) {

@@ -674,6 +674,83 @@ public class ScannerTest extends TestCase {
         }
     }
     
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNext(Pattern)
+     */
+    public void test_hasNextLPattern() throws IOException {
+        Pattern pattern;
+        s = new Scanner("aab@2@abb@").useDelimiter("\\@");
+        pattern = Pattern.compile("a*b");
+        assertTrue(s.hasNext(pattern));
+        assertEquals("aab", s.next(pattern));
+        assertFalse(s.hasNext(pattern));
+        try {
+            s.next(pattern);
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("word ? ");
+        pattern = Pattern.compile("\\w+");
+        assertTrue(s.hasNext(pattern));
+        assertEquals("word", s.next(pattern));
+        assertFalse(s.hasNext(pattern));
+        try {
+            s.next(pattern);
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("word1 WorD2  ");
+        pattern = Pattern.compile("\\w+");
+        assertTrue(s.hasNext(pattern));
+        assertEquals("word1", s.next(pattern));
+        assertTrue(s.hasNext(pattern));
+        assertEquals("WorD2", s.next(pattern));
+        assertFalse(s.hasNext(pattern));
+        try {
+            s.next(pattern);
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("word1 WorD2  ");
+        pattern = Pattern.compile("\\w+");
+        try {
+            s.hasNext((Pattern) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        s.close();
+        try {
+            s.hasNext(pattern);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        
+        // test socket inputStream
+        os.write("aab b".getBytes());
+        serverSocket.close();
+
+        s = new Scanner(client);
+        pattern = Pattern.compile("a+b");
+        assertTrue(s.hasNext(pattern));
+        assertEquals("aab", s.next(pattern));
+        assertFalse(s.hasNext(pattern));
+        try {
+            s.next(pattern);
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+    }
+    
     public void setUp() throws Exception {
         super.setUp();
 
