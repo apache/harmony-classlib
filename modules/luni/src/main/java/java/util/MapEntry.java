@@ -76,4 +76,8 @@ class MapEntry<K,V> implements Map.Entry<K,V>, Cloneable {
 		value = object;
 		return result;
 	}
+    
+    public String toString() {
+        return key + "=" + value;
+    }
 }

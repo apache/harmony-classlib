@@ -41,13 +41,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     private static final int DEFAULT_SIZE = 16;
 
     static class Entry<K, V> extends MapEntry<K, V> {
-        final int hash;
-
+        final int origKeyHash;
         Entry<K, V> next;
 
         Entry(K theKey, V theValue) {
             super(theKey, theValue);
-            this.hash = (theKey == null) ? 0 : theKey.hashCode();
+            origKeyHash = (theKey == null ? 0 : theKey.hashCode());
         }
 
         @Override
@@ -58,16 +57,6 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 entry.next = (Entry<K,V>) next.clone();
             }
             return entry;
-        }
-
-        @Override
-        public String toString() {
-            return key + "=" + value;
-        }
-
-        @Override
-        public int hashCode() {
-            return hash;
         }
     }
 
@@ -349,7 +338,15 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @return true if the keys are considered equal
      */
     boolean keysEqual(Object k1, Entry<K, V> entry) {
-        return entry.hashCode() == k1.hashCode() && k1.equals(entry.key);
+        int k1Hash = k1 == null ? 0 : k1.hashCode();
+        if (k1Hash != entry.origKeyHash) {
+            return false;
+        }
+        if (k1 == null && entry.key == null) {
+            return true;
+        }
+        assert k1 != null;
+        return k1.equals(entry.key);
     }
 
     /**
@@ -523,8 +520,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 index = key == null ? 0 : (key.hashCode() & 0x7FFFFFFF)
                         % elementData.length;
             }
-            entry = createEntry(key, index, null);
+            entry = createEntry(key, index, value);
+            return null;
         }
+        
         V result = entry.value;
         entry.value = value;
         return result;

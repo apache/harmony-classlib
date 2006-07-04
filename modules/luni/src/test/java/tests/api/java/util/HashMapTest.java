@@ -215,7 +215,7 @@ public class HashMapTest extends junit.framework.TestCase {
 		assertNull("Get returned non-null for non existent key",
 				hm.get("T"));
 		hm.put("T", "HELLO");
-		assertEquals("Get returned incorecct value for existing key", "HELLO", hm.get("T")
+		assertEquals("Get returned incorrect value for existing key", "HELLO", hm.get("T")
 				);
 
 		HashMap m = new HashMap();
@@ -409,6 +409,21 @@ public class HashMapTest extends junit.framework.TestCase {
 			return key == ((ReusableKey) o).key;
 		}
 	}
+    
+	public void test_Map_Entry_hashCode() {
+        //Related to HARMONY-403
+	    HashMap<Integer, Integer> map = new HashMap<Integer, Integer>(10);
+	    Integer key = new Integer(1);
+	    Integer val = new Integer(2);
+	    map.put(key, val);
+	    int expected = key.hashCode() ^ val.hashCode();
+	    assertEquals(expected, map.hashCode());
+	    key = new Integer(4);
+	    val = new Integer(8);
+	    map.put(key, val);
+	    expected += key.hashCode() ^ val.hashCode();
+	    assertEquals(expected, map.hashCode());
+	} 
 	
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
