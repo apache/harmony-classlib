@@ -109,10 +109,6 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 		return this.wrapped.get(index);
 	}
 
-	// FIXME Need synchronization as far as the update of this.position is
-	// concerned of the following methods? Spec does not say whether
-	// MappedByteBuffer
-	// is thread safe. It is the decision we should make.
 	public char getChar() {
 		int newPosition = this.position + CHAR_SIZE;
 		if (newPosition > this.limit) {
@@ -214,7 +210,6 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 		return this.wrapped.order(byteOrder);
 	}
 
-	// FIXME: This method also has the synchronization problem.
 	public ByteBuffer put(byte b) {
 		if (this.position == this.limit) {
 			throw new BufferOverflowException();
@@ -252,7 +247,6 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 
 	public ByteBuffer putDouble(double value) {
 		int newPosition = this.position + DOUBLE_SIZE;
-		// FIXME: Does this need synchronization?
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
 		}
@@ -268,7 +262,6 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 
 	public ByteBuffer putFloat(float value) {
 		int newPosition = this.position + FLOAT_SIZE;
-		// FIXME:Synchronization problem
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
 		}
@@ -289,7 +282,6 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 
 	public ByteBuffer putInt(int value) {
 		int newPosition = this.position + INTEGER_SIZE;
-		// FIXME: Synchronization
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
 		}
@@ -304,7 +296,6 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putLong(long value) {
-		// FIXME: Synchronization
 		int newPosition = this.position + LONG_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
@@ -320,7 +311,6 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putShort(short value) {
-		// FIXME: Synchronization
 		int newPosition = this.position + SHORT_SIZE;
 		if (newPosition > this.limit) {
 			throw new BufferOverflowException();
