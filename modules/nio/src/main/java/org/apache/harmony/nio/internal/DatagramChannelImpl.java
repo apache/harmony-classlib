@@ -27,7 +27,6 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AlreadyConnectedException;
-import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.NotYetConnectedException;
@@ -63,8 +62,6 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
 
     private static final String ERRMSG_NONBLOKING_OUT = "The socket is marked as nonblocking operation would block";
 
-    private static final String ERRMSG_ASYNCHRONOUSCLOSE = "The call was cancelled";
-
     // -------------------------------------------------------------------
     // Instance variables
     // -------------------------------------------------------------------
@@ -90,7 +87,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
     // lock for read and receive
     private final Object readLock = new Object();
 
-    // lock for write and receive
+    // lock for write and send
     private final Object writeLock = new Object();
 
     // used to store the trafficClass value which is simply returned
@@ -290,11 +287,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         } catch (SocketException e) {
             // FIXME Depend on former function,it's a work round, wait for
             // native improve.
-            String msg = e.getMessage();
-            if (ERRMSG_ASYNCHRONOUSCLOSE.equals(msg)) {
-                throw new AsynchronousCloseException();
-            }
-            if (ERRMSG_NONBLOKING_OUT.equals(msg)) {
+            if (ERRMSG_NONBLOKING_OUT.equals(e.getMessage())) {
                 return null;
             }
             throw e;
@@ -433,9 +426,10 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
             }
             boolean loop = isBlocking();
             do {
-                // handle asynchronous closing
                 if (!isOpen()) {
-                    throw new AsynchronousCloseException();
+                    // AsynchronizeCloseException will be thrown by end(boolean)
+                    // in finally block.
+                    break;
                 }
                 if (isConnected()) {
                     readCount = networkSystem
@@ -451,12 +445,6 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
                 }
             } while (loop);
             return readCount;
-        } catch (SocketException e) {
-            // FIXME it's a work round, wait for native improve.
-            if (e.getMessage().equals(ERRMSG_ASYNCHRONOUSCLOSE)) {
-                throw new AsynchronousCloseException();
-            }
-            throw e;
         } catch (InterruptedIOException e) {
             // FIXME improve native code.
             if (e.getMessage().equals(ERRMSG_TIMEOUT)) {
@@ -464,7 +452,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
             }
             throw e;
         } finally {
-            end(readCount >= 0);
+            end(readCount > 0);
         }
     }
 
