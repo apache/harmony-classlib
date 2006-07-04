@@ -2310,207 +2310,180 @@ public class SocketChannelTest extends TestCase {
             // correct
         }
     }
+    
+    /* 
+     * ==========================================================================
+     * Tests for read/write real data
+     * ==========================================================================
+     */ 
+        
 
-    // -------------------------------------------------
-    // Test for read/write wite real data
-    // -------------------------------------------------
-
-    /*
-     * SocketChannelImpl.read(ByteBuffer)'
+    /**
+     * @tests java.nio.channels.SocketChannel#read(ByteBuffer[])
      */
-    public void testReadByteBufferArray_Blocking_ReadWriteRealData()
-            throws IOException {
-        byte[] serverWBuf = new byte[CAPACITY_NORMAL * 2];
-        byte[] serverRBuf = new byte[CAPACITY_NORMAL * 2];
-        for (int i = 0; i < CAPACITY_NORMAL * 2; i++) {
-            serverWBuf[i] = (byte) i;
-        }
-        java.nio.ByteBuffer[] buf = new java.nio.ByteBuffer[2];
-        buf[0] = ByteBuffer.allocate(CAPACITY_NORMAL);
-        buf[1] = ByteBuffer.allocate(CAPACITY_NORMAL);
-        this.channel1.connect(localAddr1);
-        Socket serverSocket = this.server1.accept();
-        assertTrue(this.channel1.isConnected());
-        OutputStream out = serverSocket.getOutputStream();
-        InputStream in = serverSocket.getInputStream();
-        out.write(serverWBuf);
-        // FIXME: RI fail here randomly, possible RI's bug?
-        assertEquals(CAPACITY_NORMAL * 2, this.channel1.read(buf));
-        buf[0].flip();
-        buf[1].flip();
-        assertEquals(66051, buf[0].asIntBuffer().get());
-        assertEquals(CAPACITY_NORMAL * 2, this.channel1.write(buf));
-        in.read(serverRBuf);
+    public void test_read$LByteBuffer() throws IOException {
+        MockSocketChannel sc = new MockSocketChannel(null);
+        ByteBuffer [] byteBufferArray = { ByteBuffer.allocate(1), ByteBuffer.allocate(1)};
+        // Verify that calling read(ByteBuffer[]) leads to the method
+        // read(ByteBuffer[], int, int) being called with a 0 for the
+        // second parameter and targets.length as the third parameter.
+        sc.read(byteBufferArray);
+        assertTrue(sc.isReadCalled);
+    }
+    /**
+     * @tests java.nio.channels.SocketChannel#read(ByteBuffer[],int,int)
+     */  
+    public void test_read$LByteBufferII_blocking() throws Exception {
+        assert_read$LByteBuffer(true);
+    }
+ 
+    /**
+     * @tests java.nio.channels.SocketChannel#read(ByteBuffer[],int,int)
+     */  
+    public void test_read$LByteBufferII_nonblocking() throws Exception {
+        assert_read$LByteBuffer(false);
+    }
 
-        for (int i = 0; i < serverRBuf.length; i++) {
-            assertEquals((byte) i, serverRBuf[i]);
+    private void assert_read$LByteBuffer(boolean isBlocking) throws IOException {
+        // initialize write content
+        byte[] writeContent = new byte[CAPACITY_NORMAL * 2];
+        for (int i = 0; i < CAPACITY_NORMAL * 2; i++) {
+            writeContent[i] = (byte) i;
+        }
+        ByteBuffer[] readContents = new ByteBuffer[2];
+        readContents[0] = ByteBuffer.allocate(CAPACITY_NORMAL);
+        readContents[1] = ByteBuffer.allocate(CAPACITY_NORMAL + 1);
+        // establish connection
+        channel1.connect(localAddr1);
+        Socket acceptedSocket = server1.accept();
+        // use OutputStream.write to send CAPACITY_NORMAL * 2 bytes data
+        OutputStream out = acceptedSocket.getOutputStream();
+        out.write(writeContent);
+        // use close to guarantee all data is sent
+        acceptedSocket.close();
+        // configure block/nonblock mode
+        channel1.configureBlocking(isBlocking);
+        long startTime = System.currentTimeMillis();
+        long totalRead = 0;
+        long countRead = 0;
+
+        while (totalRead <= CAPACITY_NORMAL * 2) {
+            countRead = channel1.read(readContents, 0, 2);
+            if (0 == countRead && !readContents[1].hasRemaining()) {
+                // read returns 0 because readContents is full
+                break;
+            }
+            if (EOF == countRead) {
+                break;
+            }
+            totalRead += countRead;
+            // if the channel could not finish reading in TIMEOUT ms, the
+            // test fails. It is used to guarantee the test never hangs even
+            // if there are bugs of SocketChannel implementation. For
+            // blocking read, it possibly returns 0 in some cases.
+            assertTimeout(startTime, TIMEOUT);
+        }
+        
+        // assert total bytes read and the position of ByteBuffers
+        assertEquals(CAPACITY_NORMAL * 2, totalRead);
+        assertEquals(CAPACITY_NORMAL, readContents[0].position());
+        assertEquals(CAPACITY_NORMAL, readContents[1].position());
+        // assert read content
+        readContents[0].flip();
+        readContents[1].flip();
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            assertEquals(writeContent[i], readContents[0].get());
         }
         for (int i = CAPACITY_NORMAL; i < CAPACITY_NORMAL * 2; i++) {
-            assertEquals((byte) i, serverRBuf[i]);
+            assertEquals(writeContent[i], readContents[1].get());
         }
-        this.channel1.close();
-        try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(buf));
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
-        }
+    } 
+ 
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[],int,int)
+     */ 
+    public void test_write$LByteBufferII_blocking() throws Exception {
+        assert_write$LByteBuffer(true);
+    }
+ 
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[],int,int)
+     */
+    public void test_write$LByteBufferII_nonblocking()
+            throws Exception {
+        assert_write$LByteBuffer(false);
     }
 
-    /*
-     * SocketChannelImpl.read(ByteBuffer)'
-     */
-    public void testReadByteBufferArray_NonBlocking_ReadWriteRealData()
+    private void assert_write$LByteBuffer(boolean isBlocking)
             throws IOException {
-        byte[] serverWBuf = new byte[CAPACITY_NORMAL * 2];
-        byte[] serverRBuf = new byte[CAPACITY_NORMAL * 2];
-        for (int i = 0; i < CAPACITY_NORMAL * 2; i++) {
-            serverWBuf[i] = (byte) i;
-        }
-        java.nio.ByteBuffer[] buf = new java.nio.ByteBuffer[2];
-        buf[0] = ByteBuffer.allocate(CAPACITY_NORMAL);
-        buf[1] = ByteBuffer.allocate(CAPACITY_NORMAL);
-        this.channel1.configureBlocking(false);
-        this.channel1.connect(localAddr1);
-        Socket serverSocket = this.server1.accept();
-
-        if (tryFinish()) {
-            OutputStream out = serverSocket.getOutputStream();
-            InputStream in = serverSocket.getInputStream();
-            out.write(serverWBuf);
-            long readCount = this.channel1.read(buf);
-            if (0 != readCount) {
-                assertEquals(CAPACITY_NORMAL * 2, readCount);
-
-                buf[0].flip();
-                buf[1].flip();
-                assertEquals(66051, buf[0].asIntBuffer().get());
-                assertEquals(CAPACITY_NORMAL * 2, this.channel1.write(buf));
-                in.read(serverRBuf);
-
-                for (int i = 0; i < serverRBuf.length; i++) {
-                    assertEquals((byte) i, serverRBuf[i]);
-                }
-                for (int i = CAPACITY_NORMAL; i < CAPACITY_NORMAL * 2; i++) {
-                    assertEquals((byte) i, serverRBuf[i]);
-                }
-            } else {
-                System.err
-                        .println("Read fail, testReadByteBufferArray_NonBlocking_ReadWriteRealData is not finished.");
-            }
-        }
-        this.channel1.close();
-        try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(buf));
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
-        }
-    }
-
-    /*
-     * SocketChannelImpl.read(ByteBuffer)'
-     */
-    public void testReadByteBufferArrayIntInt_Blocking_ReadWriteRealData()
-            throws IOException {
-        byte[] serverWBuf = new byte[CAPACITY_NORMAL * 2];
-        byte[] serverRBuf = new byte[CAPACITY_NORMAL * 2];
-        for (int i = 0; i < CAPACITY_NORMAL * 2; i++) {
-            serverWBuf[i] = (byte) i;
-        }
-        java.nio.ByteBuffer[] buf = new java.nio.ByteBuffer[2];
-        buf[0] = ByteBuffer.allocate(CAPACITY_NORMAL);
-        buf[1] = ByteBuffer.allocate(CAPACITY_NORMAL);
-        this.channel1.connect(localAddr1);
-        Socket serverSocket = this.server1.accept();
-        assertTrue(this.channel1.isConnected());
-        OutputStream out = serverSocket.getOutputStream();
-        InputStream in = serverSocket.getInputStream();
-        out.write(serverWBuf);
-        assertEquals(CAPACITY_NORMAL, this.channel1.read(buf, 0, 1));
-        assertEquals(CAPACITY_NORMAL, this.channel1.read(buf, 1, 1));
-        buf[0].flip();
-        buf[1].flip();
-        assertEquals(66051, buf[0].asIntBuffer().get());
-        assertEquals(CAPACITY_NORMAL, this.channel1.write(buf, 1, 1));
-        in.read(serverRBuf);
-
+        // initialize write contents
+        ByteBuffer writeContents[] = new ByteBuffer[2];
+        writeContents[0] = ByteBuffer.allocate(CAPACITY_NORMAL);
+        writeContents[1] = ByteBuffer.allocate(CAPACITY_NORMAL);
         for (int i = 0; i < CAPACITY_NORMAL; i++) {
-            assertEquals((byte) (i + CAPACITY_NORMAL), serverRBuf[i]);
+            writeContents[0].put((byte) i);
         }
-        this.channel1.close();
-        try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(buf));
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
+        for (int i = CAPACITY_NORMAL; i < CAPACITY_NORMAL * 2; i++) {
+            writeContents[1].put((byte) i);
         }
-    }
+        writeContents[0].flip();
+        writeContents[1].flip();
+        // establish connection
+        channel1.connect(localAddr1);
+        Socket acceptedSocket = server1.accept();
+        // set blocking/nonblocking mode
+        channel1.configureBlocking(isBlocking);
 
-    /*
-     * SocketChannelImpl.read(ByteBuffer)'
-     */
-    public void testReadByteBufferArrayIntInt_NonBlocking_ReadWriteRealData()
-            throws IOException {
-        byte[] serverWBuf = new byte[CAPACITY_NORMAL * 2];
-        byte[] serverRBuf = new byte[CAPACITY_NORMAL * 2];
-        for (int i = 0; i < CAPACITY_NORMAL * 2; i++) {
-            serverWBuf[i] = (byte) i;
-        }
-        java.nio.ByteBuffer[] buf = new java.nio.ByteBuffer[2];
-        buf[0] = ByteBuffer.allocate(CAPACITY_NORMAL);
-        buf[1] = ByteBuffer.allocate(CAPACITY_NORMAL);
-        this.channel1.configureBlocking(false);
-        this.channel1.connect(localAddr1);
-        Socket serverSocket = this.server1.accept();
-        if (tryFinish()) {
-            OutputStream out = serverSocket.getOutputStream();
-            InputStream in = serverSocket.getInputStream();
-            out.write(serverWBuf);
-            long readCount = this.channel1.read(buf, 0, 1);
-            if (readCount > 0) {
-                assertEquals(CAPACITY_NORMAL, readCount);
-                buf[0].flip();
-                assertEquals(66051, buf[0].asIntBuffer().get());
-                readCount = this.channel1.read(buf, 1, 1);
-                if (readCount > 0) {
-                    assertEquals(CAPACITY_NORMAL, readCount);
-                    buf[1].flip();
-                    assertEquals(CAPACITY_NORMAL, this.channel1
-                            .write(buf, 1, 1));
-                    readCount = in.read(serverRBuf);
-                    if (readCount > 0) {
-                        assertEquals(CAPACITY_NORMAL, readCount);
-                        for (int i = 0; i < CAPACITY_NORMAL; i++) {
-                            assertEquals((byte) (i + CAPACITY_NORMAL),
-                                    serverRBuf[i]);
-                        }
-                    } else {
-                        System.err
-                                .println("fail to read buf[1] again, testReadByteBufferArrayIntInt_NonBlocking_ReadWriteRealData not finish.");
-                    }
-                } else {
-                    System.err
-                            .println("fail to read buf[1], testReadByteBufferArrayIntInt_NonBlocking_ReadWriteRealData not finish.");
-                }
-            } else {
-                System.err
-                        .println("fail to read buf[0], testReadByteBufferArrayIntInt_NonBlocking_ReadWriteRealData not finish.");
+        assertEquals(CAPACITY_NORMAL, channel1.write(writeContents, 0, 1));
+        assertEquals(CAPACITY_NORMAL, channel1.write(writeContents, 1, 1));
+
+        // assert written count and ByteBuffer position
+        assertEquals(CAPACITY_NORMAL, writeContents[0].position());
+        assertEquals(CAPACITY_NORMAL, writeContents[1].position());
+        // use close to guarantee all data is sent
+        channel1.close();
+        InputStream in = acceptedSocket.getInputStream();
+        byte[] readContent = new byte[CAPACITY_NORMAL * 2 + 1];
+        int totalCount = 0;
+        int count = 0;
+        // if the channel could not finish reading in TIMEOUT ms, the test
+        // fails. It is used to guarantee the test never hangs even if there
+        // are bugs of SocketChannel implementation.
+        acceptedSocket.setSoTimeout(TIMEOUT);
+        // use InputStream.read to read data.
+        while (totalCount <= CAPACITY_NORMAL) {
+            count = in.read(readContent, totalCount, readContent.length
+                    - totalCount);
+            if (EOF == count) {
+                break;
             }
-
-        } else {
-            System.err
-                    .println("fail to connect, testReadByteBufferArrayIntInt_NonBlocking_ReadWriteRealData not finish.");
+            totalCount += count;
         }
-        this.channel1.close();
-        try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(buf));
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
+        // assert read content
+        assertEquals(CAPACITY_NORMAL * 2, totalCount);
+        writeContents[0].flip();
+        writeContents[1].flip();
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            assertEquals(writeContents[0].get(), readContent[i]);
         }
+        for (int i = CAPACITY_NORMAL; i < CAPACITY_NORMAL * 2; i++) {
+            assertEquals(writeContents[1].get(), readContent[i]);
+        }
+    } 
+    
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     */
+    public void test_write$LByteBuffer() throws IOException {
+        MockSocketChannel sc = new MockSocketChannel(null);
+        ByteBuffer [] byteBufferArray = { ByteBuffer.allocate(1), ByteBuffer.allocate(1)};
+        // Verify that calling write(ByteBuffer[]) leads to the method
+        // write(ByteBuffer[], int, int) being called with a 0 for the
+        // second parameter and sources.length as the third parameter.
+        sc.write(byteBufferArray);
+        assertTrue(sc.isWriteCalled);
     }
-
+    
     public void testSocket_configureblocking() throws IOException {
         byte[] serverWBuf = new byte[CAPACITY_NORMAL];
         for (int i = 0; i < serverWBuf.length; i++) {
@@ -2703,5 +2676,73 @@ public class SocketChannelTest extends TestCase {
                 socket.close();
             }
         }
+    }
+    
+    class MockSocketChannel extends SocketChannel{
+        
+        private boolean isWriteCalled = false;
+        
+        private boolean isReadCalled = false;
+        
+        public MockSocketChannel(SelectorProvider provider){
+            super(provider);
+        }
+
+        public Socket socket() {
+            return null;
+        }
+
+        public boolean isConnected() {
+            return false;
+        }
+
+        public boolean isConnectionPending() {
+            return false;
+        }
+
+        public boolean connect(SocketAddress address) throws IOException {
+            return false;
+        }
+
+        public boolean finishConnect() throws IOException {
+            return false;
+        }
+
+        public int read(ByteBuffer target) throws IOException {
+            return 0;
+        }
+
+        public long read(ByteBuffer[] targets, int offset, int length) throws IOException {
+            // Verify that calling read(ByteBuffer[]) leads to the method
+            // read(ByteBuffer[], int, int) being called with a 0 for the
+            // second parameter and targets.length as the third parameter.
+            if(0 == offset && length == targets.length){
+                isReadCalled = true;
+            }
+            return 0;
+        }
+
+        public int write(ByteBuffer source) throws IOException {
+            return 0;
+        }
+
+        public long write(ByteBuffer[] sources, int offset, int length) throws IOException {
+            // Verify that calling write(ByteBuffer[]) leads to the method
+            // write(ByteBuffer[], int, int) being called with a 0 for the
+            // second parameter and sources.length as the third parameter.
+            if(0 == offset && length == sources.length){
+                isWriteCalled = true;
+            }
+            return 0;
+        }
+
+        protected void implCloseSelectableChannel() throws IOException {
+            // empty
+        }
+
+        protected void implConfigureBlocking(boolean blockingMode) throws IOException {
+            // empty            
+        }
+        
     }
 }
