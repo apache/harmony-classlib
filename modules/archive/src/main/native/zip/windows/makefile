@@ -13,15 +13,16 @@
 # limitations under the License.
 
 #
-# Makefile for module 'vmi stubs'
+# Makefile for module 'zip'
 #
 
-include $(HY_HDK)/build/make/makefile.include
+!include <$(HY_HDK)\build\make\defines.mak>
 
-CFLAGS += -fpic -I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
-BUILDFILES = $(SHAREDSUB)vmi_copyright.o $(SHAREDSUB)vmi.o
-MDLLIBFILES = $(LIBPATH)libhyzip.a $(LIBPATH)libhypool.a
+SHAREDSUB=..\shared\# comment to avoid \ being treated as continuation
+LIBBASE=hyzip
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+BUILDFILES = $(SHAREDSUB)zcpool.obj $(SHAREDSUB)zipalloc.obj \
+	$(SHAREDSUB)zipcache.obj $(SHAREDSUB)zipsup.obj
+HYCFLAGS = $(HYCFLAGS) /I..\..\zlib_dist
 
-DLLNAME = ../libvmi.so
-
-include $(HY_HDK)/build/make/rules.mk
+!include <$(HY_HDK)\build\make\rules.mak>

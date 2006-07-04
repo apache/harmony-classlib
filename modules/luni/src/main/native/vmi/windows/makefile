@@ -18,10 +18,10 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-SHAREDSUB=$(SHARED)vmi\# comment to avoid \ being treated as continuation
+SHAREDSUB=..\shared\# comment to avoid \ being treated as continuation
 LIBBASE=vmi
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
-HYCFLAGS = $(HYCFLAGS) -DHYPORT_LIBRARY_DEFINE /I..\..\..\modules\luni\src\main\native\include\shared /I..\..\..\modules\luni\src\main\native\include\windows
+HYCFLAGS = $(HYCFLAGS) -DHYPORT_LIBRARY_DEFINE
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = $(SHAREDSUB)vmi_copyright.obj $(SHAREDSUB)vmi.obj

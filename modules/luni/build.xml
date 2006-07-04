@@ -51,6 +51,8 @@
 		<include name="gp.h" />
 	    <include name="iohelp.h" />
 	    <include name="libglob.h" />
+    	<include name="fdlibm.h" />
+	    <include name="hymagic.h" />
 	    </fileset>
 	</copy>
 	<copy todir="${hy.jdk}/include" overwrite="yes">
@@ -87,25 +89,55 @@
     </target>
 	
 	<!-- Build native code -->
-    <target name="build.native" >
+	<target name="build.native" depends="build.native.core, build.native.secondary" />
+	
+	<target name="build.native.core" >
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/vmi/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+		
+		<!-- On Linux we want to copy the libvmi.so into the deploy/lib
+    	directory so that the natives can link against it. This is only used at
+    	build time - at runtime the libvmi.so provided by the VM implementation
+    	is loaded -->
+    	<copy todir="${hy.hdk}/lib" overwrite="yes" failonerror="false">
+    		<fileset dir="${hy.luni.src.main.native}/vmi">
+    			<include name="libvmi.so"/>
+    		</fileset>
+    	</copy>
+	</target>		
+	
+	<!-- Build secondary native code -->
+    <target name="build.native.secondary" >
+    	<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/luni/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+    	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.luni.src.main.native}/luni">
+            	<patternset includes="*${shlib.suffix}*" />
+	        </fileset>
+	    </copy>
+    	
     	<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/vmls/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
         </exec>
+    	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.luni.src.main.native}/vmls">
+	            <patternset includes="*${shlib.suffix}*" />
+	        </fileset>
+	    </copy>
+    	
 		<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/launcher/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
         </exec>
-
-		<!-- Copy the built shared libs over to the jre/bin dir -->
-		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-			<fileset dir="${hy.luni.src.main.native}/vmls">
-                <patternset includes="*${shlib.suffix}*" />
-            </fileset>
-        </copy>
-    	
     	<!-- Copy across the built executables -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/launcher">
@@ -117,6 +149,18 @@
 	
 	<!-- Clean natives -->
     <target name="clean.native" if="is.windows">
+    	<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/vmi/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+		    <arg line="clean" />
+        </exec>
+    	<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/luni/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+		    <arg line="clean" />
+        </exec>
 		<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/launcher/${hy.os}">
@@ -159,6 +203,8 @@
 		<include name="hyportpg.h" />	 
     	<include name="iohelp.h" />
 	    <include name="libglob.h" />
+    	<include name="fdlibm.h" />
+	    <include name="hymagic.h" />
 	    </fileset>
 	</delete>
 	<delete failonerror="false">

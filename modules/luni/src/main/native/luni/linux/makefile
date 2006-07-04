@@ -18,8 +18,9 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHARED)fdlibm \
-	-I../../../modules/luni/src/main/native/include/shared -I../../../modules/luni/src/main/native/include/linux
+SHAREDSUB=../shared/
+
+CFLAGS += -fpic
 
 BUILDFILES = \
 	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \
@@ -36,8 +37,8 @@ BUILDFILES = \
 	OSNetworkSystemLinux.o
 
 MDLLIBFILES = \
-	$(LIBPATH)libhycommon.a ../libhysig.so $(LIBPATH)libhyzip.a ../libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a ../libhythr.so ../libvmi.so
+	$(LIBPATH)libhycommon.a $(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
 DLLNAME = ../libhyluni.so
 

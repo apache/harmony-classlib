@@ -18,25 +18,25 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-SHAREDSUB=$(SHARED)zlib\# comment to avoid \ being treated as continuation
+SHAREDSUB=..\shared\# comment to avoid \ being treated as continuation
 LIBBASE=hyzlib
 DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
-ARCHIVE_NATIVE=..\..\..\modules\archive\src\main\native\# temporary addition until zlib moves into archive module
+ZLIB_DIST=..\..\zlib_dist\# Path to zlib
 
 # override HYCFLAGS to get different warning behaviour (W3 not WX)
 HYCFLAGS = \
   -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
   -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
-  $(VMDEBUG) /I..\include /I$(SHARED)include /I. /I$(ARCHIVE_NATIVE)include\shared
+  $(VMDEBUG)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-  $(SHAREDSUB)zlib_copyright.obj $(ARCHIVE_NATIVE)zlib_dist\adler32.obj $(ARCHIVE_NATIVE)zlib_dist\compress.obj \
-  $(ARCHIVE_NATIVE)zlib_dist\crc32.obj $(ARCHIVE_NATIVE)zlib_dist\deflate.obj $(ARCHIVE_NATIVE)zlib_dist\gzio.obj $(ARCHIVE_NATIVE)zlib_dist\infback.obj \
-  $(ARCHIVE_NATIVE)zlib_dist\inffast.obj $(ARCHIVE_NATIVE)zlib_dist\inflate.obj $(ARCHIVE_NATIVE)zlib_dist\inftrees.obj $(ARCHIVE_NATIVE)zlib_dist\trees.obj \
-  $(ARCHIVE_NATIVE)zlib_dist\uncompr.obj $(ARCHIVE_NATIVE)zlib_dist\zutil.obj
+  $(SHAREDSUB)zlib_copyright.obj $(ZLIB_DIST)adler32.obj $(ZLIB_DIST)compress.obj \
+  $(ZLIB_DIST)crc32.obj $(ZLIB_DIST)deflate.obj $(ZLIB_DIST)gzio.obj $(ZLIB_DIST)infback.obj \
+  $(ZLIB_DIST)inffast.obj $(ZLIB_DIST)inflate.obj $(ZLIB_DIST)inftrees.obj $(ZLIB_DIST)trees.obj \
+  $(ZLIB_DIST)uncompr.obj $(ZLIB_DIST)zutil.obj
 
 VIRTFILES = $(LIBBASE).res
 DLLBASE=0x11700000

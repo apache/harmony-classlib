@@ -13,15 +13,21 @@
 # limitations under the License.
 
 #
-# Makefile for module 'zip'
+# Makefile for module 'zlib'
 #
 
 include $(HY_HDK)/build/make/makefile.include
 
-CFLAGS += -I../../../modules/archive/src/main/native/zlib_dist \
-	-I../../../modules/archive/src/main/native/include/shared
-BUILDFILES = $(SHAREDSUB)zcpool.o $(SHAREDSUB)zipalloc.o \
-	$(SHAREDSUB)zipcache.o $(SHAREDSUB)zipsup.o
-LIBNAME = $(LIBPATH)libhyzip.a
+SHAREDSUB=../shared/
+ZLIB_DIST=../../zlib_dist/# Path to zlib
+
+CFLAGS += -fpic
+
+BUILDFILES = \
+	$(SHAREDSUB)zlib_copyright.o $(ZLIB_DIST)adler32.o $(ZLIB_DIST)compress.o \
+	$(ZLIB_DIST)crc32.o $(ZLIB_DIST)deflate.o $(ZLIB_DIST)infback.o $(ZLIB_DIST)inffast.o \
+	$(ZLIB_DIST)inflate.o $(ZLIB_DIST)inftrees.o $(ZLIB_DIST)trees.o $(ZLIB_DIST)uncompr.o $(ZLIB_DIST)zutil.o
+
+DLLNAME = ../libhyzlib.so
 
 include $(HY_HDK)/build/make/rules.mk

@@ -17,8 +17,7 @@
 #
 
 all: \
-	_sig _common _pool _thread _port _fdlibm _zip \
-	_zlib _vmi _luni
+	_sig _common _pool _thread _port _fdlibm
 
 _pool: 
 	(cd pool && $(MAKE) )
@@ -38,27 +37,11 @@ _sig:
 _fdlibm: 
 	(cd fdlibm && $(MAKE) )
 
-_zip: 
-	(cd zip && $(MAKE) )
-
-_zlib: 
-	(cd zlib && $(MAKE) )
-
-_vmi: _zip _pool
-	(cd vmi && $(MAKE) )
-
-_luni: _common _sig _zip _zlib _pool _fdlibm _thread _vmi
-	(cd luni && $(MAKE) )
-	
 clean:
 	(cd sig && $(MAKE) clean )
+	(cd common && $(MAKE) clean )
 	(cd pool  && $(MAKE) clean )
 	(cd thread && $(MAKE) clean )
 	(cd port && $(MAKE) clean )
 	(cd fdlibm && $(MAKE) clean )
-	(cd zip && $(MAKE) clean )
-	(cd zlib && $(MAKE) clean )
-	(cd vmi && $(MAKE) clean )
-	(cd common && $(MAKE) clean )
-	(cd luni && $(MAKE) clean )
 

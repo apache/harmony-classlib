@@ -16,14 +16,13 @@
 # Makefile for module 'zip'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+include $(HY_HDK)/build/make/makefile.include
 
-SHAREDSUB=$(SHARED)zip\# comment to avoid \ being treated as continuation
-LIBBASE=hyzip
-LIBNAME=$(LIBPATH)$(LIBBASE).lib
-BUILDFILES = $(SHAREDSUB)zcpool.obj $(SHAREDSUB)zipalloc.obj \
-	$(SHAREDSUB)zipcache.obj $(SHAREDSUB)zipsup.obj
-HYCFLAGS = $(HYCFLAGS) /I..\..\..\modules\archive\src\main\native\zlib_dist \
-	/I..\..\..\modules\archive\src\main\native\include\shared
+SHAREDSUB=../shared/
 
-!include <$(HY_HDK)\build\make\rules.mak>
+CFLAGS += -I../../zlib_dist
+BUILDFILES = $(SHAREDSUB)zcpool.o $(SHAREDSUB)zipalloc.o \
+	$(SHAREDSUB)zipcache.o $(SHAREDSUB)zipsup.o
+LIBNAME = $(LIBPATH)libhyzip.a
+
+include $(HY_HDK)/build/make/rules.mk

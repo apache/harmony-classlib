@@ -19,16 +19,10 @@
 !include <ntwin32.mak>
 
 all: \
-	_sig _pool _thread _port _fdlibm _zip \
-	_zlib _common _luni _vmi
+	_sig _common _pool _thread _port _fdlibm
 
 _pool: 
 	cd pool
-	$(MAKE) /NOLOGO
-	cd ..
-
-_vmi: _zip _pool
-	cd vmi
 	$(MAKE) /NOLOGO
 	cd ..
 
@@ -52,36 +46,12 @@ _fdlibm:
 	$(MAKE) /NOLOGO
 	cd ..
 
-_zip: 
-	cd zip
-	$(MAKE) /NOLOGO
-	cd ..
-
-_zlib: 
-	cd zlib
-	$(MAKE) /NOLOGO
-	cd ..
-
 _common: 
 	cd common
 	$(MAKE) /NOLOGO
 	cd ..
 
-_luni: _common _sig _zip _zlib _pool _fdlibm _thread _vmi
-	cd luni
-	$(MAKE) /NOLOGO
-	cd ..	
-
 clean:
-	cd common
-	$(MAKE) /NOLOGO clean
-	cd ..
-	cd luni
-	$(MAKE) /NOLOGO clean
-	cd ..
-	cd vmi
-	$(MAKE) /NOLOGO clean
-	cd ..
 	cd fdlibm
 	$(MAKE) /NOLOGO clean
 	cd ..
@@ -97,10 +67,7 @@ clean:
 	cd thread
 	$(MAKE) /NOLOGO clean
 	cd ..
-	cd zip
-	$(MAKE) /NOLOGO clean
-	cd ..
-	cd zlib
+	cd common
 	$(MAKE) /NOLOGO clean
 	cd ..
 
