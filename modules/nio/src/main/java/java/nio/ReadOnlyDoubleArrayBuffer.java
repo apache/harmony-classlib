@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,6 +83,10 @@ final class ReadOnlyDoubleArrayBuffer extends DoubleArrayBuffer {
 	}
 
     public final DoubleBuffer put(double[] src, int off, int len) {
+        throw new ReadOnlyBufferException();
+    }
+    
+    public final DoubleBuffer put(DoubleBuffer buf) {
         throw new ReadOnlyBufferException();
     }
     

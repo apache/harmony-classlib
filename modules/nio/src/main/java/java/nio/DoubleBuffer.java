@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
                 if (array == null) {
                         throw new NullPointerException();
                 }
-                if (start < 0 || len < 0 || start+ len > array.length) {
+                if (start < 0 || len < 0 || start + len < 0 || start+ len > array.length) {
                         throw new IndexOutOfBoundsException();
                 }
 
@@ -294,7 +294,7 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 	 *                <code>remaining()</code>
 	 */
 	public DoubleBuffer get(double[] dest, int off, int len) {
-        if (off < 0 || len < 0 || off + len > dest.length) {
+        if (off < 0 || len < 0 || off + len < 0 || off + len > dest.length) {
             throw new IndexOutOfBoundsException();
         }
         
@@ -452,7 +452,7 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public DoubleBuffer put(double[] src, int off, int len) {
-        if (off < 0 || len < 0 || off + len > src.length) {
+        if (off < 0 || len < 0 || off + len < 0 || off + len > src.length) {
             throw new IndexOutOfBoundsException();
         }
         

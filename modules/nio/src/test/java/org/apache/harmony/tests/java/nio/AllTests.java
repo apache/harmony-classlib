@@ -37,11 +37,14 @@ public class AllTests {
         suite.addTestSuite(SliceWrappedByteBufferTest.class);
         suite.addTestSuite(ByteOrderTest.class);
         suite.addTestSuite(WrappedCharBufferTest1.class);
+        suite.addTestSuite(ReadOnlyHeapDoubleBufferTest.class);
         suite.addTestSuite(LongBufferTest.class);
         suite.addTestSuite(HeapByteBufferTest.class);
+        suite.addTestSuite(ReadOnlyWrappedDoubleBufferTest.class);
         suite.addTestSuite(ReadOnlyDirectByteBufferTest.class);
         suite.addTestSuite(SliceDirectByteBufferTest.class);
         suite.addTestSuite(ReadOnlyWrappedCharBufferTest1.class);
+        suite.addTestSuite(WrappedDoubleBufferTest.class);
         suite.addTestSuite(WrappedCharBufferTest2.class);
         suite.addTestSuite(ShortBufferTest.class);
         suite.addTestSuite(BufferUnderflowExceptionTest.class);
@@ -50,11 +53,14 @@ public class AllTests {
         suite.addTestSuite(DirectCharBufferTest.class);
         suite.addTestSuite(ByteBufferTest.class);
         suite.addTestSuite(ReadOnlyWrappedByteBufferTest.class);
+        suite.addTestSuite(AbstractBufferTest.class);
+        suite.addTestSuite(HeapDoubleBufferTest.class);
         suite.addTestSuite(DirectByteBufferTest.class);
         suite.addTestSuite(BufferOverflowExceptionTest.class);
         suite.addTestSuite(BufferTest.class);
         suite.addTestSuite(DuplicateWrappedByteBufferTest.class);
         suite.addTestSuite(WrappedByteBufferTest.class);
+        suite.addTestSuite(ReadOnlyDoubleBufferTest.class);
         suite.addTestSuite(ReadOnlyBufferExceptionTest.class);
         suite.addTestSuite(DoubleBufferTest.class);
         suite.addTestSuite(CharBufferTest.class);
@@ -63,6 +69,7 @@ public class AllTests {
         suite.addTestSuite(ReadOnlyHeapByteBufferTest.class);
         suite.addTestSuite(ReadOnlyHeapCharBufferTest.class);
         suite.addTestSuite(SliceHeapByteBufferTest.class);
+        suite.addTestSuite(DirectDoubleBufferTest.class);
         //$JUnit-END$
         return suite;
     }

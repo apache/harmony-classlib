@@ -21,149 +21,89 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 import java.nio.InvalidMarkException;
-import java.nio.ReadOnlyBufferException;
-
-import junit.framework.TestCase;
 
 /**
  * Tests java.nio.DoubleBuffer
  */
-public class DoubleBufferTest extends TestCase {
+public class DoubleBufferTest extends AbstractBufferTest {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(DoubleBufferTest.class);
+    protected static final int SMALL_TEST_LENGTH = 5;
+
+    protected static final int BUFFER_LENGTH = 20;
+
+    protected DoubleBuffer buf;
+
+    protected void setUp() throws Exception {
+        buf = DoubleBuffer.allocate(BUFFER_LENGTH);
+        loadTestData1(buf);
+        baseBuf = buf;
     }
 
-    public static void testDoubleBufferInstance(DoubleBuffer buf) {
-        // test Buffer functions
-        BufferTest.testBufferInstance(buf);
-
-        // test DoubleBuffer functions
-        testHashCode(buf);
-        testEquals(buf);
-        testToString(buf);
-        testSlice(buf);
-        testDuplicate(buf);
-        testAsReadOnlyBuffer(buf);
-        testGet(buf);
-        testPutdouble(buf);
-        testGetint(buf);
-        testPutintdouble(buf);
-        testGetdoubleArrayintint(buf);
-        testGetdoubleArray(buf);
-        testPutDoubleBuffer(buf);
-        testPutdoubleArrayintint(buf);
-        testPutdoubleArray(buf);
-        testHasArray(buf);
-        testArray(buf);
-        testArrayOffset(buf);
-        testCompact(buf);
-        testIsDirect(buf);
-        testCompareTo(buf);
-        testOrder(buf);
-        testNaNs();
+    protected void tearDown() throws Exception {
+        buf = null;
+        baseBuf = null;
     }
 
-	/* Test with bit sequences that represent the IEEE754 doubles
-	 * Positive inifinity, negative infinity, and NaN.
-	 */
-    public static void testNaNs() {
-		long[] nans = new long[] { 0x7ff0000000000000L, 0xfff0000000000000L, 0x7ff8000000000000L};
-		for (int i = 0; i < nans.length; i++) {
-			long longBitsIn = nans[i];
-			double dbl = Double.longBitsToDouble(longBitsIn);
-			long longBitsOut = Double.doubleToRawLongBits(dbl);
-			// Sanity check
-			assertTrue(longBitsIn == longBitsOut);
+    /*
+     * Test with bit sequences that represent the IEEE754 doubles Positive
+     * inifinity, negative infinity, and NaN.
+     */
+    public void testNaNs() {
+        long[] nans = new long[] { 0x7ff0000000000000L, 0xfff0000000000000L,
+                0x7ff8000000000000L };
+        for (int i = 0; i < nans.length; i++) {
+            long longBitsIn = nans[i];
+            double dbl = Double.longBitsToDouble(longBitsIn);
+            long longBitsOut = Double.doubleToRawLongBits(dbl);
+            // Sanity check
+            assertTrue(longBitsIn == longBitsOut);
 
-			// Store the double and retrieve it
-			ByteBuffer buffer = ByteBuffer.allocate(8);
-			buffer.putDouble(dbl);
-			double bufDoubleOut = buffer.getDouble(0);
+            // Store the double and retrieve it
+            ByteBuffer buffer = ByteBuffer.allocate(8);
+            buffer.putDouble(dbl);
+            double bufDoubleOut = buffer.getDouble(0);
 
-			// Check the bits sequence was not normalized
-			long bufLongOut = Double.doubleToRawLongBits(bufDoubleOut);
-			assertTrue(longBitsIn == bufLongOut);
-		}
-	}
-    
-    public static void testArray(DoubleBuffer buf) {
-        if (buf.hasArray()) {
-            double array[] = buf.array();
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
-
-            loadTestData1(array, buf.arrayOffset(), buf.capacity());
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
-
-            loadTestData2(array, buf.arrayOffset(), buf.capacity());
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
-
-            loadTestData1(buf);
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
-
-            loadTestData2(buf);
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
-        } else {
-            if (buf.isReadOnly()) {
-                try {
-                    buf.array();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                    // Note:can not tell when to throw 
-                    // UnsupportedOperationException
-                    // or ReadOnlyBufferException, so catch all.
-                }
-            } else {
-                try {
-                    buf.array();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                }
-            }
+            // Check the bits sequence was not normalized
+            long bufLongOut = Double.doubleToRawLongBits(bufDoubleOut);
+            assertTrue(longBitsIn == bufLongOut);
         }
     }
 
-    public static void testArrayOffset(DoubleBuffer buf) {
-        if (buf.hasArray()) {
-            double array[] = buf.array();
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+    public void testArray() {
+        double array[] = buf.array();
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData1(array, buf.arrayOffset(), buf.capacity());
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData1(array, buf.arrayOffset(), buf.capacity());
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData2(array, buf.arrayOffset(), buf.capacity());
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData2(array, buf.arrayOffset(), buf.capacity());
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData1(buf);
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData1(buf);
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData2(buf);
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
-        } else {
-            if (buf.isReadOnly()) {
-                try {
-                    buf.arrayOffset();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                    // Note:can not tell when to throw 
-                    // UnsupportedOperationException
-                    // or ReadOnlyBufferException, so catch all.
-                }
-            } else {
-                try {
-                    buf.arrayOffset();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                }
-            }
-        }
+        loadTestData2(buf);
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
     }
 
-    public static void testAsReadOnlyBuffer(DoubleBuffer buf) {
+    public void testArrayOffset() {
+        double array[] = buf.array();
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+
+        loadTestData1(array, buf.arrayOffset(), buf.capacity());
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+
+        loadTestData2(array, buf.arrayOffset(), buf.capacity());
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+
+        loadTestData1(buf);
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+
+        loadTestData2(buf);
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+    }
+
+    public void testAsReadOnlyBuffer() {
         buf.clear();
         buf.mark();
         buf.position(buf.limit());
@@ -187,17 +127,7 @@ public class DoubleBufferTest extends TestCase {
         assertEquals(buf.position(), 0);
     }
 
-    public static void testCompact(DoubleBuffer buf) {
-        if (buf.isReadOnly()) {
-            try {
-                buf.compact();
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
-
+    public void testCompact() {
         // case: buffer is full
         buf.clear();
         buf.mark();
@@ -248,33 +178,24 @@ public class DoubleBufferTest extends TestCase {
         }
     }
 
-    public static void testCompareTo(DoubleBuffer buf) {
-        // compare to self
-        assertEquals(0, buf.compareTo(buf));
-
-        // normal cases
-        if (!buf.isReadOnly()) {
-            assertTrue(buf.capacity() > 5);
-            buf.clear();
-            DoubleBuffer other = DoubleBuffer.allocate(buf.capacity());
-            loadTestData1(buf);
-            loadTestData1(other);
-            assertEquals(0, buf.compareTo(other));
-            assertEquals(0, other.compareTo(buf));
-            buf.position(1);
-            assertTrue(buf.compareTo(other) > 0);
-            assertTrue(other.compareTo(buf) < 0);
-            other.position(2);
-            assertTrue(buf.compareTo(other) < 0);
-            assertTrue(other.compareTo(buf) > 0);
-            buf.position(2);
-            other.limit(5);
-            assertTrue(buf.compareTo(other) > 0);
-            assertTrue(other.compareTo(buf) < 0);
-        }
+    public void testCompareTo() {
+        DoubleBuffer other = DoubleBuffer.allocate(buf.capacity());
+        loadTestData1(other);
+        assertEquals(0, buf.compareTo(other));
+        assertEquals(0, other.compareTo(buf));
+        buf.position(1);
+        assertTrue(buf.compareTo(other) > 0);
+        assertTrue(other.compareTo(buf) < 0);
+        other.position(2);
+        assertTrue(buf.compareTo(other) < 0);
+        assertTrue(other.compareTo(buf) > 0);
+        buf.position(2);
+        other.limit(5);
+        assertTrue(buf.compareTo(other) > 0);
+        assertTrue(other.compareTo(buf) < 0);
     }
 
-    public static void testDuplicate(DoubleBuffer buf) {
+    public void testDuplicate() {
         buf.clear();
         buf.mark();
         buf.position(buf.limit());
@@ -298,6 +219,7 @@ public class DoubleBufferTest extends TestCase {
         assertEquals(buf.position(), 0);
 
         // duplicate share the same content with buf
+        // FIXME
         if (!duplicate.isReadOnly()) {
             loadTestData1(buf);
             assertContentEquals(buf, duplicate);
@@ -306,7 +228,7 @@ public class DoubleBufferTest extends TestCase {
         }
     }
 
-    public static void testEquals(DoubleBuffer buf) {
+    public void testEquals() {
         // equal to self
         assertTrue(buf.equals(buf));
         DoubleBuffer readonly = buf.asReadOnlyBuffer();
@@ -331,7 +253,7 @@ public class DoubleBufferTest extends TestCase {
     /*
      * Class under test for double get()
      */
-    public static void testGet(DoubleBuffer buf) {
+    public void testGet() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), i);
@@ -348,7 +270,7 @@ public class DoubleBufferTest extends TestCase {
     /*
      * Class under test for java.nio.DoubleBuffer get(double[])
      */
-    public static void testGetdoubleArray(DoubleBuffer buf) {
+    public void testGetdoubleArray() {
         double array[] = new double[1];
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
@@ -368,7 +290,7 @@ public class DoubleBufferTest extends TestCase {
     /*
      * Class under test for java.nio.DoubleBuffer get(double[], int, int)
      */
-    public static void testGetdoubleArrayintint(DoubleBuffer buf) {
+    public void testGetdoubleArrayintint() {
         buf.clear();
         double array[] = new double[buf.capacity()];
 
@@ -405,6 +327,18 @@ public class DoubleBufferTest extends TestCase {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
+        try {
+            buf.get(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.get(array, Integer.MAX_VALUE, 1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
         assertEquals(buf.position(), 0);
 
         buf.clear();
@@ -417,7 +351,7 @@ public class DoubleBufferTest extends TestCase {
     /*
      * Class under test for double get(int)
      */
-    public static void testGetint(DoubleBuffer buf) {
+    public void testGetint() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), i);
@@ -437,32 +371,11 @@ public class DoubleBufferTest extends TestCase {
         }
     }
 
-    public static void testHasArray(DoubleBuffer buf) {
-        if (buf.hasArray()) {
-            assertNotNull(buf.array());
-        } else {
-            if (buf.isReadOnly()) {
-                try {
-                    buf.array();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                    // Note:can not tell when to throw 
-                    // UnsupportedOperationException
-                    // or ReadOnlyBufferException, so catch all.
-                }
-            } else {
-                try {
-                    buf.array();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                }
-            }
-        }
+    public void testHasArray() {
+        assertTrue(buf.hasArray());
     }
 
-    public static void testHashCode(DoubleBuffer buf) {
+    public void testHashCode() {
         buf.clear();
         DoubleBuffer readonly = buf.asReadOnlyBuffer();
         DoubleBuffer duplicate = buf.duplicate();
@@ -473,31 +386,18 @@ public class DoubleBufferTest extends TestCase {
         assertTrue(buf.hashCode() != duplicate.hashCode());
     }
 
-    public static void testIsDirect(DoubleBuffer buf) {
-        buf.isDirect();
+    public void testIsDirect() {
+        assertFalse(buf.isDirect());
     }
 
-    public static void testOrder(DoubleBuffer buf) {
-        buf.order();
-        if (buf.hasArray()) {
-            assertEquals(ByteOrder.nativeOrder(), buf.order());
-        }
+    public void testOrder() {
+        assertEquals(ByteOrder.nativeOrder(), buf.order());
     }
 
     /*
      * Class under test for java.nio.DoubleBuffer put(double)
      */
-    public static void testPutdouble(DoubleBuffer buf) {
-        if (buf.isReadOnly()) {
-            try {
-                buf.clear();
-                buf.put(0);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
+    public void testPutdouble() {
 
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
@@ -517,17 +417,8 @@ public class DoubleBufferTest extends TestCase {
     /*
      * Class under test for java.nio.DoubleBuffer put(double[])
      */
-    public static void testPutdoubleArray(DoubleBuffer buf) {
+    public void testPutdoubleArray() {
         double array[] = new double[1];
-        if (buf.isReadOnly()) {
-            try {
-                buf.put(array);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
 
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
@@ -548,18 +439,9 @@ public class DoubleBufferTest extends TestCase {
     /*
      * Class under test for java.nio.DoubleBuffer put(double[], int, int)
      */
-    public static void testPutdoubleArrayintint(DoubleBuffer buf) {
+    public void testPutdoubleArrayintint() {
         buf.clear();
         double array[] = new double[buf.capacity()];
-        if (buf.isReadOnly()) {
-            try {
-                buf.put(array, 0, array.length);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
 
         try {
             buf.put(new double[buf.capacity() + 1], 0, buf.capacity() + 1);
@@ -594,6 +476,18 @@ public class DoubleBufferTest extends TestCase {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
+        try {
+            buf.put(array, Integer.MAX_VALUE, 1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.put(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
         assertEquals(buf.position(), 0);
 
         loadTestData2(array, 0, array.length);
@@ -606,18 +500,8 @@ public class DoubleBufferTest extends TestCase {
     /*
      * Class under test for java.nio.DoubleBuffer put(java.nio.DoubleBuffer)
      */
-    public static void testPutDoubleBuffer(DoubleBuffer buf) {
+    public void testPutDoubleBuffer() {
         DoubleBuffer other = DoubleBuffer.allocate(buf.capacity());
-        if (buf.isReadOnly()) {
-            try {
-                buf.clear();
-                buf.put(other);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
 
         try {
             buf.put(buf);
@@ -645,17 +529,7 @@ public class DoubleBufferTest extends TestCase {
     /*
      * Class under test for java.nio.DoubleBuffer put(int, double)
      */
-    public static void testPutintdouble(DoubleBuffer buf) {
-        if (buf.isReadOnly()) {
-            try {
-                buf.put(0, 0);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
-
+    public void testPutintdouble() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), 0);
@@ -677,7 +551,7 @@ public class DoubleBufferTest extends TestCase {
         }
     }
 
-    public static void testSlice(DoubleBuffer buf) {
+    public void testSlice() {
         assertTrue(buf.capacity() > 5);
         buf.position(1);
         buf.limit(buf.capacity() - 1);
@@ -697,6 +571,7 @@ public class DoubleBufferTest extends TestCase {
         }
 
         // slice share the same content with buf
+        // FIXME:
         if (!slice.isReadOnly()) {
             loadTestData1(slice);
             assertContentLikeTestData1(buf, 1, 0, slice.capacity());
@@ -705,7 +580,7 @@ public class DoubleBufferTest extends TestCase {
         }
     }
 
-    public static void testToString(DoubleBuffer buf) {
+    public void testToString() {
         String str = buf.toString();
         assertTrue(str.indexOf("Double") >= 0 || str.indexOf("double") >= 0);
         assertTrue(str.indexOf("" + buf.position()) >= 0);
@@ -713,156 +588,52 @@ public class DoubleBufferTest extends TestCase {
         assertTrue(str.indexOf("" + buf.capacity()) >= 0);
     }
 
-    private static void loadTestData1(double array[], int offset, int length) {
+    void loadTestData1(double array[], int offset, int length) {
         for (int i = 0; i < length; i++) {
             array[offset + i] = (double) i;
         }
     }
 
-    private static void loadTestData2(double array[], int offset, int length) {
+    void loadTestData2(double array[], int offset, int length) {
         for (int i = 0; i < length; i++) {
             array[offset + i] = (double) length - i;
         }
     }
 
-    private static void loadTestData1(DoubleBuffer buf) {
+    void loadTestData1(DoubleBuffer buf) {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             buf.put(i, (double) i);
         }
     }
 
-    private static void loadTestData2(DoubleBuffer buf) {
+    void loadTestData2(DoubleBuffer buf) {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             buf.put(i, (double) buf.capacity() - i);
         }
     }
 
-    private static void assertContentEquals(DoubleBuffer buf, double array[],
+    private void assertContentEquals(DoubleBuffer buf, double array[],
             int offset, int length) {
         for (int i = 0; i < length; i++) {
             assertEquals(buf.get(i), array[offset + i], 0.01);
         }
     }
 
-    private static void assertContentEquals(DoubleBuffer buf, DoubleBuffer other) {
+    private void assertContentEquals(DoubleBuffer buf, DoubleBuffer other) {
         assertEquals(buf.capacity(), other.capacity());
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.get(i), other.get(i), 0.01);
         }
     }
 
-    private static void assertContentLikeTestData1(DoubleBuffer buf,
-            int startIndex, double startValue, int length) {
+    private void assertContentLikeTestData1(DoubleBuffer buf, int startIndex,
+            double startValue, int length) {
         double value = startValue;
         for (int i = 0; i < length; i++) {
             assertEquals(buf.get(startIndex + i), value, 0.01);
             value = value + 1.0;
         }
     }
-
-    public void testAllocatedDoubleBuffer() {
-        try {
-            DoubleBuffer.allocate(-1);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // expected 
-        }
-        DoubleBuffer buf = DoubleBuffer.allocate(16);
-        testDoubleBufferInstanceThoroughly(buf);
-    }
-
-    public void testWrappedDoubleBuffer() {
-        DoubleBuffer buf = DoubleBuffer.wrap(new double[16]);
-        testDoubleBufferInstanceThoroughly(buf);
-    }
-
-    public void testWrappedDoubleBuffer2() {
-        double array[] = new double[20];
-        try {
-            DoubleBuffer.wrap(array, -1, 0);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            DoubleBuffer.wrap(array, 21, 0);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            DoubleBuffer.wrap(array, 0, -1);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            DoubleBuffer.wrap(array, 0, 21);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-
-        DoubleBuffer buf = DoubleBuffer.wrap(array, 2, 16);
-        assertEquals(buf.position(), 2);
-        assertEquals(buf.limit(), 18);
-        assertEquals(buf.capacity(), 20);
-        testDoubleBufferInstanceThoroughly(buf);
-    }
-
-    /**
-     * @tests java.nio.DoubleBuffer.wrap(double[],int,int)
-     */
-    public void testWrappedDoubleBuffer_null_array() {
-        // Regression for HARMONY-264
-        double array[] = null;
-        try {
-            DoubleBuffer.wrap(array, -1, 0);
-            fail("Should throw NPE"); //$NON-NLS-1$
-        } catch (NullPointerException e) {
-        }
-    }
-
-    public void testByteBufferAsDoubleBuffer() {
-        DoubleBuffer buf = ByteBuffer.allocate(160).asDoubleBuffer();
-        testDoubleBufferInstanceThoroughly(buf);
-    }
-
-    private void testDoubleBufferInstanceThoroughly(DoubleBuffer buf) {
-        assertTrue(buf.capacity() > 15);
-        buf.clear();
-        loadTestData1(buf);
-
-        buf.limit(15).position(1);
-        testDoubleBufferInstance(buf);
-        testDoubleBufferInstance(buf.duplicate());
-        testDoubleBufferInstance(buf.asReadOnlyBuffer());
-        buf.limit(15).position(1);
-        testDoubleBufferInstance(buf.slice());
-
-        DoubleBuffer duplicate = buf.duplicate();
-        duplicate.limit(15).position(1);
-        testDoubleBufferInstance(duplicate.duplicate());
-        testDoubleBufferInstance(duplicate.asReadOnlyBuffer());
-        duplicate.limit(15).position(1);
-        testDoubleBufferInstance(duplicate.slice());
-
-        DoubleBuffer readonly = buf.asReadOnlyBuffer();
-        readonly.limit(15).position(1);
-        testDoubleBufferInstance(readonly.duplicate());
-        testDoubleBufferInstance(readonly.asReadOnlyBuffer());
-        readonly.limit(15).position(1);
-        testDoubleBufferInstance(readonly.slice());
-
-        buf.limit(15).position(1);
-        DoubleBuffer slice = buf.slice();
-        slice.limit(10).position(1);
-        testDoubleBufferInstance(slice.duplicate());
-        testDoubleBufferInstance(slice.asReadOnlyBuffer());
-        slice.limit(10).position(1);
-        testDoubleBufferInstance(slice.slice());
-    }
-
 }

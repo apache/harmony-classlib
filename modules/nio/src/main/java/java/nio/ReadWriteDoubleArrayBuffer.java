@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,9 +104,9 @@ final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
 	}
 
     public DoubleBuffer put(double[] src, int off, int len) {
-        if (off < 0 || len < 0 || off + len > src.length) {
-            throw new IndexOutOfBoundsException();
-        }
+        if (off < 0 || len < 0 || off + len < 0 || off + len > src.length) {
+			throw new IndexOutOfBoundsException();
+		}
         if (len > remaining()) {
             throw new BufferOverflowException();
         }
