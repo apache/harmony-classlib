@@ -55,7 +55,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
             .getNetworkSystem();
 
     // default timeout used to nonblocking mode.
-    private static final int DEFAULT_TIMEOUT = 100;
+    private static final int DEFAULT_TIMEOUT = 1;
 
     // error messages, for native dependent.
     private static final String ERRMSG_TIMEOUT = "The operation timed out";
@@ -372,14 +372,26 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      * @see java.nio.channels.DatagramChannel#read(java.nio.ByteBuffer)
      */
     public int read(ByteBuffer target) throws IOException {
+        if (null == target){
+            throw new NullPointerException();
+        }
         // status must be open and connected
         checkOpenConnected();
         // target buffer must be not null and not readonly
         checkNotNullNotReadOnly(target);
 
+        if (!target.hasRemaining()){
+            return 0;
+        }        
+        byte[] readArray = new byte[target.remaining()];
+        int readCount;
         synchronized (readLock) {
-            return readImpl(target);
+            readCount = readImpl(readArray);
         }
+        if (0 != readCount) {
+            target.put(readArray, 0, readCount);
+        }
+        return readCount;
     }
 
     /*
@@ -389,26 +401,43 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      */
     public long read(ByteBuffer[] targets, int offset, int length)
             throws IOException {
-        if (length >= 0 && offset >= 0 && length + offset <= targets.length) {
-            // status must be open and connected
-            checkOpenConnected();
-            synchronized (readLock) {
-                long readCount = 0;
-                for (int val = offset; val < length; val++) {
-                    // target buffer must be not null and not readonly
-                    checkNotNullNotReadOnly(targets[val]);
-                    readCount = readCount + readImpl(targets[val]);
-                }
-                return readCount;
+        if (!(length >= 0 && offset >= 0 && length + offset <= targets.length)) {
+            throw new ArrayIndexOutOfBoundsException();
+        }        
+        // status must be open and connected
+        checkOpenConnected();
+        
+        int totalCount = 0;
+        for (int val = offset; val < length; val++) {
+            // target buffer must be not null and not readonly
+            checkNotNullNotReadOnly(targets[val]);
+            totalCount += targets[val].remaining();
+        }
+        // read data to readBuffer, and then transfer data from readBuffer to
+        // targets.
+        byte[] readBuffer = new byte[totalCount];
+        int readCount ;
+        synchronized (readLock) {
+            readCount = readImpl(readBuffer);
+        }
+        if (readCount > 0) {
+            int left = readCount;
+            int index = offset;
+            // transfer data from readBuffer to targets
+            while (left > 0) {
+                int putLength = Math.min(targets[index].remaining(), left);                
+                targets[index].put(readBuffer, readCount - left, putLength);
+                index++;
+                left -= putLength;
             }
         }
-        throw new ArrayIndexOutOfBoundsException();
+        return readCount;
     }
 
     /*
      * read from channel, and store the result in the target.
      */
-    private int readImpl(ByteBuffer target) throws IOException {
+    private int readImpl(byte[] target) throws IOException {
         // the return value
         int readCount = 0;
 
@@ -418,32 +447,14 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
             // DEFAULT_TIMEOUT is used in non-block mode.
             int timeout = isBlocking() ? 0 : DEFAULT_TIMEOUT;
             DatagramPacket pack;
-            if (target.hasRemaining()) {
-                pack = new DatagramPacket(new byte[target.remaining()], target
-                        .remaining());
+            pack = new DatagramPacket(target, target.length);
+            if (isConnected()) {
+                readCount = networkSystem.recvConnectedDatagram(fd, pack, pack
+                        .getData(), 0, pack.getLength(), timeout, false);
             } else {
-                return 0;
+                readCount = networkSystem.receiveDatagram(fd, pack, pack
+                        .getData(), 0, pack.getLength(), timeout, false);
             }
-            boolean loop = isBlocking();
-            do {
-                if (!isOpen()) {
-                    // AsynchronizeCloseException will be thrown by end(boolean)
-                    // in finally block.
-                    break;
-                }
-                if (isConnected()) {
-                    readCount = networkSystem
-                            .recvConnectedDatagram(fd, pack, pack.getData(), 0,
-                                    pack.getLength(), timeout, false);
-                } else {
-                    readCount = networkSystem.receiveDatagram(fd, pack, pack
-                            .getData(), 0, pack.getLength(), timeout, false);
-                }
-                if (0 < readCount) {
-                    target.put(pack.getData());
-                    return readCount;
-                }
-            } while (loop);
             return readCount;
         } catch (InterruptedIOException e) {
             // FIXME improve native code.
@@ -464,6 +475,10 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         checkNotNull(source);
         // status must be open and connected
         checkOpenConnected();
+        // return immediately if source is full
+        if (!source.hasRemaining()){
+            return 0;
+        }
 
         synchronized (writeLock) {
             return writeImpl(source);

@@ -2434,7 +2434,99 @@ public class DatagramChannelTest extends TestCase {
         // assert the position of ByteBuffer has been set
         assertEquals(CAPACITY_NORMAL, sourceBuf.position());
     }
+    
+    /**
+     * @tests DatagramChannel#read(ByteBuffer[])
+     */
+    public void test_read_$LByteBuffer() throws Exception {
+        // regression test for Harmony-754
+        channel2.socket().bind(localAddr1);
+        channel1.socket().bind(localAddr2);
+        channel1.connect(localAddr1);         
+        channel2.connect(localAddr2);
+        channel2.write(ByteBuffer.allocate(CAPACITY_NORMAL));
+        
+        ByteBuffer[] readBuf = new ByteBuffer[2];
+        readBuf[0] = ByteBuffer.allocateDirect(CAPACITY_NORMAL);
+        readBuf[1] = ByteBuffer.allocateDirect(CAPACITY_NORMAL);        
+        
+        channel1.configureBlocking(true);
+        assertEquals(CAPACITY_NORMAL, channel1.read(readBuf));
+    }
 
+    /**
+     * @tests DatagramChannel#read(ByteBuffer[],int,int)
+     */
+    public void test_read_$LByteBufferII() throws Exception {
+        // regression test for Harmony-754
+        channel2.socket().bind(localAddr1);
+        channel1.socket().bind(localAddr2);
+        channel1.connect(localAddr1);         
+        channel2.connect(localAddr2);
+        channel2.write(ByteBuffer.allocate(CAPACITY_NORMAL));
+        
+        ByteBuffer[] readBuf = new ByteBuffer[2];
+        readBuf[0] = ByteBuffer.allocateDirect(CAPACITY_NORMAL);
+        readBuf[1] = ByteBuffer.allocateDirect(CAPACITY_NORMAL);        
+        
+        channel1.configureBlocking(true);
+        assertEquals(CAPACITY_NORMAL, channel1.read(readBuf,0,2));
+    }
+    
+    /**
+     * @tests DatagramChannel#read(ByteBuffer)
+     */
+    public void test_read_LByteBuffer_closed_nullBuf() throws Exception {
+        // regression test for Harmony-754
+        ByteBuffer c = null;
+        DatagramChannel channel = DatagramChannel.open();
+        channel.close();
+        try{
+            channel.read(c);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e){
+            // expected
+        }
+    }
+    
+    /**
+     * @tests DatagramChannel#read(ByteBuffer)
+     */
+    public void test_read_LByteBuffer_NotConnected_nullBuf() throws Exception {
+        // regression test for Harmony-754
+        ByteBuffer c = null;
+        DatagramChannel channel = DatagramChannel.open();
+        try{
+            channel.read(c);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e){
+            // expected
+        }
+    }
+    
+    /**
+     * @tests DatagramChannel#read(ByteBuffer)
+     */
+    public void test_read_LByteBuffer_readOnlyBuf() throws Exception {
+        // regression test for Harmony-754
+        ByteBuffer c = ByteBuffer.allocate(1);
+        DatagramChannel channel = DatagramChannel.open();
+        try{
+            channel.read(c.asReadOnlyBuffer());
+            fail("Should throw NotYetConnectedException");
+        } catch (NotYetConnectedException e){
+            // expected
+        }
+        channel.connect(localAddr1);
+        try{
+            channel.read(c.asReadOnlyBuffer());
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e){
+            // expected
+        }
+    }
+
+    
     // -------------------------------------------------------------------
     // Mock class for security test.
     // -------------------------------------------------------------------
