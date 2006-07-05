@@ -124,13 +124,6 @@
     <target name="make-clean" depends="properties">
     	<antcall target="copy-makefile-includes" />
     	
-        <exec failonerror="true" 
-            executable="${make.command}" 
-            dir="${target.platform}">
-        	<env key="HY_HDK" value="${hy.hdk}" />
-            <arg line="clean" />
-        </exec>
-    	
     	<ant dir="..\modules\auth" antfile="build.xml" target="clean.native" />
     	<ant dir="..\modules\archive" antfile="build.xml" target="clean.native" />
        	<ant dir="..\modules\text" antfile="build.xml" target="clean.native" />
