@@ -13,20 +13,30 @@
 # limitations under the License.
 
 #
-# Makefile for module 'zlib'
+# Makefile for module 'port'
 #
 
 include $(HY_HDK)/build/make/makefile.include
 
-ZLIB_DIST=../../zlib_dist/# Path to zlib
-
-CFLAGS += -fpic
+CFLAGS += -fpic -DHYPORT_LIBRARY_DEFINE
 
 BUILDFILES = \
-	$(SHAREDSUB)zlib_copyright.o $(ZLIB_DIST)adler32.o $(ZLIB_DIST)compress.o \
-	$(ZLIB_DIST)crc32.o $(ZLIB_DIST)deflate.o $(ZLIB_DIST)infback.o $(ZLIB_DIST)inffast.o \
-	$(ZLIB_DIST)inflate.o $(ZLIB_DIST)inftrees.o $(ZLIB_DIST)trees.o $(ZLIB_DIST)uncompr.o $(ZLIB_DIST)zutil.o
+	$(SHAREDSUB)port_copyright.o hycpu.o $(SHAREDSUB)hyerror.o \
+	hyerrorhelpers.o $(SHAREDSUB)hyexit.o hyfile.o hyfiletext.o \
+	$(SHAREDSUB)hygp.o hyipcmutex.o hymem.o \
+	hymmap.o $(SHAREDSUB)hynls.o hynlshelpers.o hyosdump.o \
+	$(SHAREDSUB)hyport.o $(SHAREDSUB)hyportcontrol.o hyportptb.o \
+	hysharedhelper.o hyshmem.o hyshsem.o hysignal.o hysl.o hysock.o \
+	$(SHAREDSUB)hystr.o $(SHAREDSUB)hystrftime.o $(SHAREDSUB)hystsl.o \
+	hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o hytty.o hyvmem.o
 
-DLLNAME = ../libhyzlib.so
+MDLLIBFILES = $(DLLPATH)libhythr.so $(LIBPATH)libhycommon.a $(DLLPATH)libhysig.so
+
+DLLNAME = ../libhyprt.so
+
+# temp by geir - please ignore
+#
+LIBNAME = $(LIBPATH)libhyprt.a
+
 
 include $(HY_HDK)/build/make/rules.mk

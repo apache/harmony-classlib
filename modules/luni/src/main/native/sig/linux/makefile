@@ -13,19 +13,13 @@
 # limitations under the License.
 
 #
-# Makefile for module 'launcher.java'
+# Makefile for module 'hysig'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+include $(HY_HDK)/build/make/makefile.include
 
-EXENAME=$(EXEPATH)java.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+CFLAGS += -fpic
+BUILDFILES = $(SHAREDSUB)hysig_copyright.o hysiglinux.o hysigunix.o
+DLLNAME = ../libhysig.so
 
-BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
-        $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
-VIRTFILES = java.res
-MDLLIBFILES = $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
-EXEFLAGS=$(conlflags) -subsystem:console
-EXEDLLFILES=$(conlibsdll)
-
-!include <$(HY_HDK)\build\make\rules.mak>
+include $(HY_HDK)/build/make/rules.mk

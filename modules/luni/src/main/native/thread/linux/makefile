@@ -13,19 +13,20 @@
 # limitations under the License.
 
 #
-# Makefile for module 'launcher.java'
+# Makefile for module 'thread'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+include $(HY_HDK)/build/make/makefile.include
 
-EXENAME=$(EXEPATH)java.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+CFLAGS += -fpic
 
-BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
-        $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
-VIRTFILES = java.res
-MDLLIBFILES = $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
-EXEFLAGS=$(conlflags) -subsystem:console
-EXEDLLFILES=$(conlibsdll)
+BUILDFILES = \
+	$(SHAREDSUB)thread_copyright.o thrhelp.o thrspinlock.o hythread.o \
+	$(SHAREDSUB)hythreadinspect.o linuxonexit.o priority.o rasthrsup.o \
+	$(SHAREDSUB)rwmutex.o thrcreate.o thrdsup.o $(SHAREDSUB)thrprof.o
 
-!include <$(HY_HDK)\build\make\rules.mak>
+SYSLIBFILES = -lpthread
+MDLLIBFILES = $(LIBPATH)libhypool.a $(LIBPATH)libhycommon.a
+DLLNAME = ../libhythr.so
+
+include $(HY_HDK)/build/make/rules.mk

@@ -18,7 +18,6 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-SHAREDSUB=../shared/
 CFLAGS += -fpic -I../../icu4c
 BUILDFILES = text_copyright.o $(SHAREDSUB)BidiWrapper.o
 

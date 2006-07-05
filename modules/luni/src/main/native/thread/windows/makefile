@@ -13,19 +13,28 @@
 # limitations under the License.
 
 #
-# Makefile for module 'launcher.java'
+# Makefile for module 'thread'
 #
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=$(EXEPATH)java.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+LIBBASE=hythr
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
-BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
-        $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
-VIRTFILES = java.res
-MDLLIBFILES = $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
-EXEFLAGS=$(conlflags) -subsystem:console
-EXEDLLFILES=$(conlibsdll)
+BUILDFILES = \
+  $(SHAREDSUB)thread_copyright.obj thrhelp.obj thrspinlock.obj hythread.obj \
+  $(SHAREDSUB)hythreadinspect.obj $(SHAREDSUB)rwmutex.obj thrdsup.obj \
+  $(SHAREDSUB)thrprof.obj
+
+# TOFIX $(LIBBASE).def should be a dependency on all libs
+VIRTFILES = $(LIBBASE).res
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
+
+MDLLIBFILES = $(LIBPATH)hypool.lib $(LIBPATH)hycommon.lib
+
+DLLBASE=0x11500000
+COMMENT=/comment:"Thread support library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

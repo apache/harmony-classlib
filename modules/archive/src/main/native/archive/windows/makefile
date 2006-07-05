@@ -18,7 +18,6 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-SHAREDSUB=..\shared\# comment to avoid \ being treated as continuation
 LIBBASE=hyarchive
 DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib

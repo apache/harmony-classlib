@@ -1,4 +1,4 @@
-# Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+# Copyright 2003, 2005 The Apache Software Foundation or its licensors, as applicable
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,19 +13,18 @@
 # limitations under the License.
 
 #
-# Makefile for module 'launcher.java'
+# Makefile for module 'sig'
 #
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=$(EXEPATH)java.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
-
-BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
-        $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
-VIRTFILES = java.res
-MDLLIBFILES = $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
-EXEFLAGS=$(conlflags) -subsystem:console
-EXEDLLFILES=$(conlibsdll)
+LIBBASE=hysig
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+BUILDFILES = $(SHAREDSUB)hysig_copyright.obj hysigwin.obj
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
+VIRTFILES = $(LIBBASE).res
+DLLBASE=0x13100000
+COMMENT=/comment:"Signal handling support DLL. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

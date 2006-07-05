@@ -87,7 +87,7 @@ Building Java component archives...
 Building native libs and executables...
 ========================================
 </echo>
-        <ant antfile="native-src/build.xml" inheritall="false" target="build"/>
+        <ant antfile="make/build-native.xml" inheritall="false" target="build"/>
 
         <ant antfile="make/build-test.xml" inheritall="false"
              target="support.jar"/>
@@ -127,7 +127,7 @@ Generating HTML using Doxygen...
          ================================= -->
     <target name="clean">
         <ant antfile="make/build-java.xml" inheritall="false" target="clean" />
-        <ant antfile="native-src/build.xml" inheritall="false" target="clean" />
+        <ant antfile="make/build-native.xml" inheritall="false" target="clean" />
         <!-- Removed this for now since svn diff complains with
              svn: Working copy 'doc/kernel_doc' is missing or not locked
              if we run it.  We shouldn't really clean things that are in the

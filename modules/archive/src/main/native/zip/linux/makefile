@@ -18,8 +18,6 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-SHAREDSUB=../shared/
-
 CFLAGS += -I../../zlib_dist
 BUILDFILES = $(SHAREDSUB)zcpool.o $(SHAREDSUB)zipalloc.o \
 	$(SHAREDSUB)zipcache.o $(SHAREDSUB)zipsup.o

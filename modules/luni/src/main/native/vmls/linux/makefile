@@ -18,7 +18,6 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-SHAREDSUB=../shared/
 CFLAGS += -I../../include/shared -I../../include/linux
 BUILDFILES = $(SHAREDSUB)vmls.o
 LIBNAME = $(LIBPATH)libhyvmls.a

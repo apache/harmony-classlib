@@ -32,148 +32,220 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-         use the Eclipse Java compiler. -->
+	     use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
-    
-    <property file="../../make/depends.properties" />
+
+	<property file="../../make/depends.properties" />    
+    <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
 
     <target name="build" depends="compile.java, build.jar" />
 
     <target name="copy.native.includes">
-    <copy todir="${hy.hdk}/include" overwrite="yes">
-        <fileset dir="${hy.luni.src.main.native}/include/shared">
-        <include name="vmi.h" />
-        <include name="hyvmls.h" />
-        <include name="hypool.h" />
-        <include name="hyport.h" />
-        <include name="hythread.h" />
-        <include name="hycomp.h" />
-        <include name="hysocket.h" />
-        <include name="hyporterror.h" />
-        <include name="gp.h" />
-        <include name="iohelp.h" />
-        <include name="libglob.h" />
-        <include name="fdlibm.h" />
-        <include name="hymagic.h" />
-        </fileset>
-    </copy>
-    <copy todir="${hy.jdk}/include" overwrite="yes">
-        <fileset dir="${hy.luni.src.main.native}/include/shared">
-        <include name="jni.h" />
-        <include name="jniport.h" />
-        </fileset>
-    </copy>
+	<copy todir="${hy.hdk}/include" overwrite="yes">
+	    <fileset dir="${hy.luni.src.main.native}/include/shared">
+		<include name="vmi.h" />
+		<include name="hyvmls.h" />
+		<include name="hypool.h" />
+		<include name="hyport.h" />
+		<include name="hythread.h" />
+		<include name="hycomp.h" />
+		<include name="hysocket.h" />
+		<include name="hyporterror.h" />
+		<include name="gp.h" />
+	    <include name="iohelp.h" />
+	    <include name="libglob.h" />
+    	<include name="fdlibm.h" />
+	    <include name="hymagic.h" />
+	    <include name="jsig.h" />
+	    </fileset>
+	</copy>
+	<copy todir="${hy.jdk}/include" overwrite="yes">
+	    <fileset dir="${hy.luni.src.main.native}/include/shared">
+		<include name="jni.h" />
+		<include name="jniport.h" />
+	    </fileset>
+	</copy>
 
-    <antcall target="copy.native.includes.windows" />
-    <antcall target="copy.native.includes.linux" />
+	<antcall target="copy.native.includes.windows" />
+	<antcall target="copy.native.includes.linux" />
     </target>
-    
+	
     <target name="copy.native.includes.windows" if="is.windows">
-    <copy todir="${hy.hdk}/include" overwrite="yes">
-        <fileset dir="${hy.luni.src.main.native}/include/windows">
-            <include name="hymutex.h" />
-            <include name="jclprots.h" />
-            <include name="hysock.h" />
-            <include name="hyportpg.h" />
-            </fileset>
-    </copy>
+	<copy todir="${hy.hdk}/include" overwrite="yes">
+	    <fileset dir="${hy.luni.src.main.native}/include/windows">
+    		<include name="hymutex.h" />
+    		<include name="jclprots.h" />
+    		<include name="hysock.h" />
+    		<include name="hyportpg.h" />
+    	    </fileset>
+	</copy>
     </target>
-    
+	
     <target name="copy.native.includes.linux" if="is.linux">
-    <copy todir="${hy.hdk}/include" overwrite="yes">
-        <fileset dir="${hy.luni.src.main.native}/include/linux">
-            <include name="hymutex.h" />
-            <include name="jclprots.h" />
-            <include name="hysock.h" />
-            <include name="hyportpg.h" />
-            </fileset>
-    </copy>
+	<copy todir="${hy.hdk}/include" overwrite="yes">
+	    <fileset dir="${hy.luni.src.main.native}/include/linux">
+    		<include name="hymutex.h" />
+    		<include name="jclprots.h" />
+    		<include name="hysock.h" />
+    		<include name="hyportpg.h" />
+    	    </fileset>
+	</copy>
     </target>
-    
-    <!-- Build native code -->
-    <target name="build.native" depends="build.native.core, build.native.secondary" />
-    
-    <target name="build.native.core" >
-        <exec failonerror="true" 
+	
+	<!-- Build native code -->
+	<target name="build.native" depends="build.native.core, build.native.secondary" />
+	
+    <!-- Build the core luni native components -->
+	<target name="build.native.core" >
+	    <!-- Build sig dll -->
+	    <exec failonerror="true" 
+	          executable="${make.command}" 
+	          dir="${hy.luni.src.main.native}/sig/${hy.os}">
+	        <env key="HY_HDK" value="${hy.hdk}" />
+	    </exec>
+		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.luni.src.main.native}/sig">
+	        	<patternset includes="*${shlib.suffix}*" />
+	        </fileset>
+	    </copy>
+	    
+	    <!-- Build common lib -->
+	    <exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/common/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+	    
+	    <!-- Build pool lib -->
+	    <exec failonerror="true" 
+	          executable="${make.command}" 
+	          dir="${hy.luni.src.main.native}/pool/${hy.os}">
+	        <env key="HY_HDK" value="${hy.hdk}" />
+	    </exec>
+	    
+	    <!-- Build thread dll -->
+	    <exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/thread/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+    	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.luni.src.main.native}/thread">
+            	<patternset includes="*${shlib.suffix}*" />
+	        </fileset>
+	    </copy>
+    	
+	    <!-- Build port dll -->
+	    <exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/port/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+    	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.luni.src.main.native}/port">
+            	<patternset includes="*${shlib.suffix}*" />
+	        </fileset>
+	    </copy>
+	    
+	    <!-- Build fdlibm lib -->
+	    <exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.luni.src.main.native}/fdlibm/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+	    
+	    <!-- Build vmi dll -->
+		<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/vmi/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
         </exec>
-        
-        <!-- On Linux we want to copy the libvmi.so into the deploy/lib
-        directory so that the natives can link against it. This is only used at
-        build time - at runtime the libvmi.so provided by the VM implementation
-        is loaded -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes" failonerror="false">
-            <fileset dir="${hy.luni.src.main.native}/vmi">
-                <include name="libvmi.so"/>
-            </fileset>
-        </copy>
-    </target>       
-    
-    <!-- Build secondary native code -->
+		
+		<!-- On Linux we want to copy the libvmi.so into the deploy/lib
+    	directory so that the natives can link against it. This is only used at
+    	build time - at runtime the libvmi.so provided by the VM implementation
+    	is loaded -->
+    	<copy todir="${hy.hdk}/lib" overwrite="yes" failonerror="false">
+    		<fileset dir="${hy.luni.src.main.native}/vmi">
+    			<include name="libvmi.so"/>
+    		</fileset>
+    	</copy>
+	</target>		
+	
+	<!-- Build secondary native luni components -->
     <target name="build.native.secondary" >
-        <exec failonerror="true" 
+        <!-- Build luni dll -->
+    	<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/luni/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
         </exec>
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/luni">
-                <patternset includes="*${shlib.suffix}*" />
-            </fileset>
-        </copy>
-        
-        <exec failonerror="true" 
+    	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.luni.src.main.native}/luni">
+            	<patternset includes="*${shlib.suffix}*" />
+	        </fileset>
+	    </copy>
+    	
+        <!-- Build vmls lib -->
+    	<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/vmls/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
         </exec>
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/vmls">
-                <patternset includes="*${shlib.suffix}*" />
-            </fileset>
-        </copy>
-        
+    	
+        <!-- Build launcher executables -->
         <exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/launcher/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
         </exec>
-        <!-- Copy across the built executables -->
+    	<!-- Copy across the built executables -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/launcher">
                 <patternset includes="java${exe.suffix}" />
                 <patternset includes="javaw${exe.suffix}" />
             </fileset>
         </copy>
+        <!-- Make sure the Linux launcher has execute permission -->
+        <chmod file="${hy.jdk}/jre/bin/java${exe.suffix}" perm="ugo+x" />
     </target>
     
-    <!-- Clean natives -->
+    <!-- Overlay OSS packages into their required locations -->
+    <target name="overlay-oss" >
+        <unzip src="${fdlibm.zip}" dest="${hy.luni.src.main.native}/fdlibm_dist" />
+        <chmod dir="${hy.luni.src.main.native}/fdlibm_dist" perm="ugo+r" />
+    </target>
+    
+    <!-- Clean overlaid OSS packages -->
+    <target name="clean-overlay-oss" >
+	    <delete dir="${hy.luni.src.main.native}/fdlibm_dist" quiet="true" />
+    </target>
+	
+	<!-- Clean natives -->
     <target name="clean.native" if="is.windows">
-        <exec failonerror="true" 
+    	<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/vmi/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
-            <arg line="clean" />
+		    <arg line="clean" />
         </exec>
-        <exec failonerror="true" 
+    	<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/luni/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
-            <arg line="clean" />
+		    <arg line="clean" />
         </exec>
-        <exec failonerror="true" 
+		<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/launcher/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
-            <arg line="clean" />
+		    <arg line="clean" />
         </exec>
-        <exec failonerror="true" 
+    	<exec failonerror="true" 
               executable="${make.command}" 
               dir="${hy.luni.src.main.native}/vmls/${hy.os}">
             <env key="HY_HDK" value="${hy.hdk}" />
-            <arg line="clean" />
+		    <arg line="clean" />
         </exec>
     </target>
 
@@ -184,37 +256,37 @@
             <fileset refid="classes" />
             <fileset dir="${hy.luni.bin.test}" />
         </delete>
-        <antcall target="clean.native.includes" />
+    	<antcall target="clean.native.includes" />
     </target>
-    
+	
     <target name="clean.native.includes">
-    <delete failonerror="false">
-        <fileset dir="${hy.hdk}/include">
-        <include name="vmi.h" />
-        <include name="hyvmls.h" />
-        <include name="hypool.h" />
-        <include name="hyport.h" />
-        <include name="hythread.h" />
-        <include name="hymutex.h" />
-        <include name="jclprots.h" />
-        <include name="hycomp.h" />
-        <include name="hysocket.h" />
-        <include name="hyporterror.h" />
-        <include name="gp.h" />
-        <include name="hysock.h" />
-        <include name="hyportpg.h" />    
-        <include name="iohelp.h" />
-        <include name="libglob.h" />
-        <include name="fdlibm.h" />
-        <include name="hymagic.h" />
-        </fileset>
-    </delete>
-    <delete failonerror="false">
-        <fileset dir="${hy.jdk}/include">
-        <include name="jni.h" />
-        <include name="jniport.h" />
-        </fileset>
-    </delete>
+	<delete failonerror="false">
+	    <fileset dir="${hy.hdk}/include">
+		<include name="vmi.h" />
+		<include name="hyvmls.h" />
+		<include name="hypool.h" />
+		<include name="hyport.h" />
+		<include name="hythread.h" />
+		<include name="hymutex.h" />
+		<include name="jclprots.h" />
+		<include name="hycomp.h" />
+		<include name="hysocket.h" />
+		<include name="hyporterror.h" />
+		<include name="gp.h" />
+ 		<include name="hysock.h" />
+		<include name="hyportpg.h" />	 
+    	<include name="iohelp.h" />
+	    <include name="libglob.h" />
+    	<include name="fdlibm.h" />
+	    <include name="hymagic.h" />
+	    </fileset>
+	</delete>
+	<delete failonerror="false">
+	    <fileset dir="${hy.jdk}/include">
+		<include name="jni.h" />
+		<include name="jniport.h" />
+	    </fileset>
+	</delete>
     </target>
 
     <target name="compile.java">
@@ -345,28 +417,28 @@
     <target name="run.tests.impl" unless="test.noimpl">
         <run-tests description="impl tests">
             <junit-elements>
-                <classpath>
+            <classpath>
                     <pathelement path="${hy.luni.bin.test}/impl"/>
                     <pathelement path="${hy.luni.src.test.resources}"/>
                     <pathelement path="../../build/tests"/>
-                    <pathelement path="${hy.hdk}/build/test/support.jar" />
-                </classpath>
+                <pathelement path="${hy.hdk}/build/test/support.jar" />
+            </classpath>
                 <!-- Required for running the serialization unit tests -->
                 <!-- Note: will be deleted after improving             -->
                 <!-- SerializationTest support class: all resource     -->
                 <!-- files will be placed on the classpath             -->
                 <jvmarg value="-DRESOURCE_DIR=${hy.luni.src.test}/resources"/>
-                
+
                 <!-- Required by various tests that set security manager etc -->
                 <jvmarg value="-Djava.security.policy=../../../../support/src/test/resources/config/testing.policy" />
-    
+
                 <!-- Required for running the java.net unit tests -->
                 <jvmarg value="-Dtest.ini.file=../../../../support/src/test/resources/config/localhosttest.ini" />
 
-                
+
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.luni.src.test}/impl/java">
-                        <include name="**/*Test.java"/>
+                    <include name="**/*Test.java" />
                     </fileset>
                     <fileset dir="${hy.luni.src.test}/java">
                         <include name="**/*Test.java"/>
@@ -389,9 +461,9 @@
                     <exclude name="tests/api/java/net/URLClassLoaderTest.java" />
                     <exclude name="tests/api/java/net/URLConnectionTest.java" />
                     <exclude name="tests/api/java/net/URLTest.java" />
-                    <exclude name="tests/api/java/net/SocketPermissionTest.java" />
-                    </fileset>
-                </batchtest>
+                	<exclude name="tests/api/java/net/SocketPermissionTest.java" />
+                </fileset>
+            </batchtest>
 
             </junit-elements>
         </run-tests>
@@ -454,7 +526,7 @@
                 <bootclasspath>
                     <fileset dir="${hy.jdk}/jre/lib/boot">
                         <include name="**/*.jar" />
-                    </fileset>
+            </fileset>
                 </bootclasspath>
                 <classpath location="../../build/tests" />
                 <classpath location="${hy.hdk}/build/test/support.jar" />

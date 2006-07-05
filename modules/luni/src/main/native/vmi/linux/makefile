@@ -18,8 +18,6 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-SHAREDSUB=../shared/
-
 CFLAGS += -fpic
 BUILDFILES = $(SHAREDSUB)vmi_copyright.o $(SHAREDSUB)vmi.o
 MDLLIBFILES = $(LIBPATH)libhypool.a

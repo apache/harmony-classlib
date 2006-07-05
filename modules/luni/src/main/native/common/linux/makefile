@@ -13,19 +13,13 @@
 # limitations under the License.
 
 #
-# Makefile for module 'launcher.java'
+# Makefile for module 'common'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+include $(HY_HDK)/build/make/makefile.include
 
-EXENAME=$(EXEPATH)java.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+BUILDFILES = $(SHAREDSUB)libglob.o $(SHAREDSUB)iohelp.o \
+	$(SHAREDSUB)utf8encode.o $(SHAREDSUB)utf8decode.o
+LIBNAME = $(LIBPATH)libhycommon.a
 
-BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
-        $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
-VIRTFILES = java.res
-MDLLIBFILES = $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib 
-EXEFLAGS=$(conlflags) -subsystem:console
-EXEDLLFILES=$(conlibsdll)
-
-!include <$(HY_HDK)\build\make\rules.mak>
+include $(HY_HDK)/build/make/rules.mk

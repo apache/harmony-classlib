@@ -18,7 +18,6 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-SHAREDSUB=..\shared\# comment to avoid \ being treated as continuation
 EXENAME=$(EXEPATH)javaw.exe
 BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \
         winmain.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj

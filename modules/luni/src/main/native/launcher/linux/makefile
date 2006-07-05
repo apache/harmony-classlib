@@ -18,7 +18,6 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-SHAREDSUB=../shared/
 BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
 	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
 	$(SHAREDSUB)libhlp.o  

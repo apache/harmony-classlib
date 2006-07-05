@@ -18,7 +18,7 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHARED)fdlibm
+CFLAGS += -fpic
 
 BUILDFILES = \
 	../shared/DirectBufferUtil.o ../shared/AddressUtil.o 

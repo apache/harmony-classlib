@@ -18,8 +18,6 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-SHAREDSUB=../shared/
-
 CFLAGS += -fpic
 
 BUILDFILES = \
