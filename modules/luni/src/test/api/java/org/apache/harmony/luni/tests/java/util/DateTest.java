@@ -13,24 +13,23 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.util;
+package org.apache.harmony.luni.tests.java.util;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.Date;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
-	}
+public class DateTest extends TestCase {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.util");
-		//$JUnit-BEGIN$
-
-		//$JUnit-END$
-		return suite;
+	/**
+	 * @tests java.util.Date#parse(String)
+	 */
+	public void test_parseLjava_lang_String() {
+		// Regression for HARMONY-102
+		assertEquals("Assert 0: parse failure",
+				-5400000, Date.parse("Sat, 1 Jan 1970 +0130 00:00:00"));
+		assertEquals("Assert 1: parse failure",
+				858600000, Date.parse("00:00:00 GMT +0130 Sat, 11 Jan 1970"));
 	}
 
 }

@@ -13,24 +13,23 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.util;
+package org.apache.harmony.luni.tests.java.util;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.Vector;
 
-public class AllTests {
+import junit.framework.TestCase;
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
+public class VectorTest extends TestCase {
+
+	/**
+	 * @tests java.util.Vector#toString()
+	 */
+	public void test_toString() {
+		// Ensure toString works with self-referencing elements.
+		Vector vec = new Vector(3);
+		vec.add(null);
+		vec.add(new Object());
+		vec.add(vec);
+		vec.toString();
 	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.apache.harmony.tests.java.util");
-		//$JUnit-BEGIN$
-
-		//$JUnit-END$
-		return suite;
-	}
-
 }
