@@ -22,10 +22,12 @@ import java.io.FileOutputStream;
 import java.io.FilePermission;
 import java.io.Flushable;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.Permission;
 import java.util.Arrays;
 import java.util.Date;
@@ -45,7 +47,7 @@ import java.util.Locale;
 import java.util.MissingFormatArgumentException;
 import java.util.MissingFormatWidthException;
 import java.util.UnknownFormatConversionException;
-import java.nio.charset.Charset;
+
 import junit.framework.TestCase;
 
 public class FormatterTest extends TestCase {
@@ -1514,6 +1516,280 @@ public class FormatterTest extends TestCase {
         // error on RI, throw UnknownFormatConversionException
         // RI do not support converter 'C'
         assertEquals("\u1111ed", f.toString());
+    }
+    
+    
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for legal
+     *        Byte/Short/Integer/Long conversion type 'd'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_ByteShortIntegerLongConversionD() {
+        final Object[][] triple = { 
+                { 0,                "%d",                  "0" }, 
+                { 0,                "%10d",       "         0" }, 
+                { 0,                "%-1d",                "0" }, 
+                { 0,                "%+d",                "+0" }, 
+                { 0,                "% d",                " 0" }, 
+                { 0,                "%,d",                 "0" }, 
+                { 0,                "%(d",                 "0" }, 
+                { 0,                "%08d",         "00000000" }, 
+                { 0,                "%-+,(11d",  "+0         " }, 
+                { 0,                "%0 ,(11d",  " 0000000000" }, 
+
+                { (byte) 0xff,      "%d",                 "-1" }, 
+                { (byte) 0xff,      "%10d",       "        -1" }, 
+                { (byte) 0xff,      "%-1d",               "-1" }, 
+                { (byte) 0xff,      "%+d",                "-1" }, 
+                { (byte) 0xff,      "% d",                "-1" }, 
+                { (byte) 0xff,      "%,d",                "-1" }, 
+                { (byte) 0xff,      "%(d",               "(1)" }, 
+                { (byte) 0xff,      "%08d",         "-0000001" }, 
+                { (byte) 0xff,      "%-+,(11d",  "(1)        " }, 
+                { (byte) 0xff,      "%0 ,(11d",  "(000000001)" }, 
+                
+                { (short) 0xf123,   "%d",              "-3805" }, 
+                { (short) 0xf123,   "%10d",       "     -3805" }, 
+                { (short) 0xf123,   "%-1d",            "-3805" }, 
+                { (short) 0xf123,   "%+d",             "-3805" }, 
+                { (short) 0xf123,   "% d",             "-3805" }, 
+                { (short) 0xf123,   "%,d",            "-3.805" }, 
+                { (short) 0xf123,   "%(d",            "(3805)" }, 
+                { (short) 0xf123,   "%08d",         "-0003805" }, 
+                { (short) 0xf123,   "%-+,(11d",  "(3.805)    " }, 
+                { (short) 0xf123,   "%0 ,(11d",  "(00003.805)" }, 
+                
+                {  0x123456,        "%d",            "1193046" }, 
+                {  0x123456,        "%10d",       "   1193046" }, 
+                {  0x123456,        "%-1d",          "1193046" }, 
+                {  0x123456,        "%+d",          "+1193046" }, 
+                {  0x123456,        "% d",          " 1193046" }, 
+                {  0x123456,        "%,d",         "1.193.046" }, 
+                {  0x123456,        "%(d",           "1193046" }, 
+                {  0x123456,        "%08d",         "01193046" }, 
+                {  0x123456,        "%-+,(11d",  "+1.193.046 " }, 
+                {  0x123456,        "%0 ,(11d",  " 01.193.046" }, 
+                
+                { -3,               "%d",                 "-3" }, 
+                { -3,               "%10d",       "        -3" }, 
+                { -3,               "%-1d",               "-3" }, 
+                { -3,               "%+d",                "-3" }, 
+                { -3,               "% d",                "-3" }, 
+                { -3,               "%,d",                "-3" }, 
+                { -3,               "%(d",               "(3)" }, 
+                { -3,               "%08d",         "-0000003" }, 
+                { -3,               "%-+,(11d",  "(3)        " }, 
+                { -3,               "%0 ,(11d",  "(000000003)" },
+                
+                { 0x7654321L,       "%d",          "124076833" }, 
+                { 0x7654321L,       "%10d",       " 124076833" }, 
+                { 0x7654321L,       "%-1d",        "124076833" }, 
+                { 0x7654321L,       "%+d",        "+124076833" }, 
+                { 0x7654321L,       "% d",        " 124076833" }, 
+                { 0x7654321L,       "%,d",       "124.076.833" }, 
+                { 0x7654321L,       "%(d",         "124076833" }, 
+                { 0x7654321L,       "%08d",        "124076833" }, 
+                { 0x7654321L,       "%-+,(11d", "+124.076.833" }, 
+                { 0x7654321L,       "%0 ,(11d", " 124.076.833" }, 
+                
+                { -1L,              "%d",                 "-1" }, 
+                { -1L,              "%10d",       "        -1" }, 
+                { -1L,              "%-1d",               "-1" }, 
+                { -1L,              "%+d",                "-1" }, 
+                { -1L,              "% d",                "-1" }, 
+                { -1L,              "%,d",                "-1" }, 
+                { -1L,              "%(d",               "(1)" }, 
+                { -1L,              "%08d",         "-0000001" }, 
+                { -1L,              "%-+,(11d",  "(1)        " }, 
+                { -1L,              "%0 ,(11d",  "(000000001)" }, 
+                };
+
+        final int input = 0;
+        final int pattern = 1;
+        final int output = 2;
+        Formatter f;
+        for (int i = 0; i < triple.length; i++) {
+            f = new Formatter(Locale.GERMAN);
+            f.format((String) triple[i][pattern],
+                    triple[i][input]);
+            assertEquals("triple[" + i + "]:" + triple[i][input] + ",pattern["
+                    + i + "]:" + triple[i][pattern], triple[i][output], f
+                    .toString());
+        }
+    }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for legal
+     *        Byte/Short/Integer/Long conversion type 'o'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_ByteShortIntegerLongConversionO() {
+        final Object[][] triple = { 
+                { 0,                "%o",                 "0" }, 
+                { 0,                "%-6o",          "0     " }, 
+                { 0,                "%08o",        "00000000" }, 
+                { 0,                "%#o",               "00" }, 
+                { 0,                "%0#11o",   "00000000000" }, 
+                { 0,                "%-#9o",      "00       " }, 
+
+                { (byte) 0xff,      "%o",               "377" }, 
+                { (byte) 0xff,      "%-6o",          "377   " }, 
+                { (byte) 0xff,      "%08o",        "00000377" }, 
+                { (byte) 0xff,      "%#o",             "0377" }, 
+                { (byte) 0xff,      "%0#11o",   "00000000377" }, 
+                { (byte) 0xff,      "%-#9o",      "0377     " }, 
+                
+                { (short) 0xf123,   "%o",            "170443" }, 
+                { (short) 0xf123,   "%-6o",          "170443" }, 
+                { (short) 0xf123,   "%08o",        "00170443" }, 
+                { (short) 0xf123,   "%#o",          "0170443" }, 
+                { (short) 0xf123,   "%0#11o",   "00000170443" }, 
+                { (short) 0xf123,   "%-#9o",      "0170443  " }, 
+                
+                {  0x123456,        "%o",           "4432126" }, 
+                {  0x123456,        "%-6o",         "4432126" }, 
+                {  0x123456,        "%08o",        "04432126" }, 
+                {  0x123456,        "%#o",         "04432126" }, 
+                {  0x123456,        "%0#11o",   "00004432126" }, 
+                {  0x123456,        "%-#9o",      "04432126 " }, 
+                
+                { -3,               "%o",       "37777777775" }, 
+                { -3,               "%-6o",     "37777777775" }, 
+                { -3,               "%08o",     "37777777775" }, 
+                { -3,               "%#o",     "037777777775" }, 
+                { -3,               "%0#11o",  "037777777775" }, 
+                { -3,               "%-#9o",   "037777777775" }, 
+                
+                { 0x7654321L,       "%o",          "731241441" }, 
+                { 0x7654321L,       "%-6o",        "731241441" }, 
+                { 0x7654321L,       "%08o",        "731241441" }, 
+                { 0x7654321L,       "%#o",        "0731241441" }, 
+                { 0x7654321L,       "%0#11o",    "00731241441" }, 
+                { 0x7654321L,       "%-#9o",      "0731241441" }, 
+                
+                { -1L,              "%o",       "1777777777777777777777" }, 
+                { -1L,              "%-6o",     "1777777777777777777777" }, 
+                { -1L,              "%08o",     "1777777777777777777777" }, 
+                { -1L,              "%#o",     "01777777777777777777777" }, 
+                { -1L,              "%0#11o",  "01777777777777777777777" }, 
+                { -1L,              "%-#9o",   "01777777777777777777777" }, 
+                };
+
+        final int input = 0;
+        final int pattern = 1;
+        final int output = 2;
+        Formatter f;
+        for (int i = 0; i < triple.length; i++) {
+            f = new Formatter(Locale.ITALY);
+            f.format((String) triple[i][pattern],
+                    triple[i][input]);
+            assertEquals("triple[" + i + "]:" + triple[i][input] + ",pattern["
+                    + i + "]:" + triple[i][pattern], triple[i][output], f
+                    .toString());
+        }
+    }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for legal
+     *        Byte/Short/Integer/Long conversion type 'x' and 'X'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_ByteShortIntegerLongConversionX() {
+        final Object[][] triple = { 
+                { 0,                "%x",                 "0" }, 
+                { 0,                "%-8x",        "0       " }, 
+                { 0,                "%06x",          "000000" }, 
+                { 0,                "%#x",              "0x0" }, 
+                { 0,                "%0#12x",  "0x0000000000" }, 
+                { 0,                "%-#9x",      "0x0      " }, 
+
+                { (byte) 0xff,      "%x",                "ff" }, 
+                { (byte) 0xff,      "%-8x",        "ff      " }, 
+                { (byte) 0xff,      "%06x",          "0000ff" }, 
+                { (byte) 0xff,      "%#x",             "0xff" }, 
+                { (byte) 0xff,      "%0#12x",  "0x00000000ff" }, 
+                { (byte) 0xff,      "%-#9x",      "0xff     " }, 
+                
+                { (short) 0xf123,   "%x",              "f123" }, 
+                { (short) 0xf123,   "%-8x",        "f123    " }, 
+                { (short) 0xf123,   "%06x",          "00f123" }, 
+                { (short) 0xf123,   "%#x",           "0xf123" }, 
+                { (short) 0xf123,   "%0#12x",  "0x000000f123" }, 
+                { (short) 0xf123,   "%-#9x",      "0xf123   " }, 
+                
+                {  0x123456,        "%x",            "123456" }, 
+                {  0x123456,        "%-8x",        "123456  " }, 
+                {  0x123456,        "%06x",          "123456" }, 
+                {  0x123456,        "%#x",         "0x123456" }, 
+                {  0x123456,        "%0#12x",  "0x0000123456" }, 
+                {  0x123456,        "%-#9x",      "0x123456 " }, 
+                
+                { -3,               "%x",          "fffffffd" }, 
+                { -3,               "%-8x",        "fffffffd" }, 
+                { -3,               "%06x",        "fffffffd" }, 
+                { -3,               "%#x",       "0xfffffffd" }, 
+                { -3,               "%0#12x",  "0x00fffffffd" }, 
+                { -3,               "%-#9x",     "0xfffffffd" }, 
+                
+                { 0x7654321L,       "%x",          "7654321" }, 
+                { 0x7654321L,       "%-8x",       "7654321 " }, 
+                { 0x7654321L,       "%06x",        "7654321" }, 
+                { 0x7654321L,       "%#x",       "0x7654321" }, 
+                { 0x7654321L,       "%0#12x", "0x0007654321" }, 
+                { 0x7654321L,       "%-#9x",     "0x7654321" }, 
+                
+                { -1L,              "%x",       "ffffffffffffffff" }, 
+                { -1L,              "%-8x",     "ffffffffffffffff" }, 
+                { -1L,              "%06x",     "ffffffffffffffff" }, 
+                { -1L,              "%#x",    "0xffffffffffffffff" }, 
+                { -1L,              "%0#12x", "0xffffffffffffffff" }, 
+                { -1L,              "%-#9x",  "0xffffffffffffffff" }, 
+                };
+
+        final int input = 0;
+        final int pattern = 1;
+        final int output = 2;
+        Formatter f;
+        for (int i = 0; i < triple.length; i++) {
+            f = new Formatter(Locale.FRANCE);
+            f.format((String) triple[i][pattern],
+                    triple[i][input]);
+            assertEquals("triple[" + i + "]:" + triple[i][input] + ",pattern["
+                    + i + "]:" + triple[i][pattern], triple[i][output], f
+                    .toString());
+            
+            f = new Formatter(Locale.FRANCE);
+            f.format((String) triple[i][pattern],
+                    triple[i][input]);
+            assertEquals("triple[" + i + "]:" + triple[i][input] + ",pattern["
+                    + i + "]:" + triple[i][pattern], triple[i][output], f
+                    .toString());
+        }
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for null argment for
+     *        Byte/Short/Integer/Long/BigInteger conversion
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_ByteShortIntegerLongNullConversion() {
+
+        Formatter f = new Formatter(Locale.FRANCE);
+        f.format("%d%<o%<x%<5X", (Integer) null);
+        assertEquals("nullnullnull NULL", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%d%<#03o %<0#4x%<6X", (Long) null);
+        assertEquals("nullnull null  NULL", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%(+,07d%<o %<x%<6X", (Byte) null);
+        assertEquals("   nullnull null  NULL", f.toString());
+
+        f = new Formatter(Locale.ITALY);
+        f.format("%(+,07d%<o %<x%<0#6X", (Short) null);
+        assertEquals("   nullnull null  NULL", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%(+,-7d%<( o%<+(x %<( 06X", (BigInteger) null);
+        assertEquals("null   nullnull   NULL", f.toString());
     }
 
     /**

@@ -29,6 +29,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
@@ -631,6 +633,13 @@ public final class Formatter implements Closeable, Flushable {
 
         private char conversionType = (char) UNSET;
 
+        boolean isPrecisionSet() {
+            return precision != UNSET;
+        }
+        
+        boolean isWidthSet() {
+            return width != UNSET;
+        }
         boolean isFlagSet(int flag) {
             return 0 != (flags & flag);
         }
@@ -673,6 +682,10 @@ public final class Formatter implements Closeable, Flushable {
 
         int getFlags() {
             return flags;
+        }
+
+        void setFlags(int flags) {
+            this.flags = flags;
         }
 
         /*
@@ -767,9 +780,27 @@ public final class Formatter implements Closeable, Flushable {
 
         private static String lineSeparator;
 
+        private NumberFormat numberFormat;
+
+        private DecimalFormatSymbols decimalFormatSymbols;
+
         Transformer(Formatter formatter, Locale locale) {
             this.formatter = formatter;
             this.locale = (null == locale ? Locale.US : locale);
+        }
+
+        private NumberFormat getNumberFormat() {
+            if (null == numberFormat) {
+                numberFormat = NumberFormat.getInstance(locale);
+            }
+            return numberFormat;
+        }
+
+        private DecimalFormatSymbols getDecimalFormatSymbols() {
+            if (null == decimalFormatSymbols) {
+                decimalFormatSymbols = new DecimalFormatSymbols(locale);
+            }
+            return decimalFormatSymbols;
         }
 
         /*
@@ -809,7 +840,11 @@ public final class Formatter implements Closeable, Flushable {
             case 'o':
             case 'x':
             case 'X': {
-                result = transformFromInteger();
+                if (null == arg) {
+                    result = transformFromNull();
+                } else {
+                    result = transformFromInteger();
+                }
                 break;
             }
             case 'e':
@@ -858,7 +893,7 @@ public final class Formatter implements Closeable, Flushable {
             int flags = formatToken.getFlags();
 
             if (formatToken.isFlagSet(FormatToken.FLAG_MINUS)
-                    && FormatToken.UNSET == formatToken.getWidth()) {
+                    && !formatToken.isWidthSet()) {
                 throw new MissingFormatWidthException("-"
                         + formatToken.getConversionType());
             }
@@ -889,7 +924,7 @@ public final class Formatter implements Closeable, Flushable {
             int flags = formatToken.getFlags();
 
             if (formatToken.isFlagSet(FormatToken.FLAG_MINUS)
-                    && FormatToken.UNSET == formatToken.getWidth()) {
+                    && !formatToken.isWidthSet()) {
                 throw new MissingFormatWidthException("-"
                         + formatToken.getConversionType());
             }
@@ -917,7 +952,7 @@ public final class Formatter implements Closeable, Flushable {
             int flags = formatToken.getFlags();
 
             if (formatToken.isFlagSet(FormatToken.FLAG_MINUS)
-                    && FormatToken.UNSET == formatToken.getWidth()) {
+                    && !formatToken.isWidthSet()) {
                 throw new MissingFormatWidthException("-"
                         + formatToken.getConversionType());
             }
@@ -969,7 +1004,7 @@ public final class Formatter implements Closeable, Flushable {
             int flags = formatToken.getFlags();
 
             if (formatToken.isFlagSet(FormatToken.FLAG_MINUS)
-                    && FormatToken.UNSET == formatToken.getWidth()) {
+                    && !formatToken.isWidthSet()) {
                 throw new MissingFormatWidthException("-"
                         + formatToken.getConversionType());
             }
@@ -981,7 +1016,7 @@ public final class Formatter implements Closeable, Flushable {
                         .getConversionType());
             }
 
-            if (FormatToken.UNSET != formatToken.getPrecision()) {
+            if (formatToken.isPrecisionSet()) {
                 throw new IllegalFormatPrecisionException(formatToken
                         .getPrecision());
             }
@@ -1030,7 +1065,7 @@ public final class Formatter implements Closeable, Flushable {
             int flags = formatToken.getFlags();
 
             if (formatToken.isFlagSet(FormatToken.FLAG_MINUS)
-                    && FormatToken.UNSET == formatToken.getWidth()) {
+                    && !formatToken.isWidthSet()) {
                 throw new MissingFormatWidthException("-"
                         + formatToken.getConversionType());
             }
@@ -1039,7 +1074,7 @@ public final class Formatter implements Closeable, Flushable {
                 throw new FormatFlagsConversionMismatchException(formatToken
                         .getStrFlags(), formatToken.getConversionType());
             }
-            if (FormatToken.UNSET != formatToken.getPrecision()) {
+            if (formatToken.isPrecisionSet()) {
                 throw new IllegalFormatPrecisionException(formatToken
                         .getPrecision());
             }
@@ -1051,7 +1086,7 @@ public final class Formatter implements Closeable, Flushable {
          * or the precision is illegal.
          */
         private String transfromFromLineSeparator() {
-            if (FormatToken.UNSET != formatToken.getPrecision()) {
+            if (formatToken.isPrecisionSet()) {
                 throw new IllegalFormatPrecisionException(formatToken
                         .getPrecision());
             }
@@ -1082,9 +1117,21 @@ public final class Formatter implements Closeable, Flushable {
          * Pads characters to the formatted string.
          */
         private String padding(StringBuilder source, int startIndex) {
+            int start = startIndex;
             boolean paddingRight = formatToken
                     .isFlagSet(FormatToken.FLAG_MINUS);
             char paddingChar = '\u0020';// space as padding char.
+            if (formatToken.isFlagSet(FormatToken.FLAG_ZERO)) {
+                if ('d' == formatToken.getConversionType()) {
+                    paddingChar = getDecimalFormatSymbols().getZeroDigit();
+                } else {
+                    paddingChar = '0';
+                }
+            } else {
+                // if padding char is space, always padding from the head
+                // location.
+                start = 0;
+            }
             int width = formatToken.getWidth();
             int precision = formatToken.getPrecision();
 
@@ -1107,7 +1154,7 @@ public final class Formatter implements Closeable, Flushable {
             if (paddingRight) {
                 source.append(insertString);
             } else {
-                source.insert(startIndex, insertString);
+                source.insert(start, insertString);
             }
             return source.toString();
         }
@@ -1116,7 +1163,145 @@ public final class Formatter implements Closeable, Flushable {
          * Transforms the Integer to a formatted string.
          */
         private String transformFromInteger() {
-            throw new NotYetImplementedException();
+            int startIndex = 0;
+            boolean isNegative = false;
+            StringBuilder result = new StringBuilder();
+            long value;
+
+            if (formatToken.isFlagSet(FormatToken.FLAG_MINUS)
+                    || formatToken.isFlagSet(FormatToken.FLAG_ZERO)) {
+                if (!formatToken.isWidthSet()) {
+                    throw new MissingFormatWidthException(formatToken
+                            .getStrFlags());
+                }
+            }
+            // Combination of '+' & ' ' is illegal.
+            if (formatToken.isFlagSet(FormatToken.FLAG_ADD)
+                    && formatToken.isFlagSet(FormatToken.FLAG_SPACE)) {
+                throw new IllegalFormatFlagsException(formatToken.getStrFlags());
+            }
+            if (formatToken.isPrecisionSet()) {
+                throw new IllegalFormatPrecisionException(formatToken
+                        .getPrecision());
+            }
+            if ('d' != formatToken.getConversionType()) {
+                if (formatToken.isFlagSet(FormatToken.FLAG_ADD)
+                        | formatToken.isFlagSet(FormatToken.FLAG_SPACE)
+                        | formatToken.isFlagSet(FormatToken.FLAG_COMMA)
+                        | formatToken.isFlagSet(FormatToken.FLAG_PARENTHESIS)) {
+                    throw new FormatFlagsConversionMismatchException(
+                            formatToken.getStrFlags(), formatToken
+                                    .getConversionType());
+                }
+            }
+
+            if (formatToken.isFlagSet(FormatToken.FLAG_SHARP)) {
+                if ('d' == formatToken.getConversionType()) {
+                    throw new FormatFlagsConversionMismatchException(
+                            formatToken.getStrFlags(), formatToken
+                                    .getConversionType());
+                } else if ('o' == formatToken.getConversionType()) {
+                    result.append("0");
+                    startIndex += "0".length();
+                } else {
+                    result.append("0x");
+                    startIndex += "0x".length();
+                }
+            }
+
+            if (formatToken.isFlagSet(FormatToken.FLAG_MINUS)
+                    && formatToken.isFlagSet(FormatToken.FLAG_ZERO)) {
+                throw new IllegalFormatFlagsException(formatToken.getStrFlags());
+            }
+
+            if (arg instanceof Long) {
+                value = ((Long) arg).longValue();
+            } else if (arg instanceof Integer) {
+                value = ((Integer) arg).longValue();
+            } else if (arg instanceof Short) {
+                value = ((Short) arg).longValue();
+            } else if (arg instanceof Byte) {
+                value = ((Byte) arg).longValue();
+            } else {
+                throw new IllegalFormatConversionException(formatToken
+                        .getConversionType(), arg.getClass());
+            }
+
+            if (value < 0) {
+                isNegative = true;
+            }
+
+            if ('d' == formatToken.getConversionType()) {
+                NumberFormat numberFormat = getNumberFormat();
+                if (formatToken.isFlagSet(FormatToken.FLAG_COMMA)) {
+                    numberFormat.setGroupingUsed(true);
+                } else {
+                    numberFormat.setGroupingUsed(false);
+                }
+                result.append(numberFormat.format(arg));
+            } else {
+                long BYTE_MASK  = 0x00000000000000FFL;
+                long SHORT_MASK = 0x000000000000FFFFL;
+                long INT_MASK   = 0x00000000FFFFFFFFL;
+                if (isNegative) {
+                    if (arg instanceof Byte) {
+                        value &= BYTE_MASK;
+                    } else if (arg instanceof Short) {
+                        value &= SHORT_MASK;
+                    } else if (arg instanceof Integer) {
+                        value &= INT_MASK;
+                    }
+                }
+                if ('o' == formatToken.getConversionType()) {
+                    result.append(Long.toOctalString(value));
+                } else {
+                    result.append(Long.toHexString(value));
+                }
+                isNegative = false;
+            }
+
+            if (!isNegative) {
+                if (formatToken.isFlagSet(FormatToken.FLAG_ADD)) {
+                    result.insert(0, '+');
+                    startIndex += "+".length();
+                }
+                if (formatToken.isFlagSet(FormatToken.FLAG_SPACE)) {
+                    result.insert(0, ' ');
+                    startIndex += " ".length();
+                }
+            }
+
+            /* pad paddingChar to the output */
+            if (isNegative
+                    && formatToken.isFlagSet(FormatToken.FLAG_PARENTHESIS)) {
+                /*
+                 * add () to the output,if the value is negative and
+                 * formatToken.FLAG_PARENTHESIS is set.
+                 */
+                StringBuilder buffer = new StringBuilder();
+                result.deleteCharAt(0); // delete the '-'
+                result.insert(0, '(');
+                if (formatToken.isFlagSet(FormatToken.FLAG_ZERO)) {
+                    formatToken.setWidth(formatToken.getWidth() - 1);
+                    buffer.append(padding(result, 1));
+                    buffer.append(')');
+                } else {
+                    result.append(')');
+                    buffer.append(padding(result, 0));
+                }
+                return buffer.toString();
+
+            }
+            if (isNegative && formatToken.isFlagSet(FormatToken.FLAG_ZERO)) {
+                startIndex++;
+            }
+            return padding(result, startIndex);
+        }
+
+        private String transformFromNull() {
+            formatToken.setFlags(formatToken.getFlags()
+                    & (~FormatToken.FLAG_ZERO));
+            return padding(new StringBuilder("null"), 0);
         }
 
         /*
