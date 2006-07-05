@@ -41,6 +41,7 @@ public class AllTests {
         suite.addTestSuite(AsynchronousCloseExceptionTest.class);
         suite.addTestSuite(CancelledKeyExceptionTest.class);
         suite.addTestSuite(ClosedByInterruptExceptionTest.class);
+        suite.addTestSuite(ClosedChannelExceptionTest.class);
         //$JUnit-END$
         return suite;
     }
