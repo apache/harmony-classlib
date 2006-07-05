@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,53 +15,103 @@
 
 package java.nio.channels;
 
-
 import java.io.IOException;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.SelectorProvider;
 
 /**
- * TODO Type description
+ * A pipe contains two channels. One is the writable sink channel and the other is
+ * readable source channel. When bytes are written into the writable channel they
+ * can be read from readable channel. The order of these bytes remains unchanged. 
  * 
  */
 public abstract class Pipe {
 
-	public static abstract class SinkChannel extends AbstractSelectableChannel
-			implements WritableByteChannel, GatheringByteChannel {
-		protected SinkChannel(SelectorProvider provider) {
-			super(provider);
-		}
+    /**
+     * Writable sink channel for writing into.
+     */
+    public static abstract class SinkChannel extends AbstractSelectableChannel
+            implements WritableByteChannel, GatheringByteChannel {
+        
+        /**
+         * The Constructor.
+         * 
+         * @param provider
+         *            the provider of the channel
+         */
+        protected SinkChannel(SelectorProvider provider) {
+            super(provider);
+        }
 
-		public final int validOps() {
-			return SelectionKey.OP_WRITE;
-		}
+        /**
+         * Indicates this channel supports only writing.
+         * 
+         * @return a static value of OP_WRITE
+         */
+        public final int validOps() {
+            return SelectionKey.OP_WRITE;
+        }
+    }
 
-	}
+    /**
+     * Readable source channel for reading from.
+     */
+    public static abstract class SourceChannel extends
+            AbstractSelectableChannel implements ReadableByteChannel,
+            ScatteringByteChannel {
+        
+        /**
+         * The Constructor.
+         * 
+         * @param provider
+         *            the provider of the channel
+         */
+        protected SourceChannel(SelectorProvider provider) {
+            super(provider);
+        }
 
-	public static abstract class SourceChannel extends
-			AbstractSelectableChannel implements ReadableByteChannel,
-			ScatteringByteChannel {
+        /**
+         * Indicates this channel supports only reading.
+         * 
+         * @return a static value of OP_READ
+         */
+        public final int validOps() {
+            return SelectionKey.OP_READ;
+        }
 
-		protected SourceChannel(SelectorProvider provider) {
-			super(provider);
-		}
+    }
 
-		public final int validOps() {
-			return SelectionKey.OP_READ;
-		}
+    /**
+     * Initializes a pipe.
+     * 
+     * @return a new instance of pipe
+     * 
+     * @throws IOException
+     *             if I/O error occurs
+     */
+    public static Pipe open() throws IOException {
+        return SelectorProvider.provider().openPipe();
+    }
 
-	}
+    /**
+     * The protected constructor.
+     */
+    protected Pipe() {
+        super();
+    }
 
-	public static Pipe open() throws IOException {
-		return SelectorProvider.provider().openPipe();
-	}
+    /**
+     * Returns the sink channel of the pipe.
+     * 
+     * @return a writable sink channel of the pipe
+     */
+    public abstract SinkChannel sink();
 
-	protected Pipe() {
-		super();
-	}
-
-	public abstract SinkChannel sink();
-
-	public abstract SourceChannel source();
+    /**
+     * Returns the source channel of the pipe.
+     * 
+     * @return a readable source channel of the pipe
+     */
+    public abstract SourceChannel source();
 
 }
