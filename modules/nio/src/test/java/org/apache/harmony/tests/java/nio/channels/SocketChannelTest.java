@@ -1596,29 +1596,28 @@ public class SocketChannelTest extends TestCase {
         this.channel1.connect(localAddr1);
         assertFalse(this.channel1.isConnected());
         ensureServerOpen();
-        // cannot connect?
+
+        assertFalse(this.channel1.finishConnect());
+        assertFalse(this.channel1.isBlocking());
+        assertFalse(this.channel1.isConnected());
+        assertTrue(this.channel1.isConnectionPending());
+        assertTrue(this.channel1.isOpen());
         try {
-            assertFalse(this.channel1.finishConnect());
-            assertFalse(this.channel1.isBlocking());
-            assertFalse(this.channel1.isConnected());
-            assertTrue(this.channel1.isConnectionPending());
-            assertTrue(this.channel1.isOpen());
-            try {
-                this.channel1.connect(localAddr1);
-                fail("Should throw ConnectionPendingException");
-            } catch (ConnectionPendingException e) {
-                // correct
-            }
-            this.channel1.configureBlocking(true);
-            try {
-                this.channel1.connect(localAddr1);
-                fail("Should throw ConnectionPendingException");
-            } catch (ConnectionPendingException e) {
-                // correct
-            }
-            tryFinish();
-        } catch (ConnectException e) {
-            // FIXME: assertEquals(e.getMessage(), "Connection refused");
+            // should throw ConnectionPendingException because channel.connect
+            // has already been invoked in the previous code.
+            this.channel1.connect(localAddr1);
+            fail("Should throw ConnectionPendingException");
+        } catch (ConnectionPendingException e) {
+            // correct
+        }
+        this.channel1.configureBlocking(true);
+        try {
+            // should throw ConnectionPendingException because channel.connect
+            // has already been invoked in the previous code.
+            this.channel1.connect(localAddr1);
+            fail("Should throw ConnectionPendingException");
+        } catch (ConnectionPendingException e) {
+            // correct
         }
     }
 
@@ -1655,29 +1654,28 @@ public class SocketChannelTest extends TestCase {
         this.channel1.connect(localAddr1);
         assertFalse(this.channel1.isConnected());
         ensureServerOpen();
-        // cannot connect?
+
+        assertFalse(this.channel1.finishConnect());
+        assertFalse(this.channel1.isBlocking());
+        assertFalse(this.channel1.isConnected());
+        assertTrue(this.channel1.isConnectionPending());
+        assertTrue(this.channel1.isOpen());
         try {
-            assertFalse(this.channel1.finishConnect());
-            assertFalse(this.channel1.isBlocking());
-            assertFalse(this.channel1.isConnected());
-            assertTrue(this.channel1.isConnectionPending());
-            assertTrue(this.channel1.isOpen());
-            try {
-                this.channel1.connect(localAddr1);
-                fail("Should throw ConnectionPendingException");
-            } catch (ConnectionPendingException e) {
-                // correct
-            }
-            this.channel1.configureBlocking(true);
-            try {
-                this.channel1.connect(localAddr1);
-                fail("Should throw ConnectionPendingException");
-            } catch (ConnectionPendingException e) {
-                // correct
-            }
-            tryFinish();
-        } catch (ConnectException e) {
-            // FIXME: assertEquals(e.getMessage(), "Connection refused");
+            // should throw ConnectionPendingException because channel.connect
+            // has already been invoked in the previous code.
+            this.channel1.connect(localAddr1);
+            fail("Should throw ConnectionPendingException");
+        } catch (ConnectionPendingException e) {
+            // correct
+        }
+        this.channel1.configureBlocking(true);
+        try {
+            // should throw ConnectionPendingException because channel.connect
+            // has already been invoked in the previous code.
+            this.channel1.connect(localAddr1);
+            fail("Should throw ConnectionPendingException");
+        } catch (ConnectionPendingException e) {
+            // correct
         }
     }
 
@@ -1718,35 +1716,6 @@ public class SocketChannelTest extends TestCase {
     // -------------------------------------------------------------------
     // End of original tests. Test method for CFII with real data.
     // -------------------------------------------------------------------
-
-    public void testConnect_Lock() throws Exception {
-        final Socket sock = new Socket();
-        new Thread() {
-            public void run() {
-                try {
-                    sock.connect(localAddr2);
-                } catch (Exception e) {
-                    System.out.println("in thread1" + e.getMessage());
-                }
-                if (!sock.isClosed())
-                    System.out.println("T1 not closed");
-            }
-        }.start();
-        new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(200);
-                    sock.connect(localAddr1);
-                } catch (Exception e) {
-                    System.out.println("in thread2" + e.getMessage());
-                }
-                if (!sock.isClosed())
-                    System.out.println("T2 not closed");
-            }
-        }.start();
-        Thread.sleep(2000);
-        sock.close();
-    }
 
     /**
      * @tests java.nio.channels.SocketChannel#read(ByteBuffer)
