@@ -25,6 +25,9 @@ import java.lang.reflect.Array;
  */
 public class Arrays {
 
+     /* Specifies when to switch to insertion sort */
+     private static final int SIMPLE_LENGTH = 7;
+
     private static class ArrayList<E> extends AbstractList<E> implements
             List<E>, Serializable, RandomAccess {
 
@@ -2146,39 +2149,478 @@ public class Arrays {
         sort(start, end, array);
     }
 
-    @SuppressWarnings("unchecked")
-    private static void sort(int start, int end, Object[] array) {
-        int middle = (start + end) / 2;
-        if (start + 1 < middle) {
-            sort(start, middle, array);
-        }
-        if (middle + 1 < end) {
-            sort(middle, end, array);
-        }
-        if (start + 1 >= end) {
-            return; // this case can only happen when this method is called by
-        }
-        // the user
-        if (((Comparable<Object>) array[middle - 1]).compareTo(array[middle]) <= 0) {
+    private static void sort(int fromIndex, int toIndex, Object[] array) {
+        int length = toIndex - fromIndex;
+        if (length <= 0) {
             return;
         }
-        if (start + 2 == end) {
-            Object temp = array[start];
-            array[start] = array[middle];
-            array[middle] = temp;
-            return;
+        if (array instanceof String[]) {
+            stableStringSort((String[]) array, fromIndex, toIndex);
+        } else {
+            Object[] out = new Object[toIndex];
+            System.arraycopy(array, fromIndex, out, fromIndex, length);
+            mergeSort(out, array, fromIndex, toIndex);
         }
-        int i1 = start, i2 = middle, i3 = 0;
-        Object[] merge = new Object[end - start];
-        while (i1 < middle && i2 < end) {
-            merge[i3++] = ((Comparable<Object>) array[i1]).compareTo(array[i2]) <= 0 ? array[i1++]
-                    : array[i2++];
-        }
-        if (i1 < middle) {
-            System.arraycopy(array, i1, merge, i3, middle - i1);
-        }
-        System.arraycopy(merge, 0, array, start, i2 - start);
     }
+
+    /**
+      * Swaps the elements at the specified positions in the specified array.
+      *
+      * @param a -
+      *            the index of one element to be swapped.
+      * @param b -
+      *            the index of the other element to be swapped.
+      * @param arr -
+      *            the array in which to swap elements.
+      */
+     private static void swap(int a, int b, Object[] arr) {
+         Object tmp = arr[a];
+         arr[a] = arr[b];
+         arr[b] = tmp;
+     }
+
+     /**
+      * Sorts the specified range of the specified array of objects. The range to
+      * be sorted extends from index fromIndex, inclusive, to index toIndex,
+      * exclusive. (If fromIndex==toIndex, the range to be sorted is empty.) This
+      * sort is guaranteed to be stable: equal elements will not be reordered as
+      * a result of the sort.
+      *
+      * The sorting algorithm is a mergesort with exponential search (in which
+      * the merge is performed by exponential search). This algorithm offers
+      * guaranteed n*log(n) performance and in average case faster then any
+      * mergesort in which the merge is performed by linear search.
+      *
+      * @param in -
+      *            the array for sorting.
+      * @param out -
+      *            the result, sorted array.
+      * @param fromIndex -
+      *            the index of the first element (inclusive) to be sorted.
+      * @param toIndex -
+      *            the index of the last element (exclusive) to be sorted.
+      */
+     private static void mergeSort(Object[] in, Object[] out, int fromIndex,
+             int toIndex) {
+         int len = toIndex - fromIndex;
+         //use insertion sort for small arrays
+         if (len <= SIMPLE_LENGTH) {
+             for (int i = fromIndex + 1; i < toIndex; i++) {
+                 Comparable current = (Comparable) out[i];
+                 Object prev = out[i - 1];
+                 if (current.compareTo(prev) < 0) {
+                     int j = i;
+                     do {
+                        out[j--] = prev;
+                     } while (j > fromIndex
+                             && current.compareTo(prev = out[j - 1]) < 0);
+                     out[j] = current;
+                 }
+             }
+             return;
+         }
+         int med = (toIndex + fromIndex) >> 1;
+         mergeSort(out, in, fromIndex, med);
+         mergeSort(out, in, med, toIndex);
+
+         // merging
+
+         //if arrays are already sorted - no merge
+         if (((Comparable) in[med]).compareTo(in[med - 1]) >= 0) {
+             System.arraycopy(in, fromIndex, out, fromIndex, len);
+             return;
+         }
+         int r = med, i = fromIndex;
+
+         // use merging with exponential search
+         do {
+             Comparable fromVal = (Comparable) in[fromIndex];
+             Comparable rVal = (Comparable) in[r];
+             if (fromVal.compareTo(rVal) <= 0) {
+                 int l_1 = find(in,rVal,-1,fromIndex+1,med-1);
+                 int toCopy = l_1 - fromIndex + 1;
+                 System.arraycopy(in, fromIndex, out, i, toCopy);
+                 i += toCopy;
+                 out[i++] = rVal;
+                 r++;
+                 fromIndex = l_1+1;
+             } else {
+                 int r_1 = find(in,fromVal,0,r+1,toIndex-1);
+                 int toCopy = r_1 - r + 1;
+                 System.arraycopy(in, r, out, i, toCopy);
+                 i += toCopy;
+                 out[i++] = fromVal;
+                 fromIndex++;
+                 r = r_1+1;
+             }
+         } while ((toIndex - r) > 0 && (med - fromIndex) > 0);
+
+        // copy rest of array
+         if ((toIndex - r) <= 0) {
+             System.arraycopy(in, fromIndex, out, i, med - fromIndex);
+         } else {
+             System.arraycopy(in, r, out, i, toIndex - r);
+         }
+     }
+
+     /**
+      * Sorts the specified range of the specified array of objects. The range to
+      * be sorted extends from index fromIndex, inclusive, to index toIndex,
+      * exclusive. (If fromIndex==toIndex, the range to be sorted is empty.) This
+      * sort is guaranteed to be stable: equal elements will not be reordered as
+      * a result of the sort.
+      *
+      * The sorting algorithm is a mergesort with exponential search (in which
+      * the merge is performed by exponential search). This algorithm offers
+      * guaranteed n*log(n) performance and in average case faster then any
+      * mergesort in which the merge is performed by linear search.
+      *
+      * @param in -
+      *            the array for sorting.
+      * @param out -
+      *            the result, sorted array.
+      * @param fromIndex -
+      *            the index of the first element (inclusive) to be sorted.
+      * @param toIndex -
+      *            the index of the last element (exclusive) to be sorted.
+      * @param c -
+      *            the comparator to determine the order of the array.
+      */
+     private static void mergeSort(Object[] in, Object[] out, int fromIndex,
+             int toIndex, Comparator c) {
+         int len = toIndex - fromIndex;
+         //use insertion sort for small arrays
+         if (len <= SIMPLE_LENGTH) {
+             for (int i = fromIndex + 1; i < toIndex; i++) {
+                 Object current = out[i];
+                 Object prev = out[i - 1];
+                 if (c.compare(prev, current) > 0) {
+                     int j = i;
+                     do {
+                        out[j--] = prev;
+                     } while (j > fromIndex
+                             && (c.compare(prev = out[j - 1], current) > 0));
+                     out[j] = current;
+                 }
+             }
+             return;
+         }
+         int med = (toIndex + fromIndex) >> 1;
+         mergeSort(out, in, fromIndex, med,c);
+         mergeSort(out, in, med, toIndex,c);
+
+         // merging
+
+         //if arrays are already sorted - no merge
+         if (c.compare(in[med],in[med - 1]) >= 0) {
+             System.arraycopy(in, fromIndex, out, fromIndex, len);
+             return;
+         }
+         int r = med, i = fromIndex;
+
+         // use merging with exponential search
+         do {
+             Object fromVal =  in[fromIndex];
+             Object rVal =  in[r];
+             if (c.compare(fromVal,rVal) <= 0) {
+                 int l_1 = find(in,rVal,-1,fromIndex+1,med-1,c);
+                 int toCopy = l_1 - fromIndex + 1;
+                 System.arraycopy(in, fromIndex, out, i, toCopy);
+                 i += toCopy;
+                 out[i++] = rVal;
+                 r++;
+                 fromIndex = l_1+1;
+             } else {
+                 int r_1 = find(in,fromVal,0,r+1,toIndex-1,c);
+                 int toCopy = r_1 - r + 1;
+                 System.arraycopy(in, r, out, i, toCopy);
+                 i += toCopy;
+                 out[i++] = fromVal;
+                 fromIndex++;
+                 r = r_1+1;
+             }
+         } while ((toIndex - r) > 0 && (med - fromIndex) > 0);
+
+        // copy rest of array
+         if ((toIndex - r) <= 0) {
+             System.arraycopy(in, fromIndex, out, i, med - fromIndex);
+         } else {
+             System.arraycopy(in, r, out, i, toIndex - r);
+         }
+     }
+
+     /**
+      * Finds the place of specified range of specified sorted array, where the
+      * element should be inserted for getting sorted array. Uses expionential
+      * search algorithm.
+      *
+      * @param arr - the array with already sorted range
+      *
+      * @param val - object to be inserted
+      *
+      * @param l - the index of the first element (inclusive)
+      *
+      * @param r - the index of the last element (inclusive)
+      *
+      * @param bnd - possible values 0,-1. "-1" - val is located at index more
+      * then elements equals to val. "0" - val is located at index less then
+      * elements equals to val.
+      *
+      */
+     private static int find(Object[] arr, Comparable val, int bnd, int l, int r){
+         int m = l ;
+         int d = 1;
+         while (m <= r) {
+             if (val.compareTo(arr[m]) > bnd) {
+                l=m+1;
+             } else {
+                r=m-1;
+                break;
+             }
+             m+=d;
+             d<<=1;
+         }
+         while (l <= r) {
+             m = (l + r) >> 1;
+             if (val.compareTo(arr[m]) > bnd) {
+                  l = m+1;
+             } else {
+                  r = m-1;
+             }
+         }
+         return l-1;
+     }
+
+     /**
+      * Finds the place of specified range of specified sorted array, where the
+      * element should be inserted for getting sorted array. Uses expionential
+      * search algorithm.
+      *
+      * @param arr - the array with already sorted range
+      *
+      * @param val - object to be inserted
+      *
+      * @param l - the index of the first element (inclusive)
+      *
+      * @param r - the index of the last element (inclusive)
+      *
+      * @param bnd - possible values 0,-1. "-1" - val is located at index more
+      * then elements equals to val. "0" - val is located at index less then
+      * elements equals to val.
+      *
+      * @param c -
+      *            the comparator to determine the order of the array.
+      */
+     private static int find(Object[] arr, Object val, int bnd, int l,
+             int r, Comparator c){
+         int m = l ;
+         int d = 1;
+         while (m <= r) {
+             if (c.compare(val,arr[m]) > bnd) {
+                l=m+1;
+             } else {
+                r=m-1;
+                break;
+             }
+             m+=d;
+             d<<=1;
+         }
+         while (l <= r) {
+             m = (l + r) >> 1;
+             if (c.compare(val,arr[m]) > bnd) {
+                  l = m+1;
+             } else {
+                  r = m-1;
+             }
+         }
+         return l-1;
+     }
+
+     /*
+      * returns the median index.
+      */
+     private static int medChar(int a, int b, int c, String[] arr, int id) {
+         int ac = charAt(arr[a], id);
+         int bc = charAt(arr[b], id);
+         int cc = charAt(arr[c], id);
+         return ac < bc ? (bc < cc ? b : (ac < cc ? c : a))
+                 : (bc < cc ? (ac < cc ? a : c) : b);
+
+     }
+
+     /*
+      * Returns the char value at the specified index of string or -1 if the
+      * index more than the length of this string.
+      */
+    private static int charAt(String str, int i) {
+         if (i >= str.length()) {
+             return -1;
+         }
+         return str.charAt(i);
+     }
+
+     /**
+      * Copies object from one array to another array with reverse of objects
+      * order. Source and destination arrays may be the same.
+      *
+      * @param src -
+      *            the source array.
+      * @param from -
+      *            starting position in the source array.
+      * @param dst -
+      *            the destination array.
+      * @param to -
+      *            starting position in the destination array.
+      * @param len -
+      *            the number of array elements to be copied.
+      */
+    private static void copySwap(Object[] src, int from, Object[] dst, int to,
+             int len) {
+         if (src == dst && from + len > to) {
+             int new_to = to + len - 1;
+             for (; from < to; from++, new_to--, len--) {
+                 dst[new_to] = src[from];
+             }
+             for (; len > 1; from++, new_to--, len -= 2) {
+                 swap(from, new_to, dst);
+             }
+
+         } else {
+             to = to + len - 1;
+             for (; len > 0; from++, to--, len--) {
+                 dst[to] = src[from];
+             }
+         }
+     }
+
+     /**
+      * Sorts the specified range of the specified array of String.
+      *
+      * @param arr -
+      *            the array to be sorted
+      * @param fromIndex -
+      *            the index of the first element (inclusive) to be sorted.
+      * @param toIndex -
+      *            the index of the last element (exclusive) to be sorted.
+      */
+     private static void stableStringSort(String[] arr, int fromIndex,
+             int toIndex) {
+         stableStringSort(arr, arr, new String[toIndex], fromIndex, toIndex, 0);
+     }
+
+     /**
+      * Sorts the specified range of the specified array of String. Use stable
+      * ternary quick sort algorithm.
+      *
+      * @param arr -
+      *            the array to be sorted
+      * @param src -
+      *            auxilary array
+      * @param dst -
+      *            auxilary array
+      * @param fromIndex -
+      *            the index of the first element (inclusive) to be sorted.
+      * @param toIndex -
+      *            the index of the last element (exclusive) to be sorted.
+      * @param chId -
+      *            index of char for current sorting
+      */
+     private static void stableStringSort(String[] arr, String[] src,
+             String[] dst, int fromIndex, int toIndex, int chId) {
+         int length = toIndex - fromIndex;
+         //use insertion sort fro small arrays
+         if (length < SIMPLE_LENGTH) {
+             if (src == arr) {
+                 for (int i = fromIndex + 1; i < toIndex; i++) {
+                     String current = arr[i];
+                     String prev = arr[i - 1];
+                     if (current.compareTo(prev) < 0) {
+                         int j = i;
+                         do {
+                             arr[j--] = prev;
+                         } while (j > fromIndex
+                                 && current.compareTo(prev = arr[j - 1]) < 0);
+                         arr[j] = current;
+                     }
+                 }
+             } else {
+                 int end = toIndex - 1;
+                 dst[fromIndex] = src[end--];
+                 for (int i = fromIndex + 1; i < toIndex; i++, end--) {
+                     String current = (String) src[end];
+                     String prev;
+                     int j = i;
+                     while (j > fromIndex && current.compareTo(prev = dst[j - 1]) < 0) {
+                         dst[j--] = prev;
+                     }
+                     dst[j] = current;
+                 }
+             }
+             return;
+         }
+         // aproximate median
+         int s;
+         int mid = fromIndex + length / 2;
+         int lo = fromIndex;
+         int hi = toIndex - 1;
+         if (length > 40) {
+             s = length / 8;
+             lo = medChar(lo, lo + s, lo + s * 2, src, chId);
+             mid = medChar(mid - s, mid, mid + s, src, chId);
+             hi = medChar(hi, hi - s, hi - s * 2, src, chId);
+         }
+         mid = medChar(lo, mid, hi, src, chId);
+         //  median finded
+         // create 4 pointers <a (in star of src) ,
+         //                      =b(in start of dst), >c (in end of dst)
+         // i - current element;
+         int midVal = charAt(src[mid], chId);
+         int a, b, c;
+         a = b = fromIndex;
+         c = toIndex - 1;
+         int cmp;
+
+         for (int i = fromIndex; i < toIndex; i++) {
+             String el = src[i];
+             cmp = charAt(el, chId) - midVal;
+             if (cmp < 0) {
+                 src[a] = el;
+                 a++;
+             } else if (cmp > 0) {
+                 dst[c] = el;
+                 c--;
+             } else {
+                 dst[b] = el;
+                 b++;
+             }
+         }
+
+         s = b - fromIndex;
+         if (s > 0) {
+             if (arr == src) {
+                 System.arraycopy(dst, fromIndex, arr, a, s);
+             } else {
+                 copySwap(dst, fromIndex, arr, a, s);
+             }
+
+             if (b >= toIndex && midVal == -1) {
+                 return;
+             }
+             stableStringSort(arr, arr, arr == dst ? src : dst, a, a + s,
+                     chId + 1);
+         }
+
+         s = a - fromIndex;
+         if (s > 0) {
+             stableStringSort(arr, src, dst, fromIndex, a, chId);
+         }
+
+         c++;
+         s = toIndex - c;
+         if (s > 0) {
+             stableStringSort(arr, dst, src, c, toIndex, chId);
+         }
+     }
 
     /**
      * Sorts the specified range in the array using the specified Comparator.
@@ -2213,40 +2655,13 @@ public class Arrays {
     private static <T> void sort(int start, int end, T[] array,
             Comparator<? super T> comparator) {
         if (comparator == null) {
-            sort(start, end, array);
-            return;
+           sort(start, end, array);
+        } else {
+           int length = end - start;
+           Object[] out = new Object[end];
+           System.arraycopy(array, start, out, start, length);
+           mergeSort(out, array, start, end, comparator);
         }
-
-        int middle = (start + end) / 2;
-        if (start + 1 < middle) {
-            sort(start, middle, array, comparator);
-        }
-        if (middle + 1 < end) {
-            sort(middle, end, array, comparator);
-        }
-        if (start + 1 >= end) {
-            return; // this case can only happen when this method is called by
-        }
-        // the user
-        if (comparator.compare(array[middle - 1], array[middle]) <= 0) {
-            return;
-        }
-        if (start + 2 == end) {
-            T temp = array[start];
-            array[start] = array[middle];
-            array[middle] = temp;
-            return;
-        }
-        int i1 = start, i2 = middle, i3 = 0;
-        Object[] merge = new Object[end - start];
-        while (i1 < middle && i2 < end) {
-            merge[i3++] = comparator.compare(array[i1], array[i2]) <= 0 ? array[i1++]
-                    : array[i2++];
-        }
-        if (i1 < middle) {
-            System.arraycopy(array, i1, merge, i3, middle - i1);
-        }
-        System.arraycopy(merge, 0, array, start, i2 - start);
     }
 
     /**
