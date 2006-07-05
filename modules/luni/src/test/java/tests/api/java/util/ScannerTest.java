@@ -676,6 +676,84 @@ public class ScannerTest extends TestCase {
     
     /**
      * @throws IOException
+     * @tests java.util.Scanner#hasNext()
+     */
+    public void test_hasNext() throws IOException {
+        s = new Scanner("1##2").useDelimiter("\\#");
+        assertTrue(s.hasNext());
+        assertEquals("1", s.next());
+        assertEquals("", s.next());
+        assertEquals("2", s.next());
+        assertFalse(s.hasNext());
+        s.close();
+        try {
+            s.hasNext();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s = new Scanner("1( )2( )").useDelimiter("\\( \\)");
+        assertTrue(s.hasNext());
+        assertTrue(s.hasNext());
+        assertEquals("1", s.next());
+        assertEquals("2", s.next());
+
+        s = new Scanner("1 2  ").useDelimiter("( )");
+        assertEquals("1", s.next());
+        assertEquals("2", s.next());
+        assertTrue(s.hasNext());
+        assertEquals("", s.next());
+
+        s = new Scanner("1\n2  ");
+        assertEquals("1", s.next());
+        assertTrue(s.hasNext());
+        assertEquals("2", s.next());
+        assertFalse(s.hasNext());
+        // test boundary case
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("1'\n'2  ");
+        assertEquals("1'", s.next());
+        assertTrue(s.hasNext());
+        assertEquals("'2", s.next());
+        assertFalse(s.hasNext());
+        // test boundary case
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("  ");
+        assertFalse(s.hasNext());
+
+        // test socket inputStream
+
+        os.write("1 2".getBytes());
+        serverSocket.close();
+
+        s = new Scanner(client);
+        assertEquals("1", s.next());
+        assertTrue(s.hasNext());
+        assertEquals("2", s.next());
+        assertFalse(s.hasNext());
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+    }
+    
+    /**
+     * @throws IOException
      * @tests java.util.Scanner#hasNext(Pattern)
      */
     public void test_hasNextLPattern() throws IOException {
@@ -745,6 +823,76 @@ public class ScannerTest extends TestCase {
         assertFalse(s.hasNext(pattern));
         try {
             s.next(pattern);
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNext(String)
+     */
+    public void test_hasNextLString() throws IOException {
+        s = new Scanner("aab@2@abb@").useDelimiter("\\@");
+        try {
+            s.hasNext((String)null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        s = new Scanner("aab*b*").useDelimiter("\\*");
+        assertTrue(s.hasNext("a+b"));
+        assertEquals("aab", s.next("a+b"));
+        assertFalse(s.hasNext("a+b"));
+        try {
+            s.next("a+b");
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.close();
+        try {
+            s.hasNext("a+b");
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s = new Scanner("WORD ? ");
+        assertTrue(s.hasNext("\\w+"));
+        assertEquals("WORD", s.next("\\w+"));
+        assertFalse(s.hasNext("\\w+"));
+        try {
+            s.next("\\w+");
+            fail("should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("word1 word2  ");
+        assertEquals("word1", s.next("\\w+"));
+        assertEquals("word2", s.next("\\w+"));
+        // test boundary case
+        try {
+            s.next("\\w+");
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // test socket inputStream
+
+        os.write("aab 2".getBytes());
+        serverSocket.close();
+
+        s = new Scanner(client);
+        assertTrue(s.hasNext("a*b"));
+        assertEquals("aab", s.next("a*b"));
+        assertFalse(s.hasNext("a*b"));
+        try {
+            s.next("a*b");
             fail("should throw InputMismatchException");
         } catch (InputMismatchException e) {
             // Expected

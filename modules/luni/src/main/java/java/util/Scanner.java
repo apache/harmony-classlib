@@ -68,7 +68,7 @@ public final class Scanner implements Iterator<String> {
     // Default radix
     private static final int DEFAULT_RADIX = 10;
 
-    private static final int READ_TRUNK_SIZE = 1024;
+    private static final int DEFAULT_TRUNK_SIZE = 1024;
 
     // The input source of scanner
     private Readable input;
@@ -143,6 +143,7 @@ public final class Scanner implements Iterator<String> {
             }
             throw new IllegalArgumentException(e.getMessage());
         }
+        initialization();
     }
 
     /**
@@ -153,6 +154,7 @@ public final class Scanner implements Iterator<String> {
      */
     public Scanner(String src) {
         input = new StringReader(src);
+        initialization();
     }
 
     /**
@@ -187,6 +189,7 @@ public final class Scanner implements Iterator<String> {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
+        initialization();
     }
 
     /**
@@ -197,10 +200,10 @@ public final class Scanner implements Iterator<String> {
      */
     public Scanner(Readable src) {
         if (null == src) {
-            throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00c"));
+            throw new NullPointerException();
         }
         input = src;
+        initialization();
     }
 
     /**
@@ -240,6 +243,7 @@ public final class Scanner implements Iterator<String> {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
+        initialization();
     }
 
     /**
@@ -291,9 +295,18 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner has next token. This method may be blocked
+     * when it is waiting for input to scan. This scanner does not advance past
+     * the input.
+     * 
+     * @return true 
+     *             iff this scanner has next token
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNext() {
-        throw new NotYetImplementedException();
+        return hasNext(ANY_PATTERN);
     }
 
     /**
@@ -330,9 +343,24 @@ public final class Scanner implements Iterator<String> {
     }
 
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token matches the pattern constructed
+     * from the specified string. This method may be blocked when it is waiting
+     * for input to scan. This scanner does not advance past the input that
+     * matched the pattern.
+     * 
+     * The invocation of this method in the form hasNext(pattern) behaves in the
+     * same way as the invocaiton of hasNext(Pattern.compile(pattern)).
+     * 
+     * @param pattern
+     *            the string specifying the pattern to scan for
+     * @return true 
+     *            iff this scanner's next token matches the specified pattern
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNext(String pattern) {
-        throw new NotYetImplementedException();
+        return hasNext(Pattern.compile(pattern));
     }
 
     //TODO: To implement this feature
@@ -677,6 +705,15 @@ public final class Scanner implements Iterator<String> {
     }
 
     /*
+     * Initial some components.
+     */
+    private void initialization() {
+        buffer = CharBuffer.allocate(DEFAULT_TRUNK_SIZE);
+        buffer.limit(0);
+        matcher = delimiter.matcher(buffer);
+    }
+    
+    /*
      * Check the scanner's state, if it is closed, IllegalStateException will be
      * thrown.
      */
@@ -791,7 +828,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /*
-     * Handle some special case
+     * Handle some special cases
      */
     private boolean setHeadTokenRegion(int findIndex) {
         int tokenStartIndex;
@@ -840,42 +877,53 @@ public final class Scanner implements Iterator<String> {
 
     /*
      * Read more data from underlying Readable. Return false if nothing is
-     * available.
+     * available or I/O operation fails.
      */
     private boolean readMore() {
-        int oldBufferSize = (buffer == null ? 0 : buffer.limit());
-        int oldBufferCapacity = (buffer == null ? 0 : buffer.capacity());
+        int oldPosition = buffer.position();
+        int oldLimit = buffer.limit();
         // Increase capacity if empty space is not enough
-        if (oldBufferSize >= oldBufferCapacity / 2) {
-            expandBuffer(oldBufferSize, oldBufferCapacity);
+        if (buffer.limit() >= buffer.capacity()) {
+            expandBuffer();
         }
 
         // Read input resource
         int readCount = 0;
         try {
             buffer.limit(buffer.capacity());
-            buffer.position(oldBufferSize);
-            // TODO Writes test cases to test whether this == 0 is correct.
+            buffer.position(oldLimit);
             while ((readCount = input.read(buffer)) == 0) {
                 // nothing to do here
             }
         } catch (IOException e) {
+            readCount = (buffer.position() - oldLimit);
             lastIOException = e;
         }
+
+        // The return value of readable.read() method can be used to record the
+        // actual characters read. Consider the scenario: readable puts 4 chars into
+        // buffer and then an IOException is thrown out. In this case, buffer is
+        // actually grown, but readable.read() will never return.
+
         buffer.flip();
-        buffer.position(bufferLength);
-        bufferLength = buffer.length() + bufferLength;
-        buffer.position(0);
+        buffer.position(oldPosition);
+        if (-1 != readCount)
+            bufferLength = readCount + bufferLength;
         return readCount != -1;
     }
 
     // Expand the size of internal buffer.
-    private void expandBuffer(int oldBufferSize, int oldBufferCapacity) {
-        int newCapacity = oldBufferCapacity * DIPLOID + READ_TRUNK_SIZE;
+    private void expandBuffer() {
+        int oldPosition = buffer.position();
+        int oldCapacity = buffer.capacity();
+        int oldLimit = buffer.limit();
+        int newCapacity = oldCapacity * DIPLOID;
         char[] newBuffer = new char[newCapacity];
         if (buffer != null) {
-            System.arraycopy(buffer.array(), 0, newBuffer, 0, oldBufferSize);
+            System.arraycopy(buffer.array(), 0, newBuffer, 0, oldLimit);
         }
         buffer = CharBuffer.wrap(newBuffer, 0, newCapacity);
+        buffer.position(oldPosition);
+        buffer.limit(oldLimit);
     }
 }
