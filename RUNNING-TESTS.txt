@@ -5,35 +5,23 @@ This is a work in progress.
 
 The objective is to make it easy to run unit tests
 for any part of the classlibrary, and be able to also
-run the pile and do easy reporting.
-
-This is a work in progress.
+run all the tests and do easy reporting.
 
 Requirements : 
 
-1) Eclipse compiler and adapter.  http://www.eclipse.org
+1) JUnit.jar - any modern version. http://www.junit.org
    
-   Put these in your ant/lib
-
-   jdtCompilerAdapter.jar
-   org.eclipse.jdt.code_3.1.x.jar
+   Put this on your ant/lib directory.
    
-   where x is arbitrary.  Right now, this can only be gotten
-   from the 106MB eclipse download.  Sorry.
-   
-2) JUnit.jar - any modern version. http://www.junit.org
-   
-   Put this on your ant/lib directory too.
-   
-3) Ensure you have the build time dependencies installed, these
+2) Ensure you have the build time dependencies installed, these
    can be downloaded using the following command:
 
-   ant -f make/depends.xml download
+   ant fetch-depends
 
    Warning: Some of the dependencies are made available under
             licences other than the ASLv2.
   
-4) J9 VM from IBM (evaluation)
+3) J9 VM from IBM (evaluation)
     
       http://www-128.ibm.com/developerworks/java/jdk/harmony/index.html
       
@@ -50,14 +38,12 @@ Requirements :
  
  1) Build the classlibrary : 
  
-    $ cd make
     $ ant
     
     This should build and install all java and native components
     
  2) Test : 
  
-    in make dir : 
     
     $ ant test
     

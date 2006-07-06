@@ -1,9 +1,17 @@
-
 README
 ======
 
 
-This directory contain the Harmony class library code.
+This directory contain the Apache Harmony class library code.
+
+Apache Harmony is an effort undergoing incubation at the Apache Software
+Foundation (ASF). Incubation is required of all newly accepted projects
+until a further review indicates that the infrastructure, communications,
+and decision making process have stabilized in a manner consistent with
+other successful ASF projects. While incubation status is not necessarily
+a reflection of the completeness or stability of the code, it does indicate
+that the project has yet to be fully endorsed by the ASF.
+
 
 Contents
 --------
@@ -21,18 +29,15 @@ following directories under <EXTRACT_DIR> :
               HTML documentation of the Java and C source using the Doxygen
               documentation system. Pre-genenerated HTML is included. 
                
-*  modules - Java source files that can be compiled into the class library
-              component files
-              
-*  native-src -  C language source files plus the required makefiles that
-                 together can be used to build the natives libraries required
-                 by the Java class library components to function correctly.
-                   
+*  modules  - Java, C/C++, assembly source files that can be compiled into the
+              class library component files.
+
+*  support  - Java source files used to support test cases across various modules.
 
 
 Pre-requisites for Building
 ---------------------------
-In order to build the Java and C source contained in the modules and native-src
+In order to build the source code contained in the modules and support
 directories, it is necessary to configure the following tools in the user 
 environment. That is, the working environment should be such that the PATH 
 environment variable contains all of the directories where the executables of
@@ -72,18 +77,16 @@ HTML files are already stored in subversion.
 
 Building
 --------
-The simplest way to get started is to change directory into
-<EXTRACT_DIR> and then type "ant" to run Apache Ant against the
-default target of the build.xml file. Provided that both a C compiler and a Java
-compiler are available, Ant will proceed to compile all Java source beneath
-the <EXTRACT_DIR>/modules folders and all C source beneath the
-<EXTRACT_DIR>/native-src folders.
+The simplest way to get started is to change directory into <EXTRACT_DIR> and
+then type "ant" to run Apache Ant against the default target of the build.xml
+file. Provided that the required compilers are available, Ant will proceed to
+compile all the class library source code .
 
 
 Building Java
 -------------
 The class files output from the Java compilation will be assembled into a set
-of JAR files which reflect the proposed components of the class libraries (see
+of JAR files which reflect the components of the class libraries (see
 http://wiki.apache.org/harmony/ClassLibrary for more information). Together with
 the required support files, these JAR files will then be laid out in the boot
 directory of the following directory tree structure ...
@@ -114,8 +117,8 @@ directory of the following directory tree structure ...
 
 Building Natives
 ----------------
-Next, the source files contained under <EXTRACT_DIR>/native-src will be
-built using the available C compiler. The output from this stage will be the 
+Next, the source files contained under <EXTRACT_DIR>/modules will be
+built using the available C/C++/ASM compiler. The output from this stage will be the 
 creation of a launcher executable (java.exe on Windows, java on Linux) in the 
 bin directory of the above layout together with a number of shared libraries
 (with the .dll extension on Windows, and .so on Linux). 
@@ -144,7 +147,7 @@ Two sets of HTML files can be found under the <EXTRACT_DIR>/doc directory.
 
 * kernel_doc - contains HTML documentation on the set of Java classes called the
                "kernel classes". These are the set of classes which - under the
-               architecture proposed in this contribution - are closely tied to
+               Harmony class library architecture - are closely tied to
                the structure of the VM. 
                Browse <EXTRACT_DIR>/doc/kernel_doc/html/index.html
 
@@ -196,15 +199,9 @@ http://dev.eclipse.org/viewcvs/index.cgi/%7Echeckout%7E/jdt-core-home/howto/batc
 What's Next ?
 -------------
 
-The class libraries do not provide the full J2SE
-API. Instead the included source is only a subset of the Java 1.5 API.
+The class libraries do not provide the full JSE API. Instead the included source
+is only a subset of the Java 1.5 API.
 
-In addition there is minimal support for the Java security framework. Users 
-wishing to experiment with introducing JCE support to these class libraries are 
-recommended to download the latest release of the Bouncy Castle Cryptography API
-and install the provider jar into the <EXTRACT_DIR>/deploy/jdk/jre/lib/ext
-location. 
-See http://www.bouncycastle.org
 
 To test out the functionality of the built class library components a compatible
 VM needs to be obtained.  A compatible VM implements the Virtual Machine Interface
