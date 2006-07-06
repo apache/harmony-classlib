@@ -45,9 +45,10 @@
 	<delete dir="${tests.output}" />
 	<delete dir="${tests.build.output}" />
 	<delete dir="${tests.support.output}" />
+        <delete file="${hy.hdk}/build/test/support.jar" />
     </target>
 
-    <target name="test-modules" depends="compile-support">
+    <target name="test-modules" depends="support.jar">
         <call-modules target="test" />
     </target>
 
