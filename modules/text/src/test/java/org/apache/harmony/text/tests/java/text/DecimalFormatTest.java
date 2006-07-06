@@ -1523,4 +1523,30 @@ public class DecimalFormatTest extends TestCase {
         // assertEquals(df, deserializedDF);
 
     }
+
+    /**
+     * Test whether DecimalFormat can parse Positive infinity correctly
+     */
+    public void testParseInfinityBigDecimalFalse() {
+        // Regression test for HARMONY-106
+        DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        Number number = format.parse(symbols.getInfinity(),
+                new ParsePosition(0));
+        assertTrue(number instanceof Double);
+        assertTrue(Double.isInfinite(number.doubleValue()));
+    }
+
+    /**
+     * Test whether DecimalFormat can parse Negative infinity correctly
+     */
+    public void testParseMinusInfinityBigDecimalFalse() {
+        // Regression test for HARMONY-106
+        DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        Number number = format.parse("-" + symbols.getInfinity(),
+                new ParsePosition(0));
+        assertTrue(number instanceof Double);
+        assertTrue(Double.isInfinite(number.doubleValue()));
+    }
 }
