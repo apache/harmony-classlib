@@ -146,14 +146,12 @@
 
 	<target name="touch-failures-file" if="test.failures">
 		<echo file="${hy.tests.reports}/test.failures"
-            append="true" >tools
-</echo>
+            append="true">tools${line.separator}</echo>
 	</target>
 
 	<target name="touch-errors-file" if="test.errors">
 		<echo file="${hy.tests.reports}/test.errors"
-            append="true" >tools
-</echo>
+            append="true">tools${line.separator}</echo>
 	</target>
 
 </project>

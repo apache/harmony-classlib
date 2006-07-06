@@ -221,14 +221,12 @@
 
     <target name="touch-failures-file" if="test.failures">
         <echo file="${hy.tests.reports}/test.failures"
-            append="true" >archive
-</echo>
+            append="true">archive${line.separator}</echo>
     </target>
 
     <target name="touch-errors-file" if="test.errors">
         <echo file="${hy.tests.reports}/test.errors"
-            append="true" >archive
-</echo>
+            append="true">archive${line.separator}</echo>
     </target>
 
     <target name="copy.test.resources">
