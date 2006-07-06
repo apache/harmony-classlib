@@ -14,6 +14,7 @@
  */
 package org.apache.harmony.tests.java.nio.channels;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,7 +35,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import junit.framework.TestCase;
 
 /**
- * Note: the test case uses a txt file named "test.txt" which contains 31
+ * Note: the test case uses a temp text file named "test" which contains 31
  * charactors : "P@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]"
  * 
  */
@@ -43,8 +44,6 @@ public class ChannelsTest extends TestCase {
     private static final String CODE_SET = "GB2312"; //$NON-NLS-1$
 
     private static final String BAD_CODE_SET = "GB2313"; //$NON-NLS-1$
-
-    private static final String TEST_FILE = "test.txt"; //$NON-NLS-1$
 
     private FileInputStream fins;
 
@@ -55,10 +54,14 @@ public class ChannelsTest extends TestCase {
     private final int testNum = 10;
 
     private final int fileSize = 31;// the file size
+    
+    private File tmpFile;
 
     protected void setUp() throws Exception {
         super.setUp();
         // Make the test file same in every test
+        tmpFile = File.createTempFile("test","tmp");
+        tmpFile.deleteOnExit();
         this.writeFileSame();
     }
 
@@ -72,13 +75,13 @@ public class ChannelsTest extends TestCase {
             this.fouts = null;
         }
 
-        // this.writeFileSame();
+        tmpFile.delete();
         super.tearDown();
 
     }
 
     private void writeFileSame() throws IOException {
-        this.fouts = new FileOutputStream(TEST_FILE);
+        this.fouts = new FileOutputStream(tmpFile);
         byte[] bit = new byte[1];
         bit[0] = 80;
         this.fouts.write(bit);
@@ -94,9 +97,9 @@ public class ChannelsTest extends TestCase {
      * This private method is to assert if the file size is the same as the
      * compare Number in the test
      */
-    private void assertFileSizeSame(String FileName, int compareNumber)
+    private void assertFileSizeSame(File fileToTest, int compareNumber)
             throws IOException {
-        FileInputStream file = new FileInputStream(FileName);
+        FileInputStream file = new FileInputStream(fileToTest);
         assertEquals(file.available(), compareNumber);
         file.close();
     }
@@ -121,7 +124,7 @@ public class ChannelsTest extends TestCase {
     public void testNewChannelInputStream_BufferNull() throws IOException {
         ByteBuffer byteBuf = ByteBuffer.allocate(this.testNum);
         int readres = this.testNum;
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
         ReadableByteChannel rbChannel = Channels.newChannel(this.fins);
         assertNotNull(rbChannel);
         try {
@@ -148,7 +151,7 @@ public class ChannelsTest extends TestCase {
         int readres = 0;
         byte[] byteArray = new byte[bufSize];
         ByteBuffer byteBuf = ByteBuffer.allocate(bufSize);
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
         readres = this.fins.read(byteArray);
 
         assertEquals(bufSize, readres);
@@ -195,7 +198,7 @@ public class ChannelsTest extends TestCase {
         int writeres = this.testNum;
         ByteBuffer writebuf = null;
         try {
-            this.fouts = new FileOutputStream(TEST_FILE);
+            this.fouts = new FileOutputStream(tmpFile);
         } catch (FileNotFoundException e) {
             fail();
         }
@@ -219,7 +222,7 @@ public class ChannelsTest extends TestCase {
         for (int val = 0; val < this.writebufSize / 2; val++) {
             writebuf.putChar((char) (val + 64));
         }
-        this.fouts = new FileOutputStream(TEST_FILE);
+        this.fouts = new FileOutputStream(tmpFile);
         WritableByteChannel testChannel = this.fouts.getChannel();
         WritableByteChannel rbChannel = Channels.newChannel(this.fouts);
 
@@ -230,7 +233,7 @@ public class ChannelsTest extends TestCase {
         bit[0] = 80;
         this.fouts.write(bit);
         this.fouts.flush();
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
         assertEquals(this.fins.available(), 1);
         this.fins.close();
 
@@ -261,7 +264,7 @@ public class ChannelsTest extends TestCase {
     public void testNewInputStreamReadableByteChannel_InputNull()
             throws Exception {
         byte[] readbuf = new byte[this.testNum];
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
         ReadableByteChannel readbc = this.fins.getChannel();
         assertEquals(this.fileSize, this.fins.available());
         assertTrue(readbc.isOpen());
@@ -287,7 +290,7 @@ public class ChannelsTest extends TestCase {
     public void testNewInputStreamReadableByteChannel() throws Exception {
         ByteBuffer readbcbuf = ByteBuffer.allocateDirect(this.testNum);
         byte[] readbuf = new byte[this.testNum];
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
         ReadableByteChannel readbc = this.fins.getChannel();
         assertEquals(this.fileSize, this.fins.available());
         assertTrue(readbc.isOpen());
@@ -343,7 +346,7 @@ public class ChannelsTest extends TestCase {
     public void testNewOutputStreamWritableByteChannel() throws Exception {
         byte[] writebuf = new byte[this.testNum];
         ByteBuffer writebcbuf = ByteBuffer.allocateDirect(this.testNum);
-        this.fouts = new FileOutputStream(TEST_FILE);
+        this.fouts = new FileOutputStream(tmpFile);
         WritableByteChannel writebc = this.fouts.getChannel();
 
         assertTrue(writebc.isOpen());
@@ -351,11 +354,11 @@ public class ChannelsTest extends TestCase {
 
         // read in testins and fins use the same pointer
         testouts.write(writebuf);
-        this.assertFileSizeSame(TEST_FILE, this.testNum);
+        this.assertFileSizeSame(tmpFile, this.testNum);
         writebc.write(writebcbuf);
-        this.assertFileSizeSame(TEST_FILE, this.testNum * 2);
+        this.assertFileSizeSame(tmpFile, this.testNum * 2);
         testouts.write(writebuf);
-        this.assertFileSizeSame(TEST_FILE, this.testNum * 3);
+        this.assertFileSizeSame(tmpFile, this.testNum * 3);
         // readbc.close() affect testins
         writebc.close();
         assertFalse(writebc.isOpen());
@@ -368,7 +371,7 @@ public class ChannelsTest extends TestCase {
     }
 
     public void testnewReaderCharsetError() throws Exception {
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
 
         ReadableByteChannel rbChannel = Channels.newChannel(this.fins);
         try {
@@ -382,7 +385,7 @@ public class ChannelsTest extends TestCase {
     }
 
     public void testnewWriterCharsetError() throws Exception {
-        this.fouts = new FileOutputStream(TEST_FILE);
+        this.fouts = new FileOutputStream(tmpFile);
         WritableByteChannel wbChannel = Channels.newChannel(this.fouts);
         try {
             Channels.newWriter(wbChannel, Charset.forName(BAD_CODE_SET)
@@ -402,7 +405,7 @@ public class ChannelsTest extends TestCase {
         int bufSize = this.testNum;
         int readres = 0;
         CharBuffer charBuf = CharBuffer.allocate(bufSize);
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
         // channel null
         Reader testReader = Channels.newReader(null, Charset.forName(CODE_SET)
                 .newDecoder(), -1);
@@ -447,7 +450,7 @@ public class ChannelsTest extends TestCase {
         int bufSize = this.testNum;
         int readres = 0;
         CharBuffer charBuf = CharBuffer.allocate(bufSize);
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
         // channel null
         Reader testReader = Channels.newReader(null, Charset.forName(CODE_SET)
                 .newDecoder(), //$NON-NLS-1$
@@ -491,7 +494,7 @@ public class ChannelsTest extends TestCase {
         int bufSize = this.testNum;
         int readres = 0;
         CharBuffer charBuf = CharBuffer.allocate(bufSize);
-        this.fins = new FileInputStream(TEST_FILE);
+        this.fins = new FileInputStream(tmpFile);
         ReadableByteChannel rbChannel = Channels.newChannel(this.fins);
         Reader testReader = Channels.newReader(rbChannel, Charset.forName(
                 CODE_SET).newDecoder(), //$NON-NLS-1$
@@ -576,7 +579,7 @@ public class ChannelsTest extends TestCase {
      */
     public void testNewWriterWritableByteChannelString_InputNull()
             throws IOException {
-        this.fouts = new FileOutputStream(TEST_FILE);
+        this.fouts = new FileOutputStream(tmpFile);
         WritableByteChannel wbChannel = Channels.newChannel(this.fouts);
         Writer testWriter = Channels.newWriter(wbChannel, Charset.forName(
                 CODE_SET).newEncoder(), //$NON-NLS-1$
@@ -598,7 +601,7 @@ public class ChannelsTest extends TestCase {
      * 'java.nio.channels.Channels.newWriter(WritableByteChannel, String)'
      */
     public void testNewWriterWritableByteChannelString() throws IOException {
-        this.fouts = new FileOutputStream(TEST_FILE);
+        this.fouts = new FileOutputStream(tmpFile);
         WritableByteChannel wbChannel = Channels.newChannel(this.fouts);
         Writer testWriter = Channels.newWriter(wbChannel, CODE_SET); //$NON-NLS-1$
         Writer testWriter_s = Channels.newWriter(wbChannel, Charset.forName(
@@ -612,20 +615,20 @@ public class ChannelsTest extends TestCase {
         byte[] bit = new byte[1];
         bit[0] = 80;
         this.fouts.write(bit);
-        this.assertFileSizeSame(TEST_FILE, 1);
+        this.assertFileSizeSame(tmpFile, 1);
 
         // writer continues to write after '1',what the fouts write
         testWriter.write(writebuf);
         testWriter.flush();
-        this.assertFileSizeSame(TEST_FILE, this.writebufSize / 2 + 1);
+        this.assertFileSizeSame(tmpFile, this.writebufSize / 2 + 1);
         // testwriter_s does not know if testwrite writes
         testWriter_s.write(writebuf);
         testWriter.flush();
-        this.assertFileSizeSame(TEST_FILE, this.writebufSize / 2 + 1);
+        this.assertFileSizeSame(tmpFile, this.writebufSize / 2 + 1);
         // testwriter_s even does not know if himself writes?
         testWriter_s.write(writebuf);
         testWriter.flush();
-        this.assertFileSizeSame(TEST_FILE, this.writebufSize / 2 + 1);
+        this.assertFileSizeSame(tmpFile, this.writebufSize / 2 + 1);
 
         // close the fouts, no longer writable for testWriter
         for (int val = 0; val < this.writebufSize; val++) {
@@ -634,6 +637,6 @@ public class ChannelsTest extends TestCase {
         this.fouts.close();
         testWriter_s.write(writebuf);
         testWriter.flush();
-        this.assertFileSizeSame(TEST_FILE, this.writebufSize / 2 + 1);
+        this.assertFileSizeSame(tmpFile, this.writebufSize / 2 + 1);
     }
 }
