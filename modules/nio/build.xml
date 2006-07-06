@@ -35,6 +35,9 @@
 	     use the Eclipse Java compiler. -->
 	<property name="build.compiler" value="modern" />
 
+        <property name="hy.nio.src.test.java.platform"
+                  value="${hy.nio.src.test.java}/../${hy.os}" />
+
 	<target name="build" depends="compile.java, build.jar" />
 
 	<target name="test" depends="build, compile.tests, run.tests" />
@@ -108,19 +111,23 @@
 
 		<mkdir dir="${hy.nio.bin.test}" />
 
-		<javac srcdir="${hy.nio.src.test.java}"
-			destdir="${hy.nio.bin.test}"
-			sourcepath=""
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${hy.javac.debug}">
+		<javac destdir="${hy.nio.bin.test}"
+		       sourcepath=""
+		       source="${hy.javac.source}"
+		       target="${hy.javac.target}"
+		       debug="${hy.javac.debug}">
 
-			<bootclasspath>
-				<fileset dir="${hy.jdk}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-			<classpath location="${hy.hdk}/build/test/support.jar" />
+                    <src>
+                        <pathelement location="${hy.nio.src.test.java}"/>
+                        <pathelement
+                             location="${hy.nio.src.test.java.platform}"/>
+                    </src>
+		    <bootclasspath>
+			<fileset dir="${hy.jdk}/jre/lib/boot">
+			    <include name="**/*.jar" />
+			</fileset>
+		    </bootclasspath>
+		    <classpath location="${hy.hdk}/build/test/support.jar" />
 		</javac>
 	</target>
 
@@ -153,6 +160,9 @@
 
 			<batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
 				<fileset dir="${hy.nio.src.test.java}">
+					<include name="**/*Test.java" />
+				</fileset>
+				<fileset dir="${hy.nio.src.test.java.platform}">
 					<include name="**/*Test.java" />
 				</fileset>
 			</batchtest>
