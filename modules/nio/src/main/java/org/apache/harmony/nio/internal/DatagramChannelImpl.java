@@ -60,7 +60,6 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
     // error messages, for native dependent.
     private static final String ERRMSG_TIMEOUT = "The operation timed out";
 
-    private static final String ERRMSG_NONBLOKING_OUT = "The socket is marked as nonblocking operation would block";
 
     // -------------------------------------------------------------------
     // Instance variables
@@ -119,9 +118,8 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      */
     synchronized public DatagramSocket socket() {
         if (null == socket) {
-//            DatagramSocketImpl datagramSocketImpl = new DatagramSocketImplAdapter(
-//                    fd, localPort, this);
-            socket = new DatagramSocketAdapter(SocketImplProvider.getDatagramSocketImpl(fd, localPort), this);
+            socket = new DatagramSocketAdapter(SocketImplProvider
+                    .getDatagramSocketImpl(fd, localPort), this);
         }
         return socket;
     }
@@ -284,13 +282,6 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
                     }
                 } while (loop);
             }
-        } catch (SocketException e) {
-            // FIXME Depend on former function,it's a work round, wait for
-            // native improve.
-            if (ERRMSG_NONBLOKING_OUT.equals(e.getMessage())) {
-                return null;
-            }
-            throw e;
         } catch (InterruptedIOException e) {
             // this line used in Linux
             return null;
@@ -401,8 +392,8 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      */
     public long read(ByteBuffer[] targets, int offset, int length)
             throws IOException {
-        if (!(length >= 0 && offset >= 0 && length + offset <= targets.length)) {
-            throw new ArrayIndexOutOfBoundsException();
+        if (length < 0 || offset < 0 || length + offset > targets.length) {
+            throw new IndexOutOfBoundsException();
         }        
         // status must be open and connected
         checkOpenConnected();
@@ -491,26 +482,26 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      */
     public long write(ByteBuffer[] sources, int offset, int length)
             throws IOException {
-        if (length >= 0 && offset >= 0 && length + offset <= sources.length) {
-            // status must be open and connected
-            checkOpenConnected();
-            synchronized (writeLock) {
-                int count = 0;
-                for (int val = offset; val < length; val++) {
-                    // source buffer must be not null
-                    checkNotNull(sources[val]);
-                    // add all to avoid bugs in Linux
-                    count = count + sources[val].remaining();
-                }
-                ByteBuffer writeBuf = ByteBuffer.allocate(count);
-                for (int val = offset; val < length; val++) {
-                    writeBuf.put(sources[val]);
-                }
-                writeBuf.flip();
-                return writeImpl(writeBuf);
-            }
+        if (length < 0 || offset < 0 || length + offset > sources.length) {
+            throw new IndexOutOfBoundsException();
         }
-        throw new ArrayIndexOutOfBoundsException();
+        // status must be open and connected
+        checkOpenConnected();
+        synchronized (writeLock) {
+            int count = 0;
+            for (int val = offset; val < length; val++) {
+                // source buffer must be not null
+                checkNotNull(sources[val]);
+                // add all to avoid bugs in Linux
+                count = count + sources[val].remaining();
+            }
+            ByteBuffer writeBuf = ByteBuffer.allocate(count);
+            for (int val = offset; val < length; val++) {
+                writeBuf.put(sources[val]);
+            }
+            writeBuf.flip();
+            return writeImpl(writeBuf);
+        }
     }
 
     /*
@@ -564,7 +555,9 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      */
     protected void implConfigureBlocking(boolean blockingMode)
             throws IOException {
-        networkSystem.setNonBlocking(fd, !blockingMode);
+        // Do nothing here. For real read/write operation in nonblocking mode,
+        // it uses select system call. Whether a channel is blocking can be
+        // decided by isBlocking() method.
     }
 
     // -------------------------------------------------------------------
