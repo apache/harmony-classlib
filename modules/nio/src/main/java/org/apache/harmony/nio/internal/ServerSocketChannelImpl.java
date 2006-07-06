@@ -41,7 +41,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         FileDescriptorHandler {
 
     // ----------------------------------------------------
-    // Class Variables
+    // Class variables
     // ----------------------------------------------------
 
     // status un-init, not initialized.
@@ -72,9 +72,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
 
     // lock for accept
     private final Object acceptLock = new Object();
-
-    // lock for status
-    // final Object statusLock = new Object();
 
     // ----------------------------------------------------
     // Constructor
@@ -113,7 +110,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         if (!isOpen()) {
             throw new ClosedChannelException();
         }
-        if (!isBound || !socket.isBound()) {
+        if (!isBound) {
             throw new NotYetBoundException();
         }
 
@@ -168,7 +165,9 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
      */
     protected void implConfigureBlocking(boolean blockingMode)
             throws IOException {
-        Platform.getNetworkSystem().setNonBlocking(getFD(), blockingMode);
+        // Do nothing here. For real accept() operation in nonblocking mode,
+        // it uses INetworkSystem.select. Whether a channel is blocking can be
+        // decided by isBlocking() method.
     }
 
     /*
@@ -176,22 +175,22 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
      * @see java.nio.channels.spi.AbstractSelectableChannel#implCloseSelectableChannel()
      */
     synchronized protected void implCloseSelectableChannel() throws IOException {
-        status = SERVER_STATUS_CLOSED;     
+        status = SERVER_STATUS_CLOSED;
         if (!socket.isClosed()) {
             socket.close();
         }
     }
 
-    // ----------------------------------------------------
-    // Adapter classes.
-    // ----------------------------------------------------
-
     /*
-     * get the fd
+     * Gets the FileDescriptor
      */
     public FileDescriptor getFD() {
         return fd;
     }
+
+    // ----------------------------------------------------
+    // Adapter classes.
+    // ----------------------------------------------------
 
     /*
      * The adapter class of ServerSocket.
@@ -206,7 +205,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
          * The Constructor.
          */
         ServerSocketAdapter(SocketImpl impl,
-                ServerSocketChannelImpl aChannelImpl){
+                ServerSocketChannelImpl aChannelImpl) {
             super(impl);
             this.channelImpl = aChannelImpl;
         }
@@ -224,15 +223,15 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
          * @see java.net.ServerSocket#accept()
          * 
          * If the channel is in non-blocking mode and there is no connection
-         * ready to be accepted, invoking this method will causes an
+         * ready to be accepted, invoking this method will cause an
          * IllegalBlockingModeException.
          */
         public Socket accept() throws IOException {
-            if (!isBound || !socket.isBound()) {
+            if (!isBound) {
                 throw new IllegalBlockingModeException();
             }
             SocketChannel sc = channelImpl.accept();
-            if(null == sc){
+            if (null == sc) {
                 throw new IllegalBlockingModeException();
             }
             return sc.socket();
@@ -294,7 +293,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
          */
         public void close() throws IOException {
             synchronized (channelImpl) {
-                if(channelImpl.isOpen()){
+                if (channelImpl.isOpen()) {
                     channelImpl.close();
                 } else {
                     super.close();
