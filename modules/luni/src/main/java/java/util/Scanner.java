@@ -60,6 +60,10 @@ public final class Scanner implements Iterator<String> {
     private static final Pattern DEFAULT_DELIMITER = Pattern
             .compile("\\p{javaWhitespace}+"); //$NON-NLS-1$
     
+    //The boolean's pattern
+    private static final Pattern BOOLEAN_PATTERN = Pattern.compile(
+            "true|false", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+    
     // The pattern matching anything
     private static final Pattern ANY_PATTERN = Pattern.compile("(?s).*");
 
@@ -96,6 +100,8 @@ public final class Scanner implements Iterator<String> {
     private boolean closed = false;
 
     private IOException lastIOException;
+    
+    private boolean matchSuccessful = false;
 
     /**
      * Constructs a scanner that uses File as its input. The default charset is
@@ -378,9 +384,18 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * boolean value. The scanner does not advance past the input that matched.
+     * 
+     * @return true 
+     *             iff the next token in this scanner's input can be translated
+     *         into a valid boolean value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextBoolean() {
-        throw new NotYetImplementedException();
+        return hasNext(BOOLEAN_PATTERN);
     }
 
     //TODO: To implement this feature
@@ -458,9 +473,29 @@ public final class Scanner implements Iterator<String> {
         return locale;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns the match result of this scanner's last match operation.This
+     * method throws IllegalStateException if no match operation has been
+     * performed, or if the last match was unsuccessful.
+     * 
+     * The various nextXXX methods of Scanner provide a match result if they do
+     * not complete with throwing an exception. For example, after an invocation
+     * of the nextBoolean() method which returned a boolean value, this method
+     * returns a match result for the search of the Boolean regular expression
+     * defined above. In the same way,the findInLine(java.lang.String),
+     * findWithinHorizon(java.lang.String, int), and
+     * skip(java.util.regex.Pattern) methods will provide a match result if they
+     * are successful.
+     * 
+     * @return the match result of the last match operation
+     * @throws IllegalStateException
+     *             if the match result is available
+     */
     public MatchResult match() {
-        throw new NotYetImplementedException();
+        if (!matchSuccessful) {
+            throw new IllegalStateException();
+        }
+        return matcher.toMatchResult();
     }
 
     /**
@@ -500,6 +535,10 @@ public final class Scanner implements Iterator<String> {
      */
     public String next(Pattern pattern) {
         checkClosed();
+        if (null == pattern) {
+            throw new NullPointerException();
+        }
+        matchSuccessful = false;
         if (isInputExhausted()) {
             throw new NoSuchElementException();
         }
@@ -510,7 +549,7 @@ public final class Scanner implements Iterator<String> {
             throw new NoSuchElementException();
         }
         matcher.usePattern(pattern);
-        if (matcher.matches()) {
+        if (matchSuccessful = matcher.matches()) {
             return matcher.group(0);
         } else {
             recoverPreviousStatus();
@@ -556,11 +595,26 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a boolean value and
+     * returns this value. This method will throw InputMismatchException if the
+     * next token can not be interpreted as a boolean value with a case
+     * insensitive pattern created from the string "true|false". If this match
+     * succeeds, the scanner advances past the input that matched.
+     * 
+     * @return the boolean value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid boolean
+     *             value
+     */
     public boolean nextBoolean() {
-        throw new NotYetImplementedException();
+        return Boolean.parseBoolean(next(BOOLEAN_PATTERN));
     }
-
+    
     //TODO: To implement this feature
     public byte nextByte() {
         throw new NotYetImplementedException();
@@ -699,7 +753,14 @@ public final class Scanner implements Iterator<String> {
         return this;
     }
 
-    //TODO: To implement this feature
+    /**
+     * 
+     * The operation of remove is not supported by this implementation of
+     * Iterator.
+     * 
+     * @return UnsupportedOperationException 
+     *            if this method is invoked
+     */
     public void remove() {
         throw new UnsupportedOperationException();
     }
@@ -862,8 +923,10 @@ public final class Scanner implements Iterator<String> {
         boolean findComplete = false;
         while (!findComplete) {
             if (findComplete = matcher.find()) {
-                tokenEndIndex = matcher.start();
-                findStartIndex = matcher.start();
+                if (matcher.start() == findStartIndex
+                        && matcher.start() == matcher.end()) {
+                    findComplete = false;
+                }
             } else {
                 if (readMore()) {
                     resetMatcher();
@@ -872,6 +935,8 @@ public final class Scanner implements Iterator<String> {
                 }
             }
         }
+        tokenEndIndex = matcher.start();
+        findStartIndex = matcher.start();
         return tokenEndIndex;
     }
 

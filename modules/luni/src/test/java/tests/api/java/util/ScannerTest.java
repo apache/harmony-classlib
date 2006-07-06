@@ -37,23 +37,24 @@ import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
 public class ScannerTest extends TestCase {
 
-    Scanner s;
+    private Scanner s;
 
-    ServerSocket server;
+    private ServerSocket server;
 
-    SocketAddress address;
+    private SocketAddress address;
 
-    SocketChannel client;
+    private SocketChannel client;
 
-    Socket serverSocket;
+    private Socket serverSocket;
 
-    OutputStream os;
+    private OutputStream os;
 
     private static class MockCloseable implements Closeable, Readable {
 
@@ -463,6 +464,147 @@ public class ScannerTest extends TestCase {
     }
 
     /**
+     * @tests java.util.Scanner#remove()
+     */
+    public void test_remove() {
+        s = new Scanner("aab*b*").useDelimiter("\\*");
+        try {
+            s.remove();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            //Expected
+        }
+    }
+
+    /**
+     * @tests java.util.Scanner#match()
+     */
+    public void test_match() {
+        MatchResult result ;
+        s = new Scanner("1 2 ");
+        try {
+            s.match();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        assertEquals("1", s.next());
+        assertEquals("2", s.next());
+        result = s.match();
+        assertEquals(2, result.start());
+        assertEquals(3, result.end());
+        assertEquals(2, result.start(0));
+        assertEquals(3, result.end(0));
+        assertEquals("2", result.group());
+        assertEquals("2", result.group(0));
+        assertEquals(0, result.groupCount());
+        try {
+            result.start(1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        }
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+        try {
+            s.match();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        
+        s = new Scanner("True faLse");
+        try {
+            s.match();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        assertEquals(true, s.nextBoolean());
+        result = s.match();
+        assertEquals(0, result.start());
+        assertEquals(4, result.end());
+        assertEquals(0, result.start(0));
+        assertEquals(4, result.end(0));
+        assertEquals("True", result.group());
+        assertEquals(0, result.groupCount());
+        assertEquals(false, s.nextBoolean());
+        try {
+            s.nextBoolean();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+        try {
+            s.match();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        
+        s = new Scanner("True faLse");
+        assertEquals(true, s.nextBoolean());
+        result = s.match();
+        assertEquals(0, result.start());
+        assertEquals(4, result.end());
+        assertEquals(0, result.start(0));
+        assertEquals(4, result.end(0));
+        assertEquals("True", result.group());
+        assertEquals(0, result.groupCount());
+        s.close();
+        try {
+            s.nextBoolean();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        result = s.match();
+        assertEquals(0, result.start());
+        assertEquals(4, result.end());
+        assertEquals(0, result.start(0));
+        assertEquals(4, result.end(0));
+        assertEquals("True", result.group());
+        assertEquals(0, result.groupCount());
+        
+        s = new Scanner("True fase");
+        assertEquals(true, s.nextBoolean());
+        assertEquals(0, result.groupCount());
+        try {
+            s.nextBoolean();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        try {
+            s.match();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        
+        s = new Scanner("True fase");
+        assertEquals(true, s.nextBoolean());
+        try {
+            s.next((Pattern)null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        result = s.match();
+        assertEquals(0, result.start());
+        assertEquals(4, result.end());
+        assertEquals(0, result.start(0));
+        assertEquals(4, result.end(0));
+        assertEquals("True", result.group());
+        assertEquals(0, result.groupCount());
+        
+    }
+     
+    /**
      * @throws IOException
      * @tests java.util.Scanner#next()
      */
@@ -472,6 +614,34 @@ public class ScannerTest extends TestCase {
         assertEquals("1", s.next());
         assertEquals("", s.next());
         assertEquals("2", s.next());
+
+        s = new Scanner(" \t 1 \t 2").useDelimiter("\\s*");
+        assertEquals("1", s.next());
+        assertEquals("2", s.next());
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+        
+        s = new Scanner("a").useDelimiter("a?");
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+        
+        s = new Scanner("aa").useDelimiter("a?");
+        assertEquals("", s.next());
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+        
 
         s = new Scanner("word( )test( )").useDelimiter("\\( \\)");
         assertEquals("word", s.next());
@@ -511,7 +681,7 @@ public class ScannerTest extends TestCase {
             // Expected
         }
 
-        // no delimiter exites in this scanner
+        // no delimiter exists in this scanner
         s = new Scanner("test");
         assertEquals("test", s.next());
 
@@ -523,6 +693,7 @@ public class ScannerTest extends TestCase {
         s = new Scanner("  test  ");
         assertEquals("test", s.next());
 
+        // Harmony uses 1024 as default buffer size,
         // What if a sentence can not be read in all in once.
         StringBuilder longSentence = new StringBuilder(1025);
         for (int i = 0; i <= 10; i++) {
@@ -543,6 +714,29 @@ public class ScannerTest extends TestCase {
                 Pattern.MULTILINE));
         assertEquals("test\n", s.next());
         assertEquals("test", s.next());
+        
+        s = new Scanner("").useDelimiter(Pattern.compile("^",
+                Pattern.MULTILINE));
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+        
+        s = new Scanner("").useDelimiter(Pattern.compile("^*",
+                Pattern.MULTILINE));
+        try {
+            s.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("test\ntest").useDelimiter(Pattern.compile("^*",
+                Pattern.MULTILINE));
+        assertEquals("t", s.next());
+        assertEquals("e", s.next());
 
         s = new Scanner("\ntest\ntest").useDelimiter(Pattern.compile("$",
                 Pattern.MULTILINE));
@@ -672,6 +866,64 @@ public class ScannerTest extends TestCase {
         } catch (InputMismatchException e) {
             // Expected
         }
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#nextBoolean()
+     */
+    public void test_nextBoolean() throws IOException {
+        // case insensitive
+        s = new Scanner("TRue");
+        assertTrue(s.nextBoolean());
+
+        s = new Scanner("tRue false");
+        assertTrue(s.nextBoolean());
+        assertFalse(s.nextBoolean());
+        try {
+            s.nextBoolean();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("true1");
+        try {
+            s.nextBoolean();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        try {
+            s = new Scanner("");
+            s.nextBoolean();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // test socket inputStream
+        os.write("true false".getBytes());
+        serverSocket.close();
+
+        s = new Scanner(client);
+        assertTrue(s.nextBoolean());
+        assertFalse(s.nextBoolean());
+
+        // ues '*' as delimiter
+        s = new Scanner("true**false").useDelimiter("\\*");
+        assertTrue(s.nextBoolean());
+        try {
+            s.nextBoolean();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("false( )").useDelimiter("\\( \\)");
+        assertFalse(s.nextBoolean());
+
     }
     
     /**
@@ -899,7 +1151,55 @@ public class ScannerTest extends TestCase {
         }
     }
     
-    public void setUp() throws Exception {
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextBoolean()
+     */
+    public void test_hasNextBoolean() throws IOException {
+
+        s = new Scanner("TRue");
+        assertTrue(s.hasNextBoolean());
+        assertTrue(s.nextBoolean());
+
+        s = new Scanner("tRue false");
+        assertTrue(s.hasNextBoolean());
+        assertTrue(s.nextBoolean());
+        assertTrue(s.hasNextBoolean());
+        assertFalse(s.nextBoolean());
+
+        s = new Scanner("");
+        assertFalse(s.hasNextBoolean());
+
+        // test socket inputStream
+
+        os.write("true false ".getBytes());
+        serverSocket.close();
+
+        s = new Scanner(client);
+        assertTrue(s.hasNextBoolean());
+        assertTrue(s.nextBoolean());
+
+        // ues '*' as delimiter
+        s = new Scanner("true**false").useDelimiter("\\*");
+        assertTrue(s.hasNextBoolean());
+        assertTrue(s.nextBoolean());
+        assertFalse(s.hasNextBoolean());
+        try {
+            s.nextBoolean();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("false( )").useDelimiter("\\( \\)");
+        assertTrue(s.hasNextBoolean());
+        assertFalse(s.nextBoolean());
+        assertFalse(s.hasNextBoolean());
+
+    }
+
+    
+    protected void setUp() throws Exception {
         super.setUp();
 
         server = new ServerSocket(0);
@@ -912,7 +1212,7 @@ public class ScannerTest extends TestCase {
         os = serverSocket.getOutputStream();
     }
 
-    public void tearDown() throws Exception {
+    protected void tearDown() throws Exception {
         super.tearDown();
 
         try {
