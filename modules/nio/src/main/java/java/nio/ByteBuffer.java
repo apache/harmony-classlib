@@ -685,19 +685,19 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	}
 
 	/**
-	 * Sets the byte order of this buffer.
-	 * 
-	 * @param byteOrder     The byte order to set
-	 * @return This buffer
-	 */
+     * Sets the byte order of this buffer.
+     * 
+     * @param byteOrder
+     *            The byte order to set. If <code>null</code> then the order
+     *            will be {@link ByteOrder.LITTLE_ENDIAN LITTLE_ENDIAN}.
+     * @return This buffer
+     * @see ByteOrder
+     */
 	public final ByteBuffer order(ByteOrder byteOrder) {
 		return orderImpl(byteOrder);
 	}
 
 	ByteBuffer orderImpl(ByteOrder byteOrder) {
-		if (byteOrder == null) {
-			throw new NullPointerException();
-		}
 		order = byteOrder == ByteOrder.BIG_ENDIAN ? Endianness.BIG_ENDIAN
 				: Endianness.LITTLE_ENDIAN;
 		return this;

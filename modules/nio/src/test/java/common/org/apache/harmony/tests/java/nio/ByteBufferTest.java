@@ -457,6 +457,18 @@ public class ByteBufferTest extends AbstractBufferTest {
     public void testOrder() {
         // BIG_ENDIAN is the default byte order
         assertEquals(ByteOrder.BIG_ENDIAN, buf.order());
+
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+        assertEquals(ByteOrder.LITTLE_ENDIAN, buf.order());
+        
+        buf.order(ByteOrder.BIG_ENDIAN);
+        assertEquals(ByteOrder.BIG_ENDIAN, buf.order());
+
+        // Regression test for HARMONY-798
+        buf.order((ByteOrder)null);
+        assertEquals(ByteOrder.LITTLE_ENDIAN, buf.order());
+        
+        buf.order(ByteOrder.BIG_ENDIAN);
     }
 
     /*
