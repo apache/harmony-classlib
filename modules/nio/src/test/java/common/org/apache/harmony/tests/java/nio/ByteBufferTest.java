@@ -233,6 +233,8 @@ public class ByteBufferTest extends AbstractBufferTest {
             assertTrue(buf.compareTo(other) > 0);
             assertTrue(other.compareTo(buf) < 0);
         }
+        
+        assertTrue(ByteBuffer.wrap(new byte[21]).compareTo(ByteBuffer.allocateDirect(21)) == 0);
     }
 
     public void testDuplicate() {

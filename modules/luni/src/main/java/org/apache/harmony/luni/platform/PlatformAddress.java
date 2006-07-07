@@ -58,12 +58,34 @@ public final class PlatformAddress implements ICommonDataTypes, Comparable {
 		return addr;
 	}
 
+    /**
+     * Allocates a contiguous block of OS heap memory.
+     * 
+     * @param size The number of bytes to allocate from the system heap.
+     * @return PlatformAddress representing the memory block.
+     */
 	public static PlatformAddress alloc(long size) {
 		long osAddress = osMemory.malloc(size);
 		PlatformAddress newMemory = PlatformAddress.on(osAddress);
 		memorySpy.alloc(newMemory, size);
 		return newMemory;
 	}
+    
+    /**
+     * Allocates a contiguous block of OS heap memory and initializes it to
+     * a given value.
+     * 
+     * @param size The number of bytes to allocate from the system heap.
+     * @param init The value to initialize the memory.
+     * @return PlatformAddress representing the memory block.
+     */
+    public static PlatformAddress alloc(long size, byte init) {
+        long osAddress = osMemory.malloc(size);
+        osMemory.memset(osAddress, init, size);
+        PlatformAddress newMemory = PlatformAddress.on(osAddress);
+        memorySpy.alloc(newMemory, size);
+        return newMemory;
+    }
 
 	public PlatformAddress(long address) {
 		this(address, false);

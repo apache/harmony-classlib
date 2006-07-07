@@ -52,8 +52,15 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 	// starts.
 	protected final int offset;
 
+    /*
+     * Constructs a new direct byte buffer of the given capacity on newly
+     * allocatd OS memory.  The memory will have been zeroed.  When the
+     * instance is discarded the OS memory will be freed if it has not
+     * already been done so by an explicit call to #free().  Callers are
+     * encouraged to explicitly free the memory where possible.
+     */
 	DirectByteBuffer(int capacity) {
-		this(new SafeAddress(PlatformAddress.alloc(capacity)), capacity, 0);
+		this(new SafeAddress(PlatformAddress.alloc(capacity, (byte)0)), capacity, 0);
 		safeAddress.address.autoFree();
 	}
 
