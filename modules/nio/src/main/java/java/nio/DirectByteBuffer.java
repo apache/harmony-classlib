@@ -77,7 +77,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
      * @see java.nio.ByteBuffer#get(byte[], int, int)
      */
     public final ByteBuffer get(byte[] dest, int off, int len) {
-        if ((off < 0 ) || (len < 0) || off + len > dest.length) {
+        if ((off < 0 ) || (len < 0) || (long)off + (long)len > dest.length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {
@@ -113,7 +113,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 	}
 
 	public final double getDouble(int index) {
-		if (index < 0 || index + 8 > limit) {
+		if (index < 0 || (long)index + 8 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		return getBaseAddress().getDouble(offset + index, order);
@@ -130,7 +130,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 	}
 
 	public final float getFloat(int index) {
-		if (index < 0 || index + 4 > limit) {
+		if (index < 0 || (long)index + 4 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		return getBaseAddress().getFloat(offset + index, order);
@@ -147,7 +147,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 	}
 
 	public final int getInt(int index) {
-		if (index < 0 || index + 4 > limit) {
+		if (index < 0 || (long)index + 4 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		return getBaseAddress().getInt(offset + index, order);
@@ -164,7 +164,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 	}
 
 	public final long getLong(int index) {
-		if (index < 0 || index + 8 > limit) {
+		if (index < 0 || (long)index + 8 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		return getBaseAddress().getLong(offset + index, order);
@@ -181,7 +181,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 	}
 
 	public final short getShort(int index) {
-		if (index < 0 || index + 2 > limit) {
+		if (index < 0 || (long)index + 2 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		return getBaseAddress().getShort(offset + index, order);

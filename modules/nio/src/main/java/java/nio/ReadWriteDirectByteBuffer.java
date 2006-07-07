@@ -127,7 +127,7 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
 	}
 
 	public ByteBuffer putDouble(int index, double value) {
-		if (index < 0 || index + 8 > limit) {
+		if (index < 0 || (long)index + 8 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		getBaseAddress().setDouble(offset + index, value, order);
@@ -145,7 +145,7 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
 	}
 
 	public ByteBuffer putFloat(int index, float value) {
-		if (index < 0 || index + 4 > limit) {
+		if (index < 0 || (long)index + 4 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		getBaseAddress().setFloat(offset + index, value, order);
@@ -163,7 +163,7 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
 	}
 
 	public ByteBuffer putInt(int index, int value) {
-		if (index < 0 || index + 4 > limit) {
+		if (index < 0 || (long)index + 4 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		getBaseAddress().setInt(offset + index, value, order);
@@ -181,7 +181,7 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
 	}
 
 	public ByteBuffer putLong(int index, long value) {
-		if (index < 0 || index + 8 > limit) {
+		if (index < 0 || (long)index + 8 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		getBaseAddress().setLong(offset + index, value, order);
@@ -199,7 +199,7 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
 	}
 
 	public ByteBuffer putShort(int index, short value) {
-		if (index < 0 || index + 2 > limit) {
+		if (index < 0 || (long)index + 2 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		getBaseAddress().setShort(offset + index, value, order);

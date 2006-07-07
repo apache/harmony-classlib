@@ -1196,6 +1196,12 @@ public class ByteBufferTest extends AbstractBufferTest {
         }
 
         buf.order(ByteOrder.BIG_ENDIAN);
+
+        try {
+        	ByteBuffer.allocateDirect(16).putChar(Integer.MAX_VALUE, 'h');
+        } catch (IndexOutOfBoundsException e) {
+        	//expected 
+        }
     }
 
     public void testGetDouble() {
@@ -1259,6 +1265,12 @@ public class ByteBufferTest extends AbstractBufferTest {
         }
 
         buf.order(ByteOrder.BIG_ENDIAN);
+
+        try {
+        	ByteBuffer.allocateDirect(16).getDouble(Integer.MAX_VALUE);
+        } catch (IndexOutOfBoundsException e) {
+        	//expected 
+        }
     }
 
     public void testPutDouble() {
@@ -1539,6 +1551,11 @@ public class ByteBufferTest extends AbstractBufferTest {
         }
 
         buf.order(ByteOrder.BIG_ENDIAN);
+        try {
+        	ByteBuffer.allocateDirect(16).getInt(Integer.MAX_VALUE);
+        } catch (IndexOutOfBoundsException e) {
+        	//expected 
+        }
     }
 
     public void testPutInt() {
