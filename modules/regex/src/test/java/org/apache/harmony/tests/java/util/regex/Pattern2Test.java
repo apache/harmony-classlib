@@ -1157,6 +1157,7 @@ public class Pattern2Test extends TestCase {
 			// modify text
 			text.delete(0, text.length());
 			text.append("Text have been changed.");
+            matcher.reset(text);
 		}
 
 		found = matcher.find();
