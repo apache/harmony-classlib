@@ -1719,35 +1719,6 @@ public class SocketChannelTest extends TestCase {
     // End of original tests. Test method for CFII with real data.
     // -------------------------------------------------------------------
 
-    public void testConnect_Lock() throws Exception {
-        final Socket sock = new Socket();
-        new Thread() {
-            public void run() {
-                try {
-                    sock.connect(localAddr2);
-                } catch (Exception e) {
-                    System.out.println("in thread1" + e.getMessage());
-                }
-                if (!sock.isClosed())
-                    System.out.println("T1 not closed");
-            }
-        }.start();
-        new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(200);
-                    sock.connect(localAddr1);
-                } catch (Exception e) {
-                    System.out.println("in thread2" + e.getMessage());
-                }
-                if (!sock.isClosed())
-                    System.out.println("T2 not closed");
-            }
-        }.start();
-        Thread.sleep(2000);
-        sock.close();
-    }
-
     /**
      * @tests java.nio.channels.SocketChannel#read(ByteBuffer)
      */
