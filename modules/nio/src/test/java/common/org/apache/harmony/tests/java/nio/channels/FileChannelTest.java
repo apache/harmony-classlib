@@ -22,9 +22,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.NonReadableChannelException;
 import java.nio.channels.NonWritableChannelException;
+import java.nio.channels.OverlappingFileLockException;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -54,6 +60,8 @@ public class FileChannelTest extends TestCase {
     // to read content from FileChannel
     private FileInputStream fis;
 
+    private FileLock fileLock;
+
     protected void setUp() throws Exception {
         fileOfReadOnlyFileChannel = File.createTempFile(
                 "File_of_readOnlyFileChannel", "tmp");
@@ -65,6 +73,7 @@ public class FileChannelTest extends TestCase {
                 "File_of_readWriteFileChannel", "tmp");
         fileOfReadWriteFileChannel.deleteOnExit();
         fis = null;
+        fileLock = null;
         readOnlyFileChannel = new FileInputStream(fileOfReadOnlyFileChannel)
                 .getChannel();
         writeOnlyFileChannel = new FileOutputStream(fileOfWriteOnlyFileChannel)
@@ -102,6 +111,15 @@ public class FileChannelTest extends TestCase {
                 // do nothing
             }
         }
+
+        if (null != fileLock) {
+            try {
+                fileLock.release();
+            } catch (IOException e) {
+                // do nothing
+            }
+        }
+
         if (null != fileOfReadOnlyFileChannel) {
             fileOfReadOnlyFileChannel.delete();
         }
@@ -502,6 +520,425 @@ public class FileChannelTest extends TestCase {
     }
 
     /**
+     * @tests java.nio.channels.FileChannel#lock()
+     */
+    public void test_lock() throws Exception {
+        MockFileChannel mockFileChannel = new MockFileChannel();
+        // Verify that calling lock() leads to the method
+        // lock(long, long, boolean) being called with a 0 for the
+        // first parameter, Long.MAX_VALUE as the second parameter and false
+        // as the third parameter.
+        mockFileChannel.lock();
+        assertTrue(mockFileChannel.isLockCalled);
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_Closed() throws Exception {
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.lock(0, 10, false);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.lock(0, 10, false);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.lock(0, 10, false);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // throws ClosedChannelException before IllegalArgumentException
+        try {
+            readWriteFileChannel.lock(-1, 0, false);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_IllegalArgument() throws Exception {
+        try {
+            writeOnlyFileChannel.lock(0, -1, false);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.lock(-1, 0, false);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.lock(-1, -1, false);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.lock(Long.MAX_VALUE, 1, false);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_NonWritable() throws Exception {
+        try {
+            readOnlyFileChannel.lock(0, 10, false);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+
+        // throws NonWritableChannelException before IllegalArgumentException
+        try {
+            readOnlyFileChannel.lock(-1, 0, false);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_NonReadable() throws Exception {
+        try {
+            writeOnlyFileChannel.lock(0, 10, true);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+
+        // throws NonReadableChannelException before IllegalArgumentException
+        try {
+            writeOnlyFileChannel.lock(-1, 0, true);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_Shared() throws Exception {
+        final long POSITION = 100;
+        final long SIZE = 200;
+        fileLock = readOnlyFileChannel.lock(POSITION, SIZE, true);
+        assertTrue(fileLock.isValid());
+        // fileLock.isShared depends on whether the underlying platform support
+        // shared lock, but it works on Windows & Linux.
+        assertTrue(fileLock.isShared());
+        assertSame(readOnlyFileChannel, fileLock.channel());
+        assertEquals(POSITION, fileLock.position());
+        assertEquals(SIZE, fileLock.size());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_NotShared() throws Exception {
+        final long POSITION = 100;
+        final long SIZE = 200;
+        fileLock = writeOnlyFileChannel.lock(POSITION, SIZE, false);
+        assertTrue(fileLock.isValid());
+        assertFalse(fileLock.isShared());
+        assertSame(writeOnlyFileChannel, fileLock.channel());
+        assertEquals(POSITION, fileLock.position());
+        assertEquals(SIZE, fileLock.size());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_Long_MAX_VALUE() throws Exception {
+        final long POSITION = 0;
+        final long SIZE = Long.MAX_VALUE;
+        fileLock = readOnlyFileChannel.lock(POSITION, SIZE, true);
+        assertTrue(fileLock.isValid());
+        assertTrue(fileLock.isShared());
+        assertEquals(POSITION, fileLock.position());
+        assertEquals(SIZE, fileLock.size());
+        assertSame(readOnlyFileChannel, fileLock.channel());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_Overlapping() throws Exception {
+        final long POSITION = 100;
+        final long SIZE = 200;
+        fileLock = writeOnlyFileChannel.lock(POSITION, SIZE, false);
+        assertTrue(fileLock.isValid());
+
+        try {
+            writeOnlyFileChannel.lock(POSITION + 1, SIZE, false);
+            fail("should throw OverlappingFileLockException");
+        } catch (OverlappingFileLockException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long, long, boolean)
+     */
+    public void test_lockJJZ_NotOverlapping() throws Exception {
+        final long POSITION = 100;
+        final long SIZE = 200;
+        FileLock fileLock1 = writeOnlyFileChannel.lock(POSITION, SIZE, false);
+        assertTrue(fileLock1.isValid());
+        FileLock fileLock2 = writeOnlyFileChannel.lock(POSITION + SIZE, SIZE,
+                false);
+        assertTrue(fileLock2.isValid());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#lock(long,long,boolean)
+     */
+    public void test_lockJJZ_After_Release() throws Exception {
+        fileLock = writeOnlyFileChannel.lock(0, 10, false);
+        fileLock.release();
+        // after release file lock can be obtained again.
+        fileLock = writeOnlyFileChannel.lock(0, 10, false);
+        assertTrue(fileLock.isValid());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock()
+     */
+    public void test_tryLock() throws Exception {
+        MockFileChannel mockFileChannel = new MockFileChannel();
+        // Verify that calling tryLock() leads to the method
+        // tryLock(long, long, boolean) being called with a 0 for the
+        // first parameter, Long.MAX_VALUE as the second parameter and false
+        // as the third parameter.
+        mockFileChannel.tryLock();
+        assertTrue(mockFileChannel.isTryLockCalled);
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_Closed() throws Exception {
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.tryLock(0, 10, false);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.tryLock(0, 10, false);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.tryLock(0, 10, false);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // throws ClosedChannelException before IllegalArgumentException
+        try {
+            readWriteFileChannel.tryLock(-1, 0, false);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_IllegalArgument() throws Exception {
+        try {
+            writeOnlyFileChannel.tryLock(0, -1, false);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.tryLock(-1, 0, false);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.tryLock(-1, -1, false);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.tryLock(Long.MAX_VALUE, 1, false);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_NonWritable() throws Exception {
+        try {
+            readOnlyFileChannel.tryLock(0, 10, false);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+
+        // throws NonWritableChannelException before IllegalArgumentException
+        try {
+            readOnlyFileChannel.tryLock(-1, 0, false);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_NonReadable() throws Exception {
+        try {
+            writeOnlyFileChannel.tryLock(0, 10, true);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+
+        // throws NonReadableChannelException before IllegalArgumentException
+        try {
+            writeOnlyFileChannel.tryLock(-1, 0, true);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_Shared() throws Exception {
+        final long POSITION = 100;
+        final long SIZE = 200;
+        fileLock = readOnlyFileChannel.tryLock(POSITION, SIZE, true);
+        assertTrue(fileLock.isValid());
+        // fileLock.isShared depends on whether the underlying platform support
+        // shared lock, but it works on Windows & Linux.
+        assertTrue(fileLock.isShared());
+        assertSame(readOnlyFileChannel, fileLock.channel());
+        assertEquals(POSITION, fileLock.position());
+        assertEquals(SIZE, fileLock.size());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_NotShared() throws Exception {
+        final long POSITION = 100;
+        final long SIZE = 200;
+        fileLock = writeOnlyFileChannel.tryLock(POSITION, SIZE, false);
+        assertTrue(fileLock.isValid());
+        assertFalse(fileLock.isShared());
+        assertSame(writeOnlyFileChannel, fileLock.channel());
+        assertEquals(POSITION, fileLock.position());
+        assertEquals(SIZE, fileLock.size());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_Long_MAX_VALUE() throws Exception {
+        final long POSITION = 0;
+        final long SIZE = Long.MAX_VALUE;
+        fileLock = readOnlyFileChannel.tryLock(POSITION, SIZE, true);
+        assertTrue(fileLock.isValid());
+        assertTrue(fileLock.isShared());
+        assertEquals(POSITION, fileLock.position());
+        assertEquals(SIZE, fileLock.size());
+        assertSame(readOnlyFileChannel, fileLock.channel());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_Overlapping() throws Exception {
+        final long POSITION = 100;
+        final long SIZE = 200;
+        fileLock = writeOnlyFileChannel.lock(POSITION, SIZE, false);
+        assertTrue(fileLock.isValid());
+
+        try {
+            writeOnlyFileChannel.lock(POSITION + 1, SIZE, false);
+            fail("should throw OverlappingFileLockException");
+        } catch (OverlappingFileLockException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long, long, boolean)
+     */
+    public void test_tryLockJJZ_NotOverlapping() throws Exception {
+        final long POSITION = 100;
+        final long SIZE = 200;
+        FileLock fileLock1 = writeOnlyFileChannel
+                .tryLock(POSITION, SIZE, false);
+        assertTrue(fileLock1.isValid());
+
+        FileLock fileLock2 = writeOnlyFileChannel.tryLock(POSITION + SIZE,
+                SIZE, false);
+        assertTrue(fileLock2.isValid());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#tryLock(long,long,boolean)
+     */
+    public void test_tryLockJJZ_After_Release() throws Exception {
+        fileLock = writeOnlyFileChannel.tryLock(0, 10, false);
+        fileLock.release();
+
+        // after release file lock can be obtained again.
+        fileLock = writeOnlyFileChannel.tryLock(0, 10, false);
+        assertTrue(fileLock.isValid());
+    }
+
+    /**
      * @tests java.nio.channels.FileChannel#isOpen()
      */
     public void test_isOpen() throws Exception {
@@ -533,5 +970,97 @@ public class FileChannelTest extends TestCase {
         FileOutputStream f = new FileOutputStream(tmpfile, true);
         // Below assertion fails on RI. RI behaviour is counter to spec.
         assertEquals(10, f.getChannel().position());
+    }
+
+    private class MockFileChannel extends FileChannel {
+        
+        private boolean isLockCalled = false;
+        
+        private boolean isTryLockCalled = false;
+
+        public void force(boolean arg0) throws IOException {
+            // do nothing
+        }
+
+        public FileLock lock(long position, long size, boolean shared)
+                throws IOException {
+            // verify that calling lock() leads to the method 
+            // lock(0, Long.MAX_VALUE, false).
+            if (0 == position && Long.MAX_VALUE == size && false == shared) {
+                isLockCalled = true;
+            }
+            return null;
+        }
+
+        public MappedByteBuffer map(MapMode arg0, long arg1, long arg2)
+                throws IOException {
+            return null;
+        }
+
+        public long position() throws IOException {
+            return 0;
+        }
+
+        public FileChannel position(long arg0) throws IOException {
+            return null;
+        }
+
+        public int read(ByteBuffer arg0) throws IOException {
+            return 0;
+        }
+
+        public int read(ByteBuffer arg0, long arg1) throws IOException {
+            return 0;
+        }
+
+        public long read(ByteBuffer[] srcs, int offset, int length)
+                throws IOException {
+            return 0;
+        }
+
+        public long size() throws IOException {
+            return 0;
+        }
+
+        public long transferFrom(ReadableByteChannel arg0, long arg1, long arg2)
+                throws IOException {
+            return 0;
+        }
+
+        public long transferTo(long arg0, long arg1, WritableByteChannel arg2)
+                throws IOException {
+            return 0;
+        }
+
+        public FileChannel truncate(long arg0) throws IOException {
+            return null;
+        }
+
+        public FileLock tryLock(long position, long size, boolean shared)
+                throws IOException {
+            // verify that calling tryLock() leads to the method 
+            // tryLock(0, Long.MAX_VALUE, false).
+            if (0 == position && Long.MAX_VALUE == size && false == shared) {
+                isTryLockCalled = true;
+            }
+            return null;
+        }
+
+        public int write(ByteBuffer arg0) throws IOException {
+            return 0;
+        }
+
+        public int write(ByteBuffer arg0, long arg1) throws IOException {
+            return 0;
+        }
+
+        public long write(ByteBuffer[] srcs, int offset, int length)
+                throws IOException {
+            return 0;
+        }
+
+        protected void implCloseChannel() throws IOException {
+
+        }
     }
 }
