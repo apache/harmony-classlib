@@ -1884,6 +1884,11 @@ public class ByteBufferTest extends AbstractBufferTest {
             fail("Should throw NPE"); //$NON-NLS-1$
         } catch (NullPointerException e) {
         }
+        try {
+            ByteBuffer.wrap(new byte[10], Integer.MAX_VALUE, 2);
+            fail("Should throw IndexOutOfBoundsException"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+        }
     }
 
     private void loadTestData1(byte array[], int offset, int length) {

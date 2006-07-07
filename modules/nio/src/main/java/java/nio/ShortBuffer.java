@@ -88,7 +88,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
                 if (array == null) {
                         throw new NullPointerException();
                 }
-                if (start< 0 || len < 0 || start + len > array.length) {
+                if (start< 0 || len < 0 || (long)start + (long)len > array.length) {
                         throw new IndexOutOfBoundsException();
                 }
 
@@ -306,7 +306,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 	 *                <code>remaining()</code>
 	 */
 	public ShortBuffer get(short[] dest, int off, int len) {
-        if (off < 0 || len < 0 || off + len > dest.length) {
+        if (off < 0 || len < 0 || (long)off + (long)len > dest.length) {
             throw new IndexOutOfBoundsException();
         }
 		if (len > remaining()) {
@@ -467,7 +467,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public ShortBuffer put(short[] src, int off, int len) {
-        if (off < 0 || len < 0 || off + len > src.length) {
+        if (off < 0 || len < 0 || (long)off + (long)len > src.length) {
             throw new IndexOutOfBoundsException();
         }
         

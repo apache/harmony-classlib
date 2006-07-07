@@ -94,7 +94,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
                 if (array == null) {
                         throw new NullPointerException();
                 }
-                if ((start < 0 ) || (len < 0) || start + len > array.length) {
+                if ((start < 0 ) || (len < 0) || (long)start + (long)len > array.length) {
                         throw new IndexOutOfBoundsException();
                 }
 
@@ -142,8 +142,9 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                invalid
 	 */
 	public static CharBuffer wrap(CharSequence chseq, int start, int end) {
-	    if (chseq == null)
-	        throw new NullPointerException();
+	    if (chseq == null) {
+            throw new NullPointerException();
+        }
 	    if (start < 0 || end < start || end > chseq.length()) {
 	        throw new IndexOutOfBoundsException();
 	    }
@@ -381,7 +382,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                <code>remaining()</code>
 	 */
 	public CharBuffer get(char[] dest, int off, int len) {
-        if ((off < 0 ) || (len < 0) || off + len > dest.length) {
+        if ((off < 0 ) || (len < 0) || (long)off + (long)len > dest.length) {
             throw new IndexOutOfBoundsException();
         }
         
@@ -552,7 +553,7 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public CharBuffer put(char[] src, int off, int len) {
-        if ((off < 0 ) || (len < 0) || off + len > src.length) {
+        if ((off < 0 ) || (len < 0) || (long)off + (long)len > src.length) {
             throw new IndexOutOfBoundsException();
         }
         

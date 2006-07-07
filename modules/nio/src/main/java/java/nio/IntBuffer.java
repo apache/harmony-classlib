@@ -87,7 +87,7 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
                 if (array == null) {
                         throw new NullPointerException();
                 }
-                if (start < 0 || len < 0 || len + start > array.length) {
+                if (start < 0 || len < 0 || (long)len + (long)start > array.length) {
                         throw new IndexOutOfBoundsException();
                 }
 
@@ -305,7 +305,7 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
 	 *                <code>remaining()</code>
 	 */
 	public IntBuffer get(int[] dest, int off, int len) {
-        if (off < 0 || len < 0 || len + off > dest.length) {
+        if (off < 0 || len < 0 || (long)len + (long)off > dest.length) {
             throw new IndexOutOfBoundsException();
         }
 		if (len > remaining()) {
@@ -462,7 +462,7 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public IntBuffer put(int[] src, int off, int len) {
-        if (off < 0 || len < 0 || len + off > src.length) {
+        if (off < 0 || len < 0 || (long)len + (long)off > src.length) {
             throw new IndexOutOfBoundsException();
         }
         
