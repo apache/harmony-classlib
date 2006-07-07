@@ -101,7 +101,7 @@ final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
 	}
 
     public CharBuffer put(char[] src, int off, int len) {
-        if (off < 0 || len < 0 || len + off > src.length) {
+        if (off < 0 || len < 0 || (long)len + (long)off > src.length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {

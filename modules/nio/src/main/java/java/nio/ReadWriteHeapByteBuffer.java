@@ -109,7 +109,7 @@ final class ReadWriteHeapByteBuffer extends HeapByteBuffer {
      * @see java.nio.ByteBuffer#put(byte[], int, int)
      */
     public ByteBuffer put(byte[] src, int off, int len) {
-        if (off < 0 || len < 0 || off + len > src.length) {
+        if (off < 0 || len < 0 || (long)off + (long)len > src.length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {
@@ -151,7 +151,7 @@ final class ReadWriteHeapByteBuffer extends HeapByteBuffer {
 	}
 
 	public ByteBuffer putInt(int index, int value) {
-		if (index < 0 || index + 4 > limit) {
+		if (index < 0 || (long)index + 4 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		store(index, value);
@@ -159,7 +159,7 @@ final class ReadWriteHeapByteBuffer extends HeapByteBuffer {
 	}
 
 	public ByteBuffer putLong(int index, long value) {
-		if (index < 0 || index + 8 > limit) {
+		if (index < 0 || (long)index + 8 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		store(index, value);
@@ -177,7 +177,7 @@ final class ReadWriteHeapByteBuffer extends HeapByteBuffer {
 	}
 
 	public ByteBuffer putShort(int index, short value) {
-		if (index < 0 || index + 2 > limit) {
+		if (index < 0 || (long)index + 2 > limit) {
 			throw new IndexOutOfBoundsException();
 		}
 		store(index, value);

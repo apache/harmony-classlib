@@ -101,7 +101,7 @@ final class ReadWriteIntArrayBuffer extends IntArrayBuffer {
 	}
 
     public IntBuffer put(int[] src, int off, int len) {
-        if (off < 0 || len < 0 || off + len > src.length) {
+        if (off < 0 || len < 0 || (long)off + (long)len > src.length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {

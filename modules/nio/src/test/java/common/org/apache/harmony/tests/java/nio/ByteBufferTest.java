@@ -569,6 +569,14 @@ public class ByteBufferTest extends AbstractBufferTest {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
+
+        try {
+            buf.put(array, 2, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
         assertEquals(buf.position(), 0);
 
         loadTestData2(array, 0, array.length);
