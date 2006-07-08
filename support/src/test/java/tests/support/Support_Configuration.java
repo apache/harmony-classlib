@@ -157,7 +157,6 @@ public class Support_Configuration {
 		}
 		try {
 			if (in != null) {
-				System.out.println("Loading: " + iniName);
 				load(in, props);
 			}
 		} catch (IOException e) {
