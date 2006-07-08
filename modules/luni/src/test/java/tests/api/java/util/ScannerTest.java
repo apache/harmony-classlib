@@ -1198,6 +1198,259 @@ public class ScannerTest extends TestCase {
 
     }
 
+    private static class MockStringReader extends StringReader {
+
+        public MockStringReader(String param) {
+            super(param);
+        }
+
+        public int read(CharBuffer target) throws IOException {
+            target.append('t');
+            target.append('e');
+            target.append('s');
+            target.append('t');
+            throw new IOException();
+        }
+
+    }
+    
+    /**
+     * @tests java.util.Scanner#findWithinHorizon(Pattern, int)
+     */
+    public void test_findWithinHorizon_LPatternI(){
+
+        // This method searches through the input up to the specified search
+        // horizon(exclusive).
+        s = new Scanner("123test");
+        String result = s.findWithinHorizon(Pattern.compile("\\p{Lower}"), 5);
+        assertEquals("t", result);
+        MatchResult mresult = s.match();
+        assertEquals(3, mresult.start());
+        assertEquals(4, mresult.end());
+
+        s = new Scanner("12345test1234test next");
+        /*
+         * If the pattern is found the scanner advances past the input that
+         * matched and returns the string that matched the pattern.
+         */
+        result = s.findWithinHorizon(Pattern.compile("\\p{Digit}+"), 2);
+        assertEquals("12", result);
+        mresult = s.match();
+        assertEquals(0, mresult.start());
+        assertEquals(2, mresult.end());
+        // Postion is now pointing at the bar. "12|345test1234test next"
+
+        result = s.findWithinHorizon(Pattern.compile("\\p{Digit}+"), 6);
+        assertEquals("345", result);
+
+        mresult = s.match();
+        assertEquals(2, mresult.start());
+        assertEquals(5, mresult.end());
+        // Postion is now pointing at the bar. "12345|test1234test next"
+
+        // If no such pattern is detected then the null is returned and the
+        // scanner's position remains unchanged.
+        result = s.findWithinHorizon(Pattern.compile("\\p{Digit}+"), 3);
+        assertNull(result);
+
+        try {
+            s.match();
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        assertEquals("345", mresult.group());
+        assertEquals(2, mresult.start());
+        assertEquals(5, mresult.end());
+        // Postion is now still pointing at the bar. "12345|test1234test next"
+
+        // If horizon is 0, then the horizon is ignored and this method
+        // continues to search through the input looking for the specified
+        // pattern without bound.
+        result = s.findWithinHorizon(Pattern.compile("\\p{Digit}+"), 0);
+        mresult = s.match();
+        assertEquals(9, mresult.start());
+        assertEquals(13, mresult.end());
+        // Postion is now pointing at the bar. "12345test1234|test next"
+
+        assertEquals("test", s.next());
+        mresult = s.match();
+        assertEquals(13, mresult.start());
+        assertEquals(17, mresult.end());
+
+        assertEquals("next", s.next());
+        mresult = s.match();
+        assertEquals(18, mresult.start());
+        assertEquals(22, mresult.end());
+
+        try {
+            s.findWithinHorizon((Pattern) null, -1);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            s.findWithinHorizon(Pattern.compile("\\p{Digit}+"), -1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        s.close();
+        try {
+            s.findWithinHorizon((Pattern) null, -1);
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s = new Scanner("test");
+        result = s.findWithinHorizon(Pattern.compile("\\w+"), 10);
+        assertEquals("test", result);
+
+        s = new Scanner("aa\n\rb");
+        String patternStr = "^(a)$";
+        result = s.findWithinHorizon(Pattern.compile("a"), 5);
+        assertEquals("a", result);
+        mresult = s.match();
+        assertEquals(0, mresult.start());
+        assertEquals(1, mresult.end());
+
+        result = s.findWithinHorizon(Pattern.compile(patternStr,
+                Pattern.MULTILINE), 5);
+        assertNull(result);
+
+        try {
+            mresult = s.match();
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s = new Scanner("");
+        result = s.findWithinHorizon(Pattern.compile("^"), 0);
+        assertEquals("", result);
+        MatchResult matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(0, matchResult.end());
+
+        result = s.findWithinHorizon(Pattern.compile("$"), 0);
+        assertEquals("", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(0, matchResult.end());
+
+        s = new Scanner("1 fish 2 fish red fish blue fish");
+        result = s.findWithinHorizon(Pattern
+                .compile("(\\d+) fish (\\d+) fish (\\w+) fish (\\w+)"), 10);
+        assertNull(result);
+
+        try {
+            mresult = s.match();
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        assertEquals(0, mresult.groupCount());
+
+        result = s.findWithinHorizon(Pattern
+                .compile("(\\d+) fish (\\d+) fish (\\w+) fish (\\w+)"), 100);
+        assertEquals("1 fish 2 fish red fish blue", result);
+        mresult = s.match();
+        assertEquals(4, mresult.groupCount());
+        assertEquals("1", mresult.group(1));
+        assertEquals("2", mresult.group(2));
+        assertEquals("red", mresult.group(3));
+        assertEquals("blue", mresult.group(4));
+
+        s = new Scanner("test");
+        s.close();
+        try {
+            s.findWithinHorizon(Pattern.compile("test"), 1);
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s = new Scanner("word1 WorD2  ");
+        s.close();
+        try {
+            s.findWithinHorizon(Pattern.compile("\\d+"), 10);
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s = new Scanner("word1 WorD2 wOrd3 ");
+        Pattern pattern = Pattern.compile("\\d+");
+        assertEquals("1", s.findWithinHorizon(pattern, 10));
+        assertEquals("WorD2", s.next());
+        assertEquals("3", s.findWithinHorizon(pattern, 15));
+
+        // Regression test
+        s = new Scanner(new MockStringReader("MockStringReader"));
+        pattern = Pattern.compile("test");
+        result = s.findWithinHorizon(pattern, 10);
+        assertEquals("test", result);
+
+        // Test the situation when input length is longer than buffer size.
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 1026; i++) {
+            stringBuilder.append('a');
+        }
+        s = new Scanner(stringBuilder.toString());
+        pattern = Pattern.compile("\\p{Lower}+");
+        result = s.findWithinHorizon(pattern, 1026);
+        assertEquals(stringBuilder.toString(), result);
+
+        // Test the situation when input length is longer than buffer size and
+        // set horizon to buffer size.
+        stringBuilder = new StringBuilder();
+        for (int i = 0; i < 1026; i++) {
+            stringBuilder.append('a');
+        }
+        s = new Scanner(stringBuilder.toString());
+        pattern = Pattern.compile("\\p{Lower}+");
+        result = s.findWithinHorizon(pattern, 1022);
+        assertEquals(1022, result.length());
+        assertEquals(stringBuilder.subSequence(0, 1022), result);
+
+        // Test the situation, under which pattern is clipped by buffer.
+        stringBuilder = new StringBuilder();
+        for (int i = 0; i < 1022; i++) {
+            stringBuilder.append(' ');
+        }
+        stringBuilder.append("bbc");
+        assertEquals(1025, stringBuilder.length());
+        s = new Scanner(stringBuilder.toString());
+        pattern = Pattern.compile("bbc");
+        result = s.findWithinHorizon(pattern, 1025);
+        assertEquals(3, result.length());
+        assertEquals(stringBuilder.subSequence(1022, 1025), result);
+
+        stringBuilder = new StringBuilder();
+        for (int i = 0; i < 1026; i++) {
+            stringBuilder.append('a');
+        }
+        s = new Scanner(stringBuilder.toString());
+        pattern = Pattern.compile("\\p{Lower}+");
+        result = s.findWithinHorizon(pattern, 0);
+        assertEquals(stringBuilder.toString(), result);
+        
+        stringBuilder = new StringBuilder();
+        for (int i = 0; i < 10240; i++) {
+            stringBuilder.append('-');
+        }
+        stringBuilder.replace(0, 2, "aa");
+        s = new Scanner(stringBuilder.toString());
+        result = s.findWithinHorizon(Pattern.compile("aa"), 0);
+        assertEquals("aa", result);
+        
+        s = new Scanner("aaaa");
+        result = s.findWithinHorizon(Pattern.compile("a*"), 0);
+        assertEquals("aaaa", result);
+    }
     
     protected void setUp() throws Exception {
         super.setUp();

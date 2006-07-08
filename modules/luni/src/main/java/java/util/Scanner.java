@@ -291,9 +291,74 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * @param pattern
+     * @param horizon
+     * @return
+     * @throws IllegalStateException
+     * @throws IllegalArgumentException
+     */
     public String findWithinHorizon(Pattern pattern, int horizon) {
-        throw new NotYetImplementedException();
+        checkClosed();
+        if (null == pattern) {
+            throw new NullPointerException();
+        }
+        if (horizon < 0) {
+            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
+                    .getString("KA00e")); //$NON-NLS-1$
+        }
+        matcher.usePattern(pattern);
+
+        boolean isInputExhausted = false;
+        String result = null;
+        int findEndIndex = 0;
+        int horizonEndIndex = 0;
+        if (horizon == 0) {
+            horizonEndIndex = Integer.MAX_VALUE;
+        } else {
+            horizonEndIndex = findStartIndex + horizon;
+        }
+        while (true) {
+            findEndIndex = bufferLength;
+
+            // If horizon > 0, then search up to
+            // min( bufferLength, findStartIndex + horizon).
+            // Otherwise search until readable is exhausted.
+            findEndIndex = Math.min(horizonEndIndex, bufferLength);
+            // If horizon == 0, consider horizon as always outside buffer.
+            boolean isHorizonInBuffer = (horizonEndIndex <= bufferLength);
+            // First, try to find pattern within buffer. If pattern can not be
+            // found in buffer, then expand the buffer and try again,
+            // util horizonEndIndex is exceeded or no more input left.
+            matcher.region(findStartIndex, findEndIndex);
+            if (matcher.find()) {
+                if (isHorizonInBuffer || isInputExhausted) {
+                    result = matcher.group();
+                    break;
+                }
+            } else {
+                // Pattern is not found in buffer while horizonEndIndex is
+                // within buffer, or input is exhausted. Under this situation,
+                // it can be judged that find fails.
+                if (isHorizonInBuffer || isInputExhausted) {
+                    break;
+                }
+            }
+
+            // Expand buffer and reset matcher if needed.
+            if (readMore()) {
+                matcher.reset(buffer);
+            } else {
+                isInputExhausted = true;
+            }
+        }
+        if (null != result) {
+            findStartIndex = matcher.end();
+            matchSuccessful = true;
+        } else {
+            matchSuccessful = false;
+        }
+        return result;
     }
 
     //TODO: To implement this feature
