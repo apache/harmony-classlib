@@ -259,8 +259,6 @@ public class InetAddressTest extends junit.framework.TestCase {
 
         // Test for threadsafety
         try {
-            System.out
-                    .println("\nTesting the threadsafety of getHostName.  This test could produce unpredictable results if getHostName is not threadsafe.");
             InetAddress lookup1 = InetAddress
                     .getByName(Support_Configuration.InetTestAddress);
             assertTrue(lookup1 + " expected "
@@ -290,7 +288,6 @@ public class InetAddressTest extends junit.framework.TestCase {
                 thread3.start();
                 thread4.start();
             }
-            System.out.println("Started threads, joining...");
             thread1.join();
             thread2.join();
             thread3.join();
