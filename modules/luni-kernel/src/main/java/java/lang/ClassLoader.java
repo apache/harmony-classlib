@@ -18,12 +18,13 @@ package java.lang;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.security.ProtectionDomain;
 import java.util.Enumeration;
 
 
 /**
- * This class must be implemented by the vm vendor. The documented methods and
+ * This class must be implemented by the VM vendor. The documented methods and
  * natives must be implemented to support other provided class implementations
  * in this package. ClassLoaders are used to dynamically load, link and install
  * classes into a running image.
@@ -123,18 +124,36 @@ public abstract class ClassLoader {
 			throws java.lang.ClassFormatError {
 		return null;
 	}
+    
+    /**
+     * <p>
+     * Defines a new class for the name, bytecodes in the byte buffer and the
+     * protection domain.
+     * </p>
+     * 
+     * @param name The name of the class to define.
+     * @param b The byte buffer containing the bytecodes of the new class.
+     * @param protectionDomain The protection domain this class belongs to.
+     * @return The defined class.
+     * @throws ClassFormatError if an invalid class file is defined.
+     * @since 1.5
+     */
+    protected final Class<?> defineClass(String name, ByteBuffer b,
+            ProtectionDomain protectionDomain) throws ClassFormatError {
+        byte[] temp = new byte[b.remaining()];
+        b.get(temp);
+        return defineClass(name, temp, 0, temp.length, protectionDomain);
+    }
 
 	/**
-	 * Overridden by subclasses, by default throws ClassNotFoundException. This
-	 * method is called by loadClass() after the parent ClassLoader has failed
-	 * to find a loaded class of the same name.
-	 * 
-	 * @return java.lang.Class the class or null.
-	 * @param className
-	 *            String the name of the class to search for.
-	 * @exception ClassNotFoundException
-	 *                always, unless overridden.
-	 */
+     * Overridden by subclasses, by default throws ClassNotFoundException. This
+     * method is called by loadClass() after the parent ClassLoader has failed
+     * to find a loaded class of the same name.
+     * 
+     * @return java.lang.Class the class or null.
+     * @param className String the name of the class to search for.
+     * @exception ClassNotFoundException always, unless overridden.
+     */
 	protected Class<?> findClass(String className) throws ClassNotFoundException {
 		return null;
 	}
@@ -241,7 +260,7 @@ public abstract class ClassLoader {
 	}
 
 	/**
-	 * Answers an URL specifing a resource which can be found by looking up
+	 * Answers an URL specifying a resource which can be found by looking up
 	 * resName using the system class loader's resource lookup algorithm.
 	 * 
 	 * @return URL a URL specifying a system resource or null.
@@ -254,7 +273,7 @@ public abstract class ClassLoader {
 	}
 
 	/**
-	 * Answers an Emuneration of URL containing all resources which can be found
+	 * Answers an Enumeration of URL containing all resources which can be found
 	 * by looking up resName using the system class loader's resource lookup
 	 * algorithm.
 	 * 
@@ -467,7 +486,7 @@ public abstract class ClassLoader {
 	 *            The Class object
 	 * @return signers The signers for the class
 	 */
-	final Object[] getSigners(Class c) {
+	final Object[] getSigners(Class<?> c) {
 		return null;
 	}
 
@@ -484,7 +503,7 @@ public abstract class ClassLoader {
 	}
 
 	/**
-	 * This must be provided by the vm vendor. It is used by
+	 * This must be provided by the VM vendor. It is used by
 	 * SecurityManager.checkMemberAccess() with depth = 3. Note that
 	 * checkMemberAccess() assumes the following stack when called:<br> 
 	 * <code>
@@ -527,7 +546,7 @@ public abstract class ClassLoader {
 	}
 
 	/**
-	 * This method must be provided by the vm vendor, as it is called by
+	 * This method must be provided by the VM vendor, as it is called by
 	 * java.lang.System.loadLibrary(). System.loadLibrary() cannot call
 	 * Runtime.loadLibrary() because this method loads the library using the
 	 * ClassLoader of the calling method. Loads and links the library specified
@@ -547,7 +566,7 @@ public abstract class ClassLoader {
 	}
 
 	/**
-	 * This method must be provided by the vm vendor, as it is called by
+	 * This method must be provided by the VM vendor, as it is called by
 	 * java.lang.System.load(). System.load() cannot call Runtime.load() because
 	 * the library is loaded using the ClassLoader of the calling method. Loads
 	 * and links the library specified by the argument. No security check is
