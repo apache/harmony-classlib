@@ -71,6 +71,12 @@ public class BigDecimalConstructorsTest extends TestCase {
         BigDecimal aNumber = new BigDecimal(bA);
         assertEquals("incorrect value", bA, aNumber.unscaledValue());
         assertEquals("incorrect scale", 0, aNumber.scale());
+        try {
+        	new BigDecimal((BigInteger) null);
+        	fail("No NullPointerException");
+        } catch (NullPointerException e) {
+        	//expected
+        }
     }
      
     /**

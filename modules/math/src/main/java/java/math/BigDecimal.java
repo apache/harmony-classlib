@@ -210,7 +210,10 @@ public class BigDecimal extends Number
      * as 0.
      */
     public BigDecimal(BigInteger value) {
-        intVal = value;
+        if (value == null) {
+        	throw new NullPointerException();
+        }
+    	intVal = value;
         scale = 0;
     }
 
