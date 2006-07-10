@@ -43,6 +43,7 @@ public class AllTests {
         suite.addTestSuite(ClosedByInterruptExceptionTest.class);
         suite.addTestSuite(ClosedChannelExceptionTest.class);
         suite.addTestSuite(ClosedSelectorExceptionTest.class);
+        suite.addTestSuite(ConnectionPendingExceptionTest.class);
         //$JUnit-END$
         return suite;
     }
