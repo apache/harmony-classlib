@@ -41,4 +41,20 @@ public class X509CertSelectorTest extends TestCase {
             }
         }
     }
+    
+    /**
+     * @tests addPathToName(int type, String name)
+     */
+    public void testAddPathToName() {
+        // Regression for HARMONY-724
+        for (int type = 0; type <= 8; type++) {
+            try {
+                new X509CertSelector().addPathToName(type, (String) null);
+                fail("IOException expected!");
+            } catch (IOException ioe) {
+                // expected
+            }
+        }
+    }
+
 }
