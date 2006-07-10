@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.IllegalBlockingModeException;
@@ -266,175 +267,200 @@ public class ServerSocketChannelTest extends TestCase {
         assertNull(this.serverChannel.accept());
     }
 
-    public void testReadWrite_Blocking_RealData() throws IOException {
+    /**
+     * @tests ServerSocketChannel#accept().socket()
+     */
+    public void test_read_Blocking_RealData() throws IOException {
+        serverChannel.socket().bind(localAddr1);
+        ByteBuffer buf = ByteBuffer.allocate(CAPACITY_NORMAL);
 
-        assertTrue(this.serverChannel.isBlocking());
-        ServerSocket serverSocket = this.serverChannel.socket();
-        serverSocket.bind(localAddr1);
-
-        byte[] serverWBuf = new byte[CAPACITY_NORMAL];
-        byte[] serverRBuf = new byte[CAPACITY_NORMAL];
-        for (int i = 0; i < serverWBuf.length; i++) {
-            serverWBuf[i] = (byte) i;
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            buf.put((byte) i);
         }
-        java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(CAPACITY_NORMAL);
-
-        this.clientChannel.connect(localAddr1); 
-        Socket clientSocket = this.serverChannel.accept().socket();
-        assertTrue(this.clientChannel.isConnected());
-        assertTrue(clientSocket.isConnected());
-        OutputStream out = clientSocket.getOutputStream();
-        InputStream in = clientSocket.getInputStream();
-        out.write(serverWBuf);
-        assertEquals(CAPACITY_NORMAL, this.clientChannel.read(buf));
+        clientChannel.connect(localAddr1); 
+        Socket serverSocket = serverChannel.accept().socket();
+        InputStream in = serverSocket.getInputStream();
         buf.flip();
-        assertEquals(66051, buf.asIntBuffer().get());
-        assertEquals(CAPACITY_NORMAL, this.clientChannel.write(buf));
-        in.read(serverRBuf);
-        for (int i = 0; i < serverRBuf.length; i++) {
-            assertEquals((byte) i, serverRBuf[i]);
-        }
-        this.clientChannel.close();
-        try {
-            assertEquals(CAPACITY_NORMAL, this.clientChannel.read(buf));
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
-        }
+        clientChannel.write(buf);
+        clientChannel.close();
+        assertReadResult(in,CAPACITY_NORMAL);
     }
-
-    public void testReadWrite_NonBlocking_RealData() throws Exception {
-
-        this.serverChannel.configureBlocking(false);
-        ServerSocket serverSocket = this.serverChannel.socket();
-        serverSocket.bind(localAddr1);
-
-        byte[] serverWBuf = new byte[CAPACITY_NORMAL];
-        byte[] serverRBuf = new byte[CAPACITY_NORMAL];
-        for (int i = 0; i < serverWBuf.length; i++) {
-            serverWBuf[i] = (byte) i;
-        }
-        java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(CAPACITY_NORMAL);
-        this.clientChannel.connect(localAddr1); 
-        Socket clientSocket = this.serverChannel.accept().socket();
-        if (this.clientChannel.isConnected()) {
-            OutputStream out = clientSocket.getOutputStream();
-            InputStream in = clientSocket.getInputStream();
-            out.write(serverWBuf);
-            int readCount = this.clientChannel.read(buf);
-            if (readCount != 0) {
-                assertEquals(CAPACITY_NORMAL, readCount);
-                buf.flip();
-                assertEquals(66051, buf.asIntBuffer().get());
-                assertEquals(CAPACITY_NORMAL, this.clientChannel.write(buf));
-                in.read(serverRBuf);
-                for (int i = 0; i < serverRBuf.length; i++) {
-                    assertEquals((byte) i, serverRBuf[i]);
-                }
-            } else {
-                System.err
-                        .println("Read fail,testReadByteBuffer_NonBlocking_ReadWriteRealData is not finished.");
-            }
-        } else {
-            System.err
-                    .println("Connection fail, testReadByteBuffer_NonBlocking_ReadWriteRealData is not finished.");
-        }
-
-        this.clientChannel.close();
-        try {
-            assertEquals(CAPACITY_NORMAL, this.clientChannel.read(buf));
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
-        }
-    }
-
-    public void testReadByteBuffer_Blocking_ReadWriteRealLargeData()
-            throws IOException {
-
-        assertTrue(this.serverChannel.isBlocking());
-        ServerSocket serverSocket = this.serverChannel.socket();
-        serverSocket.bind(localAddr1);
-
-        byte[] serverWBuf = new byte[CAPACITY_64KB];
-        byte[] serverRBuf = new byte[CAPACITY_64KB];
-        for (int i = 0; i < serverWBuf.length; i++) {
-            serverWBuf[i] = (byte) i;
-        }
-        java.nio.ByteBuffer buf = java.nio.ByteBuffer
-                .allocateDirect(CAPACITY_64KB);
-        this.clientChannel.connect(localAddr1); 
-        Socket clientSocket = this.serverChannel.accept().socket();
-        assertTrue(this.clientChannel.isConnected());
-        OutputStream out = clientSocket.getOutputStream();
-        InputStream in = clientSocket.getInputStream();
-        out.write(serverWBuf);
+    
+    /**
+     * Asserts read content. The read content should contain <code>size</code>
+     * bytes, and the value should be a sequence from 0 to size-1
+     * ([0,1,...size-1]). Otherwise, the method throws Exception.
+     * 
+     */
+    private void assertReadResult(InputStream in, int size) throws IOException{
+        byte[] readContent = new byte[size + 1];
         int count = 0;
         int total = 0;
-        while ((count = this.clientChannel.read(buf)) != 0){
+        while ((count = in.read(readContent, total, size + 1 - total)) != -1) {
             total = total + count;
         }
-        if (0 != total){
-            assertEquals(total, CAPACITY_64KB);
-        }
-        buf.flip();
-        assertEquals(66051, buf.asIntBuffer().get());
-        assertEquals(CAPACITY_64KB, this.clientChannel.write(buf));
-        count = in.read(serverRBuf);
-        for (int i = 0; i < count; i++) {
-            assertEquals((byte) i, serverRBuf[i]);
-        }
-        this.clientChannel.close();
-        try {
-            assertEquals(CAPACITY_NORMAL, this.clientChannel.read(buf));
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
+        assertEquals(size, total);
+        for (int i = 0; i < size; i++) {
+            assertEquals((byte) i, readContent[i]);
         }
     }
 
-    public void testReadByteBuffer_NonBlocking_ReadWriteRealLargeData()
-            throws Exception {
-
-        this.serverChannel.configureBlocking(false);
-        ServerSocket serverSocket = this.serverChannel.socket();
+    /**
+     * @tests ServerSocketChannel#accept().socket()
+     */
+    public void test_read_NonBlocking_RealData() throws Exception {
+        serverChannel.configureBlocking(false);
+        serverChannel.socket().bind(localAddr1);
+        ByteBuffer buf = ByteBuffer.allocate(CAPACITY_NORMAL);
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            buf.put((byte) i);
+        }
+        buf.flip();
+        clientChannel.connect(localAddr1); 
+        Socket serverSocket = serverChannel.accept().socket();
+        InputStream in = serverSocket.getInputStream();
+        clientChannel.write(buf);
+        clientChannel.close();
+        assertReadResult(in,CAPACITY_NORMAL);
+    }
+    
+    /**
+     * @tests ServerSocketChannel#accept().socket()
+     */
+    public void test_write_Blocking_RealData() throws IOException {
+        assertTrue(serverChannel.isBlocking());
+        ServerSocket serverSocket = serverChannel.socket();
         serverSocket.bind(localAddr1);
 
-        byte[] serverWBuf = new byte[CAPACITY_64KB];
-        byte[] serverRBuf = new byte[CAPACITY_64KB];
-        for (int i = 0; i < serverWBuf.length; i++) {
-            serverWBuf[i] = (byte) i;
+        byte[] writeContent = new byte[CAPACITY_NORMAL];
+        for (int i = 0; i < writeContent.length; i++) {
+            writeContent[i] = (byte) i;
+        }       
+        clientChannel.connect(localAddr1); 
+        Socket socket = serverChannel.accept().socket();
+        OutputStream out = socket.getOutputStream();
+        out.write(writeContent);
+        out.flush();
+        socket.close();    
+        assertWriteResult(CAPACITY_NORMAL);
+    }
+    
+
+    /**
+     * @tests ServerSocketChannel#accept().socket()
+     */
+    public void test_write_NonBlocking_RealData() throws Exception {
+        serverChannel.configureBlocking(false);
+        ServerSocket serverSocket = serverChannel.socket();
+        serverSocket.bind(localAddr1);
+
+        byte[] writeContent = new byte[CAPACITY_NORMAL];
+        for (int i = 0; i < CAPACITY_NORMAL; i++) {
+            writeContent[i] = (byte) i;
         }
-        java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(CAPACITY_64KB);
-        this.clientChannel.connect(localAddr1); 
-        Socket clientSocket = this.serverChannel.accept().socket();
-        if (this.clientChannel.isConnected()) {
-            OutputStream out = clientSocket.getOutputStream();
-            InputStream in = clientSocket.getInputStream();
-            out.write(serverWBuf);
-            int count = 0;
-            int total = 0;
-            while ((count = this.clientChannel.read(buf)) != 0){
-                total = total + count;
-            }
-            assertEquals(total, CAPACITY_64KB);
-            buf.flip();
-            assertEquals(66051, buf.asIntBuffer().get());
-            assertEquals(CAPACITY_64KB, this.clientChannel.write(buf));
-            count = in.read(serverRBuf);
-            for (int i = 0; i < count; i++) {
-                assertEquals((byte) i, serverRBuf[i]);
-            }
-        } else {
-            System.err
-                    .println("Connection fail, testReadByteBuffer_NonBlocking_ReadWriteRealLargeData is not finished.");
+        clientChannel.connect(localAddr1);
+        Socket clientSocket = serverChannel.accept().socket();
+        OutputStream out = clientSocket.getOutputStream();
+        out.write(writeContent);
+        clientSocket.close();  
+        assertWriteResult(CAPACITY_NORMAL);
+    }
+    
+    /**
+     * @tests ServerSocketChannel#accept().socket()
+     */
+    public void test_read_LByteBuffer_Blocking_ReadWriteRealLargeData()
+            throws IOException {
+        serverChannel.socket().bind(localAddr1);
+        ByteBuffer buf = ByteBuffer.allocate(CAPACITY_64KB);
+        for (int i = 0; i < CAPACITY_64KB; i++) {
+            buf.put((byte) i);
         }
-        this.clientChannel.close();
-        try {
-            assertEquals(CAPACITY_NORMAL, this.clientChannel.read(buf));
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
+        buf.flip();
+        clientChannel.connect(localAddr1);
+        clientChannel.write(buf);
+        clientChannel.close();
+        Socket socket = serverChannel.accept().socket();
+        InputStream in = socket.getInputStream();
+        assertReadResult(in,CAPACITY_64KB);
+    }
+
+    /**
+     * @tests ServerSocketChannel#accept().socket()
+     */
+    public void test_read_LByteBuffer_NonBlocking_ReadWriteRealLargeData()
+            throws Exception {
+        serverChannel.configureBlocking(false);
+        serverChannel.socket().bind(localAddr1);
+        ByteBuffer buf = ByteBuffer.allocate(CAPACITY_64KB);
+        for (int i = 0; i < CAPACITY_64KB; i++) {
+            buf.put((byte) i);
+        }
+        buf.flip();
+        clientChannel.connect(localAddr1);
+        clientChannel.write(buf);
+        clientChannel.close();
+        Socket socket = serverChannel.accept().socket();
+        InputStream in = socket.getInputStream();
+        assertReadResult(in,CAPACITY_64KB);
+    }
+    
+    /**
+     * @tests ServerSocketChannel#accept().socket()
+     */
+    public void test_write_LByteBuffer_NonBlocking_ReadWriteRealLargeData()
+            throws Exception {
+        serverChannel.configureBlocking(false);
+        serverChannel.socket().bind(localAddr1);
+        byte[] writeContent = new byte[CAPACITY_64KB];
+        for (int i = 0; i < writeContent.length; i++) {
+            writeContent[i] = (byte) i;
+        }
+        clientChannel.connect(localAddr1); 
+        Socket socket = serverChannel.accept().socket();
+        OutputStream out = socket.getOutputStream();
+        out.write(writeContent);
+        socket.close();
+        assertWriteResult(CAPACITY_64KB);
+    }
+    
+    /**
+     * @tests ServerSocketChannel#accept().socket()
+     */
+    public void test_write_LByteBuffer_Blocking_ReadWriteRealLargeData()
+            throws Exception {
+        serverChannel.socket().bind(localAddr1);
+        byte[] writeContent = new byte[CAPACITY_64KB];
+        for (int i = 0; i < writeContent.length; i++) {
+            writeContent[i] = (byte) i;
+        }
+        clientChannel.connect(localAddr1); 
+        Socket socket = serverChannel.accept().socket();
+        OutputStream out = socket.getOutputStream();
+        out.write(writeContent);
+        socket.close();
+        assertWriteResult(CAPACITY_64KB);
+    }
+    
+    /**
+     * Uses SocketChannel.read(ByteBuffer) to verify write result.
+     */
+    private void assertWriteResult(int size) throws IOException{
+        ByteBuffer buf = ByteBuffer.allocate(size + 1);
+        int count = 0;
+        int total = 0;
+        long beginTime = System.currentTimeMillis();
+        while ((count = clientChannel.read(buf)) != -1) {
+            total = total + count;
+            // 10s timeout to avoid dead loop
+            if (System.currentTimeMillis() - beginTime > 10000){
+                break;
+            }
+        }
+        assertEquals(total, size);
+        buf.flip();
+        for (int i = 0; i < count; i++) {
+            assertEquals((byte) i, buf.get(i));
         }
     }
     
