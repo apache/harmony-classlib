@@ -83,6 +83,9 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
      */
     public Certificate engineGenerateCertificate(InputStream inStream)
             throws CertificateException {
+        if (inStream == null) {
+            throw new CertificateException("Input stream should not be null.");
+        }
         try {
             if (!inStream.markSupported()) {
                 // create the mark supporting wrapper
@@ -159,6 +162,9 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
     public Collection<? extends Certificate>
             engineGenerateCertificates(InputStream inStream)
                 throws CertificateException {
+        if (inStream == null) {
+            throw new CertificateException("Input stream should not be null.");
+        }
         ArrayList result = new ArrayList();
         try {
             if (!inStream.markSupported()) {
@@ -232,6 +238,9 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
      */
     public CRL engineGenerateCRL(InputStream inStream)
             throws CRLException {
+        if (inStream == null) {
+            throw new CRLException("Input stream should not be null.");
+        }
         try {
             if (!inStream.markSupported()) {
                 // create the mark supporting wrapper
