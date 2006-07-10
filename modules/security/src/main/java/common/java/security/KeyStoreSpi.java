@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.IOException;
@@ -33,9 +28,6 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 
 public abstract class KeyStoreSpi {
-
-    public KeyStoreSpi() {
-    }
 
     public abstract Key engineGetKey(String alias, char[] password)
             throws NoSuchAlgorithmException, UnrecoverableKeyException;
@@ -99,7 +91,7 @@ public abstract class KeyStoreSpi {
                 engineLoad(null, pwd);
                 return;
             } catch (Exception e) {
-                throw new IllegalArgumentException(e.toString());
+                throw new IllegalArgumentException(e);
             }
         }
         if (pp instanceof KeyStore.CallbackHandlerProtection) {
@@ -108,7 +100,7 @@ public abstract class KeyStoreSpi {
                 engineLoad(null, pwd);
                 return;
             } catch (Exception e) {
-                throw new IllegalArgumentException(e.toString());
+                throw new IllegalArgumentException(e);
             }
         }
         throw new UnsupportedOperationException(
@@ -164,14 +156,17 @@ public abstract class KeyStoreSpi {
         if (entry == null) {
             throw new KeyStoreException("entry is null");
         }
+
         if (engineContainsAlias(alias)) {
             engineDeleteEntry(alias);
         }
+
         if (entry instanceof KeyStore.TrustedCertificateEntry) {
             KeyStore.TrustedCertificateEntry trE = (KeyStore.TrustedCertificateEntry) entry;
             engineSetCertificateEntry(alias, trE.getTrustedCertificate());
             return;
         }
+
         char[] passW = null;
         if (protParam instanceof KeyStore.PasswordProtection) {
             try {
@@ -191,51 +186,53 @@ public abstract class KeyStoreSpi {
                         "protParam should be PasswordProtection or CallbackHandlerProtection");
             }
         }
+
         if (entry instanceof KeyStore.PrivateKeyEntry) {
             KeyStore.PrivateKeyEntry prE = (KeyStore.PrivateKeyEntry) entry;
             engineSetKeyEntry(alias, prE.getPrivateKey(), passW, prE
                     .getCertificateChain());
             return;
         }
+
         if (entry instanceof KeyStore.SecretKeyEntry) {
             KeyStore.SecretKeyEntry skE = (KeyStore.SecretKeyEntry) entry;
             engineSetKeyEntry(alias, skE.getSecretKey(), passW, null);
             //            engineSetKeyEntry(alias, skE.getSecretKey().getEncoded(), null);
             return;
         }
+
         throw new KeyStoreException(
                 "Entry object is neither PrivateKeyObject nor SecretKeyEntry "
                         + "nor TrustedCertificateEntry: " + entry.toString());
     }
 
-    public boolean engineEntryInstanceOf(String alias, 
+    public boolean engineEntryInstanceOf(String alias,
             Class<? extends KeyStore.Entry> entryClass) {
         if (!engineContainsAlias(alias)) {
             return false;
         }
-        Class<?> cl1 = null;
-        Class<?> cl2 = null;
+
         try {
             if (engineIsCertificateEntry(alias)) {
-                cl1 = Class
-                        .forName("java.security.KeyStore$TrustedCertificateEntry");
-                return ((cl1 != null) ? entryClass.isAssignableFrom(cl1)
-                        : false);
+                return entryClass
+                        .isAssignableFrom(Class
+                                .forName("java.security.KeyStore$TrustedCertificateEntry"));
             }
+
             if (engineIsKeyEntry(alias)) {
-                cl1 = Class.forName("java.security.KeyStore$PrivateKeyEntry");
-                cl2 = Class.forName("java.security.KeyStore$SecretKeyEntry");
+                if (entryClass.isAssignableFrom(Class
+                        .forName("java.security.KeyStore$PrivateKeyEntry"))) {
+                    return engineGetCertificate(alias) != null;
+                }
+
+                if (entryClass.isAssignableFrom(Class
+                        .forName("java.security.KeyStore$SecretKeyEntry"))) {
+                    return engineGetCertificate(alias) == null;
+                }
             }
-            if ((cl1 != null) && entryClass.isAssignableFrom(cl1)) {
-                return true;
-            }
-            if ((cl2 != null) && entryClass.isAssignableFrom(cl2)) {
-                return true;
-            }
-            return false;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+        } catch (ClassNotFoundException ignore) {}
+
+        return false;
     }
 
     /*
@@ -245,13 +242,16 @@ public abstract class KeyStoreSpi {
      */
     static char[] getPasswordFromCallBack(KeyStore.ProtectionParameter protParam)
             throws UnrecoverableEntryException {
+
         if (protParam == null) {
             return null;
         }
+
         if (!(protParam instanceof KeyStore.CallbackHandlerProtection)) {
             throw new UnrecoverableEntryException(
                     "Incorrect ProtectionParameter");
         }
+
         String clName = Security
                 .getProperty("auth.login.defaultCallbackHandler");
         if (clName == null) {
@@ -259,6 +259,7 @@ public abstract class KeyStoreSpi {
                     "Default CallbackHandler was not defined");
 
         }
+
         try {
             Class<?> cl = Class.forName(clName);
             CallbackHandler cbHand = (CallbackHandler) cl.newInstance();
@@ -269,5 +270,4 @@ public abstract class KeyStoreSpi {
             throw new UnrecoverableEntryException(e.toString());
         }
     }
-
 }

@@ -28,6 +28,9 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.cert.Certificate;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
 import org.apache.harmony.security.tests.support.KeyStoreTestSupport;
 import org.apache.harmony.security.tests.support.MyLoadStoreParams;
 import org.apache.harmony.security.tests.support.SpiEngUtils;
@@ -210,5 +213,34 @@ public class KeyStoreTest extends TestCase {
             } catch (KeyStoreException e) {
             }
         }
+    }
+
+
+    /*
+     * @tests java.security.KeyStoreSpi.engineEntryInstanceOf(String, Class<? extends Entry>)
+     */
+    public void testEngineEntryInstanceOf() throws Exception {
+        //Regression for HARMONY-615
+
+        // create a KeyStore 
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keyStore.load(null, "pwd".toCharArray());
+
+        // genarate a key 
+        KeyGenerator keyGen = KeyGenerator.getInstance("DES");
+        keyGen.init(56);
+        SecretKey secretKey = keyGen.generateKey();
+
+        // put the key into keystore 
+        String alias = "alias";
+        keyStore.setKeyEntry(alias, secretKey, "pwd".toCharArray(), null);
+
+        // check if it is a secret key 
+        assertTrue(keyStore.entryInstanceOf(alias,
+                KeyStore.SecretKeyEntry.class));
+
+        // check if it is NOT a private key 
+        assertFalse(keyStore.entryInstanceOf(alias,
+                KeyStore.PrivateKeyEntry.class));
     }
 }
