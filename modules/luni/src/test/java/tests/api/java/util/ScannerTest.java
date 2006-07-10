@@ -928,6 +928,385 @@ public class ScannerTest extends TestCase {
     
     /**
      * @throws IOException
+     * @tests java.util.Scanner#nextInt(int)
+     */
+    public void test_nextIntI() throws IOException {
+        s = new Scanner("123 456");
+        assertEquals(123, s.nextInt(10));
+        assertEquals(456, s.nextInt(10));
+        try {
+            s.nextInt(10);
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        assertEquals(38, s.nextInt(5));
+        try {
+            s.nextInt(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789123456789123456789123456789");
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextInt(10));
+        assertEquals(23456, s.nextInt(10));
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextInt(10));
+        assertEquals(23456, s.nextInt(10));
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertEquals(102, s.nextInt(10));
+        try {
+            s.nextInt(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        assertEquals(162, s.nextInt(10));
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextInt(10));
+        assertEquals(23456, s.nextInt(10));
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+
+        s = new Scanner("03456");
+        assertEquals(3456, s.nextInt(10));
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(3456, s.nextInt(10));
+
+        s = new Scanner("E3456");
+        assertEquals(930902, s.nextInt(16));
+        // The following test case fails on RI, because RI does not support
+        // letter as leading digit
+        s = new Scanner("E3,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(930902, s.nextInt(16));
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextInt(10));
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextInt(10));
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextInt(10));
+
+        /*
+         * There are three types of negative prefix all in all. '' '-' '(' There
+         * are three types of negative suffix all in all. '' '-' ')' '(' and ')'
+         * must be used togethor. Prefix '-' and suffix '-' must be used 
+         * exclusively.
+         */
+
+        /*
+         * According to Integer regular expression: Integer :: = ( [-+]? (*
+         * Numeral ) ) | LocalPositivePrefix Numeral LocalPositiveSuffix |
+         * LocalNegativePrefix Numeral LocalNegativeSuffix 123- should be
+         * recognized by scanner with locale ar_AE, (123) shouble be recognized
+         * by scanner with locale mk_MK. But this is not the case on RI.
+         */
+        s = new Scanner("-123 123- -123-");
+        s.useLocale(new Locale("ar", "AE"));
+        assertEquals(-123, s.nextInt(10));
+        // The following test case fails on RI
+        assertEquals(-123, s.nextInt(10));
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+
+        s = new Scanner("-123 123- (123)");
+        s.useLocale(new Locale("mk", "MK"));
+        assertEquals(-123, s.nextInt(10));
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        // Skip the un-recognizable token 123-.
+        assertEquals("123-", s.next());
+        // The following test case fails on RI
+        assertEquals(-123, s.nextInt(10));
+
+        // If the parameter radix is illegal, the following test cases fail on
+        // RI
+        try {
+            s.nextInt(Character.MIN_RADIX - 1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        try {
+            s.nextInt(Character.MAX_RADIX + 1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#nextInt()
+     */
+    public void test_nextInt() throws IOException {
+        s = new Scanner("123 456");
+        assertEquals(123, s.nextInt());
+        assertEquals(456, s.nextInt());
+        try {
+            s.nextInt();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        s.useRadix(5);
+        assertEquals(38, s.nextInt());
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789123456789123456789123456789");
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextInt());
+        assertEquals(23456, s.nextInt());
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextInt());
+        assertEquals(23456, s.nextInt());
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertEquals(102, s.nextInt());
+        s.useRadix(5);
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useRadix(10);
+        assertEquals(162, s.nextInt());
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextInt());
+        assertEquals(23456, s.nextInt());
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+
+        s = new Scanner("03456");
+        assertEquals(3456, s.nextInt());
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(3456, s.nextInt());
+
+        s = new Scanner("E3456");
+        s.useRadix(16);
+        assertEquals(930902, s.nextInt());
+
+        // The following test case fails on RI, because RI does not support
+        // letter as leading digit
+        s = new Scanner("E3,456");
+        s.useLocale(Locale.ENGLISH);
+        s.useRadix(16);
+        assertEquals(930902, s.nextInt());
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextInt());
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextInt());
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextInt());
+
+        /*
+         * There are three types of negative prefix all in all. '' '-' '(' There
+         * are three types of negative suffix all in all. '' '-' ')' '(' and ')'
+         * must be used togethor. Prefix '-' and suffix '-' must be used
+         * exclusively.
+         */
+
+        /*
+         * According to Integer regular expression: Integer :: = ( [-+]? (*
+         * Numeral ) ) | LocalPositivePrefix Numeral LocalPositiveSuffix |
+         * LocalNegativePrefix Numeral LocalNegativeSuffix 123- should be
+         * recognized by scanner with locale ar_AE, (123) shouble be recognized
+         * by scanner with locale mk_MK. But this is not the case on RI.
+         */
+        s = new Scanner("-123 123- -123-");
+        s.useLocale(new Locale("ar", "AE"));
+        assertEquals(-123, s.nextInt());
+        // The following test case fails on RI
+        assertEquals(-123, s.nextInt());
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+
+        s = new Scanner("-123 123- (123)");
+        s.useLocale(new Locale("mk", "MK"));
+        assertEquals(-123, s.nextInt());
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        // Skip the un-recognizable token 123-.
+        assertEquals("123-", s.next());
+        // The following test case fails on RI
+        assertEquals(-123, s.nextInt());
+    }
+    
+    /**
+     * @throws IOException
      * @tests java.util.Scanner#hasNext()
      */
     public void test_hasNext() throws IOException {
@@ -1196,6 +1575,353 @@ public class ScannerTest extends TestCase {
         assertFalse(s.nextBoolean());
         assertFalse(s.hasNextBoolean());
 
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextInt(int)
+     */
+    public void test_hasNextIntI() throws IOException {
+        s = new Scanner("123 456");
+        assertEquals(123, s.nextInt(10));
+        assertTrue(s.hasNextInt(10));
+        assertEquals(456, s.nextInt(10));
+        assertFalse(s.hasNextInt(10));
+        try {
+            s.nextInt(10);
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        assertTrue(s.hasNextInt(5));
+        assertEquals(38, s.nextInt(5));
+        assertFalse(s.hasNextInt(5));
+        try {
+            s.nextInt(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789123456789123456789123456789");
+        assertFalse(s.hasNextInt(10));
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextInt(10));
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextInt(10));
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextInt(10));
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextInt(10));
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06662");
+        assertTrue(s.hasNextInt(10));
+        assertFalse(s.hasNextInt(5));
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666");
+        s.useLocale(Locale.CHINESE);
+        assertFalse(s.hasNextInt(10));
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextInt(10));
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        assertFalse(s.hasNextInt(10));
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+
+        s = new Scanner("03456");
+        assertTrue(s.hasNextInt(10));
+        assertEquals(3456, s.nextInt(10));
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextInt(10));
+        assertEquals(3456, s.nextInt(10));
+
+        s = new Scanner("E3456");
+        assertTrue(s.hasNextInt(16));
+        assertEquals(930902, s.nextInt(16));
+        // The following test case fails on RI, because RI does not support
+        // letter as leading digit
+        s = new Scanner("E3,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextInt(16));
+        assertEquals(930902, s.nextInt(16));
+
+        // If parameter radix is illegal, the following test case fails on RI
+        try {
+            s.hasNextInt(Character.MIN_RADIX - 1);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextInt(10));
+        assertEquals(12300, s.nextInt(10));
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextInt(10));
+        assertEquals(12300, s.nextInt(10));
+
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextInt(10));
+        assertEquals(12300, s.nextInt(10));
+
+        /*
+         * There are three types of negative prefix all in all. '' '-' '(' There
+         * are three types of negative suffix all in all. '' '-' ')' '(' and ')'
+         * must be used togethor. Prefix '-' and suffix '-' must be used 
+         * exclusively.
+         */
+
+        /*
+         * According to Integer regular expression: Integer :: = ( [-+]? (*
+         * Numeral ) ) | LocalPositivePrefix Numeral LocalPositiveSuffix |
+         * LocalNegativePrefix Numeral LocalNegativeSuffix 123- should be
+         * recognized by scanner with locale ar_AE, (123) shouble be recognized
+         * by scanner with locale mk_MK. But this is not the case on RI.
+         */
+        s = new Scanner("-123 123- -123-");
+        s.useLocale(new Locale("ar", "AE"));
+        assertTrue(s.hasNextInt(10));
+        assertEquals(-123, s.nextInt(10));
+        // The following test case fails on RI
+        assertTrue(s.hasNextInt(10));
+        assertEquals(-123, s.nextInt(10));
+        assertFalse(s.hasNextInt(10));
+        try {
+            s.nextInt(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+
+        s = new Scanner("-123 123- (123)");
+        s.useLocale(new Locale("mk", "MK"));
+        assertTrue(s.hasNextInt(10));
+        assertEquals(-123, s.nextInt(10));
+        assertFalse(s.hasNextInt(10));
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        // Skip the un-recognizable token 123-.
+        assertEquals("123-", s.next());
+        // The following test case fails on RI
+        assertTrue(s.hasNextInt(10));
+        assertEquals(-123, s.nextInt(10));
+    }
+
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextInt()
+     */
+    public void test_hasNextInt() throws IOException {
+        s = new Scanner("123 456");
+        assertTrue(s.hasNextInt());
+        assertEquals(123, s.nextInt());
+        assertEquals(456, s.nextInt());
+        assertFalse(s.hasNextInt());
+        try {
+            s.nextInt();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        s.useRadix(5);
+        assertTrue(s.hasNextInt());
+        assertEquals(38, s.nextInt());
+        assertFalse(s.hasNextInt());
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789123456789123456789123456789");
+        assertFalse(s.hasNextInt());
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextInt());
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextInt());
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextInt());
+        s.useLocale(new Locale("it", "CH"));
+        assertTrue(s.hasNextInt());
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06662");
+        s.useRadix(5);
+        assertFalse(s.hasNextInt());
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666");
+        s.useLocale(Locale.CHINESE);
+        assertFalse(s.hasNextInt());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextInt());
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        assertFalse(s.hasNextInt());
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+
+        s = new Scanner("03456");
+        assertTrue(s.hasNextInt());
+        assertEquals(3456, s.nextInt());
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(3456, s.nextInt());
+
+        s = new Scanner("E3456");
+        s.useRadix(16);
+        assertTrue(s.hasNextInt());
+        assertEquals(930902, s.nextInt());
+
+        // The following test case fails on RI, because RI does not support
+        // letter as leading digit
+        s = new Scanner("E3,456");
+        s.useLocale(Locale.ENGLISH);
+        s.useRadix(16);
+        assertTrue(s.hasNextInt());
+        assertEquals(930902, s.nextInt());
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextInt());
+        assertEquals(12300, s.nextInt());
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextInt());
+        assertEquals(12300, s.nextInt());
+
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextInt());
+        assertEquals(12300, s.nextInt());
+
+        /*
+         * There are three types of negative prefix all in all. '' '-' '(' There
+         * are three types of negative suffix all in all. '' '-' ')' '(' and ')'
+         * must be used togethor. Prefix '-' and suffix '-' must be used 
+         * exclusively.
+         */
+
+        /*
+         * According to Integer regular expression: Integer :: = ( [-+]? (*
+         * Numeral ) ) | LocalPositivePrefix Numeral LocalPositiveSuffix |
+         * LocalNegativePrefix Numeral LocalNegativeSuffix 123- should be
+         * recognized by scanner with locale ar_AE, (123) shouble be recognized
+         * by scanner with locale mk_MK. But this is not the case on RI.
+         */
+        s = new Scanner("-123 123- -123-");
+        s.useLocale(new Locale("ar", "AE"));
+        assertTrue(s.hasNextInt());
+        assertEquals(-123, s.nextInt());
+        // The following test case fails on RI
+        assertTrue(s.hasNextInt());
+        assertEquals(-123, s.nextInt());
+        assertFalse(s.hasNextInt());
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+
+        s = new Scanner("-123 123- (123)");
+        s.useLocale(new Locale("mk", "MK"));
+        assertTrue(s.hasNextInt());
+        assertEquals(-123, s.nextInt());
+        try {
+            s.nextInt();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // expected
+        }
+        // Skip the un-recognizable token 123-.
+        assertEquals("123-", s.next());
+        // The following test case fails on RI
+        assertTrue(s.hasNextInt());
+        assertEquals(-123, s.nextInt());
     }
 
     private static class MockStringReader extends StringReader {

@@ -65,7 +65,7 @@ public final class Scanner implements Iterator<String> {
             "true|false", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     
     // The pattern matching anything
-    private static final Pattern ANY_PATTERN = Pattern.compile("(?s).*");
+    private static final Pattern ANY_PATTERN = Pattern.compile("(?s).*"); //$NON-NLS-1$
 
     private static final int DIPLOID = 2;
 
@@ -102,6 +102,8 @@ public final class Scanner implements Iterator<String> {
     private IOException lastIOException;
     
     private boolean matchSuccessful = false;
+    
+    private DecimalFormat decimalFormat;
 
     /**
      * Constructs a scanner that uses File as its input. The default charset is
@@ -132,12 +134,12 @@ public final class Scanner implements Iterator<String> {
     public Scanner(File src, String charsetName) throws FileNotFoundException {
         if (null == src) {
             throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00a"));
+                    .getString("KA00a")); //$NON-NLS-1$
         }
         FileInputStream fis = new FileInputStream(src);
         if (null == charsetName) {
             throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("KA009"));
+                    .getString("KA009")); //$NON-NLS-1$
         }
         try {
             input = new InputStreamReader(fis, charsetName);
@@ -188,7 +190,7 @@ public final class Scanner implements Iterator<String> {
     public Scanner(InputStream src, String charsetName) {
         if (null == src) {
             throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00b"));
+                    .getString("KA00b")); //$NON-NLS-1$
         }
         try {
             input = new InputStreamReader(src, charsetName);
@@ -237,11 +239,11 @@ public final class Scanner implements Iterator<String> {
     public Scanner(ReadableByteChannel src, String charsetName) {
         if (null == src) {
             throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00d"));
+                    .getString("KA00d")); //$NON-NLS-1$
         }
         if (null == charsetName) {
             throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("KA009"));
+                    .getString("KA009")); //$NON-NLS-1$
         }
         try {
             input = new InputStreamReader(Channels.newInputStream(src),
@@ -483,16 +485,48 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * int value in the default radix. The scanner does not advance past the
+     * input.
+     * 
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid int value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextInt() {
-        throw new NotYetImplementedException();
+        return hasNextInt(radix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * int value in the specified radix. The scanner does not advance past the
+     * input.
+     * 
+     * @param radix
+     *            the radix used to translate the token into an int value
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid int value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextInt(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        boolean isIntValue = false;
+        String intString;
+        if (hasNext(integerPattern)) {
+            intString = removeLocaleInfo(matcher.group());
+            try {
+                Integer.parseInt(intString, radix);
+                isIntValue = true;
+            } catch (NumberFormatException e) {
+                matchSuccessful = false;
+            }
+        }
+        return isIntValue;
     }
-
+    
     //TODO: To implement this feature
     public boolean hasNextLine() {
         throw new NotYetImplementedException();
@@ -700,14 +734,67 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into an int value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextInt() returned
+     * true. If this match succeeds, the scanner advances past the input that
+     * matched.
+     * 
+     * The invocation of this method in the form nextInt() behaves in the same
+     * way as the invocaiton of nextInt(radix), the radix is the default radix
+     * of this scanner.
+     * 
+     * @return the int value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid int
+     *             value
+     */
     public int nextInt() {
-        throw new NotYetImplementedException();
+        return nextInt(radix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into an int value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextInt(radix)
+     * returned true. If this match succeeds, the scanner advances past the
+     * input that matched.
+     * 
+     * If the next token matches the Integer regular expression successfully,
+     * the token is translated into an int value as following steps. At first
+     * all locale specific prefixes ,group separators, and locale specific
+     * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
+     * via Character.digit, a negative sign (-) is added if the locale specific
+     * negative prefixes and suffixes were present. At last the resulting String
+     * is passed to Integer.parseInt with the specified radix.
+     * 
+     * @param radix
+     *            the radix used to translate the token into an int value
+     * @return the int value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid int
+     *             value
+     */
     public int nextInt(int radix) {
-        throw new NotYetImplementedException();
+        String intString = nextIntegerToken(radix);
+        int intValue = 0;
+        try {
+            intValue = Integer.parseInt(intString, radix);
+        } catch (NumberFormatException e) {
+            matchSuccessful = false;
+            recoverPreviousStatus();
+            throw new InputMismatchException();
+        }
+        return intValue;
     }
 
     //TODO: To implement this feature
@@ -812,7 +899,7 @@ public final class Scanner implements Iterator<String> {
     public Scanner useRadix(int radix) {
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
             throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("KA008", radix));
+                    .getString("KA008", radix)); //$NON-NLS-1$
         }
         this.radix = radix;
         return this;
@@ -888,6 +975,178 @@ public final class Scanner implements Iterator<String> {
      */
     private void recoverPreviousStatus() {
         findStartIndex = preStartIndex;
+    }
+    
+    /*
+     * Get next token if it matches integer regular expression after removing
+     * locale related information
+     */
+    private String nextIntegerToken(int radix) {
+        Pattern integerPattern = getIntegerPattern(radix);
+        String tokenString = next(integerPattern);
+        String intString = removeLocaleInfo(tokenString);
+        return intString;
+    }
+
+    /*
+     * Get integer's pattern
+     */
+    private Pattern getIntegerPattern(int radix) {
+        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
+            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
+                    .getString("KA00e", radix)); //$NON-NLS-1$
+        }
+        decimalFormat = (DecimalFormat) NumberFormat.getInstance(locale);
+        
+        String allAvailableDigits="0123456789abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$ 
+        String ASCIIDigit=allAvailableDigits.substring(0, radix);
+        String nonZeroASCIIDigit=allAvailableDigits.substring(1, radix);
+
+        StringBuilder digit = new StringBuilder("((?i)[").append(ASCIIDigit) //$NON-NLS-1$ 
+                .append("]|\\p{javaDigit})"); //$NON-NLS-1$
+        StringBuilder nonZeroDigit = new StringBuilder("((?i)[").append( //$NON-NLS-1$
+                nonZeroASCIIDigit).append("]|([\\p{javaDigit}&&[^0]]))"); //$NON-NLS-1$
+        StringBuilder numeral = getNumeral(digit, nonZeroDigit);
+
+        StringBuilder integer = new StringBuilder("(([-+]?(").append(numeral) //$NON-NLS-1$
+                .append(")))|(").append(addPositiveSign(numeral)).append(")|(") //$NON-NLS-1$ //$NON-NLS-2$
+                .append(addNegativeSign(numeral)).append(")"); //$NON-NLS-1$
+
+        Pattern integerPattern = Pattern.compile(integer.toString());
+        return integerPattern;
+    }
+
+
+    private StringBuilder getNumeral(StringBuilder digit,
+            StringBuilder nonZeroDigit) {
+        char groupSeparator = decimalFormat.getDecimalFormatSymbols()
+                .getGroupingSeparator();
+        StringBuilder groupedNumeral = new StringBuilder("(").append( //$NON-NLS-1$
+                nonZeroDigit).append(digit).append("?").append(digit).append( //$NON-NLS-1$
+                "?(\\").append(groupSeparator).append(digit).append(digit) //$NON-NLS-1$
+                .append(digit).append(")+)"); //$NON-NLS-1$
+        StringBuilder numeral = new StringBuilder("((").append(digit).append( //$NON-NLS-1$
+                "++)|").append(groupedNumeral).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+        return numeral;
+    }
+
+    /*
+     * Add the locale specific positive prefixes and suffixes to the pattern
+     */
+    private StringBuilder addPositiveSign(StringBuilder unSignNumeral) {
+        String positivePrefix = ""; //$NON-NLS-1$
+        String positiveSuffix = ""; //$NON-NLS-1$
+        if (!decimalFormat.getPositivePrefix().equals("")) { //$NON-NLS-1$
+            positivePrefix = "\\" + decimalFormat.getPositivePrefix(); //$NON-NLS-1$
+        }
+        if (!decimalFormat.getPositiveSuffix().equals("")) { //$NON-NLS-1$
+            positiveSuffix = "\\" + decimalFormat.getPositiveSuffix(); //$NON-NLS-1$
+        }
+        StringBuilder signedNumeral = new StringBuilder()
+                .append(positivePrefix).append(unSignNumeral).append(
+                        positiveSuffix);
+        return signedNumeral;
+    }
+
+    /*
+     * Add the locale specific negative prefixes and suffixes to the pattern
+     */
+    private StringBuilder addNegativeSign(StringBuilder unSignNumeral) {
+        String negativePrefix = ""; //$NON-NLS-1$
+        String negativeSuffix = ""; //$NON-NLS-1$
+        if (!decimalFormat.getNegativePrefix().equals("")) { //$NON-NLS-1$
+            negativePrefix = "\\" + decimalFormat.getNegativePrefix(); //$NON-NLS-1$
+        }
+        if (!decimalFormat.getNegativeSuffix().equals("")) { //$NON-NLS-1$
+            negativeSuffix = "\\" + decimalFormat.getNegativeSuffix(); //$NON-NLS-1$
+        }
+        StringBuilder signedNumeral = new StringBuilder()
+                .append(negativePrefix).append(unSignNumeral).append(
+                        negativeSuffix);
+        return signedNumeral;
+    }
+
+    /*
+     * Remove the locale specific prefixes, group separators, and locale
+     * specific suffixes from input string
+     */
+    private String removeLocaleInfo(String token) {
+        StringBuilder tokenBuilder = new StringBuilder(token);
+        boolean negative = removeLocaleSign(tokenBuilder);
+        // Remove group separator
+        String groupSeparator = String.valueOf(decimalFormat
+                .getDecimalFormatSymbols().getGroupingSeparator());
+        int separatorIndex = -1;
+        while (-1 != (separatorIndex = tokenBuilder.indexOf(groupSeparator))) {
+            tokenBuilder.delete(separatorIndex, separatorIndex + 1);
+        }
+        // Remove decimal separator
+        String decimalSeparator = String.valueOf(decimalFormat
+                .getDecimalFormatSymbols().getDecimalSeparator());
+        separatorIndex = tokenBuilder.indexOf(decimalSeparator);
+        StringBuilder result = new StringBuilder(""); //$NON-NLS-1$
+        
+        for (int i = 0; i < tokenBuilder.length(); i++) {
+            if (-1 != Character.digit(tokenBuilder.charAt(i),
+                    Character.MAX_RADIX)) {
+                result.append(tokenBuilder.charAt(i));
+            }
+        }
+        // Token is NaN or Infinity
+        if (0 == result.length()) {
+            result = tokenBuilder;
+        }
+        if (-1 != separatorIndex) {
+            result.insert(separatorIndex, "."); //$NON-NLS-1$
+        }
+        // If input is negative
+        if (negative) {
+            result.insert(0, '-');
+        }
+        return result.toString();
+    }
+
+    /*
+     * remove positive and negative sign from the parameter stringBuilder, and
+     * return whether the input string is negative
+     */
+    private boolean removeLocaleSign(StringBuilder tokenBuilder) {
+        String positivePrefix = decimalFormat.getPositivePrefix();
+        String positiveSuffix = decimalFormat.getPositiveSuffix();
+        String negativePrefix = decimalFormat.getNegativePrefix();
+        String negativeSuffix = decimalFormat.getNegativeSuffix();
+
+        if (0 == tokenBuilder.indexOf("+")) { //$NON-NLS-1$
+            tokenBuilder.delete(0, 1);
+        }
+        if (!positivePrefix.equals("") //$NON-NLS-1$
+                && 0 == tokenBuilder.indexOf(positivePrefix)) {
+            tokenBuilder.delete(0, positivePrefix.length());
+        }
+        if (!positiveSuffix.equals("") //$NON-NLS-1$
+                && -1 != tokenBuilder.indexOf(positiveSuffix)) {
+            tokenBuilder.delete(
+                    tokenBuilder.length() - positiveSuffix.length(),
+                    tokenBuilder.length());
+        }
+        boolean negative = false;
+        if (0 == tokenBuilder.indexOf("-")) { //$NON-NLS-1$
+            tokenBuilder.delete(0, 1);
+            negative = true;
+        }
+        if (!negativePrefix.equals("") //$NON-NLS-1$
+                && 0 == tokenBuilder.indexOf(negativePrefix)) {
+            tokenBuilder.delete(0, negativePrefix.length());
+            negative = true;
+        }
+        if (!negativeSuffix.equals("") //$NON-NLS-1$
+                && -1 != tokenBuilder.indexOf(negativeSuffix)) {
+            tokenBuilder.delete(
+                    tokenBuilder.length() - negativeSuffix.length(),
+                    tokenBuilder.length());
+            negative = true;
+        }
+        return negative;
     }
 
     /*
