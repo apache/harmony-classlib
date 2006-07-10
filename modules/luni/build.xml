@@ -289,16 +289,8 @@
 	</delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile.java" depends="copy.resources">
         <echo message="Compiling LUNI classes" />
-
-        <mkdir dir="${hy.build}" />
-
-            <copy todir="${hy.build}" includeemptydirs="false">
-                <fileset dir="${hy.luni.src.main.java}">
-                    <exclude name="**/*.java" />
-                </fileset>
-            </copy>
 
         <javac sourcepath=""
                srcdir="${hy.luni.src.main.java}"
@@ -505,6 +497,15 @@
             append="true">luni${line.separator}</echo>
     </target>
 
+	<target name="copy.resources">
+    	<mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.luni.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+	</target>
+	
     <macrodef name="compile-tests">
         <attribute name="description" default="" />
         <attribute name="destdir"  />
