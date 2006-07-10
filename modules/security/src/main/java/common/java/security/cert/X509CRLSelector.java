@@ -83,6 +83,9 @@ public class X509CRLSelector implements CRLSelector {
             issuerPrincipals = null;
             return;
         }
+        if (names.size() == 0) {
+            return;
+        }
         issuerNames = new ArrayList<String>(names.size());
         for (Object name: names) {
             if (name instanceof String) {

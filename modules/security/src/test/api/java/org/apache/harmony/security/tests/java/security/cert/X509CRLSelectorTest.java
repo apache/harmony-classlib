@@ -23,6 +23,8 @@ package org.apache.harmony.security.tests.java.security.cert;
 
 import java.io.IOException;
 import java.security.cert.X509CRLSelector;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -91,7 +93,7 @@ public class X509CRLSelectorTest extends TestCase {
     }
 
     /**
-     * addIssuerName(String name) method testing.
+     * @tests addIssuerName(String name)
      */
     public void testAddIssuerName() throws IOException {
         //Regression for HARMONY-736
@@ -103,5 +105,18 @@ public class X509CRLSelectorTest extends TestCase {
 
         //no exception for null
         selector.addIssuerName((String) null);
+    }
+
+    /**
+     * @tests setIssuerNames(Collection <?> names)
+     */
+    public void testSetIssuerNames1() throws IOException {
+        // Regression for HARMONY-737
+        X509CRLSelector selector = new X509CRLSelector();
+        selector.setIssuerNames(new TreeSet() {
+            public Iterator iterator() {
+                return null;
+            }
+        });
     }
 }
