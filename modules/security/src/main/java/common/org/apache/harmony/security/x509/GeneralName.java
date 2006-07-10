@@ -22,6 +22,8 @@
 package org.apache.harmony.security.x509;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -143,6 +145,9 @@ public class GeneralName {
      * <pre>
      */
     public GeneralName(int tag, String name) throws IOException {
+        if (name == null) {
+            throw new IOException("The name should not be null.");
+        }
         this.tag = tag;
         switch (tag) {
             case OTHER_NAME :
@@ -150,37 +155,36 @@ public class GeneralName {
             case EDIP_NAME :
                 throw new IOException(
                         "Unknown string representation for type ["+tag+"]");
-            case RFC822_NAME :
             case DNS_NAME :
+                // according to RFC 3280 p.34 the DNS name should be 
+                // checked against the
+                // RFC 1034 p.10 (3.5. Preferred name syntax):
+                checkDNS(name);
+                this.name = name;
+                break;
             case UR_ID :
+                // check the uniformResourceIdentifier for correctness
+                // according to RFC 3280 p.34
+                checkURI(name);
+                this.name = name;
+                break;
+            case RFC822_NAME :
                 this.name = name;
                 break;
             case REG_ID:
-                this.name = ObjectIdentifier.toIntArray(name);
+                this.name = oidStrToInts(name);
                 break;
             case DIR_NAME :
-                try {
-                    this.name = new Name(name);
-                } catch (IOException e) {
-                    throw new IOException("The string " +
-                                "representation of directoryName " +
-                                "is not correct:" + name);
-                }
+                this.name = new Name(name);
                 break;
             case IP_ADDR :
                 this.name = ipStrToBytes(name);
-                int length = ((byte[])this.name).length;
-                if ((length != 4) && (length != 8) 
-                                    && (length != 16) && (length != 32)) {
-                    throw 
-                        new IOException("Specified iPAddress is not correct.");
-                }
                 break;
             default:
                 throw new IOException("Unknown type: ["+tag+"]");
         }
     }
-    
+
     /**
      * TODO
      * @param   name:   OtherName
@@ -245,6 +249,9 @@ public class GeneralName {
      */
     public GeneralName(int tag, byte[] name) 
                                     throws IOException {
+        if (name == null) {
+            throw new IOException("The name should not be null.");
+        }
         if ((tag < 0) || (tag > 8)) {
             throw new IOException("GeneralName: unknown tag: " + tag);
         }
@@ -294,30 +301,25 @@ public class GeneralName {
         if (!(_gname instanceof GeneralName)) {
             return false;
         }
-        //System.out.println("COMP: "+this+" <> "+_gname);
         GeneralName gname = (GeneralName) _gname;
         if (this.tag != gname.tag) {
-            //System.out.println(false);
             return false;
         }
         switch(tag) {
             case RFC822_NAME:
             case DNS_NAME:
             case UR_ID:
-                //System.out.println(((String) name).equals(gname.getName()));
-                return ((String) name).equals(gname.getName());
+                return ((String) name).equalsIgnoreCase(
+                        (String) gname.getName());
             case REG_ID:
-                //System.out.println(Arrays.equals((int[]) name, (int[]) gname.name));
                 return Arrays.equals((int[]) name, (int[]) gname.name);
             case IP_ADDR: 
                 // iPAddress [7], check by using ranges.
-                //System.out.println(Arrays.equals((byte[]) name, (byte[]) gname.name));
                 return Arrays.equals((byte[]) name, (byte[]) gname.name);
             case DIR_NAME: 
             case X400_ADDR:
             case OTHER_NAME:
             case EDIP_NAME:
-                //System.out.println(Arrays.equals(getEncoded(), gname.getEncoded()));
                 return Arrays.equals(getEncoded(), gname.getEncoded());
             default:
                 // should never happen
@@ -349,17 +351,18 @@ public class GeneralName {
                 // Mail address [1]: 
                 // a@b.c - particular address is acceptable by the same address,
                 // or by b.c - host name.
-                return ((String) gname.getName()).endsWith((String) name);
+                return ((String) gname.getName()).toLowerCase()
+                    .endsWith(((String) name).toLowerCase());
             case DNS_NAME:
                 // DNS name [2] that can be constructed by simply adding 
                 // to the left hand side of the name satisfies the name 
                 // constraint: aaa.aa.aa satisfies to aaa.aa.aa, aa.aa, ..
                 String dns = (String) name;
                 String _dns = (String) gname.getName();
-                if (dns.equals(_dns)) {
+                if (dns.equalsIgnoreCase(_dns)) {
                     return true;
                 } else {
-                    return _dns.endsWith("."+dns);
+                    return _dns.toLowerCase().endsWith("." + dns.toLowerCase());
                 }
             case UR_ID:
                 // For URIs the constraint ".xyz.com" is satisfied by both 
@@ -381,9 +384,9 @@ public class GeneralName {
                                 ? uri.substring(begin)
                                 : uri.substring(begin, end);
                 if (host.startsWith(".")) {
-                    return _host.endsWith(host);
+                    return _host.toLowerCase().endsWith(host.toLowerCase());
                 } else {
-                    return host.equals(_host);
+                    return host.equalsIgnoreCase(_host);
                 }
             case IP_ADDR: 
                 // iPAddress [7], check by using ranges.
@@ -558,28 +561,272 @@ public class GeneralName {
     }
 
     /**
-     * Helper method. Converts the String representation of ip address
-     * to array of bytes.
-     * @param   address :   String representation of ip address
-     * @return  byte representation of ip address
+     * Checks the correctness of the string representation of DNS name.
+     * The correctness is checked as specified in RFC 1034 p. 10.
      */
-    public static byte[] ipStrToBytes(String address) {
-        StringTokenizer st = new StringTokenizer(address, ".:/");
-        boolean is_ipv6 = address.indexOf(':') > 0;
-        int length = (is_ipv6) ? st.countTokens() * 2: st.countTokens();
-        byte[] ip = new byte[length];
-        int k = 0;
-        while (st.hasMoreElements()) {
-            if (is_ipv6) {
-                String token = st.nextToken();
-                ip[k++] = (byte) Integer.parseInt(token.substring(0, 2), 16);
-                ip[k++] = (byte) Integer.parseInt(token.substring(2), 16);
-            } else {
-                ip[k++] = (byte) Integer.parseInt(st.nextToken());
+    public static void checkDNS(String dns) throws IOException {
+        byte[] bytes = dns.toLowerCase().getBytes();
+        // indicates if it is a first letter of the label
+        boolean first_letter = true;
+        for (int i=0; i<bytes.length; i++) {
+            byte ch = bytes[i];
+            if (first_letter) {
+                if (ch > 'z' || ch < 'a') {
+                    throw new IOException("DNS name must start with a letter: "
+                            + "'" + (char)ch + "' " + dns);
+                }
+                first_letter = false;
+                continue;
+            }
+            if (!((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')
+                    || (ch == '-') || (ch == '.'))) {
+                throw new IOException("Incorrect DNS name: " + dns);
+            }
+            if (ch == '.') {
+                // check the end of the previous label, it should not
+                // be '-' sign
+                if (bytes[i-i] == '-') {
+                    throw new IOException(
+                            "Incorrect DNS name: label ends with '-': " + dns);
+                }
+                first_letter = true;
             }
         }
-        return ip;
     }
+
+    /**
+     * Checks the correctness of the string representation of URI name.
+     * The correctness is checked as pointed out in RFC 3280 p. 34.
+     */
+    public static void checkURI(String uri) throws IOException {
+        try {
+            URI ur = new URI(uri);
+            if ((ur.getScheme() == null) 
+                    || (ur.getRawSchemeSpecificPart().length() == 0)) {
+                throw new IOException(
+                    "Bad representation of uniformResourceIdentifier. "
+                    + "It must include the scheme and a scheme-specific-part: "
+                    + uri);
+            }
+            if (!ur.isAbsolute()) {
+                throw new IOException(
+                    "Bad representation of uniformResourceIdentifier."
+                    + " It should not be relative: " + uri);
+            }
+        } catch (URISyntaxException e) {
+            throw (IOException) new IOException(
+                    "Bad representation of uniformResourceIdentifier."
+                    + uri).initCause(e);
+        }
+    }
+
+    /**
+     * Converts OID into array of bytes.
+     */
+    public static int[] oidStrToInts(String oid) throws IOException {
+        byte[] bytes = oid.getBytes();
+        if (bytes[bytes.length-1] == '.') {
+            throw new IOException("Incorrect OID: " + oid);
+        }
+        int[] result = new int[bytes.length/2+1]; // best case: a.b.c.d.e
+        int number = 0; // the number of OID's components
+        for (int i=0; i<bytes.length; i++) {
+            int value = 0;
+            int pos = i;
+            while ((i < bytes.length) && (bytes[i] >= '0')
+                        && (bytes[i] <= '9')) {
+                value = 10 * value + (bytes[i++] - 48);
+            }
+            if (i == pos) {
+                // the number was not read
+                throw new IOException("Incorrect OID: " + oid);
+            }
+            result[number++] = value;
+            if (i >= bytes.length) {
+                break;
+            }
+            if (bytes[i] != '.') {
+                throw new IOException("Incorrect OID: " + oid);
+            }
+        }
+        if (number < 2) {
+            throw new IOException("OID should consist of "
+                    + "no less than 2 components:" + oid);
+        }
+        int[] res = new int[number];
+        for (int i=0; i<number; i++) {
+            res[i] = result[i];
+        }
+        return res;
+    }
+
+    /**
+     * Helper method. Converts the String representation of IP address
+     * to the array of bytes. IP addresses are expected in two versions:<br>
+     * IPv4 - in dot-decimal notation<br>
+     * IPv6 - in colon hexadecimal notation<br>
+     * Also method works with the ranges of the addresses represented
+     * as 2 addresses separated by '/' character.
+     * @param   address :   String representation of IP address
+     * @return  byte representation of IP address
+     */
+    public static byte[] ipStrToBytes(String ip) throws IOException {
+        boolean isIPv4 = (ip.indexOf('.') > 0);
+        // number of components (should be 4 or 8)
+        int num_components = (isIPv4) ? 4 : 16;
+        if (ip.indexOf('/') > 0) {
+            num_components *= 2; // this is a range of addresses
+        }
+        // the resulting array
+        byte[] result = new byte[num_components];
+        byte[] ip_bytes = ip.getBytes();
+        // number of address component to be read
+        int component = 0;
+        // if it is reading the second bound of a range
+        boolean reading_second_bound = false;
+        if (isIPv4) {
+            // IPv4 address is expected in the form of dot-decimal notation:
+            //      1.100.2.200
+            // or in the range form:
+            //      1.100.2.200/1.100.3.300
+            int i = 0;
+            while (i < ip_bytes.length) {
+                int digits = 0;
+                // the value of the address component
+                int value = 0;
+                while ((i < ip_bytes.length) && (ip_bytes[i] >= '0')
+                        && (ip_bytes[i] <= '9')) {
+                    digits++;
+                    if (digits > 3) {
+                        throw new IOException("Component of IPv4 address should"
+                                + "consist of no more than 3 decimal numbers: "
+                                + ip);
+                    }
+                    value = 10 * value + (ip_bytes[i] - 48);
+                    i++;
+                }
+                if (digits == 0) {
+                    // ip_bytes[i] is not a number
+                    throw new IOException("Incorrect IP representation: "
+                            + ip);
+                }
+                result[component] = (byte) value;
+                component++;
+                if (i >= ip_bytes.length) {
+                    // no more bytes
+                    break;
+                }
+                // check the reached delimiter
+                if ((ip_bytes[i] != '.' && ip_bytes[i] != '/')) {
+                    throw new IOException("Incorrect IP representation: "
+                            + ip);
+                }
+                // check the correctness of the range
+                if (ip_bytes[i] == '/') {
+                    if (reading_second_bound) {
+                        // more than 2 bounds in the range
+                        throw new IOException("Incorrect IP representation: "
+                                + ip);
+                    }
+                    if (component != 4) {
+                        throw new IOException("IPv4 address should consist "
+                                + "of 4 decimal numbers: " + ip);
+                    }
+                    reading_second_bound = true;
+                }
+                // check the number of the components
+                if (component > ((reading_second_bound) ? 7 : 3)) {
+                    throw new IOException("IPv4 address should consist "
+                            + "of 4 decimal numbers: " + ip);
+                }
+                i++;
+            }
+            // check the number of read components
+            if (component != num_components) {
+                throw new IOException("IPv4 address should consist "
+                        + "of 4 decimal numbers: " + ip);
+            }
+        } else {
+            // IPv6 address is expected in the form of
+            // colon hexadecimal notation:
+            // 010a:020b:3337:1000:FFFA:ABCD:9999:0000
+            // or in a range form:
+            // 010a:020b:3337:1000:FFFA:ABCD:9999:0000/010a:020b:3337:1000:FFFA:ABCD:9999:1111
+            if (ip_bytes.length != 39 && ip_bytes.length != 79) {
+                // incorrect length of the string representation
+                throw new IOException("Incorrect IPv6 representation: '"
+                        + ip + "'");
+            }
+            int value = 0;
+            // indicates the reading of the second half of byte
+            boolean second_hex = false;
+            // if the delimiter (':' or '/') is expected
+            boolean expect_delimiter = false;
+            for (int i=0; i<ip_bytes.length; i++) {
+                byte bytik = ip_bytes[i];
+                if ((bytik >= '0') && (bytik <= '9')) {
+                    value = (bytik - 48); // '0':0, '1':1, ... , '9':9
+                } else if ((bytik >= 'A') && (bytik <= 'F')) {
+                    value = (bytik - 55); // 'A':10, 'B':11, ... , 'F':15
+                } else if ((bytik >= 'a') && (bytik <= 'f')) {
+                    value = (bytik - 87); // 'a':10, 'b':11, ... , 'f':15
+                } else if (second_hex) {
+                    // second hex value of a byte is expected but was not read
+                    // (it is the situation like: ...ABCD:A:ABCD...)
+                    throw new IOException("Incorrect IPv6 representation: '"
+                            + ip + "'");
+                } else if ((bytik == ':') || (bytik == '/')) {
+                    if (component % 2 == 1) {
+                        // second byte of the component is omitted 
+                        // (it is the situation like: ... ABDC:AB:ABCD ...)
+                        throw new IOException("Incorrect IPv6 representation: '"
+                                + ip + "'");
+                    }
+                    if (bytik == '/') {
+                        if (reading_second_bound) {
+                            // more than 2 bounds in the range
+                            throw new IOException(
+                                    "Incorrect IPv6 representation: " + ip);
+                        }
+                        if (component != 16) {
+                            // check the number of read components
+                            throw new IOException("IPv6 address should consist "
+                                    + "of 8 hexadecimal numbers: " + ip);
+                        }
+                        reading_second_bound = true;
+                    }
+                    expect_delimiter = false;
+                    continue;
+                } else {
+                    throw new IOException("Incorrect IPv6 representation: '"
+                            + ip + "'");
+                }
+                if (expect_delimiter) { // delimiter is expected but was not read
+                    throw new IOException("Incorrect IPv6 representation: '"
+                            + ip + "'");
+                }
+                if (!second_hex) {
+                    // first half of byte has been read
+                    result[component] = (byte) (value << 4);
+                    second_hex = true;
+                } else {
+                    // second half of byte has been read
+                    result[component] = (byte)
+                        ((result[component] & 0xFF) | value);
+                    // delimiter is expected if 2 bytes were read
+                    expect_delimiter = (component % 2 == 1);
+                    second_hex = false;
+                    component++;
+                }
+            }
+            // check the correctness of the read address:
+            if (second_hex || (component % 2 == 1)) {
+                throw new IOException("Incorrect IPv6 representation: " + ip);
+            }
+        }
+        return result;
+    }
+
     
     /**
      * Helper method. Converts the byte array representation of ip address
