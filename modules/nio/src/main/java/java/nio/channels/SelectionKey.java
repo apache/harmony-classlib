@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,66 +15,174 @@
 
 package java.nio.channels;
 
-
 import java.nio.channels.Selector;
 
 /**
- * TODO Type description
+ * A key that representing the relationship of a channel and the selector.
  * 
  */
 public abstract class SelectionKey {
 
-	public static final int OP_ACCEPT = 16;
+    /**
+     * Interesting operation mask bit for socket-accept operations.
+     */
+    public static final int OP_ACCEPT = 16;
 
-	public static final int OP_CONNECT = 8;
+    /**
+     * Interesting operation mask bit for socket-connect operations.
+     */
+    public static final int OP_CONNECT = 8;
 
-	public static final int OP_READ = 1;
+    /**
+     * Interesting operation mask bit for read operations.
+     */
+    public static final int OP_READ = 1;
 
-	public static final int OP_WRITE = 4;
+    /**
+     * Interesting operation mask bit for write operations.
+     */
+    public static final int OP_WRITE = 4;
 
-	private volatile Object attachment = null;
+    private volatile Object attachment = null;
 
-	protected SelectionKey() {
-		super();
-	}
+    /**
+     * The constructor.
+     * 
+     */
+    protected SelectionKey() {
+        super();
+    }
 
-	public final Object attach(Object anObject) {
-		Object oldAttachment = attachment;
-		attachment = anObject;
-		return oldAttachment;
-	}
+    /**
+     * Attaches an object to the key.
+     * 
+     * @param anObject
+     *            the object to attach
+     * @return the last attached object
+     */
+    public final Object attach(Object anObject) {
+        Object oldAttachment = attachment;
+        attachment = anObject;
+        return oldAttachment;
+    }
 
-	public final Object attachment() {
-		return attachment;
-	}
+    /**
+     * Gets the attached object.
+     * 
+     * @return the attached object or null if no object has been attached
+     */
+    public final Object attachment() {
+        return attachment;
+    }
 
-	public abstract void cancel();
+    /**
+     * Cancels this key.
+     * 
+     */
+    public abstract void cancel();
 
-	public abstract SelectableChannel channel();
+    /**
+     * Gets the channel of this key.
+     * 
+     * @return the channel of this key
+     */
+    public abstract SelectableChannel channel();
 
-	public abstract int interestOps();
+    /**
+     * Gets the interesting operation of this key.
+     * 
+     * @return the interesting operation of this key
+     * @throws CancelledKeyException
+     *             If the key has been cancelled already
+     */
+    public abstract int interestOps();
 
-	public abstract SelectionKey interestOps(int operations);
+    /**
+     * Sets the interesting operation for this key.
+     * 
+     * @param operations
+     *            the interesting operation to set
+     * @return this key
+     * @throws IllegalArgumentException
+     *             if the given operation is not in the key's interesting
+     *             operation set
+     * @throws CancelledKeyException
+     *             If the key has been cancelled already
+     */
+    public abstract SelectionKey interestOps(int operations);
 
-	public final boolean isAcceptable() {
-		return (readyOps() & OP_ACCEPT) == OP_ACCEPT;
-	}
+    /**
+     * Tells whether the channel of this key is interested in accept operation
+     * and ready for acception.
+     * 
+     * @return true if the channel is interested in accept operation and ready
+     *         for acception
+     * @throws CancelledKeyException
+     *             If the key has been cancelled already
+     */
+    public final boolean isAcceptable() {
+        return (readyOps() & OP_ACCEPT) == OP_ACCEPT;
+    }
 
-	public final boolean isConnectable() {
-		return (readyOps() & OP_CONNECT) == OP_CONNECT;
-	}
+    /**
+     * Tells whether the channel of this key is interested in connect operation
+     * and ready for connection.
+     * 
+     * @return true if the channel is interested in connect operation and ready
+     *         for connection
+     * @throws CancelledKeyException
+     *             If the key has been cancelled already
+     */
+    public final boolean isConnectable() {
+        return (readyOps() & OP_CONNECT) == OP_CONNECT;
+    }
 
-	public final boolean isReadable() {
-		return (readyOps() & OP_READ) == OP_READ;
-	}
+    /**
+     * Tells whether the channel of this key is interested in read operation and
+     * ready for reading.
+     * 
+     * @return true if the channel is interested in read operation and ready for
+     *         reading
+     * @throws CancelledKeyException
+     *             If the key has been cancelled already
+     */
+    public final boolean isReadable() {
+        return (readyOps() & OP_READ) == OP_READ;
+    }
 
-	public abstract boolean isValid();
+    /**
+     * Tells whether the key is valid.
+     * 
+     * @return true if the key has not been cancelled
+     */
+    public abstract boolean isValid();
 
-	public final boolean isWritable() {
-		return (readyOps() & OP_WRITE) == OP_WRITE;
-	}
+    /**
+     * Tells whether the channel of this key is interested in write operation
+     * and ready for writing.
+     * 
+     * @return true if the channel is interested in write operation and ready
+     *         for writing
+     * @throws CancelledKeyException
+     *             If the key has been cancelled already
+     */
+    public final boolean isWritable() {
+        return (readyOps() & OP_WRITE) == OP_WRITE;
+    }
 
-	public abstract int readyOps();
+    /**
+     * Gets the ready operation.
+     * 
+     * @return the ready operation
+     * @throws CancelledKeyException
+     *             If the key has been cancelled already
+     */
+    public abstract int readyOps();
 
-	public abstract Selector selector();
+    /**
+     * Gets the related selector.
+     * 
+     * @return the related selector
+     */
+    public abstract Selector selector();
 }
