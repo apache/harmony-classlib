@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,6 +79,10 @@ final class ReadOnlyFloatArrayBuffer extends FloatArrayBuffer {
 	public FloatBuffer put(int index, float c) {
 		throw new ReadOnlyBufferException();
 	}
+    
+    public FloatBuffer put(FloatBuffer buf) {
+        throw new ReadOnlyBufferException();
+    }
 
     public final FloatBuffer put(float[] src, int off, int len) {
         throw new ReadOnlyBufferException();
