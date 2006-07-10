@@ -27,6 +27,7 @@ import java.security.Principal;
 import java.security.cert.Certificate;
 import java.util.List;
 import java.util.Map;
+
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocket;
 
@@ -320,8 +321,31 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
         }
 
         public void connect() throws IOException {
+            if (connected) {
+                return;
+            }
             super.connect();
-            // TODO wrap established Socket into SSLSocket
+            // TODO make SSL Tunnel in case of using the proxy
+            setUpTransportIO(wrapConnection(socket));
+        }
+
+        /**
+         * Create the secure socket over the connected socket and
+         * verify remote hostname.
+         */
+        private Socket wrapConnection(Socket socket) throws IOException {
+            String hostname = url.getHost();
+            // create the wrapper over connected socket
+            sslSocket = (SSLSocket) getSSLSocketFactory().createSocket(
+                    socket, hostname, url.getPort(), true);
+            sslSocket.setUseClientMode(true);
+            sslSocket.startHandshake();
+            if (!getHostnameVerifier().verify(hostname,
+                    sslSocket.getSession())) {
+                throw new IOException("Hostname <"
+                        + hostname + "> was not verified.");
+            }
+            return sslSocket;
         }
     }
 }
