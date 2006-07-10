@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Vector;
 import org.apache.harmony.sql.internal.common.ClassUtils;
+import org.apache.harmony.sql.internal.nls.Messages;
 import org.apache.harmony.kernel.vm.VM;
 
 /**
@@ -116,8 +117,8 @@ public class DriverManager {
         ClassLoader callerClassLoader = VM.callerClassLoader();
 
         if (!ClassUtils.isClassFromClassLoader(driver, callerClassLoader)) {
-            throw new SecurityException(
-                    "DriverManager: calling class not authorized to deregister JDBC driver");
+            // sql.1=DriverManager: calling class not authorized to deregister JDBC driver
+            throw new SecurityException(Messages.getString("sql.1")); //$NON-NLS-1$
         } // end if
         synchronized (theDriverSet) {
             theDriverSet.remove(driver);
@@ -160,7 +161,8 @@ public class DriverManager {
     public static Connection getConnection(String url, Properties info)
             throws SQLException {
         if (url == null) {
-            throw new SQLException("The url cannot be null");
+            // sql.5=The url cannot be null
+            throw new SQLException(Messages.getString("sql.5")); //$NON-NLS-1$
         }
         synchronized (theDriverSet) {
             /*
@@ -178,7 +180,8 @@ public class DriverManager {
             }
         }
         // If we get here, none of the drivers are able to resolve the URL
-        throw new SQLException("No suitable driver");
+        // sql.6=No suitable driver
+        throw new SQLException(Messages.getString("sql.6")); //$NON-NLS-1$
     }
 
     /**
@@ -199,7 +202,8 @@ public class DriverManager {
     public static Connection getConnection(String url, String user,
             String password) throws SQLException {
         if (user == null || password == null) {
-            throw new SQLException("Userid and/or password not supplied");
+            // sql.7=Userid and/or password not supplied
+            throw new SQLException(Messages.getString("sql.7")); //$NON-NLS-1$
         }
         Properties theProperties = new Properties();
         theProperties.setProperty("user", user); //$NON-NLS-1$
@@ -237,7 +241,8 @@ public class DriverManager {
             }
         }
         // If no drivers understand the URL, throw an SQLException
-        throw new SQLException("No suitable driver");
+        // sql.6=No suitable driver
+        throw new SQLException(Messages.getString("sql.6")); //$NON-NLS-1$
     }
 
     /**

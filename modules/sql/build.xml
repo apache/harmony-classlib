@@ -46,10 +46,8 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile.java" depends="copy.resources">
         <echo message="Compiling SQL classes" />
-
-        <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
                srcdir="${hy.sql.src.main.java}"
@@ -65,6 +63,15 @@
             </bootclasspath>
         </javac>
     </target>
+
+	<target name="copy.resources">
+    	<mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.sql.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+	</target>
 
     <target name="build.jar">
         <jar destfile="${hy.jdk}/jre/lib/boot/sql.jar"

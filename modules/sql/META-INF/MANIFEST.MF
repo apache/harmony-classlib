@@ -16,7 +16,8 @@ Import-Package: java.io,
  java.util,
  java.util.jar;resolution:=optional,
  java.util.zip;resolution:=optional,
- org.apache.harmony.kernel.vm
+ org.apache.harmony.kernel.vm,
+ org.apache.harmony.luni.util
 Export-Package: java.sql,
  javax.sql,
  javax.transaction,

@@ -20,6 +20,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.harmony.sql.internal.nls.Messages;
+
 /**
  * A Java representation of the SQL TIMESTAMP type. It provides the capability
  * to represent the SQL TIMESTAMP nanosecond value, in addition to the regular
@@ -251,7 +253,8 @@ public class Timestamp extends Date {
      */
     public void setNanos(int n) throws IllegalArgumentException {
         if ((n < 0) || (n > 999999999)) {
-            throw new IllegalArgumentException("Nanos value out of range.");
+            // sql.0=Value out of range
+            throw new IllegalArgumentException(Messages.getString("sql.0")); //$NON-NLS-1$
         }
         nanoseconds = n;
     }
@@ -293,13 +296,13 @@ public class Timestamp extends Date {
         // A SimpleDateFormat will lay out everything except the nanosecond
         // value
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss");
+                "yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
 
         /*
          * Use a DecimalFormat to lay out the nanosecond value as a simple
          * string of 9 integers, with leading Zeros
          */
-        DecimalFormat decimalFormat = new DecimalFormat("0");
+        DecimalFormat decimalFormat = new DecimalFormat("0"); //$NON-NLS-1$
         decimalFormat.setMinimumIntegerDigits(9);
         decimalFormat.setMaximumIntegerDigits(9);
         String theNanos = decimalFormat.format(nanoseconds);
@@ -326,7 +329,7 @@ public class Timestamp extends Date {
              * with a single '0'
              */
             if (i == 1) {
-                return "0";
+                return "0"; //$NON-NLS-1$
             }
         }
 
@@ -334,7 +337,8 @@ public class Timestamp extends Date {
         return finalString;
     }
 
-    private static String valueOfExceptionMessage = "Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff";
+    // sql.2=Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff
+    private static String valueOfExceptionMessage = Messages.getString("sql.2"); //$NON-NLS-1$
 
     /**
      * Creates a Timestamp object with a time value equal to the time specified
@@ -348,10 +352,11 @@ public class Timestamp extends Date {
      */
     public static Timestamp valueOf(String s) throws IllegalArgumentException {
         if (s == null) {
-            throw new IllegalArgumentException("null string");
+            // sql.3=Argument cannot be null
+            throw new IllegalArgumentException(Messages.getString("sql.3")); //$NON-NLS-1$
         }
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
         ParsePosition pp = new ParsePosition(0);
 
         /*
@@ -392,7 +397,7 @@ public class Timestamp extends Date {
              * Case where fraction of a second is specified: Require 1 character
              * plus the "." in the remaining part of the string...
              */
-            if ((s.length() - position) < ".n".length()) {
+            if ((s.length() - position) < ".n".length()) { //$NON-NLS-1$
                 throw new IllegalArgumentException(valueOfExceptionMessage);
             }
 
@@ -400,14 +405,14 @@ public class Timestamp extends Date {
              * If we're strict, we should not allow any EXTRA characters after
              * the 9 digits
              */
-            if ((s.length() - position) > ".nnnnnnnnn".length()) {
+            if ((s.length() - position) > ".nnnnnnnnn".length()) { //$NON-NLS-1$
                 throw new IllegalArgumentException(valueOfExceptionMessage);
             }
 
             // Require the next character to be a "."
             if (s.charAt(position) != '.') {
-                throw new NumberFormatException("Bad input string format - '"
-                        + s.charAt(position) + "' instead of '.'");
+                // sql.4=Bad input string format: expected '.' not {0}
+                throw new NumberFormatException(Messages.getString("sql.4", s.charAt(position))); //$NON-NLS-1$
             }
             // Get the length of the number string - need to account for the '.'
             int nanoLength = s.length() - position - 1;
@@ -419,7 +424,7 @@ public class Timestamp extends Date {
              * We must adjust for the cases where the nanos String was not 9
              * characters long by padding out with zeros
              */
-            theNanoString = theNanoString + "000000000";
+            theNanoString = theNanoString + "000000000"; //$NON-NLS-1$
             theNanoString = theNanoString.substring(0, 9);
 
             try {

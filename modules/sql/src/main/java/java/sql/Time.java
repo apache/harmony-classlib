@@ -154,7 +154,7 @@ public class Time extends Date {
      *         HH:mm:ss
      */
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
         return dateFormat.format(this);
     }
 
@@ -179,7 +179,7 @@ public class Time extends Date {
             throw new IllegalArgumentException();
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
         try {
             aDate = dateFormat.parse(theTime);
         } catch (ParseException pe) {
