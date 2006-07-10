@@ -289,6 +289,28 @@ public class MessageDigest2Test extends junit.framework.TestCase {
 						+ " : " + e);
 			}
 		}
+        try {                
+            MessageDigest.getInstance("SHA").digest(new byte[] {}, Integer.MAX_VALUE, 755);                                            
+        } catch (NoSuchAlgorithmException e) {
+        	//allowed
+        } catch (DigestException e) {
+        	//allowed
+        } catch (IllegalArgumentException e) {
+        	//expected
+        }
+	}
+
+	/**
+	 * @tests java.security.MessageDigest#update(byte[], int, int)
+	 */
+	public void test_update$BII() {
+        try {                
+        	MessageDigest.getInstance("SHA").update(new byte[] {},Integer.MAX_VALUE,Integer.MAX_VALUE);
+		} catch (NoSuchAlgorithmException e) {
+        	//allowed
+        } catch (IllegalArgumentException e) {
+        	//expected
+        }
 	}
 
 	/**

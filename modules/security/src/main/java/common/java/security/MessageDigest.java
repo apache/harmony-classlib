@@ -165,7 +165,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      */
     public void update(byte[] input, int offset, int len) {
         if (input == null || offset < 0 || len < 0 ||
-                offset + len > input.length) {
+                (long)offset + (long)len > input.length) {
             throw new IllegalArgumentException(
                     "Incorrect offset/len parameters");
         }
@@ -201,7 +201,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      */
     public int digest(byte[] buf, int offset, int len) throws DigestException {
         if (buf == null || offset < 0 || len < 0 ||
-                offset + len > buf.length) {
+                (long)offset + (long)len > buf.length) {
             throw new IllegalArgumentException(
                     "Incorrect offset/len parameters");
         }
