@@ -29,6 +29,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.text.DateFormatSymbols;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
@@ -784,6 +785,8 @@ public final class Formatter implements Closeable, Flushable {
 
         private DecimalFormatSymbols decimalFormatSymbols;
 
+        private DateTimeUtil dateTimeUtil;
+
         Transformer(Formatter formatter, Locale locale) {
             this.formatter = formatter;
             this.locale = (null == locale ? Locale.US : locale);
@@ -1315,8 +1318,426 @@ public final class Formatter implements Closeable, Flushable {
          * Transforms a Date to a formatted string.
          */
         private String transformFromDateTime() {
-            throw new NotYetImplementedException();
+            int startIndex = 0;
 
+            if (formatToken.isPrecisionSet()) {
+                throw new IllegalFormatPrecisionException(formatToken
+                        .getPrecision());
+            }
+
+            if (formatToken.isFlagSet(FormatToken.FLAG_SHARP)) {
+                throw new FormatFlagsConversionMismatchException(formatToken
+                        .getStrFlags(), formatToken.getConversionType());
+            }
+
+            if (formatToken.isFlagSet(FormatToken.FLAG_MINUS)
+                    && FormatToken.UNSET == formatToken.getWidth()) {
+                throw new MissingFormatWidthException("-" //$NON-NLS-1$
+                        + formatToken.getConversionType());
+            }
+
+            if (null == arg) {
+                return transformFromNull();
+            }
+
+            Calendar calendar;
+            if (arg instanceof Calendar) {
+                calendar = (Calendar) arg;
+            } else {
+                Date date = null;
+                if (arg instanceof Long) {
+                    date = new Date((Long) arg);
+                } else if (arg instanceof Date) {
+                    date = (Date) arg;
+                } else {
+                    throw new IllegalFormatConversionException(formatToken
+                            .getConversionType(), arg.getClass());
+                }
+                calendar = Calendar.getInstance(locale);
+                calendar.setTime(date);
+            }
+
+            if (null == dateTimeUtil) {
+                dateTimeUtil = new DateTimeUtil(locale);
+            }
+            StringBuilder result = new StringBuilder();
+	     // output result
+            dateTimeUtil.transform(formatToken, calendar, result);
+            return padding(result, startIndex);
+        }
+    }
+
+    private static class DateTimeUtil {
+        private Calendar calendar;
+
+        private Locale locale;
+
+        private StringBuilder result;
+
+        private DateFormatSymbols dateFormatSymbols;
+
+        DateTimeUtil(Locale locale) {
+            this.locale = locale;
+        }
+
+        void transform(FormatToken formatToken, Calendar calendar,
+                StringBuilder result) {
+            this.result = result;
+            this.calendar = calendar;
+            char suffix = formatToken.getDateSuffix();
+
+            switch (suffix) {
+            case 'H': {
+                transform_H();
+                break;
+            }
+            case 'I': {
+                transform_I();
+                break;
+            }
+            case 'M': {
+                transform_M();
+                break;
+            }
+            case 'S': {
+                transform_S();
+                break;
+            }
+            case 'L': {
+                transform_L();
+                break;
+            }
+            case 'N': {
+                transform_N();
+                break;
+            }
+            case 'k': {
+                transform_k();
+                break;
+            }
+            case 'l': {
+                transform_l();
+                break;
+            }
+            case 'p': {
+                transform_p(true);
+                break;
+            }
+            case 's': {
+                transform_s();
+                break;
+            }
+            case 'z': {
+                transform_z();
+                break;
+            }
+            case 'Z': {
+                transform_Z();
+                break;
+            }
+            case 'Q': {
+                transform_Q();
+                break;
+            }
+            case 'B': {
+                transform_B();
+                break;
+            }
+            case 'b':
+            case 'h': {
+                transform_b();
+                break;
+            }
+            case 'A': {
+                transform_A();
+                break;
+            }
+            case 'a': {
+                transform_a();
+                break;
+            }
+            case 'C': {
+                transform_C();
+                break;
+            }
+            case 'Y': {
+                transform_Y();
+                break;
+            }
+            case 'y': {
+                transform_y();
+                break;
+            }
+            case 'j': {
+                transform_j();
+                break;
+            }
+            case 'm': {
+                transform_m();
+                break;
+            }
+            case 'd': {
+                transform_d();
+                break;
+            }
+            case 'e': {
+                transform_e();
+                break;
+            }
+            case 'R': {
+                transform_R();
+                break;
+            }
+
+            case 'T': {
+                transform_T();
+                break;
+            }
+            case 'r': {
+                transform_r();
+                break;
+            }
+            case 'D': {
+                transform_D();
+                break;
+            }
+            case 'F': {
+                transform_F();
+                break;
+            }
+            case 'c': {
+                transform_c();
+                break;
+            }
+            default: {
+                throw new UnknownFormatConversionException(String
+                        .valueOf(formatToken.getConversionType())
+                        + formatToken.getDateSuffix());
+            }
+            }
+        }
+
+        private void transform_e() {
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            result.append(day);
+        }
+
+        private void transform_d() {
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            result.append(paddingZeros(day, 2));
+        }
+
+        private void transform_m() {
+            int month = calendar.get(Calendar.MONTH);
+            // The returned month starts from zero, which needs to be
+            // incremented by 1.
+            month++;
+            result.append(paddingZeros(month, 2));
+        }
+
+        private void transform_j() {
+            int day = calendar.get(Calendar.DAY_OF_YEAR);
+            result.append(paddingZeros(day, 3));
+        }
+
+        private void transform_y() {
+            int year = calendar.get(Calendar.YEAR);
+            year %= 100;
+            result.append(paddingZeros(year, 2));
+        }
+
+        private void transform_Y() {
+            int year = calendar.get(Calendar.YEAR);
+            result.append(paddingZeros(year, 4));
+        }
+
+        private void transform_C() {
+            int year = calendar.get(Calendar.YEAR);
+            year /= 100;
+            result.append(paddingZeros(year, 2));
+        }
+
+        private void transform_a() {
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
+            result.append(getDateFormatSymbols().getShortWeekdays()[day]);
+        }
+
+        private void transform_A() {
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
+            result.append(getDateFormatSymbols().getWeekdays()[day]);
+        }
+
+        private void transform_b() {
+            int month = calendar.get(Calendar.MONTH);
+            result.append(getDateFormatSymbols().getShortMonths()[month]);
+        }
+
+        private void transform_B() {
+            int month = calendar.get(Calendar.MONTH);
+            result.append(getDateFormatSymbols().getMonths()[month]);
+        }
+
+        private void transform_Q() {
+            long milliSeconds = calendar.getTimeInMillis();
+            result.append(milliSeconds);
+        }
+
+        private void transform_s() {
+            long milliSeconds = calendar.getTimeInMillis();
+            milliSeconds /= 1000;
+            result.append(milliSeconds);
+        }
+
+        private void transform_Z() {
+            TimeZone timeZone = calendar.getTimeZone();
+            result
+                    .append(timeZone.getDisplayName(true, TimeZone.SHORT,
+                            locale));
+        }
+
+        private void transform_z() {
+            int zoneOffset = calendar.get(Calendar.ZONE_OFFSET);
+            zoneOffset /= 3600000;
+            zoneOffset *= 100;
+            if (zoneOffset >= 0) {
+                result.append('+');
+            }
+            result.append(paddingZeros(zoneOffset, 4));
+        }
+
+        private void transform_p(boolean isLowerCase) {
+            int i = calendar.get(Calendar.AM_PM);
+            String s = getDateFormatSymbols().getAmPmStrings()[i];
+            if (isLowerCase) {
+                s = s.toLowerCase(locale);
+            }
+            result.append(s);
+        }
+
+        private void transform_N() {
+            // TODO System.nanoTime();
+            long nanosecond = calendar.get(Calendar.MILLISECOND) * 1000000;
+            result.append(paddingZeros(nanosecond, 9));
+        }
+
+        private void transform_L() {
+            int millisecond = calendar.get(Calendar.MILLISECOND);
+            result.append(paddingZeros(millisecond, 3));
+        }
+
+        private void transform_S() {
+            int second = calendar.get(Calendar.SECOND);
+            result.append(paddingZeros(second, 2));
+        }
+
+        private void transform_M() {
+            int minute = calendar.get(Calendar.MINUTE);
+            result.append(paddingZeros(minute, 2));
+        }
+
+        private void transform_l() {
+            int hour = calendar.get(Calendar.HOUR);
+            if (0 == hour) {
+                hour = 12;
+            }
+            result.append(hour);
+        }
+
+        private void transform_k() {
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            result.append(hour);
+        }
+
+        private void transform_I() {
+            int hour = calendar.get(Calendar.HOUR);
+            if (0 == hour) {
+                hour = 12;
+            }
+            result.append(paddingZeros(hour, 2));
+        }
+
+        private void transform_H() {
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            result.append(paddingZeros(hour, 2));
+        }
+
+        private void transform_R() {
+            transform_H();
+            result.append(':');
+            transform_M();
+        }
+
+        private void transform_T() {
+            transform_H();
+            result.append(':');
+            transform_M();
+            result.append(':');
+            transform_S();
+        }
+
+        private void transform_r() {
+            transform_I();
+            result.append(':');
+            transform_M();
+            result.append(':');
+            transform_S();
+            result.append(' ');
+            transform_p(false);
+        }
+
+        private void transform_D() {
+            transform_m();
+            result.append('/');
+            transform_d();
+            result.append('/');
+            transform_y();
+        }
+
+        private void transform_F() {
+            transform_Y();
+            result.append('-');
+            transform_m();
+            result.append('-');
+            transform_d();
+        }
+
+        private void transform_c() {
+            transform_a();
+            result.append(' ');
+            transform_b();
+            result.append(' ');
+            transform_d();
+            result.append(' ');
+            transform_T();
+            result.append(' ');
+            transform_Z();
+            result.append(' ');
+            transform_Y();
+        }
+
+        private static String paddingZeros(long number, int length) {
+            int len = length;
+            StringBuilder result = new StringBuilder();
+            result.append(number);
+            int startIndex = 0;
+            if (number < 0) {
+                len++;
+                startIndex = 1;
+            }
+            len -= result.length();
+            if (len > 0) {
+                char[] zeros = new char[len];
+                Arrays.fill(zeros, '0');
+                result.insert(startIndex, zeros);
+            }
+            return result.toString();
+        }
+
+        private DateFormatSymbols getDateFormatSymbols() {
+            if (null == dateFormatSymbols) {
+                dateFormatSymbols = new DateFormatSymbols(locale);
+            }
+            return dateFormatSymbols;
         }
     }
 
