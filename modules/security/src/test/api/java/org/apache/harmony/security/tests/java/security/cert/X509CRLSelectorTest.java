@@ -89,4 +89,19 @@ public class X509CRLSelectorTest extends TestCase {
             // expected
         }
     }
+
+    /**
+     * addIssuerName(String name) method testing.
+     */
+    public void testAddIssuerName() throws IOException {
+        //Regression for HARMONY-736
+        X509CRLSelector selector = new X509CRLSelector();
+        try {
+            selector.addIssuerName("a");
+            fail("IOException expected");
+        } catch (IOException e) {}
+
+        //no exception for null
+        selector.addIssuerName((String) null);
+    }
 }

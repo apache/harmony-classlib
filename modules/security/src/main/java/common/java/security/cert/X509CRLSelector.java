@@ -132,6 +132,11 @@ public class X509CRLSelector implements CRLSelector {
         if (issuerNames == null) {
             issuerNames = new ArrayList<String>();
         }
+
+        if (iss_name == null) {
+            iss_name = "";
+        }
+
         String name = new Name(iss_name).getName(X500Principal.CANONICAL);
         if (!issuerNames.contains(name)) {
             issuerNames.add(name);
