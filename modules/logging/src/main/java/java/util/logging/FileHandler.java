@@ -450,7 +450,7 @@ public class FileHandler extends StreamHandler {
         if(null == pattern || "".equals(pattern)){ //$NON-NLS-1$
             throw new NullPointerException("Pattern cannot be empty"); //$NON-NLS-1$
         }        
-        if (limit < 1 || count < 0) {
+        if (limit < 0 || count < 1) {
             throw new IllegalArgumentException(
                     "The limit and count property must larger than 0 and 1, respctively"); //$NON-NLS-1$
         }
@@ -494,7 +494,7 @@ public class FileHandler extends StreamHandler {
         if(null == pattern || "".equals(pattern)){ //$NON-NLS-1$
             throw new NullPointerException("Pattern cannot be empty"); //$NON-NLS-1$
         }        
-        if (limit < 1 || count < 0) {
+        if (limit < 0 || count < 1) {
             throw new IllegalArgumentException(
                     "The limit and count property must larger than 0 and 1, respectively"); //$NON-NLS-1$
         }

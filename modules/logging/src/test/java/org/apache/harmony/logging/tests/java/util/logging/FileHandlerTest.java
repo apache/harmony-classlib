@@ -325,6 +325,9 @@ public class FileHandlerTest extends TestCase {
 				rs[6], rs[7], rs[8] }, handler.getFormatter());
 		assertFileContent(TEMPPATH, "testLimitCount0.0",
 				new LogRecord[] { rs[9] }, handler.getFormatter());
+		
+		assertNotNull(new FileHandler("a", 0, 1));
+		assertNotNull(new FileHandler("a", 0, 1, false));
 	}
 
 	public void testSecurity() throws IOException {
