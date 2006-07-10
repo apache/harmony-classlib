@@ -182,6 +182,18 @@ public class NullCipherTest extends TestCase {
 	}
 
 	/*
+	 * Class under test for byte[] update(byte[], int, int)
+	 */
+	public void testUpdatebyteArrayintint2() {
+	    //Regression for HARMONY-758
+        try {
+            new NullCipher().update(new byte[1], 1, Integer.MAX_VALUE);
+            fail("Expected IllegalArgumentException was not thrown");
+        } catch (IllegalArgumentException e) {
+        }
+	}
+
+	/*
 	 * Class under test for int doFinal(byte[], int, int, byte[])
 	 */
 	public void testDoFinalbyteArrayintintbyteArray() throws Exception {
@@ -192,6 +204,31 @@ public class NullCipherTest extends TestCase {
 	}
 
 	/*
+	 * Class under test for int doFinal(byte[], int, int, byte[])
+	 */
+	public void testDoFinalbyteArrayintintbyteArray2() throws Exception {
+	    //Regression for HARMONY-758
+        try {
+            new NullCipher().update(new byte[1], 1, Integer.MAX_VALUE, 
+                    new byte[1]);
+            fail("Expected IllegalArgumentException was not thrown");
+        } catch (IllegalArgumentException e) {
+        }
+	}
+
+    /*
+	 * Class under test for int doFinal(byte[], int, int, byte[])
+	 */
+	public void testDoFinalbyteArrayintintbyteArray3() throws Exception {
+	    //Regression for HARMONY-758
+        try {
+            new NullCipher().update(new byte[1], 0, 1, new byte[0]);
+            fail("Expected ArrayIndexOutOfBoundsException was not thrown");
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+	}
+
+	/*
 	 * Class under test for int doFinal(byte[], int, int, byte[], int)
 	 */
 	public void testDoFinalbyteArrayintintbyteArrayint() throws Exception {
@@ -199,5 +236,31 @@ public class NullCipherTest extends TestCase {
 		byte [] r = new byte[5]; 
 		c.doFinal(b, 0, 5, r, 0);
         assertTrue("different content", Arrays.equals(b, r));
+	}
+
+	/*
+	 * Class under test for int doFinal(byte[], int, int, byte[], int)
+	 */
+	public void testDoFinalbyteArrayintintbyteArrayint2() throws Exception {
+	    //Regression for HARMONY-758
+        try {
+            new NullCipher().update(new byte[1], 1, Integer.MAX_VALUE, 
+                    new byte[1], 0);
+            fail("Expected IllegalArgumentException was not thrown");
+        } catch (IllegalArgumentException e) {
+        }
+	}
+
+    /*
+	 * Class under test for int doFinal(byte[], int, int, byte[], int)
+	 */
+	public void testDoFinalbyteArrayintintbyteArrayint3() throws Exception {
+	    //Regression for HARMONY-758
+        try {
+            new NullCipher().update(new byte[1], 0, 1, 
+                    new byte[0], 0);
+            fail("Expected ArrayIndexOutOfBoundsException was not thrown");
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
 	}
 }

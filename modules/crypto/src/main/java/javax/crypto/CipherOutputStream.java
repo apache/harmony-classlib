@@ -72,8 +72,10 @@ public class CipherOutputStream extends FilterOutputStream {
      * @com.intel.drl.spec_ref
      */
     public void write(byte[] b, int off, int len) throws IOException {
-        byte[] result;
-        result = cipher.update(b, off, len);
+        if (len == 0) {
+            return;
+        }
+        byte[] result = cipher.update(b, off, len);
         if (result != null) {
             out.write(result);
         }

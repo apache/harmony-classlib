@@ -21,7 +21,9 @@
 
 package javax.crypto;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import javax.crypto.NullCipher;
 
@@ -110,6 +112,31 @@ public class CipherOutputStreamTest extends TestCase {
         if (!Arrays.equals(result, data)) {
             fail("CipherOutputStream wrote incorrect data.");
         }
+    }
+
+    /**
+     * @tests write(byte[] b, int off, int len)
+     */
+    public void testWrite4() throws Exception {
+	    //Regression for HARMONY-758
+    	try {
+    		new CipherOutputStream(new BufferedOutputStream((OutputStream) null), new NullCipher()).write(new byte[] {0}, 1, Integer.MAX_VALUE);
+    	} catch (IllegalArgumentException e) {
+    	}
+    }
+
+    /**
+     * @tests write(byte[] b, int off, int len)
+     */
+    public void testWrite5() throws Exception {
+	    //Regression for HARMONY-758
+        Cipher cf = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        NullCipher nc = new NullCipher();
+        CipherOutputStream stream1 = new CipherOutputStream(new BufferedOutputStream((OutputStream) null), nc);
+        CipherOutputStream stream2 = new CipherOutputStream(stream1, cf);
+        CipherOutputStream stream3 = new CipherOutputStream(stream2, nc);
+        stream3.write(new byte[] {0}, 0, 0);
+   		//no exception expected
     }
 
     /**

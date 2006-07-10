@@ -541,7 +541,8 @@ public class Cipher {
             throw new IllegalArgumentException("The input parameter is null");
         }
         if (inputOffset < 0 || inputLen < 0
-                || inputOffset + inputLen > input.length) {
+                || inputLen > input.length 
+                || inputOffset > input.length - inputLen) {
             throw new IllegalArgumentException(
                     "Incorrect inputOffset/inputLen parameters");
         }
@@ -581,7 +582,8 @@ public class Cipher {
                     "Incorrect outputOffset parameter");
         }
         if (inputOffset < 0 || inputLen < 0
-                || inputOffset + inputLen > input.length) {
+                || inputLen > input.length
+                || inputOffset > input.length - inputLen) {
             throw new IllegalArgumentException(
                     "Incorrect inputOffset/inputLen parameters");
         }
