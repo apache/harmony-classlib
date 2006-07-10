@@ -161,3 +161,59 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setDouble
 {
   *(jdouble *) ((IDATA) address) = value;
 }
+
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSMemory
+ * Method:    unmapImpl
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
+  (JNIEnv * env, jobject thiz, jlong fd)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  hymmap_unmap_file((void *)fd);
+}
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSMemory
+ * Method:    mmapImpl
+ * Signature: (JJJI)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
+  (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  void *mapAddress = NULL;
+  int prot, flags;
+		  
+  // Convert from Java mapping mode to port library mapping mode.
+  switch (mmode)
+    {
+      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_READ_ONLY:
+	prot = PROT_READ;
+	flags = MAP_SHARED;
+        break;
+      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_READ_WRITE:
+	prot = PROT_READ|PROT_WRITE;
+	flags = MAP_SHARED;
+        break;
+      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_WRITE_COPY:
+	prot = PROT_READ|PROT_WRITE;
+	flags = MAP_PRIVATE;
+        break;
+      default:
+        return -1;
+    }
+
+//TODO: how to unmap
+ // mapAddress = hymmap_map_filehandler(fd, &mapAddress, mapmode, (IDATA)alignment, (IDATA)size);
+
+   mapAddress = mmap(0,size, prot, flags,fd,alignment);
+  if (mapAddress == NULL)
+    {
+      return -1;
+    }
+  return (jlong) mapAddress;
+}
+

@@ -21,7 +21,6 @@
 #include <string.h>
 #include <windows.h>
 #include "OSMemory.h"
-#include "IMemorySystem.h"
 
 JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLittleEndianImpl
   (JNIEnv * env, jclass clazz)
@@ -94,60 +93,3 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
     return (jint)FlushViewOfFile((void *)addr, (SIZE_T)size);
   }
 
-/*
- * Class:     org_apache_harmony_luni_platform_OSMemory
- * Method:    unmapImpl
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
-  (JNIEnv * env, jobject thiz, jlong fd)
-{
-  UnmapViewOfFile ((HANDLE)fd);
-}
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSMemory
- * Method:    mmapImpl
- * Signature: (JJJI)J
- */
-JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
-  (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
-{
-  void *mapAddress = NULL;
-  int mapmode = 0;
-  int protect = 0;
-  HANDLE mapping;
-
-  switch (mmode)
-  {
-    case org_apache_harmony_luni_platform_IMemorySystem_MMAP_READ_ONLY:
-      mapmode = FILE_MAP_READ;
-      protect = PAGE_READONLY;
-      break;
-    case org_apache_harmony_luni_platform_IMemorySystem_MMAP_READ_WRITE:
-      mapmode = FILE_MAP_WRITE;
-      protect = PAGE_READWRITE;
-      break;
-    case org_apache_harmony_luni_platform_IMemorySystem_MMAP_WRITE_COPY:
-      mapmode = FILE_MAP_COPY;
-      protect = PAGE_WRITECOPY;
-      break;
-    default:
-      return -1;
-  }
-
-  mapping = CreateFileMapping ((HANDLE)fd, NULL, protect, 0, 0, NULL);
-  if (mapping == NULL)
-    {
-      return -1;
-    }
-  mapAddress = MapViewOfFile (mapping, mapmode, (DWORD)((alignment>>0x20)&0x7fffffff), (DWORD)(alignment&0xffffffff), (SIZE_T)(size&0xffffffff));
-  CloseHandle (mapping);
-
-  if (mapAddress == NULL)
-    {
-      return -1;
-    }
-  
-  return (jlong) mapAddress;
-}

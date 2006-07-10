@@ -23,7 +23,6 @@
 #include <unistd.h>
 #include "vmi.h"
 #include "OSMemory.h"
-#include "IMemorySystem.h"
 
 #define	OS_JNI(func) JNICALL Java_org_apache_harmony_luni_platform_OSMemory_##func
 
@@ -102,54 +101,3 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
   return msync((void *)addr, size, MS_SYNC);
 };
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSMemory
- * Method:    unmapImpl
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
-  (JNIEnv * env, jobject thiz, jlong fd)
-{
- //FIXME: need buffer size to unmap
-}
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSMemory
- * Method:    mmapImpl
- * Signature: (JJJI)J
- */
-JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
-  (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
-{
-  PORT_ACCESS_FROM_ENV (env);
-  void *mapAddress = NULL;
-  int prot, flags;
-		  
-  // Convert from Java mapping mode to port library mapping mode.
-  switch (mmode)
-    {
-      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_READ_ONLY:
-	prot = PROT_READ;
-	flags = MAP_SHARED;
-        break;
-      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_READ_WRITE:
-	prot = PROT_READ|PROT_WRITE;
-	flags = MAP_SHARED;
-        break;
-      case org_apache_harmony_luni_platform_IMemorySystem_MMAP_WRITE_COPY:
-	prot = PROT_READ|PROT_WRITE;
-	flags = MAP_PRIVATE;
-        break;
-      default:
-        return -1;
-    }
-
-  mapAddress = mmap(0, (size_t)(size&0x7fffffff), prot, flags,fd,(off_t)(alignment&0x7fffffff));
-  if (mapAddress == MAP_FAILED)
-    {
-      return -1;
-    }
-  return (jlong) mapAddress;
-}
-

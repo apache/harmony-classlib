@@ -188,9 +188,6 @@ public abstract class FileChannelImpl extends FileChannel {
 
     protected final MappedByteBuffer mapImpl(int mapMode, long position,
             long size) throws IOException {
-        if (position + size > size()) {
-            fileSystem.truncate(handle, position + size);
-        }
         long alignment = position - position % NATIVE_PAGE_SIZE;
         int offset = (int) (position - alignment);
         PlatformAddress address = memorySystem.mmap(handle, alignment, size
