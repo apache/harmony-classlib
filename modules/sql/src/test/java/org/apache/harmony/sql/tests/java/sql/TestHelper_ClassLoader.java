@@ -107,11 +107,6 @@ public class TestHelper_ClassLoader extends ClassLoader {
 		try {
 			theFile = new File(pathName, classNameAsFile);
 			if (theFile.exists()) {
-				/*
-				 * System.out.println("findClass - class filename = " +
-				 * classNameAsFile ); System.out.println("findClass: class file
-				 * found");
-				 */
 				int length = (int) theFile.length();
 				theInput = new FileInputStream(theFile);
 				byte[] theBytes = new byte[length + 100];
@@ -122,24 +117,17 @@ public class TestHelper_ClassLoader extends ClassLoader {
 					if (count == -1)
 						break;
 					dataRead += count;
-				} // end while
+				}
 
-				// System.out.println("loadClassFromFile: read " + dataRead + "
-				// bytes from class file");
 				if (dataRead > 0) {
 					// Create the class from the bytes read in...
-					theClass = this.defineClass(className, theBytes, 0,
-							dataRead);
-					/* System.out.println("findClass: created Class object."); */
+					theClass = this.defineClass(className, theBytes, 0, dataRead);
 					ClassLoader testClassLoader = theClass.getClassLoader();
 					if (testClassLoader != this) {
 						System.out.println("findClass - wrong classloader!!");
-					} else {
-						System.out.println("Testclassloader loaded class "
-								+ className);
-					} // end if
-				} // end if
-			} // end if
+					}
+				}
+			}
 		} catch (Exception e) {
 			System.out.println("findClass - exception reading class file.");
 			e.printStackTrace();
@@ -148,10 +136,10 @@ public class TestHelper_ClassLoader extends ClassLoader {
 				if (theInput != null)
 					theInput.close();
 			} catch (Exception e) {
-			} // end try
-		} // end try
+			}
+		}
 		return theClass;
-	} // end method loadClassFromFile( )
+	}
 
 	/*
 	 * Loads a named class from a specified JAR file
