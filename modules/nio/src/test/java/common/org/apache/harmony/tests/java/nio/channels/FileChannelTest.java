@@ -37,6 +37,10 @@ import junit.framework.TestCase;
 
 public class FileChannelTest extends TestCase {
 
+    private static final int CAPACITY = 100;
+
+    private static final int LIMITED_CAPACITY = 2;
+
     private static final String CONTENT = "MYTESTSTRING";
 
     private static final int CONTENT_LENGTH = CONTENT.length();
@@ -936,6 +940,542 @@ public class FileChannelTest extends TestCase {
         // after release file lock can be obtained again.
         fileLock = writeOnlyFileChannel.tryLock(0, 10, false);
         assertTrue(fileLock.isValid());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer)
+     */
+    public void test_readLByteBuffer_Null() throws Exception {
+        ByteBuffer readBuffer = null;
+
+        try {
+            readOnlyFileChannel.read(readBuffer);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.read(readBuffer);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer)
+     */
+    public void test_readLByteBuffer_Closed() throws Exception {
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.read(readBuffer);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.read(readBuffer);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.read(readBuffer);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // should throw ClosedChannelException first
+        readBuffer = null;
+        try {
+            readWriteFileChannel.read(readBuffer);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer)
+     */
+    public void test_readLByteBuffer_WriteOnly() throws Exception {
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            writeOnlyFileChannel.read(readBuffer);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+
+        // first throws NonReadableChannelException
+        readBuffer = null;
+        try {
+            writeOnlyFileChannel.read(readBuffer);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer)
+     */
+    public void test_readLByteBuffer_EmptyFile() throws Exception {
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+        int result = readOnlyFileChannel.read(readBuffer);
+        assertEquals(-1, result);
+        assertEquals(0, readBuffer.position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer)
+     */
+    public void test_readLByteBuffer_LimitedCapacity() throws Exception {
+        writeDataToFile(fileOfReadOnlyFileChannel);
+
+        ByteBuffer readBuffer = ByteBuffer.allocate(LIMITED_CAPACITY);
+        int result = readOnlyFileChannel.read(readBuffer);
+        assertEquals(LIMITED_CAPACITY, result);
+        assertEquals(LIMITED_CAPACITY, readBuffer.position());
+        readBuffer.flip();
+        for (int i = 0; i < LIMITED_CAPACITY; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer)
+     */
+    public void test_readLByteBuffer() throws Exception {
+        writeDataToFile(fileOfReadOnlyFileChannel);
+
+        ByteBuffer readBuffer = ByteBuffer.allocate(CONTENT_AS_BYTES_LENGTH);
+        int result = readOnlyFileChannel.read(readBuffer);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, readBuffer.position());
+        readBuffer.flip();
+        for (int i = 0; i < CONTENT_AS_BYTES_LENGTH; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer, long)
+     */
+    public void test_readLByteBufferJ_Null() throws Exception {
+        ByteBuffer readBuffer = null;
+
+        try {
+            readOnlyFileChannel.read(readBuffer, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // first throws NullPointerException
+        try {
+            readOnlyFileChannel.read(readBuffer, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // first throws NullPointerException
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.read(readBuffer, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.read(readBuffer, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // first throws NullPointerException
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.read(readBuffer, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer, long)
+     */
+    public void test_readLByteBufferJ_Closed() throws Exception {
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.read(readBuffer, 0);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.read(readBuffer, 0);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer, long)
+     */
+    public void test_readLByteBufferJ_IllegalArgument() throws Exception {
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            readOnlyFileChannel.read(readBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.read(readBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.read(readBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        // throws IllegalArgumentException first.
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.read(readBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer, long)
+     */
+    public void test_readLByteBufferJ_WriteOnly() throws Exception {
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            writeOnlyFileChannel.read(readBuffer, 0);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+
+        // throws NonReadableChannelException first.
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.read(readBuffer, 0);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer,long)
+     */
+    public void test_readLByteBufferJ_Emptyfile() throws Exception {
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+        int result = readOnlyFileChannel.read(readBuffer, 0);
+        assertEquals(-1, result);
+        assertEquals(0, readBuffer.position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer,long)
+     */
+    public void test_readLByteBufferJ_Postion_BeyondFileLimit()
+            throws Exception {
+
+        writeDataToFile(fileOfReadOnlyFileChannel);
+
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+        int result = readOnlyFileChannel.read(readBuffer,
+                CONTENT_AS_BYTES.length);
+        assertEquals(-1, result);
+        assertEquals(0, readBuffer.position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer,long)
+     */
+    public void test_readLByteBufferJ_Postion_As_Long() throws Exception {
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+        try {
+            readOnlyFileChannel.read(readBuffer, Long.MAX_VALUE);
+        } catch (IOException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer,long)
+     */
+    public void test_readLByteBufferJ() throws Exception {
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
+
+        final int POSITION = 2;
+        int result = readOnlyFileChannel.read(readBuffer, POSITION);
+        assertEquals(CONTENT_AS_BYTES_LENGTH - POSITION, result);
+
+        readBuffer.flip();
+        for (int i = POSITION; i < CONTENT_AS_BYTES_LENGTH; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_Null() throws Exception {
+        ByteBuffer[] readBuffers = null;
+
+        try {
+            readOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readOnlyFileChannel.read(readBuffers, 1, 11);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.read(readBuffers, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // first throws NullPointerException
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_Closed() throws Exception {
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        readBuffers[0] = ByteBuffer.allocate(CAPACITY);
+
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.read(readBuffers, 0, 1);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_WriteOnly() throws Exception {
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        readBuffers[0] = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            writeOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+
+        // first throws NonReadableChannelException.
+        readBuffers[0] = null;
+        try {
+            writeOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw NonReadableChannelException");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_IndexOutOfBound() throws Exception {
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        readBuffers[0] = ByteBuffer.allocate(CAPACITY);
+        readBuffers[1] = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            readOnlyFileChannel.read(readBuffers, 2, 1);
+            fail("should throw IndexOutOfBoundException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.read(null, -1, 0);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.read(readBuffers, 0, 3);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.read(readBuffers, -1, 0);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        // throws IndexOutOfBoundsException first
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.read(readBuffers, 0, 3);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_EmptyFile() throws Exception {
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        readBuffers[0] = ByteBuffer.allocate(CAPACITY);
+        readBuffers[1] = ByteBuffer.allocate(CAPACITY);
+        long result = readOnlyFileChannel.read(readBuffers, 0, 2);
+        assertEquals(-1, result);
+        assertEquals(0, readBuffers[0].position());
+        assertEquals(0, readBuffers[1].position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_EmptyBuffers() throws Exception {
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        try {
+            readOnlyFileChannel.read(readBuffers, 0, 2);
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        readBuffers[0] = ByteBuffer.allocate(CAPACITY);
+        try {
+            readOnlyFileChannel.read(readBuffers, 0, 2);
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        long result = readOnlyFileChannel.read(readBuffers, 0, 1);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_EmptyFile_EmptyBuffers()
+            throws Exception {
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        // will not throw NullPointerException
+        long result = readOnlyFileChannel.read(readBuffers, 0, 0);
+        assertEquals(0, result);
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_Length_Zero() throws Exception {
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        readBuffers[0] = ByteBuffer.allocate(LIMITED_CAPACITY);
+        readBuffers[1] = ByteBuffer.allocate(LIMITED_CAPACITY);
+        long result = readOnlyFileChannel.read(readBuffers, 1, 0);
+        assertEquals(0, result);
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII_LimitedCapacity() throws Exception {
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        readBuffers[0] = ByteBuffer.allocate(LIMITED_CAPACITY);
+        readBuffers[1] = ByteBuffer.allocate(LIMITED_CAPACITY);
+
+        // reads to the second buffer
+        long result = readOnlyFileChannel.read(readBuffers, 1, 1);
+        assertEquals(LIMITED_CAPACITY, result);
+        assertEquals(0, readBuffers[0].position());
+        assertEquals(LIMITED_CAPACITY, readBuffers[1].position());
+
+        readBuffers[1].flip();
+        for (int i = 0; i < LIMITED_CAPACITY; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffers[1].get());
+        }
     }
 
     /**

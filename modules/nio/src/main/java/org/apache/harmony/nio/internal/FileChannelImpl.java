@@ -214,11 +214,11 @@ public abstract class FileChannelImpl extends FileChannel {
 	 * Sets the file pointer.
 	 */
 	public FileChannel position(long newPosition) throws IOException {
+        openCheck();
 		if (newPosition < 0) {
 			throw new IllegalArgumentException(
 					"New position must be non-negative."); //$NON-NLS-1$
-		}
-		openCheck();
+		}		
 
 		synchronized (repositioningLock) {
 			fileSystem.seek(handle, newPosition, IFileSystem.SEEK_SET);
@@ -227,6 +227,12 @@ public abstract class FileChannelImpl extends FileChannel {
 	}
 
 	public int read(ByteBuffer buffer, long position) throws IOException {
+        if (!buffer.hasRemaining()){
+            return 0;
+        }
+        if (position < 0){
+            throw new IllegalArgumentException();
+        }
 	    openCheck();
 		synchronized (repositioningLock) {
 			int bytesRead = 0;
@@ -243,6 +249,9 @@ public abstract class FileChannelImpl extends FileChannel {
 
 	public int read(ByteBuffer buffer) throws IOException {
         openCheck();
+        if (!buffer.hasRemaining()){
+            return 0;
+        }
         boolean completed = true;
         int bytesRead = 0;
 		synchronized (repositioningLock) {
@@ -292,6 +301,13 @@ public abstract class FileChannelImpl extends FileChannel {
 
 	public long read(ByteBuffer[] buffers, int offset, int length)
 			throws IOException {
+        int count = 0;
+        if (offset < 0 || length < 0 || offset + length > buffers.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        for (int i = offset; i < length; i++) {
+            count += buffers[i].remaining();
+        }
         openCheck();
         if (offset < 0 || length < 0 || offset + length > buffers.length) {
             throw new IndexOutOfBoundsException();
