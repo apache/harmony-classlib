@@ -59,11 +59,7 @@ import junit.framework.TestCase;
  */
 public class EncryptedPrivateKeyInfoTest extends TestCase {
 
-    private static final Provider[] provider;
-    
-    static {
-        provider = Security.getProviders();
-    }
+    private static final Provider[] provider = Security.getProviders();
 
     /**
      * Algorithm names/transformations used in roundtrip tests of
@@ -481,6 +477,20 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
         // check that internal state has not been affected
         assertTrue(Arrays.equals(EncryptedPrivateKeyInfoData.encryptedData,
                 epki.getEncryptedData()));
+    }
+
+    /**
+     * @tests javax/crypto/EncryptedPrivateKeyInfo(String, byte[])
+     * Checks exception order
+     */
+    public final void testEncryptedPrivateKeyInfoStringbyteArray6() {
+        //Regression for HARMONY-768
+        try {
+            new EncryptedPrivateKeyInfo("0", new byte[] {});
+            fail("NoSuchAlgorithmException expected");
+        } catch (NoSuchAlgorithmException e) {
+            //expected
+        }    
     }
 
     /**
@@ -1586,31 +1596,14 @@ public class EncryptedPrivateKeyInfoTest extends TestCase {
             ap = c.getParameters();
 
             try {
-                //                int blkS = c.getBlockSize();
-                //                blkS = blkS==0?10:blkS;
-                //                ct = new byte[c.getOutputSize(privateKeyInfo.length)];
-                //                if (blkS != 0) {
-                //                    int cltOff = 0, ctOff = 0;
-                //                    for (int i=0; i<privateKeyInfo.length/blkS; i++) {
-                //                        ctOff += c.update(privateKeyInfo, cltOff, blkS, ct, ctOff);
-                //                        cltOff += blkS;
-                //                    }
-                //                    c.doFinal(privateKeyInfo, cltOff, privateKeyInfo.length%blkS,
-                // ct, ctOff);
-                //                } else {
                 ct = c.doFinal(privateKeyInfo);
-                //                }
             } catch (IllegalStateException e) {
                 throw new AllowedFailure(e.getMessage());
             } catch (IllegalBlockSizeException e) {
                 throw new AllowedFailure(e.getMessage());
             } catch (BadPaddingException e) {
                 throw new AllowedFailure(e.getMessage());
-            }
-            //            } catch (ShortBufferException e) {
-            //                throw new AllowedFailure(e.getMessage());
-            //            }
-            catch (RuntimeException e) {
+            } catch (RuntimeException e) {
                 throw new AllowedFailure(e.getMessage());
             }
 

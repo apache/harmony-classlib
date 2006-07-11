@@ -110,6 +110,9 @@ public class EncryptedPrivateKeyInfo {
             throw new NullPointerException("the algName parameter is null");
         }
         this.algName = encrAlgName;
+        if (!mapAlgName()) {
+            throw new NoSuchAlgorithmException(this.algName + " not supported");
+        }
         if (encryptedData == null) {
             throw new NullPointerException(
                     "the encryptedData parameter is null");
@@ -121,9 +124,6 @@ public class EncryptedPrivateKeyInfo {
         System.arraycopy(encryptedData, 0,
                 this.encryptedData, 0, encryptedData.length);
         this.algParameters = null;
-        if (!mapAlgName()) {
-            throw new NoSuchAlgorithmException(this.algName + " not supported");
-        }
     }
 
     /**
