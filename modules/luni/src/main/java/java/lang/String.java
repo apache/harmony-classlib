@@ -498,7 +498,7 @@ public final class String implements Serializable, Comparable<String>, CharSeque
         super();
         if (codePoints == null)
             throw new NullPointerException();
-        if (offset < 0 || count < 0 || (offset + count) > codePoints.length)
+        if (offset < 0 || count < 0 || (long)offset + (long)count > codePoints.length)
             throw new IndexOutOfBoundsException();
         this.offset = 0;
         this.value = new char[count * 2];

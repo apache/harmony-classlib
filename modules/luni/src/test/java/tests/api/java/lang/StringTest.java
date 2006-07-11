@@ -151,6 +151,19 @@ public class StringTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @tests java.lang.String#String(int[], int, int)
+	 */
+	public void test_Constructor$III() {
+		// Test for method java.lang.String(int [], int, int)
+		try {
+			new String(new int[0], 2, Integer.MAX_VALUE);
+			fail("Did not throw exception");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+	}
+
+	/**
 	 * @tests java.lang.String#String(java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
