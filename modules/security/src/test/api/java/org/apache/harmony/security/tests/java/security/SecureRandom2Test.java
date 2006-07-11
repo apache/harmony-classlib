@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.SecureRandomSpi;
 import java.security.Security;
 
 public class SecureRandom2Test extends junit.framework.TestCase {
@@ -147,4 +148,26 @@ public class SecureRandom2Test extends junit.framework.TestCase {
 			fail("seed generation with long failed : " + e);
 		}
 	}
+
+	/**
+     * @tests java.security.SecureRandom#getAlgorithm()
+     */
+    public void test_getAlgorithm() {
+        // Regression for HARMONY-750
+        
+        SecureRandomSpi spi = new SecureRandomSpi() {
+
+            protected void engineSetSeed(byte[] arg) {}
+
+            protected void engineNextBytes(byte[] arg) {}
+
+            protected byte[] engineGenerateSeed(int arg) {
+                return null;
+            }
+        };
+
+        SecureRandom sr = new SecureRandom(spi, null) {};
+        
+        assertEquals("unknown", sr.getAlgorithm());
+    }
 }

@@ -145,7 +145,7 @@ public class SecureRandom extends Random {
      */
     protected SecureRandom(SecureRandomSpi secureRandomSpi,
                            Provider provider) {
-        this(secureRandomSpi, provider, null);
+        this(secureRandomSpi, provider, "unknown");
     }
     
     // Constructor
@@ -154,7 +154,7 @@ public class SecureRandom extends Random {
                          String algorithm) {
         super(0);
         this.provider = provider;
-        this. algorithm = algorithm;
+        this.algorithm = algorithm;
         this.secureRandomSpi = secureRandomSpi;
     }
 
