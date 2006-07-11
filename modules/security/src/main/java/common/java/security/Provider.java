@@ -56,18 +56,18 @@ public abstract class Provider extends Properties {
 
     // Contains "Service.Algorithm" and Provider.Service classes added using
     // putService()
-    private transient TwoKeyHashMap<Service> serviceTable;
+    private transient TwoKeyHashMap<String, String, Service> serviceTable;
 
     // Contains "Service.Alias" and Provider.Service classes added using
     // putService()
-    private transient TwoKeyHashMap<Service> aliasTable;
+    private transient TwoKeyHashMap<String, String, Service> aliasTable;
 
     // Contains "Service.Algorithm" and Provider.Service classes added using
     // put()
-    private transient TwoKeyHashMap<Service> propertyServiceTable;
+    private transient TwoKeyHashMap<String, String, Service> propertyServiceTable;
 
     // Contains "Service.Alias" and Provider.Service classes added using put()
-    private transient TwoKeyHashMap<Service> propertyAliasTable;
+    private transient TwoKeyHashMap<String, String, Service> propertyAliasTable;
 
     // The properties changed via put()
     private transient Properties changedProperties;
@@ -440,12 +440,12 @@ public abstract class Provider extends Properties {
         }
         servicesChanged();
         if (serviceTable == null) {
-            serviceTable = new TwoKeyHashMap<Service>(128);
+            serviceTable = new TwoKeyHashMap<String, String, Service>(128);
         }
         serviceTable.put(s.type, s.algorithm.toUpperCase(), s);
         if (s.aliases != null) {
             if (aliasTable == null) {
-                aliasTable = new TwoKeyHashMap<Service>(256);
+                aliasTable = new TwoKeyHashMap<String, String, Service>(256);
             }
             for (Iterator<String> it = s.getAliases(); it.hasNext();) {
                 aliasTable.put(s.type, (it.next()).toUpperCase(), s);
@@ -620,7 +620,7 @@ public abstract class Provider extends Properties {
                 String algUp = algorithm.toUpperCase();
                 Object o = null;
                 if (propertyServiceTable == null) {
-                    propertyServiceTable = new TwoKeyHashMap<Service>(128);
+                    propertyServiceTable = new TwoKeyHashMap<String, String, Service>(128);
                 } else {
                     o = propertyServiceTable.get(serviceName, algUp);
                 }
@@ -628,7 +628,7 @@ public abstract class Provider extends Properties {
                     s = (Provider.Service) o;
                     s.aliases.add(aliasName);
                     if (propertyAliasTable == null) {
-                        propertyAliasTable = new TwoKeyHashMap<Service>(256);
+                        propertyAliasTable = new TwoKeyHashMap<String, String, Service>(256);
                     }
                     propertyAliasTable.put(serviceName,
                             aliasName.toUpperCase(), s);
@@ -642,7 +642,7 @@ public abstract class Provider extends Properties {
                                 className, l, new HashMap<String, String>());
                         propertyServiceTable.put(serviceName, algUp, s);
                         if (propertyAliasTable == null) {
-                            propertyAliasTable = new TwoKeyHashMap<Service>(256);
+                            propertyAliasTable = new TwoKeyHashMap<String, String, Service>(256);
                         }
                         propertyAliasTable.put(serviceName, aliasName
                                 .toUpperCase(), s);
@@ -670,7 +670,7 @@ public abstract class Provider extends Properties {
                     s = new Provider.Service(this, serviceName, algorithm,
                             value, new ArrayList<String>(), new HashMap<String, String>());
                     if (propertyServiceTable == null) {
-                        propertyServiceTable = new TwoKeyHashMap<Service>(128);
+                        propertyServiceTable = new TwoKeyHashMap<String, String, Service>(128);
                     }
                     propertyServiceTable.put(serviceName, alg, s);
 
@@ -697,7 +697,7 @@ public abstract class Provider extends Properties {
                         s = new Provider.Service(this, serviceName, algorithm,
                                 className, new ArrayList<String>(), m);
                         if (propertyServiceTable == null) {
-                            propertyServiceTable = new TwoKeyHashMap<Service>(128);
+                            propertyServiceTable = new TwoKeyHashMap<String, String, Service>(128);
                         }
                         propertyServiceTable.put(serviceName, alg, s);
                     }

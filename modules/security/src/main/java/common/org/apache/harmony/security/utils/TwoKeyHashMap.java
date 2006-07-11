@@ -32,7 +32,7 @@ import java.util.Set;
  * Reductive hash with two keys
  * 
  */
-public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
+public class TwoKeyHashMap<E, K, V> extends AbstractMap<String, V> {
 
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
     static final int DEFAULT_INITIAL_SIZE = 16;
@@ -43,11 +43,18 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
     private int arrSize;
     private transient int modCount;
     
-    private Entry<V>[] arr;
+    private Entry<E, K, V>[] arr;
 
     private float loadFactor;
     int threshold = 0;
 
+    /**
+     * Constructs an empty HashMap
+     */
+    public TwoKeyHashMap() {
+        this(DEFAULT_INITIAL_SIZE, DEFAULT_LOAD_FACTOR);
+    }
+    
     /**
      * Constructs an empty HashMap
      * @param initialCapacity
@@ -113,7 +120,7 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
      * @return
      */
     public V remove(Object key1, Object key2) {
-        Entry<V> e = removeEntry(key1, key2);
+        Entry<E, K, V> e = removeEntry(key1, key2);
         return null != e ? e.value : null;
     }
     
@@ -124,7 +131,7 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
      * @param value
      * @return
      */
-    public V put(String key1, String key2, V value) {
+    public V put(E key1, K key2, V value) {
         if (key1 == null && key2 == null) {
             int index = arrSize;
             if (arr[index] == null) {
@@ -141,7 +148,7 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
 
         int hash = key1.hashCode() + key2.hashCode();
         int index = (hash & 0x7fffffff) % arrSize;
-        Entry<V> e = arr[index];
+        Entry<E, K, V> e = arr[index];
 
         while (e != null) {
             if (hash == e.hash && key1.equals(e.getKey1()) && key2.equals(e.getKey2())) {
@@ -171,12 +178,12 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
         if (newArrSize < 0) {
             newArrSize = Integer.MAX_VALUE - 1;
         }
-        Entry<V>[] newArr = new Entry[newArrSize + 1];
+        Entry<E, K, V>[] newArr = new Entry[newArrSize + 1];
 
         for (int i = 0; i < arr.length - 1; i++) {
-            Entry<V> entry = arr[i];
+            Entry<E, K, V> entry = arr[i];
             while (entry != null) {
-                Entry<V> next = entry.next;
+                Entry<E, K, V> next = entry.next;
 
                 int newIndex = (entry.hash & 0x7fffffff) % newArrSize;
                 entry.next = newArr[newIndex];
@@ -214,7 +221,7 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
      * @return
      */
     public V get(Object key1, Object key2) {
-        Entry<V> e = findEntry(key1, key2);
+        Entry<E, K, V> e = findEntry(key1, key2);
         if (e != null) {
             return e.value;
         }
@@ -244,9 +251,9 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
      * @param next
      * @return
      */
-    Entry<V> createEntry(int hashCode, String key1, String key2, 
-            V value, Entry<V> next) {
-        return new Entry<V>(hashCode, key1, key2, value, next);
+    Entry<E, K, V> createEntry(int hashCode, E key1, K key2, 
+            V value, Entry<E, K, V> next) {
+        return new Entry<E, K, V>(hashCode, key1, key2, value, next);
     }
 
     /**
@@ -270,14 +277,14 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
      * Entry implementation for the TwoKeyHashMap class
      * 
      */
-    static class Entry<V> implements Map.Entry<String, V> { 
+    public static class Entry<E, K, V> implements Map.Entry<String, V> { 
         int hash;
-        String key1;
-        String key2;
+        E key1;
+        K key2;
         V value;
-        Entry<V> next;
+        Entry<E, K, V> next;
 
-        public Entry(int hash, String key1, String key2, V value, Entry<V> next) {
+        public Entry(int hash, E key1, K key2, V value, Entry<E, K, V> next) {
             this.hash = hash;
             this.key1 = key1;
             this.key2 = key2;
@@ -286,14 +293,14 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
         }
         
         public String getKey() {
-            return key1 + key2;
+            return key1.toString() + key2.toString();
         }
 
-        public String getKey1() {
+        public E getKey1() {
             return key1;
         }
         
-        public String getKey2() {
+        public K getKey2() {
             return key2;
         }
 
@@ -312,7 +319,7 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
                 return false;
             }
 
-            Entry<?> e = (Entry<?>) obj;
+            Entry<?, ?, ?> e = (Entry<?, ?, ?>) obj;
             Object getKey1 = e.getKey1();
             Object getKey2 = e.getKey2();
             Object getValue = e.getValue();
@@ -353,8 +360,8 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
                 return false;
             }
 
-            Entry<?> entry = (Entry<?>) obj;
-            Entry<V> entry2 = findEntry(entry.getKey1(), entry.getKey2());
+            Entry<?, ?, ?> entry = (Entry<?, ?, ?>) obj;
+            Entry<E, K, V> entry2 = findEntry(entry.getKey1(), entry.getKey2());
             if (entry2 == null) {
                 return false;
             }
@@ -381,8 +388,8 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
         private boolean found;
         private int curr = -1;
         private int returned_index = -1;
-        private Entry<V> curr_entry;
-        private Entry<V> returned_entry;
+        private Entry<E, K, V> curr_entry;
+        private Entry<E, K, V> returned_entry;
 
         EntryIteratorImpl() {
             startModCount = modCount;
@@ -429,8 +436,8 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
                 throw new ConcurrentModificationException();
             }
 
-            Entry<V> p = null;
-            Entry<V> e = arr[returned_index];
+            Entry<E, K, V> p = null;
+            Entry<E, K, V> e = arr[returned_index];
             while (e != returned_entry) {
                 p = e;
                 e = e.next;
@@ -447,14 +454,14 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
         }
     }
     
-    private final Entry<V> findEntry(Object key1, Object key2) {
+    private final Entry<E, K, V> findEntry(Object key1, Object key2) {
         if (key1 == null && key2 == null) {
             return arr[arrSize];
         }
 
         int hash = key1.hashCode() + key2.hashCode();
         int index = (hash & 0x7fffffff) % arrSize;
-        Entry<V> e = arr[index];
+        Entry<E, K, V> e = arr[index];
 
         while (e != null) {
             if (hash == e.hash && key1.equals(e.getKey1()) && key2.equals(e.getKey2())) {
@@ -466,11 +473,11 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
     }
     
     // Removes entry
-    private final Entry<V> removeEntry(Object key1, Object key2) {
+    private final Entry<E, K, V> removeEntry(Object key1, Object key2) {
         if (key1 == null && key2 == null) {
             int index = arrSize;
             if (arr[index] != null) {
-                Entry<V> ret = arr[index];
+                Entry<E, K, V> ret = arr[index];
                 arr[index] = null;
                 size--;
                 modCount++;
@@ -482,8 +489,8 @@ public class TwoKeyHashMap<V> extends AbstractMap<String, V> {
         int hash = key1.hashCode() + key2.hashCode();
         int index = (hash & 0x7fffffff) % arrSize;
 
-        Entry<V> e = arr[index];
-        Entry<V> prev = e;
+        Entry<E, K, V> e = arr[index];
+        Entry<E, K, V> prev = e;
         while (e != null) {
             if (hash == e.hash && key1.equals(e.getKey1()) && key2.equals(e.getKey2())) {
                 if (prev == e) {
