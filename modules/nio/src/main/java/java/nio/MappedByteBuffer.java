@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,8 +91,12 @@ public abstract class MappedByteBuffer extends ByteBuffer {
 	}
 
     /**
-     * TODO: JavaDoc
-     * @return
+     * Writes all changes of the buffer to the mapped file.
+     * 
+     * All changes must be written by invoking this method if the mapped file
+     * exists on the local device, otherwise the action can not be specified.
+     * 
+     * @return This buffer
      */
     public final MappedByteBuffer force() {
         if (mapMode == IMemorySystem.MMAP_READ_WRITE) {

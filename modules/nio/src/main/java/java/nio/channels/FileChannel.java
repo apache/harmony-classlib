@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004,2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -271,14 +271,32 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 			throws IOException;
 
 	/**
-	 * TODO:
-	 * 
-	 * @param mode
-	 * @param position
-	 * @param size
-	 * @return the mapped byte buffer.
-	 * @throws IOException
-	 */
+     * Maps the file into memory.There can be three modes:Read-only,Read/write
+     * and Private.
+     * 
+     * After mapping, the memory and the file channel do not affect each other.
+     * 
+     * Note : mapping a file into memory is usually expensive.
+     * 
+     * @param mode
+     *            one of three modes to map
+     * @param position
+     *            the starting position of the file
+     * @param size
+     *            the size to map
+     * @return the mapped byte buffer
+     * 
+     * @throws NonReadableChannelException
+     *             If the file is not opened for reading but the given mode is
+     *             "READ_ONLY"
+     * @throws NonWritableChannelException
+     *             If the file is not opened for writing but the mode is not
+     *             "READ_ONLY"
+     * @throws IllegalArgumentException
+     *             If the given parameters of position and size are not correct
+     * @throws IOException
+     *             If any I/O error occurs
+     */
 	public abstract MappedByteBuffer map(FileChannel.MapMode mode,
 			long position, long size) throws IOException;
 
@@ -413,26 +431,75 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	public abstract long size() throws IOException;
 
 	/**
-	 * TODO:
-	 * 
-	 * @param src
-	 * @param position
-	 * @param count
-	 * @return the number of bytes that were transferred.
-	 * @throws IOException
-	 */
+     * Transfers bytes into this channel's file from the given readable byte
+     * channel. It may be very efficient.
+     * 
+     * By invoking this methid, it will read form the source channel and write
+     * into the file channel.
+     * 
+     * Note: no guarantee whether all bytes may be transferred. And it does not
+     * modify the position of the channel.
+     * 
+     * @param src
+     *            the source channel to read
+     * @param position
+     *            the non-negative position to begin
+     * @param count
+     *            the non-negative bytes to be transferred
+     * @return the number of bytes that are transferred.
+     * 
+     * @throws IllegalArgumentException
+     *             If the parameters are not correct
+     * @throws NonReadableChannelException
+     *             If the source channel is not readable
+     * @throws NonWritableChannelException
+     *             If this channel is not writable
+     * @throws ClosedChannelException
+     *             If either channel has already been closed
+     * @throws AsynchronousCloseException
+     *             If either channel is closed by other threads during this operation
+     * @throws ClosedByInterruptException
+     *             If the thread is interrupted during this operation
+     * @throws IOException
+     *             If any I/O error occurs
+     */
 	public abstract long transferFrom(ReadableByteChannel src, long position,
 			long count) throws IOException;
 
-	/**
-	 * TODO
-	 * 
-	 * @param position
-	 * @param count
-	 * @param target
-	 * @return the number of bytes transferred.
-	 * @throws IOException
-	 */
+    /**
+     * Transfers data from the file to the given channel. It may be very
+     * efficient.
+     * 
+     * By invoking this methid, it will read form the file and write into the
+     * writable channel.
+     * 
+     * Note: no guarantee whether all bytes may be transfered.And it does not
+     * modify the position of the channel.
+     * 
+     * @param position
+     *            the non-negative position to begin
+     * @param count
+     *            the non-negative bytes to be transferred
+     * @param target
+     *            the target channel to write into
+     * @return the number of bytes that were transferred.
+     * 
+     * @throws IllegalArgumentException
+     *             If the parameters are not correct
+     * @throws NonReadableChannelException
+     *             If this channel is not readable
+     * @throws NonWritableChannelException
+     *             If the target channel is not writable
+     * @throws ClosedChannelException
+     *             If either channel has already been closed
+     * @throws AsynchronousCloseException
+     *             If either channel is closed by other threads during this
+     *             operation
+     * @throws ClosedByInterruptException
+     *             If the thread is interrupted during this operation
+     * @throws IOException
+     *             If any I/O error occurs
+     */
 	public abstract long transferTo(long position, long count,
 			WritableByteChannel target) throws IOException;
 
@@ -462,54 +529,79 @@ public abstract class FileChannel extends AbstractInterruptibleChannel
 	public abstract FileChannel truncate(long size) throws IOException;
 
 	/**
-	 * Attempts to acquire an exclusive lock on this file without blocking.
-	 * <p>
-	 * This is a convenience method for attempting to acquire a maximum length
-	 * lock on the file. It is equivalent to:
-	 * 
-	 * <pre>
-	 * fileChannel.tryLock(0L, Long.MAX_VALUE, false)
-	 * </pre>
-	 * 
-	 * </p>
-	 * <p>
-	 * The method returns
-	 * <code>null</code< if the acquisition would result in an overlapped lock with another
-	 * OS process.</p>
-	 * 
-	 * @return the file lock object, or <code>null</code> if the lock would overlap an existing exclusive lock
-	 * in another OS process.
-	 * @throws ClosedChannelException the file channel is closed.
-	 * @throws NonWritableChannelException this channel was not opened for writing.
-	 * @throws OverlappingFileLockException Either a lock is already held that overlaps this lock request, or another thread is waiting to acquire a lock that will overlap with this request.
-	 * @throws IOException
-	 */
+     * Attempts to acquire an exclusive lock on this file without blocking.
+     * <p>
+     * This is a convenience method for attempting to acquire a maximum length
+     * lock on the file. It is equivalent to:
+     * 
+     * <pre>
+     * fileChannel.tryLock(0L, Long.MAX_VALUE, false)
+     * </pre>
+     * 
+     * </p>
+     * <p>
+     * The method returns <code>null</code> if the acquisition would result in
+     * an overlapped lock with another OS process.
+     * </p>
+     * 
+     * @return the file lock object, or <code>null</code> if the lock would
+     *         overlap an existing exclusive lock in another OS process.
+     * @throws ClosedChannelException
+     *             the file channel is closed.
+     * @throws OverlappingFileLockException
+     *             Either a lock is already held that overlaps this lock
+     *             request, or another thread is waiting to acquire a lock that
+     *             will overlap with this request.
+     * @throws IOException
+     *             if any I/O error occurs
+     */
 	public final FileLock tryLock() throws IOException {
 		return tryLock(0L, Long.MAX_VALUE, false);
 	}
 
-	/**
-	 * TODO
-	 * 
-	 * @param position
-	 * @param size
-	 * @param shared
-	 * @return the file lock.
-	 * @throws IOException
-	 */
+    /**
+     * Attempts to acquire an exclusive lock on this file without blocking.
+     * <p>
+     * The method returns <code>null</code> if the acquisition would result in
+     * an overlapped lock with another OS process.
+     * </p>
+     * 
+     * @param position
+     *            the starting positon
+     * @param size
+     *            the size of file to lock
+     * @param shared
+     *            true if share
+     * @return the file lock object, or <code>null</code> if the lock would
+     *         overlap an existing exclusive lock in another OS process.
+     * 
+     * @throws IllegalArgumentException
+     *             If any parameters are bad
+     * @throws ClosedChannelException
+     *             the file channel is closed.
+     * @throws OverlappingFileLockException
+     *             Either a lock is already held that overlaps this lock
+     *             request, or another thread is waiting to acquire a lock that
+     *             will overlap with this request.
+     * @throws IOException
+     *             if any I/O error occurs
+     */
 	public abstract FileLock tryLock(long position, long size, boolean shared)
 			throws IOException;
 
 	/**
-	 * Writes bytes from the given byte buffer into the file channel.
-	 * <p>
-	 * The bytes are written starting at the current file position, and after
-	 * some number of bytes are written (up to the remaining number of bytes in
-	 * the buffer) the file position is increased by the number of bytes
-	 * actually written.
-	 * 
-	 * @see java.nio.channels.WritableByteChannel#write(java.nio.ByteBuffer)
-	 */
+     * Writes bytes from the given byte buffer into the file channel.
+     * <p>
+     * The bytes are written starting at the current file position, and after
+     * some number of bytes are written (up to the remaining number of bytes in
+     * the buffer) the file position is increased by the number of bytes
+     * actually written.
+     * 
+     * @see java.nio.channels.WritableByteChannel#write(java.nio.ByteBuffer)
+     * 
+     * @param src
+     *            the source buffer to write
+     */
 	public abstract int write(ByteBuffer src) throws IOException;
 
 	/**
