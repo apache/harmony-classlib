@@ -28,36 +28,30 @@ import org.apache.harmony.beans.NullPersistenceDelegate;
 import org.apache.harmony.beans.ObjectNode;
 import org.apache.harmony.beans.DefaultPersistenceDelegatesFactory;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.14.6.4 $
- */
-
 public class Encoder {
-    
+
     private ExceptionListener exceptionListener = null;
-    private HashMap<Class<?>, PersistenceDelegate> persistenceDelegates =
-        new HashMap<Class<?>, PersistenceDelegate>();
-    
+
+    private HashMap<Class<?>, PersistenceDelegate> persistenceDelegates = new HashMap<Class<?>, PersistenceDelegate>();
+
     Vector<Object> roots = new Vector<Object>();
+
     HashMap<Object, ObjectNode> nodes = new HashMap<Object, ObjectNode>();
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public Encoder() {}
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public Object get(Object oldInstance) {
-        if(oldInstance == null) {
+        if (oldInstance == null) {
             return null;
         }
-        
-        ObjectNode node = (ObjectNode) nodes.get(oldInstance);
-        Object result = getValue(node);
-        return result;
+
+        return getValue(nodes.get(oldInstance));
     }
 
     /**
@@ -65,26 +59,24 @@ public class Encoder {
      */
     public Object remove(Object oldInstance) {
         //TODO - notify references on node deletion
-        if(oldInstance == null) {
+        if (oldInstance == null) {
             return null;
         }
-        
-        ObjectNode node = (ObjectNode) nodes.remove(oldInstance);
-        return getValue(node);
+
+        return getValue(nodes.remove(oldInstance));
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
-        PersistenceDelegate result =
-                (PersistenceDelegate) persistenceDelegates.get(type);
-        
-        if(result == null) {
-             result = DefaultPersistenceDelegatesFactory.getPersistenceDelegate(
-                     type);
+        PersistenceDelegate result = persistenceDelegates.get(type);
+
+        if (result == null) {
+            result = DefaultPersistenceDelegatesFactory
+                    .getPersistenceDelegate(type);
         }
-        
+
         return result;
     }
 
@@ -103,26 +95,26 @@ public class Encoder {
         roots.add(object);
         doWriteObject(object);
     }
-    
+
     void doWriteObject(Object object) {
-           PersistenceDelegate pd = (object != null) ?
-               getPersistenceDelegate(object.getClass()) :
-                   new NullPersistenceDelegate();
+        PersistenceDelegate pd = (object != null) ? 
+                getPersistenceDelegate(object.getClass())
+                : new NullPersistenceDelegate();
 
+        if (pd == null) {
+            pd = new DefaultPersistenceDelegate();
+        }
 
-           if(pd == null) {
-               pd = new DefaultPersistenceDelegate();
-           }
-
-           pd.writeObject(object, this);
+        pd.writeObject(object, this);
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public void writeStatement(Statement oldStm) {
-        ObjectNode node = (ObjectNode) nodes.get(oldStm.getTarget());
-        if(node != null) {
+        ObjectNode node = nodes.get(oldStm.getTarget());
+
+        if (node != null) {
             try {
                 Object[] oldArgs = oldStm.getArguments();
                 write(oldArgs);
@@ -145,20 +137,19 @@ public class Encoder {
     public void writeExpression(Expression oldExp) {
         try {
             Object oldInstance = oldExp.getValue();
-            
+
             ObjectNode node = null;
             Class<?> type = null;
 
-            if(oldInstance != null) {
+            if (oldInstance != null) {
                 type = oldInstance.getClass();
-                node = (ObjectNode) nodes.get(oldInstance);
+                node = nodes.get(oldInstance);
             }
-            
-            if(node == null) {
-                if(isNull(type) || isPrimitive(type) || isString(type)
-                        //|| isClass(type)
-                   ) 
-                {
+
+            if (node == null) {
+                if (isNull(type) || isPrimitive(type) || isString(type)
+                //|| isClass(type)
+                ) {
                     node = new ObjectNode(oldExp);
                 } else {
                     write(oldExp.getArguments());
@@ -168,14 +159,12 @@ public class Encoder {
                 nodes.put(oldInstance, node);
 
                 // if an expression is not a constructor
-                if(!(oldExp.getTarget() instanceof Class ||
-                     oldExp.getTarget() instanceof Field))
-                {
-                    ObjectNode parent = (ObjectNode) nodes.get(
-                            oldExp.getTarget());
+                if (!(oldExp.getTarget() instanceof Class || oldExp.getTarget() instanceof Field)) {
+                    ObjectNode parent = nodes.get(oldExp.getTarget());
+
                     parent.addExpression(oldExp);
                 }
-            } else if(oldExp.getMethodName().equals("new")) {
+            } else if (oldExp.getMethodName().equals("new")) {
                 node.addReference();
             } else {
                 node.addReferencedExpression(oldExp);
@@ -197,112 +186,111 @@ public class Encoder {
      * @com.intel.drl.spec_ref
      */
     public ExceptionListener getExceptionListener() {
-        if(exceptionListener == null) {
+        if (exceptionListener == null) {
             exceptionListener = new ExceptionListener() {
+
                 public void exceptionThrown(Exception e) {
                     System.out.println(e.getClass() + ": " + e.getMessage());
                 }
             };
         }
-        
+
         return exceptionListener;
     }
-    
+
     private Object write(Object oldInstance) throws Exception {
-        if(oldInstance == null) {
+        if (oldInstance == null) {
             return null;
         }
 
-        ObjectNode node = (ObjectNode) nodes.get(oldInstance);
-        if(node == null) {
-            Class<?> type = oldInstance.getClass();
-            
+        ObjectNode node = nodes.get(oldInstance);
+        if (node == null) {
+            //XXX type is never used
+            //Class<?> type = oldInstance.getClass();
+
             doWriteObject(oldInstance);
-            node = (ObjectNode) nodes.get(oldInstance);
+            node = nodes.get(oldInstance);
         } else {
             node.addReference();
         }
-        
+
         return node.getObjectValue();
     }
-    
+
     private Object[] write(Object[] oldInstances) throws Exception {
-        if(oldInstances != null) {
+        if (oldInstances != null) {
             Object[] newInstances = new Object[oldInstances.length];
-            
-            for(int i = 0; i < oldInstances.length; ++i) {
+
+            for (int i = 0; i < oldInstances.length; ++i) {
                 newInstances[i] = write(oldInstances[i]);
             }
-            
             return newInstances;
         }
-        
         return null;
     }
 
     private Object getValue(ObjectNode node) {
-        if(node != null) {
+        if (node != null) {
             try {
                 Object result = node.getObjectValue();
+
                 return result;
             } catch (Exception e) {
                 getExceptionListener().exceptionThrown(e);
             }
         }
-        
         return null;
     }
-    
+
     static boolean isNull(Class<?> type) {
-        return (type == null);
+        return type == null;
     }
-    
+
     static boolean isPrimitive(Class<?> type) {
-        return (type == Boolean.class) || (type == Byte.class) ||
-            (type == Character.class) || (type == Double.class) ||
-            (type == Float.class) || (type == Integer.class) ||
-            (type == Long.class) || (type == Short.class);
+        return type == Boolean.class || type == Byte.class
+                || type == Character.class || type == Double.class
+                || type == Float.class || type == Integer.class
+                || type == Long.class || type == Short.class;
     }
-    
+
     static boolean isString(Class<?> type) {
-        return (type == String.class);
-        
+        return type == String.class;
+
     }
-    
+
     static boolean isClass(Class<?> type) {
-        return (type == Class.class);
+        return type == Class.class;
     }
-    
-    
+
     static boolean isArray(Class<?> type) {
         return type.isArray();
     }
-    
+
     static String getPrimitiveName(Class<?> type) {
         String result = null;
-        
-        if(type == Boolean.class) {
+
+        if (type == Boolean.class) {
             result = "boolean";
-        } else if(type == Byte.class) {
+        } else if (type == Byte.class) {
             result = "byte";
-        } else if(type == Character.class) {
+        } else if (type == Character.class) {
             result = "char";
-        } else if(type == Double.class) {
+        } else if (type == Double.class) {
             result = "double";
-        } else if(type == Float.class) {
+        } else if (type == Float.class) {
             result = "float";
-        } else if(type == Integer.class) {
+        } else if (type == Integer.class) {
             result = "int";
-        } else if(type == Long.class) {
+        } else if (type == Long.class) {
             result = "long";
-        } else if(type == Short.class) {
+        } else if (type == Short.class) {
             result = "short";
-        } else if(type == String.class) {
+        } else if (type == String.class) {
             result = "string";
-        } else if(type == Class.class) {
+        } else if (type == Class.class) {
             result = "class";
         }
-        
+
         return result;
     }
 }
