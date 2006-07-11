@@ -15,6 +15,9 @@
 .c.obj:
 	$(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.c
 
+.cpp.obj:
+	$(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.cpp
+
 .asm.obj:
 	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32 $<
 
