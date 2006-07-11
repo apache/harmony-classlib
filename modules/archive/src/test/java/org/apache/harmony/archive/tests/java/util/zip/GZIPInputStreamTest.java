@@ -54,9 +54,9 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 		// test method java.util.zip.GZIPInputStream.constructor
 		try {
 			Support_Resources.copyFile(resources, "GZIPInputStream",
-					"hyts_gInput.txt");
+					"hyts_gInput.txt.gz");
 			final URL gInput = new File(resources.toString()
-					+ "/GZIPInputStream/hyts_gInput.txt").toURL();
+					+ "/GZIPInputStream/hyts_gInput.txt.gz").toURL();
 			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
 					.openConnection().getInputStream());
 			assertNotNull("the constructor for GZIPInputStream is null",
@@ -78,9 +78,9 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 		// test method java.util.zip.GZIPInputStream.constructorI
 		try {
 			Support_Resources.copyFile(resources, "GZIPInputStream",
-					"hyts_gInput.txt");
+					"hyts_gInput.txt.gz");
 			final URL gInput = new File(resources.toString()
-					+ "/GZIPInputStream/hyts_gInput.txt").toURL();
+					+ "/GZIPInputStream/hyts_gInput.txt.gz").toURL();
 			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
 					.openConnection().getInputStream(), 200);
 			assertNotNull("the constructor for GZIPInputStream is null",
@@ -99,24 +99,24 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 	 */
 	public void test_read$BII() {
 		// test method java.util.zip.GZIPInputStream.readBII
-		byte orgBuf[] = { 3, 5, 2, 'r', 'g', 'e', 'f', 'd', 'e', 'w' };
+		byte orgBuf[] = { '3', '5', '2', 'r', 'g', 'e', 'f', 'd', 'e', 'w' };
 		byte outBuf[] = new byte[100];
 		try {
 			int result = 0;
 			Support_Resources.copyFile(resources, "GZIPInputStream",
-					"hyts_gInput.txt");
+					"hyts_gInput.txt.gz");
 			String resPath = resources.toString();
 			if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
 				resPath = resPath.substring(1);
 			final URL gInput = new URL("file:/" + resPath
-					+ "/GZIPInputStream/hyts_gInput.txt");
+					+ "/GZIPInputStream/hyts_gInput.txt.gz");
 			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
 					.openConnection().getInputStream());
 			while (!(inGZIP.endofInput())) {
 				result += inGZIP.read(outBuf, result, outBuf.length - result);
 			}
 			assertEquals("the checkSum value of the compressed and decompressed data does not equal",
-					3097700292L, inGZIP.getChecksum().getValue());
+					2074883667L, inGZIP.getChecksum().getValue());
 			for (int i = 0; i < orgBuf.length; i++) {
 				assertTrue(
 						"the decompressed data does not equal the orginal data decompressed",
@@ -201,19 +201,19 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 		try {
 			int result = 0;
 			Support_Resources.copyFile(resources, "GZIPInputStream",
-					"hyts_gInput.txt");
+					"hyts_gInput.txt.gz");
 			String resPath = resources.toString();
 			if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
 				resPath = resPath.substring(1);
 			final URL gInput = new URL("file:/" + resPath
-					+ "/GZIPInputStream/hyts_gInput.txt");
+					+ "/GZIPInputStream/hyts_gInput.txt.gz");
 			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
 					.openConnection().getInputStream());
 			while (!(inGZIP.endofInput())) {
 				result += inGZIP.read(outBuf, result, outBuf.length - result);
 			}
 			assertEquals("the checkSum value of the compressed and decompressed data does not equal",
-					3097700292L, inGZIP.getChecksum().getValue());
+					2074883667L, inGZIP.getChecksum().getValue());
 			inGZIP.close();
 			int r = 0;
 			try {

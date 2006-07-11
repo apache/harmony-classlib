@@ -210,8 +210,7 @@
 
                 <fileset dir="${hy.archive.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="org/apache/harmony/archive/tests/java/util/zip/GZIPInputStreamTest.java"/>
-                	<exclude name="org/apache/harmony/archive/tests/java/util/jar/JarOutputStreamTest.java"/>
+                	<exclude name="org/apache/harmony/archive/tests/java/util/jar/JarOutputStreamTest.java" />
                 </fileset>
             </batchtest>
         </junit>
