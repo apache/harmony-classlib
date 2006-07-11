@@ -107,15 +107,15 @@ public class ExemptionMechanism {
     public static final ExemptionMechanism getInstance(String algorithm,
             String provider) throws NoSuchAlgorithmException,
             NoSuchProviderException {
-        if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
-        }
         if (provider == null) {
             throw new IllegalArgumentException("Provider is null");
         }
         Provider impProvider = Security.getProvider(provider);
         if (impProvider == null) {
             throw new NoSuchProviderException(provider);
+        }
+        if (algorithm == null) {
+            throw new NullPointerException("Algorithm is null");
         }
         return getInstance(algorithm, impProvider);
     }

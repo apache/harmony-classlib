@@ -22,89 +22,80 @@
 package org.apache.harmony.crypto.tests.javax.crypto;
 
 import java.security.InvalidKeyException;
+import java.security.NoSuchProviderException;
 import java.security.Provider;
 
 import javax.crypto.ExemptionMechanism;
 import javax.crypto.ExemptionMechanismSpi;
 
+import junit.framework.TestCase;
+
 import org.apache.harmony.crypto.tests.support.MyExemptionMechanismSpi;
 import org.apache.harmony.security.tests.support.SpiEngUtils;
-import org.apache.harmony.security.tests.support.SpiEngUtils.MyProvider;
 
-import junit.framework.TestCase;
 /**
  * Tests for <code>ExemptionMechanism</code> class constructors and methods
  * 
  */
 
 public class ExemptionMechanismTest extends TestCase {
-    
-    public static final String srvExemptionMechanism = "ExemptionMechanism";
-    
+
+    private static final String srvExemptionMechanism = "ExemptionMechanism";
+
     private static final String defaultAlg = "EMech";
-    
+
     private static final String ExemptionMechanismProviderClass = "org.apache.harmony.crypto.tests.support.MyExemptionMechanismSpi";
 
-    /**
-     * Constructor for SecurityManagerFactoryTest2.
-     * 
-     * @param arg0
-     */
-    public ExemptionMechanismTest(String arg0) {
-        super(arg0);
-    }
-   
     /**
      * Test for <code>ExemptionMechanism</code> constructor 
      * Assertion: cretes new object using provider and mechanism name
      */
     public void testExemptionMechanism() throws Exception {
-        Provider mProv = (new SpiEngUtils()).new MyProvider("MyExMechProvider", "Provider for ExemptionMechanism testing", 
-                srvExemptionMechanism.concat(".").concat(defaultAlg), 
+        Provider mProv = (new SpiEngUtils()).new MyProvider("MyExMechProvider",
+                "Provider for ExemptionMechanism testing",
+                srvExemptionMechanism.concat(".").concat(defaultAlg),
                 ExemptionMechanismProviderClass);
-        
+
         ExemptionMechanismSpi spi = new MyExemptionMechanismSpi();
-        ExemptionMechanism em = new MyMechanism(spi, mProv, defaultAlg);
-        
+
+        ExemptionMechanism em = new ExemptionMechanism(spi, mProv, defaultAlg) {};
         assertEquals("Incorrect provider", em.getProvider(), mProv);
         assertEquals("Incorrect algorithm", em.getName(), defaultAlg);
         try {
             em.init(null);
             fail("InvalidKeyException must be thrown");
-        } catch (InvalidKeyException e) {
-        }
+        } catch (InvalidKeyException e) {}
+
         try {
             em.getOutputSize(100);
             fail("IllegalStateException must be thrown");
-        } catch (IllegalStateException e) {
-        }        
-        em = new MyMechanism(null, null, null);
+        } catch (IllegalStateException e) {}
+
+
+        em = new ExemptionMechanism(null, null, null) {};
         assertNull("Incorrect mechanism", em.getName());
         assertNull("Incorrect provider", em.getProvider());
         try {
             em.init(null);
             fail("NullPointerException must be thrown");
-        } catch (NullPointerException e) {
-        }
+        } catch (NullPointerException e) {}
         try {
             em.getOutputSize(100);
             fail("IllegalStateException must be thrown");
-        } catch (IllegalStateException e) {
-        }        
-    }
-}
-
-class MyMechanism extends ExemptionMechanism {
-
-    public MyMechanism(ExemptionMechanismSpi spi, Provider prov, String mechanism) {
-        super(spi, prov, mechanism);
+        } catch (IllegalStateException e) {}
     }
 
-    public void finalize() {
+    /**
+     * @tests javax/crypto/ExemptionMechanism#getInstance(String algorithm, String provider)
+     * Checks exception order
+     */
+    public void testGetInstance() throws Exception {
+        //Regression for HARMONY-762
         try {
-            super.finalize();
-        } catch (Throwable e) {
-            throw new RuntimeException("finalize was broken", e);
+            ExemptionMechanism.getInstance((String) null, "aaa");
+            fail("NoSuchProviderException must be thrown");
+        } catch (NoSuchProviderException pe) {
+            //expected
         }
     }
 }
