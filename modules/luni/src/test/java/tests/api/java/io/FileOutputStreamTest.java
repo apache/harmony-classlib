@@ -18,6 +18,7 @@
 package tests.api.java.io;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
@@ -208,10 +209,19 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
     }
 
     /**
+     * @tests java.io.FileOutputStream#write(byte[], int, int)
+     */
+    public void test_write$BII3() throws Exception {
+        // Regression for HARMONY-834
+        //no exception expected
+        new FileOutputStream(new FileDescriptor()).write(new byte[1], 0, 0);
+    }
+
+    /**
      * @tests java.io.FileOutputStream#getChannel()
      */
     public void test_getChannel() throws Exception {
-		// Regression for HARMONY-
+		// Regression for HARMONY-508
 		File tmpfile = File.createTempFile("FileOutputStream", "tmp");
 		tmpfile.deleteOnExit();
 		FileOutputStream fos = new FileOutputStream(tmpfile);

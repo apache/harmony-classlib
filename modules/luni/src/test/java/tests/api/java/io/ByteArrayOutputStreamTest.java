@@ -16,6 +16,10 @@
 package tests.api.java.io;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileDescriptor;
+
+import junit.framework.TestCase;
 
 /**
  * Automated Test Suite for class java.io.ByteArrayOutputStream
@@ -23,9 +27,9 @@ import java.io.ByteArrayOutputStream;
  * @see java.io.ByteArrayOutputStream
  */
 
-public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
+public class ByteArrayOutputStreamTest extends TestCase {
 
-	java.io.ByteArrayOutputStream bos = null;
+	ByteArrayOutputStream bos = null;
 
 	public String fileString = "Test_All_Tests\nTest_java_io_BufferedInputStream\nTest_java_io_BufferedOutputStream\nTest_java_io_ByteArrayInputStream\nTest_ByteArrayOutputStream\nTest_java_io_DataInputStream\n";
 
@@ -33,18 +37,12 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 	 * Tears down the fixture, for example, close a network connection. This
 	 * method is called after a test is executed.
 	 */
-	protected void tearDown() {
+	protected void tearDown() throws Exception {
 		try {
 			bos.close();
-		} catch (Exception e) {
+		} catch (Exception ignore) {
 		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
+        super.tearDown();
 	}
 
 	/**
@@ -124,36 +122,29 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 		bos = new java.io.ByteArrayOutputStream();
 		bos.write(fileString.getBytes(), 0, fileString.length());
 		bytes = bos.toByteArray();
-		for (int i = 0; i < fileString.length(); i++)
+		for (int i = 0; i < fileString.length(); i++) {
 			assertTrue("Error in byte array", bytes[i] == sbytes[i]);
+        }
 	}
 
 	/**
 	 * @tests java.io.ByteArrayOutputStream#toString(java.lang.String)
 	 */
-	public void test_toStringLjava_lang_String() {
-		// Test for method java.lang.String
-		// java.io.ByteArrayOutputStream.toString(java.lang.String)
-		java.io.ByteArrayOutputStream bos;
-		bos = new java.io.ByteArrayOutputStream();
-		try {
-			bos.write(fileString.getBytes(), 0, fileString.length());
-			assertTrue("Returned incorrect 8859-1 String", bos.toString(
-					"8859_1").equals(fileString));
-		} catch (java.io.UnsupportedEncodingException e) {
-			fail(
-					"Threw an UnsupportedEncodingException for ISO 8859-1 encoding");
-		}
-		bos = new java.io.ByteArrayOutputStream();
-		try {
-			bos.write(fileString.getBytes(), 0, fileString.length());
-			assertTrue("Returned incorrect 8859-2 String", bos.toString(
-					"8859_2").equals(fileString));
-		} catch (java.io.UnsupportedEncodingException e) {
-			fail(
-					"Threw an UnsupportedEncodingException for 8859-2 encoding");
-		}
-	}
+	public void test_toStringLjava_lang_String() throws Exception {
+        // Test for method java.lang.String
+        // java.io.ByteArrayOutputStream.toString(java.lang.String)
+        java.io.ByteArrayOutputStream bos;
+        bos = new java.io.ByteArrayOutputStream();
+
+        bos.write(fileString.getBytes(), 0, fileString.length());
+        assertTrue("Returned incorrect 8859-1 String", bos.toString("8859_1")
+                .equals(fileString));
+
+        bos = new java.io.ByteArrayOutputStream();
+        bos.write(fileString.getBytes(), 0, fileString.length());
+        assertTrue("Returned incorrect 8859-2 String", bos.toString("8859_2")
+                .equals(fileString));
+    }
 
 	/**
 	 * @tests java.io.ByteArrayOutputStream#toString()
@@ -209,9 +200,9 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 
     /**
      * @tests java.io.ByteArrayOutputStream#write(byte[], int, int)
-     * Regression for HARMONY-387
      */
     public void test_write$BII_2() {
+        //Regression for HARMONY-387
         ByteArrayOutputStream obj = new ByteArrayOutputStream();
         try {
             obj.write(new byte [] {(byte)0x00}, -1, 0);
@@ -226,18 +217,18 @@ public class ByteArrayOutputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.ByteArrayOutputStream#writeTo(java.io.OutputStream)
 	 */
-	public void test_writeToLjava_io_OutputStream() {
+	public void test_writeToLjava_io_OutputStream() throws Exception {
 		// Test for method void
 		// java.io.ByteArrayOutputStream.writeTo(java.io.OutputStream)
 		java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
 		java.io.ByteArrayOutputStream bos2 = new java.io.ByteArrayOutputStream();
 		bos.write(fileString.getBytes(), 0, 100);
-		try {
-			bos.writeTo(bos2);
-		} catch (java.io.IOException e) {
-			fail("Threw IOException during writeTo : " + e.getMessage());
-		}
+		bos.writeTo(bos2);
 		assertTrue("Returned incorrect String", bos2.toString().equals(
 				fileString.substring(0, 100)));
+
+        //Regression test for HARMONY-834
+		//no exception expected
+		new ByteArrayOutputStream().writeTo(new FileOutputStream(new FileDescriptor()));
 	}
 }

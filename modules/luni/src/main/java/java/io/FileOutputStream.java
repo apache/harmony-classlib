@@ -281,6 +281,11 @@ public class FileOutputStream extends OutputStream implements Closeable{
                 || count > buffer.length - offset) {
             throw new IndexOutOfBoundsException();
         }
+
+        if( count == 0 ) {
+            return;
+        }
+
         openCheck();
         fileSystem.write(fd.descriptor, buffer, offset, count);
     }
