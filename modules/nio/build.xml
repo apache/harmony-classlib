@@ -44,12 +44,7 @@
 
 	<!-- Build natives.-->
 	<target name="build.native">
-		<exec failonerror="true"
-			executable="${make.command}"
-			dir="${hy.nio.src.main.native}/nio/${hy.os}">
-
-			<env key="HY_HDK" value="${hy.hdk}" />
-		</exec>
+		<make dir="${hy.nio.src.main.native}/nio/${hy.os}" />
 
 		<!-- Copy the built shared libs over to the jre/bin dir -->
 		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -68,13 +63,8 @@
 
 	<!-- Clean natives. -->
 	<target name="clean.native">
-		<exec failonerror="true"
-			executable="${make.command}"
-			dir="${hy.nio.src.main.native}/nio/${hy.os}">
-
-			<env key="HY_HDK" value="${hy.hdk}" />
-			<arg line="clean" />
-		</exec>
+		<make dir="${hy.nio.src.main.native}/nio/${hy.os}"
+                      target="clean" />
 	</target>
 
 

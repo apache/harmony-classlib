@@ -200,4 +200,20 @@ properties in preference to these:
         </subant>
     </target>
 
+    <!-- macros for modules -->
+    <!-- TOFIX move to a shared file in the HDK/build/make directory. -->
+
+    <macrodef name="make">
+        <attribute name="dir" />
+        <attribute name="target" default="" />
+        <sequential>
+            <exec failonerror="true"
+                  executable="${make.command}"
+                  dir="@{dir}">
+                <env key="HY_HDK" value="${hy.hdk}" />
+                <arg line="@{target}" />
+            </exec>
+        </sequential>
+    </macrodef>
+    
 </project>

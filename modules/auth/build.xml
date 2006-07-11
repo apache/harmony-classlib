@@ -48,30 +48,21 @@
 
     <target name="test" depends="build, compile.tests, run.tests" />
 	
-	<!-- Build native code -->
+    <!-- Build native code -->
     <target name="build.native" >
-		<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.auth.src.main.native}/auth/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-        </exec>
+	<make dir="${hy.auth.src.main.native}/auth/${hy.os}" />
 
-		<!-- Copy the built shared libs over to the jre/bin dir -->
-		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-			<fileset dir="${hy.auth.src.main.native}/auth">
+	<!-- Copy the built shared libs over to the jre/bin dir -->
+	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+	    <fileset dir="${hy.auth.src.main.native}/auth">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
     </target>
 	
-	<!-- Clean natives -->
+    <!-- Clean natives -->
     <target name="clean.native">
-		<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.auth.src.main.native}/auth/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-		    <arg line="clean" />
-        </exec>
+	<make dir="${hy.auth.src.main.native}/auth/${hy.os}" target="clean" />
     </target>
 
     <target name="clean">

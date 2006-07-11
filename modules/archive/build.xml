@@ -46,67 +46,42 @@
 	</copy>
     </target>
 	
-	<target name="overlay-oss">
-		<mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
-		<unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
-		<chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
-	</target>
-	
-	<target name="clean-overlay-oss">
-		<delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
-	</target>
-
-	<!-- Build native code -->
+    <target name="overlay-oss">
+	<mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
+	<unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
+	<chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
+    </target>
+    
+    <target name="clean-overlay-oss">
+	<delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
+    </target>
+    
+    <!-- Build native code -->
     <target name="build.native" >
-    	<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.archive.src.main.native}/zip/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-        </exec>
+    	<make dir="${hy.archive.src.main.native}/zip/${hy.os}" />
     	
-    	<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.archive.src.main.native}/zlib/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-        </exec>
+    	<make dir="${hy.archive.src.main.native}/zlib/${hy.os}" />
     	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-			<fileset dir="${hy.archive.src.main.native}/zlib">
+	    <fileset dir="${hy.archive.src.main.native}/zlib">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
     	
-		<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.archive.src.main.native}/archive/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-        </exec>
-		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-			<fileset dir="${hy.archive.src.main.native}/archive">
+	<make dir="${hy.archive.src.main.native}/archive/${hy.os}" />
+	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+	    <fileset dir="${hy.archive.src.main.native}/archive">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
     </target>
 	
-	<!-- Clean natives -->
+    <!-- Clean natives -->
     <target name="clean.native">
-    	<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.archive.src.main.native}/zip/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-		    <arg line="clean" />
-        </exec>
-    	<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.archive.src.main.native}/zlib/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-		    <arg line="clean" />
-        </exec>
-		<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.archive.src.main.native}/archive/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-		    <arg line="clean" />
-        </exec>
+    	<make dir="${hy.archive.src.main.native}/zip/${hy.os}" target="clean" />
+    	<make dir="${hy.archive.src.main.native}/zlib/${hy.os}"
+              target="clean" />
+    	<make dir="${hy.archive.src.main.native}/archive/${hy.os}"
+              target="clean" />
     </target>
 
     <target name="test" depends="build, compile.tests, run.tests" />

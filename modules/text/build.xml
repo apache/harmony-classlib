@@ -41,40 +41,31 @@
 
     <target name="test" depends="build, compile.tests, run.tests" />
 	
-	<target name="overlay-oss">
-		<mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
-	   	<unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
-	     <chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
-	</target>
+    <target name="overlay-oss">
+	<mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
+	<unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
+	<chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
+    </target>
 	
-	<target name="clean-overlay-oss">
-		<delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
-	</target>
+    <target name="clean-overlay-oss">
+	<delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
+    </target>
 	
-	<!-- Build native code -->
+    <!-- Build native code -->
     <target name="build.native" >
-		<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.text.src.main.native}/text/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-        </exec>
+	<make dir="${hy.text.src.main.native}/text/${hy.os}" />
 
-		<!-- Copy the built shared libs over to the jre/bin dir -->
-		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-			<fileset dir="${hy.text.src.main.native}/text">
+	<!-- Copy the built shared libs over to the jre/bin dir -->
+	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+	    <fileset dir="${hy.text.src.main.native}/text">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
     </target>
 	
-	<!-- Clean natives -->
+    <!-- Clean natives -->
     <target name="clean.native">
-		<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.text.src.main.native}/text/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-		    <arg line="clean" />
-        </exec>
+	<make dir="${hy.text.src.main.native}/text/${hy.os}" target="clean" />
     </target>
 
     <target name="clean">
