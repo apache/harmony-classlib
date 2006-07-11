@@ -129,8 +129,6 @@
 
                 <fileset dir="${hy.jndi.src.test.java}">
                     <include name="**/*Test.java"/>
-                        <exclude name="org/apache/harmony/jndi/provider/dns/DNSContextTest.java" />                	
-
                 	<!--  These tests run in a separate jvm below -->
                 	<exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerBuilderTest.java" />
                     <exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerTest.java" />
