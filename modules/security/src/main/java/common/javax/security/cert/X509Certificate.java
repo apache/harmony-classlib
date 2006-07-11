@@ -76,6 +76,9 @@ public abstract class X509Certificate extends Certificate {
      */
     public static final X509Certificate getInstance(InputStream inStream)
                                              throws CertificateException {
+        if (inStream == null) {
+            throw new CertificateException("The stream should not be null");
+        }
         if (constructor != null) {
             try {
                 return (X509Certificate) 
@@ -199,6 +202,9 @@ public abstract class X509Certificate extends Certificate {
      */
     public static final X509Certificate getInstance(byte[] certData)
                                              throws CertificateException {
+        if (certData == null) {
+            throw new CertificateException("The data should not be null");
+        }
         ByteArrayInputStream bais = new ByteArrayInputStream(certData);
         return getInstance(bais);
     }

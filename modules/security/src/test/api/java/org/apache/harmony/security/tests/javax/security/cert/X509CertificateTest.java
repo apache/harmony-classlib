@@ -22,6 +22,7 @@
 package org.apache.harmony.security.tests.javax.security.cert;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -115,6 +116,12 @@ public class X509CertificateTest extends TestCase {
             // The requested certificate type is not available.
             // Test pass..
         }
+        // Regression for HARMONY-756
+		try {
+			X509Certificate.getInstance((InputStream) null);
+		} catch (CertificateException e) {
+			//expected;
+		}
     }
 
     /**
@@ -135,6 +142,12 @@ public class X509CertificateTest extends TestCase {
             // The requested certificate type is not available.
             // Test pass..
         }
+   		// Regression for HARMONY-756
+		try {
+			X509Certificate.getInstance((byte[]) null);
+		} catch (CertificateException e) {
+			//expected;
+		}
     }
 
     /**
