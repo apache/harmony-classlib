@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander Y. Kleymenov
-* @version $Revision$
-*/
-
 package javax.crypto.spec;
 
 import java.security.InvalidKeyException;
@@ -129,7 +124,7 @@ public class DESKeySpec implements KeySpec {
      * @com.intel.drl.spec_ref
      */
     public static boolean isParityAdjusted(byte[] key, int offset)
-                throws InvalidKeyException {
+            throws InvalidKeyException {
         if (key == null) {
             throw new InvalidKeyException("Key material is null.");
         }
@@ -137,11 +132,17 @@ public class DESKeySpec implements KeySpec {
             throw new InvalidKeyException(
                     "The key material is shorter than 8 bytes");
         }
-        for (int i=offset; i<DES_KEY_LEN+offset; i++) {
-            int b = key[i];
-            if ((((b & 1) + ((b & 2) >> 1) + ((b & 4) >> 2)
-                + ((b & 8) >> 3) + ((b & 16) >> 4) + ((b & 32) >> 5)
-                + ((b & 64) >> 6)) & 1) == ((b & 128) >> 7)) {
+
+        int byteKey = 0;
+
+        for (int i = offset; i < DES_KEY_LEN; i++) {
+            byteKey = key[i];
+
+            byteKey ^= byteKey >> 1;
+            byteKey ^= byteKey >> 2;
+            byteKey ^= byteKey >> 4;
+
+            if ((byteKey & 1) == 0) {
                 return false;
             }
         }
