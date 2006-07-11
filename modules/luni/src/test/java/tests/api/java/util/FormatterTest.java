@@ -2500,7 +2500,283 @@ public class FormatterTest extends TestCase {
         f.format("%(+,-7d%<( o%<+(x %<( 06X", (BigInteger) null);
         assertEquals("null   nullnull   NULL", f.toString());
     }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for legal
+     *        BigInteger conversion type 'd'
+     */
+    public void test_formatLjava_lang_String$LBigInteger() {
+        final Object[][] tripleD = {
+                {new BigInteger("123456789012345678901234567890"),          "%d",       "123456789012345678901234567890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%10d",     "123456789012345678901234567890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%-1d",     "123456789012345678901234567890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%+d",      "+123456789012345678901234567890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "% d",      " 123456789012345678901234567890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%,d",      "123.456.789.012.345.678.901.234.567.890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%(d",      "123456789012345678901234567890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%08d",     "123456789012345678901234567890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%-+,(11d", "+123.456.789.012.345.678.901.234.567.890"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%0 ,(11d", " 123.456.789.012.345.678.901.234.567.890"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%d",       "-9876543210987654321098765432100000"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%10d",     "-9876543210987654321098765432100000"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%-1d",     "-9876543210987654321098765432100000"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%+d",      "-9876543210987654321098765432100000"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "% d",      "-9876543210987654321098765432100000"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%,d",      "-9.876.543.210.987.654.321.098.765.432.100.000"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%(d",      "(9876543210987654321098765432100000)"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%08d",     "-9876543210987654321098765432100000"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%-+,(11d", "(9.876.543.210.987.654.321.098.765.432.100.000)"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%0 ,(11d", "(9.876.543.210.987.654.321.098.765.432.100.000)"}, //$NON-NLS-2$
+        };
+        
+        final int input = 0;
+        final int pattern = 1;
+        final int output = 2;
+        Formatter f;
+        for (int i = 0; i < tripleD.length; i++) {
+            f = new Formatter(Locale.GERMAN);
+            f.format((String) tripleD[i][pattern],
+                    tripleD[i][input]);
+            assertEquals("triple[" + i + "]:" + tripleD[i][input] + ",pattern["
+                    + i + "]:" + tripleD[i][pattern], tripleD[i][output], f
+                    .toString());
+            
+        }
+        
+        final Object[][] tripleO = {
+                {new BigInteger("123456789012345678901234567890"),          "%o",       "143564417755415637016711617605322"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%-6o",     "143564417755415637016711617605322"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%08o",     "143564417755415637016711617605322"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%#o",      "0143564417755415637016711617605322"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%0#11o",   "0143564417755415637016711617605322"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%-#9o",    "0143564417755415637016711617605322"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%o",       "-36336340043453651353467270113157312240"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%-6o",     "-36336340043453651353467270113157312240"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%08o",     "-36336340043453651353467270113157312240"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%#o",      "-036336340043453651353467270113157312240"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%0#11o",   "-036336340043453651353467270113157312240"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%-#9o",    "-036336340043453651353467270113157312240"}, //$NON-NLS-2$
+        };
+        for (int i = 0; i < tripleO.length; i++) {
+            f = new Formatter(Locale.ITALY);
+            f.format((String) tripleO[i][pattern],
+                    tripleO[i][input]);
+            assertEquals("triple[" + i + "]:" + tripleO[i][input] + ",pattern["
+                    + i + "]:" + tripleO[i][pattern], tripleO[i][output], f
+                    .toString());
+            
+        }
+        
+        final Object[][] tripleX = {
+                {new BigInteger("123456789012345678901234567890"),          "%x",       "18ee90ff6c373e0ee4e3f0ad2"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%-8x",     "18ee90ff6c373e0ee4e3f0ad2"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%06x",     "18ee90ff6c373e0ee4e3f0ad2"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%#x",      "0x18ee90ff6c373e0ee4e3f0ad2"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%0#12x",   "0x18ee90ff6c373e0ee4e3f0ad2"}, //$NON-NLS-2$
+                {new BigInteger("123456789012345678901234567890"),          "%-#9x",    "0x18ee90ff6c373e0ee4e3f0ad2"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%x",       "-1e6f380472bd4bae6eb8259bd94a0"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%-8x",     "-1e6f380472bd4bae6eb8259bd94a0"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%06x",     "-1e6f380472bd4bae6eb8259bd94a0"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%#x",      "-0x1e6f380472bd4bae6eb8259bd94a0"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%0#12x",   "-0x1e6f380472bd4bae6eb8259bd94a0"}, //$NON-NLS-2$
+                {new BigInteger("-9876543210987654321098765432100000"),     "%-#9x",    "-0x1e6f380472bd4bae6eb8259bd94a0"}, //$NON-NLS-2$
+        };
+        
+        for (int i = 0; i < tripleX.length; i++) {
+            f = new Formatter(Locale.FRANCE);
+            f.format((String) tripleX[i][pattern],
+                    tripleX[i][input]);
+            assertEquals("triple[" + i + "]:" + tripleX[i][input] + ",pattern["
+                    + i + "]:" + tripleX[i][pattern], tripleX[i][output], f
+                    .toString());
+            
+        }
+        
+        f = new Formatter(Locale.GERMAN);
+        f.format("%(+,-7d%<( o%<+(x %<( 06X", (BigInteger) null);
+        assertEquals("null   nullnull   NULL", f.toString());
+    }
 
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for padding of
+     *        BigInteger conversion
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_BigIntegerPaddingConversion() {
+        Formatter f = null;
+
+        BigInteger bigInt = new BigInteger("123456789012345678901234567890");
+        f = new Formatter(Locale.GERMAN);
+        f.format("%32d", bigInt);
+        assertEquals("  123456789012345678901234567890", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%+32x", bigInt);
+        assertEquals("      +18ee90ff6c373e0ee4e3f0ad2", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("% 32o", bigInt);
+        assertEquals(" 143564417755415637016711617605322", f.toString());
+
+        BigInteger negBigInt = new BigInteger(
+                "-1234567890123456789012345678901234567890");
+        f = new Formatter(Locale.GERMAN);
+        f.format("%( 040X", negBigInt);
+        assertEquals("(000003A0C92075C0DBF3B8ACBC5F96CE3F0AD2)", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%+(045d", negBigInt);
+        assertEquals("(0001234567890123456789012345678901234567890)", f
+                .toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%+,-(60d", negBigInt);
+        assertEquals(
+                "(1.234.567.890.123.456.789.012.345.678.901.234.567.890)     ",
+                f.toString());
+    }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for BigInteger
+     *        conversion exception
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_BigIntegerConversionException() {
+        Formatter f = null;
+
+        final String[] flagsConversionMismatches = { "%#d", "%,o", "%,x", "%,X" };
+        for (int i = 0; i < flagsConversionMismatches.length; i++) {
+            try {
+                f = new Formatter(Locale.CHINA);
+                f.format(flagsConversionMismatches[i], new BigInteger("1"));
+                fail("should throw FormatFlagsConversionMismatchException");
+            } catch (FormatFlagsConversionMismatchException e) {
+                // expected
+            }
+        }
+
+        final String[] missingFormatWidths = { "%-0d", "%0d", "%-d", "%-0o",
+                "%0o", "%-o", "%-0x", "%0x", "%-x", "%-0X", "%0X", "%-X" };
+        for (int i = 0; i < missingFormatWidths.length; i++) {
+            try {
+                f = new Formatter(Locale.KOREA);
+                f.format(missingFormatWidths[i], new BigInteger("1"));
+                fail("should throw MissingFormatWidthException");
+            } catch (MissingFormatWidthException e) {
+                // expected
+            }
+        }
+
+        final String[] illFlags = { "%+ d", "%-08d", "%+ o", "%-08o", "%+ x",
+                "%-08x", "%+ X", "%-08X" };
+        for (int i = 0; i < illFlags.length; i++) {
+            try {
+                f = new Formatter(Locale.CANADA);
+                f.format(illFlags[i], new BigInteger("1"));
+                fail("should throw IllegalFormatFlagsException");
+            } catch (IllegalFormatFlagsException e) {
+                // expected
+            }
+        }
+
+        final String[] precisionExceptions = { "%.4d", "%2.5o", "%8.6x",
+                "%11.17X" };
+        for (int i = 0; i < precisionExceptions.length; i++) {
+            try {
+                f = new Formatter(Locale.US);
+                f.format(precisionExceptions[i], new BigInteger("1"));
+                fail("should throw IllegalFormatPrecisionException");
+            } catch (IllegalFormatPrecisionException e) {
+                // expected
+            }
+        }
+
+        f = new Formatter(Locale.US);
+        try {
+            f.format("%D", new BigInteger("1"));
+            fail("should throw UnknownFormatConversionException");
+        } catch (UnknownFormatConversionException e) {
+            // expected
+        }
+
+        f = new Formatter(Locale.US);
+        try {
+            f.format("%O", new BigInteger("1"));
+            fail("should throw UnknownFormatConversionException");
+        } catch (UnknownFormatConversionException e) {
+            // expected
+        }
+
+        try {
+            f = new Formatter();
+            f.format("%010000000000000000000000000000000001d", new BigInteger(
+                    "1"));
+            fail("should throw MissingFormatWidthException");
+        } catch (MissingFormatWidthException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for BigInteger
+     *        exception throwing order
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_BigIntegerExceptionOrder() {
+        Formatter f = null;
+        BigInteger big = new BigInteger("100");
+
+        /*
+         * Order summary: UnknownFormatConversionException >
+         * MissingFormatWidthException > IllegalFormatFlagsException >
+         * IllegalFormatPrecisionException > IllegalFormatConversionException >
+         * FormatFlagsConversionMismatchException
+         * 
+         */
+        f = new Formatter(Locale.US);
+        try {
+            // compare IllegalFormatConversionException and
+            // FormatFlagsConversionMismatchException
+            f.format("%(o", false);
+            fail("should throw IllegalFormatConversionException");
+        } catch (IllegalFormatConversionException e) {
+            // expected
+        }
+
+        try {
+            // compare IllegalFormatPrecisionException and
+            // IllegalFormatConversionException
+            f.format("%.4o", false);
+            fail("should throw IllegalFormatPrecisionException");
+        } catch (IllegalFormatPrecisionException e) {
+            // expected
+        }
+
+        try {
+            // compare IllegalFormatFlagsException and
+            // IllegalFormatPrecisionException
+            f.format("%+ .4o", big);
+            fail("should throw IllegalFormatFlagsException");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+
+        try {
+            // compare MissingFormatWidthException and
+            // IllegalFormatFlagsException
+            f.format("%+ -o", big);
+            fail("should throw MissingFormatWidthException");
+        } catch (MissingFormatWidthException e) {
+            // expected
+        }
+
+        try {
+            // compare UnknownFormatConversionException and
+            // MissingFormatWidthException
+            f.format("%-O", big);
+            fail("should throw UnknownFormatConversionException");
+        } catch (UnknownFormatConversionException e) {
+            // expected
+        }
+    }
+    
     /**
      * Setup resource files for testing
      */
