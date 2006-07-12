@@ -74,11 +74,7 @@
     </target>
 
     <target name="build.native" >
-    	<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.misc.src.main.native}/accessors/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-        </exec>
+    	<make dir="${hy.misc.src.main.native}/accessors/${hy.os}" />
 
 	<!-- Copy the built shared libs over to the jre/bin dir -->
 	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -90,12 +86,8 @@
 	
     <!-- Clean natives -->
     <target name="clean.native">
-	<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.misc.src.main.native}/accessors/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-	    <arg line="clean" />
-        </exec>
+    	<make dir="${hy.misc.src.main.native}/accessors/${hy.os}"
+              target="clean" />
     </target>
 
     <target name="compile.tests">
