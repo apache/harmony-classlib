@@ -184,25 +184,29 @@ public class Statement {
     }
 
     private Method findArrayMethod() throws NoSuchMethodException {
+        // the code below reproduces exact RI exception throwing behavior 
         if (!methodName.equals("set") && !methodName.equals("get")) {
             throw new NoSuchMethodException("Unknown method name for array");
-        } else if (methodName.equals("get") && (arguments.length != 1)) {
-            throw new NoSuchMethodException(
-                    "Illegal number of arguments in array getter");
-        } else if (methodName.equals("set") && (arguments.length != 2)) {
-            throw new NoSuchMethodException(
-                    "Illegal number of arguments in array setter");
-        } else if (arguments[0].getClass() != Integer.class) {
-            throw new NoSuchMethodException(
+        } else if (arguments.length > 0 &&
+                   arguments[0].getClass() != Integer.class) {
+            throw new ClassCastException(
                     "First parameter in array getter(setter) is not of "
                             + "Integer type");
+        } else if (methodName.equals("get") && (arguments.length != 1)) {
+            throw new ArrayIndexOutOfBoundsException(
+                    "Illegal number of arguments in array getter");
+        } else if (methodName.equals("set") && (arguments.length != 2)) {
+            throw new ArrayIndexOutOfBoundsException(
+                    "Illegal number of arguments in array setter");
+        } 
+
+        if (methodName.equals("get")) {
+            return Array.class.getMethod("get",
+                    new Class[] { Object.class, int.class } );
+        } else {
+            return Array.class.getMethod("set",
+                    new Class[] { Object.class, int.class, Object.class } );
         }
-
-        Class[] argClasses = methodName.equals("get") ? new Class[] {
-                Object.class, int.class } : new Class[] { Object.class,
-                int.class, Object.class };
-
-        return Array.class.getMethod(methodName, argClasses);
     }
 
     private Object[] getArrayMethodArguments() {

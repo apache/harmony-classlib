@@ -612,7 +612,7 @@ public class StatementTest extends TestCase {
     public void testExecute_ArrayGet() throws Exception {
         Object[] array = new Object[] { "test" };
         Statement t = new Statement(array, "get", new Object[] {
-                new Integer(0), new Object() });
+                new Integer(0)});
         t.execute();
 
         array = new Object[] { "test" };
@@ -660,7 +660,7 @@ public class StatementTest extends TestCase {
     public void testExecute_ArrayInvalidSet() throws Exception {
         Object[] array = new Object[] { "test" };
         Statement t = new Statement(array, "set", new Object[] {
-                new Integer(0), "test2", new Object() });
+                new Integer(0), "test2"});
         t.execute();
         assertEquals("test2", array[0]);
 
