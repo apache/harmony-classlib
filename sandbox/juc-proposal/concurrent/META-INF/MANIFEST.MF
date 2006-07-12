@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony Concurrent
+Bundle-SymbolicName: org.apache.harmony.concurrent
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Eclipse-JREBundle: true
+Import-Package: 
+ java.io,
+ java.lang,
+ java.lang.reflect,
+ java.net,
+ java.security,
+ java.util
+Export-Package: java.util.concurrent,
+ java.util.concurrent.atomic,
+ java.util.concurrent.locks,
+ org.apache.harmony.concurrent
