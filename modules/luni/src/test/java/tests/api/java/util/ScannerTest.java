@@ -1307,6 +1307,101 @@ public class ScannerTest extends TestCase {
     
     /**
      * @throws IOException
+     * @tests java.util.Scanner#nextFloat()
+     */
+    public void test_nextFloat() throws IOException {
+        s = new Scanner("123 45\u0666. 123.4 .123 ");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals((float)123.0, s.nextFloat());
+        assertEquals((float)456.0, s.nextFloat());
+        assertEquals((float)123.4, s.nextFloat());
+        assertEquals((float)0.123, s.nextFloat());
+        try {
+            s.nextFloat();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("+123.4 -456.7 123,456.789 0.1\u06623,4");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals((float)123.4, s.nextFloat());
+        assertEquals((float)-456.7, s.nextFloat());
+        assertEquals((float)123456.789, s.nextFloat());
+        try {
+            s.nextFloat();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // Scientific notation
+        s = new Scanner("+123.4E10 -456.7e+12 123,456.789E-10");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals((float)1.234E12, s.nextFloat());
+        assertEquals((float)-4.567E14, s.nextFloat());
+        assertEquals((float)1.23456789E-5, s.nextFloat());
+
+        s = new Scanner("NaN Infinity -Infinity");
+        assertEquals(Float.NaN, s.nextFloat());
+        assertEquals(Float.POSITIVE_INFINITY, s.nextFloat());
+        assertEquals(Float.NEGATIVE_INFINITY, s.nextFloat());
+
+        String str=String.valueOf(Float.MAX_VALUE*2);
+        s=new Scanner(str);
+        assertEquals(Float.POSITIVE_INFINITY,s.nextFloat());
+        
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals((float)23456.0, s.nextFloat());
+        s.useLocale(Locale.GERMANY);
+        assertEquals((float)23.456, s.nextFloat());
+
+        s = new Scanner("23.456 23.456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals((float)23.456, s.nextFloat());
+        s.useLocale(Locale.GERMANY);
+        assertEquals((float)23456.0, s.nextFloat());
+
+        s = new Scanner("23,456.7 23.456,7");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals((float)23456.7, s.nextFloat());
+        s.useLocale(Locale.GERMANY);
+        assertEquals((float)23456.7, s.nextFloat());
+
+        s = new Scanner("-123.4 123.4- -123.4-");
+        s.useLocale(new Locale("ar", "AE"));
+        assertEquals((float)-123.4, s.nextFloat());
+        //The following test case fails on RI
+        assertEquals((float)-123.4, s.nextFloat());
+        try {
+            s.nextFloat();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("(123) 123- -123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertEquals((float)-123.0, s.nextFloat());
+        try {
+            s.nextFloat();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        // Skip the un-recognizable token 123-.
+        assertEquals("123-", s.next());
+        assertEquals((float)-123.0, s.nextFloat());
+
+    }
+    
+    /**
+     * @throws IOException
      * @tests java.util.Scanner#hasNext()
      */
     public void test_hasNext() throws IOException {
@@ -1923,7 +2018,129 @@ public class ScannerTest extends TestCase {
         assertTrue(s.hasNextInt());
         assertEquals(-123, s.nextInt());
     }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextFloat()
+     */
+    public void test_hasNextFloat() throws IOException {
+        s = new Scanner("123 45\u0666. 123.4 .123 ");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)123.0, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)456.0, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)123.4, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)0.123, s.nextFloat());
+        assertFalse(s.hasNextFloat());
+        try {
+            s.nextFloat();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
 
+        s = new Scanner("+123.4 -456.7 123,456.789 0.1\u06623,4");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)123.4, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)-456.7, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)123456.789, s.nextFloat());
+        assertFalse(s.hasNextFloat());
+        try {
+            s.nextFloat();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // Scientific notation
+        s = new Scanner("+123.4E10 -456.7e+12 123,456.789E-10");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)1.234E12, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)-4.567E14, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)1.23456789E-5, s.nextFloat());
+
+        s = new Scanner("NaN Infinity -Infinity");
+        assertTrue(s.hasNextFloat());
+        assertEquals(Float.NaN, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals(Float.POSITIVE_INFINITY, s.nextFloat());
+        assertTrue(s.hasNextFloat());
+        assertEquals(Float.NEGATIVE_INFINITY, s.nextFloat());
+
+        String str=String.valueOf(Float.MAX_VALUE*2);
+        s=new Scanner(str);
+        assertTrue(s.hasNextFloat());
+        assertEquals(Float.POSITIVE_INFINITY,s.nextFloat());
+        
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)23456.0, s.nextFloat());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)23.456, s.nextFloat());
+
+        s = new Scanner("23.456 23.456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)23.456, s.nextFloat());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)23456.0, s.nextFloat());
+
+        s = new Scanner("23,456.7 23.456,7");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)23456.7, s.nextFloat());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)23456.7, s.nextFloat());
+
+        s = new Scanner("-123.4 123.4- -123.4-");
+        s.useLocale(new Locale("ar", "AE"));
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)-123.4, s.nextFloat());
+        //The following test case fails on RI
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)-123.4, s.nextFloat());
+        try {
+            s.nextFloat();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("(123) 123- -123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)-123.0, s.nextFloat());
+        assertFalse(s.hasNextFloat());
+        try {
+            s.nextFloat();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        // Skip the un-recognizable token 123-.
+        assertEquals("123-", s.next());
+        assertTrue(s.hasNextFloat());
+        assertEquals((float)-123.0, s.nextFloat());
+
+    }
+    
     private static class MockStringReader extends StringReader {
 
         public MockStringReader(String param) {
