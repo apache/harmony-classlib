@@ -39,11 +39,11 @@ size_t jstrlen(const jchar* str) {
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_getUTFChars
   (JNIEnv *env, jobject self, jstring str)
 {
-    const char* strPtr = (const char*)env->GetStringUTFChars(str, 0);
-    int len = env->GetStringUTFLength(str);
+    const char* strPtr = (const char*)(*env)->GetStringUTFChars(env, str, 0);
+    int len = (*env)->GetStringUTFLength(env, str);
     char* resPtr = (char*)malloc(len * sizeof(char) + 2);
     memcpy(resPtr, strPtr, len);
-    env->ReleaseStringUTFChars(str, (const char*)strPtr);
+    (*env)->ReleaseStringUTFChars(env, str, (const char*)strPtr);
     resPtr[len + 1] = resPtr[len] = 0;
     return addr2jlong(resPtr);
 
@@ -57,11 +57,11 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_ge
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_getChars
   (JNIEnv *env, jobject self, jstring str)
 {
-    const jchar* strPtr = (const jchar*)env->GetStringCritical(str, 0);
-    int len = env->GetStringLength(str);
+    const jchar* strPtr = (const jchar*)(*env)->GetStringCritical(env, str, 0);
+    int len = (*env)->GetStringLength(env, str);
     jchar* resPtr = (jchar*)malloc((len + 1) * sizeof(jchar));
     memcpy(resPtr, strPtr, len * sizeof(jchar));
-    env->ReleaseStringCritical(str, (const jchar*)strPtr);
+    (*env)->ReleaseStringCritical(env, str, (const jchar*)strPtr);
     resPtr[len] = 0;
     return addr2jlong(resPtr);
 }
@@ -74,7 +74,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_ge
 JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_createStringUTF__J
   (JNIEnv *env, jobject self, jlong ptr) 
 {
-    return env->NewStringUTF(jlong2addr(const char, ptr));
+    return (*env)->NewStringUTF(env, jlong2addr(const char, ptr));
 }
 
 /*
@@ -85,7 +85,7 @@ JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_
 JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_createString__J
   (JNIEnv *env, jobject self, jlong ptr)
 {
-    return env->NewString(jlong2addr(const jchar, ptr), jstrlen(jlong2addr(const jchar, ptr)));
+    return (*env)->NewString(env, jlong2addr(const jchar, ptr), jstrlen(jlong2addr(const jchar, ptr)));
 }
 
 /*
@@ -98,9 +98,10 @@ JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_
 {
     const jlong tmplen = len + 2;
     char* cstr = (char*)malloc(tmplen);
+    jstring res;
     memset(cstr, 0, tmplen);
     strncpy(cstr, jlong2addr(const char, ptr), len);
-    jstring res = env->NewStringUTF(cstr);
+    res = (*env)->NewStringUTF(env, cstr);
     free(cstr);
     return res;
 }
@@ -113,5 +114,5 @@ JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_
 JNIEXPORT jstring JNICALL Java_org_apache_harmony_misc_accessors_StringAccessor_createString__JJ
   (JNIEnv *env, jobject self, jlong ptr, jlong len)
 {
-    return env->NewString(jlong2addr(const jchar, ptr), min(len >> 1, jstrlen(jlong2addr(const jchar, ptr))));
+    return (*env)->NewString(env, jlong2addr(const jchar, ptr), min(len >> 1, jstrlen(jlong2addr(const jchar, ptr))));
 }

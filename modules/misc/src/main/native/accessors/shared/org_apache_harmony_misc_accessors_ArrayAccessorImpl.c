@@ -27,7 +27,7 @@
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticLockArray
   (JNIEnv *env, jclass clazz, jobject array) {
-    return addr2jlong(env->GetPrimitiveArrayCritical((jarray)array, NULL));
+    return addr2jlong((*env)->GetPrimitiveArrayCritical(env, (jarray)array, NULL));
 }
 
 
@@ -38,7 +38,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_sta
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticUnlockArray
   (JNIEnv *env, jclass clazz, jobject array, jlong addr) {
-    env->ReleasePrimitiveArrayCritical((jarray)array,  jlong2addr(jlong, addr), 0);
+    (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array,  jlong2addr(jlong, addr), 0);
 }
 
 /*
@@ -48,7 +48,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_stat
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticUnlockArrayNoCopy
   (JNIEnv *env, jclass clazz, jobject array, jlong addr) {
-    env->ReleasePrimitiveArrayCritical((jarray)array,  jlong2addr(jlong, addr), JNI_ABORT);
+    (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array,  jlong2addr(jlong, addr), JNI_ABORT);
 }
 
 
@@ -66,15 +66,15 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_stat
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticPin##TypeArray \
 (JNIEnv *env, jclass clss, jobject array) { \
     jboolean isCopy; \
-    return addr2jlong(env->Get##TypeArrayElements((typeArray)array, &isCopy)); \
+    return addr2jlong((*env)->Get##TypeArrayElements(env, (typeArray)array, &isCopy)); \
 } \
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticUnpin##TypeArray \
 (JNIEnv *env, jclass clss, jobject array, jlong addr) { \
-  env->Release##TypeArrayElements((typeArray)array, jlong2addr(t, addr), 0); \
+  (*env)->Release##TypeArrayElements(env, (typeArray)array, jlong2addr(t, addr), 0); \
 } \
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticUnpin##TypeArrayNoCopy \
 (JNIEnv *env, jclass clss, jobject array, jlong addr) { \
-  env->Release##TypeArrayElements((typeArray)array, jlong2addr(t, addr), JNI_ABORT); \
+  (*env)->Release##TypeArrayElements(env, (typeArray)array, jlong2addr(t, addr), JNI_ABORT); \
 }
 
 pinFunctions(ByteArray, ByteArrayNoCopy, ByteArrayElements, jbyteArray, jbyte)
@@ -97,17 +97,17 @@ pinFunctions(DoubleArray, DoubleArrayNoCopy, DoubleArrayElements, jdoubleArray, 
  */
 #define setGetFunctions(TI, TIT, t, typeArray) \
  JNIEXPORT t JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_getElement___3##TI \
-  (JNIEnv *env, jobject, typeArray array, jint index) { \
-    t* ptr = (t*)env->GetPrimitiveArrayCritical((jarray)array, NULL); \
+  (JNIEnv *env, jobject obj, typeArray array, jint index) { \
+    t* ptr = (t*)(*env)->GetPrimitiveArrayCritical(env, (jarray)array, NULL); \
     t res = ptr[index]; \
-    env->ReleasePrimitiveArrayCritical((jarray)array, ptr, 0); \
+    (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array, ptr, 0); \
     return res; \
   } \
  JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_setElement___3##TIT \
-(JNIEnv *env, jobject, typeArray array, jint index, t value) { \
-    t* ptr = (t*)env->GetPrimitiveArrayCritical((jarray)array, NULL); \
+(JNIEnv *env, jobject obj, typeArray array, jint index, t value) { \
+    t* ptr = (t*)(*env)->GetPrimitiveArrayCritical(env, (jarray)array, NULL); \
     ptr[index] = value; \
-    env->ReleasePrimitiveArrayCritical((jarray)array, ptr, 0); \
+    (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array, ptr, 0); \
 }
 
 setGetFunctions(BI, BIB, jbyte, jbyteArray);
@@ -125,8 +125,8 @@ setGetFunctions(DI, DID, jdouble, jdoubleArray);
  * Signature: ([Ljava/lang/Object;I)Ljava/lang/Object;
  */
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_getElement___3Ljava_lang_Object_2I
-(JNIEnv *env, jobject, jobjectArray array, jint index) {
-    return env->GetObjectArrayElement(array, index);
+(JNIEnv *env, jobject obj, jobjectArray array, jint index) {
+    return (*env)->GetObjectArrayElement(env, array, index);
 }
 
 /*
@@ -135,7 +135,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_g
  * Signature: ([Ljava/lang/Object;ILjava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_setElement___3Ljava_lang_Object_2ILjava_lang_Object_2
-(JNIEnv *env, jobject, jobjectArray array, jint index, jobject value) {
-    env->SetObjectArrayElement(array, index, value);
+(JNIEnv *env, jobject obj, jobjectArray array, jint index, jobject value) {
+    (*env)->SetObjectArrayElement(env, array, index, value);
 }
 

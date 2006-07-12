@@ -29,8 +29,6 @@ MDLLIBFILES = \
 	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-SYSLIBFILES=-lstdc++
-
 DLLNAME=../libaccessors.so
 
 include $(HY_HDK)/build/make/rules.mk

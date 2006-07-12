@@ -36,19 +36,19 @@
 #define fieldAccessFunctions(t,T,F) \
 JNIEXPORT t JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_get##T \
 (JNIEnv *env, jobject accessorObj, jobject obj, jlong fieldID) { \
-    return env->Get##F(obj, (jfieldID)(intptr_t)fieldID); \
+    return (*env)->Get##F(env, obj, (jfieldID)(intptr_t)fieldID); \
 } \
 JNIEXPORT t JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getStatic##T \
   (JNIEnv *env, jobject accessorObj, jclass clss, jlong fieldID) { \
-  return env->GetStatic##F(clss, (jfieldID)(intptr_t)fieldID); \
+  return (*env)->GetStatic##F(env, clss, (jfieldID)(intptr_t)fieldID); \
 } \
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_set##T \
 (JNIEnv *env, jobject accessorObj, jobject obj, jlong fieldID, t value) { \
-    env->Set##F(obj, (jfieldID)(intptr_t)fieldID, value); \
+    (*env)->Set##F(env, obj, (jfieldID)(intptr_t)fieldID, value); \
 } \
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_setStatic##T \
 (JNIEnv *env, jobject accessorObj, jclass clss, jlong fieldID, t value) { \
-    env->SetStatic##F(clss, (jfieldID)(intptr_t)fieldID, value); \
+    (*env)->SetStatic##F(env, clss, (jfieldID)(intptr_t)fieldID, value); \
 }
 
 
@@ -66,35 +66,35 @@ fieldAccessFunctions(jobject, Object, ObjectField)
 // Cached references to primitive type wrapping classes
 jclass findIntClass(JNIEnv* env) {
     static jclass intClass;
-    return intClass == NULL ? (jclass)env->NewGlobalRef(env->FindClass("java/lang/Integer")) : intClass;
+    return intClass == NULL ? (jclass)(*env)->NewGlobalRef(env, (*env)->FindClass(env, "java/lang/Integer")) : intClass;
 }
 jclass findBooleanClass(JNIEnv* env) {
     static jclass booleanClass;
-    return booleanClass == NULL ? (jclass)env->NewGlobalRef(env->FindClass("java/lang/Boolean")) : booleanClass;
+    return booleanClass == NULL ? (jclass)(*env)->NewGlobalRef(env, (*env)->FindClass(env, "java/lang/Boolean")) : booleanClass;
 }
 jclass findByteClass(JNIEnv* env) {
     static jclass byteClass;
-    return byteClass == NULL ? (jclass)env->NewGlobalRef(env->FindClass("java/lang/Byte")) : byteClass;
+    return byteClass == NULL ? (jclass)(*env)->NewGlobalRef(env, (*env)->FindClass(env, "java/lang/Byte")) : byteClass;
 }
 jclass findShortClass(JNIEnv* env) {
     static jclass shortClass;
-    return shortClass == NULL ? (jclass)env->NewGlobalRef(env->FindClass("java/lang/Short")) : shortClass;
+    return shortClass == NULL ? (jclass)(*env)->NewGlobalRef(env, (*env)->FindClass(env, "java/lang/Short")) : shortClass;
 }
 jclass findCharClass(JNIEnv* env) {
     static jclass charClass;
-    return charClass == NULL ? (jclass)env->NewGlobalRef(env->FindClass("java/lang/Character")) : charClass;
+    return charClass == NULL ? (jclass)(*env)->NewGlobalRef(env, (*env)->FindClass(env, "java/lang/Character")) : charClass;
 }
 jclass findLongClass(JNIEnv* env) {
     static jclass longClass;
-    return longClass == NULL ? (jclass)env->NewGlobalRef(env->FindClass("java/lang/Long")) : longClass;
+    return longClass == NULL ? (jclass)(*env)->NewGlobalRef(env, (*env)->FindClass(env, "java/lang/Long")) : longClass;
 }
 jclass findFloatClass(JNIEnv* env) {
     static jclass floatClass;
-    return floatClass == NULL ? (jclass)env->NewGlobalRef(env->FindClass("java/lang/Float")) : floatClass;
+    return floatClass == NULL ? (jclass)(*env)->NewGlobalRef(env, (*env)->FindClass(env, "java/lang/Float")) : floatClass;
 }
 jclass findDoubleClass(JNIEnv* env) {
     static jclass doubleClass;
-    return doubleClass == NULL ? (jclass)env->NewGlobalRef(env->FindClass("java/lang/Double")) : doubleClass;
+    return doubleClass == NULL ? (jclass)(*env)->NewGlobalRef(env, (*env)->FindClass(env, "java/lang/Double")) : doubleClass;
 }
 
 
@@ -103,14 +103,18 @@ jclass findDoubleClass(JNIEnv* env) {
  * Method for debugging purposes - can be used to print java object name.
  */
 void printObjectName(JNIEnv* env, jobject obj) {
-    jmethodID id = env->GetMethodID(env->GetObjectClass(obj), "toString", "()Ljava/lang/String;");
-    assert(id != NULL);
-    jstring jstr = (jstring)env->CallObjectMethodA(obj, id, NULL);
-    assert(jstr != NULL);
+    jmethodID id = (*env)->GetMethodID(env, (*env)->GetObjectClass(env, obj), "toString", "()Ljava/lang/String;");
+    jstring jstr;
     jboolean isCopy;
-    const char* str = env->GetStringUTFChars(jstr, &isCopy);
+    const char* str;
+
+    assert(id != NULL);
+    jstr = (jstring)(*env)->CallObjectMethodA(env, obj, id, NULL);
+    assert(jstr != NULL);
+    str = (*env)->GetStringUTFChars(env, jstr, &isCopy);
+
     printf("Object: %s\n", str);
-    env->ReleaseStringUTFChars(jstr, str);
+    (*env)->ReleaseStringUTFChars(env, jstr, str);
 }
 
 
@@ -118,39 +122,40 @@ void printObjectName(JNIEnv* env, jobject obj) {
  * Convenience method - converts an object array to array of jvalues suitable for CallXXX functions.
  */
 jvalue* jarrayToValues(JNIEnv* env, jobjectArray array) {
-    int len = env->GetArrayLength(array);
+    int len = (*env)->GetArrayLength(env, array);
     jvalue* pargs = (jvalue*)malloc(len * sizeof(jvalue));
     jobject obj;
     jclass clss;
     jmethodID methodID;
-    for (int i = 0; i < len; i++) {
-        obj = env->GetObjectArrayElement(array, i);
-        clss = env->GetObjectClass(obj);
+    int i;
+    for (i = 0; i < len; i++) {
+        obj = (*env)->GetObjectArrayElement(env, array, i);
+        clss = (*env)->GetObjectClass(env, obj);
         // Do unboxing for primitive type wrappers
-        if (env->IsSameObject(clss, findIntClass(env))) {
-            methodID = env->GetMethodID(clss, "intValue", "()I");
-            pargs[i].i = env->CallIntMethodA(obj, methodID, NULL);
-        } else if(env->IsSameObject(clss, findLongClass(env))) {
-            methodID = env->GetMethodID(clss, "longValue", "()J");
-            pargs[i].j = env->CallLongMethodA(obj, methodID, NULL);
-        } else if(env->IsSameObject(clss, findShortClass(env))) {
-            methodID = env->GetMethodID(clss, "shortValue", "()S");
-            pargs[i].s = env->CallShortMethodA(obj, methodID, NULL);
-        } else if(env->IsSameObject(clss, findByteClass(env))) {
-            methodID = env->GetMethodID(clss, "byteValue", "()B");
-            pargs[i].b = env->CallByteMethodA(obj, methodID, NULL);
-        } else if(env->IsSameObject(clss, findCharClass(env))) {
-            methodID = env->GetMethodID(clss, "charValue", "()C");
-            pargs[i].c = env->CallCharMethodA(obj, methodID, NULL);
-        } else if(env->IsSameObject(clss, findFloatClass(env))) {
-            methodID = env->GetMethodID(clss, "floatValue", "()F");
-            pargs[i].f = env->CallFloatMethodA(obj, methodID, NULL);
-        } else if(env->IsSameObject(clss, findDoubleClass(env))) {
-            methodID = env->GetMethodID(clss, "doubleValue", "()D");
-            pargs[i].d = env->CallDoubleMethodA(obj, methodID, NULL);
-        } else if(env->IsSameObject(clss, findBooleanClass(env))) {
-            methodID = env->GetMethodID(clss, "booleanValue", "()Z");
-            pargs[i].z = env->CallBooleanMethodA(obj, methodID, NULL);
+        if ((*env)->IsSameObject(env, clss, findIntClass(env))) {
+            methodID = (*env)->GetMethodID(env, clss, "intValue", "()I");
+            pargs[i].i = (*env)->CallIntMethodA(env, obj, methodID, NULL);
+        } else if((*env)->IsSameObject(env, clss, findLongClass(env))) {
+            methodID = (*env)->GetMethodID(env, clss, "longValue", "()J");
+            pargs[i].j = (*env)->CallLongMethodA(env, obj, methodID, NULL);
+        } else if((*env)->IsSameObject(env, clss, findShortClass(env))) {
+            methodID = (*env)->GetMethodID(env, clss, "shortValue", "()S");
+            pargs[i].s = (*env)->CallShortMethodA(env, obj, methodID, NULL);
+        } else if((*env)->IsSameObject(env, clss, findByteClass(env))) {
+            methodID = (*env)->GetMethodID(env, clss, "byteValue", "()B");
+            pargs[i].b = (*env)->CallByteMethodA(env, obj, methodID, NULL);
+        } else if((*env)->IsSameObject(env, clss, findCharClass(env))) {
+            methodID = (*env)->GetMethodID(env, clss, "charValue", "()C");
+            pargs[i].c = (*env)->CallCharMethodA(env, obj, methodID, NULL);
+        } else if((*env)->IsSameObject(env, clss, findFloatClass(env))) {
+            methodID = (*env)->GetMethodID(env, clss, "floatValue", "()F");
+            pargs[i].f = (*env)->CallFloatMethodA(env, obj, methodID, NULL);
+        } else if((*env)->IsSameObject(env, clss, findDoubleClass(env))) {
+            methodID = (*env)->GetMethodID(env, clss, "doubleValue", "()D");
+            pargs[i].d = (*env)->CallDoubleMethodA(env, obj, methodID, NULL);
+        } else if((*env)->IsSameObject(env, clss, findBooleanClass(env))) {
+            methodID = (*env)->GetMethodID(env, clss, "booleanValue", "()Z");
+            pargs[i].z = (*env)->CallBooleanMethodA(env, obj, methodID, NULL);
         } else {
             pargs[i].l = obj;
         }
@@ -163,19 +168,19 @@ jvalue* jarrayToValues(JNIEnv* env, jobjectArray array) {
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_invokeNonVirtualVoid
 (JNIEnv *env, jobject accessorObj, jclass clss, jobject obj, jlong methodID, jobjectArray args){
     jvalue* pargs = jarrayToValues(env, args);
-    env->CallNonvirtualVoidMethodA(obj, clss, (jmethodID)(intptr_t)methodID, pargs);
+    (*env)->CallNonvirtualVoidMethodA(env, obj, clss, (jmethodID)(intptr_t)methodID, pargs);
     free(pargs);
 }
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_invokeStaticVoid
 (JNIEnv *env, jobject accessorObj, jclass clss, jlong methodID, jobjectArray args) {
     jvalue* pargs = jarrayToValues(env, args);
-    env->CallStaticVoidMethodA(clss, (jmethodID)(intptr_t)methodID, pargs);
+    (*env)->CallStaticVoidMethodA(env, clss, (jmethodID)(intptr_t)methodID, pargs);
     free(pargs);
 }
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_invokeVirtualVoid
 (JNIEnv *env, jobject accessorObj, jobject obj, jlong methodID, jobjectArray args) {
     jvalue* pargs = jarrayToValues(env, args);
-    env->CallVoidMethodA(obj, (jmethodID)(intptr_t)methodID, pargs);
+    (*env)->CallVoidMethodA(env, obj, (jmethodID)(intptr_t)methodID, pargs);
     free(pargs);
 }
 
@@ -194,21 +199,21 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_inv
  JNIEXPORT t JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_invokeNonVirtual##T \
 (JNIEnv *env, jobject accessorObj, jclass clss, jobject obj, jlong methodID, jobjectArray args){ \
     jvalue* pargs = jarrayToValues(env, args); \
-    t res = env->CallNonvirtual##M(obj, clss, (jmethodID)(intptr_t)methodID, pargs); \
+    t res = (*env)->CallNonvirtual##M(env, obj, clss, (jmethodID)(intptr_t)methodID, pargs); \
     free(pargs); \
     return res; \
 } \
 JNIEXPORT t JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_invokeStatic##T \
 (JNIEnv *env, jobject accessorObj, jclass clss, jlong methodID, jobjectArray args) { \
     jvalue* pargs = jarrayToValues(env, args); \
-    t res = env->CallStatic##M(clss, (jmethodID)(intptr_t)methodID, pargs); \
+    t res = (*env)->CallStatic##M(env, clss, (jmethodID)(intptr_t)methodID, pargs); \
     free(pargs); \
     return res; \
 } \
 JNIEXPORT t JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_invokeVirtual##T \
 (JNIEnv *env, jobject accessorObj, jobject obj, jlong methodID, jobjectArray args) { \
     jvalue* pargs = jarrayToValues(env, args); \
-    t res = env->Call##M(obj, (jmethodID)(intptr_t)methodID, pargs); \
+    t res = (*env)->Call##M(env, obj, (jmethodID)(intptr_t)methodID, pargs); \
     free(pargs); \
     return res; \
 }
@@ -236,7 +241,7 @@ invokeMethodFunctions(jdouble, Double, DoubleMethodA)
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getFieldID__Ljava_lang_reflect_Field_2
 (JNIEnv *env, jobject accessorObj, jobject field) {
-        return (jlong)(intptr_t)env->FromReflectedField(field);
+        return (jlong)(intptr_t)(*env)->FromReflectedField(env, field);
 }
 
 /*
@@ -245,13 +250,13 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_ge
  * Signature: (Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getMethodID0__Ljava_lang_Class_2Ljava_lang_String_2Ljava_lang_String_2
-(JNIEnv *env, jclass, jclass clss, jstring methodName, jstring methodSignature) {
+(JNIEnv *env, jclass cl, jclass clss, jstring methodName, jstring methodSignature) {
     jboolean isCopy;
-    char* method = (char *)env->GetStringUTFChars(methodName, &isCopy);
-    char* sig = (char *)env->GetStringUTFChars(methodSignature, &isCopy);
-    jlong res = (jlong)(intptr_t)env->GetMethodID(clss, method, sig);
-    env->ReleaseStringUTFChars(methodName, method);
-    env->ReleaseStringUTFChars(methodSignature, sig);
+    char* method = (char *)(*env)->GetStringUTFChars(env, methodName, &isCopy);
+    char* sig = (char *)(*env)->GetStringUTFChars(env, methodSignature, &isCopy);
+    jlong res = (jlong)(intptr_t)(*env)->GetMethodID(env, clss, method, sig);
+    (*env)->ReleaseStringUTFChars(env, methodName, method);
+    (*env)->ReleaseStringUTFChars(env, methodSignature, sig);
     return res;
 }
 
@@ -261,13 +266,13 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_ge
  * Signature: (Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getStaticMethodID0
-(JNIEnv *env, jclass, jclass clss, jstring methodName, jstring methodSignature) {
+(JNIEnv *env, jclass cl, jclass clss, jstring methodName, jstring methodSignature) {
     jboolean isCopy;
-    char* method = (char *)env->GetStringUTFChars(methodName, &isCopy);
-    char* sig = (char *)env->GetStringUTFChars(methodSignature, &isCopy);
-    jlong res = (jlong)(intptr_t)env->GetStaticMethodID(clss, method, sig);
-    env->ReleaseStringUTFChars(methodName, method);
-    env->ReleaseStringUTFChars(methodSignature, sig);
+    char* method = (char *)(*env)->GetStringUTFChars(env, methodName, &isCopy);
+    char* sig = (char *)(*env)->GetStringUTFChars(env, methodSignature, &isCopy);
+    jlong res = (jlong)(intptr_t)(*env)->GetStaticMethodID(env, clss, method, sig);
+    (*env)->ReleaseStringUTFChars(env, methodName, method);
+    (*env)->ReleaseStringUTFChars(env, methodSignature, sig);
     return res;
 }
 
@@ -278,8 +283,8 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_ge
  * Signature: (Ljava/lang/reflect/Member;)J
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getMethodID0__Ljava_lang_reflect_Member_2
-(JNIEnv *env, jclass, jobject method) {
-    return (jlong)(intptr_t)env->FromReflectedField(method);
+(JNIEnv *env, jclass cl, jobject method) {
+    return (jlong)(intptr_t)(*env)->FromReflectedField(env, method);
 }
 
 
@@ -291,7 +296,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_ge
  */
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_allocateObject
 (JNIEnv *env, jobject accessorObj, jclass clazz) {
-     return env->AllocObject(clazz);
+     return (*env)->AllocObject(env, clazz);
 }
 
 /*
@@ -302,7 +307,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_newInstance__Ljava_lang_Class_2J_3Ljava_lang_Object_2
 (JNIEnv *env, jobject accessorObj, jclass clss, jlong ctorID, jobjectArray args) {
     jvalue* pargs = jarrayToValues(env, args);
-    jobject res = env->NewObjectA(clss, (jmethodID)(intptr_t)ctorID, pargs);
+    jobject res = (*env)->NewObjectA(env, clss, (jmethodID)(intptr_t)ctorID, pargs);
     free(pargs);
     return res;
 }
@@ -317,8 +322,8 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_
  */
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_newInstance__Ljava_lang_Class_2
 (JNIEnv *env, jobject accessorObj, jclass c) {
-    jmethodID ctorID = env->GetMethodID(c, "<init>", "()V");
-    return env->NewObject(c, ctorID);
+    jmethodID ctorID = (*env)->GetMethodID(env, c, "<init>", "()V");
+    return (*env)->NewObject(env, c, ctorID);
 }
 
 /*
@@ -328,8 +333,8 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_
  */
 JNIEXPORT jboolean JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_hasStaticInitializer
 (JNIEnv *env, jobject accessorObj, jclass c) {
-    jboolean res = env->GetStaticMethodID(c, "<clinit>", "()V") != 0 ? JNI_TRUE : JNI_FALSE;
-    env->ExceptionClear();
+    jboolean res = (*env)->GetStaticMethodID(env, c, "<clinit>", "()V") != 0 ? JNI_TRUE : JNI_FALSE;
+    (*env)->ExceptionClear(env);
     return res;
 }
 
@@ -340,7 +345,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_monitorEnter
 (JNIEnv *env, jobject accessorObj, jobject obj) {
-    env->MonitorEnter(obj);
+    (*env)->MonitorEnter(env, obj);
 }
 
 /*
@@ -350,7 +355,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_mon
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_monitorExit
 (JNIEnv *env, jobject accessorObj, jobject obj) {
-    env->MonitorExit(obj);
+    (*env)->MonitorExit(env, obj);
 }
 
 /*
@@ -361,11 +366,11 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_mon
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getFieldID__Ljava_lang_Class_2Ljava_lang_String_2Ljava_lang_String_2
 (JNIEnv *env, jobject accessorObj, jclass clss, jstring fieldName, jstring fieldSig) {
     jboolean isCopy;
-    char* name = (char *)env->GetStringUTFChars(fieldName, &isCopy);
-    char* sig = (char *)env->GetStringUTFChars(fieldSig, &isCopy);
-    jlong res = (jlong)(intptr_t)env->GetFieldID(clss, name, sig);
-    env->ReleaseStringUTFChars(fieldName, name);
-    env->ReleaseStringUTFChars(fieldSig, sig);
+    char* name = (char *)(*env)->GetStringUTFChars(env, fieldName, &isCopy);
+    char* sig = (char *)(*env)->GetStringUTFChars(env, fieldSig, &isCopy);
+    jlong res = (jlong)(intptr_t)(*env)->GetFieldID(env, clss, name, sig);
+    (*env)->ReleaseStringUTFChars(env, fieldName, name);
+    (*env)->ReleaseStringUTFChars(env, fieldSig, sig);
     return res;
 }
 
@@ -377,11 +382,11 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_ge
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getStaticFieldID
 (JNIEnv *env, jobject accessorObj, jclass clss, jstring fieldName, jstring fieldSig) {
     jboolean isCopy;
-    char* name = (char *)env->GetStringUTFChars(fieldName, &isCopy);
-    char* sig = (char *)env->GetStringUTFChars(fieldSig, &isCopy);
-    jlong res = (jlong)(intptr_t)env->GetStaticFieldID(clss, name, sig);
-    env->ReleaseStringUTFChars(fieldName, name);
-    env->ReleaseStringUTFChars(fieldSig, sig);
+    char* name = (char *)(*env)->GetStringUTFChars(env, fieldName, &isCopy);
+    char* sig = (char *)(*env)->GetStringUTFChars(env, fieldSig, &isCopy);
+    jlong res = (jlong)(intptr_t)(*env)->GetStaticFieldID(env, clss, name, sig);
+    (*env)->ReleaseStringUTFChars(env, fieldName, name);
+    (*env)->ReleaseStringUTFChars(env, fieldSig, sig);
     return res;
 }
 

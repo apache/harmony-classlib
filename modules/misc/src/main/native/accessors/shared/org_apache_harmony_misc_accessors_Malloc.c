@@ -41,7 +41,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_Malloc_malloc
  * Signature: (JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_Malloc_realloc
-  (JNIEnv *, jclass clazz, jlong addr, jlong size)
+  (JNIEnv *env, jclass clazz, jlong addr, jlong size)
 {
     return addr2jlong(realloc(jlong2addr(void, addr), (size_t)size));
 }
