@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -305,7 +305,8 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
 	 *                <code>remaining()</code>
 	 */
 	public IntBuffer get(int[] dest, int off, int len) {
-        if (off < 0 || len < 0 || (long)len + (long)off > dest.length) {
+        int length = dest.length;
+        if (off < 0 || len < 0 || (long)len + (long)off > length) {
             throw new IndexOutOfBoundsException();
         }
 		if (len > remaining()) {
@@ -462,7 +463,8 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public IntBuffer put(int[] src, int off, int len) {
-        if (off < 0 || len < 0 || (long)len + (long)off > src.length) {
+        int length = src.length;
+        if (off < 0 || len < 0 || (long)len + (long)off > length) {
             throw new IndexOutOfBoundsException();
         }
         

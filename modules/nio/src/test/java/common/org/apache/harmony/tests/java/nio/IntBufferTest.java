@@ -17,130 +17,69 @@ package org.apache.harmony.tests.java.nio;
 
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.InvalidMarkException;
-import java.nio.ReadOnlyBufferException;
-
-import junit.framework.TestCase;
 
 /**
  * Tests java.nio.IntBuffer
  * 
  */
-public class IntBufferTest extends TestCase {
+public class IntBufferTest extends AbstractBufferTest {
+    
+    
+    protected static final int SMALL_TEST_LENGTH = 5;
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(IntBufferTest.class);
+    protected static final int BUFFER_LENGTH = 20;
+
+    protected IntBuffer buf;
+
+    protected void setUp() throws Exception {
+        buf = IntBuffer.allocate(BUFFER_LENGTH);
+        loadTestData1(buf);
+        baseBuf = buf;
     }
 
-    public static void testIntBufferInstance(IntBuffer buf) {
-        // test Buffer functions
-        BufferTest.testBufferInstance(buf);
-
-        // test IntBuffer functions
-        testHashCode(buf);
-        testEquals(buf);
-        testToString(buf);
-        testSlice(buf);
-        testDuplicate(buf);
-        testAsReadOnlyBuffer(buf);
-        testGet(buf);
-        testPutint(buf);
-        testGetint(buf);
-        testPutintint(buf);
-        testGetintArrayintint(buf);
-        testGetintArray(buf);
-        testPutIntBuffer(buf);
-        testPutintArrayintint(buf);
-        testPutintArray(buf);
-        testHasArray(buf);
-        testArray(buf);
-        testArrayOffset(buf);
-        testCompact(buf);
-        testIsDirect(buf);
-        testCompareTo(buf);
-        testOrder(buf);
+    protected void tearDown() throws Exception {
+        buf = null;
+        baseBuf = null;
     }
 
-    public static void testArray(IntBuffer buf) {
-        if (buf.hasArray()) {
-            int array[] = buf.array();
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+    public void testArray() {
+        int array[] = buf.array();
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData1(array, buf.arrayOffset(), buf.capacity());
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData1(array, buf.arrayOffset(), buf.capacity());
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData2(array, buf.arrayOffset(), buf.capacity());
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData2(array, buf.arrayOffset(), buf.capacity());
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData1(buf);
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData1(buf);
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData2(buf);
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
-        } else {
-            if (buf.isReadOnly()) {
-                try {
-                    buf.array();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                    // Note:can not tell when to throw 
-                    // UnsupportedOperationException
-                    // or ReadOnlyBufferException, so catch all.
-                }
-            } else {
-                try {
-                    buf.array();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                }
-            }
-        }
+        loadTestData2(buf);
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
     }
 
-    public static void testArrayOffset(IntBuffer buf) {
-        if (buf.hasArray()) {
-            int array[] = buf.array();
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+    public  void testArrayOffset() {
+        int array[] = buf.array();
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData1(array, buf.arrayOffset(), buf.capacity());
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData1(array, buf.arrayOffset(), buf.capacity());
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData2(array, buf.arrayOffset(), buf.capacity());
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData2(array, buf.arrayOffset(), buf.capacity());
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData1(buf);
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+        loadTestData1(buf);
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
 
-            loadTestData2(buf);
-            assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
-        } else {
-            if (buf.isReadOnly()) {
-                try {
-                    buf.arrayOffset();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                    // Note:can not tell when to throw 
-                    // UnsupportedOperationException
-                    // or ReadOnlyBufferException, so catch all.
-                }
-            } else {
-                try {
-                    buf.arrayOffset();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                }
-            }
-        }
-    }
+        loadTestData2(buf);
+        assertContentEquals(buf, array, buf.arrayOffset(), buf.capacity());
+     }
 
-    public static void testAsReadOnlyBuffer(IntBuffer buf) {
+    public  void testAsReadOnlyBuffer() {
         buf.clear();
         buf.mark();
         buf.position(buf.limit());
@@ -164,17 +103,7 @@ public class IntBufferTest extends TestCase {
         assertEquals(buf.position(), 0);
     }
 
-    public static void testCompact(IntBuffer buf) {
-        if (buf.isReadOnly()) {
-            try {
-                buf.compact();
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
-
+    public  void testCompact() {
         // case: buffer is full
         buf.clear();
         buf.mark();
@@ -225,33 +154,30 @@ public class IntBufferTest extends TestCase {
         }
     }
 
-    public static void testCompareTo(IntBuffer buf) {
+    public  void testCompareTo() {
         // compare to self
         assertEquals(0, buf.compareTo(buf));
 
         // normal cases
-        if (!buf.isReadOnly()) {
-            assertTrue(buf.capacity() > 5);
-            buf.clear();
-            IntBuffer other = IntBuffer.allocate(buf.capacity());
-            loadTestData1(buf);
-            loadTestData1(other);
-            assertEquals(0, buf.compareTo(other));
-            assertEquals(0, other.compareTo(buf));
-            buf.position(1);
-            assertTrue(buf.compareTo(other) > 0);
-            assertTrue(other.compareTo(buf) < 0);
-            other.position(2);
-            assertTrue(buf.compareTo(other) < 0);
-            assertTrue(other.compareTo(buf) > 0);
-            buf.position(2);
-            other.limit(5);
-            assertTrue(buf.compareTo(other) > 0);
-            assertTrue(other.compareTo(buf) < 0);
-        }
+        assertTrue(buf.capacity() > 5);
+        buf.clear();
+        IntBuffer other = IntBuffer.allocate(buf.capacity());
+        loadTestData1(other);
+        assertEquals(0, buf.compareTo(other));
+        assertEquals(0, other.compareTo(buf));
+        buf.position(1);
+        assertTrue(buf.compareTo(other) > 0);
+        assertTrue(other.compareTo(buf) < 0);
+        other.position(2);
+        assertTrue(buf.compareTo(other) < 0);
+        assertTrue(other.compareTo(buf) > 0);
+        buf.position(2);
+        other.limit(5);
+        assertTrue(buf.compareTo(other) > 0);
+        assertTrue(other.compareTo(buf) < 0);
     }
 
-    public static void testDuplicate(IntBuffer buf) {
+    public  void testDuplicate() {
         buf.clear();
         buf.mark();
         buf.position(buf.limit());
@@ -283,7 +209,7 @@ public class IntBufferTest extends TestCase {
         }
     }
 
-    public static void testEquals(IntBuffer buf) {
+    public  void testEquals() {
         // equal to self
         assertTrue(buf.equals(buf));
         IntBuffer readonly = buf.asReadOnlyBuffer();
@@ -308,7 +234,7 @@ public class IntBufferTest extends TestCase {
     /*
      * Class under test for int get()
      */
-    public static void testGet(IntBuffer buf) {
+    public  void testGet() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), i);
@@ -325,7 +251,7 @@ public class IntBufferTest extends TestCase {
     /*
      * Class under test for java.nio.IntBuffer get(int[])
      */
-    public static void testGetintArray(IntBuffer buf) {
+    public  void testGetintArray() {
         int array[] = new int[1];
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
@@ -340,12 +266,18 @@ public class IntBufferTest extends TestCase {
         } catch (BufferUnderflowException e) {
             // expected
         }
+        try {
+            buf.get((int[])null);
+            fail("Should throw NPE"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /*
      * Class under test for java.nio.IntBuffer get(int[], int, int)
      */
-    public static void testGetintArrayintint(IntBuffer buf) {
+    public  void testGetintArrayintint() {
         buf.clear();
         int array[] = new int[buf.capacity()];
 
@@ -377,7 +309,25 @@ public class IntBufferTest extends TestCase {
             // expected
         }
         try {
+            buf.get((int[])null, 2, -1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
             buf.get(array, 2, array.length);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.get(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.get(array, Integer.MAX_VALUE, 1);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IndexOutOfBoundsException e) {
             // expected
@@ -394,7 +344,7 @@ public class IntBufferTest extends TestCase {
     /*
      * Class under test for int get(int)
      */
-    public static void testGetint(IntBuffer buf) {
+    public  void testGetint() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), i);
@@ -414,32 +364,11 @@ public class IntBufferTest extends TestCase {
         }
     }
 
-    public static void testHasArray(IntBuffer buf) {
-        if (buf.hasArray()) {
-            assertNotNull(buf.array());
-        } else {
-            if (buf.isReadOnly()) {
-                try {
-                    buf.array();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                    // Note:can not tell when to throw 
-                    // UnsupportedOperationException
-                    // or ReadOnlyBufferException, so catch all.
-                }
-            } else {
-                try {
-                    buf.array();
-                    fail("Should throw Exception"); //$NON-NLS-1$
-                } catch (UnsupportedOperationException e) {
-                    // expected
-                }
-            }
-        }
+    public  void testHasArray() {
+        assertNotNull(buf.array());
     }
 
-    public static void testHashCode(IntBuffer buf) {
+    public  void testHashCode() {
         buf.clear();
         IntBuffer readonly = buf.asReadOnlyBuffer();
         IntBuffer duplicate = buf.duplicate();
@@ -450,32 +379,19 @@ public class IntBufferTest extends TestCase {
         assertTrue(buf.hashCode() != duplicate.hashCode());
     }
 
-    public static void testIsDirect(IntBuffer buf) {
-        buf.isDirect();
+    public  void testIsDirect() {
+        assertFalse(buf.isDirect());
     }
 
-    public static void testOrder(IntBuffer buf) {
+    public  void testOrder() {
         buf.order();
-        if (buf.hasArray()) {
-            assertEquals(ByteOrder.nativeOrder(), buf.order());
-        }
+        assertEquals(ByteOrder.nativeOrder(), buf.order());
     }
 
     /*
      * Class under test for java.nio.IntBuffer put(int)
      */
-    public static void testPutint(IntBuffer buf) {
-        if (buf.isReadOnly()) {
-            try {
-                buf.clear();
-                buf.put(0);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
-
+    public  void testPutint() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), i);
@@ -494,18 +410,8 @@ public class IntBufferTest extends TestCase {
     /*
      * Class under test for java.nio.IntBuffer put(int[])
      */
-    public static void testPutintArray(IntBuffer buf) {
+    public  void testPutintArray() {
         int array[] = new int[1];
-        if (buf.isReadOnly()) {
-            try {
-                buf.put(array);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
-
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), i);
@@ -520,24 +426,21 @@ public class IntBufferTest extends TestCase {
         } catch (BufferOverflowException e) {
             // expected
         }
+        try {
+            buf.position(buf.limit());
+            buf.put((int[])null);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /*
      * Class under test for java.nio.IntBuffer put(int[], int, int)
      */
-    public static void testPutintArrayintint(IntBuffer buf) {
+    public  void testPutintArrayintint() {
         buf.clear();
         int array[] = new int[buf.capacity()];
-        if (buf.isReadOnly()) {
-            try {
-                buf.put(array, 0, array.length);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
-
         try {
             buf.put(new int[buf.capacity() + 1], 0, buf.capacity() + 1);
             fail("Should throw Exception"); //$NON-NLS-1$
@@ -566,7 +469,25 @@ public class IntBufferTest extends TestCase {
             // expected
         }
         try {
+            buf.put((int[])null, 0, -1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
             buf.put(array, 2, array.length);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.put(array, Integer.MAX_VALUE, 1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.put(array, 1, Integer.MAX_VALUE);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IndexOutOfBoundsException e) {
             // expected
@@ -583,19 +504,8 @@ public class IntBufferTest extends TestCase {
     /*
      * Class under test for java.nio.IntBuffer put(java.nio.IntBuffer)
      */
-    public static void testPutIntBuffer(IntBuffer buf) {
+    public  void testPutIntBuffer() {
         IntBuffer other = IntBuffer.allocate(buf.capacity());
-        if (buf.isReadOnly()) {
-            try {
-                buf.clear();
-                buf.put(other);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
-
         try {
             buf.put(buf);
             fail("Should throw Exception"); //$NON-NLS-1$
@@ -606,6 +516,13 @@ public class IntBufferTest extends TestCase {
             buf.put(IntBuffer.allocate(buf.capacity() + 1));
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (BufferOverflowException e) {
+            // expected
+        }
+        try {
+            buf.flip();
+            buf.put((IntBuffer)null);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
             // expected
         }
 
@@ -622,17 +539,7 @@ public class IntBufferTest extends TestCase {
     /*
      * Class under test for java.nio.IntBuffer put(int, int)
      */
-    public static void testPutintint(IntBuffer buf) {
-        if (buf.isReadOnly()) {
-            try {
-                buf.put(0, 0);
-                fail("Should throw Exception"); //$NON-NLS-1$
-            } catch (ReadOnlyBufferException e) {
-                // expected
-            }
-            return;
-        }
-
+    public  void testPutintint() {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.position(), 0);
@@ -654,7 +561,7 @@ public class IntBufferTest extends TestCase {
         }
     }
 
-    public static void testSlice(IntBuffer buf) {
+    public  void testSlice() {
         assertTrue(buf.capacity() > 5);
         buf.position(1);
         buf.limit(buf.capacity() - 1);
@@ -682,7 +589,7 @@ public class IntBufferTest extends TestCase {
         }
     }
 
-    public static void testToString(IntBuffer buf) {
+    public  void testToString() {
         String str = buf.toString();
         assertTrue(str.indexOf("Int") >= 0 || str.indexOf("int") >= 0);
         assertTrue(str.indexOf("" + buf.position()) >= 0);
@@ -690,47 +597,47 @@ public class IntBufferTest extends TestCase {
         assertTrue(str.indexOf("" + buf.capacity()) >= 0);
     }
 
-    private static void loadTestData1(int array[], int offset, int length) {
+      void loadTestData1(int array[], int offset, int length) {
         for (int i = 0; i < length; i++) {
             array[offset + i] = (int) i;
         }
     }
 
-    private static void loadTestData2(int array[], int offset, int length) {
+      void loadTestData2(int array[], int offset, int length) {
         for (int i = 0; i < length; i++) {
             array[offset + i] = (int) length - i;
         }
     }
 
-    private static void loadTestData1(IntBuffer buf) {
+      void loadTestData1(IntBuffer buf) {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             buf.put(i, (int) i);
         }
     }
 
-    private static void loadTestData2(IntBuffer buf) {
+      void loadTestData2(IntBuffer buf) {
         buf.clear();
         for (int i = 0; i < buf.capacity(); i++) {
             buf.put(i, (int) buf.capacity() - i);
         }
     }
 
-    private static void assertContentEquals(IntBuffer buf, int array[],
+      void assertContentEquals(IntBuffer buf, int array[],
             int offset, int length) {
         for (int i = 0; i < length; i++) {
             assertEquals(buf.get(i), array[offset + i]);
         }
     }
 
-    private static void assertContentEquals(IntBuffer buf, IntBuffer other) {
+      void assertContentEquals(IntBuffer buf, IntBuffer other) {
         assertEquals(buf.capacity(), other.capacity());
         for (int i = 0; i < buf.capacity(); i++) {
             assertEquals(buf.get(i), other.get(i));
         }
     }
 
-    private static void assertContentLikeTestData1(IntBuffer buf,
+      void assertContentLikeTestData1(IntBuffer buf,
             int startIndex, int startValue, int length) {
         int value = startValue;
         for (int i = 0; i < length; i++) {
@@ -738,108 +645,4 @@ public class IntBufferTest extends TestCase {
             value = value + 1;
         }
     }
-
-    public void testAllocatedIntBuffer() {
-        try {
-            IntBuffer.allocate(-1);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // expected 
-        }
-        IntBuffer buf = IntBuffer.allocate(16);
-        testIntBufferInstanceThoroughly(buf);
-    }
-
-    public void testWrappedIntBuffer() {
-        IntBuffer buf = IntBuffer.wrap(new int[16]);
-        testIntBufferInstanceThoroughly(buf);
-    }
-
-    public void testWrappedIntBuffer2() {
-        int array[] = new int[20];
-        try {
-            IntBuffer.wrap(array, -1, 0);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            IntBuffer.wrap(array, 21, 0);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            IntBuffer.wrap(array, 0, -1);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-        try {
-            IntBuffer.wrap(array, 0, 21);
-            fail("Should throw Exception"); //$NON-NLS-1$
-        } catch (IndexOutOfBoundsException e) {
-            // expected
-        }
-
-        IntBuffer buf = IntBuffer.wrap(array, 2, 16);
-        assertEquals(buf.position(), 2);
-        assertEquals(buf.limit(), 18);
-        assertEquals(buf.capacity(), 20);
-        testIntBufferInstanceThoroughly(buf);
-    }
-
-    /**
-     * @tests java.nio.IntBuffer.wrap(int[],int,int)
-     */
-    public void testWrappedIntBuffer_null_array() {
-        // Regression for HARMONY-264
-        int array[] = null;
-        try {
-            IntBuffer.wrap(array, -1, 0);
-            fail("Should throw NPE"); //$NON-NLS-1$
-        } catch (NullPointerException e) {
-        }
-    }
-
-    public void testByteBufferAsIntBuffer() {
-        IntBuffer buf = ByteBuffer.allocate(160).asIntBuffer();
-        testIntBufferInstanceThoroughly(buf);
-    }
-
-    private void testIntBufferInstanceThoroughly(IntBuffer buf) {
-        assertTrue(buf.capacity() > 15);
-        buf.clear();
-        loadTestData1(buf);
-
-        buf.limit(15).position(1);
-        testIntBufferInstance(buf);
-        testIntBufferInstance(buf.duplicate());
-        testIntBufferInstance(buf.asReadOnlyBuffer());
-        buf.limit(15).position(1);
-        testIntBufferInstance(buf.slice());
-
-        IntBuffer duplicate = buf.duplicate();
-        duplicate.limit(15).position(1);
-        testIntBufferInstance(duplicate.duplicate());
-        testIntBufferInstance(duplicate.asReadOnlyBuffer());
-        duplicate.limit(15).position(1);
-        testIntBufferInstance(duplicate.slice());
-
-        IntBuffer readonly = buf.asReadOnlyBuffer();
-        readonly.limit(15).position(1);
-        testIntBufferInstance(readonly.duplicate());
-        testIntBufferInstance(readonly.asReadOnlyBuffer());
-        readonly.limit(15).position(1);
-        testIntBufferInstance(readonly.slice());
-
-        buf.limit(15).position(1);
-        IntBuffer slice = buf.slice();
-        slice.limit(10).position(1);
-        testIntBufferInstance(slice.duplicate());
-        testIntBufferInstance(slice.asReadOnlyBuffer());
-        slice.limit(10).position(1);
-        testIntBufferInstance(slice.slice());
-    }
-
 }
