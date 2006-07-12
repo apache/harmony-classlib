@@ -21,16 +21,12 @@ import java.beans.Beans;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextSupport;
 import java.io.Externalizable;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.net.URLClassLoader;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -45,30 +41,10 @@ import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
  * Unit test for java.beans.Beans
  */
 public class BeansTest extends TestCase {
-	private File fileURLCP = new File(System.getProperty("user.home"), "urlcp");
 
-	private File fileSer;
-
-	private File fileClass;
-
-	public BeansTest() {
-		File path = new File(fileURLCP, "serialization/java/beans/mock");
-		path.mkdirs();
-		fileSer = new File(path, "MockJavaBean2.ser");
-		fileClass = new File(path, "MockJavaBean2.class");
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		if (fileSer.exists()) {
-			fileSer.delete();
-		}
-
-		if (fileClass.exists()) {
-			fileClass.delete();
-		}
-		fileURLCP.delete();
-	}
+    private final String MOCK_JAVA_BEAN2 = "tests.api.java.beans.mock.MockJavaBean2";
+    private final String MOCK_JAVA_BEAN2_FILE = "/binary/java/beans/mock/MockJavaBean2.bin";
+    private final String MOCK_JAVA_BEAN2_SFILE = "/serialization/java/beans/mock/MockJavaBean2.ser";
 
 	/*
 	 * public Beans()
@@ -102,55 +78,33 @@ public class BeansTest extends TestCase {
 	/*
 	 * Class under test for Object instantiate(ClassLoader, String)
 	 */
-	public void testInstantiateClassLoaderString_Class() throws IOException,
-			ClassNotFoundException, NoSuchMethodException, SecurityException,
-			IllegalAccessException, InvocationTargetException {
-		// copy class
-		InputStream bin = getClass().getResourceAsStream(
-				"/binary/java/beans/mock/MockJavaBean2.bin");
-		copyFile(bin, fileClass);
+	public void testInstantiateClassLoaderString_Class() throws Exception {
 
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
-		Object bean = Beans.instantiate(loader,
-				"org.apache.harmony.beans.tests.java.beans.mock.MockJavaBean2");
+		ClassLoader loader = new BinClassLoader();
+		Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2);
+
 		assertEquals("as_class", (String) bean.getClass().getMethod(
 				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 	}
 
-	public void testInstantiateClassLoaderString_Ser() throws IOException,
-			ClassNotFoundException, IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException {
-		// copy class
-		InputStream bin = getClass().getResourceAsStream(
-				"/binary/java/beans/mock/MockJavaBean2.bin");
-		copyFile(bin, fileClass);
+	public void testInstantiateClassLoaderString_Ser() throws Exception {
+        ClassLoader loader = new SerClassLoader();
+		Object bean = Beans.instantiate(loader,MOCK_JAVA_BEAN2);
 
-		// copy ser
-		InputStream res = getClass().getResourceAsStream(
-				"/serialization/java/beans/mock/MockJavaBean2.ser");
-		copyFile(res, fileSer);
-
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
-		Object bean = Beans.instantiate(loader,
-				"org.apache.harmony.beans.tests.java.beans.mock.MockJavaBean2");
-		assertEquals("as_object", (String) bean.getClass().getMethod(
+        assertEquals("as_object", (String) bean.getClass().getMethod(
 				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 	}
 
-	public void testInstantiateClassLoaderString_ClassLoaderNull()
-			throws IOException, ClassNotFoundException {
+	public void testInstantiateClassLoaderString_ClassLoaderNull() throws Exception {
 		Object bean = Beans.instantiate(null, MockJavaBean.class.getName());
 		assertEquals(bean.getClass(), MockJavaBean.class);
 		assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
 				.getClassLoader());
 	}
 
-	public void testInstantiateClassLoaderString_BeanNameNull()
-			throws IOException, ClassNotFoundException {
+	public void testInstantiateClassLoaderString_BeanNameNull() throws Exception {
 		try {
 			Beans.instantiate(null, null);
 			fail("Should throw NullPointerException");
@@ -161,52 +115,30 @@ public class BeansTest extends TestCase {
 	/*
 	 * Class under test for Object instantiate(ClassLoader, String, BeanContext)
 	 */
-	public void testInstantiateClassLoaderStringBeanContext_Class()
-			throws ClassNotFoundException, ClassNotFoundException, IOException,
-			IllegalAccessException, InvocationTargetException,
-			NoSuchMethodException {
-		// copy class
-		InputStream bin = getClass().getResourceAsStream(
-				"/binary/java/beans/mock/MockJavaBean2.bin");
-		copyFile(bin, fileClass);
+	public void testInstantiateClassLoaderStringBeanContext_Class() throws Exception {
 
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
+        ClassLoader loader = new BinClassLoader ();
 		BeanContext context = new BeanContextSupport();
-		Object bean = Beans.instantiate(loader,
-				"org.apache.harmony.beans.tests.java.beans.mock.MockJavaBean2", context);
-		assertEquals("as_class", (String) bean.getClass().getMethod(
+		Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2, context);
+
+        assertEquals("as_class", (String) bean.getClass().getMethod(
 				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 		assertTrue(context.contains(bean));
 	}
 
-	public void testInstantiateClassLoaderStringBeanContext_Ser()
-			throws IOException, ClassNotFoundException, IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException {
-		// copy class
-		InputStream bin = getClass().getResourceAsStream(
-				"/binary/java/beans/mock/MockJavaBean2.bin");
-		copyFile(bin, fileClass);
-
-		// copy ser
-		InputStream res = getClass().getResourceAsStream(
-				"/serialization/java/beans/mock/MockJavaBean2.ser");
-		copyFile(res, fileSer);
-
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
+	public void testInstantiateClassLoaderStringBeanContext_Ser() throws Exception {
+		ClassLoader loader = new SerClassLoader();
 		BeanContext context = new BeanContextSupport();
-		Object bean = Beans.instantiate(loader,
-				"org.apache.harmony.beans.tests.java.beans.mock.MockJavaBean2", context);
+		Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2, context);
+
 		assertEquals("as_object", (String) bean.getClass().getMethod(
 				"getPropertyOne", (Class[])null).invoke(bean, null));
 		assertSame(loader, bean.getClass().getClassLoader());
 		assertTrue(context.contains(bean));
 	}
 
-	public void testInstantiateClassLoaderStringBeanContext_ClassLoaderNull()
-			throws IOException, ClassNotFoundException {
+	public void testInstantiateClassLoaderStringBeanContext_ClassLoaderNull() throws Exception {
 		BeanContext context = new BeanContextSupport();
 		Object bean = Beans.instantiate(null, MockJavaBean.class.getName(),
 				context);
@@ -216,11 +148,9 @@ public class BeansTest extends TestCase {
 		assertTrue(context.contains(bean));
 	}
 
-	public void testInstantiateClassLoaderStringBeanContext_BeanNameNull()
-			throws IOException, ClassNotFoundException {
+	public void testInstantiateClassLoaderStringBeanContext_BeanNameNull() throws Exception {
 		BeanContext context = new BeanContextSupport();
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
+		ClassLoader loader = createSpecificClassLoader();
 		try {
 			Beans.instantiate(loader, null, context);
 			fail("Should throw NullPointerException.");
@@ -228,10 +158,8 @@ public class BeansTest extends TestCase {
 		}
 	}
 
-	public void testInstantiateClassLoaderStringBeanContext_ContextNull()
-			throws IOException, ClassNotFoundException {
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
+	public void testInstantiateClassLoaderStringBeanContext_ContextNull() throws Exception {
+        ClassLoader loader = createSpecificClassLoader();
 		Object bean = Beans.instantiate(loader, MockJavaBean.class.getName(),
 				null);
 		assertEquals(bean.getClass(), MockJavaBean.class);
@@ -241,19 +169,11 @@ public class BeansTest extends TestCase {
 	 * Class under test for Object instantiate(ClassLoader, String, BeanContext,
 	 * AppletInitializer)
 	 */
-	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_Class()
-			throws IOException, ClassNotFoundException, IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException {
-		// copy class
-		InputStream bin = getClass().getResourceAsStream(
-				"/binary/java/beans/mock/MockJavaBean2.bin");
-		copyFile(bin, fileClass);
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
-		String beanName = "org.apache.harmony.beans.tests.java.beans.mock.MockJavaBean2";
+	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_Class() throws Exception {
+		ClassLoader loader = new BinClassLoader();
 		BeanContext context = new BeanContextSupport();
 		AppletInitializer appInit = new MockAppletInitializer();
-		Object bean = Beans.instantiate(loader, beanName, context, appInit);
+		Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2, context, appInit);
 
 		assertEquals("as_class", (String) bean.getClass().getMethod(
 				"getPropertyOne", (Class[])null).invoke(bean, null));
@@ -261,26 +181,12 @@ public class BeansTest extends TestCase {
 		assertTrue(context.contains(bean));
 	}
 
-	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_Ser()
-			throws ClassNotFoundException, IOException,
-			InvocationTargetException, NoSuchMethodException,
-			IllegalAccessException {
-		// copy class
-		InputStream bin = getClass().getResourceAsStream(
-				"/binary/java/beans/mock/MockJavaBean2.bin");
-		copyFile(bin, fileClass);
+	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_Ser() throws Exception {
 
-		// copy ser
-		InputStream res = getClass().getResourceAsStream(
-				"/serialization/java/beans/mock/MockJavaBean2.ser");
-		copyFile(res, fileSer);
-
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
-		String beanName = "org.apache.harmony.beans.tests.java.beans.mock.MockJavaBean2";
+		ClassLoader loader = new SerClassLoader();
 		BeanContext context = new BeanContextSupport();
 		AppletInitializer appInit = new MockAppletInitializer();
-		Object bean = Beans.instantiate(loader, beanName, context, appInit);
+		Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2, context, appInit);
 
 		assertEquals("as_object", (String) bean.getClass().getMethod(
 				"getPropertyOne", (Class[])null).invoke(bean, null));
@@ -288,22 +194,20 @@ public class BeansTest extends TestCase {
 		assertTrue(context.contains(bean));
 	}
 
-	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_LoaderNull()
-			throws IOException, ClassNotFoundException {
-		String beanName = "org.apache.harmony.beans.tests.java.beans.MockJavaBean";
+	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_LoaderNull() throws Exception {
+		String beanName = "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
 		BeanContext context = new BeanContextSupport();
 		AppletInitializer appInit = new MockAppletInitializer();
-		Object bean = Beans.instantiate(null, beanName, context, appInit);
+
+        Object bean = Beans.instantiate(null, beanName, context, appInit);
 		assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
 				.getClassLoader());
 		assertEquals(beanName, bean.getClass().getName());
 		assertTrue(context.contains(bean));
 	}
 
-	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_BeanNull()
-			throws IOException, ClassNotFoundException {
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
+	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_BeanNull() throws Exception {
+        ClassLoader loader = createSpecificClassLoader();
 		BeanContext context = new BeanContextSupport();
 		AppletInitializer appInit = new MockAppletInitializer();
 		try {
@@ -313,11 +217,9 @@ public class BeansTest extends TestCase {
 		}
 	}
 
-	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_ContextNull()
-			throws IOException, ClassNotFoundException {
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
-		String beanName = "org.apache.harmony.beans.tests.java.beans.MockJavaBean";
+	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_ContextNull() throws Exception {
+        ClassLoader loader = createSpecificClassLoader();
+		String beanName = "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
 		AppletInitializer appInit = new MockAppletInitializer();
 		Object bean = Beans.instantiate(loader, beanName, null, appInit);
 		assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
@@ -325,11 +227,9 @@ public class BeansTest extends TestCase {
 		assertEquals(beanName, bean.getClass().getName());
 	}
 
-	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_InitializerNull()
-			throws IOException, ClassNotFoundException {
-		URLClassLoader loader = new URLClassLoader(new URL[] { fileURLCP
-				.toURL() });
-		String beanName = "org.apache.harmony.beans.tests.java.beans.MockJavaBean";
+	public void testInstantiateClassLoaderStringBeanContextAppletInitializer_InitializerNull() throws Exception {
+        ClassLoader loader = createSpecificClassLoader();
+		String beanName = "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
 		BeanContext context = new BeanContextSupport();
 		Object bean = Beans.instantiate(loader, beanName, context, null);
 		assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
@@ -425,47 +325,29 @@ public class BeansTest extends TestCase {
 		assertFalse(Beans.isGuiAvailable());
 	}
 
-	private void copyFile(InputStream src, File dest) throws IOException {
-		FileOutputStream fos = new FileOutputStream(dest);
-		int length = 0;
-		byte[] bytes = new byte[1024];
-		while ((length = src.read(bytes)) != -1) {
-			fos.write(bytes, 0, length);
-		}
-		fos.close();
-		src.close();
-	}
-    
-    
     /**
      * The test checks the method instantiate()
      * using specific classloader for class loading
      */
-    public void testLoadBySpecificClassLoader() {
-        String beanName = "org.apache.harmony.beans.tests.java.beans.auxiliary.SampleBean";
-        
-        try {
-            ClassLoader cls = createSpecificClassLoader();
-            Object bean = Beans.instantiate(cls, beanName);
-            
-            assertNotNull(bean);
-            assertEquals(bean.getClass(), SampleBean.class);
-            
-            SampleBean sampleBean = (SampleBean) bean;
-            checkValues(sampleBean);
-        } catch (ClassNotFoundException cnfe) {
-            fail("Class with name " + beanName + " is not found");
-        } catch (IOException ioe) {
-            fail("IOException is thrown while loading " + beanName + " class");
-        }
+    public void testLoadBySpecificClassLoader() throws Exception {
+        String beanName = "org.apache.harmony.beans.tests.support.SampleBean";
+
+        ClassLoader cls = createSpecificClassLoader();
+        Object bean = Beans.instantiate(cls, beanName);
+
+        assertNotNull(bean);
+        assertEquals(bean.getClass(), SampleBean.class);
+
+        SampleBean sampleBean = (SampleBean) bean;
+        checkValues(sampleBean);
     }
     
     /**
-     * The test checks the method instantiate()
-     * using default classloader for class loading
+     * The test checks the method instantiate() using default classloader for
+     * class loading
      */
     public void testLoadByDefaultClassLoader() {
-        String beanName = "org.apache.harmony.beans.tests.java.beans.auxiliary.SampleBean";
+        String beanName = "org.apache.harmony.beans.tests.support.SampleBean";
         
         try {
             Object bean = Beans.instantiate(null, beanName);
@@ -519,12 +401,7 @@ public class BeansTest extends TestCase {
     }
     
     private ClassLoader createSpecificClassLoader() {
-        return new ClassLoader() {
-            public Class loadClass(String name) throws ClassNotFoundException {
-                Class result = super.loadClass(name);
-                return result;
-            }
-        };        
+        return new ClassLoader() {};
     }
     
     private void checkValues(SampleBean sampleBean) {
@@ -535,4 +412,44 @@ public class BeansTest extends TestCase {
         public void writeExternal(ObjectOutput out) {}; 
         public void readExternal(ObjectInput in){}; 
     } 
+
+    private class BinClassLoader extends ClassLoader {
+
+        protected Class findClass(String name) throws ClassNotFoundException {
+            if (!MOCK_JAVA_BEAN2.equals(name)) {
+                return super.findClass(name);
+            }
+
+            try {
+                // makes sense to get actual file size?
+                byte[] buf = new byte[10000];
+
+                InputStream in = getClass().getResourceAsStream(MOCK_JAVA_BEAN2_FILE);
+
+                int sz = 0;
+
+                // read whole file
+                int read;
+                while ((read = in.read(buf, sz, buf.length - sz)) >= 0) {
+                    sz += read;
+                }
+
+                return defineClass(MOCK_JAVA_BEAN2, buf, 0, sz);
+            } catch (IOException e) {
+                throw (ClassNotFoundException) new ClassNotFoundException(e
+                        .toString()).initCause(e);
+            }
+        }
+    }
+
+    private class SerClassLoader extends BinClassLoader {
+        private final String MOCK_JAVA_BEAN2_SNAME = MOCK_JAVA_BEAN2.replace('.', '/') + ".ser";;
+
+        protected URL findResource(String name)  {
+            if (MOCK_JAVA_BEAN2_SNAME.equals(name)) {
+                name = MOCK_JAVA_BEAN2_SFILE; 
+            }
+            return super.getResource(name);
+        }
+    }
 }

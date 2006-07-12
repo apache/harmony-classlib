@@ -137,11 +137,11 @@ public class Beans {
      * @com.intel.drl.spec_ref
      */
     public static boolean isInstanceOf(Object bean, Class<?> targetType) {
-        if (targetType == null) {
-            return false;
-        } else {
-            return targetType.isInstance(bean);
+        if (bean == null) {
+            throw new NullPointerException("bean is null");
         }
+
+        return targetType == null ? false : targetType.isInstance(bean);
     }
 
     /**
