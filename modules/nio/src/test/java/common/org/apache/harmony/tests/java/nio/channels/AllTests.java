@@ -44,6 +44,7 @@ public class AllTests {
         suite.addTestSuite(ClosedChannelExceptionTest.class);
         suite.addTestSuite(ClosedSelectorExceptionTest.class);
         suite.addTestSuite(ConnectionPendingExceptionTest.class);
+        suite.addTestSuite(FileLockInterruptionExceptionTest.class);
         suite.addTestSuite(MapModeTest.class);
         //$JUnit-END$
         return suite;
