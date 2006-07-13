@@ -196,7 +196,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 */
 	public ObjectOutputStream(OutputStream output) throws IOException {
 		Class<?> implementationClass = getClass();
-		Class<?> thisClass = ObjectInputStream.class;
+		Class<?> thisClass = ObjectOutputStream.class;
 		if (implementationClass != thisClass) {
 			boolean mustCheck = false;
 			try {
@@ -670,7 +670,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 *         The handle that this object was assigned when it was saved.
 	 */
 	private Integer registeredObjectHandleFor(Object obj) {
-		return (Integer) objectsWritten.get(obj);
+		return objectsWritten.get(obj);
 	}
 
 	/**
@@ -956,7 +956,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		}
 		if (handle == null) {
             Class<?> classToWrite = classDesc.forClass();
-			Integer previousHandle = (Integer) objectsWritten.get(classDesc);
+			Integer previousHandle = objectsWritten.get(classDesc);
 			// If we got here, it is a new (non-null) classDesc that will have
 			// to be registered as well
 			handle = registerObjectWritten(classDesc);
@@ -1402,7 +1402,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		output.writeByte(TC_ARRAY);
 		writeClassDescForClass(arrayClass);
 
-		Integer previousHandle = (Integer) objectsWritten.get(array);
+		Integer previousHandle = objectsWritten.get(array);
 		Integer handle = registerObjectWritten(array);
 		if (unshared) {
 			// remove reference to unshared object
@@ -1498,7 +1498,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		// it.
 		writeClassDesc(ObjectStreamClass.lookupStreamClass(object), unshared);
 		
-		Integer previousHandle = (Integer) objectsWritten.get(object);
+		Integer previousHandle = objectsWritten.get(object);
 		Integer handle = registerObjectWritten(object);
 		if (unshared) {
 			// remove reference to unshared object
@@ -1626,7 +1626,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		// Either serializable or externalizable, now we can save info
 		output.writeByte(TC_OBJECT);
 		writeClassDescForClass(theClass);
-		Integer previousHandle = (Integer) objectsWritten.get(object);
+		Integer previousHandle = objectsWritten.get(object);
 		Integer handle = registerObjectWritten(object);
 
 		// This is how we know what to do in defaultWriteObject. And it is also
@@ -1696,7 +1696,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		}
 		output.writeUTFBytes(object, count);
 		
-		Integer previousHandle = (Integer) objectsWritten.get(object);
+		Integer previousHandle = objectsWritten.get(object);
 		Integer handle = registerObjectWritten(object);
 		if (unshared) {
 			// remove reference to unshared object
@@ -1944,7 +1944,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         classDesc.setSerialVersionUID(0L);
         // set flag for enum, the flag is (SC_SERIALIZABLE | SC_ENUM)
         classDesc.setFlags((byte)(SC_SERIALIZABLE|SC_ENUM));
-        Integer previousHandle = (Integer) objectsWritten.get(classDesc);
+        Integer previousHandle = objectsWritten.get(classDesc);
         Integer handle = null;
         if (!unshared) {
             handle = dumpCycle(classDesc);
@@ -1989,7 +1989,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         output.writeByte(TC_ENUM);
         ObjectStreamClass classDesc = writeEnumDesc(theClass, unshared);
 
-        Integer previousHandle = (Integer) objectsWritten.get(object);
+        Integer previousHandle = objectsWritten.get(object);
         Integer handle = registerObjectWritten(object);        
 
         ObjectStreamField[] fields = classDesc.getSuperclass().fields();

@@ -2542,7 +2542,11 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     public int skipBytes(int length) throws IOException {
         // To be used with available. Ok to call if reading primitive buffer
-        int offset = 0;
+        if (input == null) {
+            throw new NullPointerException();
+        }
+
+    	int offset = 0;
         while (offset < length) {
             checkReadPrimitiveTypes();
             long skipped = primitiveData.skip(length - offset);
