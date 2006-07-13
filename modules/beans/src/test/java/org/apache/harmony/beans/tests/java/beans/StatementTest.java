@@ -731,7 +731,7 @@ public class StatementTest extends TestCase {
         arguments = new Object[] { Boolean.FALSE };
         t = new Statement(mo, "methodB", arguments);
         t.execute();
-        MockObject.assertCalled("methodB4", arguments);
+        MockObject.assertCalled("methodB2", arguments);
     }
 
     /*
@@ -963,22 +963,10 @@ public class StatementTest extends TestCase {
             receivedArguments.add(i);
         }
 
-        public void methodB(int i) {
-            reset();
-            calledMethod = "methodB2";
-            receivedArguments.add(new Integer(i));
-        }
-
         public void methodB(boolean b) {
             reset();
-            calledMethod = "methodB3";
+            calledMethod = "methodB2";
             receivedArguments.add(new Boolean(b));
-        }
-
-        public void methodB(Boolean b) {
-            reset();
-            calledMethod = "methodB4";
-            receivedArguments.add(b);
         }
 
         public static void staticMethod(Object o) {
