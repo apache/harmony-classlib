@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.Permission;
@@ -2775,6 +2776,1436 @@ public class FormatterTest extends TestCase {
         } catch (UnknownFormatConversionException e) {
             // expected
         }
+    }
+    
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for Float/Double
+     *        conversion type 'e' and 'E'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_FloatConversionE() {
+        Formatter f = null;
+        final Object[][] tripleE = {
+                {0f, "%e",          "0.000000e+00"},
+                {0f, "%#.0e",       "0.e+00"},
+                {0f, "%#- (9.8e",   " 0.00000000e+00"},
+                {0f, "%#+0(8.4e",   "+0.0000e+00"},
+                {0f, "%-+(1.6e",    "+0.000000e+00"},
+                {0f, "% 0(12e",     " 0.000000e+00"},
+                
+                {101f, "%e",          "1.010000e+02"},
+                {101f, "%#.0e",       "1.e+02"},
+                {101f, "%#- (9.8e",   " 1.01000000e+02"},
+                {101f, "%#+0(8.4e",   "+1.0100e+02"},
+                {101f, "%-+(1.6e",    "+1.010000e+02"},
+                {101f, "% 0(12e",     " 1.010000e+02"},
+                
+                {1.f, "%e",          "1.000000e+00"},
+                {1.f, "%#.0e",       "1.e+00"},
+                {1.f, "%#- (9.8e",   " 1.00000000e+00"},
+                {1.f, "%#+0(8.4e",   "+1.0000e+00"},
+                {1.f, "%-+(1.6e",    "+1.000000e+00"},
+                {1.f, "% 0(12e",     " 1.000000e+00"},
+                
+                {-98f, "%e",          "-9.800000e+01"},
+                {-98f, "%#.0e",       "-1.e+02"},
+                {-98f, "%#- (9.8e",   "(9.80000000e+01)"},
+                {-98f, "%#+0(8.4e",   "(9.8000e+01)"},
+                {-98f, "%-+(1.6e",    "(9.800000e+01)"},
+                {-98f, "% 0(12e",     "(9.800000e+01)"},
+                
+                {1.23f, "%e",          "1.230000e+00"},
+                {1.23f, "%#.0e",       "1.e+00"},
+                {1.23f, "%#- (9.8e",   " 1.23000002e+00"},
+                {1.23f, "%#+0(8.4e",   "+1.2300e+00"},
+                {1.23f, "%-+(1.6e",    "+1.230000e+00"},
+                {1.23f, "% 0(12e",     " 1.230000e+00"},
+                
+                {34.1234567f, "%e",          "3.412346e+01"},
+                {34.1234567f, "%#.0e",       "3.e+01"},
+                {34.1234567f, "%#- (9.8e",   " 3.41234550e+01"},
+                {34.1234567f, "%#+0(8.4e",   "+3.4123e+01"},
+                {34.1234567f, "%-+(1.6e",    "+3.412346e+01"},
+                {34.1234567f, "% 0(12e",     " 3.412346e+01"},
+                
+                {-.12345f, "%e",          "-1.234500e-01"},
+                {-.12345f, "%#.0e",       "-1.e-01"},
+                {-.12345f, "%#- (9.8e",   "(1.23450004e-01)"},
+                {-.12345f, "%#+0(8.4e",   "(1.2345e-01)"},
+                {-.12345f, "%-+(1.6e",    "(1.234500e-01)"},
+                {-.12345f, "% 0(12e",     "(1.234500e-01)"},
+                
+                {-9876.1234567f, "%e",          "-9.876123e+03"},
+                {-9876.1234567f, "%#.0e",       "-1.e+04"},
+                {-9876.1234567f, "%#- (9.8e",   "(9.87612305e+03)"},
+                {-9876.1234567f, "%#+0(8.4e",   "(9.8761e+03)"},
+                {-9876.1234567f, "%-+(1.6e",    "(9.876123e+03)"},
+                {-9876.1234567f, "% 0(12e",     "(9.876123e+03)"},
+                
+                {Float.MAX_VALUE, "%e",          "3.402823e+38"},
+                {Float.MAX_VALUE, "%#.0e",       "3.e+38"},
+                {Float.MAX_VALUE, "%#- (9.8e",   " 3.40282347e+38"},
+                {Float.MAX_VALUE, "%#+0(8.4e",   "+3.4028e+38"},
+                {Float.MAX_VALUE, "%-+(1.6e",    "+3.402823e+38"},
+                {Float.MAX_VALUE, "% 0(12e",     " 3.402823e+38"},
+                
+                {Float.MIN_VALUE, "%e",          "1.401298e-45"},
+                {Float.MIN_VALUE, "%#.0e",       "1.e-45"},
+                {Float.MIN_VALUE, "%#- (9.8e",   " 1.40129846e-45"},
+                {Float.MIN_VALUE, "%#+0(8.4e",   "+1.4013e-45"},
+                {Float.MIN_VALUE, "%-+(1.6e",    "+1.401298e-45"},
+                {Float.MIN_VALUE, "% 0(12e",     " 1.401298e-45"},
+                
+                {Float.NaN, "%e",          "NaN"},
+                {Float.NaN, "%#.0e",       "NaN"},
+                {Float.NaN, "%#- (9.8e",   "NaN      "},
+                {Float.NaN, "%#+0(8.4e",   "     NaN"},
+                {Float.NaN, "%-+(1.6e",    "NaN"},
+                {Float.NaN, "% 0(12e",     "         NaN"},
+                
+                
+                {Float.NEGATIVE_INFINITY, "%e",          "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%#.0e",       "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%#- (9.8e",   "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "%#+0(8.4e",   "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "%-+(1.6e",    "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "% 0(12e",     "  (Infinity)"},
+                
+                {Float.NEGATIVE_INFINITY, "%e",          "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%#.0e",       "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%#- (9.8e",   "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "%#+0(8.4e",   "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "%-+(1.6e",    "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "% 0(12e",     "  (Infinity)"},
+                
+                {0d, "%e",          "0.000000e+00"},
+                {0d, "%#.0e",       "0.e+00"},
+                {0d, "%#- (9.8e",   " 0.00000000e+00"},
+                {0d, "%#+0(8.4e",   "+0.0000e+00"},
+                {0d, "%-+(1.6e",    "+0.000000e+00"},
+                {0d, "% 0(12e",     " 0.000000e+00"},
+                
+                {1d, "%e",          "1.000000e+00"},
+                {1d, "%#.0e",       "1.e+00"},
+                {1d, "%#- (9.8e",   " 1.00000000e+00"},
+                {1d, "%#+0(8.4e",   "+1.0000e+00"},
+                {1d, "%-+(1.6e",    "+1.000000e+00"},
+                {1d, "% 0(12e",     " 1.000000e+00"},
+                
+                {-1d, "%e",          "-1.000000e+00"},
+                {-1d, "%#.0e",       "-1.e+00"},
+                {-1d, "%#- (9.8e",   "(1.00000000e+00)"},
+                {-1d, "%#+0(8.4e",   "(1.0000e+00)"},
+                {-1d, "%-+(1.6e",    "(1.000000e+00)"},
+                {-1d, "% 0(12e",     "(1.000000e+00)"},
+                
+                
+                {.00000001d, "%e",          "1.000000e-08"},
+                {.00000001d, "%#.0e",       "1.e-08"},
+                {.00000001d, "%#- (9.8e",   " 1.00000000e-08"},
+                {.00000001d, "%#+0(8.4e",   "+1.0000e-08"},
+                {.00000001d, "%-+(1.6e",    "+1.000000e-08"},
+                {.00000001d, "% 0(12e",     " 1.000000e-08"},
+                
+                {9122.10d, "%e",          "9.122100e+03"},
+                {9122.10d, "%#.0e",       "9.e+03"},
+                {9122.10d, "%#- (9.8e",   " 9.12210000e+03"},
+                {9122.10d, "%#+0(8.4e",   "+9.1221e+03"},
+                {9122.10d, "%-+(1.6e",    "+9.122100e+03"},
+                {9122.10d, "% 0(12e",     " 9.122100e+03"},
+                
+                {0.1d, "%e",          "1.000000e-01"},
+                {0.1d, "%#.0e",       "1.e-01"},
+                {0.1d, "%#- (9.8e",   " 1.00000000e-01"},
+                {0.1d, "%#+0(8.4e",   "+1.0000e-01"},
+                {0.1d, "%-+(1.6e",    "+1.000000e-01"},
+                {0.1d, "% 0(12e",     " 1.000000e-01"},
+                
+                {-2.d, "%e",          "-2.000000e+00"},
+                {-2.d, "%#.0e",       "-2.e+00"},
+                {-2.d, "%#- (9.8e",   "(2.00000000e+00)"},
+                {-2.d, "%#+0(8.4e",   "(2.0000e+00)"},
+                {-2.d, "%-+(1.6e",    "(2.000000e+00)"},
+                {-2.d, "% 0(12e",     "(2.000000e+00)"},
+                
+                {-.39d, "%e",          "-3.900000e-01"},
+                {-.39d, "%#.0e",       "-4.e-01"},
+                {-.39d, "%#- (9.8e",   "(3.90000000e-01)"},
+                {-.39d, "%#+0(8.4e",   "(3.9000e-01)"},
+                {-.39d, "%-+(1.6e",    "(3.900000e-01)"},
+                {-.39d, "% 0(12e",     "(3.900000e-01)"},
+                
+                {-1234567890.012345678d, "%e",          "-1.234568e+09"},
+                {-1234567890.012345678d, "%#.0e",       "-1.e+09"},
+                {-1234567890.012345678d, "%#- (9.8e",   "(1.23456789e+09)"},
+                {-1234567890.012345678d, "%#+0(8.4e",   "(1.2346e+09)"},
+                {-1234567890.012345678d, "%-+(1.6e",    "(1.234568e+09)"},
+                {-1234567890.012345678d, "% 0(12e",     "(1.234568e+09)"},
+                
+                {Double.MAX_VALUE, "%e",          "1.797693e+308"},
+                {Double.MAX_VALUE, "%#.0e",       "2.e+308"},
+                {Double.MAX_VALUE, "%#- (9.8e",   " 1.79769313e+308"},
+                {Double.MAX_VALUE, "%#+0(8.4e",   "+1.7977e+308"},
+                {Double.MAX_VALUE, "%-+(1.6e",    "+1.797693e+308"},
+                {Double.MAX_VALUE, "% 0(12e",     " 1.797693e+308"},
+                
+                {Double.MIN_VALUE, "%e",          "4.900000e-324"},
+                {Double.MIN_VALUE, "%#.0e",       "5.e-324"},
+                {Double.MIN_VALUE, "%#- (9.8e",   " 4.90000000e-324"},
+                {Double.MIN_VALUE, "%#+0(8.4e",   "+4.9000e-324"},
+                {Double.MIN_VALUE, "%-+(1.6e",    "+4.900000e-324"},
+                {Double.MIN_VALUE, "% 0(12e",     " 4.900000e-324"},
+                
+                {Double.NaN, "%e",          "NaN"},
+                {Double.NaN, "%#.0e",       "NaN"},
+                {Double.NaN, "%#- (9.8e",   "NaN      "},
+                {Double.NaN, "%#+0(8.4e",   "     NaN"},
+                {Double.NaN, "%-+(1.6e",    "NaN"},
+                {Double.NaN, "% 0(12e",     "         NaN"},
+                
+                {Double.NEGATIVE_INFINITY, "%e",          "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%#.0e",       "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%#- (9.8e",   "(Infinity)"},
+                {Double.NEGATIVE_INFINITY, "%#+0(8.4e",   "(Infinity)"},
+                {Double.NEGATIVE_INFINITY, "%-+(1.6e",    "(Infinity)"},
+                {Double.NEGATIVE_INFINITY, "% 0(12e",     "  (Infinity)"},
+                
+                {Double.POSITIVE_INFINITY, "%e",          "Infinity"},
+                {Double.POSITIVE_INFINITY, "%#.0e",       "Infinity"},
+                {Double.POSITIVE_INFINITY, "%#- (9.8e",   " Infinity"},
+                {Double.POSITIVE_INFINITY, "%#+0(8.4e",   "+Infinity"},
+                {Double.POSITIVE_INFINITY, "%-+(1.6e",    "+Infinity"},
+                {Double.POSITIVE_INFINITY, "% 0(12e",     "    Infinity"},
+        };
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+            for (int i = 0; i < tripleE.length; i++) {
+                f = new Formatter(Locale.US);
+                f.format((String)tripleE[i][pattern], tripleE[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleE[i][input] + ",pattern["
+                        + i + "]:" + tripleE[i][pattern],
+                        tripleE[i][output], f.toString());
+
+                // test for conversion type 'E'
+                f = new Formatter(Locale.US);
+                f.format(((String)tripleE[i][pattern]).toUpperCase(), tripleE[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleE[i][input] + ",pattern["
+                        + i + "]:" + tripleE[i][pattern], ((String)tripleE[i][output])
+                        .toUpperCase(Locale.UK), f.toString());
+            }
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%e", 1001f);
+        /*
+         * fail on RI, spec says 'e' requires the output to be formatted in
+         * general scientific notation and the localization algorithm is
+         * applied. But RI format this case to 1.001000e+03, which does not
+         * conform to the German Locale
+         */
+        assertEquals("1,001000e+03", f.toString());
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for Float/Double
+     *        conversion type 'g' and 'G'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_FloatConversionG() {
+        Formatter f = null;
+        final Object[][] tripleG = {
+                {1001f, "%g",           "1001.00"},
+                {1001f, "%- (,9.8g",    " 1,001.0000"},
+                {1001f, "%+0(,8.4g",    "+001,001"},
+                {1001f, "%-+(,1.6g",    "+1,001.00"},
+                {1001f, "% 0(,12.0g",   " 0000001e+03"},
+                
+                {1.f, "%g",           "1.00000"},
+                {1.f, "%- (,9.8g",    " 1.0000000"},
+                {1.f, "%+0(,8.4g",    "+001.000"},
+                {1.f, "%-+(,1.6g",    "+1.00000"},
+                {1.f, "% 0(,12.0g",   " 00000000001"},
+                
+                {-98f, "%g",           "-98.0000"},
+                {-98f, "%- (,9.8g",    "(98.000000)"},
+                {-98f, "%+0(,8.4g",    "(098.00)"},
+                {-98f, "%-+(,1.6g",    "(98.0000)"},
+                {-98f, "% 0(,12.0g",   "(000001e+02)"},
+                
+                {0.000001f, "%g",           "1.00000e-06"},
+                {0.000001f, "%- (,9.8g",    " 1.0000000e-06"},
+                {0.000001f, "%+0(,8.4g",    "+1.000e-06"},
+                {0.000001f, "%-+(,1.6g",    "+1.00000e-06"},
+                {0.000001f, "% 0(,12.0g",   " 0000001e-06"},
+                
+                {345.1234567f, "%g",           "345.123"},
+                {345.1234567f, "%- (,9.8g",    " 345.12344"},
+                {345.1234567f, "%+0(,8.4g",    "+00345.1"},
+                {345.1234567f, "%-+(,1.6g",    "+345.123"},
+                {345.1234567f, "% 0(,12.0g",   " 0000003e+02"},
+
+                {-.00000012345f, "%g",           "-1.23450e-07"},
+                {-.00000012345f, "%- (,9.8g",    "(1.2344999e-07)"},
+                {-.00000012345f, "%+0(,8.4g",    "(1.234e-07)"},
+                {-.00000012345f, "%-+(,1.6g",    "(1.23450e-07)"},
+                {-.00000012345f, "% 0(,12.0g",   "(000001e-07)"},
+                
+                {-987.1234567f, "%g",           "-987.123"},
+                {-987.1234567f, "%- (,9.8g",    "(987.12347)"},
+                {-987.1234567f, "%+0(,8.4g",    "(0987.1)"},
+                {-987.1234567f, "%-+(,1.6g",    "(987.123)"},
+                {-987.1234567f, "% 0(,12.0g",   "(000001e+03)"},
+                
+                {Float.MAX_VALUE, "%g",           "3.40282e+38"},
+                {Float.MAX_VALUE, "%- (,9.8g",    " 3.4028235e+38"},
+                {Float.MAX_VALUE, "%+0(,8.4g",    "+3.403e+38"},
+                {Float.MAX_VALUE, "%-+(,1.6g",    "+3.40282e+38"},
+                {Float.MAX_VALUE, "% 0(,12.0g",   " 0000003e+38"},
+                
+                {Float.MIN_VALUE, "%g",           "1.40130e-45"},
+                {Float.MIN_VALUE, "%- (,9.8g",    " 1.4012985e-45"},
+                {Float.MIN_VALUE, "%+0(,8.4g",    "+1.401e-45"},
+                {Float.MIN_VALUE, "%-+(,1.6g",    "+1.40130e-45"},
+                {Float.MIN_VALUE, "% 0(,12.0g",   " 0000001e-45"},
+                
+                {Float.NaN, "%g",           "NaN"},
+                {Float.NaN, "%- (,9.8g",    "NaN      "},
+                {Float.NaN, "%+0(,8.4g",    "     NaN"},
+                {Float.NaN, "%-+(,1.6g",    "NaN"},
+                {Float.NaN, "% 0(,12.0g",   "         NaN"},
+                
+                {Float.NEGATIVE_INFINITY, "%g",           "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%- (,9.8g",    "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "%+0(,8.4g",    "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "%-+(,1.6g",    "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "% 0(,12.0g",   "  (Infinity)"},
+                
+                {Float.POSITIVE_INFINITY, "%g",           "Infinity"},
+                {Float.POSITIVE_INFINITY, "%- (,9.8g",    " Infinity"},
+                {Float.POSITIVE_INFINITY, "%+0(,8.4g",    "+Infinity"},
+                {Float.POSITIVE_INFINITY, "%-+(,1.6g",    "+Infinity"},
+                {Float.POSITIVE_INFINITY, "% 0(,12.0g",   "    Infinity"},
+                
+                {1d, "%g",           "1.00000"},
+                {1d, "%- (,9.8g",    " 1.0000000"},
+                {1d, "%+0(,8.4g",    "+001.000"},
+                {1d, "%-+(,1.6g",    "+1.00000"},
+                {1d, "% 0(,12.0g",   " 00000000001"},
+                
+                {-1d, "%g",           "-1.00000"},
+                {-1d, "%- (,9.8g",    "(1.0000000)"},
+                {-1d, "%+0(,8.4g",    "(01.000)"},
+                {-1d, "%-+(,1.6g",    "(1.00000)"},
+                {-1d, "% 0(,12.0g",   "(0000000001)"},
+                
+                {.00000001d, "%g",           "1.00000e-08"},
+                {.00000001d, "%- (,9.8g",    " 1.0000000e-08"},
+                {.00000001d, "%+0(,8.4g",    "+1.000e-08"},
+                {.00000001d, "%-+(,1.6g",    "+1.00000e-08"},
+                {.00000001d, "% 0(,12.0g",   " 0000001e-08"},
+                
+                {1912.10d, "%g",           "1912.10"},
+                {1912.10d, "%- (,9.8g",    " 1,912.1000"},
+                {1912.10d, "%+0(,8.4g",    "+001,912"},
+                {1912.10d, "%-+(,1.6g",    "+1,912.10"},
+                {1912.10d, "% 0(,12.0g",   " 0000002e+03"},
+                
+                {0.1d, "%g",           "0.100000"},
+                {0.1d, "%- (,9.8g",    " 0.10000000"},
+                {0.1d, "%+0(,8.4g",    "+00.1000"},
+                {0.1d, "%-+(,1.6g",    "+0.100000"},
+                {0.1d, "% 0(,12.0g",   " 000000000.1"},
+                
+                {-2.d, "%g",           "-2.00000"},
+                {-2.d, "%- (,9.8g",    "(2.0000000)"},
+                {-2.d, "%+0(,8.4g",    "(02.000)"},
+                {-2.d, "%-+(,1.6g",    "(2.00000)"},
+                {-2.d, "% 0(,12.0g",   "(0000000002)"},
+                
+                {-.00039d, "%g",           "-0.000390000"},
+                {-.00039d, "%- (,9.8g",    "(0.00039000000)"},
+                {-.00039d, "%+0(,8.4g",    "(0.0003900)"},
+                {-.00039d, "%-+(,1.6g",    "(0.000390000)"},
+                {-.00039d, "% 0(,12.0g",   "(00000.0004)"},
+                
+                {-1234567890.012345678d, "%g",           "-1.23457e+09"},
+                {-1234567890.012345678d, "%- (,9.8g",    "(1.2345679e+09)"},
+                {-1234567890.012345678d, "%+0(,8.4g",    "(1.235e+09)"},
+                {-1234567890.012345678d, "%-+(,1.6g",    "(1.23457e+09)"},
+                {-1234567890.012345678d, "% 0(,12.0g",   "(000001e+09)"},
+                
+                {Double.MAX_VALUE, "%g",           "1.79769e+308"},
+                {Double.MAX_VALUE, "%- (,9.8g",    " 1.7976931e+308"},
+                {Double.MAX_VALUE, "%+0(,8.4g",    "+1.798e+308"},
+                {Double.MAX_VALUE, "%-+(,1.6g",    "+1.79769e+308"},
+                {Double.MAX_VALUE, "% 0(,12.0g",   " 000002e+308"},
+                
+                {Double.MIN_VALUE, "%g",           "4.90000e-324"},
+                {Double.MIN_VALUE, "%- (,9.8g",    " 4.9000000e-324"},
+                {Double.MIN_VALUE, "%+0(,8.4g",    "+4.900e-324"},
+                {Double.MIN_VALUE, "%-+(,1.6g",    "+4.90000e-324"},
+                {Double.MIN_VALUE, "% 0(,12.0g",   " 000005e-324"},
+                
+                {Double.NaN, "%g",           "NaN"},
+                {Double.NaN, "%- (,9.8g",    "NaN      "},
+                {Double.NaN, "%+0(,8.4g",    "     NaN"},
+                {Double.NaN, "%-+(,1.6g",    "NaN"},
+                {Double.NaN, "% 0(,12.0g",   "         NaN"},
+                
+                {Double.NEGATIVE_INFINITY, "%g",           "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%- (,9.8g",    "(Infinity)"},
+                {Double.NEGATIVE_INFINITY, "%+0(,8.4g",    "(Infinity)"},
+                {Double.NEGATIVE_INFINITY, "%-+(,1.6g",    "(Infinity)"},
+                {Double.NEGATIVE_INFINITY, "% 0(,12.0g",   "  (Infinity)"},
+                
+                {Double.POSITIVE_INFINITY, "%g",           "Infinity"},
+                {Double.POSITIVE_INFINITY, "%- (,9.8g",    " Infinity"},
+                {Double.POSITIVE_INFINITY, "%+0(,8.4g",    "+Infinity"},
+                {Double.POSITIVE_INFINITY, "%-+(,1.6g",    "+Infinity"},
+                {Double.POSITIVE_INFINITY, "% 0(,12.0g",   "    Infinity"},
+                
+        };
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+            for (int i = 0; i < tripleG.length; i++) {
+                
+                f = new Formatter(Locale.US);
+                f.format((String)tripleG[i][pattern], tripleG[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleG[i][input] + ",pattern["
+                        + i + "]:" + tripleG[i][pattern],
+                        tripleG[i][output], f.toString());
+
+                // test for conversion type 'G'
+                f = new Formatter(Locale.US);
+                f.format(((String)tripleG[i][pattern]).toUpperCase(), tripleG[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleG[i][input] + ",pattern["
+                        + i + "]:" + tripleG[i][pattern], ((String)tripleG[i][output])
+                        .toUpperCase(Locale.UK), f.toString());
+            }
+
+        f = new Formatter(Locale.US);
+        f.format("%.5g", 0f);
+        assertEquals("0.0000", f.toString());
+
+        f = new Formatter(Locale.US);
+        f.format("%.0g", 0f);
+        /*
+         * fail on RI, spec says if the precision is 0, then it is taken to be
+         * 1. but RI throws ArrayIndexOutOfBoundsException.
+         */
+        assertEquals("0", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%g", 1001f);
+        /*
+         * fail on RI, spec says 'g' requires the output to be formatted in
+         * general scientific notation and the localization algorithm is
+         * applied. But RI format this case to 1001.00, which does not conform
+         * to the German Locale
+         */
+        assertEquals("1001,00", f.toString());
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for Float/Double
+     *        conversion type 'g' and 'G' overflow
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_FloatConversionG_Overflow() {
+        Formatter f = new Formatter();
+        f.format("%g", 999999.5);
+        assertEquals("1.00000e+06", f.toString());
+
+        f = new Formatter();
+        f.format("%g", 99999.5);
+        assertEquals("99999.5", f.toString());
+
+        f = new Formatter();
+        f.format("%.4g", 99.95);
+        assertEquals("99.95", f.toString());
+
+        f = new Formatter();
+        f.format("%g", 99.95);
+        assertEquals("99.9500", f.toString());
+
+        f = new Formatter();
+        f.format("%g", 0.9);
+        assertEquals("0.900000", f.toString());
+
+        f = new Formatter();
+        f.format("%.0g", 0.000095);
+        assertEquals("0.0001", f.toString());
+
+        f = new Formatter();
+        f.format("%g", 0.0999999);
+        assertEquals("0.0999999", f.toString());
+
+        f = new Formatter();
+        f.format("%g", 0.00009);
+        assertEquals("9.00000e-05", f.toString());
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for Float/Double
+     *        conversion type 'f'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_FloatConversionF() {
+        Formatter f = null;
+
+        final Object[][] tripleF = {
+                {0f, "%f",          "0,000000"},
+                {0f, "%#.3f",       "0,000"},
+                {0f, "%,5f",        "0,000000"},
+                {0f, "%- (12.0f",   " 0          "},
+                {0f, "%#+0(1.6f",   "+0,000000"},
+                {0f, "%-+(8.4f",    "+0,0000 "},
+                {0f, "% 0#(9.8f",   " 0,00000000"},
+                
+                {1234f, "%f",          "1234,000000"},
+                {1234f, "%#.3f",       "1234,000"},
+                {1234f, "%,5f",        "1.234,000000"},
+                {1234f, "%- (12.0f",   " 1234       "},
+                {1234f, "%#+0(1.6f",   "+1234,000000"},
+                {1234f, "%-+(8.4f",    "+1234,0000"},
+                {1234f, "% 0#(9.8f",   " 1234,00000000"},
+                
+                {1.f, "%f",          "1,000000"},
+                {1.f, "%#.3f",       "1,000"},
+                {1.f, "%,5f",        "1,000000"},
+                {1.f, "%- (12.0f",   " 1          "},
+                {1.f, "%#+0(1.6f",   "+1,000000"},
+                {1.f, "%-+(8.4f",    "+1,0000 "},
+                {1.f, "% 0#(9.8f",   " 1,00000000"},
+                
+                {-98f, "%f",          "-98,000000"},
+                {-98f, "%#.3f",       "-98,000"},
+                {-98f, "%,5f",        "-98,000000"},
+                {-98f, "%- (12.0f",   "(98)        "},
+                {-98f, "%#+0(1.6f",   "(98,000000)"},
+                {-98f, "%-+(8.4f",    "(98,0000)"},
+                {-98f, "% 0#(9.8f",   "(98,00000000)"},
+                
+                {0.000001f, "%f",          "0,000001"},
+                {0.000001f, "%#.3f",       "0,000"},
+                {0.000001f, "%,5f",        "0,000001"},
+                {0.000001f, "%- (12.0f",   " 0          "},
+                {0.000001f, "%#+0(1.6f",   "+0,000001"},
+                {0.000001f, "%-+(8.4f",    "+0,0000 "},
+                {0.000001f, "% 0#(9.8f",   " 0,00000100"},
+                
+                {345.1234567f, "%f",          "345,123444"},
+                {345.1234567f, "%#.3f",       "345,123"},
+                {345.1234567f, "%,5f",        "345,123444"},
+                {345.1234567f, "%- (12.0f",   " 345        "},
+                {345.1234567f, "%#+0(1.6f",   "+345,123444"},
+                {345.1234567f, "%-+(8.4f",    "+345,1234"},
+                {345.1234567f, "% 0#(9.8f",   " 345,12344360"},
+                
+                {-.00000012345f, "%f",          "-0,000000"},
+                {-.00000012345f, "%#.3f",       "-0,000"},
+                {-.00000012345f, "%,5f",        "-0,000000"},
+                {-.00000012345f, "%- (12.0f",   "(0)         "},
+                {-.00000012345f, "%#+0(1.6f",   "(0,000000)"},
+                {-.00000012345f, "%-+(8.4f",    "(0,0000)"},
+                {-.00000012345f, "% 0#(9.8f",   "(0,00000012)"},
+                
+                {-987654321.1234567f, "%f",          "-987654336,000000"},
+                {-987654321.1234567f, "%#.3f",       "-987654336,000"},
+                {-987654321.1234567f, "%,5f",        "-987.654.336,000000"},
+                {-987654321.1234567f, "%- (12.0f",   "(987654336) "},
+                {-987654321.1234567f, "%#+0(1.6f",   "(987654336,000000)"},
+                {-987654321.1234567f, "%-+(8.4f",    "(987654336,0000)"},
+                {-987654321.1234567f, "% 0#(9.8f",   "(987654336,00000000)"},
+                
+                {Float.MAX_VALUE, "%f",          "340282346638528860000000000000000000000,000000"},
+                {Float.MAX_VALUE, "%#.3f",       "340282346638528860000000000000000000000,000"},
+                {Float.MAX_VALUE, "%,5f",        "340.282.346.638.528.860.000.000.000.000.000.000.000,000000"},
+                {Float.MAX_VALUE, "%- (12.0f",   " 340282346638528860000000000000000000000"},
+                {Float.MAX_VALUE, "%#+0(1.6f",   "+340282346638528860000000000000000000000,000000"},
+                {Float.MAX_VALUE, "%-+(8.4f",    "+340282346638528860000000000000000000000,0000"},
+                {Float.MAX_VALUE, "% 0#(9.8f",   " 340282346638528860000000000000000000000,00000000"},
+                
+                {Float.MIN_VALUE, "%f",          "0,000000"},
+                {Float.MIN_VALUE, "%#.3f",       "0,000"},
+                {Float.MIN_VALUE, "%,5f",        "0,000000"},
+                {Float.MIN_VALUE, "%- (12.0f",   " 0          "},
+                {Float.MIN_VALUE, "%#+0(1.6f",   "+0,000000"},
+                {Float.MIN_VALUE, "%-+(8.4f",    "+0,0000 "},
+                {Float.MIN_VALUE, "% 0#(9.8f",   " 0,00000000"},
+                
+                {Float.NaN, "%f",          "NaN"},
+                {Float.NaN, "%#.3f",       "NaN"},
+                {Float.NaN, "%,5f",        "  NaN"},
+                {Float.NaN, "%- (12.0f",   "NaN         "},
+                {Float.NaN, "%#+0(1.6f",   "NaN"},
+                {Float.NaN, "%-+(8.4f",    "NaN     "},
+                {Float.NaN, "% 0#(9.8f",   "      NaN"},
+                
+                {Float.NEGATIVE_INFINITY, "%f",          "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%#.3f",       "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%,5f",        "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%- (12.0f",   "(Infinity)  "},
+                {Float.NEGATIVE_INFINITY, "%#+0(1.6f",   "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "%-+(8.4f",    "(Infinity)"},
+                {Float.NEGATIVE_INFINITY, "% 0#(9.8f",   "(Infinity)"},
+                
+                {Float.POSITIVE_INFINITY, "%f",          "Infinity"},
+                {Float.POSITIVE_INFINITY, "%#.3f",       "Infinity"},
+                {Float.POSITIVE_INFINITY, "%,5f",        "Infinity"},
+                {Float.POSITIVE_INFINITY, "%- (12.0f",   " Infinity   "},
+                {Float.POSITIVE_INFINITY, "%#+0(1.6f",   "+Infinity"},
+                {Float.POSITIVE_INFINITY, "%-+(8.4f",    "+Infinity"},
+                {Float.POSITIVE_INFINITY, "% 0#(9.8f",   " Infinity"},
+                
+                
+                {0d, "%f",          "0,000000"},
+                {0d, "%#.3f",       "0,000"},
+                {0d, "%,5f",        "0,000000"},
+                {0d, "%- (12.0f",   " 0          "},
+                {0d, "%#+0(1.6f",   "+0,000000"},
+                {0d, "%-+(8.4f",    "+0,0000 "},
+                {0d, "% 0#(9.8f",   " 0,00000000"},
+                
+                {1d, "%f",          "1,000000"},
+                {1d, "%#.3f",       "1,000"},
+                {1d, "%,5f",        "1,000000"},
+                {1d, "%- (12.0f",   " 1          "},
+                {1d, "%#+0(1.6f",   "+1,000000"},
+                {1d, "%-+(8.4f",    "+1,0000 "},
+                {1d, "% 0#(9.8f",   " 1,00000000"},
+                
+                {-1d, "%f",          "-1,000000"},
+                {-1d, "%#.3f",       "-1,000"},
+                {-1d, "%,5f",        "-1,000000"},
+                {-1d, "%- (12.0f",   "(1)         "},
+                {-1d, "%#+0(1.6f",   "(1,000000)"},
+                {-1d, "%-+(8.4f",    "(1,0000)"},
+                {-1d, "% 0#(9.8f",   "(1,00000000)"},
+                
+                {.00000001d, "%f",          "0,000000"},
+                {.00000001d, "%#.3f",       "0,000"},
+                {.00000001d, "%,5f",        "0,000000"},
+                {.00000001d, "%- (12.0f",   " 0          "},
+                {.00000001d, "%#+0(1.6f",   "+0,000000"},
+                {.00000001d, "%-+(8.4f",    "+0,0000 "},
+                {.00000001d, "% 0#(9.8f",   " 0,00000001"},
+                
+                {1000.10d, "%f",          "1000,100000"},
+                {1000.10d, "%#.3f",       "1000,100"},
+                {1000.10d, "%,5f",        "1.000,100000"},
+                {1000.10d, "%- (12.0f",   " 1000       "},
+                {1000.10d, "%#+0(1.6f",   "+1000,100000"},
+                {1000.10d, "%-+(8.4f",    "+1000,1000"},
+                {1000.10d, "% 0#(9.8f",   " 1000,10000000"},
+                
+                {0.1d, "%f",          "0,100000"},
+                {0.1d, "%#.3f",       "0,100"},
+                {0.1d, "%,5f",        "0,100000"},
+                {0.1d, "%- (12.0f",   " 0          "},
+                {0.1d, "%#+0(1.6f",   "+0,100000"},
+                {0.1d, "%-+(8.4f",    "+0,1000 "},
+                {0.1d, "% 0#(9.8f",   " 0,10000000"},
+                
+                {-2.d, "%f",          "-2,000000"},
+                {-2.d, "%#.3f",       "-2,000"},
+                {-2.d, "%,5f",        "-2,000000"},
+                {-2.d, "%- (12.0f",   "(2)         "},
+                {-2.d, "%#+0(1.6f",   "(2,000000)"},
+                {-2.d, "%-+(8.4f",    "(2,0000)"},
+                {-2.d, "% 0#(9.8f",   "(2,00000000)"},
+                
+                {-.00009d, "%f",          "-0,000090"},
+                {-.00009d, "%#.3f",       "-0,000"},
+                {-.00009d, "%,5f",        "-0,000090"},
+                {-.00009d, "%- (12.0f",   "(0)         "},
+                {-.00009d, "%#+0(1.6f",   "(0,000090)"},
+                {-.00009d, "%-+(8.4f",    "(0,0001)"},
+                {-.00009d, "% 0#(9.8f",   "(0,00009000)"},
+                
+                {-1234567890.012345678d, "%f",          "-1234567890,012346"},
+                {-1234567890.012345678d, "%#.3f",       "-1234567890,012"},
+                {-1234567890.012345678d, "%,5f",        "-1.234.567.890,012346"},
+                {-1234567890.012345678d, "%- (12.0f",   "(1234567890)"},
+                {-1234567890.012345678d, "%#+0(1.6f",   "(1234567890,012346)"},
+                {-1234567890.012345678d, "%-+(8.4f",    "(1234567890,0123)"},
+                {-1234567890.012345678d, "% 0#(9.8f",   "(1234567890,01234580)"},
+                
+                {Double.MAX_VALUE, "%f",          "179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,000000"},
+                {Double.MAX_VALUE, "%#.3f",       "179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,000"},
+                {Double.MAX_VALUE, "%,5f",        "179.769.313.486.231.570.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000.000,000000"},
+                {Double.MAX_VALUE, "%- (12.0f",   " 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"},
+                {Double.MAX_VALUE, "%#+0(1.6f",   "+179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,000000"},
+                {Double.MAX_VALUE, "%-+(8.4f",    "+179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,0000"},
+                {Double.MAX_VALUE, "% 0#(9.8f",   " 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,00000000"},
+                
+                {Double.MIN_VALUE, "%f",          "0,000000"},
+                {Double.MIN_VALUE, "%#.3f",       "0,000"},
+                {Double.MIN_VALUE, "%,5f",        "0,000000"},
+                {Double.MIN_VALUE, "%- (12.0f",   " 0          "},
+                {Double.MIN_VALUE, "%#+0(1.6f",   "+0,000000"},
+                {Double.MIN_VALUE, "%-+(8.4f",    "+0,0000 "},
+                {Double.MIN_VALUE, "% 0#(9.8f",   " 0,00000000"},
+                
+                {Double.NaN, "%f",          "NaN"},
+                {Double.NaN, "%#.3f",       "NaN"},
+                {Double.NaN, "%,5f",        "  NaN"},
+                {Double.NaN, "%- (12.0f",   "NaN         "},
+                {Double.NaN, "%#+0(1.6f",   "NaN"},
+                {Double.NaN, "%-+(8.4f",    "NaN     "},
+                {Double.NaN, "% 0#(9.8f",   "      NaN"},
+                
+                {Double.POSITIVE_INFINITY, "%f",          "Infinity"},
+                {Double.POSITIVE_INFINITY, "%#.3f",       "Infinity"},
+                {Double.POSITIVE_INFINITY, "%,5f",        "Infinity"},
+                {Double.POSITIVE_INFINITY, "%- (12.0f",   " Infinity   "},
+                {Double.POSITIVE_INFINITY, "%#+0(1.6f",   "+Infinity"},
+                {Double.POSITIVE_INFINITY, "%-+(8.4f",    "+Infinity"},
+                {Double.POSITIVE_INFINITY, "% 0#(9.8f",   " Infinity"},
+                
+                {Double.NEGATIVE_INFINITY, "%f",          "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%#.3f",       "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%,5f",        "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%- (12.0f",   "(Infinity)  "},
+                {Double.NEGATIVE_INFINITY, "%#+0(1.6f",   "(Infinity)"},
+                {Double.NEGATIVE_INFINITY, "%-+(8.4f",    "(Infinity)"},
+                {Double.NEGATIVE_INFINITY, "% 0#(9.8f",   "(Infinity)"},
+        };
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+            for (int i = 0; i < tripleF.length; i++) {
+                f = new Formatter(Locale.GERMAN);
+                f.format((String)tripleF[i][pattern], tripleF[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleF[i][input] + ",pattern["
+                        + i + "]:" + tripleF[i][pattern],
+                        tripleF[i][output], f.toString());
+            }
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for Float/Double
+     *        conversion type 'a' and 'A'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_FloatConversionA() {
+        Formatter f = null;
+        final Object[][] tripleA = {
+                {-0f, "%a",         "-0x0.0p0"},
+                {-0f, "%#.3a",      "-0x0.000p0"},
+                {-0f, "%5a",        "-0x0.0p0"},
+                {-0f, "%- 12.0a",   "-0x0.0p0    "},
+                {-0f, "%#+01.6a",   "-0x0.000000p0"},
+                {-0f, "%-+8.4a",    "-0x0.0000p0"},
+                
+                {0f, "%a",         "0x0.0p0"},
+                {0f, "%#.3a",      "0x0.000p0"},
+                {0f, "%5a",        "0x0.0p0"},
+                {0f, "%- 12.0a",   " 0x0.0p0    "},
+                {0f, "%#+01.6a",   "+0x0.000000p0"},
+                {0f, "%-+8.4a",    "+0x0.0000p0"},
+                
+                {1234f, "%a",         "0x1.348p10"},
+                {1234f, "%#.3a",      "0x1.348p10"},
+                {1234f, "%5a",        "0x1.348p10"},
+                {1234f, "%- 12.0a",   " 0x1.3p10   "},
+                {1234f, "%#+01.6a",   "+0x1.348000p10"},
+                {1234f, "%-+8.4a",    "+0x1.3480p10"},
+                
+                {1.f, "%a",         "0x1.0p0"},
+                {1.f, "%#.3a",      "0x1.000p0"},
+                {1.f, "%5a",        "0x1.0p0"},
+                {1.f, "%- 12.0a",   " 0x1.0p0    "},
+                {1.f, "%#+01.6a",   "+0x1.000000p0"},
+                {1.f, "%-+8.4a",    "+0x1.0000p0"},
+                
+                {-98f, "%a",         "-0x1.88p6"},
+                {-98f, "%#.3a",      "-0x1.880p6"},
+                {-98f, "%5a",        "-0x1.88p6"},
+                {-98f, "%- 12.0a",   "-0x1.8p6    "},
+                {-98f, "%#+01.6a",   "-0x1.880000p6"},
+                {-98f, "%-+8.4a",    "-0x1.8800p6"},
+                
+                {345.1234567f, "%a",         "0x1.591f9ap8"},
+                {345.1234567f, "%5a",        "0x1.591f9ap8"},
+                {345.1234567f, "%#+01.6a",   "+0x1.591f9ap8"},
+                
+                {-987654321.1234567f, "%a",         "-0x1.d6f346p29"},
+                {-987654321.1234567f, "%#.3a",      "-0x1.d6fp29"},
+                {-987654321.1234567f, "%5a",        "-0x1.d6f346p29"},
+                {-987654321.1234567f, "%- 12.0a",   "-0x1.dp29   "},
+                {-987654321.1234567f, "%#+01.6a",   "-0x1.d6f346p29"},
+                {-987654321.1234567f, "%-+8.4a",    "-0x1.d6f3p29"},
+                
+                {Float.MAX_VALUE, "%a",         "0x1.fffffep127"},
+                {Float.MAX_VALUE, "%5a",        "0x1.fffffep127"},
+                {Float.MAX_VALUE, "%#+01.6a",   "+0x1.fffffep127"},
+                
+                {Float.NaN, "%a",         "NaN"},
+                {Float.NaN, "%#.3a",      "NaN"},
+                {Float.NaN, "%5a",        "  NaN"},
+                {Float.NaN, "%- 12.0a",   "NaN         "},
+                {Float.NaN, "%#+01.6a",   "NaN"},
+                {Float.NaN, "%-+8.4a",    "NaN     "},
+                
+                {Float.NEGATIVE_INFINITY, "%a",         "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%#.3a",      "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%5a",        "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%- 12.0a",   "-Infinity   "},
+                {Float.NEGATIVE_INFINITY, "%#+01.6a",   "-Infinity"},
+                {Float.NEGATIVE_INFINITY, "%-+8.4a",    "-Infinity"},
+                
+                {Float.POSITIVE_INFINITY, "%a",         "Infinity"},
+                {Float.POSITIVE_INFINITY, "%#.3a",      "Infinity"},
+                {Float.POSITIVE_INFINITY, "%5a",        "Infinity"},
+                {Float.POSITIVE_INFINITY, "%- 12.0a",   " Infinity   "},
+                {Float.POSITIVE_INFINITY, "%#+01.6a",   "+Infinity"},
+                {Float.POSITIVE_INFINITY, "%-+8.4a",    "+Infinity"},
+                
+                {-0d, "%a",         "-0x0.0p0"},
+                {-0d, "%#.3a",      "-0x0.000p0"},
+                {-0d, "%5a",        "-0x0.0p0"},
+                {-0d, "%- 12.0a",   "-0x0.0p0    "},
+                {-0d, "%#+01.6a",   "-0x0.000000p0"},
+                {-0d, "%-+8.4a",    "-0x0.0000p0"},
+
+                {0d, "%a",         "0x0.0p0"},
+                {0d, "%#.3a",      "0x0.000p0"},
+                {0d, "%5a",        "0x0.0p0"},
+                {0d, "%- 12.0a",   " 0x0.0p0    "},
+                {0d, "%#+01.6a",   "+0x0.000000p0"},
+                {0d, "%-+8.4a",    "+0x0.0000p0"},
+                
+                {1d, "%a",         "0x1.0p0"},
+                {1d, "%#.3a",      "0x1.000p0"},
+                {1d, "%5a",        "0x1.0p0"},
+                {1d, "%- 12.0a",   " 0x1.0p0    "},
+                {1d, "%#+01.6a",   "+0x1.000000p0"},
+                {1d, "%-+8.4a",    "+0x1.0000p0"},
+                
+                {-1d, "%a",         "-0x1.0p0"},
+                {-1d, "%#.3a",      "-0x1.000p0"},
+                {-1d, "%5a",        "-0x1.0p0"},
+                {-1d, "%- 12.0a",   "-0x1.0p0    "},
+                {-1d, "%#+01.6a",   "-0x1.000000p0"},
+                {-1d, "%-+8.4a",    "-0x1.0000p0"},
+                
+                {.00000001d, "%a",         "0x1.5798ee2308c3ap-27"},
+                {.00000001d, "%5a",        "0x1.5798ee2308c3ap-27"},
+                {.00000001d, "%- 12.0a",   " 0x1.5p-27  "},
+                {.00000001d, "%#+01.6a",   "+0x1.5798eep-27"},
+                
+                {1000.10d, "%a",         "0x1.f40cccccccccdp9"},
+                {1000.10d, "%5a",        "0x1.f40cccccccccdp9"},
+                {1000.10d, "%- 12.0a",   " 0x1.fp9    "},
+                
+                {0.1d, "%a",         "0x1.999999999999ap-4"},
+                {0.1d, "%5a",        "0x1.999999999999ap-4"},
+                
+                {-2.d, "%a",         "-0x1.0p1"},
+                {-2.d, "%#.3a",      "-0x1.000p1"},
+                {-2.d, "%5a",        "-0x1.0p1"},
+                {-2.d, "%- 12.0a",   "-0x1.0p1    "},
+                {-2.d, "%#+01.6a",   "-0x1.000000p1"},
+                {-2.d, "%-+8.4a",    "-0x1.0000p1"},
+                
+                {-.00009d, "%a",         "-0x1.797cc39ffd60fp-14"},
+                {-.00009d, "%5a",        "-0x1.797cc39ffd60fp-14"},
+                
+                {-1234567890.012345678d, "%a",         "-0x1.26580b480ca46p30"},
+                {-1234567890.012345678d, "%5a",        "-0x1.26580b480ca46p30"},
+                {-1234567890.012345678d, "%- 12.0a",   "-0x1.2p30   "},
+                {-1234567890.012345678d, "%#+01.6a",   "-0x1.26580bp30"},
+                {-1234567890.012345678d, "%-+8.4a",    "-0x1.2658p30"},
+                
+                {Double.MAX_VALUE, "%a",         "0x1.fffffffffffffp1023"},
+                {Double.MAX_VALUE, "%5a",        "0x1.fffffffffffffp1023"},
+                
+                {Double.MIN_VALUE, "%a",         "0x0.0000000000001p-1022"},
+                {Double.MIN_VALUE, "%5a",        "0x0.0000000000001p-1022"},
+                
+                {Double.NaN, "%a",         "NaN"},
+                {Double.NaN, "%#.3a",      "NaN"},
+                {Double.NaN, "%5a",        "  NaN"},
+                {Double.NaN, "%- 12.0a",   "NaN         "},
+                {Double.NaN, "%#+01.6a",   "NaN"},
+                {Double.NaN, "%-+8.4a",    "NaN     "},
+                
+                {Double.NEGATIVE_INFINITY, "%a",         "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%#.3a",      "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%5a",        "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%- 12.0a",   "-Infinity   "},
+                {Double.NEGATIVE_INFINITY, "%#+01.6a",   "-Infinity"},
+                {Double.NEGATIVE_INFINITY, "%-+8.4a",    "-Infinity"},
+                
+                {Double.POSITIVE_INFINITY, "%a",         "Infinity"},
+                {Double.POSITIVE_INFINITY, "%#.3a",      "Infinity"},
+                {Double.POSITIVE_INFINITY, "%5a",        "Infinity"},
+                {Double.POSITIVE_INFINITY, "%- 12.0a",   " Infinity   "},
+                {Double.POSITIVE_INFINITY, "%#+01.6a",   "+Infinity"},
+                {Double.POSITIVE_INFINITY, "%-+8.4a",    "+Infinity"},
+                
+        };
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+            for (int i = 0; i < tripleA.length; i++) {
+                f = new Formatter(Locale.UK);
+                f.format((String)tripleA[i][pattern], tripleA[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleA[i][input] + ",pattern["
+                        + i + "]:" + tripleA[i][pattern],
+                        tripleA[i][output], f.toString());
+
+                // test for conversion type 'A'
+                f = new Formatter(Locale.UK);
+                f.format(((String)tripleA[i][pattern]).toUpperCase(), tripleA[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleA[i][input] + ",pattern["
+                        + i + "]:" + tripleA[i][pattern], ((String)tripleA[i][output])
+                        .toUpperCase(Locale.UK), f.toString());
+            }
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for BigDecimal
+     *        conversion type 'e' and 'E'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_BigDecimalConversionE() {
+        Formatter f = null;
+        final Object[][] tripleE = {
+                {BigDecimal.ZERO, "%e",         "0.000000e+00"},
+                {BigDecimal.ZERO, "%#.0e",      "0.e+00"},
+                {BigDecimal.ZERO, "%# 9.8e",    " 0.00000000e+00"},
+                {BigDecimal.ZERO, "%#+0(8.4e",  "+0.0000e+00"},
+                {BigDecimal.ZERO, "%-+17.6e",   "+0.000000e+00    "},
+                {BigDecimal.ZERO, "% 0(20e",    " 00000000.000000e+00"},
+                
+                {BigDecimal.ONE, "%e",         "1.000000e+00"},
+                {BigDecimal.ONE, "%#.0e",      "1.e+00"},
+                {BigDecimal.ONE, "%# 9.8e",    " 1.00000000e+00"},
+                {BigDecimal.ONE, "%#+0(8.4e",  "+1.0000e+00"},
+                {BigDecimal.ONE, "%-+17.6e",   "+1.000000e+00    "},
+                {BigDecimal.ONE, "% 0(20e",    " 00000001.000000e+00"},
+                
+                {BigDecimal.TEN, "%e",         "1.000000e+01"},
+                {BigDecimal.TEN, "%#.0e",      "1.e+01"},
+                {BigDecimal.TEN, "%# 9.8e",    " 1.00000000e+01"},
+                {BigDecimal.TEN, "%#+0(8.4e",  "+1.0000e+01"},
+                {BigDecimal.TEN, "%-+17.6e",   "+1.000000e+01    "},
+                {BigDecimal.TEN, "% 0(20e",    " 00000001.000000e+01"},
+                
+                {new BigDecimal(-1), "%e",         "-1.000000e+00"},
+                {new BigDecimal(-1), "%#.0e",      "-1.e+00"},
+                {new BigDecimal(-1), "%# 9.8e",    "-1.00000000e+00"},
+                {new BigDecimal(-1), "%#+0(8.4e",  "(1.0000e+00)"},
+                {new BigDecimal(-1), "%-+17.6e",   "-1.000000e+00    "},
+                {new BigDecimal(-1), "% 0(20e",    "(0000001.000000e+00)"},
+                
+                {new BigDecimal("5.000E999"), "%e",         "5.000000e+999"},
+                {new BigDecimal("5.000E999"), "%#.0e",      "5.e+999"},
+                {new BigDecimal("5.000E999"), "%# 9.8e",    " 5.00000000e+999"},
+                {new BigDecimal("5.000E999"), "%#+0(8.4e",  "+5.0000e+999"},
+                {new BigDecimal("5.000E999"), "%-+17.6e",   "+5.000000e+999   "},
+                {new BigDecimal("5.000E999"), "% 0(20e",    " 0000005.000000e+999"},
+                
+                {new BigDecimal("-5.000E999"), "%e",         "-5.000000e+999"},
+                {new BigDecimal("-5.000E999"), "%#.0e",      "-5.e+999"},
+                {new BigDecimal("-5.000E999"), "%# 9.8e",    "-5.00000000e+999"},
+                {new BigDecimal("-5.000E999"), "%#+0(8.4e",  "(5.0000e+999)"},
+                {new BigDecimal("-5.000E999"), "%-+17.6e",   "-5.000000e+999   "},
+                {new BigDecimal("-5.000E999"), "% 0(20e",    "(000005.000000e+999)"},
+        };
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+            for (int i = 0; i < tripleE.length; i++) {
+                f = new Formatter(Locale.US);
+                f.format((String)tripleE[i][pattern], tripleE[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleE[i][input] + ",pattern["
+                        + i + "]:" + tripleE[i][pattern],
+                        tripleE[i][output], f.toString());
+
+                // test for conversion type 'E'
+                f = new Formatter(Locale.US);
+                f.format(((String)tripleE[i][pattern]).toUpperCase(), tripleE[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleE[i][input] + ",pattern["
+                        + i + "]:" + tripleE[i][pattern], ((String)tripleE[i][output])
+                        .toUpperCase(Locale.US), f.toString());
+            }
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for BigDecimal
+     *        conversion type 'g' and 'G'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_BigDecimalConversionG() {
+        Formatter f = null;
+        final Object[][] tripleG = {
+                {BigDecimal.ZERO, "%g",         "0.00000"},
+                {BigDecimal.ZERO, "%.5g",       "0.0000"},
+                {BigDecimal.ZERO, "%- (,9.8g",  " 0.0000000"},
+                {BigDecimal.ZERO, "%+0(,8.4g",  "+000.000"},
+                {BigDecimal.ZERO, "%-+10.6g",   "+0.00000  "},
+                {BigDecimal.ZERO, "% 0(,12.0g", " 00000000000"},
+                {BigDecimal.ONE, "%g",          "1.00000"},
+                {BigDecimal.ONE, "%.5g",        "1.0000"},
+                {BigDecimal.ONE, "%- (,9.8g",   " 1.0000000"},
+                {BigDecimal.ONE, "%+0(,8.4g",   "+001.000"},
+                {BigDecimal.ONE, "%-+10.6g",    "+1.00000  "},
+                {BigDecimal.ONE, "% 0(,12.0g",  " 00000000001"},
+                
+                {new BigDecimal(-1), "%g",          "-1.00000"},
+                {new BigDecimal(-1), "%.5g",        "-1.0000"},
+                {new BigDecimal(-1), "%- (,9.8g",   "(1.0000000)"},
+                {new BigDecimal(-1), "%+0(,8.4g",   "(01.000)"},
+                {new BigDecimal(-1), "%-+10.6g",    "-1.00000  "},
+                {new BigDecimal(-1), "% 0(,12.0g",  "(0000000001)"},
+                
+                {new BigDecimal(-0.000001), "%g",           "-1.00000e-06"},
+                {new BigDecimal(-0.000001), "%.5g",         "-1.0000e-06"},
+                {new BigDecimal(-0.000001), "%- (,9.8g",    "(1.0000000e-06)"},
+                {new BigDecimal(-0.000001), "%+0(,8.4g",    "(1.000e-06)"},
+                {new BigDecimal(-0.000001), "%-+10.6g",     "-1.00000e-06"},
+                {new BigDecimal(-0.000001), "% 0(,12.0g",   "(000001e-06)"},
+                
+                {new BigDecimal(0.0002), "%g",          "0.000200000"},
+                {new BigDecimal(0.0002), "%.5g",        "0.00020000"},
+                {new BigDecimal(0.0002), "%- (,9.8g",   " 0.00020000000"},
+                {new BigDecimal(0.0002), "%+0(,8.4g",   "+0.0002000"},
+                {new BigDecimal(0.0002), "%-+10.6g",    "+0.000200000"},
+                {new BigDecimal(0.0002), "% 0(,12.0g",  " 000000.0002"},
+                
+                {new BigDecimal(-0.003), "%g",          "-0.00300000"},
+                {new BigDecimal(-0.003), "%.5g",        "-0.0030000"},
+                {new BigDecimal(-0.003), "%- (,9.8g",   "(0.0030000000)"},
+                {new BigDecimal(-0.003), "%+0(,8.4g",   "(0.003000)"},
+                {new BigDecimal(-0.003), "%-+10.6g",    "-0.00300000"},
+                {new BigDecimal(-0.003), "% 0(,12.0g",  "(000000.003)"},
+                
+                {new BigDecimal("5.000E999"), "%g",             "5.00000e+999"},
+                {new BigDecimal("5.000E999"), "%.5g",           "5.0000e+999"},
+                {new BigDecimal("5.000E999"), "%- (,9.8g",      " 5.0000000e+999"},
+                {new BigDecimal("5.000E999"), "%+0(,8.4g",      "+5.000e+999"},
+                {new BigDecimal("5.000E999"), "%-+10.6g",       "+5.00000e+999"},
+                {new BigDecimal("5.000E999"), "% 0(,12.0g",     " 000005e+999"},
+                
+                {new BigDecimal("-5.000E999"), "%g",            "-5.00000e+999"},
+                {new BigDecimal("-5.000E999"), "%.5g",          "-5.0000e+999"},
+                {new BigDecimal("-5.000E999"), "%- (,9.8g",     "(5.0000000e+999)"},
+                {new BigDecimal("-5.000E999"), "%+0(,8.4g",     "(5.000e+999)"},
+                {new BigDecimal("-5.000E999"), "%-+10.6g",      "-5.00000e+999"},
+                {new BigDecimal("-5.000E999"), "% 0(,12.0g",    "(00005e+999)"},
+        };
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+            for (int i = 0; i < tripleG.length; i++) {
+                f = new Formatter(Locale.US);
+                f.format((String)tripleG[i][pattern], tripleG[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleG[i][input] + ",pattern["
+                        + i + "]:" + tripleG[i][pattern],
+                        tripleG[i][output], f.toString());
+
+                // test for conversion type 'G'
+                f = new Formatter(Locale.US);
+                f.format(((String)tripleG[i][pattern]).toUpperCase(), tripleG[i][input]);
+                assertEquals("triple[" + i + "]:" + tripleG[i][input] + ",pattern["
+                        + i + "]:" + tripleG[i][pattern], ((String)tripleG[i][output])
+                        .toUpperCase(Locale.US), f.toString());
+            }
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%- (,9.6g", new BigDecimal("4E6"));
+        /*
+         * fail on RI, spec says 'g' requires the output to be formatted in
+         * general scientific notation and the localization algorithm is
+         * applied. But RI format this case to 4.00000e+06, which does not
+         * conform to the German Locale
+         */
+        assertEquals(" 4,00000e+06", f.toString());
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for BigDecimal
+     *        conversion type 'f'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_BigDecimalConversionF() {
+
+        Formatter f = null;
+        final int input   = 0;
+        final int pattern = 1;
+        final int output  = 2;
+        final Object[][] tripleF = {
+                {BigDecimal.ZERO,                                               "%f",           "0.000000"},
+                {BigDecimal.ZERO,                                               "%#.3f",        "0.000"},
+                {BigDecimal.ZERO,                                               "%#,5f",        "0.000000"},
+                {BigDecimal.ZERO,                                               "%- #(12.0f",   " 0.         "},
+                {BigDecimal.ZERO,                                               "%#+0(1.6f",    "+0.000000"},
+                {BigDecimal.ZERO,                                               "%-+(8.4f",     "+0.0000 "},
+                {BigDecimal.ZERO,                                               "% 0#(9.8f",    " 0.00000000"},
+                {BigDecimal.ONE,                                                "%f",           "1.000000"},
+                {BigDecimal.ONE,                                                "%#.3f",        "1.000"},
+                {BigDecimal.ONE,                                                "%#,5f",        "1.000000"},
+                {BigDecimal.ONE,                                                "%- #(12.0f",   " 1.         "},
+                {BigDecimal.ONE,                                                "%#+0(1.6f",    "+1.000000"},
+                {BigDecimal.ONE,                                                "%-+(8.4f",     "+1.0000 "},
+                {BigDecimal.ONE,                                                "% 0#(9.8f",    " 1.00000000"},
+                {BigDecimal.TEN,                                                "%f",           "10.000000"},
+                {BigDecimal.TEN,                                                "%#.3f",        "10.000"},
+                {BigDecimal.TEN,                                                "%#,5f",        "10.000000"},
+                {BigDecimal.TEN,                                                "%- #(12.0f",   " 10.        "},
+                {BigDecimal.TEN,                                                "%#+0(1.6f",    "+10.000000"},
+                {BigDecimal.TEN,                                                "%-+(8.4f",     "+10.0000"},
+                {BigDecimal.TEN,                                                "% 0#(9.8f",    " 10.00000000"},
+                {new BigDecimal(-1),                                            "%f",           "-1.000000"},
+                {new BigDecimal(-1),                                            "%#.3f",        "-1.000"},
+                {new BigDecimal(-1),                                            "%#,5f",        "-1.000000"},
+                {new BigDecimal(-1),                                            "%- #(12.0f",   "(1.)        "},
+                {new BigDecimal(-1),                                            "%#+0(1.6f",    "(1.000000)"},
+                {new BigDecimal(-1),                                            "%-+(8.4f",     "(1.0000)"},
+                {new BigDecimal(-1),                                            "% 0#(9.8f",    "(1.00000000)"},
+                {new BigDecimal("9999999999999999999999999999999999999999999"), "%f",           "9999999999999999999999999999999999999999999.000000"},
+                {new BigDecimal("9999999999999999999999999999999999999999999"), "%#.3f",        "9999999999999999999999999999999999999999999.000"},
+                {new BigDecimal("9999999999999999999999999999999999999999999"), "%#,5f",        "9,999,999,999,999,999,999,999,999,999,999,999,999,999,999.000000"},
+                {new BigDecimal("9999999999999999999999999999999999999999999"), "%- #(12.0f",   " 9999999999999999999999999999999999999999999."},
+                {new BigDecimal("9999999999999999999999999999999999999999999"), "%#+0(1.6f",    "+9999999999999999999999999999999999999999999.000000"},
+                {new BigDecimal("9999999999999999999999999999999999999999999"), "%-+(8.4f",     "+9999999999999999999999999999999999999999999.0000"},
+                {new BigDecimal("9999999999999999999999999999999999999999999"), "% 0#(9.8f",    " 9999999999999999999999999999999999999999999.00000000"},
+                {new BigDecimal("-9999999999999999999999999999999999999999999"), "%f",          "-9999999999999999999999999999999999999999999.000000"},
+                {new BigDecimal("-9999999999999999999999999999999999999999999"), "%#.3f",       "-9999999999999999999999999999999999999999999.000"},
+                {new BigDecimal("-9999999999999999999999999999999999999999999"), "%#,5f",       "-9,999,999,999,999,999,999,999,999,999,999,999,999,999,999.000000"},
+                {new BigDecimal("-9999999999999999999999999999999999999999999"), "%- #(12.0f",  "(9999999999999999999999999999999999999999999.)"},
+                {new BigDecimal("-9999999999999999999999999999999999999999999"), "%#+0(1.6f",   "(9999999999999999999999999999999999999999999.000000)"},
+                {new BigDecimal("-9999999999999999999999999999999999999999999"), "%-+(8.4f",    "(9999999999999999999999999999999999999999999.0000)"},
+                {new BigDecimal("-9999999999999999999999999999999999999999999"), "% 0#(9.8f",   "(9999999999999999999999999999999999999999999.00000000)"},
+        }; 
+        for (int i = 0; i < tripleF.length; i++) {
+            f = new Formatter(Locale.US);
+            f.format((String)tripleF[i][pattern], tripleF[i][input]);
+            assertEquals("triple[" + i + "]:" + tripleF[i][input] + ",pattern["
+                    + i + "]:" + tripleF[i][pattern], tripleF[i][output], f.toString());
+        }
+
+        f = new Formatter(Locale.US);
+        f.format("%f", new BigDecimal("5.0E9"));
+        // error on RI
+        // RI throw ArrayIndexOutOfBoundsException
+        assertEquals("5000000000.000000", f.toString());
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for exceptions in
+     *        Float/Double/BigDecimal conversion type 'e', 'E', 'g', 'G', 'f', 'a', 'A'
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_FloatDoubleBigDecimalConversionException() {
+        Formatter f = null;
+
+        final char[] conversions = { 'e', 'E', 'g', 'G', 'f', 'a', 'A' };
+        final Object[] illArgs = { false, (byte) 1, (short) 2, 3, (long) 4,
+                new BigInteger("5"), new Character('c'), new Object(),
+                new Date() };
+        for (int i = 0; i < illArgs.length; i++) {
+            for (int j = 0; j < conversions.length; j++) {
+                try {
+                    f = new Formatter(Locale.UK);
+                    f.format("%" + conversions[j], illArgs[i]);
+                    fail("should throw IllegalFormatConversionException");
+                } catch (IllegalFormatConversionException e) {
+                    // expected
+                }
+            }
+        }
+
+        try {
+            f = new Formatter(Locale.UK);
+            f.format("%a", new BigDecimal(1));
+            fail("should throw IllegalFormatConversionException");
+        } catch (IllegalFormatConversionException e) {
+            // expected
+        }
+
+        try {
+            f = new Formatter(Locale.UK);
+            f.format("%A", new BigDecimal(1));
+            fail("should throw IllegalFormatConversionException");
+        } catch (IllegalFormatConversionException e) {
+            // expected
+        }
+
+        final String[] flagsConversionMismatches = { "%,e", "%,E", "%#g",
+                "%#G", "%,a", "%,A", "%(a", "%(A" };
+        for (int i = 0; i < flagsConversionMismatches.length; i++) {
+            try {
+                f = new Formatter(Locale.CHINA);
+                f.format(flagsConversionMismatches[i], new BigDecimal(1));
+                fail("should throw FormatFlagsConversionMismatchException");
+            } catch (FormatFlagsConversionMismatchException e) {
+                // expected
+            }
+            try {
+                f = new Formatter(Locale.JAPAN);
+                f.format(flagsConversionMismatches[i], (BigDecimal) null);
+                fail("should throw FormatFlagsConversionMismatchException");
+            } catch (FormatFlagsConversionMismatchException e) {
+                // expected
+            }
+        }
+
+        final String[] missingFormatWidths = { "%-0e", "%0e", "%-e", "%-0E",
+                "%0E", "%-E", "%-0g", "%0g", "%-g", "%-0G", "%0G", "%-G",
+                "%-0f", "%0f", "%-f", "%-0a", "%0a", "%-a", "%-0A", "%0A",
+                "%-A" };
+        for (int i = 0; i < missingFormatWidths.length; i++) {
+            try {
+                f = new Formatter(Locale.KOREA);
+                f.format(missingFormatWidths[i], 1f);
+                fail("should throw MissingFormatWidthException");
+            } catch (MissingFormatWidthException e) {
+                // expected
+            }
+
+            try {
+                f = new Formatter(Locale.KOREA);
+                f.format(missingFormatWidths[i], (Float) null);
+                fail("should throw MissingFormatWidthException");
+            } catch (MissingFormatWidthException e) {
+                // expected
+            }
+        }
+
+        final String[] illFlags = { "%+ e", "%+ E", "%+ g", "%+ G", "%+ f",
+                "%+ a", "%+ A", "%-03e", "%-03E", "%-03g", "%-03G", "%-03f",
+                "%-03a", "%-03A" };
+        for (int i = 0; i < illFlags.length; i++) {
+            try {
+                f = new Formatter(Locale.CANADA);
+                f.format(illFlags[i], 1.23d);
+                fail("should throw IllegalFormatFlagsException");
+            } catch (IllegalFormatFlagsException e) {
+                // expected
+            }
+
+            try {
+                f = new Formatter(Locale.CANADA);
+                f.format(illFlags[i], (Double) null);
+                fail("should throw IllegalFormatFlagsException");
+            } catch (IllegalFormatFlagsException e) {
+                // expected
+            }
+        }
+
+        f = new Formatter(Locale.US);
+        try {
+            f.format("%F", 1);
+            fail("should throw UnknownFormatConversionException");
+        } catch (UnknownFormatConversionException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for
+     *        Float/Double/BigDecimal exception throwing order
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_FloatDoubleBigDecimalExceptionOrder() {
+        Formatter f = null;
+
+        /*
+         * Summary: UnknownFormatConversionException >
+         * MissingFormatWidthException > IllegalFormatFlagsException >
+         * FormatFlagsConversionMismatchException >
+         * IllegalFormatConversionException
+         * 
+         */
+        try {
+            // compare FormatFlagsConversionMismatchException and
+            // IllegalFormatConversionException
+            f = new Formatter(Locale.US);
+            f.format("%,e", (byte) 1);
+            fail("should throw FormatFlagsConversionMismatchException");
+        } catch (FormatFlagsConversionMismatchException e) {
+            // expected
+        }
+
+        try {
+            // compare IllegalFormatFlagsException and
+            // FormatFlagsConversionMismatchException
+            f = new Formatter(Locale.US);
+            f.format("%+ ,e", 1f);
+            fail("should throw IllegalFormatFlagsException");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+
+        try {
+            // compare MissingFormatWidthException and
+            // IllegalFormatFlagsException
+            f = new Formatter(Locale.US);
+            f.format("%+ -e", 1f);
+            fail("should throw MissingFormatWidthException");
+        } catch (MissingFormatWidthException e) {
+            // expected
+        }
+
+        try {
+            // compare UnknownFormatConversionException and
+            // MissingFormatWidthException
+            f = new Formatter(Locale.US);
+            f.format("%-F", 1f);
+            fail("should throw UnknownFormatConversionException");
+        } catch (UnknownFormatConversionException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for BigDecimal
+     *        exception throwing order
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_BigDecimalExceptionOrder() {
+        Formatter f = null;
+        BigDecimal bd = new BigDecimal("1.0");
+
+        /*
+         * Summary: UnknownFormatConversionException >
+         * MissingFormatWidthException > IllegalFormatFlagsException >
+         * FormatFlagsConversionMismatchException >
+         * IllegalFormatConversionException
+         * 
+         */
+        try {
+            // compare FormatFlagsConversionMismatchException and
+            // IllegalFormatConversionException
+            f = new Formatter(Locale.US);
+            f.format("%,e", (byte) 1);
+            fail("should throw FormatFlagsConversionMismatchException");
+        } catch (FormatFlagsConversionMismatchException e) {
+            // expected
+        }
+
+        try {
+            // compare IllegalFormatFlagsException and
+            // FormatFlagsConversionMismatchException
+            f = new Formatter(Locale.US);
+            f.format("%+ ,e", bd);
+            fail("should throw IllegalFormatFlagsException");
+        } catch (IllegalFormatFlagsException e) {
+            // expected
+        }
+
+        try {
+            // compare MissingFormatWidthException and
+            // IllegalFormatFlagsException
+            f = new Formatter(Locale.US);
+            f.format("%+ -e", bd);
+            fail("should throw MissingFormatWidthException");
+        } catch (MissingFormatWidthException e) {
+            // expected
+        }
+
+        // compare UnknownFormatConversionException and
+        // MissingFormatWidthException
+        try {
+            f = new Formatter(Locale.US);
+            f.format("%-F", bd);
+            fail("should throw UnknownFormatConversionException");
+        } catch (UnknownFormatConversionException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.util.Formatter#format(String, Object...) for null argment for
+     *        Float/Double/BigDecimal conversion
+     */
+    public void test_formatLjava_lang_String$Ljava_lang_Object_FloatDoubleBigDecimalNullConversion() {
+        Formatter f = null;
+
+        // test (Float)null
+        f = new Formatter(Locale.FRANCE);
+        f.format("%#- (9.0e", (Float) null);
+        assertEquals("         ", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%-+(1.6E", (Float) null);
+        assertEquals("NULL", f.toString());
+
+        f = new Formatter(Locale.UK);
+        f.format("%+0(,8.4g", (Float) null);
+        assertEquals("    null", f.toString());
+
+        f = new Formatter(Locale.FRANCE);
+        f.format("%- (9.8G", (Float) null);
+        assertEquals("NULL     ", f.toString());
+
+        f = new Formatter(Locale.FRANCE);
+        f.format("%- (12.1f", (Float) null);
+        assertEquals("n           ", f.toString());
+
+        f = new Formatter(Locale.FRANCE);
+        f.format("% .4a", (Float) null);
+        assertEquals("null", f.toString());
+
+        f = new Formatter(Locale.FRANCE);
+        f.format("%06A", (Float) null);
+        assertEquals("  NULL", f.toString());
+
+        // test (Double)null
+        f = new Formatter(Locale.GERMAN);
+        f.format("%- (9e", (Double) null);
+        assertEquals("null     ", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%#-+(1.6E", (Double) null);
+        assertEquals("NULL", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%+0(6.4g", (Double) null);
+        assertEquals("  null", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%- (,5.8G", (Double) null);
+        assertEquals("NULL ", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("% (.4f", (Double) null);
+        assertEquals("null", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("%#.6a", (Double) null);
+        assertEquals("null", f.toString());
+
+        f = new Formatter(Locale.GERMAN);
+        f.format("% 2.5A", (Double) null);
+        assertEquals("NULL", f.toString());
+
+        // test (BigDecimal)null
+        f = new Formatter(Locale.UK);
+        f.format("%#- (6.2e", (BigDecimal) null);
+        assertEquals("nu    ", f.toString());
+
+        f = new Formatter(Locale.UK);
+        f.format("%-+(1.6E", (BigDecimal) null);
+        assertEquals("NULL", f.toString());
+
+        f = new Formatter(Locale.UK);
+        f.format("%+-(,5.3g", (BigDecimal) null);
+        assertEquals("nul  ", f.toString());
+
+        f = new Formatter(Locale.UK);
+        f.format("%0 3G", (BigDecimal) null);
+        assertEquals("NULL", f.toString());
+
+        f = new Formatter(Locale.UK);
+        f.format("%0 (9.0G", (BigDecimal) null);
+        assertEquals("         ", f.toString());
+
+        f = new Formatter(Locale.UK);
+        f.format("% (.5f", (BigDecimal) null);
+        assertEquals("null", f.toString());
+
+        f = new Formatter(Locale.UK);
+        f.format("%06a", (BigDecimal) null);
+        assertEquals("  null", f.toString());
+
+        f = new Formatter(Locale.UK);
+        f.format("% .5A", (BigDecimal) null);
+        assertEquals("NULL", f.toString());
     }
     
     /**
