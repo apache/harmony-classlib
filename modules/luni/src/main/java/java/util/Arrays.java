@@ -2351,7 +2351,7 @@ public class Arrays {
 
      /**
       * Finds the place of specified range of specified sorted array, where the
-      * element should be inserted for getting sorted array. Uses expionential
+      * element should be inserted for getting sorted array. Uses exponential
       * search algorithm.
       *
       * @param arr - the array with already sorted range
@@ -2515,9 +2515,9 @@ public class Arrays {
       * @param arr -
       *            the array to be sorted
       * @param src -
-      *            auxilary array
+      *            auxiliary array
       * @param dst -
-      *            auxilary array
+      *            auxiliary array
       * @param fromIndex -
       *            the index of the first element (inclusive) to be sorted.
       * @param toIndex -
@@ -2528,7 +2528,7 @@ public class Arrays {
      private static void stableStringSort(String[] arr, String[] src,
              String[] dst, int fromIndex, int toIndex, int chId) {
          int length = toIndex - fromIndex;
-         //use insertion sort fro small arrays
+         //use insertion sort for small arrays
          if (length < SIMPLE_LENGTH) {
              if (src == arr) {
                  for (int i = fromIndex + 1; i < toIndex; i++) {
@@ -2558,7 +2558,7 @@ public class Arrays {
              }
              return;
          }
-         // aproximate median
+         // Approximate median
          int s;
          int mid = fromIndex + length / 2;
          int lo = fromIndex;
@@ -2570,7 +2570,7 @@ public class Arrays {
              hi = medChar(hi, hi - s, hi - s * 2, src, chId);
          }
          mid = medChar(lo, mid, hi, src, chId);
-         //  median finded
+         //  median found
          // create 4 pointers <a (in star of src) ,
          //                      =b(in start of dst), >c (in end of dst)
          // i - current element;
