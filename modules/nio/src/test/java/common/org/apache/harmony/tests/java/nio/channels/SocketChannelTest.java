@@ -146,7 +146,7 @@ public class SocketChannelTest extends TestCase {
         SocketChannel channel1IP = null;
         try {
             channel1IP = SocketChannel.open(null);
-            fail("Should throw IAE");
+            fail("Should throw an IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // correct
         }
@@ -196,13 +196,6 @@ public class SocketChannelTest extends TestCase {
         MockSocketChannel testMSChannelnull = new MockSocketChannel(null);
         MockSocketChannel testMSChannel = new MockSocketChannel(
                 SelectorProvider.provider());
-        try {
-            this.channel1.read(byteBuf);
-            fail("Should throw NPE");
-        } catch (NullPointerException e) {
-            // correct
-        }
-        byteBuf = null;
         try {
             this.channel1.read(byteBuf);
             fail("Should throw NPE");
@@ -482,7 +475,7 @@ public class SocketChannelTest extends TestCase {
         if (this.channel1.isConnectionPending()) {
             try {
                 s.bind(localAddr2);
-                fail("Should throw BindException");
+                fail("Should throw ConnectionPendingException");
             } catch (ConnectionPendingException e1) {
                 // OK.
             }
@@ -878,7 +871,7 @@ public class SocketChannelTest extends TestCase {
 
         try {
             this.channel1.connect(localAddr1);
-            fail("Should throw a AlreadyConnectedException here.");
+            fail("Should throw an AlreadyConnectedException here.");
         } catch (AlreadyConnectedException e) {
             // OK.
         }
@@ -887,7 +880,7 @@ public class SocketChannelTest extends TestCase {
         // connect another addr
         try {
             this.channel1.connect(localAddr2);
-            fail("Should throw a AlreadyConnectedException here.");
+            fail("Should throw an AlreadyConnectedException here.");
         } catch (AlreadyConnectedException e) {
             // OK.
         }
@@ -898,7 +891,7 @@ public class SocketChannelTest extends TestCase {
 
         try {
             this.channel1.connect(localAddr1);
-            fail("Should throw a AlreadyConnectedException here.");
+            fail("Should throw an AlreadyConnectedException here.");
         } catch (AlreadyConnectedException e) {
             // OK.
         }
@@ -932,7 +925,7 @@ public class SocketChannelTest extends TestCase {
         // connect another addr
         try {
             this.channel1.connect(localAddr2);
-            fail("Should throw a AlreadyConnectedException here.");
+            fail("Should throw an AlreadyConnectedException here.");
         } catch (AlreadyConnectedException e) {
             // OK.
         }
@@ -943,7 +936,7 @@ public class SocketChannelTest extends TestCase {
 
         try {
             this.channel1.connect(localAddr1);
-            fail("Should throw a AlreadyConnectedException here.");
+            fail("Should throw an AlreadyConnectedException here.");
         } catch (AlreadyConnectedException e) {
             // OK.
         }
@@ -1018,7 +1011,7 @@ public class SocketChannelTest extends TestCase {
 
         try {
             this.channel1.connect(localAddr1);
-            fail("Should throw a AlreadyConnectedException here.");
+            fail("Should throw an AlreadyConnectedException here.");
         } catch (AlreadyConnectedException e) {
             // OK.
         }
@@ -1027,7 +1020,7 @@ public class SocketChannelTest extends TestCase {
         // connect another addr
         try {
             this.channel1.connect(localAddr2);
-            fail("Should throw a AlreadyConnectedException here.");
+            fail("Should throw an AlreadyConnectedException here.");
         } catch (AlreadyConnectedException e) {
             // OK.
         }
@@ -1038,7 +1031,7 @@ public class SocketChannelTest extends TestCase {
 
         try {
             this.channel1.connect(localAddr1);
-            fail("Should throw a AlreadyConnectedException here.");
+            fail("Should throw an AlreadyConnectedException here.");
         } catch (AlreadyConnectedException e) {
             // OK.
         }
@@ -1218,7 +1211,7 @@ public class SocketChannelTest extends TestCase {
         statusNotConnected_NotPending();
         try {
             this.channel1.connect(null);
-            fail("Should throw a IAE here.");
+            fail("Should throw an IllegalArgumentException here.");
         } catch (IllegalArgumentException e) {
             // OK.
         }
@@ -1237,7 +1230,7 @@ public class SocketChannelTest extends TestCase {
         SocketAddress newTypeAddress = new SubSocketAddress();
         try {
             this.channel1.connect(newTypeAddress);
-            fail("Should throw a UnsupportedAddressTypeException here.");
+            fail("Should throw an UnsupportedAddressTypeException here.");
         } catch (UnsupportedAddressTypeException e) {
             // OK.
         }
@@ -1249,7 +1242,7 @@ public class SocketChannelTest extends TestCase {
                 "unresolved address", 1080);
         try {
             this.channel1.connect(unresolved);
-            fail("Should throw a UnresolvedAddressException here.");
+            fail("Should throw an UnresolvedAddressException here.");
         } catch (UnresolvedAddressException e) {
             // OK.
         }
@@ -1299,7 +1292,7 @@ public class SocketChannelTest extends TestCase {
         // 1.1 block mode
         assertTrue(this.channel1.isBlocking());
         try {
-            assertFalse(this.channel1.connect(localAddr1));
+            channel1.connect(localAddr1);
             fail("Should throw ConnectException");
         } catch (ConnectException e) {
             // OK.
@@ -1559,7 +1552,7 @@ public class SocketChannelTest extends TestCase {
         writeBufArr[0] = java.nio.ByteBuffer.allocate(CAPACITY_NORMAL);
         this.channel1.configureBlocking(false);
         try {
-            this.channel1 = SocketChannel.open(localAddr1);
+            SocketChannel.open(localAddr1);
             fail("Should throw ConnectException");
         } catch (ConnectException e) {
             // correct
@@ -1944,7 +1937,7 @@ public class SocketChannelTest extends TestCase {
         // note: blocking-mode will make the read process endless!
         this.channel1.configureBlocking(false);
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(readBuf));
+            channel1.read(readBuf);
             fail("Should throw NotYetConnectedException");
         } catch (NotYetConnectedException e) {
             // correct
@@ -1959,7 +1952,7 @@ public class SocketChannelTest extends TestCase {
 
         this.channel1.close();
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(readBuf));
+            channel1.read(readBuf);
             fail("Should throw ClosedChannelException");
         } catch (ClosedChannelException e) {
             // correct
@@ -1973,8 +1966,7 @@ public class SocketChannelTest extends TestCase {
         // note: blocking-mode will make the read process endless!
         this.channel1.configureBlocking(false);
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1
-                    .read((java.nio.ByteBuffer) null));
+            channel1.read((java.nio.ByteBuffer) null);
             fail("Should throw NPE");
         } catch (NullPointerException e) {
             // correct
@@ -1982,8 +1974,7 @@ public class SocketChannelTest extends TestCase {
         this.channel1.connect(localAddr1);
         if (tryFinish()) {
             try {
-                assertEquals(CAPACITY_NORMAL, this.channel1
-                        .read((java.nio.ByteBuffer) null));
+                this.channel1.read((java.nio.ByteBuffer) null);
                 fail("Should throw NPE");
             } catch (NullPointerException e) {
                 // correct
@@ -1992,8 +1983,7 @@ public class SocketChannelTest extends TestCase {
         }
         this.server1.close();
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1
-                    .read((java.nio.ByteBuffer) null));
+            channel1.read((java.nio.ByteBuffer) null);
             fail("Should throw NPE");
         } catch (NullPointerException e) {
             // correct
@@ -2016,7 +2006,7 @@ public class SocketChannelTest extends TestCase {
         // note: blocking-mode will make the read process endless!
         this.channel1.configureBlocking(false);
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(readBuf, 0, 1));
+            channel1.read(readBuf, 0, 1);
             fail("Should throw NotYetConnectedException");
         } catch (NotYetConnectedException e) {
             // correct
@@ -2032,7 +2022,7 @@ public class SocketChannelTest extends TestCase {
 
         this.channel1.close();
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(readBuf, 0, 1));
+            channel1.read(readBuf, 0, 1);
             fail("Should throw ClosedChannelException");
         } catch (ClosedChannelException e) {
             // correct
@@ -2051,7 +2041,7 @@ public class SocketChannelTest extends TestCase {
         // note: blocking-mode will make the read process endless!
         this.channel1.configureBlocking(false);
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(null, 0, 0));
+            channel1.read(null, 0, 0);
             fail("Should throw NPE");
         } catch (NullPointerException e) {
             // correct
@@ -2060,13 +2050,13 @@ public class SocketChannelTest extends TestCase {
         if (tryFinish()) {
 
             try {
-                assertEquals(CAPACITY_NORMAL, this.channel1.read(null, 0, 0));
+                channel1.read(null, 0, 0);
                 fail("Should throw NPE");
             } catch (NullPointerException e) {
                 // correct
             }
             try {
-                assertEquals(0, this.channel1.read(readBuf, 0, 2));
+                channel1.read(readBuf, 0, 2);
                 fail("Should throw NPE");
             } catch (NullPointerException e) {
                 // correct
@@ -2076,7 +2066,7 @@ public class SocketChannelTest extends TestCase {
         }
         this.channel1.close();
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(null, 0, 1));
+            channel1.read(null, 0, 1);
             fail("Should throw NPE");
         } catch (NullPointerException e) {
             // correct
@@ -2093,7 +2083,7 @@ public class SocketChannelTest extends TestCase {
         assertFalse(this.channel1.isConnectionPending());
         assertTrue(this.channel1.isOpen());
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
+            channel1.write(writeBuf);
             fail("Should throw NotYetConnectedException");
         } catch (NotYetConnectedException e) {
             // correct
@@ -2107,7 +2097,7 @@ public class SocketChannelTest extends TestCase {
 
         this.channel1.close();
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
+            channel1.write(writeBuf);
             fail("Should throw ClosedChannelException");
         } catch (ClosedChannelException e) {
             // correct
@@ -2140,7 +2130,7 @@ public class SocketChannelTest extends TestCase {
         assertFalse(this.channel1.isConnectionPending());
         assertTrue(this.channel1.isOpen());
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf, 0, 1));
+            channel1.write(writeBuf, 0, 1);
             fail("Should throw NotYetConnectedException");
         } catch (NotYetConnectedException e) {
             // correct
@@ -2158,7 +2148,7 @@ public class SocketChannelTest extends TestCase {
         assertEquals(CAPACITY_NORMAL * 2, this.channel1.write(writeBuf, 0, 2));
         this.channel1.close();
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
+            channel1.write(writeBuf);
             fail("Should throw ClosedChannelException");
         } catch (ClosedChannelException e) {
             // correct
@@ -2197,7 +2187,7 @@ public class SocketChannelTest extends TestCase {
         }
         this.server1.close();
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(null, 0, 1));
+            channel1.read(null, 0, 1);
             fail("Should throw NPE");
         } catch (NullPointerException e) {
             // correct
@@ -2236,7 +2226,7 @@ public class SocketChannelTest extends TestCase {
         }
         this.server1.close();
         try {
-            assertEquals(CAPACITY_NORMAL, this.channel1.read(null, -1, -1));
+            channel1.read(null, -1, -1);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
             // correct
@@ -2479,34 +2469,6 @@ public class SocketChannelTest extends TestCase {
         assertTrue(channel1.isBlocking());
         // write operation is allowed in blocking mode
         channelSocketOut.write(buf.array());
-    }
-
-    public void testConfigureBlockingWhileRead() throws IOException {
-        channel1.connect(localAddr1);
-        server1.accept();
-        assertTrue(this.channel1.isConnected());
-        new ReadThread(channel1).start();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {}
-        channel1.configureBlocking(false);
-        assertFalse(channel1.isBlocking());
-    }
-
-    private static class ReadThread extends Thread {
-
-        private SocketChannel channel;
-
-        ReadThread(SocketChannel sc) {
-            channel = sc;
-        }
-
-        public void run() {
-            ByteBuffer bf = ByteBuffer.allocate(100);
-            try {
-                channel.read(bf);
-            } catch (IOException e) {}
-        }
     }
 
     /**
