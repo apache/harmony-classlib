@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *  Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
+package org.apache.harmony.security.tests.java.security;
 
-package java.security;
+import java.security.AllPermission;
+import java.security.SecurityPermission;
+import java.security.UnresolvedPermission;
 
 import junit.framework.TestCase;
 
@@ -29,18 +28,6 @@ import junit.framework.TestCase;
  */
 
 public class UnresolvedPermissionTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(UnresolvedPermissionTest.class);
-    }
-
-    /**
-     * Constructor for UnresolvedPermissionTest.
-     * @param arg0
-     */
-    public UnresolvedPermissionTest(String arg0) {
-        super(arg0);
-    }
     
     /**
      * Creates an Object with given name, type, action, certificaties. 
@@ -71,11 +58,9 @@ public class UnresolvedPermissionTest extends TestCase {
             fail("exception is not thrown on null type");
         }
         catch (Exception ok) {}
-        /*try {
-            new UnresolvedPermission("", name, action, null);
-            fail("exception is not thrown on empty type");
-        }
-        catch (Exception ok) {}*/
+
+        //Regression for HARMONY-733
+        assertNotNull(new UnresolvedPermission("", name, action, null));
     }
     
     /** 
@@ -87,17 +72,5 @@ public class UnresolvedPermissionTest extends TestCase {
         assertFalse(up.implies(up));
         assertFalse(up.implies(new AllPermission()));
         assertFalse(up.implies(new SecurityPermission("a.b.c")));
-    }
-    
-    /**
-     * newPermissionCollection() should return new BasicPermissionCollection on every invokation
-     */
-    public void testCollection()
-    {
-        UnresolvedPermission up = new UnresolvedPermission("a.b.c", null, null, null);
-        PermissionCollection pc1 = up.newPermissionCollection();
-        PermissionCollection pc2 = up.newPermissionCollection();
-        assertTrue((pc1 instanceof UnresolvedPermissionCollection) && (pc2 instanceof UnresolvedPermissionCollection));
-        assertNotSame(pc1, pc2);
     }
 }

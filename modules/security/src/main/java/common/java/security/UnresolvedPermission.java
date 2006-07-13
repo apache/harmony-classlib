@@ -109,10 +109,15 @@ public final class UnresolvedPermission extends Permission
     private final void checkType(String type) {
         if (type == null) {
             throw new NullPointerException("type cannot be null");
-        }    
-        if (type.length() == 0) {
-            throw new IllegalArgumentException("type cannot be empty");
         }
+
+        // type is the class name of the Permission class.
+        // Empty string is inappropriate for class name.
+        // But this check is commented out for compatibility with RI.
+        // see JIRA issue HARMONY-733
+        // if (type.length() == 0) {
+        //     throw new IllegalArgumentException("type cannot be empty");
+        // }
     }
 
 	/**
