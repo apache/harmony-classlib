@@ -144,7 +144,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readv
   while(i<size){
     long bytesRead = hyfile_read ((IDATA) fd, (void *) (*(bufs+i)+*(offsets+i)), (IDATA) *(lengths+i));
     if(bytesRead == -1){
-        totalRead = -1;
+        if (totalRead == 0){
+                totalRead = -1;
+        }
         break;
     }
     totalRead += bytesRead;

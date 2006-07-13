@@ -1251,6 +1251,38 @@ public class FileChannelTest extends TestCase {
             assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
         }
     }
+    
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[])
+     */
+    public void test_read$LByteBuffer() throws Exception {
+        // regression test for Harmony-849
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        readBuffers[0] = ByteBuffer.allocate(CAPACITY);
+        readBuffers[1] = ByteBuffer.allocate(CAPACITY);
+        
+        long readCount = readOnlyFileChannel.read(readBuffers);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, readCount);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, readBuffers[0].position());
+        assertEquals(0, readBuffers[1].position());
+        readBuffers[0].flip();
+        for (int i = 0; i < CONTENT_AS_BYTES_LENGTH; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffers[0].get());
+        }
+    }
+    
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[])
+     */
+    public void test_read$LByteBuffer_mock() throws Exception {
+        FileChannel mockChannel = new MockFileChannel();
+        ByteBuffer[] buffers = new ByteBuffer[2];
+        mockChannel.read(buffers);
+        // Verify that calling read(ByteBuffer[] dsts) leads to the method
+        // read(dsts, 0, dsts.length)
+        assertTrue(((MockFileChannel)mockChannel).isReadCalled);
+    }
 
     /**
      * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
@@ -1477,6 +1509,27 @@ public class FileChannelTest extends TestCase {
             assertEquals(CONTENT_AS_BYTES[i], readBuffers[1].get());
         }
     }
+    
+    /**
+     * @tests java.nio.channels.FileChannel#read(ByteBuffer[], int, int)
+     */
+    public void test_read$LByteBufferII() throws Exception {
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        ByteBuffer[] readBuffers = new ByteBuffer[2];
+        readBuffers[0] = ByteBuffer.allocate(CAPACITY);
+        readBuffers[1] = ByteBuffer.allocate(CAPACITY);
+
+        // writes to the second buffer
+        assertEquals(CONTENT_AS_BYTES_LENGTH, readOnlyFileChannel.read(
+                readBuffers, 1, 1));
+        assertEquals(0, readBuffers[0].position());
+        assertEquals(CONTENT_AS_BYTES_LENGTH, readBuffers[1].position());
+
+        readBuffers[1].flip();
+        for (int i = 0; i < CONTENT_AS_BYTES_LENGTH; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffers[1].get());
+        }
+    }
 
     /**
      * @tests java.nio.channels.FileChannel#isOpen()
@@ -1517,6 +1570,8 @@ public class FileChannelTest extends TestCase {
         private boolean isLockCalled = false;
         
         private boolean isTryLockCalled = false;
+        
+        private boolean isReadCalled = false;
 
         public void force(boolean arg0) throws IOException {
             // do nothing
@@ -1555,6 +1610,9 @@ public class FileChannelTest extends TestCase {
 
         public long read(ByteBuffer[] srcs, int offset, int length)
                 throws IOException {
+            if (!isReadCalled){
+                isReadCalled = true;
+            }
             return 0;
         }
 

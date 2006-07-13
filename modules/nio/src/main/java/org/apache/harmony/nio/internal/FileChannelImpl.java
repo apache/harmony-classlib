@@ -371,8 +371,17 @@ public abstract class FileChannelImpl extends FileChannel {
                     break;
                 }
             } else {
-                bytesRemaining -= directBuffers[i - offset].remaining();
-                buffers[i].put(directBuffers[i - offset]);
+                ByteBuffer buf = directBuffers[i - offset];
+                if (bytesRemaining < buf.remaining()){
+                    // this is the last step.                  
+                    int pos = buf.position();
+                    buffers[i].put(buf);
+                    buffers[i].position(pos + (int)bytesRemaining);
+                    bytesRemaining = 0;
+                } else {
+                    bytesRemaining -= buf.remaining();
+                    buffers[i].put(buf);
+                }                
             }
         }
         return bytesRead;
