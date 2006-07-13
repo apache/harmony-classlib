@@ -33,6 +33,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -2157,6 +2158,31 @@ public class ScannerTest extends TestCase {
 
     }
     
+    private static class MockStringReader2Read extends StringReader {
+        private int timesRead = 1;
+
+        public MockStringReader2Read(String param) {
+            super(param);
+        }
+
+        public int read(CharBuffer target) throws IOException {
+            if (timesRead == 1) {
+                target.append('1');
+                target.append('2');
+                target.append('3');
+                timesRead++;
+                return 3;
+            } else if (timesRead == 2) {
+                target.append('t');
+                timesRead++;
+                return 1;
+            } else {
+                throw new IOException();
+            }
+        }
+
+    }
+    
     /**
      * @tests java.util.Scanner#findWithinHorizon(Pattern, int)
      */
@@ -2393,6 +2419,121 @@ public class ScannerTest extends TestCase {
         s = new Scanner("aaaa");
         result = s.findWithinHorizon(Pattern.compile("a*"), 0);
         assertEquals("aaaa", result);
+    }
+    
+    /**
+     * @tests java.util.Scanner#skip(Pattern)
+     */
+    public void test_skip_LPattern() {
+        s = new Scanner("test");
+        try {
+            s.skip((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        // If pattern does not match, NoSuchElementException will be thrown out.
+        s = new Scanner("1234");
+        try {
+            s.skip(Pattern.compile("\\p{Lower}"));
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+        // Then, no matchResult will be thrown out.
+        try {
+            s.match();
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s.skip(Pattern.compile("\\p{Digit}"));
+        MatchResult matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+
+        s.skip(Pattern.compile("\\p{Digit}+"));
+        matchResult = s.match();
+        assertEquals(1, matchResult.start());
+        assertEquals(4, matchResult.end());
+
+        s.close();
+        try {
+            s.skip(Pattern.compile("test"));
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        MockStringReader2Read reader = new MockStringReader2Read("test");
+        s = new Scanner(reader);
+        try {
+            s.skip(Pattern.compile("\\p{Digit}{4}"));
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+        try {
+            s.match();
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        s.skip(Pattern.compile("\\p{Digit}{3}\\p{Lower}"));
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(4, matchResult.end());
+
+        s.close();
+        try {
+            s.skip((Pattern) null);
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        char [] chars = new char[1024];
+        Arrays.fill(chars, 'a');
+        stringBuilder.append(chars);
+        stringBuilder.append('3');
+        s = new Scanner(stringBuilder.toString());
+        s.skip(Pattern.compile("\\p{Lower}+\\p{Digit}"));
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1025, matchResult.end());
+        
+        // Large amount of input may be cached
+        chars = new char[102400];
+        Arrays.fill(chars, 'a');
+        stringBuilder = new StringBuilder();
+        stringBuilder.append(chars);
+        s = new Scanner(stringBuilder.toString());
+        s.skip(Pattern.compile(".*"));
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(102400, matchResult.end());
+        
+        // skip something without risking a NoSuchElementException
+        s.skip(Pattern.compile("[ \t]*"));
+        matchResult = s.match();
+        assertEquals(102400, matchResult.start());
+        assertEquals(102400, matchResult.end());
+    }
+
+    /**
+     * @tests java.util.Scanner#skip(String)
+     */
+    public void test_skip_LString() {
+        s = new Scanner("test");
+        try {
+            s.skip((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
     
     protected void setUp() throws Exception {

@@ -105,6 +105,9 @@ public final class Scanner implements Iterator<String> {
     
     private DecimalFormat decimalFormat;
     
+    // Records whether the underlying readable has more input
+    private boolean inputExhausted = false;
+    
     private enum DataType{
         /*
          * Stands for Integer
@@ -305,24 +308,46 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
+     * Tries to find the pattern in input from current position to the specified
+     * horizon. Delimiters are ignored. If the pattern is found, the matched
+     * string will be returned, and the scanner will advance to the end of the
+     * matched string. Otherwise, null will be returned and scanner will not
+     * advance the input. When waiting for input, the scanner may be blocked.
+     * 
+     * Scanner will never search exceed horizon code points from current
+     * position. The position of horizon does have effects on the result of
+     * match. For example, when input is "123", and current position is at zero,
+     * findWithinHorizon(Pattern.compile("\\p{Digit}{3}"), 2) will return null.
+     * While findWithinHorizon(Pattern.compile("\\p{Digit}{3}"), 3) will return
+     * "123". Horizon is treated as a transparent, non-anchoring bound. (refer
+     * to {@link Matcher#useTransparentBounds} and
+     * {@link Matcher#useAnchoringBounds})
+     * 
+     * Horizon whose value is zero will be ignored and the whole input will be
+     * used for search. Under this situation, all the input may be cached.
+     * 
+     * An IllegalArgumentException will be thrown out if horizon is less than
+     * zero.
+     * 
      * @param pattern
+     *            the pattern used to scan
      * @param horizon
-     * @return
+     *            the search limit
+     * @return the matched string
      * @throws IllegalStateException
+     *             if the scanner is closed
      * @throws IllegalArgumentException
+     *             if horizon is less than zero
      */
     public String findWithinHorizon(Pattern pattern, int horizon) {
         checkClosed();
-        if (null == pattern) {
-            throw new NullPointerException();
-        }
+        checkNull(pattern);
         if (horizon < 0) {
             throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
                     .getString("KA00e")); //$NON-NLS-1$
         }
         matcher.usePattern(pattern);
 
-        boolean isInputExhausted = false;
         String result = null;
         int findEndIndex = 0;
         int horizonEndIndex = 0;
@@ -345,7 +370,7 @@ public final class Scanner implements Iterator<String> {
             // util horizonEndIndex is exceeded or no more input left.
             matcher.region(findStartIndex, findEndIndex);
             if (matcher.find()) {
-                if (isHorizonInBuffer || isInputExhausted) {
+                if (isHorizonInBuffer || inputExhausted) {
                     result = matcher.group();
                     break;
                 }
@@ -353,16 +378,15 @@ public final class Scanner implements Iterator<String> {
                 // Pattern is not found in buffer while horizonEndIndex is
                 // within buffer, or input is exhausted. Under this situation,
                 // it can be judged that find fails.
-                if (isHorizonInBuffer || isInputExhausted) {
+                if (isHorizonInBuffer || inputExhausted) {
                     break;
                 }
             }
 
             // Expand buffer and reset matcher if needed.
-            if (readMore()) {
-                matcher.reset(buffer);
-            } else {
-                isInputExhausted = true;
+            if (!inputExhausted) {
+                readMore();
+                resetMatcher();
             }
         }
         if (null != result) {
@@ -374,9 +398,24 @@ public final class Scanner implements Iterator<String> {
         return result;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Tries to find the pattern in input from current position to the specified
+     * horizon. Delimiters are ignored.
+     * 
+     * It is the same as invoke findWithinHorizon(Pattern.compile(pattern)).
+     * 
+     * @param pattern
+     *            the pattern used to scan
+     * @param horizon
+     *            the search limit
+     * @return the matched string
+     * @throws IllegalStateException
+     *             if the scanner is closed
+     * @throws IllegalArgumentException
+     *             if horizon is less than zero
+     */
     public String findWithinHorizon(String pattern, int horizon) {
-        throw new NotYetImplementedException();
+        return findWithinHorizon(Pattern.compile(pattern), horizon);
     }
 
     /**
@@ -407,9 +446,8 @@ public final class Scanner implements Iterator<String> {
      */
     public boolean hasNext(Pattern pattern) {
         checkClosed();
-        if (isInputExhausted()) {
-            return false;
-        }
+        checkNull(pattern);
+        matchSuccessful = false;
         saveCurrentStatus();
         //if the next token exists, set the match region, otherwise return false
         if (!setTokenRegion()) {
@@ -420,6 +458,7 @@ public final class Scanner implements Iterator<String> {
         boolean hasNext = false;
         //check whether next token matches the specified pattern
         if (matcher.matches()) {
+            matchSuccessful = true;
             hasNext = true;
         }
         recoverPreviousStatus();
@@ -665,13 +704,8 @@ public final class Scanner implements Iterator<String> {
      */
     public String next(Pattern pattern) {
         checkClosed();
-        if (null == pattern) {
-            throw new NullPointerException();
-        }
+        checkNull(pattern);
         matchSuccessful = false;
-        if (isInputExhausted()) {
-            throw new NoSuchElementException();
-        }
         saveCurrentStatus();
         if (!setTokenRegion()) {
             recoverPreviousStatus();
@@ -679,12 +713,13 @@ public final class Scanner implements Iterator<String> {
             throw new NoSuchElementException();
         }
         matcher.usePattern(pattern);
-        if (matchSuccessful = matcher.matches()) {
-            return matcher.group(0);
-        } else {
+        if (!matcher.matches()) {
             recoverPreviousStatus();
             throw new InputMismatchException();
+
         }
+        matchSuccessful = true;
+        return matcher.group();
     }
 
     /**
@@ -901,14 +936,71 @@ public final class Scanner implements Iterator<String> {
         return integerRadix;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Tries to use specified pattern to match input from the current position.
+     * The delimiter will be ignored. If matches, the matched input will be
+     * skipped. If an anchored match of the specified pattern succeeds, input
+     * will also be skipped. Otherwise, a NoSuchElementException will be thrown
+     * out.
+     * 
+     * Patterns that can match a lot of input may cause the scanner to read in a
+     * large amount of input.
+     * 
+     * Uses a pattern that matches nothing( sc.skip(Pattern.compile("[ \t]*")) )
+     * will suppress NoSuchElementException.
+     * 
+     * @param pattern
+     *            used to skip over input
+     * @return the scanner itself
+     * @throws IllegalStateException
+     *             if the scanner is closed
+     * @throws NoSuchElementException
+     *             if the specified pattern match fails
+     */
     public Scanner skip(Pattern pattern) {
-        throw new NotYetImplementedException();
+        checkClosed();
+        checkNull(pattern);
+        matcher.usePattern(pattern);
+        matcher.region(findStartIndex, bufferLength);
+        while (true) {
+            if (matcher.lookingAt()) {
+                boolean matchInBuffer = matcher.end() < bufferLength
+                        || (matcher.end() == bufferLength && inputExhausted);
+                if (matchInBuffer) {
+                    matchSuccessful = true;
+                    findStartIndex = matcher.end();
+                    break;
+                }
+            } else {
+                if (inputExhausted) {
+                    matchSuccessful = false;
+                    throw new NoSuchElementException();
+                }
+            }
+            if (!inputExhausted) {
+                readMore();
+                resetMatcher();
+            }
+        }
+        return this;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Tries to use the specified string to construct a pattern. And then uses
+     * the constructed pattern to match input from the current position. The
+     * delimiter will be ignored.
+     * 
+     * It is the same as invoke skip(Pattern.compile(pattern))
+     * 
+     * @param pattern
+     *            the string used to construct a pattern which in turn used to
+     *            match input
+     * @return the matched input
+     * @throws IllegalStateException
+     *             if the scanner is closed
+     */
     public Scanner skip(String pattern) {
-        throw new NotYetImplementedException();
+        return skip(Pattern.compile(pattern));
     }
 
     //TODO: To implement this feature
@@ -1004,20 +1096,15 @@ public final class Scanner implements Iterator<String> {
             throw new IllegalStateException();
         }
     }
-
+    
     /*
-     * Check input resource of this scanner, if it has been exhausted, return
-     * true.
+     * Check the inputed pattern. If it is null, then a NullPointerException
+     * will be thrown out.
      */
-    private boolean isInputExhausted() {
-        if (findStartIndex == bufferLength) {
-            if (readMore()) {
-                resetMatcher();
-            } else {
-                return true;
-            }
+    private void checkNull(Pattern pattern) {
+        if (null == pattern) {
+            throw new NullPointerException();
         }
-        return false;
     }
 
     /*
@@ -1323,18 +1410,21 @@ public final class Scanner implements Iterator<String> {
         int tokenStartIndex;
         boolean findComplete = false;
         while (!findComplete) {
-            if (findComplete = matcher.find()) {
+            if (matcher.find()) {
+                findComplete = true;
                 // If just delimiter remains
                 if (matcher.start() == findStartIndex
                         && matcher.end() == bufferLength) {
                     // If more input resource exists
-                    if (readMore()) {
+                    if (!inputExhausted) {
+                        readMore();
                         resetMatcher();
                         findComplete = false;
                     }
                 }
             } else {
-                if (readMore()) {
+                if (!inputExhausted) {
+                    readMore();
                     resetMatcher();
                 } else {
                     return -1;
@@ -1380,13 +1470,15 @@ public final class Scanner implements Iterator<String> {
         int tokenEndIndex = 0;
         boolean findComplete = false;
         while (!findComplete) {
-            if (findComplete = matcher.find()) {
+            if (matcher.find()) {
+                findComplete = true;
                 if (matcher.start() == findStartIndex
                         && matcher.start() == matcher.end()) {
                     findComplete = false;
                 }
             } else {
-                if (readMore()) {
+                if (!inputExhausted) {
+                    readMore();
                     resetMatcher();
                 } else {
                     return -1;
@@ -1399,10 +1491,11 @@ public final class Scanner implements Iterator<String> {
     }
 
     /*
-     * Read more data from underlying Readable. Return false if nothing is
-     * available or I/O operation fails.
+     * Read more data from underlying Readable. If nothing is available or I/O
+     * operation fails, global boolean variable inputExhausted will be set to
+     * true, otherwise set to false.
      */
-    private boolean readMore() {
+    private void readMore() {
         int oldPosition = buffer.position();
         int oldLimit = buffer.limit();
         // Increase capacity if empty space is not enough
@@ -1419,21 +1512,26 @@ public final class Scanner implements Iterator<String> {
                 // nothing to do here
             }
         } catch (IOException e) {
+            // Consider the scenario: readable puts 4 chars into
+            // buffer and then an IOException is thrown out. In this case, buffer is
+            // actually grown, but readable.read() will never return.
             bufferLength += (buffer.position() - oldLimit);
+            /*
+             * Uses -1 to record IOException occurring, and no more input can be
+             * read.
+             */
             readCount = -1;
             lastIOException = e;
         }
 
-        // The return value of readable.read() method can be used to record the
-        // actual characters read. Consider the scenario: readable puts 4 chars into
-        // buffer and then an IOException is thrown out. In this case, buffer is
-        // actually grown, but readable.read() will never return.
 
         buffer.flip();
         buffer.position(oldPosition);
-        if (-1 != readCount)
+        if (-1 == readCount) {
+            inputExhausted = true;
+        } else {
             bufferLength = readCount + bufferLength;
-        return readCount != -1;
+        }
     }
 
     // Expand the size of internal buffer.
