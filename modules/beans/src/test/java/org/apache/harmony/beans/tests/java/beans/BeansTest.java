@@ -44,9 +44,9 @@ public class BeansTest extends TestCase {
 
     private final String MOCK_JAVA_BEAN2 = "tests.api.java.beans.mock.MockJavaBean2";
 
-    private final String MOCK_JAVA_BEAN2_FILE = "/binary/java/beans/mock/MockJavaBean2.bin";
+    private final String MOCK_JAVA_BEAN2_FILE = "binary/java/beans/mock/MockJavaBean2.bin";
 
-    private final String MOCK_JAVA_BEAN2_SFILE = "/serialization/java/beans/mock/MockJavaBean2.ser";
+    private final String MOCK_JAVA_BEAN2_SFILE = "serialization/java/beans/mock/MockJavaBean2.ser";
 
     /*
      * public Beans()
@@ -428,8 +428,7 @@ public class BeansTest extends TestCase {
                 // makes sense to get actual file size?
                 byte[] buf = new byte[10000];
 
-                InputStream in = getClass().getResourceAsStream(
-                        MOCK_JAVA_BEAN2_FILE);
+                InputStream in = getResourceAsStream(MOCK_JAVA_BEAN2_FILE);
 
                 int sz = 0;
 
@@ -454,10 +453,11 @@ public class BeansTest extends TestCase {
                 + ".ser";;
 
         protected URL findResource(String name) {
-            if (MOCK_JAVA_BEAN2_SNAME.equals(name)) {
-                name = MOCK_JAVA_BEAN2_SFILE;
+            if (!MOCK_JAVA_BEAN2_SNAME.equals(name)) {
+                return super.findResource(name);
             }
-            return super.getResource(name);
+
+            return getResource(MOCK_JAVA_BEAN2_SFILE);
         }
     }
 }
