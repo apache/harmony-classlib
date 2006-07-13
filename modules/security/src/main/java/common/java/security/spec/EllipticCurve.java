@@ -121,10 +121,14 @@ public class EllipticCurve {
      * @com.intel.drl.spec_ref
      */
     public byte[] getSeed() {
-        // return copy
-        byte[] ret = new byte[seed.length];
-        System.arraycopy(seed, 0, ret, 0, ret.length);
-        return ret;
+        if (seed == null) {
+            return null;
+        } else {
+            // return copy
+            byte[] ret = new byte[seed.length];
+            System.arraycopy(seed, 0, ret, 0, ret.length);
+            return ret;
+        }
     }
 
     /**

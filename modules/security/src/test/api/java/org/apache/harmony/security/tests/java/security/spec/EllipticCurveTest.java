@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package org.apache.harmony.security.tests.java.security.spec;
 
 import java.math.BigInteger;
@@ -35,18 +30,6 @@ import junit.framework.TestCase;
  * 
  */
 public class EllipticCurveTest extends TestCase {
-
-    /**
-     * Constructor for EllipticCurveTest.
-     * @param name
-     */
-    public EllipticCurveTest(String name) {
-        super(name);
-    }
-
-    //
-    // Tests
-    //
 
     /**
      * Test #1 for <code>EllipticCurve(ECField, BigInteger, BigInteger, byte[])</code>
@@ -574,6 +557,17 @@ public class EllipticCurveTest extends TestCase {
         EllipticCurve c = new EllipticCurve(f, a, b, seed);
         c.getSeed();
         assertNotSame(c.getSeed(), c.getSeed());
+    }
+
+    /**
+     * @tests java.security.spec.EllipticCurve#getSeed()
+     * Assertion: null if not specified
+     */    
+    public final void testGetSeed04() {
+        //Regression for HARMONY-732
+        ECFieldFp f = new ECFieldFp(BigInteger.valueOf(23L));
+        BigInteger a = BigInteger.ONE;
+        assertNull(new EllipticCurve(f, a, a).getSeed());
     }
 
     /**
