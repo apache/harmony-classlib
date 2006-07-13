@@ -122,25 +122,26 @@ public class AbstractPreferencesTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 		}
 		try {
-			Preferences p3 = new MockAbstractPreferences(null, " ");
+			new MockAbstractPreferences(null, " ");
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
 		try {
-			Preferences p3 = new MockAbstractPreferences(pref, "");
+			new MockAbstractPreferences(pref, "");
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
 		try {
-			Preferences p3 = new MockAbstractPreferences(pref, null);
+			new MockAbstractPreferences(pref, null);
 			fail();
 		} catch (NullPointerException e) {
 		}
 		if (!(pref instanceof MockAbstractPreferences)) {
 			return;
 		}
-		Preferences p3 = new MockAbstractPreferences(pref, " ");
-		Preferences p2 = new MockAbstractPreferences(null, "");
+		new MockAbstractPreferences(pref, " ");
+
+        Preferences p2 = new MockAbstractPreferences(null, "");
 		assertNotSame(p2, Preferences.systemRoot());
 		assertNotSame(p2, Preferences.userRoot());
 		assertFalse(p2.isUserNode());
@@ -164,7 +165,7 @@ public class AbstractPreferencesTest extends TestCase {
 
 		p = (MockAbstractPreferences) ((MockAbstractPreferences) pref)
 				.publicChildSpi("child2");
-		assertTrue(((MockAbstractPreferences) p).getNewNode());
+		assertTrue(p.getNewNode());
 	}
 
 	public void testToString() {
@@ -197,10 +198,12 @@ public class AbstractPreferencesTest extends TestCase {
 		// MockAbstractPreferences(child1,
 		// "subchild1");
 		Preferences child1 = pref.node("child1");
-		Preferences child2 = pref.node("child2");
-		Preferences child3 = pref.node("child3");
-		Preferences subchild1 = child1.node("subchild1");
-		assertSame(pref, child1.parent());
+
+        pref.node("child2");
+		pref.node("child3");
+		child1.node("subchild1");
+
+        assertSame(pref, child1.parent());
 		assertEquals(3, pref.childrenNames().length);
 	}
 
@@ -277,7 +280,7 @@ public class AbstractPreferencesTest extends TestCase {
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
-		byte[] longArray = new byte[(int) (Preferences.MAX_VALUE_LENGTH * 0.75)];
+		byte[] longArray = new byte[(int) (Preferences.MAX_VALUE_LENGTH * 0.74)];
 		byte[] longerArray = new byte[(int) (Preferences.MAX_VALUE_LENGTH * 0.75) + 1];
 		pref.putByteArray(longKey, longArray);
 		try {
@@ -1049,7 +1052,7 @@ public class AbstractPreferencesTest extends TestCase {
 				if (systemId.equals("http://java.sun.com/dtd/preferences.dtd")) {
 					InputSource result = new InputSource(
 							AbstractPreferencesTest.class
-									.getResourceAsStream("preferences.dtd"));
+									.getResourceAsStream("/prefs/java/util/prefs/preferences.dtd"));
 					result.setSystemId("preferences.dtd");
 					return result;
 				}
@@ -1072,7 +1075,7 @@ public class AbstractPreferencesTest extends TestCase {
 		child.put("key2", "value2");
 		Preferences grandson = child.node("grandson");
 		grandson.put("key3", "value3");
-		Preferences grandson2 = child.node("grandson2");
+		child.node("grandson2");
 		Preferences grandgrandson = grandson.node("grandgrandson");
 		grandgrandson.put("key4", "value4");
 		child.exportSubtree(out);
