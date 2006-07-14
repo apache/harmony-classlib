@@ -45,8 +45,10 @@ public class AllTests {
         suite.addTestSuite(ClosedSelectorExceptionTest.class);
         suite.addTestSuite(ConnectionPendingExceptionTest.class);
         suite.addTestSuite(FileLockInterruptionExceptionTest.class);
+        suite.addTestSuite(IllegalBlockingModeExceptionTest.class);
+        suite.addTestSuite(IllegalSelectorExceptionTest.class);
         suite.addTestSuite(MapModeTest.class);
-        //$JUnit-END$
+        // $JUnit-END$
         return suite;
     }
 
