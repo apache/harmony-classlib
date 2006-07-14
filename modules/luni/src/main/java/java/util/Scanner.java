@@ -473,7 +473,7 @@ public final class Scanner implements Iterator<String> {
      * matched the pattern.
      * 
      * The invocation of this method in the form hasNext(pattern) behaves in the
-     * same way as the invocaiton of hasNext(Pattern.compile(pattern)).
+     * same way as the invocation of hasNext(Pattern.compile(pattern)).
      * 
      * @param pattern
      *            the string specifying the pattern to scan for
@@ -491,14 +491,46 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * BigInteger in the default radix. The scanner does not advance past the
+     * input.
+     * 
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid BigInteger
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextBigInteger() {
-        throw new NotYetImplementedException();
+        return hasNextBigInteger(integerRadix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * BigInteger in the specified radix. The scanner does not advance past the
+     * input.
+     * 
+     * @param radix
+     *            the radix used to translate the token into a BigInteger
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid BigInteger
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextBigInteger(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        boolean isBigIntegerValue = false;
+        if (hasNext(integerPattern)) {
+            String intString = matcher.group();
+            intString = removeLocaleInfo(intString, DataType.INT);
+            try {
+                new BigInteger(intString, radix);
+                isBigIntegerValue = true;
+            } catch (NumberFormatException e) {
+                matchSuccessful = false;
+            }
+        }
+        return isBigIntegerValue;
     }
 
     /**
@@ -515,14 +547,46 @@ public final class Scanner implements Iterator<String> {
         return hasNext(BOOLEAN_PATTERN);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * byte value in the default radix. The scanner does not advance past the
+     * input.
+     * 
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid byte value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextByte() {
-        throw new NotYetImplementedException();
+        return hasNextByte(integerRadix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * byte value in the specified radix. The scanner does not advance past the
+     * input.
+     * 
+     * @param radix
+     *            the radix used to translate the token into a byte value
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid byte value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextByte(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        boolean isByteValue = false;
+        if (hasNext(integerPattern)) {
+            String intString = matcher.group();
+            intString = removeLocaleInfo(intString, DataType.INT);
+            try {
+                Byte.parseByte(intString, radix);
+                isByteValue = true;
+            } catch (NumberFormatException e) {
+                matchSuccessful = false;
+            }
+        }
+        return isByteValue;
     }
 
     //TODO: To implement this feature
@@ -658,7 +722,7 @@ public final class Scanner implements Iterator<String> {
      * 
      * @return the match result of the last match operation
      * @throws IllegalStateException
-     *             if the match result is available
+     *             if the match result is not available
      */
     public MatchResult match() {
         if (!matchSuccessful) {
@@ -730,7 +794,7 @@ public final class Scanner implements Iterator<String> {
      * advances past the next token that matched the pattern.
      * 
      * The invocation of this method in the form next(pattern) behaves in the
-     * same way as the invocaiton of next(Pattern.compile(pattern)).
+     * same way as the invocation of next(Pattern.compile(pattern)).
      * 
      * @param pattern
      *            the string specifying the pattern to scan for
@@ -750,14 +814,70 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a BigInteger and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextBigInteger()
+     * returned true. If this match succeeds, the scanner advances past the
+     * input that matched.
+     * 
+     * The invocation of this method in the form nextBigInteger() behaves in the
+     * same way as the invocation of nextBigInteger(radix), the radix is the
+     * default radix of this scanner.
+     * 
+     * @return the BigInteger scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid
+     *             BigInteger, or it is out of range
+     */
     public BigInteger nextBigInteger() {
-        throw new NotYetImplementedException();
+        return nextBigInteger(integerRadix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a BigInteger and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextBigInteger(radix)
+     * returned true. If this match succeeds, the scanner advances past the
+     * input that matched.
+     * 
+     * If the next token matches the Integer regular expression successfully,
+     * the token is translated into a BigInteger as following steps. At first
+     * all locale specific prefixes ,group separators, and locale specific
+     * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
+     * via {@link Character#digit(char, int)}}, a negative sign (-) is added if
+     * the locale specific negative prefixes and suffixes were present. At last
+     * the resulting String is passed to
+     * {@link BigInteger#BigInteger(String, int)}} with the specified radix.
+     * 
+     * @param radix
+     *            the radix used to translate the token into a BigInteger
+     * @return the int value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid
+     *             BigInteger, or it is out of range
+     */
     public BigInteger nextBigInteger(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        String intString = next(integerPattern);
+        intString = removeLocaleInfo(intString, DataType.INT);
+        BigInteger bigIntegerValue;
+        try {
+            bigIntegerValue = new BigInteger(intString, radix);
+        } catch (NumberFormatException e) {
+            matchSuccessful = false;
+            recoverPreviousStatus();
+            throw new InputMismatchException();
+        }
+        return bigIntegerValue;
     }
 
     /**
@@ -780,14 +900,70 @@ public final class Scanner implements Iterator<String> {
         return Boolean.parseBoolean(next(BOOLEAN_PATTERN));
     }
     
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a byte value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextByte() returned
+     * true. If this match succeeds, the scanner advances past the input that
+     * matched.
+     * 
+     * The invocation of this method in the form nextByte() behaves in the same
+     * way as the invocation of nextByte(radix), the radix is the default radix
+     * of this scanner.
+     * 
+     * @return the byte value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid byte
+     *             value, or it is out of range
+     */
     public byte nextByte() {
-        throw new NotYetImplementedException();
+        return nextByte(integerRadix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a byte value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextByte(radix)
+     * returned true. If this match succeeds, the scanner advances past the
+     * input that matched.
+     * 
+     * If the next token matches the Integer regular expression successfully,
+     * the token is translated into a byte value as following steps. At first
+     * all locale specific prefixes ,group separators, and locale specific
+     * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
+     * via {@link Character#digit(char, int)}}, a negative sign (-) is added if
+     * the locale specific negative prefixes and suffixes were present. At last
+     * the resulting String is passed to {@link Byte#parseByte(String, int)}}
+     * with the specified radix.
+     * 
+     * @param radix
+     *            the radix used to translate the token into byte value
+     * @return the byte value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid byte
+     *             value, or it is out of range
+     */
     public byte nextByte(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        String intString = next(integerPattern);
+        intString = removeLocaleInfo(intString, DataType.INT);
+        byte byteValue = 0;
+        try {
+            byteValue = Byte.parseByte(intString, radix);
+        } catch (NumberFormatException e) {
+            matchSuccessful = false;
+            recoverPreviousStatus();
+            throw new InputMismatchException();
+        }
+        return byteValue;
     }
 
     //TODO: To implement this feature
@@ -844,7 +1020,7 @@ public final class Scanner implements Iterator<String> {
      * matched.
      * 
      * The invocation of this method in the form nextInt() behaves in the same
-     * way as the invocaiton of nextInt(radix), the radix is the default radix
+     * way as the invocation of nextInt(radix), the radix is the default radix
      * of this scanner.
      * 
      * @return the int value scanned from the input
