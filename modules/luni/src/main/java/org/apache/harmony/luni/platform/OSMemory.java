@@ -17,8 +17,6 @@ package org.apache.harmony.luni.platform;
 
 import java.io.IOException;
 
-import org.apache.harmony.luni.util.NotYetImplementedException;
-
 
 /**
  * This class enables direct access to OS memory.
@@ -539,12 +537,11 @@ final class OSMemory extends OSComponent implements IMemorySystem {
 
 	public PlatformAddress mmap(long fileDescriptor, long alignment, long size,
 			int mapMode) throws IOException {
-		throw new NotYetImplementedException();
-//		long address = mmapImpl(fileDescriptor, alignment, size, mapMode);
-//		if (address == -1) {
-//			throw new IOException();
-//		}
-//		return PlatformAddress.on(address, true);
+		long address = mmapImpl(fileDescriptor, alignment, size, mapMode);
+		if (address == -1) {
+			throw new IOException();
+		}
+		return PlatformAddress.on(address, true);
 	}
 
 	private native void unmapImpl(long addr);

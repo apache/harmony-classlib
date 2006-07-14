@@ -21,8 +21,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
+import java.nio.ReadOnlyBufferException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -31,6 +34,7 @@ import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -41,7 +45,17 @@ public class FileChannelTest extends TestCase {
 
     private static final int LIMITED_CAPACITY = 2;
 
-    private static final String CONTENT = "MYTESTSTRING";
+    private static final String CONTENT = "MYTESTSTRING needs to be a little long";
+
+    private static final byte[] TEST_BYTES;
+
+    static {
+        try {
+            TEST_BYTES = "test".getBytes("iso8859-1");
+        } catch (UnsupportedEncodingException e) {
+            throw new Error(e);
+        }
+    }
 
     private static final int CONTENT_LENGTH = CONTENT.length();
 
@@ -1565,6 +1579,248 @@ public class FileChannelTest extends TestCase {
         assertEquals(10, f.getChannel().position());
     }
 
+    
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_AbnormalMode() throws IOException {
+        try {
+            writeOnlyFileChannel.map(MapMode.READ_ONLY, 0, CONTENT_LENGTH);
+            fail("should throw NonReadableChannelException.");
+        } catch (NonReadableChannelException ex) {
+            // expected;
+        }
+        try {
+            writeOnlyFileChannel.map(MapMode.READ_WRITE, 0, CONTENT_LENGTH);
+            fail("should throw NonReadableChannelException.");
+        } catch (NonReadableChannelException ex) {
+            // expected;
+        }
+        try {
+            writeOnlyFileChannel.map(MapMode.PRIVATE, 0, CONTENT_LENGTH);
+            fail("should throw NonReadableChannelException.");
+        } catch (NonReadableChannelException ex) {
+            // expected;
+        }
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.map(MapMode.READ_WRITE, 0, -1);
+            fail("should throw ClosedChannelExeption.");
+        } catch (ClosedChannelException ex) {
+            // expected;
+        }
+
+        try {
+            readOnlyFileChannel.map(MapMode.READ_WRITE, 0, CONTENT_LENGTH);
+            fail("should throw NonWritableChannelException .");
+        } catch (NonWritableChannelException ex) {
+            // expected;
+        }
+        try {
+            readOnlyFileChannel.map(MapMode.PRIVATE, 0, CONTENT_LENGTH);
+            fail("should throw NonWritableChannelException .");
+        } catch (NonWritableChannelException ex) {
+            // expected;
+        }
+        try {
+            readOnlyFileChannel.map(MapMode.READ_WRITE, -1, CONTENT_LENGTH);
+            fail("should throw IAE.");
+        } catch (IllegalArgumentException ex) {
+            // expected;
+        }
+        try {
+            readOnlyFileChannel.map(MapMode.READ_WRITE, 0, -1);
+            fail("should throw IAE.");
+        } catch (IllegalArgumentException ex) {
+            // expected;
+        }
+
+        try {
+            readOnlyFileChannel.map(MapMode.READ_ONLY, 0, CONTENT_LENGTH + 1);
+            fail("should throw IOException.");
+        } catch (IOException ex) {
+            // expected;
+        }
+        try {
+            readOnlyFileChannel.map(MapMode.READ_ONLY, 2, CONTENT_LENGTH - 1);
+            fail("should throw IOException.");
+        } catch (IOException ex) {
+            // expected;
+        }
+
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.map(MapMode.READ_WRITE, 0, -1);
+            fail("should throw ClosedChannelExeption.");
+        } catch (ClosedChannelException ex) {
+            // expected;
+        }
+        try {
+            readOnlyFileChannel.map(MapMode.READ_ONLY, 2, CONTENT_LENGTH - 1);
+            fail("should throw IOException.");
+        } catch (IOException ex) {
+            // expected;
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.map(MapMode.READ_WRITE, 0, -1);
+            fail("should throw ClosedChannelExeption.");
+        } catch (ClosedChannelException ex) {
+            // expected;
+        }
+    }
+    
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_ReadOnly_CloseChannel() throws IOException {
+        // close channel has no effect on map if mapped
+        assertEquals(0, readWriteFileChannel.size());
+        MappedByteBuffer mapped = readWriteFileChannel.map(MapMode.READ_ONLY,
+                0, CONTENT_LENGTH);
+        assertEquals(CONTENT_LENGTH, readWriteFileChannel.size());
+        readOnlyFileChannel.close();
+        assertEquals(CONTENT_LENGTH, mapped.limit());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_Private_CloseChannel() throws IOException {
+        MappedByteBuffer mapped = readWriteFileChannel.map(MapMode.PRIVATE, 0,
+                CONTENT_LENGTH);
+        readWriteFileChannel.close();
+        mapped.put(TEST_BYTES);
+        assertEquals(CONTENT_LENGTH, mapped.limit());
+        assertEquals("test".length(), mapped.position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_ReadOnly() throws IOException {
+        MappedByteBuffer mapped = null;
+        // try put something to readonly map
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        mapped = readOnlyFileChannel.map(MapMode.READ_ONLY, 0, CONTENT_LENGTH);
+        try {
+            mapped.put(TEST_BYTES);
+            fail("should throw ReadOnlyBufferException.");
+        } catch (ReadOnlyBufferException ex) {
+            // expected;
+        }
+        assertEquals(CONTENT_LENGTH, mapped.limit());
+        assertEquals(CONTENT_LENGTH, mapped.capacity());
+        assertEquals(0, mapped.position());
+
+        // try to get a readonly map from read/write channel
+        writeDataToFile(fileOfReadWriteFileChannel);
+        mapped = readWriteFileChannel.map(MapMode.READ_ONLY, 0, CONTENT
+                .length());
+        assertEquals(CONTENT_LENGTH, mapped.limit());
+        assertEquals(CONTENT_LENGTH, mapped.capacity());
+        assertEquals(0, mapped.position());
+
+        // map not change channel's position
+        assertEquals(0, readOnlyFileChannel.position());
+        assertEquals(0, readWriteFileChannel.position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_ReadOnly_NonZeroPosition() throws IOException {
+        this.writeDataToFile(fileOfReadOnlyFileChannel);
+        MappedByteBuffer mapped = readOnlyFileChannel.map(MapMode.READ_ONLY,
+                10, CONTENT_LENGTH - 10);
+        assertEquals(CONTENT_LENGTH - 10, mapped.limit());
+        assertEquals(CONTENT_LENGTH - 10, mapped.capacity());
+        assertEquals(0, mapped.position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_Private() throws IOException {
+        this.writeDataToFile(fileOfReadWriteFileChannel);
+        MappedByteBuffer mapped = readWriteFileChannel.map(MapMode.PRIVATE, 0,
+                CONTENT_LENGTH);
+        assertEquals(CONTENT_LENGTH, mapped.limit());
+        // test copy on write if private
+        ByteBuffer returnByPut = mapped.put(TEST_BYTES);
+        assertSame(returnByPut, mapped);
+        ByteBuffer checkBuffer = ByteBuffer.allocate(CONTENT_LENGTH);
+        mapped.force();
+        readWriteFileChannel.read(checkBuffer);
+        assertEquals(CONTENT, new String(checkBuffer.array(), "iso8859-1"));
+
+        // test overflow
+        try {
+            mapped.put(("test" + CONTENT).getBytes("iso8859-1"));
+            fail("should throw BufferOverflowException.");
+        } catch (BufferOverflowException ex) {
+            // expected;
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_Private_NonZeroPosition() throws IOException {
+        MappedByteBuffer mapped = readWriteFileChannel.map(MapMode.PRIVATE, 10,
+                CONTENT_LENGTH - 10);
+        assertEquals(CONTENT_LENGTH - 10, mapped.limit());
+        assertEquals(CONTENT_LENGTH - 10, mapped.capacity());
+        assertEquals(0, mapped.position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_ReadWrite() throws IOException {
+        MappedByteBuffer mapped = null;
+        writeDataToFile(fileOfReadWriteFileChannel);
+        mapped = readWriteFileChannel.map(MapMode.READ_WRITE, 0, CONTENT
+                .length());
+
+        // put something will change its channel
+        ByteBuffer returnByPut = mapped.put(TEST_BYTES);
+        assertSame(returnByPut, mapped);
+        String checkString = "test" + CONTENT.substring(4);
+        ByteBuffer checkBuffer = ByteBuffer.allocate(CONTENT_LENGTH);
+        mapped.force();
+        readWriteFileChannel.position(0);
+        readWriteFileChannel.read(checkBuffer);
+        assertEquals(checkString, new String(checkBuffer.array(), "iso8859-1"));
+
+        try {
+            mapped.put(("test" + CONTENT).getBytes("iso8859-1"));
+            fail("should throw BufferOverflowException.");
+        } catch (BufferOverflowException ex) {
+            // expected;
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#map(MapMode,long,long)
+     */
+    public void test_map_ReadWrite_NonZeroPosition() throws IOException {
+        // test position non-zero
+        writeDataToFile(fileOfReadWriteFileChannel);
+        MappedByteBuffer mapped = readWriteFileChannel.map(MapMode.READ_WRITE,
+                10, CONTENT_LENGTH - 10);
+        assertEquals(CONTENT_LENGTH - 10, mapped.limit());
+        assertEquals(CONTENT.length() - 10, mapped.capacity());
+        assertEquals(0, mapped.position());
+        mapped.put(TEST_BYTES);
+        ByteBuffer checkBuffer = ByteBuffer.allocate(CONTENT_LENGTH);
+        readWriteFileChannel.read(checkBuffer);
+        String expected = CONTENT.substring(0, 10) + "test"
+                + CONTENT.substring(10 + "test".length());
+        assertEquals(expected, new String(checkBuffer.array(), "iso8859-1"));
+    }
+    
     private class MockFileChannel extends FileChannel {
         
         private boolean isLockCalled = false;

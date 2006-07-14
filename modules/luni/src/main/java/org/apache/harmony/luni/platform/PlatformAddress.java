@@ -139,8 +139,9 @@ public final class PlatformAddress implements ICommonDataTypes, Comparable {
 		if (memorySpy.free(this)) {
 			if (isMappedAddress) {
 				unmap();
-			}
-			osMemory.free(osaddr);
+			}else{
+			    osMemory.free(osaddr);
+            }
 		}
 	}
 
