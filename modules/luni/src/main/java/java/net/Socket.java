@@ -402,6 +402,9 @@ public class Socket {
 	 */
 	public OutputStream getOutputStream() throws IOException {
 		checkClosedAndCreate(false);
+        if (isOutputShutdown()) {
+            throw new SocketException(Msg.getString("KA00f"));
+        }
 		return impl.getOutputStream();
 	}
 

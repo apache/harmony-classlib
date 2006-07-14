@@ -2397,6 +2397,23 @@ public class SocketTest extends SocketTestCase {
             // expected
         }
     }
+    
+    /**
+     * @tests Socket#getOutputStream()
+     */
+    public void test_getOutputStream_shutdownOutput() throws Exception {
+        // regression test for Harmony-873
+        ServerSocket ss = new ServerSocket(0);
+        Socket s = new Socket("127.0.0.1", ss.getLocalPort());
+        ss.accept();
+        s.shutdownOutput();
+        try {
+            s.getOutputStream();
+            fail("should throw SocketException");
+        } catch (SocketException e) {
+            // expected
+        }
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
