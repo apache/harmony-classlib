@@ -231,18 +231,6 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         try {
             begin();
 
-            // // FIXME donot peek at time,see if can improve
-            // DatagramPacket peekPack = new DatagramPacket(new byte[1], 1);
-            // synchronized (dataLock) {
-            // networkSystem.receiveDatagram(fd, peekPack, peekPack.getData(),
-            // peekPack.getOffset(), peekPack.getLength(),
-            // isBlocking() ? 0 : DEFAULT_TIMEOUT, true);
-            // }
-            // if (null == peekPack.getAddress()) {
-            // // if no new packet peeked
-            // return null;
-            // }
-
             // receive real data packet, (not peek)
             synchronized (readLock) {
                 boolean loop = isBlocking();
@@ -490,9 +478,6 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         synchronized (writeLock) {
             int count = 0;
             for (int val = offset; val < length; val++) {
-                // source buffer must be not null
-                checkNotNull(sources[val]);
-                // add all to avoid bugs in Linux
                 count = count + sources[val].remaining();
             }
             ByteBuffer writeBuf = ByteBuffer.allocate(count);
