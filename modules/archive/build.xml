@@ -38,10 +38,14 @@
 
     <target name="build" depends="compile.java, build.jar" />
 	
-    <target name="copy.native.includes">
+    <target name="copy.native.includes" depends="overlay-oss">
 	<copy todir="${hy.hdk}/include" overwrite="yes">
 	    <fileset dir="${hy.archive.src.main.native}/include/shared">
 		<include name="zipsup.h" />
+	    </fileset>
+	    <fileset dir="${hy.archive.src.main.native}/zlib_dist">
+		<include name="zlib.h" />
+		<include name="zconf.h" />
 	    </fileset>
 	</copy>
     </target>

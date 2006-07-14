@@ -83,6 +83,97 @@
         </jar>
     </target>
 
+    <target name="build.native"
+            depends="-build.native.linux,-build.native.windows"
+            if="with.awt.swing">
+
+        <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/lcmm">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+
+        <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/jpegdecoder">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+
+        <make dir="${hy.awt.src.main.native}/gl/${hy.os}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/gl">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+
+    </target>
+
+    <target name="-build.native.linux" if="is.linux">
+        <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/x11wrapper">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+
+        <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/linuxfont">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="-build.native.windows" if="is.windows">
+        <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/win32wrapper">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+
+        <make dir="${hy.awt.src.main.native}/winfont/${hy.os}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/winfont">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean.native"
+            depends="-clean.native.linux,-clean.native.windows"
+            if="with.awt.swing">
+        <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}"
+              target="clean"/>
+        <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os}"
+              target="clean"/>
+        <make dir="${hy.awt.src.main.native}/gl/${hy.os}"
+              target="clean"/>
+    </target>
+
+    <target name="-clean.native.linux" if="is.linux">
+        <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os}"
+              target="clean"/>
+        <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os}"
+              target="clean"/>
+    </target>
+
+    <target name="-clean.native.windows" if="is.windows">
+        <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os}"
+              target="clean"/>
+        <make dir="${hy.awt.src.main.native}/winfont/${hy.os}"
+              target="clean"/>
+    </target>
+
     <target name="compile.tests">
         <echo message="Compiling AWT tests" />
 

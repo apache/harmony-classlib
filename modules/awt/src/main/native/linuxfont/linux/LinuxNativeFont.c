@@ -22,10 +22,10 @@
  * 
  */
 #include <X11/Xft/Xft.h>
-#include <tttables.h>
-#include <t1tables.h>
-#include <tttypes.h>
-#include <ftsnames.h>
+#include <freetype/tttables.h>
+#include <freetype/t1tables.h>
+#include <freetype/internal/tttypes.h>
+#include <freetype/ftsnames.h>
 
 #include <stdio.h>
 #include <stdlib.h>
