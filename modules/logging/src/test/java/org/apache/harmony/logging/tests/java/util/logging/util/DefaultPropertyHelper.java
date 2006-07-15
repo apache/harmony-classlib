@@ -88,9 +88,11 @@ public class DefaultPropertyHelper {
 	}
 
 	public synchronized static void reset(File bak) {
-		File file = new File(propertyPath);
-		file.delete();
-		bak.renameTo(file);
+		if (bak.exists()) {
+			File file = new File(propertyPath);
+			file.delete();
+			bak.renameTo(file);
+		}
 	}
 
 }
