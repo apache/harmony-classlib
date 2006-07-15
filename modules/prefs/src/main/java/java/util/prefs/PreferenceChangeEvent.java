@@ -38,7 +38,13 @@ import java.util.EventObject;
  */
 public class PreferenceChangeEvent extends EventObject implements Serializable {
 
-    static final long serialVersionUID = 793724513368024975L;
+    private static final long serialVersionUID = 793724513368024975L;
+    
+    private final Preferences node;
+
+    private final String key;
+
+    private final String value;
 
     /**
      * Construct a new <code>PreferenceChangeEvent</code> instance.
@@ -100,12 +106,6 @@ public class PreferenceChangeEvent extends EventObject implements Serializable {
     private void readObject(ObjectInputStream in) throws IOException{
         throw new NotSerializableException();
     }
-
-    private Preferences node;
-
-    private String key;
-
-    private String value;
 }
 
 

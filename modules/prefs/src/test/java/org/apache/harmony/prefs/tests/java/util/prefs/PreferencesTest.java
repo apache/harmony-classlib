@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringBufferInputStream;
 import java.net.MalformedURLException;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
@@ -46,8 +45,7 @@ public class PreferencesTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		in = new StringBufferInputStream(
-				"<!DOCTYPE preferences SYSTEM \"http://java.sun.com/dtd/preferences.dtd\"><preferences><root type=\"user\"><map></map></root></preferences>");
+		in = new ByteArrayInputStream("<!DOCTYPE preferences SYSTEM \"http://java.sun.com/dtd/preferences.dtd\"><preferences><root type=\"user\"><map></map></root></preferences>".getBytes("UTF-8"));
 		stream = new MockInputStream(in);
 	}
 

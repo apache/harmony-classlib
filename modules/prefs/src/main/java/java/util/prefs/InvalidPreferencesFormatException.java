@@ -34,6 +34,8 @@ import java.io.ObjectOutputStream;
  */
 public class InvalidPreferencesFormatException extends Exception {
     
+    private static final long serialVersionUID = -791715184232119669L;
+    
 	/**
 	 * Constructs a new <code>InvalidPreferencesFormatException</code> instance using an 
 	 * exception message.

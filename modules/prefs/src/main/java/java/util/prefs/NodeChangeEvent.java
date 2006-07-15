@@ -37,7 +37,10 @@ import java.io.IOException;
  */
 public class NodeChangeEvent extends EventObject implements Serializable {
 	
-    static final long serialVersionUID = 8068949086596572957L;
+    private static final long serialVersionUID = 8068949086596572957L;
+    
+    private final Preferences parent;
+    private final Preferences child;
     
     /**
      * Construct a new <code>NodeChangeEvent</code> instance.
@@ -86,8 +89,6 @@ public class NodeChangeEvent extends EventObject implements Serializable {
 	private void readObject (ObjectInputStream in) throws IOException, ClassNotFoundException {
 		throw new NotSerializableException();
 	}
-
-	private Preferences parent, child;
 }
 
 

@@ -16,6 +16,7 @@
 package org.apache.harmony.prefs.tests.java.util.prefs;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.prefs.AbstractPreferences;
@@ -34,7 +35,7 @@ public class MockAbstractPreferences extends AbstractPreferences {
 
 	Properties attr = new Properties();
 
-	HashMap childs = new HashMap();
+	Map<String, MockAbstractPreferences> childs = new HashMap<String, MockAbstractPreferences>();
 
 	private int flushedTimes;
 
@@ -113,7 +114,7 @@ public class MockAbstractPreferences extends AbstractPreferences {
 		}
 		if (result == returnNull)
 			return null;
-		AbstractPreferences r = (AbstractPreferences) childs.get(name);
+		AbstractPreferences r = childs.get(name);
 		if (r == null) {
 			r = new MockAbstractPreferences(this, name, true);
 
@@ -139,7 +140,7 @@ public class MockAbstractPreferences extends AbstractPreferences {
 
 	protected String[] keysSpi() throws BackingStoreException {
 		checkException();
-		Set keys = attr.keySet();
+		Set<Object> keys = attr.keySet();
 		String[] results = new String[keys.size()];
 		keys.toArray(results);
 		return result == returnNull ? null : results;

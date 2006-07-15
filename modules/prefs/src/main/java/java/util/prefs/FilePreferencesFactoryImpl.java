@@ -16,7 +16,7 @@
 
 package java.util.prefs;
 
-/*
+/**
  * Default implementation of <code>PreferencesFactory</code> for Linux 
  * platform, using file system as back end.
  * 
@@ -24,29 +24,19 @@ package java.util.prefs;
  */
 class FilePreferencesFactoryImpl implements PreferencesFactory {
     
-    /*
+    /**
      * Default constructor
      */
     public FilePreferencesFactoryImpl() {
     	super();
     }
 
-    /* (non-Javadoc)
-     * @see java.util.prefs.PreferencesFactory#userRoot()
-     */
     public Preferences userRoot() {
         return FilePreferencesImpl.userRoot;
     }
 
-    /* (non-Javadoc)
-     * @see java.util.prefs.PreferencesFactory#systemRoot()
-     */
     public Preferences systemRoot() {
         return FilePreferencesImpl.systemRoot;    
     }
 
 }
-
-
-
- 

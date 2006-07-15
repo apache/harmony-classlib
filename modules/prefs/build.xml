@@ -150,7 +150,6 @@
 
                 <fileset dir="${hy.prefs.src.test.java}">
                     <include name="**/*Test.java"/>
-                    <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/AbstractPreferencesTest.java"/>
                     <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/FilePreferencesImplTest.java"/>
                 </fileset>
             </batchtest>

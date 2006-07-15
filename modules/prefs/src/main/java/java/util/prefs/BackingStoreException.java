@@ -21,7 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * An exception to indicate that some eror was encountered while accessing
+ * An exception to indicate that some error was encountered while accessing
  * the backing store.
  * <p>
  * Please note that this class cannot be serialized actually, so relevant 
@@ -31,6 +31,8 @@ import java.io.ObjectOutputStream;
  * @since 1.4
  */
 public class BackingStoreException extends Exception {
+    
+    private static final long serialVersionUID = 859796500401108469L;
     
 	/**
 	 * Constructs a new <code>BackingStoreException</code> instance using an 

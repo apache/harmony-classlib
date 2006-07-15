@@ -18,10 +18,13 @@ package java.util.prefs;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
@@ -52,13 +55,8 @@ public abstract class AbstractPreferences extends Preferences {
      * Constants
      * -----------------------------------------------------------
      */
-    /**
-     * The object used to lock this node. 
-     */
-    protected final Object lock;
-
-    //the unhandled events colletion
-    static final LinkedList events = new LinkedList();
+    //the unhandled events collection
+    static final List<EventObject> events = new LinkedList<EventObject>();
     //the event dispatcher thread
     private final static EventDispatcher dispatcher = new EventDispatcher("Preference Event Dispatcher");
 
@@ -68,6 +66,11 @@ public abstract class AbstractPreferences extends Preferences {
      * -----------------------------------------------------------
      */
     /**
+     * The object used to lock this node. 
+     */
+    protected final Object lock;
+    
+    /**
      * This field is true if this node is created while it doesn't exist in the 
      * backing store. This field's default value is false, and it is checked when 
      * the node creation is completed, and if it is true, the node change event 
@@ -76,13 +79,14 @@ public abstract class AbstractPreferences extends Preferences {
     protected boolean newNode;
 
     //cached child nodes
-    private HashMap cachedNode;
+    private Map<String, AbstractPreferences> cachedNode;
 
     //true if this node is in user preference hierarchy
     boolean userNode;
 
-    //the colletions of listeners
-    LinkedList nodeChangeListeners, preferenceChangeListeners;
+    //the collections of listeners
+    List<EventListener> nodeChangeListeners;
+    List<EventListener> preferenceChangeListeners;
 
     //this node's name
     private String nodeName;
@@ -143,10 +147,10 @@ public abstract class AbstractPreferences extends Preferences {
             throw new IllegalArgumentException();
         }
         root = null == parent ? this : parent.root;
-        nodeChangeListeners = new LinkedList();
-        preferenceChangeListeners = new LinkedList();
+        nodeChangeListeners = new LinkedList<EventListener>();
+        preferenceChangeListeners = new LinkedList<EventListener>();
         isRemoved = false;
-        cachedNode = new HashMap();
+        cachedNode = new HashMap<String, AbstractPreferences>();
         nodeName = name;
         parentPref = parent;
         lock = new Object();
@@ -164,8 +168,7 @@ public abstract class AbstractPreferences extends Preferences {
      * @return arrays of all cached children node.
      */
     protected final AbstractPreferences[] cachedChildren() {
-        return (AbstractPreferences[]) cachedNode.values().toArray(
-                new AbstractPreferences[0]);
+        return cachedNode.values().toArray(new AbstractPreferences[cachedNode.size()]);
     }
 
     /**
@@ -238,7 +241,7 @@ public abstract class AbstractPreferences extends Preferences {
      * If the named node has just been removed, implementation of this method must 
      * create a new one instead of reactivated the removed one. 
      * <p>
-     * The new creation is not required to be presisted immediately until the flush 
+     * The new creation is not required to be persisted immediately until the flush 
      * method is invoked.</p>
      * 
      * @param name
@@ -336,12 +339,12 @@ public abstract class AbstractPreferences extends Preferences {
     public String[] childrenNames() throws BackingStoreException {
         synchronized (lock) {
             checkState();
-            TreeSet result = new TreeSet(cachedNode.keySet());
+            TreeSet<String> result = new TreeSet<String>(cachedNode.keySet());
             String[] names = childrenNamesSpi();
             for (int i = 0; i < names.length; i++) {
                 result.add(names[i]);
             }
-            return (String[]) result.toArray(new String[0]);
+            return result.toArray(new String[0]);
         }
     }
 
@@ -352,8 +355,9 @@ public abstract class AbstractPreferences extends Preferences {
     public void clear() throws BackingStoreException {
         synchronized (lock) {
             String[] keyList = keys();
-            for (int i = 0; i < keyList.length; i++)
+            for (int i = 0; i < keyList.length; i++) {
                 remove(keyList[i]);
+            }
         }
     }
 
@@ -395,8 +399,9 @@ public abstract class AbstractPreferences extends Preferences {
         }
         AbstractPreferences[] cc = cachedChildren();
         int i;
-        for (i = 0; i < cc.length; i++)
+        for (i = 0; i < cc.length; i++) {
             cc[i].flush();
+        }
     }
 
     /*
@@ -404,8 +409,9 @@ public abstract class AbstractPreferences extends Preferences {
      * @see java.util.prefs.Preferences#get(java.lang.String, java.lang.String)
      */
     public String get(String key, String deflt) {
-        if (key == null)
+        if (key == null) {
             throw new NullPointerException();
+        }
         String result;
         synchronized (lock) {
             checkState();
@@ -424,14 +430,15 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public boolean getBoolean(String key, boolean deflt) {
         String result = get(key, null);
-        if (result == null)
+        if (result == null) {
             return deflt;
-        else if (result.equalsIgnoreCase("true")) { //$NON-NLS-1$
+        } else if (result.equalsIgnoreCase("true")) { //$NON-NLS-1$
             return true;
         } else if (result.equalsIgnoreCase("false")) { //$NON-NLS-1$
             return false;
-        } else
+        } else {
             return deflt;
+        }
     }
 
     /*
@@ -440,14 +447,15 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public byte[] getByteArray(String key, byte[] deflt) {
         String svalue = get(key, null);
-        if (svalue == null)
+        if (svalue == null) {
             return deflt;
-        if ("".equals(svalue)) { //$NON-NLS-1$
+        }
+        if (svalue.length() == 0) { 
             return new byte[0];
         }
         byte[] dres;
         try {
-            byte[] bavalue = svalue.getBytes("ascii"); //$NON-NLS-1$
+            byte[] bavalue = svalue.getBytes("US-ASCII"); //$NON-NLS-1$
             if (bavalue.length % 4 != 0) {
                 return deflt;
             }
@@ -464,8 +472,9 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public double getDouble(String key, double deflt) {
         String result = get(key, null);
-        if (result == null)
+        if (result == null) {
             return deflt;
+        }
         double dres;
         try {
             dres = Double.parseDouble(result);
@@ -481,8 +490,9 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public float getFloat(String key, float deflt) {
         String result = get(key, null);
-        if (result == null)
+        if (result == null) {
             return deflt;
+        }
         float fres;
         try {
             fres = Float.parseFloat(result);
@@ -498,8 +508,9 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public int getInt(String key, int deflt) {
         String result = get(key, null);
-        if (result == null)
+        if (result == null) {
             return deflt;
+        }
         int ires;
         try {
             ires = Integer.parseInt(result);
@@ -515,8 +526,9 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public long getLong(String key, long deflt) {
         String result = get(key, null);
-        if (result == null)
+        if (result == null) {
             return deflt;
+        }
         long lres;
         try {
             lres = Long.parseLong(result);
@@ -601,7 +613,7 @@ public abstract class AbstractPreferences extends Preferences {
         while (st.hasMoreTokens() && null != currentNode) {
             String name = st.nextToken();
             synchronized (currentNode.lock) {
-                temp = (AbstractPreferences) currentNode.cachedNode.get(name);
+                temp = currentNode.cachedNode.get(name);
                 if (temp == null) {
                     temp = getNodeFromBackend(createNew, currentNode, name);
                 }
@@ -623,8 +635,9 @@ public abstract class AbstractPreferences extends Preferences {
         if (createNew) {
             temp = currentNode.childSpi(name);
             currentNode.cachedNode.put(name, temp);
-            if (temp.newNode && currentNode.nodeChangeListeners.size() > 0)
+            if (temp.newNode && currentNode.nodeChangeListeners.size() > 0) {
                 currentNode.notifyChildAdded(temp);
+            }
         } else {
             temp = currentNode.getChild(name);
         }
@@ -707,7 +720,7 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public void putByteArray(String key, byte[] value) {
         try {
-            put(key, Base64.encode(value, "ascii")); //$NON-NLS-1$
+            put(key, Base64.encode(value, "US-ASCII")); //$NON-NLS-1$
         } catch (UnsupportedEncodingException e) {
             //should not happen
         }
@@ -784,7 +797,7 @@ public abstract class AbstractPreferences extends Preferences {
                     cachedNode.put(childrenNames[i], child);
                 }
             }
-            AbstractPreferences[] children = (AbstractPreferences[]) cachedNode
+            AbstractPreferences[] children = cachedNode
                     .values().toArray(new AbstractPreferences[0]);
             for (int i = 0; i < children.length; i++) {
                 children[i].removeNodeImpl();
@@ -867,8 +880,9 @@ public abstract class AbstractPreferences extends Preferences {
         }
         AbstractPreferences[] cc = cachedChildren();
         int i;
-        for (i = 0; i < cc.length; i++)
+        for (i = 0; i < cc.length; i++) {
             cc[i].sync();
+        }
     }
 
     /*
@@ -946,16 +960,16 @@ public abstract class AbstractPreferences extends Preferences {
                 if (events.isEmpty()) {
                     events.wait();
                 }
-                EventObject event = (EventObject) events.get(0);
+                EventObject event = events.get(0);
                 events.remove(0);
                 return event;
             }
         }
 
         private void dispatchPrefChange(PreferenceChangeEvent event,
-                LinkedList preferenceChangeListeners) {
+                List<EventListener> preferenceChangeListeners) {
             synchronized (preferenceChangeListeners) {
-                Iterator i = preferenceChangeListeners.iterator();
+                Iterator<EventListener> i = preferenceChangeListeners.iterator();
                 while (i.hasNext()) {
                     PreferenceChangeListener pcl = (PreferenceChangeListener) i
                             .next();
@@ -965,9 +979,9 @@ public abstract class AbstractPreferences extends Preferences {
         }
 
         private void dispatchNodeRemove(NodeChangeEvent event,
-                LinkedList nodeChangeListeners) {
+                List<EventListener> nodeChangeListeners) {
             synchronized (nodeChangeListeners) {
-                Iterator i = nodeChangeListeners.iterator();
+                Iterator<EventListener> i = nodeChangeListeners.iterator();
                 while (i.hasNext()) {
                     NodeChangeListener ncl = (NodeChangeListener) i.next();
                     ncl.childRemoved(event);
@@ -976,9 +990,9 @@ public abstract class AbstractPreferences extends Preferences {
         }
 
         private void dispatchNodeAdd(NodeChangeEvent event,
-                LinkedList nodeChangeListeners) {
+                List<EventListener> nodeChangeListeners) {
             synchronized (nodeChangeListeners) {
-                Iterator i = nodeChangeListeners.iterator();
+                Iterator<EventListener> i = nodeChangeListeners.iterator();
                 while (i.hasNext()) {
                     NodeChangeListener ncl = (NodeChangeListener) i.next();
                     ncl.childAdded(event);
@@ -988,25 +1002,20 @@ public abstract class AbstractPreferences extends Preferences {
     }
 
     private static class NodeAddEvent extends NodeChangeEvent {
-        /**
-         * @param p
-         * @param c
-         */
+        //The base class is NOT serializable, so this class isn't either.
+        private static final long serialVersionUID = 1L;
+
         public NodeAddEvent(Preferences p, Preferences c) {
             super(p, c);
         }
     }
 
     private static class NodeRemoveEvent extends NodeChangeEvent {
-        /**
-         * @param p
-         * @param c
-         */
+        //The base class is NOT serializable, so this class isn't either.
+        private static final long serialVersionUID = 1L;
+        
         public NodeRemoveEvent(Preferences p, Preferences c) {
             super(p, c);
         }
     }
 }
-
-
-

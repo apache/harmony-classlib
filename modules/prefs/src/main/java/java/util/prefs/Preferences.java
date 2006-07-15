@@ -34,7 +34,7 @@ import java.security.PrivilegedAction;
  * persistly in implementation-dependent backend, and user doesn't need to care
  * about the details.
  * <p>
- * Every node has one name and one unique absolute path in a similiar way with
+ * Every node has one name and one unique absolute path in a similar way with
  * directories in file system. The root node's name is "", and other nodes' name
  * string cannot contains slash and cannot be empty. The root node's absolute
  * path is "/", and other nodes' absolute path equals &lt;parent's absolute
@@ -44,7 +44,7 @@ import java.security.PrivilegedAction;
  * ancestor's absolute path and a slash.
  * </p>
  * <p>
- * The modification to preferences data may be asynchronized, which means they
+ * The modification to preferences data may be asynchronous, which means they
  * may don't block and may returns immediately, implementation can feel free to
  * the modifications to the backend in any time until the flush() or sync()
  * method is invoked, these two methods force synchronized updates to backend.
@@ -58,7 +58,7 @@ import java.security.PrivilegedAction;
  * when backend is unavailable.
  * </p>
  * <p>
- * Preferences can be export to/import from xml files, the XML document must
+ * Preferences can be export to/import from XML files, the XML document must
  * have the following DOCTYPE declaration:
  * </p>
  * <p>
@@ -120,17 +120,17 @@ public abstract class Preferences {
      * ---------------------------------------------------------
      */		
 	static{
-	    String factoryClassName = (String)AccessController.doPrivileged(new PrivilegedAction(){
-            public Object run() {
+	    String factoryClassName = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
                 return System.getProperty("java.util.prefs.PreferencesFactory"); //$NON-NLS-1$
             }
-	    });
+        });
 	    try {
 	        ClassLoader loader = Thread.currentThread().getContextClassLoader();
 	        if(loader == null){
 	            loader = ClassLoader.getSystemClassLoader();
 	        }
-	        Class factoryClass = loader.loadClass(factoryClassName);
+	        Class<?> factoryClass = loader.loadClass(factoryClassName);
 	        factory = (PreferencesFactory) factoryClass.newInstance();
         } catch (Exception e) {
             throw new InternalError("Cannot initiate PreferencesFactory: "+factoryClassName+". Caused by "+ e);  //$NON-NLS-1$//$NON-NLS-2$
@@ -190,7 +190,7 @@ public abstract class Preferences {
 	 * This XML document has the following DOCTYPE declaration:
 	 * <pre>
 	 * &lt;!DOCTYPE preferences SYSTEM "http://java.sun.com/dtd/preferences.dtd"&gt;</pre>
-	 * And the utf-8 encoding will be used. Please note that this node is not 
+	 * And the UTF-8 encoding will be used. Please note that this node is not 
 	 * thread-safe, which is an exception of this class. 
 	 * </p>
 	 * @param  ostream
@@ -211,7 +211,7 @@ public abstract class Preferences {
 	 * This XML document has the following DOCTYPE declaration:
 	 * <pre>
 	 * &lt;!DOCTYPE preferences SYSTEM "http://java.sun.com/dtd/preferences.dtd"&gt;</pre>	 * 
-	 * And the utf-8 encoding will be used. Please note that this node is not 
+	 * And the UTF-8 encoding will be used. Please note that this node is not 
 	 * thread-safe, which is an exception of this class. 
 	 * </p>
 	 * @param  ostream
@@ -445,10 +445,10 @@ public abstract class Preferences {
 	
 	/**
 	 * Return true if this is a user preferences, false if this is a system 
-	 * perferences
+	 * preferences
 	 * 
 	 * @return 		true if this is a user preferences, false if this is a 
-	 * 				system perferences
+	 * 				system preferences
 	 */
 	public abstract boolean isUserNode();
 	
@@ -570,7 +570,7 @@ public abstract class Preferences {
 	 * @throws IllegalArgumentException
 	 * 				if the given key's length is bigger than 
 	 * 				<code>MAX_KEY_LENGTH</code> or value's length is bigger than  
-	 * 				three quaters of <code>MAX_KEY_LENGTH</code>
+	 * 				three quarters of <code>MAX_KEY_LENGTH</code>
 	 * @throws IllegalStateException
 	 * 			if this node has been removed	
 	 */
@@ -810,7 +810,7 @@ public abstract class Preferences {
 	}
 	
 	//parse node's absolute path from class instance
-	private static String getNodeName(Class c){
+	private static String getNodeName(Class<?> c){
 	    Package p = c.getPackage();
 	    if(null == p){
 	        return "/<unnamed>"; //$NON-NLS-1$
@@ -840,7 +840,3 @@ public abstract class Preferences {
 	 */
 	public abstract String toString();
 }
-
-
-
- 

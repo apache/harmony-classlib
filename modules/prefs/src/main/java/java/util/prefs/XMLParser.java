@@ -52,18 +52,18 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * Utility class for the Preferences import/export from xml file.
+ * Utility class for the Preferences import/export from XML file.
  * 
  */
 class XMLParser {
 
     /*
-     * const - the specified dtd URL
+     * Constant - the specified DTD URL
      */
     static final String PREFS_DTD_NAME = "http://java.sun.com/dtd/preferences.dtd"; //$NON-NLS-1$
 
     /*
-     * const - the dtd string
+     * Constant - the DTD string
      */
     static final String PREFS_DTD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" //$NON-NLS-1$
             + "    <!ELEMENT preferences (root)>" //$NON-NLS-1$
@@ -77,12 +77,12 @@ class XMLParser {
             + "    <!ATTLIST entry key   CDATA #REQUIRED value CDATA #REQUIRED >"; //$NON-NLS-1$
 
     /*
-     * const - the specified header
+     * Constant - the specified header
      */
     static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //$NON-NLS-1$
 
     /*
-     * const - the specified doctype
+     * Constant - the specified DOCTYPE
      */
     static final String DOCTYPE = "<!DOCTYPE preferences SYSTEM"; //$NON-NLS-1$
 
@@ -92,17 +92,17 @@ class XMLParser {
     private static final String[] EMPTY_SARRAY = new String[0];
     
     /*
-     * const - used by FilePreferencesImpl, which is default implementation of Linux platform 
+     * Constant - used by FilePreferencesImpl, which is default implementation of Linux platform 
      */
     private static final String FILE_PREFS = "<!DOCTYPE map SYSTEM 'http://java.sun.com/dtd/preferences.dtd'>"; //$NON-NLS-1$
 
     /*
-     * const - specify the dtd version
+     * Constant - specify the DTD version
      */
     private static final float XML_VERSION = 1.0f;    
     
     /*
-     * dom builder
+     * DOM builder
      */
     private static final DocumentBuilder builder;
 
@@ -112,7 +112,7 @@ class XMLParser {
     private static int indent = -1;
 
     /*
-     * init dom builder
+     * init DOM builder
      */
     static {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -136,16 +136,16 @@ class XMLParser {
             }
         });
         builder.setErrorHandler(new ErrorHandler() {
-            public void warning(SAXParseException arg0) throws SAXException {
-                throw arg0;
+            public void warning(SAXParseException e) throws SAXException {
+                throw e;
             }
 
-            public void error(SAXParseException arg0) throws SAXException {
-                throw arg0;
+            public void error(SAXParseException e) throws SAXException {
+                throw e;
             }
 
-            public void fatalError(SAXParseException arg0) throws SAXException {
-                throw arg0;
+            public void fatalError(SAXParseException e) throws SAXException {
+                throw e;
             }
         });
     }
@@ -159,8 +159,7 @@ class XMLParser {
     static void exportPrefs(Preferences prefs, OutputStream stream,
             boolean withSubTree) throws IOException, BackingStoreException {
         indent = -1;
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(stream,
-                "utf-8")); //$NON-NLS-1$
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(stream, "UTF-8")); //$NON-NLS-1$
         out.write(HEADER);
         out.newLine();
         out.newLine();
@@ -350,7 +349,7 @@ class XMLParser {
     static void importPrefs(InputStream in) throws IOException,
             InvalidPreferencesFormatException {
         try {
-            // load xml document
+            // load XML document
             Document doc = builder.parse(new InputSource(in));
 
             // check preferences' export version
@@ -423,27 +422,26 @@ class XMLParser {
      * load preferences from file, if cannot load, create a new one FIXME: need
      * lock or not?
      * 
-     * @param file	the xml file to be read
+     * @param file	the XML file to be read
      * @return Properties instance which indicates the preferences key-value pairs
      */
     static Properties loadFilePrefs(final File file) {
-        return (Properties) AccessController
-                .doPrivileged(new PrivilegedAction() {
-                    public Object run() {
-                        return loadFilePrefsImpl(file);
-                    }
-                });
+        return AccessController.doPrivileged(new PrivilegedAction<Properties>() {
+            public Properties run() {
+                return loadFilePrefsImpl(file);
+            }
+        });
 
         // try {
         // //FIXME: lines below can be deleted, because it is not required to
-        // persistent at the very begining
+        // persistent at the very beginning
         // flushFilePrefs(file, result);
         // } catch (IOException e) {
         // e.printStackTrace();
         // }
     }
 
-    static Object loadFilePrefsImpl(final File file) {
+    static Properties loadFilePrefsImpl(final File file) {
         Properties result = new Properties();
         if (!file.exists()) {
             file.getParentFile().mkdirs();
@@ -492,13 +490,12 @@ class XMLParser {
      * @throws PrivilegedActionException
      */
     static void flushFilePrefs(final File file, final Properties prefs) throws PrivilegedActionException {
-        AccessController
-                .doPrivileged(new PrivilegedExceptionAction() {
-                    public Object run() throws IOException {
-                        flushFilePrefsImpl(file, prefs);
-                        return null;
-                    }
-                });
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+            public Object run() throws IOException {
+                flushFilePrefsImpl(file, prefs);
+                return null;
+            }
+        });
     }
     
     static void flushFilePrefsImpl(File file, Properties prefs) throws IOException {
@@ -506,7 +503,7 @@ class XMLParser {
         FileLock lock = null;
         try {
             FileOutputStream ostream = new FileOutputStream(file);
-            out = new BufferedWriter(new OutputStreamWriter(ostream, "utf-8")); //$NON-NLS-1$
+            out = new BufferedWriter(new OutputStreamWriter(ostream, "UTF-8")); //$NON-NLS-1$
             FileChannel channel = ostream.getChannel();
             lock = channel.lock();
             out.write(HEADER);
@@ -516,7 +513,7 @@ class XMLParser {
             if (prefs.size() == 0) {
                 exportEntries(EMPTY_SARRAY, EMPTY_SARRAY, out);
             } else {
-                String[] keys = (String[]) prefs.keySet().toArray(EMPTY_SARRAY);
+                String[] keys = prefs.keySet().toArray(new String[prefs.size()]);
                 int length = keys.length;
                 String[] values = new String[length];
                 for (int i = 0; i < length; i++) {
@@ -531,8 +528,9 @@ class XMLParser {
             } catch (Exception e) {//ignore
             }
             try {
-                if (null != out)
+                if (null != out) {
                     out.close();
+                }
             } catch (Exception e) {//ignore
             }
         }

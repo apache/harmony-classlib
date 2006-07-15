@@ -62,7 +62,7 @@ class FilePreferencesImpl extends AbstractPreferences {
      * --------------------------------------------------------------
      */
     static {
-        AccessController.doPrivileged(new PrivilegedAction() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 USER_HOME = System.getProperty("user.home") + "/.java/.userPrefs";//$NON-NLS-1$ //$NON-NLS-2$
                 SYSTEM_HOME = System.getProperty("java.home") + "/.systemPrefs";//$NON-NLS-1$//$NON-NLS-2$
@@ -93,10 +93,10 @@ class FilePreferencesImpl extends AbstractPreferences {
     File dir;
 
     //cache for removed prefs key-value pair
-    private Set removed = new HashSet();
+    private Set<String> removed = new HashSet<String>();
 
     //cache for updated prefs key-value pair
-    private Set updated = new HashSet();
+    private Set<String> updated = new HashSet<String>();
 
     /*
      * --------------------------------------------------------------
@@ -114,12 +114,11 @@ class FilePreferencesImpl extends AbstractPreferences {
 
     private void initPrefs() {
         dir = new File(path);
-        newNode = ((Boolean) AccessController
-                .doPrivileged(new PrivilegedAction() {
-                    public Object run() {
-                        return Boolean.valueOf(!dir.exists());
-                    }
-                })).booleanValue();
+        newNode = (AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
+                return Boolean.valueOf(!dir.exists());
+            }
+        })).booleanValue();
         prefsFile = new File(path + File.separator + prefsFileName);
         prefs = XMLParser.loadFilePrefs(prefsFile);
     }
@@ -146,13 +145,12 @@ class FilePreferencesImpl extends AbstractPreferences {
      * @see java.util.prefs.AbstractPreferences#chilrenNamesSpi()
      */
     protected String[] childrenNamesSpi() throws BackingStoreException {
-        String[] names = (String[]) AccessController
-                .doPrivileged(new PrivilegedAction() {
-                    public Object run() {
+        String[] names = AccessController
+                .doPrivileged(new PrivilegedAction<String[]>() {
+                    public String[] run() {
                         return dir.list(new FilenameFilter() {
                             public boolean accept(File parent, String name) {
-                                return new File(path + File.separator + name)
-                                        .isDirectory(); //$NON-NLS-1$
+                                return new File(path + File.separator + name).isDirectory(); 
                             }
                         });
 
@@ -189,7 +187,7 @@ class FilePreferencesImpl extends AbstractPreferences {
             // reload
             Properties currentPrefs = XMLParser.loadFilePrefs(prefsFile);
             // merge
-            Iterator it = removed.iterator();
+            Iterator<String> it = removed.iterator();
             while (it.hasNext()) {
                 currentPrefs.remove(it.next());
             }
@@ -230,7 +228,7 @@ class FilePreferencesImpl extends AbstractPreferences {
      * @see java.util.prefs.AbstractPreferences#keysSpi()
      */
     protected String[] keysSpi() throws BackingStoreException {
-        return (String[]) prefs.keySet().toArray(new String[0]);
+        return prefs.keySet().toArray(new String[0]);
     }
 
     /*
@@ -250,15 +248,15 @@ class FilePreferencesImpl extends AbstractPreferences {
      * @see java.util.prefs.AbstractPreferences#removeNodeSpi()
      */
     protected void removeNodeSpi() throws BackingStoreException {
-        boolean removeSucceed = ((Boolean) AccessController
-                .doPrivileged(new PrivilegedAction() {
-                    public Object run() {
-                        prefsFile.delete();
-                        return Boolean.valueOf(dir.delete());
-                    }
-                })).booleanValue();
-        if (!removeSucceed)
+        boolean removeSucceed = (AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
+                prefsFile.delete();
+                return Boolean.valueOf(dir.delete());
+            }
+        })).booleanValue();
+        if (!removeSucceed) {
             throw new BackingStoreException("Cannot remove " + toString() + "!"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
     }
 
     /*
@@ -282,5 +280,3 @@ class FilePreferencesImpl extends AbstractPreferences {
     }
 
 }
-
-

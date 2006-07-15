@@ -17,7 +17,7 @@
 package java.util.prefs;
 
 /**
- * This interfaceis used by {@link java.util.prefs.Preferences Preferences} class 
+ * This interface is used by {@link Preferences} class 
  * as factory class to create Preferences instance. This interface can be implemented 
  * and installed to replace the default preferences implementation.
  * 

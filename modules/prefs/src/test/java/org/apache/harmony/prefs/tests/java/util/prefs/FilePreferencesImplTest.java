@@ -23,29 +23,31 @@ import java.util.prefs.Preferences;
 
 import junit.framework.TestCase;
 
-/**
- * TODO Type description
- * 
- */
 public class FilePreferencesImplTest extends TestCase {
 
-	Preferences uroot = Preferences.userRoot();
-
-	Preferences sroot = Preferences.systemRoot();
-
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    private String prevFactory;
+	private Preferences uroot;
+	private Preferences sroot;
+    
+    public FilePreferencesImplTest() {
+        super();
+    }
+    
+    protected void setUp() throws Exception {
+        prevFactory = System.getProperty("java.util.prefs.PreferencesFactory");
+        System.setProperty("java.util.prefs.PreferencesFactory", "java.util.prefs.FilePreferencesFactoryImpl");
+        
+        uroot = Preferences.userRoot();
+        sroot = Preferences.systemRoot();
+    }
+    
+    protected void tearDown() throws Exception {
+        if (prevFactory != null)
+            System.setProperty("java.util.prefs.PreferencesFactory", prevFactory);
+        
+        uroot = null;
+        sroot = null;
+    }
 
 	public void testPutGet() throws IOException, BackingStoreException {
 		uroot.put("ukey1", "value1");
@@ -75,6 +77,7 @@ public class FilePreferencesImplTest extends TestCase {
 		Preferences child1 = uroot.node("child1");
 		Preferences child2 = uroot.node("\u4e2d child2");
 		Preferences grandchild = child1.node("grand");
+        assertNotNull(grandchild);
 
 		String[] childNames = uroot.childrenNames();
 		assertEquals(2, childNames.length);

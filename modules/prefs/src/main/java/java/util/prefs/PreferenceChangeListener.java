@@ -19,7 +19,7 @@ package java.util.prefs;
 import java.util.EventListener;
 
 /**
- * This interface is used to handle preferences change event. Implmenetation 
+ * This interface is used to handle preferences change event. Implementation 
  * of this interface can be installed by <code>Preferences</code> instance.
  * 
  * @see Preferences
@@ -31,7 +31,7 @@ import java.util.EventListener;
 public interface PreferenceChangeListener extends EventListener {
     
     /**
-     * This method gets invoked whenener some preference is added, deleted or 
+     * This method gets invoked whenever some preference is added, deleted or 
      * updated.
      * 
      * @param pce 	the event instance which describes the changed Preferences 
