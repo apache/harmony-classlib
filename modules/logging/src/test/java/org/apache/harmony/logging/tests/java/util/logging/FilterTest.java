@@ -25,8 +25,6 @@ import junit.framework.TestCase;
  * 
  */
 public class FilterTest extends TestCase {
-	private static String className = FilterTest.class.getName();
-
 	public void testFilter() {
 		MockFilter f = new MockFilter();
 		f.isLoggable(null);

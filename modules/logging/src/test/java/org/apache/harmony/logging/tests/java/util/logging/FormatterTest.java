@@ -24,12 +24,7 @@ import java.util.logging.LogRecord;
 
 import junit.framework.TestCase;
 
-/**
- * 
- */
 public class FormatterTest extends TestCase {
-	private static String className = FormatterTest.class.getName();
-
 	Formatter f;
 
 	LogRecord r;
@@ -43,22 +38,6 @@ public class FormatterTest extends TestCase {
 		super.setUp();
 		f = new MockFormatter();
 		r = new LogRecord(Level.FINE, MSG);
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	/**
-	 * Constructor for FormatterTest.
-	 * 
-	 * @param arg0
-	 */
-	public FormatterTest(String arg0) {
-		super(arg0);
 	}
 
 	public void testFormat() {

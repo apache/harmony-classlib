@@ -150,7 +150,7 @@ public class LogManagerTest extends TestCase {
 
 		assertNull(mockManager.getLogger("bad name"));
 
-		Enumeration enumar = mockManager.getLoggerNames();
+		Enumeration<String> enumar = mockManager.getLoggerNames();
 		int i = 0;
 		while (enumar.hasMoreElements()) {
 			String name = (String) enumar.nextElement();
@@ -168,7 +168,7 @@ public class LogManagerTest extends TestCase {
 		assertSame(foo, mockManager.getLogger("foo"));
 		assertFalse(mockManager.addLogger(foo2));
 		assertSame(foo, mockManager.getLogger("foo"));
-		Enumeration enumar = mockManager.getLoggerNames();
+		Enumeration<String> enumar = mockManager.getLoggerNames();
 		int i = 0;
 		while (enumar.hasMoreElements()) {
 			enumar.nextElement();

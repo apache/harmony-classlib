@@ -300,8 +300,7 @@ public class StreamHandlerTest extends TestCase {
 		assertEquals(LogManager.getLogManager().getProperty(
 				"java.util.logging.StreamHandler.encoding"), "iso-8859-1");
 		try {
-			StreamHandler h = new StreamHandler(new ByteArrayOutputStream(),
-					null);
+			new StreamHandler(new ByteArrayOutputStream(), null);
 			fail("Should throw NullPointerException!");
 		} catch (NullPointerException e) {
 		}
@@ -328,7 +327,7 @@ public class StreamHandlerTest extends TestCase {
 		assertEquals(LogManager.getLogManager().getProperty(
 				"java.util.logging.StreamHandler.encoding"), "iso-8859-1");
 		try {
-			StreamHandler h = new StreamHandler(null, new MockFormatter2());
+			new StreamHandler(null, new MockFormatter2());
 			fail("Should throw NullPointerException!");
 		} catch (NullPointerException e) {
 		}

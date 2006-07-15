@@ -219,7 +219,7 @@ public class SocketHandlerTest extends TestCase {
 		oldMan = System.getSecurityManager();
 		System.setSecurityManager(new MockNoSocketSecurityManager());
 		try {
-			Handler h = new SocketHandler();
+			new SocketHandler();
 			fail("Should throw SecurityException!");
 		} catch (SecurityException e) {
 		} finally {
@@ -227,7 +227,7 @@ public class SocketHandlerTest extends TestCase {
 		}
 		System.setSecurityManager(new MockNoSocketSecurityManager());
 		try {
-			Handler h = new SocketHandler("127.0.0.1", 6666);
+			new SocketHandler("127.0.0.1", 6666);
 			fail("Should throw SecurityException!");
 		} catch (SecurityException e) {
 		} finally {

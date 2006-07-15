@@ -40,8 +40,6 @@ import tests.util.CallVerificationStack;
  */
 public class LoggerTest extends TestCase {
 
-	private static String className = LoggerTest.class.getName();
-
 	private final static String VALID_RESOURCE_BUNDLE = "bundles/java/util/logging/res";
 
 	private final static String VALID_RESOURCE_BUNDLE2 = "bundles/java/util/logging/res2";
@@ -118,7 +116,7 @@ public class LoggerTest extends TestCase {
 		assertEquals("myname", mlog.getName());
 		assertNull(mlog.getParent());
 		ResourceBundle rb = mlog.getResourceBundle();
-		assertEquals(VALID_VALUE, mlog.getResourceBundle().getString(VALID_KEY));
+		assertEquals(VALID_VALUE, rb.getString(VALID_KEY));
 		assertEquals(mlog.getResourceBundleName(), VALID_RESOURCE_BUNDLE);
 		assertTrue(mlog.getUseParentHandlers());
 	}
@@ -492,31 +490,27 @@ public class LoggerTest extends TestCase {
 	 * existing logger with different associated resource bundle.
 	 */
 	public void testGetLoggerWithRes_ExistingLoggerWithDiffRes() {
-		assertNull(LogManager.getLogManager().getLogger(
-				"testGetLoggerWithRes_ExistingLoggerWithDiffRes_ANewLogger"));
-		// create a new logger
-		Logger log1 = Logger.getLogger(
-				"testGetLoggerWithRes_ExistingLoggerWithDiffRes_ANewLogger",
-				VALID_RESOURCE_BUNDLE);
-		// get an existing logger
-		try {
-			Logger log2 = Logger
-					.getLogger(
-							"testGetLoggerWithRes_ExistingLoggerWithDiffRes_ANewLogger",
-							VALID_RESOURCE_BUNDLE2);
-			fail("Should throw IllegalArgumentException!");
-		} catch (IllegalArgumentException e) {
-		}
+        assertNull(LogManager.getLogManager().getLogger(
+                "testGetLoggerWithRes_ExistingLoggerWithDiffRes_ANewLogger"));
+        // create a new logger
+        Logger log1 = Logger.getLogger(
+                "testGetLoggerWithRes_ExistingLoggerWithDiffRes_ANewLogger",
+                VALID_RESOURCE_BUNDLE);
+        assertNotNull(log1);
+        // get an existing logger
+        try {
+            Logger.getLogger("testGetLoggerWithRes_ExistingLoggerWithDiffRes_ANewLogger",
+                    VALID_RESOURCE_BUNDLE2);
+            fail("Should throw IllegalArgumentException!");
+        } catch (IllegalArgumentException e) {
+        }
 
-		try {
-			Logger log2 = Logger
-					.getLogger(
-							"testGetLoggerWithRes_ExistingLoggerWithDiffRes_ANewLogger",
-							null);
-			fail("Should throw IllegalArgumentException!");
-		} catch (IllegalArgumentException e) {
-		}
-	}
+        try {
+            Logger.getLogger("testGetLoggerWithRes_ExistingLoggerWithDiffRes_ANewLogger", null);
+            fail("Should throw IllegalArgumentException!");
+        } catch (IllegalArgumentException e) {
+        }
+    }
 
 	/*
 	 * Test getLogger(String, String) with invalid name.

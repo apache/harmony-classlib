@@ -16,12 +16,10 @@
 package org.apache.harmony.logging.tests.java.util.logging;
 
 import java.io.Serializable;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import junit.framework.TestCase;
-
 import tests.util.SerializationTester;
 
 /**
@@ -32,8 +30,6 @@ public class LevelTest extends TestCase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static String className = LevelTest.class.getName();
-
 	transient ResourceBundle rb;
 
 	/*
@@ -42,13 +38,6 @@ public class LevelTest extends TestCase implements Serializable {
 	protected void setUp() throws Exception {
 		super.setUp();
 		rb = ResourceBundle.getBundle("bundles/java/util/logging/res");
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	/*
@@ -68,7 +57,7 @@ public class LevelTest extends TestCase implements Serializable {
 	 */
 	public void testConstructorNoResBundle_NullName() {
         try {
-            MockLevel l = new MockLevel(null, -2);
+            new MockLevel(null, -2);
             fail("No expected NullPointerException");
         } catch (NullPointerException ignore) {
         }
@@ -101,7 +90,7 @@ public class LevelTest extends TestCase implements Serializable {
 	 */
 	public void testConstructorHavingResBundle_NullName() {
         try {
-            MockLevel l = new MockLevel(null, -123, "qwe");
+            new MockLevel(null, -123, "qwe");
             fail("No expected NullPointerException");
         } catch (NullPointerException ignore) {
         }
@@ -150,7 +139,7 @@ public class LevelTest extends TestCase implements Serializable {
 	 */
 	public void testParse_EmptyString() {
 		try {
-			Level l = Level.parse("");
+			Level.parse("");
 			fail("Should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}

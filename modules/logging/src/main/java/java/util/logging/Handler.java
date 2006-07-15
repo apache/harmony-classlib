@@ -103,12 +103,13 @@ public abstract class Handler {
     // get a instance from given class name, using context classloader
     private Object getCustomizeInstance(final String className)
             throws Exception {
-        Class c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class>() {
-                    public Class run() throws Exception {
+        Class<?> c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+                    public Class<?> run() throws Exception {
                         ClassLoader loader = Thread.currentThread()
                                 .getContextClassLoader();
-                        if (null == loader)
+                        if (null == loader) {
                             loader = ClassLoader.getSystemClassLoader();
+                        }
                         return loader.loadClass(className);
                     }
                 });
@@ -236,9 +237,9 @@ public abstract class Handler {
     }
 
     /**
-     * Gets the fomatter used by this handler to format the logging messages.
+     * Gets the formatter used by this handler to format the logging messages.
      * 
-     * @return the fomatter used by this handler
+     * @return the formatter used by this handler
      */
     public Formatter getFormatter() {
         return this.formatter;
@@ -265,7 +266,7 @@ public abstract class Handler {
     public boolean isLoggable(LogRecord record) {
         if (null == record) {
             reportError(
-                    "Null pointer of LogRecord", new NullPointerException("null"), ErrorManager.GENERIC_FAILURE); //$NON-NLS-1$ //$NON-NLS-2$
+                    "Null pointer of LogRecord", new NullPointerException(), ErrorManager.GENERIC_FAILURE); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
         if (this.level.intValue() == Level.OFF.intValue()) {
@@ -346,7 +347,7 @@ public abstract class Handler {
     public void setErrorManager(ErrorManager em) {
         LogManager.getLogManager().checkAccess();
         if (null == em) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException();
         }
         this.errorMan = em;
     }
@@ -370,11 +371,11 @@ public abstract class Handler {
      * not check security.
      * 
      * @param newFormatter
-     *            the fomatter to set
+     *            the formatter to set
      */
     void internalSetFormatter(Formatter newFormatter) {
         if (null == newFormatter) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException();
         }
         this.formatter = newFormatter;
     }
@@ -383,7 +384,7 @@ public abstract class Handler {
      * Sets the formatter to be used by this handler.
      * 
      * @param newFormatter
-     *            the fomatter to set
+     *            the formatter to set
      * @throws SecurityException
      *             If a security manager determines that the caller does not
      *             have the required permission.
@@ -404,7 +405,7 @@ public abstract class Handler {
      */
     public void setLevel(Level newLevel) {
         if (null == newLevel) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException();
         }
         LogManager.getLogManager().checkAccess();
         this.level = newLevel;

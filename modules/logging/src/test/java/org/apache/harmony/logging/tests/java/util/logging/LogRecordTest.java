@@ -25,9 +25,6 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 import tests.util.SerializationTester;
 
-/**
- * 
- */
 public class LogRecordTest extends TestCase {
 
 	static final String MSG = "test msg, pls. ignore itb";
@@ -36,39 +33,20 @@ public class LogRecordTest extends TestCase {
 
 	private static String className = LogRecordTest.class.getName();
 
-	/*
-	 * @see TestCase#setUp()
-	 */
 	protected void setUp() throws Exception {
 		super.setUp();
 		lr = new LogRecord(Level.CONFIG, MSG);
 
 	}
 
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	/**
-	 * Constructor for LogRecordTest.
-	 * 
-	 * @param arg0
-	 */
-	public LogRecordTest(String arg0) {
-		super(arg0);
-	}
-
 	public void testLogRecordWithNullPointers() {
 		try {
-			LogRecord r = new LogRecord(null, null);
+			new LogRecord(null, null);
 			fail("should throw NullPointerException");
 		} catch (NullPointerException e) {
 		}
 		try {
-			LogRecord r = new LogRecord(null, MSG);
+			new LogRecord(null, MSG);
 			fail("should throw NullPointerException");
 		} catch (NullPointerException e) {
 		}
@@ -248,6 +226,7 @@ public class LogRecordTest extends TestCase {
 
 	public void testGetSetMillis() {
 		long milli = lr.getMillis();
+        assertTrue(milli > 0);
 		lr.setMillis(-1);
 		assertEquals(-1, lr.getMillis());
 		lr.setMillis(0);

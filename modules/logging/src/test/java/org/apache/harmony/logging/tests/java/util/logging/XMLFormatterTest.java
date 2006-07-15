@@ -24,9 +24,6 @@ import java.util.logging.XMLFormatter;
 
 import junit.framework.TestCase;
 
-/**
- * 
- */
 public class XMLFormatterTest extends TestCase {
 
 	XMLFormatter formatter = null;
@@ -35,23 +32,11 @@ public class XMLFormatterTest extends TestCase {
 
 	LogRecord lr = null;
 
-	private static String className = XMLFormatterTest.class.getName();
-
-	/*
-	 * @see TestCase#setUp()
-	 */
 	protected void setUp() throws Exception {
 		super.setUp();
 		formatter = new XMLFormatter();
 		handler = new MockHandler();
 		lr = new LogRecord(Level.SEVERE, "pattern");
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	public void testLocalFormat() {
@@ -138,7 +123,6 @@ public class XMLFormatterTest extends TestCase {
 
 	public void testGetHead() throws SecurityException,
 			UnsupportedEncodingException {
-		String defaultEncoding = System.getProperty("file.encoding");
 		String result = formatter.getHead(handler);
 		assertNull(handler.getEncoding());
 		// TODO: where do we get the default encoding from?

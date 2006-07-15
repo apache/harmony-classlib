@@ -49,8 +49,6 @@ public class MemoryHandlerTest extends TestCase {
 
 	final static SecurityManager securityManager = new MockSecurityManager();
 
-	private static String className = MemoryHandlerTest.class.getName();
-
 	MemoryHandler handler;
 
 	Handler target = new MockHandler();

@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
  * There is only one global <code>LogManager</code> instance in the
  * application, which can be get by calling static method
  * <code>LogManager.getLogManager()</code>. This instance is created and
- * inited during class initialization and cannot be changed.
+ * initialized during class initialization and cannot be changed.
  * </p>
  * <p>
  * The <code>LogManager</code> class can be specified by
@@ -73,25 +73,25 @@ import java.util.StringTokenizer;
  * </p>
  * <p>
  * If "java.util.logging.config.class" property is not set, or it is invalid, or
- * some exception is throwed during the instantiation, then the
+ * some exception is thrown during the instantiation, then the
  * "java.util.logging.config.file" system property can be used to specify a
  * properties file. The <code>LogManager</code> will read initial
  * configuration from this file.
  * </p>
  * <p>
- * If neither of these properties is defined, or some exception is throwed
+ * If neither of these properties is defined, or some exception is thrown
  * during these two properties using, the <code>LogManager</code> will read
  * its initial configuration from default properties file, as described above.
  * </p>
  * <p>
  * The global logging properties may include:
  * <ul>
- * <li>"handlers". This property's valus should be a list of class names for
+ * <li>"handlers". This property's values should be a list of class names for
  * handler classes separated by whitespace, these classes must be subclasses of
  * <code>Handler</code> and each must have a default constructor, these
  * classes will be loaded, instantiated and registered as handlers on the root
  * <code>Logger</code> (the <code>Logger</code> named ""). These
- * <code>Handler</code>s maybe inited lazily.</li>
+ * <code>Handler</code>s maybe initialized lazily.</li>
  * <li>"config". The property defines a list of class names separated by
  * whitespace. Each class must have a default constructor, in which it can
  * update the logging configuration, such as levels, handlers, or filters for
@@ -158,10 +158,10 @@ public class LogManager {
     private Logger root;
 
     // the configuration properties
-    private Properties props = null;
+    private Properties props;
 
     // the property change listener
-    private PropertyChangeSupport listeners = null;
+    private PropertyChangeSupport listeners;
 
     /*
      * -------------------------------------------------------------------
@@ -240,7 +240,7 @@ public class LogManager {
      * Check that the caller has <code>LoggingPermission("control")</code> so
      * that it is trusted to modify the configuration for logging framework. If
      * the check passes, just return, otherwise <code>SecurityException</code>
-     * will be throwed.
+     * will be thrown.
      * 
      * @throws SecurityException
      *             if there is a security manager in operation and the invoker
@@ -409,7 +409,7 @@ public class LogManager {
     // use SystemClassLoader to load class from system classpath
     static Object getInstanceByClass(final String className) {
         try {
-            Class clazz = ClassLoader.getSystemClassLoader().loadClass(
+            Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(
                     className);
             return clazz.newInstance();
         } catch (Exception e) {
@@ -421,7 +421,7 @@ public class LogManager {
 
     }
 
-    // actual default initilization process
+    // actual default initialization process
     private synchronized void readConfigurationImpl() throws IOException {
         checkAccess();
         boolean needInit = true;
@@ -440,7 +440,7 @@ public class LogManager {
             String configFile = getSystemProperty("java.util.logging.config.file"); //$NON-NLS-1$
             if (null == configFile) {
                 // if cannot find configFile, use default logging.properties
-                configFile = new StringBuffer().append(
+                configFile = new StringBuilder().append(
                         System.getProperty("java.home")).append(fileSeparator) //$NON-NLS-1$
                         .append("lib").append(fileSeparator).append( //$NON-NLS-1$
                                 "logging.properties").toString(); //$NON-NLS-1$
@@ -477,7 +477,7 @@ public class LogManager {
 
     // init "level" properties for all registered loggers
     private void initLevelForLoggers() {
-        Enumeration enumeration = props.propertyNames();
+        Enumeration<?> enumeration = props.propertyNames();
         while (enumeration.hasMoreElements()) {
             // search for all properties whose name is ended with ".level"
             String loggerLevel = (String) enumeration.nextElement();
@@ -561,7 +561,7 @@ public class LogManager {
     public synchronized void reset() {
         checkAccess();
         props.clear();
-        Iterator it = loggers.values().iterator();
+        Iterator<Logger> it = loggers.values().iterator();
         while (it.hasNext()) {
             Logger l = (Logger) it.next();
             l.setLevel(null);

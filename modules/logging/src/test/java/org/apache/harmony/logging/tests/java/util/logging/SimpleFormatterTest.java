@@ -34,8 +34,6 @@ public class SimpleFormatterTest extends TestCase {
 
 	private static String MSG = "test msg. pls. ignore it\nadaadasfdasfd\nadfafdadfsa";
 
-	private static String className = SimpleFormatterTest.class.getName();
-
 	/*
 	 * @see TestCase#setUp()
 	 */
@@ -43,22 +41,6 @@ public class SimpleFormatterTest extends TestCase {
 		super.setUp();
 		sf = new SimpleFormatter();
 		lr = new LogRecord(Level.FINE, MSG);
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	/**
-	 * Constructor for SimpleFormatterTest.
-	 * 
-	 * @param arg0
-	 */
-	public SimpleFormatterTest(String arg0) {
-		super(arg0);
 	}
 
 	public void testFormatNull() {

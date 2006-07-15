@@ -19,35 +19,12 @@ import java.util.logging.ErrorManager;
 
 import junit.framework.TestCase;
 
-/**
- */
 public class ErrorManagerTest extends TestCase {
-	private static String className = ErrorManagerTest.class.getName();
-
 	ErrorManager em;
 
-	/*
-	 * @see TestCase#setUp()
-	 */
 	protected void setUp() throws Exception {
 		super.setUp();
 		em = new ErrorManager();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	/**
-	 * Constructor for ErrorManagerTest.
-	 * 
-	 * @param arg0
-	 */
-	public ErrorManagerTest(String arg0) {
-		super(arg0);
 	}
 
 	public void testErrorWithNullParameter() {

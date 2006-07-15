@@ -497,7 +497,7 @@ public class FileHandlerTest extends TestCase {
 		assertFalse(file.exists());
 
 		try {
-			FileHandler h = new FileHandler(null);
+			new FileHandler(null);
 			fail("should throw null exception");
 		} catch (NullPointerException e) {
 		}
@@ -507,22 +507,22 @@ public class FileHandlerTest extends TestCase {
 			fail("should not throw NPE");
 		}
 		try {
-			FileHandler h = new FileHandler(null, false);
+			new FileHandler(null, false);
 			fail("should throw null exception");
 		} catch (NullPointerException e) {
 		}
 		try {
-			FileHandler h = new FileHandler("");
+			new FileHandler("");
 			fail("should throw null exception");
 		} catch (NullPointerException e) {
 		}
 		try {
-			FileHandler h = new FileHandler("%t/java%u", 0, 0);
+			new FileHandler("%t/java%u", 0, 0);
 			fail("should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}
 		try {
-			FileHandler h = new FileHandler("%t/java%u", -1, 1);
+			new FileHandler("%t/java%u", -1, 1);
 			fail("should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}

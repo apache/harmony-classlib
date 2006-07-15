@@ -26,7 +26,7 @@ import java.security.PrivilegedExceptionAction;
  * <p> 
  * Mostly this <code>MemoryHandler</code> just puts the given <code>LogRecord</code>
  * into the internal buffer and doesn't perform any formatting or any other process.
- * When the buffer is full, the earlist buffered records will be discarded.  
+ * When the buffer is full, the earliest buffered records will be discarded.  
  * </p>
  * <p>
  * Every <code>MemoryHandler</code> has a target handler, and push action can be 
@@ -44,7 +44,7 @@ import java.security.PrivilegedExceptionAction;
  * </p>
  * <p>
  * <code>MemoryHandler</code> will read following <code>LogManager</code> 
- * properties for initialization, if given propeties are not defined or has 
+ * properties for initialization, if given properties are not defined or has 
  * invalid values, default value will be used.
  * <ul>
  * <li>java.util.logging.MemoryHandler.level specifies the level for this 
@@ -107,8 +107,8 @@ public class MemoryHandler extends Handler {
         //init target
         final String targetName = manager.getProperty(className+".target"); //$NON-NLS-1$
         try {
-            Class targetClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class>(){
-                public Class run() throws Exception{
+            Class<?> targetClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>(){
+                public Class<?> run() throws Exception{
                     ClassLoader loader = Thread.currentThread().getContextClassLoader();
                     if(loader == null){
                         loader = ClassLoader.getSystemClassLoader();
@@ -235,7 +235,7 @@ public class MemoryHandler extends Handler {
      * </p>
      * <p>
      * The given <code>LogRecord</code> is loggable if and only if it has 
-     * approriate level and it pass any associated filter's check. 
+     * appropriate level and it pass any associated filter's check. 
      * </p>
      * <p>
      * Note that the push level is not used for this check. 
@@ -249,7 +249,7 @@ public class MemoryHandler extends Handler {
     }
 
     /**
-     * Trig a push action to output all buffered records to the target handler,
+     * Triggers a push action to output all buffered records to the target handler,
      * and the target handler will publish them. Then the buffer is cleared.
      */
     public void push() {
@@ -285,7 +285,4 @@ public class MemoryHandler extends Handler {
         newLevel.intValue();
         this.push = newLevel;
     }
-
 }
-
-

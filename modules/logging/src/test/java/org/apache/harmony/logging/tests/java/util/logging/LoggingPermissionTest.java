@@ -20,34 +20,7 @@ import java.util.logging.LoggingPermission;
 import junit.framework.TestCase;
 import tests.util.SerializationTester;
 
-/**
- */
 public class LoggingPermissionTest extends TestCase {
-	private static String className = LoggingPermissionTest.class.getName();
-
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	/**
-	 * Constructor for LoggingPermissionTest.
-	 * 
-	 * @param arg0
-	 */
-	public LoggingPermissionTest(String arg0) {
-		super(arg0);
-	}
-
 	public void testSerializationCompability() throws Exception {
 		LoggingPermission lp = new LoggingPermission("control", "");
 		SerializationTester.assertCompabilityEquals(lp,
@@ -56,33 +29,35 @@ public class LoggingPermissionTest extends TestCase {
 
 	public void testLoggingPermission() {
 		try {
-			LoggingPermission lp = new LoggingPermission(null, null);
+			new LoggingPermission(null, null);
 			fail("should throw IllegalArgumentException");
 		} catch (NullPointerException e) {
 		}
 		try {
-			LoggingPermission lp = new LoggingPermission("", null);
+			new LoggingPermission("", null);
 			fail("should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}
 		try {
-			LoggingPermission lp = new LoggingPermission("bad name", null);
+			new LoggingPermission("bad name", null);
 			fail("should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}
 		try {
-			LoggingPermission lp = new LoggingPermission("Control", null);
+			new LoggingPermission("Control", null);
 			fail("should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}
 		try {
-			LoggingPermission lp = new LoggingPermission("control",
+			new LoggingPermission("control",
 					"bad action");
 			fail("should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}
-		LoggingPermission lp = new LoggingPermission("control", "");
-		lp = new LoggingPermission("control", null);
+		
+        new LoggingPermission("control", "");
+		
+        new LoggingPermission("control", null);
 	}
 
 }
