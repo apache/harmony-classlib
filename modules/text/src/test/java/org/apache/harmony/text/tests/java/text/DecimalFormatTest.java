@@ -408,6 +408,8 @@ public class DecimalFormatTest extends TestCase {
         assertEquals(maxIntDigit, nform.getMaximumIntegerDigits());
         assertEquals(maxIntDigit, form.getMaximumIntegerDigits());
 
+        // regression test for HARMONY-878
+        assertTrue(new DecimalFormat("0\t0").getMaximumIntegerDigits() > 0);
     }
 
     public void test_getMinimumIntegerDigits() {
