@@ -35,9 +35,8 @@ public class UnknownFormatConversionExceptionTest extends TestCase {
 			String s = null;
 			UnknownFormatConversionException UnknownFormatConversionException = new UnknownFormatConversionException(
 					s);
-			fail("should throw NullPointerExcepiton");
 		} catch (NullPointerException e) {
-			// expected
+			fail("should not throw NullPointerExcepiton");
 		}
 
 	}
