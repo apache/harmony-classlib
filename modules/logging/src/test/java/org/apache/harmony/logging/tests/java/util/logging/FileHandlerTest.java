@@ -503,8 +503,8 @@ public class FileHandlerTest extends TestCase {
 		}
 		try {
 			handler.publish(null);
-			fail("should throw null exception");
 		} catch (NullPointerException e) {
+			fail("should not throw NPE");
 		}
 		try {
 			FileHandler h = new FileHandler(null, false);

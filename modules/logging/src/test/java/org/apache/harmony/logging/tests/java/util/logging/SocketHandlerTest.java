@@ -594,8 +594,6 @@ public class SocketHandlerTest extends TestCase {
 		h.setLevel(Level.INFO);
 		try {
 			h.publish(null);
-			fail("Should throw NullPointerException!");
-		} catch (NullPointerException e) {
 		} finally {
 			h.close();
 			// ensure the thread exits and the port becomes available again
