@@ -363,6 +363,9 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public void exportNode(OutputStream ostream) throws IOException,
             BackingStoreException {
+        if(ostream == null) {
+            throw new AssertionError("Stream is null"); //$NON-NLS-1$
+        }
         checkState();
         XMLParser.exportPrefs(this, ostream, false);
 
@@ -374,6 +377,10 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public void exportSubtree(OutputStream ostream) throws IOException,
             BackingStoreException {
+        if(ostream == null) {
+            throw new AssertionError("Stream is null"); //$NON-NLS-1$
+        }
+
         checkState();
         XMLParser.exportPrefs(this, ostream, true);
     }
