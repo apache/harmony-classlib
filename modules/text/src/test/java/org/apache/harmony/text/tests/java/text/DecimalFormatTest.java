@@ -1453,6 +1453,10 @@ public class DecimalFormatTest extends TestCase {
         assertEquals("Wrong format", "50", df.format(5));
         assertEquals("Wrong parse", 5, df.parse("50", new ParsePosition(0))
                 .intValue());
+        
+        // regression test for HARMONY-879
+        df.setMultiplier(-1);
+        assertEquals("Wrong  multiplier for negative value", -1, df.getMultiplier());
     }
 
     /**
