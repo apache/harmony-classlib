@@ -50,6 +50,8 @@ public class DataFormatFieldTest extends TestCase{
 	}
 
     static class MyField extends DateFormat.Field {
+        private static final long serialVersionUID = 1L;
+
         protected MyField(String fieldName, int calendarField) {
             super(fieldName, calendarField);
         }
@@ -175,7 +177,7 @@ public class DataFormatFieldTest extends TestCase{
             out = new ObjectOutputStream(bytes);
 
             DateFormat.Field dfield, dfield2;
-            MyField field, field2;
+            MyField field;
 
             // a regular instance of DateFormat.Field
             dfield = DateFormat.Field.MILLISECOND;
@@ -197,7 +199,7 @@ public class DataFormatFieldTest extends TestCase{
             }
 
             try {
-                field2 = (MyField) in.readObject();
+                in.readObject();
                 fail("Expected InvalidObjectException for subclass instance with null name");
             } catch (InvalidObjectException e) {
             }

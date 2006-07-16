@@ -80,10 +80,12 @@ public abstract class NumberFormat extends Format {
 	 * @see #hashCode
 	 */
 	public boolean equals(Object object) {
-		if (object == this)
-			return true;
-		if (!(object instanceof NumberFormat))
-			return false;
+		if (object == this) {
+            return true;
+        }
+		if (!(object instanceof NumberFormat)) {
+            return false;
+        }
 		NumberFormat obj = (NumberFormat) object;
 		return groupingUsed == obj.groupingUsed
 				&& parseIntegerOnly == obj.parseIntegerOnly
@@ -173,8 +175,9 @@ public abstract class NumberFormat extends Format {
 		if (object instanceof Number) {
 			double dv = ((Number) object).doubleValue();
 			long lv = ((Number) object).longValue();
-			if (dv == lv)
-				return format(lv, buffer, field);
+			if (dv == lv) {
+                return format(lv, buffer, field);
+            }
 			return format(dv, buffer, field);
 		}
 		throw new IllegalArgumentException();
@@ -417,8 +420,9 @@ public abstract class NumberFormat extends Format {
 	public Number parse(String string) throws ParseException {
 		ParsePosition pos = new ParsePosition(0);
 		Number number = parse(string, pos);
-		if (pos.getErrorIndex() != -1 || pos.getIndex() == 0)
-			throw new ParseException(null, pos.getErrorIndex());
+		if (pos.getErrorIndex() != -1 || pos.getIndex() == 0) {
+            throw new ParseException(null, pos.getErrorIndex());
+        }
 		return number;
 	}
 
@@ -493,8 +497,9 @@ public abstract class NumberFormat extends Format {
 	 */
 	public void setMaximumFractionDigits(int value) {
 		maximumFractionDigits = value < 0 ? 0 : value;
-		if (maximumFractionDigits < minimumFractionDigits)
-			minimumFractionDigits = maximumFractionDigits;
+		if (maximumFractionDigits < minimumFractionDigits) {
+            minimumFractionDigits = maximumFractionDigits;
+        }
 	}
 
 	/**
@@ -507,8 +512,9 @@ public abstract class NumberFormat extends Format {
 	 */
 	public void setMaximumIntegerDigits(int value) {
 		maximumIntegerDigits = value < 0 ? 0 : value;
-		if (maximumIntegerDigits < minimumIntegerDigits)
-			minimumIntegerDigits = maximumIntegerDigits;
+		if (maximumIntegerDigits < minimumIntegerDigits) {
+            minimumIntegerDigits = maximumIntegerDigits;
+        }
 	}
 
 	/**
@@ -520,8 +526,9 @@ public abstract class NumberFormat extends Format {
 	 */
 	public void setMinimumFractionDigits(int value) {
 		minimumFractionDigits = value < 0 ? 0 : value;
-		if (maximumFractionDigits < minimumFractionDigits)
-			maximumFractionDigits = minimumFractionDigits;
+		if (maximumFractionDigits < minimumFractionDigits) {
+            maximumFractionDigits = minimumFractionDigits;
+        }
 	}
 
 	/**
@@ -533,8 +540,9 @@ public abstract class NumberFormat extends Format {
 	 */
 	public void setMinimumIntegerDigits(int value) {
 		minimumIntegerDigits = value < 0 ? 0 : value;
-		if (maximumIntegerDigits < minimumIntegerDigits)
-			maximumIntegerDigits = minimumIntegerDigits;
+		if (maximumIntegerDigits < minimumIntegerDigits) {
+            maximumIntegerDigits = minimumIntegerDigits;
+        }
 	}
 
 	/**
@@ -613,13 +621,15 @@ public abstract class NumberFormat extends Format {
 			minimumIntegerDigits = fields.get("minimumIntegerDigits", 1);
 		}
 		if (minimumIntegerDigits > maximumIntegerDigits
-				|| minimumFractionDigits > maximumFractionDigits)
-			throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
+				|| minimumFractionDigits > maximumFractionDigits) {
+            throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
 					.getString("K00fa"));
+        }
 		if (minimumIntegerDigits < 0 || maximumIntegerDigits < 0
-				|| minimumFractionDigits < 0 || maximumFractionDigits < 0)
-			throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
+				|| minimumFractionDigits < 0 || maximumFractionDigits < 0) {
+            throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
 					.getString("K00fb"));
+        }
 	}
 
 	/**
@@ -632,6 +642,8 @@ public abstract class NumberFormat extends Format {
 	 * <p>
 	 */
 	public static class Field extends Format.Field {
+        
+        private static final long serialVersionUID = 7494728892700160890L;
 
 		public static final Field SIGN = new Field("sign");
 
@@ -670,28 +682,39 @@ public abstract class NumberFormat extends Format {
 		 * NumberFormat.Field values
 		 */
 		protected Object readResolve() throws InvalidObjectException {
-			if (this.equals(INTEGER))
-				return INTEGER;
-			if (this.equals(FRACTION))
-				return FRACTION;
-			if (this.equals(EXPONENT))
-				return EXPONENT;
-			if (this.equals(EXPONENT_SIGN))
-				return EXPONENT_SIGN;
-			if (this.equals(EXPONENT_SYMBOL))
-				return EXPONENT_SYMBOL;
-			if (this.equals(CURRENCY))
-				return CURRENCY;
-			if (this.equals(DECIMAL_SEPARATOR))
-				return DECIMAL_SEPARATOR;
-			if (this.equals(GROUPING_SEPARATOR))
-				return GROUPING_SEPARATOR;
-			if (this.equals(PERCENT))
-				return PERCENT;
-			if (this.equals(PERMILLE))
-				return PERMILLE;
-			if (this.equals(SIGN))
-				return SIGN;
+			if (this.equals(INTEGER)) {
+                return INTEGER;
+            }
+			if (this.equals(FRACTION)) {
+                return FRACTION;
+            }
+			if (this.equals(EXPONENT)) {
+                return EXPONENT;
+            }
+			if (this.equals(EXPONENT_SIGN)) {
+                return EXPONENT_SIGN;
+            }
+			if (this.equals(EXPONENT_SYMBOL)) {
+                return EXPONENT_SYMBOL;
+            }
+			if (this.equals(CURRENCY)) {
+                return CURRENCY;
+            }
+			if (this.equals(DECIMAL_SEPARATOR)) {
+                return DECIMAL_SEPARATOR;
+            }
+			if (this.equals(GROUPING_SEPARATOR)) {
+                return GROUPING_SEPARATOR;
+            }
+			if (this.equals(PERCENT)) {
+                return PERCENT;
+            }
+			if (this.equals(PERMILLE)) {
+                return PERMILLE;
+            }
+			if (this.equals(SIGN)) {
+                return SIGN;
+            }
 
 			throw new InvalidObjectException(Msg.getString("K000d"));
 		}

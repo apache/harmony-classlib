@@ -133,9 +133,8 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
                 f2.format(new Date()).getClass() == String.class);
 
         // Invalid constructor value.
-        SimpleDateFormat dateFormat = null;
         try {
-            dateFormat = new SimpleDateFormat(
+            new SimpleDateFormat(
                     "this is an invalid simple date format");
             fail("Expected test_ConstructorLjava_lang_String to throw IAE.");
         } catch (IllegalArgumentException ex) {

@@ -16,11 +16,12 @@
 package java.text;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Vector;
+import java.util.List;
 
 /**
- * ChoiceFormat is used to assocate strings with ranges of double values. The
+ * ChoiceFormat is used to associate strings with ranges of double values. The
  * strings and ranges are either specified using arrays or with a pattern which
  * is parsed to determine the Strings and ranges.
  */
@@ -76,7 +77,7 @@ public class ChoiceFormat extends NumberFormat {
 	 */
 	public void applyPattern(String template) {
 		double[] limits = new double[5];
-		Vector formats = new Vector();
+		List<String> formats = new ArrayList<String>();
 		int length = template.length(), limitCount = 0, index = 0;
 		StringBuffer buffer = new StringBuffer();
 		NumberFormat format = NumberFormat.getInstance();
@@ -84,15 +85,16 @@ public class ChoiceFormat extends NumberFormat {
 		while (true) {
 			index = skipWhitespace(template, index);
 			if (index >= length) {
-				if (limitCount == limits.length)
-					choiceLimits = limits;
-				else {
+				if (limitCount == limits.length) {
+                    choiceLimits = limits;
+                } else {
 					choiceLimits = new double[limitCount];
 					System.arraycopy(limits, 0, choiceLimits, 0, limitCount);
 				}
 				choiceFormats = new String[formats.size()];
-				for (int i = 0; i < formats.size(); i++)
-					choiceFormats[i] = (String) formats.elementAt(i);
+				for (int i = 0; i < formats.size(); i++) {
+                    choiceFormats[i] = formats.get(i);
+                }
 				return;
 			}
 
@@ -123,14 +125,15 @@ public class ChoiceFormat extends NumberFormat {
 			default:
 				throw new IllegalArgumentException();
 			}
-			if (limitCount > 0 && next <= limits[limitCount - 1])
-				throw new IllegalArgumentException();
+			if (limitCount > 0 && next <= limits[limitCount - 1]) {
+                throw new IllegalArgumentException();
+            }
 			buffer.setLength(0);
 			position.setIndex(index);
 			upTo(template, position, buffer, '|');
 			index = position.getIndex();
 			limits[limitCount++] = next;
-			formats.addElement(buffer.toString());
+			formats.add(buffer.toString());
 		}
 	}
 
@@ -144,8 +147,8 @@ public class ChoiceFormat extends NumberFormat {
 	 */
 	public Object clone() {
 		ChoiceFormat clone = (ChoiceFormat) super.clone();
-		clone.choiceLimits = (double[]) choiceLimits.clone();
-		clone.choiceFormats = (String[]) choiceFormats.clone();
+		clone.choiceLimits = choiceLimits.clone();
+		clone.choiceFormats = choiceFormats.clone();
 		return clone;
 	}
 
@@ -162,10 +165,12 @@ public class ChoiceFormat extends NumberFormat {
 	 * @see #hashCode
 	 */
 	public boolean equals(Object object) {
-		if (this == object)
-			return true;
-		if (!(object instanceof ChoiceFormat))
-			return false;
+		if (this == object) {
+            return true;
+        }
+		if (!(object instanceof ChoiceFormat)) {
+            return false;
+        }
 		ChoiceFormat choice = (ChoiceFormat) object;
 		return Arrays.equals(choiceLimits, choice.choiceLimits)
 				&& Arrays.equals(choiceFormats, choice.choiceFormats);
@@ -186,11 +191,14 @@ public class ChoiceFormat extends NumberFormat {
 	public StringBuffer format(double value, StringBuffer buffer,
 			FieldPosition field) {
 		if (Double.isNaN(value)
-				|| (choiceLimits.length > 1 && value < choiceLimits[1]))
-			return buffer.append(choiceFormats[0]);
-		for (int i = 2; i < choiceLimits.length; i++)
-			if (value >= choiceLimits[i - 1] && value < choiceLimits[i])
-				return buffer.append(choiceFormats[i - 1]);
+				|| (choiceLimits.length > 1 && value < choiceLimits[1])) {
+            return buffer.append(choiceFormats[0]);
+        }
+		for (int i = 2; i < choiceLimits.length; i++) {
+            if (value >= choiceLimits[i - 1] && value < choiceLimits[i]) {
+                return buffer.append(choiceFormats[i - 1]);
+            }
+        }
 		return buffer.append(choiceFormats[choiceFormats.length - 1]);
 	}
 
@@ -258,14 +266,16 @@ public class ChoiceFormat extends NumberFormat {
 	 * @return the next larger double value
 	 */
 	public static final double nextDouble(double value) {
-		if (value == Double.POSITIVE_INFINITY)
-			return value;
+		if (value == Double.POSITIVE_INFINITY) {
+            return value;
+        }
 		long bits;
 		// Handle -0.0
-		if (value == 0)
-			bits = 0;
-		else
-			bits = Double.doubleToLongBits(value);
+		if (value == 0) {
+            bits = 0;
+        } else {
+            bits = Double.doubleToLongBits(value);
+        }
 		return Double.longBitsToDouble(value < 0 ? bits - 1 : bits + 1);
 	}
 
@@ -320,14 +330,16 @@ public class ChoiceFormat extends NumberFormat {
 	 * @return the next smaller double value
 	 */
 	public static final double previousDouble(double value) {
-		if (value == Double.NEGATIVE_INFINITY)
-			return value;
+		if (value == Double.NEGATIVE_INFINITY) {
+            return value;
+        }
 		long bits;
 		// Handle 0.0
-		if (value == 0)
-			bits = 0x8000000000000000L;
-		else
-			bits = Double.doubleToLongBits(value);
+		if (value == 0) {
+            bits = 0x8000000000000000L;
+        } else {
+            bits = Double.doubleToLongBits(value);
+        }
 		return Double.longBitsToDouble(value <= 0 ? bits + 1 : bits - 1);
 	}
 
@@ -344,16 +356,18 @@ public class ChoiceFormat extends NumberFormat {
 	 *            range is at the same index as the string.
 	 */
 	public void setChoices(double[] limits, String[] formats) {
-		if (limits.length != formats.length)
-			throw new IllegalArgumentException();
+		if (limits.length != formats.length) {
+            throw new IllegalArgumentException();
+        }
 		choiceLimits = limits;
 		choiceFormats = formats;
 	}
 
 	private int skipWhitespace(String string, int index) {
 		int length = string.length();
-		while (index < length && Character.isWhitespace(string.charAt(index)))
-			index++;
+		while (index < length && Character.isWhitespace(string.charAt(index))) {
+            index++;
+        }
 		return index;
 	}
 
@@ -366,8 +380,9 @@ public class ChoiceFormat extends NumberFormat {
 	public String toPattern() {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < choiceLimits.length; i++) {
-            if (i != 0) //if appending another format add OR symbol first
+            if (i != 0) {
                 buffer.append('|');
+            }
 			String previous = String.valueOf(previousDouble(choiceLimits[i]));
 			String limit = String.valueOf(choiceLimits[i]);
 			if (previous.length() < limit.length()) {
@@ -378,11 +393,13 @@ public class ChoiceFormat extends NumberFormat {
 				buffer.append('#');
 			}
 			boolean quote = (choiceFormats[i].indexOf('|') != -1);
-			if (quote)
-				buffer.append('\'');
+			if (quote) {
+                buffer.append('\'');
+            }
 			buffer.append(choiceFormats[i]);
-			if (quote)
-				buffer.append('\'');
+			if (quote) {
+                buffer.append('\'');
+            }
 		}
 		return buffer.toString();
 	}

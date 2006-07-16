@@ -365,7 +365,7 @@ public class ChoiceFormatTest extends TestCase {
         pos = new ParsePosition(2);
         result = f1.parse("12one and two", pos);
         assertTrue("Not a Double2", result instanceof Double);
-		assertEquals("Ignored parse position", 1.0, result.doubleValue());
+		assertEquals("Ignored parse position", 1.0D, result.doubleValue(), 0.0D);
 		assertEquals("Wrong position ~5", 5, pos.getIndex());
     }
 

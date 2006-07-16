@@ -89,12 +89,13 @@ public final class Bidi {
 	 * @see TextAttribute.RUN_DIRECTION
 	 */
 	public Bidi(AttributedCharacterIterator paragraph) {
-        if (paragraph == null)
+        if (paragraph == null) {
             throw new IllegalArgumentException("paragraph is null");
         /*
          * TODO: dependency on java.awt.font.TextAttribute and
          * java.awt.font.NumericShaper which is not implemented yet.
          */
+        }
     }
 
 	/**
@@ -106,7 +107,7 @@ public final class Bidi {
 	 *            the start offset of the text array to perform the algorithm.
 	 * @param embeddings
 	 *            the embedding level array of the paragraph text, specifying
-	 *            the embedding level infomation for each character. Values
+	 *            the embedding level information for each character. Values
 	 *            between -1 and -62 denote overrides at the level's absolute
 	 *            value, values from 1 to 62 indicate embeddings, and the 0
 	 *            value indicates the level is calculated by the algorithm
@@ -415,7 +416,7 @@ public final class Bidi {
 
 			int[] indices = BidiWrapper.ubidi_reorderVisual(realLevels, count);
 
-			LinkedList result = new LinkedList();
+			LinkedList<Object> result = new LinkedList<Object>();
 			for (int i = 0; i < count; i++) {
 				result.addLast(objects[objectStart + indices[i]]);
 			}
@@ -457,7 +458,7 @@ public final class Bidi {
 	/**
 	 * Return the internal message of the Bidi object, used in debugging.
 	 * 
-	 * @return a string containing the internal messsage.
+	 * @return a string containing the internal message.
 	 */
 	public String toString() {
 		return super.toString() + "[direction: " + direction + " baselevel: " + baseLevel

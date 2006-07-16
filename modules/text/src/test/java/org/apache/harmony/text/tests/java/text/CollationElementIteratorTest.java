@@ -17,12 +17,9 @@ package org.apache.harmony.text.tests.java.text;
 
 import java.text.CollationElementIterator;
 import java.text.Collator;
-import java.text.ParseException;
 import java.text.RuleBasedCollator;
-
-import java.util.Locale;
-
 import java.text.StringCharacterIterator;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 

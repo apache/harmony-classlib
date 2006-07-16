@@ -186,10 +186,12 @@ public abstract class DateFormat extends Format {
 	 * @see #hashCode
 	 */
 	public boolean equals(Object object) {
-		if (this == object)
-			return true;
-		if (!(object instanceof DateFormat))
-			return false;
+		if (this == object) {
+            return true;
+        }
+		if (!(object instanceof DateFormat)) {
+            return false;
+        }
 		DateFormat dateFormat = (DateFormat) object;
 		return numberFormat.equals(dateFormat.numberFormat)
 				&& calendar.getTimeZone().equals(
@@ -209,7 +211,7 @@ public abstract class DateFormat extends Format {
 	 * 
 	 * @param object
 	 *            the object to format, must be a Date or a Number. If the
-	 *            object is a Number, a Date is contructed using the
+	 *            object is a Number, a Date is constructed using the
 	 *            <code>longValue()</code> of the Number.
 	 * @param buffer
 	 *            the StringBuffer
@@ -222,11 +224,13 @@ public abstract class DateFormat extends Format {
 	 */
 	public final StringBuffer format(Object object, StringBuffer buffer,
 			FieldPosition field) {
-		if (object instanceof Date)
-			return format((Date) object, buffer, field);
-		if (object instanceof Number)
-			return format(new Date(((Number) object).longValue()), buffer,
+		if (object instanceof Date) {
+            return format((Date) object, buffer, field);
+        }
+		if (object instanceof Number) {
+            return format(new Date(((Number) object).longValue()), buffer,
 					field);
+        }
 		throw new IllegalArgumentException();
 	}
 
@@ -487,8 +491,9 @@ public abstract class DateFormat extends Format {
 	public Date parse(String string) throws ParseException {
 		ParsePosition position = new ParsePosition(0);
 		Date date = parse(string, position);
-		if (position.getErrorIndex() != -1 || position.getIndex() == 0)
-			throw new ParseException(null, position.getErrorIndex());
+		if (position.getErrorIndex() != -1 || position.getIndex() == 0) {
+            throw new ParseException(null, position.getErrorIndex());
+        }
 		return date;
 	}
 
@@ -575,7 +580,9 @@ public abstract class DateFormat extends Format {
 	 */
 	public static class Field extends Format.Field {
 
-		private static Hashtable table = new Hashtable();
+        private static final long serialVersionUID = 7441350119349544720L;
+        
+		private static Hashtable<Integer, Field> table = new Hashtable<Integer, Field>();
 
 		public final static Field ERA = new Field("era", Calendar.ERA);
 
@@ -622,7 +629,7 @@ public abstract class DateFormat extends Format {
 		public final static Field TIME_ZONE = new Field("time zone", -1);
 
 		/**
-		 * The Calender field that this Field represents.
+		 * The Calendar field that this Field represents.
 		 */
 		private int calendarField = -1;
 
@@ -634,8 +641,9 @@ public abstract class DateFormat extends Format {
 			super(fieldName);
 			this.calendarField = calendarField;
 			if (calendarField != -1
-					&& table.get(new Integer(calendarField)) == null)
-				table.put(new Integer(calendarField), this);
+					&& table.get(new Integer(calendarField)) == null) {
+                table.put(new Integer(calendarField), this);
+            }
 		}
 
 		/**
@@ -655,32 +663,37 @@ public abstract class DateFormat extends Format {
 		 * @return null if there is no Field for this calendar field
 		 */
 		public static Field ofCalendarField(int calendarField) {
-			if (calendarField < 0 || calendarField >= Calendar.FIELD_COUNT)
-				throw new IllegalArgumentException();
+			if (calendarField < 0 || calendarField >= Calendar.FIELD_COUNT) {
+                throw new IllegalArgumentException();
+            }
 
-			return (Field) table.get(new Integer(calendarField));
+			return table.get(new Integer(calendarField));
 		}
 
 		/**
-		 * serizalization method resolve instances to the constant
+		 * Serialization method resolve instances to the constant
 		 * DateFormat.Field values
 		 */
 		protected Object readResolve() throws InvalidObjectException {
 			if (calendarField != -1) {
 				try {
 					Field result = ofCalendarField(calendarField);
-					if (result != null && this.equals(result))
-						return result;
+					if (result != null && this.equals(result)) {
+                        return result;
+                    }
 				} catch (IllegalArgumentException e) {
 					throw new InvalidObjectException(Msg.getString("K000d"));
 				}
 			} else {
-				if (this.equals(TIME_ZONE))
-					return TIME_ZONE;
-				if (this.equals(HOUR1))
-					return HOUR1;
-				if (this.equals(HOUR_OF_DAY1))
-					return HOUR_OF_DAY1;
+				if (this.equals(TIME_ZONE)) {
+                    return TIME_ZONE;
+                }
+				if (this.equals(HOUR1)) {
+                    return HOUR1;
+                }
+				if (this.equals(HOUR_OF_DAY1)) {
+                    return HOUR_OF_DAY1;
+                }
 			}
 
 			throw new InvalidObjectException(Msg.getString("K000d"));

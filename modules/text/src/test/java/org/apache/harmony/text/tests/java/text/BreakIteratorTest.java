@@ -37,13 +37,6 @@ public class BreakIteratorTest extends TestCase {
         iterator = BreakIterator.getCharacterInstance(Locale.US);
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testConsts() {
         assertEquals(-1, BreakIterator.DONE);
     }
@@ -204,6 +197,7 @@ public class BreakIteratorTest extends TestCase {
      */
     public void testGetLineInstance() {
         BreakIterator it = BreakIterator.getLineInstance();
+        assertNotNull(it);
     }
 
     /*
@@ -211,6 +205,7 @@ public class BreakIteratorTest extends TestCase {
      */
     public void testGetLineInstanceLocale() {
         BreakIterator it = BreakIterator.getLineInstance(Locale.US);
+        assertNotNull(it);
         BreakIterator.getLineInstance(new Locale("bad locale"));
     }
 
@@ -219,6 +214,7 @@ public class BreakIteratorTest extends TestCase {
      */
     public void testGetSentenceInstance() {
         BreakIterator it = BreakIterator.getSentenceInstance();
+        assertNotNull(it);
     }
 
     /*
@@ -226,6 +222,7 @@ public class BreakIteratorTest extends TestCase {
      */
     public void testGetSentenceInstanceLocale() {
         BreakIterator it = BreakIterator.getSentenceInstance(Locale.US);
+        assertNotNull(it);
     }
 
     public void testGetText() {
@@ -239,6 +236,7 @@ public class BreakIteratorTest extends TestCase {
      */
     public void testGetWordInstance() {
         BreakIterator it = BreakIterator.getWordInstance();
+        assertNotNull(it);
     }
 
     /*
@@ -246,6 +244,7 @@ public class BreakIteratorTest extends TestCase {
      */
     public void testGetWordInstanceLocale() {
         BreakIterator it = BreakIterator.getWordInstance(Locale.US);
+        assertNotNull(it);
     }
 
     /*

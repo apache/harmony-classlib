@@ -73,24 +73,25 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
 
 	private static int CACHE_SIZE;
 
-	private static Vector cache = new Vector(CACHE_SIZE);
-
-	// Wrapper class of ICU4J Collator
-	com.ibm.icu.text.Collator icuColl;
-
 	static {
 		// CACHE_SIZE includes key and value, so needs to be double
-		String cacheSize = (String) AccessController
-				.doPrivileged(new PriviAction("collator.cache")); //$NON-NLS-1$
+		String cacheSize = AccessController.doPrivileged(new PriviAction<String>(
+                "collator.cache")); //$NON-NLS-1$
 		if (cacheSize != null) {
 			try {
 				CACHE_SIZE = Integer.parseInt(cacheSize);
 			} catch (NumberFormatException e) {
 				CACHE_SIZE = 6;
 			}
-		} else
-			CACHE_SIZE = 6;
+		} else {
+            CACHE_SIZE = 6;
+        }
 	}
+    
+    private static Vector<Collator> cache = new Vector<Collator>(CACHE_SIZE);
+    
+    // Wrapper class of ICU4J Collator
+    com.ibm.icu.text.Collator icuColl;
 
 	Collator(com.ibm.icu.text.Collator wrapper) {
 		this.icuColl = wrapper;
@@ -163,8 +164,9 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
 	 * @see #hashCode
 	 */
 	public boolean equals(Object object) {
-		if (!(object instanceof Collator))
-			return false;
+		if (!(object instanceof Collator)) {
+            return false;
+        }
 		Collator collator = (Collator) object;
 		return this.icuColl == null ? collator.icuColl == null : this.icuColl
 				.equals(collator.icuColl);
@@ -196,7 +198,7 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
 
 	/**
 	 * Answers a CollationKey for the specified String for this Collator with
-	 * the current decomposition rule and stength value.
+	 * the current decomposition rule and strength value.
 	 * 
 	 * @param string
 	 *            the collation key.
@@ -234,8 +236,9 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
 	public static Collator getInstance(Locale locale) {
 		String key = locale.toString();
 		for (int i = cache.size() - 1; i >= 0; i -= 2) {
-			if (cache.elementAt(i).equals(key))
-				return (Collator) ((Collator) cache.elementAt(i - 1)).clone();
+			if (cache.elementAt(i).equals(key)) {
+                return (Collator) (cache.elementAt(i - 1)).clone();
+            }
 		}
 
 		return new RuleBasedCollator(com.ibm.icu.text.Collator

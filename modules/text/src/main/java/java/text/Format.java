@@ -55,21 +55,20 @@ public abstract class Format implements Serializable, Cloneable {
 	}
 
 	static ResourceBundle getBundle(final Locale locale) {
-		return (ResourceBundle) AccessController
-				.doPrivileged(new PrivilegedAction() {
-					public Object run() {
-						return ResourceBundle.getBundle(
-								"org.apache.harmony.luni.internal.locale.Locale", locale);
-					}
-				});
-	}
+        return AccessController.doPrivileged(new PrivilegedAction<ResourceBundle>() {
+            public ResourceBundle run() {
+                return ResourceBundle.getBundle(
+                        "org.apache.harmony.luni.internal.locale.Locale", locale);
+            }
+        });
+    }
 
 	String convertPattern(String template, String fromChars, String toChars,
 			boolean check) {
 		if (!check && fromChars.equals(toChars))
 			return template;
 		boolean quote = false;
-		StringBuffer output = new StringBuffer();
+		StringBuilder output = new StringBuilder();
 		int length = template.length();
 		for (int i = 0; i < length; i++) {
 			int index;
@@ -233,6 +232,8 @@ public abstract class Format implements Serializable, Cloneable {
 	 */
 	public static class Field extends AttributedCharacterIterator.Attribute {
 
+        private static final long serialVersionUID = 276966692217360283L;
+        
 		/**
 		 * Constructs a new instance of Field with the given fieldName.
 		 */

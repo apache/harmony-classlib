@@ -94,20 +94,21 @@ public class MessageFormat extends Format {
 		int length = template.length();
 		StringBuffer buffer = new StringBuffer();
 		ParsePosition position = new ParsePosition(0);
-		Vector localStrings = new Vector();
+		Vector<String> localStrings = new Vector<String>();
 		int argCount = 0;
 		int[] args = new int[10];
 		int maxArg = -1;
-		Vector localFormats = new Vector();
+		Vector<Format> localFormats = new Vector<Format>();
 		while (position.getIndex() < length) {
 			if (Format.upTo(template, position, buffer, '{')) {
 				byte arg;
 				int offset = position.getIndex();
 				if (offset >= length
 						|| (arg = (byte) Character.digit(template
-								.charAt(offset++), 10)) == -1)
-					throw new IllegalArgumentException(Msg
+								.charAt(offset++), 10)) == -1) {
+                    throw new IllegalArgumentException(Msg
 							.getString("K001d"));
+                }
 				position.setIndex(offset);
 				localFormats.addElement(parseVariable(template, position));
 				if (argCount >= args.length) {
@@ -116,19 +117,22 @@ public class MessageFormat extends Format {
 					args = newArgs;
 				}
 				args[argCount++] = arg;
-				if (arg > maxArg)
-					maxArg = arg;
+				if (arg > maxArg) {
+                    maxArg = arg;
+                }
 			}
 			localStrings.addElement(buffer.toString());
 			buffer.setLength(0);
 		}
 		this.strings = new String[localStrings.size()];
-		for (int i = 0; i < localStrings.size(); i++)
-			this.strings[i] = (String) localStrings.elementAt(i);
+		for (int i = 0; i < localStrings.size(); i++) {
+            this.strings[i] = localStrings.elementAt(i);
+        }
 		argumentNumbers = args;
 		this.formats = new Format[argCount];
-		for (int i = 0; i < argCount; i++)
-			this.formats[i] = (Format) localFormats.elementAt(i);
+		for (int i = 0; i < argCount; i++) {
+            this.formats[i] = localFormats.elementAt(i);
+        }
 		maxOffset = argCount - 1;
 		maxArgumentIndex = maxArg;
 	}
@@ -145,8 +149,9 @@ public class MessageFormat extends Format {
 		MessageFormat clone = (MessageFormat) super.clone();
 		Format[] array = new Format[formats.length];
 		for (int i = formats.length; --i >= 0;) {
-			if (formats[i] != null)
-				array[i] = (Format) formats[i].clone();
+			if (formats[i] != null) {
+                array[i] = (Format) formats[i].clone();
+            }
 		}
 		clone.formats = array;
 		return clone;
@@ -165,18 +170,22 @@ public class MessageFormat extends Format {
 	 * @see #hashCode
 	 */
 	public boolean equals(Object object) {
-		if (this == object)
-			return true;
-		if (!(object instanceof MessageFormat))
-			return false;
+		if (this == object) {
+            return true;
+        }
+		if (!(object instanceof MessageFormat)) {
+            return false;
+        }
 		MessageFormat format = (MessageFormat) object;
-		if (maxOffset != format.maxOffset)
-			return false;
+		if (maxOffset != format.maxOffset) {
+            return false;
+        }
 		// Must use a loop since the lengths may be different due
 		// to serialization cross-loading
 		for (int i = 0; i <= maxOffset; i++) {
-			if (argumentNumbers[i] != format.argumentNumbers[i])
-				return false;
+			if (argumentNumbers[i] != format.argumentNumbers[i]) {
+                return false;
+            }
 		}
 		return locale.equals(format.locale)
 				&& Arrays.equals(strings, format.strings)
@@ -199,11 +208,12 @@ public class MessageFormat extends Format {
 	 *                by this Format
 	 */
 	public AttributedCharacterIterator formatToCharacterIterator(Object object) {
-		if (object == null)
-			throw new NullPointerException();
+		if (object == null) {
+            throw new NullPointerException();
+        }
 
 		StringBuffer buffer = new StringBuffer();
-		Vector fields = new Vector();
+		Vector<FieldContainer> fields = new Vector<FieldContainer>();
 
 		// format the message, and find fields
 		formatImpl((Object[]) object, buffer, new FieldPosition(0), fields);
@@ -213,7 +223,7 @@ public class MessageFormat extends Format {
 
 		// add MessageFormat field attributes and values to the AttributedString
 		for (int i = 0; i < fields.size(); i++) {
-			FieldContainer fc = (FieldContainer) fields.elementAt(i);
+			FieldContainer fc = fields.elementAt(i);
 			as.addAttribute(fc.attribute, fc.value, fc.start, fc.end);
 		}
 
@@ -227,7 +237,7 @@ public class MessageFormat extends Format {
 	 * <p>
 	 * If Field Attribute of the FieldPosition supplied is
 	 * MessageFormat.Field.ARGUMENT, then begin and end index of this
-	 * fieldposition is set to the location of the first occurance of a message
+	 * field position is set to the location of the first occurrence of a message
 	 * format argument. Otherwise the FieldPosition is ignored
 	 * <p>
 	 * 
@@ -246,15 +256,15 @@ public class MessageFormat extends Format {
 	}
 
 	private StringBuffer formatImpl(Object[] objects, StringBuffer buffer,
-			FieldPosition position, Vector fields) {
+			FieldPosition position, Vector<FieldContainer> fields) {
 		FieldPosition passedField = new FieldPosition(0);
 		for (int i = 0; i <= maxOffset; i++) {
 			buffer.append(strings[i]);
 			int begin = buffer.length();
 			Object arg;
-			if (objects != null && argumentNumbers[i] < objects.length)
-				arg = objects[argumentNumbers[i]];
-			else {
+			if (objects != null && argumentNumbers[i] < objects.length) {
+                arg = objects[argumentNumbers[i]];
+            } else {
 				buffer.append('{');
 				buffer.append(argumentNumbers[i]);
 				buffer.append('}');
@@ -264,11 +274,11 @@ public class MessageFormat extends Format {
 			}
 			Format format = formats[i];
 			if (format == null || arg == null) {
-				if (arg instanceof Number)
-					format = NumberFormat.getInstance();
-				else if (arg instanceof Date)
-					format = DateFormat.getInstance();
-				else {
+				if (arg instanceof Number) {
+                    format = NumberFormat.getInstance();
+                } else if (arg instanceof Date) {
+                    format = DateFormat.getInstance();
+                } else {
 					buffer.append(arg);
 					handleArgumentField(begin, buffer.length(),
 							argumentNumbers[i], position, fields);
@@ -290,8 +300,9 @@ public class MessageFormat extends Format {
 				handleformat(format, arg, begin, fields);
 			}
 		}
-		if (maxOffset + 1 < strings.length)
-			buffer.append(strings[maxOffset + 1]);
+		if (maxOffset + 1 < strings.length) {
+            buffer.append(strings[maxOffset + 1]);
+        }
 		return buffer;
 	}
 
@@ -308,11 +319,11 @@ public class MessageFormat extends Format {
 	 * @param fields
 	 */
 	private void handleArgumentField(int begin, int end, int argnumber,
-			FieldPosition position, Vector fields) {
-		if (fields != null)
-			fields.add(new FieldContainer(begin, end, Field.ARGUMENT,
+			FieldPosition position, Vector<FieldContainer> fields) {
+		if (fields != null) {
+            fields.add(new FieldContainer(begin, end, Field.ARGUMENT,
 					new Integer(argnumber)));
-		else {
+        } else {
 			if (position != null
 					&& position.getFieldAttribute() == Field.ARGUMENT
 					&& position.getEndIndex() == 0) {
@@ -357,7 +368,7 @@ public class MessageFormat extends Format {
 	 *            FieldContainer.
 	 */
 	private void handleformat(Format format, Object arg, int begin,
-			Vector fields) {
+			Vector<FieldContainer> fields) {
 		if (fields != null) {
 			AttributedCharacterIterator iterator = format
 					.formatToCharacterIterator(arg);
@@ -365,7 +376,7 @@ public class MessageFormat extends Format {
 				int start = iterator.getRunStart();
 				int end = iterator.getRunLimit();
 
-				Iterator it = iterator.getAttributes().keySet().iterator();
+				Iterator<?> it = iterator.getAttributes().keySet().iterator();
 				while (it.hasNext()) {
 					AttributedCharacterIterator.Attribute attribute = (AttributedCharacterIterator.Attribute) it
 							.next();
@@ -420,7 +431,7 @@ public class MessageFormat extends Format {
 	 * @return an array of Format
 	 */
 	public Format[] getFormats() {
-		return (Format[]) formats.clone();
+		return formats.clone();
 	}
 
 	/**
@@ -447,8 +458,9 @@ public class MessageFormat extends Format {
 	 */
 	public void setFormatByArgumentIndex(int argIndex, Format format) {
 		for (int i = 0; i < maxOffset + 1; i++) {
-			if (argumentNumbers[i] == argIndex)
-				formats[i] = format;
+			if (argumentNumbers[i] == argIndex) {
+                formats[i] = format;
+            }
 		}
 	}
 
@@ -461,8 +473,9 @@ public class MessageFormat extends Format {
 	public void setFormatsByArgumentIndex(Format[] formats) {
 		for (int j = 0; j < formats.length; j++) {
 			for (int i = 0; i < maxOffset + 1; i++) {
-				if (argumentNumbers[i] == j)
-					this.formats[i] = formats[j];
+				if (argumentNumbers[i] == j) {
+                    this.formats[i] = formats[j];
+                }
 			}
 		}
 	}
@@ -488,11 +501,13 @@ public class MessageFormat extends Format {
 		int hashCode = 0;
 		for (int i = 0; i <= maxOffset; i++) {
 			hashCode += argumentNumbers[i] + strings[i].hashCode();
-			if (formats[i] != null)
-				hashCode += formats[i].hashCode();
+			if (formats[i] != null) {
+                hashCode += formats[i].hashCode();
+            }
 		}
-		if (maxOffset + 1 < strings.length)
-			hashCode += strings[maxOffset + 1].hashCode();
+		if (maxOffset + 1 < strings.length) {
+            hashCode += strings[maxOffset + 1].hashCode();
+        }
 		return hashCode + locale.hashCode();
 	}
 
@@ -510,8 +525,9 @@ public class MessageFormat extends Format {
 	public Object[] parse(String string) throws ParseException {
 		ParsePosition position = new ParsePosition(0);
 		Object[] result = parse(string, position);
-		if (position.getErrorIndex() != -1 || position.getIndex() == 0)
-			throw new ParseException(null, position.getErrorIndex());
+		if (position.getErrorIndex() != -1 || position.getIndex() == 0) {
+            throw new ParseException(null, position.getErrorIndex());
+        }
 		return result;
 	}
 
@@ -531,8 +547,9 @@ public class MessageFormat extends Format {
 	 *         if there is an error
 	 */
 	public Object[] parse(String string, ParsePosition position) {
-		if (string == null)
-			return new Object[0];
+		if (string == null) {
+            return new Object[0];
+        }
 		ParsePosition internalPos = new ParsePosition(0);
 		int offset = position.getIndex();
 		Object[] result = new Object[maxArgumentIndex + 1];
@@ -603,8 +620,9 @@ public class MessageFormat extends Format {
 	private int match(String string, ParsePosition position, boolean last,
 			String[] tokens) {
 		int length = string.length(), offset = position.getIndex(), token = -1;
-		while (offset < length && Character.isWhitespace(string.charAt(offset)))
-			offset++;
+		while (offset < length && Character.isWhitespace(string.charAt(offset))) {
+            offset++;
+        }
 		for (int i = tokens.length; --i >= 0;) {
 			if (string.regionMatches(true, offset, tokens[i], 0, tokens[i]
 					.length())) {
@@ -612,11 +630,13 @@ public class MessageFormat extends Format {
 				break;
 			}
 		}
-		if (token == -1)
-			return -1;
+		if (token == -1) {
+            return -1;
+        }
 		offset += tokens[token].length();
-		while (offset < length && Character.isWhitespace(string.charAt(offset)))
-			offset++;
+		while (offset < length && Character.isWhitespace(string.charAt(offset))) {
+            offset++;
+        }
 		char ch;
 		if (offset < length
 				&& ((ch = string.charAt(offset)) == '}' || (!last && ch == ','))) {
@@ -630,26 +650,30 @@ public class MessageFormat extends Format {
 		int length = string.length(), offset = position.getIndex();
 		char ch;
 		if (offset >= length
-				|| ((ch = string.charAt(offset++)) != '}' && ch != ','))
-			throw new IllegalArgumentException(Msg
+				|| ((ch = string.charAt(offset++)) != '}' && ch != ',')) {
+            throw new IllegalArgumentException(Msg
 					.getString("K001e"));
+        }
 		position.setIndex(offset);
-		if (ch == '}')
-			return null;
+		if (ch == '}') {
+            return null;
+        }
 		int type = match(string, position, false, new String[] { "time",
 				"date", "number", "choice" });
-		if (type == -1)
-			throw new IllegalArgumentException(Msg
+		if (type == -1) {
+            throw new IllegalArgumentException(Msg
 					.getString("K001f"));
+        }
 		StringBuffer buffer = new StringBuffer();
 		ch = string.charAt(position.getIndex() - 1);
 		switch (type) {
 		case 0: // time
 		case 1: // date
-			if (ch == '}')
-				return type == 1 ? DateFormat.getDateInstance(
+			if (ch == '}') {
+                return type == 1 ? DateFormat.getDateInstance(
 						DateFormat.DEFAULT, locale) : DateFormat
 						.getTimeInstance(DateFormat.DEFAULT, locale);
+            }
 			int dateStyle = match(string, position, true, new String[] {
 					"full", "long", "medium", "short" });
 			if (dateStyle == -1) {
@@ -673,8 +697,9 @@ public class MessageFormat extends Format {
 			return type == 1 ? DateFormat.getDateInstance(dateStyle, locale)
 					: DateFormat.getTimeInstance(dateStyle, locale);
 		case 2: // number
-			if (ch == '}')
-				return NumberFormat.getInstance();
+			if (ch == '}') {
+                return NumberFormat.getInstance();
+            }
 			int numberStyle = match(string, position, true, new String[] {
 					"currency", "percent", "integer" });
 			if (numberStyle == -1) {
@@ -719,10 +744,12 @@ public class MessageFormat extends Format {
 	 */
 	public void setFormats(Format[] formats) {
 		int min = this.formats.length;
-		if (formats.length < min)
-			min = formats.length;
-		for (int i=0; i<min; i++)
-			this.formats[i] = formats[i];
+		if (formats.length < min) {
+            min = formats.length;
+        }
+		for (int i=0; i<min; i++) {
+            this.formats[i] = formats[i];
+        }
 	}
 
 	/**
@@ -750,13 +777,13 @@ public class MessageFormat extends Format {
 		buffer.append(",number");
 		if (format.equals(NumberFormat.getNumberInstance(locale))) {
 			// Empty block
-		} else if (format.equals(NumberFormat.getIntegerInstance(locale)))
-			buffer.append(",integer");
-		else if (format.equals(NumberFormat.getCurrencyInstance(locale)))
-			buffer.append(",currency");
-		else if (format.equals(NumberFormat.getPercentInstance(locale)))
-			buffer.append(",percent");
-		else {
+		} else if (format.equals(NumberFormat.getIntegerInstance(locale))) {
+            buffer.append(",integer");
+        } else if (format.equals(NumberFormat.getCurrencyInstance(locale))) {
+            buffer.append(",currency");
+        } else if (format.equals(NumberFormat.getPercentInstance(locale))) {
+            buffer.append(",percent");
+        } else {
 			buffer.append(',');
 			return ((DecimalFormat) format).toPattern();
 		}
@@ -765,30 +792,30 @@ public class MessageFormat extends Format {
 
 	private String decodeSimpleDateFormat(StringBuffer buffer, Format format) {
 		if (format.equals(DateFormat
-				.getTimeInstance(DateFormat.DEFAULT, locale)))
-			buffer.append(",time");
-		else if (format.equals(DateFormat.getDateInstance(DateFormat.DEFAULT,
-				locale)))
-			buffer.append(",date");
-		else if (format.equals(DateFormat.getTimeInstance(DateFormat.SHORT,
-				locale)))
-			buffer.append(",time,short");
-		else if (format.equals(DateFormat.getDateInstance(DateFormat.SHORT,
-				locale)))
-			buffer.append(",date,short");
-		else if (format.equals(DateFormat.getTimeInstance(DateFormat.LONG,
-				locale)))
-			buffer.append(",time,long");
-		else if (format.equals(DateFormat.getDateInstance(DateFormat.LONG,
-				locale)))
-			buffer.append(",date,long");
-		else if (format.equals(DateFormat.getTimeInstance(DateFormat.FULL,
-				locale)))
-			buffer.append(",time,full");
-		else if (format.equals(DateFormat.getDateInstance(DateFormat.FULL,
-				locale)))
-			buffer.append(",date,full");
-		else {
+				.getTimeInstance(DateFormat.DEFAULT, locale))) {
+            buffer.append(",time");
+        } else if (format.equals(DateFormat.getDateInstance(DateFormat.DEFAULT,
+				locale))) {
+            buffer.append(",date");
+        } else if (format.equals(DateFormat.getTimeInstance(DateFormat.SHORT,
+				locale))) {
+            buffer.append(",time,short");
+        } else if (format.equals(DateFormat.getDateInstance(DateFormat.SHORT,
+				locale))) {
+            buffer.append(",date,short");
+        } else if (format.equals(DateFormat.getTimeInstance(DateFormat.LONG,
+				locale))) {
+            buffer.append(",time,long");
+        } else if (format.equals(DateFormat.getDateInstance(DateFormat.LONG,
+				locale))) {
+            buffer.append(",date,long");
+        } else if (format.equals(DateFormat.getTimeInstance(DateFormat.FULL,
+				locale))) {
+            buffer.append(",time,full");
+        } else if (format.equals(DateFormat.getDateInstance(DateFormat.FULL,
+				locale))) {
+            buffer.append(",date,full");
+        } else {
 			buffer.append(",date,");
 			return ((SimpleDateFormat) format).toPattern();
 		}
@@ -815,23 +842,26 @@ public class MessageFormat extends Format {
 				pattern = decodeDecimalFormat(buffer, format);
 			} else if (format instanceof SimpleDateFormat) {
 				pattern = decodeSimpleDateFormat(buffer, format);
-			} else if (format != null)
-				throw new IllegalArgumentException(Msg
+			} else if (format != null) {
+                throw new IllegalArgumentException(Msg
 						.getString("K0020"));
+            }
 			if (pattern != null) {
 				boolean quote = false;
 				int index = 0, length = pattern.length(), count = 0;
 				while (index < length) {
 					char ch = pattern.charAt(index++);
-					if (ch == '\'')
-						quote = !quote;
+					if (ch == '\'') {
+                        quote = !quote;
+                    }
 					if (!quote) {
-						if (ch == '{')
-							count++;
+						if (ch == '{') {
+                            count++;
+                        }
 						if (ch == '}') {
-							if (count > 0)
-								count--;
-							else {
+							if (count > 0) {
+                                count--;
+                            } else {
 								buffer.append("'}");
 								ch = '\'';
 							}
@@ -842,8 +872,9 @@ public class MessageFormat extends Format {
 			}
 			buffer.append('}');
 		}
-		if (maxOffset + 1 < strings.length)
-			appendQuoted(buffer, strings[maxOffset + 1]);
+		if (maxOffset + 1 < strings.length) {
+            appendQuoted(buffer, strings[maxOffset + 1]);
+        }
 		return buffer.toString();
 	}
 
@@ -855,8 +886,9 @@ public class MessageFormat extends Format {
 				buffer.append('\'');
 				buffer.append(ch);
 				buffer.append('\'');
-			} else
-				buffer.append(ch);
+			} else {
+                buffer.append(ch);
+            }
 		}
 	}
 
@@ -884,8 +916,9 @@ public class MessageFormat extends Format {
 			offsets[i] = offset;
 			pattern.append(strings[i]);
 		}
-		if (maxOffset + 1 < strings.length)
-			pattern.append(strings[maxOffset + 1]);
+		if (maxOffset + 1 < strings.length) {
+            pattern.append(strings[maxOffset + 1]);
+        }
 		fields.put("offsets", offsets);
 		fields.put("pattern", pattern.toString());
 		stream.writeFields();
@@ -901,20 +934,22 @@ public class MessageFormat extends Format {
 		int[] offsets = (int[]) fields.get("offsets", null);
 		String pattern = (String) fields.get("pattern", null);
 		int length;
-		if (maxOffset < 0)
-			length = pattern.length() > 0 ? 1 : 0;
-		else
-			length = maxOffset
+		if (maxOffset < 0) {
+            length = pattern.length() > 0 ? 1 : 0;
+        } else {
+            length = maxOffset
 					+ (offsets[maxOffset] == pattern.length() ? 1 : 2);
+        }
 		strings = new String[length];
 		int last = 0;
 		for (int i = 0; i <= maxOffset; i++) {
 			strings[i] = pattern.substring(last, offsets[i]);
 			last = offsets[i];
 		}
-		if (maxOffset + 1 < strings.length)
-			strings[strings.length - 1] = pattern.substring(last, pattern
+		if (maxOffset + 1 < strings.length) {
+            strings[strings.length - 1] = pattern.substring(last, pattern
 					.length());
+        }
 	}
 
 	/**
@@ -926,7 +961,9 @@ public class MessageFormat extends Format {
 	 * constants defined here.
 	 */
 	public static class Field extends Format.Field {
-
+        
+        private static final long serialVersionUID = 7899943957617360810L;
+        
 		public static final Field ARGUMENT = new Field("message argument field");
 
 		/**
@@ -943,13 +980,15 @@ public class MessageFormat extends Format {
 		 */
 		protected Object readResolve() throws InvalidObjectException {
 			String name = this.getName();
-			if (name == null)
-				// "Not a valid {0}, subclass should override readResolve()"
+			if (name == null) {
+                // "Not a valid {0}, subclass should override readResolve()"
 				throw new InvalidObjectException(
 						Msg.getString("K0344", "MessageFormat.Field"));
+            }
 
-			if (name.equals(ARGUMENT.getName()))
-				return ARGUMENT;
+			if (name.equals(ARGUMENT.getName())) {
+                return ARGUMENT;
+            }
 
 			throw new InvalidObjectException(
 					Msg.getString("K0344", "MessageFormat.Field"));
