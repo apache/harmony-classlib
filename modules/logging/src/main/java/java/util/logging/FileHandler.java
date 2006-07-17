@@ -272,20 +272,34 @@ public class FileHandler extends StreamHandler {
                     e1, ErrorManager.OPEN_FAILURE);
         }
         setOutputStream(output);
-
     }
 
-    //apply settings, parse pattern and open files
+    /**
+     *  Transform the pattern to the valid file name, replacing
+     *  any patterns, and applying generation and uniqueID if
+     *  present
+     *
+     *  @param gen generation of this file
+     *  @param uniqueID distinguishing id of this file
+     *  @return transformed filename ready for use
+     */
     private String parseFileName(int gen, int uniqueID) {
         int cur = 0;
         int next = 0;
         boolean hasUniqueID = false;
         boolean hasGeneration = false;
-        //TODO privilege code?
+
+        //TODO privilege code? 
+
         String tempPath = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+        boolean tempPathHasSepEnd = (tempPath == null ? false : tempPath.endsWith(File.separator));
+
         String homePath = System.getProperty("user.home"); //$NON-NLS-1$
+        boolean homePathHasSepEnd = (homePath == null ? false : homePath.endsWith(File.separator));
+
         StringBuffer sb = new StringBuffer();
         pattern = pattern.replace('/', File.separatorChar);
+
         char[] value = pattern.toCharArray();
         while ((next = pattern.indexOf('%', cur)) >= 0) {
             if (++next < pattern.length()) {
@@ -299,10 +313,20 @@ public class FileHandler extends StreamHandler {
                     hasUniqueID = true;
                     break;
                 case 't':
+                    /*
+                     *  we should probably try to do somethig cute here like
+                     *  lookahead for adjacent '/'
+                     */
                     sb.append(value, cur, next - cur - 1).append(tempPath);
+                    if (!tempPathHasSepEnd) {
+                        sb.append(File.separator);
+                    }
                     break;
                 case 'h':
                     sb.append(value, cur, next - cur - 1).append(homePath);
+                    if (!homePathHasSepEnd){
+                        sb.append(File.separator);
+                    }
                     break;
                 case '%':
                     sb.append(value, cur, next - cur - 1).append('%');
@@ -312,16 +336,20 @@ public class FileHandler extends StreamHandler {
                 }
                 cur = ++next;
             } else {
-
+                // fail silently
             }
         }
+
         sb.append(value, cur, value.length - cur);
+
         if (!hasGeneration && count > 1) {
             sb.append(".").append(gen); //$NON-NLS-1$
         }
+
         if (!hasUniqueID && uniqueID > 0) {
             sb.append(".").append(uniqueID); //$NON-NLS-1$
         }
+
         return sb.toString();
     }
 
