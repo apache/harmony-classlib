@@ -47,6 +47,9 @@ public class AllTests {
         suite.addTestSuite(FileLockInterruptionExceptionTest.class);
         suite.addTestSuite(IllegalBlockingModeExceptionTest.class);
         suite.addTestSuite(IllegalSelectorExceptionTest.class);
+        suite.addTestSuite(NoConnectionPendingExceptionTest.class);
+        suite.addTestSuite(NonReadableChannelExceptionTest.class);
+        suite.addTestSuite(NonWritableChannelExceptionTest.class);
         suite.addTestSuite(MapModeTest.class);
         // $JUnit-END$
         return suite;
