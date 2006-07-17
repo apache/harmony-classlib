@@ -780,9 +780,15 @@ public class FileTest extends junit.framework.TestCase {
 					// System.out.println("f: " + f.getCanonicalFile());
 					// System.out.println("f3: " + f3.getCanonicalFile());
 					File canonicalf2 = f2.getCanonicalFile();
+                    /*
+                     * If the "short file name" doesn't exist, then assume that
+                     * the 8.3 file name compatibility is disabled.
+                     */
+                    if (canonicalf2.exists()) {
 					assertTrue("Test 5: Incorrect File Returned: "
 							+ canonicalf2, canonicalf2.compareTo(f
 							.getCanonicalFile()) == 0);
+                    }
 				} finally {
 					f.delete();
 					f2.delete();
@@ -796,107 +802,100 @@ public class FileTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.io.File#getCanonicalPath()
-	 */
-	public void test_getCanonicalPath() {
-		// Test for method java.lang.String java.io.File.getCanonicalPath()
-		// Should work for Unix/Windows.
-		String dots = "..";
-		try {
-			String base = new File(System.getProperty("user.dir"))
-					.getCanonicalPath();
-			if (!base.regionMatches((base.length() - 1), slash, 0, 1))
-				base += slash;
-			File f = new File(base, "temp.tst");
-			assertTrue("Test 1: Incorrect Path Returned.", f.getCanonicalPath()
-					.equals(base + "temp.tst"));
-			f = new File(base + "Temp" + slash + dots + slash + "temp.tst");
-			assertTrue("Test 2: Incorrect Path Returned.", f.getCanonicalPath()
-					.equals(base + "temp.tst"));
+     * @tests java.io.File#getCanonicalPath()
+     */
+    public void test_getCanonicalPath() {
+        // Test for method java.lang.String java.io.File.getCanonicalPath()
+        // Should work for Unix/Windows.
+        String dots = "..";
+        try {
+            String base = new File(System.getProperty("user.dir")).getCanonicalPath();
+            if (!base.regionMatches((base.length() - 1), slash, 0, 1))
+                base += slash;
+            File f = new File(base, "temp.tst");
+            assertEquals("Test 1: Incorrect Path Returned.", base + "temp.tst", f
+                    .getCanonicalPath());
+            f = new File(base + "Temp" + slash + dots + slash + "temp.tst");
+            assertEquals("Test 2: Incorrect Path Returned.", base + "temp.tst", f
+                    .getCanonicalPath());
 
-			// Finding a non-existent directory for tests 3 and 4
-			// This is necessary because getCanonicalPath is case sensitive and
-			// could
-			// cause a failure in the test if the directory exists but with
-			// different
-			// case letters (e.g "Temp" and "temp")
-			int dirNumber = 1;
-			boolean dirExists = true;
-			File dir1 = new File(base, String.valueOf(dirNumber));
-			while (dirExists) {
-				if (dir1.exists()) {
-					dirNumber++;
-					dir1 = new File(base, String.valueOf(dirNumber));
-				} else {
-					dirExists = false;
-				}
-			}
-			f = new File(base + dirNumber + slash + dots + slash + dirNumber
-					+ slash + "temp.tst");
-			// System.out.println(f.getCanonicalPath());
-			// System.out.println(userDir + dirNumber + slash + "temp.tst");
-			assertTrue("Test 3: Incorrect Path Returned.", f.getCanonicalPath()
-					.equals(base + dirNumber + slash + "temp.tst"));
-			f = new File(base + dirNumber + slash + "Temp" + slash + dots
-					+ slash + "Test" + slash + "temp.tst");
-			assertTrue("Test 4: Incorrect Path Returned.", f.getCanonicalPath()
-					.equals(
-							base + dirNumber + slash + "Test" + slash
-									+ "temp.tst"));
+            // Finding a non-existent directory for tests 3 and 4
+            // This is necessary because getCanonicalPath is case sensitive and
+            // could
+            // cause a failure in the test if the directory exists but with
+            // different
+            // case letters (e.g "Temp" and "temp")
+            int dirNumber = 1;
+            boolean dirExists = true;
+            File dir1 = new File(base, String.valueOf(dirNumber));
+            while (dirExists) {
+                if (dir1.exists()) {
+                    dirNumber++;
+                    dir1 = new File(base, String.valueOf(dirNumber));
+                } else {
+                    dirExists = false;
+                }
+            }
+            f = new File(base + dirNumber + slash + dots + slash + dirNumber + slash
+                    + "temp.tst");
+            // System.out.println(f.getCanonicalPath());
+            // System.out.println(userDir + dirNumber + slash + "temp.tst");
+            assertEquals("Test 3: Incorrect Path Returned.", base + dirNumber + slash
+                    + "temp.tst", f.getCanonicalPath());
+            f = new File(base + dirNumber + slash + "Temp" + slash + dots + slash + "Test"
+                    + slash + "temp.tst");
+            assertEquals("Test 4: Incorrect Path Returned.", base + dirNumber + slash + "Test"
+                    + slash + "temp.tst", f.getCanonicalPath());
 
-			f = new File("1234.567");
-			assertTrue("Test 5: Incorrect Path Returned."
-					+ f.getCanonicalPath(), f.getCanonicalPath().equals(
-					base + "1234.567"));
+            f = new File("1234.567");
+            assertEquals("Test 5: Incorrect Path Returned.", base + "1234.567", f
+                    .getCanonicalPath());
 
-			// Test for long file names on Windows
-			boolean onWindows = (File.separatorChar == '\\');
-			if (onWindows) {
-				File testdir = new File(base, "long-" + platformId);
-				testdir.mkdir();
-				File f1 = new File(testdir, "longfilename" + platformId
-						+ ".tst");
-				FileOutputStream fos = new FileOutputStream(f1);
-				File f2 = null, f3 = null, dir2 = null;
-				try {
-					fos.close();
-					String dirName1 = f1.getCanonicalPath();
-					File f4 = new File(testdir, "longfi~1.tst");
-					String dirName2 = f4.getCanonicalPath();
-					if (!base.equals(slash)) {
-						assertTrue("Test 6: Incorrect Path Returned. ("
-								+ dirName2 + " insteadof " + dirName1 + ")",
-								dirName1.equals(dirName2));
-						dir2 = new File(testdir, "longdirectory" + platformId);
-						if (!dir2.exists())
-							assertTrue("Could not create dir: " + dir2, dir2
-									.mkdir());
-						f2 = new File(testdir.getPath() + slash
-								+ "longdirectory" + platformId + slash + "Test"
-								+ slash + dots + slash + "longfilename.tst");
-						FileOutputStream fos2 = new FileOutputStream(f2);
-						fos2.close();
-						dirName1 = f2.getCanonicalPath();
-						f3 = new File(testdir.getPath() + slash + "longdi~1"
-								+ slash + "Test" + slash + dots + slash
-								+ "longfi~1.tst");
-						dirName2 = f3.getCanonicalPath();
-						assertTrue("Test 7: Incorrect Path Returned.", dirName1
-								.equals(dirName2));
-					}
-				} finally {
-					f1.delete();
-					if (f2 != null)
-						f2.delete();
-					if (dir2 != null)
-						dir2.delete();
-					testdir.delete();
-				}
-			}
-		} catch (IOException e) {
-			fail("Unexpected IOException During Test : " + e.getMessage());
-		}
-	}
+            // Test for long file names on Windows
+            boolean onWindows = (File.separatorChar == '\\');
+            if (onWindows) {
+                File testdir = new File(base, "long-" + platformId);
+                testdir.mkdir();
+                File f1 = new File(testdir, "longfilename" + platformId + ".tst");
+                FileOutputStream fos = new FileOutputStream(f1);
+                File f2 = null, f3 = null, dir2 = null;
+                try {
+                    fos.close();
+                    String dirName1 = f1.getCanonicalPath();
+                    File f4 = new File(testdir, "longfi~1.tst");
+                    /*
+                     * If the "short file name" doesn't exist, then assume that
+                     * the 8.3 file name compatibility is disabled.
+                     */
+                    if (f4.exists()) {
+                        String dirName2 = f4.getCanonicalPath();
+                        assertEquals("Test 6: Incorrect Path Returned.", dirName1, dirName2);
+                        dir2 = new File(testdir, "longdirectory" + platformId);
+                        if (!dir2.exists())
+                            assertTrue("Could not create dir: " + dir2, dir2.mkdir());
+                        f2 = new File(testdir.getPath() + slash + "longdirectory" + platformId
+                                + slash + "Test" + slash + dots + slash + "longfilename.tst");
+                        FileOutputStream fos2 = new FileOutputStream(f2);
+                        fos2.close();
+                        dirName1 = f2.getCanonicalPath();
+                        f3 = new File(testdir.getPath() + slash + "longdi~1" + slash + "Test"
+                                + slash + dots + slash + "longfi~1.tst");
+                        dirName2 = f3.getCanonicalPath();
+                        assertEquals("Test 7: Incorrect Path Returned.", dirName1, dirName2);
+                    }
+                } finally {
+                    f1.delete();
+                    if (f2 != null)
+                        f2.delete();
+                    if (dir2 != null)
+                        dir2.delete();
+                    testdir.delete();
+                }
+            }
+        } catch (IOException e) {
+            fail("Unexpected IOException During Test : " + e.getMessage());
+        }
+    }
 
 	/**
 	 * @tests java.io.File#getName()
