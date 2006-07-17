@@ -390,7 +390,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     public long read(ByteBuffer[] targets, int offset, int length)
             throws IOException {
         if (!isIndexValid(targets, offset, length)) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException();
         }
         checkOpenConnected();
 
@@ -468,20 +468,20 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
      */
     public long write(ByteBuffer[] sources, int offset, int length)
             throws IOException {
-        if (isIndexValid(sources, offset, length)) {
-            checkOpenConnected();
-            if (0 == calculateByteBufferArray(sources, offset, length)){
-                return 0;
-            }
-            synchronized (writeLock) {
-                long writeCount = 0;
-                for (int val = offset; val < offset + length; val++) {
-                    writeCount = writeCount + writeImpl(sources[val]);
-                }
-                return writeCount;
-            }
+        if (!isIndexValid(sources, offset, length)) {
+            throw new IndexOutOfBoundsException();
         }
-        throw new ArrayIndexOutOfBoundsException();
+        checkOpenConnected();
+        if (0 == calculateByteBufferArray(sources, offset, length)) {
+            return 0;
+        }
+        synchronized (writeLock) {
+            long writeCount = 0;
+            for (int val = offset; val < offset + length; val++) {
+                writeCount = writeCount + writeImpl(sources[val]);
+            }
+            return writeCount;
+        }
     }
 
     private int calculateByteBufferArray(ByteBuffer[] sources, int offset, int length){
@@ -614,10 +614,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
     }
 
-    // -------------------------------------------------------------------
-    // Adapter classes for internal socket.
-    // -------------------------------------------------------------------
-
     /*
      * get the fd
      */
@@ -625,20 +621,10 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         return fd;
     }
 
-    public InetAddress getAddress() {
-        return (null == this.connectAddress) ? null : this.connectAddress
-                .getAddress();
-    }
-
-    public int getPort() {
-        return (null == this.connectAddress) ? 0 : this.connectAddress
-                .getPort();
-    }
-
-    public int getLocalPort() {
-        return this.localPort;
-    }
-
+    // -------------------------------------------------------------------
+    // Adapter classes for internal socket.
+    // -------------------------------------------------------------------
+    
     private static class SocketAdapter extends Socket {
 
         // ----------------------------------------------------
@@ -784,7 +770,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
 
         /*
-         * 
          * @see java.net.Socket#getTcpNoDelay()
          */
         public boolean getTcpNoDelay() throws SocketException {
@@ -793,13 +778,20 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                     .booleanValue();
         }
 
-        /*
-         * 
+        /* 
          * @see java.net.Socket#getOutputStream()
          */
         public OutputStream getOutputStream() throws IOException {
-            return new SocketChannelOutputStream(super.getOutputStream(),
-                    channel);
+            if (!channel.isOpen()) {
+                throw new SocketException(Msg.getString("K003d"));
+            }
+            if (!channel.isConnected()) {
+                throw new SocketException(Msg.getString("K0320"));
+            }             
+            if (isOutputShutdown()) {
+                throw new SocketException(Msg.getString("KA00f"));
+            }
+            return new SocketChannelOutputStream(channel);
         }
 
         /*
@@ -807,7 +799,16 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          * @see java.net.Socket#getInputStream()
          */
         public InputStream getInputStream() throws IOException {
-            return new SocketChannelInputStream(super.getInputStream(), channel);
+            if (!channel.isOpen()) {
+                throw new SocketException(Msg.getString("K003d"));
+            }
+            if (!channel.isConnected()) {
+                throw new SocketException(Msg.getString("K0320"));
+            }             
+            if (isInputShutdown()) {
+                throw new SocketException(Msg.getString("K0321"));
+            }
+            return new SocketChannelInputStream(channel);
         }
 
         /*
@@ -827,95 +828,101 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
     }
 
+    
+    /*
+     * This output stream delegates all operations to the associated channel.
+     * Throws an IllegalBlockingModeException if the channel is in non-blocking
+     * mode when performing write operations.
+     */
     private static class SocketChannelOutputStream extends OutputStream {
         SocketChannel channel;
 
-        OutputStream wrapped;
-
-        public SocketChannelOutputStream(OutputStream wrapped,
-                SocketChannel channel) {
+        public SocketChannelOutputStream(SocketChannel channel) {
             this.channel = channel;
-            this.wrapped = wrapped;
         }
 
         /*
+         * Closes this stream and channel
          * 
-         * @see com.ibm.io.nio.SocketOutputStream#write(byte[], int, int)
+         * @exception IOException
+         *                thrown if an error occurs during the close
+         */
+        public void close() throws IOException {
+            channel.close();
+        }
+        
+        /* 
+         * @see java.io.OutputStream#write(byte[], int, int)
          */
         public void write(byte[] buffer, int offset, int count)
                 throws IOException {
+            if (0 > offset || 0 > count || count + offset > buffer.length) {
+                throw new IndexOutOfBoundsException();
+            }
+            ByteBuffer buf = ByteBuffer.wrap(buffer, offset, count);
             if (!channel.isBlocking()) {
                 throw new IllegalBlockingModeException();
-            }
-            wrapped.write(buffer, offset, count);
+            }            
+            channel.write(buf);
         }
 
-        /*
-         * 
-         * @see com.ibm.io.nio.SocketOutputStream#write(byte[])
-         */
-        public void write(byte[] buffer) throws IOException {
-            if (!channel.isBlocking()) {
-                throw new IllegalBlockingModeException();
-            }
-            wrapped.write(buffer);
-        }
-
-        /*
-         * 
-         * @see com.ibm.io.nio.SocketOutputStream#write(int)
+        /* 
+         * @see java.io.OutputStream#write(int)
          */
         public void write(int oneByte) throws IOException {
             if (!channel.isBlocking()) {
                 throw new IllegalBlockingModeException();
             }
-            wrapped.write(oneByte);
+            ByteBuffer buffer = ByteBuffer.allocate(1);
+            buffer.put((byte)(oneByte & 0xFF));
+            channel.write(buffer);
         }
     }
 
+    /*
+     * This input stream delegates all operations to the associated channel.
+     * Throws an IllegalBlockingModeException if the channel is in non-blocking
+     * mode when performing read operations.
+     */
     private static class SocketChannelInputStream extends InputStream {
         SocketChannel channel;
 
-        InputStream wrapped;
-
-        public SocketChannelInputStream(InputStream wrapped,
-                SocketChannel channel) {
+        public SocketChannelInputStream(SocketChannel channel) {
             this.channel = channel;
-            this.wrapped = wrapped;
+        }
+        
+        /*
+         * Closes this stream and channel.
+         */
+        public void close() throws IOException {
+            channel.close();
         }
 
-        /*
-         * 
-         * @see com.ibm.io.nio.SocketInputStream#read()
+        /* 
+         * @see java.io.InputStream#read()
          */
         public int read() throws IOException {
             if (!channel.isBlocking()) {
                 throw new IllegalBlockingModeException();
             }
-            return wrapped.read();
+            ByteBuffer buf = ByteBuffer.allocate(1);
+            int result = channel.read(buf);
+            return (-1 == result) ? result : buf.get() & 0xFF;
         }
 
-        /*
-         * 
-         * @see com.ibm.io.nio.SocketInputStream#read(byte[], int, int)
+        /* 
+         * @see java.io.InputStream#read(byte[], int, int)
          */
         public int read(byte[] buffer, int offset, int count)
                 throws IOException {
+            if (0 > offset || 0 > count || count + offset > buffer.length) {
+                throw new IndexOutOfBoundsException();
+            }
             if (!channel.isBlocking()) {
                 throw new IllegalBlockingModeException();
             }
-            return wrapped.read(buffer, offset, count);
-        }
-
-        /*
-         * 
-         * @see com.ibm.io.nio.SocketInputStream#read(byte[])
-         */
-        public int read(byte[] buffer) throws IOException {
-            if (!channel.isBlocking()) {
-                throw new IllegalBlockingModeException();
-            }
-            return wrapped.read(buffer);
+            ByteBuffer buf = ByteBuffer.wrap(buffer, offset, count);
+            return channel.read(buf);
         }
     }
 }

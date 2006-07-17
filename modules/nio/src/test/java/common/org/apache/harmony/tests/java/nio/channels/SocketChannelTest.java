@@ -2610,7 +2610,233 @@ public class SocketChannelTest extends TestCase {
             }
         }
     }
-    
+
+    /**
+     * @tests SocketChannelImpl#socket().getOutputStream().read
+     */
+    public void test_socket_getOutputStream_nonBlocking_read_Exception()
+            throws IOException {
+        channel1.connect(this.localAddr1);
+        InputStream is = channel1.socket().getInputStream();
+        channel1.configureBlocking(false);
+        try {
+            is.read();
+            fail("should throw IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }
+        try {
+            is.read(null, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            is.read(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        // closed
+        is.close();
+        try {
+            is.read(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            is.read();
+            fail("should throw IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }
+        try {
+            is.read(null, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            is.read(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests SocketChannelImpl#socket().getOutputStream().read
+     */
+    public void test_socket_getOutputStream_blocking_read_Exception()
+            throws IOException {
+        channel1.connect(this.localAddr1);
+        InputStream is = channel1.socket().getInputStream();
+        try {
+            is.read(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            is.read(null, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            is.read(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        // closed
+        is.close();
+        try {
+            is.read(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            is.read();
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+        try {
+            is.read(null, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            is.read(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests SocketChannelImpl#socket().getOutputStream().write
+     */
+    public void test_socket_getOutputStream_nonBlocking_write_Exception()
+            throws IOException {
+        channel1.connect(this.localAddr1);
+        OutputStream os = channel1.socket().getOutputStream();
+        channel1.configureBlocking(false);
+        try {
+            os.write(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            os.write(1);
+            fail("should throw IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }
+        try {
+            os.write(1);
+            fail("should throw IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }
+        try {
+            os.write(null, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            os.write(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        // closed
+        os.close();
+        try {
+            os.write(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            os.write(1);
+            fail("should throw IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }
+        try {
+            os.write(null, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            os.write(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests SocketChannelImpl#socket().getOutputStream().write
+     */
+    public void test_socket_getOutputStream_blocking_write_Exception()
+            throws IOException {
+        channel1.connect(this.localAddr1);
+        OutputStream os = channel1.socket().getOutputStream();
+        try {
+            os.write(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            os.write(null, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            os.write(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        // closed
+        os.close();
+        try {
+            os.write(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            os.write(1);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+        try {
+            os.write(null, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            os.write(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+
     class MockSocketChannel extends SocketChannel{
         
         private boolean isWriteCalled = false;
@@ -2677,5 +2903,5 @@ public class SocketChannelTest extends TestCase {
             // empty            
         }
         
-    }
+    }   
 }
