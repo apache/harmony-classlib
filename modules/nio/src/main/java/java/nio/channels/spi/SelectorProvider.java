@@ -91,7 +91,12 @@ public abstract class SelectorProvider extends Object {
                 provider = loadProviderByJar();
             }
             if (null == provider) {
-                provider = new SelectorProviderImpl();
+                provider = AccessController
+                        .doPrivileged(new PrivilegedAction<SelectorProvider>() {
+                            public SelectorProvider run() {
+                                return new SelectorProviderImpl();
+                            }
+                        });
             }
         }
         return provider;
