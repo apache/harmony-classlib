@@ -1836,6 +1836,584 @@ public class ScannerTest extends TestCase {
     
     /**
      * @throws IOException
+     * @tests java.util.Scanner#nextShort(int)
+     */
+    public void test_nextShortI() throws IOException {
+        s = new Scanner("123 456");
+        assertEquals(123, s.nextShort(10));
+        assertEquals(456, s.nextShort(10));
+        try {
+            s.nextShort(10);
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        assertEquals(38, s.nextShort(5));
+        try {
+            s.nextShort(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789");
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextShort(10));
+        assertEquals(23456, s.nextShort(10));
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextShort(10));
+        assertEquals(23456, s.nextShort(10));
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertEquals(102, s.nextShort(10));
+        try {
+            s.nextShort(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        assertEquals(162, s.nextShort(10));
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextShort(10));
+        assertEquals(23456, s.nextShort(10));
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("03456");
+        assertEquals(3456, s.nextShort(10));
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(3456, s.nextShort(10));
+
+        s = new Scanner("E34");
+        assertEquals(3636, s.nextShort(16));
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextShort(10));
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextShort(10));
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextShort(10));
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("ar", "AE"));
+        assertEquals(-123, s.nextShort(10));
+       
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertEquals(-123, s.nextShort(10));
+    }
+
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#nextShort()
+     */
+    public void test_nextShort() throws IOException {
+        s = new Scanner("123 456");
+        assertEquals(123, s.nextShort());
+        assertEquals(456, s.nextShort());
+        try {
+            s.nextShort();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        s.useRadix(5);
+        assertEquals(38, s.nextShort());
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789");
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextShort());
+        assertEquals(23456, s.nextShort());
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextShort());
+        assertEquals(23456, s.nextShort());
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertEquals(102, s.nextShort());
+        s.useRadix(5);
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useRadix(10);
+        assertEquals(162, s.nextShort());
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextShort());
+        assertEquals(23456, s.nextShort());
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("03456");
+        assertEquals(3456, s.nextShort());
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(3456, s.nextShort());
+
+        s = new Scanner("E34");
+        s.useRadix(16);
+        assertEquals(3636, s.nextShort());
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextShort());
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextShort());
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextShort());
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("ar", "AE"));
+        assertEquals(-123, s.nextShort());
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertEquals(-123, s.nextShort());
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#nextLong(int)
+     */
+    public void test_nextLongI() throws IOException {
+        s = new Scanner("123 456");
+        assertEquals(123, s.nextLong(10));
+        assertEquals(456, s.nextLong(10));
+        try {
+            s.nextLong(10);
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        assertEquals(38, s.nextLong(5));
+        try {
+            s.nextLong(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789123456789123456789123456789");
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextLong(10));
+        assertEquals(23456, s.nextLong(10));
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextLong(10));
+        assertEquals(23456, s.nextLong(10));
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertEquals(102, s.nextLong(10));
+        try {
+            s.nextLong(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        assertEquals(162, s.nextLong(10));
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextLong(10));
+        assertEquals(23456, s.nextLong(10));
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("03456");
+        assertEquals(3456, s.nextLong(10));
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(3456, s.nextLong(10));
+
+        s = new Scanner("E34");
+        assertEquals(3636, s.nextLong(16));
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextLong(10));
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextLong(10));
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextLong(10));
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("ar", "AE"));
+        assertEquals(-123, s.nextLong(10));
+       
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertEquals(-123, s.nextLong(10));
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#nextLong()
+     */
+    public void test_nextLong() throws IOException {
+        s = new Scanner("123 456");
+        assertEquals(123, s.nextLong());
+        assertEquals(456, s.nextLong());
+        try {
+            s.nextLong();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        s.useRadix(5);
+        assertEquals(38, s.nextLong());
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789123456789123456789123456789");
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextLong());
+        assertEquals(23456, s.nextLong());
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextLong());
+        assertEquals(23456, s.nextLong());
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertEquals(102, s.nextLong());
+        s.useRadix(5);
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useRadix(10);
+        assertEquals(162, s.nextLong());
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertEquals(23456, s.nextLong());
+        assertEquals(23456, s.nextLong());
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("03456");
+        assertEquals(3456, s.nextLong());
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(3456, s.nextLong());
+
+        s = new Scanner("E34");
+        s.useRadix(16);
+        assertEquals(3636, s.nextLong());
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextLong());
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextLong());
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertEquals(12300, s.nextLong());
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("ar", "AE"));
+        assertEquals(-123, s.nextLong());
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertEquals(-123, s.nextLong());
+    }
+    
+    /**
+     * @throws IOException
      * @tests java.util.Scanner#hasNext()
      */
     public void test_hasNext() throws IOException {
@@ -3087,6 +3665,690 @@ public class ScannerTest extends TestCase {
         assertTrue(s.hasNextFloat());
         assertEquals((float)-123.0, s.nextFloat());
 
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextShort(int)
+     */
+    public void test_hasNextShortI() throws IOException {
+        s = new Scanner("123 456");
+        assertTrue(s.hasNextShort(10));
+        assertEquals(123, s.nextShort(10));
+        assertTrue(s.hasNextShort(10));
+        assertEquals(456, s.nextShort(10));
+        assertFalse(s.hasNextShort(10));
+        try {
+            s.nextShort(10);
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        assertTrue(s.hasNextShort(5));
+        assertEquals(38, s.nextShort(5));
+        assertFalse(s.hasNextShort(5));
+        try {
+            s.nextShort(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789");
+        assertFalse(s.hasNextShort(10));
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextShort(10));
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextShort(10));
+        assertEquals(23456, s.nextInt(10));
+        assertTrue(s.hasNextShort(10));
+        assertEquals(23456, s.nextInt(10));
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextShort(10));
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextShort(10));
+        assertEquals(23456, s.nextShort(10));
+        assertTrue(s.hasNextShort(10));
+        assertEquals(23456, s.nextShort(10));
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertTrue(s.hasNextShort(10));
+        assertEquals(102, s.nextShort(10));
+        assertFalse(s.hasNextShort(5));
+        try {
+            s.nextShort(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        assertTrue(s.hasNextShort(10));
+        assertEquals(162, s.nextShort(10));
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        assertFalse(s.hasNextShort(10));
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextShort(10));
+        assertEquals(23456, s.nextShort(10));
+        assertTrue(s.hasNextShort(10));
+        assertEquals(23456, s.nextShort(10));
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        assertFalse(s.hasNextShort(10));
+        try {
+            s.nextShort(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("03456");
+        assertTrue(s.hasNextShort(10));
+        assertEquals(3456, s.nextShort(10));
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextShort(10));
+        assertEquals(3456, s.nextShort(10));
+
+        s = new Scanner("E34");
+        assertTrue(s.hasNextShort(16));
+        assertEquals(3636, s.nextShort(16));
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextShort(10));
+        assertEquals(12300, s.nextShort(10));
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextShort(10));
+        assertEquals(12300, s.nextShort(10));
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextShort(10));
+        assertEquals(12300, s.nextShort(10));
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("ar", "AE"));
+        assertTrue(s.hasNextShort(10));
+        assertEquals(-123, s.nextShort(10));
+       
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertTrue(s.hasNextShort(10));
+        assertEquals(-123, s.nextShort(10));
+    }
+
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextShort()
+     */
+    public void test_hasNextShort() throws IOException {
+        s = new Scanner("123 456");
+        assertTrue(s.hasNextShort());
+        assertEquals(123, s.nextShort());
+        assertTrue(s.hasNextShort());
+        assertEquals(456, s.nextShort());
+        assertFalse(s.hasNextShort());
+        try {
+            s.nextShort();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        s.useRadix(5);
+        assertTrue(s.hasNextShort());
+        assertEquals(38, s.nextShort());
+        assertFalse(s.hasNextShort());
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789");
+        assertFalse(s.hasNextShort());
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextShort());
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextShort());
+        assertEquals(23456, s.nextShort());
+        assertTrue(s.hasNextShort());
+        assertEquals(23456, s.nextShort());
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextShort());
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextShort());
+        assertEquals(23456, s.nextShort());
+        assertTrue(s.hasNextShort());
+        assertEquals(23456, s.nextShort());
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertEquals(102, s.nextShort());
+        s.useRadix(5);
+        assertFalse(s.hasNextShort());
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useRadix(10);
+        assertTrue(s.hasNextShort());
+        assertEquals(162, s.nextShort());
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        assertFalse(s.hasNextShort());
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextShort());
+        assertEquals(23456, s.nextShort());
+        assertTrue(s.hasNextShort());
+        assertEquals(23456, s.nextShort());
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        assertFalse(s.hasNextShort());
+        try {
+            s.nextShort();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("03456");
+        assertTrue(s.hasNextShort());
+        assertEquals(3456, s.nextShort());
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextShort());
+        assertEquals(3456, s.nextShort());
+
+        s = new Scanner("E34");
+        s.useRadix(16);
+        assertTrue(s.hasNextShort());
+        assertEquals(3636, s.nextShort());
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextShort());
+        assertEquals(12300, s.nextShort());
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextShort());
+        assertEquals(12300, s.nextShort());
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextShort());
+        assertEquals(12300, s.nextShort());
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("ar", "AE"));
+        assertTrue(s.hasNextShort());
+        assertEquals(-123, s.nextShort());
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertTrue(s.hasNextShort());
+        assertEquals(-123, s.nextShort());
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextLong(int)
+     */
+    public void test_hasNextLongI() throws IOException {
+        s = new Scanner("123 456");
+        assertTrue(s.hasNextLong(10));
+        assertEquals(123, s.nextLong(10));
+        assertTrue(s.hasNextLong(10));
+        assertEquals(456, s.nextLong(10));
+        assertFalse(s.hasNextLong(10));
+        try {
+            s.nextLong(10);
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        assertTrue(s.hasNextLong(5));
+        assertEquals(38, s.nextLong(5));
+        assertFalse(s.hasNextLong(5));
+        try {
+            s.nextLong(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789123456789123456789123456789");
+        assertFalse(s.hasNextLong(10));
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextShort(10));
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextLong(10));
+        assertEquals(23456, s.nextLong(10));
+        assertTrue(s.hasNextLong(10));
+        assertEquals(23456, s.nextLong(10));
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextLong(10));
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextLong(10));
+        assertEquals(23456, s.nextLong(10));
+        assertTrue(s.hasNextLong(10));
+        assertEquals(23456, s.nextLong(10));
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertTrue(s.hasNextLong(10));
+        assertEquals(102, s.nextLong(10));
+        assertFalse(s.hasNextLong(5));
+        try {
+            s.nextLong(5);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        assertTrue(s.hasNextLong(10));
+        assertEquals(162, s.nextLong(10));
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        assertFalse(s.hasNextLong(10));
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextLong(10));
+        assertEquals(23456, s.nextLong(10));
+        assertTrue(s.hasNextLong(10));
+        assertEquals(23456, s.nextLong(10));
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        assertFalse(s.hasNextLong(10));
+        try {
+            s.nextLong(10);
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("03456");
+        assertTrue(s.hasNextLong(10));
+        assertEquals(3456, s.nextLong(10));
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextLong(10));
+        assertEquals(3456, s.nextLong(10));
+
+        s = new Scanner("E34");
+        assertTrue(s.hasNextLong(16));
+        assertEquals(3636, s.nextLong(16));
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextLong(10));
+        assertEquals(12300, s.nextLong(10));
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextLong(10));
+        assertEquals(12300, s.nextLong(10));
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextLong(10));
+        assertEquals(12300, s.nextLong(10));
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("ar", "AE"));
+        assertTrue(s.hasNextLong(10));
+        assertEquals(-123, s.nextLong(10));
+       
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertTrue(s.hasNextLong(10));
+        assertEquals(-123, s.nextLong(10));
+    }
+
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextLong()
+     */
+    public void test_hasNextLong() throws IOException {
+        s = new Scanner("123 456");
+        assertTrue(s.hasNextLong());
+        assertEquals(123, s.nextLong());
+        assertTrue(s.hasNextLong());
+        assertEquals(456, s.nextLong());
+        assertFalse(s.hasNextLong());
+        try {
+            s.nextLong();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        // If the radix is different from 10
+        s = new Scanner("123 456");
+        s.useRadix(5);
+        assertTrue(s.hasNextLong());
+        assertEquals(38, s.nextLong());
+        assertFalse(s.hasNextLong());
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // If the number is out of range
+        s = new Scanner("123456789123456789123456789123456789");
+        assertFalse(s.hasNextLong());
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextLong());
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.ENGLISH);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextLong());
+        assertEquals(23456, s.nextLong());
+        assertTrue(s.hasNextLong());
+        assertEquals(23456, s.nextLong());
+
+        /*
+         * ''' is used in many locales as group separator.
+         */
+        s = new Scanner("23'456 23'456");
+        s.useLocale(Locale.GERMANY);
+        assertFalse(s.hasNextLong());
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(new Locale("it", "CH"));
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextLong());
+        assertEquals(23456, s.nextLong());
+        assertTrue(s.hasNextLong());
+        assertEquals(23456, s.nextLong());
+
+        /*
+         * The input string has Arabic-Indic digits.
+         */
+        s = new Scanner("1\u06602 1\u06662");
+        assertEquals(102, s.nextLong());
+        s.useRadix(5);
+        assertFalse(s.hasNextLong());
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useRadix(10);
+        assertTrue(s.hasNextLong());
+        assertEquals(162, s.nextLong());
+
+        /*
+         * '.' is used in many locales as group separator. The input string
+         * has Arabic-Indic digits .
+         */
+        s = new Scanner("23.45\u0666 23.456");
+        s.useLocale(Locale.CHINESE);
+        assertFalse(s.hasNextLong());
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+        s.useLocale(Locale.GERMANY);
+        // If exception is thrown out, input will not be advanced.
+        assertTrue(s.hasNextLong());
+        assertEquals(23456, s.nextLong());
+        assertTrue(s.hasNextLong());
+        assertEquals(23456, s.nextLong());
+
+        // The input string starts with zero
+        s = new Scanner("03,456");
+        s.useLocale(Locale.ENGLISH);
+        assertFalse(s.hasNextLong());
+        try {
+            s.nextLong();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        s = new Scanner("03456");
+        assertTrue(s.hasNextLong());
+        assertEquals(3456, s.nextLong());
+
+        s = new Scanner("\u06603,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextLong());
+        assertEquals(3456, s.nextLong());
+
+        s = new Scanner("E34");
+        s.useRadix(16);
+        assertTrue(s.hasNextLong());
+        assertEquals(3636, s.nextLong());
+
+        /*
+         * There are 3 types of zero digit in all locales, '0' '\u0966' '\u0e50'
+         * respectively, but they are not differentiated.
+         */
+        s = new Scanner("12300");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextLong());
+        assertEquals(12300, s.nextLong());
+
+        s = new Scanner("123\u0966\u0966");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextLong());
+        assertEquals(12300, s.nextLong());
+        
+        s = new Scanner("123\u0e50\u0e50");
+        s.useLocale(Locale.CHINESE);
+        assertTrue(s.hasNextLong());
+        assertEquals(12300, s.nextLong());
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("ar", "AE"));
+        assertTrue(s.hasNextLong());
+        assertEquals(-123, s.nextLong());
+
+        s = new Scanner("-123");
+        s.useLocale(new Locale("mk", "MK"));
+        assertTrue(s.hasNextLong());
+        assertEquals(-123, s.nextLong());
     }
     
     private static class MockStringReader extends StringReader {

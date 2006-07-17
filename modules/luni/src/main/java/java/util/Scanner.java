@@ -666,24 +666,89 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * long value in the default radix. The scanner does not advance past the
+     * input.
+     * 
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid long value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextLong() {
-        throw new NotYetImplementedException();
+        return hasNextLong(integerRadix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * long value in the specified radix. The scanner does not advance past the
+     * input.
+     * 
+     * @param radix
+     *            the radix used to translate the token into a long value
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid long value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextLong(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        boolean isLongValue = false;
+        if (hasNext(integerPattern)) {
+            String intString = matcher.group();
+            intString = removeLocaleInfo(intString, DataType.INT);
+            try {
+                Long.parseLong(intString, radix);
+                isLongValue = true;
+            } catch (NumberFormatException e) {
+                matchSuccessful = false;
+            }
+        }
+        return isLongValue;
     }
 
-    //TODO: To implement this feature
+
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * short value in the default radix. The scanner does not advance past the
+     * input.
+     * 
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid short value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextShort() {
-        throw new NotYetImplementedException();
+        return hasNextShort(integerRadix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * short value in the specified radix. The scanner does not advance past the
+     * input.
+     * 
+     * @param radix
+     *            the radix used to translate the token into a short value
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid short value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextShort(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        boolean isShortValue = false;
+        if (hasNext(integerPattern)) {
+            String intString = matcher.group();
+            intString = removeLocaleInfo(intString, DataType.INT);
+            try {
+                Short.parseShort(intString, radix);
+                isShortValue = true;
+            } catch (NumberFormatException e) {
+                matchSuccessful = false;
+            }
+        }
+        return isShortValue;
     }
 
     /**
@@ -1082,24 +1147,136 @@ public final class Scanner implements Iterator<String> {
         throw new NotYetImplementedException();
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a long value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextLong() returned
+     * true. If this match succeeds, the scanner advances past the input that
+     * matched.
+     * 
+     * The invocation of this method in the form nextLong() behaves in the same
+     * way as the invocation of nextLong(radix), the radix is the default radix
+     * of this scanner.
+     * 
+     * @return the long value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid long
+     *             value, or it is out of range
+     */
     public long nextLong() {
-        throw new NotYetImplementedException();
+        return nextLong(integerRadix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a long value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextLong(radix)
+     * returned true. If this match succeeds, the scanner advances past the
+     * input that matched.
+     * 
+     * If the next token matches the Integer regular expression successfully,
+     * the token is translated into a long value as following steps. At first
+     * all locale specific prefixes, group separators, and locale specific
+     * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
+     * via {@link Character#digit(char, int)}}, a negative sign (-) is added if
+     * the locale specific negative prefixes and suffixes were present. At last
+     * the resulting String is passed to {@link Long#parseLong(String, int)}}
+     * with the specified radix.
+     * 
+     * @param radix
+     *            the radix used to translate the token into a long value
+     * @return the long value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid long
+     *             value, or it is out of range
+     */
     public long nextLong(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        String intString = next(integerPattern);
+        intString = removeLocaleInfo(intString, DataType.INT);
+        long longValue = 0;
+        try {
+            longValue = Long.parseLong(intString, radix);
+        } catch (NumberFormatException e) {
+            matchSuccessful = false;
+            recoverPreviousStatus();
+            throw new InputMismatchException();
+        }
+        return longValue;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a short value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextShort() returned
+     * true. If this match succeeds, the scanner advances past the input that
+     * matched.
+     * 
+     * The invocation of this method in the form nextShort() behaves in the same
+     * way as the invocation of nextShort(radix), the radix is the default radix
+     * of this scanner.
+     * 
+     * @return the short value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid short
+     *             value, or it is out of range
+     */
     public short nextShort() {
-        throw new NotYetImplementedException();
+        return nextShort(integerRadix);
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a short value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextShort(radix)
+     * returned true. If this match succeeds, the scanner advances past the
+     * input that matched.
+     * 
+     * If the next token matches the Integer regular expression successfully,
+     * the token is translated into a short value as following steps. At first
+     * all locale specific prefixes, group separators, and locale specific
+     * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
+     * via {@link Character#digit(char, int)}}, a negative sign (-) is added if
+     * the locale specific negative prefixes and suffixes were present. At last
+     * the resulting String is passed to {@link Short#parseShort(String, int)}}
+     * with the specified radix.
+     * 
+     * @param radix
+     *            the radix used to translate the token into short value
+     * @return the short value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid short
+     *             value, or it is out of range
+     */
     public short nextShort(int radix) {
-        throw new NotYetImplementedException();
+        Pattern integerPattern = getIntegerPattern(radix);
+        String intString = next(integerPattern);
+        intString = removeLocaleInfo(intString, DataType.INT);
+        short shortValue = 0;
+        try {
+            shortValue = Short.parseShort(intString, radix);
+        } catch (NumberFormatException e) {
+            matchSuccessful = false;
+            recoverPreviousStatus();
+            throw new InputMismatchException();
+        }
+        return shortValue;
     }
 
     /**
