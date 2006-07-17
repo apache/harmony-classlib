@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,35 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 		super();
 	}
 
+    /**
+     * If the specified element is not contained within this collection, and
+     * addition of this element succeeds, then true will be returned. If the
+     * specified element is already contained within this collection, or
+     * duplication is not permitted, false will be returned. Different
+     * implementations may add specific limitations on this method to filter
+     * permitted elements. For example, in some implementation, null element may
+     * be denied, and NullPointerException will be thrown out. These limitations
+     * should be explicitly documented by specific collection implmentation.
+     * 
+     * Add operation is not supported in this implementation, and
+     * UnsupportedOperationException will always be thrown out.
+     * 
+     * @param object
+     *            the element to be added.
+     * @return true if the collection is changed successfully after invoking
+     *         this method. Otherwise, false.
+     * @exception UnsupportedOperationException
+     *                if add operation is not supported by this class.
+     * @exception NullPointerException
+     *                if null is used to invoke this method, and null is not
+     *                permitted by this collection.
+     * @exception ClassCastException
+     *                if the class type of the specified element is not
+     *                compatible with the permitted class type.
+     * @exception IllegalArgumentException
+     *                if limitations of this collection prevent the specified
+     *                element from being added
+     */
 	public boolean add(E object) {
 		throw new UnsupportedOperationException();
 	}
