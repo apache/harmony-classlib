@@ -230,13 +230,16 @@ public abstract class FileChannelImpl extends FileChannel {
 	}
 
 	public int read(ByteBuffer buffer, long position) throws IOException {
-        if (!buffer.hasRemaining()){
-            return 0;
+        if (null == buffer){
+            throw new NullPointerException();
         }
         if (position < 0){
             throw new IllegalArgumentException();
         }
 	    openCheck();
+        if (!buffer.hasRemaining()){
+            return 0;
+        }
 		synchronized (repositioningLock) {
 			int bytesRead = 0;
 			long preReadPosition = position();
@@ -308,14 +311,11 @@ public abstract class FileChannelImpl extends FileChannel {
         if (offset < 0 || length < 0 || offset + length > buffers.length) {
             throw new IndexOutOfBoundsException();
         }
-        for (int i = offset; i < length; i++) {
+        for (int i = offset; i < offset + length; i++) {
             count += buffers[i].remaining();
         }
         openCheck();
-        if (offset < 0 || length < 0 || offset + length > buffers.length) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (length == 0) {
+        if (0 == count) {
             return 0;
         }
         if (size() == 0) {
@@ -503,7 +503,16 @@ public abstract class FileChannelImpl extends FileChannel {
 	 */
 
 	public int write(ByteBuffer buffer, long position) throws IOException {
+        if (null == buffer){
+            throw new NullPointerException();
+        }
+        if (position < 0){
+            throw new IllegalArgumentException();
+        }
         openCheck();
+        if (!buffer.hasRemaining()){
+            return 0;
+        }
         int bytesWritten = 0;
 		synchronized (repositioningLock) {
 			long preWritePosition = position();
@@ -546,7 +555,8 @@ public abstract class FileChannelImpl extends FileChannel {
                 try {
                     begin();
                     bytesWritten = (int) fileSystem.write(handle, buffer
-                            .array(), buffer.arrayOffset(), buffer.remaining());
+                            .array(), buffer.arrayOffset() + buffer.position(),
+                            buffer.remaining());
                 } catch (IOException e) {
                     completed = false;
                     throw e;
@@ -566,11 +576,15 @@ public abstract class FileChannelImpl extends FileChannel {
 
 	public long write(ByteBuffer[] buffers, int offset, int length)
 			throws IOException {
-        openCheck();
-        if (offset < 0 || length < 0 || offset + length > buffers.length) {
+        if (offset < 0 || length < 0 || (offset + length) > buffers.length) {
             throw new IndexOutOfBoundsException();
         }
-        if (length == 0) {
+        openCheck();
+        int count = 0;
+        for (int i = offset; i < offset + length; i++) {
+            count += buffers[i].remaining();
+        }
+        if (0 == count) {
             return 0;
         }
         long[] handles = new long[length];

@@ -31,6 +31,12 @@ public final class ReadOnlyFileChannel extends FileChannelImpl {
 
 	public final int write(ByteBuffer buffer, long position) throws IOException {
 		openCheck();
+        if (null == buffer){
+            throw new NullPointerException();
+        }
+        if (position < 0){
+            throw new IllegalArgumentException();
+        }
 		throw new NonWritableChannelException();
 	}
 
@@ -41,6 +47,9 @@ public final class ReadOnlyFileChannel extends FileChannelImpl {
 
 	public final long write(ByteBuffer[] buffers, int offset, int length)
 			throws IOException {
+        if (offset < 0 || length < 0 || (offset + length) > buffers.length) {
+            throw new IndexOutOfBoundsException();
+        }
 		openCheck();
 		throw new NonWritableChannelException();
 	}

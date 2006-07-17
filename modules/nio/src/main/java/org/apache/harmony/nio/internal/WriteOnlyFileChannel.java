@@ -66,8 +66,8 @@ public final class WriteOnlyFileChannel extends FileChannelImpl {
 	}
 
 	public int read(ByteBuffer buffer, long position) throws IOException {		
-        if (!buffer.hasRemaining()){
-            return 0;
+        if (null == buffer) {
+            throw new NullPointerException();
         }
         if (position < 0){
             throw new IllegalArgumentException();

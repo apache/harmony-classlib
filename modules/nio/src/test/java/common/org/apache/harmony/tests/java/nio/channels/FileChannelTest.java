@@ -1820,6 +1820,458 @@ public class FileChannelTest extends TestCase {
                 + CONTENT.substring(10 + "test".length());
         assertEquals(expected, new String(checkBuffer.array(), "iso8859-1"));
     }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer)
+     */
+    public void test_writeLByteBuffer_Null() throws Exception {
+        ByteBuffer writeBuffer = null;
+
+        try {
+            writeOnlyFileChannel.write(writeBuffer);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.write(writeBuffer);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer)
+     */
+    public void test_writeLByteBuffer_Closed() throws Exception {
+        ByteBuffer writeBuffer = ByteBuffer.allocate(CAPACITY);
+
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.write(writeBuffer);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.write(writeBuffer);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.write(writeBuffer);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // should throw ClosedChannelException first
+        writeBuffer = null;
+        try {
+            readWriteFileChannel.read(writeBuffer);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer)
+     */
+    public void test_writeLByteBuffer_ReadOnly() throws Exception {
+        ByteBuffer writeBuffer = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            readOnlyFileChannel.write(writeBuffer);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+
+        // first throws NonWriteableChannelException
+        writeBuffer = null;
+        try {
+            readOnlyFileChannel.write(writeBuffer);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer)
+     */
+    public void test_writeLByteBuffer() throws Exception {
+        ByteBuffer writeBuffer = ByteBuffer.wrap(CONTENT_AS_BYTES);
+
+        int result = writeOnlyFileChannel.write(writeBuffer);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, writeBuffer.position());
+        writeOnlyFileChannel.close();
+
+        assertEquals(CONTENT_AS_BYTES_LENGTH, fileOfWriteOnlyFileChannel
+                .length());
+
+        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+        byte[] inputBuffer = new byte[CONTENT_AS_BYTES_LENGTH];
+        fis.read(inputBuffer);
+        assertTrue(Arrays.equals(CONTENT_AS_BYTES, inputBuffer));
+    }
+    
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer)
+     */
+    public void test_writeLByteBuffer_positioned() throws Exception {
+        final int pos = 5;
+        ByteBuffer writeBuffer = ByteBuffer.wrap(CONTENT_AS_BYTES);
+        writeBuffer.position(pos);
+        int result = writeOnlyFileChannel.write(writeBuffer);
+        assertEquals(CONTENT_AS_BYTES_LENGTH - pos, result);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, writeBuffer.position());
+        writeOnlyFileChannel.close();
+
+        assertEquals(CONTENT_AS_BYTES_LENGTH - pos, fileOfWriteOnlyFileChannel
+                .length());
+
+        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+        byte[] inputBuffer = new byte[CONTENT_AS_BYTES_LENGTH - pos];
+        fis.read(inputBuffer);
+        String test = CONTENT.substring(pos);        
+        assertTrue(Arrays.equals(test.getBytes(), inputBuffer));
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer, long)
+     */
+    public void test_writeLByteBufferJ_Null() throws Exception {
+        ByteBuffer writeBuffer = null;
+
+        try {
+            readOnlyFileChannel.write(writeBuffer, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.write(writeBuffer, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // first throws NullPointerException
+        try {
+            readOnlyFileChannel.write(writeBuffer, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.write(writeBuffer, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // first throws NullPointerException
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.write(writeBuffer, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer, long)
+     */
+    public void test_writeLByteBufferJ_Closed() throws Exception {
+        ByteBuffer writeBuffer = ByteBuffer.allocate(CAPACITY);
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.write(writeBuffer, 0);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.write(writeBuffer, 0);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer, long)
+     */
+    public void test_writeLByteBufferJ_ReadOnly() throws Exception {
+        ByteBuffer writeBuffer = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            readOnlyFileChannel.write(writeBuffer, 10);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer, long)
+     */
+    public void test_writeLByteBufferJ_IllegalArgument() throws Exception {
+        ByteBuffer writeBuffer = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            readOnlyFileChannel.write(writeBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.write(writeBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.write(writeBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        // throws IllegalArgumentException first.
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.write(writeBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer,long)
+     */
+    public void test_writeLByteBufferJ() throws Exception {
+        writeDataToFile(fileOfWriteOnlyFileChannel);
+
+        final int POSITION = 4;
+        ByteBuffer writeBuffer = ByteBuffer.wrap(CONTENT_AS_BYTES);
+        int result = writeOnlyFileChannel.write(writeBuffer, POSITION);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, writeBuffer.position());
+        writeOnlyFileChannel.close();
+
+        assertEquals(POSITION + CONTENT_AS_BYTES_LENGTH,
+                fileOfWriteOnlyFileChannel.length());
+
+        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+        byte[] inputBuffer = new byte[POSITION + CONTENT_AS_BYTES_LENGTH];
+        fis.read(inputBuffer);
+        byte[] expectedResult = new byte[POSITION + CONTENT_AS_BYTES_LENGTH];
+        System.arraycopy(CONTENT_AS_BYTES, 0, expectedResult, 0, POSITION);
+        System.arraycopy(CONTENT_AS_BYTES, 0, expectedResult, POSITION,
+                CONTENT_AS_BYTES_LENGTH);
+        assertTrue(Arrays.equals(expectedResult, inputBuffer));
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer[])
+     */
+    public void test_write$LByteBuffer() throws Exception {
+        ByteBuffer[] writeBuffers = new ByteBuffer[2];
+        MockFileChannel mockFileChannel = new MockFileChannel();
+        mockFileChannel.write(writeBuffers);
+        // verify that calling write(ByteBuffer[] srcs) leads to the method
+        // write(srcs, 0, srcs.length)
+        assertTrue(mockFileChannel.isWriteCalled);
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer[],int,int)
+     */
+    public void test_write$LByteBufferII_Null() throws Exception {
+        ByteBuffer[] writeBuffers = null;
+
+        try {
+            readOnlyFileChannel.write(writeBuffers, 1, 2);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.write(writeBuffers, 1, 2);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.write(writeBuffers, 1, 2);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // first throws NullPointerExcepiton
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.write(writeBuffers, 0, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer[],int,int)
+     */
+    public void test_write$LByteBufferII_Closed() throws Exception {
+        ByteBuffer[] writeBuffers = new ByteBuffer[2];
+        writeBuffers[0] = ByteBuffer.allocate(CAPACITY);
+        writeBuffers[1] = ByteBuffer.allocate(CAPACITY);
+
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.write(writeBuffers, 0, 2);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.write(writeBuffers, 0, 2);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.write(writeBuffers, 0, 2);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // throws ClosedChannelException first
+        writeBuffers[0] = null;
+        try {
+            readWriteFileChannel.write(writeBuffers, 0, 2);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer[],int,int)
+     */
+    public void test_write$LByteBufferII_ReadOnly() throws Exception {
+        ByteBuffer[] writeBuffers = new ByteBuffer[2];
+        writeBuffers[0] = ByteBuffer.allocate(CAPACITY);
+        writeBuffers[1] = ByteBuffer.allocate(CAPACITY);
+
+        try {
+            readOnlyFileChannel.write(writeBuffers, 0, 2);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+
+        // throw NonWritableChannelException first although buffer array is
+        // empty.
+        writeBuffers = new ByteBuffer[2];
+        try {
+            readOnlyFileChannel.write(writeBuffers, 0, 2);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+        
+        readOnlyFileChannel.close();
+        writeBuffers = null;
+        try {
+            readOnlyFileChannel.write(writeBuffers, 0, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            readOnlyFileChannel.write(writeBuffers, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer[],int,int)
+     */
+    public void test_write$LByteBufferII_EmptyBuffers() throws Exception {
+        ByteBuffer[] writeBuffers = new ByteBuffer[2];
+        try {
+            writeOnlyFileChannel.write(writeBuffers, 0, 2);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.write(writeBuffers, 0, 2);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#write(ByteBuffer[],int,int)
+     */
+    public void test_write$LByteBufferII() throws Exception {
+        ByteBuffer[] writeBuffers = new ByteBuffer[2];
+        writeBuffers[0] = ByteBuffer.wrap(CONTENT_AS_BYTES);
+        writeBuffers[1] = ByteBuffer.wrap(CONTENT_AS_BYTES);
+
+        long result = writeOnlyFileChannel.write(writeBuffers, 0, 2);
+        assertEquals(CONTENT_AS_BYTES_LENGTH * 2, result);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, writeBuffers[0].position());
+        assertEquals(CONTENT_AS_BYTES_LENGTH, writeBuffers[1].position());
+        writeOnlyFileChannel.close();
+
+        assertEquals(CONTENT_AS_BYTES_LENGTH * 2, fileOfWriteOnlyFileChannel
+                .length());
+
+        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+        byte[] inputBuffer = new byte[CONTENT_AS_BYTES_LENGTH];
+        fis.read(inputBuffer);
+        byte[] expectedResult = new byte[CONTENT_AS_BYTES_LENGTH * 2];
+        System.arraycopy(CONTENT_AS_BYTES, 0, expectedResult, 0,
+                CONTENT_AS_BYTES_LENGTH);
+        System.arraycopy(CONTENT_AS_BYTES, 0, expectedResult,
+                CONTENT_AS_BYTES_LENGTH, CONTENT_AS_BYTES_LENGTH);
+        assertTrue(Arrays.equals(CONTENT_AS_BYTES, inputBuffer));
+    }
     
     private class MockFileChannel extends FileChannel {
         
@@ -1828,6 +2280,8 @@ public class FileChannelTest extends TestCase {
         private boolean isTryLockCalled = false;
         
         private boolean isReadCalled = false;
+        
+        private boolean isWriteCalled = false;
 
         public void force(boolean arg0) throws IOException {
             // do nothing
@@ -1866,7 +2320,9 @@ public class FileChannelTest extends TestCase {
 
         public long read(ByteBuffer[] srcs, int offset, int length)
                 throws IOException {
-            if (!isReadCalled){
+            // verify that calling read(ByteBuffer[] srcs) leads to the method
+            // read(srcs, 0, srcs.length)
+            if (0 == offset && length == srcs.length) {
                 isReadCalled = true;
             }
             return 0;
@@ -1910,6 +2366,11 @@ public class FileChannelTest extends TestCase {
 
         public long write(ByteBuffer[] srcs, int offset, int length)
                 throws IOException {
+            // verify that calling write(ByteBuffer[] srcs) leads to the method
+            // write(srcs, 0, srcs.length)
+            if(0 == offset && length == srcs.length){
+                isWriteCalled = true;
+            }
             return 0;
         }
 
