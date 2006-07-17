@@ -259,7 +259,7 @@ public final class Formatter implements Closeable, Flushable {
     /**
      * Constructs a formatter of which the file, charset and locale is denoted.
      * 
-     * @param The
+     * @param file
      *            file that is used as the output destination for the formatter.
      *            The file will be truncated to zero size if the file exists, or
      *            else a new file will be created. The output of the formatter
@@ -815,15 +815,15 @@ public final class Formatter implements Closeable, Flushable {
          * Gets the formatted string according to the format token and the
          * argument.
          */
-        String transform(FormatToken formatToken,
+        String transform(FormatToken token,
                 Object argument) {
 
             /* init data member to print */
-            this.formatToken = formatToken;
+            this.formatToken = token;
             this.arg = argument;
 
             String result;
-            switch (formatToken.getConversionType()) {
+            switch (token.getConversionType()) {
             case 'B':
             case 'b': {
                 result = transformFromBoolean();
@@ -880,11 +880,11 @@ public final class Formatter implements Closeable, Flushable {
             }
             default: {
                 throw new UnknownFormatConversionException(String
-                        .valueOf(formatToken.getConversionType()));
+                        .valueOf(token.getConversionType()));
             }
             }
 
-            if (Character.isUpperCase(formatToken.getConversionType())) {
+            if (Character.isUpperCase(token.getConversionType())) {
                 if (null != result) {
                     result = result.toUpperCase(Locale.US);
                 }
@@ -1145,7 +1145,7 @@ public final class Formatter implements Closeable, Flushable {
             int length = source.length();
             if (precision >= 0) {
                 length = Math.min(length, precision);
-                source = source.delete(length, source.length());
+                source.delete(length, source.length());
             }
             if (width > 0) {
                 width = Math.max(source.length(), width);
@@ -1527,27 +1527,7 @@ public final class Formatter implements Closeable, Flushable {
             // output result
             FloatUtil floatUtil = new FloatUtil(result, formatToken,
                     (DecimalFormat) NumberFormat.getInstance(locale), arg);
-            switch (currentConversionType) {
-            case 'e':
-            case 'E': {
-                floatUtil.transform_e();
-                break;
-            }
-            case 'f': {
-                floatUtil.transform_f();
-                break;
-            }
-            case 'g':
-            case 'G': {
-                floatUtil.transform_g();
-                break;
-            }
-            case 'a':
-            case 'A': {
-                floatUtil.transform_a();
-                break;
-            }
-            }
+            floatUtil.transform(formatToken, result);
 
             formatToken.setPrecision(FormatToken.UNSET);
 
@@ -1578,194 +1558,6 @@ public final class Formatter implements Closeable, Flushable {
                 startIndex += 2;
             }
             return padding(result, startIndex);
-        }
-
-        private static class FloatUtil {
-            private StringBuilder result;
-
-            private DecimalFormat decimalFormat;
-
-            private FormatToken formatToken;
-
-            private Object argument;
-
-            private char minusSign;
-
-            FloatUtil(StringBuilder result, FormatToken formatToken,
-                    DecimalFormat decimalFormat, Object argument) {
-                this.result = result;
-                this.formatToken = formatToken;
-                this.decimalFormat = decimalFormat;
-                this.argument = argument;
-                this.minusSign = decimalFormat.getDecimalFormatSymbols()
-                        .getMinusSign();
-            }
-
-            char getMinusSign() {
-                return minusSign;
-            }
-
-            char getAddSign() {
-                return '+';
-            }
-
-            void transform_e() {
-                StringBuilder pattern = new StringBuilder();
-                pattern.append('0');
-                if (formatToken.getPrecision() > 0) {
-                    pattern.append('.');
-                    char[] zeros = new char[formatToken.getPrecision()];
-                    Arrays.fill(zeros, '0');
-                    pattern.append(zeros);
-                }
-                pattern.append('E');
-                pattern.append("+00"); //$NON-NLS-1$
-                decimalFormat.applyPattern(pattern.toString());
-                String formattedString = decimalFormat.format(argument);
-                result.append(formattedString.replace('E', 'e'));
-
-                // if the flag is sharp and decimal seperator is always given
-                // out.
-                if (formatToken.isFlagSet(FormatToken.FLAG_SHARP)
-                        && 0 == formatToken.getPrecision()) {
-                    int indexOfE = result.indexOf("e"); //$NON-NLS-1$
-                    char dot = decimalFormat.getDecimalFormatSymbols()
-                            .getDecimalSeparator();
-                    result.insert(indexOfE, dot);
-                }
-            }
-
-            void transform_g() {
-                int precision = formatToken.getPrecision();
-                precision = (0 == precision ? 1 : precision);
-                formatToken.setPrecision(precision);
-
-                if (0.0 == ((Number) argument).doubleValue()) {
-                    precision--;
-                    formatToken.setPrecision(precision);
-                    transform_f();
-                    return;
-                }
-
-                boolean requireScientificRepresentation = true;
-                double d = ((Number) argument).doubleValue();
-                d = Math.abs(d);
-                long l = Math.round(d);
-
-                if (l >= 1) {
-                    if (l < Math.pow(10, precision)) {
-                        requireScientificRepresentation = false;
-                        precision -= String.valueOf(l).length();
-                        precision = precision < 0 ? 0 : precision;
-                        l = Math.round(d * Math.pow(10, precision + 1));
-                        if (String.valueOf(l).length() <= formatToken
-                                .getPrecision()) {
-                            precision++;
-                        }
-                        formatToken.setPrecision(precision);
-                    }
-
-                } else {
-                    l = Math.round(d * Math.pow(10, 4));
-                    if (l >= 1) {
-                        requireScientificRepresentation = false;
-                        precision += 4 - String.valueOf(l).length();
-                        l = Math.round(d * Math.pow(10, precision + 1));
-                        if (String.valueOf(l).length() <= formatToken
-                                .getPrecision()) {
-                            precision++;
-                        }
-                        l = Math.round(d * Math.pow(10, precision));
-                        if (l < Math.pow(10, precision - 4)) {
-                            requireScientificRepresentation = true;
-                        } else {
-                            formatToken.setPrecision(precision);
-                        }
-                    }
-                }
-                if (requireScientificRepresentation) {
-                    precision = formatToken.getPrecision();
-                    precision--;
-                    formatToken.setPrecision(precision);
-                    transform_e();
-                } else {
-                    transform_f();
-                }
-
-            }
-
-            void transform_f() {
-                StringBuilder pattern = new StringBuilder();
-                if (formatToken.isFlagSet(FormatToken.FLAG_COMMA)) {
-                    pattern.append(',');
-                    int groupingSize = decimalFormat.getGroupingSize();
-                    if (groupingSize > 1) {
-                        char[] sharps = new char[groupingSize - 1];
-                        Arrays.fill(sharps, '#');
-                        pattern.append(sharps);
-                    }
-                }
-
-                pattern.append(0);
-
-                if (formatToken.getPrecision() > 0) {
-                    pattern.append('.');
-                    char[] zeros = new char[formatToken.getPrecision()];
-                    Arrays.fill(zeros, '0');
-                    pattern.append(zeros);
-                }
-                decimalFormat.applyPattern(pattern.toString());
-                result.append(decimalFormat.format(argument));
-                // if the flag is sharp and decimal seperator is always given
-                // out.
-                if (formatToken.isFlagSet(FormatToken.FLAG_SHARP)
-                        && 0 == formatToken.getPrecision()) {
-                    char dot = decimalFormat.getDecimalFormatSymbols()
-                            .getDecimalSeparator();
-                    result.append(dot);
-                }
-
-            }
-
-            void transform_a() {
-                char currentConversionType = formatToken.getConversionType();
-
-                if (argument instanceof Float) {
-                    Float F = (Float) argument;
-                    result.append(Float.toHexString(F.floatValue()));
-
-                } else if (argument instanceof Double) {
-                    Double D = (Double) argument;
-                    result.append(Double.toHexString(D.doubleValue()));
-                } else {
-                    // BigInteger is not supported.
-                    throw new IllegalFormatConversionException(currentConversionType, argument.getClass());
-                }
-
-                if (!formatToken.isPrecisionSet()) {
-                    return;
-                }
-
-                int precision = formatToken.getPrecision();
-                precision = (0 == precision ? 1 : precision);
-                int indexOfFirstFracitoanlDigit = result.indexOf(".") + 1; //$NON-NLS-1$
-                int indexOfP = result.indexOf("p"); //$NON-NLS-1$
-                int fractionalLength = indexOfP - indexOfFirstFracitoanlDigit;
-
-                if (fractionalLength == precision) {
-                    return;
-                }
-
-                if (fractionalLength < precision) {
-                    char zeros[] = new char[precision - fractionalLength];
-                    Arrays.fill(zeros, '0');
-                    result.insert(indexOfP, zeros);
-                    return;
-                }
-                result
-                        .delete(indexOfFirstFracitoanlDigit + precision,
-                                indexOfP);
-            }
         }
 
         /*
@@ -1815,9 +1607,227 @@ public final class Formatter implements Closeable, Flushable {
                 dateTimeUtil = new DateTimeUtil(locale);
             }
             StringBuilder result = new StringBuilder();
-	     // output result
+            // output result
             dateTimeUtil.transform(formatToken, calendar, result);
             return padding(result, startIndex);
+        }
+    }
+    
+    private static class FloatUtil {
+        private StringBuilder result;
+
+        private DecimalFormat decimalFormat;
+
+        private FormatToken formatToken;
+
+        private Object argument;
+
+        private char minusSign;
+
+        FloatUtil(StringBuilder result, FormatToken formatToken,
+                DecimalFormat decimalFormat, Object argument) {
+            this.result = result;
+            this.formatToken = formatToken;
+            this.decimalFormat = decimalFormat;
+            this.argument = argument;
+            this.minusSign = decimalFormat.getDecimalFormatSymbols()
+                    .getMinusSign();
+        }
+        
+        void transform(FormatToken aFormatToken, StringBuilder aResult) {
+            this.result = aResult;
+            this.formatToken = aFormatToken;
+            switch (formatToken.getConversionType()) {
+            case 'e':
+            case 'E': {
+                transform_e();
+                break;
+            }
+            case 'f': {
+                transform_f();
+                break;
+            }
+            case 'g':
+            case 'G': {
+                transform_g();
+                break;
+            }
+            case 'a':
+            case 'A': {
+                transform_a();
+                break;
+            }
+            default: {
+                throw new UnknownFormatConversionException(String
+                        .valueOf(formatToken.getConversionType()));
+            }
+            }
+        }
+
+        char getMinusSign() {
+            return minusSign;
+        }
+
+        char getAddSign() {
+            return '+';
+        }
+
+        void transform_e() {
+            StringBuilder pattern = new StringBuilder();
+            pattern.append('0');
+            if (formatToken.getPrecision() > 0) {
+                pattern.append('.');
+                char[] zeros = new char[formatToken.getPrecision()];
+                Arrays.fill(zeros, '0');
+                pattern.append(zeros);
+            }
+            pattern.append('E');
+            pattern.append("+00"); //$NON-NLS-1$
+            decimalFormat.applyPattern(pattern.toString());
+            String formattedString = decimalFormat.format(argument);
+            result.append(formattedString.replace('E', 'e'));
+
+            // if the flag is sharp and decimal seperator is always given
+            // out.
+            if (formatToken.isFlagSet(FormatToken.FLAG_SHARP)
+                    && 0 == formatToken.getPrecision()) {
+                int indexOfE = result.indexOf("e"); //$NON-NLS-1$
+                char dot = decimalFormat.getDecimalFormatSymbols()
+                        .getDecimalSeparator();
+                result.insert(indexOfE, dot);
+            }
+        }
+
+        void transform_g() {
+            int precision = formatToken.getPrecision();
+            precision = (0 == precision ? 1 : precision);
+            formatToken.setPrecision(precision);
+
+            if (0.0 == ((Number) argument).doubleValue()) {
+                precision--;
+                formatToken.setPrecision(precision);
+                transform_f();
+                return;
+            }
+
+            boolean requireScientificRepresentation = true;
+            double d = ((Number) argument).doubleValue();
+            d = Math.abs(d);
+            long l = Math.round(d);
+
+            if (l >= 1) {
+                if (l < Math.pow(10, precision)) {
+                    requireScientificRepresentation = false;
+                    precision -= String.valueOf(l).length();
+                    precision = precision < 0 ? 0 : precision;
+                    l = Math.round(d * Math.pow(10, precision + 1));
+                    if (String.valueOf(l).length() <= formatToken
+                            .getPrecision()) {
+                        precision++;
+                    }
+                    formatToken.setPrecision(precision);
+                }
+
+            } else {
+                l = Math.round(d * Math.pow(10, 4));
+                if (l >= 1) {
+                    requireScientificRepresentation = false;
+                    precision += 4 - String.valueOf(l).length();
+                    l = Math.round(d * Math.pow(10, precision + 1));
+                    if (String.valueOf(l).length() <= formatToken
+                            .getPrecision()) {
+                        precision++;
+                    }
+                    l = Math.round(d * Math.pow(10, precision));
+                    if (l < Math.pow(10, precision - 4)) {
+                        requireScientificRepresentation = true;
+                    } else {
+                        formatToken.setPrecision(precision);
+                    }
+                }
+            }
+            if (requireScientificRepresentation) {
+                precision = formatToken.getPrecision();
+                precision--;
+                formatToken.setPrecision(precision);
+                transform_e();
+            } else {
+                transform_f();
+            }
+
+        }
+
+        void transform_f() {
+            StringBuilder pattern = new StringBuilder();
+            if (formatToken.isFlagSet(FormatToken.FLAG_COMMA)) {
+                pattern.append(',');
+                int groupingSize = decimalFormat.getGroupingSize();
+                if (groupingSize > 1) {
+                    char[] sharps = new char[groupingSize - 1];
+                    Arrays.fill(sharps, '#');
+                    pattern.append(sharps);
+                }
+            }
+
+            pattern.append(0);
+
+            if (formatToken.getPrecision() > 0) {
+                pattern.append('.');
+                char[] zeros = new char[formatToken.getPrecision()];
+                Arrays.fill(zeros, '0');
+                pattern.append(zeros);
+            }
+            decimalFormat.applyPattern(pattern.toString());
+            result.append(decimalFormat.format(argument));
+            // if the flag is sharp and decimal seperator is always given
+            // out.
+            if (formatToken.isFlagSet(FormatToken.FLAG_SHARP)
+                    && 0 == formatToken.getPrecision()) {
+                char dot = decimalFormat.getDecimalFormatSymbols()
+                        .getDecimalSeparator();
+                result.append(dot);
+            }
+
+        }
+
+        void transform_a() {
+            char currentConversionType = formatToken.getConversionType();
+
+            if (argument instanceof Float) {
+                Float F = (Float) argument;
+                result.append(Float.toHexString(F.floatValue()));
+
+            } else if (argument instanceof Double) {
+                Double D = (Double) argument;
+                result.append(Double.toHexString(D.doubleValue()));
+            } else {
+                // BigInteger is not supported.
+                throw new IllegalFormatConversionException(currentConversionType, argument.getClass());
+            }
+
+            if (!formatToken.isPrecisionSet()) {
+                return;
+            }
+
+            int precision = formatToken.getPrecision();
+            precision = (0 == precision ? 1 : precision);
+            int indexOfFirstFracitoanlDigit = result.indexOf(".") + 1; //$NON-NLS-1$
+            int indexOfP = result.indexOf("p"); //$NON-NLS-1$
+            int fractionalLength = indexOfP - indexOfFirstFracitoanlDigit;
+
+            if (fractionalLength == precision) {
+                return;
+            }
+
+            if (fractionalLength < precision) {
+                char zeros[] = new char[precision - fractionalLength];
+                Arrays.fill(zeros, '0');
+                result.insert(indexOfP, zeros);
+                return;
+            }
+            result
+                    .delete(indexOfFirstFracitoanlDigit + precision,
+                            indexOfP);
         }
     }
 
@@ -1834,10 +1844,10 @@ public final class Formatter implements Closeable, Flushable {
             this.locale = locale;
         }
 
-        void transform(FormatToken formatToken, Calendar calendar,
-                StringBuilder result) {
-            this.result = result;
-            this.calendar = calendar;
+        void transform(FormatToken formatToken, Calendar aCalendar,
+                StringBuilder aResult) {
+            this.result = aResult;
+            this.calendar = aCalendar;
             char suffix = formatToken.getDateSuffix();
 
             switch (suffix) {
