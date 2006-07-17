@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -363,6 +363,26 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
         return buffer.toString();
     }
 
+    /**
+     * Answers a collection of the values contained in this map. The collection
+     * is backed by this map so changes to one are reflected by the other. The
+     * collection supports remove, removeAll, retainAll and clear operations,
+     * and it does not support add or addAll operations.
+     * 
+     * This method answers a collection which is the subclass of
+     * AbstractCollection. The iterator method of this subclass answers a
+     * "wrapper object" over the iterator of map's entrySet(). The size method
+     * wraps the map's size method and the contains method wraps the map's
+     * containsValue method.
+     * 
+     * The collection is created when this method is called at first time and
+     * returned in response to all subsequent calls. This method may return
+     * different Collection when multiple calls to this method, since it has no
+     * synchronization performed.
+     * 
+     * @return a collection of the values contained in this map
+     * 
+     */
     public Collection<V> values() {
         if (valuesCollection == null) {
             valuesCollection = new AbstractCollection<V>() {
