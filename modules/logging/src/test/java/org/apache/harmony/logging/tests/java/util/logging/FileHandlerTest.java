@@ -230,15 +230,19 @@ public class FileHandlerTest extends TestCase {
 			assertEquals(reader.read(), -1);
 		} finally {
 			try {
-				reader.close();
-				reader = null;
-			} catch (Exception e) {
-			}
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception e) {
+                // don't care
+            }
 			reset(homepath, filename);
 		}
 	}
 
 	/**
+     *   Does a cleanup of  given file
+     *
 	 * @param homepath
 	 * @param filename
 	 */
