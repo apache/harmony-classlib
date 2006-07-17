@@ -48,6 +48,17 @@ public class Modifier {
 
 	public static final int STRICT = 0x800;
 
+    // Non-public types required by Java 5 update to class file format
+    static final int BRIDGE = 0x40;
+    
+    static final int VARARGS = 0x80;
+    
+    static final int SYNTHETIC = 0x1000;
+    
+    static final int ANNOTATION = 0x2000;
+    
+    static final int ENUM = 0x4000;
+     
 	public Modifier() {
 	}
 
