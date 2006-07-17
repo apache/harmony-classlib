@@ -132,6 +132,8 @@
     	<ant dir="..\modules\prefs" antfile="build.xml" target="clean.native" />
     	<ant dir="..\modules\luni" antfile="build.xml" target="clean.native" />
     	<ant dir="..\modules\nio" antfile="build.xml" target="clean.native" />
+    	<ant dir="..\modules\misc" antfile="build.xml" target="clean.native" />
+    	<ant dir="..\modules\awt" antfile="build.xml" target="clean.native" />
     	
     	<delete dir="${native.lib.target}" />
     	
