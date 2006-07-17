@@ -272,7 +272,7 @@ public abstract class Handler {
         if (this.level.intValue() == Level.OFF.intValue()) {
             return false;
         } else if (record.getLevel().intValue() >= this.level.intValue()) {
-            return null == this.filter ? true : this.filter.isLoggable(record);
+            return null == this.filter || this.filter.isLoggable(record);
         }
         return false;
     }
