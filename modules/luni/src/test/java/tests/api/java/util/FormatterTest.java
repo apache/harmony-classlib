@@ -1109,20 +1109,13 @@ public class FormatterTest extends TestCase {
         }
 
         f = new Formatter(Locale.US);
-        final String[] illFlags = { "%+%", "%#%", "% %", "%0%", "%,%", "%(%" };
-        for (int i = 0; i < illFlags.length; i++) {
-            try {
-                f.format(illFlags[i]);
-                fail("should throw FormatFlagsConversionMismatchException: "
-                        + illFlags[i]);
-                /*
-                 * error on RI, throw IllegalFormatFlagsException specification
-                 * says FormatFlagsConversionMismatchException should be thrown
-                 */
-            } catch (FormatFlagsConversionMismatchException e) {
-                // expected
-            }
-        }
+        assertFormatFlagsConversionMismatchException(f, "%+%");
+        assertFormatFlagsConversionMismatchException(f, "%#%");
+        assertFormatFlagsConversionMismatchException(f, "% %");
+        assertFormatFlagsConversionMismatchException(f, "%0%");
+        assertFormatFlagsConversionMismatchException(f, "%,%");
+        assertFormatFlagsConversionMismatchException(f, "%(%");
+        
 
         f = new Formatter(Locale.KOREAN);
         f.format("%4%", 1);
@@ -1140,6 +1133,20 @@ public class FormatterTest extends TestCase {
          * 4 chars width.
          */
         assertEquals("%   ", f.toString());
+    }
+
+    private void assertFormatFlagsConversionMismatchException(Formatter f, String str) {
+        try {
+            f.format(str);
+            fail("should throw FormatFlagsConversionMismatchException: "
+                    + str);
+             /*
+             * error on RI, throw IllegalFormatFlagsException specification
+             * says FormatFlagsConversionMismatchException should be thrown
+             */
+        } catch (FormatFlagsConversionMismatchException e) {
+           // expected
+        }
     }
 
     /**
