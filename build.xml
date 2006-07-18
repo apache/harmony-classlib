@@ -51,6 +51,10 @@ Usage:
     Fetches dependencies. Note: Some of Harmony's dependencies are
     licensed under terms other than the Apache License v2.
 
+  ant properties
+    Display the common properties that are use in the ant build files.
+
+
 The 'build' and 'test' targets can be restricted to processing only
 a single module by defining the 'build.module' variable on the ant
 command line.  For example, to run only the luni tests:
@@ -59,6 +63,7 @@ command line.  For example, to run only the luni tests:
 
         </echo>
     </target>
+
     <!-- import properties for snapshot targets -->
     <import file="${basedir}/make/properties.xml" />
 
@@ -130,9 +135,9 @@ Generating HTML using Doxygen...
     </target>
 
     <!-- ================================= 
-          target: properties
+          target: -properties
          ================================= -->
-    <target name="properties" depends="svn-prop">
+    <target name="-properties" depends="svn-prop">
         <property name="deploy.file.prefix"
                   value="incubator-harmony-classlib-r${svn.revision}" />
         <property name="deploy.tar"
@@ -149,7 +154,7 @@ Generating HTML using Doxygen...
     <!-- ================================= 
           target: snapshot-tar
          ================================= -->
-    <target name="snapshot-tar" depends="default, properties" if="is.unix">
+    <target name="snapshot-tar" depends="default, -properties" if="is.unix">
         <echo>
 ========================================
 Generating snapshot tar
@@ -181,7 +186,7 @@ Generating snapshot tar
     <!-- ================================= 
           target: snapshot-zip
          ================================= -->
-    <target name="snapshot-zip" depends="default, properties" if="is.windows">
+    <target name="snapshot-zip" depends="default, -properties" if="is.windows">
         <echo>
 ========================================
 Generating snapshot zip
@@ -210,5 +215,7 @@ Generating snapshot zip
     <target name="fetch-depends">
         <ant antfile="make/depends.xml" inheritall="false" target="download" />
     </target>
+
+    <target name="properties" depends="echo" />
 
 </project>
