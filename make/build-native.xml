@@ -57,13 +57,11 @@
 
 
     <!-- This target invokes make on the all target to compile all natives -->
-    <target name="make-all">
+    <target name="make-all" depends="copy-makefile-includes">
     	<!-- Create the target directory structure -->
         <mkdir dir="${hy.jdk}/jre/bin" />
         <mkdir dir="${hy.jdk}/include" />
     	<mkdir dir="${native.lib.target}"/>
-    	
-    	<antcall target="copy-makefile-includes" />
     	
     	<!-- These module targets take care of building and copying
              their shared libs -->
@@ -82,9 +80,10 @@
     <!-- ================================= 
           target: make-clean              
          ================================= -->
-    <target name="make-clean">
-    	<antcall target="copy-makefile-includes" />
-    	
+    <target name="make-clean"
+        depends="copy-makefile-includes,-make-clean,clean-makefile-includes" />
+
+    <target name="-make-clean">
     	<ant dir="modules/auth" antfile="build.xml" target="clean.native" />
     	<ant dir="modules/archive" antfile="build.xml" target="clean.native" />
        	<ant dir="modules/text" antfile="build.xml" target="clean.native" />
@@ -93,10 +92,7 @@
     	<ant dir="modules/nio" antfile="build.xml" target="clean.native" />
     	<ant dir="modules/misc" antfile="build.xml" target="clean.native" />
     	<ant dir="modules/awt" antfile="build.xml" target="clean.native" />
-    	
     	<delete dir="${native.lib.target}" />
-    	
-    	<antcall target="clean-makefile-includes" />
     </target>
 
 
