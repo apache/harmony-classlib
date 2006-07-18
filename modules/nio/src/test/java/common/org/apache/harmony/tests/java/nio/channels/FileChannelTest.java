@@ -1372,6 +1372,27 @@ public class FileChannelTest extends TestCase {
         } catch (ClosedChannelException e) {
             // expected
         }
+        
+        // regression test for Harmony-902
+        readBuffers[0] = null;
+        try {
+            readOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+        try {
+            writeOnlyFileChannel.read(readBuffers, 0, 1);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+        try {
+            readWriteFileChannel.read(readBuffers, 0, 1);
+            fail("should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
     }
 
     /**

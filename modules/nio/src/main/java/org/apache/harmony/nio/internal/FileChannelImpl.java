@@ -311,10 +311,10 @@ public abstract class FileChannelImpl extends FileChannel {
         if (offset < 0 || length < 0 || offset + length > buffers.length) {
             throw new IndexOutOfBoundsException();
         }
+        openCheck();
         for (int i = offset; i < offset + length; i++) {
             count += buffers[i].remaining();
         }
-        openCheck();
         if (0 == count) {
             return 0;
         }
