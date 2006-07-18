@@ -137,6 +137,9 @@ public class JarEntryTest extends junit.framework.TestCase {
 	    }
 	    assertEquals(2,certs_bob.size());
 	    assertEquals(1,certs_alice.size());
+            
+            assertNull("getCodeSigners() of a primitive JarEntry should return null", 
+                 new JarEntry("aaa").getCodeSigners());
 	}    
     
 	/**

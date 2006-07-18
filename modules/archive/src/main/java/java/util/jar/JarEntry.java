@@ -134,6 +134,9 @@ public class JarEntry extends ZipEntry {
     }
 
     private CodeSigner[] getCodeSigners(Certificate[] certs) {
+        if(null == certs) {
+            return null;
+        }
 
         X500Principal prevIssuer = null;
         ArrayList<Certificate> list = new ArrayList<Certificate>(certs.length);
