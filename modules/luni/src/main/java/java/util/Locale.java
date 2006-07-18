@@ -202,27 +202,35 @@ public final class Locale implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Constructs a new Locale using the specified language, country, and
-	 * variant codes.
-	 * @param language 
-	 * @param country 
-	 * @param variant 
-	 * 
-	 */
-	public Locale(String language, String country, String variant) {
-		languageCode = language.toLowerCase();
-		// Map new language codes to the obsolete language
-		// codes so the correct resource bundles will be used.
-		if (languageCode.equals("he")) {
+     * Constructs a new Locale using the specified language, country, and
+     * variant codes.
+     * 
+     * @param language
+     * @param country
+     * @param variant
+     * @throws NullPointerException if <code>language</code>,
+     *         <code>country</code> or <code>variant</code> is
+     *         <code>null</code>.
+     */
+    public Locale(String language, String country, String variant) {
+        if (language == null || country == null || variant == null) {
+            throw new NullPointerException();
+        }
+        languageCode = language.toLowerCase();
+        // Map new language codes to the obsolete language
+        // codes so the correct resource bundles will be used.
+        if (languageCode.equals("he")) {
             languageCode = "iw"; //$NON-NLS-1$
         } else if (languageCode.equals("id")) {
             languageCode = "in"; //$NON-NLS-1$
         } else if (languageCode.equals("yi")) {
             languageCode = "ji"; //$NON-NLS-1$
         }
-		countryCode = country.toUpperCase();
-		variantCode = variant;
-	}
+
+        countryCode = country.toUpperCase();
+
+        variantCode = variant;
+    }
 
 	/**
 	 * Answers a new Locale with the same language, country and variant codes as

@@ -45,6 +45,23 @@ public class LocaleTest extends junit.framework.TestCase {
 		Locale x = new Locale("xx", "CV", "ZZ");
 		assertTrue("Failed to create Locale", x.getLanguage().equals("xx")
 				&& (x.getCountry().equals("CV") && x.getVariant().equals("ZZ")));
+                try {
+                   new Locale(null, "CV", "ZZ");
+                   fail("expected NullPointerException with 1st parameter == null");
+                } catch(NullPointerException e) {
+                }
+
+                try {
+                   new Locale("xx", null, "ZZ");
+                   fail("expected NullPointerException with 2nd parameter == null");
+                } catch(NullPointerException e) {
+                }
+
+                try {
+                   new Locale("xx", "CV", null);
+                   fail("expected NullPointerException with 3rd parameter == null");
+                } catch(NullPointerException e) {
+                }
 	}
 
 	/**
