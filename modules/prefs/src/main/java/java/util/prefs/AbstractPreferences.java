@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -668,8 +668,12 @@ public abstract class AbstractPreferences extends Preferences {
                 startNode = this;
             }
         }
-        Preferences result = startNode.nodeImpl(name, false);
-        return null == result ? false : true;
+        try {
+            Preferences result = startNode.nodeImpl(name, false);
+            return null == result ? false : true;
+        } catch(IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /*

@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1762,6 +1762,13 @@ public class AbstractPreferencesTest extends TestCase {
 		}
 	}
 
+    /**
+     * Regression for HARMONY-828
+     */
+    public void testLongPath() throws Exception { 
+        assertFalse(pref.nodeExists("ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"));
+    } 
+
 	public static class MockPreferenceChangeListener implements
 			PreferenceChangeListener {
 		private int changed = 0;
@@ -1847,5 +1854,6 @@ public class AbstractPreferencesTest extends TestCase {
 			removed = 0;
 		}
 	}
+
 }
 
