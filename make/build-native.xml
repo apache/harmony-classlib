@@ -46,14 +46,14 @@
           target: build
          ================================= -->
     <target name="build"
-            depends="overlay-oss, copy-includes, make-all, layout" />
+        depends="overlay-oss, copy-includes, make-all, layout" />
 
 
     <!-- ================================= 
           target: clean              
          ================================= -->
     <target name="clean"
-            depends="make-clean, clean-includes, clean-overlay-oss, clean-layout" />
+        depends="make-clean, clean-includes, clean-overlay-oss, clean-layout" />
 
 
     <!-- This target invokes make on the all target to compile all natives -->
@@ -65,7 +65,8 @@
     	
     	<antcall target="copy-makefile-includes" />
     	
-    	<!-- These module targets take care of building and copying their shared libs -->
+    	<!-- These module targets take care of building and copying
+             their shared libs -->
     	<ant dir="modules/luni" antfile="build.xml" target="build.native.core" />
     	<ant dir="modules/archive" antfile="build.xml" target="build.native" />
     	<ant dir="modules/auth" antfile="build.xml" target="build.native" />
@@ -139,60 +140,61 @@
          ================================= -->
     <target name="overlay-oss">
         <ant dir="modules/luni" antfile="build.xml"
-        	target="overlay-oss" />
+             target="overlay-oss" />
 
     	<ant dir="modules/archive" antfile="build.xml" 
-			target="overlay-oss" />        
+	     target="overlay-oss" />        
     	
     	<ant dir="modules/text" antfile="build.xml" 
-    				target="overlay-oss" /> 
+    	     target="overlay-oss" /> 
     </target>
 
     <!-- ================================= 
           target: copy-includes              
          ================================= -->
-	<target name="copy-includes" >
-		<!-- Call copy.native.includes targets to copy across global includes to 
-		    		 deploy/includes/harmony -->
+    <target name="copy-includes" >
+	<!-- Call copy.native.includes targets to copy across
+	     global includes to deploy/includes/harmony -->
     	<ant dir="modules/archive" antfile="build.xml"
              target="copy.native.includes" />
     	<ant dir="modules/luni" antfile="build.xml" 
     	     target="copy.native.includes" />
-	</target>
+    </target>
 	
-	<!-- ================================= 
+    <!-- ================================= 
           target: clean-includes              
          ================================= -->
-	<target name="clean-includes" >
-		<!-- Call clean.native.includes targets to delete global includes under
-		    		 deploy/includes/harmony -->
+    <target name="clean-includes" >
+	<!-- Call clean.native.includes targets to delete global
+   	     includes under deploy/includes/harmony -->
+        
     	<ant dir="modules/archive" antfile="build.xml" 
     	     target="clean.native.includes" />
     	<ant dir="modules/luni" antfile="build.xml" 
     	     target="clean.native.includes" />
-	</target>
+    </target>
 
     <!-- ================================= 
           target: copy-makefile-includes              
          ================================= -->
-	<target name="copy-makefile-includes">
-		<!-- copy generic defines and rules for each platform into a shared
-			place -->
-	    <mkdir dir="${hy.hdk}/build/make" />
-	    <copy todir="${hy.hdk}/build/make" overwrite="yes">
+    <target name="copy-makefile-includes">
+	<!-- copy generic defines and rules for each platform into a shared
+	     place -->
+	<mkdir dir="${hy.hdk}/build/make" />
+	<copy todir="${hy.hdk}/build/make" overwrite="yes">
             <fileset dir="${depends.build}">
                 <include name="*" />
             </fileset>
         </copy>
-	</target>
+    </target>
 	
-	<!-- ================================= 
+    <!-- ================================= 
           target: clean-makefile-includes              
          ================================= -->
-	<target name="clean-makefile-includes">
-		<!-- delete generic defines and rules -->
-		<delete dir="${hy.hdk}/build/make" />
-	</target>
+    <target name="clean-makefile-includes">
+	<!-- delete generic defines and rules -->
+	<delete dir="${hy.hdk}/build/make" />
+    </target>
 
     <!-- ================================= 
           target: clean-overlay-oss              
