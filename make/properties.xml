@@ -96,6 +96,11 @@
     </condition>
     <property name="shlib.suffix" value=".so" />
 
+    <condition property="linklib.suffix" value=".lib">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="linklib.suffix" value=".so" />
+
     <condition property="make.command" value="nmake.exe">
         <isset property="is.windows"/>
     </condition>

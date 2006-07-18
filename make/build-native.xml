@@ -23,13 +23,23 @@
 		Compile the native source into component shared libs.
     </description>
 
+    <!-- import common properties -->
+    <import file="${basedir}/make/properties.xml" />
+
+    <property name="hy.hdk" location="deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="depends.build" location="depends/build" />
+    <property name="depends.oss" location="depends/oss" />
+    <property name="depends.libs" location="depends/libs/${hy.platform}" />
+    <property name="depends.files" location="depends/files" />
+    <property name="native.lib.target" location="${hy.hdk}/lib" />
+
     <!-- ================================= 
           target: default              
          ================================= -->
     <target name="default" 
         description="Compile the native source into component shared libs." 
         depends="clean, build" />
-
 
 
     <!-- ================================= 
@@ -46,60 +56,8 @@
             depends="make-clean, clean-includes, clean-overlay-oss, clean-layout" />
 
 
-    <!-- ================================= 
-          target: properties
-         ================================= -->
-    <target name="properties" depends="init, windows-properties, linux-properties">
-        <property name="hy.hdk" location="deploy" />
-    	<property name="hy.jdk" location="${hy.hdk}/jdk" />
-    	<property name="depends.build" location="depends/build" />
-        <property name="depends.oss" location="depends/oss" />
-        <property name="depends.libs" location="depends/libs/${target.platform}" />
-    	<property name="depends.files" location="depends/files" />
-    	<property name="native.lib.target" location="${hy.hdk}/lib" />
-    </target>
-
-
-    <!-- ================================= 
-          target: windows-properties              
-         ================================= -->
-    <target name="windows-properties" if="is.windows">
-        <property name="target.platform" value="./win.IA32" />
-        <property name="make.command" value="nmake.exe" />
-        <property name="exe.suffix" value=".exe" />
-        <property name="shlib.suffix" value=".dll" />
-    	<property name="linklib.suffix" value=".lib" />
-    </target>
-
-
-    <!-- ================================= 
-          target: linux-properties              
-         ================================= -->
-    <target name="linux-properties" if="is.linux">
-        <property name="target.platform" value="./linux.IA32" />
-        <property name="make.command" value="make" />
-        <property name="exe.suffix" value="" />
-        <property name="shlib.suffix" value=".so" />
-    	<property name="linklib.suffix" value=".so" />
-    </target>
-
-
-    <!-- - - - - - - - - - - - - - - - - - 
-          target: init                      
-         - - - - - - - - - - - - - - - - - -->
-    <target name="init">
-        <!-- Determine our operating system -->
-        <condition property="is.windows">
-            <os family="windows" />
-        </condition>
-
-        <condition property="is.linux">
-            <os name="linux" />
-        </condition>
-    </target>
-
     <!-- This target invokes make on the all target to compile all natives -->
-    <target name="make-all" depends="properties">
+    <target name="make-all">
     	<!-- Create the target directory structure -->
         <mkdir dir="${hy.jdk}/jre/bin" />
         <mkdir dir="${hy.jdk}/include" />
@@ -123,7 +81,7 @@
     <!-- ================================= 
           target: make-clean              
          ================================= -->
-    <target name="make-clean" depends="properties">
+    <target name="make-clean">
     	<antcall target="copy-makefile-includes" />
     	
     	<ant dir="modules/auth" antfile="build.xml" target="clean.native" />
@@ -144,8 +102,7 @@
     <!-- ================================= 
           target: layout              
          ================================= -->
-    <target name="layout" 
-        depends="properties" 
+    <target name="layout"
         description="Construct the correct directory structure for native binaries">
 
     	<!-- NLS catalog files -->
@@ -165,7 +122,7 @@
     <!-- ================================= 
           target: clean-layout              
          ================================= -->
-    <target name="clean-layout" depends="properties">
+    <target name="clean-layout">
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${hy.jdk}">
                 <include name="**/bin/java${exe.suffix}" />
@@ -180,7 +137,7 @@
     <!-- ================================= 
           target: overlay-oss              
          ================================= -->
-    <target name="overlay-oss" depends="properties">
+    <target name="overlay-oss">
         <ant dir="modules/luni" antfile="build.xml"
         	target="overlay-oss" />
 
@@ -218,7 +175,7 @@
     <!-- ================================= 
           target: copy-makefile-includes              
          ================================= -->
-	<target name="copy-makefile-includes" depends="properties" >
+	<target name="copy-makefile-includes">
 		<!-- copy generic defines and rules for each platform into a shared
 			place -->
 	    <mkdir dir="${hy.hdk}/build/make" />
@@ -240,7 +197,7 @@
     <!-- ================================= 
           target: clean-overlay-oss              
          ================================= -->
-    <target name="clean-overlay-oss" depends="properties">
+    <target name="clean-overlay-oss">
         <ant dir="modules/luni" antfile="build.xml" 
              target="clean-overlay-oss" />
      	<ant dir="modules/archive" antfile="build.xml" 
