@@ -14,6 +14,7 @@
  */
 
 #include "iohelp.h"
+#include "exceptions.h"
 #include "jclglob.h"
 
 jclass JNICALL

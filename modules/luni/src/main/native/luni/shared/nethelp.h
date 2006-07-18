@@ -16,6 +16,7 @@
 #if !defined(nethelp_h)
 #define nethelp_h
 #include "iohelp.h"
+#include "exceptions.h"
 #include "hysocket.h"
 #define JAVASOCKOPT_TCP_NODELAY 1
 #define JAVASOCKOPT_SO_REUSEADDR 4

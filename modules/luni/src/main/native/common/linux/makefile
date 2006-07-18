@@ -19,6 +19,7 @@
 include $(HY_HDK)/build/make/makefile.include
 
 BUILDFILES = $(SHAREDSUB)libglob.o $(SHAREDSUB)iohelp.o \
+	$(SHAREDSUB)exceptions.o \
 	$(SHAREDSUB)utf8encode.o $(SHAREDSUB)utf8decode.o
 LIBNAME = $(LIBPATH)libhycommon.a
 

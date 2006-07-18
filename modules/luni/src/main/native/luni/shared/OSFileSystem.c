@@ -19,6 +19,7 @@
 #include "vmi.h"
 #include <string.h>
 #include "iohelp.h"
+#include "exceptions.h"
 
 #include "OSFileSystem.h"
 #include "IFileSystem.h"

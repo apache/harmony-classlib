@@ -53,6 +53,7 @@
 		<include name="hyporterror.h" />
 		<include name="gp.h" />
 	        <include name="iohelp.h" />
+	        <include name="exceptions.h" />
 	        <include name="libglob.h" />
     	        <include name="fdlibm.h" />
 	        <include name="hymagic.h" />
@@ -233,6 +234,7 @@
  		<include name="hysock.h" />
 		<include name="hyportpg.h" />	 
                 <include name="iohelp.h" />
+                <include name="exceptions.h" />
 	        <include name="libglob.h" />
     	        <include name="fdlibm.h" />
 	        <include name="hymagic.h" />

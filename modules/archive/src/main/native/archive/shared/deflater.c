@@ -15,6 +15,7 @@
 
 #include "vmi.h"
 #include "iohelp.h"
+#include "exceptions.h"
 
 #include "zlib.h"
 #include "inflater.h"

@@ -16,6 +16,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "iohelp.h"
+#include "exceptions.h"
 #include "jclglob.h"
 #include "helpers.h"
 #include "jclprots.h"

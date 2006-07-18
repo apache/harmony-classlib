@@ -14,23 +14,10 @@
  */
 
 #include "iohelp.h"
+#include "exceptions.h"
 #include "jclglob.h"
 
 jfieldID getJavaIoFileDescriptorDescriptorFID (JNIEnv * env);
-
-/**
-  * Throw java.io.IOException with the message provided
-  */
-void
-throwJavaIoIOException (JNIEnv * env, char *message)
-{
-  jclass exceptionClass = (*env)->FindClass(env, "java/io/IOException");
-  if (0 == exceptionClass) { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
-}
 
 /**
   * This will convert all separators to the proper platform separator
@@ -82,30 +69,6 @@ ioh_convertToPlatform (char *path)
     }
   /* This will have to handle extra \'s but currently doesn't */
 
-}
-
-/**
-  * Throw java.io.IOException with the "File closed" message
-  * Consolidate all through here so message is consistent.
-  */
-void
-throwJavaIoIOExceptionClosed (JNIEnv * env)
-{
-  throwJavaIoIOException (env, "File closed");
-}
-
-/**
-  * Throw java.lang.IndexOutOfBoundsException
-  */
-void
-throwIndexOutOfBoundsException (JNIEnv * env)
-{
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/IndexOutOfBoundsException");
-  if (0 == exceptionClass) { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, "");
 }
 
 /**
@@ -326,23 +289,6 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
 }
 
 /**
-  * Throw java.lang.NullPointerException with the message provided
-  * Note: This is not named throwNullPointerException because it conflicts
-  * with a VM function of that same name and this causes problems on
-  * some platforms.
-  */
-void
-throwNPException (JNIEnv * env, char *message)
-{
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/NullPointerException");
-  if (0 == exceptionClass) { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
-}
-
-/**
   * This will return the number of chars left in the file
   */
 jint
@@ -437,20 +383,6 @@ setJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd,
     {
       (*env)->SetLongField (env, fd, fid, (IDATA)value);
     }
-}
-
-/**
-  * Throw java.lang.OutOfMemoryError
-  */
-void
-throwNewOutOfMemoryError (JNIEnv * env, char *message)
-{
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
-  if (0 == exceptionClass) { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
 }
 
 /**
