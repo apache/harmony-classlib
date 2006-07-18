@@ -64,6 +64,15 @@ public final class Scanner implements Iterator<String> {
     private static final Pattern BOOLEAN_PATTERN = Pattern.compile(
             "true|false", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     
+    // Pattern used to recognize line terminator
+    private static final Pattern LINE_TERMINATOR = Pattern
+            .compile("\n|\r\n|\r|\u0085|\u2028|\u2029"); //$NON-NLS-1$
+    
+    // Pattern used to recognize a line with a line terminator.
+    private static final Pattern LINE_PATTERN = Pattern
+            .compile(".*(" + LINE_TERMINATOR.pattern() + //$NON-NLS-1$
+                    ")|.+(" + LINE_TERMINATOR.pattern() + ")?"); //$NON-NLS-1$ //$NON-NLS-2$
+    
     // The pattern matching anything
     private static final Pattern ANY_PATTERN = Pattern.compile("(?s).*"); //$NON-NLS-1$
 
@@ -1142,9 +1151,55 @@ public final class Scanner implements Iterator<String> {
         return intValue;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns the skipped input and advances the scanner to the beginning of
+     * the next line. The returned result will exclude any line terminator.
+     * 
+     * When searching, if no line terminator is found, then a large amount of
+     * input will be cached. If no line at all can be found, a
+     * NoSuchElementException will be thrown out.
+     * 
+     * @return the skipped line
+     * @throws IllegalStateException
+     *             if the scanner is closed
+     * @throws NoSuchElementException
+     *             if no line can be found, e.g. when input is an empty string
+     */
     public String nextLine() {
-        throw new NotYetImplementedException();
+        checkClosed();
+
+        matcher.usePattern(LINE_PATTERN);
+        matcher.region(findStartIndex, bufferLength);
+        String result = null;
+        while (true) {
+            if (matcher.find()) {
+                if (inputExhausted || bufferLength != matcher.end()) {
+                    matchSuccessful = true;
+                    findStartIndex = matcher.end();
+                    result = matcher.group();
+                    break;
+                }
+            } else {
+                if (inputExhausted) {
+                    matchSuccessful = false;
+                    throw new NoSuchElementException();
+                }
+            }
+            if (!inputExhausted) {
+                readMore();
+                resetMatcher();
+            } else {
+                break;
+            }
+        }
+        // Find text without line terminator here.
+        if (null != result) {
+            Matcher terminatorMatcher = LINE_TERMINATOR.matcher(result);
+            if (terminatorMatcher.find()) {
+                result = result.substring(0, terminatorMatcher.start());
+            }
+        }
+        return result;
     }
 
     /**

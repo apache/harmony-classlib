@@ -4745,6 +4745,140 @@ public class ScannerTest extends TestCase {
         }
     }
     
+    /**
+     * @tests java.util.Scanner#nextLine()
+     */
+    public void test_nextLine() {
+        s = new Scanner("");
+        s.close();
+        try {
+            s.nextLine();
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        
+        s = new Scanner("test\r\ntest");
+        String result = s.nextLine();
+        assertEquals("test", result);
+        MatchResult matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(6, matchResult.end());
+
+        s = new Scanner("\u0085");
+        result = s.nextLine();
+        assertEquals("", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+        
+        s = new Scanner("\u2028");
+        result = s.nextLine();
+        assertEquals("", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+        
+        s = new Scanner("\u2029");
+        result = s.nextLine();
+        assertEquals("", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+        
+        s = new Scanner("");
+        try {
+            result = s.nextLine();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+        try {
+            s.match();
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s = new Scanner("Ttest");
+        result = s.nextLine();
+        assertEquals("Ttest", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(5, matchResult.end());
+
+        s = new Scanner("\r\n");
+        result = s.nextLine();
+        assertEquals("", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(2, matchResult.end());
+
+        char[] chars = new char[1024];
+        Arrays.fill(chars, 'a');
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(chars);
+        chars = new char[] { '+', '-' };
+        stringBuilder.append(chars);
+        stringBuilder.append("\u2028");
+        s = new Scanner(stringBuilder.toString());
+        result = s.nextLine();
+
+        assertEquals(stringBuilder.toString().substring(0, 1026), result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1027, matchResult.end());
+
+        chars = new char[1023];
+        Arrays.fill(chars, 'a');
+        stringBuilder = new StringBuilder();
+        stringBuilder.append(chars);
+        stringBuilder.append("\r\n");
+        s = new Scanner(stringBuilder.toString());
+        result = s.nextLine();
+
+        assertEquals(stringBuilder.toString().substring(0, 1023), result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1025, matchResult.end());
+
+        s = new Scanner("  ");
+        result = s.nextLine();
+        assertEquals("  ", result);
+
+        s = new Scanner("test\n\n\n");
+        result = s.nextLine();
+        assertEquals("test", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(5, matchResult.end());
+        result = s.nextLine();
+        matchResult = s.match();
+        assertEquals(5, matchResult.start());
+        assertEquals(6, matchResult.end());
+
+        s = new Scanner("\n\n\n");
+        result = s.nextLine();
+        assertEquals("", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+        result = s.nextLine();
+        matchResult = s.match();
+        assertEquals(1, matchResult.start());
+        assertEquals(2, matchResult.end());
+        
+        s = new Scanner("123 test\n   ");
+        int value = s.nextInt();
+        assertEquals(123, value);
+        
+        result = s.nextLine();
+        assertEquals(" test", result);
+        
+        s = new Scanner("test\n ");
+        result = s.nextLine();
+        assertEquals("test", result);
+    }
+    
     protected void setUp() throws Exception {
         super.setUp();
 
