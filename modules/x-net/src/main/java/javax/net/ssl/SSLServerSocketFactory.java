@@ -76,7 +76,7 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory {
         }
         if (defaultServerSocketFactory == null) {
             // Use internal dummy implementation
-            defaultServerSocketFactory = new DefaultSSLServerSocketFactory("No ServerSocketFactory instaled");
+            defaultServerSocketFactory = new DefaultSSLServerSocketFactory("No ServerSocketFactory installed");
         }    
         return defaultServerSocketFactory;
     }
