@@ -2048,6 +2048,33 @@ public class FileChannelTest extends TestCase {
         } catch (NonWritableChannelException e) {
             // expected
         }
+ 
+        // regression test for Harmony-903
+        
+        // read-only file channel never throws ClosedChannelException even if
+        // the channel is closed.
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.write(writeBuffer, 10);
+            fail("should throw NonWritableChannelException");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+
+        try {
+            readOnlyFileChannel.write(writeBuffer, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        writeBuffer = null;
+        try {
+            readOnlyFileChannel.write(writeBuffer, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        } 
     }
 
     /**
