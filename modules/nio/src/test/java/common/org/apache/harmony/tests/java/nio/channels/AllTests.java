@@ -50,6 +50,8 @@ public class AllTests {
         suite.addTestSuite(NoConnectionPendingExceptionTest.class);
         suite.addTestSuite(NonReadableChannelExceptionTest.class);
         suite.addTestSuite(NonWritableChannelExceptionTest.class);
+        suite.addTestSuite(NotYetBoundExceptionTest.class);
+        suite.addTestSuite(NotYetConnectedExceptionTest.class);
         suite.addTestSuite(MapModeTest.class);
         // $JUnit-END$
         return suite;
