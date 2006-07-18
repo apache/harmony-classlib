@@ -18,7 +18,7 @@
      build-native-source    
      Compile the native source into component shared libs.
      ====================================================================== -->
-<project name="build-native-source" default="default" basedir=".">
+<project name="build-native-source" default="default" basedir="..">
     <description>
 		Compile the native source into component shared libs.
     </description>
@@ -50,12 +50,12 @@
           target: properties
          ================================= -->
     <target name="properties" depends="init, windows-properties, linux-properties">
-        <property name="hy.hdk" location="${basedir}/../deploy" />
+        <property name="hy.hdk" location="deploy" />
     	<property name="hy.jdk" location="${hy.hdk}/jdk" />
-    	<property name="depends.build" location="../depends/build" />
-        <property name="depends.oss" location="../depends/oss" />
-        <property name="depends.libs" location="../depends/libs/${target.platform}" />
-    	<property name="depends.files" location="../depends/files" />
+    	<property name="depends.build" location="depends/build" />
+        <property name="depends.oss" location="depends/oss" />
+        <property name="depends.libs" location="depends/libs/${target.platform}" />
+    	<property name="depends.files" location="depends/files" />
     	<property name="native.lib.target" location="${hy.hdk}/lib" />
     </target>
 
@@ -108,15 +108,15 @@
     	<antcall target="copy-makefile-includes" />
     	
     	<!-- These module targets take care of building and copying their shared libs -->
-    	<ant dir="..\modules\luni" antfile="build.xml" target="build.native.core" />
-    	<ant dir="..\modules\archive" antfile="build.xml" target="build.native" />
-    	<ant dir="..\modules\auth" antfile="build.xml" target="build.native" />
-    	<ant dir="..\modules\text" antfile="build.xml" target="build.native" />
-    	<ant dir="..\modules\prefs" antfile="build.xml" target="build.native" />
-    	<ant dir="..\modules\luni" antfile="build.xml" target="build.native.secondary" />
-        <ant dir="..\modules\nio" antfile="build.xml" target="build.native" />    	
-        <ant dir="..\modules\misc" antfile="build.xml" target="build.native" />    	
-        <ant dir="..\modules\awt" antfile="build.xml" target="build.native" />    	
+    	<ant dir="modules/luni" antfile="build.xml" target="build.native.core" />
+    	<ant dir="modules/archive" antfile="build.xml" target="build.native" />
+    	<ant dir="modules/auth" antfile="build.xml" target="build.native" />
+    	<ant dir="modules/text" antfile="build.xml" target="build.native" />
+    	<ant dir="modules/prefs" antfile="build.xml" target="build.native" />
+    	<ant dir="modules/luni" antfile="build.xml" target="build.native.secondary" />
+        <ant dir="modules/nio" antfile="build.xml" target="build.native" />    	
+        <ant dir="modules/misc" antfile="build.xml" target="build.native" />    	
+        <ant dir="modules/awt" antfile="build.xml" target="build.native" />    	
     </target>
 
 
@@ -126,14 +126,14 @@
     <target name="make-clean" depends="properties">
     	<antcall target="copy-makefile-includes" />
     	
-    	<ant dir="..\modules\auth" antfile="build.xml" target="clean.native" />
-    	<ant dir="..\modules\archive" antfile="build.xml" target="clean.native" />
-       	<ant dir="..\modules\text" antfile="build.xml" target="clean.native" />
-    	<ant dir="..\modules\prefs" antfile="build.xml" target="clean.native" />
-    	<ant dir="..\modules\luni" antfile="build.xml" target="clean.native" />
-    	<ant dir="..\modules\nio" antfile="build.xml" target="clean.native" />
-    	<ant dir="..\modules\misc" antfile="build.xml" target="clean.native" />
-    	<ant dir="..\modules\awt" antfile="build.xml" target="clean.native" />
+    	<ant dir="modules/auth" antfile="build.xml" target="clean.native" />
+    	<ant dir="modules/archive" antfile="build.xml" target="clean.native" />
+       	<ant dir="modules/text" antfile="build.xml" target="clean.native" />
+    	<ant dir="modules/prefs" antfile="build.xml" target="clean.native" />
+    	<ant dir="modules/luni" antfile="build.xml" target="clean.native" />
+    	<ant dir="modules/nio" antfile="build.xml" target="clean.native" />
+    	<ant dir="modules/misc" antfile="build.xml" target="clean.native" />
+    	<ant dir="modules/awt" antfile="build.xml" target="clean.native" />
     	
     	<delete dir="${native.lib.target}" />
     	
@@ -181,13 +181,13 @@
           target: overlay-oss              
          ================================= -->
     <target name="overlay-oss" depends="properties">
-        <ant dir="${basedir}/../modules/luni" antfile="build.xml"
+        <ant dir="modules/luni" antfile="build.xml"
         	target="overlay-oss" />
 
-    	<ant dir="${basedir}/../modules/archive" antfile="build.xml" 
+    	<ant dir="modules/archive" antfile="build.xml" 
 			target="overlay-oss" />        
     	
-    	<ant dir="${basedir}/../modules/text" antfile="build.xml" 
+    	<ant dir="modules/text" antfile="build.xml" 
     				target="overlay-oss" /> 
     </target>
 
@@ -197,10 +197,10 @@
 	<target name="copy-includes" >
 		<!-- Call copy.native.includes targets to copy across global includes to 
 		    		 deploy/includes/harmony -->
-    	<ant dir="${basedir}/../modules/archive" antfile="build.xml" 
-    		target="copy.native.includes" />
-    	<ant dir="${basedir}/../modules/luni" antfile="build.xml" 
-    		target="copy.native.includes" />
+    	<ant dir="modules/archive" antfile="build.xml"
+             target="copy.native.includes" />
+    	<ant dir="modules/luni" antfile="build.xml" 
+    	     target="copy.native.includes" />
 	</target>
 	
 	<!-- ================================= 
@@ -209,10 +209,10 @@
 	<target name="clean-includes" >
 		<!-- Call clean.native.includes targets to delete global includes under
 		    		 deploy/includes/harmony -->
-    	<ant dir="${basedir}/../modules/archive" antfile="build.xml" 
-    		target="clean.native.includes" />
-    	<ant dir="${basedir}/../modules/luni" antfile="build.xml" 
-    		target="clean.native.includes" />
+    	<ant dir="modules/archive" antfile="build.xml" 
+    	     target="clean.native.includes" />
+    	<ant dir="modules/luni" antfile="build.xml" 
+    	     target="clean.native.includes" />
 	</target>
 
     <!-- ================================= 
@@ -241,12 +241,12 @@
           target: clean-overlay-oss              
          ================================= -->
     <target name="clean-overlay-oss" depends="properties">
-        <ant dir="${basedir}/../modules/luni" antfile="build.xml" 
-            				target="clean-overlay-oss" />
-     	<ant dir="${basedir}/../modules/archive" antfile="build.xml" 
-    				target="clean-overlay-oss" />
-    	<ant dir="${basedir}/../modules/text" antfile="build.xml" 
-    	    				target="clean-overlay-oss" />
+        <ant dir="modules/luni" antfile="build.xml" 
+             target="clean-overlay-oss" />
+     	<ant dir="modules/archive" antfile="build.xml" 
+    	     target="clean-overlay-oss" />
+    	<ant dir="modules/text" antfile="build.xml" 
+    	     target="clean-overlay-oss" />
     </target>
 
 </project>
