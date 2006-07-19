@@ -326,6 +326,12 @@ public class ByteBufferTest extends AbstractBufferTest {
         } catch (BufferUnderflowException e) {
             // expected
         }
+        try {
+            buf.get((byte[])null);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /*
@@ -364,6 +370,24 @@ public class ByteBufferTest extends AbstractBufferTest {
         }
         try {
             buf.get(array, 2, array.length);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.get((byte[])null, -1, 0);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            buf.get(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.get(array, Integer.MAX_VALUE, 1);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IndexOutOfBoundsException e) {
             // expected
@@ -530,6 +554,12 @@ public class ByteBufferTest extends AbstractBufferTest {
         } catch (BufferOverflowException e) {
             // expected
         }
+        try {
+            buf.put((byte[])null);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /*
@@ -588,6 +618,18 @@ public class ByteBufferTest extends AbstractBufferTest {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
+        try {
+            buf.put(array, Integer.MAX_VALUE, 1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.put((byte[])null, 2, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
         
         assertEquals(buf.position(), 0);
 
@@ -611,6 +653,13 @@ public class ByteBufferTest extends AbstractBufferTest {
             } catch (ReadOnlyBufferException e) {
                 // expected
             }
+            try {
+                buf.clear();
+                buf.put((ByteBuffer)null);
+                fail("Should throw Exception"); //$NON-NLS-1$
+            } catch (ReadOnlyBufferException e) {
+                // expected
+            }
             return;
         }
 
@@ -626,7 +675,13 @@ public class ByteBufferTest extends AbstractBufferTest {
         } catch (BufferOverflowException e) {
             // expected
         }
-
+        
+        try {
+            buf.put((ByteBuffer)null);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
         loadTestData2(other);
         other.clear();
         buf.clear();

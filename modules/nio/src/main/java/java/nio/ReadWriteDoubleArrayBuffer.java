@@ -104,7 +104,8 @@ final class ReadWriteDoubleArrayBuffer extends DoubleArrayBuffer {
 	}
 
     public DoubleBuffer put(double[] src, int off, int len) {
-        if (off < 0 || len < 0 || (long)off + (long)len > src.length) {
+        int length = src.length;
+        if (off < 0 || len < 0 || (long)off + (long)len > length) {
 			throw new IndexOutOfBoundsException();
 		}
         if (len > remaining()) {

@@ -20,6 +20,7 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
+import java.nio.FloatBuffer;
 import java.nio.InvalidMarkException;
 import java.nio.ReadOnlyBufferException;
 
@@ -364,12 +365,30 @@ public class CharBufferTest extends AbstractBufferTest {
 		} catch (IndexOutOfBoundsException e) {
 			// expected
 		}
-		try {
-			buf.get(array, 2, array.length);
-			fail("Should throw Exception"); //$NON-NLS-1$
-		} catch (IndexOutOfBoundsException e) {
-			// expected
-		}
+        try {
+            buf.get((char[])null, 2, -1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            buf.get(array, 2, array.length);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.get(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.get(array, Integer.MAX_VALUE, 1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
 		assertEquals(buf.position(), 0);
 
 		buf.clear();
@@ -499,12 +518,30 @@ public class CharBufferTest extends AbstractBufferTest {
 		} catch (IndexOutOfBoundsException e) {
 			// expected
 		}
-		try {
-			buf.put(array, 2, array.length);
-			fail("Should throw Exception"); //$NON-NLS-1$
-		} catch (IndexOutOfBoundsException e) {
-			// expected
-		}
+        try {
+            buf.put((char[])null, 0, -1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            buf.put(array, 2, array.length);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.put(array, Integer.MAX_VALUE, 1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.put(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
 		assertEquals(buf.position(), 0);
 
 		loadTestData2(array, 0, array.length);
@@ -538,6 +575,13 @@ public class CharBufferTest extends AbstractBufferTest {
 		} catch (BufferOverflowException e) {
 			// expected
 		}
+        try {
+            buf.flip();
+            buf.put((CharBuffer)null);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
 
 		loadTestData2(other);
 		other.clear();

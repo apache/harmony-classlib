@@ -101,12 +101,10 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 *                invalid
 	 */
 	public static ByteBuffer wrap(byte[] array, int start, int len) {
-                if (array == null) {
-                        throw new NullPointerException();
-                }
-                if ((start < 0 ) || (len < 0) || ((long)start + (long)len > array.length)) {
-                        throw new IndexOutOfBoundsException();
-                }
+        int length = array.length;
+        if ((start < 0) || (len < 0) || ((long) start + (long) len > length)) {
+            throw new IndexOutOfBoundsException();
+        }
 
 		ByteBuffer buf = BufferFactory.newByteBuffer(array);
 		buf.position = start;
@@ -427,7 +425,8 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 *                <code>remaining()</code>
 	 */
 	public ByteBuffer get(byte[] dest, int off, int len) {
-        if ((off < 0 ) || (len < 0) || ((long)off + (long)len > dest.length)) {
+        int length = dest.length;
+        if ((off < 0 ) || (len < 0) || ((long)off + (long)len > length)) {
             throw new IndexOutOfBoundsException();
         }
         
@@ -784,7 +783,8 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public ByteBuffer put(byte[] src, int off, int len) {
-        if ((off < 0 ) || (len < 0) || ((long)off + (long)len > src.length)) {
+        int length = src.length;
+        if ((off < 0 ) || (len < 0) || ((long)off + (long)len > length)) {
             throw new IndexOutOfBoundsException();
         }
         

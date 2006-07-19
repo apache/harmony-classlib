@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,8 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
      * @see java.nio.ByteBuffer#put(byte[], int, int)
      */
     public ByteBuffer put(byte[] src, int off, int len) {
-        if (off < 0 || len < 0 || (long)off + (long)len > src.length) {
+        int length = src.length;
+        if (off < 0 || len < 0 || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {

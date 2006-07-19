@@ -60,6 +60,12 @@ public class WrappedCharBufferTest2 extends ReadOnlyCharBufferTest {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
+        try {
+            CharBuffer.wrap((String)null, -1, 21);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
     
     public void testArray() {

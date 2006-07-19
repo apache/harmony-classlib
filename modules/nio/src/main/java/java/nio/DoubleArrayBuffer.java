@@ -64,7 +64,8 @@ abstract class DoubleArrayBuffer extends DoubleBuffer {
 	}
 
     public final DoubleBuffer get(double[] dest, int off, int len) {
-        if (off < 0 || len < 0 || off + len < 0 || off + len > dest.length) {
+        int length = dest.length;
+        if (off < 0 || len < 0 || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {

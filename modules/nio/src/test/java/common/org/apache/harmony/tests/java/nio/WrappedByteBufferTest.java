@@ -61,6 +61,24 @@ public class WrappedByteBufferTest extends ByteBufferTest {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
+        try {
+            ByteBuffer.wrap(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            ByteBuffer.wrap(array, Integer.MAX_VALUE, 1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            ByteBuffer.wrap((byte[])null, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
     
     public void testIsDirect() {

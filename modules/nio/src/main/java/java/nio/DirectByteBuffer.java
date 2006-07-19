@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,8 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
      * @see java.nio.ByteBuffer#get(byte[], int, int)
      */
     public final ByteBuffer get(byte[] dest, int off, int len) {
-        if ((off < 0 ) || (len < 0) || (long)off + (long)len > dest.length) {
+        int length = dest.length;
+        if ((off < 0 ) || (len < 0) || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
         }
         if (len > remaining()) {

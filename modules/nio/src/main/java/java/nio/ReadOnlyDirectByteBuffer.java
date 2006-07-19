@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,6 +118,10 @@ final class ReadOnlyDirectByteBuffer extends DirectByteBuffer {
 	public ByteBuffer putShort(short value) {
 		throw new ReadOnlyBufferException();
 	}
+    
+    public ByteBuffer put(ByteBuffer buf) {
+        throw new ReadOnlyBufferException();
+    }
 
 	public ByteBuffer slice() {
 		ReadOnlyDirectByteBuffer buf = new ReadOnlyDirectByteBuffer(

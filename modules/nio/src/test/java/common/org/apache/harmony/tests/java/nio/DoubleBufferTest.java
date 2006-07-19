@@ -322,6 +322,12 @@ public class DoubleBufferTest extends AbstractBufferTest {
             // expected
         }
         try {
+            buf.get((double[])null, 0, -1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
             buf.get(array, 2, array.length);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IndexOutOfBoundsException e) {
@@ -468,6 +474,12 @@ public class DoubleBufferTest extends AbstractBufferTest {
             buf.put(array, 0, -1);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.put((double[])null, 0, -1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
             // expected
         }
         try {

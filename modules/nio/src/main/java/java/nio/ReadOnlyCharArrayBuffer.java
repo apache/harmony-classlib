@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
     }
 
     public CharBuffer put(String src, int start, int end) {
-        if ((start < 0 ) || (end < 0) || start + end > src.length()) {
+        if ((start < 0 ) || (end < 0) || (long)start + (long)end > src.length()) {
             throw new IndexOutOfBoundsException();
         }
         if(src == null){

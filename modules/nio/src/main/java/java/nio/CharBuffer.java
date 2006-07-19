@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,12 +91,11 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                invalid
 	 */
 	public static CharBuffer wrap(char[] array, int start, int len) {
-                if (array == null) {
-                        throw new NullPointerException();
-                }
-                if ((start < 0 ) || (len < 0) || (long)start + (long)len > array.length) {
-                        throw new IndexOutOfBoundsException();
-                }
+        int length = array.length;
+        if ((start < 0) || (len < 0)
+                || (long) start + (long) len > length) {
+            throw new IndexOutOfBoundsException();
+        }
 
 		CharBuffer buf = BufferFactory.newCharBuffer(array);
 		buf.position = start;
@@ -382,7 +381,8 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                <code>remaining()</code>
 	 */
 	public CharBuffer get(char[] dest, int off, int len) {
-        if ((off < 0 ) || (len < 0) || (long)off + (long)len > dest.length) {
+        int length = dest.length;
+        if ((off < 0 ) || (len < 0) || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
         }
         
@@ -553,7 +553,8 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public CharBuffer put(char[] src, int off, int len) {
-        if ((off < 0 ) || (len < 0) || (long)off + (long)len > src.length) {
+        int length = src.length;
+        if ((off < 0 ) || (len < 0) || (long)off + (long)len > length) {
             throw new IndexOutOfBoundsException();
         }
         
@@ -659,10 +660,8 @@ public abstract class CharBuffer extends Buffer implements Comparable<CharBuffer
 	 *                If no changes may be made to the contents of this buffer
 	 */
 	public CharBuffer put(String str, int start, int end) {
-        if(str == null){
-            throw new NullPointerException();
-        }
-        if (start < 0 || end < start || end > str.length()) {
+        int length = str.length();
+        if (start < 0 || end < start || end > length) {
             throw new IndexOutOfBoundsException();
         }
         

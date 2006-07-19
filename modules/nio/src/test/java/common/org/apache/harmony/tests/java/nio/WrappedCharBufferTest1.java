@@ -62,5 +62,22 @@ public class WrappedCharBufferTest1 extends CharBufferTest {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
+        try {
+            CharBuffer.wrap(array, Integer.MAX_VALUE, 1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            CharBuffer.wrap(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            CharBuffer.wrap((char[])null, -1, 0);
+            fail("Should throw NPE"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+        }
     }
 }
