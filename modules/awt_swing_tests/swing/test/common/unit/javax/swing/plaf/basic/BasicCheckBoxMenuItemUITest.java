@@ -1,0 +1,66 @@
+/*
+ *  Copyright 2005 - 2006 The Apache Software Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+* @author Alexander T. Simbirtsev
+* @version $Revision$
+*/
+package javax.swing.plaf.basic;
+
+import javax.swing.plaf.ComponentUI;
+
+public class BasicCheckBoxMenuItemUITest extends BasicMenuItemUITest {
+
+    protected BasicCheckBoxMenuItemUI checkBoxUI;
+
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        checkBoxUI = new BasicCheckBoxMenuItemUI();
+        menuItemUI = checkBoxUI;
+        prefix = "CheckBoxMenuItem.";
+    }
+
+    protected void tearDown() throws Exception {
+        checkBoxUI = null;
+        menuItemUI = null;
+        super.tearDown();
+    }
+
+
+    /*
+     * Test method for 'javax.swing.plaf.basic.BasicCheckBoxMenuItemUI.createUI(JComponent)'
+     */
+    public void testCreateUI() {
+        ComponentUI ui1 = BasicCheckBoxMenuItemUI.createUI(null);
+        ComponentUI ui2 = BasicCheckBoxMenuItemUI.createUI(null);
+        assertTrue(ui1 instanceof BasicCheckBoxMenuItemUI);
+        assertNotSame(ui1, ui2);
+    }
+
+    /*
+     * Test method for 'javax.swing.plaf.basic.BasicCheckBoxMenuItemUI.getPropertyPrefix()'
+     */
+    public void testGetPropertyPrefix() {
+        assertEquals("CheckBoxMenuItem", menuItemUI.getPropertyPrefix());
+    }
+
+    /*
+     * Test method for 'javax.swing.plaf.basic.BasicCheckBoxMenuItemUI.processMouseEvent(JMenuItem, MouseEvent, MenuElement[], MenuSelectionManager)'
+     */
+    public void testProcessMouseEvent() {
+    }
+
+}
