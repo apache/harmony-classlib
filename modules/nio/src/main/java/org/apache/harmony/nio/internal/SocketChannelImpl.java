@@ -57,8 +57,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     // Class variables
     // -------------------------------------------------------------------
 
-    private static final int MAX_PORT_NUMBER = 65535;
-
     private static final int EOF = -1;
 
     private static final String ERRMSG_SOCKET_NONBLOCKING_WOULD_BLOCK = "The socket is marked as nonblocking operation would block";
@@ -95,9 +93,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
     // connect success
     private static final int CONNECT_SUCCESS = 0;
-
-    // error msg
-    private static final String ERRCODE_PORT_ERROR = "K0032"; //$NON-NLS-1$
 
     // a address of localhost
     private static final byte[] localAddrArray = { 127, 0, 0, 1 };
@@ -242,10 +237,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
         int port = inetSocketAddress.getPort();
         String hostName = inetSocketAddress.getAddress().getHostName();
-        if (port < 0 || port > MAX_PORT_NUMBER) {
-            throw new IllegalArgumentException(Msg
-                    .getString(ERRCODE_PORT_ERROR));
-        }
         // security check
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
