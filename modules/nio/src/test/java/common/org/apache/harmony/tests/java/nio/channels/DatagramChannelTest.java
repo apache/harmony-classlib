@@ -2483,6 +2483,39 @@ public class DatagramChannelTest extends TestCase {
         }
     }
     
+    /**
+     * @tests DatagramChannel#send(ByteBuffer, SocketAddress)
+     */
+    public void test_send_LByteBuffer_LSocketAddress_closed() throws IOException{
+        // regression test for Harmony-913
+        channel1.close();
+        ByteBuffer buf = ByteBuffer.allocate(CAPACITY_NORMAL);
+        try {
+            channel1.send(buf, localAddr1);
+            fail("Should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            //pass
+        }
+        try {
+            channel1.send(null,localAddr1);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            //pass
+        }
+        try {
+            channel1.send(buf, null);
+            fail("Should throw ClosedChannelException");
+        } catch (ClosedChannelException e) {
+            //pass
+        }
+        try {
+            channel1.send(null, null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            //pass
+        }
+    }
+    
     // -------------------------------------------------------------------
     // Mock class for security test.
     // -------------------------------------------------------------------

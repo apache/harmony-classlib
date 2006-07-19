@@ -285,10 +285,10 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      */
     public int send(ByteBuffer source, SocketAddress address)
             throws IOException {
-        // must open
-        checkOpen();
         // must not null
         checkNotNull(source);
+        // must open
+        checkOpen();
 
         // transfer address
         InetSocketAddress isa = (InetSocketAddress) address;
