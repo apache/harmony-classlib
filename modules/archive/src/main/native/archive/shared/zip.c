@@ -22,8 +22,6 @@
 void zfree PROTOTYPE ((void *opaque, void *address));
 void *zalloc PROTOTYPE ((void *opaque, U_32 items, U_32 size));
 
-void throwNewOutOfMemoryError (JNIEnv * env, char *message);
-
 /**
   * Throw java.lang.InternalError
   */

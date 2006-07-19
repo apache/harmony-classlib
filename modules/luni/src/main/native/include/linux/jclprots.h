@@ -342,20 +342,22 @@ I_32 netGetSockAddr PROTOTYPE((JNIEnv *env, jobject fileDescriptor, hysockaddr_t
 
 /* NativesCommonIoHelpers*/
 void* getJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv *env, jobject fd));
-void throwNewOutOfMemoryError PROTOTYPE((JNIEnv * env, char * message));
+void throwNewExceptionByName PROTOTYPE((JNIEnv* env,
+                                        const char* name, const char* message));
+void throwNewOutOfMemoryError PROTOTYPE((JNIEnv* env, const char* message));
 jint ioh_readcharImpl PROTOTYPE((JNIEnv * env, jobject recv, IDATA descriptor));
-void throwJavaIoIOException PROTOTYPE((JNIEnv * env, char *message));
-void throwJavaIoIOExceptionClosed PROTOTYPE((JNIEnv * env));
+void throwJavaIoIOException PROTOTYPE((JNIEnv* env, const char* message));
+void throwJavaIoIOExceptionClosed PROTOTYPE((JNIEnv* env));
 void ioh_convertToPlatform PROTOTYPE((char *path));
 jint new_ioh_available PROTOTYPE((JNIEnv * env, jobject recv, jfieldID fdFID));
-void throwNPException PROTOTYPE((JNIEnv * env, char *message));
+void throwNPException PROTOTYPE((JNIEnv* env, const char* message));
 void setJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv * env, jobject fd, void *value));
 void ioh_writebytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
 char* ioLookupErrorString PROTOTYPE((JNIEnv* env, I_32 anErrorNum));
 void ioh_writecharImpl PROTOTYPE((JNIEnv *env, jobject recv, jint c, IDATA descriptor));
 jint ioh_readbytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
 void new_ioh_close PROTOTYPE((JNIEnv * env, jobject recv, jfieldID fdFID));
-void throwIndexOutOfBoundsException PROTOTYPE((JNIEnv * env));
+void throwIndexOutOfBoundsException PROTOTYPE((JNIEnv* env));
 
 /* NativesCommonSocket*/
 void throwSocketException PROTOTYPE((JNIEnv* env, I_32 errorNumber));

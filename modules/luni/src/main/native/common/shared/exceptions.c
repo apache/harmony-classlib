@@ -16,41 +16,40 @@
 #include "exceptions.h"
 #include "jclglob.h"
 
-/**
-  * Throw java.io.IOException with the message provided
-  */
-void throwJavaIoIOException(JNIEnv *env, char *message)
+void throwNewExceptionByName(JNIEnv* env,
+                             const char* name, const char* message)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/io/IOException");
-  if (0 == exceptionClass) { 
+  jclass exceptionClass = (*env)->FindClass(env, name);
+  if (exceptionClass == NULL) { 
     /* Just return if we can't load the exception class. */
     return;
   }
   (*env)->ThrowNew(env, exceptionClass, message);
+}  
+
+/**
+  * Throw java.io.IOException with the message provided
+  */
+void throwJavaIoIOException(JNIEnv* env, const char* message)
+{
+  throwNewExceptionByName(env, "java/io/IOException", message);
 }
 
 /**
   * Throw java.io.IOException with the "File closed" message
   * Consolidate all through here so message is consistent.
   */
-void
-throwJavaIoIOExceptionClosed (JNIEnv * env)
+void throwJavaIoIOExceptionClosed(JNIEnv* env)
 {
-  throwJavaIoIOException (env, "File closed");
+  throwJavaIoIOException(env, "File closed");
 }
 
 /**
   * Throw java.lang.IndexOutOfBoundsException
   */
-void
-throwIndexOutOfBoundsException (JNIEnv * env)
+void throwIndexOutOfBoundsException(JNIEnv* env)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/IndexOutOfBoundsException");
-  if (0 == exceptionClass) { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, "");
+  throwNewExceptionByName(env, "java/lang/IndexOutOfBoundsException", "");
 }
 
 /**
@@ -59,27 +58,15 @@ throwIndexOutOfBoundsException (JNIEnv * env)
   * with a VM function of that same name and this causes problems on
   * some platforms.
   */
-void
-throwNPException (JNIEnv * env, char *message)
+void throwNPException(JNIEnv* env, const char* message)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/NullPointerException");
-  if (0 == exceptionClass) { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
+  throwNewExceptionByName(env, "java/lang/NullPointerException", message);
 }
 
 /**
   * Throw java.lang.OutOfMemoryError
   */
-void
-throwNewOutOfMemoryError (JNIEnv * env, char *message)
+void throwNewOutOfMemoryError(JNIEnv* env, const char* message)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
-  if (0 == exceptionClass) { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
+  throwNewExceptionByName(env, "java/lang/OutOfMemoryError", message);
 }
