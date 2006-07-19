@@ -22,17 +22,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.nio.channels.ClosedChannelException;
+import java.nio.channels.DatagramChannel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.NonReadableChannelException;
 import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.OverlappingFileLockException;
+import java.nio.channels.Pipe;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.Arrays;
@@ -44,6 +50,8 @@ public class FileChannelTest extends TestCase {
     private static final int CAPACITY = 100;
 
     private static final int LIMITED_CAPACITY = 2;
+    
+    private static final int TIME_OUT = 10000;
 
     private static final String CONTENT = "MYTESTSTRING needs to be a little long";
 
@@ -74,6 +82,22 @@ public class FileChannelTest extends TestCase {
     private File fileOfWriteOnlyFileChannel;
 
     private File fileOfReadWriteFileChannel;
+    
+    private ReadableByteChannel readByteChannel;
+
+    private WritableByteChannel writableByteChannel;
+
+    private DatagramChannel datagramChannelSender;
+
+    private DatagramChannel datagramChannelReceiver;
+
+    private ServerSocketChannel serverSocketChannel;
+
+    private SocketChannel socketChannelSender;
+
+    private SocketChannel socketChannelReceiver;
+
+    private Pipe pipe;
 
     // to read content from FileChannel
     private FileInputStream fis;
@@ -146,6 +170,57 @@ public class FileChannelTest extends TestCase {
         }
         if (null != fileOfReadWriteFileChannel) {
             fileOfReadWriteFileChannel.delete();
+        }
+        if (null != datagramChannelSender) {
+            try {
+                datagramChannelSender.close();
+            } catch (IOException e) {
+                // do nothing
+            }
+        }
+        if (null != datagramChannelReceiver) {
+            try {
+                datagramChannelReceiver.close();
+            } catch (IOException e) {
+                // do nothing
+            }
+        }
+        if (null != serverSocketChannel) {
+            try {
+                serverSocketChannel.close();
+            } catch (IOException e) {
+                // do nothing
+            }
+        }
+        if (null != socketChannelSender) {
+            try {
+                socketChannelSender.close();
+            } catch (IOException e) {
+                // do nothing
+            }
+        }
+        if (null != socketChannelReceiver) {
+            try {
+                socketChannelReceiver.close();
+            } catch (IOException e) {
+                // do nothing
+            }
+        }
+        if (null != pipe) {
+            if (null != pipe.source()) {
+                try {
+                    pipe.source().close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
+            if (null != pipe.sink()) {
+                try {
+                    pipe.sink().close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
         }
     }
 
@@ -2319,6 +2394,676 @@ public class FileChannelTest extends TestCase {
         System.arraycopy(CONTENT_AS_BYTES, 0, expectedResult,
                 CONTENT_AS_BYTES_LENGTH, CONTENT_AS_BYTES_LENGTH);
         assertTrue(Arrays.equals(CONTENT_AS_BYTES, inputBuffer));
+    }
+    
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_Closed()
+            throws Exception {
+        readByteChannel = DatagramChannel.open();
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.transferFrom(readByteChannel, 0, 0);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.transferFrom(readByteChannel, 0, 10);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.transferFrom(readByteChannel, 0, 0);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // should throw ClosedChannelException first.
+        try {
+            readWriteFileChannel.transferFrom(readByteChannel, 0, -1);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_SourceClosed()
+            throws Exception {
+        readByteChannel = DatagramChannel.open();
+        readByteChannel.close();
+
+        try {
+            readOnlyFileChannel.transferFrom(readByteChannel, 0, 10);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.transferFrom(readByteChannel, 0, 10);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.transferFrom(readByteChannel, 0, 10);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // should throw ClosedChannelException first.
+        try {
+            readWriteFileChannel.transferFrom(readByteChannel, 0, -1);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_IllegalArgument()
+            throws Exception {
+        readByteChannel = DatagramChannel.open();
+        try {
+            writeOnlyFileChannel.transferFrom(readByteChannel, 10, -1);
+            fail("should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.transferFrom(readByteChannel, -1, -10);
+            fail("should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_NonWritable()
+            throws Exception {
+        readByteChannel = DatagramChannel.open();
+        try {
+            readOnlyFileChannel.transferFrom(readByteChannel, 0, 0);
+            fail("should throw NonWritableChannelException.");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_SourceNonReadable()
+            throws Exception {
+        try {
+            readWriteFileChannel.transferFrom(writeOnlyFileChannel, 0, 0);
+            fail("should throw NonReadableChannelException.");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+
+        // not throws NonReadableChannelException first if position beyond file
+        // size.
+        readWriteFileChannel.transferFrom(writeOnlyFileChannel, 10, 10);
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_PositionBeyondSize()
+            throws Exception {
+        // init data to file.
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        writeDataToFile(fileOfWriteOnlyFileChannel);
+
+        final int READONLYFILECHANNELPOSITION = 2;
+        readOnlyFileChannel.position(READONLYFILECHANNELPOSITION);
+
+        final int POSITION = CONTENT_AS_BYTES_LENGTH * 2;
+        final int LENGTH = 5;
+        long result = writeOnlyFileChannel.transferFrom(readOnlyFileChannel,
+                POSITION, LENGTH);
+        assertEquals(0, result);
+        assertEquals(0, writeOnlyFileChannel.position());
+        assertEquals(READONLYFILECHANNELPOSITION, readOnlyFileChannel
+                .position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_FileChannel()
+            throws Exception {
+        // init data to file.
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        writeDataToFile(fileOfWriteOnlyFileChannel);
+
+        final int READONLYFILECHANNELPOSITION = 2;
+        final int WRITEONLYFILECHANNELPOSITION = 4;
+        readOnlyFileChannel.position(READONLYFILECHANNELPOSITION);
+        writeOnlyFileChannel.position(WRITEONLYFILECHANNELPOSITION);
+
+        final int POSITION = 3;
+        final int LENGTH = 5;
+        long result = writeOnlyFileChannel.transferFrom(readOnlyFileChannel,
+                POSITION, LENGTH);
+        assertEquals(LENGTH, result);
+        assertEquals(WRITEONLYFILECHANNELPOSITION, writeOnlyFileChannel
+                .position());
+        assertEquals(READONLYFILECHANNELPOSITION + LENGTH, readOnlyFileChannel
+                .position());
+        writeOnlyFileChannel.close();
+
+        final int EXPECTED_LENGTH = POSITION + LENGTH;
+        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+        byte[] resultContent = new byte[EXPECTED_LENGTH];
+        fis.read(resultContent);
+
+        byte[] expectedContent = new byte[EXPECTED_LENGTH];
+        System.arraycopy(CONTENT_AS_BYTES, 0, expectedContent, 0, POSITION);
+        System.arraycopy(CONTENT_AS_BYTES, READONLYFILECHANNELPOSITION,
+                expectedContent, POSITION, LENGTH);
+        assertTrue(Arrays.equals(expectedContent, resultContent));
+    }
+    
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_DatagramChannel()
+            throws Exception {
+        // connects two datagramChannels.
+        datagramChannelReceiver = DatagramChannel.open();
+        datagramChannelReceiver.socket().bind(
+                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        datagramChannelSender = DatagramChannel.open();
+        datagramChannelSender.socket().bind(
+                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
+        datagramChannelReceiver.connect(datagramChannelSender.socket()
+                .getLocalSocketAddress());
+        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
+        ByteBuffer writeBuffer = ByteBuffer.wrap(CONTENT_AS_BYTES);
+        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
+        // sends data from datagramChannelSender to datagramChannelReceiver.
+        datagramChannelSender.send(writeBuffer, datagramChannelReceiver
+                .socket().getLocalSocketAddress());
+        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
+
+        // transfers data from datagramChannelReceiver to fileChannel.
+        long result = writeOnlyFileChannel.transferFrom(
+                datagramChannelReceiver, 0, CONTENT_AS_BYTES_LENGTH);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+        assertEquals(0, writeOnlyFileChannel.position());
+        writeOnlyFileChannel.close();
+
+        // gets content from file.
+        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, fileOfWriteOnlyFileChannel
+                .length());
+        byte[] resultContent = new byte[CONTENT_AS_BYTES_LENGTH];
+        fis.read(resultContent);
+
+        // compares contents.
+        assertTrue(Arrays.equals(CONTENT_AS_BYTES, resultContent));
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_SocketChannel()
+            throws Exception {
+        // connects two socketChannels.
+        socketChannelReceiver = SocketChannel.open();
+        serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel.socket().bind(
+                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        socketChannelReceiver.socket().setSoTimeout(TIME_OUT);
+        socketChannelReceiver.connect(serverSocketChannel.socket()
+                .getLocalSocketAddress());
+        serverSocketChannel.socket().setSoTimeout(TIME_OUT);
+        socketChannelSender = serverSocketChannel.accept();
+        socketChannelSender.socket().setSoTimeout(TIME_OUT);
+
+        // sends data from socketChannelSender to socketChannelReceiver.
+        ByteBuffer writeBuffer = ByteBuffer.wrap(CONTENT_AS_BYTES);
+        socketChannelSender.write(writeBuffer);
+
+        // transfers data from socketChannelReceiver to fileChannel.
+        long result = readWriteFileChannel.transferFrom(socketChannelReceiver,
+                0, CONTENT_AS_BYTES_LENGTH);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+        assertEquals(0, readWriteFileChannel.position());
+        readWriteFileChannel.close();
+
+        // gets content from file.
+        fis = new FileInputStream(fileOfReadWriteFileChannel);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, fileOfReadWriteFileChannel
+                .length());
+        byte[] resultContent = new byte[CONTENT_AS_BYTES_LENGTH];
+        fis.read(resultContent);
+
+        // compares content.
+        assertTrue(Arrays.equals(CONTENT_AS_BYTES, resultContent));
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferFrom(ReadableByteChannel,long,long)
+     */
+    public void test_transferFromLReadableByteChannelJJ_Pipe() throws Exception {
+        // inits data in file.
+        writeDataToFile(fileOfWriteOnlyFileChannel);
+
+        // inits pipe.
+        pipe = Pipe.open();
+
+        // writes content to pipe.
+        ByteBuffer writeBuffer = ByteBuffer.wrap(CONTENT_AS_BYTES);
+        pipe.sink().write(writeBuffer);
+
+        // transfers data from pipe to fileChannel.
+        final int OFFSET = 2;
+        final int LENGTH = 4;
+        long result = writeOnlyFileChannel.transferFrom(pipe.source(), OFFSET,
+                LENGTH);
+        assertEquals(LENGTH, result);
+        writeOnlyFileChannel.close();
+
+        // gets content from file.
+        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+        byte[] resultBytes = new byte[OFFSET + LENGTH];
+        fis.read(resultBytes);
+
+        // compares content.
+        byte[] expectedBytes = new byte[OFFSET + LENGTH];
+        System.arraycopy(CONTENT_AS_BYTES, 0, expectedBytes, 0, OFFSET);
+        System.arraycopy(CONTENT_AS_BYTES, 0, expectedBytes, OFFSET, LENGTH);
+
+        assertTrue(Arrays.equals(expectedBytes, resultBytes));
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_Null() throws Exception {
+        writableByteChannel = null;
+        try {
+            readOnlyFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        // should throw NullPointerException first.
+        readOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.transferTo(-1, 0, writableByteChannel);
+            fail("should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_Closed() throws Exception {
+        writableByteChannel = DatagramChannel.open();
+        readOnlyFileChannel.close();
+        try {
+            readOnlyFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        writeOnlyFileChannel.close();
+        try {
+            writeOnlyFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        readWriteFileChannel.close();
+        try {
+            readWriteFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // should throw ClosedChannelException first.
+        try {
+            readWriteFileChannel.transferTo(0, -1, writableByteChannel);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_SourceClosed()
+            throws Exception {
+        writableByteChannel = DatagramChannel.open();
+        writableByteChannel.close();
+
+        try {
+            readOnlyFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        try {
+            writeOnlyFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.transferTo(0, 10, writableByteChannel);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+
+        // should throw ClosedChannelException first.
+        try {
+            readWriteFileChannel.transferTo(0, -1, writableByteChannel);
+            fail("should throw ClosedChannelException.");
+        } catch (ClosedChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_IllegalArgument()
+            throws Exception {
+        writableByteChannel = DatagramChannel.open();
+        try {
+            readOnlyFileChannel.transferTo(10, -1, writableByteChannel);
+            fail("should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.transferTo(-1, -10, writableByteChannel);
+            fail("should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_NonReadable()
+            throws Exception {
+        writableByteChannel = DatagramChannel.open();
+        try {
+            writeOnlyFileChannel.transferTo(-1, 10, writableByteChannel);
+            fail("should throw NonReadableChannelException.");
+        } catch (NonReadableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_TargetNonWritable()
+            throws Exception {
+        try {
+            readWriteFileChannel.transferTo(0, 0, readOnlyFileChannel);
+            fail("should throw NonWritableChannelException.");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+
+        // first throws NonWritableChannelException even position out of file
+        // size.
+        try {
+            readWriteFileChannel.transferTo(10, 10, readOnlyFileChannel);
+            fail("should throw NonWritableChannelException.");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_PositionBeyondSize()
+            throws Exception {
+        // init data to file.
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        writeDataToFile(fileOfWriteOnlyFileChannel);
+
+        final int WRITEONLYFILECHANNELPOSITION = 2;
+        writeOnlyFileChannel.position(WRITEONLYFILECHANNELPOSITION);
+
+        final int POSITION = CONTENT_AS_BYTES_LENGTH * 2;
+        final int LENGTH = 5;
+        long result = readOnlyFileChannel.transferTo(POSITION, LENGTH,
+                writeOnlyFileChannel);
+        assertEquals(0, result);
+        assertEquals(0, readOnlyFileChannel.position());
+        assertEquals(WRITEONLYFILECHANNELPOSITION, writeOnlyFileChannel
+                .position());
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_FileChannel()
+            throws Exception {
+        // init data to file.
+        writeDataToFile(fileOfReadOnlyFileChannel);
+        writeDataToFile(fileOfWriteOnlyFileChannel);
+
+        final int READONLYFILECHANNELPOSITION = 2;
+        final int WRITEONLYFILECHANNELPOSITION = 4;
+        readOnlyFileChannel.position(READONLYFILECHANNELPOSITION);
+        writeOnlyFileChannel.position(WRITEONLYFILECHANNELPOSITION);
+
+        final int POSITION = 3;
+        final int LENGTH = 5;
+        long result = readOnlyFileChannel.transferTo(POSITION, LENGTH,
+                writeOnlyFileChannel);
+        assertEquals(LENGTH, result);
+        assertEquals(READONLYFILECHANNELPOSITION, readOnlyFileChannel
+                .position());
+        assertEquals(WRITEONLYFILECHANNELPOSITION + LENGTH,
+                writeOnlyFileChannel.position());
+        writeOnlyFileChannel.close();
+
+        final int EXPECTED_LENGTH = WRITEONLYFILECHANNELPOSITION + LENGTH;
+        fis = new FileInputStream(fileOfWriteOnlyFileChannel);
+        byte[] resultContent = new byte[EXPECTED_LENGTH];
+        fis.read(resultContent);
+
+        byte[] expectedContent = new byte[EXPECTED_LENGTH];
+        System.arraycopy(CONTENT_AS_BYTES, 0, expectedContent, 0,
+                WRITEONLYFILECHANNELPOSITION);
+        System.arraycopy(CONTENT_AS_BYTES, POSITION, expectedContent,
+                WRITEONLYFILECHANNELPOSITION, LENGTH);
+        assertTrue(Arrays.equals(expectedContent, resultContent));
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_SocketChannel()
+            throws Exception {
+        // inits data into file.
+        writeDataToFile(fileOfReadOnlyFileChannel);
+
+        // connects two socketChannels.
+        socketChannelReceiver = SocketChannel.open();
+        socketChannelReceiver.socket().bind(
+                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel.socket().bind(
+                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        socketChannelReceiver.socket().setSoTimeout(TIME_OUT);
+        socketChannelReceiver.connect(serverSocketChannel.socket()
+                .getLocalSocketAddress());
+        serverSocketChannel.socket().setSoTimeout(TIME_OUT);
+        socketChannelSender = serverSocketChannel.accept();
+        socketChannelSender.socket().setSoTimeout(TIME_OUT);
+
+        // position here should have no effect on transferTo since it uses
+        // offset from file_begin
+        final int POSITION = 10;
+        readOnlyFileChannel.position(POSITION);
+
+        // transfers data from file to socketChannelSender.
+        final int OFFSET = 2;
+        long result = readOnlyFileChannel.transferTo(OFFSET,
+                CONTENT_AS_BYTES_LENGTH * 2, socketChannelSender);
+        final int LENGTH = CONTENT_AS_BYTES_LENGTH - OFFSET;
+        assertEquals(LENGTH, result);
+        assertEquals(POSITION, readOnlyFileChannel.position());
+        readOnlyFileChannel.close();
+        socketChannelSender.close();
+
+        // gets contents from socketChannelReceiver.
+        ByteBuffer readBuffer = ByteBuffer.allocate(LENGTH + 1);
+        int totalRead = 0;
+        int countRead = 0;
+        long beginTime = System.currentTimeMillis();
+        while ((countRead = socketChannelReceiver.read(readBuffer)) != -1) {
+            totalRead += countRead;
+            // TIMEOUT
+            if (System.currentTimeMillis() - beginTime > TIME_OUT) {
+                break;
+            }
+        }
+        assertEquals(LENGTH, totalRead);
+
+        // compares contents.
+        readBuffer.flip();
+        for (int i = OFFSET; i < CONTENT_AS_BYTES_LENGTH; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_DatagramChannel()
+            throws Exception {
+        // inits data to file.
+        writeDataToFile(fileOfReadOnlyFileChannel);
+
+        // connects two datagramChannel
+        datagramChannelReceiver = DatagramChannel.open();
+        datagramChannelReceiver.socket().bind(
+                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        datagramChannelSender = DatagramChannel.open();
+        datagramChannelSender.socket().bind(
+                new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        datagramChannelSender.socket().setSoTimeout(TIME_OUT);
+        datagramChannelSender.connect(datagramChannelReceiver.socket()
+                .getLocalSocketAddress());
+        datagramChannelReceiver.socket().setSoTimeout(TIME_OUT);
+        datagramChannelReceiver.connect(datagramChannelSender.socket()
+                .getLocalSocketAddress());
+
+        // transfers data from fileChannel to datagramChannelSender
+        long result = readOnlyFileChannel.transferTo(0,
+                CONTENT_AS_BYTES_LENGTH, datagramChannelSender);
+        assertEquals(CONTENT_AS_BYTES_LENGTH, result);
+        assertEquals(0, readOnlyFileChannel.position());
+        readOnlyFileChannel.close();
+        datagramChannelSender.close();
+
+        // gets contents from datagramChannelReceiver
+        ByteBuffer readBuffer = ByteBuffer.allocate(CONTENT_AS_BYTES_LENGTH);
+        long beginTime = System.currentTimeMillis();
+        int totalRead = 0;
+        while (totalRead < CONTENT_AS_BYTES_LENGTH) {
+            totalRead += datagramChannelReceiver.read(readBuffer);
+            if (System.currentTimeMillis() - beginTime > TIME_OUT) {
+                break;
+            }
+        }
+        assertEquals(CONTENT_AS_BYTES_LENGTH, totalRead);
+
+        // compares contents.
+        readBuffer.flip();
+        for (int i = 0; i < CONTENT_AS_BYTES_LENGTH; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
+        }
+    }
+
+    /**
+     * @tests java.nio.channels.FileChannel#transferTo(long,long,WritableByteChannel)
+     */
+    public void test_transferToJJLWritableByteChannel_Pipe() throws Exception {
+        // inits data in file.
+        writeDataToFile(fileOfReadOnlyFileChannel);
+
+        // inits pipe.
+        pipe = Pipe.open();
+
+        // transfers data from fileChannel to pipe.
+        final int OFFSET = 2;
+        final int LENGTH = 4;
+        long result = readOnlyFileChannel.transferTo(OFFSET, LENGTH, pipe
+                .sink());
+        assertEquals(LENGTH, result);
+        assertEquals(0, readOnlyFileChannel.position());
+        readOnlyFileChannel.close();
+
+        // gets content from pipe.
+        ByteBuffer readBuffer = ByteBuffer.allocate(LENGTH);
+        result = pipe.source().read(readBuffer);
+        assertEquals(LENGTH, result);
+
+        // compares content.
+        readBuffer.flip();
+        for (int i = OFFSET; i < OFFSET + LENGTH; i++) {
+            assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
+        }
     }
     
     private class MockFileChannel extends FileChannel {

@@ -23,6 +23,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.channels.NonReadableChannelException;
+import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
@@ -415,9 +417,10 @@ public abstract class FileChannelImpl extends FileChannel {
                 || count > Integer.MAX_VALUE) {
             throw new IllegalArgumentException();
         }
-        if (count == 0 || position > size()) {
+        if(position > size()) {
             return 0;
         }
+        
         ByteBuffer buffer = null;
         if (src instanceof FileChannel) {
             FileChannel fileSrc = (FileChannel) src;
@@ -425,6 +428,7 @@ public abstract class FileChannelImpl extends FileChannel {
             long filePosition = fileSrc.position();
             count = Math.min(count, size - filePosition);
             buffer = fileSrc.map(MapMode.READ_ONLY, filePosition, count);
+            fileSrc.position(filePosition + count);
         } else {
             buffer = ByteBuffer.allocateDirect((int) count);
             src.read(buffer);
@@ -442,6 +446,9 @@ public abstract class FileChannelImpl extends FileChannel {
         if (position < 0 || count < 0 || position > Integer.MAX_VALUE
                 || count > Integer.MAX_VALUE) {
             throw new IllegalArgumentException();
+        }
+        if (target instanceof ReadOnlyFileChannel) {
+            throw new NonWritableChannelException();
         }
         if (count == 0 || position >= size()) {
             return 0;

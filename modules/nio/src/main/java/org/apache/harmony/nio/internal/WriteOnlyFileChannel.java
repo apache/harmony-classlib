@@ -17,6 +17,7 @@ package org.apache.harmony.nio.internal;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileLock;
 import java.nio.channels.NonReadableChannelException;
 import java.nio.channels.WritableByteChannel;
@@ -45,9 +46,9 @@ public final class WriteOnlyFileChannel extends FileChannelImpl {
 	public long transferTo(long position, long count, WritableByteChannel target)
 			throws IOException {
 		openCheck();
-		if (null == target) {
-			throw new NullPointerException();
-		}
+        if (!target.isOpen()) {
+            throw new ClosedChannelException();
+        }
 		throw new NonReadableChannelException();
 	}
 
