@@ -113,6 +113,7 @@
             <fileset dir="${support.dir}/src/test/java">
                 <exclude name="**/*.java" />
             </fileset>
+            <fileset file="${support.dir}/src/test/resources/hyts_Foo.c"/>
         </copy>
     </target>
 
