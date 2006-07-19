@@ -23,7 +23,7 @@
 # Open Source providers
 security.provider.1=org.apache.harmony.security.provider.cert.DRLCertFactory
 security.provider.2=org.bouncycastle.jce.provider.BouncyCastleProvider
-security.provider.3=org.apache.harmony.security.provider.jsse.JSSEProvider
+security.provider.3=org.apache.harmony.xnet.provider.jsse.JSSEProvider
 
 #
 # Class to instantiate as a default Configuration implementation
@@ -81,8 +81,8 @@ jgss.spi.manager=
 # See specification for 
 # javax/net/ssl/SSLSocketFactory.html#getDefault()
 # javax/net/ssl/SSLServerSocketFactory.html#getDefault()
-ssl.SocketFactory.provider=org.apache.harmony.security.provider.jsse.SSLSocketFactoryImpl
-ssl.ServerSocketFactory.provider=org.apache.harmony.security.provider.jsse.SSLServerSocketFactoryImpl
+ssl.SocketFactory.provider=org.apache.harmony.xnet.provider.jsse.SSLSocketFactoryImpl
+ssl.ServerSocketFactory.provider=org.apache.harmony.xnet.provider.jsse.SSLServerSocketFactoryImpl
 
 
 # Default KeyStore type.
