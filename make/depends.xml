@@ -110,6 +110,7 @@
 
     <target name="download-win" if="is.windows">
         
+	<mkdir dir="${msvcr71.dir}" />
 	<download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
                            md5="${msvcr71.md5}" />
 
