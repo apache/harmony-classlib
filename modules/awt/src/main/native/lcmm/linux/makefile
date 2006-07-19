@@ -19,12 +19,10 @@ LCMS_DIR=$(HY_HDK)/../depends/libs/build/lcms
 
 CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(LCMS_DIR)
 
-# TOFIX move Exceptions to common?
 BUILDFILES = \
   $(SHAREDSUB)/cmmerror.o \
   $(SHAREDSUB)/cmmio.o \
   $(SHAREDSUB)/cmmxforms.o \
-  $(SHAREDSUB)/Exceptions.o \
   $(SHAREDSUB)/NativeCMM.o \
   $(SHAREDSUB)/NativeImageFormat.o \
   liblcms.a

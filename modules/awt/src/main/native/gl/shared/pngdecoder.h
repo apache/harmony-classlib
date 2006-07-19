@@ -27,7 +27,7 @@
 
 #include "png.h"
 #include "org_apache_harmony_awt_gl_image_PngDecoder.h"
-#include "Exceptions.h"
+#include "exceptions.h"
 
 // Define "boolean" as int if not defined 
 #ifndef __RPCNDR_H__    // don't redefine if rpcndr.h already defined it 

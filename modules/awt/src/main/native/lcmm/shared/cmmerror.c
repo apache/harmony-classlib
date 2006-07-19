@@ -25,5 +25,5 @@
  * Creates and throws CMMException
  */
 void newCMMException(JNIEnv *env, const char *message) {
-    newExceptionByName(env, "java/awt/color/CMMException", message);
+    throwNewExceptionByName(env, "java/awt/color/CMMException", message);
 }

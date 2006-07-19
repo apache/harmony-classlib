@@ -86,7 +86,7 @@ JNIEXPORT jobjectArray JNICALL
     xftPattern = XftPatternCreate();
 
     if (!XftPatternAddBool (xftPattern, XFT_OUTLINE, FcTrue)){
-        newNullPointerException(env, "Outline value can't be added to XftPattern");
+        throwNPException(env, "Outline value can't be added to XftPattern");
     }
 
     /* Just need to add which fields you want to list */
@@ -101,7 +101,7 @@ JNIEXPORT jobjectArray JNICALL
     }
 
         if (!fs){
-        newNullPointerException(env, "Font list can't be created");
+        throwNPException(env, "Font list can't be created");
     } else  {
         numFamilies = fs->nfont;
         famList = (char** )malloc(numFamilies * sizeof(char *));
@@ -142,7 +142,7 @@ JNIEXPORT jobjectArray JNICALL
         }
         free(famList);
         
-        newNullPointerException(env, "Not enough memory to create families list");
+        throwNPException(env, "Not enough memory to create families list");
     }
 
     for (i = 0;i < numFamilies;i++){
@@ -301,35 +301,35 @@ JNIEXPORT jlong JNICALL
     /* Xft part */
 
     if (dpy == NULL){
-        newNullPointerException(env, "Cannot connect to XServer");
+        throwNPException(env, "Cannot connect to XServer");
     }   
 
     /* Create pattern */
     pattern = XftPatternCreate();
 
     if (!XftPatternAddString (pattern, XFT_FAMILY, name)){
-        newNullPointerException(env, "Error during adding family name to XFTPattern structure");
+        throwNPException(env, "Error during adding family name to XFTPattern structure");
     }
 
     if (faceStyle && !XftPatternAddString (pattern, XFT_STYLE, faceStyle)){
-        newNullPointerException(env, "Error during adding style name to XFTPattern structure");
+        throwNPException(env, "Error during adding style name to XFTPattern structure");
     }
 
     if (!XftPatternAddInteger(pattern, XFT_SLANT, slant)){
-        newNullPointerException(env, "Error during adding font slant to XFTPattern structure");
+        throwNPException(env, "Error during adding font slant to XFTPattern structure");
     }
 
     if (!XftPatternAddInteger(pattern, XFT_WEIGHT, weight)){
-        newNullPointerException(env, "Error during adding font weight to XFTPattern structure");
+        throwNPException(env, "Error during adding font weight to XFTPattern structure");
     }
 
 /*  if (!XftPatternAddInteger(pattern, FC_WIDTH, FC_WIDTH_NORMAL)){
-        newNullPointerException(env, "Error during adding font width to XFTPattern structure");
+        throwNPException(env, "Error during adding font width to XFTPattern structure");
     }
 */
     /* We set antialias mode for simple text rendering without antialiasing */
     if (!XftPatternAddBool(pattern, XFT_ANTIALIAS, False)){
-        newNullPointerException(env, "Error during adding font antialias set to false to XFTPattern structure");
+        throwNPException(env, "Error during adding font antialias set to false to XFTPattern structure");
     }
 
     /* 
@@ -343,21 +343,21 @@ JNIEXPORT jlong JNICALL
     fSize = (double)size / 96 * 72;
 
     if (!XftPatternAddDouble (pattern, XFT_SIZE, fSize)){
-        newNullPointerException(env, "Error during adding font size to XFTPattern structure");
+        throwNPException(env, "Error during adding font size to XFTPattern structure");
     }
 
 /*  if (!XftPatternAddBool (pattern, FC_HINTING, True)){
-        newNullPointerException(env, "Error during adding font hinting set to false to XFTPattern structure");
+        throwNPException(env, "Error during adding font hinting set to false to XFTPattern structure");
     }
 */
 
     if (!XftPatternAddBool (pattern, XFT_RENDER, True)){
-        newNullPointerException(env, "Error during adding font RENDER set to true to XFTPattern structure");
+        throwNPException(env, "Error during adding font RENDER set to true to XFTPattern structure");
     }
 
 
     if (!XftPatternAddBool (pattern, FC_AUTOHINT, True)){
-        newNullPointerException(env, "Error during adding font autohinting set to false to XFTPattern structure");
+        throwNPException(env, "Error during adding font autohinting set to false to XFTPattern structure");
     }
         
     if (pitch != 0){
@@ -368,7 +368,7 @@ JNIEXPORT jlong JNICALL
         }
 
         if (!XftPatternAddInteger(pattern, XFT_SPACING, spacing)){
-            newNullPointerException(env, "Error during adding font spacing type to XFTPattern structure");
+            throwNPException(env, "Error during adding font spacing type to XFTPattern structure");
         }
     }
                                                                    
@@ -486,7 +486,7 @@ JNIEXPORT jlong JNICALL
     dpy = (Display *)(*env)->GetLongField(env, linuxFont, fid);
 
     if (dpy == NULL){
-        newNullPointerException(env, "Cannot connect to XServer");
+        throwNPException(env, "Cannot connect to XServer");
     }   
     
 
@@ -621,7 +621,7 @@ JNIEXPORT jstring JNICALL
     char* family;   
 
         if (XftPatternGetString (xftFnt->pattern, XFT_FAMILY, 0, &family) != XftResultMatch){
-        newNullPointerException(env, "Can not get font family value");
+        throwNPException(env, "Can not get font family value");
                     
     }
 
@@ -749,7 +749,7 @@ JNIEXPORT jfloat JNICALL
     } else {
         err =  FT_Get_PS_Font_Info( face, &afont_info);
         if (err){
-            newNullPointerException(env, "Error in FT_Get_PS_Font_Info fucntion");
+            throwNPException(env, "Error in FT_Get_PS_Font_Info fucntion");
             XftUnlockFace(xftFnt);
             return italicAngle;
         }
@@ -798,7 +798,7 @@ JNIEXPORT jobjectArray JNICALL
     xftPattern = XftPatternCreate();
 
     if (!XftPatternAddBool (xftPattern, XFT_OUTLINE, FcTrue)){
-        newNullPointerException(env, "Outline value can't be added to XftPattern");
+        throwNPException(env, "Outline value can't be added to XftPattern");
     }
 
     /* Just need to add which fields you want to list */
@@ -813,7 +813,7 @@ JNIEXPORT jobjectArray JNICALL
     }
 
         if (!fs){
-        newNullPointerException(env, "Font list can't be created");
+        throwNPException(env, "Font list can't be created");
     } else  {
         numFonts = fs->nfont;
         fontList = (char** )malloc(numFonts * sizeof(char *));
@@ -822,7 +822,7 @@ JNIEXPORT jobjectArray JNICALL
         {
 
                 if (XftPatternGetString (fs->fonts[j], XFT_FAMILY, 0, &family) != XftResultMatch){
-                newNullPointerException(env, "Couldn't get font family name");
+                throwNPException(env, "Couldn't get font family name");
                                                 
             }
 
@@ -865,7 +865,7 @@ JNIEXPORT jobjectArray JNICALL
         }
         free(fontList);
         
-        newNullPointerException(env, "Not enough memory to create families list");
+        throwNPException(env, "Not enough memory to create families list");
     }
 
     for (i = 0;i < numFonts;i++){
@@ -910,7 +910,7 @@ JNIEXPORT jfloatArray JNICALL
         face = XftLockFace(xftFnt);
         units_per_EM = face->units_per_EM;
             if (units_per_EM == 0){
-            newNullPointerException(env, "Units per EM value is equals to zero");
+            throwNPException(env, "Units per EM value is equals to zero");
         }
         values[16] = units_per_EM;
         mltpl = (float)fontHeight / units_per_EM;
@@ -1174,7 +1174,7 @@ JNIEXPORT jint JNICALL
     XftFont *font = (XftFont *)fnt;
 
     if (dpy == NULL){
-        newNullPointerException(env, "Cannot connect to XServer");
+        throwNPException(env, "Cannot connect to XServer");
     }   
 
 

@@ -238,7 +238,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmDeleteT
     if(xform != NULL) {
         cmsDeleteTransform(xform);
     } else
-        newNullPointerException(env, "Invalid ICC transform passed to CMM");
+        throwNPException(env, "Invalid ICC transform passed to CMM");
 }
 
 static long getScanlineStrideFromFormat(ImageFormat *fmt) {

@@ -19,7 +19,7 @@ CFLAGS += -fpic -I$(SHARED)common \
 	  -I/usr/X11R6/include -I/usr/include/freetype2 \
 	  -Iinclude # TOFIX move includes
 
-BUILDFILES = Exceptions.o LinuxNativeFont.o
+BUILDFILES = LinuxNativeFont.o
 
 MDLLIBFILES = \
 	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \

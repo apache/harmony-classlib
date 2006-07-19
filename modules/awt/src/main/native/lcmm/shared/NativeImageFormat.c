@@ -20,7 +20,7 @@
  */
 
 #include "NativeImageFormat.h"
-#include "Exceptions.h"
+#include "exceptions.h"
 
 /*
  * Class:     org_apache_harmony_awt_gl_color_NativeImageFormat
@@ -32,37 +32,37 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeImageFormat_in
 
     clr_NIF_cmmFormatID = (*env)->GetFieldID(env, cls, "cmmFormat", "I");
     if(clr_NIF_cmmFormatID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     clr_NIF_colsID = (*env)->GetFieldID(env, cls, "cols", "I");
     if(clr_NIF_colsID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     clr_NIF_rowsID = (*env)->GetFieldID(env, cls, "rows", "I");
     if(clr_NIF_rowsID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     clr_NIF_scanlineStrideID = (*env)->GetFieldID(env, cls, "scanlineStride", "I");
     if(clr_NIF_scanlineStrideID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     clr_NIF_imageDataID = (*env)->GetFieldID(env, cls, "imageData", "Ljava/lang/Object;");
     if(clr_NIF_imageDataID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     clr_NIF_dataOffsetID = (*env)->GetFieldID(env, cls, "dataOffset", "I");
     if(clr_NIF_dataOffsetID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
   clr_NIF_alphaOffsetID = (*env)->GetFieldID(env, cls, "alphaOffset", "I");
     if(clr_NIF_alphaOffsetID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 }
 
@@ -82,7 +82,7 @@ ImageFormat* getImageFormat(JNIEnv* env, jobject jimft) {
     imft->imageData = (BYTE*) (*env)->GetPrimitiveArrayCritical(env, imft->jImageData, 0);
 
   if(imft->imageData == NULL) { // All is lost, we don't have C array
-      newNullPointerException(env, "Error while accessing java image data");
+      throwNPException(env, "Error while accessing java image data");
       // Free resources and stop further processing...
         releaseImageFormat(env, imft);
         return NULL;

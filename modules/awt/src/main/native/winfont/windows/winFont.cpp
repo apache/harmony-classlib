@@ -30,7 +30,7 @@
 #include "winFont.h"
 #include "org_apache_harmony_awt_gl_font_NativeFont.h"
 #include "org_apache_harmony_awt_gl_font_WinGlyph.h"
-#include "Exceptions.h"
+#include "exceptions.h"
 
 static LCIDS lcidTable;
 static FontRecords fonts;           /* Cached system fonts data             */
@@ -364,7 +364,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getFontFamiliesNames(JNIEnv *env,
     res = enumFamilies();
 
     if (res = FONTLIB_ERROR){
-        newNullPointerException(env, "Not enough memory to enumerate font family names list.");
+        throwNPException(env, "Not enough memory to enumerate font family names list.");
         return NULL;
     }
 
@@ -402,19 +402,19 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_enumSystem
     res = enumFonts();
 
     if (res = FONTLIB_ERROR){
-        newNullPointerException(env, "Not enough memory to enumerate font names list.");
+        throwNPException(env, "Not enough memory to enumerate font names list.");
         return;
     }
 
     cls= env->FindClass("org/apache/harmony/awt/gl/font/NativeFont");
     if (cls == 0) {
-        newNullPointerException(env, "Can't find class NativeFont");
+        throwNPException(env, "Can't find class NativeFont");
         return;
     }
 
     mid=env->GetStaticMethodID(cls, "setArrays", "([I[I[I[Ljava/lang/String;)V");
     if (mid == 0) {
-        newNullPointerException(env, "Can't find method sendArrayResults");
+        throwNPException(env, "Can't find method sendArrayResults");
         return;
     }
 
@@ -434,7 +434,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_enumSystem
 
 
     if ((indArr == NULL) || (typesArr == NULL) || (stylesArr == NULL)){
-        newNullPointerException(env, "Not enough memory to create font data arrays.");
+        throwNPException(env, "Not enough memory to create font data arrays.");
         return;
     }
 
@@ -596,7 +596,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_initializ
     // Get number of unicode range pairs' bounds values 
     arrSize = GetUnicodeRanges(res, &pRanges);
     if (arrSize == -1){
-        newNullPointerException(env, "Error occured during getting an array of unicode ranges");
+        throwNPException(env, "Error occured during getting an array of unicode ranges");
 
         return (jlong)NULL;
     }
@@ -638,7 +638,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_canDisplayCharNative(JNIEnv *env,
 
     size = GetGlyphIndices(hDC, sample, 1, gi, GGI_MARK_NONEXISTING_GLYPHS);
     if (size == GDI_ERROR){
-        newNullPointerException(env, "Error occured during getting char data in native code.");
+        throwNPException(env, "Error occured during getting char data in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return FALSE;
@@ -672,7 +672,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getFamilyNative(JNIEnv *env, jcla
     size = GetOutlineTextMetrics(hDC, sizeof(outm), outm);
 
     if (size == 0 ){
-        newNullPointerException(env, "Error occured during getting text metrics in native code.");
+        throwNPException(env, "Error occured during getting text metrics in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return NULL;
@@ -780,7 +780,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getItalicAngleNative(JNIEnv *env,
 
     size = GetOutlineTextMetrics(hDC, sizeof(outm), outm);
     if (size == 0 ){
-        newNullPointerException(env, "Error occured during getting text outline metrics in native code.");
+        throwNPException(env, "Error occured during getting text outline metrics in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return 0;
@@ -813,7 +813,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getDefaultCharNative(JNIEnv *env,
 
     size = GetTextMetrics(hDC, &tm);
     if (size == 0 ){
-        newNullPointerException(env, "Error occured during getting text metrics in native code.");
+        throwNPException(env, "Error occured during getting text metrics in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return 0;
@@ -937,7 +937,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getNativeLineMetrics(JNIEnv *env,
     // Getting current size of Font
     size = GetOutlineTextMetrics(hDC, sizeof(outm), outm);
     if (size == 0 ){
-        newNullPointerException(env, "Error occured during getting text outline metrics in native code.");
+        throwNPException(env, "Error occured during getting text outline metrics in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return NULL;
@@ -973,7 +973,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getNativeLineMetrics(JNIEnv *env,
 
     size = GetOutlineTextMetrics(hDC, sizeof(outm), outm);
     if (size == 0 ){
-        newNullPointerException(env, "Error occured during getting text outline metrics in native code.");
+        throwNPException(env, "Error occured during getting text outline metrics in native code.");
 
         SelectObject(hDC, hOld);
         DeleteObject(hFontEM);
@@ -1040,7 +1040,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphInfoNative(JNIEnv *env, j
     // Getting current height of given Font
     size = GetOutlineTextMetrics(hDC, sizeof(outm), outm);
     if (size == 0 ){
-        newNullPointerException(env, "Error occured during getting text outline metrics in native code.");
+        throwNPException(env, "Error occured during getting text outline metrics in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return NULL;
@@ -1056,7 +1056,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphInfoNative(JNIEnv *env, j
 
     res = GetCharABCWidths(hDC, chr, chr, abcWidth);
     if (res == 0 ){
-        newNullPointerException(env, "Error occured during getting char widths in native code.");
+        throwNPException(env, "Error occured during getting char widths in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return NULL;
@@ -1068,7 +1068,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphInfoNative(JNIEnv *env, j
 
     res = GetGlyphOutline(hDC, chr, GGO_METRICS, & g_metrics, 0, NULL, & mat2);
     if (res == GDI_ERROR ){
-        newNullPointerException(env, "Error occured during getting glyph outline in native code.");
+        throwNPException(env, "Error occured during getting glyph outline in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return NULL;
@@ -1088,7 +1088,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphInfoNative(JNIEnv *env, j
 
     size = GetGlyphOutline(hDC, chr, GGO_METRICS, & g_metrics, 0, NULL, & mat2);
     if (size==GDI_ERROR){
-        newNullPointerException(env, "Error occured during getting glyph outline metrics in native code.");
+        throwNPException(env, "Error occured during getting glyph outline metrics in native code.");
         SelectObject(hDC, hOld);
         DeleteObject(hFontEM);
         DeleteDC(hDC);
@@ -1143,7 +1143,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphPxlInfoNative(JNIEnv *env
 
     size = GetGlyphOutline(hDC, chr, GGO_METRICS, & g_metrics, 0, NULL, & mat2);
     if (size==GDI_ERROR){
-        newNullPointerException(env, "Error occured during getting glyph outline in native code.");
+        throwNPException(env, "Error occured during getting glyph outline in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return NULL;
@@ -1194,7 +1194,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphCodesNative(JNIEnv *env, 
 
     size = GetGlyphIndices(hDC, chars, leng, gi, 0);//GGI_MARK_NONEXISTING_GLYPHS);
     if (size == GDI_ERROR){
-        newNullPointerException(env, "Error occured during getting glyph indices in native code.");
+        throwNPException(env, "Error occured during getting glyph indices in native code.");
         free(gi);
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
@@ -1282,7 +1282,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_NativeInitGlyphImage(JNIEnv *env,
     bitsSize = GetGlyphOutline(hDC, uChar, GGO_BITMAP, & gMetrics, 0, NULL, &mat2);
 
     if (bitsSize==GDI_ERROR){
-        newNullPointerException(env, "Error occured during getting glyph outline in native code.");
+        throwNPException(env, "Error occured during getting glyph outline in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return NULL;
@@ -1295,7 +1295,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_NativeInitGlyphImage(JNIEnv *env,
     bitsSize = GetGlyphOutline(hDC, uChar, GGO_BITMAP, & gMetrics, bitsSize, pBits, &mat2);
 
     if ( bitsSize==GDI_ERROR){
-        newNullPointerException(env, "Error occured during getting glyph outline in native code.");
+        throwNPException(env, "Error occured during getting glyph outline in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         free(pBits);
@@ -1339,7 +1339,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphCodeNative(JNIEnv *env, j
 
     size = GetGlyphIndices(hDC, uChr, 1, gi, 0);//GGI_MARK_NONEXISTING_GLYPHS);
     if (size==GDI_ERROR){
-        newNullPointerException(env, "Error occured during getting glyph indices in native code.");
+        throwNPException(env, "Error occured during getting glyph indices in native code.");
         SelectObject(hDC, hOld);
         DeleteDC(hDC);
         return 0;
@@ -1382,7 +1382,7 @@ JNIEXPORT jint JNICALL
     DeleteDC(hDC);
     
     if (size==GDI_ERROR){
-        newNullPointerException(env, "GDI :: GetGlyphOutline Error.");
+        throwNPException(env, "GDI :: GetGlyphOutline Error.");
         return 0;
     }
     return size;

@@ -158,7 +158,7 @@ void outOfMemory(JNIEnv *env, jobject obj, gl_decompress_struct *glDecompress) {
   (*env)->SetIntField(env, obj, img_JPEG_bytesConsumedID, -1);
     (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, 0);
 
-  newExceptionByName(env, "java/lang/OutOfMemoryError", "Out of memory");
+  throwNewExceptionByName(env, "java/lang/OutOfMemoryError", "Out of memory");
 }
 
 GLOBAL(void) gl_decompress_struct_init(gl_decompress_struct** glDecompressPtr) {
@@ -222,37 +222,37 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_initIDs
 (JNIEnv *env, jclass cls) {  
     img_JPEG_imageWidthID = (*env)->GetFieldID(env, cls, "imageWidth", "I");
     if(img_JPEG_imageWidthID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     img_JPEG_imageHeightID = (*env)->GetFieldID(env, cls, "imageHeight", "I");
     if(img_JPEG_imageHeightID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     img_JPEG_progressiveID = (*env)->GetFieldID(env, cls, "progressive", "Z");
     if(img_JPEG_progressiveID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     img_JPEG_jpegColorSpaceID = (*env)->GetFieldID(env, cls, "jpegColorSpace", "I");
     if(img_JPEG_jpegColorSpaceID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     img_JPEG_bytesConsumedID = (*env)->GetFieldID(env, cls, "bytesConsumed", "I");
     if(img_JPEG_bytesConsumedID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     img_JPEG_currScanlineID = (*env)->GetFieldID(env, cls, "currScanline", "I");
     if(img_JPEG_currScanlineID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 
     img_JPEG_hNativeDecoderID = (*env)->GetFieldID(env, cls, "hNativeDecoder", "J");
     if(img_JPEG_hNativeDecoderID == NULL) {
-        newNullPointerException(env, "Unable to get field ID");
+        throwNPException(env, "Unable to get field ID");
     }
 }
 

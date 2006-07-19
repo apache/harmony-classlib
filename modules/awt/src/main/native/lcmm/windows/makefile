@@ -34,7 +34,6 @@ BUILDFILES = \
   $(SHAREDSUB)cmmerror.obj \
   $(SHAREDSUB)cmmio.obj \
   $(SHAREDSUB)cmmxforms.obj \
-  $(SHAREDSUB)Exceptions.obj \
   $(SHAREDSUB)NativeCMM.obj \
   $(SHAREDSUB)NativeImageFormat.obj
 

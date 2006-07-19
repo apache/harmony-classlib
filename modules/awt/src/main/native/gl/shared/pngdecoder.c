@@ -53,7 +53,8 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_image_PngDecoder_decode
   // Init decoder if needed
   if(!decoderInfo) {
     if(!(decoderInfo = initPng())) {
-      newExceptionByName(env, "java/lang/RuntimeException", "Can't create native PNG decoder");
+      throwNewExceptionByName(env, "java/lang/RuntimeException",
+                              "Can't create native PNG decoder");
       return 0; // NULL
     }
   }
@@ -125,7 +126,8 @@ void releaseArrays(png_decoder_info_ptr decoderInfo) {
 
 void gl_error_fn(png_structp png_ptr, png_const_charp error_msg) {
   png_decoder_info_ptr decoderInfo = png_get_error_ptr(png_ptr);
-  newExceptionByName(decoderInfo->env, "java/lang/RuntimeException", error_msg);
+  throwNewExceptionByName(decoderInfo->env, "java/lang/RuntimeException",
+                          error_msg);
   
   if(decoderInfo) { // Else there's no way to terminate correctly
     longjmp(decoderInfo->jmpBuf, 1);

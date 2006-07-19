@@ -31,7 +31,7 @@
 #include "jpegint.h"
 #include "setjmp.h"
 
-#include "Exceptions.h"
+#include "exceptions.h"
 
 #define MAX_BUFFER 32768
 

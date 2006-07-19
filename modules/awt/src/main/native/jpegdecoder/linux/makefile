@@ -17,13 +17,10 @@ include $(HY_HDK)/build/make/makefile.include
 
 JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR) \
-	  -I../../lcmm/shared
-# TOFIX move Exceptions to common?
+CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR)
 
 BUILDFILES = \
   $(SHAREDSUB)/JpegDecoder.o \
-  ../../lcmm/shared/Exceptions.o \
   libjpeg.a
 
 MDLLIBFILES = \

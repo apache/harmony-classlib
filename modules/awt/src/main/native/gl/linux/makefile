@@ -17,9 +17,7 @@ include $(HY_HDK)/build/make/makefile.include
 
 PNG_DIR=$(HY_HDK)/../depends/libs/build/png
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(PNG_DIR) \
-	  -I../../lcmm/shared
-# TOFIX move Exceptions to common?
+CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(PNG_DIR)
 
 BUILDFILES = \
   $(SHAREDSUB)/blitter.o \
@@ -27,7 +25,6 @@ BUILDFILES = \
   $(SHAREDSUB)/LUTTables.o \
   $(SHAREDSUB)/pngdecoder.o \
   $(SHAREDSUB)/SurfaceDataStructure.o \
-  ../../lcmm/shared/Exceptions.o \
   libpng.a
 
 MDLLIBFILES = \

@@ -23,7 +23,7 @@
 #define _included_cmmerror
 
 #include "NativeCMM.h"
-#include "Exceptions.h"
+#include "exceptions.h"
 
 // Java exception
 void newCMMException(JNIEnv *env, const char *message);

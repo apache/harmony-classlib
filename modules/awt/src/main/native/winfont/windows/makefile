@@ -27,9 +27,7 @@ HYCFLAGS = \
   /Iinclude /I..\..\gl\windows\include \
   -DUNICODE -D_UNICODE
 
-BUILDFILES = \
-  Exceptions.obj \
-  winFont.obj
+BUILDFILES = winFont.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib gdi32.lib GdiPlus.lib advapi32.lib
