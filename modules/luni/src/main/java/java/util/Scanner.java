@@ -495,9 +495,29 @@ public final class Scanner implements Iterator<String> {
         return hasNext(Pattern.compile(pattern));
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * BigDecimal. The scanner does not advance past the input.
+     * 
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid BigDecimal
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextBigDecimal() {
-        throw new NotYetImplementedException();
+        Pattern floatPattern = getFloatPattern();
+        boolean isBigDecimalValue = false;
+        if (hasNext(floatPattern)) {
+            String floatString = matcher.group();
+            floatString = removeLocaleInfoFromFloat(floatString);
+            try {
+                new BigDecimal(floatString);
+                isBigDecimalValue = true;
+            } catch (NumberFormatException e) {
+                matchSuccessful = false;
+            }
+        }
+        return isBigDecimalValue;
     }
 
     /**
@@ -598,9 +618,29 @@ public final class Scanner implements Iterator<String> {
         return isByteValue;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns true if this scanner's next token can be translated into a valid
+     * double value. The scanner does not advance past the input.
+     * 
+     * @return true iff the next token in this scanner's input can be translated
+     *         into a valid double value
+     * @throws IllegalStateException
+     *             if the scanner has been closed
+     */
     public boolean hasNextDouble() {
-        throw new NotYetImplementedException();
+        Pattern floatPattern = getFloatPattern();
+        boolean isDoubleValue = false;
+        if (hasNext(floatPattern)) {
+            String floatString = matcher.group();
+            floatString = removeLocaleInfoFromFloat(floatString);
+            try {
+                Double.parseDouble(floatString);
+                isDoubleValue = true;
+            } catch (NumberFormatException e) {
+                matchSuccessful = false;
+            }
+        }
+        return isDoubleValue;
     }
 
     /**
@@ -883,9 +923,45 @@ public final class Scanner implements Iterator<String> {
         return next(Pattern.compile(pattern));
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a BigDecimal and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextBigDecimal()
+     * returned true. If this match succeeds, the scanner advances past the
+     * input that matched.
+     * 
+     * If the next token matches the Float regular expression successfully, the
+     * token is translated into a BigDecimal as following steps. At first all
+     * locale specific prefixes ,group separators, and locale specific suffixes
+     * are removed. Then non-ASCII digits are mapped into ASCII digits via
+     * {@link Character#digit(char, int)}}, a negative sign (-) is added if the
+     * locale specific negative prefixes and suffixes were present. At last the
+     * resulting String is passed to {@link BigDecimal#BigDecimal(String)}}.
+     * 
+     * @param integerRadix
+     *            the radix used to translate the token into BigDecimal
+     * @return the BigDecimal scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid
+     *             BigDecimal
+     */
     public BigDecimal nextBigDecimal() {
-        throw new NotYetImplementedException();
+        Pattern floatPattern = getFloatPattern();
+        String floatString = next(floatPattern);
+        floatString = removeLocaleInfoFromFloat(floatString);
+        BigDecimal bigDecimalValue;
+        try {
+            bigDecimalValue = new BigDecimal(floatString);
+        } catch (NumberFormatException e) {
+            matchSuccessful = false;
+            recoverPreviousStatus();
+            throw new InputMismatchException();
+        }
+        return bigDecimalValue;
     }
 
     /**
@@ -1040,9 +1116,47 @@ public final class Scanner implements Iterator<String> {
         return byteValue;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Translates the next token in this scanner's input into a double value and
+     * returns this value. This method may be blocked when it is waiting for
+     * input to scan, even if a previous invocation of hasNextDouble() returned
+     * true. If this match succeeds, the scanner advances past the input that
+     * matched.
+     * 
+     * If the next token matches the Float regular expression successfully, the
+     * token is translated into a double value as following steps. At first all
+     * locale specific prefixes ,group separators, and locale specific suffixes
+     * are removed. Then non-ASCII digits are mapped into ASCII digits via
+     * {@link Character#digit(char, int)}}, a negative sign (-) is added if the
+     * locale specific negative prefixes and suffixes were present. At last the
+     * resulting String is passed to {@link Double#parseDouble(String)}}.If the
+     * token matches the localized NaN or infinity strings, it is also passed to
+     * {@link Double#parseDouble(String)}}.
+     * 
+     * @param integerRadix
+     *            the radix used to translate the token into double value
+     * @return the double value scanned from the input
+     * @throws IllegalStateException
+     *             if this scanner has been closed
+     * @throws NoSuchElementException
+     *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token can not be translated into a valid double
+     *             value
+     */
     public double nextDouble() {
-        throw new NotYetImplementedException();
+        Pattern floatPattern = getFloatPattern();
+        String floatString = next(floatPattern);
+        floatString = removeLocaleInfoFromFloat(floatString);
+        double doubleValue = 0;
+        try {
+            doubleValue = Double.parseDouble(floatString);
+        } catch (NumberFormatException e) {
+            matchSuccessful = false;
+            recoverPreviousStatus();
+            throw new InputMismatchException();
+        }
+        return doubleValue;
     }
 
     /**
@@ -1579,11 +1693,11 @@ public final class Scanner implements Iterator<String> {
         StringBuilder nonZeroDigit = new StringBuilder("[\\p{javaDigit}&&[^0]]"); //$NON-NLS-1$
         StringBuilder numeral = getNumeral(digit, nonZeroDigit);
 
-        char decimalSeparator = decimalFormat.getDecimalFormatSymbols()
-                .getDecimalSeparator();
+        String decimalSeparator = "\\" + decimalFormat.getDecimalFormatSymbols()//$NON-NLS-1$
+                        .getDecimalSeparator();
         StringBuilder decimalNumeral = new StringBuilder("(").append(numeral) //$NON-NLS-1$
-                .append("|").append(numeral).append("\\") //$NON-NLS-1$//$NON-NLS-2$
-                .append(decimalSeparator).append(digit).append("*+|\\").append( //$NON-NLS-1$
+                .append("|").append(numeral) //$NON-NLS-1$
+                .append(decimalSeparator).append(digit).append("*+|").append( //$NON-NLS-1$
                         decimalSeparator).append(digit).append("++)"); //$NON-NLS-1$
         StringBuilder exponent = new StringBuilder("([eE][+-]?").append(digit) //$NON-NLS-1$
                 .append("+)?"); //$NON-NLS-1$
@@ -1595,14 +1709,14 @@ public final class Scanner implements Iterator<String> {
                 .append(addNegativeSign(decimalNumeral)).append("(").append( //$NON-NLS-1$
                         exponent).append("?)").append("))"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        StringBuilder hexFloat = new StringBuilder("([-+]?0[xX][0-9a-fA-F]*\\") //$NON-NLS-1$
-                .append(decimalSeparator).append(
-                        "[0-9a-fA-F]+([pP][-+]?[0-9]++)?)"); //$NON-NLS-1$
+        StringBuilder hexFloat = new StringBuilder("([-+]?0[xX][0-9a-fA-F]*") //$NON-NLS-1$
+                .append("\\.").append(//$NON-NLS-1$
+                        "[0-9a-fA-F]+([pP][-+]?[0-9]+)?)"); //$NON-NLS-1$
         String localNaN = decimalFormat.getDecimalFormatSymbols().getNaN();
         String localeInfinity = decimalFormat.getDecimalFormatSymbols()
                 .getInfinity();
-        StringBuilder nonNumber = new StringBuilder("NaN|\\").append(localNaN) //$NON-NLS-1$
-                .append("|Infinity|\\").append(localeInfinity).append(""); //$NON-NLS-1$ //$NON-NLS-2$
+        StringBuilder nonNumber = new StringBuilder("(NaN|\\Q").append(localNaN) //$NON-NLS-1$
+                .append("\\E|Infinity|\\Q").append(localeInfinity).append("\\E)"); //$NON-NLS-1$ //$NON-NLS-2$
         StringBuilder singedNonNumber = new StringBuilder("((([-+]?(").append( //$NON-NLS-1$
                 nonNumber).append(")))|(").append(addPositiveSign(nonNumber)) //$NON-NLS-1$
                 .append(")|(").append(addNegativeSign(nonNumber)).append("))"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1615,11 +1729,12 @@ public final class Scanner implements Iterator<String> {
 
     private StringBuilder getNumeral(StringBuilder digit,
             StringBuilder nonZeroDigit) {
-        char groupSeparator = decimalFormat.getDecimalFormatSymbols()
-                .getGroupingSeparator();
+        String groupSeparator = "\\"//$NON-NLS-1$
+                + decimalFormat.getDecimalFormatSymbols()
+                        .getGroupingSeparator();
         StringBuilder groupedNumeral = new StringBuilder("(").append( //$NON-NLS-1$
                 nonZeroDigit).append(digit).append("?").append(digit).append( //$NON-NLS-1$
-                "?(\\").append(groupSeparator).append(digit).append(digit) //$NON-NLS-1$
+                "?(").append(groupSeparator).append(digit).append(digit) //$NON-NLS-1$
                 .append(digit).append(")+)"); //$NON-NLS-1$
         StringBuilder numeral = new StringBuilder("((").append(digit).append( //$NON-NLS-1$
                 "++)|").append(groupedNumeral).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1633,10 +1748,10 @@ public final class Scanner implements Iterator<String> {
         String positivePrefix = ""; //$NON-NLS-1$
         String positiveSuffix = ""; //$NON-NLS-1$
         if (!decimalFormat.getPositivePrefix().equals("")) { //$NON-NLS-1$
-            positivePrefix = "\\" + decimalFormat.getPositivePrefix(); //$NON-NLS-1$
+            positivePrefix = "\\Q" + decimalFormat.getPositivePrefix()+"\\E"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (!decimalFormat.getPositiveSuffix().equals("")) { //$NON-NLS-1$
-            positiveSuffix = "\\" + decimalFormat.getPositiveSuffix(); //$NON-NLS-1$
+            positiveSuffix = "\\Q" + decimalFormat.getPositiveSuffix()+"\\E"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         StringBuilder signedNumeral = new StringBuilder()
                 .append(positivePrefix).append(unSignNumeral).append(
@@ -1651,10 +1766,10 @@ public final class Scanner implements Iterator<String> {
         String negativePrefix = ""; //$NON-NLS-1$
         String negativeSuffix = ""; //$NON-NLS-1$
         if (!decimalFormat.getNegativePrefix().equals("")) { //$NON-NLS-1$
-            negativePrefix = "\\" + decimalFormat.getNegativePrefix(); //$NON-NLS-1$
+            negativePrefix = "\\Q" + decimalFormat.getNegativePrefix()+"\\E"; //$NON-NLS-1$//$NON-NLS-2$
         }
         if (!decimalFormat.getNegativeSuffix().equals("")) { //$NON-NLS-1$
-            negativeSuffix = "\\" + decimalFormat.getNegativeSuffix(); //$NON-NLS-1$
+            negativeSuffix = "\\Q" + decimalFormat.getNegativeSuffix()+"\\E"; //$NON-NLS-1$//$NON-NLS-2$
         }
         StringBuilder signedNumeral = new StringBuilder()
                 .append(negativePrefix).append(unSignNumeral).append(
@@ -1716,9 +1831,18 @@ public final class Scanner implements Iterator<String> {
             }
         }
         if (DataType.FLOAT == type) {
-            for (int i = 0; i < tokenBuilder.length(); i++) {
-                if (-1 != Character.digit(tokenBuilder.charAt(i), 10)) {
-                    result.append(Character.digit(tokenBuilder.charAt(i), 10));
+            if (tokenBuilder.toString().equals(decimalFormat.getDecimalFormatSymbols()
+                    .getNaN())) {
+                result.append("NaN");//$NON-NLS-1$ 
+            } else if (tokenBuilder.toString().equals(decimalFormat
+                    .getDecimalFormatSymbols().getInfinity())) {
+                result.append("Infinity");//$NON-NLS-1$ 
+            } else {
+                for (int i = 0; i < tokenBuilder.length(); i++) {
+                    if (-1 != Character.digit(tokenBuilder.charAt(i), 10)) {
+                        result.append(Character.digit(tokenBuilder.charAt(i),
+                                10));
+                    }
                 }
             }
         }

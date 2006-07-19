@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -4351,6 +4352,191 @@ public class ScannerTest extends TestCase {
         assertEquals(-123, s.nextLong());
     }
     
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#nextDouble()
+     */
+    public void test_hasNextDouble() throws IOException {
+        s = new Scanner("123 45\u0666. 123.4 .123 ");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextDouble());
+        assertEquals(123.0, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(456.0, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(123.4, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(0.123, s.nextDouble());
+        assertFalse(s.hasNextDouble());
+        try {
+            s.nextDouble();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("+123.4 -456.7 123,456.789 0.1\u06623,4");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextDouble());
+        assertEquals(123.4, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(-456.7, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(123456.789, s.nextDouble());
+        assertFalse(s.hasNextDouble());
+        try {
+            s.nextDouble();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // Scientific notation
+        s = new Scanner("+123.4E10 -456.7e+12 123,456.789E-10");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextDouble());
+        assertEquals(1.234E12, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(-4.567E14, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(1.23456789E-5, s.nextDouble());
+
+        s = new Scanner("NaN Infinity -Infinity");
+        assertTrue(s.hasNextDouble());
+        assertEquals(Double.NaN, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(Double.POSITIVE_INFINITY, s.nextDouble());
+        assertTrue(s.hasNextDouble());
+        assertEquals(Double.NEGATIVE_INFINITY, s.nextDouble());
+
+        String str=String.valueOf(Double.MAX_VALUE*2);
+        s=new Scanner(str);
+        assertTrue(s.hasNextDouble());
+        assertEquals(Double.POSITIVE_INFINITY,s.nextDouble());
+        
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextDouble());
+        assertEquals(23456.0, s.nextDouble());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextDouble());
+        assertEquals(23.456, s.nextDouble());
+
+        s = new Scanner("23.456 23.456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextDouble());
+        assertEquals(23.456, s.nextDouble());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextDouble());
+        assertEquals(23456.0, s.nextDouble());
+
+        s = new Scanner("23,456.7 23.456,7");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextDouble());
+        assertEquals(23456.7, s.nextDouble());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextDouble());
+        assertEquals(23456.7, s.nextDouble());
+
+        s = new Scanner("-123.4");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextDouble());
+        assertEquals(-123.4, s.nextDouble());
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#hasNextBigDecimal()
+     */
+    public void test_hasNextBigDecimal() throws IOException {
+        s = new Scanner("123 45\u0666. 123.4 .123 ");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("123"), s.nextBigDecimal());
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("456"), s.nextBigDecimal());
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("123.4"), s.nextBigDecimal());
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("0.123"), s.nextBigDecimal());
+        assertFalse(s.hasNextBigDecimal());
+        try {
+            s.nextBigDecimal();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("+123.4 -456.7 123,456.789 0.1\u06623,4");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("123.4"), s.nextBigDecimal());
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("-456.7"), s.nextBigDecimal());
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("123456.789"), s.nextBigDecimal());
+        assertFalse(s.hasNextBigDecimal());
+        try {
+            s.nextBigDecimal();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // Scientific notation
+        s = new Scanner("+123.4E10 -456.7e+12 123,456.789E-10");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("1.234E12"), s.nextBigDecimal());
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("-4.567E14"), s.nextBigDecimal());
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("1.23456789E-5"), s.nextBigDecimal());
+
+        s = new Scanner("NaN");
+        assertFalse(s.hasNextBigDecimal());
+        try {
+            s.nextBigDecimal();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("23456"), s.nextBigDecimal());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("23.456"), s.nextBigDecimal());
+
+        s = new Scanner("23.456 23.456");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("23.456"), s.nextBigDecimal());
+        s.useLocale(Locale.GERMANY);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("23456"), s.nextBigDecimal());
+
+        s = new Scanner("23,456.7");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("23456.7"), s.nextBigDecimal());
+
+        s = new Scanner("-123.4");
+        s.useLocale(Locale.ENGLISH);
+        assertTrue(s.hasNextBigDecimal());
+        assertEquals(new BigDecimal("-123.4"), s.nextBigDecimal());
+    }
+    
     private static class MockStringReader extends StringReader {
 
         public MockStringReader(String param) {
@@ -4743,6 +4929,154 @@ public class ScannerTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#nextDouble()
+     */
+    public void test_nextDouble() throws IOException {
+        s = new Scanner("123 45\u0666. 123.4 .123 ");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(123.0, s.nextDouble());
+        assertEquals(456.0, s.nextDouble());
+        assertEquals(123.4, s.nextDouble());
+        assertEquals(0.123, s.nextDouble());
+        try {
+            s.nextDouble();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("+123.4 -456.7 123,456.789 0.1\u06623,4");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(123.4, s.nextDouble());
+        assertEquals(-456.7, s.nextDouble());
+        assertEquals(123456.789, s.nextDouble());
+        try {
+            s.nextDouble();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // Scientific notation
+        s = new Scanner("+123.4E10 -456.7e+12 123,456.789E-10");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(1.234E12, s.nextDouble());
+        assertEquals(-4.567E14, s.nextDouble());
+        assertEquals(1.23456789E-5, s.nextDouble());
+
+        s = new Scanner("NaN Infinity -Infinity");
+        assertEquals(Double.NaN, s.nextDouble());
+        assertEquals(Double.POSITIVE_INFINITY, s.nextDouble());
+        assertEquals(Double.NEGATIVE_INFINITY, s.nextDouble());
+        
+        //The following test case fails on RI
+        s=new Scanner("\u221e");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(Double.POSITIVE_INFINITY, s.nextDouble());
+
+        String str=String.valueOf(Double.MAX_VALUE*2);
+        s=new Scanner(str);
+        assertEquals(Double.POSITIVE_INFINITY,s.nextDouble());
+        
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(23456.0, s.nextDouble());
+        s.useLocale(Locale.GERMANY);
+        assertEquals(23.456, s.nextDouble());
+
+        s = new Scanner("23.456 23.456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(23.456, s.nextDouble());
+        s.useLocale(Locale.GERMANY);
+        assertEquals(23456.0, s.nextDouble());
+
+        s = new Scanner("23,456.7 23.456,7");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(23456.7, s.nextDouble());
+        s.useLocale(Locale.GERMANY);
+        assertEquals(23456.7, s.nextDouble());
+
+        s = new Scanner("-123.4");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(-123.4, s.nextDouble());
+    }
+    
+    /**
+     * @throws IOException
+     * @tests java.util.Scanner#nextBigDecimal()
+     */
+    public void test_nextBigDecimal() throws IOException {
+        s = new Scanner("123 45\u0666. 123.4 .123 ");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(new BigDecimal("123"), s.nextBigDecimal());
+        assertEquals(new BigDecimal("456"), s.nextBigDecimal());
+        assertEquals(new BigDecimal("123.4"), s.nextBigDecimal());
+        assertEquals(new BigDecimal("0.123"), s.nextBigDecimal());
+        try {
+            s.nextBigDecimal();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
+
+        s = new Scanner("+123.4 -456.7 123,456.789 0.1\u06623,4");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(new BigDecimal("123.4"), s.nextBigDecimal());
+        assertEquals(new BigDecimal("-456.7"), s.nextBigDecimal());
+        assertEquals(new BigDecimal("123456.789"), s.nextBigDecimal());
+        try {
+            s.nextBigDecimal();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        // Scientific notation
+        s = new Scanner("+123.4E10 -456.7e+12 123,456.789E-10");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(new BigDecimal("1.234E12"), s.nextBigDecimal());
+        assertEquals(new BigDecimal("-4.567E14"), s.nextBigDecimal());
+        assertEquals(new BigDecimal("1.23456789E-5"), s.nextBigDecimal());
+
+        s = new Scanner("NaN");
+        try {
+            s.nextBigDecimal();
+            fail("Should throw InputMismatchException");
+        } catch (InputMismatchException e) {
+            // Expected
+        }
+
+        /*
+         * Different locale can only recognize corresponding locale sensitive
+         * string. ',' is used in many locales as group separator.
+         */
+        s = new Scanner("23,456 23,456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(new BigDecimal("23456"), s.nextBigDecimal());
+        s.useLocale(Locale.GERMANY);
+        assertEquals(new BigDecimal("23.456"), s.nextBigDecimal());
+
+        s = new Scanner("23.456 23.456");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(new BigDecimal("23.456"), s.nextBigDecimal());
+        s.useLocale(Locale.GERMANY);
+        assertEquals(new BigDecimal("23456"), s.nextBigDecimal());
+
+        s = new Scanner("23,456.7");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(new BigDecimal("23456.7"), s.nextBigDecimal());
+
+        s = new Scanner("-123.4");
+        s.useLocale(Locale.ENGLISH);
+        assertEquals(new BigDecimal("-123.4"), s.nextBigDecimal());
     }
     
     /**
