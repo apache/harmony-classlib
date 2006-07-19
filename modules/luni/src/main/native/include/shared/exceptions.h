@@ -18,6 +18,11 @@
 
 #include <string.h>
 #include "vmi.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void throwNewExceptionByName(JNIEnv* env,
                              const char* name, const char* message);
 void throwNewOutOfMemoryError(JNIEnv* env, const char* message);
@@ -25,5 +30,9 @@ void throwJavaIoIOException(JNIEnv* env, const char* message);
 void throwJavaIoIOExceptionClosed(JNIEnv* env);
 void throwNPException(JNIEnv* env, const char* message);
 void throwIndexOutOfBoundsException(JNIEnv* env);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
