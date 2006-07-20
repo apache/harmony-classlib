@@ -21,6 +21,7 @@
 #include "vmi.h"
 #include "OSMemory.h"
 #include "IMemorySystem.h"
+#include "exceptions.h"
 
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_malloc
   (JNIEnv * env, jobject thiz, jlong size)
