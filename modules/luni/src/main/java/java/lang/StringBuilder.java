@@ -700,6 +700,20 @@ public final class StringBuilder extends AbstractStringBuilder implements
     }
 
     /**
+     * Answers the contents of this StringBuilder.
+     * 
+     * @return a String containing the characters in this StringBuilder
+     */
+    public String toString() {
+        /* Note: This method is required to workaround a compiler bug
+         * in the RI javac (at least in 1.5.0_06) that will generate a
+         * reference to the non-public AbstractStringBuilder if we don't
+         * override it here.
+         */
+        return super.toString();
+    }
+
+    /**
      * <p>
      * Reads the state of a <code>StringBuilder</code> from the passed stream
      * and restores it to this instance.
