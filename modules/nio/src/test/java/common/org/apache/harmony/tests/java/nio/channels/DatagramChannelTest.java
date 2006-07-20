@@ -1863,6 +1863,25 @@ public class DatagramChannelTest extends TestCase {
         assertEquals(0, this.channel1.read(readBuf, 0, 1));
         assertEquals(0, this.channel1.read(readBuf, 0, 2));
         datagramSocket1.close();
+        //regression test for HARMONY-932
+        try {
+        	DatagramChannel.open().read(new ByteBuffer[] {}, 2, Integer.MAX_VALUE);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // correct
+        }
+        try {
+        	DatagramChannel.open().write(new ByteBuffer[] {}, 2, Integer.MAX_VALUE);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // correct
+        }
+        try {
+        	DatagramChannel.open().write((ByteBuffer[])null, -1, 2);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // correct
+        }
     }
 
     public void testReadByteBufferArrayIntInt_BufNull() throws IOException {

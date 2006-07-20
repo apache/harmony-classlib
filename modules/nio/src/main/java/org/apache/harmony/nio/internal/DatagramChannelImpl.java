@@ -380,7 +380,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      */
     public long read(ByteBuffer[] targets, int offset, int length)
             throws IOException {
-        if (length < 0 || offset < 0 || length + offset > targets.length) {
+        if (length < 0 || offset < 0 || (long)length + (long)offset > targets.length) {
             throw new IndexOutOfBoundsException();
         }        
         // status must be open and connected
@@ -470,7 +470,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
      */
     public long write(ByteBuffer[] sources, int offset, int length)
             throws IOException {
-        if (length < 0 || offset < 0 || length + offset > sources.length) {
+        if (length < 0 || offset < 0 || (long)length + (long)offset > sources.length) {
             throw new IndexOutOfBoundsException();
         }
         // status must be open and connected
