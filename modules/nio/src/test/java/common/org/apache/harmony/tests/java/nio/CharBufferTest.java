@@ -20,7 +20,6 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
-import java.nio.FloatBuffer;
 import java.nio.InvalidMarkException;
 import java.nio.ReadOnlyBufferException;
 
@@ -1034,6 +1033,7 @@ public class CharBufferTest extends AbstractBufferTest {
 			source.read(source);
 			fail("should throw IAE.");
 		} catch (IllegalArgumentException e) {
+            //expected
 		}
 	}
 
@@ -1051,25 +1051,5 @@ public class CharBufferTest extends AbstractBufferTest {
 
 	public void testIsReadOnly() {
 		assertFalse(buf.isReadOnly());
-	}
-    
-	/**
-	 * @tests java.nio.CharBuffer.wrap(CharSequence,int,int)
-	 */
-	public void testWrapNPE() {
-	    // Regression for HARMONY-264
-	    try {
-	        CharBuffer.wrap((CharSequence)null,1,0);
-	        fail("CharBuffer.wrap((CharSequence)null,1,0) should throw NullPointerException");
-	    } catch (NullPointerException e) {
-	    }
-
-
-	    char[] array = null;
-	    try {
-	        CharBuffer.wrap(array,-1,0);
-	        fail("CharBuffer.wrap((char[])null,-1,0) should throw NullPointerException");
-	    } catch (NullPointerException e) {
-	    }
 	}
 }
