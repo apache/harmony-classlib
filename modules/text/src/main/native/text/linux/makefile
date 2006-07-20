@@ -19,7 +19,7 @@
 include $(HY_HDK)/build/make/makefile.include
 
 CFLAGS += -fpic -I../../icu4c
-BUILDFILES = text_copyright.o $(SHAREDSUB)BidiWrapper.o
+BUILDFILES = $(SHAREDSUB)text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
 MDLLIBFILES = \
 	../../icu4c/unicode/libicuuc.so.34 \

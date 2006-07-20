@@ -23,7 +23,7 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I../../icu4c
-BUILDFILES = text_copyright.obj $(SHAREDSUB)BidiWrapper.obj
+BUILDFILES = $(SHAREDSUB)text_copyright.obj $(SHAREDSUB)BidiWrapper.obj
 VIRTFILES = hytext.res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
@@ -32,6 +32,6 @@ MDLLIBFILES = \
   $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib ..\..\icu4c\unicode\icuuc.lib
 
 DLLBASE=0x13300000
-COMMENT=/comment:"Text component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"Text component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>
