@@ -122,7 +122,6 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
   if (retVal)
     {
         char errMsg[256];
-    	jclass exClass;
 
         /* Failed to exec program */
         
