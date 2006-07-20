@@ -210,37 +210,35 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   (JNIEnv *env, jobject thiz, jlong fd, jobject sd, jlong offset, jlong count)
 {
 	PORT_ACCESS_FROM_ENV (env);
-	int length =0;
-    HANDLE hfile = (HANDLE)fd;
-	OVERLAPPED  overlapped;
+	HANDLE hfile = (HANDLE)fd;    	
     SOCKET socket;
-	//TODO IPV6
-
-	hysocket_t hysocketP = getJavaIoFileDescriptorContentsAsPointer(env,sd);
-	if (!hysock_socketIsValid (hysocketP)){
-      	printf("not valid socket\n");
+    hysocket_t hysocketP;
+	DWORD pos_high = 0;
+    DWORD pos_low = 0;        
+	   
+    if(0 !=(count>>31)) {
+        count = 0x7FFFFFFF;
     }
-	printf("hysocketP:%p\n",hysocketP);
-	if(hysocketP == NULL)
-	{   
-	printf("Error getJavaIoFileDescriptorContentsAsPointer!\n");
-	return -1;}
-	
-	socket = (SOCKET)hysocketP->ipv4;
-	printf("socket:%p\n",socket);
-	overlapped.Offset = (int)offset;
-	overlapped.OffsetHigh = (int)(offset>>32);
 
-	TransmitFile(socket,hfile,(int)count,0,&overlapped,NULL,0);
-    printf("TrasmitFile Error %d\n",GetLastError());
-	if(GetOverlappedResult((HANDLE)socket,&overlapped,(LPDWORD)&length,1))
-	{
-        return length; //OK
+	hysocketP = getJavaIoFileDescriptorContentsAsPointer(env,sd);	
+	socket = (SOCKET)hysocketP->ipv4;	
+    
+	pos_low  = SetFilePointer(hfile,0,&pos_high,FILE_CURRENT);
+	if(INVALID_SET_FILE_POINTER == pos_low){
+        return -1;
 	}
-	else
-	{
-		printf("GetOverlappedResult Error %d\n",GetLastError());
-		return -1;//ERROR
+			
+	if(INVALID_SET_FILE_POINTER == SetFilePointer(hfile,(DWORD)offset,(DWORD *)(((BYTE *)&offset)+4),FILE_BEGIN)){
+        return -1;
 	}
+    
+	if(!TransmitFile(socket,hfile,(DWORD)count,0,NULL,NULL,0)){
+        return -1;
+	}		
+
+	if(INVALID_SET_FILE_POINTER == SetFilePointer(hfile,pos_low,&pos_high,FILE_BEGIN)){
+        return -1;
+	}
+    return count;	
 }
 
