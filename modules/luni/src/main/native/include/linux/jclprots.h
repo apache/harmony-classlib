@@ -275,17 +275,17 @@ void JNICALL Java_java_net_PlainMulticastSocketImpl_createMulticastSocketImpl PR
 	JNIEnv* env, jclass thisClz, jobject thisObjFD, jboolean preferIPv4Stack));
 
 /* NativesCommonZipFile*/
-void throwJavaZIOException PROTOTYPE((JNIEnv * env, char *message));
-void throwNewInternalError PROTOTYPE((JNIEnv * env, char * message));
+void throwJavaZIOException PROTOTYPE((JNIEnv * env, const char *message));
+void throwNewInternalError PROTOTYPE((JNIEnv * env, const char * message));
 void JNICALL Java_java_util_zip_ZipFile_closeZipImpl PROTOTYPE((JNIEnv * env, jobject recv));
 jobject JNICALL Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor, jlong nextEntry));
 void JNICALL Java_java_util_zip_ZipFile_ntvinit PROTOTYPE((JNIEnv * env, jclass cls));
-void throwNewIllegalStateException PROTOTYPE((JNIEnv * env, char * message));
+void throwNewIllegalStateException PROTOTYPE((JNIEnv * env, const char * message));
 jlong JNICALL Java_java_util_zip_ZipFile_00024ZFEnum_resetZip PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor));
 jint JNICALL Java_java_util_zip_ZipFile_openZipImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray zipName));
 jobject JNICALL Java_java_util_zip_ZipFile_getEntryImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong zipPointer, jstring entryName));
 jbyteArray JNICALL Java_java_util_zip_ZipFile_inflateEntryImpl2 PROTOTYPE((JNIEnv * env, jobject recv, jlong zipPointer, jstring entryName));
-void throwNewIllegalArgumentException PROTOTYPE((JNIEnv * env, char * message));
+void throwNewIllegalArgumentException PROTOTYPE((JNIEnv * env, const char * message));
 
 /* NativesCommonInetAddress*/
 void JNICALL Java_java_net_InetAddress_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz, jboolean ipv6_support ));

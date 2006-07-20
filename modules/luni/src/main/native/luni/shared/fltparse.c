@@ -18,6 +18,7 @@
 #include "vmi.h"
 #include "cbigint.h"
 #include "jclglob.h"
+#include "exceptions.h"
 
 #if defined(LINUX)
 #define USE_LL
@@ -540,17 +541,11 @@ Java_org_apache_harmony_luni_util_FloatingPointParser_parseFltImpl (JNIEnv * env
     }
   else if (((I_32) FLOAT_TO_INTBITS (flt)) == (I_32) - 1)
     {
-      clazz = (*env)->FindClass (env, "java/lang/NumberFormatException");
-      if (clazz == 0)
-        return 0.0;
-      (*env)->ThrowNew (env, clazz, "");
+      throwNewExceptionByName(env, "java/lang/NumberFormatException", "");
     }
   else
     {                           /* OutOfMemoryError */
-      clazz = (*env)->FindClass (env, "java/lang/OutOfMemoryError");
-      if (clazz == 0)
-        return 0.0;
-      (*env)->ThrowNew (env, clazz, "");
+      throwNewOutOfMemoryError(env, "");
     }
 
   return 0.0;

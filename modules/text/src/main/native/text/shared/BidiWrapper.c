@@ -153,8 +153,8 @@ check_fail (JNIEnv * env, int err)
   if (U_FAILURE (err))
     {
       sprintf (message, "ICU Internal Error: %d", err);
-      exception = (*env)->FindClass (env, "java/lang/RuntimeException");
-      (*env)->ThrowNew (env, exception, message);
+      throwNewExceptionByName(env, "java/lang/RuntimeException",
+                              message);
     }
 }
 

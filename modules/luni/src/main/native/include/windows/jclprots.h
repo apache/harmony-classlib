@@ -483,8 +483,8 @@ extern "C"
                 jboolean preferIPv4Stack));
                 
   /* NativesCommonZipFile*/
-  void throwJavaZIOException PROTOTYPE ((JNIEnv * env, char *message));
-  void throwNewInternalError PROTOTYPE ((JNIEnv * env, char *message));
+  void throwJavaZIOException PROTOTYPE ((JNIEnv * env, const char *message));
+  void throwNewInternalError PROTOTYPE ((JNIEnv * env, const char *message));
   void JNICALL Java_java_util_zip_ZipFile_closeZipImpl
     PROTOTYPE ((JNIEnv * env, jobject recv));
   jobject JNICALL Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry
@@ -493,7 +493,7 @@ extern "C"
   void JNICALL Java_java_util_zip_ZipFile_ntvinit
     PROTOTYPE ((JNIEnv * env, jclass cls));
   void throwNewIllegalStateException
-    PROTOTYPE ((JNIEnv * env, char *message));
+    PROTOTYPE ((JNIEnv * env, const char *message));
   jlong JNICALL Java_java_util_zip_ZipFile_00024ZFEnum_resetZip
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong descriptor));
   jint JNICALL Java_java_util_zip_ZipFile_openZipImpl
@@ -505,7 +505,7 @@ extern "C"
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong zipPointer,
                 jstring entryName));
   void throwNewIllegalArgumentException
-    PROTOTYPE ((JNIEnv * env, char *message));
+    PROTOTYPE ((JNIEnv * env, const char *message));
     
   /* NativesCommonInetAddress*/
   void JNICALL Java_java_net_InetAddress_oneTimeInitialization

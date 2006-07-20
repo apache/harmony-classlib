@@ -27,14 +27,12 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_malloc
 {
   PORT_ACCESS_FROM_ENV (env);
 
-  jclass exceptionClazz;
   void *address = hymem_allocate_memory ((UDATA) size);
 
   if (address == NULL)
     {
-      exceptionClazz = (*env)->FindClass (env, "java/lang/OutOfMemoryError");
-      (*env)->ThrowNew (env, exceptionClazz,
-                        "Insufficient memory available.");
+      throwNewOutOfMemoryError(env, "java/lang/OutOfMemoryError",
+                               "Insufficient memory available.");
     }
 
   return (jlong) address;

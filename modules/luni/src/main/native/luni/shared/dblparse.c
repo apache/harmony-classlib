@@ -18,6 +18,7 @@
 #include "vmi.h"
 #include "cbigint.h"
 #include "jclglob.h"
+#include "exceptions.h"
 
 #if defined(LINUX)
 #define USE_LL
@@ -637,17 +638,11 @@ Java_org_apache_harmony_luni_util_FloatingPointParser_parseDblImpl (JNIEnv * env
     }
   else if (LOW_I32_FROM_VAR (dbl) == (I_32) - 1)
     {                           /* NumberFormatException */
-      clazz = (*env)->FindClass (env, "java/lang/NumberFormatException");
-      if (clazz == 0)
-        return 0.0;
-      (*env)->ThrowNew (env, clazz, "");
+      throwNewExceptionByName(env, "java/lang/NumberFormatException", "");
     }
   else
     {                           /* OutOfMemoryError */
-      clazz = (*env)->FindClass (env, "java/lang/OutOfMemoryError");
-      if (clazz == 0)
-        return 0.0;
-      (*env)->ThrowNew (env, clazz, "");
+      throwNewOutOfMemoryError(env, "");
     }
 
   return 0.0;

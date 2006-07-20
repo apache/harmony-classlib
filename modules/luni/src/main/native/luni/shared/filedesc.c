@@ -49,12 +49,8 @@ Java_java_io_FileDescriptor_sync (JNIEnv * env, jobject recv)
   if (syncfailed)
     {
       /* Find and throw SyncFailedException */
-      jclass exceptionClass = (*env)->FindClass(env, "java/io/SyncFailedException");
-      if (0 == exceptionClass) { 
-        /* Just return if we can't load the exception class. */
-        return;
-        }
-      (*env)->ThrowNew(env, exceptionClass, "Failed to Sync File");
+      throwNewExceptionByName(env, "java/io/SyncFailedException",
+                              "Failed to Sync File");
       return;
     }
 }

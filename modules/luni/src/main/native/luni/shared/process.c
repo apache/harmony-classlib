@@ -46,14 +46,12 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
   envLength = (*env)->GetArrayLength (env, arg2);
   if (commandLineLength >= 255)
     {
-      jclass exClass = (*env)->FindClass (env, "java/io/IOException");
-      (*env)->ThrowNew (env, exClass, "Too many arguments");
+      throwJavaIoIOException(env, "Too many arguments");
       return NULL;
     }
   if (envLength >= 255)
     {
-      jclass exClass = (*env)->FindClass (env, "java/io/IOException");
-      (*env)->ThrowNew (env, exClass, "Too many environment arguments");
+      throwJavaIoIOException(env, "Too many environment arguments");
       return NULL;
     }
 
@@ -140,8 +138,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
             break;
         }
 
-        exClass = (*env)->FindClass (env, "java/io/IOException");
-        (*env)->ThrowNew (env, exClass, errMsg);
+        throwJavaIoIOException(env, errMsg);
         goto failed;
     }
 
@@ -235,8 +232,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_availableImpl (
   if (retVal < 0)
     {
       /* Couldn't read bytes */
-      jclass exClass = (*env)->FindClass (env, "java/io/IOException");
-      (*env)->ThrowNew (env, exClass, "Unable to peek on stream");
+      throwJavaIoIOException(env, "Unable to peek on stream");
     }
   return (jint) retVal;
 }

@@ -21,7 +21,7 @@
 
 #include "inflater.h"
 
-void throwNewDataFormatException (JNIEnv * env, char *message);
+void throwNewDataFormatException (JNIEnv * env, const char *message);
 
 /* Create a new stream . This stream cannot be used until it has been properly initialized. */
 jlong JNICALL
@@ -237,14 +237,9 @@ Java_java_util_zip_Inflater_resetImpl (JNIEnv * env, jobject recv,
   * Throw java.util.zip.DataFormatException
   */
 void
-throwNewDataFormatException (JNIEnv * env, char *message)
+throwNewDataFormatException (JNIEnv * env, const char *message)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/util/zip/DataFormatException");
-  if (0 == exceptionClass) { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
+  throwNewExceptionByName(env, "java/util/zip/DataFormatException", message);
 }
 
 jlong JNICALL

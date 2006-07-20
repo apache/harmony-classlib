@@ -17,6 +17,7 @@
 #include "hysock.h"
 #include "hyport.h"
 #include "jclglob.h"
+#include "exceptions.h"
 
 /**
  * Set up JNI ID Caches.
@@ -271,17 +272,12 @@ getJavaNetSocketImplPort(JNIEnv * env);
 void
 throwJavaLangIllegalArgumentException (JNIEnv * env, I_32 errorNumber)
 {
-  jclass aClass;
-  /* the error message lookup should be done before the FindClass call, because the FindClass call
-   * may reset the error number that is used in hysock_error_message */
+  /* the error message lookup should be done before the FindClass
+   * call, because the FindClass call may reset the error number that
+   * is used in hysock_error_message */
   char *errorMessage = netLookupErrorString (env, errorNumber);
-  aClass = (*env)->FindClass (env, "java/lang/IllegalArgumentException");
-  if (0 == aClass)
-    {
-      return;
-    }
-  (*env)->ThrowNew (env, aClass, errorMessage);
-
+  throwNewExceptionByName(env, "java/lang/IllegalArgumentException",
+                          errorMessage);
 }
 
 /**
@@ -296,8 +292,9 @@ void
 throwJavaNetBindException (JNIEnv * env, I_32 errorNumber)
 {
   jclass aClass;
-  /* the error message lookup should be done before the FindClass call, because the FindClass call
-   * may reset the error number that is used in hysock_error_message */
+  /* the error message lookup should be done before the FindClass
+   * call, because the FindClass call may reset the error number that
+   * is used in hysock_error_message */
   char *errorMessage = netLookupErrorString (env, errorNumber);
   aClass = (*env)->FindClass (env, "java/net/BindException");
   if (0 == aClass)
@@ -351,17 +348,11 @@ throwJavaNetConnectException (JNIEnv * env, I_32 errorNumber)
 void
 throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber)
 {
-  jclass aClass;
-  /* the error message lookup should be done before the FindClass call, because the FindClass call
-   * may reset the error number that is used in hysock_error_message */
+  /* the error message lookup should be done before the FindClass
+   * call, because the FindClass call may reset the error number that
+   * is used in hysock_error_message */
   char *errorMessage = netLookupErrorString (env, errorNumber);
-  aClass = (*env)->FindClass (env, "java/net/SocketException");
-  if (0 == aClass)
-    {
-      return;
-    }
-  (*env)->ThrowNew (env, aClass, errorMessage);
-
+  throwNewExceptionByName(env, "java/net/SocketException", errorMessage);
 }
 
 /**
@@ -375,23 +366,17 @@ throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber)
 void
 throwJavaNetUnknownHostException (JNIEnv * env, I_32 errorNumber)
 {
-  jclass aClass;
   char *errorMessage;
   if (errorNumber == HYPORT_ERROR_SOCKET_SYSTEMFULL)
     {
-      throwNewOutOfMemoryError (env, "");
+      throwNewOutOfMemoryError(env, "");
       return;
     }
-  /* the error message lookup should be done before the FindClass call, because the FindClass call
-   * may reset the error number that is used in hysock_error_message */
+  /* the error message lookup should be done before the FindClass
+   * call, because the FindClass call may reset the error number that
+   * is used in hysock_error_message */
   errorMessage = netLookupErrorString (env, errorNumber);
-  aClass = (*env)->FindClass (env, "java/net/UnknownHostException");
-  if (0 == aClass)
-    {
-      return;
-    }
-  (*env)->ThrowNew (env, aClass, errorMessage);
-
+  throwNewExceptionByName(env, "java/net/UnknownHostException", errorMessage);
 }
 
 /**
@@ -405,17 +390,11 @@ throwJavaNetUnknownHostException (JNIEnv * env, I_32 errorNumber)
 void
 throwJavaIoInterruptedIOException (JNIEnv * env, I_32 errorNumber)
 {
-  jclass aClass;
-  /* the error message lookup should be done before the FindClass call, because the FindClass call
-   * may reset the error number that is used in hysock_error_message */
+  /* the error message lookup should be done before the FindClass
+   * call, because the FindClass call may reset the error number that
+   * is used in hysock_error_message */
   char *errorMessage = netLookupErrorString (env, errorNumber);
-  aClass = (*env)->FindClass (env, "java/io/InterruptedIOException");
-  if (0 == aClass)
-    {
-      return;
-    }
-  (*env)->ThrowNew (env, aClass, errorMessage);
-
+  throwNewExceptionByName(env, "java/io/InterruptedIOException", errorMessage);
 }
 
 /**
@@ -1237,17 +1216,12 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
 void
 throwJavaNetPortUnreachableException (JNIEnv * env, I_32 errorNumber)
 {
-  jclass aClass;
-  /* the error message lookup should be done before the FindClass call, because the FindClass call
-   * may reset the error number that is used in hysock_error_message */
+  /* the error message lookup should be done before the FindClass
+   * call, because the FindClass call may reset the error number that
+   * is used in hysock_error_message */
   char *errorMessage = netLookupErrorString (env, errorNumber);
-  aClass = (*env)->FindClass (env, "java/net/PortUnreachableException");
-  if (0 == aClass)
-    {
-      return;
-    }
-  (*env)->ThrowNew (env, aClass, errorMessage);
-
+  throwNewExceptionByName(env, "java/net/PortUnreachableException",
+                          errorMessage);
 }
 
 /**
@@ -1261,17 +1235,11 @@ throwJavaNetPortUnreachableException (JNIEnv * env, I_32 errorNumber)
 void
 throwJavaNetSocketTimeoutException (JNIEnv * env, I_32 errorNumber)
 {
-  jclass aClass;
-  /* the error message lookup should be done before the FindClass call, because the FindClass call
-   * may reset the error number that is used in hysock_error_message */
+  /* the error message lookup should be done before the FindClass
+   * call, because the FindClass call may reset the error number that
+   * is used in hysock_error_message */
   char *errorMessage = netLookupErrorString (env, errorNumber);
-  aClass = (*env)->FindClass (env, "java/net/SocketTimeoutException");
-  if (0 == aClass)
-    {
-      return;
-    }
-  (*env)->ThrowNew (env, aClass, errorMessage);
-
+  throwNewExceptionByName(env, "java/net/SocketTimeoutException", errorMessage);
 }
 
 /**

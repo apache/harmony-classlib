@@ -26,30 +26,18 @@ void *zalloc PROTOTYPE ((void *opaque, U_32 items, U_32 size));
   * Throw java.lang.InternalError
   */
 void
-throwNewInternalError (JNIEnv * env, char *message)
+throwNewInternalError (JNIEnv * env, const char *message)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/InternalError");
-  if (0 == exceptionClass)
-    {
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
+  throwNewExceptionByName(env, "java/lang/InternalError", message);
 }
 
 /**
   * Throw java.util.zip.ZipException with the message provided
   */
 void
-throwJavaZIOException (JNIEnv * env, char *message)
+throwJavaZIOException (JNIEnv * env, const char *message)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/util/zip/ZipException");
-  if (0 == exceptionClass)
-    { 
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
+  throwNewExceptionByName(env, "java/util/zip/ZipException", message);
 }
 
 jint JNICALL
@@ -216,30 +204,18 @@ Java_java_util_zip_ZipFile_closeZipImpl (JNIEnv * env, jobject recv)
   * Throw java.lang.IllegalStateException
   */
 void
-throwNewIllegalStateException (JNIEnv * env, char *message)
+throwNewIllegalStateException (JNIEnv * env, const char *message)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/IllegalStateException");
-  if (0 == exceptionClass)
-    {
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
+  throwNewExceptionByName(env, "java/lang/IllegalStateException", message);
 }
 
 /**
   * Throw java.lang.IllegalArgumentException
   */
 void
-throwNewIllegalArgumentException (JNIEnv * env, char *message)
+throwNewIllegalArgumentException (JNIEnv * env, const char *message)
 {
-  jclass exceptionClass = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
-  if (0 == exceptionClass)
-    {
-    /* Just return if we can't load the exception class. */
-    return;
-    }
-  (*env)->ThrowNew(env, exceptionClass, message);
+  throwNewExceptionByName(env, "java/lang/IllegalArgumentException", message);
 }
 
 void JNICALL
