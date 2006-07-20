@@ -180,7 +180,7 @@ Generating snapshot tar
                 includes="README-snapshot.txt"
                 fullpath="Harmony/README"/>
         </tar>
-        <checksum file="${deploy.tar}" fileext=".md5"/>
+        <md5sum file="${deploy.tar}" />
     </target>
 
     <!-- ================================= 
@@ -209,7 +209,7 @@ Generating snapshot zip
                 includes="README-snapshot.txt"
                 fullpath="Harmony/README.txt"/>
         </zip>
-        <checksum file="${deploy.zip}" fileext=".md5"/>
+        <md5sum file="${deploy.zip}" />
     </target>
 
     <target name="fetch-depends">
@@ -217,5 +217,15 @@ Generating snapshot zip
     </target>
 
     <target name="properties" depends="echo" />
+
+    <macrodef name="md5sum">
+        <attribute name="file" />
+        <attribute name="type" default="md5" />
+        <sequential>
+            <checksum property="@{file}.@{type}" file="@{file}" />
+            <echo file="@{file}.@{type}"
+                  message="${@{file}.@{type}}  @{file}" />
+        </sequential>
+    </macrodef>
 
 </project>
