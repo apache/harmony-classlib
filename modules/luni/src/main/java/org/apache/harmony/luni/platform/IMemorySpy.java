@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ package org.apache.harmony.luni.platform;
  */
 public interface IMemorySpy {
 
-	public void alloc(PlatformAddress address, long size);
+	public void alloc(PlatformAddress address);
 
 	// Has a veto: true == do free,false = don't
 	public boolean free(PlatformAddress address);

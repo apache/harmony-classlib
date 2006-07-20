@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ final class DebugMemorySpy extends AbstractMemorySpy {
 			PlatformAddress accessStart = address.offsetBytes(offset);
 			PlatformAddress accessEnd = accessStart.offsetBytes(length);
 			PlatformAddress allocStart = wrapper.shadow;
-			PlatformAddress allocEnd = allocStart.offsetBytes(wrapper.size);
+			PlatformAddress allocEnd = allocStart.offsetBytes(address.size);
 			boolean under = (accessStart.compareTo(allocStart)) == -1;
 			boolean over = (accessEnd.compareTo(allocEnd)) == 1;
 			if (under || over) {

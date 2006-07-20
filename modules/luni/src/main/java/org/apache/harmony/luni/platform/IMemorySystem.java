@@ -411,7 +411,7 @@ public interface IMemorySystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public PlatformAddress mmap(long fileDescriptor, long alignment, long size,
+	public long mmap(long fileDescriptor, long alignment, long size,
 			int mapMode) throws IOException;
 
 	/**
@@ -420,21 +420,21 @@ public interface IMemorySystem {
 	 * @param addr
 	 * @throws IOException
 	 */
-	public void unmap(PlatformAddress addr);
+	public void unmap(long addr, long size);
 
 	/**
 	 * TODO: JavaDoc
 	 */
-	public void load(PlatformAddress addr, long size);
+	public void load(long addr, long size);
 
 	/**
 	 * TODO: JavaDoc
 	 */
-	public boolean isLoaded(PlatformAddress addr, long size);
+	public boolean isLoaded(long addr, long size);
 
 	/**
 	 * TODO : JavaDoc
 	 */
-	public void flush(PlatformAddress addr, long size);
+	public void flush(long addr, long size);
 
 }

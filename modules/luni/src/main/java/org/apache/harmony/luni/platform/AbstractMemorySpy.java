@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,16 +40,13 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 	final class AddressWrapper {
 		final PlatformAddress shadow;
 
-		final long size;
-
 		final PhantomReference<PlatformAddress> wrAddress;
 
 		volatile boolean autoFree = false;
 
-		AddressWrapper(PlatformAddress address, long size) {
+		AddressWrapper(PlatformAddress address) {
 			super();
-			this.shadow = PlatformAddress.on(address);
-			this.size = size;
+			this.shadow = address.duplicate();
 			this.wrAddress = new PhantomReference<PlatformAddress>(address, notifyQueue);
 		}
 	}
@@ -58,8 +55,8 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 		super();
 	}
 
-	public void alloc(PlatformAddress address, long size) {
-		AddressWrapper wrapper = new AddressWrapper(address, size);
+	public void alloc(PlatformAddress address) {
+		AddressWrapper wrapper = new AddressWrapper(address);
 		synchronized (lock) {
 			memoryInUse.put(wrapper.shadow, wrapper);
 			refToShadow.put(wrapper.wrAddress, wrapper.shadow);

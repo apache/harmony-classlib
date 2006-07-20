@@ -535,38 +535,35 @@ final class OSMemory extends OSComponent implements IMemorySystem {
 	private native long mmapImpl(long fileDescriptor, long alignment,
 			long size, int mapMode);
 
-	public PlatformAddress mmap(long fileDescriptor, long alignment, long size,
+	public long mmap(long fileDescriptor, long alignment, long size,
 			int mapMode) throws IOException {
 		long address = mmapImpl(fileDescriptor, alignment, size, mapMode);
 		if (address == -1) {
 			throw new IOException();
 		}
-		return PlatformAddress.on(address, true);
+		return address;
 	}
 
-	private native void unmapImpl(long addr);
+	private native void unmapImpl(long addr, long size);
 
-	public void unmap(PlatformAddress addr) {
-		long osAddr = addr.toLong();
-		unmapImpl(osAddr);
+	public void unmap(long addr, long size) {
+		unmapImpl(addr, size);
 	}
 
-	public void load(PlatformAddress addr, long size) {
-		// WIN32: virtualLock, need
-		// Linux:
-		loadImpl(addr.toLong(), size);
+	public void load(long addr, long size) {
+		loadImpl(addr, size);
 	}
 
 	private native int loadImpl(long l, long size);
 
-	public boolean isLoaded(PlatformAddress addr, long size) {
-		return size == 0 ? true : isLoadedImpl(addr.toLong(), size);
+	public boolean isLoaded(long addr, long size) {
+		return size == 0 ? true : isLoadedImpl(addr, size);
 	}
 
 	private native boolean isLoadedImpl(long l, long size);
 
-	public void flush(PlatformAddress addr, long size) {
-		flushImpl(addr.toLong(), size);
+	public void flush(long addr, long size) {
+		flushImpl(addr, size);
 	}
 
 	private native int flushImpl(long l, long size);

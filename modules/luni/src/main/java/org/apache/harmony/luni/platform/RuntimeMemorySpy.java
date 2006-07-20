@@ -23,8 +23,8 @@ final class RuntimeMemorySpy extends AbstractMemorySpy {
 		super();
 	}
 
-	public void alloc(PlatformAddress address, long size) {
-		super.alloc(address, size);
+	public void alloc(PlatformAddress address) {
+		super.alloc(address);
 		// Pay a tax on the allocation to see if there are any frees pending.
 		Reference ref = notifyQueue.poll(); // non-blocking check
 		while (ref != null) {

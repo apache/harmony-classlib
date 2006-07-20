@@ -100,9 +100,9 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
-  (JNIEnv * env, jobject thiz, jlong fd)
+  (JNIEnv * env, jobject thiz, jlong addr, jlong size)
 {
-  UnmapViewOfFile ((HANDLE)fd);
+  UnmapViewOfFile ((HANDLE)addr);
 }
 
 /*
