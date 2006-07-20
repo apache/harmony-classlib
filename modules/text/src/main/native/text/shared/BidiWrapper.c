@@ -16,6 +16,7 @@
 #include <unicode/ubidi.h>
 #include "vmi.h"
 #include "BidiWrapper.h"
+#include "exceptions.h"
 
 void check_fail (JNIEnv * env, int err);
 
@@ -147,7 +148,6 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getRun
 void
 check_fail (JNIEnv * env, int err)
 {
-  jclass exception;
   char message[] = "ICU Internal Error:                     ";
 
   if (U_FAILURE (err))
