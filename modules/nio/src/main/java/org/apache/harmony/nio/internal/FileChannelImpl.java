@@ -450,13 +450,12 @@ public abstract class FileChannelImpl extends FileChannel {
             return 0;
         }
         ByteBuffer buffer = null;
-//        if (target instanceof SocketChannelImpl
-//                || target instanceof DatagramChannelImpl) {
-//            // TODO: not implement yet
-//            // return kernelTransfer(handle,
-//            // ((FileChannelImpl) target).handle, position, count);
-//        }
         count = Math.min(count, size() - position);
+        if (target instanceof SocketChannelImpl) {
+            // only socket can be transfered by system call
+            return kernelTransfer(handle, ((SocketChannelImpl) target).getFD(),
+                    position, count);
+        }
         buffer = map(MapMode.READ_ONLY, position, count);
         return target.write(buffer);
     }
