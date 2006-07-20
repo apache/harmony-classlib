@@ -16,6 +16,7 @@
 package java.nio;
 
 import org.apache.harmony.luni.platform.IMemorySystem;
+import org.apache.harmony.luni.platform.MappedPlatformAddress;
 import org.apache.harmony.luni.platform.PlatformAddress;
 import org.apache.harmony.nio.internal.DirectBuffer;
 
@@ -75,8 +76,7 @@ public abstract class MappedByteBuffer extends ByteBuffer {
 	 * @return True if this buffer's content is loaded.
 	 */
 	public final boolean isLoaded() {
-		return ((DirectBuffer) wrapped).getEffectiveAddress().mmapIsLoaded(
-                wrapped.capacity());
+		return ((MappedPlatformAddress)((DirectBuffer) wrapped).getBaseAddress()).mmapIsLoaded();
 	}
 
 	/**
@@ -85,8 +85,7 @@ public abstract class MappedByteBuffer extends ByteBuffer {
 	 * @return This buffer
 	 */
 	public final MappedByteBuffer load() {
-		((DirectBuffer) wrapped).getEffectiveAddress().mmapLoad(
-                wrapped.capacity());
+		((MappedPlatformAddress)((DirectBuffer) wrapped).getBaseAddress()).mmapLoad();
 		return this;
 	}
 
@@ -100,8 +99,7 @@ public abstract class MappedByteBuffer extends ByteBuffer {
      */
     public final MappedByteBuffer force() {
         if (mapMode == IMemorySystem.MMAP_READ_WRITE) {
-            ((DirectBuffer) wrapped).getEffectiveAddress().mmapFlush(
-                    wrapped.capacity());
+            ((MappedPlatformAddress)((DirectBuffer) wrapped).getBaseAddress()).mmapFlush();
         }
         return this;
     }

@@ -15,6 +15,7 @@
 
 package java.nio;
 
+import org.apache.harmony.luni.platform.MappedPlatformAddress;
 import org.apache.harmony.luni.platform.PlatformAddress;
 import org.apache.harmony.nio.internal.DirectBuffer;
 
@@ -354,7 +355,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public void free() {
-		this.wrapped.getBaseAddress().unmap();
+		((MappedPlatformAddress)this.wrapped.getBaseAddress()).free();
 		this.wrapped.free();
 	}
 }

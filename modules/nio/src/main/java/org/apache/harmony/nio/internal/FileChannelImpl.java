@@ -23,15 +23,14 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.channels.NonReadableChannelException;
 import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
 import org.apache.harmony.luni.platform.IFileSystem;
-import org.apache.harmony.luni.platform.IMemorySystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.platform.PlatformAddress;
+import org.apache.harmony.luni.platform.PlatformAddressFactory;
 
 /*
  * The file channel impl class is the bridge between the logical channels
@@ -45,9 +44,6 @@ public abstract class FileChannelImpl extends FileChannel {
 
 	// Reference to the portable file system code.
 	private static final IFileSystem fileSystem = Platform.getFileSystem();
-
-    private static final IMemorySystem memorySystem = Platform
-            .getMemorySystem();
 
     private static final int NATIVE_PAGE_SIZE;
 
@@ -195,7 +191,7 @@ public abstract class FileChannelImpl extends FileChannel {
         }
         long alignment = position - position % NATIVE_PAGE_SIZE;
         int offset = (int) (position - alignment);
-        PlatformAddress address = memorySystem.mmap(handle, alignment, size
+        PlatformAddress address = PlatformAddressFactory.allocMap(handle, alignment, size
                 + offset, mapMode);
         MappedByteBuffer buffer = null;
         try {
