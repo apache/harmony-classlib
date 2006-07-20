@@ -75,11 +75,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 * 
 	 * @exception UnsupportedOperationException
 	 *                when adding to this Collection is not supported
-	 * @exception ClassCastException
-	 *                when the class of an object is inappropriate for this
-	 *                Collection
-	 * @exception IllegalArgumentException
-	 *                when an object cannot be added to this Collection
+	 * @exception NullPointerException
+	 *                if null is used to invoke this method
 	 */
 	public boolean addAll(Collection<? extends E> collection) {
 		boolean result = false;
@@ -92,6 +89,18 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 		return result;
 	}
 
+    /**
+     * Removes all the elements in this collection. This collection will be 
+     * cleared up after this operation. The operation iterates over the 
+     * collection, removes every element using Iterator.remove method.
+     * 
+     * UnsupportedOperationException will be thrown out if the iterator returned
+     * by this collection does not implement the remove method and the collection
+     * is not zero length.
+     * 
+     * @exception UnsupportedOperationException 
+     *                  if this operation is not implemented.
+     */
 	public void clear() {
 		Iterator<E> it = iterator();
 		while (it.hasNext()) {
@@ -133,6 +142,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *            the Collection of objects
 	 * @return true if all objects in the specified Collection are elements of
 	 *         this Collection, false otherwise
+     * @exception NullPointerException
+     *                if null is used to invoke this method
 	 */
 	public boolean containsAll(Collection<?> collection) {
 		Iterator<?> it = collection.iterator();
@@ -144,6 +155,11 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 		return true;
 	}
 
+    /**
+     * Returns true if the collection has no element, otherwise false.
+     * 
+     * @return true if the collection has no element.
+     */
 	public boolean isEmpty() {
 		return size() == 0;
 	}
@@ -160,7 +176,13 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
 	/**
 	 * Removes the first occurrence of the specified object from this
-	 * Collection.
+	 * Collection. This operation traverses over the collection, looking
+     * for the specified object. Once the object is found, the object will
+     * be removed from the collection using the iterator's remove method. 
+     * 
+     * This collection will throw an UnsupportedOperationException if the 
+     * iterator returned does not implement remove method, and the specified
+     * object is in this collection.
 	 * 
 	 * @param object
 	 *            the object to remove
@@ -191,7 +213,15 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
 	/**
 	 * Removes all occurrences in this Collection of each object in the
-	 * specified Collection.
+	 * specified Collection. This operation traverses over the collection
+     * itself, to verify whether each element is contained in the specified 
+     * collection. The object will be removed from the collection itself using 
+     * the iterator's remove method if it is contained in the specified 
+     * collection. 
+     * 
+     * This collection will throw an UnsupportedOperationException if the 
+     * iterator returned does not implement remove method, and the element 
+     * in the specified collection is contained in this collection.
 	 * 
 	 * @param collection
 	 *            the Collection of objects to remove
@@ -199,6 +229,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 * 
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Collection is not supported
+     * @exception NullPointerException
+     *                if null is used to invoke this method
 	 */
 	public boolean removeAll(Collection<?> collection) {
 		boolean result = false;
@@ -214,7 +246,15 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
 	/**
 	 * Removes all objects from this Collection that are not contained in the
-	 * specified Collection.
+	 * specified Collection. This operation traverses over the collection
+     * itself, to verify whether any element is contained in the specified 
+     * collection. The object will be removed from the collection itself using 
+     * the iterator's remove method if it is not contained in the specified 
+     * collection. 
+     * 
+     * This collection will throw an UnsupportedOperationException if the 
+     * iterator returned does not implement remove method, and the collection
+     * itself does contain elements which do not exist in the specified collection.
 	 * 
 	 * @param collection
 	 *            the Collection of objects to retain
@@ -222,6 +262,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 * 
 	 * @exception UnsupportedOperationException
 	 *                when removing from this Collection is not supported
+     * @exception NullPointerException
+     *                if null is used to invoke this method
 	 */
 	public boolean retainAll(Collection<?> collection) {
 		boolean result = false;
@@ -244,6 +286,10 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
 	/**
 	 * Answers a new array containing all elements contained in this Collection.
+     * All the elements in the array will not be referenced by the collection.
+     * The elements in the returned array will be sorted to the same order as 
+     * those returned by the iterator of this collection itself if the collection  
+     * guarantees the order. 
 	 * 
 	 * @return an array of the elements from this Collection
 	 */
@@ -271,6 +317,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 * @exception ArrayStoreException
 	 *                when the type of an element in this Collection cannot be
 	 *                stored in the type of the specified array
+     * @exception NullPointerException
+     *                if null is used to invoke this method
 	 */
 	@SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] contents) {
@@ -289,7 +337,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	}
 
 	/**
-	 * Answers the string representation of this Collection.
+	 * Answers the string representation of this Collection. The presentation
+     * has a specific format. It is enclosed by square brackets ("[]"). Elements
+     * are separated by ', ' (comma and space).
 	 * 
 	 * @return the string representation of this Collection
 	 */
