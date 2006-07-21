@@ -83,9 +83,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#1: Expected NPE not thrown");
-        } catch (NullPointerException ok) {
-        }
-
+        } catch (NullPointerException ok) {}
 
         // test case 2 parameters set,
         f = new ECFieldFp(BigInteger.valueOf(23L));
@@ -96,9 +94,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#2: Expected NPE not thrown");
-        } catch (NullPointerException ok) {
-        }
-
+        } catch (NullPointerException ok) {}
 
         // test case 3 parameters set,
         f = new ECFieldFp(BigInteger.valueOf(23L));
@@ -109,8 +105,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#3: Expected NPE not thrown");
-        } catch (NullPointerException ok) {
-        }
+        } catch (NullPointerException ok) {}
     }
 
     /**
@@ -135,9 +130,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#1: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 1.1 parameters set,
         // b is not in field
@@ -149,8 +142,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#1.1: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
+        } catch (IllegalArgumentException ok) {}
 
         // test case 2 parameters set,
         // b is not in field
@@ -162,9 +154,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#2: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 3 parameters set,
         // both a and b are not in field
@@ -176,8 +166,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#3: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
+        } catch (IllegalArgumentException ok) {}
     }
 
     /**
@@ -198,14 +187,11 @@ public class EllipticCurveTest extends TestCase {
         BigInteger b = BigInteger.valueOf(19L);
         byte[] seed = new byte[24];
 
-
         // perform test case 1
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#1: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 2 parameters set,
         // b is not in field
@@ -217,9 +203,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#2: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 3 parameters set,
         // both a and b are not in field
@@ -231,8 +215,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b, seed);
             fail("#3: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
+        } catch (IllegalArgumentException ok) {}
     }
 
     /**
@@ -250,7 +233,7 @@ public class EllipticCurveTest extends TestCase {
         byte[] seedCopy = seed.clone();
         EllipticCurve c = new EllipticCurve(f, a, b, seedCopy);
         // modify array passed
-        seedCopy[0] = (byte)1;
+        seedCopy[0] = (byte) 1;
         // check that above modification did not changed
         // internal state of test object
         assertTrue(Arrays.equals(seed, c.getSeed()));
@@ -305,9 +288,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#1: Expected NPE not thrown");
-        } catch (NullPointerException ok) {
-        }
-
+        } catch (NullPointerException ok) {}
 
         // test case 2 parameters set,
         f = new ECFieldFp(BigInteger.valueOf(23L));
@@ -317,9 +298,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#2: Expected NPE not thrown");
-        } catch (NullPointerException ok) {
-        }
-
+        } catch (NullPointerException ok) {}
 
         // test case 3 parameters set,
         f = new ECFieldFp(BigInteger.valueOf(23L));
@@ -329,8 +308,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#3: Expected NPE not thrown");
-        } catch (NullPointerException ok) {
-        }
+        } catch (NullPointerException ok) {}
     }
 
     /**
@@ -354,9 +332,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#1: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 1.1 parameters set,
         // a is not in field
@@ -367,9 +343,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#1.1: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 2 parameters set,
         // b is not in field
@@ -380,9 +354,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#2: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 3 parameters set,
         // both a and b are not in field
@@ -393,8 +365,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#3: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
+        } catch (IllegalArgumentException ok) {}
     }
 
     /**
@@ -417,9 +388,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#1: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 2 parameters set,
         // b is not in field
@@ -430,9 +399,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#2: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
-
+        } catch (IllegalArgumentException ok) {}
 
         // test case 3 parameters set,
         // both a and b are not in field
@@ -443,8 +410,7 @@ public class EllipticCurveTest extends TestCase {
         try {
             new EllipticCurve(f, a, b);
             fail("#3: Expected IAE not thrown");
-        } catch (IllegalArgumentException ok) {
-        }
+        } catch (IllegalArgumentException ok) {}
     }
 
     /**
@@ -463,6 +429,18 @@ public class EllipticCurveTest extends TestCase {
         EllipticCurve c = new EllipticCurve(f, a, b);
         assertEquals(a, c.getA());
         assertSame(a, c.getA());
+    }
+
+    /**
+     * @tests java/security/spec/EllipticCurve#EllipticCurve(EcField,BigInteger,BigInteger)
+     */
+    public final void testEllipticCurveECFieldBigIntegerBigInteger05() {
+        // Regression for Harmony-731
+        EllipticCurve ec = new EllipticCurve(new testECField(), BigInteger
+                .valueOf(4L), BigInteger.ONE);
+        assertEquals("incorrect a", ec.getA(), BigInteger.valueOf(4L));
+        assertEquals("incorrect b", ec.getB(), BigInteger.ONE);
+        assertEquals("incorrect size", ec.getField().getFieldSize(), 2);
     }
 
     /**
@@ -536,7 +514,7 @@ public class EllipticCurveTest extends TestCase {
         EllipticCurve c = new EllipticCurve(f, a, b, seed.clone());
         byte[] seedRet = c.getSeed();
         // modify returned array
-        seedRet[0] = (byte)1;
+        seedRet[0] = (byte) 1;
         // check that above modification did not changed
         // internal state of test object
         assertTrue(Arrays.equals(seed, c.getSeed()));
@@ -562,7 +540,7 @@ public class EllipticCurveTest extends TestCase {
     /**
      * @tests java.security.spec.EllipticCurve#getSeed()
      * Assertion: null if not specified
-     */    
+     */
     public final void testGetSeed04() {
         //Regression for HARMONY-732
         ECFieldFp f = new ECFieldFp(BigInteger.valueOf(23L));
@@ -578,52 +556,38 @@ public class EllipticCurveTest extends TestCase {
      */
     public final void testEqualsObject01() {
         // test case 1: must be equal to itself
-        EllipticCurve c2=null, c1 =
-            new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                    BigInteger.ONE,
-                    BigInteger.valueOf(19L));
+        EllipticCurve c2 = null, c1 = new EllipticCurve(new ECFieldFp(
+                BigInteger.valueOf(23L)), BigInteger.ONE, BigInteger
+                .valueOf(19L));
         assertTrue(c1.equals(c1));
 
         // test case 2: equal objects
         c1 = new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.ONE,
-                BigInteger.valueOf(19L));
+                BigInteger.ONE, BigInteger.valueOf(19L));
         c2 = new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.valueOf(1L),
-                BigInteger.valueOf(19L));
+                BigInteger.valueOf(1L), BigInteger.valueOf(19L));
         assertTrue(c1.equals(c2) && c2.equals(c1));
 
         // test case 3: equal objects with seed not null
         c1 = new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.ONE,
-                BigInteger.valueOf(19L),
-                new byte[24]);
+                BigInteger.ONE, BigInteger.valueOf(19L), new byte[24]);
         c2 = new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.valueOf(1L),
-                BigInteger.valueOf(19L),
-                new byte[24]);
+                BigInteger.valueOf(1L), BigInteger.valueOf(19L), new byte[24]);
         assertTrue(c1.equals(c2) && c2.equals(c1));
 
         // test case 4: equal object and subclass object
         c1 = new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.ONE,
-                BigInteger.valueOf(19L),
-                new byte[24]);
-        MyEllipticCurve c3 = new MyEllipticCurve(
-                new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.ONE,
-                BigInteger.valueOf(19L),
+                BigInteger.ONE, BigInteger.valueOf(19L), new byte[24]);
+        MyEllipticCurve c3 = new MyEllipticCurve(new ECFieldFp(BigInteger
+                .valueOf(23L)), BigInteger.ONE, BigInteger.valueOf(19L),
                 new byte[24]);
         assertTrue(c1.equals(c3) && c3.equals(c1));
 
         // test case 5: equal objects
         c1 = new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.ONE,
-                BigInteger.valueOf(19L));
+                BigInteger.ONE, BigInteger.valueOf(19L));
         c2 = new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.valueOf(1L),
-                BigInteger.valueOf(19L),
-                null);
+                BigInteger.valueOf(1L), BigInteger.valueOf(19L), null);
         assertTrue(c1.equals(c2) && c2.equals(c1));
     }
 
@@ -635,19 +599,14 @@ public class EllipticCurveTest extends TestCase {
      */
     public final void testHashCode01() {
         int hc = 0;
-        EllipticCurve f = new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                BigInteger.ONE,
-                BigInteger.valueOf(19L),
+        EllipticCurve f = new EllipticCurve(new ECFieldFp(BigInteger
+                .valueOf(23L)), BigInteger.ONE, BigInteger.valueOf(19L),
                 new byte[24]);
         hc = f.hashCode();
-        assertTrue(hc == f.hashCode() &&
-                hc == f.hashCode() &&
-                hc == f.hashCode() &&
-                hc == f.hashCode() &&
-                hc == f.hashCode() &&
-                hc == f.hashCode() &&
-                hc == f.hashCode() &&
-                hc == f.hashCode());
+        assertTrue(hc == f.hashCode() && hc == f.hashCode()
+                && hc == f.hashCode() && hc == f.hashCode()
+                && hc == f.hashCode() && hc == f.hashCode()
+                && hc == f.hashCode() && hc == f.hashCode());
     }
 
     /**
@@ -657,28 +616,32 @@ public class EllipticCurveTest extends TestCase {
      * on equal (according to the <code>equals(Object)</code> method) objects. 
      */
     public final void testHashCode02() {
-        assertEquals(
-                new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                        BigInteger.ONE,
-                        BigInteger.valueOf(19L),
-                        new byte[24]).hashCode(),
-                new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
-                        BigInteger.ONE,
-                        BigInteger.valueOf(19L),
-                        new byte[24]).hashCode());
+        assertEquals(new EllipticCurve(new ECFieldFp(BigInteger.valueOf(23L)),
+                BigInteger.ONE, BigInteger.valueOf(19L), new byte[24])
+                .hashCode(), new EllipticCurve(new ECFieldFp(BigInteger
+                .valueOf(23L)), BigInteger.ONE, BigInteger.valueOf(19L),
+                new byte[24]).hashCode());
     }
 
     //
     // Private stuff
     //
 
+    class testECField implements ECField {
+
+        public int getFieldSize() {
+            return 2;
+        }
+    }
+
     /**
      * EllipticCurve subclass for testing purposes
      * 
      */
     private static class MyEllipticCurve extends EllipticCurve {
+
         MyEllipticCurve(ECField f, BigInteger a, BigInteger b, byte[] seed) {
-            super(f,a,b,seed);
+            super(f, a, b, seed);
         }
     }
 }

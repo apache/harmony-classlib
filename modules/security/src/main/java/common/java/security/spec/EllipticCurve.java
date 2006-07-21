@@ -29,23 +29,27 @@ import java.util.Arrays;
  * 
  */
 public class EllipticCurve {
+
     // Underlying finite field
     private final ECField field;
+
     // The first coefficient of the equation defining this elliptic curve
     private final BigInteger a;
+
     // The second coefficient of the equation defining this elliptic curve
-   private final BigInteger b;
+    private final BigInteger b;
+
     // Bytes used during this elliptic curve generation,
     // if it was generated randomly
     private final byte[] seed;
+
     // Hash code
     private volatile int hash;
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public EllipticCurve(ECField field, BigInteger a,
-            BigInteger b, byte[] seed) {
+    public EllipticCurve(ECField field, BigInteger a, BigInteger b, byte[] seed) {
         this.field = field;
         if (this.field == null) {
             throw new NullPointerException("the field parameter is null");
@@ -65,20 +69,18 @@ public class EllipticCurve {
             this.seed = new byte[seed.length];
             System.arraycopy(seed, 0, this.seed, 0, this.seed.length);
         }
-        // check parameters
+        // check parameters for ECFieldFp and ECFieldF2m.
         // Check invariant: a and b must be in the field.
+        // Check conditions for custom ECField are not specified.
         if (this.field instanceof ECFieldFp) {
-            BigInteger p = ((ECFieldFp)this.field).getP();
-            if (this.a.signum() < 0 ||
-                this.a.compareTo(p) >= 0) {
+            BigInteger p = ((ECFieldFp) this.field).getP();
+            if (this.a.signum() < 0 || this.a.compareTo(p) >= 0) {
                 throw new IllegalArgumentException("the a is not in the field");
             }
-            if (this.b.signum() < 0 ||
-                    this.b.compareTo(p) >= 0) {
-                    throw new IllegalArgumentException(
-                            "the a is not in the field");
-                }
-        } else {
+            if (this.b.signum() < 0 || this.b.compareTo(p) >= 0) {
+                throw new IllegalArgumentException("the a is not in the field");
+            }
+        } else if (this.field instanceof ECFieldF2m) {
             int fieldSizeInBits = this.field.getFieldSize();
             if (!(this.a.bitLength() <= fieldSizeInBits)) {
                 throw new IllegalArgumentException("the a is not in the field");
@@ -141,11 +143,10 @@ public class EllipticCurve {
         if (!(other instanceof EllipticCurve)) {
             return false;
         }
-        EllipticCurve otherEc = (EllipticCurve)other;
-        return this.field.equals(otherEc.field) &&
-               this.a.equals(otherEc.a) &&
-               this.b.equals(otherEc.b) &&
-               Arrays.equals(this.seed, otherEc.seed);
+        EllipticCurve otherEc = (EllipticCurve) other;
+        return this.field.equals(otherEc.field) && this.a.equals(otherEc.a)
+                && this.b.equals(otherEc.b)
+                && Arrays.equals(this.seed, otherEc.seed);
     }
 
     /**
@@ -159,8 +160,8 @@ public class EllipticCurve {
             hash0 = hash0 * 31 + a.hashCode();
             hash0 = hash0 * 31 + b.hashCode();
             if (seed != null) {
-                for (int i=0; i<seed.length; i++) {
-                    hash0 = hash0*31 + seed[i];
+                for (int i = 0; i < seed.length; i++) {
+                    hash0 = hash0 * 31 + seed[i];
                 }
             } else {
                 hash0 = hash0 * 31;
