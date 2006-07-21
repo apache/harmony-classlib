@@ -284,7 +284,7 @@ public final class Scanner implements Iterator<String> {
      * 
      */
     public void close() {
-        if (closed == true) {
+        if (closed) {
             return;
         }
         if (input instanceof Closeable) {
@@ -710,9 +710,41 @@ public final class Scanner implements Iterator<String> {
         return isIntValue;
     }
     
-    //TODO: To implement this feature
+    /**
+     * Returns true if there is another line in the input. Otherwise, returns
+     * false. When waiting for input, the scanner may be blocked. No matter true
+     * or false, the scanner will not advance any input.
+     * 
+     * @return true if there is another line in the input. Otherwise, false will
+     *         be returned.
+     * @throws IllegalStateException
+     *             if the scanner is closed
+     */
     public boolean hasNextLine() {
-        throw new NotYetImplementedException();
+        checkClosed();
+        matcher.usePattern(LINE_PATTERN);
+        matcher.region(findStartIndex, bufferLength);
+
+        boolean hasNextLine = false;
+        while (true) {
+            if (matcher.find()) {
+                if (inputExhausted || matcher.end() != bufferLength) {
+                    matchSuccessful = true;
+                    hasNextLine = true;
+                    break;
+                }
+            } else {
+                if (inputExhausted) {
+                    matchSuccessful = false;
+                    break;
+                }
+            }
+            if (!inputExhausted) {
+                readMore();
+                resetMatcher();
+            }
+        }
+        return hasNextLine;
     }
 
     /**
@@ -801,7 +833,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * returns the last IOException thrown when reading the underlying input. If
+     * Returns the last IOException thrown when reading the underlying input. If
      * no exception is thrown, return null.
      * 
      * @return the last IOException thrown
@@ -811,7 +843,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * return the locale of this scanner.
+     * Return the locale of this scanner.
      * 
      * @return 
      *             the locale of this scanner
@@ -1287,7 +1319,7 @@ public final class Scanner implements Iterator<String> {
         String result = null;
         while (true) {
             if (matcher.find()) {
-                if (inputExhausted || bufferLength != matcher.end()) {
+                if (inputExhausted || matcher.end() != bufferLength) {
                     matchSuccessful = true;
                     findStartIndex = matcher.end();
                     result = matcher.group();
@@ -1302,9 +1334,7 @@ public final class Scanner implements Iterator<String> {
             if (!inputExhausted) {
                 readMore();
                 resetMatcher();
-            } else {
-                break;
-            }
+            } 
         }
         // Find text without line terminator here.
         if (null != result) {
@@ -1449,7 +1479,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * return the radix of this scanner.
+     * Return the radix of this scanner.
      * 
      * @return
      *            the radix of this scanner
@@ -1556,23 +1586,24 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * 
-     * set the locale of this scanner to a specified locale. 
+     * Set the locale of this scanner to a specified locale. 
      *
-     * @param locale
+     * @param l
      *              the specified locale to use
      * @return
      *              this scanner
      */
-    public Scanner useLocale(Locale locale) {
-        if (null == locale)
+    public Scanner useLocale(Locale l) {
+        if (null == l) {
             throw new NullPointerException();
-        this.locale = locale;
+        }
+        this.locale = l;
         return this;
     }
 
     /**
      * 
-     * set the radix of this scanner to a specified radix.
+     * Set the radix of this scanner to a specified radix.
      * 
      * @param radix
      *             the specified radix to use
@@ -1642,7 +1673,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /*
-     * save the matcher's last find position
+     * Save the matcher's last find position
      */
     private void saveCurrentStatus() {
         preStartIndex = findStartIndex;

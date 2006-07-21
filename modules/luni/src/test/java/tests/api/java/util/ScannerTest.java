@@ -5087,6 +5087,7 @@ public class ScannerTest extends TestCase {
         s.close();
         try {
             s.nextLine();
+            fail("Should throw IllegalStateException");
         } catch (IllegalStateException e) {
             // expected
         }
@@ -5211,6 +5212,79 @@ public class ScannerTest extends TestCase {
         s = new Scanner("test\n ");
         result = s.nextLine();
         assertEquals("test", result);
+    }
+    
+    /**
+     * @tests java.util.Scanner#hasNextLine()
+     */
+    public void test_hasNextLine() {
+        
+        s = new Scanner("");
+        s.close();
+        try {
+            s.hasNextLine();
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        
+        s = new Scanner("test\r\ntest");
+        boolean result = s.hasNextLine();
+        assertTrue(result);
+        MatchResult matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(6, matchResult.end());
+
+        s = new Scanner("\u0085");
+        result = s.hasNextLine();
+        assertTrue(result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+        
+        s = new Scanner("\u2028");
+        result = s.hasNextLine();
+        assertTrue(result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+        
+        s = new Scanner("\u2029");
+        result = s.hasNextLine();
+        assertTrue(result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+        
+        s = new Scanner("test\n");
+        assertTrue(s.hasNextLine());
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(5, matchResult.end());
+
+        char[] chars = new char[2048];
+        Arrays.fill(chars, 'a');
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(chars);
+        s = new Scanner(stringBuilder.toString());
+        result = s.hasNextLine();
+        assertTrue(result);
+
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(2048, matchResult.end());
+
+        s = new Scanner("\n\n\n");
+        assertTrue(s.hasNextLine());
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
+
+        // The scanner will not advance any input.
+        assertTrue(s.hasNextLine());
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(1, matchResult.end());
     }
     
     protected void setUp() throws Exception {
